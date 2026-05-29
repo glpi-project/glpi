@@ -50,6 +50,7 @@ use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
@@ -58,6 +59,7 @@ use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
@@ -885,5 +887,54 @@ class AnswersHandlerTest extends DbTestCase
 
         // Assert: no assertions, we just make sure no fatal errors occurred
         $this->assertNotNull($set);
+    }
+
+    /**
+     * Regression test for https://github.com/glpi-project/glpi/issues/23210
+     */
+    public function testAnswerForConditionnalCheckboxIsDisplayed(): void
+    {
+        // Arrange: create a form with a condition on a checkbox
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Do you like GLPI?",
+            type: QuestionTypeCheckbox::class,
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'fake-uuid' => 'Yes',
+            ])),
+        );
+        $builder->addQuestion("Tell us why", QuestionTypeShortText::class);
+        $builder->setQuestionVisibility(
+            "Tell us why",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Do you like GLPI?",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => ["fake-uuid"],
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: send anwsers for this form
+        $this->login();
+        $handler = AnswersHandler::getInstance();
+        $input = [
+            // "" simulate the default empty value that is always sent by the HTML form.
+            $this->getQuestionId($form, "Do you like GLPI?") => ["", "fake-uuid"],
+            $this->getQuestionId($form, "Tell us why") => "Because it is great",
+        ];
+        $input = $handler->removeUnusedAnswers($form, $input);
+        $answers = $handler->saveAnswers($form, $input, Session::getLoginUserID());
+
+        // Assert: ticket description should contain both answers
+        $ticket = $answers->getCreatedItems()[0];
+        $this->assertEquals(
+            "<p><b>1) Do you like GLPI?</b>: Yes<br><b>2) Tell us why</b>: Because it is great<br></p>",
+            $ticket->fields['content'],
+        );
     }
 }

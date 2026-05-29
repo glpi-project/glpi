@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Migration;
 use AbstractRightsDropdown;
 use Change;
 use Computer;
+use Dropdown;
 use Entity;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\AccessControl\ControlType\AllowList;
@@ -3658,6 +3659,54 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
+    public function testFormWithDropdownQuestionReferencingGenericObjectDropdown(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a "dropdown" question referencing a GenericObject
+        // custom dropdown type (PluginGenericobjectSmartphoneModel -> Glpi\CustomAsset\smartphoneAssetModel)
+        $this->createSimpleFormcreatorForm("With generic object custom dropdown", [
+            [
+                'name'      => 'Generic object dropdown',
+                'fieldtype' => 'dropdown',
+                'itemtype'  => 'PluginGenericobjectSmartphoneModel',
+                'values'    => json_encode([
+                    'show_ticket_categories' => '',
+                    'show_tree_depth'        => '0',
+                    'show_tree_root'         => '0',
+                    'selectable_tree_root'   => '0',
+                ]),
+            ],
+        ]);
+
+        // Run GenericObject migration first so that DropdownDefinition for "smartphoneAssetModel" is created
+        // and itemtype references should be updated
+        $asset_migration = new GenericobjectPluginMigration($DB);
+        $asset_migration->execute();
+
+        // Arrange: Reset the dropdown itemtypes static cache
+        Dropdown::resetItemtypesStaticCache();
+
+        // Act: run form migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $migration->execute();
+
+        // Assert: the question should have been migrated with the correct migrated itemtype
+        $form = getItemByTypeName(Form::class, "With generic object custom dropdown");
+        $question_id = $this->getQuestionId($form, "Generic object dropdown");
+        $question = Question::getById($question_id);
+
+        $config = $question->getExtraDataConfig();
+        if (!$config instanceof QuestionTypeItemDropdownExtraDataConfig) {
+            $this->fail("Unexpected config class: " . get_class($config));
+        }
+        $this->assertEquals(
+            "Glpi\\CustomAsset\\smartphoneAssetModel",
+            $config->getItemtype()
+        );
+    }
+
     public function testNonVisiblePrivateFormMigration(): void
     {
         /** @var \DBmysql $DB */
@@ -3901,6 +3950,27 @@ final class FormMigrationTest extends DbTestCase
             [
                 'name'      => 'Actor',
                 'fieldtype' => 'actor',
+            ],
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: migration should be done without error
+        $this->assertTrue($result->isFullyProcessed());
+    }
+
+    public function testFormMigrationActorsWithEmptyDefaultValue(): void
+    {
+        global $DB;
+
+        // Arrange: create a form with an actor question with an empty default value
+        $this->createSimpleFormcreatorForm('Actor test with empty default value', [
+            [
+                'name'           => 'Actor',
+                'fieldtype'      => 'actor',
+                'default_values' => '',
             ],
         ]);
 

@@ -161,4 +161,83 @@ class SearchOptionTest extends DbTestCase
         // If we reach this point, the SQL was successful
         $this->assertTrue(true, 'Search completed without SQL error - fix is working');
     }
+
+    public function testAllAssetsGroupSearchResults(): void
+    {
+        $this->login();
+
+        $group = $this->createItem(
+            \Group::class,
+            [
+                'name'          => 'Test Normal Group ' . __FUNCTION__,
+                'is_itemgroup'  => 1,
+                'entities_id'   => $this->getTestRootEntity(true),
+            ]
+        );
+
+        $computer = $this->createItem(
+            \Computer::class,
+            [
+                'name'        => 'Test Computer ' . __FUNCTION__,
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
+
+        $this->createItem(
+            \Group_Item::class,
+            [
+                'groups_id'   => $group->getID(),
+                'itemtype'    => \Computer::class,
+                'items_id'    => $computer->getID(),
+                'type'        => \Group_Item::GROUP_TYPE_NORMAL,
+            ]
+        );
+
+        $result = \Search::getDatas(
+            \AllAssets::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => 71,
+                        'searchtype' => 'equals',
+                        'value'      => $group->getID(),
+                    ],
+                ],
+                'forcetoview' => [1, 71],
+            ]
+        );
+
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('rows', $result['data']);
+        $this->assertEquals(1, $result['data']['totalcount'], '1 pc found');
+
+        $row = $result['data']['rows'][0];
+
+        $this->assertArrayHasKey('AllAssets_1', $row);
+        $this->assertStringContainsString('Test Computer ' . __FUNCTION__, $row['AllAssets_1']['displayname']);
+
+        $this->assertArrayHasKey('AllAssets_71', $row);
+        $this->assertStringContainsString(
+            'Test Normal Group ' . __FUNCTION__,
+            $row['AllAssets_71']['displayname']
+        );
+
+        $result2 = \Search::getDatas(
+            \AllAssets::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => 71,
+                        'searchtype' => 'contains',
+                        'value'      => 'Test Normal Group ' . __FUNCTION__,
+                    ],
+                ],
+                'forcetoview' => [1, 71],
+            ]
+        );
+
+        $this->assertArrayHasKey('data', $result2);
+        $this->assertArrayHasKey('rows', $result2['data']);
+        $this->assertGreaterThan(0, $result2['data']['totalcount']);
+    }
 }

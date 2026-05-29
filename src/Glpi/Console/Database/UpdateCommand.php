@@ -154,6 +154,8 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        global $PHPLOGGER;
+
         if (!$output instanceof ConsoleOutputInterface) {
             throw new LogicException('This command accepts only an instance of "ConsoleOutputInterface".');
         }
@@ -163,6 +165,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
         $no_interaction = $input->getOption('no-interaction'); // Base symfony/console option
 
         $update = new Update($this->db);
+        $update->setLogger($PHPLOGGER);
 
         // Initialize entities
         $_SESSION['glpidefault_entity'] = 0;

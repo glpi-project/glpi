@@ -77,7 +77,7 @@ final class AnswerTagProvider implements TagProviderInterface, TagWithIdValueInt
         }
 
         $answer = array_pop($answers);
-        return $answer->getFormattedAnswer();
+        return $answer->getFormattedAnswer() ?? '';
     }
 
     #[Override]

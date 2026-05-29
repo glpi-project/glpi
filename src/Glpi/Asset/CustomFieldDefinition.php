@@ -37,6 +37,7 @@ namespace Glpi\Asset;
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldType\DropdownType;
+use Glpi\Asset\CustomFieldType\RawType;
 use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
@@ -340,6 +341,9 @@ final class CustomFieldDefinition extends CommonDBChild
 
     public function getFieldType(): TypeInterface
     {
+        if ($this->fields['type'] === RawType::class) {
+            return new RawType($this);
+        }
         $field_types = AssetDefinitionManager::getInstance()->getCustomFieldTypes();
         if (in_array($this->fields['type'], $field_types, true)) {
             return new $this->fields['type']($this);

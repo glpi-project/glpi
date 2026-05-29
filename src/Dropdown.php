@@ -1246,6 +1246,9 @@ HTML;
                 ],
 
                 __('Assistance') => [
+                    'TicketTemplate'  => null,
+                    'ChangeTemplate'  => null,
+                    'ProblemTemplate' => null,
                     'ITILCategory' => null,
                     'TaskCategory' => null,
                     'TaskTemplate' => null,
@@ -3852,7 +3855,7 @@ HTML;
                 $multi = true;
             }
         } else {
-            $where += getEntitiesRestrictCriteria($table, '', $_SESSION['glpiactiveentities'], $multi);
+            $where += getEntitiesRestrictCriteria($table, '', '', $multi);
             if (count($_SESSION['glpiactiveentities']) > 1) {
                 $multi = true;
             }
@@ -4256,6 +4259,7 @@ HTML;
 
                         if (!isset($all_devices[$itemtype])) {
                             $all_devices[$itemtype] = [
+                                //TRANS: Always a plural form: My computers, My monitors
                                 'text' => sprintf(__('My %s'), $item->getTypeName(Session::getPluralNumber())),
                                 'children' => [],
                                 'itemtype' => $itemtype,
@@ -5166,5 +5170,45 @@ HTML;
         }
 
         return $durationDropdown;
+    }
+
+    /**
+     * Compute the list of additional fields to display alongside item names in dropdowns.
+     *
+     * @param string|null $itemtype The itemtype to compute displaywith for.
+     * @return array<string>
+     */
+    public static function getDisplayWith(?string $itemtype): array
+    {
+        global $CFG_GLPI;
+
+        if ($itemtype === null || $itemtype === '0') {
+            return [];
+        }
+
+        $displaywith = [];
+        $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types']);
+        $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
+
+        if ($is_itil_type && !$id_already_visible) {
+            $displaywith[] = 'id';
+        }
+
+        if (in_array($itemtype, $CFG_GLPI['asset_types'])) {
+            $item = getItemForItemtype($itemtype);
+            if ($item) {
+                if ($item->isField('serial')) {
+                    $displaywith[] = 'serial';
+                }
+                if ($item->isField('otherserial')) {
+                    $displaywith[] = 'otherserial';
+                }
+                if ($item->isField('users_id')) {
+                    $displaywith[] = 'users_id';
+                }
+            }
+        }
+
+        return $displaywith;
     }
 }

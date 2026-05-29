@@ -1098,7 +1098,7 @@ class Rule extends CommonDBTM
                 <div id="viewaction{{ rules_id }}{{ rand }}"></div>
                 {% if can_add_new_action %}
                     <div class="center mt-1 mb-3">
-                        <button type="button" name="add_action" class="btn btn-primary">{{ btn_label }}</button>
+                        <button type="button" name="add_action" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
                         <script>
                             $('button[name="add_action"]').on('click', () => {
                                 $('#viewaction{{ rules_id }}{{ rand }}').load('{{ path('ajax/viewsubitem.php')|e('js') }}', {{ ajax_params|json_encode|raw }});
@@ -1218,7 +1218,7 @@ TWIG, $twig_params);
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div id="viewcriteria{{ rules_id }}{{ rand }}"></div>
                 <div class="center mt-1 mb-3">
-                    <button type="button" name="add_criterion" class="btn btn-primary">{{ btn_label }}</button>
+                    <button type="button" name="add_criterion" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
                     <script>
                         $('button[name="add_criterion"]').on('click', () => {
                             $('#viewcriteria{{ rules_id }}{{ rand }}').load('{{ path('ajax/viewsubitem.php')|e('js') }}', {{ ajax_params|json_encode|raw }});
@@ -1938,7 +1938,7 @@ TWIG, $twig_params);
             $link = sprintf(
                 __('%1$s %2$s'),
                 $link,
-                Html::showToolTip($this->fields["comment"], ['display' => false])
+                Html::showToolTip(htmlescape($this->fields["comment"]), ['display' => false])
             );
         }
         $data['name'] = $link;
@@ -2774,6 +2774,8 @@ TWIG, $twig_params);
      */
     public function showRulePreviewCriteriasForm($rules_id)
     {
+        global $CFG_GLPI;
+
         $criteria = $this->getAllCriteria();
         if (!$this->getRuleWithCriteriasAndActions($rules_id, true, false)) {
             return;
@@ -2791,9 +2793,9 @@ TWIG, $twig_params);
             }
         }
 
-        $target = '/front/rule.test.php';
+        $target = $CFG_GLPI['root_doc'] . '/front/rule.test.php';
         if ($plugin = isPluginItemType(static::class)) {
-            $target = '/plugins/' . $plugin['plugin'] . $target;
+            $target = $CFG_GLPI['root_doc'] . '/plugins/' . $plugin['plugin'] . '/front/rule.test.php';
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/rules/preview_criteria.html.twig', [

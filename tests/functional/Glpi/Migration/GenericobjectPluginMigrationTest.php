@@ -247,6 +247,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                     ['key' => 'custom_dropdowns_dropdowns_id_uaus', 'order' => 27, 'field_options' => []],
                     ['key' => 'custom_dropdowns_dropdowns_id_item_state', 'order' => 28, 'field_options' => []],
                     ['key' => 'custom_dropdowns_dropdowns_id_test_abc', 'order' => 29, 'field_options' => []],
+                    ['key' => 'custom_courier_id', 'order' => 30, 'field_options' => []],
                 ],
                 'date_creation'  => '2025-03-05 16:28:56',
                 // 'date_mod'       => '2025-03-06 14:19:23',
@@ -464,6 +465,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                     'custom_dropdowns_dropdowns_id_foo' => \getItemByTypeName('Glpi\\CustomDropdown\\FooDropdown', 'Foo 2', true),
                     'custom_dropdowns_dropdowns_id_item_state' => 0,
                     'custom_dropdowns_dropdowns_id_test_abc' => \getItemByTypeName('Glpi\\CustomDropdown\\Test_AbcDropdown', 'Test 1', true),
+                    'custom_courier_id' => '#98759',
                     'date_creation' => '2025-03-06 10:08:51',
                     // 'date_mod' => '2025-03-06 10:08:51',
                 ],
@@ -500,6 +502,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                     'custom_dropdowns_dropdowns_id_foo' => 0,
                     'custom_dropdowns_dropdowns_id_item_state' => \getItemByTypeName('Glpi\\CustomDropdown\\Item_StateDropdown', 'State 3', true),
                     'custom_dropdowns_dropdowns_id_test_abc' => 0,
+                    'custom_courier_id' => '#49879',
                     'date_creation' => '2025-03-06 10:11:46',
                     // 'date_mod' => '2025-03-06 10:11:46',
                 ],
@@ -536,6 +539,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                     'custom_dropdowns_dropdowns_id_foo' => 0,
                     'custom_dropdowns_dropdowns_id_item_state' => \getItemByTypeName('Glpi\\CustomDropdown\\Item_StateDropdown', 'State 1', true),
                     'custom_dropdowns_dropdowns_id_test_abc' => \getItemByTypeName('Glpi\\CustomDropdown\\Test_AbcDropdown', 'Test 2', true),
+                    'custom_courier_id' => '',
                     'date_creation' => '2025-03-06 10:12:59',
                     // 'date_mod' => '2025-03-06 10:12:59',
                 ],
@@ -862,6 +866,58 @@ class GenericobjectPluginMigrationTest extends DbTestCase
             $contract_item = new Contract_Item();
             $this->assertTrue($contract_item->getFromDBByCrit($expected_contract_item), json_encode($expected_contract_item));
         }
+    }
+
+    public function testItemtypeReferencesAreUpdatedForAssetTypeAndModel(): void
+    {
+        global $DB;
+
+        // Arrange: insert FieldUnicity records using Type and Model sub-itemtypes,
+        // which are not standalone custom dropdowns and have no explicit updateItemtypeReferences()
+        // call before this fix.
+        $DB->insert(FieldUnicity::getTable(), [
+            'name'         => 'Smartphone type uniqueness',
+            'itemtype'     => 'PluginGenericobjectSmartphoneType',
+            'fields'       => 'name',
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+            'is_active'    => 1,
+        ]);
+        $DB->insert(FieldUnicity::getTable(), [
+            'name'         => 'Smartphone model uniqueness',
+            'itemtype'     => 'PluginGenericobjectSmartphoneModel',
+            'fields'       => 'name',
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+            'is_active'    => 1,
+        ]);
+
+        // Act
+        $migration = new GenericobjectPluginMigration($DB);
+        $result    = new PluginMigrationResult();
+        $this->setPrivateProperty($migration, 'result', $result);
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Assert: references must be updated to the migrated class names
+        $smartphone_definition = getItemByTypeName(AssetDefinition::class, 'Smartphone');
+
+        $type_unicity = new FieldUnicity();
+        $this->assertTrue(
+            $type_unicity->getFromDBByCrit([
+                'name'     => 'Smartphone type uniqueness',
+                'itemtype' => $smartphone_definition->getAssetTypeClassName(),
+            ]),
+            'itemtype reference for SmartphoneType was not updated'
+        );
+
+        $model_unicity = new FieldUnicity();
+        $this->assertTrue(
+            $model_unicity->getFromDBByCrit([
+                'name'     => 'Smartphone model uniqueness',
+                'itemtype' => $smartphone_definition->getAssetModelClassName(),
+            ]),
+            'itemtype reference for SmartphoneModel was not updated'
+        );
     }
 
     /**

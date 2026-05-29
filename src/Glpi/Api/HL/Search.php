@@ -44,6 +44,7 @@ use DBmysqlIterator;
 use Entity;
 use ExtraVisibilityCriteria;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\RSQL\Error;
 use Glpi\Api\HL\RSQL\Lexer;
 use Glpi\Api\HL\RSQL\Parser;
 use Glpi\Api\HL\RSQL\RSQLException;
@@ -402,17 +403,30 @@ final class Search
      * @return void
      * @throws RSQLException
      */
-    public function addRSQLCriteria(array &$criteria): void
+    public function addRSQLCriteria(array &$criteria, ?callable $schema_resolver = null): void
     {
         if (!empty($this->context->getRequestParameter('filter'))) {
             $filter_result = $this->rsql_parser->parse(Lexer::tokenize($this->context->getRequestParameter('filter')));
+            $unknown_properties = array_keys(
+                array: array_filter(
+                    array: $filter_result->getInvalidFilters(),
+                    callback: static fn($error) => $error === Error::UNKNOWN_PROPERTY
+                )
+            );
+            $other_invalid_filters = array_filter($filter_result->getInvalidFilters(), static fn($error) => $error !== Error::UNKNOWN_PROPERTY);
             // Fail the request if any of the filters are invalid
-            if (!empty($filter_result->getInvalidFilters())) {
+            if ($schema_resolver === null && $other_invalid_filters !== []) {
                 throw new RSQLException(
                     message: 'RSQL query has invalid filters',
                     details: array_map(static fn($rsql_error) => $rsql_error->getMessage(), $filter_result->getInvalidFilters())
                 );
+            } elseif ($schema_resolver !== null && $unknown_properties !== []) {
+                // Try to resolve the missing schema parts and retry parsing the RSQL filters
+                $schema_resolver($this->getContext(), $unknown_properties);
+                $this->addRSQLCriteria(criteria: $criteria, schema_resolver: null);
+                return;
             }
+
             $criteria['WHERE'] = [$filter_result->getSQLWhereCriteria()];
             $criteria['HAVING'] = [$filter_result->getSQLHavingCriteria()];
         }
@@ -460,8 +474,10 @@ final class Search
                     $criteria[$join_type] = array_merge($criteria[$join_type], $visibility_restrict[$join_type]);
                 }
             }
+
+            // Entity management in GLPI is a mess...
             $entity_assign = $item->isEntityAssign();
-            if ($entity_assign && $item->isField('entities_id') && !in_array($itemtype, ['Consumable', 'Cartridge'], true)) {
+            if ($entity_assign && $item->isField('entities_id') && !in_array($itemtype, ['Consumable', 'Cartridge', 'ProblemCost', 'QueuedWebhook'], true)) {
                 $entity_restrict[] = getEntitiesRestrictCriteria(table: '_', is_recursive: $item->maybeRecursive() && !($item instanceof Entity));
             } elseif ($entity_assign && $item instanceof CommonDBChild && !str_starts_with($item::$itemtype, 'itemtype')) {
                 // need to join the parent item table and apply the entity restrict there
@@ -484,6 +500,7 @@ final class Search
             } elseif ($entity_assign) {
                 throw new RuntimeException('Itemtype ' . $itemtype . ' is entity assign but has no known way to apply entity restrictions.');
             }
+
             if ($item instanceof Entity) {
                 $entity_restrict = [
                     'OR' => [

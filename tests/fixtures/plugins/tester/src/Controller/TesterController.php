@@ -52,4 +52,10 @@ final class TesterController extends AbstractController
     {
         return new Response('Greeting from tester plugin controller /Testuri route.');
     }
+
+    #[Route("/post-only", name: "testerplugin_post_only", methods: ['POST'])]
+    public function postOnly(Request $request): Response
+    {
+        return new Response('Greeting from tester plugin POST-only route.');
+    }
 }

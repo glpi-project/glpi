@@ -95,7 +95,7 @@ class CommonITILRecurrentCron extends CommonDBTM
                 // get items
                 $related_items = $item->getRelatedElements();
 
-                if ($item->fields['ticket_per_item']) {
+                if ($item->fields['ticket_per_item'] ?? false) {
                     foreach ($related_items as $related_itemtype => $related_items_ids) {
                         foreach ($related_items_ids as $related_item_id) {
                             if ($item->createItem([$related_itemtype => [$related_item_id]])) {

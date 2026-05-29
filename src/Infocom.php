@@ -205,7 +205,7 @@ class Infocom extends CommonDBChild
             [
                 'suppliers_id' => $item->getField('id'),
                 'NOT' => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']],
-            ] + getEntitiesRestrictCriteria('glpi_infocoms', '', $_SESSION['glpiactiveentities'])
+            ] + getEntitiesRestrictCriteria('glpi_infocoms', '', '')
         );
     }
 
@@ -733,7 +733,8 @@ class Infocom extends CommonDBChild
             $not_deleted_items = array_filter($items, static fn($item) => $item['is_deleted'] === 0);
             $deleted_expired_items = array_filter($items, static fn($item) => $item['is_deleted'] === 1 && $item['warrantyexpiration'] < $_SESSION['glpi_currenttime']);
             if (
-                NotificationEvent::raiseEvent("alert", new self(), [
+                count($not_deleted_items) > 0
+                && NotificationEvent::raiseEvent("alert", new self(), [
                     'entities_id' => $entity,
                     'items'       => $not_deleted_items,
                 ])
@@ -1996,10 +1997,7 @@ HTML;
     {
 
         // Life warranty
-        if (
-            ($addwarranty == -1)
-            && ($deletenotice == 0)
-        ) {
+        if ($addwarranty == -1) {
             return __s('Never');
         }
 

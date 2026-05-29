@@ -101,6 +101,17 @@ enum SLMFieldStrategy: string
         };
     }
 
+    public function isDateComputation(): bool
+    {
+        return match ($this) {
+            self::FROM_TEMPLATE                           => true,
+            self::SPECIFIC_VALUE                          => false,
+            self::SPECIFIC_DATE_ANSWER                    => true,
+            self::COMPUTED_DATE_FROM_FORM_SUBMISSION      => true,
+            self::COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER => true,
+        };
+    }
+
     private function getDateTimeFromSpecificAnswer(
         ?int $question_id,
         AnswersSet $answers_set,

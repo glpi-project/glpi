@@ -46,6 +46,9 @@ $finder = (new PhpCsFixer\Finder())
         'tests/e2e/',
         'vendor/',
     ])
+    ->notPath([
+        '/^tests\/files-/'
+    ])
 ;
 
 return (new PhpCsFixer\Config())

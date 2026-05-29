@@ -34,7 +34,17 @@
  */
 
 if (Config::canUpdate()) {
-    $mode = ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? Session::NORMAL_MODE : Session::DEBUG_MODE);
+    if (isset($_POST['mode']) && in_array($_POST['mode'], [
+        Session::NORMAL_MODE,
+        Session::DEBUG_MODE,
+    ])) {
+        // Mode was manually specified
+        $mode = $_POST['mode'];
+    } else {
+        // Toggle
+        $mode = ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE ? Session::NORMAL_MODE : Session::DEBUG_MODE);
+    }
+
     $user = new User();
     $user->update(
         [

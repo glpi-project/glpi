@@ -31,7 +31,7 @@
  #}
 
 {% for picture in pictures %}
-    <div class="stencil-view mb-2 w-100">
+    <div class="stencil-view mb-2 w-100" data-testid="stencil-view">
         <img src="{{ picture }}" class="mb-1 w-100">
         {% include 'stencil/parts/zones.html.twig' with {
             'item': item,

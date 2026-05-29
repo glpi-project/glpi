@@ -52,6 +52,8 @@ use Glpi\Tests\FormBuilder;
 use Group;
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
+use Profile_User;
 use Session;
 use Supplier;
 use Ticket;
@@ -158,7 +160,11 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
         // Login is required to assign actors
         $this->login();
 
-        $supervisor = $this->createItem(User::class, ['name' => 'testAssigneeFormFillerSupervisor Supervisor']);
+        $technician_profiles_id = getItemByTypeName(Profile::class, 'Technician', true);
+        $supervisor = $this->createItem(User::class, [
+            'name' => 'testAssigneeFormFillerSupervisor Supervisor',
+            '_profiles_id' => $technician_profiles_id,
+        ]);
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $form_filler_supervisor_config = new AssigneeFieldConfig(
             [ITILActorFieldStrategy::FORM_FILLER_SUPERVISOR]
@@ -198,8 +204,15 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
         $this->login();
 
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
-        $user = $this->createItem(User::class, ['name' => 'testSpecificActors User']);
-        $group = $this->createItem(Group::class, ['name' => 'testSpecificActors Group']);
+        $technician_profiles_id = getItemByTypeName(Profile::class, 'Technician', true);
+        $user = $this->createItem(User::class, [
+            'name' => 'testSpecificActors User',
+            '_profiles_id' => $technician_profiles_id,
+        ]);
+        $group = $this->createItem(Group::class, [
+            'name' => 'testSpecificActors Group',
+            'is_assign' => 1,
+        ]);
         $supplier = $this->createItem(Supplier::class, [
             'name' => 'testSpecificActors Supplier',
             'entities_id' => $this->getTestRootEntity(true),
@@ -245,6 +258,55 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             ),
             answers: [],
             expected_actors: [['items_id' => $user->getID()], ['items_id' => $group->getID()], ['items_id' => $supplier->getID()]]
+        );
+    }
+
+    public function testSpecificActorsExcludesUnauthorizedActors(): void
+    {
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $entities_id = $this->getTestRootEntity(only_id: true);
+        $authorized_user = $this->createItem(User::class, [
+            'name' => 'testSpecificActorsExcludesUnauthorizedActors Authorized user',
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id'    => $authorized_user->getID(),
+            'profiles_id' => getItemByTypeName(Profile::class, 'Technician', true),
+            'entities_id' => $entities_id,
+        ]);
+        $unauthorized_user = $this->createItem(User::class, [
+            'name' => 'testSpecificActorsExcludesUnauthorizedActors Unauthorized user',
+        ]);
+        $authorized_group = $this->createItem(Group::class, [
+            'name'      => 'testSpecificActorsExcludesUnauthorizedActors Authorized group',
+            'is_assign' => 1,
+        ]);
+        $unauthorized_group = $this->createItem(Group::class, [
+            'name'      => 'testSpecificActorsExcludesUnauthorizedActors Unauthorized group',
+            'is_assign' => 0,
+        ]);
+        $supplier = $this->createItem(Supplier::class, [
+            'name'       => 'testSpecificActorsExcludesUnauthorizedActors Supplier',
+            'entities_id' => $entities_id,
+        ]);
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    User::getForeignKeyField() . '-' . $authorized_user->getID(),
+                    User::getForeignKeyField() . '-' . $unauthorized_user->getID(),
+                    Group::getForeignKeyField() . '-' . $authorized_group->getID(),
+                    Group::getForeignKeyField() . '-' . $unauthorized_group->getID(),
+                    Supplier::getForeignKeyField() . '-' . $supplier->getID(),
+                ]
+            ),
+            answers: [],
+            expected_actors: [
+                ['items_id' => $authorized_user->getID()],
+                ['items_id' => $authorized_group->getID()],
+                ['items_id' => $supplier->getID()],
+            ]
         );
     }
 
@@ -529,9 +591,19 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
         $this->login();
 
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
-        $user1 = $this->createItem(User::class, ['name' => 'testMultipleStrategies User 1']);
-        $user2 = $this->createItem(User::class, ['name' => 'testMultipleStrategies User 2']);
-        $group = $this->createItem(Group::class, ['name' => 'testMultipleStrategies Group']);
+        $technician_profiles_id = getItemByTypeName(Profile::class, 'Technician', true);
+        $user1 = $this->createItem(User::class, [
+            'name' => 'testMultipleStrategies User 1',
+            '_profiles_id' => $technician_profiles_id,
+        ]);
+        $user2 = $this->createItem(User::class, [
+            'name' => 'testMultipleStrategies User 2',
+            '_profiles_id' => $technician_profiles_id,
+        ]);
+        $group = $this->createItem(Group::class, [
+            'name' => 'testMultipleStrategies Group',
+            'is_assign' => 1,
+        ]);
         $supplier = $this->createItem(Supplier::class, [
             'name' => 'testMultipleStrategies Supplier',
             'entities_id' => $this->getTestRootEntity(true),
@@ -864,8 +936,10 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
 
         // Check actors
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->assertSameSize($expected_actors, $actors);
         foreach ($expected_actors as $expected_actor) {
             $actor = array_shift($actors);
+            $this->assertIsArray($actor);
             $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
                 $expected_actor,
                 $actor,

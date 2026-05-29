@@ -37,6 +37,7 @@
         background-color: var(--glpi-form-header-bg);
         color: var(--glpi-form-header-fg);
         border-color: var(--glpi-form-header-border-color);
+        padding: var(--tblr-card-cap-padding-y, 1rem) var(--tblr-card-cap-padding-x, 1.25rem);
 
         &:not(.main-header) {
             border-top: 1px solid var(--glpi-form-header-border-color);

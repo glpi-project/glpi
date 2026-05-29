@@ -58,13 +58,14 @@ class Knowbase {
             })
                 .done((data) => {
                     glpi_html_dialog({
+                        modalclass: 'modal-xl',
                         title: __('Show revision %d').replace('%d', _this.data('rev')),
                         body: `
                             <div>
                                 <h2>${__('Subject')}</h2>
-                                <div>${_.escape(data.name)}</div>
+                                <div class="text-wrap text-break">${_.escape(data.name)}</div>
                                 <h2>${__('Content')}</h2>
-                                <div>${data.answer}</div>
+                                <div class="text-wrap text-break">${data.answer}</div>
                             </div>
                         `,
                     });
@@ -137,15 +138,15 @@ class Knowbase {
                             </tr>
                             <tr>
                                 <th>${__('Subject')}</th>
-                                <td class="original">${_.escape(data['old']['name'])}</td>
-                                <td class="changed">${_.escape(data['diff']['name'])}</td>
-                                <td class="diff"></td>
+                                <td class="original text-wrap text-break">${_.escape(data['old']['name'])}</td>
+                                <td class="changed text-wrap text-break">${_.escape(data['diff']['name'])}</td>
+                                <td class="diff text-wrap text-break"></td>
                             </tr>
                             <tr>
                                 <th>${__('Content')}</th>
-                                <td class="original">${data['old']['answer']}</td>
-                                <td class="changed">${data['diff']['answer']}</td>
-                                <td class="diff"></td>
+                                <td class="original text-wrap text-break">${data['old']['answer']}</td>
+                                <td class="changed text-wrap text-break">${data['diff']['answer']}</td>
+                                <td class="diff text-wrap text-break"></td>
                             </tr>
                         </table>
                     </div>

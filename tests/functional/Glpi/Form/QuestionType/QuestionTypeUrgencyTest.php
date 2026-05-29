@@ -39,6 +39,7 @@ use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Glpi\Urgency;
 
 final class QuestionTypeUrgencyTest extends DbTestCase
 {
@@ -64,7 +65,6 @@ final class QuestionTypeUrgencyTest extends DbTestCase
     {
         global $CFG_GLPI;
 
-        $questionType = new QuestionTypeUrgency();
         $urgency_levels = array_combine(
             range(1, 5),
             array_map(
@@ -75,13 +75,13 @@ final class QuestionTypeUrgencyTest extends DbTestCase
 
         // Allow all urgency levels
         $CFG_GLPI['urgency_mask'] = array_reduce(range(1, 5), fn($mask, $level) => $mask | (1 << $level), 0);
-        $this->assertEquals($urgency_levels, $this->callPrivateMethod($questionType, 'getUrgencyLevels'));
+        $this->assertEquals($urgency_levels, Urgency::getEnabledUrgencyValuesForDropdown());
 
         // Allow only the third urgency level (the third level can't be disabled)
         $CFG_GLPI['urgency_mask'] = 1 << 3;
         $this->assertEquals(
             [3 => $urgency_levels[3]],
-            $this->callPrivateMethod($questionType, 'getUrgencyLevels')
+            Urgency::getEnabledUrgencyValuesForDropdown()
         );
 
         // Allow the three first urgency levels
@@ -92,7 +92,7 @@ final class QuestionTypeUrgencyTest extends DbTestCase
                 2 => $urgency_levels[2],
                 3 => $urgency_levels[3],
             ],
-            $this->callPrivateMethod($questionType, 'getUrgencyLevels'),
+            Urgency::getEnabledUrgencyValuesForDropdown(),
         );
 
         // Allow the two last urgency levels
@@ -103,7 +103,7 @@ final class QuestionTypeUrgencyTest extends DbTestCase
                 4 => $urgency_levels[4],
                 5 => $urgency_levels[5],
             ],
-            $this->callPrivateMethod($questionType, 'getUrgencyLevels'),
+            Urgency::getEnabledUrgencyValuesForDropdown(),
         );
     }
 }

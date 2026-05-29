@@ -458,6 +458,7 @@ class GLPIKey
      * @param string|null $key Key to use, fallback to default key if null.
      *
      * @return string|null
+     * @phpstan-return ($string is null ? null : string)
      */
     public function decrypt(?string $string, ?string $key = null): ?string
     {

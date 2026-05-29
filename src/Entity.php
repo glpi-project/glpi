@@ -38,11 +38,13 @@ use Glpi\Debug\Profiler;
 use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Form\FormTranslation;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\Search\DefaultSearchRequestInterface;
 use Glpi\UI\IllustrationManager;
 use Ramsey\Uuid\Uuid;
 
@@ -53,7 +55,10 @@ use function Safe\realpath;
 /**
  * Entity class
  */
-class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, ProvideTranslationsInterface
+class Entity extends CommonTreeDropdown implements
+    LinkableToTilesInterface,
+    ProvideTranslationsInterface,
+    DefaultSearchRequestInterface
 {
     /** @use Clonable<static> */
     use Clonable;
@@ -182,7 +187,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             'contracts_strategy_default', 'contracts_id_default', 'show_tickets_properties_on_helpdesk',
             'custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right',
             'custom_helpdesk_home_title', 'enable_helpdesk_home_search_bar', 'enable_helpdesk_service_catalog',
-            'expand_service_catalog',
+            'expand_service_catalog', 'service_catalog_default_sort_strategy',
         ],
         // Configuration
         'config' => ['enable_custom_css', 'custom_css_code'],
@@ -258,6 +263,18 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         $GLPI_CACHE->delete($ckey);
 
         return true;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    #[Override]
+    public static function getDefaultSearchRequest(): array
+    {
+        return [
+            'sort'  => 1, //completename SO
+            'order' => 'ASC',
+        ];
     }
 
     public static function getTypeName($nb = 0)
@@ -2963,6 +2980,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      * @param string $field The field name
      * @param string|null $strategy_field The field name of the strategy
      * @param mixed $default_value
+     * @param mixed $inherit_parent_value The sentinel value stored in the field when it inherits from its parent.
+     *                                    Use CONFIG_PARENT (-2) for numeric fields, or null for text/email/URL fields.
      * @return string|null The badge HTML or null if the field is not inherited
      */
     public function getInheritedValueBadge(string $field, ?string $strategy_field = null, mixed $default_value = self::CONFIG_PARENT, mixed $inherit_parent_value = self::CONFIG_PARENT): ?string
@@ -2975,7 +2994,9 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             if ($strategy_field === null) {
                 $strategy_field = $field;
             }
-            $inherited_strategy = self::getUsedConfig($strategy_field, $this->fields['entities_id']);
+            // pass a non-numeric default ('') For text/null fields to recognize inherited values in ancestor entities.
+            $get_used_config_default = is_numeric($inherit_parent_value) ? $default_value : '';
+            $inherited_strategy = self::getUsedConfig($strategy_field, $this->fields['entities_id'], '', $get_used_config_default);
             $inherited_value    = $inherited_strategy === 0
                 ? self::getUsedConfig($strategy_field, $this->fields['entities_id'], $field, $default_value)
                 : $inherited_strategy;
@@ -3303,9 +3324,16 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             $tiles_manager->showConfigFormForItem($this);
         }
 
+        $sort_strategy_options = array_map(
+            fn($strategy) => $strategy->getLabel(),
+            SortStrategyEnum::getAvailableStrategies()
+        );
         $twig->display(
             'pages/admin/helpdesk_home_config_for_entity.html.twig',
-            ['entity' => $this],
+            [
+                'entity'                  => $this,
+                'sort_strategy_options'   => $sort_strategy_options,
+            ],
         );
 
         return true;
@@ -3425,6 +3453,21 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
 
         return $value === 1;
+    }
+
+    public function getServiceCatalogDefaultSortStrategy(): SortStrategyEnum
+    {
+        $value = $this->fields['service_catalog_default_sort_strategy'] ?? '';
+
+        // Load from parent if needed
+        if ($value == self::CONFIG_PARENT) {
+            $value = self::getUsedConfig(
+                'service_catalog_default_sort_strategy',
+                $this->fields['entities_id']
+            );
+        }
+
+        return SortStrategyEnum::tryFrom((string) $value) ?? SortStrategyEnum::getDefault();
     }
 
     public function getDefaultHelpdeskHomeTitle(): string

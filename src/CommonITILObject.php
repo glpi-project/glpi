@@ -689,6 +689,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'canassign'               => $canupdate,
             'can_requester'           => $this->canRequesterUpdateItem(),
             'has_pending_reason'      => PendingReason_Item::getForItem($this) !== false,
+            'survey'                  => $this->getSatisfactionSurvey(),
         ]);
 
         return true;
@@ -1871,6 +1872,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $allowed_fields[] = 'takeintoaccount_delay_stat';
                     $allowed_fields[] = 'takeintoaccountdate';
                 }
+                if (isset($input['_do_update_date_mod'])) {
+                    $allowed_fields[] = 'date_mod';
+                }
             }
 
             $ret = [];
@@ -1889,10 +1893,20 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
+        // If category, entity, or type fields are not updated, the template is not changed.
+        if (
+            (empty($input['itilcategories_id']) || $this->fields['itilcategories_id'] == $input['itilcategories_id'])
+            && (empty($input['entities_id']) || $this->fields['entities_id'] == $input['entities_id'])
+            && (empty($input['type']) || $this->fields['type'] == $input['type'])
+        ) {
+            return $input;
+        }
+
         // First get ticket template associated: entity and type/category
         $tt = $this->getITILTemplateFromInput($input);
 
-        if (!$tt) {
+        // If no template or template not found, return input without template fields
+        if (!$tt || $tt->getID() <= 0) {
             return $input;
         }
 
@@ -2964,7 +2978,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // No name set name
-        $input["name"]    = ltrim($input["name"] ?? '');
+        $input["name"]    = Toolbox::substr(ltrim($input["name"] ?? ''), 0, 255);
         $input['content'] = ltrim($input['content'] ?? '');
         if (empty($input["name"])) {
             // Build name based on content
@@ -7703,6 +7717,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         && $this instanceof Ticket
                         && Ticket::canCreate()
                     ;
+
+                    // Initialize fields that only exist for ChangeTask
+                    // 0 when is not a ticket
+                    if (!isset($followup_row['sourceitems_id'])) {
+                        $followup_row['sourceitems_id'] = 0;
+                    }
+                    if (!isset($followup_row['sourceof_items_id'])) {
+                        $followup_row['sourceof_items_id'] = 0;
+                    }
                     $timeline["ITILFollowup_" . $followups_id] = [
                         'type'     => ITILFollowup::class,
                         'item'     => $followup_row,
@@ -7733,6 +7756,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         && $this instanceof Ticket
                         && Ticket::canCreate()
                     ;
+                    // Initialize fields that only exist for ChangeTask
+                    // 0 when is not a ticket
+                    if (!isset($task_row['sourceitems_id'])) {
+                        $task_row['sourceitems_id'] = 0;
+                    }
+                    if (!isset($task_row['sourceof_items_id'])) {
+                        $task_row['sourceof_items_id'] = 0;
+                    }
                     $timeline[$tltask::getType() . "_" . $tasks_id] = [
                         'type'     => $taskClass,
                         'item'     => $task_row,
@@ -7963,7 +7994,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // add autoreminders to timeline
         $autoreminder_obj = new ITILReminder();
-        $autoreminders = $autoreminder_obj->find(['items_id'  => $this->getID()]);
+        $autoreminders = $autoreminder_obj->find([
+            'items_id'  => $this->getID(),
+            'itemtype'  => static::class,
+        ]);
         foreach ($autoreminders as $autoreminder_id => $autoreminder) {
             $autoreminder_obj = ITILReminder::getByID($autoreminder_id);
             if (!$autoreminder_obj instanceof ITILReminder) {
@@ -7974,7 +8008,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
                 '<i class="ti ti-refresh-alert text-warning me-1"></i>',
                 htmlescape(ITILReminder::getTypeName(1)),
-                $autoreminder_obj->fields['content'] ?? '',
+                htmlescape($autoreminder_obj->fields['content'] ?? ''),
                 htmlescape($autoreminder_obj->fields['name'])
             );
 
@@ -9630,15 +9664,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     && $actor['items_id'] > 0
                     && $found === false
                 ) {
-                    $valid_users = iterator_to_array(
-                        User::getSqlSearchResult(
-                            false,
-                            'all',
-                            $this->fields['entities_id']
-                        )
-                    );
-
-                    if (isset($valid_users[$actor['items_id']])) {
+                    if (User::isValidUserForEntity($actor['items_id'], $this->fields['entities_id'])) {
                         $added[] = $actor;
                     }
                 } elseif ($found === false) {
@@ -11040,6 +11066,24 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
+     * Returns the satisfaction survey instance for the current item if it exists, null otherwise.
+     *
+     * @return CommonITILSatisfaction|null
+     */
+    protected function getSatisfactionSurvey(): ?CommonITILSatisfaction
+    {
+        $satisfaction = static::getSatisfactionClassInstance();
+        if ($satisfaction === null) {
+            return null;
+        }
+        $survey_exist = $satisfaction->getFromDBByCrit([
+            static::getForeignKeyField() => $this->getID(),
+        ]);
+
+        return $survey_exist ? $satisfaction : null;
+    }
+
+    /**
      * Returns the {@link CommonITILSatisfaction} class instance for the current itemtype
      * @return CommonITILSatisfaction|null
      */
@@ -11058,6 +11102,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param CommonITILObject $item The ITIL Object
      * @return void
      * @since 11.0.0
+     * @TODO Remove this unused method in GLPI 12.0.
      */
     final protected static function showSatisfactionTabContent(CommonITILObject $item): void
     {

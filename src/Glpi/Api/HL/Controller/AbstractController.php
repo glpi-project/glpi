@@ -36,10 +36,12 @@
 namespace Glpi\Api\HL\Controller;
 
 use CommonDBTM;
+use Document;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
+use Glpi\Api\HL\StreamedResponseWrapper;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -47,6 +49,8 @@ use Glpi\Plugin\Hooks;
 use Plugin;
 use RuntimeException;
 use Session;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Toolbox;
 
 /**
  * @phpstan-type AdditionalErrorMessage array{priority: string, message: string}
@@ -227,7 +231,6 @@ abstract class AbstractController
 
     /**
      * @param string $action
-     * @phpstan-param self::CRUD_ACTION_* $action
      * @return Response
      */
     public static function getCRUDErrorResponse(string $action): Response
@@ -351,5 +354,38 @@ abstract class AbstractController
             return $path;
         }
         return '/';
+    }
+
+    /**
+     * Download a file using streaming.
+     *
+     * This method does not check permissions or validate the document in any way.
+     *
+     * If this method actually sends the file content (not a 304 FOUND or similar), the underlying {@link Toolbox::getFileAsResponse()} response would be a Symfony StreamedResponse, which is not PSR-7 compatible and cannot be processed by the HLAPI.
+     * To ensure it can be processed and the headers do not get sent too early, the StreamedResponse is wrapped with {@link StreamedResponseWrapper} which allows it to be treated as a normal PSR-7 Response until the HLAPI is ready to send the response.
+     * As the HLAPI ultimately converts PSR-7 responses to Symfony responses before sending, the underlying Symfony response will be sent directly instead of creating in a new Symfony Response.
+     *
+     * @param Request $request The request object
+     * @param string $filepath The file path
+     * @param string $filename The name of the file to be downloaded (used in the Content-Disposition header)
+     * @param string|null $mime The mime type of the file if known. If null, the mime type will be determined based on the file content.
+     * @return Response
+     * @internal This method is not intended to be overriden and should not be relied on too much. It should be replaced in GLPI 12 as part of a switch to Symfony requests/responses (if possible).
+     */
+    protected function downloadFile(Request $request, string $filepath, string $filename, ?string $mime = null): Response
+    {
+        $is_head_request = $request->getMethod() === 'HEAD';
+        $symfony_response = Toolbox::getFileAsResponse($filepath, $filename, $mime);
+
+        if ($symfony_response instanceof StreamedResponse) {
+            if ($is_head_request) {
+                // we can return a normal PSR-7 response with the headers and status code, but without content
+                return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all());
+            }
+            return new StreamedResponseWrapper($symfony_response);
+        } else {
+            $content = $is_head_request ? null : (string) $symfony_response->getContent();
+            return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
+        }
     }
 }

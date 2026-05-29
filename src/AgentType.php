@@ -38,6 +38,8 @@
  **/
 class AgentType extends CommonDBTM
 {
+    public static $rightname = 'agent';
+
     public static function getTypeName($nb = 0)
     {
         return _n('Agent type', 'Agents types', $nb);

@@ -191,11 +191,15 @@ export default [
             "playwright/no-force-option": "error",
             "playwright/no-raw-locators": "error",
             "playwright/expect-expect": [
-                "warn",
+                "error",
                 {
                     "assertFunctionPatterns": ["^expect.*", "^assert.*"]
                 }
-            ]
+            ],
+
+            // See: https://typescript-eslint.io/rules/no-unused-vars/
+            "no-unused-vars": "off",
+            "@typescript-eslint/no-unused-vars": "error",
         },
     }
 ];

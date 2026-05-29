@@ -87,6 +87,7 @@ var GLPIPlanning  = {
         var enabled_days = CFG_GLPI.planning_work_days;
         var hidden_days = all_days.filter(day => !enabled_days.some(n => n == day));
         var loadedLocales = Object.keys(FullCalendarLocales);
+        const list_full_year_range = options.full_view ? 5 : 1; // +/- number of years to display in list full view
 
         this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
             plugins:     options.plugins,
@@ -122,13 +123,13 @@ var GLPIPlanning  = {
                 listFull: {
                     type: 'list',
                     titleFormat: function() {
-                        return '';
+                        return __('List');
                     },
                     visibleRange: function(currentDate) {
                         var current_year = currentDate.getFullYear();
                         return {
-                            start: (new Date(currentDate.getTime())).setFullYear(current_year - 5),
-                            end: (new Date(currentDate.getTime())).setFullYear(current_year + 5)
+                            start: (new Date(currentDate.getTime())).setFullYear(current_year - list_full_year_range),
+                            end: (new Date(currentDate.getTime())).setFullYear(current_year + list_full_year_range)
                         };
                     }
                 },
@@ -396,8 +397,21 @@ var GLPIPlanning  = {
                     .after(
                         $('<i id="refresh_planning" class="ti ti-refresh pointer"></i>')
                     ).after(
-                        $('<div id="planning_datepicker"><a data-toggle><i class="ti ti-calendar pointer"></i></a>')
+                        $('<div id="planning_datepicker"><a data-toggle><i id="planning_calendar_btn" class="ti ti-calendar pointer"></i></a>')
                     );
+
+                $('#refresh_planning').qtip({
+                    position: { viewport: $(window) },
+                    content: { text: __('Refresh') },
+                    style: { classes: 'qtip-shadow qtip-bootstrap' },
+                    hide: { fixed: true, delay: 200, leave: false }
+                });
+                $('#planning_calendar_btn').qtip({
+                    position: { viewport: $(window) },
+                    content: { text: _n('Calendar', 'Calendars', 1) },
+                    style: { classes: 'qtip-shadow qtip-bootstrap' },
+                    hide: { fixed: true, delay: 200, leave: false }
+                });
 
                 // specific process for full list
                 if (view.type == 'listFull') {
@@ -430,30 +444,30 @@ var GLPIPlanning  = {
                 var view_type = info.view.type;
 
                 GLPIPlanning.last_view = view_type;
-                // inform backend we changed view (to store it in session)
-                $.ajax({
-                    url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
-                    type: 'POST',
-                    data: {
-                        action: 'view_changed',
-                        view:   view_type
-                    }
-                }).done(function() {
-                    // indicate to central page we're done rendering
-                    if (!options.full_view) {
-                        // Observe changes in the DOM before triggering
-                        const observer = new MutationObserver((mutations, obs) => {
-                            if (document.readyState === 'complete') {
-                                obs.disconnect(); // Stop observation once the DOM is stable
-                                setTimeout(() => {
-                                    $(document).trigger('masonry_grid:layout');
-                                }, 100);
-                            }
-                        });
 
-                        observer.observe(document.body, { childList: true, subtree: true });
-                    }
-                });
+                if (options.full_view) {
+                    // inform backend we changed view (to store it in session)
+                    $.ajax({
+                        url: `${CFG_GLPI.root_doc}/ajax/planning.php`,
+                        type: 'POST',
+                        data: {
+                            action: 'view_changed',
+                            view: view_type
+                        }
+                    });
+                } else {
+                    // Observe changes in the DOM before triggering
+                    const observer = new MutationObserver((mutations, obs) => {
+                        if (document.readyState === 'complete') {
+                            obs.disconnect(); // Stop observation once the DOM is stable
+                            setTimeout(() => {
+                                $(document).trigger('masonry_grid:layout');
+                            }, 100);
+                        }
+                    });
+
+                    observer.observe(document.body, {childList: true, subtree: true});
+                }
 
                 // set end of day markers for timeline
                 GLPIPlanning.setEndofDays(info.view);
@@ -632,10 +646,14 @@ var GLPIPlanning  = {
             type: 'POST',
             extraParams: function () {
                 var view_name =  GLPIPlanning.calendar.state.viewType;
-                return {
+                const extra_params = {
                     'action': 'get_events',
-                    'view_name': view_name
+                    'view_name': view_name,
                 };
+                if (!options.full_view) {
+                    extra_params['state_done'] = false;
+                }
+                return extra_params;
             },
             success: function (data) {
                 if (!options.full_view && data.length === 0) {

@@ -130,7 +130,7 @@ class Ticket_Contract extends CommonDBRelation
                                 nochecklimit: true
                             }) }}
                             {% set btn %}
-                                <button type="submit" class="btn btn-primary" name="add">{{ btn_label }}</button>
+                                <button type="submit" class="btn btn-primary" name="add"><i class="ti ti-link me-1"></i>{{ btn_label }}</button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -155,6 +155,7 @@ TWIG, $twig_params);
                 'num' => _x('phone', 'Number'),
                 'begin_date' => __('Start date'),
                 'end_date' => __('End date'),
+                'expiration_date' => __('Expiration date'),
                 'comment' => _n('Comment', 'Comments', Session::getPluralNumber()),
             ];
             $formatters = [
@@ -190,6 +191,15 @@ TWIG, $twig_params);
                 }
                 $entry['type'] = $type_cache[$item->fields['contracttypes_id']];
                 $entry['end_date'] = Infocom::getWarrantyExpir($item->fields['begin_date'], $item->fields['duration'], 0, true);
+                $entry['expiration_date'] = Infocom::getWarrantyExpir(
+                    $item->fields['begin_date'],
+                    $item->fields['renewal'] == Contract::RENEWAL_EXPRESS ? $item->fields['duration'] + $item->fields['periodicity'] : $item->fields['duration'],
+                    0,
+                    true,
+                    (int) $item->fields['renewal'] === Contract::RENEWAL_TACIT,
+                    $item->fields['periodicity']
+                );
+
                 $entries[] = $entry;
             }
         }

@@ -141,20 +141,6 @@ class GLPITestCase extends TestCase
         // impact others tests that depend on it.
         assert(true === Plugin::isPluginActive('tester'), 'The tester plugin must be active for tests to run properly. Make sure test db is initialized and tester plugin directory doesn\'t exist.');
 
-        if (isset($_SESSION['MESSAGE_AFTER_REDIRECT']) && !$this->has_failed) {
-            unset($_SESSION['MESSAGE_AFTER_REDIRECT'][INFO]);
-            $this->assertSame(
-                [],
-                $_SESSION['MESSAGE_AFTER_REDIRECT'],
-                sprintf(
-                    "Some messages has not been handled in %s::%s:\n%s",
-                    static::class,
-                    __METHOD__/*$method*/,
-                    print_r($_SESSION['MESSAGE_AFTER_REDIRECT'], true)
-                )
-            );
-        }
-
         if (!$this->has_failed) {
             $this->assertIsArray($this->log_handler->getRecords());
             $clean_logs = array_map(
@@ -184,6 +170,23 @@ class GLPITestCase extends TestCase
                     static::class,
                     __METHOD__/*$method*/,
                     print_r($clean_logs, true)
+                )
+            );
+        }
+
+        // Keep this after the logs checks, logs contains more detailled
+        // information so we prefer that the test fail with the log details
+        // rather than with the session messages details for easier debugging.
+        if (isset($_SESSION['MESSAGE_AFTER_REDIRECT']) && !$this->has_failed) {
+            unset($_SESSION['MESSAGE_AFTER_REDIRECT'][INFO]);
+            $this->assertSame(
+                [],
+                $_SESSION['MESSAGE_AFTER_REDIRECT'],
+                sprintf(
+                    "Some messages has not been handled in %s::%s:\n%s",
+                    static::class,
+                    __METHOD__/*$method*/,
+                    print_r($_SESSION['MESSAGE_AFTER_REDIRECT'], true)
                 )
             );
         }

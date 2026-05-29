@@ -44,6 +44,8 @@ abstract class Dropdown extends CommonTreeDropdown
 {
     use CustomObjectTrait;
 
+    public $can_be_translated = true;
+
     /**
      * Dropdown definition system name.
      *

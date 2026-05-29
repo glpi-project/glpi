@@ -35,7 +35,8 @@
       {% set is_private = timeline_itemtype.item.fields['is_private'] ?? false %}
       {% set is_private_class = is_private ? "private-item" : "" %}
       <div class="timeline-item mb-1 ms-auto {{ is_private_class }} {{ timeline_itemtype.type }} collapse"
-        id="new-{{ timeline_itemtype.class }}-block" aria-expanded="false" data-bs-parent="#new-itilobject-form">
+        id="new-{{ timeline_itemtype.class }}-block" aria-expanded="false" data-bs-parent="#new-itilobject-form"
+        data-testid="new-{{ timeline_itemtype.class }}-block">
          <div class="row">
             <div class="col-auto todo-list-state"></div>
             <div class="col-auto d-flex flex-column user-part ms-0 order-sm-last">
@@ -46,7 +47,8 @@
                   <div class="card-body px-1 px-xxl-3">
                      <div class="clearfix">
                         <button class="btn btn-sm btn-ghost-secondary float-end mb-1 close-itil-answer"
-                              data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                              data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block"
+                              aria-label="{{ __('Close') }}">
                            <i class="fs-2 ti ti-x"></i>
                         </button>
                      </div>

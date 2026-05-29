@@ -44,6 +44,7 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
+use Glpi\Api\HL\StreamedResponseWrapper;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -299,6 +300,13 @@ final class HLAPIHelper
         }
         $request = $request->withHeader('GLPI-API-Version', $this->api_version);
         $response = $this->router->handleRequest($request);
+        if ($response instanceof StreamedResponseWrapper) {
+            $symfony_response = $response->getSymfonyResponse();
+            ob_start();
+            $symfony_response->sendContent();
+            $content = ob_get_clean();
+            $response = new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
+        }
         $fn(new HLAPICallAsserter($this->test, $this->router, $response));
         return $this;
     }
@@ -549,7 +557,10 @@ final class HLAPIHelper
         ?callable $deny_update = null,
         ?callable $deny_delete = null,
         ?callable $deny_purge = null,
-        ?callable $deny_restore = null
+        ?callable $deny_restore = null,
+        ?array $create_params = null,
+        ?array $update_params = null,
+        ?array $extra_options = []
     ): self {
         $this->test->loginWeb();
         $this->router->registerAuthMiddleware(new InternalAuthMiddleware());
@@ -586,22 +597,37 @@ final class HLAPIHelper
             $call->response->isNotOK();
         }, false);
 
-        $deny_create();
-        // No CREATE = Access denied
-        $this->call(new Request('POST', $endpoint), function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response->isAccessDenied();
-        }, false);
+        if (!($extra_options['skip_create_test'] ?? false)) {
+            $deny_create();
+            // No CREATE = Access denied
+            $create_request = new Request('POST', $endpoint);
+            if ($create_params !== null) {
+                foreach ($create_params as $key => $value) {
+                    $create_request->setParameter($key, $value);
+                }
+            }
+            $this->call($create_request, function ($call) {
+                /** @var HLAPICallAsserter $call */
+                $call->response->isAccessDenied();
+            }, false);
+        }
 
-        $deny_update();
-        $update_request = new Request('PATCH', $endpoint . '/' . $items_id);
-        // Property does not need to exist, but we try to act like a real update
-        $update_request->setParameter('name', 'updated');
-        // No UPDATE = Access denied
-        $this->call($update_request, function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response->isAccessDenied();
-        }, false);
+        if (!($extra_options['skip_update_test'] ?? false)) {
+            $deny_update();
+            $update_request = new Request('PATCH', $endpoint . '/' . $items_id);
+            // Property does not need to exist, but we try to act like a real update
+            $update_request->setParameter('name', 'updated');
+            if ($update_params !== null) {
+                foreach ($update_params as $key => $value) {
+                    $update_request->setParameter($key, $value);
+                }
+            }
+            // No UPDATE = Access denied
+            $this->call($update_request, function ($call) {
+                /** @var HLAPICallAsserter $call */
+                $call->response->isAccessDenied();
+            }, false);
+        }
 
         if ($item->maybeDeleted()) {
             $deny_delete();

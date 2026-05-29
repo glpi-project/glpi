@@ -37,12 +37,18 @@ namespace tests\units\Glpi\Form\Tag;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\AbstractQuestionTypeSelectable;
+use Glpi\Form\QuestionType\QuestionTypeRadio;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\Tag;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+
+use function Safe\json_encode;
 
 final class AnswerTagProviderTest extends DbTestCase
 {
@@ -119,6 +125,52 @@ final class AnswerTagProviderTest extends DbTestCase
             $answers_set,
         );
         $this->assertEquals($expected_content, $computed_content);
+    }
+
+    public function testGetTagContentForValueTranslatesSelectableOptionLabels(): void
+    {
+        $option_uuid = 'test-uuid-option-1';
+        $form = $this->createForm(
+            (new FormBuilder())->addQuestion(
+                name: 'Favorite color',
+                type: QuestionTypeRadio::class,
+                extra_data: json_encode((new QuestionTypeSelectableExtraDataConfig(
+                    options: [$option_uuid => 'Red']
+                ))->jsonSerialize()),
+            )
+        );
+
+        $question = Question::getById($this->getQuestionId($form, 'Favorite color'));
+        $translation_key = sprintf(
+            '%s-%s',
+            AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION,
+            $option_uuid
+        );
+        $this->addTranslationToForm($question, 'fr_FR', $translation_key, 'Rouge');
+
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers($form, [
+            $this->getQuestionId($form, 'Favorite color') => $option_uuid,
+        ], 0);
+
+        $original_language = $_SESSION['glpilanguage'];
+        try {
+            $_SESSION['glpilanguage'] = 'fr_FR';
+            $this->checkGetTagContentForValue(
+                value: $this->getQuestionId($form, 'Favorite color'),
+                answers_set: $answers,
+                expected_content: 'Rouge',
+            );
+
+            $_SESSION['glpilanguage'] = 'de_DE'; // No translation, falls back to original
+            $this->checkGetTagContentForValue(
+                value: $this->getQuestionId($form, 'Favorite color'),
+                answers_set: $answers,
+                expected_content: 'Red',
+            );
+        } finally {
+            $_SESSION['glpilanguage'] = $original_language;
+        }
     }
 
     private function createAndGetFormWithFirstAndLastNameQuestions(): Form

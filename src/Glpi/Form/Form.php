@@ -220,6 +220,7 @@ final class Form extends CommonDBTM implements
         if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable(self::getTable(), [
                 'forms_categories_id' => $item->getID(),
+                'is_draft' => 0,
             ]);
         }
 

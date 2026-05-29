@@ -782,7 +782,7 @@ class CommonGLPI implements CommonGLPIInterface
         $counter_html = '';
         if ($nb > 0) {
             $badge_content = $total_nb !== null ? "$nb/$total_nb" : "$nb";
-            $counter_html = sprintf(' <span class="badge glpi-badge">%s</span>', htmlescape($badge_content));
+            $counter_html = sprintf(' <span class="badge glpi-badge" data-testid="tab-count-badge">%s</span>', htmlescape($badge_content));
         }
 
         return sprintf(
@@ -1376,6 +1376,7 @@ class CommonGLPI implements CommonGLPIInterface
         ]);
 
         $found_kbitem = [];
+        $kbitem_ids = [];
         foreach ($iterator as $line) {
             $found_kbitem[$line['id']] = $line;
             $kbitem_ids[$line['id']] = $line['id'];
@@ -1389,7 +1390,7 @@ class CommonGLPI implements CommonGLPIInterface
             $ret .= "<label for='display_faq_chkbox$rand'>";
             $ret .= "<i class='ti ti-zoom-question cursor-pointer'></i>";
             $ret .= "</label>";
-            $ret .= "<input type='checkbox'  class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
+            $ret .= "<input type='checkbox' class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
             $ret .= "<div class='faqadd_entries' style='position:relative;'>";
             if (count($found_kbitem) == 1) {
                 $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";

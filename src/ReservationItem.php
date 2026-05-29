@@ -442,7 +442,7 @@ TWIG, $twig_params);
             'FROM'            => 'glpi_reservationitems',
             'WHERE'           => [
                 'is_active' => 1,
-            ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', $_SESSION['glpiactiveentities'], true),
+            ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', '', true),
         ]);
 
         foreach ($iterator as $data) {
@@ -476,7 +476,7 @@ TWIG, $twig_params);
                 'itemtype'           => Peripheral::class,
                 'is_active'          => 1,
                 'peripheraltypes_id' => ['>', 0],
-            ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', $_SESSION['glpiactiveentities'], true),
+            ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', '', true),
             'ORDERBY'   => 'glpi_peripheraltypes.name',
         ]);
 
@@ -543,7 +543,7 @@ TWIG, $twig_params);
                 'WHERE'        => [
                     'glpi_reservationitems.is_active'   => 1,
                     "$itemtable.is_deleted"             => 0,
-                ] + getEntitiesRestrictCriteria($itemtable, '', $_SESSION['glpiactiveentities'], $item->maybeRecursive()),
+                ] + getEntitiesRestrictCriteria($itemtable, '', '', $item->maybeRecursive()),
                 'ORDERBY'      => [
                     "$itemtable.entities_id",
                     "$itemtable.$itemname",

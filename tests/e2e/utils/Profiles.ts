@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-// Not all values may be used, ignore this error.
-/* eslint-disable no-unused-vars */
-
 export enum Profiles
 {
     SelfService = 1,

@@ -51,10 +51,10 @@
             {% set default_action = main_actions_itemtypes|keys|first %}
             {% if item.isNotSolved() and default_action_data != false %}
                {% if main_actions_itemtypes|length > 1 %}
-                  {% set btn_class = timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') ? "" : "btn-group" %}
+                  {% set btn_class = timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') ? "btn-splitted" : "btn-group" %}
                   <div class="{{ btn_class }} me-2 main-actions">
                {% else %}
-                  {# Don't use d-inline-flex class as it add an '!important' tag that mess with our javascript that will hide this div #}
+                  {# Don't use d-flex/d-inline-flex classes here: they add display:...!important which breaks jQuery .hide() #}
                   <div class="main-actions" style="display:inline-flex">
                {% endif %}
                   <button
@@ -62,6 +62,7 @@
                      data-bs-toggle="collapse"
                      data-bs-target="#new-{{ default_action_data.class }}-block"
                      type="button"
+                     aria-label="{{ default_action_data.label }}"
                   >
                      <i class="{{ default_action_data.icon }}"></i>
                      <span>{{ default_action_data.label }}</span>
@@ -71,7 +72,7 @@
                      {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') %}
                         {% for action, timeline_itemtype in main_actions_itemtypes %}
                         {% if loop.index0 > 0 %}
-                              <button class="ms-2 btn btn-primary answer-action action-{{ action }}" data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                              <button class="btn btn-primary answer-action action-{{ action }}" data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
                                  <i class="{{ timeline_itemtype.icon }}"></i>
                                  <span>{{ timeline_itemtype.short_label }}</span>
                               </button>
@@ -89,7 +90,7 @@
                         <ul class="dropdown-menu">
                               {% for action, timeline_itemtype in main_actions_itemtypes %}
                                  {% if loop.index0 > 0 %}
-                                 <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
+                                 <li aria-label="{{ timeline_itemtype.label }}"><a class="dropdown-item action-{{ action }} answer-action" href="#"
                                     data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
                                     <i class="{{ timeline_itemtype.icon }}"></i>
                                     <span>{{ timeline_itemtype.label }}</span>
@@ -141,19 +142,34 @@
 
             <span>
             {% if item.isNewItem() %}
-               <button class="btn btn-primary" type="submit" name="add" form="itil-form"
-                     title="{{ _x('button', 'Add') }}">
+               <button
+                  class="btn btn-primary"
+                  type="submit"
+                  name="add"
+                  form="itil-form"
+                  title="{{ _x('button', 'Add') }}"
+                  aria-label="{{ _x('button', 'Add') }}"
+               >
                   <i class="ti ti-plus"></i>
                   <span class="d-none d-lg-block">{{ _x('button', 'Add') }}</span>
                </button>
             {% else %}
-               <div class="btn-group d-flex flex-row-reverse" role="group" id="right-actions">
+               {# Use style= instead of d-flex: utility classes add !important on display, breaking jQuery .hide() #}
+               <div class="btn-group flex-row-reverse" role="group" id="right-actions" style="display:flex">
                   {% set is_locked = params['locked'] is defined and params['locked'] %}
                   {% set display_save_btn = not is_locked and (canupdate or can_requester or canpriority or canassign or canassigntome) %}
 
                   {% if display_save_btn %}
-                     <button class="btn btn-primary btn-square" type="submit" name="update" form="itil-form"
-                           data-bs-toggle="tooltip" data-bs-placement="top" title="{{ _x('button', 'Save') }}">
+                     <button
+                        class="btn btn-primary btn-square"
+                        type="submit"
+                        name="update"
+                        form="itil-form"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="{{ _x('button', 'Save') }}"
+                        aria-label="{{ _x('button', 'Save') }}"
+                     >
                         <i class="ti ti-device-floppy"></i>
                         <span class="d-none d-xl-block">{{ _x('button', 'Save') }}</span>
                      </button>
@@ -222,19 +238,33 @@
 
    $(document).on("click", "#itil-footer .answer-action", function() {
       scrollToTimelineStart();
-      // hide answer button after clicking on it only for merge btn
+   });
+
+   // Hide primary actions whenever a top-level timeline answer form opens (direct children only, to ignore nested collapses inside forms).
+   $(document).on("show.bs.collapse", "#new-itilobject-form > .collapse", function() {
       $("#itil-footer .main-actions").hide();
-      // hide also itil object action to prevent confusion
       $("#right-actions").hide();
+      setHasUnsavedChanges(true);
+   });
+
+   // Restore primary actions once all top-level forms are fully hidden (direct children only, to avoid false positives from nested .collapse.show inside forms such as pending-reasons).
+   $(document).on("hidden.bs.collapse", "#new-itilobject-form > .collapse", function() {
+      if ($("#new-itilobject-form > .collapse.show").length === 0) {
+         $("#itil-footer .main-actions").show();
+         $("#right-actions").show();
+         setHasUnsavedChanges(false);
+      }
+   });
+
+   $('#itil-footer .form-buttons button[name="update"]').on('click', () => {
+       const has_opened_new_form = $('#new-itilobject-form > .collapse.show').length > 0
+           || $('.timeline-item .edit-content').filter((i, c) => c.textContent.trim().length > 0).length > 0;
+       if (has_opened_new_form) {
+          return confirm('{{ __("You have unsaved changes in the timeline. Are you sure you want to continue?")|e('js') }}');
+       }
    });
 
    $(function() {
-      // when close button of new answer block is clicked, show again the new answer button (and the itil object actions)
-      $(document).on("click", "#new-itilobject-form .close-itil-answer", function() {
-         $("#itil-footer .main-actions").show();
-         $("#right-actions").show();
-      });
-
       {% if openfollowup %}
          // trigger for reopen, show followup form in timeline
          var myCollapse = document.getElementById('new-ITILFollowup-block')

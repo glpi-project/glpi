@@ -539,4 +539,167 @@ class NotificationTargetTicketTest extends DbTestCase
         ], $expected_raw_url);
         $this->assertEquals($parent_expected_url, $ret['##ticket.url##']);
     }
+
+    public function testDateFormatInNotifications()
+    {
+        $this->login('tech', 'tech');
+
+        $entity = getItemByTypeName('Entity', '_test_root_entity');
+
+        // Create a ticket with a known creation date
+        $creation_date = '2026-03-19 06:46:00';
+        $ticket = $this->createItem(
+            \Ticket::class,
+            [
+                'name'                => 'Test date format in notifications',
+                'content'             => 'Testing date format',
+                'entities_id'         => $entity->getID(),
+                'date'                => $creation_date,
+                '_users_id_assign'    => getItemByTypeName(\User::class, 'tech', true),
+                '_users_id_requester' => getItemByTypeName(\User::class, 'tech', true),
+            ]
+        );
+        $ticket->getFromDB($ticket->getID());
+
+        // Set session date format to default (YYYY-MM-DD = format 0)
+        $_SESSION["glpidate_format"] = 0;
+
+        $basic_options = [
+            'additionnaloption' => [
+                'usertype' => NotificationTarget::GLPI_USER,
+            ],
+        ];
+
+        $notiftargetticket = new \NotificationTargetTicket(
+            $entity->getID(),
+            'new',
+            $ticket
+        );
+
+        // With default format (0 = YYYY-MM-DD) date should be formatted as 2026-03-19
+        $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
+        $this->assertSame('2026-03-19 06:46', $ret['##ticket.creationdate##']);
+
+        // Now switch session to DD-MM-YYYY format (format 1)
+        $_SESSION["glpidate_format"] = 1;
+
+        // Need to recreate the notification target to avoid any internal caching
+        $notiftargetticket = new \NotificationTargetTicket(
+            $entity->getID(),
+            'new',
+            $ticket
+        );
+        $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
+        $this->assertSame('19-03-2026 06:46', $ret['##ticket.creationdate##']);
+
+        // Now test that the date format is correctly applied when coming from
+        // getTemplateByLanguage (which simulates the real notification flow)
+        // Reset to default format in session, simulating a cron or different user context
+        $_SESSION["glpidate_format"] = 0;
+
+        // Create a user with DD-MM-YYYY date format preference
+        $user = $this->createItem(
+            \User::class,
+            [
+                'name'        => 'test_dateformat_user_' . mt_rand(),
+                'date_format' => 1, // DD-MM-YYYY
+            ]
+        );
+
+        // Build a notification template
+        $template = $this->createItem(
+            \NotificationTemplate::class,
+            [
+                'name'      => 'Test date format template',
+                'itemtype'  => 'Ticket',
+            ]
+        );
+
+        $this->createItem(
+            \NotificationTemplateTranslation::class,
+            [
+                'notificationtemplates_id' => $template->getID(),
+                'language'                 => '',
+                'subject'                  => '##ticket.title##',
+                'content_text'             => '##ticket.creationdate##',
+                'content_html'             => '&lt;p&gt;##ticket.creationdate##&lt;/p&gt;',
+            ]
+        );
+
+        $notiftargetticket = new \NotificationTargetTicket(
+            $entity->getID(),
+            'new',
+            $ticket
+        );
+
+        // Simulate user_infos as built by the notification system for a user with DD-MM-YYYY format
+        $user_infos = [
+            'language'          => 'en_GB',
+            'users_id'          => $user->getID(),
+            'additionnaloption' => [
+                'usertype'    => NotificationTarget::GLPI_USER,
+                'date_format' => 1, // DD-MM-YYYY
+            ],
+        ];
+
+        $tid = $template->getTemplateByLanguage(
+            $notiftargetticket,
+            $user_infos,
+            'new',
+            []
+        );
+        $this->assertNotFalse($tid);
+
+        // The rendered template should contain the date in DD-MM-YYYY format
+        $generated = $template->templates_by_languages[$tid];
+        $this->assertStringContainsString(
+            '19-03-2026 06:46',
+            $generated['content_text'],
+            'Notification date should use the recipient\'s date format (DD-MM-YYYY), got: ' . $generated['content_text']
+        );
+
+        // Verify session date_format was restored to original value
+        $this->assertSame(0, $_SESSION["glpidate_format"]);
+
+        // Now test with format 2 (MM-DD-YYYY) for a different user
+        $user_infos2 = [
+            'language'          => 'en_GB',
+            'users_id'          => $user->getID(),
+            'additionnaloption' => [
+                'usertype'    => NotificationTarget::GLPI_USER,
+                'date_format' => 2, // MM-DD-YYYY
+            ],
+        ];
+
+        $notiftargetticket2 = new \NotificationTargetTicket(
+            $entity->getID(),
+            'new',
+            $ticket
+        );
+
+        // Use a fresh template to avoid cache
+        $template2 = new \NotificationTemplate();
+        $template2->getFromDB($template->getID());
+
+        $tid2 = $template2->getTemplateByLanguage(
+            $notiftargetticket2,
+            $user_infos2,
+            'new',
+            []
+        );
+        $this->assertNotFalse($tid2);
+
+        $generated2 = $template2->templates_by_languages[$tid2];
+        $this->assertStringContainsString(
+            '03-19-2026 06:46',
+            $generated2['content_text'],
+            'Notification date should use format MM-DD-YYYY, got: ' . $generated2['content_text']
+        );
+
+        // Verify session date_format was restored again
+        $this->assertSame(0, $_SESSION["glpidate_format"]);
+
+        // Clean up
+        $_SESSION["glpidate_format"] = 0;
+    }
 }

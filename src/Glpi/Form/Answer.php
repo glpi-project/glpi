@@ -36,6 +36,7 @@
 namespace Glpi\Form;
 
 use Glpi\Form\QuestionType\QuestionTypeInterface;
+use Glpi\Form\QuestionType\RawAnswerIsHtmlInterface;
 use InvalidArgumentException;
 use JsonSerializable;
 
@@ -96,7 +97,14 @@ final readonly class Answer implements JsonSerializable
         if ($question === false) {
             return null;
         }
-        return $type->formatRawAnswer($this->getRawAnswer(), $question);
+
+        $formatted = $type->formatRawAnswer($this->getRawAnswer(), $question);
+
+        if (!$type instanceof RawAnswerIsHtmlInterface) {
+            $formatted = \htmlescape($formatted);
+        }
+
+        return $formatted;
     }
 
     public function getQuestionLabel(): string

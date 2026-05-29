@@ -31,6 +31,7 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 <form action="{{ target }}" method="post">
     <div class="d-flex">
@@ -44,7 +45,9 @@
             label_class: 'col-4',
             input_class: 'col-8',
         }) }}
-        {{ fields.numberField('port', '', _n('Port', 'Ports', 1), {
+        {{ fields.numberField('port', 389, _n('Port', 'Ports', 1), {
+            min: 1,
+            max: 65535,
             field_class: 'col-3',
             label_class: 'col-4',
             input_class: 'col-8',
@@ -63,6 +66,6 @@
     <div class="d-flex flex-row-reverse">
         <input type="hidden" name="authldaps_id" value="{{ authldaps_id }}">
         {{ fields.csrfField() }}
-        <button type="submit" name="add_replicate" class="btn btn-primary">{{ _x('button', 'Add') }}</button>
+        {{ inputs.submit('add_replicate', _x('button', 'Add'), 'btn-primary', {icon: 'ti ti-plus'}) }}
     </div>
 </form>

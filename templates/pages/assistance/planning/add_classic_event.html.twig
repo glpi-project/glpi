@@ -102,7 +102,7 @@
         }) }}
 
         {% if (params.id is not defined or params.id == 0) and params.itemtype is defined and call('PlanningRecall::isAvailable') %}
-            {{ fields.dropdownField('PlanningRecall', 'planningrecalls_id', 0, _x('Planning', 'Reminder'), {
+            {{ fields.dropdownField('PlanningRecall', 'planningrecalls_id', params['before_time']|default(0), _x('Planning', 'Reminder'), {
                 itemtype: params.itemtype,
                 items_id: params.items_id,
                 rand: rand,

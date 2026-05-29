@@ -131,4 +131,5 @@ function plugin_tester_boot()
 {
     \Glpi\Http\SessionManager::registerPluginStatelessPath('tester', '#^/$#');
     \Glpi\Http\SessionManager::registerPluginStatelessPath('tester', '#^/StatelessURI$#');
+    \Glpi\Http\SessionManager::registerPluginStatelessPath('tester', '#^/post-only$#');
 }

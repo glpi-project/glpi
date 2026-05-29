@@ -85,7 +85,7 @@ final class SLATTRField extends SLMField
     public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
     {
         $parent_config = parent::convertFieldConfig($migration, $form, $rawData);
-        if ($parent_config != $this->getDefaultConfig($form)) {
+        if ($parent_config != $this->getDefaultConfig($form) || !isset($rawData['due_date_rule'])) {
             return $parent_config;
         }
 

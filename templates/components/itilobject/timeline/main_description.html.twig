@@ -34,7 +34,8 @@
 {% set entry_rand = random() %}
 
 <div class="timeline-item mb-3 ITILContent"
-     data-itemtype="{{ item.getType() }}" data-items-id="{{ item.fields['id'] }}">
+     data-itemtype="{{ item.getType() }}" data-items-id="{{ item.fields['id'] }}"
+     data-testid="timeline-ITILContent">
    <div class="row">
       <div class="col-auto d-flex flex-column ">
     {% if users_id %}

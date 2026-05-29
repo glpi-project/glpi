@@ -91,6 +91,12 @@ if (isset($_POST["validatortype"])) {
                     // the user is not found or has no supervisor
                     continue;
                 }
+
+                $supervisor_entities = Profile_User::getUserEntities($requester->fields['users_id_supervisor']);
+                if (!isset($_POST['entity']) || !in_array($_POST['entity'], $supervisor_entities)) {
+                    continue;
+                }
+
                 $supervisor = User::getById($requester->fields['users_id_supervisor']);
                 if (!is_object($supervisor)) {
                     // the user does not have any supervisor

@@ -459,7 +459,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                             {{ fields.dropdownField('DomainRecord', 'domainrecords_id', 0, label, {
                                 'condition': condition
                             }) }}
-                            {{ fields.htmlField('', inputs.submit('addrecord', add_btn_msg, 1), null, {
+                            {{ fields.htmlField('', inputs.submit('addrecord', add_btn_msg, 1, {'icon': 'ti ti-link'}), null, {
                                 no_label: true,
                                 mb: '',
                                 wrapper_class: 'ms-2'
@@ -476,7 +476,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                     </div>
                     <div class="mt-4 text-center">
                         <button type="button" class="btn btn-primary" id="add_new_record_btn{{ rand }}">
-                            {{ add_new_btn_msg }}
+                            <i class="ti ti-plus"></i>
+                            <span>{{ add_new_btn_msg }}</span>
                         </button>
                         <script>
                             $('#add_new_record_btn{{ rand }}').on('click', function() {

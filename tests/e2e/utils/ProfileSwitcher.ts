@@ -78,7 +78,7 @@ export class ProfileSwitcher
         }
 
         // Send http request to change profile.
-        await this.request.post(
+        const response = await this.request.post(
             `/Session/ChangeProfile`,
             {
                 form: {
@@ -90,6 +90,18 @@ export class ProfileSwitcher
                 }
             }
         );
+
+        if (!response.ok()) {
+            throw new Error(
+                `Failed to change profile to ${profile_id}: HTTP ${response.status()}`
+            );
+        }
+
         this.cache.setCurrentProfileId(profile_id);
+    }
+
+    public async invalidateCachedProfile(): Promise<void>
+    {
+        this.cache.setCurrentProfileId(-1);
     }
 }

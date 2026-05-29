@@ -35,12 +35,14 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Budget;
 use Calendar;
 use Change;
 use Change_Change;
 use Change_Item;
 use Change_Problem;
 use Change_Ticket;
+use ChangeCost;
 use ChangeSatisfaction;
 use ChangeTask;
 use ChangeTemplate;
@@ -67,17 +69,23 @@ use Item_Problem;
 use Item_Ticket;
 use ITILCategory;
 use ITILFollowup;
+use ITILFollowupTemplate;
+use ITILReminder;
 use ITILSolution;
 use Location;
 use OLA;
 use OlaLevel;
+use PendingReason;
+use PendingReason_Item;
 use Planning;
 use PlanningEventCategory;
 use PlanningExternalEvent;
 use PlanningExternalEventTemplate;
+use PlanningRecall;
 use Problem;
 use Problem_Problem;
 use Problem_Ticket;
+use ProblemCost;
 use ProblemTask;
 use ProblemTemplate;
 use RecurrentChange;
@@ -86,10 +94,12 @@ use RuntimeException;
 use Session;
 use SLA;
 use SlaLevel;
+use SolutionTemplate;
 use SolutionType;
 use TaskCategory;
 use Ticket;
 use Ticket_Ticket;
+use TicketCost;
 use TicketRecurrent;
 use TicketSatisfaction;
 use TicketTask;
@@ -232,7 +242,6 @@ final class ITILController extends AbstractController
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'readOnly' => true,
                     'x-field' => 'time_to_resolve',
                 ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -427,7 +436,6 @@ final class ITILController extends AbstractController
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'readOnly' => true,
                     'x-field' => 'takeintoaccountdate',
                 ];
                 $schemas[$itil_type]['properties']['take_into_account_duration'] = [
@@ -471,14 +479,12 @@ final class ITILController extends AbstractController
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'readOnly' => true,
                     'x-field' => 'internal_time_to_resolve',
                 ];
                 $schemas[$itil_type]['properties']['internal_take_into_account_date'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'readOnly' => true,
                     'x-field' => 'internal_time_to_own',
                 ];
             }
@@ -544,6 +550,33 @@ final class ITILController extends AbstractController
                     'type' => Doc\Schema::TYPE_OBJECT,
                     'properties' => $schemas['TeamMember']['properties'],
                     'x-full-schema' => 'TeamMember',
+                ],
+            ];
+
+            $cost_type = match ($itil_type) {
+                Ticket::class => TicketCost::class,
+                Change::class => ChangeCost::class,
+                Problem::class => ProblemCost::class,
+            };
+            $schemas[$itil_type]['properties']['costs'] = [
+                'x-version-introduced' => '2.3.0',
+                'type' => Doc\Schema::TYPE_ARRAY,
+                'items' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'x-full-schema' => $cost_type,
+                    'x-join' => [
+                        'table' => $cost_type::getTable(),
+                        'fkey' => 'id',
+                        'field' => $itil_type::getForeignKeyField(),
+                        'primary-property' => 'id',
+                    ],
+                    'properties' => [
+                        'id' => [
+                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                            'readOnly' => true,
+                        ],
+                    ],
                 ],
             ];
         }
@@ -865,10 +898,10 @@ final class ITILController extends AbstractController
                     ],
                     'description' => <<<EOT
                         The status of the validation.
-                        - 0: None
-                        - 1: Waiting
-                        - 2: Accepted
-                        - 3: Refused
+                        - 1: None
+                        - 2: Waiting
+                        - 3: Accepted
+                        - 4: Refused
                         EOT,
                 ],
                 'submission_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -1365,6 +1398,191 @@ EOT,
                 'ticket' => self::getDropdownTypeSchema(class: Ticket::class, full_schema: 'Ticket'),
                 'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                 'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+            ],
+        ];
+
+        //FIXME Changes may be recursive and ChangeCost has an is_recursive field which is valid.
+        // Problems may also be recursive but ProblemCost doesn't have an is_recursive field so there is a hack in the API Search engine to do entity restriction checks.
+        // Tickets may not be recursive and TicketCost doesn't have an is_recursive field.
+        // Shouldn't these be aligned? At the least, the ProblemCost schema needs fixed.
+        $schemas['ChangeCost'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ChangeCost::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'change' => self::getDropdownTypeSchema(class: Change::class, full_schema: 'Change'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_begin' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'begin_date',
+                ],
+                'date_end' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'end_date',
+                ],
+                'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32, 'x-field' => 'actiontime'],
+                'cost_time' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_fixed' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_material' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'budget' => self::getDropdownTypeSchema(class: Budget::class, full_schema: 'Budget'),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+            ],
+        ];
+
+        $schemas['ProblemCost'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ProblemCost::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'problem' => self::getDropdownTypeSchema(class: Problem::class, full_schema: 'Problem'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_begin' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'begin_date',
+                ],
+                'date_end' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'end_date',
+                ],
+                'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32, 'x-field' => 'actiontime'],
+                'cost_time' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_fixed' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_material' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'budget' => self::getDropdownTypeSchema(class: Budget::class, full_schema: 'Budget'),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+            ],
+        ];
+
+        $schemas['TicketCost'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => TicketCost::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'ticket' => self::getDropdownTypeSchema(class: Ticket::class, full_schema: 'Ticket'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_begin' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'begin_date',
+                ],
+                'date_end' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'end_date',
+                ],
+                'duration' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32, 'x-field' => 'actiontime'],
+                'cost_time' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_fixed' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'cost_material' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0],
+                'budget' => self::getDropdownTypeSchema(class: Budget::class, full_schema: 'Budget'),
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+            ],
+        ];
+
+        $schemas['PlanningReminder'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => PlanningRecall::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-rights-conditions' => [ // Object-level extra permissions
+                'read' => static fn() => [
+                    'WHERE' => ['users_id' => Session::getLoginUserID()],
+                ],
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'date' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'when',
+                ],
+                'before_time' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+            ],
+        ];
+
+        $schemas['ITILReminder'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ITILReminder::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'pending_reason' => self::getDropdownTypeSchema(class: PendingReason::class, full_schema: 'PendingReason'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'content' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['PendingReason'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => PendingReason::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'followup_frequency' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'followups_before_resolution' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'followup_template' => self::getDropdownTypeSchema(class: ITILFollowupTemplate::class, full_schema: 'FollowupTemplate'),
+                'solution_template' => self::getDropdownTypeSchema(class: SolutionTemplate::class, full_schema: 'SolutionTemplate'),
+                'calendar' => self::getDropdownTypeSchema(class: Calendar::class, full_schema: 'Calendar'),
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+            ],
+        ];
+
+        $schemas['PendingReason_Item'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => PendingReason_Item::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'followup_frequency' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'followups_before_resolution' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'bump_count' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'last_bump_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'previous_status' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
             ],
         ];
 
@@ -1913,7 +2131,7 @@ EOT,
 
     /**
      * @param CommonITILObject $item
-     * @return array{role: string|int, name?: string, realname?: string, firstname?: string, display_name?: string, href: string}[]
+     * @return array{role: string|int, name?: string, realname?: string, firstname?: string, display_name?: string, href: string, type: string}[]
      */
     private static function getCleanTeam(CommonITILObject $item): array
     {
@@ -1932,6 +2150,7 @@ EOT,
             // Add a link to the full resource represented by the team member (User, Group, etc)
             $member['id'] = $member_items_id;
             $member['href'] = $member_itemtype::getFormURLWithID($member_items_id);
+            $member['type'] = $member_itemtype;
             // Replace role with non-localized textual representation
             try {
                 $member['role'] = self::getRoleName($member['role']);
@@ -2252,5 +2471,262 @@ EOT,
     public function deleteExternalEvent(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('ExternalEvent', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Cost', methods: ['GET'], requirements: [
+        'itemtype' => 'Ticket|Change|Problem',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(schema_name: '{itemtype}Cost', description: 'Get the costs for a specific {itemtype}')]
+    public function searchCosts(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema($itemtype . 'Cost', $this->getAPIVersion($request));
+        $parameters = $request->getParameters();
+        $parent_prop = match ($itemtype) {
+            'Ticket' => 'ticket',
+            'Change' => 'change',
+            'Problem' => 'problem',
+            default => throw new RuntimeException(\sprintf('Unexpected type `%s`.', $itemtype)),
+        };
+        $filters = $parameters['filter'] ?? '';
+        $filters .= $parent_prop . '.id==' . $request->getAttribute('id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($schema, $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Cost', methods: ['POST'], requirements: [
+        'itemtype' => 'Ticket|Change|Problem',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(schema_name: '{itemtype}Cost', description: 'Create a new cost for a specific {itemtype}')]
+    public function createCost(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        $parameters = $request->getParameters();
+        $parent_prop = match ($itemtype) {
+            'Ticket' => 'ticket',
+            'Change' => 'change',
+            'Problem' => 'problem',
+            default => throw new RuntimeException(\sprintf('Unexpected type `%s`.', $itemtype)),
+        };
+        $parameters[$parent_prop] = $request->getAttribute('id');
+        $schema = $this->getKnownSchema($request->getAttribute('itemtype') . 'Cost', $this->getAPIVersion($request));
+        return ResourceAccessor::createBySchema($schema, $parameters, [self::class, 'getCost'], [
+            'mapped' => [
+                'itemtype' => $itemtype,
+                'id' => $request->getAttribute('id'),
+            ],
+            'id' => 'cost_id',
+        ]);
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Cost/{cost_id}', methods: ['GET'], requirements: [
+        'itemtype' => 'Ticket|Change|Problem',
+        'cost_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(schema_name: '{itemtype}Cost', description: 'Get a specific cost by ID for a specific {itemtype}')]
+    public function getCost(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema($itemtype . 'Cost', $this->getAPIVersion($request));
+        return ResourceAccessor::getOneBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Cost/{cost_id}', methods: ['PATCH'], requirements: [
+        'itemtype' => 'Ticket|Change|Problem',
+        'cost_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(schema_name: '{itemtype}Cost', description: 'Update a specific cost by ID for a specific {itemtype}')]
+    public function updateCost(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema($itemtype . 'Cost', $this->getAPIVersion($request));
+        return ResourceAccessor::updateBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Cost/{cost_id}', methods: ['DELETE'], requirements: [
+        'itemtype' => 'Ticket|Change|Problem',
+        'cost_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(schema_name: '{itemtype}Cost', description: 'Delete a specific cost by ID for a specific {itemtype}')]
+    public function deleteCost(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema($itemtype . 'Cost', $this->getAPIVersion($request));
+        return ResourceAccessor::deleteBySchema($schema, ['id' => $request->getAttribute('cost_id')], $request->getParameters());
+    }
+
+    #[Route(path: '/{assistance_itemtype}/{assistance_id}/KBArticle', methods: ['POST'], requirements: [
+        'assistance_itemtype' => 'Ticket|Change|Problem',
+        'assistance_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Assign a KB article to an item'
+    )]
+    public function createKBArticleItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('assistance_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('assistance_id'));
+        return ResourceAccessor::createBySchema(
+            (new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getKBArticleItemLink'],
+            [
+                'mapped' => [
+                    'assistance_itemtype' => $request->getAttribute('assistance_itemtype'),
+                    'assistance_id' => $request->getAttribute('assistance_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/{assistance_itemtype}/{assistance_id}/KBArticle', methods: ['GET'], requirements: [
+        'assistance_itemtype' => 'Ticket|Change|Problem',
+        'assistance_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'List or search KB article links'
+    )]
+    public function searchKBArticleItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('assistance_itemtype') . ';items_id==' . $request->getAttribute('assistance_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{assistance_itemtype}/{assistance_id}/KBArticle/{id}', methods: ['GET'], requirements: [
+        'assistance_itemtype' => 'Ticket|Change|Problem',
+        'assistance_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Get a specific KB article link'
+    )]
+    public function getKBArticleItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('assistance_itemtype') . ';items_id==' . $request->getAttribute('assistance_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{assistance_itemtype}/{assistance_id}/KBArticle/{id}', methods: ['PATCH'], requirements: [
+        'assistance_itemtype' => 'Ticket|Change|Problem',
+        'assistance_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Update a specific KB article link'
+    )]
+    public function updateKBArticleItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{assistance_itemtype}/{assistance_id}/KBArticle/{id}', methods: ['DELETE'], requirements: [
+        'assistance_itemtype' => 'Ticket|Change|Problem',
+        'assistance_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Delete a specific KB article link'
+    )]
+    public function deleteKBArticleItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/PlanningReminder', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(schema_name: 'PlanningReminder')]
+    public function searchPlanningReminder(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('PlanningReminder', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/PlanningReminder/{id}', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(schema_name: 'PlanningReminder')]
+    public function getPlanningReminder(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('PlanningReminder', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/PendingReason', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(schema_name: 'PendingReason')]
+    public function searchPendingReason(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('PendingReason', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/PendingReason/{id}', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(schema_name: 'PendingReason')]
+    public function getPendingReason(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('PendingReason', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/PendingReason', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(schema_name: 'PendingReason')]
+    public function createPendingReason(Request $request): Response
+    {
+        return ResourceAccessor::createBySchema($this->getKnownSchema('PendingReason', $this->getAPIVersion($request)), $request->getParameters(), [self::class, 'getPendingReason']);
+    }
+
+    #[Route(path: '/PendingReason/{id}', methods: ['PATCH'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(schema_name: 'PendingReason')]
+    public function updatePendingReason(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('PendingReason', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/PendingReason/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(schema_name: 'PendingReason')]
+    public function deletePendingReason(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('PendingReason', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/PendingReason', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'PendingReason_Item',
+        description: 'Get the pending reason for a specific Ticket, Change or Problem'
+    )]
+    public function getItemPendingReason(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        $schema = $this->getKnownSchema('PendingReason_Item', $this->getAPIVersion($request));
+        $filters = 'itemtype==' . $itemtype;
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema($schema, ['items_id' => $request->getAttribute('id')], $request->getParameters(), 'items_id');
     }
 }

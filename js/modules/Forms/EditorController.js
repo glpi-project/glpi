@@ -1908,7 +1908,8 @@ export class GlpiFormEditorController
                     'opacity': '0.7',
                     'pointer-events': 'none'
                 })
-                .attr('data-glpi-loading', 'true');
+                .attr('data-glpi-loading', 'true')
+                .attr('data-testid', 'question-loading');
         } else {
             // Remove loading overlay
             specificContent.find('.glpi-form-editor-loading-overlay').remove();
@@ -1919,7 +1920,8 @@ export class GlpiFormEditorController
                     'pointer-events': '',
                     'position': ''
                 })
-                .removeAttr('data-glpi-loading');
+                .removeAttr('data-glpi-loading')
+                .removeAttr('data-testid');
         }
     }
 

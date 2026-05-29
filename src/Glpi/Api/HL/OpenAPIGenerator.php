@@ -142,6 +142,14 @@ The High-Level REST API documentation shown here is dynamically generated from t
 If a plugin is not enabled, its routes will not be shown here.
 EOT;
 
+        $api_versions = Router::getAPIVersions();
+        foreach ($api_versions as $version_info) {
+            if ($version_info['version'] === $this->api_version && ($version_info['deprecated'] ?? false)) {
+                $description = "DEPRECATED - " . $description;
+                break;
+            }
+        }
+
         return [
             'title' => 'GLPI High-Level REST API',
             'description' => $description,
@@ -313,7 +321,14 @@ EOT;
                             foreach ($method_info['parameters'] ?? [] as $pk => $param) {
                                 if (array_key_exists('pattern', $param['schema'])) {
                                     foreach ($paths[$new_path][$method]['parameters'] as $existing_pk => $existing_param) {
-                                        if (($existing_param['name'] === $param['name']) && isset($existing_param['schema']['pattern']) && str_contains($existing_param['schema']['pattern'], '|')) {
+                                        if (
+                                            ($existing_param['name'] === $param['name'])
+                                            && isset($existing_param['schema']['pattern'])
+                                            && (
+                                                str_contains($existing_param['schema']['pattern'], '|')
+                                                || str_contains($param['schema']['pattern'], '|')
+                                            )
+                                        ) {
                                             $paths[$new_path][$method]['parameters'][$existing_pk]['schema']['pattern'] .= '|' . $param['schema']['pattern'];
                                         }
                                     }

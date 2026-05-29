@@ -91,6 +91,23 @@ final class FormTagProviderTest extends DbTestCase
         );
     }
 
+    public function testGetTagContentForValueUsingTranslation(): void
+    {
+        $form = $this->createForm((new FormBuilder())->setName('My form'));
+        $this->addTranslationToForm($form, 'fr_FR', Form::TRANSLATION_KEY_NAME, 'Mon formulaire');
+
+        $original_language = $_SESSION['glpilanguage'];
+        try {
+            $_SESSION['glpilanguage'] = 'fr_FR';
+            $this->checkGetTagContentForValue($form->getId(), 'Mon formulaire');
+
+            $_SESSION['glpilanguage'] = 'de_DE'; // No translation, falls back to original
+            $this->checkGetTagContentForValue($form->getId(), 'My form');
+        } finally {
+            $_SESSION['glpilanguage'] = $original_language;
+        }
+    }
+
     private function checkGetTagContentForValue(
         string $value,
         string $expected_content

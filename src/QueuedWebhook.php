@@ -77,6 +77,11 @@ class QueuedWebhook extends CommonDBChild
         return false;
     }
 
+    public static function canPurge(): bool
+    {
+        return (bool) Session::haveRight(static::$rightname, UPDATE);
+    }
+
     public static function getForbiddenActionsForMenu()
     {
         return ['add'];
@@ -188,7 +193,11 @@ class QueuedWebhook extends CommonDBChild
 
         if (GLPI_WEBHOOK_CRA_MANDATORY || $webhook->fields['use_cra_challenge']) {
             // Send CRA challenge
-            $result = $webhook::validateCRAChallenge($queued_webhook->fields['url'], 'validate_cra_challenge', $webhook->fields['secret']);
+            $result = $webhook::validateCRAChallenge(
+                $queued_webhook->fields['url'],
+                $queued_webhook->fields['body'] ?: sha1((string) $queued_webhook->getID()),
+                $webhook->fields['secret']
+            );
             if ($result['status'] !== true) {
                 Toolbox::logInFile('webhook', "CRA challenge failed for webhook {$webhook->fields['name']} ({$webhook->getID()})");
                 return false;
@@ -211,7 +220,7 @@ class QueuedWebhook extends CommonDBChild
                         RequestOptions::FORM_PARAMS => [
                             'grant_type' => 'client_credentials',
                             'client_id' => $webhook->fields['clientid'],
-                            'client_secret' => $webhook->fields['clientsecret'],
+                            'client_secret' => (new GLPIKey())->decrypt($webhook->fields['clientsecret']),
                             'scope' => '',
                         ],
                     ]);

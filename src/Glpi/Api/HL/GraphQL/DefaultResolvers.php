@@ -41,6 +41,7 @@ use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\RightConditionNotMetException;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search;
+use Glpi\Api\HL\Search\SearchContext;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
@@ -384,8 +385,8 @@ class DefaultResolvers
             }
         }
 
+        $search->addRSQLCriteria($criteria, fn(SearchContext $context, array $properties) => $this->resolveSchemaFromProperties($context, $properties));
         $search->addJoinsCriteria($criteria);
-        $search->addRSQLCriteria($criteria);
 
         if ($request_params['id'] ?? null) {
             if (!is_array($request_params['id'])) {
@@ -425,5 +426,37 @@ class DefaultResolvers
         $count_select = [QueryFunction::count("$table_alias.id", true, 'count')];
         $count_criteria['SELECT'] = $count_select;
         return $count_criteria;
+    }
+
+    /**
+     * @param SearchContext &$context
+     * @param string[] $properties
+     * @return void
+     */
+    private function resolveSchemaFromProperties(SearchContext $context, array $properties): void
+    {
+        $joins = $context->getJoins();
+        $new_schema = $context->getSchema();
+        foreach ($properties as $property) {
+            if (!str_contains($property, '.')) {
+                continue;
+            }
+            $parent_path = substr($property, 0, (int) strrpos($property, '.'));
+            $join_name = $context->getJoinNameForProperty($parent_path);
+            if (array_key_exists($join_name, $joins)) {
+                $join_schema_name = $joins[$join_name]['x-full-schema'] ?? null;
+                if ($join_schema_name !== null) {
+                    $join_schema = $this->getSchemaForObjectName($join_schema_name);
+                    if (($join_schema !== null)) {
+                        if (array_key_exists('items', $new_schema['properties'][$join_name])) {
+                            $new_schema['properties'][$join_name]['items']['properties'] = $join_schema['properties'];
+                        } else {
+                            $new_schema['properties'][$join_name]['properties'] = $join_schema['properties'];
+                        }
+                    }
+                }
+            }
+        }
+        $context->updateSchema($new_schema);
     }
 }

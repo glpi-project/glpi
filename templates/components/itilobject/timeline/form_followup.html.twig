@@ -118,7 +118,8 @@
                         'mention_options': mention_options,
                         'entities_id': item.fields['entities_id'],
                         'rand': rand,
-                        'required': add_reopen
+                        'required': add_reopen,
+                        'aria_label': _n('Followup', 'Followups', 1),
                      }
                   ) }}
                </div>
@@ -143,6 +144,7 @@
                               'on_change': 'itilfollowuptemplate_update' ~ rand ~ '(this.value)',
                               'entity': item.fields['entities_id'],
                               'rand': rand,
+                              'aria_label': _n('Followup template', 'Followup templates', 1),
                            }
                         ) }}
 
@@ -162,6 +164,7 @@
                                  'is_itilfollowup': 1,
                               },
                               'rand': rand,
+                              'aria_label': __('Source of followup'),
                            }
                         ) }}
 
@@ -178,6 +181,7 @@
                               'rand': rand,
                               'additional_attributes': {
                                 'onchange': 'toggleTimelinePrivate(this.checked, this)',
+                                'data-testid': 'private-switch',
                               }
                            }
                         ) }}
@@ -222,7 +226,8 @@
                                     id="enable-pending-reasons-{{ rand }}"
                                     role="button"
                                     {{ (item.fields['status'] == constant('CommonITILObject::WAITING') or is_default_pending) and not add_reopen ? 'checked' : '' }}
-                                    data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}" />
+                                    data-bs-toggle="collapse" data-bs-target="#pending-reasons-setup-{{ rand }}"
+                                    data-testid="pending-checkbox" />
                            </label>
                         </span>
 
@@ -240,7 +245,12 @@
                {% if subitem.fields['id'] <= 0 %}
                   {# Do not enable flex wrapping when creating a new item as the pending form will be merged with the add button in an input group #}
                   <div class="input-group flex-nowrap">
-                     <button class="btn btn-primary" type="submit" name="add">
+                     <button
+                        class="btn btn-primary"
+                        type="submit"
+                        name="add"
+                        aria-label="{{ _x('button', 'Add') }}"
+                     >
                         <i class="ti ti-plus"></i>
                         <span>{{ _x('button', 'Add') }}</span>
                      </button>

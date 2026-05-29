@@ -4925,4 +4925,48 @@ Build Time: Mon Jan 27 10:02:25 2020</COMMENTS>
         $result = \Glpi\Inventory\MainAsset\NetworkEquipment::needToBeUpdatedFromDiscovery($networkEquipment2, $val);
         $this->assertFalse($result, 'Should return false when IPs array is empty');
     }
+
+    /**
+     * Test stacked Juniper
+     *
+     */
+    public function testStackedJuniperSwitch()
+    {
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/juniper.xml');
+        // Import the switch(es) into GLPI
+        $converter = new Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        $networkEquipment = new \NetworkEquipment();
+        $networkPort      = new \NetworkPort();
+
+        $server_serial = [
+            'XH3722471153' => 39,
+            'XH3722470229' => 41,
+        ];
+
+        foreach ($server_serial as $serial => $nb_port) {
+            $this->assertTrue(
+                $networkEquipment->getFromDBByCrit(['serial' => $serial]),
+                "Switch s/n $serial doesn't exist"
+            );
+
+            $found_np = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ]);
+            $this->assertCount($nb_port, $found_np, 'Must have ' . $nb_port . ' ports');
+        }
+    }
 }

@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryUnion;
 
 /**
  * Document_Item Class
@@ -203,6 +204,7 @@ class Document_Item extends CommonDBRelation
             $input  = [
                 'id'              => $this->fields['items_id'],
                 'date_mod'        => $_SESSION["glpi_currenttime"],
+                '_do_update_date_mod' => true,
             ];
 
             if (!isset($this->input['_do_notif']) || $this->input['_do_notif']) {
@@ -446,7 +448,7 @@ TWIG, $twig_params);
                     }
                     $entries[] = [
                         'itemtype' => self::class,
-                        'row_class' => $data['is_deleted'] ? 'table-danger' : '',
+                        'row_class' => ($data['is_deleted'] ?? false) ? 'table-danger' : '',
                         'id'       => $data['linkid'],
                         'linked_itemtype' => $item::getTypeName(1),
                         'name'    => $name,
@@ -652,15 +654,13 @@ TWIG, $twig_params);
 
         // Document : search links in both order using union
         if ($item::class === Document::class) {
-            $owhere = $criteria['WHERE'];
-            $o2where =  $owhere + ['glpi_documents_items.documents_id' => $item->getID()];
-            unset($o2where['glpi_documents_items.items_id']);
-            $criteria['WHERE'] = [
-                'OR' => [
-                    $owhere,
-                    $o2where,
-                ],
+            $reverse_criteria = self::getDocumentForItemRequest($item, ["$sort $order"]);
+            $reverse_criteria['LEFT JOIN']['glpi_documents']['ON']['glpi_documents_items'] = 'items_id';
+            $reverse_criteria['WHERE'] = [
+                'glpi_documents_items.documents_id' => $item->getID(),
+                'glpi_documents_items.itemtype' => $item::class,
             ];
+            $criteria = ['FROM' => new QueryUnion([$criteria, $reverse_criteria])];
         }
 
         $iterator = $DB->request($criteria);

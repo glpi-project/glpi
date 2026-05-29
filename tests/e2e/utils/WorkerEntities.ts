@@ -31,6 +31,7 @@
  */
 
 import test from "@playwright/test";
+import { Constants } from "./Constants";
 
 export function getWorkerEntityId(): number
 {
@@ -49,4 +50,10 @@ export function getWorkerUserId(): number
 export function getWorkerIndex(): number
 {
     return test.info().parallelIndex + 1;
+}
+
+export function getWorkerLogin(): string
+{
+    const worker_index = String(test.info().parallelIndex + 1).padStart(2, '0');
+    return `${Constants.E2E_WORKER_PREFIX}${worker_index}`;
 }

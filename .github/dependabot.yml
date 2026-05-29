@@ -132,8 +132,8 @@ updates:
           - "twig/*"
 
 
-  # main branch (next version is a minor version, i.e. 11.x)
-  # -> minor updates for both production and developement dependencies (prevent BC breaks)
+  # main branch (next version is a major version, i.e. 12.x)
+  # -> major updates for both production and developement dependencies (until the first RC release)
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -145,8 +145,12 @@ updates:
     target-branch: "main"
     versioning-strategy: "increase"
     ignore:
-      # ignore major versions for all dependencies
-      - dependency-name: "*"
+      # ignore major versions of the `fullcalendar` component (the code upgrade needs to be done by ourselves)
+      - dependency-name: "@fullcalendar/*"
+        update-types:
+          - "version-update:semver-major"
+      # ignore major versions of the `gridstack` component (too much issues due to BC-breaks)
+      - dependency-name: "gridstack"
         update-types:
           - "version-update:semver-major"
     groups:
@@ -180,10 +184,10 @@ updates:
     target-branch: "main"
     versioning-strategy: "increase"
     ignore:
-      # ignore major versions for all dependencies
-      - dependency-name: "*"
-        update-types:
-          - "version-update:semver-major"
+      # stick to symfony 7.4 LTS
+      - dependency-name: "symfony/*"
+        versions:
+          - "8.x"
     groups:
       # dev-dependencies group first, to be sure that they will not be included in the following groups
       dev-dependencies:

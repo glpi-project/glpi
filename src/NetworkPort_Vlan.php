@@ -147,7 +147,7 @@ class NetworkPort_Vlan extends CommonDBRelation
                             {{ fields.checkboxField('tagged', 0, tagged_label) }}
                         </div>
                         <div class="d-flex flex-row-reverse">
-                            <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
                         </div>
                     </form>
                 </div>

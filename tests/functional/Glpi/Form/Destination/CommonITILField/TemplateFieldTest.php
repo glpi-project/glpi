@@ -215,6 +215,7 @@ final class TemplateFieldTest extends AbstractDestinationFieldTest
         TemplateFieldConfig $config,
         int $expected_tickettemplates_id
     ): Ticket {
+        $this->login();
 
         // Insert config
         $destinations = $form->getDestinations();

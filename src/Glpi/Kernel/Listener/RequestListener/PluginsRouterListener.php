@@ -100,6 +100,9 @@ final readonly class PluginsRouterListener implements EventSubscriberInterface
                 $server['REQUEST_URI'] = \str_replace($request->getPathInfo(), $request->getPathInfo() . '/', $server['REQUEST_URI']);
                 $request_to_match = $request->duplicate(server: $server);
             }
+            // Update the router's context from the actual request so that HTTP method constraints
+            // are evaluated against the real method, not the default 'GET' from RequestContext.
+            $router->getContext()->fromRequest($request_to_match);
             $matches = $router->matchRequest($request_to_match);
         } catch (ResourceNotFoundException) {
             // No route found, let Symfony do the rest of the work.

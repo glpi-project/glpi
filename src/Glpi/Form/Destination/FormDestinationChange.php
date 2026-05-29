@@ -41,6 +41,7 @@ use Glpi\Form\Destination\CommonITILField\CheckListField;
 use Glpi\Form\Destination\CommonITILField\ControlsListField;
 use Glpi\Form\Destination\CommonITILField\DeploymentPlanField;
 use Glpi\Form\Destination\CommonITILField\ImpactsField;
+use Glpi\Form\Destination\CommonITILField\SLATTRField;
 use Override;
 
 final class FormDestinationChange extends AbstractCommonITILFormDestination
@@ -66,6 +67,7 @@ final class FormDestinationChange extends AbstractCommonITILFormDestination
             new DeploymentPlanField(),
             new BackupPlanField(),
             new CheckListField(),
+            new SLATTRField(support_only_dates: true),
         ]);
     }
 }

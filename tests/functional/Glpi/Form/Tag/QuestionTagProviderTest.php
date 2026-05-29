@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Form\Tag;
 
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\Tag;
@@ -93,6 +94,35 @@ final class QuestionTagProviderTest extends DbTestCase
             $this->getQuestionId($form, 'Last name'),
             'Last name'
         );
+    }
+
+    public function testGetTagContentForValueUsingTranslation(): void
+    {
+        $form = $this->getFormWithFirstAndLastNameQuestions();
+        $question = Question::getById($this->getQuestionId($form, 'First name'));
+        $this->addTranslationToForm(
+            $question,
+            'fr_FR',
+            Question::TRANSLATION_KEY_NAME,
+            'Prénom'
+        );
+
+        $original_language = $_SESSION['glpilanguage'];
+        try {
+            $_SESSION['glpilanguage'] = 'fr_FR';
+            $this->checkGetTagContentForValue(
+                $this->getQuestionId($form, 'First name'),
+                'Prénom'
+            );
+
+            $_SESSION['glpilanguage'] = 'de_DE'; // No translation, falls back to original
+            $this->checkGetTagContentForValue(
+                $this->getQuestionId($form, 'First name'),
+                'First name'
+            );
+        } finally {
+            $_SESSION['glpilanguage'] = $original_language;
+        }
     }
 
     private function checkGetTagContentForValue(

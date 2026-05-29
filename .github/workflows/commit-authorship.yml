@@ -1,0 +1,66 @@
+name: "Commit authorship gate"
+
+# Block PRs whose commits are authored by AI agents or LLM provider accounts.
+# Per CONTRIBUTING.md, commits must be authored under a human's name and email.
+#
+# Uses pull_request_target so the check fires even for first-time contributors
+# whose PRs are otherwise gated behind a manual Actions approval step.
+# Safe because we only call the GitHub REST API for commit metadata; no fork
+# code is ever checked out or executed.
+#
+# Uses the GitHub REST API rather than git-clone to avoid the pathological case
+# where `git log BASE..HEAD` traverses the entire fork history instead of only
+# the PR commits, turning a 1-second check into a 15-minute scan.
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  check-authorship:
+    name: "Verify commit authorship"
+    runs-on: "ubuntu-latest"
+    steps:
+      # DENY list is matched (regex, case-insensitive) against author name and email
+      # of every commit in the PR. Extend conservatively as new agents appear.
+      - name: "Scan commit authors"
+        env:
+          GH_TOKEN: ${{ github.token }}  # gh CLI reads this; not injected automatically
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -e
+          DENY=(
+            '@anthropic\.com'
+            '@openai\.com'
+            '@cursor\.sh'
+            '@cursor\.so'
+            '@codeium\.com'
+            'copilot.*\[bot\]'
+            'copilot.*@.*users\.noreply\.github\.com'
+            '^claude([-_ ]|$)'
+            '^chatgpt([-_ ]|$)'
+            '^gpt-'
+          )
+          FAIL=0
+          while IFS=$'\t' read -r sha name email; do
+            echo "${sha:0:12} - $name <$email>"
+            for pattern in "${DENY[@]}"; do
+              if echo "$name" | grep -iqE "$pattern" || echo "$email" | grep -iqE "$pattern"; then
+                echo "::error title=AI-authored commit::${sha:0:12} — '$name <$email>' matches '$pattern'"
+                FAIL=1
+                break
+              fi
+            done
+          done < <(gh api --paginate "/repos/$REPO/pulls/$PR_NUMBER/commits" \
+            --jq '.[] | [.sha, .commit.author.name, .commit.author.email] | @tsv')
+          if [ "$FAIL" -ne 0 ]; then
+            echo ""
+            echo "PRs must be authored by humans. See CONTRIBUTING.md."
+            exit 1
+          fi
+          echo "All commits authored by human accounts."

@@ -46,6 +46,9 @@ $extevent = new PlanningExternalEvent();
 
 if ($_REQUEST["action"] == "get_events") {
     header("Content-Type: application/json; charset=UTF-8");
+    if (isset($_REQUEST['state_done'])) {
+        $_REQUEST['state_done'] = filter_var($_REQUEST['state_done'], FILTER_VALIDATE_BOOLEAN);
+    }
     echo json_encode(Planning::constructEventsArray($_REQUEST));
     return;
 }
@@ -67,7 +70,7 @@ if (($_POST["action"] ?? null) == "clone_event") {
 }
 
 if (($_POST["action"] ?? null) == "delete_event") {
-    $extevent->check(-1, DELETE);
+    $extevent->check((int) $_POST['event']['items_id'], DELETE);
     echo Planning::deleteEvent($_POST['event']);
     return;
 }

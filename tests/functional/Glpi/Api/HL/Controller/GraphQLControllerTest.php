@@ -38,6 +38,8 @@ use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\Router;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Project;
+use ProjectTask;
 
 class GraphQLControllerTest extends HLAPITestCase
 {
@@ -465,5 +467,64 @@ GRAPHQL);
         }
 
         $this->assertEmpty($schemas_errors, "Schemas with errors when querying with GraphQL: \n" . implode("\n", $schemas_errors));
+    }
+
+    /**
+     * Tests a GraphQL query with filters that reference properties not directly in the main schema.
+     * @return void
+     */
+    public function testIndirectRSQLFilters(): void
+    {
+        $this->login();
+
+        $query = 'query { Project(filter: "name==_project01;entity.level==2") { id name } }';
+        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'text/plain'], $query);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content['data']);
+                    $this->assertCount(1, $content['data']['Project']);
+                    $this->assertEquals('_project01', $content['data']['Project'][0]['name']);
+                });
+        });
+
+        $projecttask = new ProjectTask();
+        $parent_task = $projecttask->add([
+            'name' => 'ParentTask',
+            'projects_id' => getItemByTypeName(Project::class, '_project01', true),
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $projecttask->add([
+            'name' => 'ChildTask',
+            'projects_id' => getItemByTypeName(Project::class, '_project01', true),
+            'projecttasks_id' => $parent_task,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $query = 'query { Project(filter: "name==_project01;tasks.parent_task.name==test") { id name } }';
+        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'text/plain'], $query);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEmpty($content['data']['Project']);
+                });
+        });
+
+        $query = 'query { Project(filter: "name==_project01;tasks.parent_task.name==ParentTask") { id name } }';
+        $request = new Request('POST', '/GraphQL', ['Content-Type' => 'text/plain'], $query);
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content['data']);
+                    $this->assertCount(1, $content['data']['Project']);
+                    $this->assertEquals('_project01', $content['data']['Project'][0]['name']);
+                });
+        });
     }
 }

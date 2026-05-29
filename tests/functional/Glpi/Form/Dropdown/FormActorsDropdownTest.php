@@ -239,6 +239,58 @@ final class FormActorsDropdownTest extends DbTestCase
         $this->assertEquals(count($expected), $values['count']);
     }
 
+    public function testFetchValuesOnlyReturnsRecursiveGroupsFromParentEntity(): void
+    {
+        $this->login();
+        $root_entity_id = $this->getTestRootEntity(only_id: true);
+        $unique = uniqid('fetchvalues_group_');
+
+        $this->createItem(Group::class, [
+            'name'         => $unique . '_recursive',
+            'entities_id'  => $root_entity_id,
+            'is_recursive' => 1,
+        ]);
+        $this->createItem(Group::class, [
+            'name'         => $unique . '_not_recursive',
+            'entities_id'  => $root_entity_id,
+            'is_recursive' => 0,
+        ]);
+
+        $this->setEntity('_test_child_1', false);
+
+        $values = FormActorsDropdown::fetchValues($unique, ['allowed_types' => [Group::class]]);
+        $text_values = $this->extractTextFromOutput($values);
+
+        $this->assertContains($unique . '_recursive', $text_values);
+        $this->assertNotContains($unique . '_not_recursive', $text_values);
+    }
+
+    public function testFetchValuesOnlyReturnsRecursiveSuppliersFromParentEntity(): void
+    {
+        $this->login();
+        $root_entity_id = $this->getTestRootEntity(only_id: true);
+        $unique = uniqid('fetchvalues_supplier_');
+
+        $this->createItem(Supplier::class, [
+            'name'         => $unique . '_recursive',
+            'entities_id'  => $root_entity_id,
+            'is_recursive' => 1,
+        ]);
+        $this->createItem(Supplier::class, [
+            'name'         => $unique . '_not_recursive',
+            'entities_id'  => $root_entity_id,
+            'is_recursive' => 0,
+        ]);
+
+        $this->setEntity('_test_child_1', false);
+
+        $values = FormActorsDropdown::fetchValues($unique, ['allowed_types' => [Supplier::class]]);
+        $text_values = $this->extractTextFromOutput($values);
+
+        $this->assertContains($unique . '_recursive', $text_values);
+        $this->assertNotContains($unique . '_not_recursive', $text_values);
+    }
+
     private function extractTextFromOutput(array $dropdown_output): array
     {
         // Helper method to compare expected results more easily

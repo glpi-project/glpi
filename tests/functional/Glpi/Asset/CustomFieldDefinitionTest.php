@@ -409,7 +409,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $opt = $custom_field_definition_9->getFieldType()->getSearchOption();
         $this->assertEquals($opt_id_offset + $field_id, $opt['id']);
         $this->assertEquals('Test bool', $opt['name']);
-        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '1')", (string) $opt['computation']);
+        $this->assertEquals("COALESCE(JSON_UNQUOTE(JSON_EXTRACT(`glpi_assets_assets`.`custom_fields`, '$.\\\"{$field_id}\\\"')), '1') = 'true'", (string) $opt['computation']);
         $this->assertEquals('bool', $opt['datatype']);
     }
 
@@ -698,5 +698,59 @@ class CustomFieldDefinitionTest extends DbTestCase
             'Tag01$#$1$$##$$Tag02$#$2',
             $row['ITEM_Glpi\\CustomAsset\\Test01Asset_' . $multiple_dropdown_opt]
         );
+    }
+
+    public function testSearchBooleanField(): void
+    {
+        $this->login();
+
+        $opts = SearchOption::getOptionsForItemtype('Glpi\\CustomAsset\\Test01Asset');
+        $boolean_opt = null;
+
+        foreach ($opts as $num => $opt) {
+            if (!is_array($opt)) {
+                continue;
+            }
+            if ($opt['name'] === 'Test Boolean') {
+                $boolean_opt = $num;
+                break;
+            }
+        }
+        $this->assertNotNull($boolean_opt);
+
+        $this->createItem('Glpi\\CustomAsset\\Test01Asset', [
+            'entities_id' => $this->getTestRootEntity(true),
+            'name' => __FUNCTION__ . '_yes',
+            'custom_testboolean' => true,
+        ], ['custom_testboolean']);
+
+        $this->createItem('Glpi\\CustomAsset\\Test01Asset', [
+            'entities_id' => $this->getTestRootEntity(true),
+            'name' => __FUNCTION__ . '_no',
+            'custom_testboolean' => false,
+        ], ['custom_testboolean']);
+
+        $this->createItem('Glpi\\CustomAsset\\Test01Asset', [
+            'entities_id' => $this->getTestRootEntity(true),
+            'name' => __FUNCTION__ . '_default',
+        ]);
+
+        $data = SearchEngine::getData('Glpi\\CustomAsset\\Test01Asset', [
+            'criteria' => [
+                [
+                    'link' => 'AND',
+                    'field' => 1,
+                    'searchtype' => 'contains',
+                    'value' => __FUNCTION__,
+                ],
+            ],
+        ], [$boolean_opt]);
+
+        $this->assertCount(3, $data['data']['rows']);
+        foreach ($data['data']['rows'] as $row) {
+            $raw = $row['raw'];
+            $name = $raw['ITEM_Glpi\\CustomAsset\\Test01Asset_1'];
+            $this->assertEquals($name === __FUNCTION__ . '_yes' ? 1 : 0, $raw['ITEM_Glpi\\CustomAsset\\Test01Asset_' . $boolean_opt]);
+        }
     }
 }

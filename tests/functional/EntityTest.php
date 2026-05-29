@@ -42,6 +42,7 @@ use Glpi\Controller\ServiceCatalog\IndexController;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Category;
 use Glpi\Form\Form;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Helpdesk\HomePageTabs;
 use Glpi\Tests\DbTestCase;
@@ -705,6 +706,91 @@ class EntityTest extends DbTestCase
         $this->assertEquals($expected_result, call_user_func_array([Entity::class, 'getUsedConfig'], $params));
     }
 
+    public static function getInheritedValueBadgeProvider(): iterable
+    {
+        // Numeric sentinel (CONFIG_PARENT = -2): auto_assign_mode
+        yield 'numeric: not inheriting returns null' => [
+            'root_values'       => ['auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY],
+            'child_values'      => ['auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE],
+            'grandchild_values' => ['auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE],
+            'field'             => 'auto_assign_mode',
+            'expected_result'     => null,
+            'inherit_parent_value' => Entity::CONFIG_PARENT,
+        ];
+        yield 'numeric: inherits from direct parent' => [
+            'root_values'       => ['auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY],
+            'child_values'      => ['auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE],
+            'grandchild_values' => ['auto_assign_mode' => Entity::CONFIG_PARENT],
+            'field'             => 'auto_assign_mode',
+            'expected_result'   => 'Based on the category then the item',
+            'inherit_parent_value' => Entity::CONFIG_PARENT,
+        ];
+        yield 'numeric: inherits from grandparent when parent also inherits' => [
+            'root_values'       => ['auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY],
+            'child_values'      => ['auto_assign_mode' => Entity::CONFIG_PARENT],
+            'grandchild_values' => ['auto_assign_mode' => Entity::CONFIG_PARENT],
+            'field'             => 'auto_assign_mode',
+            'expected_result'   => 'Based on the item then the category',
+            'inherit_parent_value' => Entity::CONFIG_PARENT,
+        ];
+
+        // Null sentinel (text fields): admin_email
+        yield 'text: not inheriting returns null' => [
+            'root_values'          => ['admin_email' => 'root@example.com'],
+            'child_values'         => ['admin_email' => 'child@example.com'],
+            'grandchild_values'    => ['admin_email' => 'grand@example.com'],
+            'field'                => 'admin_email',
+            'expected_result'      => null,
+            'inherit_parent_value' => null,
+        ];
+        yield 'text: inherits from direct parent' => [
+            'root_values'          => ['admin_email' => 'root@example.com'],
+            'child_values'         => ['admin_email' => 'child@example.com'],
+            'grandchild_values'    => ['admin_email' => null],
+            'field'                => 'admin_email',
+            'expected_result'      => 'child@example.com',
+            'inherit_parent_value' => null,
+        ];
+        yield 'text: inherits from grandparent when parent also inherits' => [
+            'root_values'       => ['admin_email' => 'root@example.com'],
+            'child_values'      => ['admin_email' => null],
+            'grandchild_values' => ['admin_email' => null],
+            'field'             => 'admin_email',
+            'expected_result' => 'root@example.com',
+            'inherit_parent_value' => null,
+        ];
+    }
+
+    #[DataProvider('getInheritedValueBadgeProvider')]
+    public function testGetInheritedValueBadge(
+        array $root_values,
+        array $child_values,
+        array $grandchild_values,
+        string $field,
+        ?string $expected_result,
+        ?int $inherit_parent_value,
+    ): void {
+        $this->login();
+
+        $root_id       = getItemByTypeName('Entity', 'Root entity', true);
+        $child_id      = getItemByTypeName('Entity', '_test_root_entity', true);
+        $grandchild_id = getItemByTypeName('Entity', '_test_child_1', true);
+
+        $entity = new Entity();
+        $this->assertTrue($entity->update(['id' => $root_id] + $root_values));
+        $this->assertTrue($entity->update(['id' => $child_id] + $child_values));
+        $this->assertTrue($entity->update(['id' => $grandchild_id] + $grandchild_values));
+
+        $this->assertTrue($entity->getFromDB($grandchild_id));
+        $badge = $entity->getInheritedValueBadge(field: $field, inherit_parent_value: $inherit_parent_value);
+
+        if ($expected_result === null) {
+            $this->assertNull($badge);
+        } else {
+            $this->assertNotNull($badge);
+            $this->assertStringContainsString($expected_result, $badge);
+        }
+    }
 
     public static function customCssProvider()
     {
@@ -2076,5 +2162,94 @@ class EntityTest extends DbTestCase
             $should_be_expanded ? 1 : 0,
             $request_form
         );
+    }
+
+    public static function serviceCatalogDefaultSortStrategyProvider(): iterable
+    {
+        yield 'Entity without config inherits popularity from root' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => '-2'],
+            ],
+            'entity' => 'entity_a',
+            'expected_strategy' => SortStrategyEnum::POPULARITY,
+        ];
+
+        yield 'Entity with explicit alphabetical value' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'alphabetical'],
+            ],
+            'entity' => 'entity_a',
+            'expected_strategy' => SortStrategyEnum::ALPHABETICAL,
+        ];
+
+        yield 'Entity with explicit reverse_alphabetical value' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'reverse_alphabetical'],
+            ],
+            'entity' => 'entity_a',
+            'expected_strategy' => SortStrategyEnum::REVERSE_ALPHABETICAL,
+        ];
+
+        yield 'Entity inherits alphabetical from parent' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'alphabetical'],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => '-2'],
+            ],
+            'entity' => 'entity_aa',
+            'expected_strategy' => SortStrategyEnum::ALPHABETICAL,
+        ];
+
+        yield 'Child overrides parent alphabetical with popularity' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'alphabetical'],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => 'popularity'],
+            ],
+            'entity' => 'entity_aa',
+            'expected_strategy' => SortStrategyEnum::POPULARITY,
+        ];
+
+        yield 'Invalid stored value falls back to default' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'unknown_value'],
+            ],
+            'entity' => 'entity_a',
+            'expected_strategy' => SortStrategyEnum::POPULARITY,
+        ];
+    }
+
+    #[DataProvider('serviceCatalogDefaultSortStrategyProvider')]
+    public function testServiceCatalogDefaultSortStrategy(
+        array $entities,
+        string $entity,
+        SortStrategyEnum $expected_strategy,
+    ): void {
+        $this->login();
+
+        // Arrange: create requested entities
+        $root = $this->getTestRootEntity(only_id: true);
+        foreach ($entities as $to_create) {
+            if (isset($to_create['parent'])) {
+                $parent = getItemByTypeName(
+                    Entity::class,
+                    $to_create['parent'],
+                    onlyid: true,
+                );
+            } else {
+                $parent = $root;
+            }
+
+            $this->createItem(Entity::class, [
+                'name'                                  => $to_create['name'],
+                'entities_id'                           => $parent,
+                'service_catalog_default_sort_strategy' => $to_create['config'],
+            ]);
+        }
+
+        // Act
+        $entity = getItemByTypeName(Entity::class, $entity);
+        $actual_strategy = $entity->getServiceCatalogDefaultSortStrategy();
+
+        // Assert
+        $this->assertEquals($expected_strategy, $actual_strategy);
     }
 }

@@ -34,14 +34,23 @@
 
 export class GlpiFormServiceCatalogController
 {
+    /** @type {string} */
+    #sort_strategy;
+
+    /** @type {string} */
+    #default_sort_strategy;
+
     /**
      * @constructor
      * @param {Object} sort_icons - Icons for sorting
+     * @param {string} default_sort_strategy - Server-configured default sort strategy
      */
-    constructor(sort_icons)
+    constructor(sort_icons, default_sort_strategy = 'popularity')
     {
         this.breadcrumb = [];
         this.sort_icons = sort_icons;
+        this.#default_sort_strategy = default_sort_strategy;
+        this.#sort_strategy = default_sort_strategy;
 
         const input = this.#getFilterInput();
         const filterFormsDebounced = _.debounce(
@@ -52,6 +61,9 @@ export class GlpiFormServiceCatalogController
         input.addEventListener('input', filterFormsDebounced);
         // Handle page load with URL parameters
         const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('sort_strategy')) {
+            this.#sort_strategy = urlParams.get('sort_strategy');
+        }
         if (urlParams.size > 0) {
             this.#loadItems(urlParams.toString());
         }
@@ -63,6 +75,9 @@ export class GlpiFormServiceCatalogController
                 if (event.state.breadcrumb) {
                     this.breadcrumb = event.state.breadcrumb;
                 }
+                const params = new URLSearchParams(event.state.url_params);
+                this.#sort_strategy = params.get('sort_strategy') || this.#default_sort_strategy;
+                this.#syncSortDropdown(this.#sort_strategy);
             }
         });
 
@@ -83,8 +98,10 @@ export class GlpiFormServiceCatalogController
 
                 const index = this.breadcrumb.findIndex(item => item.params === breadcrumbItem.data('childrenUrlParameters'));
                 this.breadcrumb = this.breadcrumb.slice(0, index + 1);
-                this.#loadItems(breadcrumbItem.data('childrenUrlParameters'));
-                this.#updateHistory(breadcrumbItem.data('childrenUrlParameters'));
+                const url_params = new URLSearchParams(breadcrumbItem.data('childrenUrlParameters'));
+                url_params.set('sort_strategy', this.#sort_strategy);
+                this.#loadItems(url_params.toString());
+                this.#updateHistory(url_params.toString());
             }
 
             const pageLink = $(e.target).closest('[data-pagination-item]');
@@ -99,11 +116,16 @@ export class GlpiFormServiceCatalogController
         // Initialize the sort select after the DOM is ready
         const sortSelect = document.querySelector('[data-glpi-service-catalog-sort-strategy]');
         setTimeout(() => {
-            setupAdaptDropdown(window.select2_configs[sortSelect.id])
+            const $select = setupAdaptDropdown(window.select2_configs[sortSelect.id])
                 .on('select2:select', (e) => {
                     const sort_strategy = e.params.data.id;
                     this.#applySortStrategy(sort_strategy);
                 });
+
+            // Sync dropdown to current sort strategy when it differs from the select2 initial value
+            if (this.#sort_strategy !== this.#default_sort_strategy) {
+                $select.val(this.#sort_strategy).trigger('change');
+            }
         }, 0);
     }
 
@@ -113,6 +135,7 @@ export class GlpiFormServiceCatalogController
         const url_params = new URLSearchParams({
             filter: input.value,
             page: 1, // Reset to first page when filtering
+            sort_strategy: this.#sort_strategy,
         });
         this.#loadItems(url_params);
     }
@@ -123,11 +146,12 @@ export class GlpiFormServiceCatalogController
         const search_input = this.#getFilterInput();
         search_input.value = '';
 
-        const url_params = element.dataset['childrenUrlParameters'];
+        const url_params = new URLSearchParams(element.dataset['childrenUrlParameters']);
+        url_params.set('sort_strategy', this.#sort_strategy);
 
         // Get children items from backend
-        this.#loadItems(url_params);
-        this.#updateHistory(url_params);
+        this.#loadItems(url_params.toString());
+        this.#updateHistory(url_params.toString());
     }
 
     async #loadItems(url_params)
@@ -144,21 +168,48 @@ export class GlpiFormServiceCatalogController
     }
 
     async #loadPage(element) {
-        const url_params = element.dataset.childrenUrlParameters;
+        const url_params = new URLSearchParams(element.dataset.childrenUrlParameters);
+        url_params.set('sort_strategy', this.#sort_strategy);
 
         // Get children items from backend
-        this.#loadItems(url_params);
+        this.#loadItems(url_params.toString());
 
         // Push state to history with breadcrumb
-        this.#updateHistory(url_params);
+        this.#updateHistory(url_params.toString());
     }
 
     async #applySortStrategy(sort_strategy) {
+        this.#sort_strategy = sort_strategy;
+
         const url_params = new URLSearchParams();
         url_params.set('sort_strategy', sort_strategy);
         url_params.set('filter', this.#getFilterInput().value); // Keep the current filter
         url_params.set('page', 1); // Reset to first page when sorting
+
+        // Stay in the current category instead of returning to root
+        const current_category = this.#getCurrentCategoryFromBreadcrumb();
+        if (current_category !== null) {
+            url_params.set('category', current_category);
+        }
+
         this.#loadItems(url_params);
+        this.#updateHistory(url_params.toString());
+    }
+
+    #getCurrentCategoryFromBreadcrumb() {
+        if (this.breadcrumb.length === 0) {
+            return null;
+        }
+        const lastItem = this.breadcrumb[this.breadcrumb.length - 1];
+        const params = new URLSearchParams(lastItem.params);
+        return params.get('category');
+    }
+
+    #syncSortDropdown(value) {
+        const sortSelect = document.querySelector('[data-glpi-service-catalog-sort-strategy]');
+        if (sortSelect) {
+            $(sortSelect).val(value).trigger('change');
+        }
     }
 
     #updateBreadcrumb() {
@@ -182,16 +233,21 @@ export class GlpiFormServiceCatalogController
         breadcrumbContainer.innerHTML = '';
 
         this.breadcrumb.forEach((item, index) => {
+            const isActive = index === this.breadcrumb.length - 1;
             const li = document.createElement('li');
             li.className = 'breadcrumb-item text-truncate';
-            if (index === this.breadcrumb.length - 1) {
+            if (isActive) {
                 li.classList.add('active');
             }
 
             const a = document.createElement('a');
             a.href = `?${item.params}`;
             a.textContent = item.title;
-            if (index < this.breadcrumb.length - 1) {
+            if (isActive) {
+                a.setAttribute('aria-current', 'page');
+                a.setAttribute('aria-disabled', 'true');
+                a.removeAttribute('href');
+            } else {
                 a.dataset.childrenUrlParameters = item.params;
                 a.dataset.breadcrumbItem = '';
             }

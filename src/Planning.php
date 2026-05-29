@@ -1421,6 +1421,11 @@ TWIG, $twig_params);
     public static function cloneEvent(array $event = [])
     {
         $item = getItemForItemtype($event['old_itemtype']);
+
+        if (!$item->can((int) $event['old_items_id'], READ)) {
+            return false;
+        }
+
         $item->getFromDB((int) $event['old_items_id']);
 
         $input = array_merge($item->fields, [
@@ -1453,6 +1458,10 @@ TWIG, $twig_params);
             $input[$key] = $event['actor']['items_id'];
         }
 
+        if (!$item->can(-1, CREATE, $input)) {
+            return false;
+        }
+
         $new_items_id = $item->add($input);
 
         // manage all assigments for ProjectTask
@@ -1479,7 +1488,18 @@ TWIG, $twig_params);
      */
     public static function deleteEvent(array $event = []): bool
     {
+        global $CFG_GLPI;
+
+        // Validate itemtype is a planning type
+        if (!in_array($event['itemtype'], $CFG_GLPI['planning_types'])) {
+            return false;
+        }
+
         $item = getItemForItemtype($event['itemtype']);
+
+        if (!$item->can((int) $event['items_id'], $item->maybeDeleted() ? DELETE : PURGE)) {
+            return false;
+        }
 
         if (
             isset($event['day'], $event['instance'])

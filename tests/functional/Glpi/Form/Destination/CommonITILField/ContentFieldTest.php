@@ -38,6 +38,9 @@ use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeLongText;
+use Glpi\Form\QuestionType\QuestionTypeRadio;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
@@ -83,6 +86,79 @@ final class ContentFieldTest extends DbTestCase
         );
     }
 
+    public function testAnswersAfterQuestionWithAngleBracketsAreDisplayed(): void
+    {
+        $this->login();
+        $form = $this->createAndGetFormWithFirstAndLastNameQuestions();
+
+        // Act: send form with answer containing angle brackets
+        $ticket = $this->sendFormAndAssertTicketContentContains(
+            expected_content: [
+                "<b>1) First name</b>: John &lt;john@doe.fr&gt;",
+                "<b>2) Last name</b>: Doe",
+            ],
+            form: $form,
+            answers: [
+                "First name" => "John <john@doe.fr>",
+                "Last name"  => "Doe",
+            ],
+            config: null,
+        );
+
+        // Assert: content is correctly escaped in ticket content field
+        $this->assertStringContainsString('John &lt;john@doe.fr&gt;', $ticket->fields['content']);
+        $this->assertStringNotContainsString('John <john@doe.fr>', $ticket->fields['content']);
+
+        // Act: display content in ticket
+        ob_start();
+        $ticket->showForm($ticket->getID());
+        $output = ob_get_clean();
+
+        // Assert: find two lines
+        $this->assertNotFalse($output);
+        $this->assertStringContainsString('<b>1) First name</b>: John &lt;john&#64;doe.fr&gt;', $output);
+        $this->assertStringContainsString("<b>2) Last name</b>: Doe", $output);
+    }
+
+    public function testRadioAnswerWithAngleBracketsIsEscaped(): void
+    {
+        $form = $this->createForm(
+            (new FormBuilder("Radio form"))
+                ->addQuestion(
+                    name: "Pick one",
+                    type: QuestionTypeRadio::class,
+                    extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                        'opt1' => 'Option <br>test',
+                        'opt2' => 'Normal option',
+                    ]))
+                )
+        );
+
+        $this->sendFormAndAssertTicketContentContains(
+            expected_content: ["Option &lt;br&gt;test"],
+            form: $form,
+            answers: ["Pick one" => "opt1"],
+            config: null,
+        );
+    }
+
+    public function testLongTextAnswerHtmlIsPreserved(): void
+    {
+        $form = $this->createForm(
+            (new FormBuilder("Long text form"))
+                ->addQuestion("Description", QuestionTypeLongText::class)
+        );
+
+        $html_answer = "<p>Bold <strong>text</strong></p>";
+
+        $this->sendFormAndAssertTicketContentContains(
+            expected_content: [$html_answer],
+            form: $form,
+            answers: ["Description" => $html_answer],
+            config: null,
+        );
+    }
+
     public function testSpecificContent(): void
     {
         $this->sendFormAndAssertTicketContentEquals(
@@ -98,11 +174,13 @@ final class ContentFieldTest extends DbTestCase
         Form $form,
         array $answers,
         ?SimpleValueConfig $config,
-    ): void {
+    ): Ticket {
         $ticket = $this->sendForm($form, $config, $answers);
         foreach ($expected_content as $expected) {
             $this->assertStringContainsString($expected, $ticket->fields['content']);
         }
+
+        return $ticket;
     }
 
     private function sendFormAndAssertTicketContentEquals(

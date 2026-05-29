@@ -39,6 +39,8 @@ use InvalidArgumentException;
 
 interface TypeInterface
 {
+    public static function isAllowedForCustomFields(): bool;
+
     /**
      * Get the field type name.
      */

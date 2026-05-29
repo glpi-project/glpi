@@ -38,6 +38,7 @@ namespace Glpi\Form\Tag;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Comment;
 use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
 use Override;
 
 final class CommentDescriptionTagProvider implements TagProviderInterface, TagWithIdValueInterface
@@ -70,7 +71,7 @@ final class CommentDescriptionTagProvider implements TagProviderInterface, TagWi
         if ($comment === false) {
             return '';
         }
-        return $comment->fields['description'];
+        return FormTranslation::translate($comment, Comment::TRANSLATION_KEY_DESCRIPTION) ?? $comment->fields['description'];
     }
 
     #[Override]

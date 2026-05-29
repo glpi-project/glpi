@@ -55,7 +55,7 @@ class BarcodeManager
         $barcode = new Barcode();
         $qrcode = $barcode->getBarcodeObj(
             'QRCODE,H',
-            $CFG_GLPI["url_base"] . $item->getLinkURL(),
+            $CFG_GLPI["url_base"] . $item::getFormURLWithID($item->getID(), false),
             200,
             200,
             'black',

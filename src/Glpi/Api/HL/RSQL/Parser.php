@@ -219,10 +219,32 @@ final class Parser
                         [
                             'AND' => [
                                 [$this->db::quoteName($a) => ['<>', '']],
-                                [$this->db::quoteName($a) => ['<>', null]],
+                                'NOT' => [$this->db::quoteName($a) => null],
                             ],
                         ],
                     ],
+                ],
+                [
+                    'operator' => '=notlike=',
+                    'description' => 'not like',
+                    'value_expected' => true,
+                    'sql_where_callable' => function ($a, $b) {
+                        $b = str_replace(['%', '*'], ['_', '%'], $b);
+                        return [
+                            [$this->db::quoteName($a) => ['NOT LIKE', QueryFunction::cast(new QueryExpression($this->db->quote($b)), 'BINARY')]],
+                        ];
+                    },
+                ],
+                [
+                    'operator' => '=notilike=',
+                    'description' => 'case insensitive not like',
+                    'value_expected' => true,
+                    'sql_where_callable' => function ($a, $b) {
+                        $b = str_replace(['%', '*'], ['_', '%'], $b);
+                        return [
+                            [$this->db::quoteName($a) => ['NOT LIKE', $b]],
+                        ];
+                    },
                 ],
             ];
         }

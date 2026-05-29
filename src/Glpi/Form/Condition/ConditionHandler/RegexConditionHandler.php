@@ -66,7 +66,9 @@ class RegexConditionHandler implements ConditionHandlerInterface
     #[Override]
     public function getTemplateParameters(ConditionData $condition): array
     {
-        return [];
+        return [
+            'placeholder' => '/regex/',
+        ];
     }
 
     #[Override]

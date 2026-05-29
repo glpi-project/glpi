@@ -229,13 +229,6 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                     if ($item->canUpdate()) {
                         $ong[1] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
                     }
-                    $satisfaction = new ChangeSatisfaction();
-                    if (
-                        $satisfaction->getFromDB($item->getID())
-                        && in_array($item->fields['status'], self::getClosedStatusArray())
-                    ) {
-                        $ong[3] = ChangeSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
-                    }
 
                     return $ong;
 
@@ -282,9 +275,6 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                 switch ($tabnum) {
                     case 1:
                         $item->showStats();
-                        break;
-                    case 3:
-                        self::showSatisfactionTabContent($item);
                         break;
                 }
                 break;

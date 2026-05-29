@@ -121,13 +121,11 @@
             ) }}
 
             {{ fields.dropdownYesNo(
-                "attach_ticket_documents_to_mail",
-                config('attach_ticket_documents_to_mail'),
-                __('Add documents into ticket notifications'),
+                "attach_documents_to_notifications_for_anonymous",
+                config('attach_documents_to_notifications_for_anonymous'),
+                __('Add documents into notifications sent to anonymous users'),
                 field_options
             ) }}
-
-            {{ fields.nullField() }}
 
             {{ fields.textareaField(
                 'mailing_signature',

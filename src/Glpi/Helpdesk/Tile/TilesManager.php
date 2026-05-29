@@ -179,12 +179,17 @@ final class TilesManager
      */
     public function getAllTiles(): array
     {
+        global $DB;
+
         // Load all tiles from the database
         $tiles = [];
-        $item_tile = new Item_Tile();
-        $item_tiles = $item_tile->find([], ['itemtype_item', 'items_id_item', 'rank']);
+        $it = $DB->request([
+            'SELECT' => ['itemtype_tile', 'items_id_tile'],
+            'FROM'   => Item_Tile::getTable(),
+            'ORDER' => ['itemtype_item', 'items_id_item', 'rank'],
+        ]);
 
-        foreach ($item_tiles as $row) {
+        foreach ($it as $row) {
             // Validate tile itemtype
             $itemtype = $row['itemtype_tile'];
             /** @var CommonDBTM $tile */
@@ -195,7 +200,7 @@ final class TilesManager
 
             // Try to load tile from database
             try {
-                if (!$tile->getFromDb($row['items_id_tile'])) {
+                if (!$tile->getFromDB($row['items_id_tile'])) {
                     continue;
                 }
             } catch (InvalidTileException $e) {

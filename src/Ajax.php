@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 use function Safe\json_encode;
 use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * Ajax Class
@@ -347,7 +348,10 @@ class Ajax
                 $tab_content_url = $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '');
                 $selected = $active_id == $target ? 'selected' : '';
                 $title = $val['title'];
-                $title_clean = strip_tags($title);
+
+                // Format the badge with parentheses before stripping tags for option and aria-label
+                $title_clean = preg_replace('/<span[^>]*class="[^"]*\bbadge\b[^"]*"[^>]*>(.*?)<\/span>/', '($1)', $title);
+                $title_clean = strip_tags($title_clean);
 
                 // Compute direct link that user can reach in a new tab using
                 // middle mouse click.
@@ -375,7 +379,7 @@ class Ajax
                             >{$title}</a>
                         </li>
                     ";
-                    $html_sele .= "<option value='$i' {$selected}>{$title}</option>";
+                    $html_sele .= "<option value='$i' {$selected}>{$title_clean}</option>";
                 } else {
                     // All tabs
                     $html_tabs .= <<<HTML
@@ -384,7 +388,7 @@ class Ajax
                                 href='#' data-show-all-tabs="true">{$title}</a>
                         </li>
 HTML;
-                    $html_sele .= "<option value='$i' {$selected}>{$title}</option>";
+                    $html_sele .= "<option value='$i' {$selected}>{$title_clean}</option>";
                 }
                 $i++;
             }

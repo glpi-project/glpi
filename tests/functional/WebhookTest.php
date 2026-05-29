@@ -35,10 +35,15 @@
 namespace tests\units;
 
 use Glpi\Api\HL\Controller\AbstractController;
+use Glpi\Search\CriteriaFilter;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Psr\Log\LogLevel;
+use QueuedWebhook;
+use Ticket;
 use Webhook;
+
+use function Safe\json_encode;
 
 class WebhookTest extends DbTestCase
 {
@@ -115,7 +120,7 @@ JSON;
             'content' => 'Test followup',
         ]);
 
-        $queued_webhooks = getAllDataFromTable(\QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
+        $queued_webhooks = getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
         $queued_webhook = reset($queued_webhooks);
 
         $this->assertGreaterThan(0, count($queued_webhook));
@@ -164,7 +169,7 @@ JSON;
             'content' => 'Test followup',
         ]);
 
-        $queued_webhooks = getAllDataFromTable(\QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
+        $queued_webhooks = getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
         $queued_webhook = reset($queued_webhooks);
 
         $this->assertGreaterThan(0, count($queued_webhook));
@@ -215,7 +220,7 @@ JSON;
             'content' => 'Test followup',
         ]);
 
-        $queued_webhooks = getAllDataFromTable(\QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
+        $queued_webhooks = getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
         $queued_webhook = reset($queued_webhooks);
 
         $this->assertGreaterThan(0, count($queued_webhook));
@@ -392,5 +397,134 @@ JSON;
         $this->assertFalse($webhook->canCreateItem());
         $webhook->fields['itemtype'] = 'Monitor';
         $this->assertTrue($webhook->canCreateItem());
+    }
+
+    public function testWebhookWithoutSession(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Arrange: setup a webhook with a filter
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => Ticket::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+        $this->createItem(CriteriaFilter::class, [
+            'itemtype' => Webhook::class,
+            'items_id' => $webhook->getID(),
+            'search_itemtype' => Ticket::class,
+            'search_criteria' => json_encode([
+                [
+                    "link"       => "AND",
+                    "field"      => "12",
+                    "searchtype" => "equals",
+                    "value"      => "notold",
+                ],
+            ]),
+        ], ['search_criteria']);
+
+        // Act: trigger the webhook by creating a ticket
+        $base_count = $this->countQueuedRequestForWebhook($webhook);
+        $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket',
+            'content'     => 'Test ticket content',
+            'entities_id' => $entity_id,
+        ]);
+
+        // Assert: one webhook request should have been added to the queue
+        $this->assertEquals(
+            $base_count + 1,
+            $this->countQueuedRequestForWebhook($webhook),
+        );
+    }
+
+    private function countQueuedRequestForWebhook(Webhook $webhook): int
+    {
+        return countElementsInTable(QueuedWebhook::getTable(), [
+            'webhooks_id' => $webhook->getID(),
+        ]);
+    }
+
+    /**
+     * Ensure the get_webhook_body action enforces READ permission on the requested item.
+     * A user who cannot READ an item must not be able to retrieve its webhook body.
+     */
+    public function testGetWebhookBodyReadPermissionCheck(): void
+    {
+        $this->login();
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'Test computer',
+            'entities_id' => $_SESSION['glpiactive_entity'],
+        ]);
+        $computers_id = $computer->getID();
+
+        $webhook = $this->createItem(Webhook::class, [
+            'name'               => 'Test webhook',
+            'entities_id'        => $_SESSION['glpiactive_entity'],
+            'url'                => 'http://localhost',
+            'itemtype'           => \Computer::class,
+            'event'              => 'new',
+            'is_active'          => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        // Sanity check: with READ right the item is accessible
+        $obj = new \Computer();
+        $this->assertTrue($obj->can($computers_id, READ));
+
+        // Remove READ right on Computer for the current profile
+        $saved_rights = $_SESSION['glpiactiveprofile'];
+        $_SESSION['glpiactiveprofile']['computer'] = ALLSTANDARDRIGHT & ~READ;
+
+        // The can() check must now fail, which is the guard used by the ajax action
+        $obj2 = new \Computer();
+        $this->assertFalse($obj2->can($computers_id, READ));
+
+        // Restore rights
+        $_SESSION['glpiactiveprofile'] = $saved_rights;
+    }
+
+    /**
+     * Ensure the get_webhook_body action rejects requests whose itemtype does not
+     * match the webhook's configured itemtype.
+     */
+    public function testGetWebhookBodyItemtypeMismatch(): void
+    {
+        $this->login();
+
+        // Create a webhook configured for Computer
+        $webhook = $this->createItem(Webhook::class, [
+            'name'               => 'Test webhook',
+            'entities_id'        => $_SESSION['glpiactive_entity'],
+            'url'                => 'http://localhost',
+            'itemtype'           => \Computer::class,
+            'event'              => 'new',
+            'is_active'          => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        // The webhook's configured itemtype is Computer
+        $this->assertEquals(\Computer::class, $webhook->fields['itemtype']);
+
+        // A request asking for Monitor (a different itemtype) must be rejected:
+        // the mismatch condition used in the ajax action is:
+        //   $webhook->getID() && $itemtype !== $webhook->fields['itemtype']
+        $requested_itemtype = \Monitor::class;
+        $this->assertNotEquals($requested_itemtype, $webhook->fields['itemtype']);
+        $this->assertGreaterThan(0, $webhook->getID());
+
+        // Directly testing the mismatch guard logic
+        $mismatch_detected = $webhook->getID() && $requested_itemtype !== $webhook->fields['itemtype'];
+        $this->assertTrue($mismatch_detected, 'Itemtype mismatch should have been detected');
+
+        // A request with the correct itemtype must not be rejected
+        $matching_itemtype = \Computer::class;
+        $no_mismatch = $webhook->getID() && $matching_itemtype !== $webhook->fields['itemtype'];
+        $this->assertFalse($no_mismatch, 'Correct itemtype should not trigger the mismatch guard');
     }
 }

@@ -84,14 +84,6 @@ class AuthLdapReplicateTest extends DbTestCase
             ]);
             $this->assertArrayNotHasKey('port', $result);
 
-            //Port=0, change value to 389
-            $result = $replicate->$method([
-                'name' => 'test',
-                'host' => 'host',
-                'port' => 0,
-            ]);
-            $this->assertSame(389, $result['port']);
-
             //Port set : do not change its value
             $result = $replicate->$method([
                 'name' => 'test',

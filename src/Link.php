@@ -563,13 +563,13 @@ class Link extends CommonDBTM
                     {% if show_add %}
                         <a class="btn btn-primary ms-1" href="{{ 'ManualLink'|itemtype_form_path ~ '?itemtype=' ~ item.getType() ~ '&items_id=' ~ item.fields[item.getIndexName()] }}">
                             <i class="ti ti-link"></i>
-                            {{ add_msg }}
+                            <span>{{ add_msg }}</span>
                         </a>
                     {% endif %}
                     {% if show_configure %}
                         <a class="btn btn-primary ms-1" href="{{ 'Link'|itemtype_search_path }}">
                             <i class="ti ti-settings"></i>
-                            {{ configure_msg }}
+                            <span>{{ configure_msg }}</span>
                         </a>
                     {% endif %}
                 </div>

@@ -46,6 +46,11 @@ abstract class AbstractType implements TypeInterface
         protected CustomFieldDefinition $custom_field
     ) {}
 
+    public static function isAllowedForCustomFields(): bool
+    {
+        return true;
+    }
+
     public function getLabel(): string
     {
         return $this->custom_field->getFriendlyName();

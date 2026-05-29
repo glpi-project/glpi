@@ -206,7 +206,6 @@ if ($DB->tableExists('glpi_netpoints')) {
         $iterator = $DB->request($criteria);
 
         foreach ($iterator as $data) {
-            $socket = new Socket();
             $input = [
                 'name'            => $data['name'],
                 'locations_id'    => $data['locations_id'],
@@ -217,8 +216,7 @@ if ($DB->tableExists('glpi_netpoints')) {
                 'date_creation'   => $data['date_creation'],
                 'date_mod'        => $data['date_mod'],
             ];
-
-            $socket->add($input);
+            $DB->insert('glpi_sockets', $input);
         }
     }
     //remove "useless "netpoints_id" field

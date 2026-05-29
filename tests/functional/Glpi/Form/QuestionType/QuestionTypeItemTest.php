@@ -35,11 +35,13 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use Computer;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
 use User;
@@ -257,5 +259,142 @@ final class QuestionTypeItemTest extends DbTestCase
 
         // Clean up any session flags set by the case
         unset($_SESSION['glpiis_ids_visible']);
+    }
+
+    /**
+     * Data provider for testing the transformation of condition values for comparisons.
+     * Each case provides a question configuration, an input itemtype_id value, and the expected output after transformation.
+     */
+    public static function transformConditionValueForComparisonsProvider()
+    {
+        yield [
+            fn(self $t) => [
+                'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: Computer::class),
+                'itemtype_id' => ['items_id' => $t->createItem(Computer::class, [
+                    'name'        => 'ComputerTest',
+                    'entities_id' => $t->getTestRootEntity(true),
+                ])->getID()],
+                'expected_name' => 'ComputerTest',
+            ],
+        ];
+
+        yield [
+            fn(self $t) => [
+                'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: \ITILCategory::class),
+                'itemtype_id' => ['items_id' => $t->createItem(\ITILCategory::class, [
+                    'name' => 'Parent Category',
+                    'entities_id' => $t->getTestRootEntity(true),
+                ])->getID()],
+                'expected_name' => 'Parent Category',
+            ],
+        ];
+
+        yield [
+            fn(self $t) => [
+                'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: \ITILCategory::class),
+                'itemtype_id' => ['items_id' => $t->createItem(\ITILCategory::class, [
+                    'name' => 'Child Category',
+                    'entities_id' => $t->getTestRootEntity(true),
+                    'itilcategories_id' => $t->createItem(\ITILCategory::class, [
+                        'name' => 'Parent Category',
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ])->getID(),
+                ])->getID()],
+                'expected_name' => 'Parent Category > Child Category',
+            ],
+        ];
+    }
+
+    #[DataProvider('transformConditionValueForComparisonsProvider')]
+    public function testTransformConditionValueForComparisons(callable $setup): void
+    {
+        $this->login();
+
+        $question_type = new QuestionTypeItem();
+        $case = $setup($this);
+        $name = $question_type->transformConditionValueForComparisons(
+            $case['itemtype_id'],
+            $case['question_config']
+        );
+        $this->assertEquals($case['expected_name'], $name);
+    }
+
+    public static function formatRawAnswerProvider(): array
+    {
+        return [
+            'item is a user' => [
+                fn(self $t) => [
+                    'answer'   => [
+                        'itemtype' => User::class,
+                        'items_id' => $t->createItem(User::class, [
+                            'name'      => 'jdoe',
+                            'firstname' => 'John',
+                            'realname'  => 'Doe',
+                        ])->getID(),
+                    ],
+                    'expected' => 'Doe John',
+                ],
+            ],
+
+            'location without parent' => [
+                fn(self $t) => [
+                    'answer'   => [
+                        'itemtype' => Location::class,
+                        'items_id' => $t->createItem(Location::class, [
+                            'name'        => 'Headquarters',
+                            'entities_id' => $t->getTestRootEntity(true),
+                        ])->getID(),
+                    ],
+                    'expected' => 'Headquarters',
+                ],
+            ],
+
+            'location with deep hierarchy' => [
+                fn(self $t) => (static function () use ($t) {
+                    $root = $t->createItem(Location::class, [
+                        'name'        => 'France',
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ]);
+                    $mid = $t->createItem(Location::class, [
+                        'name'        => 'Paris',
+                        'locations_id' => $root->getID(),
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ]);
+                    $leaf = $t->createItem(Location::class, [
+                        'name'        => 'Office',
+                        'locations_id' => $mid->getID(),
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ]);
+                    return [
+                        'answer'   => [
+                            'itemtype' => Location::class,
+                            'items_id' => $leaf->getID(),
+                        ],
+                        'expected' => 'France > Paris > Office',
+                    ];
+                })(),
+            ],
+
+            'non-existent item' => [
+                fn(self $t) => [
+                    'answer'   => [
+                        'itemtype' => Computer::class,
+                        'items_id' => PHP_INT_MAX,
+                    ],
+                    'expected' => '',
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('formatRawAnswerProvider')]
+    public function testFormatRawAnswer(callable $setup): void
+    {
+        $this->login();
+
+        $case = $setup($this);
+        $result = (new QuestionTypeItem())->formatRawAnswer($case['answer'], new Question());
+
+        $this->assertEquals($case['expected'], $result);
     }
 }

@@ -191,14 +191,12 @@ class NotificationTargetPlanningRecall extends NotificationTarget
 
         if ($target_object->isField('name')) {
             $this->data['##recall.item.name##'] = $target_object->getField('name');
-        } else {
-            if (
-                $target_object instanceof CommonDBChild
-                && ($item2 = $target_object->getItem()) !== false
-                && $item2->isField('name')
-            ) {
-                $this->data['##recall.item.name##'] = $item2->getField('name');
-            }
+        } elseif (
+            ($target_object instanceof CommonDBChild || $target_object instanceof CommonITILTask)
+            && ($item2 = $target_object->getItem()) !== false
+            && $item2->isField('name')
+        ) {
+            $this->data['##recall.item.name##'] = $item2->getField('name');
         }
 
         $this->data['##recall.item.content##'] = '';

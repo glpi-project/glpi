@@ -42,12 +42,15 @@ namespace Glpi\Api;
 use AllAssets;
 use CommonDBTM;
 use Document;
+use GLPIKey;
 use GLPIUploadHandler;
 use ReflectionClass;
 use Safe\Exceptions\JsonException;
+use Safe\Exceptions\UrlException;
 use stdClass;
 use Toolbox;
 
+use function Safe\base64_decode;
 use function Safe\file_get_contents;
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -318,9 +321,9 @@ class APIRest extends API
                         $response = $this->getItems($itemtype, $this->parameters, $totalcount);
 
                         //add pagination headers
-                        $range = [0, $_SESSION['glpilist_limit']];
+                        $range = [0, $_SESSION['glpilist_limit'] - 1];
                         if (isset($this->parameters['range'])) {
-                            $range = explode("-", $this->parameters['range']);
+                            $range = \array_map('intval', explode("-", $this->parameters['range']));
                         }
 
                         // fix end range
@@ -345,14 +348,14 @@ class APIRest extends API
                     $code     = 201;
                     if (isset($response['id'])) {
                         // add a location targetting created element
-                        $additionalheaders['location'] = self::$api_url . "/$itemtype/" . $response['id'];
+                        $additionalheaders['location'] = self::$api_url . "/$itemtype/" . ((int) $response['id']);
                     } else {
                         // add a link header targetting created elements
                         $additionalheaders['link'] = "";
                         foreach ($response as $created_item) {
                             if ($created_item['id']) {
                                 $additionalheaders['link'] .= self::$api_url . "/$itemtype/"
-                                                     . $created_item['id'] . ",";
+                                                     . ((int) $created_item['id']) . ",";
                             }
                         }
                         // remove last comma
@@ -616,7 +619,12 @@ class APIRest extends API
 
         // try to retrieve session_token in header
         if (isset($headers['Session-Token'])) {
-            $parameters['session_token'] = $headers['Session-Token'];
+            try {
+                $parameters['session_token'] = (new GLPIKey())->decrypt(base64_decode(trim($headers['Session-Token'])));
+            } catch (UrlException) {
+                // malformed session token, keep its raw value and let authentication code fail due to mismatch token
+                $parameters['session_token'] = $headers['Session-Token'];
+            }
         }
 
         // try to retrieve app_token in header

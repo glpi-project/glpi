@@ -159,7 +159,7 @@
             // prepare html for option element
             text = (is_selection && itemtype == "Group") ? title : text;
             const option_text    = `<span class="actor_text">${text}</span>`;
-            const option_element = $(`<span class="actor_entry" data-itemtype="${_.escape(itemtype)}" data-items-id="${_.escape(items_id)}" data-actortype="${_.escape(actorytype)}">${indent}${icon}${option_text}${actions}</span>`);
+            const option_element = $(`<span class="actor_entry" data-itemtype="${_.escape(itemtype)}" data-items-id="${_.escape(items_id)}" data-actortype="${_.escape(actorytype)}" data-testid="actor-entry-${_.escape(actorytype)}-${_.escape(itemtype)}-${_.escape(items_id)}">${indent}${icon}${option_text}${actions}</span>`);
 
             if (is_selection && itemtype == "User") {
                 const unique_id = "user_opt_" + actor_select.attr('data-actor-type') + "User" + items_id;
@@ -264,7 +264,7 @@
                 }
 
                 // Don't offset to create a tag if it's not an email
-                if (!new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,63}$/).test(term)) {
+                if (!new RegExp({{ constant('Toolbox::ACTOR_EMAIL_VALIDATION_REGEX')|slice(1, -2)|json_encode|raw }}, 'u').test(term)) {
                     // Return null to disable tag creation
                     return null;
                 }
