@@ -68,7 +68,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             }
 
             if ($item::class === KnowbaseItem::class) {
-                $type_name = _n('Associated element', 'Associated elements', $nb);
+                $type_name = _n('Associated element', 'Associated elements', Session::getPluralNumber());
             } else {
                 $type_name = __('Knowledge base');
             }
