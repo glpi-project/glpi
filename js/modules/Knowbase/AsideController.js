@@ -317,8 +317,11 @@ export class GlpiKnowbaseAsideController
      *
      * A multi-category article is shown once under each of its categories. Those
      * copies live in disjoint DOM subtrees, so CSS :hover cannot reach them — JS
-     * toggles a shared class on every node carrying the same article id. The
-     * "also in …" text itself is a native Bootstrap tooltip (no JS here).
+     * toggles a shared class on every node carrying the same article id.
+     *
+     * When a copy is folded away inside a collapsed category its own row is
+     * hidden, so we light the collapsed ancestor's header instead — the signal
+     * must never disappear behind a fold.
      */
     #initMultiCategoryHighlight()
     {
@@ -331,12 +334,36 @@ export class GlpiKnowbaseAsideController
             `[data-glpi-kb-article-id="${CSS.escape(article_li.getAttribute('data-glpi-kb-article-id'))}"]`,
         );
 
+        // The outermost collapsed category wrapping `el`, or null when every
+        // ancestor is expanded (so `el` is actually visible). The outermost one
+        // is the only category whose header stays visible while the rest folds.
+        const collapsedAncestor = (el) => {
+            let collapsed = null;
+            for (let node = el.parentElement; node && node !== tree; node = node.parentElement) {
+                if (
+                    node.matches('[data-glpi-kb-aside-category]')
+                    && node.hasAttribute('data-glpi-kb-aside-category-collapsed')
+                ) {
+                    collapsed = node;
+                }
+            }
+            return collapsed;
+        };
+
         // Delegation via bubbling events. Resilient to DOM mutations (drag-and-drop
         // reparenting, search filtering) — the article id is read fresh every time.
         const highlight = (e, on) => {
             const article_li = e.target.closest('[data-glpi-kb-article-multi]');
-            if (article_li) {
-                siblings(article_li).forEach(el => el.classList.toggle('kb-article--sibling', on));
+            if (!article_li) {
+                return;
+            }
+            for (const el of siblings(article_li)) {
+                const folded = collapsedAncestor(el);
+                if (folded) {
+                    folded.classList.toggle('kb-category--sibling', on);
+                } else {
+                    el.classList.toggle('kb-article--sibling', on);
+                }
             }
         };
 

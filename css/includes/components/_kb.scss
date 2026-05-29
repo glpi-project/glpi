@@ -795,39 +795,10 @@
         cursor: pointer;
     }
 
-    // Multi-category article: a subtle italic "also live in …" subtitle listing
-    // the other categories (a M2M with no canonical one, so every occurrence is
-    // flagged identically) + sibling highlight lighting up the same article
-    // wherever else it is listed.
+    // Multi-category article (a M2M with no canonical category, so every
+    // occurrence is flagged identically): hovering/focusing one occurrence lights
+    // up all of them across the tree, revealing where else the article is listed.
     .article[data-glpi-kb-article-multi] {
-        // min-width:0 lets the title and subtitle truncate inside the flex row.
-        .kb-article-stack {
-            min-width: 0;
-        }
-
-        // Title line: truncating title + a trailing "stack" marker kept visible.
-        .kb-article-titleline {
-            display: flex;
-            align-items: center;
-            min-width: 0;
-        }
-
-        .kb-article-title {
-            min-width: 0;
-        }
-
-        .kb-article-multi-icon {
-            flex: 0 0 auto;
-            margin-left: 0.25rem;
-            color: var(--tblr-secondary);
-            font-size: 0.875rem;
-        }
-
-        .kb-article-also-in {
-            font-size: 0.75rem;
-            color: var(--tblr-secondary);
-        }
-
         &.kb-article--sibling,
         &:hover {
             background-color: color-mix(in srgb, var(--tblr-primary) 12%, transparent);
@@ -837,6 +808,15 @@
                 color: var(--tblr-primary);
             }
         }
+    }
+
+    // When a copy of the hovered article is folded away inside a collapsed
+    // category, its row is hidden — so we light that category's (still visible)
+    // header instead, keeping the "also listed here" signal from being lost.
+    [data-glpi-kb-aside-category].kb-category--sibling > [data-glpi-kb-aside-category-toggle] {
+        background-color: color-mix(in srgb, var(--tblr-primary) 12%, transparent);
+        border-radius: var(--tblr-border-radius);
+        color: var(--tblr-primary);
     }
 
     // KB aside tree hierarchy connector lines

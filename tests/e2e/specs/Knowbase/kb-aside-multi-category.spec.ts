@@ -70,54 +70,6 @@ test('Article linked to several categories appears under each one', async ({
     await expect(kb.getAsideCategoryArticle(category_b, article_name)).toBeVisible();
 });
 
-test('A multi-category article lists its other categories in a subtitle under each listing', async ({
-    page,
-    profile,
-    api,
-}) => {
-    await profile.set(Profiles.SuperAdmin);
-    const kb = new KnowbaseItemPage(page);
-
-    const token        = randomUUID().slice(0, 8);
-    const category_a   = `E2E Sub Cat A ${token}`;
-    const category_b   = `E2E Sub Cat B ${token}`;
-    const category_c   = `E2E Sub Cat C ${token}`;
-    const article_name = `E2E Sub Article ${token}`;
-
-    const category_a_id = await api.createItem('KnowbaseItemCategory', {
-        name: category_a,
-        entities_id: getWorkerEntityId(),
-    });
-    const category_b_id = await api.createItem('KnowbaseItemCategory', {
-        name: category_b,
-        entities_id: getWorkerEntityId(),
-    });
-    const category_c_id = await api.createItem('KnowbaseItemCategory', {
-        name: category_c,
-        entities_id: getWorkerEntityId(),
-    });
-    const article_id = await api.createItem('KnowbaseItem', {
-        name: article_name,
-        answer: 'Test content',
-        entities_id: getWorkerEntityId(),
-        _categories: [category_a_id, category_b_id, category_c_id],
-    });
-
-    await kb.goto(article_id);
-
-    // Under category A → subtitle names B and C, not A.
-    const subtitle_under_a = kb.getAsideCategory(category_a).getByText('Also live in');
-    await expect(subtitle_under_a).toContainText(category_b);
-    await expect(subtitle_under_a).toContainText(category_c);
-    await expect(subtitle_under_a).not.toContainText(category_a);
-
-    // Under category B → subtitle names A and C, not B.
-    const subtitle_under_b = kb.getAsideCategory(category_b).getByText('Also live in');
-    await expect(subtitle_under_b).toContainText(category_a);
-    await expect(subtitle_under_b).toContainText(category_c);
-    await expect(subtitle_under_b).not.toContainText(category_b);
-});
-
 test('Hovering one listing of a multi-category article highlights its other listings', async ({
     page,
     profile,
@@ -160,7 +112,53 @@ test('Hovering one listing of a multi-category article highlights its other list
     await expect(row_under_b).not.toHaveClass(/kb-article--sibling/);
 });
 
-test('Single-category article shows no "also live in" subtitle', async ({
+test('A copy folded inside a collapsed category lights up that category header', async ({
+    page,
+    profile,
+    api,
+}) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const token        = randomUUID().slice(0, 8);
+    const category_a   = `E2E Fold Cat A ${token}`;
+    const category_b   = `E2E Fold Cat B ${token}`;
+    const article_name = `E2E Fold Article ${token}`;
+
+    const category_a_id = await api.createItem('KnowbaseItemCategory', {
+        name: category_a,
+        entities_id: getWorkerEntityId(),
+    });
+    const category_b_id = await api.createItem('KnowbaseItemCategory', {
+        name: category_b,
+        entities_id: getWorkerEntityId(),
+    });
+    const article_id = await api.createItem('KnowbaseItem', {
+        name: article_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+        _categories: [category_a_id, category_b_id],
+    });
+
+    await kb.goto(article_id);
+
+    // Fold category B so its copy of the article is hidden behind the header.
+    await kb.doToggleAsideCategory(category_b);
+
+    const category_b_node = kb.getAsideCategory(category_b);
+    await expect(category_b_node).not.toHaveClass(/kb-category--sibling/);
+
+    // Hovering the still-visible copy under A lights up B's collapsed header
+    // instead of its now-hidden row.
+    await kb.getAsideCategoryArticle(category_a, article_name).hover();
+    await expect(category_b_node).toHaveClass(/kb-category--sibling/);
+
+    // Moving away clears the highlight.
+    await page.mouse.move(0, 0);
+    await expect(category_b_node).not.toHaveClass(/kb-category--sibling/);
+});
+
+test('Single-category article is not flagged as multi-category', async ({
     page,
     profile,
     api,
@@ -186,5 +184,7 @@ test('Single-category article shows no "also live in" subtitle', async ({
     await kb.goto(article_id);
 
     await expect(kb.getAsideCategoryArticle(category_a, article_name)).toBeVisible();
-    await expect(kb.getAsideCategory(category_a).getByText('Also live in')).toHaveCount(0);
+    // A single-category article carries no cross-listing marker, so it never highlights.
+    await expect(kb.getAsideCategory(category_a).getByRole('listitem'))
+        .not.toHaveAttribute('data-glpi-kb-article-multi');
 });
