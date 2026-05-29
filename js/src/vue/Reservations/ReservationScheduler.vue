@@ -10,7 +10,6 @@
     import listPlugin from "@fullcalendar/list";
     import timeGridPlugin from "@fullcalendar/timegrid";
     import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
-    import bootstrapPlugin from "@fullcalendar/bootstrap";
     import BaseFullCalendar from "../FullCalendar/BaseFullCalendar.vue";
     import {onMounted, ref, useTemplateRef, watch} from "vue";
     import ReservationEvent from "./ReservationEvent.vue";
@@ -55,7 +54,6 @@
             listPlugin,
             timeGridPlugin,
             resourceTimelinePlugin,
-            bootstrapPlugin,
         ],
         initialDate: props.default_date,
         views: {
