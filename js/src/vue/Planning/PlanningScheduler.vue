@@ -13,7 +13,6 @@
     import timeGridPlugin from '@fullcalendar/timegrid';
     import resourceTimelinePlugin from '@fullcalendar/resource-timeline';
     import rrulePlugin from '@fullcalendar/rrule';
-    import bootstrapPlugin from '@fullcalendar/bootstrap';
     import PlanningEvent from "./PlanningEvent.vue";
     import usePlanningScheduler from "./usePlanningScheduler.js";
 
@@ -94,7 +93,6 @@
             timeGridPlugin,
             resourceTimelinePlugin,
             rrulePlugin,
-            bootstrapPlugin,
         ],
         weekNumbers: props.full_view,
         dayMaxEvents: true,
