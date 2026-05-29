@@ -178,7 +178,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_rev->getTabNameForItem($kb1);
-        $this->assertSame("Revision 1", strip_tags($name));
+        $this->assertSame("Revisions 1", strip_tags($name));
 
         $this->assertTrue(
             $kb1->update(
