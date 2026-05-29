@@ -256,12 +256,16 @@
         {% endif %}
 
         function getFilterData() {
-            return {
-                'user': user_filter.value.trim(),
-                'status': status_filter.value,
-                'type': type_filter.value,
-                'ip': ip_filter.value.trim(),
-            };
+            {% if is_admin_view %}
+                return {
+                    'user': user_filter.value.trim(),
+                    'status': status_filter.value,
+                    'type': type_filter.value,
+                    'ip': ip_filter.value.trim(),
+                };
+            {% else %}
+                return {};
+            {% endif %}
         }
 
         function reloadWithFilters() {
