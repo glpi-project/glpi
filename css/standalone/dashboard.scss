@@ -452,6 +452,7 @@ $break_tablet: 1400px;
                         border: none;
                         background-color: transparent;
                         min-height: 24px;
+                        min-width: 100px;
 
                         .select2-selection__rendered {
                             padding: 0;
@@ -477,7 +478,7 @@ $break_tablet: 1400px;
                             color: #74838f;
                             font-weight: bold;
                             font-size: 12px;
-                            min-width: 100px;
+                            min-width: 10px;
                             margin: 0;
                         }
                     }
