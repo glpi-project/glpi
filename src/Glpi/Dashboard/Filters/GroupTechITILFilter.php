@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,22 +35,20 @@
 namespace Glpi\Dashboard\Filters;
 
 use Change;
-use Glpi\Features\AssignableItem;
 use Group_Item;
 use Problem;
 use Ticket;
-use Toolbox;
 
-class GroupTechFilter extends AbstractGroupFilter
+class GroupTechITILFilter extends AbstractGroupFilter
 {
     public static function getName(): string
     {
-        return __("Technician group");
+        return __("Assigned group");
     }
 
     public static function getId(): string
     {
-        return "group_tech";
+        return "group_tech_itil";
     }
 
     protected static function getGroupType(): int
@@ -71,13 +68,7 @@ class GroupTechFilter extends AbstractGroupFilter
 
     public static function canBeApplied(string $table): bool
     {
-        global $DB;
-
-        if (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true)) {
-            return false;
-        }
-
-        return Toolbox::hasTrait(getItemtypeForTable($table), AssignableItem::class)
-            || $DB->fieldExists($table, 'groups_id_tech');
+        return in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true);
     }
 }
+

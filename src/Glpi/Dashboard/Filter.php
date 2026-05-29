@@ -36,19 +36,18 @@
 namespace Glpi\Dashboard;
 
 use CommonDBChild;
-use Glpi\Dashboard\Filters\{
-    DatesFilter,
+use Glpi\Dashboard\Filters\{DatesFilter,
     DatesModFilter,
     GroupRequesterFilter,
     GroupTechFilter,
+    GroupTechITILFilter,
     ItilCategoryFilter,
     LocationFilter,
     ManufacturerFilter,
     RequestTypeFilter,
     StateFilter,
     TicketTypeFilter,
-    UserTechFilter
-};
+    UserTechFilter};
 use Glpi\Plugin\Hooks;
 use Plugin;
 use Session;
@@ -111,6 +110,7 @@ class Filter extends CommonDBChild
             TicketTypeFilter::class,
             GroupRequesterFilter::class,
             GroupTechFilter::class,
+            GroupTechITILFilter::class,
             UserTechFilter::class,
         ];
 
