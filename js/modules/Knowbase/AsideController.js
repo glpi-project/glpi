@@ -514,8 +514,13 @@ export class GlpiKnowbaseAsideController
             return false;
         }
 
-        // Optimistic move.
-        target_children.appendChild(source_li);
+        // Optimistic move: articles are grouped above subcategories
+        if (itemtype === 'KnowbaseItem') {
+            const first_subcategory = target_children.querySelector(':scope > [data-glpi-kb-aside-category]');
+            target_children.insertBefore(source_li, first_subcategory); // null → append
+        } else {
+            target_children.appendChild(source_li);
+        }
 
         let response;
         try {
