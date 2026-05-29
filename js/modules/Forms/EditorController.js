@@ -3048,6 +3048,7 @@ export class GlpiFormEditorController
                     'name': this.#getItemInput($(question), "name"),
                     'type': this.#getItemInput($(question), "type"),
                     'extra_data': this.#getQuestionExtraData(question),
+                    'forms_sections_uuid': this.#getItemInput($(question), "forms_sections_uuid"),
                 });
             })
         ;
@@ -3072,6 +3073,7 @@ export class GlpiFormEditorController
                 comments.push({
                     'uuid': this.#getItemInput($(comment), "uuid"),
                     'name': this.#getItemInput($(comment), "name"),
+                    'forms_sections_uuid': this.#getItemInput($(comment), "forms_sections_uuid"),
                 });
             })
         ;

@@ -203,6 +203,183 @@ final class EditorManagerTest extends GLPITestCase
         ]);
     }
 
+    public function testQuestionsAndCommentsAreGroupedBySection(): void
+    {
+        // Arrange: two sections, each holding questions (some sharing the same
+        // name) and a comment, all referencing their parent section.
+        $form_data = new FormData([
+            'sections' => [
+                ['uuid' => 's1', 'name' => 'Section 1'],
+                ['uuid' => 's2', 'name' => 'Section 2'],
+            ],
+            'questions' => [
+                [
+                    'uuid' => 1,
+                    'name' => 'Name',
+                    'type' => QuestionTypeShortText::class,
+                    'forms_sections_uuid' => 's1',
+                ],
+                [
+                    'uuid' => 2,
+                    'name' => 'Email',
+                    'type' => QuestionTypeShortText::class,
+                    'forms_sections_uuid' => 's1',
+                ],
+                [
+                    'uuid' => 3,
+                    'name' => 'Name',
+                    'type' => QuestionTypeShortText::class,
+                    'forms_sections_uuid' => 's2',
+                ],
+            ],
+            'comments' => [
+                ['uuid' => 1, 'name' => 'My comment', 'forms_sections_uuid' => 's2'],
+            ],
+        ]);
+        $editor_manager = $this->getManagerWithData($form_data);
+
+        // Act: get the dropdown values
+        $dropdown_values = $editor_manager->getItemsDropdownValues();
+
+        // Assert: questions and comments are grouped under their section name,
+        // letting homonymous questions be told apart.
+        $this->assertEquals([
+            'Sections' => [
+                'section-s1' => 'Section 1',
+                'section-s2' => 'Section 2',
+            ],
+            'Section 1' => [
+                'question-1' => 'Name',
+                'question-2' => 'Email',
+            ],
+            'Section 2' => [
+                'question-3' => 'Name',
+                'comment-1' => 'My comment',
+            ],
+        ], $dropdown_values);
+    }
+
+    public function testEmptySectionNameFallsBackToPlaceholder(): void
+    {
+        // Arrange: two sections, one of them without a name.
+        $form_data = new FormData([
+            'sections' => [
+                ['uuid' => 's1', 'name' => 'Section 1'],
+                ['uuid' => 's2', 'name' => ''],
+            ],
+            'questions' => [
+                [
+                    'uuid' => 1,
+                    'name' => 'Name',
+                    'type' => QuestionTypeShortText::class,
+                    'forms_sections_uuid' => 's1',
+                ],
+                [
+                    'uuid' => 2,
+                    'name' => 'Email',
+                    'type' => QuestionTypeShortText::class,
+                    'forms_sections_uuid' => 's2',
+                ],
+            ],
+        ]);
+        $editor_manager = $this->getManagerWithData($form_data);
+
+        // Act: get the dropdown values
+        $dropdown_values = $editor_manager->getItemsDropdownValues();
+
+        // Assert: the unnamed section uses the editor's placeholder, both as a
+        // selectable item and as the group label.
+        $this->assertEquals([
+            'Sections' => [
+                'section-s1' => 'Section 1',
+                'section-s2' => __('New section'),
+            ],
+            'Section 1' => [
+                'question-1' => 'Name',
+            ],
+            __('New section') => [
+                'question-2' => 'Email',
+            ],
+        ], $dropdown_values);
+    }
+
+    public function testSingleSectionDisablesGrouping(): void
+    {
+        // Arrange: a single section (its header is hidden in the editor) holding
+        // questions and a comment.
+        $form_data = new FormData([
+            'sections' => [
+                ['uuid' => 's1', 'name' => 'Section 1'],
+            ],
+            'questions' => [
+                [
+                    'uuid' => 1,
+                    'name' => 'Name',
+                    'type' => QuestionTypeShortText::class,
+                    'forms_sections_uuid' => 's1',
+                ],
+                [
+                    'uuid' => 2,
+                    'name' => 'Email',
+                    'type' => QuestionTypeShortText::class,
+                    'forms_sections_uuid' => 's1',
+                ],
+            ],
+            'comments' => [
+                ['uuid' => 1, 'name' => 'My comment', 'forms_sections_uuid' => 's1'],
+            ],
+        ]);
+        $editor_manager = $this->getManagerWithData($form_data);
+
+        // Act: get the dropdown values
+        $dropdown_values = $editor_manager->getItemsDropdownValues();
+
+        // Assert: grouping is cancelled, items keep the flat grouping by type.
+        $this->assertEquals([
+            'Sections' => [
+                'section-s1' => 'Section 1',
+            ],
+            'Questions' => [
+                'question-1' => 'Name',
+                'question-2' => 'Email',
+            ],
+            'Comments' => [
+                'comment-1' => 'My comment',
+            ],
+        ], $dropdown_values);
+    }
+
+    public function testItemsWithUnknownSectionFallBackToGenericGroups(): void
+    {
+        // Arrange: a question and a comment without any resolvable parent section.
+        $form_data = new FormData([
+            'questions' => [
+                [
+                    'uuid' => 1,
+                    'name' => 'Question 1',
+                    'type' => QuestionTypeShortText::class,
+                ],
+            ],
+            'comments' => [
+                ['uuid' => 1, 'name' => 'Comment 1'],
+            ],
+        ]);
+        $editor_manager = $this->getManagerWithData($form_data);
+
+        // Act: get the dropdown values
+        $dropdown_values = $editor_manager->getItemsDropdownValues();
+
+        // Assert: items keep their former generic grouping by type.
+        $this->assertEquals([
+            'Questions' => [
+                'question-1' => 'Question 1',
+            ],
+            'Comments' => [
+                'comment-1' => 'Comment 1',
+            ],
+        ], $dropdown_values);
+    }
+
     public static function provideSelectedFormElementIsExcludedFromDropdownValues(): iterable
     {
         yield 'section' => [
