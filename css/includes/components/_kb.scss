@@ -807,28 +807,27 @@
         }
     }
 
-    // Per-category action buttons (create article, create sub-category):
-    // hidden by default, revealed on hover of the parent category row or
-    // when keyboard-focused. flex-shrink: 0 keeps them at their natural
-    // width even when the title is long.
+    // Per-category action buttons (create article, create sub-category),
+    // revealed on row hover/focus. visibility:hidden (not opacity:0) keeps them
+    // out of the tab order and unclickable until shown. flex-shrink: 0 keeps
+    // them at their natural width even when the title is long.
     [data-glpi-kb-aside-category-add],
     [data-glpi-kb-aside-category-create] {
         flex-shrink: 0;
-        opacity: 0;
-        transition: opacity 0.15s ease-in-out;
+        visibility: hidden;
     }
 
     [data-glpi-kb-aside-category-header]:hover [data-glpi-kb-aside-category-add],
     [data-glpi-kb-aside-category-header]:hover [data-glpi-kb-aside-category-create],
-    [data-glpi-kb-aside-category-add]:focus-visible,
-    [data-glpi-kb-aside-category-create]:focus-visible {
-        opacity: 1;
+    [data-glpi-kb-aside-category-header]:focus-within [data-glpi-kb-aside-category-add],
+    [data-glpi-kb-aside-category-header]:focus-within [data-glpi-kb-aside-category-create] {
+        visibility: visible;
     }
 
     @media (hover: none) {
         [data-glpi-kb-aside-category-add],
         [data-glpi-kb-aside-category-create] {
-            opacity: 1;
+            visibility: visible;
         }
     }
 

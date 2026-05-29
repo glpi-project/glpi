@@ -61,6 +61,8 @@ test('clicking the aside create-sub-category link creates a category under the p
     const create_link = kb.getAsideCategory(parent_name).getByRole('link', {
         name: new RegExp(`Create a sub-category in ${parent_name}`, 'i'),
     });
+    // Reveal the action button (hidden until the category row is hovered).
+    await kb.getAsideCategoryToggle(parent_name).hover();
     await expect(create_link).toBeVisible();
     await create_link.click();
 
@@ -101,6 +103,8 @@ test('submitting the modal with an empty name shows an inline validation error',
 
     await kb.goto(1);
 
+    // Reveal the action button (hidden until the category row is hovered).
+    await kb.getAsideCategoryToggle(parent_name).hover();
     await kb.getAsideCategory(parent_name).getByRole('link', {
         name: new RegExp(`Create a sub-category in ${parent_name}`, 'i'),
     }).click();
@@ -136,6 +140,8 @@ test('clicking Cancel closes the modal without creating a category', async ({ pa
 
     await kb.goto(1);
 
+    // Reveal the action button (hidden until the category row is hovered).
+    await kb.getAsideCategoryToggle(parent_name).hover();
     await kb.getAsideCategory(parent_name).getByRole('link', {
         name: new RegExp(`Create a sub-category in ${parent_name}`, 'i'),
     }).click();
@@ -197,6 +203,6 @@ test('hovering a sub-category does not reveal the parent category create-sub-cat
 
     await kb.getAsideCategoryToggle(child_name).hover();
 
-    await expect(child_create).toHaveCSS('opacity', '1');
-    await expect(parent_create).toHaveCSS('opacity', '0');
+    await expect(child_create).toBeVisible();
+    await expect(parent_create).toBeHidden();
 });
