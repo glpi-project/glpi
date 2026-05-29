@@ -448,6 +448,40 @@ $break_tablet: 1400px;
                         height: 24px;
                     }
 
+                    .select2-selection.select2-selection--multiple {
+                        border: none;
+                        background-color: transparent;
+                        min-height: 24px;
+
+                        .select2-selection__rendered {
+                            padding: 0;
+                        }
+
+                        .select2-selection__choice {
+                            color: #74838f;
+                            font-weight: bold;
+                            font-size: 12px;
+                            background-color: transparent;
+                            border: 1px solid #74838f;
+                            border-radius: 3px;
+                            padding: 0 4px;
+                            margin: 2px 2px 0 0;
+                        }
+
+                        .select2-selection__choice__remove {
+                            color: #509ee3;
+                            margin-right: 3px;
+                        }
+
+                        .select2-search--inline .select2-search__field {
+                            color: #74838f;
+                            font-weight: bold;
+                            font-size: 12px;
+                            min-width: 100px;
+                            margin: 0;
+                        }
+                    }
+
                     .select2-container {
                         margin-right: 0;
                     }
@@ -525,6 +559,17 @@ $break_tablet: 1400px;
                     input,
                     .select2-selection__rendered {
                         color: #509ee3 !important;
+                    }
+
+                    .select2-selection--multiple {
+                        .select2-selection__choice {
+                            color: #509ee3 !important;
+                            border-color: #509ee3;
+                        }
+
+                        .select2-search--inline .select2-search__field {
+                            color: #509ee3 !important;
+                        }
                     }
 
                     .flatpickr,
