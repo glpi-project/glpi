@@ -99,6 +99,7 @@ test('Hovering one listing of a multi-category article highlights its other list
     });
 
     await kb.goto(article_id);
+    await kb.waitForAsideReady();
 
     // The listing under category B is the cross-tree copy we expect to light up.
     const row_under_b = kb.getAsideCategory(category_b).getByRole('listitem');
@@ -141,6 +142,7 @@ test('A copy folded inside a collapsed category lights up that category header',
     });
 
     await kb.goto(article_id);
+    await kb.waitForAsideReady();
 
     // Fold category B so its copy of the article is hidden behind the header.
     await kb.doToggleAsideCategory(category_b);

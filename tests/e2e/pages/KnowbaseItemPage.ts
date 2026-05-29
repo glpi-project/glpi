@@ -90,10 +90,6 @@ export class KnowbaseItemPage extends GlpiPage
             `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`,
             { waitUntil: 'domcontentloaded' }
         );
-
-        // The aside controller attaches its listeners after `domcontentloaded`,
-        // then drops `pe-none` — wait for that or early interactions are dropped.
-        await expect(this.asideSearchInput).not.toHaveClass(/pe-none/);
     }
 
     public async doToggleFaqStatus(): Promise<void>
@@ -302,6 +298,14 @@ export class KnowbaseItemPage extends GlpiPage
     public get asideSearchInput(): Locator
     {
         return this.page.getByLabel('Search articles');
+    }
+
+    // The aside controller attaches its listeners after `domcontentloaded`, then
+    // drops `pe-none`. Specs that interact with the aside (hover, fold) must await
+    // this or their early pointer events are silently dropped.
+    public async waitForAsideReady(): Promise<void>
+    {
+        await expect(this.asideSearchInput).not.toHaveClass(/pe-none/);
     }
 
     public get asideNoResultsMessage(): Locator
