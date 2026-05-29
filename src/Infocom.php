@@ -2011,7 +2011,7 @@ HTML;
         if ($auto_renew) {
 
             // In the edge case where a tacitly renewed contract has no period and periodicity, return start date to avoid divide by 0 error
-            if ($periodicity == 0 && $addwarranty == 0){
+            if ($periodicity == 0 && $addwarranty == 0) {
                 $date = Html::convDate($start->format('Y-m-d'));
 
                 // Ensure we never return null, fallback to empty string if convDate returns null
@@ -2027,7 +2027,12 @@ HTML;
 
             // Calculate the number of months elapsed since the beginning
             $interval = $start->diff($current);
-            $months_elapsed = ($interval->y * 12) + $interval->m;
+            $months_elapsed = (($interval->y * 12) + $interval->m);
+
+            // Put months_elapsed variable to negative if the contract start date if after the current date
+            if ($interval->invert == 1) {
+                $months_elapsed = - $months_elapsed;
+            }
 
             // if the contract hasn't reach the end of the initial period, the contract is treated the same as a non tacit contract
             if ($months_elapsed < $addwarranty) {
