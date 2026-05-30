@@ -208,6 +208,13 @@ class KnowbaseAutosave {
 
         banner.classList.remove('d-none');
 
+        // Dismiss button — removes draft from localStorage and hides the banner
+        document.getElementById('kb-autosave-dismiss')
+            ?.addEventListener('click', () => {
+                localStorage.removeItem(this.#storageKey);
+                banner.classList.add('d-none');
+            });
+
         // Restore button — fills the form fields with the draft content
         document.getElementById('kb-autosave-restore')
             ?.addEventListener('click', () => {
