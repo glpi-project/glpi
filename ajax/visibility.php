@@ -60,15 +60,18 @@ if (
         case 'User':
             $params = [
                 'right' => isset($_POST['allusers']) ? 'all' : $_POST['right'],
-                'name' => $prefix . 'users_id' . $suffix,
+                'name'  => $prefix . 'users_id' . $suffix,
+                'used'  => $_POST['used']['User'] ?? [],
             ];
             User::dropdown($params);
             $display = true;
             break;
 
         case 'Group':
-            $params             = ['rand' => $rand,
+            $params             = [
+                'rand' => $rand,
                 'name' => $prefix . 'groups_id' . $suffix,
+                'used' => $_POST['used']['Group'] ?? [],
             ];
             $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
@@ -87,8 +90,10 @@ if (
 
         case 'Entity':
             Entity::dropdown([
-                'value' => $_SESSION['glpiactive_entity'],
+                'display_emptychoice' => true,
+                'value' => -1,
                 'name'  => $prefix . 'entities_id' . $suffix,
+                'used'  => $_POST['used']['Entity'] ?? [],
             ]);
             echo '<div class="ms-3">' . __s('Child entities') . '</div>';
             Dropdown::showYesNo($prefix . 'is_recursive' . $suffix);
@@ -105,6 +110,7 @@ if (
             $params             = [
                 'rand'      => $rand,
                 'name'      => $prefix . 'profiles_id' . $suffix,
+                'used'      => $_POST['used']['Profile'] ?? [],
                 'condition' => [
                     'glpi_profilerights.name'     => $righttocheck,
                     'glpi_profilerights.rights'   => ['&', $checkright],
