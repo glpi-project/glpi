@@ -1785,7 +1785,7 @@ TWIG, $twig_params);
                 'duration'    => $ms_duration,
                 '_duration'   => $ms_duration, // sometimes duration is removed from event object in fullcalendar
                 '_editable'   => $event['editable'], // same, avoid loss of editable key in fullcalendar
-                'rendering'   => isset($event['background'])
+                'display'   => isset($event['background'])
                              && $event['background']
                              && !$_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']
                               ? 'background'
