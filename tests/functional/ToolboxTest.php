@@ -243,28 +243,44 @@ class ToolboxTest extends DbTestCase
             [
                 '{"validJson":true}',
                 true,
-            ], [
+            ],
+            [
                 '{"invalidJson":true',
                 false,
-            ], [
+            ],
+            [
                 '"valid"',
                 true,
-            ], [
+            ],
+            [
                 'null',
                 true,
-            ], [
+            ],
+            [
+                'true',
+                true,
+            ],
+            [
+                'false',
+                true,
+            ],
+            [
                 1000,
                 true,
-            ], [
+            ],
+            [
                 [1, 2, 3],
                 false,
-            ], [
+            ],
+            [
                 (object) ['json' => true],
                 false,
-            ], [
+            ],
+            [
                 '{ bad content',
                 false,
-            ], [
+            ],
+            [
                 file_get_contents(GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/computer_1.json'),
                 true,
             ],
