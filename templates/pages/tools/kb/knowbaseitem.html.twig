@@ -82,6 +82,10 @@
 
     <hr class="my-2">
 
+    {% if params.canedit is defined and params.canedit %}
+        {% include 'components/kb/autosave_banner.html.twig' %}
+    {% endif %}
+
     {{ fields.textField('name', item.fields['name'], __('Subject'), {
         full_width: true,
         label_class: 'col-1',
@@ -122,5 +126,16 @@
             rand: rand,
             add_field_html: visibility_fields
         }) }}
+    {% endif %}
+
+    {% if params.canedit is defined and params.canedit %}
+        <script>
+            window.KB_AUTOSAVE_CONFIG = {
+                itemId:  {{ item.fields['id']|default(0) }},
+                usersId: {{ session('glpiID') }},
+                isNew:   {{ item.isNewItem ? 'true' : 'false' }},
+            };
+        </script>
+        {{ call('Html::script', ['js/modules/KnowbaseAutosave.js', {'type': 'module'}])|raw }}
     {% endif %}
 {% endblock %}
