@@ -130,21 +130,6 @@ export class GlpiKnowbaseArticleController
      */
     #isDiffMode = false;
 
-    /** @type {number|null} */
-    #users_id = null;
-
-    /** @type {string|null} */
-    #storage_key = null;
-
-    /** @type {number|null} */
-    #autosave_interval = null;
-
-    /** @type {string} */
-    #last_saved_content = '';
-
-    /** @type {string} */
-    #last_saved_title = '';
-
     /**
      * @param {HTMLElement} container
      * @param {HTMLElement} side_panel_container
@@ -162,12 +147,8 @@ export class GlpiKnowbaseArticleController
             );
         }
         this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;
-        this.#users_id = parseInt(container.dataset.glpiKbUsersId, 10) || null;
-        this.#storage_key = this.#buildStorageKey();
-
         this.#initEventListeners();
         this.#initEditor();
-        this.#checkExistingDraft();
         this.#initDiffListeners();
         this.#initIllustrationPicker();
         this.#initRecursiveToggle();
@@ -190,80 +171,6 @@ export class GlpiKnowbaseArticleController
 
         // Enable interactions once all listeners are registered
         this.#container.classList.remove('pe-none');
-    }
-
-    #buildStorageKey() {
-        if (!this.#item_id) {
-            return `glpi_kb_autosave_new_${this.#users_id}`;
-        }
-        return `glpi_kb_autosave_${this.#item_id}_${this.#users_id}`;
-    }
-
-    #checkExistingDraft() {
-        if (!this.#storage_key || !this.#users_id) return;
-        
-        const raw = sessionStorage.getItem(this.#storage_key);
-        if (!raw) return;
-
-        let draft;
-        try {
-            draft = JSON.parse(raw);
-        } catch {
-            sessionStorage.removeItem(this.#storage_key);
-            return;
-        }
-
-        if (!draft?.savedAt) return;
-
-        this.#showBanner(draft);
-    }
-
-    #showBanner(draft) {
-        const banner = this.#container.querySelector('#kb-autosave-banner');
-        if (!banner) return;
-
-        banner.classList.remove('d-none');
-
-        const dismissBtn = banner.querySelector('#kb-autosave-dismiss');
-        const restoreBtn = banner.querySelector('#kb-autosave-restore');
-
-        dismissBtn?.addEventListener('click', () => {
-            sessionStorage.removeItem(this.#storage_key);
-            banner.classList.add('d-none');
-        });
-
-        restoreBtn?.addEventListener('click', async () => {
-            if (!window.confirm(__('Do you want to restore the auto-saved draft?'))) {
-                return;
-            }
-
-            if (this.#title_element) {
-                this.#title_element.textContent = draft.title || '';
-            }
-
-            if (this.#editor) {
-                this.#editor.setContent(draft.content || '');
-            } else {
-                const editorEl = this.#container.querySelector('#kb-tiptap-editor');
-                if (editorEl) {
-                    editorEl.innerHTML = draft.content || '';
-                }
-            }
-
-            this.#last_saved_title = draft.title || '';
-            this.#last_saved_content = draft.content || '';
-
-            sessionStorage.removeItem(this.#storage_key);
-            banner.classList.add('d-none');
-            
-            if (typeof setHasUnsavedChanges === 'function') {
-                setHasUnsavedChanges(true);
-            }
-            
-            if (!this.#is_editing) {
-                await this.#enableEditMode();
-            }
-        });
     }
 
     #initEventListeners()
@@ -916,14 +823,6 @@ export class GlpiKnowbaseArticleController
                 save_button.classList.add('d-none');
                 cancel_button.classList.add('d-none');
 
-                if (this.#autosave_interval !== null) {
-                    window.clearInterval(this.#autosave_interval);
-                    this.#autosave_interval = null;
-                }
-                if (this.#storage_key) {
-                    sessionStorage.removeItem(this.#storage_key);
-                }
-
                 setHasUnsavedChanges(false);
             });
         }
@@ -1091,39 +990,6 @@ export class GlpiKnowbaseArticleController
         }
 
         this.#broadcastDiffExit();
-
-        if (this.#autosave_interval === null && this.#storage_key && this.#users_id) {
-            this.#last_saved_title = this.#title_element?.textContent.trim() || '';
-            this.#last_saved_content = this.#editor.getHTML();
-            this.#autosave_interval = window.setInterval(() => this.#autoSave(), 30_000);
-        }
-    }
-
-    #autoSave() {
-        if (!this.#is_editing || !this.#editor) {
-            return;
-        }
-
-        const current_title = this.#title_element?.textContent.trim() || '';
-        const current_content = this.#editor.getHTML();
-
-        if (current_title === this.#last_saved_title && current_content === this.#last_saved_content) {
-            return;
-        }
-
-        const draft = {
-            title: current_title,
-            content: current_content,
-            savedAt: new Date().toISOString(),
-        };
-
-        try {
-            sessionStorage.setItem(this.#storage_key, JSON.stringify(draft));
-            this.#last_saved_title = current_title;
-            this.#last_saved_content = current_content;
-        } catch {
-            // Fail silently on QuotaExceededError (e.g., large base64 inline images before upload)
-        }
     }
 
     #enableTitleEditing()
@@ -1213,14 +1079,6 @@ export class GlpiKnowbaseArticleController
             save_button.classList.add('d-none');
             cancel_button.classList.add('d-none');
 
-            if (this.#autosave_interval !== null) {
-                window.clearInterval(this.#autosave_interval);
-                this.#autosave_interval = null;
-            }
-            if (this.#storage_key) {
-                sessionStorage.removeItem(this.#storage_key);
-            }
-
             setHasUnsavedChanges(false);
 
             // Show success notification
@@ -1276,15 +1134,6 @@ export class GlpiKnowbaseArticleController
         }
 
         document.body.appendChild(form);
-
-        if (this.#autosave_interval !== null) {
-            window.clearInterval(this.#autosave_interval);
-            this.#autosave_interval = null;
-        }
-        if (this.#storage_key) {
-            sessionStorage.removeItem(this.#storage_key);
-        }
-
         setHasUnsavedChanges(false);
         form.submit();
     }

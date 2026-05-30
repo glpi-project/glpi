@@ -34,7 +34,6 @@
     class="d-flex mx-n2 my-n2 pe-none"
     data-glpi-knowbase-article
     data-glpi-kb-item-id="{{ item_id }}"
-    data-glpi-kb-users-id="{{ session('glpicurrentuser') }}"
     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}"
     {% if mode == 'edit' %}
         data-glpi-kb-default-language="{{ default_language }}"
@@ -45,24 +44,6 @@
         class="col-12 ms-0 px-4 py-3 kb-article"
         data-glpi-knowbase-article-content
     >
-        {# Autosave banner #}
-        <div id="kb-autosave-banner" class="d-none mb-3">
-            <span class="alert alert-warning m-0 d-flex align-items-center">
-                <i class="ti ti-history d-flex align-items-center justify-content-center flex-shrink-0 me-2"></i>
-                <span id="kb-autosave-banner-text">
-                    {{ __('The backup of this article in your browser is different from the version below.') }}
-                </span>
-                <span class="ms-auto d-flex gap-2">
-                    <button type="button" id="kb-autosave-dismiss" class="btn btn-sm btn-outline-warning">
-                        {{ __('Dismiss') }}
-                    </button>
-                    <button type="button" id="kb-autosave-restore" class="btn btn-sm btn-warning">
-                        {{ __('Restore') }}
-                    </button>
-                </span>
-            </span>
-        </div>
-
         {# Translation mode alert #}
         <div
             class="alert alert-info d-none align-items-center mb-3 gap-1"
