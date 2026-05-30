@@ -345,10 +345,10 @@ abstract class CommonDBVisible extends CommonDBTM
             $params['is_recursive'] = $this->fields['is_recursive'];
         }
         $params['used'] = [
-            'User'    => array_keys($this->users ?? []),
-            'Entity'  => array_keys($this->entities ?? []),
-            'Group'   => array_keys($this->groups ?? []),
-            'Profile' => array_keys($this->profiles ?? []),
+            'User'    => array_keys($this->users),
+            'Entity'  => array_keys($this->entities),
+            'Group'   => array_keys($this->groups),
+            'Profile' => array_keys($this->profiles),
         ];
         return $params;
     }
