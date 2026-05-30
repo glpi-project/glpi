@@ -35,9 +35,31 @@
 namespace tests\units;
 
 use CommonDBRelation;
+use MassiveAction;
+use NetworkPort_NetworkPort;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\ItemLinkException;
 use Glpi\Tests\DbTestCase;
+
+/**
+ * Test-only relation used to exercise same-type reverse lookup logic
+ * in CommonDBRelation massive actions.
+ */
+class CommonDBRelationTest_SameTypeRelation extends NetworkPort_NetworkPort
+{
+    public static function getRelationMassiveActionsSpecificities()
+    {
+        $specificities = parent::getRelationMassiveActionsSpecificities();
+        $specificities['check_both_items_if_same_type'] = true;
+
+        return $specificities;
+    }
+
+    public function can($ID, $right, ?array &$input = null)
+    {
+        return true;
+    }
+}
 
 class CommonDBRelationTest extends DbTestCase
 {
@@ -413,5 +435,95 @@ class CommonDBRelationTest extends DbTestCase
             ]
         );
         /** /Entity with items_id = 0 is valid (root entity) */
+    }
+
+    /**
+     * Verify that massive remove actions can find and delete
+     * same-type relations stored in reverse order.
+     *
+     * This specifically exercises the
+     * `check_both_items_if_same_type` reverse lookup branch.
+     */
+    public function testMassiveActionRemoveFindsReverseSameTypeRelation(): void
+    {
+        // Create two computers.
+        $computer_1 = $this->createItem(\Computer::class, [
+            'name'        => __FUNCTION__ . '_1',
+            'entities_id' => 0,
+        ]);
+    
+        $computer_2 = $this->createItem(\Computer::class, [
+            'name'        => __FUNCTION__ . '_2',
+            'entities_id' => 0,
+        ]);
+    
+        // Create one network port for each computer.
+        $port_1 = $this->createItem(\NetworkPort::class, [
+            'itemtype'           => \Computer::class,
+            'items_id'           => $computer_1->getID(),
+            'name'               => __FUNCTION__ . '_port_1',
+            'instantiation_type' => 'NetworkPortEthernet',
+        ]);
+    
+        $port_2 = $this->createItem(\NetworkPort::class, [
+            'itemtype'           => \Computer::class,
+            'items_id'           => $computer_2->getID(),
+            'name'               => __FUNCTION__ . '_port_2',
+            'instantiation_type' => 'NetworkPortEthernet',
+        ]);
+    
+        // Store relation in reverse order:
+        // port_2 -> port_1.
+        $relation = new CommonDBRelationTest_SameTypeRelation();
+    
+        $this->assertGreaterThan(0, $relation->add([
+            'networkports_id_1' => $port_2->getID(),
+            'networkports_id_2' => $port_1->getID(),
+        ]));
+    
+        // Ensure relation exists before massive action removal.
+        $this->assertSame(
+            1,
+            countElementsInTable(CommonDBRelationTest_SameTypeRelation::getTable(), [
+                'networkports_id_1' => $port_2->getID(),
+                'networkports_id_2' => $port_1->getID(),
+            ])
+        );
+    
+        // Mock a massive action removing port_2 from port_1.
+        $ma = $this->getMockBuilder(MassiveAction::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAction', 'addMessage', 'getInput', 'itemDone'])
+            ->getMock();
+    
+        $ma->method('getAction')->willReturn('remove');
+        $ma->method('addMessage')->willReturn(null);
+        $ma->method('getInput')->willReturn([
+            'peer_networkports_id_2' => $port_2->getID(),
+        ]);
+    
+        // The relation should be found through the reverse lookup and removed.
+        $ma->expects($this->once())
+            ->method('itemDone')
+            ->with(
+                \NetworkPort::class,
+                $port_1->getID(),
+                MassiveAction::ACTION_OK
+            );
+    
+        CommonDBRelationTest_SameTypeRelation::processMassiveActionsForOneItemtype(
+            $ma,
+            new \NetworkPort(),
+            [$port_1->getID()]
+        );
+    
+        // Relation should no longer exist.
+        $this->assertSame(
+            0,
+            countElementsInTable(CommonDBRelationTest_SameTypeRelation::getTable(), [
+                'networkports_id_1' => $port_2->getID(),
+                'networkports_id_2' => $port_1->getID(),
+            ])
+        );
     }
 }
