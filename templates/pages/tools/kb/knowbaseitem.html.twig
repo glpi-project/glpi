@@ -129,13 +129,12 @@
     {% endif %}
 
     {% if params.canedit is defined and params.canedit %}
-        <script>
-            window.KB_AUTOSAVE_CONFIG = {
-                itemId:  {{ item.fields['id']|default(0) }},
-                usersId: {{ session('glpiID') }},
-                isNew:   {{ item.isNewItem ? 'true' : 'false' }},
-            };
-        </script>
+        <div id="kb-autosave-config" class="d-none"
+             data-glpi-kb-item-id="{{ item.fields['id']|default(0) }}"
+             data-glpi-kb-users-id="{{ session('glpicurrentuser') }}"
+             data-glpi-kb-can-edit="{{ params.canedit ? 'true' : 'false' }}"
+             data-glpi-kb-is-new="{{ item.isNewItem ? 'true' : 'false' }}">
+        </div>
         {{ call('Html::script', ['js/modules/KnowbaseAutosave.js', {'type': 'module'}])|raw }}
     {% endif %}
 {% endblock %}

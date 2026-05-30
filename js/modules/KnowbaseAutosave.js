@@ -37,7 +37,7 @@
  * when changes are detected. Displays a warning banner and a last-saved
  * timestamp when a draft is available.
  *
- * Initialized via window.KB_AUTOSAVE_CONFIG injected by the Twig template.
+ * Initialized via a hidden `#kb-autosave-config` element injected by the Twig template.
  *
  * @since 11.0.0
  */
@@ -253,8 +253,14 @@ class KnowbaseAutosave {
 }
 
 // Bootstrap — initialize as soon as the config injected by Twig is available
-if (window.KB_AUTOSAVE_CONFIG) {
-    new KnowbaseAutosave(window.KB_AUTOSAVE_CONFIG);
+const configEl = document.getElementById('kb-autosave-config');
+if (configEl) {
+    const config = {
+        itemId: parseInt(configEl.dataset.glpiKbItemId, 10),
+        usersId: parseInt(configEl.dataset.glpiKbUsersId, 10),
+        isNew: configEl.dataset.glpiKbIsNew === 'true',
+    };
+    new KnowbaseAutosave(config);
 }
 
 export default KnowbaseAutosave;
