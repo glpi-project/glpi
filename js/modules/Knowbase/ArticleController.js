@@ -964,7 +964,7 @@ export class GlpiKnowbaseArticleController
             this.#editor = new KnowbaseEditor(editor_element, {
                 content: this.#original_content,
                 readonly: false,
-                placeholder: __("Start writing..."),
+                placeholder: __('Type / to choose block'),
                 item_id: this.#item_id,
                 onUpdate: () => {
                     setHasUnsavedChanges(true);

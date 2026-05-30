@@ -316,7 +316,7 @@
         }
 
         // Placeholder
-        p.is-editor-empty:first-child::before {
+        p.is-empty::before {
             content: attr(data-placeholder);
             float: inline-start;
             color: var(--tblr-muted);
