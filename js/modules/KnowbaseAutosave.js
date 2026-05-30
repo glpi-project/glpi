@@ -161,8 +161,11 @@ class KnowbaseAutosave {
         try {
             sessionStorage.setItem(this.#storageKey, JSON.stringify(draft));
         } catch (e) {
-            // sessionStorage full or unavailable — fail silently
+            // sessionStorage full or unavailable - fail silently (e.g., large base64 inline images before upload)
             console.warn('[KnowbaseAutosave] Could not save draft:', e);
+            // If the draft has been saved before throwing this, the old version shouldn't be
+            // kept in sessionStorage to avoid showing a stale draft banner on page reload.
+            sessionStorage.removeItem(this.#storageKey);
             return;
         }
 
