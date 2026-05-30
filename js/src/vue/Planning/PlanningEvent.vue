@@ -16,10 +16,10 @@
 
     const { current_view, event_context_menu_el: context_menu } = inject('scheduler');
     const event_content = useTemplateRef('event_content');
-    const show_content = computed(() => {
-        return current_view.value !== 'dayGridMonth' && !current_view.value.includes('list') && event.rendering !== 'background' && !event.allDay;
-    });
     const event = props.event_info.event;
+    const show_content = computed(() => {
+        return current_view.value !== 'dayGridMonth' && !current_view.value.includes('list') && event.extendedProps.rendering !== 'background' && !event.allDay;
+    });
     const type_color = event.extendedProps.typeColor;
     const time_hour = props.event_info.timeText.split(':')[0].padStart(2, '0');
     const icon_class = event.extendedProps?.icon || '';

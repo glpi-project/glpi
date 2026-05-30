@@ -36,7 +36,6 @@
     const default_fullcalendar_options = {
         height: Math.max(window.innerHeight - 272, 300),
         timeZone: 'UTC',
-        themeSystem: 'bootstrap5',
         weekNumbers: true,
         eventTimeFormat: {
             hour: 'numeric',
