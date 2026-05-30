@@ -33,7 +33,7 @@
 /**
  * KnowbaseAutosave
  *
- * Automatically saves KB article drafts to localStorage every 30 seconds
+ * Automatically saves KB article drafts to sessionStorage every 30 seconds
  * when changes are detected. Displays a warning banner and a last-saved
  * timestamp when a draft is available.
  *
@@ -46,7 +46,7 @@ class KnowbaseAutosave {
     /** @type {{ itemId: number, usersId: number, isNew: boolean }} */
     #config;
 
-    /** @type {string} localStorage key for this article */
+    /** @type {string} sessionStorage key for this article */
     #storageKey;
 
     /** @type {string} last saved Subject value (to detect changes) */
@@ -67,13 +67,13 @@ class KnowbaseAutosave {
         this.#init();
     }
 
-    // ─── localStorage Key ───────────────────────────────────────────────────
+    // ─── sessionStorage Key ───────────────────────────────────────────────────
 
     #buildStorageKey() {
         if (this.#config.isNew) {
             return `glpi_kb_autosave_new_${this.#config.usersId}`;
         }
-        return `glpi_kb_autosave_${this.#config.itemId}`;
+        return `glpi_kb_autosave_${this.#config.itemId}_${this.#config.usersId}`;
     }
 
     // ─── Initialization ─────────────────────────────────────────────────────
@@ -159,9 +159,9 @@ class KnowbaseAutosave {
         };
 
         try {
-            localStorage.setItem(this.#storageKey, JSON.stringify(draft));
+            sessionStorage.setItem(this.#storageKey, JSON.stringify(draft));
         } catch (e) {
-            // localStorage full or unavailable — fail silently
+            // sessionStorage full or unavailable — fail silently
             console.warn('[KnowbaseAutosave] Could not save draft:', e);
             return;
         }
@@ -173,7 +173,7 @@ class KnowbaseAutosave {
     // ─── Check for Existing Draft on Load ───────────────────────────────────
 
     #checkExistingDraft() {
-        const raw = localStorage.getItem(this.#storageKey);
+        const raw = sessionStorage.getItem(this.#storageKey);
         if (!raw) {
             return;
         }
@@ -182,7 +182,7 @@ class KnowbaseAutosave {
         try {
             draft = JSON.parse(raw);
         } catch {
-            localStorage.removeItem(this.#storageKey);
+            sessionStorage.removeItem(this.#storageKey);
             return;
         }
 
@@ -208,10 +208,10 @@ class KnowbaseAutosave {
 
         banner.classList.remove('d-none');
 
-        // Dismiss button — removes draft from localStorage and hides the banner
+        // Dismiss button — removes draft from sessionStorage and hides the banner
         document.getElementById('kb-autosave-dismiss')
             ?.addEventListener('click', () => {
-                localStorage.removeItem(this.#storageKey);
+                sessionStorage.removeItem(this.#storageKey);
                 banner.classList.add('d-none');
             });
 
@@ -232,7 +232,7 @@ class KnowbaseAutosave {
                 this.#lastSavedName   = draft.name;
                 this.#lastSavedAnswer = draft.answer;
 
-                localStorage.removeItem(this.#storageKey);
+                sessionStorage.removeItem(this.#storageKey);
                 banner.classList.add('d-none');
             });
     }
@@ -246,7 +246,7 @@ class KnowbaseAutosave {
         }
 
         form.addEventListener('submit', () => {
-            localStorage.removeItem(this.#storageKey);
+            sessionStorage.removeItem(this.#storageKey);
             clearInterval(this.#intervalId);
         });
     }
