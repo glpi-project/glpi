@@ -41,26 +41,6 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\ItemLinkException;
 use Glpi\Tests\DbTestCase;
 
-/**
- * Test-only relation used to exercise same-type reverse lookup logic
- * in CommonDBRelation massive actions.
- */
-class CommonDBRelationTest_SameTypeRelation extends NetworkPort_NetworkPort
-{
-    public static function getRelationMassiveActionsSpecificities()
-    {
-        $specificities = parent::getRelationMassiveActionsSpecificities();
-        $specificities['check_both_items_if_same_type'] = true;
-
-        return $specificities;
-    }
-
-    public function can($ID, $right, ?array &$input = null)
-    {
-        return true;
-    }
-}
-
 class CommonDBRelationTest extends DbTestCase
 {
     public function testCreateCheck(): void
@@ -446,7 +426,6 @@ class CommonDBRelationTest extends DbTestCase
      */
     public function testMassiveActionRemoveFindsReverseSameTypeRelation(): void
     {
-        // Create two computers.
         $computer_1 = $this->createItem(\Computer::class, [
             'name'        => __FUNCTION__ . '_1',
             'entities_id' => 0,
@@ -457,7 +436,6 @@ class CommonDBRelationTest extends DbTestCase
             'entities_id' => 0,
         ]);
     
-        // Create one network port for each computer.
         $port_1 = $this->createItem(\NetworkPort::class, [
             'itemtype'           => \Computer::class,
             'items_id'           => $computer_1->getID(),
@@ -472,8 +450,7 @@ class CommonDBRelationTest extends DbTestCase
             'instantiation_type' => 'NetworkPortEthernet',
         ]);
     
-        // Store relation in reverse order:
-        // port_2 -> port_1.
+        // Store relation in reverse order: port_2 -> port_1.
         $relation = new CommonDBRelationTest_SameTypeRelation();
     
         $this->assertGreaterThan(0, $relation->add([
@@ -481,7 +458,6 @@ class CommonDBRelationTest extends DbTestCase
             'networkports_id_2' => $port_1->getID(),
         ]));
     
-        // Ensure relation exists before massive action removal.
         $this->assertSame(
             1,
             countElementsInTable(CommonDBRelationTest_SameTypeRelation::getTable(), [
@@ -490,7 +466,6 @@ class CommonDBRelationTest extends DbTestCase
             ])
         );
     
-        // Mock a massive action removing port_2 from port_1.
         $ma = $this->getMockBuilder(MassiveAction::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getAction', 'addMessage', 'getInput', 'itemDone'])
@@ -502,7 +477,6 @@ class CommonDBRelationTest extends DbTestCase
             'peer_networkports_id_2' => $port_2->getID(),
         ]);
     
-        // The relation should be found through the reverse lookup and removed.
         $ma->expects($this->once())
             ->method('itemDone')
             ->with(
@@ -517,7 +491,6 @@ class CommonDBRelationTest extends DbTestCase
             [$port_1->getID()]
         );
     
-        // Relation should no longer exist.
         $this->assertSame(
             0,
             countElementsInTable(CommonDBRelationTest_SameTypeRelation::getTable(), [
@@ -525,5 +498,34 @@ class CommonDBRelationTest extends DbTestCase
                 'networkports_id_2' => $port_1->getID(),
             ])
         );
+    }
+}
+
+/**
+ * Test-only relation used to exercise same-type reverse lookup logic
+ * in CommonDBRelation massive actions.
+ */
+/**
+ * Test-only relation used to exercise same-type reverse lookup logic
+ * in CommonDBRelation massive actions.
+ */
+class CommonDBRelationTest_SameTypeRelation extends \NetworkPort_NetworkPort
+{
+    public static function getTable($classname = null)
+    {
+        return \NetworkPort_NetworkPort::getTable();
+    }
+
+    public static function getRelationMassiveActionsSpecificities()
+    {
+        $specificities = parent::getRelationMassiveActionsSpecificities();
+        $specificities['check_both_items_if_same_type'] = true;
+
+        return $specificities;
+    }
+
+    public function can($ID, $right, ?array &$input = null): bool
+    {
+        return true;
     }
 }
