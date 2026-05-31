@@ -13,10 +13,6 @@
             type: Object,
             default: () => ({}),
         },
-        planning_config: {
-            type: Object,
-            required: true,
-        },
         active_entity: {
             type: Object,
             required: true,
@@ -64,7 +60,7 @@
 <template>
     <div id="planning_filter" :style="filters_collapsed ? '' : 'min-width: 300px;'">
         <div id="planning_filter_content">
-            <div v-if="Object.keys(planning_config).includes('filters')">
+            <div v-if="Object.keys(filters).includes('filters')">
                 <h3 class="d-flex justify-content-between fw-normal" :style="filters_collapsed ? 'background: none' : ''">
                     <span v-show="!filters_collapsed">{{ __('Filters') }}</span>
                     <button class="btn btn-sm btn-icon btn-ghost-secondary p-1" @click="toggleFilters"
@@ -75,7 +71,7 @@
                 <PlanningFiltersList v-show="!filters_collapsed" :active_entity="active_entity" :filters="filters.filters"
                                      :can_delete="false" @filtersUpdated="emits('filtersUpdated')"/>
             </div>
-            <div v-show="!filters_collapsed" v-if="Object.keys(planning_config).includes('plannings')">
+            <div v-show="!filters_collapsed" v-if="Object.keys(filters).includes('plannings')">
                 <h3 class="d-flex justify-content-between fw-normal">
                     {{ __('Plannings') }}
                     <button class="btn btn-sm btn-icon btn-ghost-secondary me-1"
