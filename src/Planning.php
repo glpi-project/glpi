@@ -876,7 +876,6 @@ JAVASCRIPT;
             $color = self::getPaletteColor('bg', $params['filter_color_index']);
         }
 
-        $login_user = null;
         $webcal_base_url = null;
         $show_export_buttons = in_array($filter_data['type'], ['user', 'group'], true);
         if ($show_export_buttons) {
@@ -890,9 +889,6 @@ JAVASCRIPT;
                 . $parsed_url['host']
                 . ($url_port !== null ? ':' . $url_port : '')
                 . ($parsed_url['path'] ?? '');
-
-            $login_user = new User();
-            $login_user->getFromDB(Session::getLoginUserID(true));
         }
 
         if ($filter_data['type'] === 'external') {
@@ -909,7 +905,6 @@ JAVASCRIPT;
             'show_export_buttons'   => $show_export_buttons,
             'uID'                   => $uID,
             'gID'                   => $gID,
-            'login_user'            => $login_user,
             'webcal_base_url'       => $webcal_base_url,
             'caldav_url'            => $caldav_item_url !== null ? $CFG_GLPI['url_base'] . '/caldav.php/' . $caldav_item_url : null,
             'child_filters'         => $child_filters,

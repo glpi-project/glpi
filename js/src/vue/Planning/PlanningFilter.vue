@@ -94,8 +94,10 @@
                     :title="__('Toggle filters')" @click="filter_data.expanded = !filter_data.expanded">
                 <i :class="filter_data.expanded ? 'ti ti-caret-up-filled' : 'ti ti-caret-down-filled'" role="presentation"></i>
             </button>
-            <div v-if="event_type !== 'event_filter'" class="filter_option dropstart d-inline-block position-relative m-1" data-bs-toggle="dropdown">
-                <i class="ti ti-dots cursor-pointer"></i>
+            <div v-if="event_type !== 'event_filter'" class="filter_option dropstart d-inline-block position-relative m-1">
+                <button class="btn btn-sm btn-ghost-secondary btn-icon" data-bs-toggle="dropdown" :title="_n('Action', 'Actions', 5)" :aria-label="_n('Action', 'Actions', 5)">
+                    <i class="ti ti-dots"></i>
+                </button>
                 <ul class="dropdown-menu p-0">
                     <li v-if="filter_data.params.show_delete" class="dropdown-item p-0">
                         <button class="btn btn-ghost-secondary btn-sm p-2 w-100 border-radius-0 justify-content-start"

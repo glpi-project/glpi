@@ -16,9 +16,11 @@
 
     const { current_view, event_context_menu_el: context_menu } = inject('scheduler');
     const event_content = useTemplateRef('event_content');
+    /** Non-ref reference to the FC event element as refs get cleaned before unmounting but we need to reference it */
+    let fc_event_el = null;
     const event = props.event_info.event;
     const show_content = computed(() => {
-        return current_view.value !== 'dayGridMonth' && !current_view.value.includes('list') && event.extendedProps.rendering !== 'background' && !event.allDay;
+        return current_view.value !== 'dayGridMonth' && !current_view.value.includes('list') && event._def.ui.display !== 'background' && !event.allDay;
     });
     const type_color = event.extendedProps.typeColor;
     const time_hour = props.event_info.timeText.split(':')[0].padStart(2, '0');
@@ -27,9 +29,6 @@
     let popover = null;
 
     onMounted(() => {
-        if (!event_content.value) {
-            return;
-        }
         event_content.value.closest('.fc-event').addEventListener('contextmenu', handleContextMenu);
 
         popover = new bootstrap.Popover(event_content.value.closest('.fc-event'), {
@@ -37,13 +36,14 @@
             html: true,
             content: event.extendedProps.tooltip
         });
+
+        fc_event_el = event_content.value.closest('.fc-event');
     });
 
     onUnmounted(() => {
-        if (!event_content.value) {
-            return;
+        if (fc_event_el) {
+            fc_event_el.removeEventListener('contextmenu', handleContextMenu);
         }
-        event_content.value.closest('.fc-event').removeEventListener('contextmenu', handleContextMenu);
         if (popover) {
             popover.dispose();
         }
@@ -54,7 +54,6 @@
             return;
         }
         e.preventDefault();
-        context_menu.value.style.position = 'fixed';
         context_menu.value.classList.remove('d-none');
         context_menu.value.style.left = `${e.clientX}px`;
         context_menu.value.style.top = `${e.clientY}px`;
