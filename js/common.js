@@ -1574,7 +1574,7 @@ function copyDisclosablePasswordFieldToClipboard(item) {
     $("#" + CSS.escape(item)).select();
     try {
         document.execCommand("copy");
-        let btn = $("#" + CSS.escape(item)).closest('.btn-group').find('.ti-clipboard-copy').closest('button');
+        const btn = $("#" + CSS.escape(item)).closest('.btn-group').find('.ti-clipboard-copy').closest('button');
         flashIconButton(btn, btn.attr('class'), 'ti ti-check', 1500);
     } catch {
         alert("Copy to clipboard failed'");
