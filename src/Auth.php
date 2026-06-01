@@ -1773,4 +1773,12 @@ class Auth extends CommonGLPI
             $_COOKIE[$cookie_name] = $cookie_value;
         }
     }
+
+    /**
+     * @return int
+     */
+    public function getAuthType(): int
+    {
+        return $this->auth_type;
+    }
 }

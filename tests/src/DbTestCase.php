@@ -104,8 +104,7 @@ class DbTestCase extends GLPITestCase
         bool $noauto = true,
         bool $expected = true
     ): Auth {
-        Session::destroy();
-        Session::start();
+        $this->logOut();
 
         $auth = new Auth();
         $this->assertEquals($expected, $auth->login($user_name, $user_pass, $noauto));
@@ -129,8 +128,7 @@ class DbTestCase extends GLPITestCase
         string $user_name = TU_USER,
         string $user_pass = "",
     ): Auth {
-        Session::destroy();
-        Session::start();
+        $this->logOut();
 
         $auth = new Auth();
         $auth->user = getItemByTypeName(User::class, $user_name);

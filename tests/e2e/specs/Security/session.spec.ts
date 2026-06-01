@@ -87,7 +87,7 @@ test.describe('Session', () => {
         await login_page.goto();
         await login_page.doLogin(username, 'glpi');
 
-        await anonymousPage.goto('/front/preference.php?forcetab=Preference$1');
+        await anonymousPage.goto('/front/preference.php?forcetab=Preference$0');
         const secret = await anonymousPage.getByRole('textbox', { name: '2FA secret' }).inputValue();
         await login_page.doFillTotpCode(authenticator.generate(secret));
         await expect(anonymousPage.getByRole('button', { name: 'Disable 2FA' })).toBeVisible();

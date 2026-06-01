@@ -41,6 +41,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
+use Glpi\Security\SessionTracker;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\InfoException;
 
@@ -1552,12 +1553,14 @@ TWIG, ['msg' => __('Last run list')]);
                 // Delete session file if not delete before
                 try {
                     @unlink($filename);
+                    $base_filename = basename($filename);
                     ++$nb;
                 } catch (FilesystemException $e) {
-                    //mepty catch
+                    //empty catch
                 }
             }
         }
+        SessionTracker::revokeSessionsByAge($maxlifetime);
 
         $task->setVolume($nb);
         if ($nb) {
