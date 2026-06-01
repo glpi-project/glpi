@@ -970,9 +970,9 @@ export class GlpiKnowbaseArticleController
                         return __('Heading');
                     }
                     if (pos === 0) {
-                        return __("Type '/' to insert, or start writing...");
+                        return __("Type / to insert, or start writing...");
                     }
-                    return __("Type '/' to insert...");
+                    return __("Type / to insert...");
                 },
                 item_id: this.#item_id,
                 onUpdate: () => {
