@@ -40,7 +40,7 @@
             }, with_context: false) }}
         </div>
         <div class="mb-2">
-            <label class="form-label" for="kb-category-comment-{{ id }}">{{ __('Comment') }}</label>
+            <label class="form-label" for="kb-category-comment-{{ id }}">{{ _n('Comment', 'Comments', get_plural_number()) }}</label>
             <textarea
                 id="kb-category-comment-{{ id }}"
                 class="form-control"
