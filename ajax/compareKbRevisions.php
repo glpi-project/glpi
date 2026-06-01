@@ -38,6 +38,7 @@
  */
 
 use Glpi\RichText\RichText;
+use function Safe\preg_replace;
 
 use function Safe\json_encode;
 
@@ -55,6 +56,52 @@ if (!$item->getFromDB($_POST['kbid']) || !$item->can($_POST['kbid'], READ)) {
     return;
 }
 
+$normalize_html = static function (string $html): string {
+    if ($html === '') {
+        return $html;
+    }
+
+    $dom = new DOMDocument('1.0', 'UTF-8');
+    libxml_use_internal_errors(true);
+    $dom->loadHTML('<html><head><meta charset="UTF-8"></head><body>' . $html . '</body></html>');
+    libxml_clear_errors();
+
+    $xpath = new DOMXPath($dom);
+    $tables = $xpath->query('//table');
+    if ($tables !== false) {
+        foreach ($tables as $table) {
+            /** @var DOMElement $table */
+            $table->removeAttribute('width');
+            $style = $table->getAttribute('style');
+            $style = preg_replace('/\b(?:min-)?width\s*:[^;]+;?\s*/i', '', $style);
+            $style = rtrim($style, '; ') . '; max-width: 100%; box-sizing: border-box;';
+            $table->setAttribute('style', ltrim($style, '; '));
+        }
+    }
+
+    $imgs = $xpath->query('//img');
+    if ($imgs !== false) {
+        foreach ($imgs as $img) {
+            /** @var DOMElement $img */
+            $style = $img->getAttribute('style');
+            $style = preg_replace('/\bmax-width\s*:[^;]+;?\s*/i', '', $style);
+            $style = rtrim($style, '; ') . '; max-width: 100%; height: auto;';
+            $img->setAttribute('style', ltrim($style, '; '));
+        }
+    }
+
+    $body = $dom->getElementsByTagName('body')->item(0);
+    if (!($body instanceof DOMElement)) {
+        return $html;
+    }
+
+    $result = '';
+    foreach ($body->childNodes as $node) {
+        $result .= $dom->saveHTML($node);
+    }
+    return $result;
+};
+
 $oldid = $_POST['oldid'];
 $diffid = $_POST['diffid'];
 $kbid = $_POST['kbid'];
@@ -63,14 +110,14 @@ $revision = new KnowbaseItem_Revision();
 $revision->getFromDB($oldid);
 $old = [
     'name'   => $revision->fields['name'],
-    'answer' => RichText::getSafeHtml($revision->fields['answer']),
+    'answer' => $normalize_html(RichText::getSafeHtml($revision->fields['answer'])),
 ];
 
 $revision = $diffid == 0 ? new KnowbaseItem() : new KnowbaseItem_Revision();
 $revision->getFromDB($diffid == 0 ? $kbid : $diffid);
 $diff = [
     'name'   => $revision->fields['name'],
-    'answer' => RichText::getSafeHtml($revision->fields['answer']),
+    'answer' => $normalize_html(RichText::getSafeHtml($revision->fields['answer'])),
 ];
 
 echo json_encode([
