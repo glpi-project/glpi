@@ -169,11 +169,13 @@ abstract class CommonDevice extends CommonDropdown
                 /** @var class-string $key */
                 foreach ($tab as $key => $val) {
                     if ($tmp = getItemForItemtype($key)) {
+                        $search_url = $tmp::getSearchURL(false);
+
                         $menu['options'][$key] = [
                             'title' => $val,
-                            'page'  => $tmp::getSearchURL(false),
+                            'page' => $search_url,
                             'links' => [
-                                'search' => $tmp::getSearchURL(false),
+                                'search' => $search_url,
                             ],
                         ];
                         if ($tmp::canCreate()) {
