@@ -203,6 +203,7 @@ class Dashboard extends CommonDBTM
         Profiler::getInstance()->start(__METHOD__);
 
         if (!$this->load()) {
+            Profiler::getInstance()->stop(__METHOD__);
             return false;
         }
 
