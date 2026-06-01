@@ -273,7 +273,7 @@ class MassiveActionTest extends DbTestCase
         } else {
             // No update right, the action will run and fail
             $expected_ok = 0;
-            $expected_ko = 1;
+            $expected_ko = 0; // no items set KO, action canceled before the foreach loop.
         }
 
         // Execute action

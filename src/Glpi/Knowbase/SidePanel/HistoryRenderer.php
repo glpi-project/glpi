@@ -44,7 +44,7 @@ final class HistoryRenderer implements RendererInterface
     #[Override]
     public function canView(KnowbaseItem $item): bool
     {
-        return $item->canUpdateItem();
+        return $item->can($item->getID(), UPDATE);
     }
 
     #[Override]
@@ -61,7 +61,7 @@ final class HistoryRenderer implements RendererInterface
         return [
             'id' => $item->getID(),
             'history' => $history,
-            'can_revert' => $item->canUpdateItem(),
+            'can_revert' => $item->can($item->getID(), UPDATE),
             'users' => new UserCache(),
         ];
     }

@@ -428,7 +428,7 @@ class Reservation extends CommonDBChild
         $item = $ri !== false ? $ri->getItem() : false;
         if ($item !== false) {
             // Users with permission to update the specific asset can CRUD all reservations for that asset
-            if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
+            if ($item->can($item->getID(), UPDATE) && Session::haveRight($item::$rightname, UPDATE)) {
                 return true;
             }
         }
@@ -477,7 +477,7 @@ class Reservation extends CommonDBChild
         }
 
         // Users with permission to update the specific asset can see all reservations for that asset
-        if ($item->canUpdateItem() && Session::haveRight($item::$rightname, UPDATE)) {
+        if ($item->can($item->getID(), UPDATE) && Session::haveRight($item::$rightname, UPDATE)) {
             return true;
         }
 

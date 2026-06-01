@@ -54,7 +54,7 @@ final class UpdateTileController extends AbstractTileController
             $request->request->getString('_itemtype'),
             $request->request->getInt('id'),
         );
-        if (!$tile::canUpdate() || !$tile->canUpdateItem()) {
+        if (!$tile->can($tile->getID(), UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 

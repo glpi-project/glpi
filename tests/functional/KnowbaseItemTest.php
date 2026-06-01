@@ -347,7 +347,7 @@ HTML,
             ->getMock();
 
         $m_kbi = $this->getMockBuilder(KnowbaseItem::class)
-            ->onlyMethods(['getFromDB', 'canViewItem'])
+            ->onlyMethods(['getFromDB', 'can'])
             ->getMock();
 
         // Mocked db request result
@@ -362,7 +362,7 @@ HTML,
         $m_kbi->method('getFromDB')->willReturn(true);
 
         // True for call 1 & 3, false for call 2 and every following calls
-        $m_kbi->method('canViewItem')->willReturn(true, false, true, false, false, false);
+        $m_kbi->method('can')->willReturn(true, false, true, false, false, false);
 
         // Expected : [1, 3]
         // Replace global DB with mocked DB

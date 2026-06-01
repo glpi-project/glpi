@@ -1679,6 +1679,11 @@ class MassiveAction
                     break;
                 }
 
+                if (!$item::canUpdate()) {
+                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    break;
+                }
+
                 // Load input
                 $input = $ma->getInput();
                 $amendment = $input['amendment'];

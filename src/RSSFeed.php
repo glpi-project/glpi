@@ -623,7 +623,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public function showFeedContent(): bool
     {
-        if (!$this->canViewItem()) {
+        if (!$this->can($this->getID(), READ)) {
             return false;
         }
         $rss_feed = [

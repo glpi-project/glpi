@@ -191,6 +191,7 @@ class Notepad extends CommonDBChild
         }
         $iterator = $DB->request($query);
         $document_obj = new Document();
+        $can_update_document = Document::canUpdate();
 
         foreach ($iterator as $note) {
             $document_items = Document_Item::getItemsAssociatedTo(self::class, $note['id']);
@@ -200,7 +201,7 @@ class Notepad extends CommonDBChild
                 }
 
                 $item = $document_obj->fields;
-                $item['_can_edit'] = Document::canUpdate() && $document_obj->canUpdateItem();
+                $item['_can_edit'] = $can_update_document && $document_obj->canUpdateItem();
                 $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem();
 
                 $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];

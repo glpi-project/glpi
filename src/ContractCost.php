@@ -267,7 +267,7 @@ class ContractCost extends CommonDBChild
             'items_id_field' => static::$items_id,
             'parent_id' => $this->fields['contracts_id'],
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
             ],
         ]);
 

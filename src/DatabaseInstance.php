@@ -136,7 +136,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         TemplateRenderer::getInstance()->display('pages/management/databaseinstance.html.twig', [
             'item' => $this,
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
             ],
         ]);
 

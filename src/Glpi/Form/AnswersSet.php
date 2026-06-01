@@ -251,7 +251,7 @@ final class AnswersSet extends CommonDBChild
     {
         $links = [];
         foreach ($this->getCreatedItems() as $item) {
-            if ($item->canViewItem()) {
+            if ($item->can($item->getID(), READ)) {
                 $links[] = $item->getLink();
             }
         }

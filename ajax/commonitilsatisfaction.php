@@ -46,7 +46,7 @@ $config_suffix = $itemtype::getType() === 'Ticket' ? '' : ('_' . strtolower($ite
 
 if (isset($_POST['inquest_config' . $config_suffix], $_POST['entities_id'])) {
     if ($ent->getFromDB($_POST['entities_id'])) {
-        if (!$ent->canViewItem()) {
+        if (!$ent->can($ent->getID(), READ)) {
             throw new AccessDeniedHttpException();
         }
         $inquest_delay             = $ent->fields['inquest_delay' . $config_suffix];
