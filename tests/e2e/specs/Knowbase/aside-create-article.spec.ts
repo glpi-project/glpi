@@ -65,6 +65,8 @@ test('clicking the aside add-article link creates a new article linked to the ca
     const add_link = kb.getAsideCategory(category_name).getByRole('link', {
         name: new RegExp(`Create an article in ${category_name}`, 'i'),
     });
+    // Reveal the action button (hidden until the category row is hovered).
+    await kb.getAsideCategoryToggle(category_name).hover();
     await expect(add_link).toBeVisible();
     await add_link.click();
 
@@ -117,6 +119,8 @@ test('clicking the aside add-article link on Uncategorized creates an article wi
     const add_link = uncategorized.getByRole('link', {
         name: /Create an article in Uncategorized/i,
     });
+    // Reveal the action button (hidden until the category row is hovered).
+    await kb.getAsideCategoryToggle('Uncategorized').hover();
     await expect(add_link).toBeVisible();
     await add_link.click();
 
@@ -180,6 +184,6 @@ test('hovering a sub-category does not reveal the parent category add-article li
 
     await kb.getAsideCategoryToggle(child_name).hover();
 
-    await expect(child_add).toHaveCSS('opacity', '1');
-    await expect(parent_add).toHaveCSS('opacity', '0');
+    await expect(child_add).toBeVisible();
+    await expect(parent_add).toBeHidden();
 });

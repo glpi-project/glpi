@@ -36,7 +36,7 @@ import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
-test('clicking the aside create-sub-category link creates a category under the parent', async ({ page, profile, api }) => {
+test('creating a sub-category inline adds it under the parent without a dialog', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
@@ -49,8 +49,6 @@ test('clicking the aside create-sub-category link creates a category under the p
         entities_id: getWorkerEntityId(),
     });
 
-    // Seed an article so the aside renders on a viewable page (in the worker
-    // entity); a hardcoded article id is not reliable on a fresh CI database.
     const seed_article_id = await api.createItem('KnowbaseItem', {
         name: `Seed ${unique}`,
         answer: 'Seed content',
@@ -60,110 +58,132 @@ test('clicking the aside create-sub-category link creates a category under the p
 
     await kb.goto(seed_article_id);
 
-    const create_link = kb.getAsideCategory(parent_name).getByRole('link', {
-        name: new RegExp(`Create a sub-category in ${parent_name}`, 'i'),
-    });
-    // Reveal the action button (hidden until the category row is hovered).
     await kb.getAsideCategoryToggle(parent_name).hover();
-    await expect(create_link).toBeVisible();
-    await create_link.click();
+    await kb.getCreateSubCategoryButton(parent_name).click();
 
-    const dialog = page.getByRole('dialog', { name: 'Create a category' });
-    await expect(dialog).toBeVisible();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
 
-    await expect(dialog.getByText(parent_name)).toBeVisible();
+    const input = kb.getCategoryNameInput();
+    await expect(input).toBeFocused();
+    await input.fill(child_name);
+    await input.press('Enter');
 
-    await dialog.getByLabel('Name', { exact: true }).fill(child_name);
-    await dialog.getByRole('button', { name: 'Create' }).click();
-
-    await expect(dialog).toBeHidden();
-    await expect(kb.getAlert('Category created')).toBeVisible();
-
-    await kb.goto(seed_article_id);
-    const parent_node = kb.getAsideCategory(parent_name);
-    await expect(parent_node.getByRole('group', { name: child_name })).toBeVisible();
+    await expect(
+        kb.getAsideCategory(parent_name).getByRole('group', { name: child_name }),
+    ).toBeVisible();
 });
 
-test('submitting the modal with an empty name shows an inline validation error', async ({ page, profile, api }) => {
+test('creating a root category inline adds it at the tree root without a dialog', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
     const unique = randomUUID().slice(0, 8);
-    const parent_name = `E2E Aside Val Cat ${unique}`;
-
-    const parent_id = await api.createItem('KnowbaseItemCategory', {
-        name: parent_name,
-        entities_id: getWorkerEntityId(),
-    });
+    const name = `E2E Aside Root Cat ${unique}`;
 
     const seed_article_id = await api.createItem('KnowbaseItem', {
         name: `Seed ${unique}`,
         answer: 'Seed content',
         entities_id: getWorkerEntityId(),
-        _categories: [parent_id],
     });
 
     await kb.goto(seed_article_id);
 
-    // Reveal the action button (hidden until the category row is hovered).
-    await kb.getAsideCategoryToggle(parent_name).hover();
-    await kb.getAsideCategory(parent_name).getByRole('link', {
-        name: new RegExp(`Create a sub-category in ${parent_name}`, 'i'),
-    }).click();
+    await kb.getCreateRootCategoryButton().click();
 
-    const dialog = page.getByRole('dialog', { name: 'Create a category' });
-    await expect(dialog).toBeVisible();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
 
-    await dialog.getByRole('button', { name: 'Create' }).click();
+    const input = kb.getCategoryNameInput();
+    await expect(input).toBeFocused();
+    await input.fill(name);
+    await input.press('Enter');
 
-    await expect(dialog.getByRole('alert').filter({ hasText: 'Title is mandatory' })).toBeVisible();
-    await expect(dialog).toBeVisible();
-    await expect(kb.getAlert('Category created')).toHaveCount(0);
+    await expect(kb.getAsideCategory(name)).toBeVisible();
 });
 
-test('clicking Cancel closes the modal without creating a category', async ({ page, profile, api }) => {
+test('pressing Enter with an empty name shows an inline validation error', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
     const unique = randomUUID().slice(0, 8);
-    const parent_name = `E2E Aside Cancel Cat ${unique}`;
-
-    const parent_id = await api.createItem('KnowbaseItemCategory', {
-        name: parent_name,
-        entities_id: getWorkerEntityId(),
-    });
 
     const seed_article_id = await api.createItem('KnowbaseItem', {
         name: `Seed ${unique}`,
         answer: 'Seed content',
         entities_id: getWorkerEntityId(),
-        _categories: [parent_id],
     });
 
     await kb.goto(seed_article_id);
 
-    // Reveal the action button (hidden until the category row is hovered).
-    await kb.getAsideCategoryToggle(parent_name).hover();
-    await kb.getAsideCategory(parent_name).getByRole('link', {
-        name: new RegExp(`Create a sub-category in ${parent_name}`, 'i'),
-    }).click();
+    await kb.getCreateRootCategoryButton().click();
 
-    const dialog = page.getByRole('dialog', { name: 'Create a category' });
-    await expect(dialog).toBeVisible();
+    const input = kb.getCategoryNameInput();
+    await input.press('Enter');
 
-    await dialog.getByRole('button', { name: 'Cancel' }).click();
-
-    await expect(dialog).toBeHidden();
-    await expect(kb.getAlert('Category created')).toHaveCount(0);
+    await expect(
+        page.getByRole('main')
+            .getByRole('complementary')
+            .getByRole('alert')
+            .filter({ hasText: 'Title is mandatory' }),
+    ).toBeVisible();
+    await expect(input).toBeVisible();
 });
 
-test('the Uncategorized row has no create-sub-category link', async ({ page, profile, api }) => {
+test('pressing Escape cancels the inline creation', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const name = `E2E Aside Escape Cat ${unique}`;
+
+    const seed_article_id = await api.createItem('KnowbaseItem', {
+        name: `Seed ${unique}`,
+        answer: 'Seed content',
+        entities_id: getWorkerEntityId(),
+    });
+
+    await kb.goto(seed_article_id);
+
+    await kb.getCreateRootCategoryButton().click();
+
+    const input = kb.getCategoryNameInput();
+    await input.fill(name);
+    await input.press('Escape');
+
+    await expect(kb.getCategoryNameInput()).toHaveCount(0);
+    await expect(kb.getAsideCategory(name)).toHaveCount(0);
+});
+
+test('clicking away cancels the inline creation', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const name = `E2E Aside Blur Cat ${unique}`;
+
+    const seed_article_id = await api.createItem('KnowbaseItem', {
+        name: `Seed ${unique}`,
+        answer: 'Seed content',
+        entities_id: getWorkerEntityId(),
+    });
+
+    await kb.goto(seed_article_id);
+
+    await kb.getCreateRootCategoryButton().click();
+
+    const input = kb.getCategoryNameInput();
+    await input.fill(name);
+    await kb.asideSearchInput.click();
+
+    await expect(kb.getCategoryNameInput()).toHaveCount(0);
+    await expect(kb.getAsideCategory(name)).toHaveCount(0);
+});
+
+test('the Uncategorized row has no create-sub-category button', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
     const unique = randomUUID().slice(0, 8);
 
-    // Seed an uncategorized article so the aside renders on a viewable page.
     const seed_article_id = await api.createItem('KnowbaseItem', {
         name: `Seed ${unique}`,
         answer: 'Seed content',
@@ -174,12 +194,12 @@ test('the Uncategorized row has no create-sub-category link', async ({ page, pro
 
     const uncategorized = kb.getAsideCategory('Uncategorized');
     await expect(uncategorized).toBeVisible();
-    await expect(uncategorized.getByRole('link', {
+    await expect(uncategorized.getByRole('button', {
         name: /Create a sub-category in Uncategorized/i,
     })).toHaveCount(0);
 });
 
-test('hovering a sub-category does not reveal the parent category create-sub-category link', async ({ page, profile, api }) => {
+test('hovering a sub-category does not reveal the parent category create-sub-category button', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
@@ -205,12 +225,8 @@ test('hovering a sub-category does not reveal the parent category create-sub-cat
 
     await kb.goto(seed_article_id);
 
-    const parent_create = kb.getAsideCategory(parent_name).getByRole('link', {
-        name: new RegExp(`Create a sub-category in ${parent_name}`, 'i'),
-    });
-    const child_create = kb.getAsideCategory(child_name).getByRole('link', {
-        name: new RegExp(`Create a sub-category in ${child_name}`, 'i'),
-    });
+    const parent_create = kb.getCreateSubCategoryButton(parent_name);
+    const child_create = kb.getCreateSubCategoryButton(child_name);
 
     await kb.getAsideCategoryToggle(child_name).hover();
 

@@ -34,9 +34,12 @@
 
 namespace Glpi\Controller\Knowbase;
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Knowbase\Aside\Category as AsideCategory;
+use KnowbaseItem;
 use KnowbaseItemCategory;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -46,34 +49,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class CreateCategoryFromAsideController extends AbstractController
 {
-    #[Route(
-        "/Knowbase/Aside/Category/CreateForm",
-        name: "knowbase_aside_category_create_form",
-        methods: 'GET',
-    )]
-    public function form(Request $request): Response
-    {
-        if (!KnowbaseItemCategory::canCreate()) {
-            throw new AccessDeniedHttpException();
-        }
-
-        $parent_id = $request->query->getInt('parent');
-        $parent_name = '';
-
-        if ($parent_id > 0) {
-            $parent = new KnowbaseItemCategory();
-            if (!$parent->can($parent_id, READ)) {
-                throw new BadRequestHttpException();
-            }
-            $parent_name = (string) $parent->fields['name'];
-        }
-
-        return $this->render('pages/tools/kb/modal/aside_create_category.html.twig', [
-            'parent_id'   => $parent_id,
-            'parent_name' => $parent_name,
-        ]);
-    }
-
     #[Route(
         "/Knowbase/Aside/Category",
         name: "knowbase_aside_category_create",
@@ -93,7 +68,10 @@ final class CreateCategoryFromAsideController extends AbstractController
         }
 
         $parent_id = $request->request->getInt('knowbaseitemcategories_id');
+        // A root category follows the current entity view; a sub-category inherits
+        // the parent's scope so it stays visible wherever the parent is.
         $entities_id = (int) Session::getActiveEntity();
+        $is_recursive = Session::getIsActiveEntityRecursive() ? 1 : 0;
 
         if ($parent_id > 0) {
             $parent = new KnowbaseItemCategory();
@@ -101,12 +79,14 @@ final class CreateCategoryFromAsideController extends AbstractController
                 throw new BadRequestHttpException();
             }
             $entities_id = (int) $parent->fields['entities_id'];
+            $is_recursive = (int) $parent->fields['is_recursive'];
         }
 
         $input = [
             'name'                      => $name,
             'knowbaseitemcategories_id' => $parent_id,
             'entities_id'               => $entities_id,
+            'is_recursive'              => $is_recursive,
         ];
 
         $category = new KnowbaseItemCategory();
@@ -125,6 +105,86 @@ final class CreateCategoryFromAsideController extends AbstractController
             'id'        => (int) $new_id,
             'name'      => $name,
             'parent_id' => $parent_id,
+            'html'      => $this->renderNode((int) $new_id, $name, (string) ($category->fields['illustration'] ?? '')),
+        ]);
+    }
+
+    private function renderNode(int $id, string $name, string $illustration): string
+    {
+        $node = new AsideCategory(
+            title: $name,
+            illustration: $illustration !== '' ? $illustration : 'kb-faq',
+            id: $id,
+        );
+
+        return TemplateRenderer::getInstance()->render(
+            'pages/tools/kb/_category_node.html.twig',
+            [
+                'category'            => $node,
+                'can_create'          => KnowbaseItem::canCreate(),
+                'can_create_category' => KnowbaseItemCategory::canCreate(),
+                'can_update_category' => KnowbaseItemCategory::canUpdate(),
+            ],
+        );
+    }
+
+    #[Route(
+        "/Knowbase/Aside/Category/{id}/EditForm",
+        name: "knowbase_aside_category_edit_form",
+        requirements: ['id' => '\d+'],
+        methods: 'GET',
+    )]
+    public function editForm(int $id): Response
+    {
+        $category = new KnowbaseItemCategory();
+        if (!$category->getFromDB($id)) {
+            throw new BadRequestHttpException();
+        }
+        if (!$category->can($id, UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return $this->render('pages/tools/kb/category_edit_form.html.twig', [
+            'id'           => $id,
+            'illustration' => ((string) ($category->fields['illustration'] ?? '')) ?: 'kb-faq',
+            'comment'      => (string) ($category->fields['comment'] ?? ''),
+        ]);
+    }
+
+    #[Route(
+        "/Knowbase/Aside/Category/{id}",
+        name: "knowbase_aside_category_update",
+        requirements: ['id' => '\d+'],
+        methods: 'POST',
+    )]
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $category = new KnowbaseItemCategory();
+        if (!$category->getFromDB($id)) {
+            throw new BadRequestHttpException();
+        }
+        if (!$category->can($id, UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $input = ['id' => $id];
+        if ($request->request->has('illustration')) {
+            $input['illustration'] = $request->request->getString('illustration');
+        }
+        if ($request->request->has('comment')) {
+            $input['comment'] = $request->request->getString('comment');
+        }
+
+        if ($category->update($input) === false) {
+            return new JsonResponse([
+                'errors' => $this->collectSessionErrors(),
+            ], 422);
+        }
+
+        return new JsonResponse([
+            'id'           => $id,
+            'illustration' => (string) $category->fields['illustration'],
+            'comment'      => (string) $category->fields['comment'],
         ]);
     }
 
@@ -136,6 +196,6 @@ final class CreateCategoryFromAsideController extends AbstractController
         $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] ?? [];
         unset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR]);
 
-        return $messages === [] ? ['_global' => __('Unable to create the category.')] : ['_global' => implode("\n", $messages)];
+        return $messages === [] ? ['_global' => __('Unable to save the category.')] : ['_global' => implode("\n", $messages)];
     }
 }
