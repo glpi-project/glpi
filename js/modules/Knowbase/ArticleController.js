@@ -965,7 +965,7 @@ export class GlpiKnowbaseArticleController
             this.#editor = new KnowbaseEditor(editor_element, {
                 content: this.#original_content,
                 readonly: false,
-                placeholder: ({ node, pos }) => {
+                placeholder: ({ pos }) => {
                     if (pos === 0) {
                         return __("Type / to insert, or start writing...");
                     }
