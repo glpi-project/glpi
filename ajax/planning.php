@@ -71,12 +71,7 @@ if (($_POST["action"] ?? null) == "clone_event") {
 
 if (($_POST["action"] ?? null) == "delete_event") {
     $event = $_POST['event'];
-    if (!is_null($event['itemtype']) && is_a($event['itemtype'], PlanningExternalEvent::class, true)) {
-        if (is_null($event['items_id'])) {
-            throw new InvalidArgumentException("Missing items_id for external event");
-        }
-        $extevent->check((int) $event['items_id'], DELETE);
-    }
+    // rights check is done inside `Planning::deleteEvent()`, depending on the event itemtype
     echo Planning::deleteEvent($event);
     return;
 }
