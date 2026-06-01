@@ -3394,7 +3394,14 @@ TWIG, $twig_params);
 
         // Try a search to find the DN
         $filter_value = $values['user_params']['value'];
-        if ($values['login_field'] === 'objectguid' && self::isValidGuid($filter_value)) {
+        // Binary GUID attributes must be sent to the LDAP server as hex-escaped
+        // bytes, not as a canonical GUID string, or the search returns nothing.
+        // Attribute names are case-insensitive (RFC 4512).
+        $guid_fields = ['objectguid', 'ms-ds-consistencyguid'];
+        if (
+            in_array(strtolower($values['login_field']), $guid_fields, true)
+            && self::isValidGuid($filter_value)
+        ) {
             $filter_value = self::guidToHex($filter_value);
         } else {
             $filter_value = ldap_escape($filter_value, '', LDAP_ESCAPE_FILTER);
@@ -4153,21 +4160,24 @@ TWIG, $twig_params);
                 $value = $infos[$field];
             }
         }
-        if ($field !== 'objectguid') {
+        // Binary GUID attributes are returned as a string in canonical form.
+        // Attribute names are case-insensitive (RFC 4512).
+        $guid_fields = ['objectguid', 'ms-ds-consistencyguid'];
+        if (!in_array(strtolower($field), $guid_fields, true)) {
             return $value;
         }
 
-        // handle special objectguid from AD directories
+        // Convert the binary GUID to its string form. If the bytes are not a
+        // valid GUID, keep the raw value.
         try {
-            // prevent double encoding
+            // Skip if the value is already a GUID string.
             if (!self::isValidGuid($value)) {
                 $value = self::guidToString($value);
                 if (!self::isValidGuid($value)) {
-                    throw new RuntimeException('Not an objectguid!');
+                    throw new RuntimeException('Not a valid GUID!');
                 }
             }
         } catch (Throwable $e) {
-            // well... this is not an objectguid apparently
             $value = $infos[$field];
         }
 
