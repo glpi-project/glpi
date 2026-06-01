@@ -917,6 +917,7 @@ class Rule extends CommonDBTM
             $add_buttons = [
                 [
                     'text' => _x('button', 'Test'),
+                    'icon' => 'ti ti-stethoscope',
                     'type' => 'button',
                     'onclick' => "$('#ruletestmodal').modal('show');",
                 ],

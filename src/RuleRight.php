@@ -413,6 +413,7 @@ class RuleRight extends Rule
             $add_buttons = [
                 [
                     'text' => _x('button', 'Test'),
+                    'icon' => 'ti ti-stethoscope',
                     'type' => 'button',
                     'onclick' => "$('#ruletestmodal').modal('show');",
                 ],
