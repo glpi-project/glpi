@@ -1571,7 +1571,7 @@ $(document.body).on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
 });
 
 /**
- * Converts a normal password field to a text field
+ * Converts a disclosable password field to a normal text field
  * @param {string} item The ID of the field to be shown
  */
 function showDisclosablePasswordField(item) {
