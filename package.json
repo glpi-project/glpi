@@ -107,6 +107,7 @@
         "@playwright/test": "^1.59.1",
         "@testing-library/cypress": "^10.1.3",
         "@testing-library/jest-dom": "^6.9.1",
+        "@types/jsdom": "^28.0.3",
         "@types/node": "^25.6.0",
         "@typescript-eslint/eslint-plugin": "^8.59.2",
         "@typescript-eslint/parser": "^8.59.2",
