@@ -148,7 +148,7 @@ describe('Dashboard', () => {
 
         const dashboard = new GLPIDashboard({'rand': '12345'});
 
-        //Mock getUuidV4 vi legacy script common.js
+        //Mock getUuidV4 from legacy script common.js
         window.getUuidV4 = vi.fn().mockImplementation(() => {
             // return a UUIDv4
             return '12345678-1234-1234-1234-123456789012';
