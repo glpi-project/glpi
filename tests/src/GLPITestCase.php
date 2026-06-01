@@ -52,6 +52,8 @@ use Dropdown;
 use Entity;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Cache\CacheManager;
+use Glpi\Dashboard\Dashboard;
+use Glpi\Dashboard\Grid;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Search\SearchOption;
 use Glpi\Tests\Log\TestHandler;
@@ -122,6 +124,10 @@ class GLPITestCase extends TestCase
         $PHPLOGGER->setHandlers([$this->log_handler]);
 
         vfsStreamWrapper::register();
+
+        // Reset dashboard caches
+        Grid::$all_dashboards = [];
+        Dashboard::$all_dashboards = [];
 
         // Make sure the tester plugin is never deactived by a test as it would
         // impact others tests that depend on it.
