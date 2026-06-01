@@ -2435,7 +2435,7 @@ TWIG, $twig_params);
             'FROM'      => $task_table,
             'LEFT JOIN' => [
                 ProjectState::getTable() => [
-                    'FKEY' => [
+                    'ON' => [
                         ProjectState::getTable() => 'id',
                         $task_table              => 'projectstates_id',
                     ],
