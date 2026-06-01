@@ -38,9 +38,9 @@
  */
 
 use Glpi\RichText\RichText;
-use function Safe\preg_replace;
 
 use function Safe\json_encode;
+use function Safe\preg_replace;
 
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
