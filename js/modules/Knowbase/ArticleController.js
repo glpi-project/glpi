@@ -966,9 +966,6 @@ export class GlpiKnowbaseArticleController
                 content: this.#original_content,
                 readonly: false,
                 placeholder: ({ node, pos }) => {
-                    if (node.type.name === 'heading') {
-                        return __('Heading');
-                    }
                     if (pos === 0) {
                         return __("Type / to insert, or start writing...");
                     }
