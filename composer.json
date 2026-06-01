@@ -26,6 +26,7 @@
         "ext-session": "*",
         "ext-simplexml": "*",
         "ext-zlib": "*",
+        "benmorel/weakmap-polyfill": "^0.5.0",
         "donatj/phpuseragentparser": "^1.7",
         "elvanto/litemoji": "^4.1",
         "glpi-project/inventory_format": "^1.2",
@@ -80,7 +81,7 @@
         "atoum/stubs": "^2.6",
         "friendsofphp/php-cs-fixer": "^3.94",
         "friendsoftwig/twigcs": "^6.1",
-        "glpi-project/tools": "^0.7",
+        "glpi-project/tools": "^0.8",
         "maglnet/composer-require-checker": "^3.5",
         "mikey179/vfsstream": "^1.6",
         "php-parallel-lint/php-parallel-lint": "^1.4",
@@ -121,7 +122,21 @@
                 "true/punycode": "Replacement done in GLPI 11.0"
             },
             "ignore": {
-                "CVE-2025-45769": "Patch has been applied manually."
+                "CVE-2025-45769": "Patch has been applied manually.",
+                "CVE-2026-24425": "Patch has been applied manually.",
+                "CVE-2026-46627": "Patch has been applied manually.",
+                "CVE-2026-46628": "Patch has been applied manually.",
+                "CVE-2026-46633": "Patch has been applied manually.",
+                "CVE-2026-46634": "Patch has been applied manually.",
+                "CVE-2026-46635": "Patch has been applied manually.",
+                "CVE-2026-46636": "Patch has been applied manually.",
+                "CVE-2026-46638": "Patch has been applied manually.",
+                "CVE-2026-47730": "Patch has been applied manually.",
+                "CVE-2026-47732": "Patch has been applied manually.",
+                "CVE-2026-48805": "Patch has been applied manually.",
+                "CVE-2026-48806": "Patch has been applied manually.",
+                "CVE-2026-48807": "Patch has been applied manually.",
+                "CVE-2026-48808": "Patch has been applied manually."
             }
         }
     },
@@ -178,6 +193,8 @@
             "patch -f -p1 -d vendor/psr/http-factory/ < tools/patches/psr-http-factory-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/scssphp/scssphp/ < tools/patches/scssphp-scssphp-php8.4-compat.patch || true",
             "patch -f -p1 -d vendor/symfony/string/ < tools/patches/symfony-string-php8.5-compat.patch || true",
+            "(patch -f -p1 -d vendor/twig/twig/ < tools/patches/twig-twig-v3.11.3...v3.27.0.patch --dry-run && patch -f -p1 -d vendor/twig/twig/ < tools/patches/twig-twig-v3.11.3...v3.27.0.patch) || true",
+            "patch -f -p1 -d vendor/twig/twig/ < tools/patches/twig-twig-php7.4-compat.patch || true",
             "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.4-compat.patch || true",
             "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.5-compat.patch || true"
         ]
