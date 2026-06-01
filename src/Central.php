@@ -503,8 +503,8 @@ class Central extends CommonGLPI
             ];
         }
 
-        $idor = Session::getNewIDORToken(Project::class);
         if (Session::haveRight("project", Project::READMY)) {
+            $idor = Session::getNewIDORToken(Project::class);
             $twig_params['cards'][] = [
                 'itemtype'  => Project::class,
                 'widget'    => 'central_list',
@@ -514,8 +514,8 @@ class Central extends CommonGLPI
                 ],
             ];
         }
-        $idor = Session::getNewIDORToken(ProjectTask::class);
         if (Session::haveRight("projecttask", ProjectTask::READMY)) {
+            $idor = Session::getNewIDORToken(ProjectTask::class);
             $twig_params['cards'][] = [
                 'itemtype'  => ProjectTask::class,
                 'widget'    => 'central_list',
@@ -528,7 +528,6 @@ class Central extends CommonGLPI
 
         TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
     }
-
 
     private static function getMessages(): array
     {
@@ -670,7 +669,6 @@ class Central extends CommonGLPI
 
         return $messages;
     }
-
 
     /**
      * @return void
