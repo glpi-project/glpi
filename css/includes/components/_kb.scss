@@ -324,6 +324,15 @@
             height: 0;
         }
 
+        // Suggestion placeholder when typing slash command
+        .suggestion.is-empty::after {
+            content: var(--suggestion-placeholder, "Keep typing to filter...");
+            color: var(--tblr-muted);
+            pointer-events: none;
+            margin-left: 0.25rem;
+            font-style: italic;
+        }
+
         // Typography
         h1, h2, h3, h4, h5, h6 {
             margin-block: 1.5rem 0.75rem;
