@@ -190,7 +190,7 @@ class Ajax
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            <h3>' . htmlescape($param['title']) . '</h3>
+                            <h3 class="modal-title">' . htmlescape($param['title']) . '</h3>
                         </div>
                         <div class="modal-body">
                             <iframe id="iframe' . htmlescape($domid) . '" class="iframe hidden"
@@ -229,11 +229,26 @@ class Ajax
             ';
         }
         $js .= '
-                document.getElementById("iframe' . $domid . '").onload = function() {
-                    var h = ' . ((int) $param['height']) . ';
+                var iframeEl' . $rand . ' = document.getElementById("iframe' . $domid . '");
+
+                var resizeIframe' . $rand . ' = function() {
+                    try {
+                        var doc = iframeEl' . $rand . '.contentWindow.document;
+                        // Set height to content height, BUT cap it at the screen height
+                        var h = Math.min(doc.documentElement.scrollHeight, doc.body.scrollHeight) || ' . ((int) $param['height']) . ';
+                    } catch(e) {
+                        var h = ' . ((int) $param['height']) . ';
+                    }
+                    $("#iframe' . $domid . '").height(h);
+
+                    // reajust height to content
+                    myModal' . $rand . '.handleUpdate();
+                };
+
+                iframeEl' . $rand . '.onload = function() {
                     var w = ' . ((int) $param['width']) . ';
 
-                    $("#iframe' . $domid . '").height(h);
+                    resizeIframe' . $rand . '();
 
                     if (w >= 700) {
                         $("#' . $domid . ' .modal-dialog").addClass("modal-xl");
@@ -242,10 +257,9 @@ class Ajax
                     } else if (w <= 300) {
                         $("#' . $domid . ' .modal-dialog").addClass("modal-sm");
                     }
-
-                    // reajust height to content
-                    myModal' . $rand . '.handleUpdate()
                 };
+
+                $(window).on("resize.iframemodal' . $rand . '", resizeIframe' . $rand . ');
             });
         ';
 

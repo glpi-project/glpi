@@ -1208,6 +1208,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             ],
             'computation'        => QueryFunction::max('TABLE.date'),
             'nometa'             => true, // cannot GROUP_CONCAT a MAX
+            'usehaving'          => true,
         ];
 
         $tab[] = [

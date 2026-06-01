@@ -58,7 +58,7 @@ final class FormTagsManager
     public function refreshTagsContent(string $content): string
     {
         return preg_replace_callback(
-            '/<span.*?data-form-tag="true".*?>.*?<\/span>/',
+            '/<span(?=[^>]*\bdata-form-tag="true")[^>]*>.*?<\/span>/',
             function ($match) {
                 $tag = $match[0];
 
@@ -97,7 +97,7 @@ final class FormTagsManager
         AnswersSet $answers_set
     ): string {
         return preg_replace_callback(
-            '/<span.*?data-form-tag="true".*?>.*?<\/span>/',
+            '/<span(?=[^>]*\bdata-form-tag="true")[^>]*>.*?<\/span>/',
             function ($match) use ($answers_set) {
                 $tag = $match[0];
 

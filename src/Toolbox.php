@@ -1838,9 +1838,9 @@ class Toolbox
         if ($forceport && empty($tab['port'])) {
             if ($tab['type'] == 'pop') {
                 if ($tab['ssl']) {
-                    $tab['port'] = 110;
-                } else {
                     $tab['port'] = 995;
+                } else {
+                    $tab['port'] = 110;
                 }
             }
             if ($tab['type'] == 'imap') {
@@ -2771,11 +2771,8 @@ class Toolbox
         }
 
         // "true" and "false" are valid JSON strings.
-        if ('true' === $json) {
+        if (in_array($json, ['true', 'false'], true)) {
             return true;
-        }
-        if ('false' === $json) {
-            return false;
         }
 
         // Any other JSON string has to be wrapped in {}, [] or "".
@@ -3122,9 +3119,7 @@ class Toolbox
 
         if ($html) {
             $formatted = '
-                <span "
-                      class="formatted-number"
-                      data-precision="' . htmlescape($precision) . '">
+                <span class="formatted-number" data-precision="' . htmlescape($precision) . '">
                     <span class="number">' . htmlescape($formatted) . '</span>
                     <span class="suffix">' . htmlescape($suffix) . '</span>
                 </span>

@@ -487,7 +487,7 @@ class Reminder extends CommonDBVisible implements
                             'Target',
                             'Targets',
                             Session::getPluralNumber()
-                        ), $nb, $item::getType()),
+                        ), $nb, $item::getType(), 'ti ti-target-arrow'),
                         ];
                     }
             }
