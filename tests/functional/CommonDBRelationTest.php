@@ -430,34 +430,34 @@ class CommonDBRelationTest extends DbTestCase
             'name'        => __FUNCTION__ . '_1',
             'entities_id' => 0,
         ]);
-    
+
         $computer_2 = $this->createItem(\Computer::class, [
             'name'        => __FUNCTION__ . '_2',
             'entities_id' => 0,
         ]);
-    
+
         $port_1 = $this->createItem(\NetworkPort::class, [
             'itemtype'           => \Computer::class,
             'items_id'           => $computer_1->getID(),
             'name'               => __FUNCTION__ . '_port_1',
             'instantiation_type' => 'NetworkPortEthernet',
         ]);
-    
+
         $port_2 = $this->createItem(\NetworkPort::class, [
             'itemtype'           => \Computer::class,
             'items_id'           => $computer_2->getID(),
             'name'               => __FUNCTION__ . '_port_2',
             'instantiation_type' => 'NetworkPortEthernet',
         ]);
-    
+
         // Store relation in reverse order: port_2 -> port_1.
         $relation = new CommonDBRelationTest_SameTypeRelation();
-    
+
         $this->assertGreaterThan(0, $relation->add([
             'networkports_id_1' => $port_2->getID(),
             'networkports_id_2' => $port_1->getID(),
         ]));
-    
+
         $this->assertSame(
             1,
             countElementsInTable(CommonDBRelationTest_SameTypeRelation::getTable(), [
@@ -465,18 +465,18 @@ class CommonDBRelationTest extends DbTestCase
                 'networkports_id_2' => $port_1->getID(),
             ])
         );
-    
+
         $ma = $this->getMockBuilder(MassiveAction::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getAction', 'addMessage', 'getInput', 'itemDone'])
             ->getMock();
-    
+
         $ma->method('getAction')->willReturn('remove');
         $ma->method('addMessage')->willReturn(null);
         $ma->method('getInput')->willReturn([
             'peer_networkports_id_2' => $port_2->getID(),
         ]);
-    
+
         $ma->expects($this->once())
             ->method('itemDone')
             ->with(
@@ -484,13 +484,13 @@ class CommonDBRelationTest extends DbTestCase
                 $port_1->getID(),
                 MassiveAction::ACTION_OK
             );
-    
+
         CommonDBRelationTest_SameTypeRelation::processMassiveActionsForOneItemtype(
             $ma,
             new \NetworkPort(),
             [$port_1->getID()]
         );
-    
+
         $this->assertSame(
             0,
             countElementsInTable(CommonDBRelationTest_SameTypeRelation::getTable(), [
