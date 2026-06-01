@@ -459,23 +459,22 @@ $break_tablet: 1400px;
                         }
 
                         .select2-selection__choice {
-                            color: #74838f;
                             font-weight: bold;
                             font-size: 12px;
                             background-color: transparent;
-                            border: 1px solid #74838f;
+                            border: 1px solid var(--tblr-border-color);
                             border-radius: 3px;
                             padding: 0 4px;
                             margin: 2px 2px 0 0;
                         }
 
                         .select2-selection__choice__remove {
-                            color: #509ee3;
+                            color: var(--tblr-info);
                             margin-right: 3px;
                         }
 
                         .select2-search--inline .select2-search__field {
-                            color: #74838f;
+                            color: var(--tblr-body-color);
                             font-weight: bold;
                             font-size: 12px;
                             min-width: 10px;
@@ -564,13 +563,12 @@ $break_tablet: 1400px;
 
                     .select2-selection--multiple {
                         .select2-selection__choice {
-                            color: #509ee3 !important;
-                            border-color: #509ee3;
+                            color: var(--tblr-info) !important;
+                            border-color: currentColor;
                         }
 
                         .select2-search--inline .select2-search__field {
-                            color: #509ee3 !important;
-                        }
+                            color: var(--tblr-info) !important;                        }
                     }
 
                     .flatpickr,
