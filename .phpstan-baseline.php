@@ -2312,6 +2312,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDropdown.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$value of static method Toolbox\\:\\:addslashes_deep\\(\\) expects array\\<string\\>\\|string, array\\<mixed\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDropdown.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$force of method CommonDBTM\\:\\:delete\\(\\) expects bool, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -2492,12 +2498,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between \'Supplier\' and \'Group\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between mixed and null will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
@@ -2508,6 +2508,12 @@ $ignoreErrors[] = [
 	'identifier' => 'deadCode.unreachable',
 	'count' => 4,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$value of static method Toolbox\\:\\:addslashes_deep\\(\\) expects array\\<string\\>\\|string, array given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemsAssociatedTo\\(\\) expects string, int given\\.$#',
@@ -3980,6 +3986,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ITILTemplate.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$value of static method Toolbox\\:\\:addslashes_deep\\(\\) expects array\\<string\\>\\|string, array\\<mixed\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/ITILTemplate.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$withtypeandcategory of static method ITILTemplate\\:\\:getExtraAllowedFields\\(\\) expects bool, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -4026,12 +4038,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ITILTemplatePredefinedField.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type TKey of int\\|string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Impact.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Right side of \\|\\| is always true\\.$#',
@@ -5726,6 +5732,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$value of static method Toolbox\\:\\:addslashes_deep\\(\\) expects array\\<string\\>\\|string, array\\<mixed\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Planning.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
@@ -6884,6 +6896,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/TicketTemplate.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$value of static method Toolbox\\:\\:addslashes_deep\\(\\) expects array\\<string\\>\\|string, array given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Ticket_Ticket.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \'Session\' and \'getLoginUserID\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 2,
@@ -6980,6 +6998,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$value of static method Toolbox\\:\\:addslashes_deep\\(\\) expects array\\<string\\>\\|string, array\\<mixed, mixed\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 10,
+	'path' => __DIR__ . '/src/Transfer.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$value of static method Toolbox\\:\\:addslashes_deep\\(\\) expects array\\<string\\>\\|string, array\\<string, mixed\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -7017,6 +7041,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$force of method CommonDBTM\\:\\:deleteFromDB\\(\\) expects bool, int given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Unmanaged.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$value of static method Toolbox\\:\\:addslashes_deep\\(\\) expects array\\<string\\>\\|string, array\\<mixed, mixed\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Unmanaged.php',
