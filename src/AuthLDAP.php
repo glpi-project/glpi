@@ -4026,7 +4026,7 @@ TWIG, $twig_params);
             $ong     = [];
             $ong[1]  = self::createTabEntry(_x('button', 'Test'), 0, $item::class, "ti ti-stethoscope"); // test connexion
             $ong[2]  = self::createTabEntry(User::getTypeName(Session::getPluralNumber()), 0, $item::class, User::getIcon());
-            $ong[3]  = self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), 0, $item::class, User::getIcon());
+            $ong[3]  = self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), 0, $item::class, Group::getIcon());
             $ong[5]  = self::createTabEntry(__('Advanced information'));   // params for entity advanced config
             $count = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
