@@ -2776,7 +2776,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 2,
+	'count' => 3,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -2807,12 +2807,6 @@ $ignoreErrors[] = [
 	'message' => '#^Property CommonDBTM\\:\\:\\$updates \\(list\\<string\\>\\) does not accept array\\<int\\<0, max\\>, string\\>\\.$#',
 	'identifier' => 'assign.propertyType',
 	'count' => 14,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between \'Supplier\' and \'Group\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -3848,6 +3842,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method DbUtils\\:\\:getDbRelations\\(\\) should return array\\<string, array\\<string, list\\<array\\{string, string\\}\\|string\\>\\|string\\>\\> but returns array\\<array\\<list\\<array\\<mixed\\>\\|string\\>\\>\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method DbUtils\\:\\:getItemTypeForTable\\(\\) should return class\\-string\\<CommonDBTM\\>\\|null but returns class\\-string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -4346,7 +4346,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot assign offset class\\-string\\<CommonDevice\\> to array\\|string\\.$#',
+	'message' => '#^Cannot assign offset class\\-string\\<CommonDevice\\> to array\\<class\\-string\\<CommonDevice\\>, string\\>\\|string\\.$#',
 	'identifier' => 'offsetAssign.dimType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Dropdown.php',
@@ -4370,13 +4370,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$array of function asort expects array, array\\|null given\\.$#',
+	'message' => '#^Parameter \\#1 \\$array of function asort expects array, array\\<class\\-string\\<CommonDevice\\>, string\\>\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$array of function asort expects array, array\\|string given\\.$#',
+	'message' => '#^Parameter \\#1 \\$array of function asort expects array, array\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Dropdown.php',
@@ -5430,6 +5430,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\GraphQL\\\\DefaultResolvers\\:\\:getCountCriteriaFromCriteria\\(\\) should return array\\<Glpi\\\\DBAL\\\\QuerySubQuery\\> but returns array\\<string, mixed\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQL/DefaultResolvers.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method withHeader\\(\\) on Psr\\\\Http\\\\Message\\\\ResponseInterface\\|null\\.$#',
@@ -8826,12 +8832,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access an offset on Glpi\\\\Form\\\\Comment\\|Glpi\\\\Form\\\\Question\\|list\\<Glpi\\\\Form\\\\Comment\\|Glpi\\\\Form\\\\Question\\>\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Section.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Section\\:\\:getQuestions\\(\\) should return array\\<Glpi\\\\Form\\\\Question\\> but returns array\\<Glpi\\\\Form\\\\Question\\>\\|null\\.$#',
@@ -14132,12 +14132,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/LevelAgreement.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call static method getTable\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreement.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method LevelAgreement\\:\\:computeDate\\(\\) should return string\\|null but returns bool\\|string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -19313,6 +19307,12 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonITILValidation\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 2,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot assign offset \'name\' to array\\<string, \\(int\\|string\\)\\>\\|string\\.$#',
+	'identifier' => 'offsetAssign.dimType',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [

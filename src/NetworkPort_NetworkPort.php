@@ -322,7 +322,9 @@ class NetworkPort_NetworkPort extends CommonDBRelation
 
         $log = new NetworkPortConnectionLog();
 
-        $opposite_port = $this->getOppositeContact($netports_id);
+        $opposite_port = $netports_id === $this->fields['networkports_id_1']
+            ? $this->fields['networkports_id_2']
+            : $this->fields['networkports_id_1'];
         if (!$opposite_port) {
             return;
         }

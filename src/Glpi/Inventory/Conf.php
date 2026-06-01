@@ -1132,7 +1132,10 @@ class Conf extends CommonGLPI
         if ($canedit) {
             echo "<tr class='tab_bg_2'>";
             echo "<td colspan='7' class='center'>";
-            echo "<input type='submit' name='update' class='btn btn-primary' value=\"" . _sx('button', 'Save') . "\">";
+            echo "<button type='submit' name='update' class='btn btn-primary'>";
+            echo "<i class='ti ti-device-floppy me-1'></i>";
+            echo _sx('button', 'Save');
+            echo "</button>";
             echo "</td></tr>";
         }
 

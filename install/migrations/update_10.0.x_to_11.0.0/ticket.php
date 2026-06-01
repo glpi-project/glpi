@@ -36,7 +36,7 @@
  * @var DBmysql $DB
  * @var Migration $migration
  */
-$migration->addRight('ticket', Ticket::READNEWTICKET, [
+$migration->giveRight('ticket', Ticket::READNEWTICKET, [
     'ticket' => Ticket::ASSIGN,
 ]);
 

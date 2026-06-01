@@ -154,6 +154,7 @@ class Item_Process extends CommonDBChild
             'start' => $start,
             'sort' => $sort,
             'order' => $order,
+            'limit' => $_SESSION['glpilist_limit'],
             'href' => $item::getFormURLWithID($items_id),
             'additional_params' => $is_filtered ? http_build_query([
                 'filters' => $filters,

@@ -130,7 +130,7 @@ class RuleImportEntity extends Rule
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
-        if ($criteria['field'] === '_source') {
+        if (($criteria['field'] ?? '') === '_source') {
             $tab = ['GLPI' => __('GLPI'), 'NATIVE_INVENTORY' => AutoUpdateSystem::getLabelFor(AutoUpdateSystem::NATIVE_INVENTORY)];
             foreach (array_keys($PLUGIN_HOOKS[Hooks::IMPORT_ITEM] ?? []) as $plug) {
                 if (!Plugin::isPluginActive($plug)) {
@@ -142,7 +142,7 @@ class RuleImportEntity extends Rule
             return true;
         }
 
-        if ($criteria['field'] === 'itemtype') {
+        if (($criteria['field'] ?? '') === 'itemtype') {
             Dropdown::showItemTypes($name, $CFG_GLPI['asset_types'], ['value' => $value]);
             return true;
         }

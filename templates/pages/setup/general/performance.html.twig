@@ -114,7 +114,7 @@
                <td></td>
                <td>
                   <form method="post" action="{{ path('/front/config.form.php') }}">
-                     {{ inputs.submit('reset_opcache', __('Reset'), 1) }}
+                     {{ inputs.submit('reset_opcache', __('Reset'), 1, {'icon': 'ti ti-trash'}) }}
                   </form>
                </td>
                <td></td>
@@ -149,7 +149,7 @@
             <td></td>
             <td>
                <form method="post" action="{{ path('/front/config.form.php') }}">
-                  {{ inputs.submit('reset_core_cache', __('Reset'), 1) }}
+                  {{ inputs.submit('reset_core_cache', __('Reset'), 1, {'icon': 'ti ti-trash'}) }}
                </form>
             </td>
             <td></td>
@@ -173,7 +173,7 @@
             <td></td>
             <td>
                <form method="post" action="{{ path('/front/config.form.php') }}">
-                  {{ inputs.submit('reset_translation_cache', __('Reset'), 1) }}
+                  {{ inputs.submit('reset_translation_cache', __('Reset'), 1, {'icon': 'ti ti-trash'}) }}
                </form>
             </td>
             <td></td>

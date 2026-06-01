@@ -265,9 +265,11 @@
                 ) }}
 
                 <script type="text/javascript">
-                    function showPlanUpdate{{ rand }}(e) {
+                    function showPlanUpdate{{ rand }}(applyDefaultState = false) {
                         $('#plan{{ rand }}').hide();
-                        $('#dropdown_state{{ rand }}').trigger('setValue', {{ session('glpiplanned_task_state')|json_encode|raw }});
+                        if (applyDefaultState) {
+                            $('#dropdown_state{{ rand }}').trigger('setValue', {{ session('glpiplanned_task_state')|json_encode|raw }});
+                        }
                         $('#viewplan{{ rand }}').load(`${CFG_GLPI.root_doc}/ajax/planning.php`, {
                             action: "add_event_classic_form",
                             form: "followups", // Was followups for tasks before. Can't find where this is used.
@@ -295,7 +297,7 @@
                         <span>{{ __('Unplan') }}</span>
                     </button>
                 {% elseif item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::PLANNED')) or constant('CommonITILObject::PLANNED') not in item.getAllStatusArray() %}
-                    <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
+                    <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}(true)" type="button">
                         <i class="ti ti-calendar"></i>
                         <span>{{ __('Plan this task') }}</span>
                     </button>

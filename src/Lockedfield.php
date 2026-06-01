@@ -34,6 +34,8 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
+use Glpi\DBAL\QueryUnion;
 use Glpi\Features\AssignableItem;
 use Glpi\Inventory\Inventory;
 use Glpi\Search\SearchOption;
@@ -257,18 +259,21 @@ class Lockedfield extends CommonDBTM
     {
         global $DB;
 
-        $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-                'itemtype'  => $itemtype,
-                [
-                    'OR' => [
-                        'items_id'  => $items_id,
-                        'is_global' => 1,
-                    ],
-                ],
+        $query_item = new QuerySubQuery([
+            'FROM'  => $this->getTable(),
+            'WHERE' => [
+                'itemtype' => $itemtype,
+                'items_id' => $items_id,
             ],
         ]);
+        $query_global = new QuerySubQuery([
+            'FROM'  => $this->getTable(),
+            'WHERE' => [
+                'itemtype'  => $itemtype,
+                'is_global' => 1,
+            ],
+        ]);
+        $iterator = $DB->request(['FROM' => new QueryUnion([$query_item, $query_global])]);
 
         $locks = [];
         foreach ($iterator as $row) {
@@ -290,18 +295,21 @@ class Lockedfield extends CommonDBTM
     {
         global $DB;
 
-        $iterator = $DB->request([
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [
-                'itemtype'  => $itemtype,
-                [
-                    'OR' => [
-                        'items_id'  => $items_id,
-                        'is_global' => 1,
-                    ],
-                ],
+        $query_item = new QuerySubQuery([
+            'FROM'  => $this->getTable(),
+            'WHERE' => [
+                'itemtype' => $itemtype,
+                'items_id' => $items_id,
             ],
         ]);
+        $query_global = new QuerySubQuery([
+            'FROM'  => $this->getTable(),
+            'WHERE' => [
+                'itemtype'  => $itemtype,
+                'is_global' => 1,
+            ],
+        ]);
+        $iterator = $DB->request(['FROM' => new QueryUnion([$query_item, $query_global])]);
 
         $locks = [];
         foreach ($iterator as $row) {

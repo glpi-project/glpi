@@ -7965,7 +7965,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // add autoreminders to timeline
         $autoreminder_obj = new ITILReminder();
-        $autoreminders = $autoreminder_obj->find(['items_id'  => $this->getID()]);
+        $autoreminders = $autoreminder_obj->find([
+            'items_id'  => $this->getID(),
+            'itemtype'  => static::class,
+        ]);
         foreach ($autoreminders as $autoreminder_id => $autoreminder) {
             $autoreminder_obj = ITILReminder::getByID($autoreminder_id);
             if (!$autoreminder_obj instanceof ITILReminder) {

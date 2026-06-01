@@ -640,8 +640,9 @@ EOT;
         $request = $request->withQueryParams(array_merge($request->getQueryParams(), $_GET));
 
         // Handle potential JSON request body
-        $content_types = $request->getHeader('Content-Type');
-        if (in_array('application/json', $content_types, true)) {
+        $content_type = $request->getHeaderLine('Content-Type');
+        $content_type = explode(';', $content_type)[0];
+        if ($content_type === 'application/json') {
             $body = $request->getBody()->getContents();
             try {
                 $body = json_decode($body, true, 512, JSON_THROW_ON_ERROR);

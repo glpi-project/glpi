@@ -100,8 +100,8 @@
                         1
                      </span>
                   {% endif %}
-      {% endif %}
                </a>
+      {% endif %}
 
                <div class="dropdown-divider"></div>
 
@@ -123,21 +123,24 @@
             <div class="modal-content">
                <div class="modal-header">
                   <h4 class="modal-title">{{ __('About') }}</h4>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}" title="{{ __('Close') }}" data-bs-toggle="tooltip" data-bs-placement="left"></button>
                </div>
-               <div class="modal-body">
+               <div class="modal-body text-center">
+                  <p>
+                     <img src="{{ path('pics/logos/logo-GLPI-100-grey.png') }}" title="GLPI Logo" style="max-width:100px; height:auto;" />
+                  </p>
                   {% if not call('\\Glpi\\Toolbox\\VersionParser::isStableRelease', [constant('GLPI_VERSION')]) %}
                       <div class='alert alert-important alert-warning d-flex'>
                         <strong>⚠️  {{ __("This version is UNSTABLE and some SECURITY FIXES may not be included.") }} ⚠️</strong>
                       </div>
                   {% endif %}
-                  <p><a href="http://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
-                     GLPI {{ constant('GLPI_VERSION') }}
+                  <p><a href="https://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
+                     <p>GLPI {{ constant('GLPI_VERSION') }}</p>
                      Copyright (C) 2015-{{ constant('GLPI_YEAR') }} Teclib' and contributors
                   </a></p>
                   {% if found_new_version is not null %}
                      <p>
-                        <a href="http://www.glpi-project.org" target="_blank"
+                        <a href="https://glpi-project.org" target="_blank"
                            title="{{ __('You will find it on the GLPI-PROJECT.org site.') }}">
                            {{ __('A new version is available: %s.')|format(found_new_version) }}
                            <span class="badge bg-info text-dark">

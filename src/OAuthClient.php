@@ -34,6 +34,9 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\OAuth\AccessTokenRepository;
+use Glpi\OAuth\AuthCodeRepository;
+use Glpi\OAuth\RefreshTokenRepository;
 use Glpi\OAuth\Server;
 
 use function Safe\json_decode;
@@ -327,6 +330,15 @@ JS);
             $this->fields['scopes'] = json_decode($this->fields['scopes'], true);
         }
         $this->fields['redirect_uri'] = json_decode($this->fields['redirect_uri'], true);
+    }
+
+    public function cleanDBonPurge(): void
+    {
+        $identifier = $this->fields['identifier'] ?? '';
+
+        (new RefreshTokenRepository())->revokeByClient($identifier);
+        (new AccessTokenRepository())->revokeByClient($identifier);
+        (new AuthCodeRepository())->revokeByClient($identifier);
     }
 
     public function post_getEmpty()

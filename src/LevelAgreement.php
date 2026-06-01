@@ -962,8 +962,19 @@ TWIG, $twig_params);
                 $toadd['date']           = $date;
                 $toadd[$pre . 'levels_id'] = $levels_id;
                 $toadd['tickets_id']     = $ticket->fields["id"];
-                $levelticket             = getItemForItemtype(static::$levelticketclass);
-                $levelticket->add($toadd);
+                $levelticketclass = static::$levelticketclass;
+                if (
+                    !countElementsInTable(
+                        $levelticketclass::getTable(),
+                        [
+                            $pre . 'levels_id' => $levels_id,
+                            'tickets_id'       => $ticket->fields["id"],
+                        ]
+                    )
+                ) {
+                    $levelticket = getItemForItemtype($levelticketclass);
+                    $levelticket->add($toadd);
+                }
             }
         }
     }
@@ -982,14 +993,15 @@ TWIG, $twig_params);
         $ticketfield = static::$prefix . "levels_id_ttr";
 
         if ($ticket->fields[$ticketfield] > 0) {
-            $levelticket = getItemForItemtype(static::$levelticketclass);
+            $levelticketclass = static::$levelticketclass;
             $iterator = $DB->request([
                 'SELECT' => 'id',
-                'FROM'   => $levelticket::getTable(),
+                'FROM'   => $levelticketclass::getTable(),
                 'WHERE'  => ['tickets_id' => $ticket->fields['id']],
             ]);
 
             foreach ($iterator as $data) {
+                $levelticket = getItemForItemtype($levelticketclass);
                 $levelticket->delete(['id' => $data['id']]);
             }
         }

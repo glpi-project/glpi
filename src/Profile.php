@@ -244,7 +244,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     {
         global $DB;
 
-        if (count($this->profileRight) > 0) {
+        if ($this->profileRight !== []) {
             // Delegate custom assets specific rights handling to `AssetDefinitionManager`.
             $definitions = AssetDefinitionManager::getInstance()->getDefinitions();
             foreach ($definitions as $definition) {
@@ -293,7 +293,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         global $DB;
 
         ProfileRight::fillProfileRights($this->fields['id']);
-        if (count($this->profileRight) > 0) {
+        if ($this->profileRight !== []) {
             // Delegate custom assets specific rights handling to `AssetDefinitionManager`.
             $definitions = AssetDefinitionManager::getInstance()->getDefinitions();
             foreach ($definitions as $definition) {
@@ -688,7 +688,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return [new QueryExpression('true')];
         }
 
-        $criteria = ['glpi_profiles.interface' => Session::getCurrentInterface()];
+        $current_interface = Session::getCurrentInterface();
+        $criteria = ['glpi_profiles.interface' => $current_interface];
 
         // First, get all possible rights
         $right_subqueries = [];
@@ -697,7 +698,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
             if (
                 !is_array($val) // Do not include entities field added by login
-                && (Session::getCurrentInterface() === 'central'
+                && ($current_interface === 'central'
                  || in_array($key, self::$helpdesk_rights, true))
             ) {
                 $right_subqueries[] = [

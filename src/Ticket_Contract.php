@@ -129,7 +129,7 @@ class Ticket_Contract extends CommonDBRelation
                                 nochecklimit: true
                             }) }}
                             {% set btn %}
-                                <button type="submit" class="btn btn-primary" name="add">{{ btn_label }}</button>
+                                <button type="submit" class="btn btn-primary" name="add"><i class="ti ti-link me-1"></i>{{ btn_label }}</button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>

@@ -1050,10 +1050,15 @@ class Inventory
         $existing_types = glob(GLPI_INVENTORY_DIR . '/*', GLOB_ONLYDIR);
 
         foreach ($existing_types as $existing_type) {
-            /** @var class-string<CommonDBTM> $itemtype */
             $itemtype = str_replace(GLPI_INVENTORY_DIR . '/', '', $existing_type);
             // use `getItemForItemtype` to fix classname case (i.e. `refusedequipement` -> `RefusedEquipement`)
-            $itemtype = getItemForItemtype($itemtype)::class;
+            $item = getItemForItemtype($itemtype);
+            if ($item === false) {
+                // Class might not exist if it refer to a deleted custom asset type
+                continue;
+            }
+            $itemtype = $item::class;
+
             $inventory_files = new RegexIterator(
                 new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($existing_type)

@@ -36,12 +36,14 @@ import { FormPage } from "../../../pages/FormPage";
 
 test.describe('Content configuration', () => {
     let form_page: FormPage;
+    let form_id: number;
 
     test.beforeEach(async ({ page, profile, formImporter }) => {
         await profile.set(Profiles.SuperAdmin);
         form_page = new FormPage(page);
         const info = await formImporter.importForm('destination_config_fields/content-title-config.json');
-        await form_page.gotoDestinationTab(info.getId());
+        form_id = info.getId();
+        await form_page.gotoDestinationTab(form_id);
     });
 
     test('Can create ticket using default configuration', async ({ page }) => {
@@ -57,5 +59,39 @@ test.describe('Content configuration', () => {
         // Check ticket values, description should contain answers
         await expect(page.getByText('1) What is your name ?')).toBeVisible();
         await expect(page.getByText(': John doe')).toBeVisible();
+    });
+
+    test('Formatted text alongside form tags is preserved after save', async ({ page }) => {
+        const content_region = page.getByRole('region', { name: 'Content configuration' });
+        const content_body = form_page.getRichTextByLabel('Content', content_region);
+
+        // Disable auto-config to enable manual editing
+        await content_region.getByRole('checkbox', { name: 'Auto config' }).uncheck();
+
+        // Clear existing content and write underlined text followed by a form tag.
+        // Underline produces a <span style="text-decoration: underline;"> in TinyMCE.
+        // The regression being tested: refreshTagsContent used to match from the first
+        // <span (the underline span) up to the closing </span> of the form-tag span,
+        // swallowing the formatted text entirely.
+        await content_body.click();
+        await content_body.press('Control+a');
+        await content_body.press('Backspace');
+        await content_body.press('Control+u');
+        await content_body.pressSequentially('My formatted text');
+        await content_body.press('Control+u');
+        await content_body.pressSequentially(' #');
+        await page.getByRole('menuitem', { name: 'Answer: What is your name ?' }).click();
+
+        // Save and reload the destination tab to run refreshTagsContent server-side
+        await form_page.doSaveDestination();
+        await form_page.gotoDestinationTab(form_id);
+
+        // Both the formatted text and the tag must survive the reload
+        const content_region_after = page.getByRole('region', { name: 'Content configuration' });
+        const content_body_after = form_page.getRichTextByLabel('Content', content_region_after);
+        await expect(content_body_after).toContainText('My formatted text');
+        await expect(
+            content_body_after.getByText('#Answer: What is your name ?')
+        ).toHaveAttribute('data-form-tag', 'true');
     });
 });

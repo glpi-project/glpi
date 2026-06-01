@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Calendar;
 use CalendarSegment;
+use Change;
 use CommonITILActor;
 use CommonITILObject;
 use CommonITILSatisfaction;
@@ -54,6 +55,7 @@ use Group_Ticket;
 use Group_User;
 use ITILCategory;
 use ITILFollowup;
+use ITILReminder;
 use ITILSolution;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
@@ -7851,6 +7853,41 @@ HTML,
         }
     }
 
+    public function testGetTimelineItemsAutoReminder()
+    {
+        global $DB;
+
+        $this->login();
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name' => __FUNCTION__,
+                'content' => __FUNCTION__,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ],
+        );
+        $DB->insert(ITILReminder::getTable(), [
+            'itemtype' => Change::class,
+            'items_id' => $ticket->getID(),
+            'name' => 'Right ID, wrong itemtype',
+            'content' => 'Test',
+        ]);
+
+        $timeline_items = $ticket->getTimelineItems();
+        $reminder_items = array_filter($timeline_items, static fn($entry) => $entry['type'] === ITILReminder::class);
+        $this->assertCount(0, $reminder_items);
+
+        $DB->insert(ITILReminder::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'name' => 'Right ID, right itemtype',
+            'content' => 'Test',
+        ]);
+        $timeline_items = $ticket->getTimelineItems();
+        $reminder_items = array_filter($timeline_items, static fn($entry) => $entry['type'] === ITILReminder::class);
+        $this->assertCount(1, $reminder_items);
+    }
+
     /**
      * Check that when a ticket has multiple timeline items with the same creation date, they are ordered by ID
      * @return void
@@ -10058,7 +10095,7 @@ HTML,
      */
     public static function associatedDocumentsWithoutSessionProvider(): iterable
     {
-        foreach ([Ticket::class, \Change::class, \Problem::class] as $itil_itemtype) {
+        foreach ([Ticket::class, Change::class, \Problem::class] as $itil_itemtype) {
 
             yield [
                 'parent_itil_itemtype' => $itil_itemtype,

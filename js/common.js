@@ -1346,7 +1346,7 @@ function tableToDetails(table) {
             if (in_details) {
                 details += '\n</pre></details>';
             }
-            details += `<details><summary>${_.escape(e.textContent)}</summary><pre>\n`;
+            details += `<details><summary>${_.escape(e.textContent.trim())}</summary><pre>\n`;
             in_details = true;
         } else {
             if (in_details) {

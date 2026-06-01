@@ -1593,6 +1593,33 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data['##ticket.numberoflinkedchanges##'] = count($data['linkedchanges']);
             $data['##ticket.numberoflinkedproblems##'] = count($data['linkedproblems']);
 
+            $data['linkedprojects'] = [];
+            $itil_project = new Itil_Project();
+            $linked_projects = $itil_project->find([
+                'itemtype' => $item::class,
+                'items_id' => $item->getField('id'),
+            ]);
+            foreach ($linked_projects as $linked_project) {
+                $project = new Project();
+                if ($project->getFromDB($linked_project['projects_id'])) {
+                    $data['linkedprojects'][] = [
+                        '##linkedproject.id##'      => $linked_project['projects_id'],
+                        '##linkedproject.url##'     => $this->formatURL(
+                            $options['additionnaloption']['usertype'],
+                            'project_' . $linked_project['projects_id']
+                        ),
+                        '##linkedproject.name##'   => $project->getField('name'),
+                        '##linkedproject.content##' => $project->getField('content'),
+                        '##linkedproject.code##' => $project->getField('code'),
+                        '##linkedproject.planstartdate##' => Html::convDateTime($project->getField('plan_start_date')),
+                        '##linkedproject.planenddate##' => Html::convDateTime($project->getField('plan_end_date')),
+                        '##linkedproject.realstartdate##' => Html::convDateTime($project->getField('real_start_date')),
+                        '##linkedproject.realenddate##' => Html::convDateTime($project->getField('real_end_date')),
+                    ];
+                }
+            }
+            $data['##' . strtolower($item::class) . '.numberoflinkedprojects##'] = count($data['linkedprojects']);
+
             $show_private = $options['additionnaloption']['show_private'] ?? false;
             $followup_restrict = [];
             $followup_restrict['items_id'] = $item->getID();
@@ -2282,6 +2309,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $objettype . '.numberoflinkedtickets' => _x('quantity', 'Number of linked tickets'),
             $objettype . '.numberoflinkedchanges' => _x('quantity', 'Number of linked changes'),
             $objettype . '.numberoflinkedproblems' => _x('quantity', 'Number of linked problems'),
+            $objettype . '.numberoflinkedprojects' => _x('quantity', 'Number of linked projects'),
             $objettype . '.reminder.bumpcounter' => __('Number of sent reminders since status is pending'),
             $objettype . '.reminder.bumpremaining' => __('Number of remaining reminders before automatic resolution'),
             $objettype . '.reminder.bumptotal'  => __('Total number of reminders before automatic resolution'),
@@ -2310,6 +2338,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
             'linkedchanges' => _n('Linked change', 'Linked changes', Session::getPluralNumber()),
             'linkedproblems' => _n('Linked problem', 'Linked problems', Session::getPluralNumber()),
+            'linkedprojects' => _n('Linked project', 'Linked projects', Session::getPluralNumber()),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -2333,6 +2362,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $objettype . '.linkedtickets'       => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
             $objettype . '.linkedchanges'       => _n('Linked change', 'Linked changes', Session::getPluralNumber()),
             $objettype . '.linkedproblems'      => _n('Linked problem', 'Linked problems', Session::getPluralNumber()),
+            $objettype . '.linkedprojects'      => _n('Linked project', 'Linked projects', Session::getPluralNumber()),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -2494,6 +2524,51 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 __('%1$s: %2$s'),
                 _n('Linked problem', 'Linked problems', 1),
                 __('Description')
+            ),
+            'linkedproject.id'        => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('ID')
+            ),
+            'linkedproject.url'       => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('URL')
+            ),
+            'linkedproject.name'     => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Name')
+            ),
+            'linkedproject.content'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Description')
+            ),
+            'linkedproject.code'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Code')
+            ),
+            'linkedproject.planstartdate'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Plan start date')
+            ),
+            'linkedproject.planenddate'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Plan end date')
+            ),
+            'linkedproject.realstartdate'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Plan start date')
+            ),
+            'linkedproject.realenddate'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Plan start date')
             ),
         ];
 
