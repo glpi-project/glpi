@@ -48,22 +48,42 @@ if (!isset($_GET["withtemplate"])) {
 
 $instance = new DatabaseInstance();
 if (isset($_POST["add"])) {
-    $instance->check(-1, CREATE, $_POST);
+    if (isset($_POST['databaseinstances_id']) && (int) $_POST['databaseinstances_id'] > 0) {
+        $instance->check($_POST['databaseinstances_id'], UPDATE);
 
-    if ($newID = $instance->add($_POST)) {
-        Event::log(
-            $newID,
-            "databaseinstance",
-            4,
-            "management",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a database instance'), $_SESSION["glpiname"])
-        );
-        if ($_SESSION['glpibackcreated']) {
-            Html::redirect($instance->getLinkURL());
+        if ($instance->update([
+            'id'       => $_POST['databaseinstances_id'],
+            'items_id' => ($_POST['items_id'] ?? 0),
+            'itemtype' => $_POST['itemtype'],
+        ])) {
+            Event::log(
+                $_POST['databaseinstances_id'],
+                "databaseinstance",
+                4,
+                "management",
+                //TRANS: %s is the user login
+                sprintf(__('%s links a database instance'), $_SESSION["glpiname"])
+            );
         }
+        Html::back();
+    } else {
+        $instance->check(-1, CREATE, $_POST);
+
+        if ($newID = $instance->add($_POST)) {
+            Event::log(
+                $newID,
+                "databaseinstance",
+                4,
+                "management",
+                //TRANS: %s is the user login
+                sprintf(__('%s adds a database instance'), $_SESSION["glpiname"])
+            );
+            if ($_SESSION['glpibackcreated']) {
+                Html::redirect($instance->getLinkURL());
+            }
+        }
+        Html::back();
     }
-    Html::back();
 } elseif (isset($_POST["delete"])) {
     $instance->check($_POST['id'], DELETE);
     $ok = $instance->delete($_POST);
