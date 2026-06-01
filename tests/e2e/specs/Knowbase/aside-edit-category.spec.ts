@@ -232,3 +232,50 @@ test('the Uncategorized row has no edit button', async ({ page, profile, api }) 
         name: /Edit Uncategorized/i,
     })).toHaveCount(0);
 });
+
+test('editing the illustration updates the tree node icon without a page reload', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const name = `E2E Edit Illus Cat ${unique}`;
+
+    const category_id = await api.createItem('KnowbaseItemCategory', {
+        name,
+        entities_id: getWorkerEntityId(),
+    });
+    const seed_article_id = await api.createItem('KnowbaseItem', {
+        name: `Seed ${unique}`,
+        answer: 'Seed content',
+        entities_id: getWorkerEntityId(),
+        _categories: [category_id],
+    });
+
+    await kb.goto(seed_article_id);
+
+    const url_before = page.url();
+
+    await kb.getAsideCategoryToggle(name).hover();
+    await kb.getEditCategoryButton(name).click();
+
+    const category = kb.getAsideCategory(name);
+    await category.getByRole('button', { name: 'Select an illustration' }).click();
+
+    // Scope to the category edit form's picker: the article view already renders
+    // its own illustration picker modal, so a page-wide lookup is ambiguous.
+    const modal = category.getByTestId('illustration-picker-modal');
+    await expect(modal).toBeVisible();
+    await modal.getByRole('img', { name: 'Antivirus', exact: true }).click();
+    await expect(modal).toBeHidden();
+
+    await category.getByRole('button', { name: 'Save', exact: true }).click();
+
+    // The edit panel closes and the node's own icon refreshes in place — without
+    // a reload. Scope to the toggle button, which holds only the category's
+    // illustration (child article icons live in the same group but outside it).
+    await expect(kb.getCategoryCommentInput(name)).toBeHidden();
+    const node_header = kb.getAsideCategoryToggle(name);
+    await expect(node_header.getByRole('img', { name: 'Antivirus' })).toBeVisible();
+    await expect(node_header.getByRole('img', { name: 'Knowledge base and FAQ' })).not.toBeAttached();
+    expect(page.url()).toBe(url_before);
+});

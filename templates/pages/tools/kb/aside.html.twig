@@ -42,9 +42,11 @@
                 aria-expanded="true"
             >
                 <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
-                {% if category.illustration %}
-                    {{ render_illustration(category.illustration, 20) }}
-                {% endif %}
+                <span data-glpi-kb-aside-category-illustration>
+                    {% if category.illustration %}
+                        {{ render_illustration(category.illustration, 20) }}
+                    {% endif %}
+                </span>
                 <span class="ms-2 fw-bold text-truncate d-block">{{ category.title }}</span>
             </button>
             {% if can_create %}

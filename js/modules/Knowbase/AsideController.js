@@ -327,6 +327,13 @@ export class GlpiKnowbaseAsideController
         }
 
         if (response.ok) {
+            const data = await response.json();
+            // Refresh the node icon in place so the change shows without a reload.
+            const node = panel.closest('[data-glpi-kb-aside-category]');
+            const illustration = node?.querySelector('[data-glpi-kb-aside-category-illustration]');
+            if (illustration && data.illustration_html) {
+                illustration.innerHTML = data.illustration_html;
+            }
             panel.remove();
             return;
         }

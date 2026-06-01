@@ -39,6 +39,7 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Knowbase\Aside\Category as AsideCategory;
+use Glpi\UI\IllustrationManager;
 use KnowbaseItem;
 use KnowbaseItemCategory;
 use Session;
@@ -181,10 +182,17 @@ final class CreateCategoryFromAsideController extends AbstractController
             ], 422);
         }
 
+        $illustration = (string) $category->fields['illustration'];
+
         return new JsonResponse([
-            'id'           => $id,
-            'illustration' => (string) $category->fields['illustration'],
-            'comment'      => (string) $category->fields['comment'],
+            'id'                => $id,
+            'illustration'      => $illustration,
+            'comment'           => (string) $category->fields['comment'],
+            // Pre-rendered markup so the tree node icon refreshes without a reload.
+            'illustration_html' => (new IllustrationManager())->renderIcon(
+                $illustration !== '' ? $illustration : 'kb-faq',
+                20,
+            ),
         ]);
     }
 
