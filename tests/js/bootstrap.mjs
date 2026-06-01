@@ -30,6 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
+import '@testing-library/jest-dom/vitest';
+
 // Bootstrap for all JS test modules
 
 await import('jquery').then((jquery) => {

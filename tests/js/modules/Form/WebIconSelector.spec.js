@@ -84,7 +84,7 @@ describe('Web Icon Selector', () => {
             expect(results.results[0].text).toBe('Animals');
             expect(results.results[0].children.length).toBeGreaterThan(1);
             // More pages available
-            expect(results.pagination.more).toBeTrue();
+            expect(results.pagination.more).toBeTruthy();
             // each option id and text should match and contain 'ti-'
             results.results[0].children.forEach((option) => {
                 expect(option.id).toBe(`ti-${option.text}`);

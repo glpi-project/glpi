@@ -52,11 +52,11 @@ describe('Search Tokenizer Input', () => {
 
         expect(search_input.displayed_input).toBeDefined();
         const displayed_input = search_input.displayed_input;
-        expect(displayed_input.hasClass('search-input')).toBeTrue();
+        expect(displayed_input.hasClass('search-input')).toBe(true);
 
         const default_tag_input = displayed_input.find('.search-input-tag-input');
         expect(default_tag_input.length).toBe(1);
-        expect(default_tag_input.attr('contenteditable') === 'true').toBeTrue();
+        expect(default_tag_input.attr('contenteditable') === 'true').toBe(true);
     });
 
     test('Construct with custom input options', () => {

@@ -5,7 +5,8 @@
         "target": "ES2022",
         "module": "esnext",
         "moduleResolution": "bundler",
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "types": ["node"]
     },
     "include": ["tests/e2e/**/*.ts"],
 }

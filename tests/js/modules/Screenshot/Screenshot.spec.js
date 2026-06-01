@@ -31,13 +31,12 @@
  */
 
 import Screenshot from '/js/modules/Screenshot/Screenshot.js';
-import {jest} from '@jest/globals';
 
 describe('Screenshot', () => {
     let user_agent_getter;
 
     beforeEach(() => {
-        user_agent_getter = jest.spyOn(navigator, 'userAgent', 'get');
+        user_agent_getter = vi.spyOn(navigator, 'userAgent', 'get');
         window.isSecureContext = true;
         $('body').empty();
     });
@@ -97,12 +96,11 @@ describe('Screenshot', () => {
     });
 
     test('Get recording codec', () => {
-        // MediaRecorder not defined in jest environment
         window.MediaRecorder = {
             isTypeSupported: () => {
             }
         };
-        const type_supported = jest.spyOn(window.MediaRecorder, 'isTypeSupported');
+        const type_supported = vi.spyOn(window.MediaRecorder, 'isTypeSupported');
         type_supported.mockReturnValueOnce(true);
         expect(Screenshot.getRecordingCodec('video/webm')).toBe('vp9');
         type_supported.mockReturnValueOnce(false);
@@ -134,7 +132,8 @@ describe('Screenshot', () => {
     test('Show recording preview', () => {
         const fake_blob = new Blob(['FAKE_BLOB_DATA'], {type: 'video/webm'});
         $('body').append('<div id="screenshot-previews"></div>');
-        URL.createObjectURL = jest.fn().mockReturnValueOnce('blob:FAKE_BLOB_DATA');
+        const create_object_url_spy = vi.spyOn(URL, 'createObjectURL');
+        create_object_url_spy.mockReturnValueOnce('blob:FAKE_BLOB_DATA');
         Screenshot.appendPreviewVideo($('#screenshot-previews'), fake_blob, '200px', 'test.webm');
         expect($('#screenshot-previews').children().length).toBe(1);
         const preview_item = $('#screenshot-previews').children().first();
@@ -157,7 +156,7 @@ describe('Screenshot', () => {
                 <div class="fileupload">
                     <div>
                         <input type="hidden" name="_filename[0]" value="randomprefixtest.png">
-                        <span class="ti ti-circle-x" onclick="$(this).parent().remove()"></span>
+                        <span class="ti ti-circle-x" onclick="this.parentElement.remove()"></span>
                     </div>
                 </div>
             </form>
@@ -168,8 +167,7 @@ describe('Screenshot', () => {
             }
         };
         Screenshot.appendPreviewImg($('#screenshot-previews'), fake_canvas, '200px', 'test.png');
-        const delete_button = $('#screenshot-previews').find('button').first();
-        delete_button.click();
+        $('#screenshot-previews').find('button').first().click();
         expect($('#screenshot-previews').children().length).toBe(0);
         expect($('#screenshot-previews').parent().find('.fileupload').children().length).toBe(0);
     });
@@ -181,7 +179,7 @@ describe('Screenshot', () => {
                 <div class="fileupload">
                     <div>
                         <input type="hidden" name="_filename[0]" value="randomprefixtest.webm">
-                        <span class="ti ti-circle-x" onclick="$(this).parent().remove()"></span>
+                        <span class="ti ti-circle-x" onclick="this.parentElement.remove()"></span>
                     </div>
                 </div>
             </form>
@@ -201,7 +199,7 @@ describe('Screenshot', () => {
                 <div class="fileupload">
                     <div id="doc_uploader_filename89f8sef9s8df9j">
                         <input type="hidden" name="_filename[0]" value="randomprefixtest.png">
-                        <span class="ti ti-circle-x" onclick="$(this).parent().remove()"></span>
+                        <span class="ti ti-circle-x" onclick="this.parentElement.remove()"></span>
                     </div>
                 </div>
             </form>
@@ -226,7 +224,7 @@ describe('Screenshot', () => {
                 <div class="fileupload">
                     <div id="doc_uploader_filename89f8sef9s8df9j">
                         <input type="hidden" name="_filename[0]" value="randomprefixtest.webm">
-                        <span class="ti ti-circle-x" onclick="$(this).parent().remove()"></span>
+                        <span class="ti ti-circle-x" onclick="this.parentElement.remove()"></span>
                     </div>
                 </div>
             </form>

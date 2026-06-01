@@ -34,11 +34,10 @@
 
 import '/js/modules/Search/ResultsView.js';
 import '/js/modules/Search/Table.js';
-import {jest} from '@jest/globals';
 
 describe('Search ResultsView', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
     $(document.body).append(`
     <div class="ajax-container search-display-data">
@@ -58,6 +57,6 @@ describe('Search ResultsView', () => {
         expect(GLPI.Search.ResultsView).toBeDefined();
     });
     test('getView', () => {
-        expect(results_view.getView() instanceof GLPI.Search.Table).toBeTrue();
+        expect(results_view.getView() instanceof GLPI.Search.Table).toBe(true);
     });
 });

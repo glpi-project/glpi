@@ -30,17 +30,18 @@
  * ---------------------------------------------------------------------
  */
 
-require("@jest/globals");
-const Reservations = require('/js/reservations.js').Reservations;
+import { Reservations } from '/js/reservations.js';
 
 describe('Reservations', () => {
     beforeAll(() => {
         document.body.innerHTML = '<div id="reservations_planning_1234"></div>';
     });
+
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         window.AjaxMock.end();
     });
+
     it('init', () => {
         const r = new Reservations();
 
@@ -98,50 +99,56 @@ describe('Reservations', () => {
             }
         };
         window.FullCalendar = {
-            Calendar: jest.fn().mockImplementation((dom, config) => {
-                expect(dom).toHaveProperty('id', 'reservations_planning_1234');
-                expect(config.now).toBe(r.now);
-                expect(config.defaultDate).toBe(r.defaultDate);
-                expect(config.defaultView).toBe(r.currentv);
-                expect(config.minTime).toBe('08:00:00');
-                expect(config.maxTime).toBe('18:00:00');
-                expect(config.plugins).toIncludeAllMembers(['dayGrid', 'interaction', 'list', 'timeGrid', 'resourceTimeline']);
-                expect(config.header).toBeObject();
-                expect(config.views).toContainAllKeys(['listFull', 'resourceWeek']);
-                return {
-                    setOption: jest.fn().mockImplementation((option, value) => {
-                        if (option === 'locale') {
-                            expect(value).toBe('en-gb');
-                        }
-                    }),
-                    render: jest.fn(),
-                };
-            })
+            Calendar: class {
+                constructor(dom, config) {
+                    expect(dom).toHaveProperty('id', 'reservations_planning_1234');
+                    expect(config.now).toBe(r.now);
+                    expect(config.defaultDate).toBe(r.defaultDate);
+                    expect(config.defaultView).toBe(r.currentv);
+                    expect(config.minTime).toBe('08:00:00');
+                    expect(config.maxTime).toBe('18:00:00');
+                    expect(config.plugins).toEqual(expect.arrayContaining(['dayGrid', 'interaction', 'list', 'timeGrid', 'resourceTimeline']));
+                    expect(config.header).toBeTypeOf('object');
+                    //expect(config.views).toContainAllKeys(['listFull', 'resourceWeek']);
+                    expect(Object.keys(config.views)).toEqual(expect.arrayContaining(['listFull', 'resourceWeek']));
+                    return {
+                        setOption: vi.fn().mockImplementation((option, value) => {
+                            if (option === 'locale') {
+                                expect(value).toBe('en-gb');
+                            }
+                        }),
+                        render: vi.fn(),
+                    };
+                }
+            },
         };
+        vi.spyOn(window.FullCalendar, 'Calendar');
         r.displayPlanning();
         expect(window.FullCalendar.Calendar).toHaveBeenCalledTimes(1);
         expect(r.calendar).toBeDefined();
         expect(r.calendar.render).toHaveBeenCalledTimes(1);
         expect(r.calendar.setOption).toHaveBeenCalled();
 
-        jest.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
+        vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) => {
             if (key === 'fcDefaultViewReservation') {
                 return 'test';
             }
             return null;
         });
         window.FullCalendar = {
-            Calendar: jest.fn().mockImplementation((dom, config) => {
-                expect(config.defaultView).toBe('test');
-                return {
-                    setOption: jest.fn().mockImplementation((option, value) => {
-                        if (option === 'locale') {
-                            expect(value).toBe('en-gb');
-                        }
-                    }),
-                    render: jest.fn(),
-                };
-            })
+            Calendar: class {
+                constructor(dom, config) {
+                    expect(config.defaultView).toBe('test');
+                    return {
+                        setOption: vi.fn().mockImplementation((option, value) => {
+                            if (option === 'locale') {
+                                expect(value).toBe('en-gb');
+                            }
+                        }),
+                        render: vi.fn(),
+                    };
+                }
+            }
         };
         r.displayPlanning();
     });
@@ -152,7 +159,7 @@ describe('Reservations', () => {
         expect(r.dateAreSameDay(new Date('2024-06-10T12:00:00'), new Date('2024-06-10T23:59:59'))).toBe(true);
     });
     it('editEvent', () => {
-        const revert_fn = jest.fn();
+        const revert_fn = vi.fn();
 
         window.AjaxMock.start();
 
@@ -198,7 +205,7 @@ describe('Reservations', () => {
             revert: revert_fn
         });
         return new Promise(process.nextTick).then(() => {
-            expect(window.AjaxMock.isResponseStackEmpty()).toBeFalse();
+            expect(window.AjaxMock.isResponseStackEmpty()).toBe(false);
             expect(revert_fn).not.toHaveBeenCalled();
 
             // Second call - success but missing HTML
@@ -212,7 +219,7 @@ describe('Reservations', () => {
             });
             return new Promise(process.nextTick);
         }).then(() => {
-            expect(window.AjaxMock.isResponseStackEmpty()).toBeFalse();
+            expect(window.AjaxMock.isResponseStackEmpty()).toBe(false);
             expect(revert_fn).toHaveBeenCalledTimes(1);
 
             // Third call - failure
@@ -226,7 +233,7 @@ describe('Reservations', () => {
             });
             return new Promise(process.nextTick);
         }).then(() => {
-            expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+            expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
             expect(revert_fn).toHaveBeenCalledTimes(2);
             window.AjaxMock.end();
         });

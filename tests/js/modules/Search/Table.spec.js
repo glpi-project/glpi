@@ -33,22 +33,21 @@
 /* global GLPI */
 
 import '/js/modules/Search/Table.js';
-import {jest} from '@jest/globals';
 
 describe('Search Table', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         // Mock reload function
         delete window.location;
         Object.defineProperty(window, 'location', {
             value: {
                 href: '',
-                reload: jest.fn().mockImplementation(() => {})
+                reload: vi.fn().mockImplementation(() => {})
             },
             writable: true,
             configurable: true,
         });
-        window_reload_spy = jest.spyOn(window.location, 'reload');
+        window_reload_spy = vi.spyOn(window.location, 'reload');
         window.AjaxMock.start();
     });
     $(document.body).append(`
@@ -121,7 +120,7 @@ describe('Search Table', () => {
         </div>
     </div>
 `);
-    window.GLPI.Search.Table.prototype.getResultsView = jest.fn(() => {
+    window.GLPI.Search.Table.prototype.getResultsView = vi.fn(() => {
         return {
             setID(id) {
                 return id;
@@ -136,16 +135,16 @@ describe('Search Table', () => {
     });
 
     const real_table = new GLPI.Search.Table('massformComputer');
-    $.fn.load = jest.fn().mockImplementation((url, data, callback) => {
+    $.fn.load = vi.fn().mockImplementation((url, data, callback) => {
         callback();
     });
 
     let window_reload_spy = null;
-    const table_showSpinner = jest.spyOn(real_table, 'showLoadingSpinner');
-    const table_hideSpinner = jest.spyOn(real_table, 'hideLoadingSpinner');
-    const table_onLimitChange = jest.spyOn(real_table, 'onLimitChange');
-    const table_onSearch = jest.spyOn(real_table, 'onSearch');
-    const table_onPageChange = jest.spyOn(real_table, 'onPageChange');
+    const table_showSpinner = vi.spyOn(real_table, 'showLoadingSpinner');
+    const table_hideSpinner = vi.spyOn(real_table, 'hideLoadingSpinner');
+    const table_onLimitChange = vi.spyOn(real_table, 'onLimitChange');
+    const table_onSearch = vi.spyOn(real_table, 'onSearch');
+    const table_onPageChange = vi.spyOn(real_table, 'onPageChange');
 
     const table_el = real_table.getElement();
     const restore_initial_sort_state = () => {
@@ -170,7 +169,7 @@ describe('Search Table', () => {
         expect(real_table.getItemtype()).toBe('Computer');
     });
     test('getResultsView', () => {
-        expect(real_table.getResultsView()).toBeObject();
+        expect(real_table.getResultsView()).toBeTypeOf('object');
     });
     test('setSortStateFromColumns', () => {
         const verify_initial_sort_state = () => {
@@ -280,12 +279,12 @@ describe('Search Table', () => {
         // Wait for mocked AJAX response to resolve
         await new Promise(process.nextTick);
         expect(table_showSpinner).toHaveBeenCalledTimes(1);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
         expect(table_hideSpinner).toHaveBeenCalledTimes(1);
         restore_initial_sort_state();
     });
     test('AJAX refresh on limit change', async () => {
-        const history_push_spy = jest.spyOn(window.history, 'pushState');
+        const history_push_spy = vi.spyOn(window.history, 'pushState');
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/search.php', 'GET', {
             glpilist_limit: '10',
         }, () => {
@@ -299,7 +298,7 @@ describe('Search Table', () => {
         // Wait for mocked AJAX response to resolve
         await new Promise(process.nextTick);
         expect(table_showSpinner).toHaveBeenCalledTimes(1);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
         expect(table_hideSpinner).toHaveBeenCalledTimes(1);
         expect(table_onLimitChange).toHaveBeenCalledTimes(1);
         expect(history_push_spy).toHaveBeenCalledTimes(1);
@@ -322,7 +321,7 @@ describe('Search Table', () => {
         // Wait for mocked AJAX response to resolve
         await new Promise(process.nextTick);
         expect(table_showSpinner).toHaveBeenCalledTimes(1);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
         expect(table_hideSpinner).toHaveBeenCalledTimes(1);
         expect(table_onSearch).toHaveBeenCalledTimes(1);
     });
@@ -337,7 +336,7 @@ describe('Search Table', () => {
         };
 
         // This is more to test that no other test changes the active item
-        expect(pagination_items.eq(2).hasClass('active')).toBeTrue();
+        expect(pagination_items.eq(2).hasClass('active')).toBe(true);
 
         const click_order = [0, 1, 3, 4, 5, 2];
         for (let i = 0; i < click_order.length; i++) {
@@ -371,7 +370,7 @@ describe('Search Table', () => {
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/displayMessageAfterRedirect.php', 'GET', {}, () => {
             return {};
         }));
-        const get_itemtype = jest.spyOn(real_table, 'getItemtype');
+        const get_itemtype = vi.spyOn(real_table, 'getItemtype');
         get_itemtype.mockImplementation(() => {
             throw 'Test exception';
         });
@@ -380,7 +379,7 @@ describe('Search Table', () => {
         await new Promise(process.nextTick);
         expect(table_hideSpinner).toHaveBeenCalledTimes(0);
         // We expect the refresh to fail before the AJAX call
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeFalse();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(false);
         expect(window_reload_spy).toHaveBeenCalledTimes(1);
     });
 });
