@@ -420,7 +420,9 @@ abstract class CommonDevice extends CommonDropdown
         }
 
         $linktype = static::getItem_DeviceType();
-        if (in_array($itemtype, $linktype::itemAffinity()) || in_array('*', $linktype::itemAffinity())) {
+        $affinity = $linktype::itemAffinity();
+
+        if (in_array($itemtype, $affinity, true) || in_array('*', $affinity, true)) {
             $column = $base->addHeader('device', $content, $super, $father);
             $column->setItemType(
                 static::class,
