@@ -960,7 +960,6 @@ export class GlpiKnowbaseArticleController
 
         // Lazy load editor on first use
         if (this.#editor === null) {
-            const editor_element = this.#container.querySelector('.kb-editor');
             editor_element.style.setProperty('--suggestion-placeholder', `"${__('Keep typing to filter...')}"`);
             const { KnowbaseEditor } = await import('/js/modules/KnowbaseEditor.js');
             this.#editor = new KnowbaseEditor(editor_element, {
