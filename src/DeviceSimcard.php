@@ -125,38 +125,6 @@ class DeviceSimcard extends CommonDevice
         $tab = [];
 
         $tab[] = [
-            'id'            => '1342',
-            'table'         => 'glpi_items_devicesimcards',
-            'field'         => 'pin',
-            'name'          => sprintf(__('%1$s %2$s: %3$s'), self::getTypeName(1), __('items'), __('PIN code')),
-            'forcegroupby'  => true,
-            'usehaving'     => true,
-            'massiveaction' => false,
-            'datatype'      => 'string',
-            'right'         => 'devicesimcard_pinpuk',
-            'nosearch'      => true,
-            'nodisplay'     => true,
-            'protected'     => true,
-            'joinparams'    => $main_joinparams,
-        ];
-
-        $tab[] = [
-            'id'            => '1343',
-            'table'         => 'glpi_items_devicesimcards',
-            'field'         => 'puk',
-            'name'          => sprintf(__('%1$s %2$s: %3$s'), self::getTypeName(1), __('items'), __('PUK code')),
-            'forcegroupby'  => true,
-            'usehaving'     => true,
-            'massiveaction' => false,
-            'datatype'      => 'string',
-            'right'         => 'devicesimcard_pinpuk',
-            'nosearch'      => true,
-            'nodisplay'     => true,
-            'protected'     => true,
-            'joinparams'    => $main_joinparams,
-        ];
-
-        $tab[] = [
             'id'            => '1344',
             'table'         => 'glpi_items_devicesimcards',
             'field'         => 'msin',
