@@ -72,7 +72,7 @@ class KnowbaseEditor {
         this.#options = {
             content: '',
             readonly: true,
-            placeholder: __('Type / to choose block'),
+            placeholder: __('Type / to insert...'),
             onUpdate: null,
             item_id: null,
             ...options
