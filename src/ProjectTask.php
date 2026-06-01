@@ -2438,6 +2438,12 @@ TWIG, $twig_params);
                     'ON' => [
                         ProjectState::getTable() => 'id',
                         $task_table              => 'projectstates_id',
+                        [
+                            'OR' => [
+                                [ProjectState::getTable() . '.is_finished' => 0],
+                                [ProjectState::getTable() . '.is_finished' => null],
+                            ],
+                        ],
                     ],
                 ],
                 Alert::getTable() => [
@@ -2463,8 +2469,8 @@ TWIG, $twig_params);
                     interval_unit: 'DAY',
                 )]],
                 'OR' => [
-                    [ProjectState::getTable() . '.is_finished' => 0],
-                    [ProjectState::getTable() . '.is_finished' => null],
+                    [$task_table . '.projectstates_id' => null],
+                    ['NOT' => [ProjectState::getTable() . '.id' => null]],
                 ],
                 Alert::getTable() . '.date'     => null,
             ],
@@ -2473,19 +2479,18 @@ TWIG, $twig_params);
         $projecttask = new self();
         $alert       = new Alert();
         foreach ($iterator as $data) {
-            if ($projecttask->getFromDB($data['id'])) {
-                $options = ['entities_id' => $projecttask->getEntityID()];
-                if (NotificationEvent::raiseEvent('planningrecall', $projecttask, $options)) {
-                    $cron_status = 1;
-                    if ($task !== null) {
-                        $task->addVolume(1);
-                    }
-                    $alert->add([
-                        'itemtype' => self::class,
-                        'type'     => Alert::ACTION,
-                        'items_id' => $data['id'],
-                    ]);
+            $projecttask->getFromResultSet($data);
+            $options = ['entities_id' => $projecttask->getEntityID()];
+            if (NotificationEvent::raiseEvent('planningrecall', $projecttask, $options)) {
+                $cron_status = 1;
+                if ($task !== null) {
+                    $task->addVolume(1);
                 }
+                $alert->add([
+                    'itemtype' => self::class,
+                    'type'     => Alert::ACTION,
+                    'items_id' => $data['id'],
+                ]);
             }
         }
 
