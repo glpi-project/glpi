@@ -344,7 +344,8 @@ class Central extends CommonGLPI
             $twig_params['cards'][] = [
                 'itemtype' => Project::class,
                 'widget' => 'central_list',
-                'params' => [
+                'params' => $card_params + [
+                    'itemtype'    => User::getType(),
                     '_idor_token' => $idor,
                 ],
             ];
@@ -356,7 +357,8 @@ class Central extends CommonGLPI
             $twig_params['cards'][] = [
                 'itemtype' => ProjectTask::class,
                 'widget' => 'central_list',
-                'params' => [
+                'params' => $card_params + [
+                    'itemtype'    => User::getType(),
                     '_idor_token' => $idor,
                 ],
             ];
