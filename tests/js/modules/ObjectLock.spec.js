@@ -31,7 +31,6 @@
  */
 
 import { initObjectLock } from '/js/modules/ObjectLock.js';
-import {jest} from '@jest/globals';
 
 describe('Object Lock', () => {
     let window_reload_spy;
@@ -44,43 +43,43 @@ describe('Object Lock', () => {
         Object.defineProperty(window, 'location', {
             value: {
                 href: '',
-                reload: jest.fn().mockImplementation(() => {})
+                reload: vi.fn().mockImplementation(() => {})
             },
             writable: true,
             configurable: true,
         });
-        window_reload_spy = jest.spyOn(window.location, 'reload');
+        window_reload_spy = vi.spyOn(window.location, 'reload');
 
-        window.glpi_confirm = jest.fn((opts) => {
+        window.glpi_confirm = vi.fn((opts) => {
             if (opts.confirm_callback) {
                 opts.confirm_callback();
             }
         });
-        window.glpi_alert = jest.fn((opts) => {
+        window.glpi_alert = vi.fn((opts) => {
             if (opts.ok_callback) {
                 opts.ok_callback();
             }
         });
-        glpi_confirm_spy = jest.spyOn(window, 'glpi_confirm');
-        glpi_alert_spy = jest.spyOn(window, 'glpi_alert');
+        glpi_confirm_spy = vi.spyOn(window, 'glpi_confirm');
+        glpi_alert_spy = vi.spyOn(window, 'glpi_alert');
 
         $('body').empty();
     });
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         // clear timer mock
-        jest.useRealTimers();
+        vi.useRealTimers();
         window.AjaxMock.end();
         $(window).off('beforeunload');
     });
 
     test('Exports', () => {
-        expect(initObjectLock).toBeFunction();
+        expect(initObjectLock).toBeTypeOf('function');
     });
     test('Alert me', async () => {
         $('body').append('<input type="checkbox" id="alertMe" />');
         // Legacy fake timers needed to support setInterval
-        jest.useFakeTimers({
+        vi.useFakeTimers({
             doNotFake: ['nextTick'],
         });
 
@@ -108,14 +107,14 @@ describe('Object Lock', () => {
         }, false);
 
         // Checkbox not checked, so no timer and no AJAX
-        jest.advanceTimersByTime(30000);
+        vi.advanceTimersByTime(30000);
         expect(window.AjaxMock.response_stack).toHaveLength(2);
 
         $('#alertMe').prop('checked', true).trigger('change');
         await new Promise(process.nextTick);
-        jest.advanceTimersByTime(15000);
+        vi.advanceTimersByTime(15000);
         expect(window.AjaxMock.response_stack).toHaveLength(1);
-        jest.advanceTimersByTime(15000);
+        vi.advanceTimersByTime(15000);
         expect(window.AjaxMock.response_stack).toHaveLength(0);
         await new Promise(process.nextTick);
         expect(glpi_confirm_spy).toHaveBeenCalled();
@@ -123,11 +122,11 @@ describe('Object Lock', () => {
             expect.objectContaining({
                 title: 'Item unlocked!',
                 message: 'Reload page?',
-                confirm_callback: expect.toBeFunction()
+                confirm_callback: expect.any(Function)
             })
         );
         expect(window_reload_spy).toHaveBeenCalled();
-        jest.advanceTimersByTime(15000);
+        vi.advanceTimersByTime(15000);
         // AjaxMock should not throw an error here. If it does, it means the timer is still running
     });
     test('Ask unlock item', async () => {
@@ -156,7 +155,7 @@ describe('Object Lock', () => {
             expect.objectContaining({
                 title: 'Ticket #24',
                 message: 'Ask for unlock this item?',
-                confirm_callback: expect.toBeFunction()
+                confirm_callback: expect.any(Function)
             })
         );
         await new Promise(process.nextTick);
@@ -169,12 +168,12 @@ describe('Object Lock', () => {
         expect(window.AjaxMock.response_stack).toHaveLength(0);
     });
     test('Unlock on beforeunload - fetch', async () => {
-        window.fetch = jest.fn(() => {
+        window.fetch = vi.fn(() => {
             return {
                 catch: () => {}
             };
         });
-        const fetch_spy = jest.spyOn(window, 'fetch');
+        const fetch_spy = vi.spyOn(window, 'fetch');
 
         initObjectLock({
             id: 3450,

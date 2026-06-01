@@ -30,8 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-require('@jest/globals');
-const common = require('/js/common.js');
+import * as common from '/js/common.js';
 
 describe('Common', () => {
     beforeEach(() => {
@@ -177,7 +176,7 @@ describe('Common', () => {
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//pics/icones/png-dist.png', 'HEAD', {}, () => ''));
         expect(common.getExtIcon('png')).toBe(`<img src="${window.CFG_GLPI.root_doc}/pics/icones/png-dist.png" title="png">`);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//pics/icones/fake-dist.png', 'HEAD', {}, () => '', false, 'error'));
         expect(common.getExtIcon('fake')).toBe(`<img src="${window.CFG_GLPI.root_doc}/pics/icones/defaut-dist.png" title="fake">`);
     });

@@ -75,12 +75,12 @@ describe('FuzzySearch/Modal Vue Component', () => {
         await new Promise(process.nextTick);
 
         // request should not be made before display
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeFalse();
-        expect($('#fuzzysearch').hasClass('show')).toBeFalse();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(false);
+        expect($('#fuzzysearch').hasClass('show')).toBe(false);
         $('.trigger-fuzzy').click();
         await new Promise(process.nextTick);
-        expect($('#fuzzysearch').hasClass('show')).toBeTrue();
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect($('#fuzzysearch').hasClass('show')).toBe(true);
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
     });
     test('list populated', async () => {
         window.AjaxMock.start();
@@ -103,7 +103,7 @@ describe('FuzzySearch/Modal Vue Component', () => {
         await new Promise(process.nextTick);
         $('.trigger-fuzzy').click();
         await new Promise(process.nextTick);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
 
         const results_items = $('#fuzzysearch .results li');
         expect(results_items.length).toBe(2);
@@ -155,7 +155,7 @@ describe('FuzzySearch/Modal Vue Component', () => {
         // Escape key should close modal
         wrapper.trigger('keydown', {key: 'Escape'});
         await new Promise(process.nextTick);
-        expect($('#fuzzysearch').hasClass('show')).toBeFalse();
+        expect($('#fuzzysearch').hasClass('show')).toBe(false);
     });
     test('arrow keys navigation', async () => {
         window.AjaxMock.start();
@@ -177,24 +177,24 @@ describe('FuzzySearch/Modal Vue Component', () => {
         await new Promise(process.nextTick);
         $('.trigger-fuzzy').click();
         await new Promise(process.nextTick);
-        expect($('#fuzzysearch').hasClass('show')).toBeTrue();
+        expect($('#fuzzysearch').hasClass('show')).toBe(true);
 
         wrapper.trigger('keyup', {key: 'ArrowDown'});
         await new Promise(process.nextTick);
         // second item should be selected
-        expect($('#fuzzysearch .results li').eq(1).hasClass('active')).toBeTrue();
+        expect($('#fuzzysearch .results li').eq(1).hasClass('active')).toBe(true);
         wrapper.trigger('keyup', {key: 'ArrowDown'});
         await new Promise(process.nextTick);
         // second item should still be selected as there is no third item
-        expect($('#fuzzysearch .results li').eq(1).hasClass('active')).toBeTrue();
+        expect($('#fuzzysearch .results li').eq(1).hasClass('active')).toBe(true);
         wrapper.trigger('keyup', {key: 'ArrowUp'});
         await new Promise(process.nextTick);
         // first item should be selected
-        expect($('#fuzzysearch .results li').eq(0).hasClass('active')).toBeTrue();
+        expect($('#fuzzysearch .results li').eq(0).hasClass('active')).toBe(true);
         wrapper.trigger('keyup', {key: 'ArrowUp'});
         await new Promise(process.nextTick);
         // first item should still be selected as there is no item before it
-        expect($('#fuzzysearch .results li').eq(0).hasClass('active')).toBeTrue();
+        expect($('#fuzzysearch .results li').eq(0).hasClass('active')).toBe(true);
     });
     test('non-mac hotkeys', async () => {
         mount(FuzzySearchModal, {
@@ -205,7 +205,7 @@ describe('FuzzySearch/Modal Vue Component', () => {
         // Pressing Ctrl + Alt + G should open the modal
         $('body').trigger($.Event('keydown', {ctrlKey: true, altKey: true, key: 'g'}));
         await new Promise(process.nextTick);
-        expect($('#fuzzysearch').hasClass('show')).toBeTrue();
+        expect($('#fuzzysearch').hasClass('show')).toBe(true);
     });
     test('mac hotkeys', async () => {
         mount(FuzzySearchModal, {
@@ -216,6 +216,6 @@ describe('FuzzySearch/Modal Vue Component', () => {
         // Pressing Command + Option + G should open the modal
         $('body').trigger($.Event('keydown', {metaKey: true, altKey: true, key: 'g'}));
         await new Promise(process.nextTick);
-        expect($('#fuzzysearch').hasClass('show')).toBeTrue();
+        expect($('#fuzzysearch').hasClass('show')).toBe(true);
     });
 });

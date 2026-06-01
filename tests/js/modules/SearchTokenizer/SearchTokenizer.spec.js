@@ -64,8 +64,8 @@ describe('Search Tokenizer', () => {
                 supported_prefixes: ['!']
             }
         });
-        expect(tokenizer.isAllowedTag('name')).toBeTrue();
-        expect(tokenizer.isAllowedTag('content')).toBeFalse();
+        expect(tokenizer.isAllowedTag('name')).toBe(true);
+        expect(tokenizer.isAllowedTag('content')).toBe(false);
 
         result = tokenizer.tokenize('This is a te:st name:"Test"');
         expect(result.getFullPhrase()).toBe('This is a te:st');
@@ -121,7 +121,7 @@ describe('Search Tokenizer', () => {
         expect(result.tokens.length).toBe(1);
         expect(result.getTaggedTerms().length).toBe(1);
         result.getTag('name').forEach(tag => {
-            expect(tag.exclusion).toBeTrue();
+            expect(tag.exclusion).toBe(true);
             expect(tag.term).toBe('');
         });
     });
@@ -129,16 +129,16 @@ describe('Search Tokenizer', () => {
     test('Allowed Tags', () => {
         let tokenizer = new SearchTokenizer();
         // All tags allowed by default
-        expect(tokenizer.isAllowedTag('name')).toBeTrue();
-        expect(tokenizer.isAllowedTag('content')).toBeTrue();
+        expect(tokenizer.isAllowedTag('name')).toBe(true);
+        expect(tokenizer.isAllowedTag('content')).toBe(true);
 
         tokenizer = new SearchTokenizer({
             name: {
                 description: ''
             }
         });
-        expect(tokenizer.isAllowedTag('name')).toBeTrue();
-        expect(tokenizer.isAllowedTag('content')).toBeFalse();
+        expect(tokenizer.isAllowedTag('name')).toBe(true);
+        expect(tokenizer.isAllowedTag('content')).toBe(false);
     });
 
     test('Autocomplete', () => {
@@ -162,7 +162,7 @@ describe('Search Tokenizer', () => {
         tokenizer.setAutocomplete('itemtype', () => {
             return ['Project', 'ProjectTask'];
         });
-        expect(tokenizer.getAutocomplete('itemtype')).toIncludeAllMembers(['Project', 'ProjectTask']);
+        expect(tokenizer.getAutocomplete('itemtype')).toEqual(expect.arrayContaining(['Project', 'ProjectTask']));
     });
 
     test('Prefix detection', () => {
@@ -183,14 +183,14 @@ describe('Search Tokenizer', () => {
         let result = tokenizer.tokenize('!name:test');
         expect(result.getTaggedTerms().length).toBe(1);
         result.getTag('name').forEach(tag => {
-            expect(tag.exclusion).toBeTrue();
+            expect(tag.exclusion).toBe(true);
             expect(tag.term).toBe('test');
         });
 
         result = tokenizer.tokenize('#name:test');
         expect(result.getTaggedTerms().length).toBe(1);
         result.getTag('name').forEach(tag => {
-            expect(tag.exclusion).toBeFalse();
+            expect(tag.exclusion).toBe(false);
             expect(tag.term).toBe('test');
             expect(tag.prefix).toBe('#');
         });

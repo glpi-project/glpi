@@ -68,7 +68,7 @@ describe('User Mentions', () => {
                 text: 'Jane Doe',
             }
         ]);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
     });
     test('fetchItems Restricted', async () => {
         const mentions = new window.GLPI.RichText.UserMention(null, 5, 'test', {
@@ -101,6 +101,6 @@ describe('User Mentions', () => {
                 text: 'John Smith',
             }
         ]);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
     });
 });

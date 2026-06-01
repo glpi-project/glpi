@@ -297,7 +297,7 @@ class GLPIDashboard {
         // browser resized (use debounce to delay generation of css)
         let debounce;
         $(window).on('resize', (event) => {
-            if (event.target.constructor.name !== "Window") {
+            if (event.target !== window) {
                 return;
             }
 

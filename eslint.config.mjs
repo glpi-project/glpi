@@ -140,11 +140,11 @@ export default [
         }
     },
     {
-        // Jest Tests
+        // JS Tests
         files: ["tests/js/**"],
         plugins: {mocha},
         languageOptions: {
-            globals: {...globals.node, ...globals.jest},
+            globals: {...globals.node, ...globals.vitest},
             sourceType: "module",
         },
         rules: {
@@ -161,7 +161,7 @@ export default [
         files: ["tests/cypress/**"],
         plugins: {mocha},
         languageOptions: {
-            globals: {...globals.node, ...globals.jest, ...cypress.configs.globals.languageOptions.globals},
+            globals: {...globals.node, ...globals.vitest, ...cypress.configs.globals.languageOptions.globals},
             sourceType: "module",
         },
         rules: {

@@ -33,7 +33,6 @@
 /* global GLPI */
 
 import {GLPIDashboard} from '/js/modules/Dashboard/Dashboard.js';
-import {jest} from '@jest/globals';
 
 describe('Dashboard', () => {
     beforeAll(() => {
@@ -41,13 +40,13 @@ describe('Dashboard', () => {
         GLPIDashboard.prototype._refreshDashboard = GLPIDashboard.prototype.refreshDashboard;
     });
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         // clear timer mock
-        jest.useRealTimers();
+        vi.useRealTimers();
         window.AjaxMock.end();
 
         // Mock some instance methods we don't want to test but are called from the constructor
-        GLPIDashboard.prototype.refreshDashboard = jest.fn().mockImplementation(() => {});
+        GLPIDashboard.prototype.refreshDashboard = vi.fn().mockImplementation(() => {});
 
         // Mock GridStack
         window.GridStack = {
@@ -55,8 +54,8 @@ describe('Dashboard', () => {
                 return new class extends EventTarget {
                     constructor() {
                         super();
-                        this.setStatic = jest.fn().mockImplementation(() => {});
-                        this.addWidget = jest.fn().mockImplementation(() => {});
+                        this.setStatic = vi.fn().mockImplementation(() => {});
+                        this.addWidget = vi.fn().mockImplementation(() => {});
                     }
                     on(event, callback) {
                         this.addEventListener(event, callback);
@@ -105,17 +104,17 @@ describe('Dashboard', () => {
 
     test('setWidgetFromForm default values', () => {
         // Mock glpi_close_all_dialogs
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
 
         const dashboard = new GLPIDashboard({'rand': '12345'});
 
         //Mock getUuidV4 from legacy script common.js
-        window.getUuidV4 = jest.fn().mockImplementation(() => {
+        window.getUuidV4 = vi.fn().mockImplementation(() => {
             // return a UUIDv4
             return '12345678-1234-1234-1234-123456789012';
         });
 
-        dashboard.addWidget = jest.fn().mockImplementation(() => {});
+        dashboard.addWidget = vi.fn().mockImplementation(() => {});
         dashboard.setWidgetFromForm({
             serializeArray: () => {
                 return [];
@@ -145,18 +144,18 @@ describe('Dashboard', () => {
 
     test('setWidgetFromForm custom form values', () => {
         // Mock glpi_close_all_dialogs
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
 
         const dashboard = new GLPIDashboard({'rand': '12345'});
 
-        //Mock getUuidV4 from legacy script common.js
-        window.getUuidV4 = jest.fn().mockImplementation(() => {
+        //Mock getUuidV4 vi legacy script common.js
+        window.getUuidV4 = vi.fn().mockImplementation(() => {
             // return a UUIDv4
             return '12345678-1234-1234-1234-123456789012';
         });
 
-        dashboard.addWidget = jest.fn().mockImplementation(() => {});
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.addWidget = vi.fn().mockImplementation(() => {});
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 '1': 'test',
             };
@@ -207,38 +206,38 @@ describe('Dashboard', () => {
     });
 
     test('setWidgetFromForm No Card', () => {
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.addWidget = jest.fn().mockImplementation(() => {});
+        dashboard.addWidget = vi.fn().mockImplementation(() => {});
         const result = dashboard.setWidgetFromForm({
             serializeArray: () => {
                 return [{name: 'card_id', value: '0'}];
             }
         });
-        expect(result).toBeFalse();
+        expect(result).toBe(false);
         expect(dashboard.addWidget).not.toHaveBeenCalled();
         expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
     });
 
     test('setWidgetFromForm Edit No Old ID', () => {
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.addWidget = jest.fn().mockImplementation(() => {});
+        dashboard.addWidget = vi.fn().mockImplementation(() => {});
         const result = dashboard.setWidgetFromForm({
             serializeArray: () => {
                 return [{name: 'old_id', value: '0'}];
             }
         });
-        expect(result).toBeFalse();
+        expect(result).toBe(false);
         expect(dashboard.addWidget).not.toHaveBeenCalled();
         expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
     });
 
     test('setWidgetFromForm Edit Remove Old Card', () => {
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.addWidget = jest.fn().mockImplementation(() => {});
-        dashboard.grid.removeWidget = jest.fn().mockImplementation(() => {});
+        dashboard.addWidget = vi.fn().mockImplementation(() => {});
+        dashboard.grid.removeWidget = vi.fn().mockImplementation(() => {});
         dashboard.setWidgetFromForm({
             serializeArray: () => {
                 return [
@@ -260,9 +259,9 @@ describe('Dashboard', () => {
     });
 
     test('setWidgetFromForm Encoded Card Options', () => {
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.addWidget = jest.fn().mockImplementation(() => {});
+        dashboard.addWidget = vi.fn().mockImplementation(() => {});
         dashboard.setWidgetFromForm({
             serializeArray: () => {
                 return [
@@ -287,24 +286,24 @@ describe('Dashboard', () => {
      * Test the calling of the AJAX endpoint for the action 'get_card' from the method setWidgetFromForm
      */
     test('setWidgetFromForm ajax', async () => {
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
         const dashboard = new GLPIDashboard({
             'rand': '12345',
             'current': 'current_dashboard',
         });
 
-        window.getUuidV4 = jest.fn().mockImplementation(() => {
+        window.getUuidV4 = vi.fn().mockImplementation(() => {
             return '12345678-1234-1234-1234-123456789012';
         });
 
         $('body').append(`<div id="widget12345"><div class="grid-stack-item-content"></div></div>`);
-        dashboard.addWidget = jest.fn().mockImplementation(() => {
+        dashboard.addWidget = vi.fn().mockImplementation(() => {
             return $('#widget12345');
         });
 
-        dashboard.fitNumbers = jest.fn();
-        dashboard.animateNumbers = jest.fn();
-        dashboard.saveDashboard = jest.fn();
+        dashboard.fitNumbers = vi.fn();
+        dashboard.animateNumbers = vi.fn();
+        dashboard.saveDashboard = vi.fn();
 
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
@@ -329,7 +328,7 @@ describe('Dashboard', () => {
             return $(`<div class="test-content"></div>`);
         }));
 
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 '1': 'test',
             };
@@ -342,7 +341,7 @@ describe('Dashboard', () => {
         });
         await new Promise(process.nextTick);
 
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
         expect(dashboard.fitNumbers).toHaveBeenCalledWith(
             expect.toSatisfy((widget) => {
                 return widget.attr('id') === 'widget12345';
@@ -425,7 +424,7 @@ describe('Dashboard', () => {
 
         const dashboard = new GLPIDashboard({'rand': '12345'});
         $('body').append('<div id="mock_widget12345" data-card-options="">test</div>');
-        dashboard.grid.addWidget = jest.fn().mockImplementation(() => {
+        dashboard.grid.addWidget = vi.fn().mockImplementation(() => {
             return $('#mock_widget12345')[0];
         });
         const created_widget = dashboard.addWidget(widget_params);
@@ -447,11 +446,11 @@ describe('Dashboard', () => {
     });
 
     test('setFilterFromForm', async () => {
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
         $('body').append(`<div id="filter-selector"></div>`);
         const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.filters_selector = '#filter-selector';
-        dashboard.saveFilter = jest.fn().mockImplementation(() => {});
+        dashboard.saveFilter = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
@@ -469,7 +468,7 @@ describe('Dashboard', () => {
             }
         });
         await new Promise(process.nextTick);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
         expect(dashboard.saveFilter).toHaveBeenCalledWith('myfilter', []);
         expect(window.glpi_close_all_dialogs).toHaveBeenCalledTimes(1);
         expect($('#filter-selector .filter-content').length).toBe(1);
@@ -480,9 +479,9 @@ describe('Dashboard', () => {
             'rand': '12345',
             'current': 'current_dashboard'
         });
-        dashboard.grid.removeAll = jest.fn().mockImplementation(() => {});
-        dashboard.grid.makeWidget = jest.fn().mockImplementation(() => {});
-        dashboard.getCardsAjax = jest.fn().mockImplementation(() => {});
+        dashboard.grid.removeAll = vi.fn().mockImplementation(() => {});
+        dashboard.grid.makeWidget = vi.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
         $('body').find('.grid-stack').empty();
 
         window.AjaxMock.start();
@@ -503,7 +502,7 @@ describe('Dashboard', () => {
         // We need to wait for the next tick to be sure that the async code is finished
         await new Promise(process.nextTick);
 
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
         expect(dashboard.grid.removeAll).toHaveBeenCalledTimes(1);
         expect(dashboard.grid.makeWidget).toHaveBeenNthCalledWith(1, expect.toSatisfy((html) => {
             return $(html).attr('gs-id') === '4';
@@ -526,9 +525,9 @@ describe('Dashboard', () => {
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
         dashboard.is_recursive = 1;
-        dashboard.grid.removeAll = jest.fn().mockImplementation(() => {});
-        dashboard.grid.makeWidget = jest.fn().mockImplementation(() => {});
-        dashboard.getCardsAjax = jest.fn().mockImplementation(() => {});
+        dashboard.grid.removeAll = vi.fn().mockImplementation(() => {});
+        dashboard.grid.makeWidget = vi.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
         $('body').find('.grid-stack').empty();
 
         window.AjaxMock.start();
@@ -553,7 +552,7 @@ describe('Dashboard', () => {
         // We need to wait for the next tick to be sure that the async code is finished
         await new Promise(process.nextTick);
 
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
         expect(dashboard.grid.removeAll).toHaveBeenCalledTimes(1);
         expect(dashboard.grid.makeWidget).toHaveBeenNthCalledWith(1, expect.toSatisfy((html) => {
             return $(html).attr('gs-id') === '4';
@@ -580,21 +579,21 @@ describe('Dashboard', () => {
             action: 'set_last_dashboard',
         }, () => {return true;}));
         dashboard.setLastDashboard();
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
     });
 
     test('saveFilter', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.filters_selector = '#filter-selector';
 
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'filter1_value',
             };
         });
-        dashboard.setFiltersInDB = jest.fn().mockImplementation(() => {});
-        window.sortable = jest.fn().mockImplementation(() => {});
-        dashboard.refreshCardsImpactedByFilter = jest.fn().mockImplementation(() => {});
+        dashboard.setFiltersInDB = vi.fn().mockImplementation(() => {});
+        window.sortable = vi.fn().mockImplementation(() => {});
+        dashboard.refreshCardsImpactedByFilter = vi.fn().mockImplementation(() => {});
 
         dashboard.saveFilter('filter2', 'filter2_value');
 
@@ -616,7 +615,7 @@ describe('Dashboard', () => {
                 <div class="grid-stack-item" gs-id="6"><div class="card filter-filter1"></div></div>
             </div>
         `);
-        dashboard.getCardsAjax = jest.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
 
         dashboard.refreshCardsImpactedByFilter('filter1');
 
@@ -629,7 +628,7 @@ describe('Dashboard', () => {
             'rand': '12345',
             'current': 'current_dashboard'
         });
-        dashboard.refreshDashboard = jest.fn().mockImplementation(() => {});
+        dashboard.refreshDashboard = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
@@ -641,7 +640,7 @@ describe('Dashboard', () => {
 
         dashboard.saveDashboard();
         await new Promise(process.nextTick);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(0);
     });
 
@@ -650,7 +649,7 @@ describe('Dashboard', () => {
             'rand': '12345',
             'current': 'current_dashboard'
         });
-        dashboard.refreshDashboard = jest.fn().mockImplementation(() => {});
+        dashboard.refreshDashboard = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
@@ -662,7 +661,7 @@ describe('Dashboard', () => {
 
         dashboard.saveDashboard(true);
         await new Promise(process.nextTick);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(1);
     });
 
@@ -728,9 +727,9 @@ describe('Dashboard', () => {
             </div>
         `);
 
-        dashboard.resetComputedWidth = jest.fn().mockImplementation(() => {});
-        dashboard.computeWidth = jest.fn().mockImplementation(() => {});
-        $.fn.fitText = jest.fn().mockImplementation(() => {});
+        dashboard.resetComputedWidth = vi.fn().mockImplementation(() => {});
+        dashboard.computeWidth = vi.fn().mockImplementation(() => {});
+        $.fn.fitText = vi.fn().mockImplementation(() => {});
 
         dashboard.fitNumbers($('.parent1'));
         expect($.fn.fitText).toHaveBeenNthCalledWith(1, 1.16);
@@ -769,9 +768,9 @@ describe('Dashboard', () => {
             </div>
         `);
 
-        dashboard.resetComputedWidth = jest.fn().mockImplementation(() => {});
-        dashboard.computeWidth = jest.fn().mockImplementation(() => {});
-        $.fn.fitText = jest.fn().mockImplementation(() => {});
+        dashboard.resetComputedWidth = vi.fn().mockImplementation(() => {});
+        dashboard.computeWidth = vi.fn().mockImplementation(() => {});
+        $.fn.fitText = vi.fn().mockImplementation(() => {});
 
         dashboard.fitNumbers($('.parent1'));
         expect($.fn.fitText).toHaveBeenNthCalledWith(1, 1.8);
@@ -803,15 +802,15 @@ describe('Dashboard', () => {
             </div>
         `);
 
-        jest.useFakeTimers();
+        vi.useFakeTimers();
         dashboard.animateNumbers($('.parent1'));
         expect(parseInt($('.parent1 .formatted-number').text())).toBeLessThan(10000);
-        jest.advanceTimersByTime(500);
+        vi.advanceTimersByTime(500);
         expect(parseInt($('.parent1 .formatted-number').text())).toBeGreaterThan(400);
         expect(parseInt($('.parent1 .formatted-number').text())).toBeLessThan(10000);
-        jest.advanceTimersByTime(500);
+        vi.advanceTimersByTime(500);
         expect(parseInt($('.parent1 .formatted-number').text())).toBe(10000);
-        jest.advanceTimersByTime(500);
+        vi.advanceTimersByTime(500);
         expect(parseInt($('.parent1 .formatted-number').text())).toBe(10000);
     });
 
@@ -826,15 +825,15 @@ describe('Dashboard', () => {
             </div>
         `);
 
-        jest.useFakeTimers();
+        vi.useFakeTimers();
         dashboard.animateNumbers($('.parent1'));
         expect(parseFloat($('.parent1 .formatted-number').text())).toBeLessThan(10000);
-        jest.advanceTimersByTime(500);
+        vi.advanceTimersByTime(500);
         expect(parseFloat($('.parent1 .formatted-number').text())).toBeGreaterThan(400);
         expect(parseFloat($('.parent1 .formatted-number').text())).toBeLessThan(10000);
-        jest.advanceTimersByTime(500);
+        vi.advanceTimersByTime(500);
         expect(parseFloat($('.parent1 .formatted-number').text())).toBe(10000.505);
-        jest.advanceTimersByTime(500);
+        vi.advanceTimersByTime(500);
         expect(parseFloat($('.parent1 .formatted-number').text())).toBe(10000.505);
     });
 
@@ -849,12 +848,12 @@ describe('Dashboard', () => {
             </div>
         `);
 
-        jest.useFakeTimers();
+        vi.useFakeTimers();
         dashboard.animateNumbers($('.parent1'));
         expect($('.parent1 .formatted-number').text()).toBe('Test');
-        jest.advanceTimersByTime(500);
+        vi.advanceTimersByTime(500);
         expect($('.parent1 .formatted-number').text()).toBe('Test');
-        jest.advanceTimersByTime(500);
+        vi.advanceTimersByTime(500);
         expect($('.parent1 .formatted-number').text()).toBe('Test');
     });
 
@@ -872,18 +871,18 @@ describe('Dashboard', () => {
             </div>
         `);
 
-        jest.useFakeTimers();
+        vi.useFakeTimers();
         dashboard.animateNumbers($('.parent1'));
         expect($('.parent1 .formatted-number .number').text()).toBe('0');
-        jest.advanceTimersByTime(1000);
+        vi.advanceTimersByTime(1000);
         expect($('.parent1 .formatted-number .number').text()).toBe('10000');
     });
 
     test('setEditMode', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.saveDashboard = jest.fn().mockImplementation(() => {});
-        dashboard.grid.setStatic = jest.fn().mockImplementation(() => {});
-        window.sortable = jest.fn().mockImplementation(() => {});
+        dashboard.saveDashboard = vi.fn().mockImplementation(() => {});
+        dashboard.grid.setStatic = vi.fn().mockImplementation(() => {});
+        window.sortable = vi.fn().mockImplementation(() => {});
         $('body').append(`<div class="grid-stack-item dirty"></div><div class="grid-stack-item dirty"></div>`);
 
         dashboard.setEditMode(true);
@@ -896,7 +895,7 @@ describe('Dashboard', () => {
 
         $('body .grid-stack-item').remove();
 
-        jest.clearAllMocks();
+        vi.clearAllMocks();
 
         dashboard.setEditMode(false);
         expect(dashboard.edit_mode).toBe(false);
@@ -914,9 +913,9 @@ describe('Dashboard', () => {
 
     test('toggleFullscreenMode', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        window.GoInFullscreen = jest.fn().mockImplementation(() => {});
-        window.GoOutFullscreen = jest.fn().mockImplementation(() => {});
-        dashboard.setEditMode = jest.fn().mockImplementation(() => {});
+        window.GoInFullscreen = vi.fn().mockImplementation(() => {});
+        window.GoOutFullscreen = vi.fn().mockImplementation(() => {});
+        dashboard.setEditMode = vi.fn().mockImplementation(() => {});
         $('body').append(`<button class="toggle-fullscreen active"></button>`);
 
         dashboard.toggleFullscreenMode($('button.toggle-fullscreen'));
@@ -925,7 +924,7 @@ describe('Dashboard', () => {
         expect(window.GoInFullscreen).not.toHaveBeenCalled();
         expect(window.GoOutFullscreen).toHaveBeenCalled();
 
-        jest.clearAllMocks();
+        vi.clearAllMocks();
 
         dashboard.toggleFullscreenMode($('button.toggle-fullscreen'));
         expect($('button.toggle-fullscreen').get(0)).toHaveClass('active');
@@ -941,7 +940,7 @@ describe('Dashboard', () => {
             'rand': '12345',
             'current': 'current_dashboard',
         });
-        dashboard.addNewDashbardInSelect = jest.fn().mockImplementation(() => {});
+        dashboard.addNewDashbardInSelect = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
@@ -956,7 +955,7 @@ describe('Dashboard', () => {
 
         dashboard.clone();
         await new Promise(process.nextTick);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
         expect(dashboard.addNewDashbardInSelect).toHaveBeenCalledWith('New dashboard', 'new_dashboard');
     });
 
@@ -965,12 +964,12 @@ describe('Dashboard', () => {
             'rand': '12345',
             'current': 'current_dashboard',
         });
-        window.confirm = jest.fn().mockImplementationOnce(() => {
+        window.confirm = vi.fn().mockImplementationOnce(() => {
             return false;
         }).mockImplementationOnce(() => {
             return true;
         });
-        dashboard.setLastDashboard = jest.fn().mockImplementation(() => {});
+        dashboard.setLastDashboard = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
@@ -983,14 +982,14 @@ describe('Dashboard', () => {
         dashboard.delete();
         await new Promise(process.nextTick);
         // Confirm dialog should return false (not confirmed), so the dashboard shouldn't be deleted
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeFalse();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBe(false);
         expect($('.dashboard_select option[value="current_dashboard"]').length).toBe(1);
         expect($('.dashboard_select option').length).toBe(3);
 
         dashboard.delete();
         await new Promise(process.nextTick);
         // Confirm dialog should return true (confirmed), so the dashboard should be deleted
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
         expect(dashboard.setLastDashboard).toHaveBeenCalled();
         expect($('.dashboard_select option[value="current_dashboard"]').length).toBe(0);
         expect($('.dashboard_select option').length).toBe(2);
@@ -998,7 +997,7 @@ describe('Dashboard', () => {
 
     test('addForm', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        window.glpi_ajax_dialog = jest.fn().mockImplementation(() => {});
+        window.glpi_ajax_dialog = vi.fn().mockImplementation(() => {});
         dashboard.addForm();
         expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((arg) => {
             return arg.params.action === 'add_new' && arg.url === '//ajax/dashboard.php';
@@ -1007,8 +1006,8 @@ describe('Dashboard', () => {
 
     test('addNew', async () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.addNewDashbardInSelect = jest.fn().mockImplementation(() => {});
-        dashboard.setEditMode = jest.fn().mockImplementation(() => {});
+        dashboard.addNewDashbardInSelect = vi.fn().mockImplementation(() => {});
+        dashboard.setEditMode = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
@@ -1023,7 +1022,7 @@ describe('Dashboard', () => {
             title: 'mytitle',
         });
         await new Promise(process.nextTick);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
         expect(dashboard.addNewDashbardInSelect).toHaveBeenCalledWith('mytitle', 'new_dashboard');
         expect(dashboard.setEditMode).toHaveBeenCalledWith(true);
     });
@@ -1031,8 +1030,8 @@ describe('Dashboard', () => {
     test('addNew Other Context', async () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.context = 'other_context';
-        dashboard.addNewDashbardInSelect = jest.fn().mockImplementation(() => {});
-        dashboard.setEditMode = jest.fn().mockImplementation(() => {});
+        dashboard.addNewDashbardInSelect = vi.fn().mockImplementation(() => {});
+        dashboard.setEditMode = vi.fn().mockImplementation(() => {});
 
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
@@ -1047,7 +1046,7 @@ describe('Dashboard', () => {
             title: 'mytitle',
         });
         await new Promise(process.nextTick);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
         expect(dashboard.addNewDashbardInSelect).toHaveBeenCalledWith('mytitle', 'new_dashboard');
         expect(dashboard.setEditMode).toHaveBeenCalledWith(true);
     });
@@ -1060,27 +1059,27 @@ describe('Dashboard', () => {
         const new_option = $('.dashboard_select option[value="new_dashboard"]');
         expect(new_option.length).toBe(1);
         expect(new_option.text()).toBe('New dashboard');
-        expect(new_option.is(':selected')).toBeTrue();
+        expect(new_option.is(':selected')).toBeTruthy();
     });
 
     test('getCardsAjax multi-mode all', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.ajax_cards = true;
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
                 'filter2': 'value2',
             };
         });
-        dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
-        dashboard.animateNumbers = jest.fn().mockImplementation(() => {});
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
 
         const gridstack_items = $('.grid-stack-item');
         $.each(gridstack_items, (index, item) => {
             $(item).data('card-options', {});
         });
         // When ajax_cards is true, getCardsAjax should return an array of promises
-        expect(Array.isArray(dashboard.getCardsAjax())).toBeTrue();
+        expect(Array.isArray(dashboard.getCardsAjax())).toBeTruthy();
     });
 
     test('getCardsAjax multi-mode embed', async () => {
@@ -1090,14 +1089,14 @@ describe('Dashboard', () => {
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
         dashboard.is_recursive = 1;
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
                 'filter2': 'value2',
             };
         });
-        dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
-        dashboard.animateNumbers = jest.fn().mockImplementation(() => {});
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
         const gridstack_items = $('.grid-stack-item');
         $.each(gridstack_items, (index, item) => {
             $(item).data('card-options', {});
@@ -1131,37 +1130,37 @@ describe('Dashboard', () => {
         dashboard.getCardsAjax();
         await new Promise(process.nextTick);
 
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
     });
 
     test('getCardsAjax multi-mode single', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.ajax_cards = true;
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
                 'filter2': 'value2',
             };
         });
-        dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
-        dashboard.animateNumbers = jest.fn().mockImplementation(() => {});
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
 
         const gridstack_items = $('.grid-stack-item');
         $.each(gridstack_items, (index, item) => {
             $(item).data('card-options', {});
         });
         // When ajax_cards is true, getCardsAjax should return an array of promises
-        expect(Array.isArray(dashboard.getCardsAjax('[gs-id="2"]'))).toBeTrue();
+        expect(Array.isArray(dashboard.getCardsAjax('[gs-id="2"]'))).toBeTruthy();
     });
 
     test('getCardsAjax multi-mode Error', async () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.ajax_cards = true;
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {};
         });
-        dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
-        dashboard.animateNumbers = jest.fn().mockImplementation(() => {});
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
 
         const gridstack_items = $('.grid-stack-item');
         $.each(gridstack_items, (index, item) => {
@@ -1185,14 +1184,14 @@ describe('Dashboard', () => {
     test('getCardsAjax single-mode all', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.ajax_cards = false;
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
                 'filter2': 'value2',
             };
         });
-        dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
-        dashboard.animateNumbers = jest.fn().mockImplementation(() => {});
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
 
         const gridstack_items = $('.grid-stack-item');
         $.each(gridstack_items, (index, item) => {
@@ -1211,14 +1210,14 @@ describe('Dashboard', () => {
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
         dashboard.is_recursive = 1;
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
                 'filter2': 'value2',
             };
         });
-        dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
-        dashboard.animateNumbers = jest.fn().mockImplementation(() => {});
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
         const gridstack_items = $('.grid-stack-item');
         $.each(gridstack_items, (index, item) => {
             $(item).data('card-options', {});
@@ -1247,20 +1246,20 @@ describe('Dashboard', () => {
         dashboard.getCardsAjax();
         await new Promise(process.nextTick);
 
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
     });
 
     test('getCardsAjax single-mode single', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.ajax_cards = false;
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
                 'filter2': 'value2',
             };
         });
-        dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
-        dashboard.animateNumbers = jest.fn().mockImplementation(() => {});
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
 
         const gridstack_items = $('.grid-stack-item');
         $.each(gridstack_items, (index, item) => {
@@ -1275,11 +1274,11 @@ describe('Dashboard', () => {
     test('getCardsAjax single-mode Error', async () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.ajax_cards = false;
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {};
         });
-        dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
-        dashboard.animateNumbers = jest.fn().mockImplementation(() => {});
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
 
         const gridstack_items = $('.grid-stack-item');
         $.each(gridstack_items, (index, item) => {
@@ -1302,14 +1301,14 @@ describe('Dashboard', () => {
 
     test('initFilters', async () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
                 'filter2': ['value2'],
                 'filter3': [],
             };
         });
-        window.sortable = jest.fn().mockImplementation((el) => {
+        window.sortable = vi.fn().mockImplementation((el) => {
             return $(el);
         });
         window.AjaxMock.start();
@@ -1320,7 +1319,7 @@ describe('Dashboard', () => {
 
         dashboard.filters_selector = '.filters';
         $('#dashboard-12345').append('<div class="filters"></div>');
-        const init_filter_event_handler = jest.fn().mockImplementation(() => {});
+        const init_filter_event_handler = vi.fn().mockImplementation(() => {});
         $(document).on('glpiDasbhoardInitFilter', init_filter_event_handler);
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
             action: 'get_dashboard_filters',
@@ -1335,7 +1334,7 @@ describe('Dashboard', () => {
 
         dashboard.initFilters();
         await new Promise(process.nextTick);
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
         expect(init_filter_event_handler).toHaveBeenCalled();
         expect($('.filters').length).toBe(1);
         expect($('.filters .new-filter-selector').length).toBe(1);
@@ -1373,7 +1372,7 @@ describe('Dashboard', () => {
         //     'filter2': ['value2'],
         //     'filter3': '',
         // });
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
     });
 
     test('setFiltersInDB', () => {
@@ -1397,7 +1396,7 @@ describe('Dashboard', () => {
             'filter2': undefined
         });
 
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
     });
 
     test('Change selected dashboard', () => {
@@ -1405,9 +1404,9 @@ describe('Dashboard', () => {
             'rand': '12345',
             'current': 'current_dashboard',
         });
-        dashboard.refreshDashboard = jest.fn().mockImplementation(() => {});
-        dashboard.setLastDashboard = jest.fn().mockImplementation(() => {});
-        dashboard.initFilters = jest.fn().mockImplementation(() => {});
+        dashboard.refreshDashboard = vi.fn().mockImplementation(() => {});
+        dashboard.setLastDashboard = vi.fn().mockImplementation(() => {});
+        dashboard.initFilters = vi.fn().mockImplementation(() => {});
 
         $('.dashboard_select option[value="other_dashboard_2"]').prop('selected', true).trigger('change');
         expect(dashboard.refreshDashboard).toHaveBeenCalled();
@@ -1419,15 +1418,15 @@ describe('Dashboard', () => {
     test('Click add dashboard button', () => {
         $('#dashboard-12345 .toolbar').append('<button class="add-dashboard"></button>');
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.addForm = jest.fn().mockImplementation(() => {});
+        dashboard.addForm = vi.fn().mockImplementation(() => {});
         $('#dashboard-12345 .toolbar .add-dashboard').trigger('click');
         expect(dashboard.addForm).toHaveBeenCalled();
     });
 
     test('Submit add dashboard form', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.addNew = jest.fn().mockImplementation(() => {});
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        dashboard.addNew = vi.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
         $('body').append(`
             <form class="display-add-dashboard-form">
                 <input type="text" name="title" id="title_12345" class="form-control" value="New Dashboard">
@@ -1443,7 +1442,7 @@ describe('Dashboard', () => {
     test('Click delete dashboard button', () => {
         $('#dashboard-12345 .toolbar').append('<button class="delete-dashboard"></button>');
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.delete = jest.fn().mockImplementation(() => {});
+        dashboard.delete = vi.fn().mockImplementation(() => {});
         $('#dashboard-12345 .toolbar .delete-dashboard').trigger('click');
         expect(dashboard.delete).toHaveBeenCalled();
     });
@@ -1451,7 +1450,7 @@ describe('Dashboard', () => {
     test('Click clone dashboard button', () => {
         $('#dashboard-12345 .toolbar').append('<button class="clone-dashboard"></button>');
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.clone = jest.fn().mockImplementation(() => {});
+        dashboard.clone = vi.fn().mockImplementation(() => {});
         $('#dashboard-12345 .toolbar .clone-dashboard').trigger('click');
         expect(dashboard.clone).toHaveBeenCalled();
     });
@@ -1462,7 +1461,7 @@ describe('Dashboard', () => {
             'rand': '12345',
             'current': 'current_dashboard',
         });
-        window.glpi_ajax_dialog = jest.fn().mockImplementation(() => {});
+        window.glpi_ajax_dialog = vi.fn().mockImplementation(() => {});
         $('#dashboard-12345 .toolbar .open-embed').trigger('click');
         expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
             return params.params.action === 'display_embed_form' && params.params.dashboard === 'current_dashboard';
@@ -1472,11 +1471,11 @@ describe('Dashboard', () => {
     test('Click toggle edit mode button', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         const edit_btn = $('#dashboard-12345 .toolbar .edit-dashboard');
-        dashboard.setEditMode = jest.fn().mockImplementation(() => {});
+        dashboard.setEditMode = vi.fn().mockImplementation(() => {});
         edit_btn.trigger('click');
         expect(dashboard.setEditMode).toHaveBeenCalledWith(true);
         edit_btn.addClass('active');
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         edit_btn.trigger('click');
         expect(dashboard.setEditMode).toHaveBeenCalledWith(false);
     });
@@ -1484,7 +1483,7 @@ describe('Dashboard', () => {
     test('Click toggle fullscreen button', () => {
         $('#dashboard-12345 .toolbar').append('<button class="toggle-fullscreen"></button>');
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.toggleFullscreenMode = jest.fn().mockImplementation(() => {});
+        dashboard.toggleFullscreenMode = vi.fn().mockImplementation(() => {});
         $('#dashboard-12345 .toolbar .toggle-fullscreen').trigger('click');
         expect(dashboard.toggleFullscreenMode).toHaveBeenCalled();
     });
@@ -1493,64 +1492,64 @@ describe('Dashboard', () => {
         $('#dashboard-12345 .toolbar').append('<button class="night-mode"></button>');
         new GLPIDashboard({'rand': '12345'});
         $('#dashboard-12345 .toolbar .night-mode').trigger('click');
-        expect($('#dashboard-12345').hasClass('theme-dark')).toBeTrue();
-        expect($('#dashboard-12345 .toolbar .night-mode').hasClass('active')).toBeTrue();
+        expect($('#dashboard-12345').hasClass('theme-dark')).toBeTruthy();
+        expect($('#dashboard-12345 .toolbar .night-mode').hasClass('active')).toBeTruthy();
         $('#dashboard-12345 .toolbar .night-mode').trigger('click');
-        expect($('#dashboard-12345').hasClass('theme-dark')).toBeFalse();
-        expect($('#dashboard-12345 .toolbar .night-mode').hasClass('active')).toBeFalse();
+        expect($('#dashboard-12345').hasClass('theme-dark')).toBe(false);
+        expect($('#dashboard-12345 .toolbar .night-mode').hasClass('active')).toBe(false);
     });
 
     test('Click refresh mode button', () => {
         $('#dashboard-12345 .toolbar').append('<button class="auto-refresh"></button>');
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.refreshDashboard = jest.fn().mockImplementation(() => {});
+        dashboard.refreshDashboard = vi.fn().mockImplementation(() => {});
         CFG_GLPI.refresh_views = 1; // Refresh every minute
         const refresh_btn = $('#dashboard-12345 .toolbar .auto-refresh');
 
-        jest.useFakeTimers('legacy');
+        vi.useFakeTimers('legacy');
         refresh_btn.trigger('click');
-        expect(refresh_btn.hasClass('active')).toBeTrue();
-        jest.advanceTimersByTime(60000);
+        expect(refresh_btn.hasClass('active')).toBeTruthy();
+        vi.advanceTimersByTime(60000);
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(1);
-        jest.advanceTimersByTime(60000);
+        vi.advanceTimersByTime(60000);
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(2);
         refresh_btn.trigger('click');
-        expect(refresh_btn.hasClass('active')).toBeFalse();
-        jest.advanceTimersByTime(60000);
+        expect(refresh_btn.hasClass('active')).toBe(false);
+        vi.advanceTimersByTime(60000);
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(2);
-        jest.advanceTimersByTime(60000);
+        vi.advanceTimersByTime(60000);
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(2);
         refresh_btn.trigger('click');
-        expect(refresh_btn.hasClass('active')).toBeTrue();
-        jest.advanceTimersByTime(60000);
+        expect(refresh_btn.hasClass('active')).toBeTruthy();
+        vi.advanceTimersByTime(60000);
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(3);
     });
 
     test('Click Refresh Mode button with Invalid CFG_GLPI.refresh_views', () => {
         $('#dashboard-12345 .toolbar').append('<button class="auto-refresh"></button>');
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.refreshDashboard = jest.fn().mockImplementation(() => {});
+        dashboard.refreshDashboard = vi.fn().mockImplementation(() => {});
         CFG_GLPI.refresh_views = 'not a number';
         const refresh_btn = $('#dashboard-12345 .toolbar .auto-refresh');
 
-        jest.useFakeTimers('legacy');
+        vi.useFakeTimers('legacy');
         refresh_btn.trigger('click');
-        expect(refresh_btn.hasClass('active')).toBeTrue();
-        jest.advanceTimersByTime(60000 * 30);
+        expect(refresh_btn.hasClass('active')).toBeTruthy();
+        vi.advanceTimersByTime(60000 * 30);
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(1);
-        jest.advanceTimersByTime(60000 * 30);
+        vi.advanceTimersByTime(60000 * 30);
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(2);
 
         // Click again to disable
         refresh_btn.trigger('click');
-        jest.clearAllMocks();
+        vi.clearAllMocks();
 
         CFG_GLPI.refresh_views = 0;
         refresh_btn.trigger('click');
-        expect(refresh_btn.hasClass('active')).toBeTrue();
-        jest.advanceTimersByTime(60000 * 30);
+        expect(refresh_btn.hasClass('active')).toBeTruthy();
+        vi.advanceTimersByTime(60000 * 30);
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(1);
-        jest.advanceTimersByTime(60000 * 30);
+        vi.advanceTimersByTime(60000 * 30);
         expect(dashboard.refreshDashboard).toHaveBeenCalledTimes(2);
     });
 
@@ -1574,7 +1573,7 @@ describe('Dashboard', () => {
                 </select>
             </form>
         `);
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
             action: 'save_rights',
@@ -1589,7 +1588,7 @@ describe('Dashboard', () => {
         }));
 
         $('.display-rights-form .save_rights').trigger('click');
-        expect(window.AjaxMock.isResponseStackEmpty()).toBeTrue();
+        expect(window.AjaxMock.isResponseStackEmpty()).toBeTruthy();
         expect(window.glpi_close_all_dialogs).toHaveBeenCalled();
     });
 
@@ -1598,8 +1597,8 @@ describe('Dashboard', () => {
             <div><button class="delete-item"></button></div>
         `);
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.grid.removeWidget = jest.fn().mockImplementation(() => {});
-        dashboard.saveDashboard = jest.fn().mockImplementation(() => {});
+        dashboard.grid.removeWidget = vi.fn().mockImplementation(() => {});
+        dashboard.saveDashboard = vi.fn().mockImplementation(() => {});
 
         $('#dashboard-12345 .grid-stack-item[gs-id="2"] .delete-item').trigger('click');
         expect(dashboard.grid.removeWidget).toHaveBeenCalledTimes(1);
@@ -1614,7 +1613,7 @@ describe('Dashboard', () => {
             <div><button class="refresh-item"></button></div>
         `);
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.getCardsAjax = jest.fn().mockImplementation(() => {});
+        dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
 
         $('#dashboard-12345 .grid-stack-item[gs-id="2"] .refresh-item').trigger('click');
         expect(dashboard.getCardsAjax).toHaveBeenCalledTimes(1);
@@ -1632,7 +1631,7 @@ describe('Dashboard', () => {
             'rand': '12345',
             'current': 'current_dashboard',
         });
-        window.glpi_ajax_dialog = jest.fn().mockImplementation(() => {});
+        window.glpi_ajax_dialog = vi.fn().mockImplementation(() => {});
 
         $('#dashboard-12345 .grid-stack-item[gs-id="2"] .edit-item').trigger('click');
         expect(window.glpi_ajax_dialog).toHaveBeenCalledTimes(1);
@@ -1651,7 +1650,7 @@ describe('Dashboard', () => {
             'rand': '12345',
             'current': 'current_dashboard',
         });
-        window.glpi_ajax_dialog = jest.fn().mockImplementation(() => {});
+        window.glpi_ajax_dialog = vi.fn().mockImplementation(() => {});
 
         $('#dashboard-12345 .cell-add').trigger('click');
         expect(window.glpi_ajax_dialog).toHaveBeenCalledWith(expect.toSatisfy((params) => {
@@ -1670,9 +1669,9 @@ describe('Dashboard', () => {
             'rand': '12345',
             'current': 'current_dashboard',
         });
-        window.glpi_ajax_dialog = jest.fn().mockImplementation(() => {});
-        window.glpi_close_all_dialogs = jest.fn().mockImplementation(() => {});
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        window.glpi_ajax_dialog = vi.fn().mockImplementation(() => {});
+        window.glpi_close_all_dialogs = vi.fn().mockImplementation(() => {});
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 filter1: 'value1',
                 filter2: 'value2',
@@ -1701,14 +1700,14 @@ describe('Dashboard', () => {
             'rand': '12345',
             'current': 'current_dashboard',
         });
-        dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
+        dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 filter1: 'value1',
                 filter2: 'value2',
             };
         });
-        dashboard.setFiltersInDB = jest.fn().mockImplementation(() => {});
-        dashboard.refreshCardsImpactedByFilter = jest.fn().mockImplementation(() => {});
+        dashboard.setFiltersInDB = vi.fn().mockImplementation(() => {});
+        dashboard.refreshCardsImpactedByFilter = vi.fn().mockImplementation(() => {});
 
         $('#dashboard-12345 .filters_toolbar .filter .delete-filter').trigger('click');
         expect(dashboard.getFiltersFromDB).toHaveBeenCalled();
@@ -1723,7 +1722,7 @@ describe('Dashboard', () => {
         const MockGLPIDashboard = class extends GLPIDashboard {
             fitNumbers() {}
         };
-        MockGLPIDashboard.prototype.fitNumbers = jest.fn().mockImplementation(() => {});
+        MockGLPIDashboard.prototype.fitNumbers = vi.fn().mockImplementation(() => {});
         let dashboard = new MockGLPIDashboard({
             'rand': '12345',
             'ajax_cards': true,
@@ -1738,41 +1737,41 @@ describe('Dashboard', () => {
 
     test('Update CSS and Fit Numbers on Resize', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
-        jest.useFakeTimers();
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        vi.useFakeTimers();
         $(window).trigger('resize');
-        jest.advanceTimersByTime(250);
+        vi.advanceTimersByTime(250);
         expect(dashboard.fitNumbers).toHaveBeenCalled();
     });
 
     test('Do not Update CSS and Fit Numbers on Propagated Resize', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
-        jest.useFakeTimers();
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        vi.useFakeTimers();
         $('body').trigger('resize');
-        jest.advanceTimersByTime(250);
+        vi.advanceTimersByTime(250);
         expect(dashboard.fitNumbers).not.toHaveBeenCalled();
     });
 
     test('Save Dashboard on GridStack DragStop', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.saveDashboard = jest.fn().mockImplementation(() => {});
+        dashboard.saveDashboard = vi.fn().mockImplementation(() => {});
         dashboard.grid.dispatchEvent(new Event('dragstop'));
         expect(dashboard.saveDashboard).toHaveBeenCalled();
     });
 
     test('Save Dashboard on GridStack ResizeStop', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.saveDashboard = jest.fn().mockImplementation(() => {});
+        dashboard.saveDashboard = vi.fn().mockImplementation(() => {});
         dashboard.grid.dispatchEvent(new Event('resizestop'));
         expect(dashboard.saveDashboard).toHaveBeenCalled();
     });
 
     test('Resize and Animate Numbers on GridStack ResizeStop', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.resetComputedWidth = jest.fn().mockImplementation(() => {});
-        dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
-        dashboard.animateNumbers = jest.fn().mockImplementation(() => {});
+        dashboard.resetComputedWidth = vi.fn().mockImplementation(() => {});
+        dashboard.fitNumbers = vi.fn().mockImplementation(() => {});
+        dashboard.animateNumbers = vi.fn().mockImplementation(() => {});
         dashboard.grid.dispatchEvent(new Event('resizestop'));
         expect(dashboard.resetComputedWidth).toHaveBeenCalledTimes(2);
         expect(dashboard.fitNumbers).toHaveBeenCalledTimes(1);
@@ -1782,7 +1781,7 @@ describe('Dashboard', () => {
     test('Add/Update Widget after Form Submit', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         $('body').append(`<form class="display-widget-form"></form>`);
-        dashboard.setWidgetFromForm = jest.fn().mockImplementation(() => {});
+        dashboard.setWidgetFromForm = vi.fn().mockImplementation(() => {});
         $('.display-widget-form').trigger('submit');
         expect(dashboard.setWidgetFromForm).toHaveBeenCalled();
     });
@@ -1790,7 +1789,7 @@ describe('Dashboard', () => {
     test('Add/Update Filter after Form Submit', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         $('body').append(`<form class="display-filter-form"></form>`);
-        dashboard.setFilterFromForm = jest.fn().mockImplementation(() => {});
+        dashboard.setFilterFromForm = vi.fn().mockImplementation(() => {});
         $('.display-filter-form').trigger('submit');
         expect(dashboard.setFilterFromForm).toHaveBeenCalled();
     });
@@ -1802,7 +1801,7 @@ describe('Dashboard', () => {
         });
         $('#dashboard-12345 .dashboard-name').val('current_dashboard_new');
         $('#dashboard-12345').append(`<button type="button" class="save-dashboard-name"></button>`);
-        dashboard.saveDashboard = jest.fn().mockImplementation(() => {});
+        dashboard.saveDashboard = vi.fn().mockImplementation(() => {});
         $('#dashboard-12345 .save-dashboard-name').trigger('click');
 
         expect(dashboard.saveDashboard).toHaveBeenCalled();
@@ -1812,7 +1811,7 @@ describe('Dashboard', () => {
     test('Save Markdown on Input', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         $('#dashboard-12345').append(`<div class="card markdown"><textarea class="markdown_content"></textarea></div>`);
-        dashboard.saveMarkdown = jest.fn().mockImplementation(() => {});
+        dashboard.saveMarkdown = vi.fn().mockImplementation(() => {});
         $('#dashboard-12345 .markdown_content').trigger('input');
         expect(dashboard.saveMarkdown).toHaveBeenCalled();
     });
