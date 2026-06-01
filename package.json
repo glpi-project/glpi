@@ -24,7 +24,7 @@
         "@fullcalendar/timeline": "^4.4.3",
         "@glpi-project/illustrations": "^0.9.1",
         "@tabler/core": "^1.4.0",
-        "@tabler/icons-webfont": "^3.35.0",
+        "@tabler/icons-webfont": "^3.44.0",
         "@tiptap/core": "^3.22.5",
         "@tiptap/extension-bubble-menu": "^3.22.5",
         "@tiptap/extension-file-handler": "^3.22.5",
