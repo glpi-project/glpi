@@ -3124,7 +3124,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$array of function array_key_exists expects array, array\\<string, mixed\\>\\|false given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 2,
+	'count' => 3,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -3161,12 +3161,6 @@ $ignoreErrors[] = [
 	'message' => '#^Property CommonDBTM\\:\\:\\$updates \\(list\\<string\\>\\) does not accept array\\<int\\<0, max\\>, string\\>\\.$#',
 	'identifier' => 'assign.propertyType',
 	'count' => 14,
-	'path' => __DIR__ . '/src/CommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between \'Supplier\' and \'Group\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -4340,6 +4334,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method DbUtils\\:\\:getDbRelations\\(\\) should return array\\<string, array\\<string, list\\<array\\{string, string\\}\\|string\\>\\|string\\>\\> but returns array\\<array\\<list\\<array\\<mixed\\>\\|string\\>\\>\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method DbUtils\\:\\:getItemTypeForTable\\(\\) should return class\\-string\\<CommonDBTM\\>\\|null but returns class\\-string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -4868,7 +4868,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot assign offset class\\-string\\<CommonDevice\\> to array\\|string\\.$#',
+	'message' => '#^Cannot assign offset class\\-string\\<CommonDevice\\> to array\\<class\\-string\\<CommonDevice\\>, string\\>\\|string\\.$#',
 	'identifier' => 'offsetAssign.dimType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Dropdown.php',
@@ -4892,13 +4892,13 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$array of function asort expects array, array\\|null given\\.$#',
+	'message' => '#^Parameter \\#1 \\$array of function asort expects array, array\\<class\\-string\\<CommonDevice\\>, string\\>\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$array of function asort expects array, array\\|string given\\.$#',
+	'message' => '#^Parameter \\#1 \\$array of function asort expects array, array\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Dropdown.php',
@@ -5786,6 +5786,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AbstractController.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$headers of class Glpi\\\\Http\\\\Response constructor expects array\\<array\\<string\\>\\|string\\>, array\\<string, list\\<string\\|null\\>\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AbstractController.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Binary operation "\\.\\=" between 0\\|0\\.0\\|array\\{\\}\\|string\\|false and non\\-falsy\\-string results in an error\\.$#',
 	'identifier' => 'assignOp.invalid',
 	'count' => 1,
@@ -5940,6 +5946,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\GraphQL\\\\DefaultResolvers\\:\\:getCountCriteriaFromCriteria\\(\\) should return array\\<Glpi\\\\DBAL\\\\QuerySubQuery\\> but returns array\\<string, mixed\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQL/DefaultResolvers.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method withHeader\\(\\) on Psr\\\\Http\\\\Message\\\\ResponseInterface\\|null\\.$#',
@@ -6240,6 +6252,12 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search/SearchContext.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$headers of method GuzzleHttp\\\\Psr7\\\\Response\\:\\:__construct\\(\\) expects array\\<array\\<string\\>\\|string\\>, array\\<string, list\\<string\\|null\\>\\> given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/StreamedResponseWrapper.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Application\\\\Environment\\:\\:get\\(\\) should return Glpi\\\\Application\\\\Environment but returns Glpi\\\\Application\\\\Environment\\|string\\.$#',
@@ -20450,6 +20468,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot assign offset \'name\' to array\\<string, \\(int\\|string\\)\\>\\|string\\.$#',
+	'identifier' => 'offsetAssign.dimType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot call method getReasonPhrase\\(\\) on Psr\\\\Http\\\\Message\\\\ResponseInterface\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -20604,18 +20628,6 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
 	'path' => __DIR__ . '/src/autoload/legacy-autoloader.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 $headers of class Glpi\\Http\\Response constructor expects array<array<string>|string>, array<string, list<string|null>> given.#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AbstractController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 $headers of class Glpi\\Http\\Response constructor expects array<array<string>|string>, array<string, list<string|null>> given.#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/StreamedResponseWrapper.php',
 ];
 
 return ['parameters' => ['ignoreErrors' => $ignoreErrors]];
