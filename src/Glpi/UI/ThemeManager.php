@@ -171,11 +171,8 @@ class ThemeManager
                     $file_content = file_get_contents($file);
                     $is_dark = preg_match('/^\s*\$is-dark:\s*true;\s*$/im', $file_content) === 1;
                     $name_matches = [];
-                    if (preg_match('/^\/\*\s*theme-name:\s*(.+?)\s*\*\//m', $file_content, $name_matches) === 1) {
-                        $theme_name = $name_matches[1];
-                    } else {
-                        $theme_name = ucfirst(str_replace('_', ' ', $file_name));
-                    }
+                    preg_match('/^\/\*\s*theme-name:\s*(.+?)\s*\*\//m', $file_content, $name_matches);
+                    $theme_name = $name_matches[1] ?? ucfirst(str_replace('_', ' ', $file_name));
                     $this->custom_themes[] = new Theme($file_name, $theme_name, $is_dark, true);
                 }
             }
