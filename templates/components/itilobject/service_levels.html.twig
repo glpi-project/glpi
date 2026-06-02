@@ -69,136 +69,124 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
     {% endif %}
 {% endfor %}
 
-<table class="table">
-    <thead>
-    <tr class="">
-        <th class="visually-hidden"></th>
-        <th class="border-0 fs-4">{{ __('SLA') }}</th>
-    </tr>
-    </thead>
-    <tbody>
+{# --- SLA section --- #}
+<div class="d-grid" style="grid-template-columns: auto 1fr;">
+    <div class="fs-4 fw-bold ms-6" style="grid-column: 1 / -1;">{{ __('SLA') }}</div>
 
     {% if not ticket_has_associated_tto_sla %}
-        <tr>
-            {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_own') %}
-            {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}
-            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_tto') %}
+        {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_own') %}
+        {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}
+        {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_tto') %}
 
-            <td class="right pe-2 align-middle border-0 p-1">{{ __('TTO') }}</td>
-            <td class="d-flex border-0 p-1">
-                {% set _rand = random() %}
+        <div class="text-end pe-2 align-self-center p-1">{{ __('TTO') }}</div>
+        <div class="d-flex p-1">
+            {% set _rand = random() %}
 
-                {# state flag #}
-                <div class="align-middle my-2 me-2">
-                    <i class="ti ti-flag text-secondary mx-1"></i>
-                </div>
+            {# state flag #}
+            <div class="align-middle my-2 me-2">
+                <i class="ti ti-flag text-secondary mx-1"></i>
+            </div>
 
-                {# datetime field #}
-                {% if display_datetime_field %}
-                    {{ _self.DatetimeLaField('time_to_own',
-                        item.fields['time_to_own'],
-                        __('TTO'),
-                        {
-                            'rand': _rand,
-                            'disabled': not can_assign_sla_ola
-                        }) }}
-                {% endif %}
+            {# datetime field #}
+            {% if display_datetime_field %}
+                {{ _self.DatetimeLaField('time_to_own',
+                    item.fields['time_to_own'],
+                    __('TTO'),
+                    {
+                        'rand': _rand,
+                        'disabled': not can_assign_sla_ola
+                    }) }}
+            {% endif %}
 
-                {# no linked tto : display add button + hidden dropdown #}
-                {% if display_associatedsla_field and can_assign_sla_ola %}
-                    {{ _self.LinkedLaFieldEmpty(
-                        tto_sla,
-                        item,
-                        'slas_id_tto',
-                        tto_sla.getAddConfirmation(),
-                        constant('SLM::TTO'),
-                        options = {
-                            'can_assign': can_assign_sla_ola,
-                            'rand': _rand,
-                        }
-                    ) }}
-                {% endif %}
-            </td>
-        </tr>
+            {# no linked tto : display add button + hidden dropdown #}
+            {% if display_associatedsla_field and can_assign_sla_ola %}
+                {{ _self.LinkedLaFieldEmpty(
+                    tto_sla,
+                    item,
+                    'slas_id_tto',
+                    tto_sla.getAddConfirmation(),
+                    constant('SLM::TTO'),
+                    options = {
+                        'can_assign': can_assign_sla_ola,
+                        'rand': _rand,
+                    }
+                ) }}
+            {% endif %}
+        </div>
     {% endif %}
 
     {# use slas from associated_slas and not from ttr_sla to allow easier refactoring if later, we allow multiple ola #}
     {% for sla in associated_slas %}
-        <tr>
-            {% if sla.type == constant('SLM::TTO') %}
-                {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_own') %}
-                {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}
-                {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_tto') %}
-                {% set _fieldname = 'time_to_own' %}
-                {% set _label = __('TTO') %}
-            {% elseif sla.type == constant('SLM::TTR') %}
-                {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_resolve') %}
-                {% set display_associatedsla_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}
-                {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_ttr') %}
-                {% set _fieldname = 'time_to_resolve' %}
-                {% set _label = __('TTR') %}
-            {% endif %}
-            {% set _rand = random() %}
+        {% if sla.type == constant('SLM::TTO') %}
+            {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_own') %}
+            {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}
+            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_tto') %}
+            {% set _fieldname = 'time_to_own' %}
+            {% set _label = __('TTO') %}
+        {% elseif sla.type == constant('SLM::TTR') %}
+            {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_resolve') %}
+            {% set display_associatedsla_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}
+            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_ttr') %}
+            {% set _fieldname = 'time_to_resolve' %}
+            {% set _label = __('TTR') %}
+        {% endif %}
+        {% set _rand = random() %}
 
-            <td class="right pe-2 align-middle border-0 p-1">{{ _label }}</td>
-            <td class="d-flex border-0 p-1">
-                {# state flag + datetime field + badge/dropdown field #}
-                {{ _self.linkedSlaField(
-                    sla,
-                    field_options|merge({
-                        'can_assign': can_assign_sla_ola,
-                        'rand': _rand,
-                        'new_item': item.isNewItem(),
-                        'display_datetime_field': display_datetime_field,
-                        'display_associatedsla_field': display_associatedsla_field
-                    })
-                ) }}
-            </td>
-        </tr>
+        <div class="text-end pe-2 align-self-center p-1">{{ _label }}</div>
+        <div class="d-flex p-1">
+            {# state flag + datetime field + badge/dropdown field #}
+            {{ _self.linkedSlaField(
+                sla,
+                field_options|merge({
+                    'can_assign': can_assign_sla_ola,
+                    'rand': _rand,
+                    'new_item': item.isNewItem(),
+                    'display_datetime_field': display_datetime_field,
+                    'display_associatedsla_field': display_associatedsla_field
+                })
+            ) }}
+        </div>
     {% endfor %}
 
     {% if not ticket_has_associated_ttr_sla %}
-        <tr>
-            {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_resolve') %}
-            {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}
-            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_ttr') %}
+        {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_resolve') %}
+        {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}
+        {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_ttr') %}
 
-            <td class="right pe-2 align-middle border-0 p-1">{{ __('TTR') }}</td>
-            <td class="d-flex border-0 p-1">
+        <div class="text-end pe-2 align-self-center p-1">{{ __('TTR') }}</div>
+        <div class="d-flex p-1">
+            {% set _rand = random() %}
 
-                {% set _rand = random() %}
-                {# state flag #}
-                <div class="align-middle my-2 me-2">
-                    <i class="ti ti-flag text-secondary mx-1"></i>
-                </div>
+            {# state flag #}
+            <div class="align-middle my-2 me-2">
+                <i class="ti ti-flag text-secondary mx-1"></i>
+            </div>
 
-                {# datetime field #}
-                {% if display_datetime_field %}
-                    {{ _self.DatetimeLaField('time_to_resolve',
-                        item.fields['time_to_resolve'],
-                        __('TTR'),
-                        {
-                            'rand': _rand,
-                            'disabled': not can_assign_sla_ola
-                        }) }}
-                {% endif %}
+            {# datetime field #}
+            {% if display_datetime_field %}
+                {{ _self.DatetimeLaField('time_to_resolve',
+                    item.fields['time_to_resolve'],
+                    __('TTR'),
+                    {
+                        'rand': _rand,
+                        'disabled': not can_assign_sla_ola
+                    }) }}
+            {% endif %}
 
-                {# no linked ttr : display add button + hidden dropdown #}
-                {% if display_associatedsla_field and can_assign_sla_ola %}
-                    {{ _self.LinkedLaFieldEmpty(ttr_sla,
-                        item,
-                        'slas_id_ttr',
-                        ttr_sla.getAddConfirmation(),
-                        constant('SLM::TTR'),
-                        options = {
-                            'can_assign': can_assign_sla_ola,
-                            'rand': _rand,
-                        }) }}
-                {% endif %}
-            </td>
-        </tr>
+            {# no linked ttr : display add button + hidden dropdown #}
+            {% if display_associatedsla_field and can_assign_sla_ola %}
+                {{ _self.LinkedLaFieldEmpty(ttr_sla,
+                    item,
+                    'slas_id_ttr',
+                    ttr_sla.getAddConfirmation(),
+                    constant('SLM::TTR'),
+                    options = {
+                        'can_assign': can_assign_sla_ola,
+                        'rand': _rand,
+                    }) }}
+            {% endif %}
+        </div>
     {% endif %}
-    </tbody>
 
 </div>{# end SLA grid #}
 
@@ -531,7 +519,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
     {# show new ola dropdown - ajax request #}
     <script>
-        // make dropdown visible
+        // make dropdown visible - essayer de faire sans jquery.
         $(() => {
                 $("#{{ button_id }}").on('click', () => {
                     $.get(
