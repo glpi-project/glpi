@@ -39,6 +39,7 @@ use CommonDBChild;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
     DatesModFilter,
+    EntityFilter,
     GroupRequesterFilter,
     GroupTechFilter,
     ItilCategoryFilter,
@@ -103,6 +104,7 @@ class Filter extends CommonDBChild
         $filters = [
             DatesFilter::class,
             DatesModFilter::class,
+            EntityFilter::class,
             ItilCategoryFilter::class,
             LocationFilter::class,
             ManufacturerFilter::class,
