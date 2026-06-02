@@ -97,10 +97,7 @@ class Item_Ola extends CommonDBRelation
             array_filter($ola_data, fn($ola_data) => $ola_data['end_time'] === null),
             'olas_id'
         );
-        $request_olas_ids = array_filter(
-            $request_olas_ids,
-            static fn($tested_olas_id) => !in_array($tested_olas_id, $current_not_completed_olas_ids)
-        );
+        $request_olas_ids = array_diff($request_olas_ids, $current_not_completed_olas_ids);
         // remove ola currently assigned, remove ola one by one because array_diff doesn't take into account the duplicates in $request_olas_ids
         $current_olas_ids = array_column($item->getOlasData(), 'olas_id');
         $toadd_olas_ids = [];

@@ -340,7 +340,9 @@ class Provider
                                 'ON' => [
                                     'glpi_tickets_subquery' => 'id',
                                     'glpi_items_olas' => 'items_id',
-                                    ['AND' => [ 'glpi_items_olas.itemtype' => ['=', (new QueryExpression(Ticket::class))->getValue()] ]                                ],
+                                    [
+                                        'AND' => [ 'glpi_items_olas.itemtype' => Ticket::class],
+                                    ],
                                 ],
                             ],
                         ],
@@ -357,7 +359,7 @@ class Provider
                                 'ON' => [
                                     'glpi_tickets' => 'id',
                                     'glpi_items_olas' => 'items_id',
-                                    ['AND' => [ 'glpi_items_olas.itemtype' => ['=', Ticket::class]]],
+                                    ['AND' => [ 'glpi_items_olas.itemtype' => [Ticket::class]]],
                                 ],
                             ],
                         ],
