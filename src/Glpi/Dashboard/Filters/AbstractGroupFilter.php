@@ -163,7 +163,6 @@ abstract class AbstractGroupFilter extends AbstractFilter
     public static function getSearchCriteria(string $table, $value): array
     {
         global $DB;
-
         $criteria = [];
 
         $values = is_array($value) ? $value : [$value];
@@ -214,7 +213,7 @@ abstract class AbstractGroupFilter extends AbstractFilter
 
     public static function getHtml($value): string
     {
-        $values = is_array($value) ? array_values($value) : [];
+        $values = is_array($value) ? array_values($value) : ($value !== null && $value !== '' ? [$value] : []);
         return self::displayMultipleList(
             static::getName(),
             $values,

@@ -242,7 +242,7 @@ abstract class AbstractFilter
 
                 GLPI.Dashboard.getActiveDashboard().saveFilter('" . \jsescape($fieldname) . "', selected);
 
-                $(dom_elem).closest('fieldset').toggleClass('filled', selected.length > 0);
+                dom_elem.closest('fieldset').toggleClass('filled', selected.length > 0);
             };
         ";
         $field .= Html::scriptBlock($js);
