@@ -1016,13 +1016,16 @@ class Session
             $valid_user = false;
         }
 
-        // Check if remote user changed (SSO case)
+        // Check if remote user changed (SSO case).
+        // The SSO variable is only injected by the web server on requests that go through the SSO module,
+        // not on every request (e.g. AJAX calls may not carry it). We only invalidate the session
+        // when the variable IS present and has a different value, meaning the user identity changed.
         if ($valid_user && array_key_exists('glpi_remote_user', $_SESSION)) {
             $ssovariable = Dropdown::getDropdownName(
                 'glpi_ssovariables',
                 $CFG_GLPI["ssovariables_id"]
             );
-            if (!array_key_exists($ssovariable, $_SERVER) || $_SERVER[$ssovariable] !== $_SESSION['glpi_remote_user']) {
+            if (array_key_exists($ssovariable, $_SERVER) && $_SERVER[$ssovariable] !== $_SESSION['glpi_remote_user']) {
                 $valid_user = false;
             }
         }

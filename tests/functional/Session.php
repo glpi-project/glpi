@@ -895,4 +895,79 @@ class Session extends \DbTestCase
         $this->string($_SESSION["glpiactive_entity_name"])->isEqualTo("Root entity (full structure)");
         $this->string($_SESSION["glpiactive_entity_shortname"])->isEqualTo("Root entity (full structure)");
     }
+
+    protected function checkValidSessionIdSsoProvider(): iterable
+    {
+        // No glpi_remote_user in session: SSO check is skipped entirely
+        yield 'no_sso_in_session' => [
+            'remote_user_in_session' => null,
+            'server_value'           => null,
+        ];
+
+        // glpi_remote_user in session, SSO variable absent from $_SERVER.
+        // Regression case: the web server does not inject the SSO header on every request
+        // (e.g. AJAX calls skip the SSO module). The session must stay valid — we must NOT
+        // destroy it just because the variable is missing.
+        yield 'sso_variable_absent_from_server' => [
+            'remote_user_in_session' => 'DOMAIN\\testuser',
+            'server_value'           => null,
+        ];
+
+        // glpi_remote_user in session, SSO variable present and matches: session stays valid
+        yield 'sso_variable_present_and_matches' => [
+            'remote_user_in_session' => 'DOMAIN\\testuser',
+            'server_value'           => 'DOMAIN\\testuser',
+        ];
+
+        // NOTE: the case where the SSO variable IS present but has CHANGED (different user)
+        // cannot be tested here. checkValidSessionId() calls Html::redirectToLogin() which
+        // invokes exit() in a CLI context (headers_sent() === false), killing the test subprocess.
+
+    }
+
+    /**
+     * @dataProvider checkValidSessionIdSsoProvider
+     */
+    public function testCheckValidSessionIdSso(
+        ?string $remote_user_in_session,
+        ?string $server_value
+    ): void {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        // Create a dedicated SSO variable entry so Dropdown::getDropdownName returns a
+        // predictable, controllable server key.
+        $sso_var_name = 'GLPI_TEST_SSO_VAR_' . mt_rand();
+        $sso_var      = $this->createItem(\SsoVariable::class, ['name' => $sso_var_name]);
+
+        $cfg_backup    = $CFG_GLPI;
+        $server_backup = $_SERVER[$sso_var_name] ?? null;
+
+        $CFG_GLPI['ssovariables_id'] = $sso_var->getID();
+
+        if ($remote_user_in_session !== null) {
+            $_SESSION['glpi_remote_user'] = $remote_user_in_session;
+        }
+
+        if ($server_value !== null) {
+            $_SERVER[$sso_var_name] = $server_value;
+        } else {
+            unset($_SERVER[$sso_var_name]);
+        }
+
+        $this->boolean(\Session::checkValidSessionId())->isTrue();
+        // Session must not have been destroyed
+        $this->string($_SESSION['valid_id'] ?? '')->isNotEmpty();
+
+        // Restore global state
+        $CFG_GLPI = $cfg_backup;
+        unset($_SESSION['glpi_remote_user']);
+
+        if ($server_backup !== null) {
+            $_SERVER[$sso_var_name] = $server_backup;
+        } else {
+            unset($_SERVER[$sso_var_name]);
+        }
+    }
 }
