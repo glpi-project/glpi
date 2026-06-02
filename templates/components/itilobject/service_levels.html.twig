@@ -200,14 +200,18 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
     {% endif %}
     </tbody>
 
-{# --------- OLA display ---------- #}
-    {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('_olas_id') %}
-    <thead class="{% if not display_associatedsla_field %}d-none{% endif %}">
-    <tr class="">
-        <th class="visually-hidden"></th>
-        <th class="border-0 fs-4">
+</div>{# end SLA grid #}
+
+{# --------- OLA section ---------- #}
+{% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('_olas_id') %}
+
+{# Wrapper kept in DOM for JS toggling — regular block div, hidden via d-none #}
+<div class="{% if not display_associatedsla_field %}d-none{% endif %} mt-2">
+    <div class="d-grid" style="grid-template-columns: auto 1fr;">
+        {# OLA header #}
+        <div class="fw-bold ms-6" style="grid-column: 1 / -1;">
             <div class="d-flex justify-content-between">
-                <div class="">
+                <div>
                     {% set ola_tto_is_mandatory = field_options.fields_template.isMandatoryField('_olas_id_tto') %}
                     {% set ola_ttr_is_mandatory = field_options.fields_template.isMandatoryField('_olas_id_ttr') %}
                     {% set required = ola_tto_is_mandatory or ola_ttr_is_mandatory %}
@@ -219,24 +223,22 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                 </div>
                 <div>{{ _self.OlaAddButton('ola_dropdown_placeholder', field_options) }}</div>
             </div>
-        </th>
-    </tr>
-    </thead>
-    <tbody class="{% if not display_associatedsla_field %}d-none{% endif %}">
+        </div>
+
+        {# OLA rows #}
         {% for ola in item.getOlasDataFromField() %}
             {% set _rand = random() %}
+            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('_olas_id') %}
 
-            <tr id="ola_row_{{ _rand }}">
-                {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('_olas_id') %}
+            {% if ola.type == constant('SLM::TTO') %}
+                {% set _label = __('TTO') %}
+            {% elseif ola.type == constant('SLM::TTR') %}
+                {% set _label = __('TTR') %}
+            {% endif %}
 
-                {% if ola.type == constant('SLM::TTO') %}
-                    {% set _label = __('TTO') %}
-                {% elseif ola.type == constant('SLM::TTR') %}
-                    {% set _label = __('TTR') %}
-                {% endif %}
-
-                <td class="right pe-2 align-middle border-0 p-1">{{ _label }}</td>
-                <td class="d-flex border-0 p-1">
+            <div id="ola_row_{{ _rand }}" style="display: contents;">
+                <div class="text-end pe-2 align-self-center p-1">{{ _label }}</div>
+                <div class="d-flex p-1">
                     {{ _self.linkedOlaField(
                         ola,
                         field_options|merge({
@@ -245,19 +247,18 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                             'new_item': item.isNewItem(),
                         })
                     ) }}
-                </td>
-            </tr>
+                </div>
+            </div>
         {% endfor %}
-    {# table row to display dropdown to choose OLA to associate with #}
-    <tr>
-        <td>&nbsp;</td>
-        {# id used by OlaAddButton() - display ajax fetched dropdown #}
-        <td id="ola_dropdown_placeholder">
-        </td>
-    </tr>
-    </tbody>
 
-</table>
+        {# row to display dropdown to choose OLA to associate with #}
+        <div>&nbsp;</div>
+        {# id used by OlaAddButton() - display ajax fetched dropdown #}
+        <div id="ola_dropdown_placeholder"></div>
+
+    </div>
+
+</div>
 
 {# --- Macros --- #}
 
