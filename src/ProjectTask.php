@@ -2469,7 +2469,7 @@ TWIG, $twig_params);
                     interval_unit: 'DAY',
                 )]],
                 'OR' => [
-                    [$task_table . '.projectstates_id' => null],
+                    [$task_table . '.projectstates_id' => 0],
                     ['NOT' => [ProjectState::getTable() . '.id' => null]],
                 ],
                 Alert::getTable() . '.date'     => null,
