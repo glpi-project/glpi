@@ -182,7 +182,7 @@ abstract class AbstractFilter
     ): string {
         $value     = !empty($value) ? $value : null;
         $rand      = mt_rand();
-        $field     = $itemtype::$function([
+        $field     = $itemtype::$function($add_params + [
             'name'                => $fieldname,
             'value'               => $value,
             'rand'                => $rand,
@@ -193,7 +193,7 @@ abstract class AbstractFilter
             'on_change'           => "on_change_{$rand}()",
             'allowClear'          => true,
             'width'               => '',
-        ] + $add_params);
+        ]);
 
         $js = "
             var on_change_{$rand} = function() {

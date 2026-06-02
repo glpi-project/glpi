@@ -61,11 +61,15 @@ class TicketStatusFilter extends AbstractFilter
      */
     public static function getCriteria(string $table, $value): array
     {
-        return [
-            "WHERE" => [
-                "$table.status" => self::getStatusValue($value),
-            ],
-        ];
+        $criteria = [];
+
+        if ((int) $value > 0) {
+            $criteria["WHERE"] = [
+                "$table.status" => (int) $value,
+            ];
+        }
+
+        return $criteria;
     }
 
     /**
@@ -73,26 +77,18 @@ class TicketStatusFilter extends AbstractFilter
      */
     public static function getSearchCriteria(string $table, $value): array
     {
-        return [
-            [
+        $criteria = [];
+
+        if ((int) $value > 0) {
+            $criteria[] = [
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'status', $table),
                 'searchtype' => 'equals',
-                'value'      => self::getStatusValue($value),
-            ],
-        ];
-    }
+                'value'      => (int) $value,
+            ];
+        }
 
-    /**
-     * Resolve the effective status to filter on.
-     *
-     * dropdownStatus() always displays a status, falling back to Ticket::INCOMING
-     * when no value is set, so the filter must apply that same default to keep the
-     * displayed value and the applied filter consistent.
-     */
-    private static function getStatusValue(string|int $value): int
-    {
-        return (int) $value > 0 ? (int) $value : Ticket::INCOMING;
+        return $criteria;
     }
 
     public static function getHtml($value): string
@@ -102,7 +98,8 @@ class TicketStatusFilter extends AbstractFilter
             is_string($value) ? $value : "",
             'ticketstatus',
             Ticket::class,
-            function: 'dropdownStatus',
+            ['display_emptychoice' => true],
+            'dropdownStatus',
         );
     }
 }
