@@ -2005,10 +2005,9 @@ HTML;
             return "";
         }
 
-        
         $current = new DateTime($_SESSION['glpi_currenttime']);
         $start = new DateTime($from);
-        
+
         // When a contract has no duration, return start date
         if ($addwarranty == 0) {
             $date = Html::convDate($start->format('Y-m-d'));
