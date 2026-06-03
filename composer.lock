@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0f7bdf99feef9e7f8c058dc8c415aee0",
+    "content-hash": "7a2fb1db681bd0a53235e89132cfc384",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -1458,16 +1458,16 @@
         },
         {
             "name": "laminas/laminas-i18n",
-            "version": "2.32.1",
+            "version": "2.33.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-i18n.git",
-                "reference": "8e71b40318f0df6253329e837188e1d77cf83aea"
+                "reference": "477501f286fba6e78f57d36c8533d05d15f6da8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/8e71b40318f0df6253329e837188e1d77cf83aea",
-                "reference": "8e71b40318f0df6253329e837188e1d77cf83aea",
+                "url": "https://api.github.com/repos/laminas/laminas-i18n/zipball/477501f286fba6e78f57d36c8533d05d15f6da8d",
+                "reference": "477501f286fba6e78f57d36c8533d05d15f6da8d",
                 "shasum": ""
             },
             "require": {
@@ -1494,6 +1494,7 @@
                 "laminas/laminas-filter": "^2.42",
                 "laminas/laminas-validator": "^2.65.0",
                 "laminas/laminas-view": "^2.44",
+                "phpbench/phpbench": "^1.6",
                 "phpunit/phpunit": "^11.5.46",
                 "psalm/plugin-phpunit": "^0.19.5",
                 "vimeo/psalm": "^6.14.2"
@@ -1543,7 +1544,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2025-12-15T14:23:40+00:00"
+            "time": "2026-05-18T16:10:02+00:00"
         },
         {
             "name": "laminas/laminas-loader",
