@@ -91,7 +91,7 @@ class ReAuthController extends AbstractController
 
             // catched in RedirectPostExceptionListener
             throw new ReauthRedirectException(
-                $this->reAuthManager->getRedirectURL(),
+                $this->reAuthManager->getTargetURL(),
                 $this->reAuthManager->getRedirectData(),
                 $this->reAuthManager->getRedirectMethod(),
             );
@@ -110,7 +110,7 @@ class ReAuthController extends AbstractController
         }
 
         return [
-            'redirect'      => $this->reAuthManager->getRedirectURL(),
+            'redirect'      => $this->reAuthManager->getTargetURL(),
             'cancel_url'    => $this->reAuthManager->getCancelURL(),
             'action'        => $this->router->generate('reauth_verify'),
             'label'         => $this->reAuthManager->getLabel(),

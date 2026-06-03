@@ -65,15 +65,8 @@ final class ReAuthManager
      */
     public function redirect(): never
     {
-        $this->setRedirect();
+        $this->setRequestedTarget();
         throw new RedirectException('/ReAuth/Prompt');
-    }
-
-    public function getButtonToReauthPrompt(): string
-    {
-        $this->setRedirect();
-
-        return '<a href="ReAuth/Prompt">Reauth</a>'; // @todo manque la base_url + sprintf avec i18n
     }
 
     /**
@@ -116,9 +109,9 @@ final class ReAuthManager
         return $this->getStrategy()->getPromptTemplate();
     }
 
-    public function getRedirectURL(): string
+    public function getTargetURL(): string
     {
-        return $_SESSION['glpi_reauth_redirect'] ?? '/';
+        return $_SESSION['glpi_reauth_target_url'] ?? '/';
     }
 
     public function getCancelURL(): string
@@ -160,13 +153,16 @@ final class ReAuthManager
         );
     }
 
-    private function setRedirect(): void
+    /**
+     * Record the request that was requested before checking that a reauth is needed.
+     */
+    private function setRequestedTarget(): void
     {
         $current_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . explode('?', $_SERVER['REQUEST_URI'])[0];
 
-        $this->setRedirectURL($current_url);
-        $this->setRedirectMethod($_SERVER['REQUEST_METHOD'] === 'POST' ? 'POST' : 'GET');
-        $this->setRedirectData($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : $_GET);
+        $this->setRequestedURL($this->forcedRequestedURL ?? $current_url);
+        $this->setRequestedMethod($_SERVER['REQUEST_METHOD'] === 'POST' ? 'POST' : 'GET');
+        $this->setRequestedData($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : $_GET);
     }
 
     private function getStrategy(): ReAuthStrategyInterface
@@ -209,13 +205,13 @@ final class ReAuthManager
         return $strategies;
     }
 
-    private function setRedirectURL(string $url): void
+    private function setRequestedURL(string $url): void
     {
-        $_SESSION['glpi_reauth_redirect'] = $url;
+        $_SESSION['glpi_reauth_target_url'] = $url;
     }
 
     /** @param array<string, string> $post */
-    private function setRedirectData(array $post): void
+    private function setRequestedData(array $post): void
     {
         $_SESSION['glpi_reauth_data'] = $post;
     }
@@ -223,7 +219,7 @@ final class ReAuthManager
     /**
      * @param 'POST'|'GET' $http_method
      */
-    private function setRedirectMethod(string $http_method): void
+    private function setRequestedMethod(string $http_method): void
     {
         $_SESSION['glpi_reauth_httpmethod'] = match ($http_method) {
             'GET'  => 'GET',

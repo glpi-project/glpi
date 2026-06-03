@@ -521,6 +521,7 @@ class Html
         return $referer;
     }
 
+
     /**
      * Add confirmation on button or link before action
      *
