@@ -71,7 +71,6 @@ if (!$DB->tableExists('glpi_user_session_history')) {
             `logout_reason` enum('user', 'admin', 'expired') DEFAULT NULL,
             `users_id_revoked_by` int unsigned DEFAULT NULL,
             PRIMARY KEY (`id`),
-            UNIQUE KEY `session_token_hash` (`session_token_hash`),
             KEY `users_id` (`users_id`, `logged_in_at` DESC),
             KEY `users_id_revoked_by` (`users_id_revoked_by`),
             KEY `logged_out_at` (`logged_out_at`)

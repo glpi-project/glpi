@@ -57,14 +57,6 @@
              }
           }
 
-          .suspsense.loading > .fallback {
-             display: block;
-          }
-
-          .suspsense.loading > :not(.fallback) {
-             display: none;
-          }
-
           @media (max-width: 768px) {
              .session-tracker-toolbar {
                 display: flex;
@@ -204,10 +196,6 @@
     <script type="module">
         const user_filter = document.getElementById('{{ user_filter_id }}');
         const status_filter = document.getElementById('dropdown_{{ status_filter_id }}');
-        console.log({
-            'status_filter_id': '{{ status_filter_id }}',
-             'dropdown_{{ status_filter_id }}': document.getElementById('dropdown_{{ status_filter_id }}'),
-        })
         const type_filter = document.getElementById('dropdown_{{ type_filter_id }}');
         const ip_filter = document.getElementById('{{ ip_filter_id }}');
         const filters_popover = document.getElementById('{{ filters_popover_id }}');

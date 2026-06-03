@@ -89,7 +89,7 @@ final class SessionTrackerController extends AbstractController
     {
         $users_id = $request->request->getInt('users_id', 0);
         $is_own_sessions = $users_id === 0 || $users_id === Session::getLoginUserID();
-        if ($is_own_sessions && !\OAuthClient::canUpdate()) {
+        if (!$is_own_sessions && !\OAuthClient::canUpdate()) {
             throw new AccessDeniedHttpException();
         }
 

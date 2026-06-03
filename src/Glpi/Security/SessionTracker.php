@@ -108,8 +108,8 @@ final class SessionTracker extends CommonGLPI
                 'ip_address' => $ip,
                 'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
                 'auth_type' => $auth->getAuthType(),
-                'created_at' => QueryFunction::now(),
-                'last_activity_at' => QueryFunction::now(),
+                'created_at' => Session::getCurrentTime(),
+                'last_activity_at' => Session::getCurrentTime(),
             ]);
             $DB->insert('glpi_user_session_history', [
                 'users_id' => $_SESSION['glpiID'],
@@ -117,7 +117,7 @@ final class SessionTracker extends CommonGLPI
                 'ip_address' => $ip,
                 'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
                 'auth_type' => $auth->getAuthType(),
-                'logged_in_at' => QueryFunction::now(),
+                'logged_in_at' => Session::getCurrentTime(),
             ]);
         } catch (RuntimeException $e) {
             ErrorHandler::logCaughtException($e);
@@ -165,7 +165,7 @@ final class SessionTracker extends CommonGLPI
 
         $DB->delete('glpi_user_sessions', ['session_token_hash' => $session_token_hash]);
         $DB->update('glpi_user_session_history', [
-            'logged_out_at' => QueryFunction::now(),
+            'logged_out_at' => Session::getCurrentTime(),
             'logout_reason' => $reason,
             'users_id_revoked_by' => $_SESSION['glpiID'] ?? null,
         ], [
