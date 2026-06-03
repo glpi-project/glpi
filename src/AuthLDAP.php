@@ -2941,7 +2941,7 @@ class AuthLDAP extends CommonDBTM
                             //In case user id has changed : get id by dn (Used to check if restoration is needed)
                             $user_found = $searched_user->getFromDBbyDn(Sanitizer::sanitize($user_dn));
                         }
-                        if ($user_found && $searched_user->fields['is_deleted_ldap'] && $searched_user->fields['user_dn']) {
+                        if ($user_found && ($searched_user->fields['is_deleted_ldap'] || !$searched_user->fields['is_active']) && $searched_user->fields['user_dn']) {
                             User::manageRestoredUserInLdap($searched_user->fields['id']);
                             return ['action' => self::USER_RESTORED_LDAP,
                                 'id' => $searched_user->fields['id'],
