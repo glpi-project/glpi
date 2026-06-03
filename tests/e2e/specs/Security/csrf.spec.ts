@@ -36,6 +36,7 @@ import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
 const external_origin = "https://not-my-origin.com";
 const same_origin = "https://my-origin.com";
+const same_origin_with_port = "https://my-origin.com:12345";
 
 const post_cases = [
     // Test all possible "Sec-Fetch-Site" values
@@ -48,6 +49,7 @@ const post_cases = [
     // Demonstrate "Origin" fallback
     { sec_fetch_site: null, origin: external_origin, expected: 403 },
     { sec_fetch_site: null, origin: same_origin, expected: 200 },
+    { sec_fetch_site: null, origin: same_origin_with_port, expected: 200 },
 
     // Demonstrate that "Sec-Fetch-Site" take precedence over "Origin"
     { sec_fetch_site: "same-origin", origin: external_origin, expected: 200 },
@@ -113,8 +115,8 @@ function configHeaders(
         'Origin'?: string,
         'Host': string,
     } = {
-        // Host is always set by the browser.
-        Host: "my-origin.com",
+        // Host is always set by the browser. Insert port if needed.
+        Host: origin && origin.split(':').length > 2 ? "my-origin.com:12345" : "my-origin.com",
     };
 
     if (sec_fetch_site !== null) {

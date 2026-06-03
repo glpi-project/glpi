@@ -36,6 +36,7 @@ namespace Glpi\Kernel\Listener\ControllerListener;
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\SessionManager;
+use RuntimeException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -101,7 +102,19 @@ final readonly class CheckCsrfListener implements EventSubscriberInterface
         $origin = $request->headers->get('Origin');
         $host = $request->headers->get('Host');
         if ($origin !== null && $host !== null) {
-            return parse_url($origin, PHP_URL_HOST) === $host;
+            $origin_host = parse_url($origin, PHP_URL_HOST);
+            if (!is_string($origin_host) || $origin_host === "") {
+                // Likely impossible, just here to make phpstan happy
+                throw new RuntimeException('Failed to parse host from origin');
+            }
+
+            // Port is optional, use it only if specified
+            $origin_port = parse_url($origin, PHP_URL_PORT);
+            if (is_int($origin_port)) {
+                return "$origin_host:$origin_port" === $host;
+            }
+
+            return $origin_host === $host;
         }
 
         // If both 'Sec-Fetch-Site' and 'Origin' are missing then the request
