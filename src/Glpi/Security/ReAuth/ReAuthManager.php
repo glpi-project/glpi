@@ -46,6 +46,8 @@ final class ReAuthManager
 
     private ?ReAuthStrategyInterface $strategy = null;
 
+    private ?string $forcedRequestedURL = null;
+
     /**
      * @throws RedirectException
      */
@@ -131,6 +133,11 @@ final class ReAuthManager
     public function getRedirectMethod(): string
     {
         return $_SESSION['glpi_reauth_httpmethod'] ?? 'GET';
+    }
+
+    public function setForcedRequestedURL(string $url): void
+    {
+        $this->forcedRequestedURL = $url; // @todo check que c'est une url interne
     }
 
     public function setCancelURL(string $url): void
