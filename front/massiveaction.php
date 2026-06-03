@@ -52,8 +52,14 @@ try {
     [$referer, $item_types] = get_item_type_redirection_path_from_post();
     $reauth_manager = new ReAuthManager();
     if ($reauth_manager->atLeastOneitemTypesRequiresReauthentication($item_types)) {
+        // update reauth redirection
+        // current page is the massive action processing
+        // but redirection should be to the page that triggered the massive action process
         $reauth_manager->setCancelURL($referer);
+        $reauth_manager->setForcedRequestedURL($referer);
+
         $reauth_manager->checkReAuthenticationOrRedirect();
+
         $ma->setRedirect($referer);
     }
 }
