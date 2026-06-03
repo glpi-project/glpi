@@ -98,7 +98,7 @@
         'wrapper_class': ''
     }) }}
     <input type="hidden" name="several" value="yes" disabled>
-    {{ fields.textField('name', item.fields['name'], __('Name')) }}
+    {{ fields.textField('name', item.fields['name'], __('Name'), {'additional_attributes': {'autocomplete': 'off'}}) }}
     {{ fields.textField('ifalias', item.fields['ifalias'], __('Alias')) }}
 
     {% set is_readonly = item.fields['is_dynamic']|default(false) %}

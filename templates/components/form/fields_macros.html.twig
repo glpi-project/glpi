@@ -104,7 +104,7 @@
          {% if current_attrs.autocomplete is not defined %}
             {% set options = options|merge({
                   'additional_attributes': current_attrs|merge({
-                     'autocomplete': 'off'
+                     'autocomplete': 'on'
                   })
             }) %}
          {% endif %}
