@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\json_encode;
+
 global $CFG_GLPI;
 
 header("Content-Type: text/html; charset=UTF-8");
