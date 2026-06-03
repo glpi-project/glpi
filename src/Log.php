@@ -1209,6 +1209,10 @@ class Log extends CommonDBTM
                 foreach (explode(";", $affected_field) as $var) {
                     if (1 === preg_match('/^(?P<key>.+):(?P<operator>.*):(?P<values>.+)$/', $var, $matches)) {
                         $key = $matches['key'];
+                        $allowed_keys = ['linked_action', 'id_search_option'];
+                        if (!in_array($key, $allowed_keys, true)) {
+                            continue;
+                        }
                         $operator = $matches['operator'];
                         if (!empty($operator) && $operator != 'NOT') {
                             throw new RuntimeException('Invalid operator: ' . $operator);
@@ -1228,10 +1232,15 @@ class Log extends CommonDBTM
                         }
                     }
                 }
+                if (empty($affected_field_crit[$index])) {
+                    unset($affected_field_crit[$index]);
+                }
             }
-            $sql_filters[] = [
-                'OR' => $affected_field_crit,
-            ];
+            if (!empty($affected_field_crit)) {
+                $sql_filters[] = [
+                    'OR' => $affected_field_crit,
+                ];
+            }
         }
 
         if (isset($filters['date']) && !empty($filters['date'])) {
