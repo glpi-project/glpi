@@ -1191,7 +1191,7 @@ class Conf extends CommonGLPI
                 self::BASIC_AUTH,
                 self::NO_AUTH,
             ];
-            $auth_required = $values['auth_required'] ?? $defaults['auth_required'];
+            $auth_required = array_key_exists('auth_required', $values) ? $values['auth_required'] : $defaults['auth_required'];
             if (!is_string($auth_required) || !in_array($auth_required, $allowed_auth_required, true)) {
                 Session::addMessageAfterRedirect(
                     __s('Inventory is enabled. Please select a valid authorization header method.'),
