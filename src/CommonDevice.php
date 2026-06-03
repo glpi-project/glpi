@@ -172,7 +172,7 @@ abstract class CommonDevice extends CommonDropdown
                         $menu['options'][$key] = [
                             'title' => $val,
                             'page'  => $tmp::getSearchURL(false),
-                            'icon'  => $tmp::getIcon(),
+                            'icon'  => $key::getIcon(),
                             'links' => [
                                 'search' => $tmp::getSearchURL(false),
                             ],
