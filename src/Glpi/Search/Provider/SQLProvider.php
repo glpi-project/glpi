@@ -7319,6 +7319,8 @@ final class SQLProvider implements SearchProviderInterface
 
     /**
      * @param array<array{percent:int, percent_text:string, color:string, text:string}> $progressbar_data
+     *
+     * @todo use a shared 'component' - Html::getProgressBar - https://github.com/glpi-project/glpi/pull/19593#discussion_r3340386331
      */
     public static function getProgressBar(array $progressbar_data): string
     {
