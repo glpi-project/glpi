@@ -1496,7 +1496,8 @@ TWIG, $twig_params);
 
         $item = getItemForItemtype($event['itemtype']);
 
-        if (!$item->can((int) $event['items_id'], $item->maybeDeleted() ? DELETE : PURGE)) {
+        $required_right = ($item instanceof CommonITILTask) ? UPDATE : ($item->maybeDeleted() ? DELETE : PURGE);
+        if (!$item->can((int) $event['items_id'], $required_right)) {
             return false;
         }
 
@@ -1506,6 +1507,12 @@ TWIG, $twig_params);
             && method_exists($item, "deleteInstance")
         ) {
             return $item->deleteInstance((int) $event['items_id'], $event['day']);
+        }
+
+        // For tasks linked to tickets/changes/problems, only unschedule (clear planning
+        // dates) instead of deleting the task record entirely.
+        if ($item instanceof CommonITILTask) {
+            return $item->unplan();
         }
 
         return $item->delete([
