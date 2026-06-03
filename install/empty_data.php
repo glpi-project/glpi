@@ -158,6 +158,7 @@ $empty_data_builder = new class {
             ];
         }
 
+        $env = getenv();
         $default_prefs = [
             'version' => 'FILLED AT INSTALL',
             'show_jobs_at_login' => '0',
@@ -201,7 +202,7 @@ $empty_data_builder = new class {
             'utf8_conv' => '1',
             'use_public_faq' => '0',
             'allow_unauthenticated_uploads' => '0',
-            'url_base' => 'http://localhost',
+            'url_base' => $env['GLPI_URL_BASE'] ?? 'http://localhost',
             'show_link_in_mail' => '0',
             'text_login' => '',
             'found_new_version' => '',
@@ -317,7 +318,7 @@ $empty_data_builder = new class {
             'attach_documents_to_notifications_for_anonymous' => '0',
             'task_state' => '1',
             'planned_task_state' => '1',
-            'palette' => 'auror',
+            'palette' => $env['GLPI_DEFAULT_THEME'] ?? 'auror',
             'page_layout' => 'vertical',
             'fold_menu' => '0',
             'savedsearches_pinned' => '0',
