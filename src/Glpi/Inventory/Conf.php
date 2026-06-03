@@ -1362,7 +1362,7 @@ class Conf extends CommonGLPI
             'stale_agents_status'            => 0,
             'stale_agents_status_condition'  => exportArrayToDB(['all']),
             'import_env'                     => 0,
-            'auth_required'                  => 'none',
+            'auth_required'                  => Conf::NO_AUTH,
             'basic_auth_login'               => '',
             'basic_auth_password'            => '',
         ];
