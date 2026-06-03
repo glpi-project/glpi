@@ -159,10 +159,6 @@ final class SessionTracker extends CommonGLPI
         $session = $it->current();
         $users_id = $session['users_id'] ?? null;
 
-        if ($reason === 'admin' && $users_id !== Session::getLoginUserID() && !Session::haveRight('config', UPDATE)) {
-            throw new AccessDeniedHttpException();
-        }
-
         $DB->delete('glpi_user_sessions', ['session_token_hash' => $session_token_hash]);
         $DB->update('glpi_user_session_history', [
             'logged_out_at' => Session::getCurrentTime(),

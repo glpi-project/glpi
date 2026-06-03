@@ -56,8 +56,22 @@ final class SessionTrackerController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function revokeSession(Request $request): Response
     {
-        // Permissions are checked in the called method.
-        SessionTracker::revokeSession($request->attributes->getString('session_token_hash'), 'admin');
+        global $DB;
+
+        $session_token_hash = $request->attributes->getString('session_token_hash');
+        $it = $DB->request([
+            'SELECT' => ['users_id'],
+            'FROM' => 'glpi_user_sessions',
+            'WHERE' => ['session_token_hash' => $session_token_hash],
+            'LIMIT' => 1,
+        ]);
+        $session = $it->current();
+        $users_id = $session['users_id'] ?? null;
+
+        if ($users_id !== Session::getLoginUserID() && !Session::haveRight('config', UPDATE)) {
+            throw new \Glpi\Exception\Http\AccessDeniedHttpException();
+        }
+        SessionTracker::revokeSession($session_token_hash, 'admin');
         return new Response();
     }
 
