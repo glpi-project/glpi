@@ -70,8 +70,9 @@ if (($_POST["action"] ?? null) == "clone_event") {
 }
 
 if (($_POST["action"] ?? null) == "delete_event") {
-    $extevent->check((int) $_POST['event']['items_id'], DELETE);
-    echo Planning::deleteEvent($_POST['event']);
+    $event = $_POST['event'];
+    // rights check is done inside `Planning::deleteEvent()`, depending on the event itemtype
+    echo Planning::deleteEvent($event);
     return;
 }
 
