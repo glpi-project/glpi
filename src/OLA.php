@@ -222,22 +222,17 @@ class OLA extends LevelAgreement
     }
 
     /**
-     * Check if the level can be added in levels todo
+     * Can Ola level can be added in levels todo ?
      *
-     * It means that the ola is not completed
+     * True if ticket can be modified and ola is not completed
      */
     private function levelCanBeAddedInLevelsTodo(Ticket $ticket, Item_Ola $items_ola): bool
     {
-        if (
+        return !(
             $ticket->isDeleted()
-            || $ticket->fields['status'] == CommonITILObject::CLOSED
-            || $ticket->fields['status'] == CommonITILObject::SOLVED
+            || $ticket->isSolved(true)
             || !is_null($items_ola->fields['end_time'])
-        ) {
-            return false;
-        }
-
-        return true;
+        );
     }
 
     /**

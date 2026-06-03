@@ -175,16 +175,14 @@ class OlaLevel_Ticket extends CommonDBTM
             return;
         }
 
-        // - ticket is closed
-        if ($ticket->fields['status'] == CommonITILObject::CLOSED) {
-            // Drop line when status is closed
+        if ($ticket->isClosed()) {
             $olalevelticket->delete(['id' => $data['id']]);
 
             return;
         }
 
-        if ($ticket->fields['status'] == CommonITILObject::SOLVED) {
-            // If status = solved : keep the line in case of solution not validated
+        if ($ticket->isSolved()) {
+            // no deletion : keep olaLevel_Ticket db entry in case of solution not validated
 
             return;
         }
