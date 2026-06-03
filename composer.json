@@ -67,7 +67,7 @@
         "sabre/dav": "^4.7",
         "sabre/http": "^5.1",
         "sabre/uri": "^2.3",
-        "sabre/vobject": "^4.5",
+        "sabre/vobject": "^4.6",
         "scssphp/scssphp": "^2.1",
         "sebastian/diff": "^7.0",
         "simplepie/simplepie": "^1.9",

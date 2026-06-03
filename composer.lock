@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2cab77079367c60f60b850285ab90b27",
+    "content-hash": "9c3e7e15482829082171aec94add1831",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -5113,16 +5113,16 @@
         },
         {
             "name": "sabre/vobject",
-            "version": "4.5.8",
+            "version": "4.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sabre-io/vobject.git",
-                "reference": "d554eb24d64232922e1eab5896cc2f84b3b9ffb1"
+                "reference": "9432544fc369851fb8202c5d91159b2e669f0c88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/d554eb24d64232922e1eab5896cc2f84b3b9ffb1",
-                "reference": "d554eb24d64232922e1eab5896cc2f84b3b9ffb1",
+                "url": "https://api.github.com/repos/sabre-io/vobject/zipball/9432544fc369851fb8202c5d91159b2e669f0c88",
+                "reference": "9432544fc369851fb8202c5d91159b2e669f0c88",
                 "shasum": ""
             },
             "require": {
@@ -5213,7 +5213,7 @@
                 "issues": "https://github.com/sabre-io/vobject/issues",
                 "source": "https://github.com/fruux/sabre-vobject"
             },
-            "time": "2026-01-12T10:45:19+00:00"
+            "time": "2026-05-31T13:04:55+00:00"
         },
         {
             "name": "sabre/xml",
