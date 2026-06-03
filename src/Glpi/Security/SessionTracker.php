@@ -42,6 +42,7 @@ use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -155,6 +156,7 @@ final class SessionTracker extends CommonGLPI
             'SELECT' => ['users_id', 'session_file'],
             'FROM' => 'glpi_user_sessions',
             'WHERE' => ['session_token_hash' => $session_token_hash],
+            'LIMIT' => 1,
         ]);
         $session = $it->current();
         $users_id = $session['users_id'] ?? null;
@@ -350,8 +352,9 @@ final class SessionTracker extends CommonGLPI
 
         return [
             'SELECT' => [
+                new QueryExpression($DB::quoteValue('web'), '_type'),
                 'glpi_user_session_history.id',
-                'glpi_user_session_history.users_id',
+                new QueryExpression('glpi_user_session_history.users_id', 'user_identifier'),
                 'glpi_user_session_history.session_token_hash',
                 QueryFunction::ifnull('glpi_user_sessions.ip_address', 'glpi_user_session_history.ip_address', 'ip_address'),
                 QueryFunction::ifnull('glpi_user_sessions.user_agent', 'glpi_user_session_history.user_agent', 'user_agent'),
@@ -361,17 +364,15 @@ final class SessionTracker extends CommonGLPI
                 'glpi_user_session_history.logged_out_at',
                 'glpi_user_session_history.logout_reason',
                 'glpi_user_session_history.users_id_revoked_by',
+                new QueryExpression('NULL', 'date_expiration'),
+                new QueryExpression('NULL', 'scopes'),
+                new QueryExpression('NULL', 'client'),
+                new QueryExpression('NULL', 'client_name'),
             ],
             'FROM' => 'glpi_user_session_history',
             "LEFT JOIN" => $joins,
             'WHERE' => $where,
-            'ORDER' => [
-                'logged_out_at ASC',
-                'logged_in_at DESC',
-            ],
             'HAVING' => $having,
-            'START' => $start,
-            'LIMIT' => $_SESSION['glpilist_limit'],
         ];
     }
 
@@ -384,14 +385,34 @@ final class SessionTracker extends CommonGLPI
     {
         global $DB;
 
+        $access_token_lifetime = Server::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES; // Ex: PT1H
+        $access_token_lifetime_seconds = (new DateInterval($access_token_lifetime))->s
+            + (new DateInterval($access_token_lifetime))->i * 60
+            + (new DateInterval($access_token_lifetime))->h * 3600
+            + (new DateInterval($access_token_lifetime))->d * 86400;
+
         $criteria = [
             'SELECT' => [
-                'glpi_oauth_access_tokens.uuid',
-                'glpi_oauth_access_tokens.client',
-                'glpi_oauth_access_tokens.date_expiration',
+                new QueryExpression($DB::quoteValue('api'), '_type'),
+                new QueryExpression('glpi_oauth_access_tokens.uuid', 'id'),
                 'glpi_oauth_access_tokens.user_identifier',
-                'glpi_oauth_access_tokens.scopes',
+                new QueryExpression('NULL', 'session_token_hash'),
                 'glpi_oauth_access_tokens.ip_address',
+                new QueryExpression('NULL', 'user_agent'),
+                new QueryExpression('NULL', 'auth_type'),
+                QueryFunction::dateSub(
+                    date: 'glpi_oauth_access_tokens.date_expiration',
+                    interval: $access_token_lifetime_seconds,
+                    interval_unit: 'SECOND',
+                    alias: 'logged_in_at',
+                ),
+                new QueryExpression('NULL', 'last_activity_at'),
+                new QueryExpression('NULL', 'logged_out_at'),
+                new QueryExpression('NULL', 'logout_reason'),
+                new QueryExpression('NULL', 'users_id_revoked_by'),
+                'glpi_oauth_access_tokens.date_expiration',
+                'glpi_oauth_access_tokens.scopes',
+                'glpi_oauth_access_tokens.client',
                 'glpi_oauthclients.name AS client_name',
             ],
             'FROM' => 'glpi_oauth_access_tokens',
@@ -405,9 +426,11 @@ final class SessionTracker extends CommonGLPI
             ],
             'WHERE' => [],
             'HAVING' => [],
-            'START' => $start,
-            'LIMIT' => $_SESSION['glpilist_limit'],
         ];
+
+        if (!in_array($filters['type'] ?? 'all', ['all', 'api'], true)) {
+            $criteria['WHERE'][] = new QueryExpression('false');
+        }
 
         if ($users_id > 0) {
             $criteria['WHERE']['user_identifier'] = $users_id;
@@ -467,9 +490,21 @@ final class SessionTracker extends CommonGLPI
 
         Profiler::getInstance()->start('SessionTracker::getSessions');
 
-        $type_filter = $filters['type'] ?? 'all';
-        $it_php = $DB->request($this->getPHPSessionsCriteria($users_id, $filters, $start));
-        $it_oauth = ($type_filter === 'api' || $type_filter === 'all') ? $DB->request($this->getOAuthSessionsCriteria($users_id, $filters, $start)) : [];
+        $query = new QueryUnion([
+            $this->getPHPSessionsCriteria($users_id, $filters, $start),
+            $this->getOAuthSessionsCriteria($users_id, $filters, $start)
+        ]);
+        $it = $DB->request([
+            'SELECT' => '*',
+            'FROM' => $query,
+            'ORDER' => [
+                new QueryExpression('CASE WHEN ' . $DB::quoteName('logged_out_at') . ' IS NULL THEN 0 ELSE 1 END'),
+                'logged_in_at'
+            ],
+            'START' => $start,
+            'LIMIT' => $_SESSION['glpilist_limit'],
+        ]);
+
         $sessions = [];
 
         Profiler::getInstance()->start('SessionTracker::getSessions - Create DeviceDetector instance');
@@ -478,35 +513,70 @@ final class SessionTracker extends CommonGLPI
         Profiler::getInstance()->stop('SessionTracker::getSessions - Create DeviceDetector instance');
 
         $user_cache = [];
+        $agent_browser_icons = [
+            'chrome' => 'ti ti-brand-chrome',
+            'firefox' => 'ti ti-brand-firefox',
+            'edge' => 'ti ti-brand-edge',
+            'safari' => 'ti ti-brand-safari',
+            'opera' => 'ti ti-brand-opera',
+        ];
+        $agent_icon = 'ti ti-help';
 
         Profiler::getInstance()->start('SessionTracker::getSessions - Loop sessions');
-        foreach ($it_php as $data) {
-            $dd->setUserAgent($data['user_agent']);
-            $dd->parse();
-
-            if (!isset($user_cache[$data['users_id']])) {
-                $user_cache[$data['users_id']] = getUserLink($data['users_id']);
+        foreach ($it as $data) {
+            if (!isset($user_cache[$data['user_identifier']])) {
+                $user_cache[$data['user_identifier']] = getUserLink($data['user_identifier']);
             }
-            $is_current_session = $data['session_token_hash'] === Session::getSessionTokenHash();
+            $is_current_session = $data['_type'] === 'web' && $data['session_token_hash'] === Session::getSessionTokenHash();
+
+            $is_real_user = is_numeric($data['user_identifier']) && $data['user_identifier'] !== $data['client'];
+            $user = $is_real_user ? $user_cache[$data['user_identifier']] : ('<span class="text-muted">' . __s('Client credentials') . '</span>');
+
             $session = [
                 'id' => $data['id'],
-                'type_raw' => $data['auth_type'] === Auth::API ? 'api' : 'web',
+                'type_raw' => $data['_type'],
                 'current_session' => $is_current_session,
-                'users_id' => $data['users_id'],
-                'user' => $user_cache[$data['users_id']],
+                'users_id' => $data['user_identifier'],
+                'user' => $user,
                 'ip_address' => $data['ip_address'],
                 'login' => $data['logged_in_at'],
                 'last_activity' => $data['last_activity_at'] ?? $data['logged_out_at'],
                 'logout_reason' => $data['logout_reason'],
                 'users_id_revoked_by' => $data['users_id_revoked_by'],
-                'details' => '',
             ];
-            if ($data['auth_type'] === Auth::API) {
+
+            if ($data['_type'] === 'api' || $data['auth_type'] === Auth::API) {
                 $session['type'] = '<span class="d-flex gap-1"><i class="ti ti-api" aria-hidden="true"></i>' . __s('API') . '</span>';
             } else {
                 $session['type'] = '<span class="d-flex gap-1"><i class="ti ti-world" aria-hidden="true"></i>' . __s('Browser') . '</span>';
             }
-            if ($data['logout_reason']) {
+
+            if ($data['_type'] === 'api') {
+                $session['details'] = '<span class="fw-bold">' . htmlescape($data['client_name']) . '</span>&nbsp;&middot;&nbsp;';
+                $session['details'] .= '<span class="text-muted">' . implode(', ', json_decode($data['scopes'], true)) . '</span>';
+            } else {
+                $dd->setUserAgent($data['user_agent']);
+                $dd->parse();
+
+                $client = $dd->getClient();
+                $os = $dd->getOs();
+                if (is_array($client) && is_array($os)) {
+                    if ($client['type'] === 'browser') {
+                        $agent_icon = $agent_browser_icons[strtolower($client['name'])] ?? $agent_icon;
+                        $agent_description = $client['name'] . ' ' . $client['version'] . ' - ' . $os['name'] . ' ' . $os['version'];
+                    } else {
+                        $agent_description = $client['name'] . ' ' . $client['version'];
+                    }
+
+                    $session['details'] = '<i class="' . $agent_icon . ' me-1" aria-hidden="true"></i>' . htmlescape($agent_description);
+                    if ($is_current_session) {
+                        $session['details'] .= ' <span class="badge badge-outline bg-transparent text-info">' . __s('Current session') . '</span>';
+                    }
+                }
+                $session['details'] = '<span>' . $session['details'] . '</span>';
+            }
+
+            if ($data['_type'] === 'web' && $data['logout_reason']) {
                 $reason_label = match ($data['logout_reason']) {
                     'user' => _sx('logout_reason', 'User logout'),
                     'admin' => _sx('logout_reason', 'Admin revoked'),
@@ -521,101 +591,24 @@ final class SessionTracker extends CommonGLPI
                 $session['status'] = '<span class="' . $reason_class . '">' . $reason_label . '</span>';
             } else {
                 $session['status'] = '<span class="badge badge-outline bg-transparent text-success">' . __s('Active') . '</span>';
-            }
-
-            $agent_browser_icons = [
-                'chrome' => 'ti ti-brand-chrome',
-                'firefox' => 'ti ti-brand-firefox',
-                'edge' => 'ti ti-brand-edge',
-                'safari' => 'ti ti-brand-safari',
-                'opera' => 'ti ti-brand-opera',
-            ];
-            $agent_icon = 'ti ti-help';
-
-            $client = $dd->getClient();
-            $os = $dd->getOs();
-            if (is_array($client) && is_array($os)) {
-                if ($client['type'] === 'browser') {
-                    $agent_icon = $agent_browser_icons[strtolower($client['name'])] ?? $agent_icon;
-                    $agent_description = $client['name'] . ' ' . $client['version'] . ' - ' . $os['name'] . ' ' . $os['version'];
-                } else {
-                    $agent_description = $client['name'] . ' ' . $client['version'];
-                }
-
-                $session['details'] = '<i class="' . $agent_icon . ' me-1" aria-hidden="true"></i>' . htmlescape($agent_description);
-                if ($is_current_session) {
-                    $session['details'] .= ' <span class="badge badge-outline bg-transparent text-info">' . __s('Current session') . '</span>';
+                if ($data['_type'] === 'api') {
+                    $session['status'] .= '<br><span class="text-muted fs-5">' . sprintf(__s('Expires at %s'), $data['date_expiration']) . '</span>';
                 }
             }
-            $session['details'] = '<span>' . $session['details'] . '</span>';
 
             $session['actions'] = '';
-            if (!$data['logged_out_at'] && !$is_current_session) {
+            if ($data['_type'] === 'web' && !$data['logged_out_at'] && !$is_current_session) {
                 $session['actions'] .= '<button class="btn btn-outline-danger btn-sm gap-1 revoke-session" data-type="web" data-identifier="' . $data['session_token_hash'] . '">';
                 $session['actions'] .= '<i class="ti ti-logout" aria-hidden="true"></i>' . __s('Revoke') . '</button>';
+            } elseif ($data['_type'] === 'api') {
+                $session['actions'] .= '<button class="btn btn-outline-danger btn-sm gap-1 revoke-session" data-type="api" data-identifier="' . $data['id'] . '">';
+                $session['actions'] .= '<i class="ti ti-logout" aria-hidden="true"></i>' . __s('Revoke') . '</button>';
             }
+
             $sessions[] = $session;
         }
-
-        $access_token_lifetime = Server::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES; // Ex: PT1H
-        $access_token_lifetime_seconds = (new DateInterval($access_token_lifetime))->s
-            + (new DateInterval($access_token_lifetime))->i * 60
-            + (new DateInterval($access_token_lifetime))->h * 3600
-            + (new DateInterval($access_token_lifetime))->d * 86400;
-
-        foreach ($it_oauth as $data) {
-            $session = [
-                'id' => $data['uuid'],
-                'type_raw' => 'api',
-                'current_session' => false,
-                'users_id' => $data['user_identifier'],
-                'client' => $data['client'],
-                'ip_address' => $data['ip_address'],
-                'login' => '',
-                'last_activity' => '',
-            ];
-
-            // Make an assumption of the generation time based on the current GLPI_OAUTH_ACCESS_TOKEN_EXPIRES value and the expiration. Only used for sorting.
-            //TODO If we revoke all access tokens when GLPI updates, we can safely use this as the actual "login" time as GLPI_OAUTH_ACCESS_TOKEN_EXPIRES is not configurable by admins.
-            $session['assumed_login'] = strtotime($data['date_expiration']) - $access_token_lifetime_seconds;
-
-            $session['type'] = '<span class="d-flex gap-1"><i class="ti ti-api" aria-hidden="true"></i>' . __s('API') . '</span>';
-            $session['details'] = '<span class="fw-bold">' . htmlescape($data['client_name']) . '</span>&nbsp;&middot;&nbsp;';
-            $session['details'] .= '<span class="text-muted">' . implode(', ', json_decode($data['scopes'], true)) . '</span>';
-            $session['status'] = '<span class="badge badge-outline bg-transparent text-success">' . __s('Active') . '</span>';
-            $session['status'] .= '<br><span class="text-muted fs-5">' . sprintf(__s('Expires at %s'), $data['date_expiration']) . '</span>';
-            if (is_numeric($session['users_id']) && $session['users_id'] !== $data['client']) {
-                if (!isset($user_cache[(int) $session['users_id']])) {
-                    $user_cache[(int) $session['users_id']] = getUserLink((int) $session['users_id']);
-                }
-                $session['user'] = $user_cache[(int) $session['users_id']];
-            } else {
-                $session['user'] = '<span class="text-muted">' . __s('Client credentials') . '</span>';
-            }
-            $session['actions'] = '<button class="btn btn-outline-danger btn-sm gap-1 revoke-session" data-type="api" data-identifier="' . $data['uuid'] . '">';
-            $session['actions'] .= '<i class="ti ti-logout" aria-hidden="true"></i>' . __s('Revoke') . '</button>';
-            $sessions[] = $session;
-        }
-
-        usort($sessions, static function ($a, $b) {
-            $a_login = $a['assumed_login'] ?? strtotime($a['login']);
-            $b_login = $b['assumed_login'] ?? strtotime($b['login']);
-            if ($a['status'] === $b['status']) {
-                return $b_login <=> $a_login;
-            }
-            // sort by active first, then login (or assumed login for API sessions)
-            if (str_contains($a['status'], 'text-success') && !str_contains($b['status'], 'text-success')) {
-                return -1;
-            } elseif (!str_contains($a['status'], 'text-success') && str_contains($b['status'], 'text-success')) {
-                return 1;
-            } else {
-
-                return $b_login <=> $a_login;
-            }
-        });
 
         Profiler::getInstance()->stop('SessionTracker::getSessions - Loop sessions');
-
         Profiler::getInstance()->stop('SessionTracker::getSessions');
         return $sessions;
     }
