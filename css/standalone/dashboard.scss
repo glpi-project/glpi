@@ -432,6 +432,8 @@ $break_tablet: 1400px;
                 }
 
                 .select2 {
+                    min-width: 100px;
+
                     & ~ a,
                     & ~ span { // remove icons next select2
                         display: none;
@@ -452,7 +454,6 @@ $break_tablet: 1400px;
                         border: none;
                         background-color: transparent;
                         min-height: 24px;
-                        min-width: 100px;
 
                         .select2-selection__rendered {
                             padding: 0;
@@ -477,13 +478,20 @@ $break_tablet: 1400px;
                             color: var(--tblr-body-color);
                             font-weight: bold;
                             font-size: 12px;
-                            min-width: 10px;
+                            min-width: 80px;
                             margin: 0;
+                            outline: none;
                         }
                     }
 
-                    .select2-container {
-                        margin-right: 0;
+                    // override select2 focus/open border on multiple selection
+                    &.select2-container--focus,
+                    &.select2-container--open {
+                        .select2-selection--multiple {
+                            border: none;
+                            outline: none;
+                            box-shadow: none;
+                        }
                     }
 
                     .select2-selection__rendered {
@@ -561,6 +569,10 @@ $break_tablet: 1400px;
                         color: #509ee3 !important;
                     }
 
+                    .select2 {
+                        width: auto !important;
+                    }
+
                     .select2-selection--multiple {
                         .select2-selection__choice {
                             color: var(--tblr-info) !important;
@@ -568,7 +580,9 @@ $break_tablet: 1400px;
                         }
 
                         .select2-search--inline .select2-search__field {
-                            color: var(--tblr-info) !important;                        }
+                            color: var(--tblr-info) !important;
+                            min-width: 4px !important;
+                        }
                     }
 
                     .flatpickr,
