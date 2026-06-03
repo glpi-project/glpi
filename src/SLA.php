@@ -92,36 +92,6 @@ class SLA extends LevelAgreement
         }
     }
 
-    /**
-     * remove a level to do for a ticket
-     *
-     * @param Ticket $ticket object
-     *
-     * @return void
-     **/
-    #[Override]
-    public static function deleteLevelsToDo(Ticket $ticket)
-    {
-        /** @var DBmysql $DB */
-        global $DB;
-
-        $ticketfield = static::$prefix . "levels_id_ttr";
-
-        if ($ticket->fields[$ticketfield] > 0) {
-            /** @var SlaLevel_Ticket $levelticket */
-            $levelticket = getItemForItemtype(static::$levelticketclass);
-            $iterator = $DB->request([
-                'SELECT' => 'id',
-                'FROM'   => $levelticket::getTable(),
-                'WHERE'  => ['tickets_id' => $ticket->fields['id']],
-            ]);
-
-            foreach ($iterator as $data) {
-                $levelticket->delete(['id' => $data['id']]);
-            }
-        }
-    }
-
     #[Override]
     public static function getTypeName($nb = 0)
     {

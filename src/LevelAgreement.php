@@ -847,22 +847,8 @@ TWIG, $twig_params);
      **/
     public static function deleteLevelsToDo(Ticket $ticket)
     {
-        global $DB;
-
-        $ticketfield = static::$prefix . "levels_id_ttr";
-
-        if ($ticket->fields[$ticketfield] > 0) {
-            $levelticket = getItemForItemtype(static::$levelticketclass);
-            $iterator = $DB->request([
-                'SELECT' => 'id',
-                'FROM'   => $levelticket::getTable(),
-                'WHERE'  => ['tickets_id' => $ticket->fields['id']],
-            ]);
-
-            foreach ($iterator as $data) {
-                $levelticket->delete(['id' => $data['id']]);
-            }
-        }
+        $levelticket = getItemForItemtype(static::$levelticketclass);
+        $levelticket->deleteByCriteria(['tickets_id' => $ticket->fields['id']]);
     }
 
     public function post_clone($source, $history)

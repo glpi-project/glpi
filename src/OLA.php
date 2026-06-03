@@ -162,14 +162,6 @@ class OLA extends LevelAgreement
         }
     }
 
-    #[Override]
-    public static function deleteLevelsToDo(Ticket $ticket)
-    {
-        /** @var OlaLevel_Ticket $levelticket */
-        $levelticket = getItemForItemtype(static::$levelticketclass);
-        $levelticket->deleteByCriteria(['tickets_id' => $ticket->fields['id']]);
-    }
-
     /**
      * remove all levels to do
      **/

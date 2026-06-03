@@ -4665,11 +4665,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Clean all infos which match some criteria
      *
-     * @param array   $crit    array of criteria (ex array('is_active'=>'1'))
-     * @param bool $force   force purge not on put in trashbin (default false)
-     * @param bool $history do history log ? (true by default)
+     * @param array $crit    array of criteria (ex array('is_active'=>'1'))
+     * @param bool  $force   force purge not on put in trashbin (default false)
+     * @param bool  $history do history log ? (true by default)
      *
-     * @return bool
+     * @return bool false if a deletion failed or there was nothing to delete (criteria did not match any entry)
      **/
     public function deleteByCriteria($crit = [], $force = false, $history = true)
     {
@@ -4687,9 +4687,9 @@ class CommonDBTM extends CommonGLPI
                 }
             }
         }
+
         return $ok;
     }
-
 
     /**
      * get the Entity of an Item
