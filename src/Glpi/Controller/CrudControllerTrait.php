@@ -58,7 +58,7 @@ trait CrudControllerTrait
             throw new AccessDeniedHttpException();
         }
 
-        if ($input === null || !$item->add($input)) {
+        if (!$item->add($input)) {
             throw new RuntimeException("Failed to create item");
         }
 
@@ -102,7 +102,7 @@ trait CrudControllerTrait
             throw new AccessDeniedHttpException();
         }
 
-        if ($input === null || !$item->update($input)) {
+        if (!$item->update($input)) {
             throw new RuntimeException("Failed to update item");
         }
 
@@ -124,7 +124,7 @@ trait CrudControllerTrait
             throw new AccessDeniedHttpException();
         }
 
-        if ($input === null || !$item->delete($input)) {
+        if (!$item->delete($input)) {
             throw new RuntimeException("Failed to delete item");
         }
     }
@@ -141,7 +141,7 @@ trait CrudControllerTrait
             throw new AccessDeniedHttpException();
         }
 
-        if ($input === null || !$item->delete($input, force: true)) {
+        if (!$item->delete($input, force: true)) {
             throw new RuntimeException("Failed to purge item");
         }
     }
