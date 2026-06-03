@@ -3089,4 +3089,33 @@ HTML;
 
         $this->assertContains($project->getID(), $ids);
     }
+
+    public function testDropdownAllItemsEntityRestrictIsStringInJsConfig(): void
+    {
+        $this->login();
+
+        // A JS array causes jQuery to expand entity_restrict into N POST params, exhausting
+        // max_input_vars and silently truncating _idor_token.
+        $_POST['idtable']             = 'Ticket';
+        $_POST['name']                = 'items_id_2';
+        $_POST['display_emptychoice'] = 1;
+        $_POST['entity_restrict']     = [0, 1, 2];
+
+        ob_start();
+        include GLPI_ROOT . '/ajax/dropdownAllItems.php';
+        $output = ob_get_clean();
+
+        unset($_POST['idtable'], $_POST['name'], $_POST['display_emptychoice'], $_POST['entity_restrict']);
+
+        $this->assertMatchesRegularExpression(
+            '/"entity_restrict"\s*:\s*"[^"]*"/',
+            $output,
+            'entity_restrict must be a JSON string in the Select2 config, not a JS array'
+        );
+        $this->assertDoesNotMatchRegularExpression(
+            '/"entity_restrict"\s*:\s*\[/',
+            $output,
+            'entity_restrict must not be a JS array (would cause N POST params per entity)'
+        );
+    }
 }
