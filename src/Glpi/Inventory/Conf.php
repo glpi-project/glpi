@@ -1191,7 +1191,7 @@ class Conf extends CommonGLPI
                 self::BASIC_AUTH,
                 self::NO_AUTH,
             ];
-            $auth_required = $values['auth_required'] ?? null;
+            $auth_required = $values['auth_required'] ?? $defaults['auth_required'];
             if (!is_string($auth_required) || !in_array($auth_required, $allowed_auth_required, true)) {
                 Session::addMessageAfterRedirect(
                     __s('Inventory is enabled. Please select a valid authorization header method.'),
@@ -1362,7 +1362,7 @@ class Conf extends CommonGLPI
             'stale_agents_status'            => 0,
             'stale_agents_status_condition'  => exportArrayToDB(['all']),
             'import_env'                     => 0,
-            'auth_required'                  => '',
+            'auth_required'                  => 'none',
             'basic_auth_login'               => '',
             'basic_auth_password'            => '',
         ];
