@@ -56,8 +56,9 @@ abstract class LevelAgreement extends CommonDBChild
 
     /** @var ''|class-string<LevelAgreementLevel> */
     protected static $levelclass        = '';
-    /** @var string|class-string<CommonDBTM> */
-    protected static $levelticketclass  = '';
+
+    /** @var class-string<CommonDBTM> */
+    protected static $levelticketclass;
 
 
     /**

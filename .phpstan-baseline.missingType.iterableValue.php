@@ -3056,6 +3056,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDCModelDropdown.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method CommonDevice\\:\\:displayFullPageForItem\\(\\) has parameter \\$menus with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDevice.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method CommonDevice\\:\\:displaySpecificTypeField\\(\\) has parameter \\$field with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -14832,6 +14838,18 @@ $ignoreErrors[] = [
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/RequesterFieldConfig.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLAField\\:\\:applyConfiguratedValueToInputUsingAnswers\\(\\) has parameter \\$input with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLAField.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLAField\\:\\:applyConfiguratedValueToInputUsingAnswers\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLAField.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLATTOFieldConfig\\:\\:jsonDeserialize\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#',

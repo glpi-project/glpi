@@ -1034,6 +1034,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/projectteam.form.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Call to method initiate\\(\\) on an unknown class Glpi\\\\Security\\\\ReAuth\\\\ReAuthManager\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/reauth_nfo.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Instantiated class Glpi\\\\Security\\\\ReAuth\\\\ReAuthManager not found\\.$#',
+	'identifier' => 'class.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/front/reauth_nfo.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'plugin\' on non\\-empty\\-array\\|true\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
@@ -2278,12 +2290,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getHeaderByName\\(\\) on HTMLTableRow\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDevice.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method CommonDevice\\:\\:displayFullPageForItem\\(\\) has parameter \\$menus with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDevice.php',
 ];
@@ -6950,24 +6956,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/ContentTemplates/Parameters/UserParameters.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/AbstractDocumentUploadController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/AbstractDocumentUploadController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/AbstractDocumentUploadController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$dashboard_key of class Glpi\\\\Dashboard\\\\Grid constructor expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -7212,330 +7200,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/ItemType/Form/SavedSearchFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/AddCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/AddCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/AddCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/DeleteArticleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/DeleteArticleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/DeleteArticleController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/DeleteTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/DeleteTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/DeleteTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/GetTranslationContentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/GetTranslationContentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/GetTranslationContentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/KnowbaseFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/KnowbaseFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/KnowbaseFormController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/KnowbaseItemController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/KnowbaseItemController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/KnowbaseItemController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/LinkDocumentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/LinkDocumentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/LinkDocumentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/LinkItemController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/LinkItemController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/LinkItemController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/PurgeCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/PurgeCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/PurgeCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/SaveTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/SaveTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/SaveTranslationController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/ToggleFavoriteController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/ToggleFavoriteController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/ToggleFavoriteController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/ToggleFieldController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/ToggleFieldController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/ToggleFieldController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UnlinkDocumentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UnlinkDocumentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UnlinkDocumentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UnlinkItemController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UnlinkItemController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UnlinkItemController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateServiceCatalogController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateServiceCatalogController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateServiceCatalogController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateVisibilityDatesController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateVisibilityDatesController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateVisibilityDatesController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UploadInlineImageController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between array\\{id\\: int\\} and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UploadInlineImageController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between non\\-empty\\-array\\<mixed\\> and null will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UploadInlineImageController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\$status of class Symfony\\\\Component\\\\HttpFoundation\\\\Response constructor expects int, bool\\|int given\\.$#',
@@ -8386,18 +8050,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getSLMID\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLMFieldStrategy\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLAField.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLAField\\:\\:applyConfiguratedValueToInputUsingAnswers\\(\\) has parameter \\$input with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLAField.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLAField\\:\\:applyConfiguratedValueToInputUsingAnswers\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLAField.php',
 ];
@@ -14168,12 +13820,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/LevelAgreement.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method delete\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreement.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method find\\(\\) on LevelAgreementLevel\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -14205,12 +13851,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method LevelAgreement\\:\\:getLevelClass\\(\\) should return class\\-string\\<LevelAgreementLevel\\> but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreement.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method LevelAgreement\\:\\:getLevelTicketClass\\(\\) should return class\\-string\\<CommonDBTM\\> but returns string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/LevelAgreement.php',

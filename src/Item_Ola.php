@@ -131,7 +131,7 @@ class Item_Ola extends CommonDBRelation
             throw new RuntimeException('due_time is not allowed in the input. Values is computed.');
         }
 
-        // get the related ola (cannot use getConnexityItem() ou getOnePeer() because it is not in the database yet)
+        // get the related ola (cannot use getConnexityItem() or getOnePeer() because it is not in the database yet)
         $_ola = new OLA();
         if (!$_ola->getFromDB($input[static::$items_id_2])) {
             throw new RuntimeException('OLA not found #' . $input[static::$items_id_2]);

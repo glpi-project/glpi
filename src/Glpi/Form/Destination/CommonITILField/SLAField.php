@@ -56,6 +56,9 @@ abstract class SLAField extends SLMField
 
         // Compute value according to strategy
         $slm_id = $strategy->getSLMID($config);
+        if (is_null($slm_id)) {
+            return $input;
+        }
 
         // Do not edit input if invalid value was found
         $slm = $this->getSLM();
