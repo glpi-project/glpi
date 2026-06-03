@@ -57,7 +57,6 @@ class NetworkCard extends Device
             'name'          => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'macaddr'       => 'mac',
-            'model'         => 'devicenetworkcardmodels_id',
         ];
         $mapping_ports = [
             'description' => 'name',
@@ -88,14 +87,6 @@ class NetworkCard extends Device
             foreach ($mapping as $origin => $dest) {
                 if (property_exists($val, $origin)) {
                     $val->$dest = $val->$origin;
-                }
-            }
-
-            if (!property_exists($val, 'designation') || empty($val->designation)) {
-                if (property_exists($val, 'model') && !empty($val->model)) {
-                    $val->designation = $val->model;
-                } elseif (property_exists($val, 'description') && !empty($val->description)) {
-                    $val->designation = $val->description;
                 }
             }
 
