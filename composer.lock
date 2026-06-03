@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7a2fb1db681bd0a53235e89132cfc384",
+    "content-hash": "2cab77079367c60f60b850285ab90b27",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -9006,16 +9006,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-barcode",
-            "version": "2.4.39",
+            "version": "2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-barcode.git",
-                "reference": "11886fb5a44ec0f6e77302439e9ebf55034383fa"
+                "reference": "4e53047a4ba4ed592ae677b3729ce9bfeae1cfbb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/11886fb5a44ec0f6e77302439e9ebf55034383fa",
-                "reference": "11886fb5a44ec0f6e77302439e9ebf55034383fa",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/4e53047a4ba4ed592ae677b3729ce9bfeae1cfbb",
+                "reference": "4e53047a4ba4ed592ae677b3729ce9bfeae1cfbb",
                 "shasum": ""
             },
             "require": {
@@ -9023,15 +9023,13 @@
                 "ext-date": "*",
                 "ext-gd": "*",
                 "ext-pcre": "*",
-                "php": ">=8.1",
-                "tecnickcom/tc-lib-color": "^2.5"
+                "php": ">=8.2",
+                "tecnickcom/tc-lib-color": "^2.7"
             },
             "require-dev": {
                 "pdepend/pdepend": "^2.16",
                 "phpcompatibility/php-compatibility": "^10.0.0@dev",
-                "phpmd/phpmd": "^2.15",
-                "phpunit/phpunit": "^13.1 || ^12.5 || ^11.5 || ^10.5",
-                "squizlabs/php_codesniffer": "^4.0"
+                "phpunit/phpunit": "^13.1 || ^12.5 || ^11.5"
             },
             "type": "library",
             "autoload": {
@@ -9103,7 +9101,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-05-01T19:04:12+00:00"
+            "time": "2026-05-22T07:09:18+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-color",

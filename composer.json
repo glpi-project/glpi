@@ -98,7 +98,7 @@
         "symfony/serializer": "^7.4",
         "symfony/twig-bundle": "^7.4",
         "symfony/ux-twig-component": "^2.35",
-        "tecnickcom/tc-lib-barcode": "^2.4",
+        "tecnickcom/tc-lib-barcode": "^2.7",
         "tecnickcom/tcpdf": "^6.11",
         "thecodingmachine/safe": "^3.4",
         "thenetworg/oauth2-azure": "^2.2",
