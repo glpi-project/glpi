@@ -50,6 +50,7 @@ class NotificationTargetProjectTask extends NotificationTarget
         $events = ['new'               => __('New project task'),
             'update'            => __('Update of a project task'),
             'delete'            => __('Deletion of a project task'),
+            'planningrecall'    => _n('Planning reminder', 'Planning reminders', 0),
         ];
         asort($events);
         return $events;

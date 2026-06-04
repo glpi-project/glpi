@@ -195,6 +195,23 @@
         }
     ) }}
 
+    {% if id and not item.fields.is_milestone %}
+        {% set recall_dropdown = call('PlanningRecall::dropdown', [{
+            'itemtype': 'ProjectTask',
+            'items_id': id,
+            'users_id': session('glpiID'),
+            'field': 'plan_end_date',
+            'display': false,
+        }]) %}
+        {{ fields.htmlField(
+            '',
+            recall_dropdown,
+            _x('Planning', 'Reminder'),
+        ) }}
+
+        {{ fields.nullField() }}
+    {% endif %}
+
     {{ fields.dropdownArrayField(
         'planned_duration',
         item.fields.planned_duration,

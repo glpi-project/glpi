@@ -263,14 +263,14 @@ class PlanningRecall extends CommonDBChild
      *
      * Mandatory options : itemtype, items_id
      *
-     * @param array{itemtype?: string, items_id?: int, users_id?: int, value?: mixed, field?: string, rand?: int} $options array of possible options:
+     * @param array{itemtype?: string, items_id?: int, users_id?: int, value?: mixed, field?: string, rand?: int, display?: bool} $options array of possible options:
      *    - itemtype : string itemtype
      *    - items_id : integer id of the item
      *    - users_id : integer id of the user (if not set used login user)
      *    - value    : integer preselected value for before_time
      *    - field    : string  field used as time mark (default begin)
      *
-     * @return void|false print out an HTML select box or return false if mandatory fields are not ok
+     * @return string|false|null print out an HTML select box, return the HTML string if display is false, or return false if mandatory fields are not ok
      **/
     public static function dropdown($options = [])
     {
@@ -281,6 +281,7 @@ class PlanningRecall extends CommonDBChild
         $p['value']    = Entity::CONFIG_NEVER;
         $p['field']    = 'begin';
         $p['rand']     = mt_rand();
+        $p['display']  = true;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -323,17 +324,24 @@ class PlanningRecall extends CommonDBChild
 
         ksort($possible_values);
 
-        Dropdown::showFromArray('_planningrecall[before_time]', $possible_values, [
-            'value' => $p['value'],
-            'rand'  => $p['rand'],
+        $output = Dropdown::showFromArray('_planningrecall[before_time]', $possible_values, [
+            'value'   => $p['value'],
+            'rand'    => $p['rand'],
+            'display' => false,
         ]);
         // language=Twig
-        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+        $output .= TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <input type="hidden" name="_planningrecall[itemtype]" value="{{ itemtype }}">
             <input type="hidden" name="_planningrecall[items_id]" value="{{ items_id }}">
             <input type="hidden" name="_planningrecall[users_id]" value="{{ users_id }}">
             <input type="hidden" name="_planningrecall[field]" value="{{ field }}">
 TWIG, $p);
+
+        if ($p['display']) {
+            echo $output;
+            return null;
+        }
+        return $output;
     }
 
     /**
