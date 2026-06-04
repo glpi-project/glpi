@@ -38,7 +38,6 @@ namespace Glpi\Controller\Security;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\ReauthRedirectException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
@@ -89,11 +88,12 @@ class ReAuthController extends AbstractController
         if ($this->reAuthManager->verify((string) $user_input)) {
             $this->reAuthManager->authenticate();
 
-            // catched in RedirectPostExceptionListener
-            throw new ReauthRedirectException(
-                $this->reAuthManager->getTargetURL(),
-                $this->reAuthManager->getRedirectData(),
-                $this->reAuthManager->getRedirectMethod(),
+            return new Response(
+                TemplateRenderer::getInstance()->render('pages/redirect_post.html.twig', [
+                    'http_method' => $this->reAuthManager->getRedirectMethod(),
+                    'url'         => $this->reAuthManager->getTargetURL(),
+                    'post_data'   => $this->reAuthManager->getRedirectData(),
+                ])
             );
         }
 
