@@ -10094,7 +10094,9 @@ CREATE TABLE `glpi_oauthapplications` (
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),
   KEY `date_creation` (`date_creation`),
-  KEY `date_mod` (`date_mod`)
+  KEY `date_mod` (`date_mod`),
+  KEY `client_id` (`client_id`),
+  KEY `tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_validatorsubstitutes`;

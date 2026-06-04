@@ -58,7 +58,9 @@ if (!$DB->tableExists('glpi_oauthapplications')) {
       KEY `name` (`name`),
       KEY `is_active` (`is_active`),
       KEY `date_creation` (`date_creation`),
-      KEY `date_mod` (`date_mod`)
+      KEY `date_mod` (`date_mod`),
+      KEY `client_id` (`client_id`),
+      KEY `tenant_id` (`tenant_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC";
     $DB->doQuery($query);
 }

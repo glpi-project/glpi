@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use GLPIKey;
 use Glpi\Tests\DbTestCase;
+use GLPIKey;
 use MailCollector;
 use OauthApplication;
 
