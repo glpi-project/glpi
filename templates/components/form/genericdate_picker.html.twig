@@ -52,9 +52,9 @@
 <script>
 $(function() {
     function buildFp(hasTime, defaultDate) {
-        const el = document.getElementById('showdate{{ rand }}');
+        const el = document.getElementById('showdate{{ rand|e('js') }}');
         if (el._flatpickr) el._flatpickr.destroy();
-        return $('#showdate{{ rand }}').flatpickr({
+        return $(el).flatpickr({
             defaultDate:     defaultDate,
             altInput:        true,
             altFormat:       hasTime ? '{{ alt_fmt_dt|e('js') }}' : '{{ alt_fmt_date|e('js') }}',
@@ -76,7 +76,7 @@ $(function() {
 
     let fp = buildFp({{ has_time ? 'true' : 'false' }}, {{ initial_value|json_encode|raw }});
 
-    document.getElementById('time_toggle_{{ rand }}').addEventListener('change', function() {
+    document.getElementById('time_toggle_{{ rand|e('js') }}').addEventListener('change', function() {
         fp = buildFp(this.checked, fp.selectedDates[0]);
     });
 });
