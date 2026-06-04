@@ -1,0 +1,83 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div class="asset">
+    {{ include('components/form/header.html.twig') }}
+
+    {% set params        = params ?? [] %}
+    {% set field_options = {} %}
+
+    <div class="card-body d-flex flex-wrap">
+        <div class="col-12 col-xxl-12 flex-column">
+            <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
+                <div class="row flex-row align-items-start flex-grow-1">
+                    <div class="row flex-row">
+                        {% block form_fields %}
+                            {{ fields.textField('name', item.fields['name'], __('Name')) }}
+
+                            {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
+
+                            {{ fields.dropdownArrayField(
+                                'provider',
+                                item.fields['provider'],
+                                providers,
+                                __('Provider')
+                            ) }}
+
+                            {{ fields.textField('client_id', item.fields['client_id'], __('Client ID')) }}
+
+                            {{ fields.passwordField('client_secret', item.fields['client_secret']|decrypt, __('Client Secret'), {
+                                is_disclosable: true,
+                                helper: item.isNewItem() ? '' : __('Leave empty to keep the current secret'),
+                            }) }}
+
+                            {{ fields.textField('tenant_id', item.fields['tenant_id'], __('Tenant ID'), {
+                                helper: __('Required for Microsoft Azure (directory/tenant ID)'),
+                            }) }}
+
+                            {{ fields.textareaField(
+                                'comment',
+                                item.fields['comment'],
+                                _n('Comment', 'Comments', get_plural_number()),
+                                field_options
+                            ) }}
+                        {% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{ include('components/form/buttons.html.twig') }}
+</div>
