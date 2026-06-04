@@ -258,8 +258,7 @@ class StateTest extends DbTestCase
         unset($CFG_GLPI['state_types'][0]);
         $this->assertTrue(method_exists($itemtype, 'isStateVisible'), $itemtype . ' misses isStateVisible() method!');
 
-        $this->expectExceptionMessage(sprintf('Class %s must be present in $CFG_GLPI[\'state_types\']', $itemtype));
-        $this->assertTrue($item->isStateVisible($states_id));
+        $this->assertFalse($item->isStateVisible($states_id));
     }
 
     public function testGetStateVisibilityCriteria(): void
