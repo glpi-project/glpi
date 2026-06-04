@@ -380,7 +380,7 @@ TWIG, $twig_params);
             'class' => 'table table-borderless',
             'header_rows' => [
                 [
-                    ['content' => __('Tag')],
+                    ['content' => _x('notification', 'Tag')],
                     ['content' => __('Label')],
                     ['content' => _n('Event', 'Events', 1)],
                     ['content' => _n('Type', 'Types', 1)],

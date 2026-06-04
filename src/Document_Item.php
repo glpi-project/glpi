@@ -652,7 +652,7 @@ TWIG, $twig_params);
             'link'      => __('Web link'),
             'headings'  => __('Heading'),
             'mime'      => __('MIME type'),
-            'tag'       => __('Tag'),
+            'tag'       => _x('document', 'Tag'),
             'assocdate' => _n('Date', 'Dates', 1),
         ];
 
