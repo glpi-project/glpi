@@ -32,56 +32,76 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * @var DBmysql $DB
  * @var Migration $migration
  */
 
-$cron = new CronTask();
-if (!$cron->getFromDBByCrit(['itemtype' => 'ProjectTask', 'name' => 'projecttasksreminder'])) {
-    CronTask::register(
-        'ProjectTask',
-        'projecttasksreminder',
-        HOUR_TIMESTAMP,
+if (!countElementsInTable('glpi_crontasks', ['itemtype' => 'ProjectTask', 'name' => 'projecttasksreminder'])) {
+    $DB->insert(
+        'glpi_crontasks',
         [
-            'comment' => '',
-            'param'   => 3,
-            'mode'    => CronTask::MODE_INTERNAL,
+            'itemtype'      => 'ProjectTask',
+            'name'          => 'projecttasksreminder',
+            'frequency'     => HOUR_TIMESTAMP,
+            'param'         => 3,
+            'state'         => CronTask::STATE_WAITING,
+            'mode'          => CronTask::MODE_INTERNAL,
+            'allowmode'     => CronTask::MODE_INTERNAL | CronTask::MODE_EXTERNAL,
+            'logs_lifetime' => 30,
+            'lastrun'       => null,
+            'comment'       => '',
+            'hourmin'       => 0,
+            'hourmax'       => 24,
         ]
     );
 }
 
-$notification = new Notification();
-if (!countElementsInTable(Notification::getTable(), ['itemtype' => 'ProjectTask', 'event' => 'planningrecall'])) {
-    $notifications_id = $notification->add([
-        'name'         => 'Project Task Planning Reminder',
-        'itemtype'     => 'ProjectTask',
-        'event'        => 'planningrecall',
-        'is_recursive' => 1,
-        'is_active'    => 1,
-    ]);
+if (!countElementsInTable('glpi_notifications', ['itemtype' => 'ProjectTask', 'event' => 'planningrecall'])) {
+    $DB->insert(
+        'glpi_notifications',
+        [
+            'name'          => 'Project Task Planning Reminder',
+            'entities_id'   => 0,
+            'itemtype'      => 'ProjectTask',
+            'event'         => 'planningrecall',
+            'comment'       => '',
+            'is_recursive'  => 1,
+            'is_active'     => 1,
+            'date_creation' => new QueryExpression('NOW()'),
+            'date_mod'      => new QueryExpression('NOW()'),
+        ]
+    );
+    $notifications_id = $DB->insertId();
 
-    if ($notifications_id) {
-        $template = new NotificationTemplate();
-        $template->getFromDBByCrit(['itemtype' => 'ProjectTask']);
-        $notificationtemplates_id = $template->fields['id'] ?? 0;
+    $template = $DB->request([
+        'SELECT' => ['id'],
+        'FROM'   => 'glpi_notificationtemplates',
+        'WHERE'  => ['itemtype' => 'ProjectTask'],
+        'LIMIT'  => 1,
+    ])->current();
 
-        if ($notificationtemplates_id) {
-            $notif_template = new Notification_NotificationTemplate();
-            $notif_template->add([
+    if ($template) {
+        $DB->insert(
+            'glpi_notifications_notificationtemplates',
+            [
                 'notifications_id'         => $notifications_id,
-                'mode'                     => 'mailing',
-                'notificationtemplates_id' => $notificationtemplates_id,
-            ]);
-        }
+                'mode'                     => Notification_NotificationTemplate::MODE_MAIL,
+                'notificationtemplates_id' => $template['id'],
+            ]
+        );
+    }
 
-        $target = new NotificationTarget();
-        foreach ([Notification::TEAM_USER, Notification::AUTHOR, Notification::TEAM_GROUP] as $items_id) {
-            $target->add([
+    foreach ([Notification::TEAM_USER, Notification::AUTHOR, Notification::TEAM_GROUP] as $items_id) {
+        $DB->insert(
+            'glpi_notificationtargets',
+            [
                 'items_id'         => $items_id,
                 'type'             => Notification::USER_TYPE,
                 'notifications_id' => $notifications_id,
-            ]);
-        }
+            ]
+        );
     }
 }
