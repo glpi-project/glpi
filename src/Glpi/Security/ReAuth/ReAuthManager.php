@@ -135,16 +135,6 @@ final class ReAuthManager
         return $_SESSION['glpi_reauth_httpmethod'] ?? 'GET';
     }
 
-    public function setForcedRequestedURL(string $url): void
-    {
-        $this->forcedRequestedURL = $url; // @todo check que c'est une url interne
-    }
-
-    public function setCancelURL(string $url): void
-    {
-        $_SESSION['glpi_reauth_cancel_url'] = $url;
-    }
-
     /**
      * returns true if at least one of the item_types require reauth
      *

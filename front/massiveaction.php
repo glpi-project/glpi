@@ -50,17 +50,19 @@ Html::header_nocache();
 try {
     $ma = new MassiveAction($_POST, $_GET, 'process');
     [$referer, $item_types] = get_item_type_redirection_path_from_post();
+    // Store final url
+    // current requested page is the massive action processing
+    // but redirection should be to the page that triggered the massive action process
+    // we can determine the url to reach after massive action processed, only before it's done
+    // -> store it in session, then reuse it on third pass on these file
+    if(!empty($item_types)) {
+        $_SESSION['glpi_reauth_massiveaction_redirect'] = $referer;
+    }
+    $ma->setRedirect($_SESSION['glpi_reauth_massiveaction_redirect']);
+
     $reauth_manager = new ReAuthManager();
     if ($reauth_manager->atLeastOneitemTypesRequiresReauthentication($item_types)) {
-        // update reauth redirection
-        // current page is the massive action processing
-        // but redirection should be to the page that triggered the massive action process
-        $reauth_manager->setCancelURL($referer);
-        $reauth_manager->setForcedRequestedURL($referer);
-
         $reauth_manager->checkReAuthenticationOrRedirect();
-
-        $ma->setRedirect($referer);
     }
 }
 // process redirect exceptions
