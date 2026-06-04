@@ -61,16 +61,28 @@ use function Safe\preg_replace;
  *      in: string,
  *      description: string,
  *      required: true|false,
- *      schema?: mixed
+ *      schema: mixed
  * }
+ * @phpstan-type ParameterRef array{"$ref": string}
  * @phpstan-type PathSchema array{
  *      tags: string[],
  *      responses: array<string|int, ResponseSchema>,
  *      description?: string,
- *      parameters: PathParameterSchema[],
+ *      parameters: array<PathParameterSchema | ParameterRef>,
  *      requestBody?: RequestBodySchema,
  * }
  * @phpstan-type RequestBodySchema array{content: array{"application/json": array{schema: SchemaArray}}}
+ * @phpstan-type OpenAPISchema array{
+ *     openapi: string,
+ *     info: OpenAPIInfo,
+ *     servers: array<array{url: string, description: string}>,
+ *     components: array{
+ *         securitySchemes: array<string, SecuritySchemaComponent>,
+ *         schemas: array<string, mixed>,
+ *     parameters: array<string, mixed>
+ *     },
+ *     paths: array<string, array<string, PathSchema>>
+ * }
  */
 final class OpenAPIGenerator
 {
@@ -84,6 +96,11 @@ final class OpenAPIGenerator
      * @var array<string, array<string, mixed>>
      */
     private static array $component_schemas_cache = [];
+
+    /**
+     * @var OpenAPISchema
+     */
+    private array $schema;
 
     public static function clearComponentSchemasCache(): void
     {
@@ -104,6 +121,13 @@ final class OpenAPIGenerator
         ];
     }
 
+    /**
+     * @template T of OpenAPISchema
+     * @param T $schema
+     * @param string|null $parent_key
+     * @param array<string, mixed>|null $parent_schema
+     * @return T
+     */
     private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null): array
     {
         $to_keep = $this->getPublicVendorExtensions();
@@ -116,7 +140,7 @@ final class OpenAPIGenerator
                 unset($schema[$key]);
                 continue;
             }
-            if ($parent_key === 'properties') {
+            if ($parent_key === 'properties' && $parent_schema !== null) {
                 if (!array_key_exists('x-full-schema', $parent_schema) && $key === 'id') {
                     // Implicitly set the id property as read-only but not for partials
                     $value['readOnly'] = true;
@@ -125,9 +149,11 @@ final class OpenAPIGenerator
             // If the value is an array
             if (is_array($value)) {
                 // Clean the value
+                /** @phpstan-var T $value */
                 $schema[$key] = $this->cleanVendorExtensions($value, $key, $schema);
             }
         }
+        /** @phpstan-var T $schema */
         return $schema;
     }
 
@@ -161,6 +187,11 @@ EOT;
         ];
     }
 
+    /**
+     * @param string $api_version
+     * @return array<string, mixed>
+     * @throws \ReflectionException
+     */
     public static function getComponentSchemas(string $api_version): array
     {
         if (isset(self::$component_schemas_cache[$api_version])) {
@@ -278,14 +309,66 @@ EOT;
     }
 
     /**
-     * @return array{openapi: string, info: OpenAPIInfo, servers: array<array{url: string, description: string}>, components: array{securitySchemes: array<string, SecuritySchemaComponent>}, paths: array<string, array<string, PathSchema>>}
+     * @return array<string, array{name: string, in: string, description: string, schema: array<string, mixed>, example?: mixed, required?: bool}>
+     */
+    public static function getParameterComponents(): array
+    {
+        return [
+            'filter' => [
+                'name' => 'filter',
+                'in' => Doc\Parameter::LOCATION_QUERY,
+                'description' => 'RSQL query string',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                ],
+            ],
+            'start' => [
+                'name' => 'start',
+                'in' => Doc\Parameter::LOCATION_QUERY,
+                'description' => 'The first item to return',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'default' => 0,
+                    'minimum' => 0,
+                ],
+            ],
+            'limit' => [
+                'name' => 'limit',
+                'in' => Doc\Parameter::LOCATION_QUERY,
+                'description' => 'The maximum number of items to return',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'default' => 100,
+                    'minimum' => 0,
+                ],
+            ],
+            'sort' => [
+                'name' => 'sort',
+                'in' => Doc\Parameter::LOCATION_QUERY,
+                'description' => 'One or more properties to sort by in the form of property:direction where property is the full property name in dot notation and direction is either asc or desc. If no direction is provided, asc is assumed. Multiple sorts can be provided by separating them with a comma.',
+                'schema' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return OpenAPISchema
      */
     public function getSchema(): array
     {
         global $CFG_GLPI;
 
+        if (isset($this->schema)) {
+            return $this->schema;
+        }
+
         $component_schemas = self::getComponentSchemas($this->api_version);
         ksort($component_schemas);
+        /** @phpstan-var OpenAPISchema $schema */
         $schema = [
             'openapi' => self::OPENAPI_VERSION,
             'info' => $this->getInfo(),
@@ -298,6 +381,7 @@ EOT;
             'components' => [
                 'securitySchemes' => $this->getSecuritySchemeComponents(),
                 'schemas' => $component_schemas,
+                'parameters' => self::getParameterComponents(),
             ],
         ];
 
@@ -319,11 +403,19 @@ EOT;
                         } else {
                             // Multiple paths with the same method (probably different parameter patterns)
                             foreach ($method_info['parameters'] ?? [] as $pk => $param) {
+                                if (array_key_exists('$ref', $param)) {
+                                    continue;
+                                }
                                 if (array_key_exists('pattern', $param['schema'])) {
                                     foreach ($paths[$new_path][$method]['parameters'] as $existing_pk => $existing_param) {
+                                        if (!isset($existing_param['name'])) {
+                                            // References don't have placeholders
+                                            continue;
+                                        }
                                         if (
                                             ($existing_param['name'] === $param['name'])
                                             && isset($existing_param['schema']['pattern'])
+                                            && isset($paths[$new_path][$method]['parameters'][$existing_pk]['schema'])
                                             && (
                                                 str_contains($existing_param['schema']['pattern'], '|')
                                                 || str_contains($param['schema']['pattern'], '|')
@@ -342,10 +434,13 @@ EOT;
 
         $schema['paths'] = $this->expandGenericPaths($paths);
 
+        /** @phpstan-var OpenAPISchema $schema */
         // Clean vendor extensions
         if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {
             $schema = $this->cleanVendorExtensions($schema);
         }
+
+        $this->schema = $schema;
 
         return $schema;
     }
@@ -385,6 +480,9 @@ EOT;
     {
         $new_parameters = $parameters;
         foreach ($new_parameters as &$parameter) {
+            if ($parameter instanceof Doc\ParameterReference) {
+                $parameter['$ref'] = $parameter->getComponentPath();
+            }
             $is_array = isset($parameter['schema']['items']['$ref']);
             if (!$is_array && !isset($parameter['schema']['$ref'])) {
                 continue;
@@ -498,7 +596,7 @@ EOT;
                 $new_url = str_replace("{{$placeholder}}", $value, $new_url);
                 // Remove the itemtype path parameter now that it is a static value
                 foreach ($temp_expanded['parameters'] as $param_key => $param) {
-                    if ($param['name'] === $placeholder) {
+                    if (isset($param['name']) && $param['name'] === $placeholder) {
                         unset($temp_expanded['parameters'][$param_key]);
                         break;
                     }
@@ -595,7 +693,20 @@ EOT;
         if ($route_doc === null) {
             return null;
         }
-        $request_params = array_filter($route_doc->getParameters(), static fn(Doc\Parameter $param) => $param->getLocation() === Doc\Parameter::LOCATION_BODY);
+        $param_refs = self::getParameterComponents();
+        $request_params = [];
+
+        foreach ($route_doc->getParameters() as $param) {
+            if ($param instanceof Doc\ParameterReference) {
+                $param_name = $param->getName();
+                if (isset($param_refs[$param_name]) && $param_refs[$param_name]['in'] === Doc\Parameter::LOCATION_BODY) {
+                    $request_params[] = $param;
+                }
+            } elseif ($param->getLocation() === Doc\Parameter::LOCATION_BODY) {
+                $request_params[] = $param;
+            }
+        }
+
         if (count($request_params) === 0) {
             return null;
         }
@@ -708,6 +819,7 @@ EOT;
     {
         $path_schemas = [];
         $route_methods = $route_path->getRouteMethods();
+        $param_refs = self::getParameterComponents();
 
         foreach ($route_methods as $route_method) {
             $route_doc = $route_path->getRouteDoc($route_method);
@@ -801,10 +913,14 @@ EOT;
                 $route_params = $route_doc->getParameters();
                 if (count($route_params) > 0) {
                     foreach ($route_params as $route_param) {
-                        $location = $route_param->getLocation();
-                        if ($location !== Doc\Parameter::LOCATION_BODY) {
-                            if ($location !== Doc\Parameter::LOCATION_PATH || (array_key_exists($route_param->getName(), $requirements) && str_contains($route_path->getRoutePath(), '{' . $route_param->getName() . '}'))) {
-                                $path_schema['parameters'][$route_param->getName()] = $this->getPathParameterSchema($route_param);
+                        if ($route_param instanceof Doc\ParameterReference && isset($param_refs[$route_param->getName()])) {
+                            $path_schema['parameters'][$route_param->getName()] = ['$ref' => $route_param->getComponentPath()];
+                        } else {
+                            $location = $route_param->getLocation();
+                            if ($location !== Doc\Parameter::LOCATION_BODY) {
+                                if ($location !== Doc\Parameter::LOCATION_PATH || (array_key_exists($route_param->getName(), $requirements) && str_contains($route_path->getRoutePath(), '{' . $route_param->getName() . '}'))) {
+                                    $path_schema['parameters'][$route_param->getName()] = $this->getPathParameterSchema($route_param);
+                                }
                             }
                         }
                     }
@@ -923,5 +1039,91 @@ EOT;
         return [
             $route_path->getRoutePath() => $path_schemas,
         ];
+    }
+
+    /**
+     * Creates a simplified snapshot of the OpenAPI schema paths to check for potential version contract breaks.
+     * @return array<string, mixed>
+     */
+    public function generatePathSnapshot(): array
+    {
+        $schema = $this->getSchema();
+
+        $paths = [];
+        $methods = ['get', 'post', 'put', 'patch', 'delete'];
+        foreach ($schema['paths'] as $path => &$path_item) {
+            foreach ($methods as $method) {
+                if (!isset($path_item[$method])) {
+                    continue;
+                }
+                // Remove description and tags as they do not affect the contract
+                unset($path_item[$method]['description'], $path_item[$method]['tags']);
+                // Remove auto-generated responses if they only have a description as they are added by the framework and do not affect the contract if not customized
+                foreach (['204', '400', '401', '403', '404', '500'] as $status_code) {
+                    if (
+                        isset($path_item[$method]['responses'][$status_code]['description'])
+                        && count($path_item[$method]['responses'][$status_code]) === 1
+                    ) {
+                        unset($path_item[$method]['responses'][$status_code]);
+                    }
+                }
+                // For 201 responses, we can remove the Location header
+                unset($path_item[$method]['responses']['201']['headers']['Location']);
+                // All responses can have the description removed as it does not affect the contract
+                if (isset($path_item[$method]['responses'])) {
+                    foreach ($path_item[$method]['responses'] as &$response) {
+                        unset($response['description']);
+                    }
+                }
+
+                // Remove certain generic headers that do not affect the contract on their own
+                if (isset($path_item[$method]['parameters'])) {
+                    $path_item[$method]['parameters'] = array_filter(
+                        $path_item[$method]['parameters'],
+                        static function ($parameter) {
+                            if (!isset($parameter['name'])) {
+                                return true;
+                            }
+                            return !in_array($parameter['name'], ['Accept-Language', 'GLPI-Entity', 'GLPI-Profile', 'GLPI-Entity-Recursive'], true);
+                        }
+                    );
+                }
+                if ($method === 'delete') {
+                    // The force parameter is generic and can be removed
+                    $path_item[$method]['parameters'] = array_filter(
+                        $path_item[$method]['parameters'] ?? [],
+                        static function ($parameter) {
+                            if (!isset($parameter['name'])) {
+                                return true;
+                            }
+                            return $parameter['name'] !== 'force';
+                        }
+                    );
+                }
+            }
+            $paths[$path] = $path_item;
+        }
+
+        return $paths;
+    }
+
+    /**
+     * Creates a simplified snapshot of the OpenAPI schema components to check for potential version contract breaks.
+     * @return array<string, mixed>
+     */
+    public function generateComponentsSnapshot(): array
+    {
+        $schema = $this->getSchema();
+
+        $schema_components = [];
+        foreach ($schema['components']['schemas'] as $name => &$component_schema) {
+            unset($component_schema['description']);
+            foreach (array_keys($component_schema['properties'] ?? []) as $property_name) {
+                unset($component_schema['properties'][$property_name]['description']);
+            }
+            $schema_components[$name] = $component_schema;
+        }
+
+        return $schema_components;
     }
 }
