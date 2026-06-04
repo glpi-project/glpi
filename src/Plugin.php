@@ -1133,6 +1133,7 @@ class Plugin extends CommonDBTM
             self::load($this->fields['directory'], true); // Force load in case plugin is not active
             FieldUnicity::deleteForItemtype($this->fields['directory']);
             Link_Itemtype::deleteForItemtype($this->fields['directory']);
+            Tag_Itemtype::deleteForItemtype($this->fields['directory']);
 
             // Run the Plugin's Uninstall Function first
             $function = 'plugin_' . $this->fields['directory'] . '_uninstall';

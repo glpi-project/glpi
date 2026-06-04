@@ -5804,6 +5804,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'tag',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'device',
                 'rights' => self::RIGHT_NONE,
             ], [
@@ -6085,6 +6089,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'dropdown',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'tag',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
@@ -6396,6 +6404,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'tag',
+                'rights' => ALLSTANDARDRIGHT,
+            ], [
+                'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'device',
                 'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
@@ -6703,6 +6715,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'dropdown',
                 'rights' => READ | UPDATE | CREATE | PURGE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'tag',
+                'rights' => ALLSTANDARDRIGHT,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'device',
@@ -7016,6 +7032,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'tag',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'device',
                 'rights' => self::RIGHT_NONE,
             ], [
@@ -7307,6 +7327,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'dropdown',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'tag',
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
@@ -7605,6 +7629,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'tag',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'device',
                 'rights' => self::RIGHT_NONE,
             ], [
@@ -7878,6 +7906,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'dropdown',
                 'rights' => READ,
+            ], [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'tag',
+                'rights' => self::RIGHT_NONE,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'entity',

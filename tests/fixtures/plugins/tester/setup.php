@@ -48,6 +48,7 @@ use GlpiPlugin\Tester\Form\QuestionTypeColor;
 use GlpiPlugin\Tester\Form\ExternalIDField;
 use GlpiPlugin\Tester\Form\TesterCategory;
 use GlpiPlugin\Tester\MyPsr4Class;
+use GlpiPlugin\Tester\Computer;
 
 function plugin_version_tester()
 {
@@ -86,7 +87,7 @@ function plugin_tester_getDropdown(): array
 
 function plugin_init_tester(): void
 {
-    global $PLUGIN_HOOKS;
+    global $CFG_GLPI, $PLUGIN_HOOKS;
     $plugin = new Plugin();
     if (!$plugin->isActivated('tester')) {
         return;
@@ -125,6 +126,8 @@ function plugin_init_tester(): void
     $service_catalog_manager->registerPluginProvider(new ComputerProvider());
 
     $PLUGIN_HOOKS['menu_toadd']['tester'] = ['management' => MyPsr4Class::class];
+
+    $CFG_GLPI['taggable_types'][] = Computer::class;
 }
 
 function plugin_tester_boot()

@@ -1133,6 +1133,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 $fn_get_rights(LineOperator::class, 'central'),
                                 $fn_get_rights(OAuthClient::class, 'central'),
                                 $fn_get_rights(DefaultFilter::class, 'central'),
+                                $fn_get_rights(Tag::class, 'central'),
                             ],
                         ],
                     ],
