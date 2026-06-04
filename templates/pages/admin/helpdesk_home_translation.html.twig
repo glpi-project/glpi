@@ -99,7 +99,7 @@
             {% if handler.getValue() is empty %}
                 {% set default_value = '<span class="text-muted fst-italic">' ~ __('No default value') ~ '</span>' %}
             {% else %}
-                {% set default_value = handler.isRichText() ? default_value|safe_html : default_value|e %}
+                {% set default_value = handler.isRichText() ? '<div class="rich_text_container rich_text_container_translation">' ~ default_value|safe_html ~ '</div>' : default_value|e %}
             {% endif %}
             {% set group_entries = group_entries|merge([{
                 'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
