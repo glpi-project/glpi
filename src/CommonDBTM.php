@@ -3047,9 +3047,8 @@ class CommonDBTM extends CommonGLPI
         $this_belongs_to_current_user = $this->isPrivate() && ($this->fields['users_id'] === Session::getLoginUserID());
         switch ($right) {
             case READ:
-                // no reauth for READ right
                 $allowed = $this_belongs_to_current_user || (static::canView() && $this->canViewItem());
-                $reauth_needed = false;
+                [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
                 break;
 
             case UPDATE:
