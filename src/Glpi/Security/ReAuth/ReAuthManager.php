@@ -118,7 +118,9 @@ final class ReAuthManager
 
     public function getCancelURL(): string
     {
-        return $_SESSION['glpi_reauth_cancel_url'] ?? $this->getRedirectURL();
+        global $CFG_GLPI;
+
+        return $_SESSION['glpi_reauth_cancel_url'] ?? $CFG_GLPI["root_doc"];
     }
 
     /** @return array<string, string> */
