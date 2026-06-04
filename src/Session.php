@@ -241,6 +241,7 @@ class Session
                 if (!Session::getCurrentInterface()) {
                     $auth->auth_succeded = false;
                     $auth->addToError(__("You don't have right to connect"));
+                    return;
                 }
 
                 $session_recorded = SessionTracker::recordNewSession($auth);
