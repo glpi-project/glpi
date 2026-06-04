@@ -951,6 +951,7 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
+
         if (method_exists($this, 'isWirelessController') && $this->isWirelessController()) {
             if (property_exists($val, 'firmware') && $val->firmware instanceof stdClass) {
                 $fw = new Firmware($this->item, [$val->firmware]);
@@ -980,6 +981,16 @@ abstract class MainAsset extends InventoryAsset
 
         if (!($this->item instanceof RefusedEquipment)) {
             $this->handleAssets();
+        }
+
+        //Ports are handled a different way on network equipments and printers
+        if (
+            $this->item->getType() != 'NetworkEquipment'
+            && $this->item->getType() != 'Printer'
+        ) {
+            if (!$this->isPartial() || count($this->ports)) {
+                $this->handlePorts();
+            }
         }
 
         $rulesmatched = new RuleMatchedLog();

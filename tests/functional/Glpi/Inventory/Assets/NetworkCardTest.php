@@ -1214,10 +1214,8 @@ class NetworkCardTest extends AbstractInventoryAsset
     <NETWORKS>
       <DESCRIPTION>Ethernet</DESCRIPTION>
       <MACADDR>00:11:22:33:44:55</MACADDR>
-      <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
-      <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
       <PCIID>14E4:165F:05E5:1028</PCIID>
-      <PNPDEVICEID>PCI\VEN_14E4&amp;DEV_165F&amp;SUBSYS_05E51028&amp;REV_00\000000112233445500</PNPDEVICEID>
+      <PNPDEVICEID>PCI\\VEN_14E4&amp;DEV_165F&amp;SUBSYS_05E51028&amp;REV_00\\000000112233445500</PNPDEVICEID>
       <SPEED>1000</SPEED>
       <STATUS>Up</STATUS>
       <TYPE>ethernet</TYPE>
@@ -1226,10 +1224,8 @@ class NetworkCardTest extends AbstractInventoryAsset
     <NETWORKS>
       <DESCRIPTION>Ethernet 2</DESCRIPTION>
       <MACADDR>00:11:22:33:44:66</MACADDR>
-      <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
-      <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
       <PCIID>14E4:165F:05E5:1028</PCIID>
-      <PNPDEVICEID>PCI\VEN_14E4&amp;DEV_165F&amp;SUBSYS_05E51028&amp;REV_00\000000112233446601</PNPDEVICEID>
+      <PNPDEVICEID>PCI\\VEN_14E4&amp;DEV_165F&amp;SUBSYS_05E51028&amp;REV_00\\000000112233446601</PNPDEVICEID>
       <SPEED>1000</SPEED>
       <STATUS>Up</STATUS>
       <TYPE>ethernet</TYPE>
@@ -1242,8 +1238,6 @@ class NetworkCardTest extends AbstractInventoryAsset
       <IPMASK>255.255.255.0</IPMASK>
       <IPSUBNET>10.0.0.0</IPSUBNET>
       <MACADDR>00:11:22:33:44:55</MACADDR>
-      <MANUFACTURER>Microsoft</MANUFACTURER>
-      <MODEL>Microsoft Network Adapter Multiplexor Driver</MODEL>
       <PNPDEVICEID>COMPOSITEBUS\MS_IMPLAT_MP\{12345678-1234-5678-1234-123456789012}</PNPDEVICEID>
       <SPEED>2000</SPEED>
       <STATUS>Up</STATUS>
@@ -1279,6 +1273,6 @@ class NetworkCardTest extends AbstractInventoryAsset
             $device_cards[] = $device_net->fields['designation'];
         }
         
-        $this->assertContains('Broadcom NetXtreme Gigabit Ethernet', $device_cards);
+        $this->assertContains('NetXtreme BCM5720 Gigabit Ethernet PCIe', $device_cards);
     }
 }
