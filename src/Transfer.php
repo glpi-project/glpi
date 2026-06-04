@@ -4219,14 +4219,20 @@ final class Transfer extends CommonDBTM
                 if (!empty($tab)) {
                     $table = $itemtype::getTable();
                     $name_field = $itemtype::getNameField();
-                    $table_name_field = sprintf('%1$s.%2$s', $table, $name_field);
+                    $has_name_field = $DB->fieldExists($table, $name_field);
+                    $table_name_field = $has_name_field ? sprintf('%1$s.%2$s', $table, $name_field) : null;
+
+                    $select = [
+                        "$table.id",
+                        'entities.completename AS entname',
+                        'entities.id AS entID',
+                    ];
+                    if ($table_name_field !== null) {
+                        $select[] = $table_name_field;
+                    }
+
                     $iterator = $DB->request([
-                        'SELECT' => [
-                            "$table.id",
-                            $table_name_field,
-                            'entities.completename AS entname',
-                            'entities.id AS entID',
-                        ],
+                        'SELECT' => $select,
                         'FROM' => $table,
                         'LEFT JOIN' => [
                             'glpi_entities AS entities' => [
@@ -4237,7 +4243,7 @@ final class Transfer extends CommonDBTM
                             ],
                         ],
                         'WHERE' => ["$table.id" => $tab],
-                        'ORDERBY' => ['entname', $table_name_field],
+                        'ORDERBY' => $table_name_field !== null ? ['entname', $table_name_field] : ['entname'],
                     ]);
 
                     foreach ($iterator as $data) {
