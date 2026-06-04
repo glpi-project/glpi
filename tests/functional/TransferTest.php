@@ -1383,7 +1383,7 @@ class TransferTest extends DbTestCase
 
         $entity_id = $this->getTestRootEntity(only_id: true);
 
-        $computer = $this->createItem(\Computer::class, [
+        $computer = $this->createItem(Computer::class, [
             'name'        => 'Transfer test computer',
             'entities_id' => $entity_id,
         ]);
@@ -1394,7 +1394,7 @@ class TransferTest extends DbTestCase
         ]);
 
         $item_soundcard = $this->createItem(\Item_DeviceSoundCard::class, [
-            'itemtype'            => \Computer::class,
+            'itemtype'            => Computer::class,
             'items_id'            => $computer->getID(),
             'devicesoundcards_id' => $soundcard->getID(),
             'entities_id'         => $entity_id,
