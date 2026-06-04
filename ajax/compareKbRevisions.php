@@ -73,7 +73,7 @@ $normalize_html = static function (string $html): string {
             /** @var DOMElement $table */
             $table->removeAttribute('width');
             $style = $table->getAttribute('style');
-            $style = preg_replace('/\b(?:min-)?width\s*:[^;]+;?\s*/i', '', $style);
+            $style = preg_replace('/(?<![a-zA-Z]-)(?:min-|max-)?width\s*:[^;]+;?\s*/i', '', $style);
             $style = rtrim($style, '; ') . '; max-width: 100%; box-sizing: border-box;';
             $table->setAttribute('style', ltrim($style, '; '));
         }
