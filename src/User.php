@@ -2777,7 +2777,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
         if (count($a_field) == 0) {
             return true;
         }
-        $this->willProcessRuleRight();
         foreach ($a_field as $field => $key) {
             $value = $_SERVER[$key] ?? null;
             if (empty($value)) {
@@ -2850,6 +2849,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 'email'  => $this->fields["_emails"] ?? [],
                 'login'  => $this->fields["name"],
             ]);
+
+            $this->willProcessRuleRight();
 
             //If rule  action is ignore import
             if (isset($this->fields["_stop_import"])) {
