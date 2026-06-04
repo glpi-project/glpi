@@ -57,7 +57,7 @@ final class ReAuthManager
             return;
         }
 
-        $this->redirect();
+        $this->redirectToReauth();
     }
 
     /**
@@ -65,7 +65,7 @@ final class ReAuthManager
      *
      * @throws RedirectException
      */
-    public function redirect(): never
+    public function redirectToReauth(): never
     {
         $this->setRequestedTarget();
         throw new RedirectException('/ReAuth/Prompt');
