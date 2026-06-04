@@ -47,17 +47,28 @@ jobs:
             '^gpt-'
           )
           FAIL=0
-          while IFS=$'\t' read -r sha name email; do
+          while IFS=$'\t' read -r sha name email message; do
+            MESS=0
+            [ -z "${message%%*Co-authored-by:*}" ] && MESS=1
             echo "${sha:0:12} - $name <$email>"
             for pattern in "${DENY[@]}"; do
               if echo "$name" | grep -iqE "$pattern" || echo "$email" | grep -iqE "$pattern"; then
                 echo "::error title=AI-authored commit::${sha:0:12} — '$name <$email>' matches '$pattern'"
                 FAIL=1
-                break
+                break 2
+              fi
+              if [ "$MESS" -ne 0 ]; then
+                while IFS=$'\t' read name email; do
+                    if echo "$name" | grep -iqE "$pattern" || echo "$email" | grep -iqE "$pattern"; then
+                        echo "::error title=AI-authored commit::${sha:0:12} — '$name <$email>' matches '$pattern'"
+                        FAIL=1
+                        break 3
+                    fi
+                done < <(echo -e "$message" | perl -ne 'print "$1\t$2\n" if /Co-authored-by:\s+(.+)\s+<(.+)>/i')
               fi
             done
           done < <(gh api --paginate "/repos/$REPO/pulls/$PR_NUMBER/commits" \
-            --jq '.[] | [.sha, .commit.author.name, .commit.author.email] | @tsv')
+            --jq '.[] | [.sha, .commit.author.name, .commit.author.email, .commit.message] | @tsv')
           if [ "$FAIL" -ne 0 ]; then
             echo ""
             echo "PRs must be authored by humans. See CONTRIBUTING.md."
