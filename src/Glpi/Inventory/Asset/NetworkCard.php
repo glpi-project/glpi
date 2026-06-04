@@ -125,11 +125,9 @@ class NetworkCard extends Device
                 foreach ($this->extra_data['controllers'] as $controller) {
                     if (
                         property_exists($controller, 'type')
-                        && (
-                            (property_exists($val, 'model') && ($val->model == $controller->type || strtolower($val->model . " controller") == strtolower($controller->type)))
-                            || $val->description == $controller->type
-                            || strtolower($val->description . " controller") == strtolower($controller->type)
-                        )
+                        && ($val->description == $controller->type
+                        || strtolower($val->description . " controller")
+                              == strtolower($controller->type))
                         && !isset($this->ignored['controllers'][$controller->name])
                     ) {
                         $found_controller = $controller;
