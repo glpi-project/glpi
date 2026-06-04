@@ -123,10 +123,15 @@ final class ReAuthManager
         return $_SESSION['glpi_reauth_cancel_url'] ?? $CFG_GLPI["root_doc"];
     }
 
-    /** @return array<string, string> */
+    /**
+     * query data + _glpi_http_referer
+     * @return array<string, string>
+     */
     public function getRedirectData(): array
     {
-        return $_SESSION['glpi_reauth_data'] ?? [];
+        $reauth_data = $_SESSION['glpi_reauth_data'] ?? [];
+
+        return $reauth_data + ['_glpi_http_referer' => $this->getTargetURL()];
     }
 
     /**
