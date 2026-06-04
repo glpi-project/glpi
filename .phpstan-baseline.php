@@ -16046,12 +16046,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, int\\|string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Planning.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$classname of function isPluginItemType expects string, class\\-string\\<CommonDBTM\\>\\|CommonDBTM given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

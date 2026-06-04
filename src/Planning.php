@@ -71,7 +71,6 @@ use function Safe\strtotime;
  *      show_export_buttons: boolean,
  *      uID: integer,
  *      gID: integer,
- *      login_user: User|null,
  *      webcal_base_url: string|null,
  *      caldav_url: string|null,
  *      child_filters: array<string, mixed>
