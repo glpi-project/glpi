@@ -302,7 +302,10 @@ abstract class AbstractRequest
         $guess_mode = ($base_mode === null);
         $this->setMode(self::JSON_MODE);
 
-        $this->authenticateRequest();
+        if (!$this->authenticateRequest()) {
+            return false;
+        }
+
         // Some network inventories may request may contain lots of information.
         // e.g. a Huawei S5720-52X-LI-AC inventory file may weigh 20MB,
         // and GLPI will consume about 500MB of memory to handle it,
