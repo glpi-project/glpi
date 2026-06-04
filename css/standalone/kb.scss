@@ -95,6 +95,14 @@
             width: 100%;
             max-width: 820px;
         }
+
+        &.KnowbaseItemComment {
+            .timeline-content {
+                &::before {
+                    border: none;
+                }
+            }
+        }
     }
 
     .h_content {

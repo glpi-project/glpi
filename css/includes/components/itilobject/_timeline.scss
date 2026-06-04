@@ -227,14 +227,6 @@
         }
     }
 
-    &.KnowbaseItemComment {
-        .timeline-content {
-            &::before {
-                border: none;
-            }
-        }
-    }
-
     &.ITILTask {
         .timeline-content {
             background-color: var(--glpi-timeline-task-bg);

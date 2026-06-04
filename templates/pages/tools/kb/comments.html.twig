@@ -171,7 +171,7 @@
                         } else {
                             comment.after(_form);
                         }
-                        $(`#newcomment${comment.data('id')}`).get(0).scrollIntoView(false);
+                        $(`#newcomment${comment.data('id')}`).get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }, () => {
                         glpi_alert({
                             title: '{{ __('Unable to load comment!')|e('js') }}',
@@ -211,6 +211,7 @@
                             .closest('.comment')
                             .find('.h_content').first()
                             .append(_form);
+                        _form.get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }, () => {
                         glpi_alert({
                             title: '{{ __('Unable to load comment!')|e('js') }}',
