@@ -190,6 +190,9 @@ CREATE TABLE `glpi_plugin_genericobject_inactives` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+INSERT INTO `glpi_plugin_genericobject_inactives` (`id`, `entities_id`, `name`, `comment`, `date_mod`, `date_creation`) VALUES
+(1, 0, 'Inactive 1', '', '2025-01-13 08:47:23', '2025-01-13 08:47:23'),
+(2, 0, 'Inactive 2', '', '2025-02-24 17:43:01', '2025-02-26 14:12:17');
 
 CREATE TABLE `glpi_plugin_genericobject_smartphones` (
   `id` INT UNSIGNED AUTO_INCREMENT NOT NULL,
