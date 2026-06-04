@@ -71,11 +71,7 @@
                {% set candel = false %}
             {% endif %}
 
-            {# check _canedit + allow button to be displayed if missing right it caused by missing reauth #}
-            {% set reauth_needed = null %}
-            {% set _canedit = canedit and item.can(id, constant('UPDATE'), {}, reauth_needed) %}
-             {# @todo autre droits que UPDATE traiter #}
-            {% if canedit or reauth_needed %}
+            {% if canedit and item.can(id, constant('UPDATE')) %}
                <button
                   class="btn btn-primary me-2"
                   type="submit"
