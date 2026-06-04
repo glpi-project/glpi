@@ -10597,7 +10597,6 @@ CREATE TABLE `glpi_tags` (
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
-  KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_active` (`is_active`),
   KEY `name` (`name`),

@@ -88,10 +88,10 @@ class TagTest extends DbTestCase
         Session::changeProfile($profile_id);
 
         // Assert rights
-        $this->assertSame($can_view,   Tag::canView());
+        $this->assertSame($can_view, Tag::canView());
         $this->assertSame($can_create, Tag::canCreate());
         $this->assertSame($can_update, Tag::canUpdate());
-        $this->assertSame($can_purge,  Tag::canPurge());
+        $this->assertSame($can_purge, Tag::canPurge());
     }
 
     /**

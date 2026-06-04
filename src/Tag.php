@@ -48,7 +48,7 @@ class Tag extends CommonDropdown
 
     /**
      * Get itemtypes can be tagged with this tag
-     * 
+     *
      * @return array List of itemtypes
      */
     public function getItemtypes(): array
@@ -58,7 +58,7 @@ class Tag extends CommonDropdown
 
     /**
      * Format and check itemtypes input for add and update
-     * 
+     *
      * @param array $input Input data
      * @return array Formatted itemtypes
      */
