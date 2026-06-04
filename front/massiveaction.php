@@ -55,7 +55,7 @@ try {
     // but redirection should be to the page that triggered the massive action process
     // we can determine the url to reach after massive action processed, only before it's done
     // -> store it in session, then reuse it on third pass on these file
-    if(!empty($item_types)) {
+    if (!empty($item_types)) {
         $_SESSION['glpi_reauth_massiveaction_redirect'] = $referer;
     }
     $ma->setRedirect($_SESSION['glpi_reauth_massiveaction_redirect']);
