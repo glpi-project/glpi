@@ -63,11 +63,7 @@
                                 <input type="hidden" name="id" value="{{ item.getID() }}" />
                             {% endif %}
                             {% if (item.isNewItem() or internal_auth) and not is_preference_form %}
-                                {{ fields.textField('name', item.fields['name'], __('Login'), {
-                                    additional_attributes: {
-                                        autocomplete: 'username'
-                                    }
-                                }) }}
+                                {{ fields.textField('name', item.fields['name'], __('Login')) }}
                             {% else %}
                                 {% set login_field %}
                                     <span class="fw-bold">{{ item.fields['name'] }}</span>
