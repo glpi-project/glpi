@@ -34,6 +34,7 @@
 
 namespace Glpi\Toolbox;
 
+use Safe\Exceptions\NetworkException;
 use function Safe\inet_ntop;
 use function Safe\inet_pton;
 
@@ -146,6 +147,7 @@ class IPUtilities
      * @param string $cidr The CIDR notation to convert
      * @return array
      * @phpstan-return list{string, string}
+     * @throws NetworkException
      */
     public static function cidrToRange(string $cidr): array
     {

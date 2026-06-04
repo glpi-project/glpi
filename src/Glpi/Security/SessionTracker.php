@@ -50,7 +50,9 @@ use Glpi\OAuth\Server;
 use Glpi\Toolbox\IPUtilities;
 use Log;
 use RuntimeException;
+use Safe\Exceptions\NetworkException;
 use Session;
+use Throwable;
 use User;
 
 use function Safe\ini_get;
@@ -252,27 +254,32 @@ final class SessionTracker extends CommonGLPI
     {
         global $DB;
 
-        $ips = array_map('trim', explode(',', $filter));
-        $ip_criteria = [];
-        foreach ($ips as $ip) {
-            $is_cidr = str_contains($ip, '/');
-            if ($is_cidr) {
-                [$start_ip, $end_ip] = IPUtilities::cidrToRange($ip);
-                $ip_criteria[] = [
-                    'RAW' => [
-                        (string) QueryFunction::inet6Aton('ip_address') => [
-                            'BETWEEN',
-                            new QueryExpression(
-                                QueryFunction::inet6Aton(new QueryExpression($DB::quoteValue($start_ip)))
-                                . ' AND '
-                                . QueryFunction::inet6Aton(new QueryExpression($DB::quoteValue($end_ip)))
-                            ),
+        try {
+            $ips = array_map('trim', explode(',', $filter));
+            $ip_criteria = [];
+            foreach ($ips as $ip) {
+                $is_cidr = str_contains($ip, '/');
+                if ($is_cidr) {
+                    [$start_ip, $end_ip] = IPUtilities::cidrToRange($ip);
+                    $ip_criteria[] = [
+                        'RAW' => [
+                            (string)QueryFunction::inet6Aton('ip_address') => [
+                                'BETWEEN',
+                                new QueryExpression(
+                                    QueryFunction::inet6Aton(new QueryExpression($DB::quoteValue($start_ip)))
+                                    . ' AND '
+                                    . QueryFunction::inet6Aton(new QueryExpression($DB::quoteValue($end_ip)))
+                                ),
+                            ],
                         ],
-                    ],
-                ];
-            } else {
-                $ip_criteria[] = ['ip_address' => $ip];
+                    ];
+                } else {
+                    $ip_criteria[] = ['ip_address' => $ip];
+                }
             }
+        } catch (NetworkException) {
+            Session::addMessageAfterRedirect(__s('Invalid IP address filter'), true, ERROR);
+            return [];
         }
         return ['OR' => $ip_criteria];
     }
