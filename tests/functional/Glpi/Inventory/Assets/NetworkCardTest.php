@@ -727,7 +727,7 @@ class NetworkCardTest extends AbstractInventoryAsset
         $result = $asset->prepare();
 
         $this->assertIsArray($result);
-        $this->assertEmpty($result);
+        $this->assertCount(1, $result);
         $ports = $asset->getNetworkPorts();
         $this->assertIsArray($ports);
         $this->assertCount(5, $ports);

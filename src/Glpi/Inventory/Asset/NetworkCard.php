@@ -165,6 +165,17 @@ class NetworkCard extends Device
                     if (property_exists($val, 'name')) {
                         $this->ignored['controllers'][$val->name] = $val->name;
                     }
+                } elseif (property_exists($val, 'pciid') && !empty($val->pciid)) {
+                    $exploded = explode(":", $val->pciid);
+                    if (count($exploded) >= 2) {
+                        if ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0])) {
+                            $val->manufacturers_id = $pci_manufacturer;
+                        }
+                        if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
+                            $val->designation = $pci_product;
+                            $val->devicenetworkcardmodels_id = $pci_product;
+                        }
+                    }
                 } else {
                     unset($this->data[$k]);
                 }
