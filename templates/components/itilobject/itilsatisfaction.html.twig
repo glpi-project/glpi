@@ -43,6 +43,9 @@
                 full_width: true
             }
         ) }}
+        {# Close wrapper div and form opened in timeline.html.twig (no buttons for external surveys) #}
+        </div>
+        </form>
 
     {% else %}
         {% if expired %}
@@ -62,6 +65,9 @@
                     full_width: true
                 }
             ) }}
+            {# Close wrapper div and form opened in timeline.html.twig (no buttons when expired without answer) #}
+            </div>
+            </form>
         {% else %}
             {{ fields.hiddenField(
                 parent_item.getForeignKeyField(),
@@ -131,6 +137,10 @@
 
             {% if not expired %}
                 {{ include('components/form/buttons.html.twig') }}
+            {% else %}
+                {# Close wrapper div and form opened in timeline.html.twig (survey answered but now expired) #}
+                </div>
+                </form>
             {% endif %}
         {% endif %}
     {% endif %}
