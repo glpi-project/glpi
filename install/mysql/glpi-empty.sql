@@ -10078,6 +10078,25 @@ CREATE TABLE `glpi_oauthclients` (
    KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_oauthapplications`;
+CREATE TABLE `glpi_oauthapplications` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `is_active` tinyint NOT NULL DEFAULT '0',
+  `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `provider` varchar(255) NOT NULL DEFAULT '',
+  `client_id` text NOT NULL,
+  `client_secret` text NOT NULL,
+  `tenant_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `is_active` (`is_active`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `glpi_validatorsubstitutes`;
 CREATE TABLE `glpi_validatorsubstitutes` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
