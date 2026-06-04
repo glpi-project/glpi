@@ -54,7 +54,7 @@ class NetworkCard extends Device
     public function prepare(): array
     {
         $mapping = [
-            'name'          => 'designation',
+            'description'   => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'macaddr'       => 'mac',
             'model'         => 'devicenetworkcardmodels_id',
@@ -88,12 +88,6 @@ class NetworkCard extends Device
             foreach ($mapping as $origin => $dest) {
                 if (property_exists($val, $origin)) {
                     $val->$dest = $val->$origin;
-                }
-            }
-
-            if (!property_exists($val, 'designation') || empty($val->designation)) {
-                if (property_exists($val, 'description') && !empty($val->description)) {
-                    $val->designation = $val->description;
                 }
             }
 
@@ -148,6 +142,7 @@ class NetworkCard extends Device
                         //product name
                         if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
                             $val->designation = $pci_product;
+                            $val->devicenetworkcardmodels_id = $pci_product;
                         }
                     } elseif (property_exists($found_controller, 'vendorid')) {
                         //manufacturer
