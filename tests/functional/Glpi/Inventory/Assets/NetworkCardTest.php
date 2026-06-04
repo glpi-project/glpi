@@ -1193,6 +1193,8 @@ class NetworkCardTest extends AbstractInventoryAsset
 
         $this->assertSame(9000, $networkport->fields['ifmtu']);
         $this->assertSame(300000000, $networkport->fields['ifspeed']);
+    }
+
     public function testInventoryUpdateModernAgent()
     {
         $computer = new \Computer();
