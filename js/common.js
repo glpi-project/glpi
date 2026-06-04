@@ -1509,33 +1509,8 @@ $(() => {
         } else {
             navigator.clipboard.writeText(text);
             glpi_toast_info(__("Copied to clipboard"));
-            flashIconButton($(this), $(this).attr('class'), 'ti ti-check', 1500);
         }
     });
-
-    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
-    $(document).on('click', '[data-disclose-password]', function(e) {
-        if (isTouch) {
-            e.preventDefault();
-            const target = $(this).data('disclose-password');
-            if ($("#" + CSS.escape(target)).prop('type') === 'password') {
-                showDisclosablePasswordField(target);
-            } else {
-                hideDisclosablePasswordField(target);
-            }
-        }
-    });
-
-    if (!isTouch) {
-        $(document).on('mousedown', '[data-disclose-password]', function(e) {
-            e.preventDefault();
-            showDisclosablePasswordField($(this).data('disclose-password'));
-        });
-        $(document).on('mouseup mouseleave', '[data-disclose-password]', function(e) {
-            e.preventDefault();
-            hideDisclosablePasswordField($(this).data('disclose-password'));
-        });
-    }
 });
 
 /**
@@ -1576,7 +1551,6 @@ $(document.body).on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
  */
 function showDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "text");
-    $(`[data-disclose-password="${CSS.escape(item)}"]`).find('.ti-eye').removeClass('ti-eye').addClass('ti-eye-off');
 }
 
 /**
@@ -1585,8 +1559,7 @@ function showDisclosablePasswordField(item) {
  */
 function hideDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "password");
-    $(`[data-disclose-password="${CSS.escape(item)}"]`).find('.ti-eye-off').removeClass('ti-eye-off').addClass('ti-eye');
-};
+}
 
 /**
  * Copies the password from a disclosable password field to the clipboard
@@ -1600,8 +1573,6 @@ function copyDisclosablePasswordFieldToClipboard(item) {
     $("#" + CSS.escape(item)).select();
     try {
         document.execCommand("copy");
-        const btn = $("#" + CSS.escape(item)).closest('.btn-group').find('.ti-clipboard-copy').closest('button');
-        flashIconButton(btn, btn.attr('class'), 'ti ti-check', 1500);
     } catch {
         alert("Copy to clipboard failed'");
     }
