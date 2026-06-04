@@ -924,16 +924,17 @@ class FormTest extends DbTestCase
     /**
      * Regression test for issue #23861.
      *
-     * Before the fix, Form::post_updateItem() unconditionally opened a nested
-     * transaction (savepoint) even when an outer transaction was already in
-     * progress. When MariaDB implicitly committed that savepoint (e.g. due to a
-     * DDL statement), the subsequent ROLLBACK TO SAVEPOINT failed with:
+     * Form::post_updateItem() opens its own savepoint (nested transaction) via
+     * beginTransaction(). When a DDL statement is executed inside that savepoint,
+     * MariaDB issues an implicit commit that invalidates the savepoint, causing
+     * the subsequent "ROLLBACK TO SAVEPOINT" to fail with:
      *   "MySQL query error: SAVEPOINT savepoint_0 does not exist"
      *
-     * The fix makes post_updateItem() skip its own transaction when one is
-     * already active, delegating commit/rollback to the outer caller.
+     * The fix detects DDL statements executed inside a transaction and emits an
+     * E_USER_WARNING so callers never reach a broken savepoint state silently.
+     * The savepoint itself is created and released normally when no DDL is involved.
      */
-    public function testPostUpdateItemDoesNotCreateNestedTransactionWhenInsideOuterTransaction(): void
+    public function testPostUpdateItemSavepointIsCreatedAndReleasedCleanly(): void
     {
         global $DB;
 
@@ -950,9 +951,9 @@ class FormTest extends DbTestCase
 
         $level_before = $this->getDbTransactionLevel($DB);
 
-        // Updating the form triggers post_updateItem().
-        // The fix ensures it does NOT start a new nested transaction (savepoint)
-        // when one is already in progress.
+        // Updating the form triggers post_updateItem(), which opens a savepoint.
+        // After the update the savepoint must be released, returning to the outer
+        // transaction level.
         $form->update([
             'id'   => $form->getID(),
             'name' => 'Updated name',
@@ -963,7 +964,7 @@ class FormTest extends DbTestCase
         $this->assertSame(
             $level_before,
             $level_after,
-            'Form::post_updateItem() must not create a nested transaction when already inside an outer transaction'
+            'Form::post_updateItem() savepoint must be released cleanly, leaving the outer transaction level unchanged'
         );
 
         // Outer transaction must still be open and closeable without errors.
