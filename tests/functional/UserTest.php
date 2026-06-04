@@ -48,6 +48,9 @@ use Psr\Log\LogLevel;
 use User;
 use UserCategory;
 
+use function Safe\json_decode;
+use function Safe\strtotime;
+
 class UserTest extends DbTestCase
 {
     public function testGenerateUserToken()
@@ -2509,6 +2512,82 @@ class UserTest extends DbTestCase
 
         $this->assertEquals("0", $user->fields["_ldap_rules"]["rules_entities_rights"][0][0]); // entities_id
         $this->assertEquals($admin_profile_id, $user->fields["_ldap_rules"]["rules_entities_rights"][0][1]); // profiles_id
+    }
+
+    /**
+     * Non-regression: willProcessRuleRight() must be called after processAllRules() in getFromSSO()
+     * so that Profile_User records are actually created after the Auth::login() update cycle.
+     */
+    public function testGetFromSSOAppliesRightRulesOnUpdate(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $root_entity_id = $this->getTestRootEntity(true);
+
+        // Minimal SSO config: expose at least the login field via a server variable.
+        $original_sso_config = $CFG_GLPI['name_ssofield'] ?? '';
+        $CFG_GLPI['name_ssofield'] = 'HTTP_SSO_LOGIN';
+
+        // Rule: TYPE = EXTERNAL → assign Super-Admin profile on root entity.
+        $rule = $this->createItem(\RuleRight::class, [
+            'name'      => __FUNCTION__,
+            'is_active' => 1,
+            'sub_type'  => 'RuleRight',
+            'match'     => 'AND',
+            'condition' => 0,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'TYPE',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => \Auth::EXTERNAL,
+        ]);
+
+        $profile_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'profiles_id',
+            'value'       => $profile_id,
+        ]);
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => $root_entity_id,
+        ]);
+
+        // Create the user as an external (SSO) user.
+        $user = $this->createItem(User::class, [
+            'name'     => $this->getUniqueString(),
+            'authtype' => \Auth::EXTERNAL,
+        ]);
+
+        // Simulate the SSO server variable so getFromSSO() can populate user fields.
+        $_SERVER['HTTP_SSO_LOGIN'] = $user->fields['name'];
+
+        $user->getFromSSO();
+
+        // _ldap_rules must be set so that applyRightRules() will run.
+        $this->assertArrayHasKey('_ldap_rules', $user->fields, '_ldap_rules not set by processAllRules()');
+        $this->assertNotEmpty($user->fields['_ldap_rules']['rules_entities_rights']);
+
+        // Simulate Auth::login() update cycle (copies fields, calls update).
+        $input = $user->fields;
+        unset($input['api_token'], $input['cookie_token'], $input['password_forget_token'], $input['personal_token']);
+        $user->update($input);
+
+        // The profile must now be assigned in Profile_User.
+        $profile_users = Profile_User::getUserProfiles($user->getID());
+        $this->assertArrayHasKey($profile_id, $profile_users, 'Profile_User record not created after SSO login rule processing');
+
+        // Cleanup: restore SSO config.
+        $CFG_GLPI['name_ssofield'] = $original_sso_config;
+        unset($_SERVER['HTTP_SSO_LOGIN']);
     }
 
     /**
