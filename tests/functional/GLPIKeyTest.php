@@ -443,6 +443,7 @@ class GLPIKeyTest extends DbTestCase
                 'glpi_apiclients.app_token',
                 'glpi_authldaps.rootdn_passwd',
                 'glpi_mailcollectors.passwd',
+                'glpi_oauthapplications.client_secret',
                 'glpi_oauthclients.secret',
                 'glpi_sharetokens.token',
                 'glpi_snmpcredentials.auth_passphrase',
