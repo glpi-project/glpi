@@ -57,7 +57,6 @@ class NetworkCard extends Device
             'description'   => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'macaddr'       => 'mac',
-            'model'         => 'devicenetworkcardmodels_id',
         ];
         $mapping_ports = [
             'description' => 'name',
