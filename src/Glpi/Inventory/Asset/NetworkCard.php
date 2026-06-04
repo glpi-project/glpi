@@ -92,9 +92,7 @@ class NetworkCard extends Device
             }
 
             if (!property_exists($val, 'designation') || empty($val->designation)) {
-                if (property_exists($val, 'model') && !empty($val->model)) {
-                    $val->designation = $val->model;
-                } elseif (property_exists($val, 'description') && !empty($val->description)) {
+                if (property_exists($val, 'description') && !empty($val->description)) {
                     $val->designation = $val->description;
                 }
             }
