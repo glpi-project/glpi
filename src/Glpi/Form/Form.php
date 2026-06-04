@@ -394,13 +394,7 @@ final class Form extends CommonDBTM implements
             'force_update'  => true,
         ]);
 
-        // Only own the transaction if no outer transaction is already in progress.
-        // When called from within AnswersHandler (or any other outer transaction),
-        // we let the caller manage commit/rollback to avoid nested savepoint issues.
-        $owns_transaction = !$DB->isInTransaction();
-        if ($owns_transaction) {
-            $DB->beginTransaction();
-        }
+        $DB->beginTransaction();
         try {
             // Update questions and sections
             $this->updateExtraFormData();
@@ -423,12 +417,10 @@ final class Form extends CommonDBTM implements
             );
 
             // Do not keep half updated data
-            if ($owns_transaction) {
-                try {
-                    $DB->rollback();
-                } catch (Throwable) {
-                    // Ignore rollback failures so the original exception is propagated
-                }
+            try {
+                $DB->rollback();
+            } catch (Throwable) {
+                // Ignore rollback failures so the original exception is propagated
             }
 
             // Propagate exception to ensure the server return an error code
