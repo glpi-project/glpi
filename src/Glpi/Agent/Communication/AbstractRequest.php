@@ -49,7 +49,6 @@ use GLPIKey;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use RuntimeException;
 use Safe\Exceptions\SimplexmlException;
-use Safe\Exceptions\UrlException;
 use Toolbox;
 use UnexpectedValueException;
 
@@ -115,15 +114,23 @@ abstract class AbstractRequest
     public const COMPRESS_BR   = 3;
     public const COMPRESS_DEFLATE = 4;
 
+    /** @var ?int */
     protected ?int $mode = null;
+    /** @var string */
     private string $deviceid;
     /** @var DOMDocument|array<string, mixed>|null */
     private DOMDocument|array|null $response = null;
+    /** @var ?int */
     private ?int $compression = null;
+    /** @var bool */
     private bool $error = false;
+    /** @var bool */
     protected bool $test_rules = false;
+    /** @var Common */
     protected Common $headers;
+    /** @var int */
     private int $http_response_code = 200;
+    /** @var string */
     protected string $query;
     protected bool $local = false;
 
@@ -217,6 +224,72 @@ abstract class AbstractRequest
     }
 
     /**
+     * Auhenticate request if required by configuration
+     */
+    public function authenticateRequest(): bool
+    {
+        $auth_required = false;
+        if (!$this->isLocal()) {
+            $auth_required = Config::getConfigurationValue('inventory', 'auth_required');
+        }
+        if ($auth_required === Conf::CLIENT_CREDENTIALS) {
+            $request = new Request('POST', $_SERVER['REQUEST_URI'], $this->headers->getHeaders());
+            try {
+                $client = Server::validateAccessToken($request);
+                if (!in_array('inventory', $client['scopes'], true)) {
+                    $this->addError('Access denied. Agent must authenticate using client credentials and have the "inventory" OAuth scope', 401);
+                    return false;
+                }
+            } catch (OAuth2KeyException $e) {
+                ErrorHandler::logCaughtException($e);
+                $this->addError($e->getMessage());
+                return false;
+            } catch (OAuthServerException) {
+                $this->addError('Authorization header required to send an inventory', 401);
+                return false;
+            }
+        }
+
+        if ($auth_required === Conf::BASIC_AUTH) {
+            $authorization_header = $this->headers->getHeader('Authorization');
+            if (is_null($authorization_header)) {
+                $this->headers->setHeader("www-authenticate", 'Basic realm="basic"');
+                $this->addError('Authorization header required to send an inventory', 401);
+                return false;
+            } else {
+                $allowed = false;
+                // if Authorization start with 'Basic'
+                $matches = [];
+                if (preg_match('/^Basic\s+(.*)$/i', $authorization_header, $matches)) {
+                    $agent_credentials = explode(':', base64_decode($matches[1]), 2);
+                    if (
+                        count($agent_credentials) !== 2
+                        || $agent_credentials[0] === ''
+                        || $agent_credentials[1] === ''
+                    ) {
+                        // Login and/or password is missing or empty
+                        $allowed = false;
+                    } else {
+                        $expected_login = Config::getConfigurationValue('inventory', 'basic_auth_login');
+                        $expected_password = (new GLPIKey())
+                            ->decrypt(Config::getConfigurationValue('inventory', 'basic_auth_password'));
+
+                        $allowed = $agent_credentials[0] === $expected_login
+                            && $agent_credentials[1] === $expected_password;
+                    }
+                }
+                if (!$allowed) {
+                    $this->headers->setHeader("www-authenticate", 'Basic realm="basic"');
+                    $this->addError('Access denied. Wrong login or password for basic authentication.', 401);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Handle agent request
      *
      * @param mixed $data Sent data
@@ -229,68 +302,8 @@ abstract class AbstractRequest
         $guess_mode = ($base_mode === null);
         $this->setMode(self::JSON_MODE);
 
-        if (!$this->isLocal()) {
-            $auth_required = Config::getConfigurationValue('inventory', 'auth_required');
-
-            if ($auth_required === Conf::CLIENT_CREDENTIALS) {
-                $request = new Request('POST', $_SERVER['REQUEST_URI'], $this->headers->getHeaders());
-                try {
-                    $client = Server::validateAccessToken($request);
-                    if (!in_array('inventory', $client['scopes'], true)) {
-                        $this->addError('Access denied. Agent must authenticate using client credentials and have the "inventory" OAuth scope', 401);
-                        return false;
-                    }
-                } catch (OAuth2KeyException $e) {
-                    ErrorHandler::logCaughtException($e);
-                    $this->addError($e->getMessage());
-                    return false;
-                } catch (OAuthServerException) {
-                    $this->addError('Authorization header required to send an inventory', 401);
-                    return false;
-                }
-            } elseif ($auth_required === Conf::BASIC_AUTH) {
-                $authorization_header = $this->headers->getHeader('Authorization');
-                if (is_null($authorization_header)) {
-                    $this->headers->setHeader("www-authenticate", 'Basic realm="basic"');
-                    $this->addError('Authorization header required to send an inventory', 401);
-                    return false;
-                } else {
-                    $allowed = false;
-                    // if Authorization start with 'Basic'
-                    $matches = [];
-                    if (preg_match('/^Basic\s+(.*)$/i', $authorization_header, $matches)) {
-                        try {
-                            $agent_credentials = explode(':', base64_decode($matches[1]), 2);
-                            if (
-                                count($agent_credentials) !== 2
-                                || $agent_credentials[0] === ''
-                                || $agent_credentials[1] === ''
-                            ) {
-                                // Login and/or password is missing or empty
-                                $allowed = false;
-                            } else {
-                                $expected_login = Config::getConfigurationValue('inventory', 'basic_auth_login');
-                                $expected_password = (new GLPIKey())
-                                    ->decrypt(Config::getConfigurationValue('inventory', 'basic_auth_password'));
-
-                                $allowed = $agent_credentials[0] === $expected_login
-                                    && $agent_credentials[1] === $expected_password;
-                            }
-                        } catch (UrlException) {
-                            // malformed base64 — leave $allowed as false
-                        }
-                    }
-
-                    if (!$allowed) {
-                        $this->headers->setHeader("www-authenticate", 'Basic realm="basic"');
-                        $this->addError('Access denied. Wrong login or password for basic authentication.', 401);
-                        return false;
-                    }
-                }
-            } elseif ($auth_required !== Conf::NO_AUTH) {
-                $this->addError('Server configuration error: invalid inventory authentication setting. Please configure the Inventory → Authorization header in GLPI.', 503);
-                return false;
-            }
+        if (!$this->authenticateRequest()) {
+            return false;
         }
 
         // Some network inventories may request may contain lots of information.
