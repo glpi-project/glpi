@@ -361,6 +361,15 @@ $(document).ready(function() {
       refreshSearchResults();
    });
 
+   // Prevent the search filters dropdown from closing when interacting with
+   // a flatpickr calendar (which is appended to <body> and therefore considered
+   // "outside" by Bootstrap's auto-close logic).
+   $('.show-search-filters').on('hide.bs.dropdown', function(e) {
+      if ($('.flatpickr-calendar.open').length > 0) {
+         e.preventDefault();
+      }
+   });
+
    $('.default-filter').change(function(event) {
       const search_params = new URLSearchParams(window.location.search);
       if (!$(this).is(":checked")) {
