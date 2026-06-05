@@ -85,7 +85,7 @@
 
     {% set more_html %}
         {% if options.is_disclosable %}
-            <button type="button" class="btn btn-outline-secondary" aria-label="{{ __('Show / Hide') }}" aria-pressed="false" title="{{ __('Show / Hide') }}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-disclose-password="{{ options.id|e('js') }}">
+            <button type="button" class="btn btn-outline-secondary" aria-pressed="false" title="{{ __('Show / Hide') }}" data-bs-toggle="tooltip" data-bs-placement="bottom" data-disclose-password="{{ options.id|e('js') }}">
                 <i class="ti ti-eye disclose"></i>
             </button>
         {% endif %}
