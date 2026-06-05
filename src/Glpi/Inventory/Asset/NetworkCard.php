@@ -54,6 +54,7 @@ class NetworkCard extends Device
     public function prepare(): array
     {
         $mapping = [
+            'model'         => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'macaddr'       => 'mac',
         ];
