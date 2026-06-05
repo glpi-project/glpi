@@ -810,13 +810,13 @@ class NetworkCardTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $asset = new NetworkCard($computer, $json->content->networks);
         $asset->setExtraData((array) $json->content);
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $asset->checkConf($conf);
         $result = $asset->prepare();
 
@@ -833,7 +833,7 @@ class NetworkCardTest extends AbstractInventoryAsset
         $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[1]->designation);
         $this->assertEquals('20:47:47:90:78:44', $result[1]->mac);
 
-        // The virtual LoadBalance adapter should be filtered out from the physical components 
+        // The virtual LoadBalance adapter should be filtered out from the physical components
         // but remain in ports.
         $ports = $asset->getNetworkPorts();
         $this->assertIsArray($ports);
