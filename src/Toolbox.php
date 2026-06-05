@@ -1879,9 +1879,7 @@ class Toolbox
             return $protocols;
         }
 
-        static $apps = null;
-        $apps ??= OAuthApplication::getActiveApplications();
-        foreach ($apps as $app) {
+        foreach (OAuthApplication::getActiveApplications() as $app) {
             $key = 'oauth_imap_' . $app->getID();
             $protocols[$key] = [
                 'label'                 => sprintf(__('OAuth IMAP – %s'), $app->getName()),

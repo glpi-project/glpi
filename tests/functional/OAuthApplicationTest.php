@@ -365,20 +365,20 @@ class OAuthApplicationTest extends DbTestCase
             'client_secret' => 'secret',
         ], ['client_secret']);
 
-        $unrelated_host = '{mail.other.com/imap/ssl}INBOX';
-
         /** @var MailCollector $mc_other */
         $mc_other = $this->createItem(MailCollector::class, [
             'name'  => 'Unrelated collector',
-            'host'  => $unrelated_host,
+            'host'  => '{mail.other.com/imap/ssl}INBOX',
             'login' => 'user2@example.com',
         ], ['host', 'server_type']);
+
+        $host_before_purge = $mc_other->fields['host'];
 
         $this->assertTrue($app->delete(['id' => $app->getID()], true));
 
         // Unrelated collector must be untouched
         $mc_other->getFromDB($mc_other->getID());
-        $this->assertSame($unrelated_host, $mc_other->fields['host']);
+        $this->assertSame($host_before_purge, $mc_other->fields['host']);
     }
 
     // -------------------------------------------------------------------------
