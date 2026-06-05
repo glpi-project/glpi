@@ -34,7 +34,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
-class OauthApplication extends CommonDBTM
+class OAuthApplication extends CommonDBTM
 {
     public static string $rightname = 'config';
 
