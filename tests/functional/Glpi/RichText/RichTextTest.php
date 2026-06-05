@@ -38,6 +38,7 @@ use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\Tag;
 use Glpi\RichText\RichText;
 use Glpi\Tests\GLPITestCase;
+use KnowbaseItem;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class RichTextTest extends GLPITestCase
@@ -794,7 +795,7 @@ HTML,
     #[DataProvider('normalizeForDisplayProvider')]
     public function testNormalizeForDisplay(string $html, string $expected): void
     {
-        $this->assertEquals($expected, RichText::normalizeForDisplay($html));
+        $this->assertEquals($expected, KnowbaseItem::normalizeKbRevisionDiffHtml($html));
     }
 
     #[DataProvider('getEnhancedHtmlProvider')]
