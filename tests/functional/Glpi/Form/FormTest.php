@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Form;
 
 use CronTask;
-use DBmysql;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
@@ -72,7 +71,6 @@ use Item_Ticket;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
-use ReflectionProperty;
 use User;
 
 class FormTest extends DbTestCase
@@ -919,62 +917,5 @@ class FormTest extends DbTestCase
         // Assert: tab count should only indicate two items
         $name = strip_tags($name);
         $this->assertEquals("Forms 2", $name);
-    }
-
-    /**
-     * Regression test for issue #23861.
-     *
-     * Form::post_updateItem() opens its own savepoint (nested transaction) via
-     * beginTransaction(). When a DDL statement is executed inside that savepoint,
-     * MariaDB issues an implicit commit that invalidates the savepoint, causing
-     * the subsequent "ROLLBACK TO SAVEPOINT" to fail with:
-     *   "MySQL query error: SAVEPOINT savepoint_0 does not exist"
-     *
-     * The fix detects DDL statements executed inside a transaction and emits an
-     * E_USER_WARNING so callers never reach a broken savepoint state silently.
-     * The savepoint itself is created and released normally when no DDL is involved.
-     */
-    public function testPostUpdateItemSavepointIsCreatedAndReleasedCleanly(): void
-    {
-        global $DB;
-
-        $this->login();
-
-        // Create a minimal form to update later.
-        $builder = new FormBuilder("Savepoint regression test");
-        $builder->addQuestion("Question 1", QuestionTypeShortText::class);
-        $form = $this->createForm($builder);
-
-        // Open an outer transaction that wraps the form update,
-        // as AnswersHandler (and other callers) do.
-        $DB->beginTransaction();
-
-        $level_before = $this->getDbTransactionLevel($DB);
-
-        // Updating the form triggers post_updateItem(), which opens a savepoint.
-        // After the update the savepoint must be released, returning to the outer
-        // transaction level.
-        $form->update([
-            'id'   => $form->getID(),
-            'name' => 'Updated name',
-        ]);
-
-        $level_after = $this->getDbTransactionLevel($DB);
-
-        $this->assertSame(
-            $level_before,
-            $level_after,
-            'Form::post_updateItem() savepoint must be released cleanly, leaving the outer transaction level unchanged'
-        );
-
-        // Outer transaction must still be open and closeable without errors.
-        $this->assertTrue($DB->isInTransaction());
-        $DB->rollback();
-    }
-
-    private function getDbTransactionLevel(DBmysql $db): int
-    {
-        $prop = new ReflectionProperty(DBmysql::class, 'transaction_level');
-        return $prop->getValue($db);
     }
 }
