@@ -817,6 +817,9 @@ class NetworkCardTest extends AbstractInventoryAsset
         $asset = new NetworkCard($computer, $json->content->networks);
         $asset->setExtraData((array) $json->content);
         $conf = new Conf();
+        $this->login();
+        $conf->saveConf(['component_networkcardvirtual' => 1]);
+        $this->logOut();
         $asset->checkConf($conf);
         $result = $asset->prepare();
 
