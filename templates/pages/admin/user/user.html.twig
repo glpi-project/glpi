@@ -65,7 +65,7 @@
                             {% if (item.isNewItem() or internal_auth) and not is_preference_form %}
                                 {{ fields.textField('name', item.fields['name'], __('Login'), {
                                     additional_attributes: {
-                                        autocomplete: 'username'
+                                        autocomplete: 'off'
                                     }
                                 }) }}
                             {% else %}
