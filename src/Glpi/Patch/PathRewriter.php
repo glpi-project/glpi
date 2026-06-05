@@ -42,6 +42,8 @@ final class PathRewriter
      * Files that must be skipped when applying the patch.
      */
     private const SKIPED_FILES = ['tests/', 'tools/', 'phpunit/', 'CHANGELOG.md', '/dev/null'];
+    private const ALLOWED_FILES = ['src/', 'ajax/', 'bin/', 'css/', 'dependency_injection/', 'front', 'inc', 'install', 'js', 'lib', 'public', 'ressources', 'templates'];
+
 
     /**
      * Folders that live under public/ in a production GLPI installation.
@@ -49,6 +51,14 @@ final class PathRewriter
      * prefixed with "public/".
      */
     private const PUBLIC_REMAPPED_FOLDERS = ['js/', 'lib/', 'css/'];
+
+    // local = indiquer le changement de traductions
+    // *.vue = arrêt du patch et msg d'erreur
+    // css et scss = des fichiers min
+    // scss = recompiler les css
+    // tests unitaires pour vérifier
+    // constant('GLPI_PLUGINS_DIRECTORIES') / constant('GLPI_MARKETPLACE_DIRECTORIES')
+    // libs à vérifier : ptlis/diff-parser xdiff alto/code-diff bsdiff
 
     /**
      * @param string $work_dir   Absolute path to the directory where the patch is being applied.
