@@ -44,7 +44,7 @@ class OAuthApplication extends CommonDBTM
 
     public static function getTypeName($nb = 0): string
     {
-        return _n('OAuth Application', 'OAuth Applications', $nb);
+        return _n('OAuth application', 'OAuth applications', $nb);
     }
 
     public static function getSectorizedDetails(): array
@@ -263,7 +263,7 @@ class OAuthApplication extends CommonDBTM
         ];
         $opts[] = [
             'id'       => 1,
-            'table'    => self::getTable(),
+            'table'    => static::getTable(),
             'field'    => 'name',
             'name'     => __('Name'),
             'datatype' => 'itemlink',
