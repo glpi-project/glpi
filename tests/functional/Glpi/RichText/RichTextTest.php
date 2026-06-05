@@ -763,6 +763,40 @@ HTML,
         ];
     }
 
+    public static function normalizeForDisplayProvider(): iterable
+    {
+        yield 'empty string is returned as-is' => [
+            'html'     => '',
+            'expected' => '',
+        ];
+
+        yield 'table width attribute is removed and max-width style is added' => [
+            'html'     => '<table width="600"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+
+        yield 'table width in style is replaced by max-width' => [
+            'html'     => '<table style="width: 800px;"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+
+        yield 'td width attribute is removed' => [
+            'html'     => '<table><tr><td width="200">Cell</td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+
+        yield 'img gets max-width and height style' => [
+            'html'     => '<p><img src="/img.png" alt="test" /></p>',
+            'expected' => '<p><img src="/img.png" alt="test" style="max-width: 100%; height: auto;"></p>',
+        ];
+    }
+
+    #[DataProvider('normalizeForDisplayProvider')]
+    public function testNormalizeForDisplay(string $html, string $expected): void
+    {
+        $this->assertEquals($expected, RichText::normalizeForDisplay($html));
+    }
+
     #[DataProvider('getEnhancedHtmlProvider')]
     public function testGetEnhancedHtml(string $content, string $expected_result)
     {
