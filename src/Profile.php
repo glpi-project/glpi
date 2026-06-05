@@ -3107,6 +3107,20 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             ],
         ];
 
+        $tab[] = [
+            'id'                 => '123',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Tag::getTypeName(1),
+            'datatype'           => 'right',
+            'rightclass'         => Tag::class,
+            'rightname'          => Tag::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Tag::$rightname],
+            ],
+        ];
+
         // Add custom asset definition rights
         $custom_assets_right_offset = 1000;
         foreach (AssetDefinitionManager::getInstance()->getDefinitions(true) as $definition) {
