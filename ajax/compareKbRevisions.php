@@ -84,7 +84,7 @@ $normalize_html = static function (string $html): string {
         foreach ($imgs as $img) {
             /** @var DOMElement $img */
             $style = $img->getAttribute('style');
-            $style = preg_replace('/\bmax-width\s*:[^;]+;?\s*/i', '', $style);
+            $style = preg_replace('/(?<![a-zA-Z]-)(?:min-|max-)?width\s*:[^;]+;?\s*/i', '', $style);
             $style = rtrim($style, '; ') . '; max-width: 100%; height: auto;';
             $img->setAttribute('style', ltrim($style, '; '));
         }
