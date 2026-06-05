@@ -293,7 +293,7 @@ class OauthApplicationTest extends DbTestCase
         $tab_names = $app->getTabNameForItem($app);
 
         $this->assertArrayHasKey(1, $tab_names);
-        $this->assertStringContainsString('1', strip_tags($tab_names[1]));
+        $this->assertStringContainsString('tab-count-badge">1<', $tab_names[1]);
 
         // DB query must include the linked collector and exclude the unlinked one
         $iterator  = $DB->request([
@@ -317,4 +317,159 @@ class OauthApplicationTest extends DbTestCase
         $this->assertArrayHasKey('azure', $providers);
         $this->assertArrayHasKey('google', $providers);
     }
+
+    // -------------------------------------------------------------------------
+    // cleanDBonPurge
+    // -------------------------------------------------------------------------
+
+    public function testCleanDBonPurge(): void
+    {
+        $this->login();
+
+        /** @var OauthApplication $app */
+        $app = $this->createItem(OauthApplication::class, [
+            'name'          => 'App to purge',
+            'is_active'     => 1,
+            'provider'      => 'azure',
+            'client_id'     => 'cid',
+            'client_secret' => 'secret',
+        ], ['client_secret']);
+
+        $protocol_key = 'oauth_imap_' . $app->getID();
+
+        /** @var MailCollector $mc */
+        $mc = $this->createItem(MailCollector::class, [
+            'name'  => 'Collector to clean',
+            'host'  => '{mail.example.com/' . $protocol_key . '/ssl}INBOX',
+            'login' => 'user@example.com',
+        ], ['host', 'server_type']);
+
+        // Purge the application
+        $this->assertTrue($app->delete(['id' => $app->getID()], true));
+
+        // The linked collector's host must now be cleared
+        $mc->getFromDB($mc->getID());
+        $this->assertSame('', $mc->fields['host']);
+    }
+
+    public function testCleanDBonPurgeDoesNotAffectUnrelatedCollectors(): void
+    {
+        $this->login();
+
+        /** @var OauthApplication $app */
+        $app = $this->createItem(OauthApplication::class, [
+            'name'          => 'App to purge 2',
+            'is_active'     => 1,
+            'provider'      => 'azure',
+            'client_id'     => 'cid',
+            'client_secret' => 'secret',
+        ], ['client_secret']);
+
+        $unrelated_host = '{mail.other.com/imap/ssl}INBOX';
+
+        /** @var MailCollector $mc_other */
+        $mc_other = $this->createItem(MailCollector::class, [
+            'name'  => 'Unrelated collector',
+            'host'  => $unrelated_host,
+            'login' => 'user2@example.com',
+        ], ['host', 'server_type']);
+
+        $this->assertTrue($app->delete(['id' => $app->getID()], true));
+
+        // Unrelated collector must be untouched
+        $mc_other->getFromDB($mc_other->getID());
+        $this->assertSame($unrelated_host, $mc_other->fields['host']);
+    }
+
+    // -------------------------------------------------------------------------
+    // countLinkedMailCollectors
+    // -------------------------------------------------------------------------
+
+    public function testCountLinkedMailCollectors(): void
+    {
+        $this->login();
+
+        /** @var OauthApplication $app */
+        $app = $this->createItem(OauthApplication::class, [
+            'name'          => 'Count test app',
+            'is_active'     => 1,
+            'provider'      => 'azure',
+            'client_id'     => 'cid',
+            'client_secret' => 'secret',
+        ], ['client_secret']);
+
+        $protocol_key = 'oauth_imap_' . $app->getID();
+
+        // Initially no linked collectors — no badge rendered
+        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $tabs = $app->getTabNameForItem($app);
+        $this->assertArrayHasKey(1, $tabs);
+        $this->assertStringNotContainsString('tab-count-badge', $tabs[1]);
+
+        // Add a collector with a trailing slash after the key
+        $this->createItem(MailCollector::class, [
+            'name'  => 'Collector with slash',
+            'host'  => '{mail.example.com/' . $protocol_key . '/ssl}INBOX',
+            'login' => 'a@example.com',
+        ], ['host', 'server_type']);
+
+        // Add a collector with closing brace after the key
+        $this->createItem(MailCollector::class, [
+            'name'  => 'Collector without options',
+            'host'  => '{mail.example.com/' . $protocol_key . '}',
+            'login' => 'b@example.com',
+        ], ['host', 'server_type']);
+
+        $tabs = $app->getTabNameForItem($app);
+        $this->assertStringContainsString('tab-count-badge">2<', $tabs[1]);
+    }
+
+    // -------------------------------------------------------------------------
+    // Rights
+    // -------------------------------------------------------------------------
+
+    public function testCannotCreateWithoutConfigRight(): void
+    {
+        $this->login();
+
+        // Remove CREATE right from config
+        $saved = $_SESSION['glpiactiveprofile']['config'];
+        $_SESSION['glpiactiveprofile']['config'] = $saved & ~CREATE;
+
+        try {
+            $this->assertFalse(OauthApplication::canCreate());
+        } finally {
+            $_SESSION['glpiactiveprofile']['config'] = $saved;
+        }
+    }
+
+    public function testCannotPurgeWithoutConfigRight(): void
+    {
+        $this->login();
+
+        $saved = $_SESSION['glpiactiveprofile']['config'];
+        $_SESSION['glpiactiveprofile']['config'] = $saved & ~PURGE;
+
+        try {
+            $this->assertFalse(OauthApplication::canPurge());
+        } finally {
+            $_SESSION['glpiactiveprofile']['config'] = $saved;
+        }
+    }
+
+    public function testCannotUpdateWithoutConfigRight(): void
+    {
+        $this->login();
+
+        $saved = $_SESSION['glpiactiveprofile']['config'];
+        $_SESSION['glpiactiveprofile']['config'] = READ;
+
+        try {
+            $this->assertFalse(OauthApplication::canUpdate());
+            $this->assertTrue(OauthApplication::canView());
+        } finally {
+            $_SESSION['glpiactiveprofile']['config'] = $saved;
+        }
+    }
+
 }

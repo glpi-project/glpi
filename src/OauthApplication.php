@@ -49,7 +49,7 @@ class OAuthApplication extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ['config', self::class];
+        return ['config', Notification::class, self::class];
     }
 
     public static function getIcon(): string
@@ -174,6 +174,23 @@ class OAuthApplication extends CommonDBTM
             'total_number'    => count($entries),
             'filtered_number' => count($entries),
         ]);
+    }
+
+    public function cleanDBonPurge(): void
+    {
+        global $DB;
+
+        $app_key = 'oauth_imap_' . $this->getID();
+        $DB->update(
+            MailCollector::getTable(),
+            ['host' => ''],
+            [
+                'OR' => [
+                    ['host' => ['LIKE', '%/' . $app_key . '/%']],
+                    ['host' => ['LIKE', '%/' . $app_key . '}%']],
+                ],
+            ]
+        );
     }
 
     public function showForm($ID, array $options = []): bool

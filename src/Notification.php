@@ -213,6 +213,14 @@ class Notification extends CommonDBTM implements FilterableInterface
             //saved search list
             $menu['options'][NotificationTemplate::class]['links']['lists']  = "";
             $menu['options'][NotificationTemplate::class]['lists_itemtype']  = NotificationTemplate::class;
+
+            if (OauthApplication::canView()) {
+                $menu['options'][OauthApplication::class]['icon']            = OauthApplication::getIcon();
+                $menu['options'][OauthApplication::class]['title']           = OauthApplication::getTypeName(Session::getPluralNumber());
+                $menu['options'][OauthApplication::class]['page']            = OauthApplication::getSearchURL(false);
+                $menu['options'][OauthApplication::class]['links']['search'] = OauthApplication::getSearchURL(false);
+                $menu['options'][OauthApplication::class]['links']['add']    = OauthApplication::getFormURL(false);
+            }
         }
         if (count($menu)) {
             return $menu;
