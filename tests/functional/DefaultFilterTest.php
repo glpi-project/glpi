@@ -1,0 +1,80 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units;
+
+use Glpi\Tests\DbTestCase;
+
+class DefaultFilterTest extends DbTestCase
+{
+    private function createDefaultFilterWithCriteria(bool $is_active): \DefaultFilter
+    {
+        $filter = new \DefaultFilter();
+        $id = $filter->add([
+            'name'      => 'Test filter',
+            'itemtype'  => \Ticket::class,
+            'is_active' => (int) $is_active,
+        ]);
+        $this->assertGreaterThan(0, $id);
+        $this->assertTrue($filter->getFromDB($id));
+
+        $filter->saveFilter([
+            ['link' => 'AND', 'field' => 12, 'searchtype' => 'equals', 'value' => 'notold'],
+        ]);
+
+        return $filter;
+    }
+
+    public function testGetSearchCriteriaReturnsNullWhenNoFilter(): void
+    {
+        $this->assertNull(\DefaultFilter::getSearchCriteria(\Ticket::class));
+    }
+
+    public function testGetSearchCriteriaReturnsDataWhenActive(): void
+    {
+        $this->createDefaultFilterWithCriteria(true);
+
+        $result = \DefaultFilter::getSearchCriteria(\Ticket::class);
+
+        $this->assertNotNull($result);
+        $this->assertArrayHasKey('search_criteria', $result);
+    }
+
+    public function testGetSearchCriteriaReturnsNullWhenInactive(): void
+    {
+        $this->createDefaultFilterWithCriteria(false);
+
+        $this->assertNull(\DefaultFilter::getSearchCriteria(\Ticket::class));
+    }
+}
