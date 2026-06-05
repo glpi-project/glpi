@@ -43,7 +43,7 @@ class Tag_Itemtype extends CommonDBChild
      *
      * @param Tag $tag Tag for which itemtypes must be retrieved
      *
-     * @return array List of itemtypes
+     * @return list<class-string<CommonDBTM>>
      */
     public static function getItemtypesByTag(Tag $tag): array
     {

@@ -49,7 +49,7 @@ class Tag extends CommonDropdown
     /**
      * Get itemtypes can be tagged with this tag
      *
-     * @return array List of itemtypes
+     * @return list<class-string<CommonDBTM>>
      */
     public function getItemtypes(): array
     {
@@ -59,8 +59,8 @@ class Tag extends CommonDropdown
     /**
      * Format and check itemtypes input for add and update
      *
-     * @param array $input Input data
-     * @return array Formatted itemtypes
+     * @param array<string, mixed> $input Input data
+     * @return array<string, mixed> Formatted input
      */
     private function prepareItemtypes(array $input): array
     {
@@ -87,26 +87,28 @@ class Tag extends CommonDropdown
     }
 
     /**
-     * Prepare input for add action
-      *
-      * @param array $input Input data
-      * @return array Prepared input
-      */
-    public function prepareInputForAdd($input): array
+     * @param array<string, mixed> $input
+     * @return false|array<string, mixed>
+     */
+    public function prepareInputForAdd($input)
     {
         $input = parent::prepareInputForAdd($input);
+        if ($input === false) {
+            return false;
+        }
         return $this->prepareItemtypes($input);
     }
 
     /**
-     * Prepare input for update action
-      *
-      * @param array $input Input data
-      * @return array Prepared input
-      */
-    public function prepareInputForUpdate($input): array
+     * @param array<string, mixed> $input
+     * @return false|array<string, mixed>
+     */
+    public function prepareInputForUpdate($input)
     {
         $input = parent::prepareInputForUpdate($input);
+        if ($input === false) {
+            return false;
+        }
         return $this->prepareItemtypes($input);
     }
 
@@ -122,11 +124,6 @@ class Tag extends CommonDropdown
         );
     }
 
-    /**
-     * Add itemtypes associations after adding a tag
-      *
-      * @param array $input Input data
-     */
     public function post_addItem(): void
     {
         parent::post_addItem();
@@ -144,11 +141,6 @@ class Tag extends CommonDropdown
         }
     }
 
-    /**
-     * Update itemtypes associations after updating a tag
-      *
-      * @param bool $history Whether to keep history of changes
-     */
     public function post_updateItem($history = true): void
     {
         parent::post_updateItem($history);
@@ -178,12 +170,8 @@ class Tag extends CommonDropdown
     }
 
     /**
-     * Show form for tag
-      *
-      * @param int $ID ID of the tag to show
-      * @param array $options Additional options for the form
-
-      * @return bool Whether the form was successfully shown
+     * @param int $ID
+     * @param array<string, mixed> $options
      */
     public function showForm($ID, array $options = []): bool
     {
