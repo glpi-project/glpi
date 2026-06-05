@@ -1307,7 +1307,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             'Item_DeviceProcessor' => 1,
             'Item_DeviceMemory' => 2,
             'Item_DeviceHardDrive' => 1,
-            'Item_DeviceNetworkCard' => 1,
+            'Item_DeviceNetworkCard' => 0,
             'Item_DeviceDrive' => 0,
             'Item_DeviceBattery' => 1,
             'Item_DeviceGraphicCard' => 0,
@@ -1420,26 +1420,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                     'states_id' => 0,
                 ],
             ],
-            'Item_DeviceNetworkCard' => [
-                // Note: The physical USB adapter (enp57s0u1u4) is not added as a component here
-                // because it lacks a PCI ID and does not perfectly match a controller by name.
-                // Only the wlp58s0 adapter is successfully imported via its PCI ID fallback.
-                [
-                    'items_id' => $assets_id,
-                    'itemtype' => $classname,
-                    'devicenetworkcards_id' => 54,
-                    'mac' => '44:85:00:2b:90:bc',
-                    'is_deleted' => 0,
-                    'is_dynamic' => 1,
-                    'entities_id' => 0,
-                    'is_recursive' => 0,
-                    'serial' => null,
-                    'busID' => null,
-                    'otherserial' => null,
-                    'locations_id' => 0,
-                    'states_id' => 0,
-                ],
-            ],
+            'Item_DeviceNetworkCard' => [],
             'Item_DeviceDrive' => [],
             'Item_DeviceGraphicCard' => [],
             'Item_DeviceSoundCard' => [

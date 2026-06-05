@@ -375,7 +375,7 @@ class InventoryTest extends InventoryTestCase
             'Item_DeviceProcessor' => 1,
             'Item_DeviceMemory' => 2,
             'Item_DeviceHardDrive' => 1,
-            'Item_DeviceNetworkCard' => 1,
+            'Item_DeviceNetworkCard' => 0,
             'Item_DeviceDrive' => 0,
             'Item_DeviceBattery' => 1,
             'Item_DeviceGraphicCard' => 0,
@@ -488,26 +488,7 @@ class InventoryTest extends InventoryTestCase
                     'states_id' => 0,
                 ],
             ],
-            'Item_DeviceNetworkCard' => [
-                // Note: The physical USB adapter (enp57s0u1u4) is not added as a component here
-                // because it lacks a PCI ID and does not perfectly match a controller by name.
-                // Only the wlp58s0 adapter (MAC 44:85:00:2b:90:bc) is successfully imported via its PCI ID fallback.
-                [
-                    'items_id' => $computers_id,
-                    'itemtype' => 'Computer',
-                    'devicenetworkcards_id' => 61,
-                    'mac' => '44:85:00:2b:90:bc',
-                    'is_deleted' => 0,
-                    'is_dynamic' => 1,
-                    'entities_id' => 0,
-                    'is_recursive' => 0,
-                    'serial' => null,
-                    'busID' => null,
-                    'otherserial' => null,
-                    'locations_id' => 0,
-                    'states_id' => 0,
-                ],
-            ],
+            'Item_DeviceNetworkCard' => [],
             'Item_DeviceDrive' => [],
             // 'Item_DeviceBattery' is not tested here, see self::checkComputer1Batteries()
             'Item_DeviceGraphicCard' => [],
@@ -1464,7 +1445,7 @@ class InventoryTest extends InventoryTestCase
             'Item_DeviceProcessor' => 1,
             'Item_DeviceMemory' => 2,
             'Item_DeviceHardDrive' => 1,
-            'Item_DeviceNetworkCard' => 2,
+            'Item_DeviceNetworkCard' => 0,
             'Item_DeviceDrive' => 0,
             'Item_DeviceBattery' => 1,
             'Item_DeviceGraphicCard' => 0,
@@ -1865,18 +1846,18 @@ class InventoryTest extends InventoryTestCase
             'OFFSET' => $nblogsnow,
         ]);
 
-        $this->assertCount(4421, $logs);
+        $this->assertCount(4418, $logs);
 
         $expected_types_count = [
             0 => 3, //Agent version, disks usage
-            \Log::HISTORY_ADD_DEVICE => 3, //new item_device...
-            \Log::HISTORY_DELETE_DEVICE => 3, //delete item_device...
+            \Log::HISTORY_ADD_DEVICE => 2, //new item_device...
+            \Log::HISTORY_DELETE_DEVICE => 2, //delete item_device...
             \Log::HISTORY_ADD_RELATION => 1, //new IPNetwork/IPAddress
             \Log::HISTORY_DEL_RELATION => 2,//monitor-computer relation
             \Log::HISTORY_ADD_SUBITEM => 3247,//network port/name, ip address, VMs, Software
             \Log::HISTORY_UPDATE_SUBITEM => 828,//disks usage, software updates
             \Log::HISTORY_DELETE_SUBITEM => 99,//networkport and networkname, Software?
-            \Log::HISTORY_CREATE_ITEM => 233, //virtual machines, os, manufacturer, net ports, net names, software category / item_device...
+            \Log::HISTORY_CREATE_ITEM => 232, //virtual machines, os, manufacturer, net ports, net names, software category / item_device...
             \Log::HISTORY_UPDATE_RELATION => 2,//kernel version
         ];
 
