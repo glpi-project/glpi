@@ -1184,14 +1184,16 @@ class Conf extends CommonGLPI
             $values['stale_agents_status_condition'] = ['all'];
         }
 
-        $enabled_inventory = (int) ($values['enabled_inventory'] ?? $defaults['enabled_inventory']) === 1;
+        $existing_config = Config::getConfigurationValues('inventory');
+
+        $enabled_inventory = (int) ($values['enabled_inventory'] ?? $existing_config['enabled_inventory'] ?? $defaults['enabled_inventory']) === 1;
         if ($enabled_inventory) {
             $allowed_auth_required = [
                 self::CLIENT_CREDENTIALS,
                 self::BASIC_AUTH,
                 self::NO_AUTH,
             ];
-            $auth_required = array_key_exists('auth_required', $values) ? $values['auth_required'] : $defaults['auth_required'];
+            $auth_required = $values['auth_required'] ?? $existing_config['auth_required'] ?? $defaults['auth_required'];
             if (!is_string($auth_required) || !in_array($auth_required, $allowed_auth_required, true)) {
                 Session::addMessageAfterRedirect(
                     __s('Inventory is enabled. Please select a valid authorization header method.'),
@@ -1225,7 +1227,7 @@ class Conf extends CommonGLPI
 
         $to_process = [];
         foreach ($defaults as $prop => $default_value) {
-            $to_process[$prop] = $values[$prop] ?? $default_value;
+            $to_process[$prop] = $values[$prop] ?? $existing_config[$prop] ?? $default_value;
             if (is_array($to_process[$prop])) {
                 if ($prop == 'stale_agents_action') {
                     $to_process[$prop] = ArrayNormalizer::normalizeValues($to_process[$prop], 'intval');
