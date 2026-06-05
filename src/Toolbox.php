@@ -1880,7 +1880,7 @@ class Toolbox
         }
 
         static $apps = null;
-        $apps ??= OauthApplication::getActiveApplications();
+        $apps ??= OAuthApplication::getActiveApplications();
         foreach ($apps as $app) {
             $key = 'oauth_imap_' . $app->getID();
             $protocols[$key] = [

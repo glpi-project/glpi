@@ -173,13 +173,13 @@ class MailCollector extends CommonDBTM
         if (countElementsInTable(self::getTable()) > 0) {
             $links["<i class='ti ti-list'></i>" . __s('Not imported emails')] = "/front/notimportedemail.php";
         }
-        if (OauthApplication::canView()) {
-            $links["<i class='" . OauthApplication::getIcon() . "'></i>" . __s('OAuth Applications')]
-                = OauthApplication::getSearchURL(false);
+        if (OAuthApplication::canView()) {
+            $links["<i class='" . OAuthApplication::getIcon() . "'></i>" . __s('OAuth Applications')]
+                = OAuthApplication::getSearchURL(false);
         }
-        if (OauthApplication::canCreate()) {
+        if (OAuthApplication::canCreate()) {
             $links["<i class='ti ti-plus'></i>" . __s('Add an OAuth Application')]
-                = OauthApplication::getFormURL(false);
+                = OAuthApplication::getFormURL(false);
         }
         return $links;
     }

@@ -355,7 +355,7 @@ class HtmlTest extends DbTestCase
             'CronTask',
             'Auth',
             'OAuthClient',
-            'OauthApplication',
+            'OAuthApplication',
             'MailCollector',
             'Link',
             'Plugin',
