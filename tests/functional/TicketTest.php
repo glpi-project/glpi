@@ -7108,13 +7108,17 @@ HTML,
 
         //add a followup to the ticket without assigning to me (tech)
         $this->login('tech', 'tech');
-        $_SESSION['glpiset_followup_tech'] = 0;
+        $tech_user = new User();
+        $tech_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 0]);
+        $tech_user->getFromDB(Session::getLoginUserID());
+        $tech_user->loadPreferencesInSession();
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
+                'users_id'  => $tech_user->getID(),
             ])
         );
 
@@ -7123,7 +7127,9 @@ HTML,
         $this->assertCount(0, $actors);
 
         //add a private followup to the ticket and NOT assign to me (tech)
-        $_SESSION['glpiset_followup_tech'] = 1;
+        $tech_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 1]);
+        $tech_user->getFromDB(Session::getLoginUserID());
+        $tech_user->loadPreferencesInSession();
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
@@ -7131,6 +7137,7 @@ HTML,
                 'items_id'      => $ticket_id,
                 'content'       => 'A simple followup',
                 'is_private'    => 1,
+                'users_id'      => $tech_user->getID(),
             ])
         );
 
@@ -7145,6 +7152,7 @@ HTML,
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
+                'users_id'  => $tech_user->getID(),
             ])
         );
 
@@ -7154,7 +7162,10 @@ HTML,
 
         //add a solution to the ticket and assign to me
         $this->login('glpi', 'glpi');
-        $_SESSION['glpiset_solution_tech'] = 1;
+        $glpi_user = new User();
+        $glpi_user->update(['id' => Session::getLoginUserID(), 'set_solution_tech' => 1]);
+        $glpi_user->getFromDB(Session::getLoginUserID());
+        $glpi_user->loadPreferencesInSession();
         $this->assertGreaterThan(
             0,
             (int) $sol->add([
@@ -7180,7 +7191,10 @@ HTML,
 
         //add a solution to the ticket without assigning to me
         $this->login('tech', 'tech');
-        $_SESSION['glpiset_solution_tech'] = 0;
+        $tech_user = new User();
+        $tech_user->update(['id' => Session::getLoginUserID(), 'set_solution_tech' => 0]);
+        $tech_user->getFromDB(Session::getLoginUserID());
+        $tech_user->loadPreferencesInSession();
         $this->assertGreaterThan(
             0,
             (int) $sol->add([
@@ -7210,25 +7224,33 @@ HTML,
 
         //add a followup to the ticket without assigning to me
         $this->login('glpi', 'glpi');
-        $_SESSION['glpiset_followup_tech'] = 1;
+        $glpi_user = new User();
+        $glpi_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 0]);
+        $glpi_user->getFromDB(Session::getLoginUserID());
+        $glpi_user->loadPreferencesInSession();
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
+                'users_id'  => $glpi_user->getID(),
             ])
         );
 
         //add a followup to the ticket without assigning to me
         $this->login('tech', 'tech');
-        $_SESSION['glpiset_followup_tech'] = 1;
+        $tech_user = new User();
+        $tech_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 0]);
+        $tech_user->getFromDB(Session::getLoginUserID());
+        $tech_user->loadPreferencesInSession();
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
+                'users_id'  => $tech_user->getID(),
             ])
         );
 
@@ -7238,7 +7260,10 @@ HTML,
 
         //add a solution to the ticket without assigning to me
         $this->login('glpi', 'glpi');
-        $_SESSION['glpiset_solution_tech'] = 1;
+        $glpi_user = new User();
+        $glpi_user->update(['id' => Session::getLoginUserID(), 'set_solution_tech' => 0]);
+        $glpi_user->getFromDB(Session::getLoginUserID());
+        $glpi_user->loadPreferencesInSession();
         $this->assertGreaterThan(
             0,
             (int) $sol->add([
