@@ -7225,7 +7225,7 @@ HTML,
         //add a followup to the ticket without assigning to me
         $this->login('glpi', 'glpi');
         $glpi_user = new User();
-        $glpi_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 0]);
+        $glpi_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 1]);
         $glpi_user->getFromDB(Session::getLoginUserID());
         $glpi_user->loadPreferencesInSession();
         $this->assertGreaterThan(
@@ -7241,7 +7241,7 @@ HTML,
         //add a followup to the ticket without assigning to me
         $this->login('tech', 'tech');
         $tech_user = new User();
-        $tech_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 0]);
+        $tech_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 1]);
         $tech_user->getFromDB(Session::getLoginUserID());
         $tech_user->loadPreferencesInSession();
         $this->assertGreaterThan(
@@ -7261,7 +7261,7 @@ HTML,
         //add a solution to the ticket without assigning to me
         $this->login('glpi', 'glpi');
         $glpi_user = new User();
-        $glpi_user->update(['id' => Session::getLoginUserID(), 'set_solution_tech' => 0]);
+        $glpi_user->update(['id' => Session::getLoginUserID(), 'set_solution_tech' => 1]);
         $glpi_user->getFromDB(Session::getLoginUserID());
         $glpi_user->loadPreferencesInSession();
         $this->assertGreaterThan(
