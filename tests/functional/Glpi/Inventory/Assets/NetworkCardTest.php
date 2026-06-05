@@ -827,12 +827,12 @@ class NetworkCardTest extends AbstractInventoryAsset
         $this->assertCount(2, $result); // 2 physical network cards should be identified
 
         // First component check
-        $this->assertEquals('Broadcom NetXtreme Gigabit Ethernet', $result[0]->devicenetworkcardmodels_id);
+        $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[0]->devicenetworkcardmodels_id);
         $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[0]->designation);
         $this->assertEquals('20:47:47:90:78:42', $result[0]->mac);
 
         // Second component check
-        $this->assertEquals('Broadcom NetXtreme Gigabit Ethernet', $result[1]->devicenetworkcardmodels_id);
+        $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[1]->devicenetworkcardmodels_id);
         $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[1]->designation);
         $this->assertEquals('20:47:47:90:78:44', $result[1]->mac);
 
@@ -933,6 +933,7 @@ class NetworkCardTest extends AbstractInventoryAsset
         $card_1_id = $device_net->add([
             'designation' => '82540EM Gigabit Ethernet Controller',
             'manufacturers_id' => $manufacturers_id,
+            'devicenetworkcardmodels_id' => \Dropdown::importExternal('DeviceNetworkCardModel', '82540EM Gigabit Ethernet Controller'),
             'mac_default' => '08:00:27:16:9C:60',
             'entities_id'  => 0,
         ]);
@@ -949,6 +950,7 @@ class NetworkCardTest extends AbstractInventoryAsset
         $card_2_id = $device_net->add([
             'designation' => 'Ethernet Connection I219-LM',
             'manufacturers_id' => $manufacturers_id,
+            'devicenetworkcardmodels_id' => \Dropdown::importExternal('DeviceNetworkCardModel', 'Ethernet Connection I219-LM'),
             'mac_default' => '18:db:f2:29:99:35',
             'entities_id'  => 0,
         ]);
