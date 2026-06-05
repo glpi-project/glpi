@@ -164,6 +164,7 @@ class NetworkCard extends Device
                             //product name
                             if ($pci_product = $pcivendor->getProductName($found_controller->vendorid, $found_controller->productid)) {
                                 $val->designation = $pci_product;
+                                $val->devicenetworkcardmodels_id = $pci_product;
                             }
                         }
                     }
