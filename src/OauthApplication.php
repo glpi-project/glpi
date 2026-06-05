@@ -59,12 +59,12 @@ class OauthApplication extends CommonDBTM
 
     public static function canCreate(): bool
     {
-        return static::canUpdate();
+        return Session::haveRight(static::$rightname, CREATE);
     }
 
     public static function canPurge(): bool
     {
-        return static::canUpdate();
+        return Session::haveRight(static::$rightname, PURGE);
     }
 
     public function defineTabs($options = []): array

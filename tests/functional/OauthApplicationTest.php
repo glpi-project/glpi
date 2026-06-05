@@ -34,8 +34,8 @@
 
 namespace tests\units;
 
-use Glpi\Tests\DbTestCase;
 use GLPIKey;
+use Glpi\Tests\DbTestCase;
 use MailCollector;
 use OauthApplication;
 
@@ -49,8 +49,8 @@ class OauthApplicationTest extends DbTestCase
     {
         $this->login();
 
-        $app = new OauthApplication();
-        $id  = $app->add([
+        /** @var OauthApplication $app */
+        $app = $this->createItem(OauthApplication::class, [
             'name'          => 'Test Azure App',
             'is_active'     => 1,
             'provider'      => 'azure',
@@ -58,10 +58,8 @@ class OauthApplicationTest extends DbTestCase
             'client_secret' => 'my-secret',
             'tenant_id'     => 'my-tenant',
             'comment'       => 'Test comment',
-        ]);
+        ], ['client_secret']); // client_secret is encrypted on save, skip field comparison
 
-        $this->assertGreaterThan(0, $id);
-        $this->assertTrue($app->getFromDB($id));
         $this->assertSame('Test Azure App', $app->fields['name']);
         $this->assertSame(1, (int) $app->fields['is_active']);
         $this->assertSame('azure', $app->fields['provider']);
@@ -73,23 +71,20 @@ class OauthApplicationTest extends DbTestCase
     {
         $this->login();
 
-        $app = new OauthApplication();
-        $id  = $app->add([
+        /** @var OauthApplication $app */
+        $app = $this->createItem(OauthApplication::class, [
             'name'          => 'Old name',
             'is_active'     => 0,
             'provider'      => 'google',
             'client_id'     => 'cid',
             'client_secret' => 'secret',
-        ]);
+        ], ['client_secret']);
 
-        $success = $app->update([
-            'id'        => $id,
+        $app = $this->updateItem(OauthApplication::class, $app->getID(), [
             'name'      => 'New name',
             'is_active' => 1,
         ]);
 
-        $this->assertTrue($success);
-        $this->assertTrue($app->getFromDB($id));
         $this->assertSame('New name', $app->fields['name']);
         $this->assertSame(1, (int) $app->fields['is_active']);
     }
@@ -98,15 +93,15 @@ class OauthApplicationTest extends DbTestCase
     {
         $this->login();
 
-        $app = new OauthApplication();
-        $id  = $app->add([
+        /** @var OauthApplication $app */
+        $app = $this->createItem(OauthApplication::class, [
             'name'          => 'To purge',
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => 'secret',
-        ]);
+        ], ['client_secret']);
 
-        $this->assertGreaterThan(0, $id);
+        $id = $app->getID();
         $this->assertTrue($app->delete(['id' => $id], true));
         $this->assertFalse($app->getFromDB($id));
     }
@@ -153,40 +148,40 @@ class OauthApplicationTest extends DbTestCase
 
         $plain_secret = 'super-secret-value';
 
-        $app = new OauthApplication();
-        $id  = $app->add([
+        /** @var OauthApplication $app */
+        $app = $this->createItem(OauthApplication::class, [
             'name'          => 'Encrypted app',
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => $plain_secret,
-        ]);
+        ], ['client_secret']);
 
-        $this->assertGreaterThan(0, $id);
-        $this->assertTrue($app->getFromDB($id));
-
+        // Stored value must differ from plaintext
         $this->assertNotSame($plain_secret, $app->fields['client_secret']);
 
-        $key       = new GLPIKey();
-        $decrypted = $key->decrypt($app->fields['client_secret']);
-        $this->assertSame($plain_secret, $decrypted);
+        // Decrypting must give back the original value
+        $key = new GLPIKey();
+        $this->assertSame($plain_secret, $key->decrypt($app->fields['client_secret']));
     }
 
     public function testClientSecretIsEncryptedOnUpdate(): void
     {
         $this->login();
 
-        $app = new OauthApplication();
-        $id  = $app->add([
+        /** @var OauthApplication $app */
+        $app = $this->createItem(OauthApplication::class, [
             'name'          => 'App to update secret',
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => 'first-secret',
-        ]);
+        ], ['client_secret']);
 
         $new_secret = 'new-secret-value';
-        $app->update(['id' => $id, 'client_secret' => $new_secret]);
+        $this->updateItem(OauthApplication::class, $app->getID(), [
+            'client_secret' => $new_secret,
+        ], ['client_secret']);
 
-        $this->assertTrue($app->getFromDB($id));
+        $app->getFromDB($app->getID());
         $this->assertNotSame($new_secret, $app->fields['client_secret']);
 
         $key = new GLPIKey();
@@ -197,20 +192,23 @@ class OauthApplicationTest extends DbTestCase
     {
         $this->login();
 
-        $app = new OauthApplication();
-        $id  = $app->add([
+        /** @var OauthApplication $app */
+        $app = $this->createItem(OauthApplication::class, [
             'name'          => 'App keep secret',
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => 'original-secret',
-        ]);
+        ], ['client_secret']);
 
-        $this->assertTrue($app->getFromDB($id));
         $stored_after_add = $app->fields['client_secret'];
 
-        $app->update(['id' => $id, 'name' => 'Renamed', 'client_secret' => '']);
+        // Updating with an empty secret must preserve the existing encrypted value
+        $this->updateItem(OauthApplication::class, $app->getID(), [
+            'name'          => 'Renamed',
+            'client_secret' => '',
+        ], ['client_secret']);
 
-        $this->assertTrue($app->getFromDB($id));
+        $app->getFromDB($app->getID());
         $this->assertSame($stored_after_add, $app->fields['client_secret']);
     }
 
@@ -227,27 +225,28 @@ class OauthApplicationTest extends DbTestCase
     {
         $this->login();
 
-        $app        = new OauthApplication();
-        $id_active  = $app->add([
+        /** @var OauthApplication $active */
+        $active = $this->createItem(OauthApplication::class, [
             'name'          => 'Active app',
             'is_active'     => 1,
             'provider'      => 'azure',
             'client_id'     => 'cid-active',
             'client_secret' => 'secret',
-        ]);
-        $app->add([
+        ], ['client_secret']);
+
+        $this->createItem(OauthApplication::class, [
             'name'          => 'Inactive app',
             'is_active'     => 0,
             'provider'      => 'azure',
             'client_id'     => 'cid-inactive',
             'client_secret' => 'secret',
-        ]);
+        ], ['client_secret']);
 
-        $active     = OauthApplication::getActiveApplications();
-        $active_ids = array_map(fn($a) => $a->getID(), $active);
+        $applications = OauthApplication::getActiveApplications();
+        $ids          = array_map(fn($a) => $a->getID(), $applications);
 
-        $this->assertContains($id_active, $active_ids);
-        foreach ($active as $a) {
+        $this->assertContains($active->getID(), $ids);
+        foreach ($applications as $a) {
             $this->assertSame(1, (int) $a->fields['is_active']);
         }
     }
@@ -262,47 +261,41 @@ class OauthApplicationTest extends DbTestCase
 
         $this->login();
 
-        $app    = new OauthApplication();
-        $app_id = $app->add([
+        /** @var OauthApplication $app */
+        $app = $this->createItem(OauthApplication::class, [
             'name'          => 'Tab test app',
             'is_active'     => 1,
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => 'secret',
-        ]);
-        $this->assertGreaterThan(0, $app_id);
-        $this->assertTrue($app->getFromDB($app_id));
+        ], ['client_secret']);
 
-        $protocol_key = 'oauth_imap_' . $app_id;
-
+        $protocol_key  = 'oauth_imap_' . $app->getID();
         $host_linked   = '{mail.example.com/' . $protocol_key . '/novalidate-cert}INBOX';
         $host_unlinked = '{mail.other.com/imap/ssl}INBOX';
 
-        $mc_linked    = new MailCollector();
-        $mc_linked_id = $mc_linked->add([
+        /** @var MailCollector $mc_linked */
+        $mc_linked = $this->createItem(MailCollector::class, [
             'name'  => 'Linked collector',
             'host'  => $host_linked,
             'login' => 'user@example.com',
-        ]);
+        ], ['host', 'server_type']);
 
-        $mc_other    = new MailCollector();
-        $mc_other_id = $mc_other->add([
+        /** @var MailCollector $mc_other */
+        $mc_other = $this->createItem(MailCollector::class, [
             'name'  => 'Unlinked collector',
             'host'  => $host_unlinked,
             'login' => 'user2@example.com',
-        ]);
+        ], ['host', 'server_type']);
 
-        $this->assertGreaterThan(0, $mc_linked_id);
-        $this->assertGreaterThan(0, $mc_other_id);
-
-        // Tab count should reflect 1 linked collector
+        // Tab count must reflect exactly 1 linked collector
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $tab_names = $app->getTabNameForItem($app);
 
         $this->assertArrayHasKey(1, $tab_names);
         $this->assertStringContainsString('1', strip_tags($tab_names[1]));
 
-        // DB query should match only the linked collector
+        // DB query must include the linked collector and exclude the unlinked one
         $iterator  = $DB->request([
             'FROM'  => MailCollector::getTable(),
             'WHERE' => [
@@ -314,8 +307,8 @@ class OauthApplicationTest extends DbTestCase
         ]);
         $found_ids = array_column(iterator_to_array($iterator), 'id');
 
-        $this->assertContains($mc_linked_id, $found_ids);
-        $this->assertNotContains($mc_other_id, $found_ids);
+        $this->assertContains($mc_linked->getID(), $found_ids);
+        $this->assertNotContains($mc_other->getID(), $found_ids);
     }
 
     public function testGetProviders(): void
