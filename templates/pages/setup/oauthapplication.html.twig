@@ -57,7 +57,7 @@
 
                             {{ fields.textField('client_id', item.fields['client_id'], __('Client ID')) }}
 
-                            {{ fields.passwordField('client_secret', item.fields['client_secret']|decrypt, __('Client Secret'), {
+                            {{ fields.passwordField('client_secret', '', __('Client Secret'), {
                                 is_disclosable: true,
                                 helper: item.isNewItem() ? '' : __('Leave empty to keep the current secret'),
                             }) }}
