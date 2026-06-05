@@ -114,7 +114,7 @@ class NetworkCardTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc", "manufacturers_id": "Intel Corporation"}',
+                'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
                 'virtual'   => false,
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -142,7 +142,7 @@ class NetworkCardTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc", "manufacturers_id": "Intel Corporation"}',
+                'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
                 'virtual'   => false,
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>

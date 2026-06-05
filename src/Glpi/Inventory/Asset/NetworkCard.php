@@ -110,21 +110,6 @@ class NetworkCard extends Device
                 }
             }
 
-            $has_pci_product = false;
-            if (property_exists($val, 'pciid') && !empty($val->pciid)) {
-                $exploded = explode(":", $val->pciid);
-                if (count($exploded) >= 2) {
-                    if ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0])) {
-                        $val->manufacturers_id = $pci_manufacturer;
-                    }
-                    if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
-                        $has_pci_product = true;
-                        $val->designation = $pci_product;
-                        $val->devicenetworkcardmodels_id = $pci_product;
-                    }
-                }
-            }
-
             if (isset($this->extra_data['controllers'])) {
                 $found_controller = false;
                 // Search in controller if find NAME = CONTROLLER TYPE
@@ -150,15 +135,13 @@ class NetworkCard extends Device
                 }
 
                 if ($found_controller) {
-                    if (!$has_pci_product) {
-                        if (property_exists($found_controller, 'caption') && !empty($found_controller->caption)) {
-                            $val->designation = $found_controller->caption;
-                        } elseif (property_exists($found_controller, 'name') && !empty($found_controller->name)) {
-                            $val->designation = $found_controller->name;
-                        }
+                    if (property_exists($found_controller, 'caption') && !empty($found_controller->caption)) {
+                        $val->designation = $found_controller->caption;
+                    } elseif (property_exists($found_controller, 'name') && !empty($found_controller->name)) {
+                        $val->designation = $found_controller->name;
                     }
 
-                    if (property_exists($found_controller, 'pciid') && !$has_pci_product) {
+                    if (property_exists($found_controller, 'pciid')) {
                         $exploded = explode(":", $found_controller->pciid);
 
                         //manufacturer
@@ -171,7 +154,7 @@ class NetworkCard extends Device
                             $val->designation = $pci_product;
                             $val->devicenetworkcardmodels_id = $pci_product;
                         }
-                    } elseif (property_exists($found_controller, 'vendorid') && !$has_pci_product) {
+                    } elseif (property_exists($found_controller, 'vendorid')) {
                         //manufacturer
                         if ($pci_manufacturer = $pcivendor->getManufacturer($found_controller->vendorid)) {
                             $val->manufacturers_id = $pci_manufacturer;
