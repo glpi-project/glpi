@@ -859,9 +859,9 @@ class NetworkCardTest extends AbstractInventoryAsset
         $this->assertEquals(2000, $ports['LoadBalance-20:47:47:90:78:42']->speed);
 
         // Check MTU mapping
-        $this->assertEquals(1500, $ports['Ethernet-20:47:47:90:78:42']->ifmtu);
-        $this->assertEquals(1500, $ports['Ethernet 2-20:47:47:90:78:44']->ifmtu);
-        $this->assertEquals(1500, $ports['LoadBalance-20:47:47:90:78:42']->ifmtu);
+        $this->assertEquals(1500, $ports['Ethernet-20:47:47:90:78:42']->mtu);
+        $this->assertEquals(1500, $ports['Ethernet 2-20:47:47:90:78:44']->mtu);
+        $this->assertEquals(1500, $ports['LoadBalance-20:47:47:90:78:42']->mtu);
     }
 
     public function testInventoryUpdate()
