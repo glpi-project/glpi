@@ -53,6 +53,6 @@ if (!empty($_POST["test_ajax_send"])) {
     Html::back();
 }
 
-$menus = ["config", "notification", "config"];
+$menus = ["config", "notification", NotificationAjaxSetting::class];
 $config_id = Config::getConfigIDForContext('core');
 NotificationAjaxSetting::displayFullPageForItem($config_id, $menus);
