@@ -69,10 +69,11 @@ class GraphicCard extends Device
 
                 if (isset($this->extra_data['controllers'])) {
                     $found_controller = false;
-                    foreach ((array)$this->extra_data['controllers'] as $controller) {
+                    foreach ((array) $this->extra_data['controllers'] as $controller) {
                         if (
                             property_exists($controller, 'name')
-                            && ($controller->name === $val->name
+                            && (
+                                $controller->name === $val->name
                                 || (isset($val->chipset) && $controller->name === $val->chipset)
                                 || ($combined_name && $controller->name === $combined_name)
                             )
