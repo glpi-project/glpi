@@ -223,7 +223,6 @@ export default function usePlanningScheduler(calendar_el, current_view, full_vie
             return;
         }
 
-        //FIXME Only a single "null" resource is returned. May be missing something related to this from the legacy code?
         let actor = {};
         const resources = event.getResources();
 

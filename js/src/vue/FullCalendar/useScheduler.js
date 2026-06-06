@@ -53,7 +53,6 @@ export default function useScheduler() {
             type: 'resourceTimeline',
             buttonText: 'Timeline Week',
             duration: { weeks: 1 },
-            groupByDateAndResource: true, //FIXME Option doesn't exist anymore. Not sure the replacement.
             slotLabelFormat: [
                 { week: 'short' },
                 { weekday: 'short', day: 'numeric', month: 'numeric', omitCommas: true },

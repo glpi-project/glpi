@@ -32,7 +32,6 @@
 
 import '/build/vue/app.js';
 import PlanningEvent from '/js/src/vue/Planning/PlanningEvent.vue';
-import '/lib/fuzzy.js';
 import {enableAutoUnmount, flushPromises, mount} from "@vue/test-utils";
 import { ref } from 'vue';
 
@@ -42,8 +41,6 @@ describe('Planning/PlanningEvent Vue Component', () => {
     beforeEach(() => {
         // clear document event listeners
         $(document).off();
-        // clear ajax mock
-        window.AjaxMock.end();
         // Reset body content
         document.body.innerHTML = `
             <div id="test-container">
@@ -102,10 +99,8 @@ describe('Planning/PlanningEvent Vue Component', () => {
 
     async function mountEvent(event_info) {
         window.bootstrap = {
-            Popover: jest.fn().mockImplementation(() => {
-                return {
-                    dispose: jest.fn(),
-                };
+            Popover: vi.fn(class {
+                dispose = vi.fn();
             }),
         };
         const component = mount(PlanningEvent, {
@@ -130,7 +125,7 @@ describe('Planning/PlanningEvent Vue Component', () => {
         const component = await mountEvent(event_info_basic);
 
         // popover should be initialized
-        jest.spyOn(window.bootstrap, 'Popover');
+        vi.spyOn(window.bootstrap, 'Popover');
         expect(window.bootstrap.Popover).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({
             trigger: 'hover focus',
             html: true,
@@ -140,7 +135,7 @@ describe('Planning/PlanningEvent Vue Component', () => {
 
         expect(component.find('.fc-time').text()).toBe('10');
         expect(component.find('.fc-title').text()).toBe('Test event');
-        expect(component.find('i.ti-calendar-event').exists()).toBeTrue();
+        expect(component.find('i.ti-calendar-event').exists()).toBe(true);
         expect(component.find('i.ti-calendar-event').attributes('title')).toBe('Event icon');
         expect(component.find('i.ti-calendar-event').attributes('aria-label')).toBe('Event icon');
 
@@ -152,6 +147,6 @@ describe('Planning/PlanningEvent Vue Component', () => {
 
     test('mount event with no icon', async () => {
         const component = await mountEvent(event_info_noicon);
-        expect(component.find('i').exists()).toBeFalse();
+        expect(component.find('i').exists()).toBe(false);
     });
 });
