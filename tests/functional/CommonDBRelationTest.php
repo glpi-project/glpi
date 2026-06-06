@@ -35,11 +35,11 @@
 namespace tests\units;
 
 use CommonDBRelation;
-use MassiveAction;
-use NetworkPort_NetworkPort;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\ItemLinkException;
 use Glpi\Tests\DbTestCase;
+use MassiveAction;
+use NetworkPort_NetworkPort;
 
 class CommonDBRelationTest extends DbTestCase
 {
