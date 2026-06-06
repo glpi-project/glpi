@@ -41,6 +41,7 @@ use Item_DeviceGraphicCard;
 class GraphicCard extends Device
 {
     protected $ignored = ['controllers' => null];
+    protected $extra_data = ['controllers' => null];
 
     public function prepare(): array
     {
@@ -57,11 +58,37 @@ class GraphicCard extends Device
                 }
 
                 $this->ignored['controllers'][$val->name] = $val->name;
+                $combined_name = null;
                 if (isset($val->chipset)) {
                     $this->ignored['controllers'][$val->chipset] = $val->chipset;
+                    $combined_name = sprintf('%s [%s]', $val->name, $val->chipset);
+                    $this->ignored['controllers'][$combined_name] = $combined_name;
                 }
 
                 $val->is_dynamic = 1;
+
+                if (isset($this->extra_data['controllers'])) {
+                    $found_controller = false;
+                    foreach ((array)$this->extra_data['controllers'] as $controller) {
+                        if (
+                            property_exists($controller, 'name')
+                            && ($controller->name === $val->name
+                                || (isset($val->chipset) && $controller->name === $val->chipset)
+                                || ($combined_name && $controller->name === $combined_name)
+                            )
+                        ) {
+                            $found_controller = $controller;
+                            break;
+                        }
+                    }
+
+                    if ($found_controller && property_exists($found_controller, 'vendorid')) {
+                        $pcivendor = new \PCIVendor();
+                        if ($pci_manufacturer = $pcivendor->getManufacturer($found_controller->vendorid)) {
+                            $val->manufacturers_id = $pci_manufacturer;
+                        }
+                    }
+                }
             } else {
                 unset($this->data[$k]);
             }
