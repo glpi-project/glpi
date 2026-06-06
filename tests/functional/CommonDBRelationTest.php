@@ -509,7 +509,7 @@ class CommonDBRelationTest_SameTypeRelation extends NetworkPort_NetworkPort
 {
     public static function getTable($classname = null): string
     {
-        return \NetworkPort_NetworkPort::getTable();
+        return NetworkPort_NetworkPort::getTable();
     }
 
     public static function getRelationMassiveActionsSpecificities(): array
