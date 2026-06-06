@@ -387,7 +387,7 @@ trait InventoryNetworkPort
         }
         foreach ($ports as $key => $data) {
             if (property_exists($data, 'speed')) {
-                $data->ifspeed = $data->speed;
+                $data->ifspeed = (int)$data->speed * 1000000;
             }
             if (property_exists($data, 'mtu')) {
                 $data->ifmtu = $data->mtu;
@@ -666,7 +666,7 @@ trait InventoryNetworkPort
         }
         foreach ($ports as $port) {
             if (property_exists($port, 'speed')) {
-                $port->ifspeed = $port->speed;
+                $port->ifspeed = (int)$port->speed * 1000000;
             }
             if (property_exists($port, 'mtu')) {
                 $port->ifmtu = $port->mtu;
