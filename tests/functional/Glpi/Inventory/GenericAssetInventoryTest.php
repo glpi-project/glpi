@@ -467,7 +467,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'is_deleted' => 0,
                 'is_dynamic' => 1,
                 'ifmtu' => 0,
-                'ifspeed' => 0,
+                'ifspeed' => 240,
                 'ifinternalstatus' => null,
                 'ifconnectionstatus' => 0,
                 'iflastchange' => null,
@@ -1170,6 +1170,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'mac' => '00:e0:4c:68:01:db',
                 'ifstatus' => '1',
                 'ifinternalstatus' => '1',
+                'ifspeed' => 100,
             ], [
                 'logical_number' => 1,
                 'name' => 'wlp58s0',

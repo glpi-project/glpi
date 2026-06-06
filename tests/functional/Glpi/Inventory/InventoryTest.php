@@ -238,6 +238,7 @@ class InventoryTest extends InventoryTestCase
                 'mac' => '00:e0:4c:68:01:db',
                 'ifstatus' => '1',
                 'ifinternalstatus' => '1',
+                'ifspeed' => 100,
             ], [
                 'logical_number' => 1,
                 'name' => 'wlp58s0',
@@ -5514,6 +5515,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'mac' => 'e0:dc:ff:ed:09:59',
                 'ifstatus' => '1',
                 'ifinternalstatus' => '1',
+                'ifspeed' => 240,
             ],
         ];
 
