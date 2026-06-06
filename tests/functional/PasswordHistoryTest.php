@@ -91,6 +91,14 @@ final class PasswordHistoryTest extends DbTestCase
             'expected' => true,
         ];
 
+        // Try to reuse old password 1 with password history fully disabled
+        $CFG_GLPI['non_reusable_passwords_count'] = 0;
+        yield [
+            'user'     => $tu_user,
+            'password' => "old password 1",
+            'expected' => true,
+        ];
+
         // Try to reuse current old password 1 with history enabled (length = 2)
         $CFG_GLPI['non_reusable_passwords_count'] = 3;
         yield [
