@@ -32,17 +32,14 @@
 
 import '/build/vue/app.js';
 import PlanningFiltersPanel from '/js/src/vue/Planning/PlanningFiltersPanel.vue';
-import '/lib/fuzzy.js';
 import {enableAutoUnmount, flushPromises, mount} from "@vue/test-utils";
 
 enableAutoUnmount(afterEach);
 
-describe('Planning/PlanningEvent Vue Component', () => {
+describe('Planning/PlanningFiltersPanel Vue Component', () => {
     beforeEach(() => {
         // clear document event listeners
         $(document).off();
-        // clear ajax mock
-        window.AjaxMock.end();
         // Reset body content
         document.body.innerHTML = `<div id="test-container"></div>`;
     });
@@ -111,27 +108,25 @@ describe('Planning/PlanningEvent Vue Component', () => {
 
         // Check that filters with children have an expand button
         const group_filter_parent = component.find('input[type="checkbox"][value="group_1_users"]').element.parentElement;
-        expect(group_filter_parent.querySelector('button[title="Toggle filters"] i').classList.contains('ti-caret-down-filled')).toBeTrue();
+        expect(group_filter_parent.querySelector('button[title="Toggle filters"] i').classList.contains('ti-caret-down-filled')).toBe(true);
         // child filters should be hidden by default
-        expect(component.find('input[type="checkbox"][value="user_4"]').element.closest('ul').classList.contains('d-none')).toBeTrue();
+        expect(component.find('input[type="checkbox"][value="user_4"]').element.closest('ul').classList.contains('d-none')).toBe(true);
         group_filter_parent.querySelector('button[title="Toggle filters"]').click();
         await flushPromises();
-        expect(group_filter_parent.querySelector('button[title="Toggle filters"] i').classList.contains('ti-caret-up-filled')).toBeTrue();
-        expect(component.find('input[type="checkbox"][value="user_4"]').element.closest('ul').classList.contains('d-none')).toBeFalse();
+        expect(group_filter_parent.querySelector('button[title="Toggle filters"] i').classList.contains('ti-caret-up-filled')).toBe(true);
+        expect(component.find('input[type="checkbox"][value="user_4"]').element.closest('ul').classList.contains('d-none')).toBe(false);
 
         // Delete option
         unsafe_filter_parent.querySelector('button[title="Actions"]').click();
-        await flushPromises();
-        expect(component.findAll('.dropdown-menu.show button').filter(btn => btn.text() === 'Delete').length).toBe(0);
+        expect(component.find('.dropdown-menu.show').findAll('button').filter(btn => btn.text() === 'Delete').length).toBe(0);
         component.find('input[type="checkbox"][value="user_2"]').element.parentElement.querySelector('button[title="Actions"]').click();
-        await flushPromises();
-        expect(component.findAll('.dropdown-menu.show button').filter(btn => btn.text() === 'Delete').length).toBe(1);
+        expect(component.find('.dropdown-menu.show').findAll('button').filter(btn => btn.text() === 'Delete').length).toBe(1);
     });
 
     test('toggle filter', async () => {
         const component = await mountFiltersPanel();
 
-        window.fetch = jest.fn().mockResolvedValue({
+        window.fetch = vi.fn().mockResolvedValue({
             ok: true,
             json: async () => ({success: true})
         });
@@ -151,7 +146,7 @@ describe('Planning/PlanningEvent Vue Component', () => {
     test('change color', async () => {
         const component = await mountFiltersPanel();
 
-        window.fetch = jest.fn().mockResolvedValue({
+        window.fetch = vi.fn().mockResolvedValue({
             ok: true,
             json: async () => ({success: true})
         });
@@ -176,7 +171,7 @@ describe('Planning/PlanningEvent Vue Component', () => {
         await flushPromises();
         const delete_button = component.findAll('.dropdown-menu.show button').find(btn => btn.text() === 'Delete');
         expect(delete_button).toBeTruthy();
-        window.fetch = jest.fn().mockResolvedValue({
+        window.fetch = vi.fn().mockResolvedValue({
             ok: true,
             json: async () => ({success: true})
         });

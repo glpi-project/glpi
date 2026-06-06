@@ -44,7 +44,7 @@ describe('User Mentions', () => {
             full: true
         });
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/getDropdownUsers.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/getDropdownUsers.php', 'POST', {
             entity_restrict: 5,
             right: 'all',
             _idor_token: 'test'
@@ -76,7 +76,7 @@ describe('User Mentions', () => {
             users: [2, 4]
         });
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/getDropdownUsers.php', 'POST', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/getDropdownUsers.php', 'POST', {
             entity_restrict: 5,
             right: 'all',
             _idor_token: 'test'
