@@ -505,7 +505,7 @@ class CommonDBRelationTest extends DbTestCase
  * Test-only relation used to exercise same-type reverse lookup logic
  * in CommonDBRelation massive actions.
  */
-class CommonDBRelationTest_SameTypeRelation extends \NetworkPort_NetworkPort
+class CommonDBRelationTest_SameTypeRelation extends NetworkPort_NetworkPort
 {
     public static function getTable($classname = null): string
     {
