@@ -37,16 +37,19 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_DeviceGraphicCard;
+use PCIVendor;
 
 class GraphicCard extends Device
 {
     protected array $ignored = ['controllers' => null];
+    protected array $extra_data = ['controllers' => null];
 
     public function prepare(): array
     {
         $mapping = [
             'name'   => 'designation',
         ];
+        $pcivendor = new PCIVendor();
 
         foreach ($this->data as $k => &$val) {
             if (property_exists($val, 'name')) {
@@ -62,6 +65,57 @@ class GraphicCard extends Device
                 }
 
                 $val->is_dynamic = 1;
+
+                if (isset($this->extra_data['controllers'])) {
+                    $found_controller = false;
+                    foreach ((array) $this->extra_data['controllers'] as $controller) {
+                        if (
+                            property_exists($controller, 'name')
+                            && (
+                                $controller->name === $val->name
+                                || (isset($val->chipset) && $controller->name === $val->chipset)
+                            )
+                        ) {
+                            $found_controller = $controller;
+                            break;
+                        }
+                    }
+
+                    if ($found_controller) {
+                        if (property_exists($found_controller, 'pciid')) {
+                            $exploded = explode(":", $found_controller->pciid);
+
+                            //manufacturer
+                            if ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0])) {
+                                $val->manufacturers_id = $pci_manufacturer;
+                            }
+
+                            //product name
+                            if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
+                                $val->designation = $pci_product;
+                                $val->devicegraphiccardmodels_id = $pci_product;
+                            }
+                        } elseif (property_exists($found_controller, 'vendorid')) {
+                            //manufacturer
+                            if ($pci_manufacturer = $pcivendor->getManufacturer($found_controller->vendorid)) {
+                                $val->manufacturers_id = $pci_manufacturer;
+                            }
+
+                            if (property_exists($found_controller, 'productid')) {
+                                //product name
+                                if ($pci_product = $pcivendor->getProductName($found_controller->vendorid, $found_controller->productid)) {
+                                    $val->designation = $pci_product;
+                                    $val->devicegraphiccardmodels_id = $pci_product;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Use caption for designation if available (after PCI lookup, as fallback)
+                if (property_exists($val, 'caption') && !empty($val->caption)) {
+                    $val->designation = $val->caption;
+                }
             } else {
                 unset($this->data[$k]);
             }

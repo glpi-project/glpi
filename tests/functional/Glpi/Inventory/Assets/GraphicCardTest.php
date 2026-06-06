@@ -75,6 +75,26 @@ class GraphicCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
                 'expected'  => '{"chipset": "Intel(R) HD Graphics Family", "name": "Intel(R) HD Graphics 530", "resolution": "1920x1080", "designation": "Intel(R) HD Graphics 530", "is_dynamic": 1}',
+            ], [ //with controller manufacturer extraction
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <CONTROLLERS>
+      <MANUFACTURER>Intel Corporation</MANUFACTURER>
+      <NAME>GeminiLake [UHD Graphics 600]</NAME>
+      <VENDORID>8086</VENDORID>
+    </CONTROLLERS>
+    <VIDEOS>
+      <CHIPSET>UHD Graphics 600</CHIPSET>
+      <NAME>GeminiLake</NAME>
+      <RESOLUTION>1360x768</RESOLUTION>
+    </VIDEOS>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  </REQUEST>",
+                'expected'  => '{"chipset": "UHD Graphics 600", "name": "GeminiLake", "resolution": "1360x768", "designation": "GeminiLake", "is_dynamic": 1, "manufacturers_id": "Intel Corporation"}',
             ],
         ];
     }
