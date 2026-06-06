@@ -505,18 +505,14 @@ class CommonDBRelationTest extends DbTestCase
  * Test-only relation used to exercise same-type reverse lookup logic
  * in CommonDBRelation massive actions.
  */
-/**
- * Test-only relation used to exercise same-type reverse lookup logic
- * in CommonDBRelation massive actions.
- */
 class CommonDBRelationTest_SameTypeRelation extends \NetworkPort_NetworkPort
 {
-    public static function getTable($classname = null)
+    public static function getTable($classname = null): string
     {
         return \NetworkPort_NetworkPort::getTable();
     }
 
-    public static function getRelationMassiveActionsSpecificities()
+    public static function getRelationMassiveActionsSpecificities(): array
     {
         $specificities = parent::getRelationMassiveActionsSpecificities();
         $specificities['check_both_items_if_same_type'] = true;
