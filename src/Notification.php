@@ -196,6 +196,7 @@ class Notification extends CommonDBTM implements FilterableInterface
             $menu['icon']                                       = self::getIcon();
             $menu['options'][Notification::class]['title']           = _n('Notification', 'Notifications', Session::getPluralNumber());
             $menu['options'][Notification::class]['page']            = Notification::getSearchURL(false);
+            $menu['options'][Notification::class]['icon']            = Notification::getIcon();
             $menu['options'][Notification::class]['links']['add']    = Notification::getFormURL(false);
             $menu['options'][Notification::class]['links']['search'] = Notification::getSearchURL(false);
             //saved search list
@@ -206,6 +207,8 @@ class Notification extends CommonDBTM implements FilterableInterface
                         = _n('Notification template', 'Notification templates', Session::getPluralNumber());
             $menu['options'][NotificationTemplate::class]['page']
                         = NotificationTemplate::getSearchURL(false);
+            $menu['options'][NotificationTemplate::class]['icon']
+                        = NotificationTemplate::getIcon();
             $menu['options'][NotificationTemplate::class]['links']['add']
                         = NotificationTemplate::getFormURL(false);
             $menu['options'][NotificationTemplate::class]['links']['search']
