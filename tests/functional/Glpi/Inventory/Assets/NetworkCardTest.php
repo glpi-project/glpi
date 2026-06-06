@@ -771,6 +771,7 @@ class NetworkCardTest extends AbstractInventoryAsset
       <MACADDR>20:47:47:90:78:42</MACADDR>
       <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
       <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
+      <MTU>1500</MTU>
       <PCIID>14E4:165F:05E5:1028</PCIID>
       <SPEED>1000</SPEED>
       <STATUS>Up</STATUS>
@@ -782,6 +783,7 @@ class NetworkCardTest extends AbstractInventoryAsset
       <MACADDR>20:47:47:90:78:44</MACADDR>
       <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
       <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
+      <MTU>1500</MTU>
       <PCIID>14E4:165F:05E5:1028</PCIID>
       <SPEED>1000</SPEED>
       <STATUS>Up</STATUS>
@@ -797,6 +799,7 @@ class NetworkCardTest extends AbstractInventoryAsset
       <MACADDR>20:47:47:90:78:42</MACADDR>
       <MANUFACTURER>Microsoft</MANUFACTURER>
       <MODEL>Microsoft Network Adapter Multiplexor Driver</MODEL>
+      <MTU>1500</MTU>
       <SPEED>2000</SPEED>
       <STATUS>Up</STATUS>
       <TYPE>ethernet</TYPE>
@@ -845,9 +848,20 @@ class NetworkCardTest extends AbstractInventoryAsset
         $this->assertArrayHasKey('Ethernet 2-20:47:47:90:78:44', $ports);
         $this->assertArrayHasKey('LoadBalance-20:47:47:90:78:42', $ports);
 
-        // Check if the Network Port has the correct MAC address, which ensures it will be assigned to the Network Card
+        // Check MAC Address mapping
         $this->assertEquals('20:47:47:90:78:42', $ports['Ethernet-20:47:47:90:78:42']->mac);
         $this->assertEquals('20:47:47:90:78:44', $ports['Ethernet 2-20:47:47:90:78:44']->mac);
+        $this->assertEquals('20:47:47:90:78:42', $ports['LoadBalance-20:47:47:90:78:42']->mac);
+
+        // Check Speed mapping
+        $this->assertEquals(1000, $ports['Ethernet-20:47:47:90:78:42']->speed);
+        $this->assertEquals(1000, $ports['Ethernet 2-20:47:47:90:78:44']->speed);
+        $this->assertEquals(2000, $ports['LoadBalance-20:47:47:90:78:42']->speed);
+
+        // Check MTU mapping
+        $this->assertEquals(1500, $ports['Ethernet-20:47:47:90:78:42']->ifmtu);
+        $this->assertEquals(1500, $ports['Ethernet 2-20:47:47:90:78:44']->ifmtu);
+        $this->assertEquals(1500, $ports['LoadBalance-20:47:47:90:78:42']->ifmtu);
     }
 
     public function testInventoryUpdate()

@@ -71,6 +71,7 @@ class NetworkCard extends Device
             'ipdhcp'      => 'dhcpserver',
             'wwn'         => 'wwn',
             'speed'       => 'speed',
+            'mtu'         => 'ifmtu',
         ];
         $pcivendor = new PCIVendor();
 
