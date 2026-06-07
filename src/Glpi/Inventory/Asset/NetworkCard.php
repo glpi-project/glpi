@@ -208,6 +208,25 @@ class NetworkCard extends Device
                     }
                 }
 
+                if (isset($this->extra_data['network_ports'])) {
+                    foreach ($this->extra_data['network_ports'] as $np) {
+                        $np_mac = property_exists($np, 'mac') ? strtolower($np->mac) : '';
+                        $vp_mac = property_exists($val_port, 'mac') ? strtolower($val_port->mac) : '';
+                        $np_name = property_exists($np, 'name') ? strtolower($np->name) : '';
+                        $vp_name = property_exists($val_port, 'name') ? strtolower($val_port->name) : '';
+
+                        if (
+                            ($np_mac !== '' && $vp_mac !== '' && $np_mac === $vp_mac)
+                            || ($np_name !== '' && $vp_name !== '' && $np_name === $vp_name)
+                        ) {
+                            if (property_exists($np, 'ifnumber') && $np->ifnumber !== '') {
+                                $val_port->logical_number = $np->ifnumber;
+                            }
+                            break;
+                        }
+                    }
+                }
+
                 if (property_exists($val_port, 'mac')) {
                     $val_port->mac = strtolower($val_port->mac);
                     $portkey = $val_port->name . '-' . $val_port->mac;
