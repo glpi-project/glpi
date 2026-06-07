@@ -333,7 +333,7 @@ export default function usePlanningScheduler(calendar_el, current_view, full_vie
                 dialogclass: 'modal-lg planning-modal',
                 title: __('Add an event'),
                 bs_focus: false,
-                done: () => refresh()
+                close: () => refresh()
             });
         }
 
