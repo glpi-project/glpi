@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Inventory\Asset;
 
 use DateInterval;
 use DateTime;
+use Glpi\Inventory\Asset\NetworkCard;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
