@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Inventory\Asset;
 
 use DateInterval;
 use DateTime;
+use Glpi\Inventory\Asset\NetworkCard;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
@@ -631,14 +632,14 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $computer_id = $computer->fields['id'];
         $this->assertGreaterThan(0, $computer_id);
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml_source);
         $json = json_decode($data);
 
-        $conf = new \Glpi\Inventory\Conf();
-        
+        $conf = new Conf();
+
         // First process NetworkCard so that the port gets created properly with logical_number
-        $cardAsset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+        $cardAsset = new NetworkCard($computer, $json->content->networks);
         $cardAsset->setExtraData((array) $json->content);
         $cardAsset->checkConf($conf);
         $cardAsset->prepare();
@@ -674,7 +675,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "networkports_id" => $networkport->fields['id'],
         ];
         $this->assertSame($expected_input, $db_input);
-        
+
         $this->assertEquals(10001, $networkport->fields['logical_number']);
     }
 
