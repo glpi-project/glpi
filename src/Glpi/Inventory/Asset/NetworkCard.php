@@ -203,12 +203,14 @@ class NetworkCard extends Device
                     }
                 }
 
-                if (isset($this->extra_data['network_ports'])) {
-                    foreach ($this->extra_data['network_ports'] as $np) {
-                        $np_mac = property_exists($np, 'mac') ? strtolower($np->mac) : '';
-                        $vp_mac = property_exists($val_port, 'mac') ? strtolower($val_port->mac) : '';
-                        $np_name = property_exists($np, 'name') ? strtolower($np->name) : '';
-                        $vp_name = property_exists($val_port, 'name') ? strtolower($val_port->name) : '';
+                if (isset($this->extra_data['network_ports']) && is_iterable($this->extra_data['network_ports'])) {
+                    /** @var iterable<object> $network_ports */
+                    $network_ports = $this->extra_data['network_ports'];
+                    foreach ($network_ports as $np) {
+                        $np_mac = property_exists($np, 'mac') ? strtolower((string)$np->mac) : '';
+                        $vp_mac = property_exists($val_port, 'mac') ? strtolower((string)$val_port->mac) : '';
+                        $np_name = property_exists($np, 'name') ? strtolower((string)$np->name) : '';
+                        $vp_name = property_exists($val_port, 'name') ? strtolower((string)$val_port->name) : '';
 
                         if (
                             ($np_mac !== '' && $vp_mac !== '' && $np_mac === $vp_mac)
