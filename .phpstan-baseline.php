@@ -9590,24 +9590,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getManagementPorts\\(\\) on object\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getStackId\\(\\) on object\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method isStackedSwitch\\(\\) on object\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Inventory\\\\Asset\\\\NetworkPort\\:\\:addNetworkName\\(\\) should return int but returns int\\|false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
