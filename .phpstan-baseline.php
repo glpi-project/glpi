@@ -9682,7 +9682,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$devicegraphiccardmodels_id\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/GraphicCard.php',
 ];
 $ignoreErrors[] = [
