@@ -46,7 +46,7 @@ class NetworkCard extends Device
 
     private Conf $conf;
 
-    protected $extra_data = ['controllers' => null];
+    protected $extra_data = ['controllers' => null, 'network_ports' => null];
     protected $ignored = ['controllers' => null];
     /** @var string[] */
     private array $cards_macs = [];
@@ -194,14 +194,33 @@ class NetworkCard extends Device
                 (property_exists($val_port, 'name') && $val_port->name != '')
                 || (property_exists($val_port, 'mac') && $val_port->mac != '')
             ) {
-                if (property_exists($val_port, 'virtualdev') && $val_port->virtualdev != 1) {
-                    $val_port->virtualdev = 0;
+                $val_port->logical_number = 1;
+                if (property_exists($val_port, 'virtualdev')) {
+                    if ($val_port->virtualdev != 1) {
+                        $val_port->virtualdev = 0;
+                    } else {
+                        $val_port->logical_number = 0;
+                    }
                 }
 
-                if (!property_exists($val_port, 'logical_number')) {
-                    $val_port->logical_number = 1;
-                    if (property_exists($val_port, 'virtualdev') && $val_port->virtualdev == 1) {
-                        $val_port->logical_number = 0;
+                if (isset($this->extra_data['network_ports']) && is_iterable($this->extra_data['network_ports'])) {
+                    /** @var iterable<object> $network_ports */
+                    $network_ports = $this->extra_data['network_ports'];
+                    foreach ($network_ports as $np) {
+                        $np_mac = property_exists($np, 'mac') ? strtolower((string) $np->mac) : '';
+                        $vp_mac = property_exists($val_port, 'mac') ? strtolower((string) $val_port->mac) : '';
+                        $np_name = property_exists($np, 'name') ? strtolower((string) $np->name) : '';
+                        $vp_name = property_exists($val_port, 'name') ? strtolower((string) $val_port->name) : '';
+
+                        if (
+                            ($np_mac !== '' && $vp_mac !== '' && $np_mac === $vp_mac)
+                            || ($np_name !== '' && $vp_name !== '' && $np_name === $vp_name)
+                        ) {
+                            if (property_exists($np, 'ifnumber') && $np->ifnumber !== '') {
+                                $val_port->logical_number = $np->ifnumber;
+                            }
+                            break;
+                        }
                     }
                 }
 
