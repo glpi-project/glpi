@@ -1750,7 +1750,7 @@ TWIG, $twig_params);
                              && !$_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']
                               ? 'background'
                               : '',
-                'color'       => $actor_color,
+                'color'       => !empty($event['color']) ? $event['color'] : $actor_color,
                 'borderColor' => (empty($event['event_type_color'])
                               ? self::getPaletteColor('ev', $event['itemtype'])
                               : $event['event_type_color']),
