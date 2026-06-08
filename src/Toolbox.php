@@ -926,7 +926,7 @@ class Toolbox
 
     /**
      * Resize a picture to the new size
-     * Always produce a JPG file!
+     * The output format matches the source image format when supported.
      *
      * @since 0.85
      *
@@ -1120,7 +1120,9 @@ class Toolbox
      * @return int
      *   0: OK,
      *   1: delete error,
-     *   2: creation error
+     *   2: creation error,
+     *   3: directory deletion error,
+     *   4: directory creation error
      **/
     public static function testWriteAccessToDirectory($dir)
     {
@@ -1962,9 +1964,9 @@ class Toolbox
             return $protocols;
         }
 
-        $additionnal_protocols = Plugin::doHookFunction(Hooks::MAIL_SERVER_PROTOCOLS, []);
-        if (is_array($additionnal_protocols)) {
-            foreach ($additionnal_protocols as $key => $additionnal_protocol) {
+        $additional_protocols = Plugin::doHookFunction(Hooks::MAIL_SERVER_PROTOCOLS, []);
+        if (is_array($additional_protocols)) {
+            foreach ($additional_protocols as $key => $additional_protocol) {
                 if (array_key_exists($key, $protocols)) {
                     trigger_error(
                         sprintf('Protocol "%s" is already defined and cannot be overwritten.', $key),
@@ -1974,9 +1976,9 @@ class Toolbox
                 }
 
                 if (
-                    !array_key_exists('label', $additionnal_protocol)
-                    || !array_key_exists('protocol', $additionnal_protocol)
-                    || !array_key_exists('storage', $additionnal_protocol)
+                    !array_key_exists('label', $additional_protocol)
+                    || !array_key_exists('protocol', $additional_protocol)
+                    || !array_key_exists('storage', $additional_protocol)
                 ) {
                     trigger_error(
                         sprintf('Invalid specs for protocol "%s".', $key),
@@ -1984,7 +1986,7 @@ class Toolbox
                     );
                     continue;
                 }
-                $protocols[$key] = $additionnal_protocol;
+                $protocols[$key] = $additional_protocol;
             }
         } else {
             trigger_error(
