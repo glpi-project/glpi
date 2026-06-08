@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
+use DeviceGraphicCardModel;
 use Glpi\Inventory\Asset\GraphicCard;
 use Glpi\Inventory\Converter;
 use Glpi\Tests\AbstractInventoryAsset;
@@ -190,9 +191,13 @@ class GraphicCardTest extends AbstractInventoryAsset
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
+        $model_gc = new DeviceGraphicCardModel();
+        
+        $model_1_id = $model_gc->add(['name' => 'ATI Radeon X1600']);
         $gc_1_id = $device_gc->add([
             'designation' => 'ATI Radeon X1600',
             'chipset' => 'ATY,RadeonX1600',
+            'devicegraphiccardmodels_id' => $model_1_id,
             'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $gc_1_id);
@@ -204,9 +209,11 @@ class GraphicCardTest extends AbstractInventoryAsset
         ]);
         $this->assertGreaterThan(0, $item_gc_1_id);
 
+        $model_2_id = $model_gc->add(['name' => 'Intel(R) HD Graphics 530']);
         $gc_2_id = $device_gc->add([
             'designation' => 'Intel(R) HD Graphics 530',
             'chipset' => 'Intel(R) HD Graphics Family',
+            'devicegraphiccardmodels_id' => $model_2_id,
             'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $gc_2_id);
