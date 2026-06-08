@@ -168,14 +168,19 @@ if (isset($_GET['getvcard'])) {
     );
     Session::addMessageAfterRedirect(__s('Lang has been changed!'));
     Html::back();
-} elseif (isset($_POST['impersonate']) && $_POST['impersonate']) {
+}
+// start impersonation
+elseif (isset($_POST['impersonate']) && $_POST['impersonate']) {
+    User::checkReAuthenticationOrRedirect();
     if (!Session::startImpersonating($_POST['id'])) {
         Session::addMessageAfterRedirect(__s('Unable to impersonate user'), false, ERROR);
         Html::back();
     }
 
     Html::redirect($CFG_GLPI['root_doc'] . '/');
-} elseif (isset($_POST['impersonate']) && !$_POST['impersonate']) {
+}
+// stop impersonation
+elseif (isset($_POST['impersonate']) && !$_POST['impersonate']) {
     $impersonated_user_id = Session::getLoginUserID();
 
     if (!Session::stopImpersonating()) {

@@ -1963,12 +1963,15 @@ class Session
      * Check if current user can impersonate another user having given id.
      *
      * @param int $user_id
+     * @param-out bool $reauth_needed On true, it tells that soly a reauth is needed to perform action. On false, ignore it.
      *
      * @return bool
      */
-    public static function canImpersonate($user_id, ?string &$message = null)
+    public static function canImpersonate($user_id, ?string &$message = null, null &$reauth_needed = null): bool
     {
         global $DB;
+
+        $reauth_needed = false;
 
         // Stop here if the user can't impersonate (doesn't have the right + isn't admin)
         if (!self::haveRight('user', User::IMPERSONATE)) {
@@ -2015,11 +2018,21 @@ class Session
             return false;
         }
 
+        // all condition met, return true unless reauth is required.
+        if (User::isUserReauthenticationNeeded()) {
+            $reauth_needed = true;
+
+            return false;
+        }
+
         return true;
     }
 
     /**
      * Impersonate user having given id.
+     *
+     * Be sure to write User::checkReAuthenticationOrRedirect() before calling this method
+     * to ensure that the user can process reauthentication if needed.
      *
      * @param int $user_id
      *
@@ -2055,12 +2068,16 @@ class Session
             'glpiactive_entity'             => $_SESSION['glpiactive_entity'],
             'glpiactive_entity_recursive'   => $_SESSION['glpiactive_entity_recursive'],
             'profiles_id'                   => $_SESSION['glpiactiveprofile']['id'],
+            'glpi_reauth_until'             => $_SESSION['glpi_reauth_until'] ?? null,
         ];
 
         $auth = new Auth();
         $auth->auth_succeded = true;
         $auth->user = $user;
         Session::init($auth);
+
+        // The impersonated user must not inherit the impersonator's re-authentication token
+        unset($_SESSION['glpi_reauth_until']);
 
         // Force usage of current user lang and session mode
         $_SESSION['glpilanguage'] = $lang;
@@ -2113,6 +2130,12 @@ class Session
             // Restore profile/entity
             self::changeProfile($impersonator_info['profiles_id']);
             self::changeActiveEntities($impersonator_info['glpiactive_entity'], $impersonator_info['glpiactive_entity_recursive']);
+            // Restore re-authentication token so the impersonator does not have to re-authenticate again
+            if ($impersonator_info['glpi_reauth_until'] !== null) {
+                $_SESSION['glpi_reauth_until'] = $impersonator_info['glpi_reauth_until'];
+            } else {
+                unset($_SESSION['glpi_reauth_until']);
+            }
         }
 
         Event::log(0, "system", 3, "Impersonate", sprintf(
