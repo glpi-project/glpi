@@ -47,7 +47,7 @@ class Tag extends CommonDropdown
     }
 
     /**
-     * Get itemtypes can be tagged with this tag
+     * Get itemtypes that can be tagged with this tag.
      *
      * @return list<class-string<CommonDBTM>>
      */
