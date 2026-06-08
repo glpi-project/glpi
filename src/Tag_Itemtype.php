@@ -34,7 +34,7 @@
 
 class Tag_Itemtype extends CommonDBChild
 {
-    // From CommonDbChild
+    // From CommonDBChild
     public static string $itemtype = Tag::class;
     public static string $items_id = 'tags_id';
 
