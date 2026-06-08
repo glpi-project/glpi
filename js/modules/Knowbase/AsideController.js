@@ -386,6 +386,9 @@ export class GlpiKnowbaseAsideController
             }
             li.classList.add('kb-aside-source-dragging');
             this.#aside.classList.add('kb-aside-dragging');
+            if (this.#identifySource(li).itemtype === ITEMTYPE_CATEGORY) {
+                this.#aside.classList.add('kb-aside-dragging-category');
+            }
         });
     }
 
@@ -410,6 +413,21 @@ export class GlpiKnowbaseAsideController
         if (!this.#drag?.source) {
             return;
         }
+
+        // Root drop zone: promote a category back to top level.
+        const root_zone = event.target.closest?.('[data-glpi-kb-aside-root-dropzone]');
+        if (root_zone) {
+            const { itemtype } = this.#identifySource(this.#drag.source);
+            if (itemtype !== ITEMTYPE_CATEGORY || this.#getCurrentParentId(this.#drag.source) === 0) {
+                return;
+            }
+            this.#clearTargetHighlight();
+            root_zone.classList.add('kb-aside-target');
+            this.#drag.current_target = root_zone;
+            this.#cancelAutoExpand();
+            return;
+        }
+
         const title = event.target.closest?.('[data-glpi-kb-aside-category-title]');
         if (!title) {
             return;
@@ -440,6 +458,16 @@ export class GlpiKnowbaseAsideController
         if (!this.#drag?.source) {
             return;
         }
+
+        const root_zone = event.target.closest?.('[data-glpi-kb-aside-root-dropzone]');
+        if (root_zone && root_zone === this.#drag.current_target) {
+            const related_zone = event.relatedTarget?.closest?.('[data-glpi-kb-aside-root-dropzone]');
+            if (related_zone !== root_zone) {
+                this.#clearTargetHighlight();
+            }
+            return;
+        }
+
         const title = event.target.closest?.('[data-glpi-kb-aside-category-title]');
         if (!title || title !== this.#drag.current_target) {
             return;
@@ -465,14 +493,11 @@ export class GlpiKnowbaseAsideController
         }
         event.preventDefault();
 
-        const target_title = this.#drag.current_target;
-        if (!target_title) {
+        const target = this.#drag.current_target;
+        if (!target) {
             this.#revertDrop();
             return;
         }
-
-        const target_li = target_title.closest('[data-glpi-kb-aside-category]');
-        const target_id = parseInt(target_li.dataset.glpiKbAsideCategoryId, 10);
 
         // Capture the revert state BEFORE awaiting the fetch: dragend fires
         // synchronously after drop and nulls this.#drag before the await
@@ -482,6 +507,14 @@ export class GlpiKnowbaseAsideController
         const origin_next   = this.#drag.origin_next;
 
         this.#clearTargetHighlight();
+
+        if (target.matches('[data-glpi-kb-aside-root-dropzone]')) {
+            await this.#commitReparentToRoot(source, origin_parent, origin_next);
+            return;
+        }
+
+        const target_li = target.closest('[data-glpi-kb-aside-category]');
+        const target_id = parseInt(target_li.dataset.glpiKbAsideCategoryId, 10);
         await this.#commitReparent(source, target_li, target_id, origin_parent, origin_next);
     }
 
@@ -522,6 +555,63 @@ export class GlpiKnowbaseAsideController
             target_children.appendChild(source_li);
         }
 
+        return this.#postReparent(
+            source_li,
+            { itemtype, items_id, from_parent_id, to_parent_id: target_id },
+            origin_parent,
+            origin_next,
+        );
+    }
+
+    /**
+     * Promote a CATEGORY back to the top level (parent_id=0). Optimistic: the
+     * category <li> is appended to the tree's root <ul>, then reverted if the
+     * server rejects.
+     *
+     * @param {HTMLElement}  source_li
+     * @param {HTMLElement}  origin_parent  Container `source_li` came from (for revert).
+     * @param {?HTMLElement} origin_next    Sibling that was after `source_li` (for revert).
+     * @returns {Promise<boolean>} true if the move was accepted by the server.
+     */
+    async #commitReparentToRoot(source_li, origin_parent, origin_next)
+    {
+        const { itemtype, items_id } = this.#identifySource(source_li);
+        if (itemtype !== ITEMTYPE_CATEGORY) {
+            return false;
+        }
+        const from_parent_id = this.#getCurrentParentId(source_li);
+        if (from_parent_id === 0) {
+            return true;
+        }
+
+        const tree    = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
+        const root_ul = tree?.querySelector(':scope > ul');
+        if (!root_ul) {
+            glpi_toast_error(__("An unexpected error occurred."));
+            return false;
+        }
+
+        root_ul.appendChild(source_li);
+
+        return this.#postReparent(
+            source_li,
+            { itemtype, items_id, from_parent_id, to_parent_id: 0 },
+            origin_parent,
+            origin_next,
+        );
+    }
+
+    /**
+     * POST a reparent to the backend; revert the optimistic DOM move on failure.
+     *
+     * @param {HTMLElement}  source_li
+     * @param {{itemtype: string, items_id: number, from_parent_id: number, to_parent_id: number}} body
+     * @param {HTMLElement}  origin_parent
+     * @param {?HTMLElement} origin_next
+     * @returns {Promise<boolean>}
+     */
+    async #postReparent(source_li, body, origin_parent, origin_next)
+    {
         let response;
         try {
             response = await fetch(`${CFG_GLPI.root_doc}/Knowbase/Aside/Reparent`, {
@@ -530,12 +620,7 @@ export class GlpiKnowbaseAsideController
                     'Content-Type': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest',
                 },
-                body: JSON.stringify({
-                    itemtype,
-                    items_id,
-                    from_parent_id,
-                    to_parent_id: target_id,
-                }),
+                body: JSON.stringify(body),
             });
         } catch (e) {
             origin_parent.insertBefore(source_li, origin_next);
@@ -564,6 +649,7 @@ export class GlpiKnowbaseAsideController
             this.#drag.source.classList.remove('kb-aside-source-dragging');
         }
         this.#aside.classList.remove('kb-aside-dragging');
+        this.#aside.classList.remove('kb-aside-dragging-category');
         this.#drag = null;
     }
 
@@ -740,6 +826,13 @@ export class GlpiKnowbaseAsideController
         const picker_id         = `kb-move-picker-${Math.random().toString(36).slice(2, 8)}`;
         const submit_id         = `${picker_id}-submit`;
 
+        // Categories get a synthetic "Top level" (root, value 0) option: the
+        // article picker reaches root through the real id=0 "Uncategorized" <li>,
+        // which is skipped for categories, so we prepend it explicitly.
+        const root_option = itemtype === ITEMTYPE_CATEGORY
+            ? this.#renderRootPickerOption(current_parent_id, picker_id)
+            : '';
+
         const tree_html = this.#renderPickerLevel(
             root_ul,
             source_li,
@@ -747,7 +840,7 @@ export class GlpiKnowbaseAsideController
             items_id,
             current_parent_id,
             picker_id,
-        );
+        ).replace('<ul class="kb-move-picker-list">', `<ul class="kb-move-picker-list">${root_option}`);
 
         const body = `
             <p class="text-muted mb-3">${_.escape(__("Pick a category as the new parent."))}</p>
@@ -778,6 +871,16 @@ export class GlpiKnowbaseAsideController
                             return;
                         }
                         const target_id = parseInt(selected.value, 10);
+                        // value 0 for a category means "Top level" (root); there
+                        // is no category <li> to find for it.
+                        if (target_id === 0 && itemtype === ITEMTYPE_CATEGORY) {
+                            this.#commitReparentToRoot(
+                                source_li,
+                                source_li.parentElement,
+                                source_li.nextElementSibling,
+                            );
+                            return;
+                        }
                         const target_li = tree.querySelector(
                             `[data-glpi-kb-aside-category][data-glpi-kb-aside-category-id="${target_id}"]`,
                         );
@@ -795,6 +898,41 @@ export class GlpiKnowbaseAsideController
                 },
             ],
         });
+    }
+
+    /**
+     * Render the synthetic "Top level" (root, value 0) radio for a category.
+     * Checked + disabled when the category is already at root.
+     *
+     * @param {number} current_parent_id
+     * @param {string} picker_id
+     * @returns {string}
+     */
+    #renderRootPickerOption(current_parent_id, picker_id)
+    {
+        const is_current    = current_parent_id === 0;
+        const radio_id      = `${picker_id}-radio-root`;
+        const checked_attr  = is_current ? 'checked' : '';
+        const disabled_attr = is_current ? 'disabled' : '';
+        const current_badge = is_current
+            ? ` <span class="badge bg-info-lt ms-2" aria-hidden="true">${_.escape(__("current"))}</span>`
+            : '';
+
+        return `
+            <li>
+                <label class="form-check d-flex align-items-center mb-1" for="${radio_id}">
+                    <input type="radio"
+                           name="target"
+                           value="0"
+                           id="${radio_id}"
+                           class="form-check-input me-2 mt-0"
+                           ${checked_attr}
+                           ${disabled_attr}>
+                    <span class="text-truncate">${_.escape(__("Top level"))}</span>
+                    ${current_badge}
+                </label>
+            </li>
+        `;
     }
 
     /**
@@ -891,8 +1029,11 @@ export class GlpiKnowbaseAsideController
     #getSourceTitle(source_li)
     {
         if (source_li.hasAttribute('data-glpi-kb-article-id')) {
-            // <a> contains the illustration (non-text) then the article title.
-            return source_li.querySelector(':scope > a')?.textContent.trim() ?? '';
+            // Clean title exposed server-side; fall back to <a> text (which also
+            // captures the illustration's accessible text) when absent.
+            return source_li.getAttribute('data-glpi-kb-article-title')
+                ?? source_li.querySelector(':scope > a')?.textContent.trim()
+                ?? '';
         }
         // Categories have the clean title on aria-label of the <li>.
         return source_li.getAttribute('aria-label') ?? '';

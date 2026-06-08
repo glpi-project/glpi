@@ -188,3 +188,61 @@ test('In the move picker, a category cannot be moved into one of its descendants
     // The category itself is also disabled (it's the current selection).
     await expect(dialog.getByRole('radio', { name: parent_name })).toBeDisabled();
 });
+
+test('Moving a nested category to (Top level) makes it a root category', async ({
+    page,
+    profile,
+    api,
+}) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const token       = randomUUID().slice(0, 8);
+    const parent_name = `E2E Parent ${token}`;
+    const child_name  = `E2E Child ${token}`;
+    const anchor_name = `E2E Anchor ${token}`;
+
+    const parent_id = await api.createItem('KnowbaseItemCategory', {
+        name: parent_name,
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItemCategory', {
+        name: child_name,
+        entities_id: getWorkerEntityId(),
+        knowbaseitemcategories_id: parent_id,
+    });
+    const anchor_id = await api.createItem('KnowbaseItem', {
+        name: anchor_name,
+        answer: 'Anchor',
+        entities_id: getWorkerEntityId(),
+        _categories: [parent_id],
+    });
+
+    await kb.gotoAndWait(anchor_id);
+
+    // The child category is nested inside the parent's group.
+    await expect(
+        page.getByRole('group', { name: parent_name })
+            .getByRole('group', { name: child_name }),
+    ).toBeVisible();
+
+    // Focus the child category's toggle so the row's :focus-within reveals the kebab.
+    await page
+        .getByRole('group', { name: child_name })
+        .getByRole('button', { name: child_name, exact: true })
+        .focus();
+    await page.getByRole('button', { name: `Move ${child_name}` }).click();
+
+    const dialog = page.getByRole('dialog');
+    await dialog.getByRole('radio', { name: 'Top level' }).check();
+    await dialog.getByRole('button', { name: 'Move', exact: true }).click();
+
+    await kb.gotoAndWait(anchor_id);
+
+    // The child is still in the tree, but no longer nested under the parent.
+    await expect(page.getByRole('group', { name: child_name })).toBeVisible();
+    await expect(
+        page.getByRole('group', { name: parent_name })
+            .getByRole('group', { name: child_name }),
+    ).toHaveCount(0);
+});

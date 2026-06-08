@@ -740,8 +740,20 @@
 }
 
 [data-main-page-aside="knowbaseitem"] {
+    display: flex;
+    flex-direction: column;
+    // Bounded height aligned with .kb-article / .kb-sidepanel so the aside
+    // scrolls internally instead of overflowing the viewport.
+    max-height: calc(100vh - 150px);
     max-width: 300px;
     background-color: #fff;
+
+    // Only the tree scrolls; header and favorites stay fixed above it.
+    [data-glpi-kb-aside-tree] {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+    }
 
     .node, .article {
         list-style: none;
@@ -844,6 +856,21 @@
         a {
             color: #fff !important;
         }
+    }
+
+    // "Top level" drop zone: hidden by default, revealed only while a category
+    // is being dragged so it can be dropped at the tree root.
+    .kb-aside-root-dropzone {
+        display: none;
+        margin: 0 0 0.25rem;
+        padding: 0.25rem 0.5rem;
+        border: 1px dashed var(--tblr-border-color);
+        border-radius: 4px;
+        color: var(--tblr-secondary);
+    }
+
+    &.kb-aside-dragging-category .kb-aside-root-dropzone {
+        display: block;
     }
 
     // Keyboard/touch-only fallback for drag-to-reparent (pointer users drag

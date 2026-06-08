@@ -84,6 +84,7 @@
     {% import _self as macros %}
     <li
         data-glpi-kb-article-id="{{ article.id }}"
+        data-glpi-kb-article-title="{{ article.title }}"
         {% if draggable %}draggable="true"{% endif %}
         {% if favorite_state is not null %}
             data-glpi-kb-favorite-current="{{ favorite_state }}"
@@ -179,6 +180,15 @@
     {% if can_reorder_categories ?? false %}data-glpi-kb-aside-can-reorder-categories{% endif %}
 >
     <ul class="kb-tree ps-0">
+        {% if can_reorder_categories ?? false %}
+            <li class="kb-aside-root-dropzone" data-glpi-kb-aside-root-dropzone aria-hidden="true">
+                <div class="kb-aside-row d-flex align-items-center">
+                    <i class="ti ti-corner-left-up me-1 fs-4" aria-hidden="true"></i>
+                    <span class="ms-2 fw-bold text-truncate d-block">{{ __('Top level') }}</span>
+                </div>
+            </li>
+        {% endif %}
+
         {# Render root articles in a special "uncategorized" pseudo-category. #}
         {# The pseudo-category itself is never draggable (id=0), but its articles can be. #}
         {% if tree.articles|length %}
