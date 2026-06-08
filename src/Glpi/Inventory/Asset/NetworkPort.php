@@ -633,9 +633,7 @@ class NetworkPort extends InventoryAsset
 
     public function handle()
     {
-        if (method_exists($this->extra_data[$this->main_asset::class], 'getManagementPorts')) {
-            $this->ports += $this->extra_data[$this->main_asset::class]->getManagementPorts();
-        }
+        $this->ports += $this->extra_data[$this->main_asset::class]->getManagementPorts();
         $this->handlePorts();
     }
 
@@ -852,7 +850,7 @@ class NetworkPort extends InventoryAsset
         }
 
         //handle ports for stacked switches
-        if (method_exists($mainasset, 'isStackedSwitch') && $mainasset->isStackedSwitch()) {
+        if ($mainasset->isStackedSwitch()) {
             $bkp_ports = $this->ports;
             $stack_id = $mainasset->getStackId();
             $need_increment_index = false;
