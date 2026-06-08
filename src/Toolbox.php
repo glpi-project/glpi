@@ -1879,16 +1879,6 @@ class Toolbox
             return $protocols;
         }
 
-        foreach (OAuthApplication::getActiveApplications() as $app) {
-            $key = 'oauth_imap_' . $app->getID();
-            $protocols[$key] = [
-                'label'                 => sprintf(__('OAuth IMAP – %s'), $app->getName()),
-                'protocol'              => Imap::class,
-                'storage'               => Laminas\Mail\Storage\Imap::class,
-                'oauth_applications_id' => $app->getID(),
-            ];
-        }
-
         $additionnal_protocols = Plugin::doHookFunction(Hooks::MAIL_SERVER_PROTOCOLS, []);
         if (is_array($additionnal_protocols)) {
             foreach ($additionnal_protocols as $key => $additionnal_protocol) {

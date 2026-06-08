@@ -52,7 +52,8 @@
                                 'provider',
                                 item.fields['provider'],
                                 providers,
-                                __('Provider')
+                                __('Provider'),
+                                {display_emptychoice: false}
                             ) }}
 
                             {{ fields.textField('client_id', item.fields['client_id'], __('Client ID')) }}

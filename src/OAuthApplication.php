@@ -37,7 +37,12 @@ use Glpi\Application\View\TemplateRenderer;
 class OAuthApplication extends CommonDBTM
 {
     public static string $rightname = 'config';
+
     public bool $dohistory = true;
+
+    public const AZURE = 'azure';
+    public const GOOGLE = 'google';
+
     public static array $undisclosedFields = [
         'client_secret',
     ];
@@ -59,12 +64,12 @@ class OAuthApplication extends CommonDBTM
 
     public static function canCreate(): bool
     {
-        return Session::haveRight(static::$rightname, CREATE);
+        return static::canUpdate();
     }
 
     public static function canPurge(): bool
     {
-        return Session::haveRight(static::$rightname, PURGE);
+        return static::canUpdate();
     }
 
     public function defineTabs($options = []): array
@@ -205,6 +210,13 @@ class OAuthApplication extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        if (empty($input['provider']) || !array_key_exists($input['provider'], self::getProviders())) {
+            Session::addMessageAfterRedirect(
+                msg: __s('A valid provider is required'),
+                message_type: ERROR
+            );
+            return false;
+        }
         if (empty($input['client_id'])) {
             Session::addMessageAfterRedirect(
                 msg: __s('Client ID is required'),
@@ -227,6 +239,14 @@ class OAuthApplication extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        if (isset($input['provider']) && !array_key_exists($input['provider'], self::getProviders())) {
+            Session::addMessageAfterRedirect(
+                msg: __s('A valid provider is required'),
+                message_type: ERROR
+            );
+            return false;
+        }
+
         if (isset($input['client_secret'])) {
             if (!empty($input['client_secret'])) {
                 $input['client_secret'] = (new GLPIKey())->encrypt($input['client_secret']);
@@ -265,8 +285,8 @@ class OAuthApplication extends CommonDBTM
     public static function getProviders(): array
     {
         return [
-            'azure'  => __('Microsoft Azure'),
-            'google' => __('Google'),
+            self::AZURE  => __('Microsoft Azure'),
+            self::GOOGLE => __('Google'),
         ];
     }
 
@@ -276,7 +296,7 @@ class OAuthApplication extends CommonDBTM
 
         $opts[] = [
             'id'   => 'common',
-            'name' => self::getTypeName(1),
+            'name' => static::getTypeName(1),
         ];
         $opts[] = [
             'id'       => 1,
@@ -287,7 +307,7 @@ class OAuthApplication extends CommonDBTM
         ];
         $opts[] = [
             'id'            => 2,
-            'table'         => self::getTable(),
+            'table'         => static::getTable(),
             'field'         => 'id',
             'name'          => __('ID'),
             'massiveaction' => false,
@@ -295,28 +315,28 @@ class OAuthApplication extends CommonDBTM
         ];
         $opts[] = [
             'id'       => 3,
-            'table'    => self::getTable(),
+            'table'    => static::getTable(),
             'field'    => 'is_active',
             'name'     => __('Active'),
             'datatype' => 'bool',
         ];
         $opts[] = [
             'id'       => 4,
-            'table'    => self::getTable(),
+            'table'    => static::getTable(),
             'field'    => 'provider',
             'name'     => __('Provider'),
             'datatype' => 'string',
         ];
         $opts[] = [
             'id'       => 5,
-            'table'    => self::getTable(),
+            'table'    => static::getTable(),
             'field'    => 'comment',
             'name'     => _n('Comment', 'Comments', 1),
             'datatype' => 'text',
         ];
         $opts[] = [
             'id'            => 19,
-            'table'         => self::getTable(),
+            'table'         => static::getTable(),
             'field'         => 'date_mod',
             'name'          => __('Last update'),
             'datatype'      => 'datetime',
@@ -324,7 +344,7 @@ class OAuthApplication extends CommonDBTM
         ];
         $opts[] = [
             'id'            => 121,
-            'table'         => self::getTable(),
+            'table'         => static::getTable(),
             'field'         => 'date_creation',
             'name'          => __('Creation date'),
             'datatype'      => 'datetime',
