@@ -270,7 +270,7 @@ final class QuestionTypeItemTest extends DbTestCase
         yield [
             fn(self $t) => [
                 'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: Computer::class),
-                'itemtype_id' => ['items_id' => $t->createItem(Computer::class, [
+                'itemtype_id' => ['items_ids' => $t->createItem(Computer::class, [
                     'name'        => 'ComputerTest',
                     'entities_id' => $t->getTestRootEntity(true),
                 ])->getID()],
@@ -281,7 +281,7 @@ final class QuestionTypeItemTest extends DbTestCase
         yield [
             fn(self $t) => [
                 'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: \ITILCategory::class),
-                'itemtype_id' => ['items_id' => $t->createItem(\ITILCategory::class, [
+                'itemtype_id' => ['items_ids' => $t->createItem(\ITILCategory::class, [
                     'name' => 'Parent Category',
                     'entities_id' => $t->getTestRootEntity(true),
                 ])->getID()],
@@ -292,7 +292,7 @@ final class QuestionTypeItemTest extends DbTestCase
         yield [
             fn(self $t) => [
                 'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: \ITILCategory::class),
-                'itemtype_id' => ['items_id' => $t->createItem(\ITILCategory::class, [
+                'itemtype_id' => ['items_ids' => $t->createItem(\ITILCategory::class, [
                     'name' => 'Child Category',
                     'entities_id' => $t->getTestRootEntity(true),
                     'itilcategories_id' => $t->createItem(\ITILCategory::class, [
