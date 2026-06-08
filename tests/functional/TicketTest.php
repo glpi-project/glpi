@@ -57,6 +57,8 @@ use ITILCategory;
 use ITILFollowup;
 use ITILReminder;
 use ITILSolution;
+use Laminas\Mail\Storage\Message as MailMessage;
+use MailCollector;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Profile_User;
@@ -79,6 +81,7 @@ use TicketTemplate;
 use TicketTemplateMandatoryField;
 use TicketValidation;
 use User;
+use UserEmail;
 
 /* Test for inc/ticket.class.php */
 
@@ -7276,6 +7279,104 @@ HTML,
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount(0, $actors);
+    }
+
+    public static function mailCollectorFollowupNotAssignedProvider(): array
+    {
+        return [
+            'self_service_user_has_no_tech_rights' => [
+                'from_user'        => 'normal',
+                'set_followup_tech' => 1,
+            ],
+            'tech_user_disabled_preference' => [
+                'from_user'        => 'tech',
+                'set_followup_tech' => 0,
+            ],
+            'tech_user_enabled_preference' => [
+                'from_user'        => 'tech',
+                'set_followup_tech' => 1,
+            ],
+        ];
+    }
+
+    #[DataProvider('mailCollectorFollowupNotAssignedProvider')]
+    public function testMailCollectorFollowupDoesNotAssignUser(string $from_user, int $set_followup_tech): void
+    {
+        // Log in as glpi and enable "assign me" preference to simulate the mail collector's
+        // own session
+        $this->login();
+        $glpi_user = new User();
+        $glpi_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 1]);
+        $glpi_user->getFromDB(Session::getLoginUserID());
+        $glpi_user->loadPreferencesInSession();
+
+        // Set the followup author's own preference in the database
+        $from_user_id = getItemByTypeName('User', $from_user, true);
+        $user = new User();
+        $user->update(['id' => $from_user_id, 'set_followup_tech' => $set_followup_tech]);
+
+        // Associate an email address with the sender so MailCollector can resolve them
+        $sender_email = $from_user . '@test.glpi.com';
+        $user_email = new UserEmail();
+        $this->assertGreaterThan(
+            0,
+            (int) $user_email->add(['users_id' => $from_user_id, 'is_default' => 1, 'email' => $sender_email])
+        );
+
+        //create mail collector
+        $collector = new MailCollector();
+        $mailgate_id = $collector->add([
+            'name'            => 'test-collector',
+            'is_active'       => 1,
+            'filesize_max'    => 2097152,
+            'requester_field' => MailCollector::REQUESTER_FIELD_FROM,
+            'mail_server'      => 'imap.test.glpi.com',
+            'server_type'      => '/imap',
+        ]);
+        $this->assertGreaterThan(0, $mailgate_id);
+        $collector->getFromDB($mailgate_id);
+
+        // Create a ticket with no assignee
+        $ticket = new Ticket();
+        $ticket_id = $ticket->add([
+            'name'              => __METHOD__,
+            'content'           => __METHOD__,
+            'entities_id'       => 0,
+            '_skip_auto_assign' => true,
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+
+        // Build a raw email from the sender replying to the ticket (linked via subject line)
+        $raw = implode("\r\n", [
+            "From: {$from_user} <{$sender_email}>",
+            "To: helpdesk@glpi.com",
+            "Subject: Re: [GLPI #{$ticket_id}]",
+            "Message-ID: <test-{$from_user}-followup@glpi-test.com>",
+            "Date: Mon, 01 Jan 2024 12:00:00 +0000",
+            "",
+            "This is a test followup sent via email.",
+        ]);
+        $message = new MailMessage(['raw' => $raw]);
+
+        $tkt = $collector->buildTicket(1, $message, ['mailgates_id' => $mailgate_id, 'play_rules' => false]);
+
+        $this->assertFalse($tkt['_blacklisted']);
+        $this->assertArrayHasKey('tickets_id', $tkt);
+        $this->assertSame($ticket_id, $tkt['tickets_id']);
+        $this->assertSame($from_user_id, $tkt['users_id']);
+
+        // Replicate the followup-creation logic from MailCollector::collect()
+        $fup_input             = $tkt;
+        $fup_input['itemtype'] = Ticket::class;
+        $fup_input['items_id'] = $fup_input['tickets_id'];
+        unset($fup_input['tickets_id']);
+
+        $fup = new ITILFollowup();
+        $this->assertGreaterThan(0, (int) $fup->add($fup_input));
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->assertCount($set_followup_tech, $actors);
     }
 
     public function testNotificationDisabled()
