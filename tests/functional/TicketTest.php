@@ -9376,7 +9376,7 @@ HTML,
             'pattern' => 'ITILsolution',
         ]);
 
-        $this->createItem(\UserEmail::class, [
+        $this->createItem(UserEmail::class, [
             'users_id' => $user->getID(),
             'is_default' => 1,
             'email' => 'tech@tech.tech',
