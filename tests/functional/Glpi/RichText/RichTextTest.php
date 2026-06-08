@@ -790,6 +790,27 @@ HTML,
             'html'     => '<p><img src="/img.png" alt="test" /></p>',
             'expected' => '<p><img src="/img.png" alt="test" style="max-width: 100%; height: auto;"></p>',
         ];
+
+        yield 'table border-width is preserved' => [
+            'html'     => '<table style="border-width: 2px; width: 600px;"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="border-width: 2px; max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+        yield 'img min-width in style is stripped' => [
+            'html'     => '<p><img src="/img.png" style="min-width: 800px;" /></p>',
+            'expected' => '<p><img src="/img.png" style="max-width: 100%; height: auto;"></p>',
+        ];
+        yield 'table min-width in style is replaced by max-width' => [
+            'html'     => '<table style="min-width: 600px; color: red;"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="color: red; max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+        yield 'th width attribute is removed' => [
+            'html'     => '<table><tr><th width="150">Header</th></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><th style="">Header</th></tr></table>',
+        ];
+        yield 'img width in style is stripped' => [
+            'html'     => '<p><img src="/img.png" style="width: 800px;" /></p>',
+            'expected' => '<p><img src="/img.png" style="max-width: 100%; height: auto;"></p>',
+        ];
     }
 
     #[DataProvider('normalizeForDisplayProvider')]
