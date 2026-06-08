@@ -3994,7 +3994,7 @@ final class FormMigrationTest extends DbTestCase
                 'itemtype'  => 'SLA',
                 'values'    => json_encode([
                     'show_service_level_types' => '0',
-                    'entity_restrict'          => '2'
+                    'entity_restrict'          => '2',
                 ]),
             ],
         ]);
@@ -4008,7 +4008,7 @@ final class FormMigrationTest extends DbTestCase
         $question = getItemByTypeName(Question::class, 'SLA dropdown');
         $config = $question->getExtraDataConfig();
         if (!$config instanceof QuestionTypeItemDropdownExtraDataConfig) {
-            throw new LogicException();
+            throw new LogicException('Config should be of type QuestionTypeItemDropdownExtraDataConfig');
         }
         $this->assertEquals('SLA', $config->getItemtype());
     }

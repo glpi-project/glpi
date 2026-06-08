@@ -94,8 +94,8 @@ class QuestionTypeItemDropdown extends QuestionTypeItem
         });
 
         $dropdown_itemtypes[SLM::getTypeName(Session::getPluralNumber())] = [
-          SLA::getType() => SLA::getType(),
-          OLA::getType() => OLA::getType(),
+            SLA::getType() => SLA::getType(),
+            OLA::getType() => OLA::getType(),
         ];
 
         return $dropdown_itemtypes;
