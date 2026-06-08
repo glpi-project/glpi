@@ -83,6 +83,7 @@ class GraphicCardTest extends AbstractInventoryAsset
       <MANUFACTURER>Intel Corporation</MANUFACTURER>
       <NAME>GeminiLake [UHD Graphics 600]</NAME>
       <VENDORID>8086</VENDORID>
+      <PRODUCTID>3185</PRODUCTID>
     </CONTROLLERS>
     <VIDEOS>
       <CHIPSET>UHD Graphics 600</CHIPSET>
@@ -94,7 +95,7 @@ class GraphicCardTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"chipset": "UHD Graphics 600", "name": "GeminiLake", "resolution": "1360x768", "designation": "GeminiLake", "is_dynamic": 1, "manufacturers_id": "Intel Corporation"}',
+                'expected'  => '{"chipset": "UHD Graphics 600", "name": "GeminiLake", "resolution": "1360x768", "designation": "GeminiLake [UHD Graphics 600]", "is_dynamic": 1, "manufacturers_id": "Intel Corporation", "devicegraphiccardmodels_id": "GeminiLake [UHD Graphics 600]"}',
             ],
         ];
     }
