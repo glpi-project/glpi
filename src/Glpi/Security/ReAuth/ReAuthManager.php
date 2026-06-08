@@ -46,8 +46,6 @@ final class ReAuthManager
 
     private ?ReAuthStrategyInterface $strategy = null;
 
-    private ?string $forcedRequestedURL = null;
-
     /**
      * @throws RedirectException
      */
@@ -67,7 +65,10 @@ final class ReAuthManager
      */
     public function redirectToReauth(): never
     {
+        global $CFG_GLPI;
+
         $this->setRequestedTarget();
+        $this->setCancelURL(\Html::getRefererUrl() ?? $CFG_GLPI["root_doc"]);
         throw new RedirectException('/ReAuth/Prompt');
     }
 
@@ -94,6 +95,13 @@ final class ReAuthManager
         return $strategy->verify($_SESSION['glpiID'], $user_input);
     }
 
+    /**
+     * Make the user reauthenticated
+     *
+     * Consider current user as reauthenticated
+     * Set the reauth session validity to now + delay (self::REAUTH_DELAY_SECONDS).
+     * Used to make user reauthenticated just after login.
+     */
     public function authenticate(): void
     {
         $_SESSION['glpi_reauth_until'] = (new DateTime($_SESSION['glpi_currenttime']))
@@ -121,6 +129,11 @@ final class ReAuthManager
         global $CFG_GLPI;
 
         return $_SESSION['glpi_reauth_cancel_url'] ?? $CFG_GLPI["root_doc"];
+    }
+
+    public function setCancelURL(string $url): void
+    {
+        $_SESSION['glpi_reauth_cancel_url'] = $url;
     }
 
     /**
@@ -164,7 +177,7 @@ final class ReAuthManager
     {
         $current_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . explode('?', $_SERVER['REQUEST_URI'])[0];
 
-        $this->setRequestedURL($this->forcedRequestedURL ?? $current_url);
+        $this->setRequestedURL($current_url);
         $this->setRequestedMethod($_SERVER['REQUEST_METHOD'] === 'POST' ? 'POST' : 'GET');
         $this->setRequestedData($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : $_GET);
     }
