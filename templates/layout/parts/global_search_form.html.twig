@@ -31,7 +31,7 @@
  #}
 
 {% if get_current_interface() == 'central' and config('allow_search_global') %}
-<form action="{{ path('front/search.php') }}" role="search" method="get" data-submit-once aria-label="{{ __('Global search') }}">
+<form action="{{ path('front/search.php') }}" role="search" method="get" data-submit-once>
    <label for="global-search" class="visually-hidden">{{ __('Search…') }}</label>
    <div class="input-group input-group-flat">
       <input type="text" id="global-search" class="form-control" name="globalsearch" placeholder="{{ __('Search…') }}" />
