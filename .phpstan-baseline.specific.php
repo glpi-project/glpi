@@ -149,7 +149,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type class\\-string\\<Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.invalidOffset',
-	'count' => 5,
+	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
