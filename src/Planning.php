@@ -1733,7 +1733,9 @@ TWIG, $twig_params);
             // get duration in milliseconds
             $ms_duration = (strtotime($end) - strtotime($begin)) * 1000;
 
-            $index_color = array_search("user_$users_id", array_keys($_SESSION['glpi_plannings']));
+            $index_color = array_search("user_$users_id", array_keys($_SESSION['glpi_plannings']['plannings']));
+            $actor_color = $_SESSION['glpi_plannings']['plannings']["user_$users_id"]['color']
+                ?? self::$palette_bg[$index_color ?: 0];
             $new_event = [
                 'title'       => $event['name'],
                 'content'     => $content,
@@ -1748,13 +1750,11 @@ TWIG, $twig_params);
                              && !$_SESSION['glpi_plannings']['filters']['OnlyBgEvents']['display']
                               ? 'background'
                               : '',
-                'color'       => (empty($event['color'])
-                              ? self::$palette_bg[$index_color]
-                              : $event['color']),
+                'color'       => $actor_color,
                 'borderColor' => (empty($event['event_type_color'])
                               ? self::getPaletteColor('ev', $event['itemtype'])
                               : $event['event_type_color']),
-                'textColor'   => self::$palette_fg[$index_color],
+                'textColor'   => self::$palette_fg[$index_color ?: 0],
                 'typeColor'   => (empty($event['event_type_color'])
                               ? self::getPaletteColor('ev', $event['itemtype'])
                               : $event['event_type_color']),
@@ -1778,12 +1778,8 @@ TWIG, $twig_params);
                 $new_event['editable'] = false;
             }
 
-            // override color if view is ressource and category color exists
-            // maybe we need a better way for displaying categories color
-            if (
-                $param['view_name'] === "resourceWeek"
-                && !empty($event['event_cat_color'])
-            ) {
+            // Category color has highest priority, then user calendar color
+            if (!empty($event['event_cat_color'])) {
                 $new_event['color'] = $event['event_cat_color'];
             }
 
