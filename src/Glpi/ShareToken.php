@@ -39,7 +39,6 @@ use Glpi\Security\ShareTokenManager;
 use GLPIKey;
 use Log;
 use Session;
-use Toolbox;
 
 /**
  * ShareToken - Generic sharing token system.
@@ -146,35 +145,6 @@ class ShareToken extends CommonDBChild
     }
 
     /**
-     * Get all tokens for a given item.
-     *
-     * @param class-string<\CommonDBTM> $itemtype The item class name
-     * @param int $items_id The item ID
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    public static function getTokensForItem(string $itemtype, int $items_id): array
-    {
-        global $DB;
-
-        $results = [];
-        $iterator = $DB->request([
-            'FROM'  => self::getTable(),
-            'WHERE' => [
-                'itemtype' => $itemtype,
-                'items_id' => $items_id,
-            ],
-            'ORDER' => 'date_creation DESC',
-        ]);
-
-        foreach ($iterator as $row) {
-            $results[] = $row;
-        }
-
-        return $results;
-    }
-
-    /**
      * Count active tokens for the same parent item, excluding the current one.
      */
     private function countOtherActiveTokens(): int
@@ -204,12 +174,6 @@ class ShareToken extends CommonDBChild
     {
         $parent = $this->getItem(getFromDB: true, getEmpty: false);
         if (!$parent) {
-            Toolbox::logDebug(sprintf(
-                'ShareToken#%d: parent %s#%d not found, sharing transition log skipped.',
-                $this->getID(),
-                $this->fields['itemtype'] ?? '?',
-                $this->fields['items_id'] ?? 0,
-            ));
             return;
         }
 
