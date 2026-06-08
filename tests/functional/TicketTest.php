@@ -7285,22 +7285,25 @@ HTML,
     {
         return [
             'self_service_user_has_no_tech_rights' => [
-                'from_user'        => 'normal',
+                'from_user'        => 'post-only',
                 'set_followup_tech' => 1,
+                'expected_actors_count' => 0,
             ],
             'tech_user_disabled_preference' => [
                 'from_user'        => 'tech',
                 'set_followup_tech' => 0,
+                'expected_actors_count' => 0,
             ],
             'tech_user_enabled_preference' => [
                 'from_user'        => 'tech',
                 'set_followup_tech' => 1,
+                'expected_actors_count' => 1,
             ],
         ];
     }
 
     #[DataProvider('mailCollectorFollowupSetAssigneeProvider')]
-    public function testMailCollectorFollowupSetAssignee(string $from_user, int $set_followup_tech): void
+    public function testMailCollectorFollowupSetAssignee(string $from_user, int $set_followup_tech, int $expected_actors_count): void
     {
         // Log in as glpi and enable "assign me" preference to simulate the mail collector's
         // own session
@@ -7376,7 +7379,7 @@ HTML,
 
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
-        $this->assertCount($set_followup_tech, $actors);
+        $this->assertCount($expected_actors_count, $actors);
     }
 
     public function testNotificationDisabled()
