@@ -428,12 +428,12 @@ export class GlpiKnowbaseAsideController
             return;
         }
 
-        const title = event.target.closest?.('[data-glpi-kb-aside-category-title]');
-        if (!title) {
+        // Whole category block is the drop target, so items drop "into" it.
+        const target_li = event.target.closest?.('[data-glpi-kb-aside-category]');
+        if (!target_li) {
             return;
         }
 
-        const target_li = title.closest('[data-glpi-kb-aside-category]');
         const target_id = parseInt(target_li.dataset.glpiKbAsideCategoryId, 10);
         const { itemtype, items_id } = this.#identifySource(this.#drag.source);
 
@@ -442,8 +442,8 @@ export class GlpiKnowbaseAsideController
         }
 
         this.#clearTargetHighlight();
-        title.classList.add('kb-aside-target');
-        this.#drag.current_target = title;
+        target_li.classList.add('kb-aside-target-block');
+        this.#drag.current_target = target_li;
 
         if (target_li.hasAttribute('data-glpi-kb-aside-category-collapsed')) {
             this.#scheduleAutoExpand(target_li);
@@ -468,14 +468,13 @@ export class GlpiKnowbaseAsideController
             return;
         }
 
-        const title = event.target.closest?.('[data-glpi-kb-aside-category-title]');
-        if (!title || title !== this.#drag.current_target) {
+        const target_li = event.target.closest?.('[data-glpi-kb-aside-category]');
+        if (!target_li || target_li !== this.#drag.current_target) {
             return;
         }
-        // dragleave fires when entering a child node too — confirm we left the
-        // title row by checking relatedTarget.
-        const related_title = event.relatedTarget?.closest?.('[data-glpi-kb-aside-category-title]');
-        if (related_title === title) {
+        // dragleave also fires moving onto a descendant; only clear on real leave.
+        const related_li = event.relatedTarget?.closest?.('[data-glpi-kb-aside-category]');
+        if (related_li === target_li) {
             return;
         }
 
@@ -612,6 +611,9 @@ export class GlpiKnowbaseAsideController
      */
     async #postReparent(source_li, body, origin_parent, origin_next)
     {
+        // The optimistic move already happened in the caller.
+        this.#reconcileEmptyStates();
+
         let response;
         try {
             response = await fetch(`${CFG_GLPI.root_doc}/Knowbase/Aside/Reparent`, {
@@ -624,6 +626,7 @@ export class GlpiKnowbaseAsideController
             });
         } catch (e) {
             origin_parent.insertBefore(source_li, origin_next);
+            this.#reconcileEmptyStates();
             glpi_toast_error(__("An unexpected error occurred."));
             console.error(e);
             return false;
@@ -633,12 +636,47 @@ export class GlpiKnowbaseAsideController
             return true;
         }
         origin_parent.insertBefore(source_li, origin_next);
+        this.#reconcileEmptyStates();
         if (response.status === 409) {
             glpi_toast_error(__("This item can't be moved here."));
         } else {
             glpi_toast_error(__("An unexpected error occurred."));
         }
         return false;
+    }
+
+    /**
+     * Keep each category's "No articles" empty-state row accurate after an
+     * optimistic move (the server only renders it on a full reload).
+     */
+    #reconcileEmptyStates()
+    {
+        const tree = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
+        if (!tree) {
+            return;
+        }
+        const categories = tree.querySelectorAll(
+            '[data-glpi-kb-aside-category]:not([data-glpi-kb-aside-category-uncategorized])',
+        );
+        for (const cat of categories) {
+            const ul = cat.querySelector(':scope > ul');
+            if (!ul) {
+                continue;
+            }
+            const has_content = ul.querySelector(
+                ':scope > [data-glpi-kb-article-id], :scope > [data-glpi-kb-aside-category]',
+            );
+            const empty_row = ul.querySelector(':scope > .kb-aside-empty');
+            if (has_content && empty_row) {
+                empty_row.remove();
+            } else if (!has_content && !empty_row) {
+                const li = document.createElement('li');
+                li.className = 'kb-aside-empty';
+                li.setAttribute('aria-hidden', 'true');
+                li.textContent = __("No articles");
+                ul.appendChild(li);
+            }
+        }
     }
 
     #onDragEnd()
@@ -656,7 +694,7 @@ export class GlpiKnowbaseAsideController
     #clearTargetHighlight()
     {
         if (this.#drag?.current_target) {
-            this.#drag.current_target.classList.remove('kb-aside-target');
+            this.#drag.current_target.classList.remove('kb-aside-target', 'kb-aside-target-block');
             this.#drag.current_target = null;
         }
     }

@@ -119,6 +119,10 @@
     {% for category in node.categories %}
         {{ macros.render_category(category, draggable_articles, draggable_categories) }}
     {% endfor %}
+    {# Empty-state keeps a drop target (and minimum height) in empty categories. #}
+    {% if node.articles is empty and node.categories is empty %}
+        <li class="kb-aside-empty" aria-hidden="true">{{ __('No articles') }}</li>
+    {% endif %}
 {% endmacro %}
 
 {% import _self as macros %}

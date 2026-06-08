@@ -845,9 +845,7 @@
         cursor: grabbing !important;
     }
 
-    // Active drop target: the title row of the destination category.
-    // Categories don't have a child <a>, but keep the override defensive in
-    // case the target structure changes.
+    // Drop target for the thin "Top level" root zone: solid fill.
     .kb-aside-target {
         background-color: var(--tblr-info);
         box-shadow: inset 4px 0 0 var(--tblr-info-text-emphasis);
@@ -856,6 +854,22 @@
         a {
             color: #fff !important;
         }
+    }
+
+    // Drop target for a whole category block: outline it (drop "into" it).
+    .kb-aside-target-block {
+        outline: 2px solid var(--tblr-info);
+        outline-offset: -2px;
+        border-radius: 4px;
+        background-color: var(--tblr-info-bg-subtle);
+    }
+
+    // Empty-state row: drop target + "no articles" hint for empty categories.
+    .kb-aside-empty {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        font-style: italic;
+        color: var(--tblr-secondary);
     }
 
     // "Top level" drop zone: hidden by default, revealed only while a category
