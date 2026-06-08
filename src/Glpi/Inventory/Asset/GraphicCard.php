@@ -47,15 +47,17 @@ class GraphicCard extends Device
     public function prepare(): array
     {
         $mapping = [
-            'name'   => 'designation',
+            'name'   => ['designation', 'devicegraphiccardmodels_id'],
         ];
         $pcivendor = new PCIVendor();
 
         foreach ($this->data as $k => &$val) {
             if (property_exists($val, 'name')) {
-                foreach ($mapping as $origin => $dest) {
+                foreach ($mapping as $origin => $dests) {
                     if (property_exists($val, $origin)) {
-                        $val->$dest = $val->$origin;
+                        foreach ((array) $dests as $dest) {
+                            $val->$dest = $val->$origin;
+                        }
                     }
                 }
 
