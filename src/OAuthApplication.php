@@ -183,7 +183,7 @@ class OAuthApplication extends CommonDBTM
         $app_key = 'oauth_imap_' . $this->getID();
         $DB->update(
             MailCollector::getTable(),
-            ['host' => ''],
+            ['host' => '', 'is_active' => 0],  
             [
                 'OR' => [
                     ['host' => ['LIKE', '%/' . $app_key . '/%']],
