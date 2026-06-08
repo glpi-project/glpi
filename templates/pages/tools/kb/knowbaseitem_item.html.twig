@@ -30,7 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 <form method="post" action="{{ 'KnowbaseItem_Item'|itemtype_form_path }}">
@@ -41,22 +40,24 @@
         {{ inputs.hidden('items_id', item.getID()) }}
         {{ inputs.hidden('itemtype', get_class(item)) }}
     {% endif %}
-    <div class="d-flex align-items-baseline">
+    <div class="row align-items-center mb-2 ms-3">
         {% if get_class(item) == 'KnowbaseItem' %}
             {# TODO pass used array to restrict visible items in list #}
-            {% set dropdown %}
+            <label class="col-auto col-form-label">{{ __('Add a linked item') }}</label>
+            <div class="col-12 col-sm-8 col-md-3 mb-2 mb-md-0">
                 {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id']) %}
-            {% endset %}
-            {{ fields.htmlField('', dropdown, __('Add a linked item')) }}
+            </div>
         {% else %}
-            {{ 'KnowbaseItem'|itemtype_dropdown({
-                'entity': item.getEntityID(),
-                'used': used_knowbase_items,
-                'condition': visibility_condition
-            }) }}
+            <div class="col-12 col-sm-8 col-md-3 mb-2 mb-md-0">
+                {{ 'KnowbaseItem'|itemtype_dropdown({
+                    'entity': item.getEntityID(),
+                    'used': used_knowbase_items,
+                    'condition': visibility_condition
+                }) }}
+            </div>
         {% endif %}
-        <div>
-            {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary ms-1', 'icon': 'ti ti-link'}) }}
+        <div class="col-auto mt-2 mt-md-0">
+            {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary', 'icon': 'ti ti-link'}) }}
         </div>
     </div>
 </form>
