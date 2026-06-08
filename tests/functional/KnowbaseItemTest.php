@@ -1099,16 +1099,17 @@ HTML,
         $this->assertStringContainsString('EditCat', $html);
     }
 
-    public function testShowFullAddModeRendersCategoryMetaLink(): void
+    public function testShowFullAddModeRendersCategoryHint(): void
     {
         $this->login();
         $item = new KnowbaseItem();
         $item->getEmpty();
         $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
-        $this->assertStringContainsString('data-glpi-kb-toggle-category-mode', $html);
-        $this->assertStringContainsString('data-glpi-kb-category-display', $html);
-        // No prefilled category → Uncategorized text
-        $this->assertStringContainsString('Uncategorized', $html);
+        // Add mode shows a plain hint, not the interactive category editor.
+        $this->assertStringNotContainsString('data-glpi-kb-toggle-category-mode', $html);
+        $this->assertStringNotContainsString('data-glpi-kb-category-display', $html);
+        // No prefilled category → static hint
+        $this->assertStringContainsString('added to a category', $html);
     }
 
     public function testShowFullEditModeRendersCategoryMetaLink(): void
@@ -1138,16 +1139,10 @@ HTML,
         $this->login();
         $item = new KnowbaseItem();
         $item->getEmpty();
+        // Add mode: no editor bar (the article does not exist yet)
         $html_add = (string) $item->showFull(['mode' => 'add', 'display' => false]);
-        $this->assertStringContainsString('data-glpi-kb-category-alert', $html_add);
-        $this->assertStringContainsString('data-glpi-kb-category-select', $html_add);
-        $this->assertStringContainsString('data-glpi-kb-category-save', $html_add);
-        $this->assertStringContainsString('data-glpi-kb-category-close', $html_add);
-        // Add mode: single-select (no multiple attribute on the select)
-        $this->assertMatchesRegularExpression(
-            '/data-glpi-kb-category-select(?![^>]*multiple)[^>]*>/',
-            $html_add
-        );
+        $this->assertStringNotContainsString('data-glpi-kb-category-alert', $html_add);
+        $this->assertStringNotContainsString('data-glpi-kb-category-select', $html_add);
 
         // Edit mode: multi-select
         $entity_id = $this->getTestRootEntity(only_id: true);

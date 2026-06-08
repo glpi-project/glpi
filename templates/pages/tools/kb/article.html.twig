@@ -88,7 +88,7 @@
             ></button>
         </div>
 
-        {% if mode == 'add' or mode == 'edit' %}
+        {% if mode == 'edit' %}
         {# Category mode alert #}
         <div
             class="alert alert-info d-none align-items-center mb-3 gap-1"
@@ -99,23 +99,13 @@
             <i class="ti ti-folder me-2 fs-3" aria-hidden="true"></i>
             <span class="me-2" id="kb-category-bar-label">{{ _n('Category', 'Categories', 1) }}</span>
 
-            {% if mode == 'add' %}
-                <select
-                    class="form-select form-select-sm d-inline-block w-auto me-auto"
-                    aria-labelledby="kb-category-bar-label"
-                    data-glpi-kb-category-select
-                >
-                    <option value="0">{{ __('Uncategorized') }}</option>
-                </select>
-            {% else %}
-                <select
-                    class="form-select form-select-sm d-inline-block w-auto me-auto"
-                    aria-labelledby="kb-category-bar-label"
-                    data-glpi-kb-category-select
-                    multiple
-                >
-                </select>
-            {% endif %}
+            <select
+                class="form-select form-select-sm d-inline-block w-auto me-auto"
+                aria-labelledby="kb-category-bar-label"
+                data-glpi-kb-category-select
+                multiple
+            >
+            </select>
 
             <button
                 type="button"
@@ -367,32 +357,44 @@
 
                 {% endif %}
 
-                {# Category indicator — always present (add/view/edit) #}
-                <div
-                    class="d-flex align-items-center"
-                    role="group"
-                    aria-label="{{ __('Article category') }}"
-                >
-                    <i class="ti ti-folder me-1 fs-3" aria-hidden="true"></i>
-                    <a
-                        href="#"
-                        class="text-muted {{ mode == 'add' ? '' : 'pointer-events-none' }}"
-                        data-glpi-kb-toggle-category-mode
-                        data-glpi-kb-category-display
+                {# Category indicator #}
+                {% if mode == 'add' %}
+                    {# In add mode the article does not exist yet: show a plain hint, no editor. #}
+                    <div
+                        class="d-flex align-items-center text-muted"
+                        role="group"
+                        aria-label="{{ __('Article category') }}"
                     >
-                        {% if mode == 'add' %}
+                        <i class="ti ti-folder me-1 fs-3" aria-hidden="true"></i>
+                        <span class="fst-italic">
                             {% if prefilled_category is defined %}
-                                {{ prefilled_category.name }}
+                                {{ __('This article will be added in the %1$s category')|format(prefilled_category.name) }}
+                            {% else %}
+                                {{ __("This article won't be added to a category") }}
+                            {% endif %}
+                        </span>
+                    </div>
+                {% else %}
+                    <div
+                        class="d-flex align-items-center"
+                        role="group"
+                        aria-label="{{ __('Article category') }}"
+                    >
+                        <i class="ti ti-folder me-1 fs-3" aria-hidden="true"></i>
+                        <a
+                            href="#"
+                            class="text-muted pointer-events-none"
+                            data-glpi-kb-toggle-category-mode
+                            data-glpi-kb-category-display
+                        >
+                            {% if existing_categories|length > 0 %}
+                                {{ existing_categories|map(c => c.name)|join(', ') }}
                             {% else %}
                                 <span class="fst-italic">{{ __('Uncategorized') }}</span>
                             {% endif %}
-                        {% elseif existing_categories|length > 0 %}
-                            {{ existing_categories|map(c => c.name)|join(', ') }}
-                        {% else %}
-                            <span class="fst-italic">{{ __('Uncategorized') }}</span>
-                        {% endif %}
-                    </a>
-                </div>
+                        </a>
+                    </div>
+                {% endif %}
             </div>
 
         {% endif %}

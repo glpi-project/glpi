@@ -181,7 +181,7 @@ export class GlpiKnowbaseArticleController
             }
         }
 
-        if (mode === 'add' || mode === 'edit') {
+        if (mode === 'edit') {
             this.#initCategoryMode();
         }
 
@@ -1237,10 +1237,9 @@ export class GlpiKnowbaseArticleController
             this.#enterCategoryMode();
         });
 
-        // In add mode the link is always interactive; in view/edit it depends on edit rights.
+        // The indicator is only interactive when the user can edit the article.
         const can_edit = this.#container.dataset.glpiKbCanEdit === 'true';
-        const is_add = this.#item_id === null;
-        if (can_edit || is_add) {
+        if (can_edit) {
             toggle_link.classList.remove('pointer-events-none');
         }
 
@@ -1302,13 +1301,6 @@ export class GlpiKnowbaseArticleController
 
         select.innerHTML = '';
 
-        if (!select.multiple) {
-            const empty = document.createElement('option');
-            empty.value = '0';
-            empty.textContent = __('Uncategorized');
-            select.appendChild(empty);
-        }
-
         const flatten = (items) => {
             const out = [];
             for (const item of items) {
@@ -1331,16 +1323,11 @@ export class GlpiKnowbaseArticleController
             select.appendChild(option);
         }
 
-        // Preselect according to mode.
-        if (select.multiple) {
-            const existing = JSON.parse(this.#container.dataset.glpiKbExistingCategories || '[]');
-            const ids = new Set(existing.map(c => String(c.id)));
-            for (const opt of select.options) {
-                opt.selected = ids.has(opt.value);
-            }
-        } else {
-            const staged = this.#staged_category_id ?? 0;
-            select.value = String(staged);
+        // Preselect the article's current categories.
+        const existing = JSON.parse(this.#container.dataset.glpiKbExistingCategories || '[]');
+        const ids = new Set(existing.map(c => String(c.id)));
+        for (const opt of select.options) {
+            opt.selected = ids.has(opt.value);
         }
 
         // Wrap in select2 for visual parity with the rest of GLPI. Init once;
@@ -1375,25 +1362,7 @@ export class GlpiKnowbaseArticleController
             return;
         }
 
-        const is_add = this.#item_id === null;
-
-        if (is_add) {
-            // Add mode: staging — synchronous, no race possible.
-            const value = Number(select.value);
-            this.#staged_category_id = (Number.isInteger(value) && value > 0) ? value : null;
-            const display_name = (this.#staged_category_id !== null && select.selectedIndex >= 0)
-                ? select.options[select.selectedIndex].textContent.trim()
-                : null;
-            this.#updateCategoryDisplay(
-                this.#staged_category_id !== null
-                    ? [{ id: this.#staged_category_id, name: display_name }]
-                    : []
-            );
-            this.#exitCategoryMode();
-            return;
-        }
-
-        // Edit mode: AJAX, guard against double-submit.
+        // AJAX update, guarded against double-submit.
         const save_btn = this.#container.querySelector('[data-glpi-kb-category-save]');
         if (save_btn?.disabled) {
             return;

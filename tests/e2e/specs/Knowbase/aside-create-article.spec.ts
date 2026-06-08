@@ -70,10 +70,10 @@ test('clicking the aside add-article link creates a new article linked to the ca
     await expect(page).toHaveURL(new RegExp(`knowbaseitemcategories_id=${category_id}`));
     await expect(page).toHaveURL(/knowbaseitem\.form\.php/);
 
-    // The article's category meta-line should reflect the prefilled category
+    // The article's category meta-line should mention the prefilled category
     await expect(
-        page.getByRole('group', { name: 'Article category' }).getByRole('link')
-    ).toHaveText(category_name);
+        page.getByRole('group', { name: 'Article category' })
+    ).toContainText(category_name);
     const add_button = page.getByRole('button', { name: 'Add article' });
 
     // Fill in the title
@@ -120,10 +120,10 @@ test('clicking the aside add-article link on Uncategorized creates an article wi
     await expect(page).toHaveURL(/knowbaseitem\.form\.php/);
     await expect(page).not.toHaveURL(/knowbaseitemcategories_id=/);
 
-    // The category meta-line should show "Uncategorized" when no category is prefilled
+    // With no prefilled category, the meta-line states the article won't be categorized
     await expect(
-        page.getByRole('group', { name: 'Article category' }).getByRole('link')
-    ).toHaveText('Uncategorized');
+        page.getByRole('group', { name: 'Article category' })
+    ).toContainText("won't be added to a category");
     const add_button = page.getByRole('button', { name: 'Add article' });
 
     const title = page.getByTestId('subject');
@@ -186,7 +186,7 @@ test('hovering a sub-category does not reveal the parent category add-article li
     await expect(parent_add).toBeHidden();
 });
 
-test('add mode shows prefilled category in meta line', async ({ page, profile, api }) => {
+test('add mode shows the prefilled category as a static hint, without inline editor', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
@@ -212,76 +212,11 @@ test('add mode shows prefilled category in meta line', async ({ page, profile, a
     await kb.getAsideCategoryToggle(category_name).hover();
     await add_link.click();
 
-    // The category meta link should show the prefilled category name
-    const category_display = page.getByRole('group', { name: 'Article category' }).getByRole('link');
-    await expect(category_display).toHaveText(category_name);
-});
-
-test('add mode allows changing the staged category via the bar', async ({ page, profile, api }) => {
-    await profile.set(Profiles.SuperAdmin);
-    const kb = new KnowbaseItemPage(page);
-
-    const unique = randomUUID().slice(0, 8);
-    const cat_a = `E2E Bar A ${unique}`;
-    const cat_b = `E2E Bar B ${unique}`;
-    const article_title = `E2E Bar Article ${unique}`;
-
-    const cat_a_id = await api.createItem('KnowbaseItemCategory', {
-        name: cat_a,
-        entities_id: getWorkerEntityId(),
-    });
-    await api.createItem('KnowbaseItemCategory', {
-        name: cat_b,
-        entities_id: getWorkerEntityId(),
-    });
-    await api.createItem('KnowbaseItem', {
-        name: `Seed ${unique}`,
-        answer: 'Seed content',
-        entities_id: getWorkerEntityId(),
-        _categories: [cat_a_id],
-    });
-
-    await kb.goto(1);
-
-    // Start from "Add" on category A
-    const add_link = kb.getAsideCategory(cat_a).getByRole('link', {
-        name: new RegExp(`Create an article in ${cat_a}`, 'i'),
-    });
-    // Reveal the action button (hidden until the category row is hovered).
-    await kb.getAsideCategoryToggle(cat_a).hover();
-    await add_link.click();
-
-    const category_group = page.getByRole('group', { name: 'Article category' });
-    await category_group.getByRole('link').click();
-
-    const category_editor = page.getByRole('group', { name: 'Category editor' });
-    const select = category_editor.getByLabel('Category');
-    await expect(select).toBeVisible();
-    await select.selectOption({ label: cat_b });
-
-    await category_editor.getByRole('button', { name: 'Save categories' }).click();
-
-    // Display now reflects cat_b
-    await expect(category_group.getByRole('link')).toHaveText(cat_b);
-
-    // Finish article creation
-    const title = page.getByTestId('subject');
-    await title.click();
-    await title.fill('');
-    await page.keyboard.type(article_title);
-    // eslint-disable-next-line playwright/no-raw-locators -- Tiptap editor has no semantic label
-    const editor = page.locator('#kb-tiptap-editor .ProseMirror');
-    await editor.click();
-    await page.keyboard.type('Body created with category swapped via bar.');
-
-    await page.getByRole('button', { name: 'Add article' }).click();
-    await expect(page.getByTestId('subject')).toHaveText(article_title);
-
-    // Article should now live under cat_b (not cat_a)
-    await kb.goto(1);
-    await expect(
-        kb.getAsideCategory(cat_b).getByRole('link', { name: article_title })
-    ).toBeVisible();
+    // A plain hint naming the category, with no toggle link nor editor.
+    const category_meta = page.getByRole('group', { name: 'Article category' });
+    await expect(category_meta).toContainText(category_name);
+    await expect(category_meta.getByRole('link')).toHaveCount(0);
+    await expect(page.getByRole('group', { name: 'Category editor' })).toHaveCount(0);
 });
 
 test('edit mode updates categories via the bar (AJAX)', async ({ page, profile, api }) => {
