@@ -291,6 +291,7 @@ jobs:
         run: |
           docker compose exec -T app .github/actions/test_install.sh
       - name: "WEB tests"
+        id: "web"
         if: "${{ success() || failure() }}"
         run: |
           docker compose exec -T app .github/actions/test_tests-web.sh
@@ -307,7 +308,7 @@ jobs:
           name: cypress-screenshots
           path: tests/cypress/screenshots
       - name: "Upload GLPI logs"
-        if: "${{ always() && (steps.e2e.conclusion == 'failure' || steps.e2e.conclusion == 'cancelled') }}"
+        if: "${{ always() && (steps.e2e.conclusion == 'failure' || steps.e2e.conclusion == 'cancelled' || steps.web.conclusion == 'failure' || steps.web.conclusion == 'cancelled') }}"
         uses: actions/upload-artifact@v7
         with:
             name: glpi-logs
