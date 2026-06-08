@@ -70,7 +70,6 @@ class NetworkCard extends Device
             'ipmask'      => 'netmask',
             'ipdhcp'      => 'dhcpserver',
             'wwn'         => 'wwn',
-            'mtu'         => 'mtu',
             'speed'       => 'speed',
         ];
         $pcivendor = new PCIVendor();
