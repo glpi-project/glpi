@@ -742,6 +742,7 @@
 [data-main-page-aside="knowbaseitem"] {
     display: flex;
     flex-direction: column;
+    
     // Bounded height aligned with .kb-article / .kb-sidepanel so the aside
     // scrolls internally instead of overflowing the viewport.
     max-height: calc(100vh - 150px);
