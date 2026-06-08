@@ -278,10 +278,12 @@ export class FormPage extends GlpiPage
         value: string,
     ): Promise<void> {
         await this.doFillConditionWithoutValue(index, logic, item, operator);
-        await this.getTextbox('Value')
-            .last()
-            .fill(value)
-        ;
+        const input = this.getTextbox('Value').last();
+        // Click before filling: a click is a pointer action so it waits for the
+        // editor to be interactive again (the editor disables pointer events
+        // while re-rendering), ensuring a late render can't wipe the value.
+        await input.click();
+        await input.fill(value);
     }
 
     public async doFillNumberCondition(
@@ -292,11 +294,10 @@ export class FormPage extends GlpiPage
         value: number,
     ): Promise<void> {
         await this.doFillConditionWithoutValue(index, logic, item, operator);
-        await this.getSpinButton('Value')
-            .last().fill(
-                value.toString()
-            )
-        ;
+        const input = this.getSpinButton('Value').last();
+        // See doFillStringCondition for why we click before filling.
+        await input.click();
+        await input.fill(value.toString());
     }
 
     public async doFillDateCondition(
@@ -307,12 +308,14 @@ export class FormPage extends GlpiPage
         value: string,
     ): Promise<void> {
         await this.doFillConditionWithoutValue(index, logic, item, operator);
-        await this.page.getByTestId('conditions-container')
+        const input = this.page.getByTestId('conditions-container')
             .getByLabel('Value', {exact: true})
             .filter({visible: true})
             .last()
-            .fill(value)
         ;
+        // See doFillStringCondition for why we click before filling.
+        await input.click();
+        await input.fill(value);
     }
 
     public async doFillDropdownCondition(

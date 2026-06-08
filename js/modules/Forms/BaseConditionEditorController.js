@@ -64,6 +64,8 @@ export class BaseConditionEditorController {
     /** @type {string} */
     #editorEndpoint;
 
+    #ongoingRenderCount = 0;
+
     constructor(container, item_uuid, item_type, forms_sections, form_questions, form_comments, editorEndpoint) {
         this.#container = container;
         if (this.#container.dataset.glpiConditionsEditorContainer === undefined) {
@@ -128,20 +130,34 @@ export class BaseConditionEditorController {
 
     async #doRenderEditor(data) {
         const url = this.#editorEndpoint;
-        const content = await $.ajax({
-            url: url,
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-        });
 
-        // Note: must use `$().html` to make sure we trigger scripts
-        $(this.#container.querySelector('[data-glpi-conditions-editor]')).html(content);
+        // Prevent interractions while loading
+        this.#ongoingRenderCount++;
+        this.#container.classList.add('pe-none');
+        this.#container.classList.add('cursor-wait');
 
-        // The number of conditions may have changed, notify
-        this.#notifyConditionsCountChanged(
-            data.conditions.length
-        );
+        try {
+            const content = await $.ajax({
+                url: url,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+            });
+
+            // Note: must use `$().html` to make sure we trigger scripts
+            $(this.#container.querySelector('[data-glpi-conditions-editor]')).html(content);
+
+            // The number of conditions may have changed, notify
+            this.#notifyConditionsCountChanged(
+                data.conditions.length
+            );
+        } finally {
+            this.#ongoingRenderCount--;
+            if (this.#ongoingRenderCount === 0) {
+                this.#container.classList.remove('pe-none');
+                this.#container.classList.remove('cursor-wait');
+            }
+        }
     }
 
     #initEventHandlers() {
