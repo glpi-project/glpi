@@ -75,6 +75,6 @@ if (isset($_POST["update"])) {
     Html::back();
 }
 
-$menus = ["config", "notification", "config"];
+$menus = ["config", "notification", NotificationMailingSetting::class];
 $config_id = Config::getConfigIDForContext('core');
 NotificationMailingSetting::displayFullPageForItem($config_id, $menus);
