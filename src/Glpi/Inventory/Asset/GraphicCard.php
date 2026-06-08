@@ -70,15 +70,20 @@ class GraphicCard extends Device
                 if (isset($this->extra_data['controllers'])) {
                     $found_controller = false;
                     foreach ((array) $this->extra_data['controllers'] as $controller) {
-                        if (
-                            property_exists($controller, 'name')
-                            && (
-                                $controller->name === $val->name
-                                || (isset($val->chipset) && $controller->name === $val->chipset)
-                                || ($combined_name && $controller->name === $combined_name)
-                            )
-                        ) {
+                        // Two devices never share the same PCI address
+                        $match_pcislot = property_exists($controller, 'pcislot') && property_exists($val, 'pcislot') && $controller->pcislot === $val->pcislot;
+
+                        // pci.ids matching (Generic and Windows pci.ids GLPI-Agent fallback)
+                        $match_name = property_exists($controller, 'name') && $combined_name && $controller->name === $combined_name;
+
+                        // Windows use drivername as VIDEOS.name and CONTROLLERS.type
+                        $match_type = property_exists($controller, 'type') && $controller->type === $val->name;
+
+                        if ($match_pcislot || $match_name || $match_type) {
                             $found_controller = $controller;
+                            if (property_exists($controller, 'name')) {
+                                $this->ignored['controllers'][$controller->name] = $controller->name;
+                            }
                             break;
                         }
                     }
