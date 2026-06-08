@@ -32,7 +32,7 @@
 
 <body class="horizontal-layout">
    <div class="skip-links">
-      <a class="visually-hidden-focusable skip-link" href="#page">{{ __('Skip to main content') }}</a>
+      <a class="visually-hidden-focusable skip-link" href="#page">{{ __('Go to main content') }}</a>
    </div>
    {% if call('DBConnection::isDbAvailable') and constant('GLPI_SKIP_UPDATES') and not call('Update::isDbUpToDate') %}
       <div class="banner-need-update">
