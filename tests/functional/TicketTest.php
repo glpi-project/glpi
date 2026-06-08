@@ -7281,7 +7281,7 @@ HTML,
         $this->assertCount(0, $actors);
     }
 
-    public static function mailCollectorFollowupNotAssignedProvider(): array
+    public static function mailCollectorFollowupSetAssigneeProvider(): array
     {
         return [
             'self_service_user_has_no_tech_rights' => [
@@ -7299,8 +7299,8 @@ HTML,
         ];
     }
 
-    #[DataProvider('mailCollectorFollowupNotAssignedProvider')]
-    public function testMailCollectorFollowupDoesNotAssignUser(string $from_user, int $set_followup_tech): void
+    #[DataProvider('mailCollectorFollowupSetAssigneeProvider')]
+    public function testMailCollectorFollowupSetAssignee(string $from_user, int $set_followup_tech): void
     {
         // Log in as glpi and enable "assign me" preference to simulate the mail collector's
         // own session
