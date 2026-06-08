@@ -82,7 +82,7 @@ class GraphicCardTest extends AbstractInventoryAsset
     <CONTROLLERS>
       <MANUFACTURER>Intel Corporation</MANUFACTURER>
       <NAME>GeminiLake [UHD Graphics 600]</NAME>
-      <TYPE>Adaptador de Vídeo Básico da Microsoft</TYPE>
+      <TYPE>Microsoft Basic Display Driver</TYPE>
       <VENDORID>8086</VENDORID>
       <PRODUCTID>3185</PRODUCTID>
       <PCISLOT>00:02.0</PCISLOT>
