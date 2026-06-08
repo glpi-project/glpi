@@ -192,7 +192,7 @@ class GraphicCardTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $computers_id);
 
         $model_gc = new DeviceGraphicCardModel();
-        
+
         $model_1_id = $model_gc->add(['name' => 'ATI Radeon X1600']);
         $gc_1_id = $device_gc->add([
             'designation' => 'ATI Radeon X1600',
