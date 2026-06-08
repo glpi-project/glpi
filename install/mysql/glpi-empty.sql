@@ -10055,6 +10055,27 @@ CREATE TABLE `glpi_oauth_auth_codes` (
    KEY `client` (`client`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+DROP TABLE IF EXISTS `glpi_oauthapplications`;
+CREATE TABLE `glpi_oauthapplications` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `is_active` tinyint NOT NULL DEFAULT '0',
+  `comment` text,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  `provider` varchar(255) NOT NULL DEFAULT '',
+  `client_id` varchar(255) NOT NULL DEFAULT '',
+  `client_secret` text NOT NULL,
+  `tenant_id` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `name` (`name`),
+  KEY `is_active` (`is_active`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`),
+  KEY `client_id` (`client_id`),
+  KEY `tenant_id` (`tenant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 DROP TABLE IF EXISTS `glpi_oauthclients`;
 CREATE TABLE `glpi_oauthclients` (
    `identifier` varchar(255) NOT NULL,
@@ -10076,27 +10097,6 @@ CREATE TABLE `glpi_oauthclients` (
    KEY `is_active` (`is_active`),
    KEY `date_creation` (`date_creation`),
    KEY `date_mod` (`date_mod`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-DROP TABLE IF EXISTS `glpi_oauthapplications`;
-CREATE TABLE `glpi_oauthapplications` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `is_active` tinyint NOT NULL DEFAULT '0',
-  `comment` text,
-  `date_creation` timestamp NULL DEFAULT NULL,
-  `date_mod` timestamp NULL DEFAULT NULL,
-  `provider` varchar(255) NOT NULL DEFAULT '',
-  `client_id` varchar(255) NOT NULL DEFAULT '',
-  `client_secret` text NOT NULL,
-  `tenant_id` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `name` (`name`),
-  KEY `is_active` (`is_active`),
-  KEY `date_creation` (`date_creation`),
-  KEY `date_mod` (`date_mod`),
-  KEY `client_id` (`client_id`),
-  KEY `tenant_id` (`tenant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_validatorsubstitutes`;

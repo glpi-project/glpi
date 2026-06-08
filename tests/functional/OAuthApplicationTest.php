@@ -274,19 +274,21 @@ class OAuthApplicationTest extends DbTestCase
         $host_linked   = '{mail.example.com/' . $protocol_key . '/novalidate-cert}INBOX';
         $host_unlinked = '{mail.other.com/imap/ssl}INBOX';
 
-        /** @var MailCollector $mc_linked */
-        $mc_linked = $this->createItem(MailCollector::class, [
+        $DB->insert(MailCollector::getTable(), [
             'name'  => 'Linked collector',
             'host'  => $host_linked,
             'login' => 'user@example.com',
-        ], ['host', 'server_type']);
+        ]);
+        $mc_linked = new MailCollector();
+        $mc_linked->getFromDB($DB->insertId());
 
-        /** @var MailCollector $mc_other */
-        $mc_other = $this->createItem(MailCollector::class, [
+        $DB->insert(MailCollector::getTable(), [
             'name'  => 'Unlinked collector',
             'host'  => $host_unlinked,
             'login' => 'user2@example.com',
-        ], ['host', 'server_type']);
+        ]);
+        $mc_other = new MailCollector();
+        $mc_other->getFromDB($DB->insertId());
 
         // Tab count must reflect exactly 1 linked collector
         $_SESSION['glpishow_count_on_tabs'] = 1;
@@ -324,6 +326,8 @@ class OAuthApplicationTest extends DbTestCase
 
     public function testCleanDBonPurge(): void
     {
+        global $DB;
+
         $this->login();
 
         /** @var OAuthApplication $app */
@@ -337,12 +341,13 @@ class OAuthApplicationTest extends DbTestCase
 
         $protocol_key = 'oauth_imap_' . $app->getID();
 
-        /** @var MailCollector $mc */
-        $mc = $this->createItem(MailCollector::class, [
+        $DB->insert(MailCollector::getTable(), [
             'name'  => 'Collector to clean',
             'host'  => '{mail.example.com/' . $protocol_key . '/ssl}INBOX',
             'login' => 'user@example.com',
-        ], ['host', 'server_type']);
+        ]);
+        $mc = new MailCollector();
+        $mc->getFromDB($DB->insertId());
 
         // Purge the application
         $this->assertTrue($app->delete(['id' => $app->getID()], true));
@@ -387,6 +392,8 @@ class OAuthApplicationTest extends DbTestCase
 
     public function testCountLinkedMailCollectors(): void
     {
+        global $DB;
+
         $this->login();
 
         /** @var OAuthApplication $app */
@@ -407,18 +414,18 @@ class OAuthApplicationTest extends DbTestCase
         $this->assertStringNotContainsString('tab-count-badge', $tabs[1]);
 
         // Add a collector with a trailing slash after the key
-        $this->createItem(MailCollector::class, [
+        $DB->insert(MailCollector::getTable(), [
             'name'  => 'Collector with slash',
             'host'  => '{mail.example.com/' . $protocol_key . '/ssl}INBOX',
             'login' => 'a@example.com',
-        ], ['host', 'server_type']);
+        ]);
 
         // Add a collector with closing brace after the key
-        $this->createItem(MailCollector::class, [
+        $DB->insert(MailCollector::getTable(), [
             'name'  => 'Collector without options',
             'host'  => '{mail.example.com/' . $protocol_key . '}',
             'login' => 'b@example.com',
-        ], ['host', 'server_type']);
+        ]);
 
         $tabs = $app->getTabNameForItem($app);
         $this->assertStringContainsString('tab-count-badge">2<', $tabs[1]);
@@ -432,9 +439,9 @@ class OAuthApplicationTest extends DbTestCase
     {
         $this->login();
 
-        // Remove CREATE right from config
+        // canCreate() delegates to canUpdate(), so removing UPDATE must deny creation
         $saved = $_SESSION['glpiactiveprofile']['config'];
-        $_SESSION['glpiactiveprofile']['config'] = $saved & ~CREATE;
+        $_SESSION['glpiactiveprofile']['config'] = $saved & ~UPDATE;
 
         try {
             $this->assertFalse(OAuthApplication::canCreate());
@@ -447,8 +454,9 @@ class OAuthApplicationTest extends DbTestCase
     {
         $this->login();
 
+        // canPurge() delegates to canUpdate(), so removing UPDATE must deny purge
         $saved = $_SESSION['glpiactiveprofile']['config'];
-        $_SESSION['glpiactiveprofile']['config'] = $saved & ~PURGE;
+        $_SESSION['glpiactiveprofile']['config'] = $saved & ~UPDATE;
 
         try {
             $this->assertFalse(OAuthApplication::canPurge());

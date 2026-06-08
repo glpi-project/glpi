@@ -188,7 +188,7 @@ class OAuthApplication extends CommonDBTM
         $app_key = 'oauth_imap_' . $this->getID();
         $DB->update(
             MailCollector::getTable(),
-            ['host' => '', 'is_active' => 0],  
+            ['host' => '', 'is_active' => 0],
             [
                 'OR' => [
                     ['host' => ['LIKE', '%/' . $app_key . '/%']],
@@ -210,9 +210,15 @@ class OAuthApplication extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        if (empty($input['provider']) || !array_key_exists($input['provider'], self::getProviders())) {
+        if (empty($input['provider'])) {
             Session::addMessageAfterRedirect(
                 msg: __s('A valid provider is required'),
+                message_type: ERROR
+            );
+            return false;
+        } elseif (!array_key_exists($input['provider'], self::getProviders())) {
+            Session::addMessageAfterRedirect(
+                msg: __s('Invalid provider'),
                 message_type: ERROR
             );
             return false;
@@ -239,9 +245,9 @@ class OAuthApplication extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        if (isset($input['provider']) && !array_key_exists($input['provider'], self::getProviders())) {
+        if (!empty($input['provider']) && !array_key_exists($input['provider'], self::getProviders())) {
             Session::addMessageAfterRedirect(
-                msg: __s('A valid provider is required'),
+                msg: __s('Invalid provider'),
                 message_type: ERROR
             );
             return false;

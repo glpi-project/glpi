@@ -177,10 +177,6 @@ class MailCollector extends CommonDBTM
             $links["<i class='" . OAuthApplication::getIcon() . "'></i>" . __s('OAuth Applications')]
                 = OAuthApplication::getSearchURL(false);
         }
-        if (OAuthApplication::canCreate()) {
-            $links["<i class='ti ti-plus'></i>" . __s('Add an OAuth Application')]
-                = OAuthApplication::getFormURL(false);
-        }
         return $links;
     }
 
