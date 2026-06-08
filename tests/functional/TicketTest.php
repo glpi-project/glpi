@@ -7308,46 +7308,43 @@ HTML,
         // Log in as glpi and enable "assign me" preference to simulate the mail collector's
         // own session
         $this->login();
-        $glpi_user = new User();
-        $glpi_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 1]);
-        $glpi_user->getFromDB(Session::getLoginUserID());
+        $glpi_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
         $glpi_user->loadPreferencesInSession();
 
         // Set the followup author's own preference in the database
         $from_user_id = getItemByTypeName('User', $from_user, true);
-        $user = new User();
-        $user->update(['id' => $from_user_id, 'set_followup_tech' => $set_followup_tech]);
+        $this->updateItem(User::class, $from_user_id, ['set_followup_tech' => $set_followup_tech]);
 
         // Associate an email address with the sender so MailCollector can resolve them
         $sender_email = $from_user . '@test.glpi.com';
         $user_email = new UserEmail();
-        $this->assertGreaterThan(
-            0,
-            (int) $user_email->add(['users_id' => $from_user_id, 'is_default' => 1, 'email' => $sender_email])
+        $this->createItem(
+            UserEmail::class,
+            ['users_id' => $from_user_id, 'is_default' => 1, 'email' => $sender_email]
         );
 
-        //create mail collector
-        $collector = new MailCollector();
-        $mailgate_id = $collector->add([
-            'name'            => 'test-collector',
-            'is_active'       => 1,
-            'filesize_max'    => 2097152,
-            'requester_field' => MailCollector::REQUESTER_FIELD_FROM,
-            'mail_server'      => 'imap.test.glpi.com',
-            'server_type'      => '/imap',
-        ]);
-        $this->assertGreaterThan(0, $mailgate_id);
-        $collector->getFromDB($mailgate_id);
+        $collector = $this->createItem(
+            MailCollector::class,
+            [
+                'name'             => 'test-collector',
+                'is_active'        => 1,
+                'filesize_max'     => 2097152,
+                'requester_field'  => MailCollector::REQUESTER_FIELD_FROM,
+                'mail_server'      => 'imap.test.glpi.com',
+                'server_type'      => '/imap',
+            ],
+            ['mail_server', 'server_type']
+        );
+        $mailgate_id = $collector->getID();
 
         // Create a ticket with no assignee
-        $ticket = new Ticket();
-        $ticket_id = $ticket->add([
+        $ticket = $this->createItem(Ticket::class, [
             'name'              => __METHOD__,
             'content'           => __METHOD__,
             'entities_id'       => 0,
             '_skip_auto_assign' => true,
         ]);
-        $this->assertGreaterThan(0, $ticket_id);
+        $ticket_id = $ticket->getID();
 
         // Build a raw email from the sender replying to the ticket (linked via subject line)
         $raw = implode("\r\n", [
@@ -7374,8 +7371,7 @@ HTML,
         $fup_input['items_id'] = $fup_input['tickets_id'];
         unset($fup_input['tickets_id']);
 
-        $fup = new ITILFollowup();
-        $this->assertGreaterThan(0, (int) $fup->add($fup_input));
+        $this->createItem(ITILFollowup::class, $fup_input, ['name', 'add_reopen']);
 
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
