@@ -157,7 +157,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             'expected_body'   => [
                 'friendlyname' => "Form 1 name (third update)",
                 'messages' => [
-                    'info'    => [],
+                    'info'    => ["Item successfully updated: <a href=\"/front/form/form.form.php?id={$form_1->getID()}\" data-bs-toggle=\"tooltip\" data-bs-placement=\"bottom\" title=\"Form 1 name (third update)\">Form 1 name (third update)</a>"],
                     'warning' => [],
                     'error'   => [],
                 ],
