@@ -2951,7 +2951,7 @@ JS;
         if (empty($value)) {
             $value = 'NOW';
         }
-        $specific_value = date("Y-m-d H:i:s");
+        $specific_value = date("Y-m-d");
 
         if (preg_match("/\d{4}-\d{2}-\d{2}.*/", $value)) {
             $specific_value = $value;
@@ -2977,7 +2977,7 @@ JS;
 
         $params     = ['value'         => '__VALUE__',
             'name'          => $element,
-            'withtime'      => $p['with_time'],
+            'withtime'      => false,
             'specificvalue' => $specific_value,
         ];
 

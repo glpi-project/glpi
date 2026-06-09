@@ -40,20 +40,37 @@ export class SearchEnginePage extends GlpiPage
     public readonly search_sorts_button: Locator;
     public readonly search_filters_panel: Locator;
     public readonly search_sorts_panel: Locator;
+    public readonly datetime_time_toggle: Locator;
+    public readonly datetime_calendar_button: Locator;
 
     public constructor(page: Page)
     {
         super(page);
-        this.search_page           = page.getByTestId('search-page');
-        this.search_filters_button = page.getByTestId('search-filters-button');
-        this.search_sorts_button   = page.getByTestId('search-sorts-button');
-        this.search_filters_panel  = page.getByTestId('search-filters-panel');
-        this.search_sorts_panel    = page.getByTestId('search-sorts-panel');
+        this.search_page              = page.getByTestId('search-page');
+        this.search_filters_button    = page.getByTestId('search-filters-button');
+        this.search_sorts_button      = page.getByTestId('search-sorts-button');
+        this.search_filters_panel     = page.getByTestId('search-filters-panel');
+        this.search_sorts_panel       = page.getByTestId('search-sorts-panel');
+        this.datetime_time_toggle     = page.getByRole('checkbox', { name: 'Specify a time' });
+        this.datetime_calendar_button = page.getByRole('button', { name: 'Enter or select a date' });
     }
 
     public async goto(): Promise<void>
     {
         await this.page.goto('/front/computer.php');
+    }
+
+    /**
+     * Navigate to ticket search with a datetime field criterion preset to "Specify a date".
+     * Field 15 = Opening date (datetime). Using searchtype=lessthan to trigger relative_dates rendering.
+     * Passing an ISO date as value causes the inner dropdown to pre-select "Specify a date".
+     */
+    public async gotoTicketWithDatetimeCriteria(date: string = '2023-06-15'): Promise<void>
+    {
+        await this.page.goto(
+            `/front/ticket.php?criteria[0][link]=AND&criteria[0][field]=15`
+            + `&criteria[0][searchtype]=lessthan&criteria[0][value]=${date}`
+        );
     }
 
     public async doOpenSearchFilters(): Promise<void>
@@ -64,5 +81,10 @@ export class SearchEnginePage extends GlpiPage
     public async doOpenSearchSorts(): Promise<void>
     {
         await this.search_sorts_button.click();
+    }
+
+    public async doOpenDatetimeCalendar(): Promise<void>
+    {
+        await this.datetime_calendar_button.click();
     }
 }

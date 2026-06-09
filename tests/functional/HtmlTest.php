@@ -1122,6 +1122,91 @@ SCSS,
         }
     }
 
+    public function testShowGenericDateTimeSearchSpecificDateAlwaysSendsWithtimeFalse(): void
+    {
+        // Non-regression: with_time=true must NOT propagate to the specific date AJAX call.
+        // Before the fix, withtime:true was sent, forcing a full H:i:S datetime picker.
+        $output = \Html::showGenericDateTimeSearch(
+            'test_field',
+            '2023-06-15',
+            ['with_time' => true, 'with_specific_date' => true, 'display' => false]
+        );
+
+        $this->assertStringContainsString('withtime:false', $output);
+        $this->assertStringNotContainsString('withtime:true', $output);
+    }
+
+    public function testShowGenericDateTimeSearchDefaultSpecificValueIsDateOnly(): void
+    {
+        // Non-regression: when the current value is not a specific date (e.g. 'NOW'),
+        // specificvalue must default to Y-m-d (no time), so the time toggle starts unchecked.
+        // Before the fix, the default was date("Y-m-d H:i:s"), which made the toggle default ON.
+        $output = \Html::showGenericDateTimeSearch(
+            'test_field',
+            'NOW',
+            ['with_specific_date' => true, 'display' => false]
+        );
+
+        $this->assertMatchesRegularExpression('/specificvalue:"\d{4}-\d{2}-\d{2}"/', $output);
+        $this->assertDoesNotMatchRegularExpression('/specificvalue:"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/', $output);
+    }
+
+    public static function computeGenericDateTimeSearchProvider(): iterable
+    {
+        yield 'specific date only passes through' => [
+            'val'          => '2023-06-15',
+            'force_day'    => false,
+            'specifictime' => mktime(14, 30, 0, 6, 15, 2023),
+            'expected'     => '2023-06-15',
+        ];
+        yield 'specific datetime passes through' => [
+            'val'          => '2023-06-15 10:30:00',
+            'force_day'    => false,
+            'specifictime' => mktime(14, 30, 0, 6, 15, 2023),
+            'expected'     => '2023-06-15 10:30:00',
+        ];
+        yield 'NOW without force_day returns datetime' => [
+            'val'          => 'NOW',
+            'force_day'    => false,
+            'specifictime' => mktime(14, 30, 0, 6, 15, 2023),
+            'expected'     => '2023-06-15 14:30:00',
+        ];
+        yield 'NOW with force_day returns date only' => [
+            'val'          => 'NOW',
+            'force_day'    => true,
+            'specifictime' => mktime(14, 30, 0, 6, 15, 2023),
+            'expected'     => '2023-06-15',
+        ];
+        yield 'relative -1DAY' => [
+            'val'          => '-1DAY',
+            'force_day'    => false,
+            'specifictime' => mktime(14, 30, 0, 6, 15, 2023),
+            'expected'     => '2023-06-14 14:30:00',
+        ];
+        yield 'relative -2HOUR' => [
+            'val'          => '-2HOUR',
+            'force_day'    => false,
+            'specifictime' => mktime(14, 30, 0, 6, 15, 2023),
+            'expected'     => '2023-06-15 12:30:00',
+        ];
+        yield 'BEGINMONTH' => [
+            'val'          => 'BEGINMONTH',
+            'force_day'    => false,
+            'specifictime' => mktime(14, 30, 0, 6, 15, 2023),
+            'expected'     => '2023-06-01 00:00:00',
+        ];
+    }
+
+    #[DataProvider('computeGenericDateTimeSearchProvider')]
+    public function testComputeGenericDateTimeSearch(
+        string $val,
+        bool $force_day,
+        int $specifictime,
+        string $expected
+    ): void {
+        $this->assertEquals($expected, \Html::computeGenericDateTimeSearch($val, $force_day, $specifictime));
+    }
+
     public static function inputNameProvider(): iterable
     {
         yield [

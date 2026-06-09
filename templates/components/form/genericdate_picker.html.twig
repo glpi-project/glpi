@@ -1,0 +1,83 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set date_fmt = call('Toolbox::getDateFormat', ['js']) %}
+{% set locale = get_current_locale() %}
+{% set alt_fmt_date = date_fmt %}
+{% set alt_fmt_dt = date_fmt ~ ' H:i' %}
+
+<div class="d-flex align-items-center gap-2">
+    <div class="button-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{{ rand }}"
+         data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Enter or select a date') }}">
+        <input type="text" name="{{ name }}" data-input class="form-control rounded-start ps-2">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
+            <i class="ti ti-calendar-time"></i>
+            <span class="sr-only">{{ __('Enter or select a date') }}</span>
+        </button>
+    </div>
+    <label class="d-flex align-items-center gap-2 text-nowrap mb-0">
+        <input type="checkbox" class="form-check-input mt-0" id="time_toggle_{{ rand }}"{{ has_time ? ' checked' : '' }}>
+        <span class="form-check-label text-secondary small">{{ __('Specify a time') }}</span>
+    </label>
+</div>
+<script>
+$(function() {
+    function buildFp(hasTime, defaultDate) {
+        const el = document.getElementById('showdate{{ rand|e('js') }}');
+        if (el._flatpickr) el._flatpickr.destroy();
+        return $(el).flatpickr({
+            defaultDate:     defaultDate,
+            altInput:        true,
+            altFormat:       hasTime ? '{{ alt_fmt_dt|e('js') }}' : '{{ alt_fmt_date|e('js') }}',
+            dateFormat:      hasTime ? 'Y-m-d H:i:S' : 'Y-m-d',
+            wrap:            true,
+            enableTime:      hasTime,
+            enableSeconds:   false,
+            time_24hr:       true,
+            weekNumbers:     true,
+            locale:          getFlatPickerLocale("{{ locale['language']|e('js') }}", "{{ locale['region']|e('js') }}"),
+            minuteIncrement: {{ timestep }},
+            allowInput:      true,
+            onClose:         function(dates, str, picker) {
+                picker.setDate(picker.altInput.value, true, picker.config.altFormat);
+            },
+            plugins:         [CustomFlatpickrButtons()]
+        });
+    }
+
+    let fp = buildFp({{ has_time ? 'true' : 'false' }}, {{ initial_value|json_encode|raw }});
+
+    document.getElementById('time_toggle_{{ rand|e('js') }}').addEventListener('change', function() {
+        fp = buildFp(this.checked, fp.selectedDates[0]);
+    });
+});
+</script>
