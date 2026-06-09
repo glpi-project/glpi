@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Error\ErrorHandler;
+use Glpi\Mail\ImportedMailContentSanitizationResult;
+use Glpi\Mail\ImportedMailContentSanitizer;
 use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
 use Laminas\Mail\Header\ContentDisposition;
@@ -50,11 +52,10 @@ use Laminas\Mail\Storage\Part;
 use Laminas\Mail\Storage\Writable\WritableInterface;
 use LitEmoji\LitEmoji;
 use Safe\Exceptions\DatetimeException;
-use Safe\Exceptions\IconvException;
+use Safe\Exceptions\UrlException;
 
 use function Safe\base64_decode;
 use function Safe\file_put_contents;
-use function Safe\iconv;
 use function Safe\mb_convert_encoding;
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -1062,13 +1063,18 @@ class MailCollector extends CommonDBTM
         // For followup : do not check users_id = login user
         $tkt['_do_not_check_users_id'] = 1;
         $body                          = $this->getBody($message);
+        $sanitizer                     = new ImportedMailContentSanitizer();
+        $declared_charset              = $this->getDeclaredCharset($message);
+        $sanitization_results          = [];
 
         try {
             $subject = $message->getHeader('subject')->getFieldValue();
         } catch (InvalidArgumentException $e) {
             $subject = '';
         }
-        $tkt['name'] = $this->cleanSubject($subject);
+        $subject_result = $sanitizer->sanitize($subject, $declared_charset);
+        $sanitization_results['subject'] = $subject_result;
+        $tkt['name'] = $this->cleanSubject($subject_result->getContent());
 
         $tkt['_message']  = $message;
 
@@ -1177,6 +1183,16 @@ class MailCollector extends CommonDBTM
             );
         }
 
+        $content_result = $sanitizer->sanitize($tkt['content'], $declared_charset);
+        $sanitization_results['content'] = $content_result;
+        $tkt['content'] = $content_result->getContent();
+
+        $name_result = $sanitizer->sanitize($tkt['name'], $declared_charset);
+        $sanitization_results['name'] = $name_result;
+        $tkt['name'] = $name_result->getContent();
+
+        $this->logImportedMailSanitization($uid, $options['mailgates_id'], $sanitization_results);
+
         if (!$DB->use_utf8mb4) {
             // Replace emojis by their shortcode
             $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
@@ -1231,6 +1247,44 @@ class MailCollector extends CommonDBTM
         }
 
         return $tkt;
+    }
+
+    /**
+     * @param array<string, ImportedMailContentSanitizationResult> $results
+     */
+    private function logImportedMailSanitization(int|string $uid, int|string $mailcollector_id, array $results): void
+    {
+        $changed_fields = [];
+        $steps = [];
+        $source_encodings = [];
+
+        foreach ($results as $field => $result) {
+            if (!$result instanceof ImportedMailContentSanitizationResult || !$result->hasChanged()) {
+                continue;
+            }
+
+            $changed_fields[] = $field;
+            $steps = array_merge($steps, $result->getAppliedSteps());
+            if ($result->getSourceEncoding() !== null) {
+                $source_encodings[] = $result->getSourceEncoding();
+            }
+        }
+
+        if (count($changed_fields) === 0) {
+            return;
+        }
+
+        Toolbox::logInFile(
+            'mailgate',
+            sprintf(
+                'Imported mail content normalized (mailcollector=%s, uid=%s, fields=%s, steps=%s, source_encodings=%s)' . "\n",
+                $mailcollector_id,
+                $uid,
+                implode(',', array_unique($changed_fields)),
+                implode(',', array_unique($steps)),
+                implode(',', array_unique($source_encodings))
+            )
+        );
     }
 
 
@@ -2442,7 +2496,22 @@ class MailCollector extends CommonDBTM
 
         switch ($encoding) {
             case 'base64':
-                $contents = base64_decode($contents);
+                try {
+                    $contents = base64_decode($contents, true);
+                } catch (UrlException) {
+                    Toolbox::logInFile(
+                        'mailgate',
+                        __('Unable to strictly decode base64 mail part; used non-strict fallback.') . "\n"
+                    );
+                    try {
+                        $contents = base64_decode($contents);
+                    } catch (UrlException) {
+                        Toolbox::logInFile(
+                            'mailgate',
+                            __('Unable to decode base64 mail part; preserving raw content.') . "\n"
+                        );
+                    }
+                }
                 break;
             case 'quoted-printable':
                 $contents = quoted_printable_decode($contents);
@@ -2494,17 +2563,36 @@ class MailCollector extends CommonDBTM
 
 
                 // Try to convert using iconv with TRANSLIT, then with IGNORE.
-                // TRANSLIT may result in failure depending on system iconv implementation.
-                try {
-                    $converted = @iconv($charset, 'UTF-8//TRANSLIT', $contents);
-                } catch (IconvException $e) {
-                    $converted = iconv($charset, 'UTF-8//IGNORE', $contents);
+                // Some iconv implementations may emit notices on invalid byte sequences.
+                // We handle failures explicitly and keep collected logs clean.
+                // @phpstan-ignore-next-line Handled explicitly with FALSE checks and fallback.
+                $converted = @\iconv($charset, 'UTF-8//TRANSLIT', $contents);
+                if ($converted === false) {
+                    // @phpstan-ignore-next-line Handled explicitly with FALSE checks and fallback.
+                    $converted = @\iconv($charset, 'UTF-8//IGNORE', $contents);
                 }
-                $contents = $converted;
+                if ($converted === false) {
+                    $converted = null;
+                }
+                if ($converted !== null) {
+                    $contents = $converted;
+                }
             }
         }
 
         return $contents;
+    }
+
+    private function getDeclaredCharset(Part $part): ?string
+    {
+        if (
+            $part->getHeaders()->has('content-type')
+            && (($content_type = $part->getHeader('content-type')) instanceof ContentType)
+        ) {
+            return $content_type->getParameter('charset');
+        }
+
+        return null;
     }
 
 
