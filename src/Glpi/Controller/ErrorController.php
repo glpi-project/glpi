@@ -37,6 +37,7 @@ namespace Glpi\Controller;
 use Config;
 use DBConnection;
 use Glpi\Application\Environment;
+use Glpi\Error\ErrorHandler;
 use Glpi\Error\ErrorUtils;
 use Html;
 use Session;
@@ -75,6 +76,7 @@ class ErrorController extends AbstractController
                 case ($exception instanceof BadRequestHttpException || $exception->getStatusCode() === 400):
                     $title   = __('Invalid request');
                     $message = __('Invalid request parameters.');
+                    ErrorHandler::logCaughtException($exception);
                     break;
                 case ($exception instanceof NotFoundHttpException || $exception->getStatusCode() === 404):
                     $title   = __('Item not found');
@@ -99,31 +101,39 @@ class ErrorController extends AbstractController
             }
         }
 
-        $trace = sprintf(
-            "%s\nIn %s(%s)",
-            $this->cleanPaths($exception->getMessage() ?: $exception::class),
-            $this->cleanPaths($exception->getFile()),
-            $exception->getLine()
-        );
-
-        if (!($exception instanceof OutOfMemoryError)) {
-            // Note: OutOfMemoryError has no stack trace, we can only get filename and line.
-            $trace .= "\n" . $this->cleanPaths($exception->getTraceAsString());
-        }
-
-        $current = $exception;
-        $depth   = 0;
-        while ($depth < 10 && $previous = $current->getPrevious()) {
-            $trace .= sprintf(
-                "\n\nPrevious: %s\nIn %s(%s)",
-                $this->cleanPaths($previous->getMessage() ?: $previous::class),
-                $this->cleanPaths($previous->getFile()),
-                $previous->getLine()
+        $trace = null;
+        if (
+            (
+                Environment::get()->shouldEnableExtraDevAndDebugTools()
+                || isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+            )
+        ) {
+            $trace = sprintf(
+                "%s\nIn %s(%s)",
+                $this->cleanPaths($exception->getMessage() ?: $exception::class),
+                $this->cleanPaths($exception->getFile()),
+                $exception->getLine()
             );
-            $trace .= "\n" . $this->cleanPaths($previous->getTraceAsString());
 
-            $current = $previous;
-            $depth++;
+            if (!($exception instanceof OutOfMemoryError)) {
+                // Note: OutOfMemoryError has no stack trace, we can only get filename and line.
+                $trace .= "\n" . $this->cleanPaths($exception->getTraceAsString());
+            }
+
+            $current = $exception;
+            $depth   = 0;
+            while ($depth < 10 && $previous = $current->getPrevious()) {
+                $trace .= sprintf(
+                    "\n\nPrevious: %s\nIn %s(%s)",
+                    $this->cleanPaths($previous->getMessage() ?: $previous::class),
+                    $this->cleanPaths($previous->getFile()),
+                    $previous->getLine()
+                );
+                $trace .= "\n" . $this->cleanPaths($previous->getTraceAsString());
+
+                $current = $previous;
+                $depth++;
+            }
         }
 
         if ($request->getPreferredFormat() === 'json') {
