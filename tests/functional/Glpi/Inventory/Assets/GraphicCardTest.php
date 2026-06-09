@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
-use DeviceGraphicCardModel;
 use Glpi\Inventory\Asset\GraphicCard;
 use Glpi\Inventory\Converter;
 use Glpi\Tests\AbstractInventoryAsset;
