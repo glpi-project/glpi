@@ -306,7 +306,7 @@ class OAuthApplication extends CommonDBTM
         $options['display'] = false;
         if ($field === 'provider') {
             $options['value'] = $values[$field] ?? '';
-            return (string)Dropdown::showFromArray($name, static::getProviders(), $options);
+            return (string) Dropdown::showFromArray($name, static::getProviders(), $options);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
