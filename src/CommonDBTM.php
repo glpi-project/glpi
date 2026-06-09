@@ -3206,12 +3206,12 @@ class CommonDBTM extends CommonGLPI
         $reauth_needed = null;
         $allowed = $this->canGlobal($right, $reauth_needed);
 
-        if($allowed) {
+        if ($allowed) {
             return;
         }
 
         // not allowed beacause of reauth : redirect to reauth prompt
-        if($reauth_needed) {
+        if ($reauth_needed) {
             self::redirectToReauthPrompt();
         }
 

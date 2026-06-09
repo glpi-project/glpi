@@ -226,7 +226,7 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check right on an item.
      *
-     * Parameter $reauth_needed value changes depending if reauthentication is needed
+     * Parameter $reauth_needed passed by ref : value changes depending on reauthentication is needed
      *
      * @param int                  $ID            ID of the item (-1 if new item)
      * @param int                  $right         Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
