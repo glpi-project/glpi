@@ -87,13 +87,21 @@
         }
 
         .timeline-content {
-            min-width: auto;
-            width: 100%;
+            min-width: 0;
+            flex-grow: 1;
         }
 
         .newcomment {
             width: 100%;
             max-width: 820px;
+        }
+
+        &.KnowbaseItemComment {
+            .timeline-content {
+                &::before {
+                    border: none;
+                }
+            }
         }
     }
 
@@ -115,6 +123,19 @@
 .comment_form textarea {
     width: 100%;
     min-height: 70px;
+}
+
+// The .h_item inside the new comment form (outside .forcomments) should not
+// have the pt-3 padding; pt-3 is only meaningful inside the comments timeline.
+.new_comment_form .h_item {
+    padding-top: 0 !important;
+}
+
+// Cancel the mt-n2 on the avatar anchor inside .new_comment_form.
+// mt-n2 is intentional inside .forcomments (aligns avatar with the speech-bubble
+// arrow), but there is no such arrow offset needed in the standalone form.
+.new_comment_form .d-flex > a {
+    margin-top: 0 !important;
 }
 
 input[type="checkbox"].toggle_comments {

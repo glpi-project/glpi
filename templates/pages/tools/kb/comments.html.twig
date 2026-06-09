@@ -92,7 +92,7 @@
 {% endmacro %}
 
 {% if can_comment %}
-    <div class="new_comment_form d-none">
+    <div class="new_comment_form d-none ms-3">
         {% include 'pages/tools/kb/comment_form.html.twig' with {
             kbitem_id: kbitem_id,
             language: lang,
@@ -100,13 +100,23 @@
     </div>
     <div class="text-center mb-3">
         <button type="button" class="btn btn-primary add_new_comment">
-            {{ __('Add a comment') }}
+            <i class="ti ti-message-circle" aria-hidden="true"></i>
+            <span>{{ __('Add a comment') }}</span>
         </button>
         <script>
             $('button.add_new_comment').on('click', (e) => {
                 e.preventDefault();
                 $('.new_comment_form').removeClass('d-none');
-                $(e.target).addClass('d-none');
+                $(e.currentTarget).addClass('d-none');
+            });
+
+            // Cancel inside the standalone new-comment form: hide the form and
+            // restore the "Add a comment" button. The form's own inline handler
+            // safely no-ops here (no .newcomment/.editcomment ancestor to remove).
+            $('.new_comment_form').on('click', 'button[name="cancel"]', (e) => {
+                e.preventDefault();
+                $('.new_comment_form').addClass('d-none');
+                $('button.add_new_comment').removeClass('d-none');
             });
         </script>
     </div>
@@ -142,7 +152,9 @@
                         'language' : comment.data('lang')
                     };
 
-                    if (comment.find('#newcomment' + add_btn.data('id')).length > 0) {
+                    const existingNewcomment = $(`#newcomment${comment.data('id')}`);
+                    if (existingNewcomment.length > 0) {
+                        existingNewcomment.get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
                         return;
                     }
 
@@ -154,12 +166,12 @@
                     }).then((data) => {
                         const _form = $(`<li class="newcomment comment subcomment timeline-item KnowbaseItemComment" id="newcomment${comment.data('id')}">${data}</li>`);
                         _bindForm(_form);
-                        if (add_btn.closest('.comment').find("ul").length > 0) {
-                            add_btn.closest('.comment').find("ul").append(_form);
+                        if (comment.children("ul").length > 0) {
+                            comment.children("ul").first().append(_form);
                         } else {
-                            $("<div class='ms-5 w-100'>").append(_form).insertAfter(add_btn.parents('.h_item'));
+                            comment.after(_form);
                         }
-                        $(`#newcomment${comment.data('id')}`).get(0).scrollIntoView(false);
+                        $(`#newcomment${comment.data('id')}`).get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }, () => {
                         glpi_alert({
                             title: '{{ __('Unable to load comment!')|e('js') }}',
@@ -177,7 +189,9 @@
                         'language' : comment.data('lang')
                     };
 
-                    if (comment.find('#editcomment' + edit_btn.data('id')).length > 0) {
+                    const existingEditcomment = $(`#editcomment${comment.data('id')}`);
+                    if (existingEditcomment.length > 0) {
+                        existingEditcomment.get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
                         return;
                     }
 
@@ -197,6 +211,7 @@
                             .closest('.comment')
                             .find('.h_content').first()
                             .append(_form);
+                        _form.get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
                     }, () => {
                         glpi_alert({
                             title: '{{ __('Unable to load comment!')|e('js') }}',
