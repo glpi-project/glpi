@@ -182,6 +182,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      * Check whether a specific user has the right to assign themselves to this ticket,
      * based on their own profile rights rather than the current session.
      *
+     * @since 11.0.8
      * @param int $user_id
      *
      * @return bool

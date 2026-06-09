@@ -7316,7 +7316,6 @@ HTML,
 
         // Associate an email address with the sender so MailCollector can resolve them
         $sender_email = $from_user . '@test.glpi.com';
-        $user_email = new UserEmail();
         $this->createItem(
             UserEmail::class,
             ['users_id' => $from_user_id, 'is_default' => 1, 'email' => $sender_email]
