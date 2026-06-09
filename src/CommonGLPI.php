@@ -37,9 +37,11 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\RedirectException;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\parse_url;
@@ -169,17 +171,75 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
     /**
+     * @throws RedirectException
+     */
+    final public static function redirectToReauthPrompt(): never
+    {
+        (new ReAuthManager())->redirectToReauth();
+    }
+
+    /**
+     * Override this method to return true in itemtypes that need re-authentication
+     */
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Should the user reauthenticate ?
+     *
+     * Depends on
+     * - context : always false on api & cli contexts
+     * - itemtype : may require it ( static::itemTypeRequiresReauthentication() )
+     * - user has a valid reauthentication (new ReAuthManager())->isReAuthenticated()
+     */
+    final public static function isUserReauthenticationNeeded(): bool
+    {
+        // no reauthentication for http requests (not for API or CLI)
+        if (isAPI() || isCommandLine()) {
+            return false;
+        }
+
+        // Itemtype doesn't need re-authentication
+        if (!static::itemTypeRequiresReauthentication()) {
+            return false;
+        }
+
+        // Check that user is re-authenticated if it's required for this itemtype @see \CommonGLPI::isReautenticationNeeded()
+        return !(new ReAuthManager())->isReAuthenticated();
+    }
+
+    /**
+     * @throws RedirectException
+     */
+    final public static function checkReAuthenticationOrRedirect(): true
+    {
+        if (static::itemTypeRequiresReauthentication()) {
+            (new ReAuthManager())->checkReAuthenticationOrRedirect();
+        }
+
+        return true;
+    }
+
+    /**
      * Check right on an item.
      *
-     * @param int                  $ID    ID of the item (-1 if new item)
-     * @param int                  $right Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
-     * @param ?array<string,mixed> $input array of input data (used for adding item)
+     * Parameter $reauth_needed value changes depending if reauthentication is needed
      *
-     * @return bool
+     * @param int                  $ID            ID of the item (-1 if new item)
+     * @param int                  $right         Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
+     * @param ?array<string,mixed> $input         array of input data (used for adding item)
+     * @param null                 $reauth_needed param is used as a return value (modified by reference) to know if reauth is needed
+     *
+     * @param-out bool $reauth_needed On true, it tells that soly a reauth is needed to perform action. On false, ignore it.
+     *
      */
-    public function can($ID, int $right, ?array &$input = null): bool
+    public function can($ID, int $right, ?array &$input = null, null &$reauth_needed = null): bool
     {
-        return match ($right) {
+        $_reauth_needed = static::isUserReauthenticationNeeded();
+
+        $allowed = match ($right) {
             READ => static::canView(),
             UPDATE => static::canUpdate(),
             DELETE => static::canDelete(),
@@ -187,12 +247,26 @@ class CommonGLPI implements CommonGLPIInterface
             CREATE => static::canCreate(),
             default => false,
         };
+
+        // allowed
+        if ($allowed) {
+            // but need reauth
+            if ($_reauth_needed) {
+                $reauth_needed = true;
+                return false;
+            }
+
+            $reauth_needed = false;
+            return true;
+        }
+
+        // not allowed
+        $reauth_needed = false;
+        return false;
     }
 
     /**
      * Check the global "creation" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canCreate(): bool
     {
@@ -217,8 +291,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Check the global "update" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canUpdate(): bool
     {
@@ -230,8 +302,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Check the global "delete" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canDelete(): bool
     {
@@ -243,8 +313,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Check the global "purge" right on the itemtype.
-     *
-     * @return bool
      */
     public static function canPurge(): bool
     {

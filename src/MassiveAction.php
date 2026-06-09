@@ -80,6 +80,7 @@ class MassiveAction
 
     /**
      * Class used to process current action.
+     * @var class-string
      */
     private string $processor;
 
@@ -565,6 +566,18 @@ class MassiveAction
         return false;
     }
 
+    /**
+     * Extract itemtypes from the input
+     *
+     * @return array<int, string> itemtypes to process
+     * // @todo a supprimer si pas besoin
+     * // @todo ajouter un test
+     **/
+    public function getItemtypes(): array
+    {
+        return array_keys($this->items);
+    }
+
 
     /**
      * Get 'add to transfer list' action when needed
@@ -613,6 +626,7 @@ class MassiveAction
             return false;
         }
 
+        /** @var CommonDBTM $item  */
         if (!is_null($checkitem)) {
             $canupdate = $checkitem->canUpdate();
             $candelete = $checkitem->canDelete();
@@ -1068,7 +1082,20 @@ class MassiveAction
                             "infocom"  => UPDATE,
                         ]);
                     } else {
-                        $so_item->checkGlobal(UPDATE);
+                        // redirect to reauth if needed // @todo cleanup
+                        // @todo normalement, on ne prend pas cette option
+                        // pas possible de faire redirection ici, c'est géré en ajax : pas d'effet
+                        // mais on peut afficher un bouton vers la reauth et on redirige vers la page actuelle
+                        $reauth_needed = null;
+                        $allowed = $so_item->canGlobal(UPDATE, $reauth_needed); // @todo juste update ? action delete/purge/etc
+                        if (!$allowed && !$reauth_needed) {
+                            // just to throw the redirect Exception, maybe we can refactor
+                            // maybe we can refactor \CommonDBTM::checkGlobal to call \CommonDBTM::throwAccessDeniedException.
+                            // then we can just call this method here instead of checkGlobal()
+                            $so_item->checkGlobal(UPDATE);
+                        }
+                        // continue event if not currently authorized, to show the submit button
+                        // right check (and reauth redirection) will be process on form submission
                     }
 
                     $itemtype_search_options = SearchOption::getOptionsForItemtype($so_itemtype);

@@ -33,6 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * Used for massive action processing
+ */
+
+use Glpi\Exception\RedirectException;
+use Glpi\Security\ReAuth\ReAuthManager;
+
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 global $CFG_GLPI;
@@ -42,6 +49,25 @@ Html::header_nocache();
 
 try {
     $ma = new MassiveAction($_POST, $_GET, 'process');
+    [$referer, $item_types] = get_item_type_redirection_path_from_post();
+    // Store final url
+    // current requested page is the massive action processing
+    // but redirection should be to the page that triggered the massive action process
+    // we can determine the url to reach after massive action processed, only before it's done
+    // -> store it in session, then reuse it on third pass on these file
+    if (!empty($item_types)) {
+        $_SESSION['glpi_reauth_massiveaction_redirect'] = $referer;
+    }
+    $ma->setRedirect($_SESSION['glpi_reauth_massiveaction_redirect']);
+
+    $reauth_manager = new ReAuthManager();
+    if ($reauth_manager->atLeastOneitemTypesRequiresReauthentication($item_types)) {
+        $reauth_manager->checkReAuthenticationOrRedirect();
+    }
+}
+// process redirect exceptions
+catch (RedirectException $e) {
+    throw $e;
 } catch (Throwable $e) {
     Html::popHeader(__('Bulk modification error'));
 
@@ -96,4 +122,28 @@ if (isset($results['messages']) && is_array($results['messages']) && count($resu
         Session::addMessageAfterRedirect($message, false, ERROR);
     }
 }
+
 Html::redirect($results['redirect']);
+
+/**
+ * Returns the redirection path and item types, based on the POST data.
+ *
+ * @return array{string, array<class-string<CommonGLPI>>} [redirection path, item types]
+ */
+function get_item_type_redirection_path_from_post(): array
+{
+    global $CFG_GLPI;
+
+    /** @var array<class-string<CommonGLPI>> $items */
+    $items = isset($_POST['items']) ? array_keys($_POST['items']) : [];
+    // ensure item types are glpi class names - phpstan complains "will always evaluate to true"
+    // but this filtering a required for security -> forbiddynamicinstantiationrule
+    // can be added to phpstan baseline
+    $items = array_filter($items, fn($item) => is_a($item, CommonGLPI::class, true));
+
+    return match (count($items)) {
+        0 => [$CFG_GLPI["root_doc"], []],
+        1 => [(new $items[0]())->getRedirectToListUrl(), $items], // phpstan complains (forbiddynamicinstantiationrule), but filtering is done just above.
+        default => [$CFG_GLPI["root_doc"] . '/front/allassets.php', $items]
+    };
+}

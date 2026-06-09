@@ -3273,7 +3273,9 @@ HTML;
             case 'force_user_ldap_update':
             case 'clean_ldap_fields':
                 foreach ($ids as $id) {
-                    if ($item->can($id, UPDATE)) {
+
+                    $reauth_needed = null; // @todo vraiment utile ? filtrage avant, non ?
+                    if ($item->can($id, UPDATE, reauth_needed: $reauth_needed)) {
                         if (
                             $item instanceof User
                             && (
@@ -3292,6 +3294,10 @@ HTML;
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
+                        if ($reauth_needed) {
+                            self::redirectToReauthPrompt();
+                        }
+
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
@@ -7093,6 +7099,12 @@ HTML;
 
         // Success if no error found
         return count($errors) === 0;
+    }
+
+    #[Override]
+    public static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
     }
 
     /**

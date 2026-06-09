@@ -34,7 +34,7 @@
  */
 
 /**
- * @since 0.84
+ * Display a massive action form
  */
 
 global $CFG_GLPI;

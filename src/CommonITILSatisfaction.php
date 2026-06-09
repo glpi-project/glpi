@@ -99,11 +99,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         return (Session::haveRight($item::$rightname, READ));
     }
 
-    /**
-     * Is the current user have right to update the current satisfaction
-     *
-     * @return bool
-     **/
+    #[Override]
     public function canUpdateItem(): bool
     {
         $item = static::getItemInstance();
