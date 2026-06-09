@@ -172,7 +172,13 @@
                                             type="button"
                                             class="dropdown-item {{ action.is_danger ? "text-danger" : "" }}"
                                             aria-label="{{ action.label }}"
-                                            {% if action.tooltip %}title="{{ action.tooltip }}"{% endif %}
+                                            {% if action.tooltip %}
+                                                {# Bootstrap tooltip (not raw title): "hover focus" makes it reachable by keyboard; container=body avoids clipping by the dropdown overflow. GLPI inits [data-bs-toggle=tooltip] globally. #}
+                                                data-bs-toggle="tooltip"
+                                                data-bs-trigger="hover focus"
+                                                data-bs-container="body"
+                                                title="{{ action.tooltip }}"
+                                            {% endif %}
                                             data-glpi-kb-action="{{ action.type.value }}"
                                             {% for key, param in action.params %}
                                                 data-glpi-kb-action-param-{{ key }}="{{ param }}"
