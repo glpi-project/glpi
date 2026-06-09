@@ -223,12 +223,6 @@ abstract class Device extends InventoryAsset
         $pcivendor = new PCIVendor();
         $updated = false;
 
-        if (property_exists($controller, 'caption') && !empty($controller->caption)) {
-            $val->designation = $controller->caption;
-        } elseif (property_exists($controller, 'name') && !empty($controller->name)) {
-            $val->designation = $controller->name;
-        }
-
         if (property_exists($controller, 'pciid')) {
             $exploded = explode(":", $controller->pciid);
             if (!empty($exploded[0]) && ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0]))) {
