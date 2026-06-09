@@ -302,13 +302,13 @@ class OAuthApplicationTest extends DbTestCase
         $host_linked   = '{mail.example.com/' . $protocol_key . '/novalidate-cert}INBOX';
         $host_unlinked = '{mail.other.com/imap/ssl}INBOX';
 
-        $DB->insert(MailCollector::getTable(), [
+        $mc_id = $this->createItem(MailCollector::class, [
             'name'  => 'Linked collector',
             'host'  => $host_linked,
             'login' => 'user@example.com',
         ]);
         $mc_linked = new MailCollector();
-        $mc_linked->getFromDB($DB->insertId());
+        $mc_linked->getFromDB($mc_id);
 
         /** @var MailCollector $mc_other */
         $mc_other = $this->createItem(MailCollector::class, [
