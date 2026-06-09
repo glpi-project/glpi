@@ -190,6 +190,14 @@ class NotificationEventMailing extends NotificationEventAbstract
                 }
                 $mail->subject($current->fields['name']);
 
+                // Force HTML mode if body_html is empty but body_text contains content
+                // This fixes emails showing raw HTML tags in plain text mode
+                if (empty($current->fields['body_html']) && !empty($current->fields['body_text'])) {
+                    $current->fields['body_html'] = '<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>'
+                        . nl2br(htmlescape($current->fields['body_text']))
+                        . '</body></html>';
+                }
+
                 $is_html = !empty($current->fields['body_html']);
 
                 $documents_ids = [];
