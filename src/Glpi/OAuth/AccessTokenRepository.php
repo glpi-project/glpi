@@ -93,20 +93,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     }
 
     /**
-     * Revoke all access tokens issued for the given client.
-     *
-     * @param string $clientIdentifier
-     *
-     * @return void
-     */
-    public function revokeByClient(string $clientIdentifier): void
-    {
-        global $DB;
-
-        $DB->delete('glpi_oauth_access_tokens', ['client' => $clientIdentifier]);
-    }
-
-    /**
      * @param string $tokenId
      *
      * @return bool
