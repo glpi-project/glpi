@@ -7096,33 +7096,29 @@ HTML,
         $entity_id = 0;
 
         $ticket = new Ticket();
-        $fup = new ITILFollowup();
-        $sol = new ITILSolution();
 
         //create a ticket
-        $ticket_id = $ticket->add([
+        $ticket = $this->createItem(Ticket::class, [
             'name'                  => __METHOD__,
             'content'               => __METHOD__,
             'entities_id'           => $entity_id,
             '_skip_auto_assign'     => true,
             '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
         ]);
-        $this->assertGreaterThan(0, $ticket_id);
+        $ticket_id = $ticket->getID();
 
         //add a followup to the ticket without assigning to me (tech)
         $this->login('tech', 'tech');
-        $tech_user = new User();
-        $tech_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 0]);
-        $tech_user->getFromDB(Session::getLoginUserID());
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 0]);
         $tech_user->loadPreferencesInSession();
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
                 'users_id'  => $tech_user->getID(),
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
@@ -7130,18 +7126,17 @@ HTML,
         $this->assertCount(0, $actors);
 
         //add a private followup to the ticket and NOT assign to me (tech)
-        $tech_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 1]);
-        $tech_user->getFromDB(Session::getLoginUserID());
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
         $tech_user->loadPreferencesInSession();
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'      => 'Ticket',
                 'items_id'      => $ticket_id,
                 'content'       => 'A simple followup',
                 'is_private'    => 1,
                 'users_id'      => $tech_user->getID(),
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
@@ -7149,14 +7144,14 @@ HTML,
         $this->assertCount(0, $actors);
 
         //add a followup to the ticket and assign to me (tech)
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
                 'users_id'  => $tech_user->getID(),
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
@@ -7165,17 +7160,15 @@ HTML,
 
         //add a solution to the ticket and assign to me
         $this->login('glpi', 'glpi');
-        $glpi_user = new User();
-        $glpi_user->update(['id' => Session::getLoginUserID(), 'set_solution_tech' => 1]);
-        $glpi_user->getFromDB(Session::getLoginUserID());
+        $glpi_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_solution_tech' => 1]);
         $glpi_user->loadPreferencesInSession();
-        $this->assertGreaterThan(
-            0,
-            (int) $sol->add([
+        $this->createItem(
+            ITILSolution::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple solution',
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
@@ -7183,28 +7176,29 @@ HTML,
         $this->assertCount(2, $actors);
 
         //create a new ticket
-        $ticket_id = $ticket->add([
-            'name'                  => __METHOD__,
-            'content'               => __METHOD__,
-            'entities_id'           => $entity_id,
-            '_skip_auto_assign'     => true,
-            '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
-        ]);
-        $this->assertGreaterThan(0, $ticket_id);
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name'                  => __METHOD__,
+                'content'               => __METHOD__,
+                'entities_id'           => $entity_id,
+                '_skip_auto_assign'     => true,
+                '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
+            ]
+        );
+        $ticket_id = $ticket->getID();
 
         //add a solution to the ticket without assigning to me
         $this->login('tech', 'tech');
-        $tech_user = new User();
-        $tech_user->update(['id' => Session::getLoginUserID(), 'set_solution_tech' => 0]);
-        $tech_user->getFromDB(Session::getLoginUserID());
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_solution_tech' => 0]);
         $tech_user->loadPreferencesInSession();
-        $this->assertGreaterThan(
-            0,
-            (int) $sol->add([
+        $this->createItem(
+            ITILSolution::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple solution',
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
@@ -7212,49 +7206,48 @@ HTML,
         $this->assertCount(0, $actors);
 
         //create a new ticket
-        $ticket_id = $ticket->add([
-            'name'                  => __METHOD__,
-            'content'               => __METHOD__,
-            'entities_id'           => $entity_id,
-            '_skip_auto_assign'     => true,
-            '_users_id_requester'   => getItemByTypeName('User', 'glpi', true),
-            '_users_id_observer'    => getItemByTypeName('User', 'tech', true),
-        ]);
-        $this->assertGreaterThan(0, $ticket_id);
-        $ticket->getFromDB($ticket_id);
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name'                  => __METHOD__,
+                'content'               => __METHOD__,
+                'entities_id'           => $entity_id,
+                '_skip_auto_assign'     => true,
+                '_users_id_requester'   => getItemByTypeName('User', 'glpi', true),
+                '_users_id_observer'    => getItemByTypeName('User', 'tech', true),
+            ]
+        );
+        $ticket_id = $ticket->getID();
+
         $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
         $this->assertCount(1, $actors);
 
         //add a followup to the ticket without assigning to me
         $this->login('glpi', 'glpi');
-        $glpi_user = new User();
-        $glpi_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 1]);
-        $glpi_user->getFromDB(Session::getLoginUserID());
+        $glpi_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
         $glpi_user->loadPreferencesInSession();
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
                 'users_id'  => $glpi_user->getID(),
-            ])
+            ]
         );
 
         //add a followup to the ticket without assigning to me
         $this->login('tech', 'tech');
-        $tech_user = new User();
-        $tech_user->update(['id' => Session::getLoginUserID(), 'set_followup_tech' => 1]);
-        $tech_user->getFromDB(Session::getLoginUserID());
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
         $tech_user->loadPreferencesInSession();
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
                 'users_id'  => $tech_user->getID(),
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
@@ -7263,17 +7256,15 @@ HTML,
 
         //add a solution to the ticket without assigning to me
         $this->login('glpi', 'glpi');
-        $glpi_user = new User();
-        $glpi_user->update(['id' => Session::getLoginUserID(), 'set_solution_tech' => 1]);
-        $glpi_user->getFromDB(Session::getLoginUserID());
+        $glpi_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_solution_tech' => 1]);
         $glpi_user->loadPreferencesInSession();
-        $this->assertGreaterThan(
-            0,
-            (int) $sol->add([
+        $this->createItem(
+            ITILSolution::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple solution',
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
