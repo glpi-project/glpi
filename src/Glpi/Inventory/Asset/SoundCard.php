@@ -47,7 +47,6 @@ class SoundCard extends Device
     {
         $mapping = [
             'name'          => 'designation',
-            'caption'       => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'description'   => 'comment',
         ];
