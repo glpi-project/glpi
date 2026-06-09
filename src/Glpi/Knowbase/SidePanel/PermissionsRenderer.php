@@ -43,6 +43,20 @@ use KnowbaseItem_User;
 use Override;
 use Session;
 
+/**
+ * @phpstan-type PermissionEntry array{
+ *     itemtype: class-string,
+ *     id: int,
+ *     type: string,
+ *     name: string,
+ *     users_id: int|null,
+ *     icon: string,
+ *     badge_class: string,
+ *     entity_name: string|null,
+ *     entities_id: int|null,
+ *     is_recursive: bool,
+ * }
+ */
 final class PermissionsRenderer implements RendererInterface
 {
     #[Override]
@@ -90,94 +104,151 @@ final class PermissionsRenderer implements RendererInterface
     }
 
     /**
+     * Build a single permission list entry for a freshly added relation.
+     *
+     * @param class-string $class The visibility relation class
+     * @param int          $relation_id The relation ID
+     * @return PermissionEntry|null
+     */
+    public function buildEntry(string $class, int $relation_id): ?array
+    {
+        $relation = getItemForItemtype($class);
+        if (!$relation || !$relation->getFromDB($relation_id)) {
+            return null;
+        }
+
+        return match ($class) {
+            KnowbaseItem_User::class    => $this->formatUserEntry($relation->fields),
+            Group_KnowbaseItem::class   => $this->formatGroupEntry($relation->fields),
+            Entity_KnowbaseItem::class  => $this->formatEntityEntry($relation->fields),
+            KnowbaseItem_Profile::class => $this->formatProfileEntry($relation->fields),
+            default                     => null,
+        };
+    }
+
+    /**
      * Build entries array for the permissions list
      *
      * @param KnowbaseItem $item
-     * @return array<int, array{itemtype: string, id: int, type: string, name: string, icon: string, badge_class: string, entity_name: ?string, is_recursive: bool, users_id: ?int}>
+     * @return list<PermissionEntry>
      */
     private function buildEntries(KnowbaseItem $item): array
     {
         $id = $item->getID();
         $entries = [];
 
-        $users = KnowbaseItem_User::getUsers($id);
-        foreach ($users as $val) {
+        foreach (KnowbaseItem_User::getUsers($id) as $val) {
             foreach ($val as $data) {
-                $entries[] = [
-                    'itemtype'     => KnowbaseItem_User::class,
-                    'id'           => $data['id'],
-                    'type'         => 'User',
-                    'name'         => getUserName($data['users_id']),
-                    'users_id'     => (int) $data['users_id'],
-                    'icon'         => 'ti-user',
-                    'badge_class'  => 'bg-azure-lt',
-                    'entity_name'  => null,
-                    'is_recursive' => false,
-                ];
+                $entries[] = $this->formatUserEntry($data);
             }
         }
 
-        $groups = Group_KnowbaseItem::getGroups($id);
-        foreach ($groups as $val) {
+        foreach (Group_KnowbaseItem::getGroups($id) as $val) {
             foreach ($val as $data) {
-                $entity_name = null;
-                if ($data['entities_id'] !== null) {
-                    $entity_name = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
-                }
-                $entries[] = [
-                    'itemtype'     => Group_KnowbaseItem::class,
-                    'id'           => $data['id'],
-                    'type'         => 'Group',
-                    'name'         => Dropdown::getDropdownName('glpi_groups', $data['groups_id']),
-                    'users_id'     => null,
-                    'icon'         => 'ti-users-group',
-                    'badge_class'  => 'bg-green-lt',
-                    'entity_name'  => $entity_name,
-                    'entities_id'  => $data['entities_id'],
-                    'is_recursive' => (bool) $data['is_recursive'],
-                ];
+                $entries[] = $this->formatGroupEntry($data);
             }
         }
 
-        $entities = Entity_KnowbaseItem::getEntities($id);
-        foreach ($entities as $val) {
+        foreach (Entity_KnowbaseItem::getEntities($id) as $val) {
             foreach ($val as $data) {
-                $entries[] = [
-                    'itemtype'     => Entity_KnowbaseItem::class,
-                    'id'           => $data['id'],
-                    'type'         => 'Entity',
-                    'name'         => Dropdown::getDropdownName('glpi_entities', $data['entities_id']),
-                    'users_id'     => null,
-                    'icon'         => 'ti-building',
-                    'badge_class'  => 'bg-yellow-lt',
-                    'entity_name'  => null,
-                    'is_recursive' => (bool) $data['is_recursive'],
-                ];
+                $entries[] = $this->formatEntityEntry($data);
             }
         }
 
-        $profiles = KnowbaseItem_Profile::getProfiles($id);
-        foreach ($profiles as $val) {
+        foreach (KnowbaseItem_Profile::getProfiles($id) as $val) {
             foreach ($val as $data) {
-                $entity_name = null;
-                if ($data['entities_id'] !== null) {
-                    $entity_name = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
-                }
-                $entries[] = [
-                    'itemtype'     => KnowbaseItem_Profile::class,
-                    'id'           => $data['id'],
-                    'type'         => 'Profile',
-                    'name'         => Dropdown::getDropdownName('glpi_profiles', $data['profiles_id']),
-                    'users_id'     => null,
-                    'icon'         => 'ti-id-badge-2',
-                    'badge_class'  => 'bg-purple-lt',
-                    'entity_name'  => $entity_name,
-                    'entities_id'  => $data['entities_id'],
-                    'is_recursive' => (bool) $data['is_recursive'],
-                ];
+                $entries[] = $this->formatProfileEntry($data);
             }
         }
 
         return $entries;
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @return PermissionEntry
+     */
+    private function formatUserEntry(array $data): array
+    {
+        return [
+            'itemtype'     => KnowbaseItem_User::class,
+            'id'           => (int) $data['id'],
+            'type'         => 'User',
+            'name'         => getUserName((int) $data['users_id']),
+            'users_id'     => (int) $data['users_id'],
+            'icon'         => 'ti-user',
+            'badge_class'  => 'bg-azure-lt',
+            'entity_name'  => null,
+            'entities_id'  => null,
+            'is_recursive' => false,
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @return PermissionEntry
+     */
+    private function formatGroupEntry(array $data): array
+    {
+        $entities_id = $data['entities_id'] !== null ? (int) $data['entities_id'] : null;
+        $entity_name = $entities_id !== null
+            ? Dropdown::getDropdownName('glpi_entities', $entities_id)
+            : null;
+        return [
+            'itemtype'     => Group_KnowbaseItem::class,
+            'id'           => (int) $data['id'],
+            'type'         => 'Group',
+            'name'         => Dropdown::getDropdownName('glpi_groups', $data['groups_id']),
+            'users_id'     => null,
+            'icon'         => 'ti-users-group',
+            'badge_class'  => 'bg-green-lt',
+            'entity_name'  => $entity_name,
+            'entities_id'  => $entities_id,
+            'is_recursive' => (bool) $data['is_recursive'],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @return PermissionEntry
+     */
+    private function formatEntityEntry(array $data): array
+    {
+        return [
+            'itemtype'     => Entity_KnowbaseItem::class,
+            'id'           => (int) $data['id'],
+            'type'         => 'Entity',
+            'name'         => Dropdown::getDropdownName('glpi_entities', $data['entities_id']),
+            'users_id'     => null,
+            'icon'         => 'ti-building',
+            'badge_class'  => 'bg-yellow-lt',
+            'entity_name'  => null,
+            'entities_id'  => $data['entities_id'] !== null ? (int) $data['entities_id'] : null,
+            'is_recursive' => (bool) $data['is_recursive'],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     * @return PermissionEntry
+     */
+    private function formatProfileEntry(array $data): array
+    {
+        $entities_id = $data['entities_id'] !== null ? (int) $data['entities_id'] : null;
+        $entity_name = $entities_id !== null
+            ? Dropdown::getDropdownName('glpi_entities', $entities_id)
+            : null;
+        return [
+            'itemtype'     => KnowbaseItem_Profile::class,
+            'id'           => (int) $data['id'],
+            'type'         => 'Profile',
+            'name'         => Dropdown::getDropdownName('glpi_profiles', $data['profiles_id']),
+            'users_id'     => null,
+            'icon'         => 'ti-id-badge-2',
+            'badge_class'  => 'bg-purple-lt',
+            'entity_name'  => $entity_name,
+            'entities_id'  => $entities_id,
+            'is_recursive' => (bool) $data['is_recursive'],
+        ];
     }
 }

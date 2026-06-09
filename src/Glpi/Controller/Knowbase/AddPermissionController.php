@@ -36,46 +36,31 @@ namespace Glpi\Controller\Knowbase;
 
 use Entity;
 use Entity_KnowbaseItem;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
-use Glpi\Controller\GenericFormController;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Http\RedirectResponse;
-use Glpi\Routing\Attribute\ItemtypeFormRoute;
+use Glpi\Knowbase\SidePanel\PermissionsRenderer;
 use Group;
 use Group_KnowbaseItem;
-use Html;
 use KnowbaseItem;
 use KnowbaseItem_Profile;
 use KnowbaseItem_User;
 use Profile;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use User;
 
-final class KnowbaseFormController extends GenericFormController
+final class AddPermissionController extends AbstractController
 {
     use CrudControllerTrait;
 
-    // KnowbaseItem::getFormURL() is session-dependent: it returns /front/helpdesk.faq.php
-    // when no session is active (route compilation time), so the central interface URL
-    // must be registered explicitly. See also: glpi-project/glpi#23544
-    #[ItemtypeFormRoute(KnowbaseItem::class)]
-    #[Route('/front/knowbaseitem.form.php', name: 'glpi_knowbaseitem_form_central')]
+    #[Route('/Knowbase/AddPermission', name: 'glpi_knowbaseitem_add_permission')]
     public function __invoke(Request $request): Response
-    {
-        $request->attributes->set('class', KnowbaseItem::class);
-
-        if ($request->request->has('addvisibility')) {
-            return $this->addPermission($request);
-        }
-
-        return parent::__invoke($request);
-    }
-
-    private function addPermission(Request $request): Response
     {
         $id = $request->request->getInt('knowbaseitems_id');
         $kb = new KnowbaseItem();
@@ -115,7 +100,7 @@ final class KnowbaseFormController extends GenericFormController
             $input['no_entity_restriction'] = 1;
         }
 
-        $this->add($class, $input);
+        $relation = $this->add($class, $input);
         Event::log(
             $id,
             "knowbaseitem",
@@ -124,11 +109,23 @@ final class KnowbaseFormController extends GenericFormController
             sprintf(__('%s adds a target'), $_SESSION["glpiname"])
         );
 
-        $back = Html::getBackUrl();
-        if ($back) {
-            return new RedirectResponse($back);
-        } else {
-            return new Response();
+        $renderer = new PermissionsRenderer();
+        $entry = $renderer->buildEntry($class, $relation->getID());
+        if ($entry === null) {
+            throw new BadRequestHttpException();
         }
+
+        $html = TemplateRenderer::getInstance()->render(
+            'pages/tools/kb/permission_entry.html.twig',
+            [
+                'entry'    => $entry,
+                'can_edit' => true,
+            ]
+        );
+
+        return new JsonResponse([
+            'html' => $html,
+            'name' => $entry['name'],
+        ]);
     }
 }

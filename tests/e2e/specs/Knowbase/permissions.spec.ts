@@ -116,8 +116,9 @@ test('Can add user permission', async ({ page, profile, api }) => {
     );
     await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
 
-    // Assert: user should be added to the permission list
-    await kb.doOpenVisibilityModal();
+    // Assert: a confirmation toast is shown and the user is added to the
+    // permission list in place, without a full page reload.
+    await expect(page.getByText("Access added successfully")).toBeVisible();
     const entry = page.getByTestId('permission-entry');
     await expect(entry.getByTestId("entry-label")).toHaveText("glpi");
     await expect(entry.getByTestId("entry-context")).not.toBeAttached();
@@ -144,7 +145,6 @@ test('Can add entity permission', async ({ page, profile, api }) => {
     await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
 
     // Assert: entity should be added to the permission list
-    await kb.doOpenVisibilityModal();
     const entry = page.getByTestId('permission-entry');
     await expect(entry.getByTestId("entry-label")).toHaveText(
         `Root entity > E2E tests entity > ${getWorkerEntityName()}`
@@ -169,7 +169,6 @@ test('Can add entity permission (recursive)', async ({ page, profile, api }) => 
     await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
 
     // Assert: entity should be added to the permission list
-    await kb.doOpenVisibilityModal();
     const entry = page.getByTestId('permission-entry');
     await expect(entry.getByTestId("entry-label")).toHaveText(
         `Root entity > E2E tests entity > ${getWorkerEntityName()} (recursive)`
@@ -205,7 +204,6 @@ test('Can add group permission', async ({ page, profile, api }) => {
     await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
 
     // Assert: group should be added to the permission list
-    await kb.doOpenVisibilityModal();
     const entry = page.getByTestId('permission-entry');
     await expect(entry.getByTestId("entry-label")).toHaveText(group_name);
     await expect(entry.getByTestId("entry-context")).not.toBeAttached();
@@ -250,7 +248,6 @@ test('Can add group permission with recursive context', async ({
     await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
 
     // Assert: group should be added to the permission list with context
-    await kb.doOpenVisibilityModal();
     const entry = page.getByTestId('permission-entry');
     await expect(entry.getByTestId("entry-label")).toHaveText(group_name);
     await expect(entry.getByTestId("entry-context")).toHaveText(
@@ -293,7 +290,6 @@ test('Can add group permission with context', async ({ page, profile, api }) => 
     await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
 
     // Assert: group should be added to the permission list with context
-    await kb.doOpenVisibilityModal();
     const entry = page.getByTestId('permission-entry');
     await expect(entry.getByTestId("entry-label")).toHaveText(group_name);
     await expect(entry.getByTestId("entry-context")).toHaveText(
@@ -324,7 +320,6 @@ test('Can add profile permission', async ({ page, profile, api }) => {
     await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
 
     // Assert: profile should be added to the permission list
-    await kb.doOpenVisibilityModal();
     const entry = page.getByTestId('permission-entry');
     await expect(entry.getByTestId("entry-label")).toHaveText("Admin");
     await expect(entry.getByTestId("entry-context")).not.toBeAttached();
@@ -364,7 +359,6 @@ test('Can add profile permission with recursive context', async ({
     await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
 
     // Assert: profile should be added to the permission list with context
-    await kb.doOpenVisibilityModal();
     const entry = page.getByTestId('permission-entry');
     await expect(entry.getByTestId("entry-label")).toHaveText("Observer");
     await expect(entry.getByTestId("entry-context")).toHaveText(
@@ -402,7 +396,6 @@ test('Can add profile permission with context', async ({ page, profile, api }) =
     await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
 
     // Assert: profile should be added to the permission list with context
-    await kb.doOpenVisibilityModal();
     const entry = page.getByTestId('permission-entry');
     await expect(entry.getByTestId("entry-label")).toHaveText("Observer");
     await expect(entry.getByTestId("entry-context")).toHaveText(
