@@ -46,16 +46,14 @@ class GraphicCard extends Device
     public function prepare(): array
     {
         $mapping = [
-            'name'   => ['designation', 'devicegraphiccardmodels_id'],
+            'name'   => 'designation',
         ];
 
         foreach ($this->data as $k => &$val) {
             if (property_exists($val, 'name')) {
-                foreach ($mapping as $origin => $dests) {
+                foreach ($mapping as $origin => $dest) {
                     if (property_exists($val, $origin)) {
-                        foreach ((array) $dests as $dest) {
-                            $val->$dest = $val->$origin;
-                        }
+                        $val->$dest = $val->$origin;
                     }
                 }
 
