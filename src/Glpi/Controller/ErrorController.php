@@ -37,7 +37,6 @@ namespace Glpi\Controller;
 use Config;
 use DBConnection;
 use Glpi\Application\Environment;
-use Glpi\Error\ErrorHandler;
 use Glpi\Error\ErrorUtils;
 use Html;
 use Session;
@@ -76,7 +75,6 @@ class ErrorController extends AbstractController
                 case ($exception instanceof BadRequestHttpException || $exception->getStatusCode() === 400):
                     $title   = __('Invalid request');
                     $message = __('Invalid request parameters.');
-                    ErrorHandler::logCaughtException($exception);
                     break;
                 case ($exception instanceof NotFoundHttpException || $exception->getStatusCode() === 404):
                     $title   = __('Item not found');
