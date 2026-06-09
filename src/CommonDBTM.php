@@ -3199,13 +3199,24 @@ class CommonDBTM extends CommonGLPI
      **/
     public function checkGlobal(int $right): void
     {
-        if (!$this->canGlobal($right)) {
-            /** @var class-string<CommonDBTM> $itemtype */
-            $itemtype = static::class;
-            $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
-            $info = "User failed a global can* method check for right $right ($right_name) on item Type: $itemtype";
-            throw new AccessDeniedHttpException($info);
+        $reauth_needed = null;
+        $allowed = $this->canGlobal($right, $reauth_needed);
+
+        if($allowed) {
+            return;
         }
+
+        // not allowed beacause of reauth : redirect to reauth prompt
+        if($reauth_needed) {
+            self::redirectToReauthPrompt();
+        }
+
+        // not allowed, no reauth needed
+        /** @var class-string<CommonDBTM> $itemtype */
+        $itemtype = static::class;
+        $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
+        $info = "User failed a global can* method check for right $right ($right_name) on item Type: $itemtype";
+        throw new AccessDeniedHttpException($info);
     }
 
 

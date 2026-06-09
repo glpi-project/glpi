@@ -55,7 +55,7 @@ if (!empty($_POST["update_auth"])) {
     Html::back();
 }
 if (!empty($_POST["update"])) {
-    Session::checkRight("config", UPDATE);
+    $config->checkGlobal(UPDATE);
     $config->update($_POST);
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
@@ -87,6 +87,8 @@ if (!empty($_POST['reset_translation_cache'])) {
     }
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
+
+$config->checkGlobal(READ);
 
 Config::displayFullPageForItem($_POST['id'], ["config", "config"], [
     'formoptions'  => "data-track-changes=true",
