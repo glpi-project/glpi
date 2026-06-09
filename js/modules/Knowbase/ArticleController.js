@@ -858,11 +858,25 @@ export class GlpiKnowbaseArticleController
 
     #setIllustrationEditable(editable)
     {
-        const picker = this.#container.querySelector(
-            '[data-glpi-kb-illustration-container] [data-glpi-illustration-picker]'
+        const container = this.#container.querySelector(
+            '[data-glpi-kb-illustration-container]'
         );
+        const picker = container?.querySelector('[data-glpi-illustration-picker]');
         if (!picker) {
             return;
+        }
+
+        // Reveal the container when entering edit mode so the user can pick an
+        // illustration even when none was previously set. When leaving edit
+        // mode with an empty value, hide the container again so the title
+        // realigns to the left.
+        if (editable) {
+            container.classList.remove('d-none');
+        } else {
+            const input = picker.querySelector('[data-glpi-icon-picker-value]');
+            if (!input?.value) {
+                container.classList.add('d-none');
+            }
         }
 
         if (picker.glpiIllustrationPicker) {
@@ -1121,7 +1135,7 @@ export class GlpiKnowbaseArticleController
             '[data-glpi-kb-illustration-container] [data-glpi-icon-picker-value]'
         );
         const illustration = illustration_input?.value ?? '';
-        if (illustration && illustration !== 'kb-faq') {
+        if (illustration) {
             fields.illustration = illustration;
         }
 

@@ -178,7 +178,7 @@ final class BuilderTest extends DbTestCase
             'knowbaseitemcategories_id' => 0,
             'entities_id'               => $this->getTestRootEntity(only_id: true),
             'is_recursive'              => 1,
-            'illustration'              => 'kb-graduation',
+            'illustration'              => 'kb-faq',
         ]);
         $this->makeCategory('Default illustrated');
 
@@ -189,8 +189,26 @@ final class BuilderTest extends DbTestCase
             $by_title[$node->title] = $node;
         }
 
-        $this->assertSame('kb-graduation', $by_title['Custom illustrated']->illustration);
-        $this->assertSame('kb-faq', $by_title['Default illustrated']->illustration);
+        $this->assertSame('kb-faq', $by_title['Custom illustrated']->illustration);
+        $this->assertSame('', $by_title['Default illustrated']->illustration);
+    }
+
+    public function testArticleIllustrationIsPropagatedFromDb(): void
+    {
+        $this->login();
+
+        $this->createItem(KnowbaseItem::class, [
+            'name'         => 'With illustration',
+            'answer'       => '<p>Content</p>',
+            'illustration' => 'antivirus',
+        ]);
+        $this->makeArticle('Without illustration');
+
+        $tree = (new Builder())->buildTree();
+
+        $by_title = array_column($tree->getArticles(), null, 'title');
+        $this->assertSame('antivirus', $by_title['With illustration']->illustration);
+        $this->assertSame('', $by_title['Without illustration']->illustration);
     }
 
     private function makeCategory(string $name, int $parent_id = 0): KnowbaseItemCategory

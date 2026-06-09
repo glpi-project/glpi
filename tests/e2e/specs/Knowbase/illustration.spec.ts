@@ -174,6 +174,7 @@ test('Illustration is not editable until edit mode is entered (regression #248)'
         name: 'KB illustration read-only test',
         entities_id: getWorkerEntityId(),
         answer: "My answer",
+        illustration: 'antivirus',
     });
 
     await kb.goto(id);

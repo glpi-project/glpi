@@ -899,23 +899,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return $input;
         }
 
-        $value = (string) $input['illustration'];
-        if ($value === '') {
-            return $input;
-        }
-
         $manager = new IllustrationManager();
-        $prefix  = IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX;
-
-        if (str_starts_with($value, $prefix)) {
-            $custom_id = substr($value, strlen($prefix));
-            if ($manager->getCustomIllustrationFile($custom_id) === null) {
-                unset($input['illustration']);
-            }
-            return $input;
-        }
-
-        if (!in_array($value, $manager->getAllIconsIds(), true)) {
+        if (!$manager->isKnownIllustrationValue((string) $input['illustration'])) {
             unset($input['illustration']);
         }
 
@@ -1047,7 +1032,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             // General fields
             $params['views']        = $this->fields['view'];
             $params['can_edit']     = $can_update;
-            $params['illustration'] = $this->fields['illustration'] ?: 'kb-faq';
+            $params['illustration'] = $this->fields['illustration'] ?? '';
 
             // Translations informations
             $params['translations_count']    = KnowbaseItemTranslation::getNumberOfTranslationsForItem($this);
@@ -1068,7 +1053,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['actions'] = $this->getEditorActions();
         } elseif ($mode === "add") {
             $params['can_edit']     = $this->can(-1, CREATE);
-            $params['illustration'] = 'kb-faq';
+            $params['illustration'] = '';
         }
 
         $out = TemplateRenderer::getInstance()->render(
@@ -2833,7 +2818,7 @@ TWIG, $twig_params);
             $articles[] = new Article(
                 id: (int) $data['id'],
                 title: $data['name'] ?? '',
-                illustration: $data['illustration'] ?: 'kb-faq',
+                illustration: $data['illustration'] ?? '',
                 link: self::getFormURLWithID($data['id']),
                 // Take note of the current article as we will render it in
                 // the favorite list even if it is not yet a favorite.

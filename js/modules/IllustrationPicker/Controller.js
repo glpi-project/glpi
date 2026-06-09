@@ -216,39 +216,49 @@ export class GlpiIllustrationPickerController
     {
         // Gets details of the newly selected item.
         const illustration_id = illustration.dataset['glpiIconPickerValue'];
-        const illustration_title = illustration
-            .querySelector('svg')
-            .querySelector('title')
-        ;
 
         // Apply the new illustration id to the hidden input.
         this.#getSelectedIllustrationsInput().value = illustration_id;
 
-        // Update the preview of the selected item.
-        const selected_svg = this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview]')
-            .querySelector('svg')
-        ;
-        const title = selected_svg.querySelector('title');
-        const use = selected_svg.querySelector('use');
-        const xlink = use.getAttribute('xlink:href');
+        if (illustration_id === '') {
+            // Empty selection: show placeholder, hide both preview slots.
+            this.#setEmptyPreview();
+            return;
+        }
 
-        use.setAttribute(
-            'xlink:href',
-            xlink.replace(/#.*/, `#${illustration_id}`)
-        );
-        title.innerHTML = illustration_title.innerHTML;
+        // Clone the clicked illustration's SVG into the native preview slot.
+        // Cloning (vs in-place mutation) handles the transition from an empty
+        // article — where the slot has no SVG to mutate — without requiring
+        // the template to pre-render a skeleton SVG.
+        const native_slot = this.#getNativePreviewSlot();
+        const clicked_svg = illustration.querySelector('svg');
+        native_slot.replaceChildren(clicked_svg.cloneNode(true));
 
-        this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-native]')
-            .classList
-            .remove('d-none')
-        ;
-        this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
-            .classList
-            .add('d-none')
-        ;
+        native_slot.classList.remove('d-none');
+        this.#getCustomPreviewSlot().classList.add('d-none');
+        this.#getPlaceholderSlot()?.classList.add('d-none');
+    }
+
+    #setEmptyPreview()
+    {
+        this.#getNativePreviewSlot()?.classList.add('d-none');
+        this.#getCustomPreviewSlot()?.classList.add('d-none');
+        this.#getPlaceholderSlot()?.classList.remove('d-none');
+    }
+
+    #getNativePreviewSlot()
+    {
+        return this.#container.querySelector('[data-glpi-icon-picker-value-preview-native]');
+    }
+
+    #getCustomPreviewSlot()
+    {
+        return this.#container.querySelector('[data-glpi-icon-picker-value-preview-custom]');
+    }
+
+    #getPlaceholderSlot()
+    {
+        return this.#container.querySelector('[data-glpi-icon-picker-value-preview-placeholder]');
     }
 
     #setCustomIllustration(file_id)
@@ -257,21 +267,12 @@ export class GlpiIllustrationPickerController
         this.#getSelectedIllustrationsInput().value = icon_id;
 
         // Update preview
-        this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
-            .querySelector('img')
-            .src = `${CFG_GLPI.root_doc}/UI/Illustration/CustomIllustration/${file_id}`
-        ;
-        this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
-            .classList
-            .remove('d-none')
-        ;
-        this.#container
-            .querySelector('[data-glpi-icon-picker-value-preview-native]')
-            .classList
-            .add('d-none')
-        ;
+        const custom_slot = this.#getCustomPreviewSlot();
+        custom_slot.querySelector('img').src
+            = `${CFG_GLPI.root_doc}/UI/Illustration/CustomIllustration/${file_id}`;
+        custom_slot.classList.remove('d-none');
+        this.#getNativePreviewSlot().classList.add('d-none');
+        this.#getPlaceholderSlot()?.classList.add('d-none');
     }
 
     /**

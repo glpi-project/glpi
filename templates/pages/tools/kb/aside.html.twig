@@ -41,7 +41,9 @@
             aria-expanded="true"
         >
             <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
-            {{ render_illustration(category.illustration, 20) }}
+            {% if category.illustration %}
+                {{ render_illustration(category.illustration, 20) }}
+            {% endif %}
             <span class="ms-2 fw-bold text-truncate d-block">{{ category.title }}</span>
         </button>
         <ul>
@@ -63,7 +65,9 @@
         class="article {{ add_margin ? 'mb-2' : '' }}"
     >
         <a class="text-dark text-hover-link text-truncate d-block" href="{{ article.link }}">
-            {{ render_illustration(article.illustration, 20) }}
+            {% if article.illustration %}
+                {{ render_illustration(article.illustration, 20) }}
+            {% endif %}
             {{ article.title }}
         </a>
     </li>
@@ -137,7 +141,7 @@
         {% if tree.articles|length %}
             {{ macros.render_category({
                 title: __("Uncategorized"),
-                illustration: "kb-faq",
+                illustration: "",
                 articles: tree.articles,
                 categories: [],
             }) }}

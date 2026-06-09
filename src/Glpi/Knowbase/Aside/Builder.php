@@ -62,7 +62,7 @@ final class Builder
             $node->addArticle(new Article(
                 id: (int) $article_data['id'],
                 title: $article_data['name'] ?? '',
-                illustration: $article_data['illustration'] ?? 'kb-faq',
+                illustration: $article_data['illustration'] ?? '',
                 link: KnowbaseItem::getFormURLWithID($article_data['id']),
                 is_current: $this->current_id > 0 && (int) $article_data['id'] === $this->current_id,
             ));
@@ -74,7 +74,7 @@ final class Builder
         foreach ($categories as $cat_data) {
             $category = new Category(
                 title: $cat_data['name'] ?? '',
-                illustration: $cat_data['illustration'] ?: 'kb-faq',
+                illustration: $cat_data['illustration'] ?? '',
             );
             $this->populateNode($category, (int) $cat_data['id']);
             $node->addCategory($category);
