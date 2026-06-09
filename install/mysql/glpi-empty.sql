@@ -6046,6 +6046,8 @@ CREATE TABLE `glpi_profiles` (
   `problemtemplates_id` int unsigned NOT NULL DEFAULT '0',
   `change_status` text,
   `managed_domainrecordtypes` text,
+  `excluded_searchoptions` text DEFAULT NULL,
+  `show_map` tinyint NOT NULL DEFAULT '1',
   `date_creation` timestamp NULL DEFAULT NULL,
   `2fa_enforced` tinyint NOT NULL DEFAULT '0',
   `last_rights_update` timestamp NULL DEFAULT NULL,

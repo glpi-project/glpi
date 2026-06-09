@@ -64,6 +64,8 @@ use Session;
 use Ticket;
 use User;
 
+use function Safe\json_decode;
+
 /**
  * Object representing a search option.
  *
@@ -150,7 +152,7 @@ final class SearchOption implements ArrayAccess
      *
      * @return array The reference to the array of search options for the given item type
      **/
-    public static function getOptionsForItemtype($itemtype, $withplugins = true): array
+    public static function getOptionsForItemtype($itemtype, $withplugins = true, bool $apply_profile_restrictions = true): array
     {
         global $CFG_GLPI;
 
@@ -158,7 +160,11 @@ final class SearchOption implements ArrayAccess
 
         $cache_key = $itemtype . '_' . ($withplugins ? 1 : 0);
         if (isset(self::$search_options_cache[$cache_key])) {
-            return self::$search_options_cache[$cache_key];
+            $options = self::$search_options_cache[$cache_key];
+            if ($apply_profile_restrictions) {
+                self::applyProfileRestrictions($itemtype, $options);
+            }
+            return $options;
         }
 
         $fn_append_options = static function ($new_options) use (&$search, $itemtype) {
@@ -427,7 +433,43 @@ final class SearchOption implements ArrayAccess
         }
 
         self::$search_options_cache[$cache_key] = $search[$itemtype];
-        return $search[$itemtype];
+        $options = $search[$itemtype];
+        if ($apply_profile_restrictions) {
+            self::applyProfileRestrictions($itemtype, $options);
+        }
+        return $options;
+    }
+
+    /**
+     * @param string $itemtype
+     * @param array<int|string, mixed> $options Options array (modified in place)
+     */
+    private static function applyProfileRestrictions(string $itemtype, array &$options): void
+    {
+        if (Session::isCron()) {
+            return;
+        }
+
+        $all_excluded = $_SESSION['glpiactiveprofile']['excluded_searchoptions'] ?? null;
+        if (empty($all_excluded)) {
+            return;
+        }
+
+        if (!is_array($all_excluded)) {
+            $all_excluded = json_decode($all_excluded, true) ?? [];
+        }
+
+        $excluded = $all_excluded[$itemtype] ?? [];
+        if (empty($excluded)) {
+            return;
+        }
+
+        foreach ($excluded as $num) {
+            if (isset($options[$num]) && is_array($options[$num])) {
+                $options[$num]['nosearch'] = true;
+                $options[$num]['nodisplay'] = true;
+            }
+        }
     }
 
     /**

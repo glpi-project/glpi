@@ -44,7 +44,11 @@ use Glpi\Form\Form;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Inventory\Conf;
+use Glpi\Search\SearchOption;
 use Glpi\Toolbox\ArrayNormalizer;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 /**
  * Profile class
@@ -90,7 +94,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * Common fields used for all profiles type
      * @var string[]
      */
-    public static array $common_fields  = ['id', 'interface', 'is_default', 'name', '2fa_enforced'];
+    public static array $common_fields  = ['id', 'interface', 'is_default', 'name', '2fa_enforced', 'excluded_searchoptions', 'show_map'];
+
+    /** @var list<class-string> Itemtypes whose search options can be restricted per profile */
+    public const SEARCHOPTION_RESTRICTED_ITEMTYPES = [Ticket::class];
 
     public bool $dohistory             = true;
 
@@ -189,6 +196,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                         $ong[6] = self::createTabEntry(__('Tools'), 0, $item::class, 'ti ti-briefcase');
                         $ong[7] = self::createTabEntry(__('Setup'), 0, $item::class, 'ti ti-settings');
                         $ong[8] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
+                        $ong[9] = self::createTabEntry(__('Search / list'), 0, $item::class, 'ti ti-search');
                     } else {
                         $ong[2] = self::createTabEntry(_n('Asset', 'Assets', Session::getPluralNumber()), 0, $item::class, 'ti ti-package');
                         $ong[3] = self::createTabEntry(__('Assistance'), 0, $item::class, 'ti ti-headset');
@@ -198,6 +206,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                         $ong[7] = self::createTabEntry(__('Administration'), 0, $item::class, 'ti ti-shield-check');
                         $ong[8] = self::createTabEntry(__('Setup'), 0, $item::class, 'ti ti-settings');
                         $ong[9] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
+                        $ong[10] = self::createTabEntry(__('Search / list'), 0, $item::class, 'ti ti-search');
                     }
                     return $ong;
             }
@@ -218,6 +227,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                     6 => $item->showFormToolsHelpdesk(),
                     7 => $item->showFormSetupHelpdesk(),
                     8 => $item->showFormSecurity(),
+                    9 => $item->showFormSearchList(),
                     default => false,
                 };
             } else {
@@ -230,6 +240,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                     7 => $item->showFormAdmin(),
                     8 => $item->showFormSetup(),
                     9 => $item->showFormSecurity(),
+                    10 => $item->showFormSearchList(),
                     default => false,
                 };
             }
@@ -284,7 +295,16 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] = importArrayFromDB($this->input['managed_domainrecordtypes']);
             }
 
-            ///TODO other needed fields
+            if (in_array('excluded_searchoptions', $this->updates, true)) {
+                $raw = $this->input['excluded_searchoptions'];
+                $_SESSION['glpiactiveprofile']['excluded_searchoptions'] = $raw !== null
+                    ? (json_decode($raw, true) ?? [])
+                    : [];
+            }
+
+            if (in_array('show_map', $this->updates, true)) {
+                $_SESSION['glpiactiveprofile']['show_map'] = (int) $this->input['show_map'];
+            }
         }
     }
 
@@ -363,6 +383,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             }
             $input["managed_domainrecordtypes"] = exportArrayToDB(
                 ArrayNormalizer::normalizeValues($input["managed_domainrecordtypes"] ?: [], 'intval')
+            );
+        }
+
+        if (isset($input['excluded_searchoptions'])) {
+            $input['excluded_searchoptions'] = self::normalizeExcludedSearchoptions(
+                is_array($input['excluded_searchoptions']) ? $input['excluded_searchoptions'] : []
             );
         }
 
@@ -585,7 +611,29 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             }
         }
 
+        if (isset($input['excluded_searchoptions'])) {
+            $input['excluded_searchoptions'] = self::normalizeExcludedSearchoptions(
+                is_array($input['excluded_searchoptions']) ? $input['excluded_searchoptions'] : []
+            );
+        }
+
         return $input;
+    }
+
+    /**
+     * @param array<string, list<int>> $input Keyed by itemtype short name
+     */
+    private static function normalizeExcludedSearchoptions(array $input): ?string
+    {
+        $result = [];
+        foreach (self::SEARCHOPTION_RESTRICTED_ITEMTYPES as $itemtype) {
+            $values = is_array($input[$itemtype] ?? null) ? $input[$itemtype] : [];
+            $values = array_values(array_unique(array_filter(array_map('intval', $values))));
+            if ($values !== []) {
+                $result[$itemtype] = $values;
+            }
+        }
+        return $result !== [] ? json_encode($result) : null;
     }
 
     /**
@@ -664,6 +712,16 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                     $this->fields[$val] = [];
                 }
             }
+        }
+
+        if (
+            isset($this->fields['excluded_searchoptions'])
+            && !is_array($this->fields['excluded_searchoptions'])
+        ) {
+            $this->fields['excluded_searchoptions'] = json_decode($this->fields['excluded_searchoptions'], true) ?? [];
+        }
+        if (!isset($this->fields['excluded_searchoptions'])) {
+            $this->fields['excluded_searchoptions'] = [];
         }
     }
 
@@ -1479,6 +1537,46 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'canedit' => $canedit,
             'item'   => $this,
             'action' => Toolbox::getItemTypeFormURL(self::class),
+        ]);
+    }
+
+    /**
+     * Print the Search / list settings form for a profile.
+     */
+    private function showFormSearchList(): void
+    {
+        if (!self::canView()) {
+            return;
+        }
+
+        $itemtypes_data = [];
+        foreach (self::SEARCHOPTION_RESTRICTED_ITEMTYPES as $itemtype) {
+            $options = [];
+            $group = '';
+            foreach (SearchOption::getOptionsForItemtype($itemtype, true, false) as $key => $val) {
+                if (!is_array($val)) {
+                    $group = $val;
+                    continue;
+                }
+                if (count($val) === 1) {
+                    $group = $val['name'];
+                    continue;
+                }
+                if (isset($val['nodisplay']) && $val['nodisplay']) {
+                    continue;
+                }
+                $options[$group][$key] = $val['name'];
+            }
+            $itemtypes_data[] = [
+                'key'     => $itemtype,
+                'label'   => $itemtype::getTypeName(Session::getPluralNumber()),
+                'options' => $options,
+            ];
+        }
+
+        TemplateRenderer::getInstance()->display('pages/admin/profile/search_list.html.twig', [
+            'item'           => $this,
+            'itemtypes_data' => $itemtypes_data,
         ]);
     }
 
