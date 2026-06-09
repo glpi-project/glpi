@@ -111,9 +111,7 @@ class OAuthApplication extends CommonDBTM
         return false;
     }
 
-    /**
-     * Returns the number of MailCollectors whose host references this application.
-     */
+    /** @return array<string, mixed> */
     private function linkedMailCollectorsWhere(int $id): array
     {
         $app_key = 'oauth_imap_' . $id;
@@ -308,7 +306,7 @@ class OAuthApplication extends CommonDBTM
         $options['display'] = false;
         if ($field === 'provider') {
             $options['value'] = $values[$field] ?? '';
-            return Dropdown::showFromArray($name, static::getProviders(), $options);
+            return (string)Dropdown::showFromArray($name, static::getProviders(), $options);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
