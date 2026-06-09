@@ -59,6 +59,22 @@ class SoundCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
                 'expected'  => '{"description": "rev 21", "manufacturer": "Intel Corporation Sunrise Point-LP HD Audio", "name": "Audio device", "designation": "Audio device", "manufacturers_id": "Intel Corporation Sunrise Point-LP HD Audio", "comment": "rev 21", "is_dynamic": 1}',
+            ], [ //with caption overriding name as designation
+                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <SOUNDS>
+      <CAPTION>Realtek High Definition Audio</CAPTION>
+      <DESCRIPTION>rev 1</DESCRIPTION>
+      <MANUFACTURER>Realtek</MANUFACTURER>
+      <NAME>Audio device</NAME>
+    </SOUNDS>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+  </REQUEST>",
+                'expected'  => '{"caption": "Realtek High Definition Audio", "description": "rev 1", "manufacturer": "Realtek", "name": "Audio device", "designation": "Realtek High Definition Audio", "manufacturers_id": "Realtek", "comment": "rev 1", "is_dynamic": 1}',
             ],
         ];
     }
