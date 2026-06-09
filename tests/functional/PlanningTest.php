@@ -168,7 +168,7 @@ class PlanningTest extends DbTestCase
         $_SESSION['glpi_plannings'] = $session_backup;
 
         foreach ($expected_events_keys as $list_var => $events_keys) {
-            $events_list = $$list_var;
+            $events_list = ${$list_var};
             $this->assertCount(count($events_keys), $events_list);
             foreach ($events_keys as $index => $evt_key) {
                 $event_data = $expected_events_data[$evt_key];
@@ -334,7 +334,7 @@ class PlanningTest extends DbTestCase
         $this->assertEmpty($event->encodeRRule(["freq" => '']));
     }
 
-    public static function checkAlreadyPlannedProvider()
+    public static function checkAlreadyPlannedProvider(): iterable
     {
         $begin_task = '2025-05-13 00:00:00';
         $end_task   = '2025-05-13 01:00:00';
@@ -468,5 +468,54 @@ class PlanningTest extends DbTestCase
         } else {
             $this->hasNoSessionMessages([WARNING]);
         }
+    }
+
+    //The category color takes precedence over the actor color, if no category is specified, the user swatch color is used
+    public function testEventColorPriority(): void
+    {
+        $this->login();
+        \Planning::initSessionForCurrentUser();
+        $actor_color = '#D757FF';
+        $category_color = '#8600FF';
+        $users_id = $_SESSION['glpiID'];
+        $_SESSION['glpi_plannings']['plannings']["user_$users_id"]['color'] = $actor_color;
+
+        $category = $this->createItem('PlanningEventCategory', [
+            'name'  => 'categorie with color',
+            'color' => $category_color,
+        ]);
+
+        $this->createItem('PlanningExternalEvent', [
+            'name'                      => 'event with categorie',
+            'users_id'                  => $users_id,
+            'planningeventcategories_id' => $category->getID(),
+            'plan' => [
+                'begin' => '2027-01-01 08:00:00',
+                'end'   => '2027-01-01 09:00:00',
+            ],
+        ], ['plan']); //'plan'  tells `createItem` not to check this field among the fields returned by the db (virtual field)
+
+        $this->createItem('PlanningExternalEvent', [
+            'name'     => 'event without categorie',
+            'users_id' => $users_id,
+            'plan' => [
+                'begin' => '2027-01-01 10:00:00',
+                'end'   => '2027-01-01 11:00:00',
+            ],
+        ], ['plan']);
+
+        $events = \Planning::constructEventsArray([
+            'start'            => '2027-01-01 00:00:00',
+            'end'              => '2027-01-01 23:59:59',
+            'force_all_events' => true, // `force_all_events`  get all events within a date range without applying any filters
+        ]);
+
+        $this->assertCount(2, $events);
+
+        $with_cat    = current(array_filter($events, fn($e) => $e['title'] === 'event with categorie'));
+        $without_cat = current(array_filter($events, fn($e) => $e['title'] === 'event without categorie'));
+
+        $this->assertEquals($category_color, $with_cat['color'], 'category color override actor_color');
+        $this->assertEquals($actor_color, $without_cat['color'], 'actor_color if no category');
     }
 }
