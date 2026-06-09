@@ -91,20 +91,8 @@ class GraphicCard extends Device
                     }
 
                     if ($found_controller) {
-                        $pcivendor = new \PCIVendor();
-                        if (property_exists($found_controller, 'vendorid')) {
-                            //manufacturer
-                            if ($pci_manufacturer = $pcivendor->getManufacturer($found_controller->vendorid)) {
-                                $val->manufacturers_id = $pci_manufacturer;
-                            }
-
-                            if (property_exists($found_controller, 'productid')) {
-                                //product name
-                                if ($pci_product = $pcivendor->getProductName($found_controller->vendorid, $found_controller->productid)) {
-                                    $val->designation = $pci_product;
-                                    $val->devicegraphiccardmodels_id = $pci_product;
-                                }
-                            }
+                        if ($this->applyPciInfoFromController($val, $found_controller)) {
+                            $val->devicegraphiccardmodels_id = $val->designation;
                         }
                     }
                 }

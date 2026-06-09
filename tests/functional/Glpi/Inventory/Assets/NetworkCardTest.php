@@ -835,6 +835,7 @@ class NetworkCardTest extends AbstractInventoryAsset
         $card_1_id = $device_net->add([
             'designation' => '82540EM Gigabit Ethernet Controller',
             'manufacturers_id' => $manufacturers_id,
+            'devicenetworkcardmodels_id' => \Dropdown::importExternal('DeviceNetworkCardModel', '82540EM Gigabit Ethernet Controller'),
             'mac_default' => '08:00:27:16:9C:60',
             'entities_id'  => 0,
         ]);
@@ -851,6 +852,7 @@ class NetworkCardTest extends AbstractInventoryAsset
         $card_2_id = $device_net->add([
             'designation' => 'Ethernet Connection I219-LM',
             'manufacturers_id' => $manufacturers_id,
+            'devicenetworkcardmodels_id' => \Dropdown::importExternal('DeviceNetworkCardModel', 'Ethernet Connection I219-LM'),
             'mac_default' => '18:db:f2:29:99:35',
             'entities_id'  => 0,
         ]);

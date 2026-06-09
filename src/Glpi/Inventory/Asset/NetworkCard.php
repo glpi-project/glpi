@@ -38,7 +38,6 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_DeviceNetworkCard;
-use PCIVendor;
 
 class NetworkCard extends Device
 {
@@ -72,7 +71,6 @@ class NetworkCard extends Device
             'wwn'         => 'wwn',
             'speed'       => 'speed',
         ];
-        $pcivendor = new PCIVendor();
 
         foreach ($this->data as $k => &$val) {
             if (
@@ -130,30 +128,8 @@ class NetworkCard extends Device
                 }
 
                 if ($found_controller) {
-                    if (property_exists($found_controller, 'pciid')) {
-                        $exploded = explode(":", $found_controller->pciids);
-
-                        //manufacturer
-                        if ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0])) {
-                            $val->manufacturers_id = $pci_manufacturer;
-                        }
-
-                        //product name
-                        if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
-                            $val->designation = $pci_product;
-                        }
-                    } elseif (property_exists($found_controller, 'vendorid')) {
-                        //manufacturer
-                        if ($pci_manufacturer = $pcivendor->getManufacturer($found_controller->vendorid)) {
-                            $val->manufacturers_id = $pci_manufacturer;
-                        }
-
-                        if (property_exists($found_controller, 'productid')) {
-                            //product name
-                            if ($pci_product = $pcivendor->getProductName($found_controller->vendorid, $found_controller->productid)) {
-                                $val->designation = $pci_product;
-                            }
-                        }
+                    if ($this->applyPciInfoFromController($val, $found_controller)) {
+                        $val->devicenetworkcardmodels_id = $val->designation;
                     }
 
                     if (property_exists($val, 'mac')) {
