@@ -568,6 +568,36 @@ class ConfigTest extends DbTestCase
     }
 
     /**
+     * Test that the legacy SMTP password is cleared when switching to SMTP OAuth.
+     *
+     * SMTP OAuth does not use `smtp_passwd`. When changing the SMTP mode to OAuth,
+     * the previous SMTP password must be overwritten with an empty value instead of
+     * being kept in the database.
+     */
+    public function testSmtpPasswordIsClearedWhenSwitchingToSmtpOauth(): void
+    {
+        $conf = new Config();
+
+        Config::setConfigurationValues('core', [
+            'smtp_mode'   => MAIL_SMTP,
+            'smtp_passwd' => 'old-password',
+        ]);
+
+        $conf->update([
+            'id'        => 1,
+            'smtp_mode' => MAIL_SMTPOAUTH,
+        ]);
+
+        $values = Config::getConfigurationValues('core', [
+            'smtp_mode',
+            'smtp_passwd',
+        ]);
+
+        $this->assertSame(MAIL_SMTPOAUTH, (int) $values['smtp_mode']);
+        $this->assertSame('', $values['smtp_passwd']);
+    }
+
+    /**
      * Test password expiration delay configuration update.
      */
     public function testPasswordExpirationDelayUpdate()
