@@ -111,11 +111,11 @@
             >{{ subject }}</h1>
             {% if is_draft|default(false) %}
                 <span
-                    class="badge bg-warning text-dark ms-2 fs-5"
+                    class="badge bg-secondary-lt ms-2"
                     data-glpi-kb-article-draft-badge
-                    title="{{ __('Draft — only visible to you and knowledge base admins') }}"
+                    title="{{ __('Draft — only visible to you and knowledge base admins until it is published') }}"
                 >
-                    {{ __('Draft') }}
+                    <i class="ti ti-pencil me-1" aria-hidden="true"></i>{{ __('Draft') }}
                 </span>
             {% endif %}
             <div class="ms-auto d-flex align-items-center gap-2">
@@ -172,6 +172,7 @@
                                             type="button"
                                             class="dropdown-item {{ action.is_danger ? "text-danger" : "" }}"
                                             aria-label="{{ action.label }}"
+                                            {% if action.tooltip %}title="{{ action.tooltip }}"{% endif %}
                                             data-glpi-kb-action="{{ action.type.value }}"
                                             {% for key, param in action.params %}
                                                 data-glpi-kb-action-param-{{ key }}="{{ param }}"

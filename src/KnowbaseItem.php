@@ -1463,6 +1463,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     'field'   => 'is_draft',
                     'checked' => $this->fields['is_draft'] ? '1' : '0',
                 ],
+                tooltip: __("Hides the article from everyone except you and knowledge base admins. Visibility targets are kept."),
             );
         }
         if ($toggles !== []) {

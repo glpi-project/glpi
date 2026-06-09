@@ -73,9 +73,9 @@
             {% endif %}
             {{ article.title }}
             {% if article.is_draft %}
-                <span class="badge bg-warning text-dark ms-1 fs-5" title="{{ __('Draft — only visible to you and knowledge base admins') }}">
-                    {{ __('Draft') }}
-                </span>
+                {# Draft rows are de-emphasized visually (muted + italic, see _kb.scss);
+                   this hidden label carries the state for screen readers. #}
+                <span class="visually-hidden" data-glpi-kb-aside-draft-label>{{ __('Draft') }}</span>
             {% endif %}
         </a>
     </li>

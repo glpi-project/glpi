@@ -83,14 +83,14 @@ test('Mark as draft / publish toggle in the action menu flips the status', async
     await page.getByRole('button', { name: 'Mark as draft', exact: false }).click();
     await responsePromise;
 
-    // The article's entry in the aside tree now exposes the Draft badge.
+    // The article's aside entry now carries the screen-reader-only Draft label.
     const tree = page.getByRole('navigation', { name: 'Knowledge base articles tree' });
     await expect(
-        tree.getByRole('link', { name }).getByTitle(/Draft — only visible/)
-    ).toBeVisible();
+        tree.getByRole('link', { name }).getByText('Draft', { exact: true })
+    ).toBeAttached();
 });
 
-test('Draft articles are flagged with a chip in the left aside', async ({ page, profile, api }) => {
+test('Draft articles carry a screen-reader Draft label in the left aside', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
@@ -106,7 +106,7 @@ test('Draft articles are flagged with a chip in the left aside', async ({ page, 
     const tree = page.getByRole('navigation', { name: 'Knowledge base articles tree' });
     const link = tree.getByRole('link', { name });
     await expect(link).toBeVisible();
-    await expect(link.getByTitle(/Draft — only visible/)).toBeVisible();
+    await expect(link.getByText('Draft', { exact: true })).toBeAttached();
 });
 
 test('Share link cannot be created on a draft article', async ({ page, profile, api }) => {

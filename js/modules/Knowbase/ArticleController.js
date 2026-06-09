@@ -685,16 +685,17 @@ export class GlpiKnowbaseArticleController
         if (!link) {
             return;
         }
-        let badge = link.querySelector('[data-glpi-kb-aside-draft-badge]');
-        if (is_draft && !badge) {
-            badge = document.createElement('span');
-            badge.dataset.glpiKbAsideDraftBadge = '';
-            badge.className = 'badge bg-warning text-dark ms-1 fs-5';
-            badge.title = __('Draft — only visible to you and knowledge base admins');
-            badge.textContent = __('Draft');
-            link.appendChild(badge);
-        } else if (!is_draft && badge) {
-            badge.remove();
+        // No visible badge in the tree: drafts are conveyed by the muted/italic
+        // row (see _kb.scss). This screen-reader-only label carries the state.
+        let label = link.querySelector('[data-glpi-kb-aside-draft-label]');
+        if (is_draft && !label) {
+            label = document.createElement('span');
+            label.dataset.glpiKbAsideDraftLabel = '';
+            label.className = 'visually-hidden';
+            label.textContent = __('Draft');
+            link.appendChild(label);
+        } else if (!is_draft && label) {
+            label.remove();
         }
     }
 
@@ -716,9 +717,12 @@ export class GlpiKnowbaseArticleController
         if (is_draft && !badge && title) {
             badge = document.createElement('span');
             badge.dataset.glpiKbArticleDraftBadge = '';
-            badge.className = 'badge bg-warning text-dark ms-2 fs-5';
-            badge.title = __('Draft — only visible to you and knowledge base admins');
-            badge.textContent = __('Draft');
+            badge.className = 'badge bg-secondary-lt ms-2';
+            badge.title = __('Draft — only visible to you and knowledge base admins until it is published');
+            const icon = document.createElement('i');
+            icon.className = 'ti ti-pencil me-1';
+            icon.setAttribute('aria-hidden', 'true');
+            badge.append(icon, __('Draft'));
             title.after(badge);
         } else if (!is_draft && badge) {
             badge.remove();

@@ -769,6 +769,18 @@
         }
     }
 
+    // Draft article: de-emphasized in the tree (muted + italic). The accessible
+    // "Draft" label is carried by a .visually-hidden span in the markup, so the
+    // state never relies on colour alone. Italic stays even when the draft is the
+    // current article; the muted colour yields to the current-article highlight.
+    .kb-aside-article-draft > a {
+        font-style: italic;
+    }
+
+    .kb-aside-article-draft:not([data-glpi-kb-article-current]) > a {
+        color: var(--tblr-secondary) !important;
+    }
+
     // Current article entry when it is not yet a favorite: hidden until the user favorites it.
     [data-glpi-kb-favorite-current="pending"] {
         display: none;
