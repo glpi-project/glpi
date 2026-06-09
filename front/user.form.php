@@ -230,7 +230,7 @@ elseif (isset($_POST['impersonate']) && !$_POST['impersonate']) {
 
         Html::back();
     } else {
-        $user->check((int) $_GET['id'], READ, $input); // @todo ?? dans main ? - pour ne pas afficher le listing si pas reauth ?
+        $user->check((int) $_GET['id'], READ, $input);
         $options = $_GET;
         $options['formoptions'] = "data-track-changes=true";
         $menus = ["admin", "user"];

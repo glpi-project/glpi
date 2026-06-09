@@ -3013,9 +3013,13 @@ class CommonDBTM extends CommonGLPI
                 $this->input = $input;
             }
 
+            // check if private
             $allowed = $this->isPrivate() && ($this->fields['users_id'] == Session::getLoginUserID());
+            // global check
             if (!$allowed) {
-                $allowed = (static::canCreate() && $this->canCreateItem());
+                $allowed = $item_type_requires_reauth
+                    ? static::canCreate() // Just check canCreate(), canCreateItem() will return false without informations about reauth need on User, so reauth will be triggered
+                    : (static::canCreate() && $this->canCreateItem());
             }
 
             [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);

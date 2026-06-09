@@ -36,7 +36,6 @@ namespace Glpi\Controller\Security;
 
 use Config;
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Http\Firewall;
 use Glpi\Http\RedirectResponse;

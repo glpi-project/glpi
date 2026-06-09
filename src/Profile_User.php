@@ -1327,4 +1327,11 @@ TWIG, $avatar_params) . $username;
             );
         }
     }
+
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
+
 }
