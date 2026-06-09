@@ -7157,6 +7157,8 @@ HTML,
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount(1, $actors);
+        $this->assertSame(User::class, array_values($actors)[0]['itemtype']);
+        $this->assertSame($tech_user->getID(), (int) array_values($actors)[0]['items_id']);
 
         //add a solution to the ticket and assign to me
         $this->login('glpi', 'glpi');
@@ -7174,6 +7176,8 @@ HTML,
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount(2, $actors);
+        $this->assertSame(User::class, array_values($actors)[1]['itemtype']);
+        $this->assertSame($glpi_user->getID(), (int) array_values($actors)[1]['items_id']);
 
         //create a new ticket
         $ticket = $this->createItem(
@@ -7205,6 +7209,8 @@ HTML,
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount(0, $actors);
 
+        $requester_id = getItemByTypeName('User', 'glpi', true);
+
         //create a new ticket
         $ticket = $this->createItem(
             Ticket::class,
@@ -7213,7 +7219,7 @@ HTML,
                 'content'               => __METHOD__,
                 'entities_id'           => $entity_id,
                 '_skip_auto_assign'     => true,
-                '_users_id_requester'   => getItemByTypeName('User', 'glpi', true),
+                '_users_id_requester'   => $requester_id,
                 '_users_id_observer'    => getItemByTypeName('User', 'tech', true),
             ]
         );
@@ -7221,6 +7227,8 @@ HTML,
 
         $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
         $this->assertCount(1, $actors);
+        $this->assertSame(User::class, array_values($actors)[0]['itemtype']);
+        $this->assertSame($requester_id, (int) array_values($actors)[0]['items_id']);
 
         //add a followup to the ticket without assigning to me
         $this->login('glpi', 'glpi');
@@ -7367,6 +7375,10 @@ HTML,
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount($expected_actors_count, $actors);
+        if ($expected_actors_count > 0) {
+            $this->assertSame(User::class, array_values($actors)[0]['itemtype']);
+            $this->assertSame($from_user_id, (int) array_values($actors)[0]['items_id']);
+        }
     }
 
     public function testNotificationDisabled()

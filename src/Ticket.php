@@ -168,8 +168,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     {
 
         if (
-            isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
-            || isset($this->fields['status']) && in_array($this->fields['status'], static::getClosedStatusArray())
+           $this->isDeletedOrClosed()
         ) {
             return false;
         }
@@ -190,8 +189,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     public function canAssignToUser(int $user_id): bool
     {
         if (
-            isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
-            || isset($this->fields['status']) && in_array($this->fields['status'], static::getClosedStatusArray())
+            $this->isDeletedOrClosed()
         ) {
             return false;
         }
@@ -205,6 +203,12 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 && $this->countUsers(CommonITILActor::ASSIGN) == 0
             )
         );
+    }
+
+    private function isDeletedOrClosed(): bool
+    {
+        return (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
+            || isset($this->fields['status']) && in_array($this->fields['status'], static::getClosedStatusArray()));
     }
 
     /**
