@@ -253,7 +253,7 @@ enum Environment: string
         // Specific for dev, should never be enabled anywhere else.
         return match ($this) {
             default           => false,
-            self::DEVELOPMENT, self::TESTING => true,
+            self::DEVELOPMENT => true,
         };
     }
 

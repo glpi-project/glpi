@@ -99,39 +99,31 @@ class ErrorController extends AbstractController
             }
         }
 
-        $trace = null;
-        if (
-            (
-                Environment::get()->shouldEnableExtraDevAndDebugTools()
-                || isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
-            )
-        ) {
-            $trace = sprintf(
-                "%s\nIn %s(%s)",
-                $this->cleanPaths($exception->getMessage() ?: $exception::class),
-                $this->cleanPaths($exception->getFile()),
-                $exception->getLine()
+        $trace = sprintf(
+            "%s\nIn %s(%s)",
+            $this->cleanPaths($exception->getMessage() ?: $exception::class),
+            $this->cleanPaths($exception->getFile()),
+            $exception->getLine()
+        );
+
+        if (!($exception instanceof OutOfMemoryError)) {
+            // Note: OutOfMemoryError has no stack trace, we can only get filename and line.
+            $trace .= "\n" . $this->cleanPaths($exception->getTraceAsString());
+        }
+
+        $current = $exception;
+        $depth   = 0;
+        while ($depth < 10 && $previous = $current->getPrevious()) {
+            $trace .= sprintf(
+                "\n\nPrevious: %s\nIn %s(%s)",
+                $this->cleanPaths($previous->getMessage() ?: $previous::class),
+                $this->cleanPaths($previous->getFile()),
+                $previous->getLine()
             );
+            $trace .= "\n" . $this->cleanPaths($previous->getTraceAsString());
 
-            if (!($exception instanceof OutOfMemoryError)) {
-                // Note: OutOfMemoryError has no stack trace, we can only get filename and line.
-                $trace .= "\n" . $this->cleanPaths($exception->getTraceAsString());
-            }
-
-            $current = $exception;
-            $depth   = 0;
-            while ($depth < 10 && $previous = $current->getPrevious()) {
-                $trace .= sprintf(
-                    "\n\nPrevious: %s\nIn %s(%s)",
-                    $this->cleanPaths($previous->getMessage() ?: $previous::class),
-                    $this->cleanPaths($previous->getFile()),
-                    $previous->getLine()
-                );
-                $trace .= "\n" . $this->cleanPaths($previous->getTraceAsString());
-
-                $current = $previous;
-                $depth++;
-            }
+            $current = $previous;
+            $depth++;
         }
 
         if ($request->getPreferredFormat() === 'json') {
