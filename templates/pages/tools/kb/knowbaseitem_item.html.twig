@@ -42,10 +42,9 @@
     {% endif %}
     <div class="row align-items-center mb-2 ms-3">
         {% if get_class(item) == 'KnowbaseItem' %}
-            {# TODO pass used array to restrict visible items in list #}
             <label class="col-auto col-form-label">{{ __('Add a linked item') }}</label>
             <div class="col-12 col-sm-8 col-md-3 mb-2 mb-md-0">
-                {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id']) %}
+                {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id', used_knowbase_items]) %}
             </div>
         {% else %}
             <div class="col-12 col-sm-8 col-md-3 mb-2 mb-md-0">

@@ -123,8 +123,8 @@ class KnowbaseItem_Item extends CommonDBRelation
             if ($item::class !== KnowbaseItem::class) {
                 $visibility = KnowbaseItem::getVisibilityCriteria();
                 $condition = (isset($visibility['WHERE']) && count($visibility['WHERE'])) ? $visibility['WHERE'] : [];
-                $used_knowbase_items = self::getItems($item, 0, 0, true);
             }
+            $used_knowbase_items = self::getItems($item, 0, 0, true);
             TemplateRenderer::getInstance()->display('pages/tools/kb/knowbaseitem_item.html.twig', [
                 'item' => $item,
                 'visibility_condition' => $condition ?? [],
@@ -191,11 +191,12 @@ class KnowbaseItem_Item extends CommonDBRelation
      *
      * @param CommonDBTM $item Item instance
      * @param string     $name Field name
+     * @param array<class-string<CommonDBTM>, array<int, int>> $used Already used items
      *
      * @return string
      * @used-by 'templates/tools/kb/knowbaseitem_item.html.twig'
      */
-    public static function dropdownAllTypes(CommonDBTM $item, $name)
+    public static function dropdownAllTypes(CommonDBTM $item, $name, $used = [])
     {
         global $CFG_GLPI;
 
@@ -209,6 +210,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             'itemtypes'       => $CFG_GLPI['kb_types'],
             'onlyglobal'      => $onlyglobal,
             'checkright'      => $checkright,
+            'used'            => $used,
         ]);
     }
 
@@ -263,8 +265,11 @@ class KnowbaseItem_Item extends CommonDBRelation
             if ($used === false) {
                 $linked_items[] = $data;
             } else {
-                $key = $item::class === KnowbaseItem::class ? 'items_id' : 'knowbaseitems_id';
-                $linked_items[$data[$key]] = $data[$key];
+                if ($item::class === KnowbaseItem::class) {
+                    $linked_items[$data['itemtype']][$data['items_id']] = $data['items_id'];
+                } else {
+                    $linked_items[$data['knowbaseitems_id']] = $data['knowbaseitems_id'];
+                }
             }
         }
         return $linked_items;
