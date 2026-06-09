@@ -60,7 +60,7 @@ class GraphicCardTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"chipset": "ATY,RadeonX1600", "memory": 128, "name": "ATI Radeon X1600", "resolution": "1680x1050", "designation": "ATI Radeon X1600", "devicegraphiccardmodels_id": "ATI Radeon X1600", "is_dynamic": 1}',
+                'expected'  => '{"chipset": "ATY,RadeonX1600", "memory": 128, "name": "ATI Radeon X1600", "resolution": "1680x1050", "designation": "ATI Radeon X1600", "is_dynamic": 1}',
             ], [ //with unit on memory
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -75,7 +75,7 @@ class GraphicCardTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"chipset": "Intel(R) HD Graphics Family", "name": "Intel(R) HD Graphics 530", "resolution": "1920x1080", "designation": "Intel(R) HD Graphics 530", "devicegraphiccardmodels_id": "Intel(R) HD Graphics 530", "is_dynamic": 1}',
+                'expected'  => '{"chipset": "Intel(R) HD Graphics Family", "name": "Intel(R) HD Graphics 530", "resolution": "1920x1080", "designation": "Intel(R) HD Graphics 530", "is_dynamic": 1}',
             ], [ //with controller manufacturer extraction
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -191,13 +191,9 @@ class GraphicCardTest extends AbstractInventoryAsset
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
-        $model_gc = new DeviceGraphicCardModel();
-
-        $model_1_id = $model_gc->add(['name' => 'ATI Radeon X1600']);
         $gc_1_id = $device_gc->add([
             'designation' => 'ATI Radeon X1600',
             'chipset' => 'ATY,RadeonX1600',
-            'devicegraphiccardmodels_id' => $model_1_id,
             'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $gc_1_id);
@@ -209,11 +205,9 @@ class GraphicCardTest extends AbstractInventoryAsset
         ]);
         $this->assertGreaterThan(0, $item_gc_1_id);
 
-        $model_2_id = $model_gc->add(['name' => 'Intel(R) HD Graphics 530']);
         $gc_2_id = $device_gc->add([
             'designation' => 'Intel(R) HD Graphics 530',
             'chipset' => 'Intel(R) HD Graphics Family',
-            'devicegraphiccardmodels_id' => $model_2_id,
             'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $gc_2_id);
