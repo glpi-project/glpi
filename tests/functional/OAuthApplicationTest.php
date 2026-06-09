@@ -138,6 +138,34 @@ class OAuthApplicationTest extends DbTestCase
         $this->hasSessionMessages(ERROR, ['Client secret is required']);
     }
 
+    public function testAddRequiresProvider(): void
+    {
+        $app    = new OAuthApplication();
+        $result = $app->prepareInputForAdd([
+            'name'          => 'Bad app',
+            'provider'      => '',
+            'client_id'     => 'cid',
+            'client_secret' => 'secret',
+        ]);
+
+        $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, ['A valid provider is required']);
+    }
+
+    public function testAddInvalidProvider(): void
+    {
+        $app    = new OAuthApplication();
+        $result = $app->prepareInputForAdd([
+            'name'          => 'Bad app',
+            'provider'      => 'unknown_provider',
+            'client_id'     => 'cid',
+            'client_secret' => 'secret',
+        ]);
+
+        $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, ['Invalid provider']);
+    }
+
     // -------------------------------------------------------------------------
     // Encryption
     // -------------------------------------------------------------------------
@@ -274,21 +302,19 @@ class OAuthApplicationTest extends DbTestCase
         $host_linked   = '{mail.example.com/' . $protocol_key . '/novalidate-cert}INBOX';
         $host_unlinked = '{mail.other.com/imap/ssl}INBOX';
 
-        $DB->insert(MailCollector::getTable(), [
+        /** @var MailCollector $mc_linked */
+        $mc_linked = $this->createItem(MailCollector::class, [
             'name'  => 'Linked collector',
             'host'  => $host_linked,
             'login' => 'user@example.com',
-        ]);
-        $mc_linked = new MailCollector();
-        $mc_linked->getFromDB($DB->insertId());
+        ], ['host', 'server_type']);
 
-        $DB->insert(MailCollector::getTable(), [
+        /** @var MailCollector $mc_other */
+        $mc_other = $this->createItem(MailCollector::class, [
             'name'  => 'Unlinked collector',
             'host'  => $host_unlinked,
             'login' => 'user2@example.com',
-        ]);
-        $mc_other = new MailCollector();
-        $mc_other->getFromDB($DB->insertId());
+        ], ['host', 'server_type']);
 
         // Tab count must reflect exactly 1 linked collector
         $_SESSION['glpishow_count_on_tabs'] = 1;
@@ -326,8 +352,6 @@ class OAuthApplicationTest extends DbTestCase
 
     public function testCleanDBonPurge(): void
     {
-        global $DB;
-
         $this->login();
 
         /** @var OAuthApplication $app */
@@ -341,13 +365,12 @@ class OAuthApplicationTest extends DbTestCase
 
         $protocol_key = 'oauth_imap_' . $app->getID();
 
-        $DB->insert(MailCollector::getTable(), [
+        /** @var MailCollector $mc */
+        $mc = $this->createItem(MailCollector::class, [
             'name'  => 'Collector to clean',
             'host'  => '{mail.example.com/' . $protocol_key . '/ssl}INBOX',
             'login' => 'user@example.com',
-        ]);
-        $mc = new MailCollector();
-        $mc->getFromDB($DB->insertId());
+        ], ['host', 'server_type']);
 
         // Purge the application
         $this->assertTrue($app->delete(['id' => $app->getID()], true));
@@ -392,8 +415,6 @@ class OAuthApplicationTest extends DbTestCase
 
     public function testCountLinkedMailCollectors(): void
     {
-        global $DB;
-
         $this->login();
 
         /** @var OAuthApplication $app */
@@ -414,18 +435,18 @@ class OAuthApplicationTest extends DbTestCase
         $this->assertStringNotContainsString('tab-count-badge', $tabs[1]);
 
         // Add a collector with a trailing slash after the key
-        $DB->insert(MailCollector::getTable(), [
+        $this->createItem(MailCollector::class, [
             'name'  => 'Collector with slash',
             'host'  => '{mail.example.com/' . $protocol_key . '/ssl}INBOX',
             'login' => 'a@example.com',
-        ]);
+        ], ['host', 'server_type']);
 
         // Add a collector with closing brace after the key
-        $DB->insert(MailCollector::getTable(), [
+        $this->createItem(MailCollector::class, [
             'name'  => 'Collector without options',
             'host'  => '{mail.example.com/' . $protocol_key . '}',
             'login' => 'b@example.com',
-        ]);
+        ], ['host', 'server_type']);
 
         $tabs = $app->getTabNameForItem($app);
         $this->assertStringContainsString('tab-count-badge">2<', $tabs[1]);

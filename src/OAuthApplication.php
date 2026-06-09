@@ -114,20 +114,25 @@ class OAuthApplication extends CommonDBTM
     /**
      * Returns the number of MailCollectors whose host references this application.
      */
+    private function linkedMailCollectorsWhere(int $id): array
+    {
+        $app_key = 'oauth_imap_' . $id;
+        return [
+            'OR' => [
+                ['host' => ['LIKE', '%/' . $app_key . '/%']],
+                ['host' => ['LIKE', '%/' . $app_key . '}%']],
+            ],
+        ];
+    }
+
     private function countLinkedMailCollectors(int $id): int
     {
         global $DB;
 
-        $app_key  = 'oauth_imap_' . $id;
         $iterator = $DB->request([
             'COUNT' => 'cpt',
             'FROM'  => MailCollector::getTable(),
-            'WHERE' => [
-                'OR' => [
-                    ['host' => ['LIKE', '%/' . $app_key . '/%']],
-                    ['host' => ['LIKE', '%/' . $app_key . '}%']],
-                ],
-            ],
+            'WHERE' => $this->linkedMailCollectorsWhere($id),
         ]);
         return (int) $iterator->current()['cpt'];
     }
@@ -139,15 +144,9 @@ class OAuthApplication extends CommonDBTM
     {
         global $DB;
 
-        $app_key  = 'oauth_imap_' . $this->getID();
         $iterator = $DB->request([
             'FROM'  => MailCollector::getTable(),
-            'WHERE' => [
-                'OR' => [
-                    ['host' => ['LIKE', '%/' . $app_key . '/%']],
-                    ['host' => ['LIKE', '%/' . $app_key . '}%']],
-                ],
-            ],
+            'WHERE' => $this->linkedMailCollectorsWhere($this->getID()),
         ]);
 
         $entries = [];
@@ -185,16 +184,10 @@ class OAuthApplication extends CommonDBTM
     {
         global $DB;
 
-        $app_key = 'oauth_imap_' . $this->getID();
         $DB->update(
             MailCollector::getTable(),
             ['host' => '', 'is_active' => 0],
-            [
-                'OR' => [
-                    ['host' => ['LIKE', '%/' . $app_key . '/%']],
-                    ['host' => ['LIKE', '%/' . $app_key . '}%']],
-                ],
-            ]
+            $this->linkedMailCollectorsWhere($this->getID())
         );
     }
 
@@ -296,6 +289,30 @@ class OAuthApplication extends CommonDBTM
         ];
     }
 
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        if ($field === 'provider') {
+            return htmlescape(static::getProviders()[$values[$field]] ?? $values[$field]);
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
+        if ($field === 'provider') {
+            $options['value'] = $values[$field] ?? '';
+            return Dropdown::showFromArray($name, static::getProviders(), $options);
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
     public function rawSearchOptions(): array
     {
         $opts = [];
@@ -327,11 +344,12 @@ class OAuthApplication extends CommonDBTM
             'datatype' => 'bool',
         ];
         $opts[] = [
-            'id'       => 4,
-            'table'    => static::getTable(),
-            'field'    => 'provider',
-            'name'     => __('Provider'),
-            'datatype' => 'string',
+            'id'         => 4,
+            'table'      => static::getTable(),
+            'field'      => 'provider',
+            'name'       => __('Provider'),
+            'datatype'   => 'specific',
+            'searchtype' => 'equals',
         ];
         $opts[] = [
             'id'       => 5,
