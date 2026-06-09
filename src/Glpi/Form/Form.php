@@ -399,6 +399,17 @@ final class Form extends CommonDBTM implements
             // Update questions and sections
             $this->updateExtraFormData();
             $DB->commit();
+
+            // The form was saved successfully. Make sure the confirmation message is
+            // always shown, even when only sub-items (questions, sections, …) changed and
+            // the form record itself had no modified field, which happens when two saves
+            // occur within the same second, as `date_mod` only has a one-second granularity.
+            // `check_once` avoids duplicating the message CommonDBTM::update() already adds.
+            Session::addMessageAfterRedirect(
+                msg: $this->formatSessionMessageAfterAction(__('Item successfully updated')),
+                check_once: true, // Prevent duplicates
+                message_type: INFO
+            );
         } catch (Throwable $e) {
             // Delete the "Item sucessfully updated" message if it exist
             Session::deleteMessageAfterRedirect(
