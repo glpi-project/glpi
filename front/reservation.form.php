@@ -55,7 +55,7 @@ $fn_redirect_back = static function ($begin_date = null) {
     if ($begin_date === null) {
         // Try to get from POST data
         if (isset($_POST['resa']["begin"])) {
-            $begin_date = date('Y-m-d', strtotime($_POST['resa']["begin"]));
+            $begin_date = date('Y-m-d', strtotime($_POST['resa']["begin"]) ?: time());
         } else {
             $begin_date = date('Y-m-d');
         }
