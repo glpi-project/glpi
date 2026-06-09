@@ -40,14 +40,11 @@ class DefaultFilterTest extends DbTestCase
 {
     private function createDefaultFilterWithCriteria(bool $is_active): \DefaultFilter
     {
-        $filter = new \DefaultFilter();
-        $id = $filter->add([
+        $filter = $this->createItem(\DefaultFilter::class, [
             'name'      => 'Test filter',
             'itemtype'  => \Ticket::class,
             'is_active' => (int) $is_active,
         ]);
-        $this->assertGreaterThan(0, $id);
-        $this->assertTrue($filter->getFromDB($id));
 
         $filter->saveFilter([
             ['link' => 'AND', 'field' => 12, 'searchtype' => 'equals', 'value' => 'notold'],
