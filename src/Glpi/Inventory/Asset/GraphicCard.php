@@ -71,7 +71,7 @@ class GraphicCard extends Device
 
                 if (isset($this->extra_data['controllers'])) {
                     $found_controller = false;
-                    foreach ((array) $this->extra_data['controllers'] as $controller) {
+                    foreach ($this->extra_data['controllers'] as $controller) {
                         // Two devices never share the same PCI address
                         $match_pcislot = property_exists($controller, 'pcislot') && property_exists($val, 'pcislot') && $controller->pcislot === $val->pcislot;
 
