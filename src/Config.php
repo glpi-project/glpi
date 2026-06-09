@@ -407,7 +407,7 @@ class Config extends CommonDBTM
 
         if (array_key_exists('smtp_mode', $input) && in_array($input['smtp_mode'], [MAIL_SMTPSSL, MAIL_SMTPTLS], true)) {
             $input['smtp_mode'] = MAIL_SMTP;
-            Toolbox::deprecated('Usage of "MAIL_SMTPTLS" and "MAIL_SMTPTLS" SMTP mode is deprecated. Switch to "MAIL_SMTP" mode.');
+            Toolbox::deprecated('Usage of "MAIL_SMTPSSL" and "MAIL_SMTPTLS" SMTP mode is deprecated. Switch to "MAIL_SMTP" mode.');
         }
 
         if (array_key_exists('smtp_mode', $input) && (int) $input['smtp_mode'] === MAIL_SMTPOAUTH) {
@@ -1965,7 +1965,7 @@ class Config extends CommonDBTM
 
         // No valid email was found
         trigger_error(
-            'No email address is not defined in configuration.',
+            'No email address is defined in configuration.',
             E_USER_WARNING
         );
 
