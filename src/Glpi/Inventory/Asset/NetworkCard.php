@@ -111,7 +111,7 @@ class NetworkCard extends Device
             if (isset($this->extra_data['controllers'])) {
                 $found_controller = false;
                 // Search in controller if find NAME = CONTROLLER TYPE
-                foreach ($this->extra_data['controllers'] as $controller) {
+                foreach ((array) $this->extra_data['controllers'] as $controller) {
                     if (
                         property_exists($controller, 'type')
                         && ($val->description == $controller->type
