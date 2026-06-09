@@ -420,7 +420,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                     }
 
                     $mail->text($current->fields['body_text']);
-                    $mail->html($current->fields['body_html']);
+                    $mail->html(html_entity_decode($current->fields['body_html'], ENT_QUOTES, 'UTF-8'));
                 }
 
                 self::attachDocuments($mail, $documents_to_attach);
