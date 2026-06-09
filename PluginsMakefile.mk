@@ -28,6 +28,9 @@ PSALM_BIN      = $(shell test -f vendor/bin/psalm        && echo vendor/bin/psal
 PHPCSFIXER_BIN = $(shell test -f vendor/bin/php-cs-fixer && echo vendor/bin/php-cs-fixer || echo ../../vendor/bin/php-cs-fixer)
 PARALLEL-LINT_BIN = $(shell test -f vendor/bin/parallel-lint && echo vendor/bin/parallel-lint || echo ../../vendor/bin/parallel-lint)
 
+# Path to GLPI's core, where the root Makefile lives.
+GLPI_DIR = ../..
+
 ##
 ##This Makefile is used for *local development* only.
 ##Production or deployment should be handled following GLPI's documentation.
@@ -139,6 +142,11 @@ phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/M
 	@$(eval c ?=)
 	@$(PLUGIN) php $(PHPUNIT_BIN) $(c)
 .PHONY: phpunit
+
+playwright: ## Run the plugin's playwright tests, example: make playwright c='--headed'
+	@$(eval c ?=)
+	@$(MAKE) -C $(GLPI_DIR) playwright c='--project=plugin:$(PLUGIN_DIR) $(c)'
+.PHONY: playwright
 
 phpstan: ## Run phpstan
 	@$(eval c ?=)
