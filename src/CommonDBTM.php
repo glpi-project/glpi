@@ -415,6 +415,8 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      * @since 9.2
+     *
+     * @phpstan-impure
      */
     public function getFromDBByCrit(array $criteria)
     {
