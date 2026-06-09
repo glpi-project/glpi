@@ -67,6 +67,7 @@ use Safe\Exceptions\JsonException;
 use Safe\Exceptions\PcreException;
 use Safe\Exceptions\UrlException;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpFoundation\IpUtils;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -78,6 +79,7 @@ use function Safe\copy;
 use function Safe\curl_exec;
 use function Safe\curl_getinfo;
 use function Safe\curl_init;
+use function Safe\dns_get_record;
 use function Safe\error_log;
 use function Safe\fclose;
 use function Safe\filemtime;
@@ -1309,18 +1311,28 @@ class Toolbox
      *
      * @since 10.0.3
      *
-     * @param string    $url        URL to check
-     * @param array     $allowlist  Allowlist (regex array)
+     * @param string      $url        URL to check
+     * @param array       $allowlist  Allowlist (regex array)
+     * @param string|null $context    FQCN of the calling feature. Pass null (default) for
+     *                                user-controlled URLs — private network check is always enforced.
+     *                                Pass the caller's class name (static::class) for admin-configured
+     *                                URLs — the check is skipped if the class appears in
+     *                                GLPI_SERVERSIDE_URL_PRIVATE_NETWORK_EXEMPTIONS.
      *
      * @return bool
      */
-    public static function isUrlSafe(string $url, array $allowlist = GLPI_SERVERSIDE_URL_ALLOWLIST): bool
-    {
+    public static function isUrlSafe(
+        string $url,
+        array $allowlist = GLPI_SERVERSIDE_URL_ALLOWLIST,
+        ?string $context = null
+    ): bool {
+        // Reject URLs whose scheme or format is not in the configured allowlist.
+        $passes_allowlist = false;
         foreach ($allowlist as $allow_regex) {
             try {
-                $result = preg_match($allow_regex, $url);
-                if ($result === 1) {
-                    return true;
+                if (preg_match($allow_regex, $url) === 1) {
+                    $passes_allowlist = true;
+                    break;
                 }
             } catch (PcreException $e) {
                 trigger_error(
@@ -1330,7 +1342,66 @@ class Toolbox
             }
         }
 
-        return false;
+        if (!$passes_allowlist) {
+            return false;
+        }
+
+        if (!GLPI_SERVERSIDE_URL_CHECK_PRIVATE_NETWORKS) {
+            return true; // globally disabled (air-gapped / fully-internal deployment)
+        }
+
+        if ($context !== null && in_array($context, GLPI_SERVERSIDE_URL_PRIVATE_NETWORK_EXEMPTIONS, true)) {
+            return true; // admin-configured feature explicitly exempt
+        }
+
+        // Only meaningful for network schemes; file:// and others skip this check.
+        $raw_scheme = parse_url($url, PHP_URL_SCHEME);
+        $scheme = strtolower(\is_string($raw_scheme) ? $raw_scheme : '');
+        if (!in_array($scheme, ['http', 'https', 'feed'], true)) {
+            return true;
+        }
+
+        $host = parse_url($url, PHP_URL_HOST);
+        if (!\is_string($host) || $host === '') {
+            return false;
+        }
+
+        $host = trim($host, '[]'); // strip IPv6 brackets e.g. [::1]
+
+        if (filter_var($host, FILTER_VALIDATE_IP)) {
+            $ips = [$host];
+        } else {
+            try {
+                $records = dns_get_record($host, DNS_A | DNS_AAAA);
+            } catch (\Safe\Exceptions\NetworkException) {
+                // DNS failure: fail-open. The subsequent HTTP request will fail naturally.
+                return true;
+            }
+            if (empty($records)) {
+                // Unresolvable: fail-open.
+                // The subsequent HTTP request will fail naturally.
+                return true;
+            }
+            $ips = [];
+            foreach ($records as $record) {
+                if (isset($record['ip'])) {
+                    $ips[] = $record['ip'];
+                } elseif (isset($record['ipv6'])) {
+                    $ips[] = $record['ipv6'];
+                }
+            }
+            if (empty($ips)) {
+                return true; // fail-open
+            }
+        }
+
+        foreach ($ips as $ip) {
+            if (IpUtils::isPrivateIp($ip)) {
+                return false; // resolves to private/reserved range
+            }
+        }
+
+        return true;
     }
 
 

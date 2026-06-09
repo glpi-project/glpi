@@ -40,12 +40,15 @@ use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\Kanban;
 use Glpi\Features\PlanningEvent;
+use Glpi\System\Status\StatusChecker;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
+use RSSFeed;
 use stdClass;
 use Ticket;
+use Webhook;
 
 /* Test for inc/toolbox.class.php */
 
@@ -1570,12 +1573,39 @@ HTML;
             'expected' => false,
         ];
 
-        // http, https and feed URLs are accepted, unless they contains a user or non default port information
+        // Addresses resolving to private/reserved IP ranges are rejected.
+        foreach (['http://127.0.0.1', 'http://10.0.0.1', 'http://192.168.1.1', 'http://172.16.0.1', 'http://169.254.1.1'] as $private_url) {
+            yield ['url' => $private_url, 'expected' => false];
+        }
+        foreach (['http://[::1]', 'http://[fc00::1]', 'http://[fe80::1]'] as $private_url) {
+            yield ['url' => $private_url, 'expected' => false];
+        }
+
+        // Exempt contexts bypass the private network check.
+        yield [
+            'url'      => 'http://192.168.1.1',
+            'expected' => true,
+            'context'  => StatusChecker::class, // in default exemption list
+        ];
+        yield [
+            'url'      => 'http://192.168.1.1',
+            'expected' => true,
+            'context'  => Webhook::class, // in default exemption list
+        ];
+
+        // Non-exempt context still gets checked.
+        yield [
+            'url'      => 'http://192.168.1.1',
+            'expected' => false,
+            'context'  => RSSFeed::class, // not in default exemption list
+        ];
+
+        // http, https and feed URLs are accepted, unless they contain a user, non-default port, or resolve to a private IP.
         foreach (['http', 'https', 'feed'] as $scheme) {
             foreach (['', '/', '/path/to/resource.php'] as $path) {
                 yield [
                     'url'      => sprintf('%s://localhost%s', $scheme, $path),
-                    'expected' => true,
+                    'expected' => false, // localhost resolves to 127.0.0.1 (private)
                 ];
                 yield [
                     'url'      => sprintf('%s://localhost:8080%s', $scheme, $path),
@@ -1622,13 +1652,9 @@ HTML;
 
 
     #[DataProvider('safeUrlProvider')]
-    public function testIsUrlSafe(string $url, bool $expected, ?array $allowlist = null): void
+    public function testIsUrlSafe(string $url, bool $expected, ?array $allowlist = null, ?string $context = null): void
     {
-        $params = [$url];
-        if ($allowlist !== null) {
-            $params[] = $allowlist;
-        }
-        $this->assertSame($expected, call_user_func_array('Toolbox::isUrlSafe', $params));
+        $this->assertSame($expected, \Toolbox::isUrlSafe($url, $allowlist ?? GLPI_SERVERSIDE_URL_ALLOWLIST, $context));
     }
 
 

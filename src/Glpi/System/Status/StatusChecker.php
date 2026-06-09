@@ -380,7 +380,7 @@ final class StatusChecker
                 }
                 $url .= '/' . $CFG_GLPI['cas_uri'];
 
-                if (Toolbox::isUrlSafe($url)) {
+                if (Toolbox::isUrlSafe($url, context: self::class)) {
                     $data = Toolbox::getURLContent($url);
                     if (!empty($data)) {
                         $status['status'] = self::STATUS_OK;

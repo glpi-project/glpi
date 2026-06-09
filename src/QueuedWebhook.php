@@ -213,7 +213,7 @@ class QueuedWebhook extends CommonDBChild
             $oauth_url   = (string) $webhook->fields['oauth_url'];
             $oauth_error = null;
 
-            if (Toolbox::isUrlSafe($oauth_url)) {
+            if (Toolbox::isUrlSafe($oauth_url, context: Webhook::class)) {
                 // Send OAuth Client Credentials
                 try {
                     $oauth_response = $client->request('POST', $oauth_url, [
@@ -259,7 +259,7 @@ class QueuedWebhook extends CommonDBChild
             $request_url   = (string) $queued_webhook->fields['url'];
             $request_error = null;
 
-            if (Toolbox::isUrlSafe($request_url)) {
+            if (Toolbox::isUrlSafe($request_url, context: Webhook::class)) {
                 try {
                     $response = $client->request($queued_webhook->fields['http_method'], $request_url, [
                         RequestOptions::HEADERS => $headers,

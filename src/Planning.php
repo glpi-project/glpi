@@ -1205,7 +1205,7 @@ TWIG, $twig_params);
             return;
         }
 
-        if (!Toolbox::isUrlSafe($params['url'])) {
+        if (!Toolbox::isUrlSafe($params['url'], context: self::class)) {
             Session::addMessageAfterRedirect(
                 sprintf(__s('URL "%s" is not allowed by your administrator.'), htmlescape($params['url'])),
                 false,

@@ -542,7 +542,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             return false;
         }
 
-        if (!Toolbox::isUrlSafe($url)) {
+        if (!Toolbox::isUrlSafe($url, context: self::class)) {
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(__('URL "%s" is not allowed by your administrator.'), $url)),
                 false,
@@ -641,7 +641,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 ];
             }
         } else {
-            $rss_feed['error'] = !Toolbox::isUrlSafe($this->fields['url'])
+            $rss_feed['error'] = !Toolbox::isUrlSafe($this->fields['url'], context: self::class)
                 ? sprintf(__('URL "%s" is not allowed by your administrator.'), $this->fields['url'])
                 : __('Error retrieving RSS feed');
             $this->setError(true);
@@ -670,7 +670,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         $cache_key = sha1($url);
         $update_cache = false;
         if (($raw_data = $GLPI_CACHE->get($cache_key)) === null) {
-            if (!Toolbox::isUrlSafe($url)) {
+            if (!Toolbox::isUrlSafe($url, context: self::class)) {
                 return false;
             }
 
