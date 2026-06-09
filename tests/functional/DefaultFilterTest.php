@@ -66,11 +66,30 @@ class DefaultFilterTest extends DbTestCase
 
         $this->assertNotNull($result);
         $this->assertArrayHasKey('search_criteria', $result);
+        $this->assertSame('AND', $result['search_criteria']['link']);
+        $this->assertNotEmpty($result['search_criteria']['criteria']);
     }
 
     public function testGetSearchCriteriaReturnsNullWhenInactive(): void
     {
         $this->createDefaultFilterWithCriteria(false);
+
+        $this->assertNull(\DefaultFilter::getSearchCriteria(\Ticket::class));
+    }
+
+    private function createActiveFilterWithoutCriteria(): \DefaultFilter
+    {
+        return $this->createItem(\DefaultFilter::class, [
+            'name'      => 'Test filter without criteria',
+            'itemtype'  => \Ticket::class,
+            'is_active' => 1,
+        ]);
+    }
+
+    // Verify if a filter exists where no criteria are saved
+    public function testGetSearchCriteriaReturnsNullWhenActiveWithoutCriteria(): void
+    {
+        $this->createActiveFilterWithoutCriteria();
 
         $this->assertNull(\DefaultFilter::getSearchCriteria(\Ticket::class));
     }
