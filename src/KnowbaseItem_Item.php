@@ -68,7 +68,7 @@ class KnowbaseItem_Item extends CommonDBRelation
             }
 
             if ($item::class === KnowbaseItem::class) {
-                $type_name = _n('Associated element', 'Associated elements', $nb);
+                $type_name = _n('Associated element', 'Associated elements', Session::getPluralNumber());
             } else {
                 $type_name = __('Knowledge base');
             }
@@ -304,7 +304,7 @@ class KnowbaseItem_Item extends CommonDBRelation
 
     public static function getIcon()
     {
-        return KnowbaseItem::getIcon();
+        return 'ti ti-link';
     }
 
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
