@@ -168,7 +168,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     {
 
         if (
-           $this->isDeletedOrClosed()
+            $this->isDeletedOrClosed()
         ) {
             return false;
         }
