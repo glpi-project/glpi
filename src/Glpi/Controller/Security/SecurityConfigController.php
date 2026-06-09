@@ -57,14 +57,13 @@ final class SecurityConfigController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_CENTRAL_ACCESS)]
     public function showForm(Request $request): Response
     {
-        if (!SecurityConfig::canView()) {
-            throw new AccessDeniedHttpException();
-        }
+        (new SecurityConfig())->checkGlobal(READ);
 
         $config_id = Config::getConfigIDForContext('core');
         if ($config_id === null) {
             throw new RuntimeException('Unable to find any configs for context "core"');
         }
+
         SecurityConfig::displayFullPageForItem($config_id, ["config", SecurityConfig::class], [
             'formoptions'  => "data-track-changes=true",
         ]);
@@ -79,20 +78,26 @@ final class SecurityConfigController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_ADMIN_ACCESS)]
     public function handleFormSubmission(Request $request): Response
     {
+        $security_config = new SecurityConfig();
+
+        // despite #[SecurityStrategy(Firewall::STRATEGY_ADMIN_ACCESS)],
+        // we need to check UPDATE right on config because of the reauth mechanism redirection
+        // otherwise reauth is bypassed
+        $security_config->checkGlobal(UPDATE);
+
         $do_update = $request->request->getBoolean('update');
         if (!$do_update) {
-            throw new BadRequestHttpException();
+            throw new BadRequestHttpException('"update" parameter must be set');
         }
 
         $config_id = Config::getConfigIDForContext('core');
         if ($config_id === null) {
             throw new RuntimeException('Unable to find any configs for context "core"');
         }
-        $config = new SecurityConfig();
 
         $update_input = $request->request->all();
         $update_input['id'] = $config_id;
-        $config->update($update_input);
+        $security_config->update($update_input);
         return new RedirectResponse(SecurityConfig::getFormURLWithID($config_id));
     }
 }
