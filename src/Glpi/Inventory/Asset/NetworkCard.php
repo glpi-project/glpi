@@ -135,12 +135,6 @@ class NetworkCard extends Device
                 }
 
                 if ($found_controller) {
-                    if (property_exists($found_controller, 'caption') && !empty($found_controller->caption)) {
-                        $val->designation = $found_controller->caption;
-                    } elseif (property_exists($found_controller, 'name') && !empty($found_controller->name)) {
-                        $val->designation = $found_controller->name;
-                    }
-
                     if (property_exists($found_controller, 'pciid')) {
                         $exploded = explode(":", $found_controller->pciid);
 
@@ -152,7 +146,6 @@ class NetworkCard extends Device
                         //product name
                         if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
                             $val->designation = $pci_product;
-                            $val->devicenetworkcardmodels_id = $pci_product;
                         }
                     } elseif (property_exists($found_controller, 'vendorid')) {
                         //manufacturer
@@ -164,7 +157,6 @@ class NetworkCard extends Device
                             //product name
                             if ($pci_product = $pcivendor->getProductName($found_controller->vendorid, $found_controller->productid)) {
                                 $val->designation = $pci_product;
-                                $val->devicenetworkcardmodels_id = $pci_product;
                             }
                         }
                     }
