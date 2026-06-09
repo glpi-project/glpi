@@ -139,8 +139,8 @@
                             {% else %}
                                 <input
                                     type="hidden"
-                                    name="_conditions[{{ original_loop_index }}][value]{% for path_key in path %}[{{ path_key|e('html_attr') }}]{% endfor %}"
-                                    value="{{ value|e('html_attr') }}"
+                                    name="_conditions[{{ original_loop_index }}][value]{% for path_key in path %}[{{ path_key }}]{% endfor %}"
+                                    value="{{ value }}"
                                     data-glpi-conditions-editor-value
                                 />
                             {% endif %}
