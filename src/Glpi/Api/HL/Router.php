@@ -722,7 +722,7 @@ EOT;
                     $params = $matched_route->getRouteDoc($request->getMethod())?->getParameters() ?? [];
                     $missing_params = [];
                     foreach ($params as $param) {
-                        if ($param->getRequired() && !$request->hasParameter($param->getName())) {
+                        if (($param['required'] ?? false) && !$request->hasParameter($param->getName())) {
                             $missing_params[] = $param->getName();
                         }
                     }
