@@ -41,7 +41,6 @@ use Glpi\Event;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\InfoException;
-use Symfony\Component\ErrorHandler\Error\FatalError;
 
 use function Safe\filemtime;
 use function Safe\glob;
