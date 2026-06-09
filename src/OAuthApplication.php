@@ -262,8 +262,7 @@ class OAuthApplication extends CommonDBTM
      */
     public static function getActiveApplications(): array
     {
-        $instance = new self();
-        $rows     = $instance->find(['is_active' => 1]);
+        $rows = (new self())->find(['is_active' => 1]);
 
         $result = [];
         foreach ($rows as $row) {
