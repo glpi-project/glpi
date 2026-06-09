@@ -61,7 +61,7 @@ class SoundCard extends Device
 
             if (isset($this->extra_data['controllers'])) {
                 $found_controller = false;
-                foreach ($this->extra_data['controllers'] as $controller) {
+                foreach ((array) $this->extra_data['controllers'] as $controller) {
                     $match_name = property_exists($controller, 'name') && $controller->name === $val->name;
 
                     if ($match_name) {
