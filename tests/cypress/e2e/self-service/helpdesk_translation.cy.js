@@ -95,7 +95,6 @@ describe('Edit helpdesk translations', () => {
 
         cy.login();
         cy.changeProfile('Super-Admin');
-        cy.enableDebugMode();
 
         cy.createWithAPI('Glpi\\Helpdesk\\Tile\\GlpiPageTile', {
             'title': tile_title,
