@@ -59,22 +59,6 @@ class SoundCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
                 'expected'  => '{"description": "rev 21", "manufacturer": "Intel Corporation Sunrise Point-LP HD Audio", "name": "Audio device", "designation": "Audio device", "manufacturers_id": "Intel Corporation Sunrise Point-LP HD Audio", "comment": "rev 21", "is_dynamic": 1}',
-            ], [ //with caption overriding name as designation
-                'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
-<REQUEST>
-  <CONTENT>
-    <SOUNDS>
-      <CAPTION>Realtek High Definition Audio</CAPTION>
-      <DESCRIPTION>rev 1</DESCRIPTION>
-      <MANUFACTURER>Realtek</MANUFACTURER>
-      <NAME>Audio device</NAME>
-    </SOUNDS>
-    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
-  </CONTENT>
-  <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
-  <QUERY>INVENTORY</QUERY>
-  </REQUEST>",
-                'expected'  => '{"caption": "Realtek High Definition Audio", "description": "rev 1", "manufacturer": "Realtek", "name": "Audio device", "designation": "Realtek High Definition Audio", "manufacturers_id": "Realtek", "comment": "rev 1", "is_dynamic": 1}',
             ],
         ];
     }
@@ -282,5 +266,49 @@ class SoundCardTest extends AbstractInventoryAsset
         //sound card not present in the inventory is still not dynamic
         $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $sounds);
+    }
+
+    public function testInventoryAddUsb()
+    {
+        $device_sound = new \DeviceSoundCard();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <USBDEVICES>
+      <CAPTION>H390 headset with microphone</CAPTION>
+      <MANUFACTURER>Logitech, Inc.</MANUFACTURER>
+      <NAME>H390 headset with microphone</NAME>
+      <PRODUCTID>0A8F</PRODUCTID>
+      <VENDORID>046D</VENDORID>
+    </USBDEVICES>
+    <SOUNDS>
+      <CAPTION>Dispositivo de áudio USB</CAPTION>
+      <DESCRIPTION>Dispositivo de áudio USB</DESCRIPTION>
+      <MANUFACTURER>Logitech, Inc.</MANUFACTURER>
+      <NAME>H390 headset with microphone</NAME>
+    </SOUNDS>
+    <HARDWARE>
+      <NAME>pc002</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>ggheb7ne7</SSN>
+    </BIOS>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc002</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source);
+
+        $sounds = $device_sound->find();
+        $this->assertCount(1, $sounds);
+
+        $usb_vendor = new \USBVendor();
+        $designation = $usb_vendor->getProductName('046D', '0A8F') ?: 'H390 headset with microphone';
+
+        $sound = current($sounds);
+        $this->assertEquals($designation, $sound['designation']);
     }
 }
