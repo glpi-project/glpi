@@ -91,6 +91,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
     if (isset($_POST['width'])) {
         $p['width'] = $_POST['width'];
     }
+    if (isset($_POST['multiple'])) {
+        $p['multiple'] = (bool) $_POST['multiple'];
+    }
     if (isset($_POST['container_css_class'])) {
         $p['container_css_class'] = $_POST['container_css_class'];
     }
