@@ -456,12 +456,14 @@ class Config extends CommonDBTM
 
         if (isset($input["_blank_smtp_passwd"]) && $input["_blank_smtp_passwd"]) {
             $input['smtp_passwd'] = '';
-        } elseif (
-            isset($input['smtp_passwd'])
-            && empty($input['smtp_passwd'])
-            && (!isset($input['smtp_mode']) || (int) $input['smtp_mode'] !== MAIL_SMTPOAUTH)
-        ) {
+        }
+
+        if (isset($input['smtp_passwd']) && empty($input['smtp_passwd'])) {
             unset($input['smtp_passwd']);
+        }
+
+        if (($input['smtp_mode'] ?? null) === MAIL_SMTPOAUTH) {
+            $input['smtp_passwd'] = '';
         }
 
         return $input;
