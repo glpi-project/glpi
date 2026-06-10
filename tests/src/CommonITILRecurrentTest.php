@@ -754,7 +754,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         // Bypass prepareInputForUpdate to force next_creation_date in the past
         $DB->update($child_class::getTable(), ['next_creation_date' => '2020-01-01 00:00:00'], ['id' => $recurrent->getID()]);
 
-        $task = $this->createStub(\CronTask::class);
+        $task = $this->createMock(\CronTask::class);
 
         // GLPITestCase::tearDown() asserts no unexpected log entries — a PHP warning
         // "Undefined array key ticket_per_item" would fail here for RecurrentChange

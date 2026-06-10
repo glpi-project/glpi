@@ -122,11 +122,16 @@ class TagTest extends DbTestCase
 
     /**
      * Create a tag with given input and verify itemtypes
+     *
+     * @param array $input Input data for tag creation
+     * @param array $skip_fields Fields to skip verification
+     *
+     * @return Tag Created tag
      */
-    private function createTag(array $input): Tag
+    private function createTag(array $input, array $skip_fields = ['itemtypes']): Tag
     {
-        $tag = $this->createItem(Tag::class, $input, ['itemtypes']);
-        $this->verifItemtypes($tag, $input['itemtypes']);
+        $tag = $this->createItem(Tag::class, $input, $skip_fields);
+        $this->verifItemtypes($tag, $input['itemtypes'] ?? []);
 
         return $tag;
     }
@@ -136,75 +141,51 @@ class TagTest extends DbTestCase
       *
       * @param Tag $tag Tag to update
       * @param array $input Input data
+      * @param array $skip_fields Fields to skip verification
+      *
+      * @return Tag Updated tag
       */
-    private function updateTag(Tag $tag, array $input): void
+    private function updateTag(Tag $tag, array $input, array $skip_fields = ['itemtypes']): Tag
     {
-        $this->updateItem(Tag::class, $tag->getID(), $input, ['itemtypes']);
-        $this->verifItemtypes($tag, $input['itemtypes']);
+        $tag = $this->updateItem(Tag::class, $tag->getID(), $input, $skip_fields);
+        $this->verifItemtypes($tag, $input['itemtypes'] ?? []);
+        return $tag;
     }
 
-    /**
-     * Data provider for testAddTagWithItemtypes and testUpdateTagItemtypes
-      *
-      * Each case provides input for tag creation/update and expected itemtypes after operation
-       *
-       * @return iterable
-       */
     public static function providerTestAddAndUpdateTagItemtypes(): iterable
     {
         yield 'itemtypes as array' => [
-            'input' => [
-                'name' => 'Test Tag',
-                'itemtypes' => [Computer::class],
-            ],
+            'input_itemtypes' => [Computer::class],
             'expected_itemtypes' => [Computer::class],
         ];
 
         yield 'itemtypes is empty' => [
-            'input' => [
-                'name' => 'Test Tag',
-                'itemtypes' => "",
-            ],
+            'input_itemtypes' => "",
             'expected_itemtypes' => [],
         ];
 
         yield 'multiple itemtypes' => [
-            'input' => [
-                'name' => 'Test Tag',
-                'itemtypes' => [Printer::class, Computer::class],
-            ],
+            'input_itemtypes' => [Printer::class, Computer::class],
             'expected_itemtypes' => [Printer::class, Computer::class],
         ];
 
         yield 'unauthorized itemtype' => [
-            'input' => [
-                'name' => 'Test Tag',
-                'itemtypes' => [Rule::class, Computer::class],
-            ],
+            'input_itemtypes' => [Rule::class, Computer::class],
             'expected_itemtypes' => [Computer::class],
         ];
 
         yield 'duplicate itemtypes' => [
-            'input' => [
-                'name' => 'Test Tag',
-                'itemtypes' => [Computer::class, Computer::class],
-            ],
+            'input_itemtypes' => [Computer::class, Computer::class],
             'expected_itemtypes' => [Computer::class],
         ];
 
         yield 'plugin itemtype' => [
-            'input' => [
-                'name' => 'Test Tag',
-                'itemtypes' => [TesterComputer::class],
-            ],
+            'input_itemtypes' => [TesterComputer::class],
             'expected_itemtypes' => [TesterComputer::class],
         ];
 
         yield 'custom asset itemtype' => [
-            'input' => [
-                'name' => 'Test Tag',
-                'itemtypes' => ['Glpi\\CustomAsset\\Test01Asset'],
-            ],
+            'input_itemtypes' => ['Glpi\\CustomAsset\\Test01Asset'],
             'expected_itemtypes' => ['Glpi\\CustomAsset\\Test01Asset'],
         ];
     }
@@ -213,34 +194,133 @@ class TagTest extends DbTestCase
      * Test adding a tag with itemtypes and verify that itemtypes are correctly set
      */
     #[DataProvider('providerTestAddAndUpdateTagItemtypes')]
-    public function testAddTagWithItemtypes(array $input, array $expected_itemtypes): void
+    public function testAddAndUpdateTagWithItemtypes(array|string $input_itemtypes, array $expected_itemtypes): void
     {
-        $tag = $this->createTag($input);
+        // Test add
+        $tag = $this->createTag([
+            'name' => 'Test Tag',
+            'itemtypes' => $input_itemtypes,
+        ]);
         $this->assertSame($expected_itemtypes, $tag->getItemtypes());
-    }
+        $this->deleteItem(Tag::class, $tag->getID());
 
-    /**
-     * Test updating a tag with itemtypes and verify that itemtypes are correctly updated
-     *
-     * @param array $input Input data for update
-     * @param array|string $expected_itemtypes Expected itemtypes after update
-     */
-    #[DataProvider('providerTestAddAndUpdateTagItemtypes')]
-    public function testUpdateTagItemtypes(array $input, array $expected_itemtypes): void
-    {
+        // Test update
         $tag = $this->createTag([
             'name' => 'Test Tag',
             'itemtypes' => [Printer::class],
         ]);
 
-        $this->updateTag($tag, $input);
+        $this->updateTag($tag, [
+            'name' => 'Test Tag',
+            'itemtypes' => $input_itemtypes,
+        ]);
         $this->assertSame($expected_itemtypes, $tag->getItemtypes());
+        $this->deleteItem(Tag::class, $tag->getID());
+    }
+
+    public static function providerTestColorGeneration(): iterable
+    {
+        yield 'default color generation' => [
+            'input' => [
+                'name' => 'Test Tag',
+                'color' => '',
+                'bg_color' => '',
+            ],
+            'expected_bg_color' => '#6cb7e0',
+            'expected_color' => '#000000',
+        ];
+
+        yield 'invalid bg_color' => [
+            'input' => [
+                'name' => 'Test Tag',
+                'color' => '#000000',
+                'bg_color' => 'bg_color',
+            ],
+            'expected_bg_color' => '#6cb7e0',
+            'expected_color' => '#000000',
+        ];
+
+        yield 'invalid color' => [
+            'input' => [
+                'name' => 'Test Tag',
+                'color' => 'color',
+                'bg_color' => '#000000',
+            ],
+            'expected_bg_color' => '#000000',
+            'expected_color' => '#FFFFFF',
+        ];
+
+        yield 'valid colors' => [
+            'input' => [
+                'name' => 'Test Tag',
+                'color' => '#ffff00',
+                'bg_color' => '#00ffff',
+            ],
+            'expected_bg_color' => '#00ffff',
+            'expected_color' => '#ffff00',
+        ];
+    }
+
+    /**
+     * Test that background and text colors are correctly generated based on input
+     */
+    #[DataProvider('providerTestColorGeneration')]
+    public function testColorGeneration(array $input, string $expected_bg_color, string $expected_color): void
+    {
+        // Test color generation on add
+        $tag = $this->createTag($input, ['color', 'bg_color']);
+
+        $this->assertSame($expected_bg_color, $tag->getBackgroundColor());
+        $this->assertSame($expected_color, $tag->getTextColor());
+        $this->deleteItem(Tag::class, $tag->getID());
+
+        // Test color generation on update
+        $tag = $this->createTag([
+            'name' => 'Test Tag',
+            'color' => '#ff0000',
+            'bg_color' => '#00ff00',
+        ]);
+
+        $tag = $this->updateTag($tag, $input, ['color', 'bg_color']);
+        $this->assertSame($expected_bg_color, $tag->getBackgroundColor());
+        $this->assertSame($expected_color, $tag->getTextColor());
+        $this->deleteItem(Tag::class, $tag->getID());
+    }
+
+    /**
+     * Test that deleting all associations for an itemtype removes both standard and legacy plugin associations
+     */
+    public function testPluginUninstallRemovesTagAssociations(): void
+    {
+        $tag = $this->createTag([
+            'name'      => 'Test Plugin Uninstall Tag Associations',
+            'itemtypes' => [Computer::class, TesterComputer::class],
+        ]);
+
+        // Insert a legacy-style plugin class directly (bypasses taggable_types validation)
+        $tag_itemtype = new Tag_Itemtype();
+        $tag_itemtype->add([
+            'tags_id'  => $tag->getID(),
+            'itemtype' => 'PluginTesterComputer',
+        ]);
+
+        $this->assertCount(3, $tag_itemtype->find(['tags_id' => $tag->getID()]));
+
+        // Simulate plugin uninstall
+        Tag_Itemtype::deleteForItemtype('tester');
+
+        // Verify that both 'GlpiPlugin\\TesterComputer' and 'PluginTesterComputer' associations are removed, but not 'Computer'
+        $remaining           = $tag_itemtype->find(['tags_id' => $tag->getID()]);
+        $remaining_itemtypes = array_column($remaining, 'itemtype');
+
+        $this->assertCount(1, $remaining);
+        $this->assertContains(Computer::class, $remaining_itemtypes);
+        $this->assertNotContains(TesterComputer::class, $remaining_itemtypes);
+        $this->assertNotContains('PluginTesterComputer', $remaining_itemtypes);
     }
 
     /**
      * Test that purging a tag removes its itemtypes associations
-      *
-      * @param array $input Input data for tag creation
      */
     public function testPurgeTagRemovesItemtypes(): void
     {
@@ -250,12 +330,13 @@ class TagTest extends DbTestCase
                 Printer::class,
                 Computer::class,
                 TesterComputer::class,
+                'Glpi\\CustomAsset\\Test01Asset',
             ],
         ]);
 
         $tag_itemtype = new Tag_Itemtype();
         $tag_itemtypes = $tag_itemtype->find(['tags_id' => $tag->getID()]);
-        $this->assertCount(3, $tag_itemtypes);
+        $this->assertCount(4, $tag_itemtypes);
         $this->deleteItem(Tag::class, $tag->getID());
         $this->assertEmpty($tag_itemtype->find(['tags_id' => $tag->getID()]));
     }

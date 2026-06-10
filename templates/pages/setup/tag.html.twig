@@ -33,12 +33,49 @@
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set generate_bg_color = item.generateBackgroundColor(random()) %}
+{% set preview_id = 'tag_preview_' ~ random() %}
+
 {% block more_fields %}
     {{ fields.dropdownItemTypes('itemtypes', null, _n('Associated Itemtype', 'Associated Itemtypes', get_plural_number()), {
         types: config('taggable_types'),
         multiple: true,
         values: item.getItemtypes,
     }) }}
-    {{ fields.colorField('color', item.fields['color'], __('Color')) }}
-    {{ fields.colorField('bg_color', item.fields['bg_color'], __('Background Color')) }}
+    {{ fields.colorField('bg_color', item.isNewItem ? generate_bg_color : item.getBackgroundColor(), __('Background Color'), {
+        auto_value: true,
+    }) }}
+    {{ fields.colorField('color', item.isNewItem ? item.generateTextColor(generate_bg_color) : item.getTextColor(), __('Color'), {
+        auto_value: true,
+    }) }}
+
+    {{ fields.smallTitle(__('Preview')) }}
+
+    <div class="col-12 mt-2">
+        <div class="card-body d-flex align-items-center justify-content-center py-4">
+            <span id="{{ preview_id }}" class="badge fs-4 py-2 px-3"
+                    style="background-color: {{ item.isNewItem ? generate_bg_color : item.getBackgroundColor() }}; color: {{ item.isNewItem ? item.generateTextColor(generate_bg_color) : item.getTextColor() }};">
+                {{ item.isNewItem ? __('Tag preview') : item.fields['name'] }}
+            </span>
+        </div>
+    </div>
+
+    <script>
+        $(function () {
+            const $preview = $('#{{ preview_id|e('js') }}');
+            const $form    = $preview.closest('form');
+
+            function updatePreview() {
+                const name = $form.find('input[name="name"]').val();
+                const bg_color = $form.find('input[name="bg_color"]').val();
+                const color = $form.find('input[name="color"]').val();
+                if (name.length) { $preview.text(name); }
+                if (bg_color.length) { $preview.css('background-color', bg_color); }
+                if (color.length) { $preview.css('color', color); }
+            }
+
+            $form.find('input[name="name"]').on('input', updatePreview);
+            $form.find('input[name="bg_color"], input[name="color"]').on('change', updatePreview);
+        });
+    </script>
 {% endblock %}

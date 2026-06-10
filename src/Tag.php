@@ -57,6 +57,32 @@ class Tag extends CommonDropdown
     }
 
     /**
+     * Get the background color of the tag.
+     *
+     * @return string
+     */
+    public function getBackgroundColor(): string
+    {
+        if (Html::isValidHexColor($this->fields['bg_color'])) {
+            return $this->fields['bg_color'];
+        }
+        return $this->generateBackgroundColor($this->fields['name']);
+    }
+
+    /**
+     * Get the text color of the tag.
+     *
+     * @return string
+     */
+    public function getTextColor(): string
+    {
+        if (Html::isValidHexColor($this->fields['color'])) {
+            return $this->fields['color'];
+        }
+        return $this->generateTextColor($this->getBackgroundColor());
+    }
+
+    /**
      * Format and check itemtypes input for add and update
      *
      * @param array<string, mixed> $input Input data
@@ -87,16 +113,100 @@ class Tag extends CommonDropdown
     }
 
     /**
+     * Prepare colors input for add and update, generate them if not set or invalid
+     *
+     * @param array<string, mixed> $input Input data
+     * @return array<string, mixed> Formatted input
+     */
+    private function prepareColorsInput(array $input): array
+    {
+        if (empty($input['bg_color']) || !Html::isValidHexColor($input['bg_color'])) {
+            $input['bg_color'] = $this->generateBackgroundColor($input['name']);
+        }
+        if (empty($input['color']) || !Html::isValidHexColor($input['color'])) {
+            $input['color'] = $this->generateTextColor($input['bg_color']);
+        }
+        return $input;
+    }
+
+    /**
+     * Generate a background color based on the tag name.
+     *
+     * @param string $seed The seed to generate the color
+     * @return string The generated background color in hex format
+     */
+    public function generateBackgroundColor(string $seed): string
+    {
+        return Toolbox::getColorForString($seed);
+    }
+
+    /**
+     * Generate a text color based on the background color.
+     *
+     * @param string $bg_color The background color in hex format
+     * @return string The generated text color in hex format
+     */
+    public function generateTextColor(string $bg_color): string
+    {
+        return Html::getInvertedColor($bg_color, true, false);
+    }
+
+    /**
+     * Check that no tag with the same name exists in the same entity.
+     *
+     * @param array<string, mixed> $input
+     * @return bool
+     */
+    private function isUnique(array $input): bool
+    {
+        $tags = $this->find(
+            [
+                'name'        => $input['name'],
+                'entities_id' => $input['entities_id'],
+                ['id'          => ['<>', $this->getID()]],
+            ]
+        );
+
+        return count($tags) === 0 ;
+    }
+
+    /**
      * @param array<string, mixed> $input
      * @return false|array<string, mixed>
      */
     public function prepareInputForAdd($input)
     {
         $input = parent::prepareInputForAdd($input);
-        if ($input === false) {
+
+        if (!is_array($input)) {
             return false;
         }
-        return $this->prepareItemtypes($input);
+
+        if (empty($input['entities_id'])) {
+            $input['entities_id'] = Session::getActiveEntity();
+        }
+
+        if (empty($input['name'])) {
+            Session::addMessageAfterRedirect(
+                htmlescape(sprintf(__s('%1$s cannot be empty!'), static::getTypeName())),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        if (!$this->isUnique($input)) {
+            Session::addMessageAfterRedirect(
+                htmlescape(sprintf(__s('%1$s must be unique!'), static::getTypeName(1))),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        $input = $this->prepareItemtypes($input);
+        $input = $this->prepareColorsInput($input);
+        return $input;
     }
 
     /**
@@ -106,10 +216,30 @@ class Tag extends CommonDropdown
     public function prepareInputForUpdate($input)
     {
         $input = parent::prepareInputForUpdate($input);
-        if ($input === false) {
+
+        if (!is_array($input)) {
             return false;
         }
-        return $this->prepareItemtypes($input);
+
+        if (empty($input['entities_id'])) {
+            $input['entities_id'] = $this->fields['entities_id'];
+        }
+
+        if (empty($input['name'])) {
+            $input['name'] = $this->fields['name'];
+        }
+
+        if (!$this->isUnique($input)) {
+            Session::addMessageAfterRedirect(
+                htmlescape(sprintf(__s('%1$s must be unique!'), static::getTypeName(1))),
+                false,
+                ERROR
+            );
+            return false;
+        }
+        $input = $this->prepareItemtypes($input);
+        $input = $this->prepareColorsInput($input);
+        return $input;
     }
 
     /**
@@ -180,5 +310,28 @@ class Tag extends CommonDropdown
             'params' => $options,
         ]);
         return true;
+    }
+
+    public function rawSearchOptions(): array
+    {
+        $tab = parent::rawSearchOptions();
+
+        $tab[] = [
+            'id'                 => '11',
+            'table'              => $this->getTable(),
+            'field'              => 'color',
+            'name'               => __('Color'),
+            'datatype'           => 'color',
+        ];
+
+        $tab[] = [
+            'id'                 => '12',
+            'table'              => $this->getTable(),
+            'field'              => 'bg_color',
+            'name'               => __('Background color'),
+            'datatype'           => 'color',
+        ];
+
+        return $tab;
     }
 }

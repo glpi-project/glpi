@@ -62,14 +62,17 @@ class Tag_Itemtype extends CommonDBChild
      *
      * @return void
      */
-    public static function deleteForItemtype($itemtype)
+    public static function deleteForItemtype($itemtype): void
     {
         global $DB;
 
         $DB->delete(
             self::getTable(),
             [
-                'itemtype'  => ['LIKE', "%Plugin$itemtype%"],
+                'OR' => [
+                    ['itemtype'  => ['LIKE', "%Plugin$itemtype%"]],
+                    ['itemtype'  => ['LIKE', 'GlpiPlugin\\\\' . ucfirst($itemtype) . '\\\\%']],
+                ],
             ]
         );
     }

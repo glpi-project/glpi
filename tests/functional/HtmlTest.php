@@ -1453,4 +1453,30 @@ SCSS,
             unlink($filepath);
         }
     }
+
+    public function testIsValidHexColor(): void
+    {
+        $this->assertTrue(\Html::isValidHexColor('#fff'));
+        $this->assertTrue(\Html::isValidHexColor('#FFF'));
+        $this->assertTrue(\Html::isValidHexColor('#000'));
+        $this->assertTrue(\Html::isValidHexColor('#ffffff'));
+        $this->assertTrue(\Html::isValidHexColor('#FFFFFF'));
+        $this->assertTrue(\Html::isValidHexColor('#000000'));
+        $this->assertTrue(\Html::isValidHexColor('#123456'));
+        $this->assertTrue(\Html::isValidHexColor('#FfFfFF'));
+        $this->assertFalse(\Html::isValidHexColor('fff'));
+        $this->assertFalse(\Html::isValidHexColor('000'));
+        $this->assertFalse(\Html::isValidHexColor('ffffff'));
+        $this->assertFalse(\Html::isValidHexColor('FFFFFF'));
+        $this->assertFalse(\Html::isValidHexColor('000000'));
+        $this->assertFalse(\Html::isValidHexColor('#12345'));
+        $this->assertFalse(\Html::isValidHexColor('#1234567'));
+        $this->assertFalse(\Html::isValidHexColor('#ggg'));
+        $this->assertFalse(\Html::isValidHexColor('#gggggg'));
+        $this->assertFalse(\Html::isValidHexColor('#GGG'));
+        $this->assertFalse(\Html::isValidHexColor('#GGGGGG'));
+        $this->assertFalse(\Html::isValidHexColor('#FFFaaG'));
+        $this->assertFalse(\Html::isValidHexColor(''));
+        $this->assertFalse(\Html::isValidHexColor(null));
+    }
 }
