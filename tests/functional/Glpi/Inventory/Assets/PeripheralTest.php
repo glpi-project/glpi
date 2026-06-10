@@ -1322,4 +1322,57 @@ class PeripheralTest extends AbstractInventoryAsset
         ]);
         $this->assertCount(1, $peripherals);
     }
+
+    public function testInventoryIgnoredUsbDevice()
+    {
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <NETWORKS>
+      <DESCRIPTION>Bluetooth Device (Personal Area Network)</DESCRIPTION>
+      <MACADDR>3C:0A:F3:8B:09:B8</MACADDR>
+      <MANUFACTURER>Realtek Semiconductor Corp.</MANUFACTURER>
+      <MODEL>Realtek Bluetooth Adapter</MODEL>
+      <PNPDEVICEID>BTH\MS_BTHPAN\6&amp;1aac2cac&amp;0&amp;2</PNPDEVICEID>
+      <SPEED>3</SPEED>
+      <STATUS>Down</STATUS>
+      <TYPE>bluetooth</TYPE>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <USBDEVICES>
+      <CAPTION>Realtek Bluetooth Adapter</CAPTION>
+      <MANUFACTURER>Realtek Semiconductor Corp.</MANUFACTURER>
+      <NAME>Realtek Bluetooth Adapter</NAME>
+      <PRODUCTID>C829</PRODUCTID>
+      <SERIAL>00E04C000001</SERIAL>
+      <VENDORID>0BDA</VENDORID>
+    </USBDEVICES>
+    <HARDWARE>
+      <NAME>pc_usb_bt_peripheral</NAME>
+    </HARDWARE>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-usb-bt-peripheral</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'pc_usb_bt_peripheral']));
+        $computers_id = $computer->fields['id'];
+
+        // The component must have been imported using the USB data for NetworkCard
+        $item_net = new \Glpi\Asset\Asset_NetworkCardAsset();
+        $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->assertCount(1, $cards);
+
+        // Check that the USB device was NOT imported as a Peripheral
+        $item_peripheral = new \Glpi\Asset\Asset_PeripheralAsset();
+        $peripherals = $item_peripheral->find([
+            'itemtype_asset' => 'Computer',
+            'items_id_asset' => $computers_id,
+        ]);
+        $this->assertCount(0, $peripherals);
+    }
 }

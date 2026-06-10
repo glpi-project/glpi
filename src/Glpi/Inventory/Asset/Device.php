@@ -38,6 +38,7 @@ namespace Glpi\Inventory\Asset;
 use Glpi\Inventory\Conf;
 use Item_Devices;
 use PCIVendor;
+use USBVendor;
 use stdClass;
 
 use function Safe\strtotime;
@@ -241,6 +242,39 @@ abstract class Device extends InventoryAsset
             if (property_exists($controller, 'productid')) {
                 if ($pci_product = $pcivendor->getProductName($controller->vendorid, $controller->productid)) {
                     $val->designation = $pci_product;
+                    $updated = true;
+                }
+            }
+        }
+
+        return $updated;
+    }
+
+    /**
+     * Apply manufacturer and product name from a USB device to an asset value.
+     *
+     * Looks up vendor/product information in the USB database using separate 
+     * `vendorid`/`productid` fields on the usb object, then sets 
+     * `manufacturers_id` and `designation` on `$val`.
+     *
+     * @param stdClass $val Asset value object to update
+     * @param stdClass $usb USB device object containing identifiers
+     *
+     * @return bool True if any field was updated
+     */
+    protected function applyUsbInfoFromDevice(stdClass $val, stdClass $usb): bool
+    {
+        $usbvendor = new USBVendor();
+        $updated = false;
+
+        if (property_exists($usb, 'vendorid')) {
+            if ($usb_manufacturer = $usbvendor->getManufacturer($usb->vendorid)) {
+                $val->manufacturers_id = $usb_manufacturer;
+                $updated = true;
+            }
+            if (property_exists($usb, 'productid')) {
+                if ($usb_product = $usbvendor->getProductName($usb->vendorid, $usb->productid)) {
+                    $val->designation = $usb_product;
                     $updated = true;
                 }
             }
