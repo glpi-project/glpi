@@ -40,49 +40,42 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class VideoEmbedRendererTest extends GLPITestCase
 {
+    /**
+     * Exact iframe markup produced by {@see VideoEmbedRenderer::render()}.
+     * `%s` placeholders: already-escaped src, already-escaped title.
+     * Kept here as an independent copy so any change to the production
+     * template is caught by the assertSame comparisons below.
+     */
+    private const IFRAME = '<div class="video-embed-wrapper"><iframe src="%s" title="%s"'
+        . ' loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"'
+        . ' sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"'
+        . ' frameborder="0"></iframe></div>';
+
     public static function renderProvider(): iterable
     {
         yield 'YouTube nominal' => [
-            'provider'        => 'youtube',
-            'video_id'        => 'dQw4w9WgXcQ',
-            'start'           => null,
-            'expected_src'    => 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-            'expected_title'  => 'YouTube video player',
+            'youtube', 'dQw4w9WgXcQ', null,
+            'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ', 'YouTube video player',
         ];
         yield 'YouTube with start offset' => [
-            'provider'        => 'youtube',
-            'video_id'        => 'dQw4w9WgXcQ',
-            'start'           => 75,
-            'expected_src'    => 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?start=75',
-            'expected_title'  => 'YouTube video player',
+            'youtube', 'dQw4w9WgXcQ', 75,
+            'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?start=75', 'YouTube video player',
         ];
         yield 'Dailymotion nominal' => [
-            'provider'        => 'dailymotion',
-            'video_id'        => 'x7ufrcj',
-            'start'           => null,
-            'expected_src'    => 'https://www.dailymotion.com/embed/video/x7ufrcj',
-            'expected_title'  => 'Dailymotion video player',
+            'dailymotion', 'x7ufrcj', null,
+            'https://www.dailymotion.com/embed/video/x7ufrcj', 'Dailymotion video player',
         ];
         yield 'Vimeo nominal (dnt=1)' => [
-            'provider'        => 'vimeo',
-            'video_id'        => '76979871',
-            'start'           => null,
-            'expected_src'    => 'https://player.vimeo.com/video/76979871?dnt=1',
-            'expected_title'  => 'Vimeo video player',
+            'vimeo', '76979871', null,
+            'https://player.vimeo.com/video/76979871?dnt=1', 'Vimeo video player',
         ];
         yield 'Vimeo start offset uses & separator' => [
-            'provider'        => 'vimeo',
-            'video_id'        => '76979871',
-            'start'           => 42,
-            'expected_src'    => 'https://player.vimeo.com/video/76979871?dnt=1&start=42',
-            'expected_title'  => 'Vimeo video player',
+            'vimeo', '76979871', 42,
+            'https://player.vimeo.com/video/76979871?dnt=1&start=42', 'Vimeo video player',
         ];
         yield 'Underscore and dash in id are accepted' => [
-            'provider'        => 'youtube',
-            'video_id'        => 'A_B-c1234567',
-            'start'           => null,
-            'expected_src'    => 'https://www.youtube-nocookie.com/embed/A_B-c1234567',
-            'expected_title'  => 'YouTube video player',
+            'youtube', 'A_B-c1234567', null,
+            'https://www.youtube-nocookie.com/embed/A_B-c1234567', 'YouTube video player',
         ];
     }
 
@@ -94,17 +87,10 @@ class VideoEmbedRendererTest extends GLPITestCase
         string $expected_src,
         string $expected_title,
     ): void {
-        $html = VideoEmbedRenderer::render($provider, $video_id, $start);
-
-        $this->assertStringContainsString('<div class="video-embed-wrapper">', $html);
-        $this->assertStringContainsString('<iframe', $html);
-        $this->assertStringContainsString('src="' . htmlescape($expected_src) . '"', $html);
-        $this->assertStringContainsString('title="' . htmlescape($expected_title) . '"', $html);
-        $this->assertStringContainsString('loading="lazy"', $html);
-        $this->assertStringContainsString('allowfullscreen', $html);
-        $this->assertStringContainsString('referrerpolicy="strict-origin-when-cross-origin"', $html);
-        $this->assertStringContainsString('sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"', $html);
-        $this->assertStringContainsString('frameborder="0"', $html);
+        $this->assertSame(
+            sprintf(self::IFRAME, htmlescape($expected_src), htmlescape($expected_title)),
+            VideoEmbedRenderer::render($provider, $video_id, $start),
+        );
     }
 
     public static function rejectedRenderProvider(): iterable
@@ -127,230 +113,153 @@ class VideoEmbedRendererTest extends GLPITestCase
         $this->assertSame('', VideoEmbedRenderer::render($provider, $video_id, $start));
     }
 
-    public function testRenderAllLeavesUnrelatedHtmlUntouched(): void
+    public static function renderAllProvider(): iterable
     {
-        $html = '<p>Hello <strong>world</strong></p>';
-        $this->assertSame($html, VideoEmbedRenderer::renderAll($html));
+        yield 'unrelated html untouched' => [
+            '<p>Hello <strong>world</strong></p>',
+            '<p>Hello <strong>world</strong></p>',
+        ];
+        yield 'replaces every placeholder' => [
+            '<div data-video-provider="youtube" data-video-id="aaa11111111"></div>'
+            . '<p>Between</p>'
+            . '<div data-video-provider="vimeo" data-video-id="123456789"></div>',
+            sprintf(self::IFRAME, 'https://www.youtube-nocookie.com/embed/aaa11111111', 'YouTube video player')
+            . '<p>Between</p>'
+            . sprintf(self::IFRAME, 'https://player.vimeo.com/video/123456789?dnt=1', 'Vimeo video player'),
+        ];
+        yield 'unknown provider dropped' => [
+            '<p>Before</p><div data-video-provider="evil" data-video-id="xxxx"></div><p>After</p>',
+            '<p>Before</p><p>After</p>',
+        ];
+        yield 'unsafe id dropped' => [
+            '<div data-video-provider="youtube" data-video-id="../../etc/passwd"></div>',
+            '',
+        ];
+        yield 'missing data-video-id dropped' => [
+            '<div data-video-provider="youtube"></div>',
+            '',
+        ];
+        yield 'no placeholder passthrough' => [
+            '<p>No video here</p>',
+            '<p>No video here</p>',
+        ];
+        // Tampered placeholder (the editor's atom node never produces children):
+        // drop the whole element, including any smuggled child such as an iframe
+        // surviving GLPI_ALLOW_IFRAME_IN_RICH_TEXT=true.
+        yield 'non-empty body with smuggled iframe dropped' => [
+            '<p>Before</p>'
+            . '<div data-video-provider="youtube" data-video-id="abc12345678"><iframe src="https://evil.example/x"></iframe></div>'
+            . '<p>After</p>',
+            '<p>Before</p><p>After</p>',
+        ];
+        yield 'text body dropped' => [
+            '<div data-video-provider="youtube" data-video-id="abc12345678">Some text</div>',
+            '',
+        ];
+        // Nested <div> in the body breaks the atom-node contract. Drop the whole
+        // block, including the OUTER </div> — the lazy regex used previously
+        // stopped at the first </div> and leaked a stray closing tag.
+        yield 'nested div tampered dropped' => [
+            '<p>Before</p>'
+            . '<div data-video-provider="youtube" data-video-id="abc12345678"><div class="inner">x</div></div>'
+            . '<p>After</p>',
+            '<p>Before</p><p>After</p>',
+        ];
+        // Unbalanced placeholder (no matching </div>): drop the opening tag — it
+        // carries the data-video-* attributes — and keep scanning so any later
+        // valid placeholder is still processed.
+        yield 'unclosed placeholder keeps trailing html' => [
+            '<p>Before</p>'
+            . '<div data-video-provider="youtube" data-video-id="abc12345678">'
+            . '<p>Trailing paragraph</p>'
+            . '<div data-video-provider="vimeo" data-video-id="76979871"></div>',
+            '<p>Before</p><p>Trailing paragraph</p>'
+            . sprintf(self::IFRAME, 'https://player.vimeo.com/video/76979871?dnt=1', 'Vimeo video player'),
+        ];
     }
 
-    public function testRenderAllReplacesAllPlaceholders(): void
+    #[DataProvider('renderAllProvider')]
+    public function testRenderAll(string $input, string $expected): void
     {
-        $html = '<div data-video-provider="youtube" data-video-id="aaa11111111"></div>'
-              . '<p>Between</p>'
-              . '<div data-video-provider="vimeo" data-video-id="123456789"></div>';
-
-        $rendered = VideoEmbedRenderer::renderAll($html);
-
-        $this->assertStringContainsString('https://www.youtube-nocookie.com/embed/aaa11111111', $rendered);
-        $this->assertStringContainsString('https://player.vimeo.com/video/123456789?dnt=1', $rendered);
-        $this->assertStringContainsString('<p>Between</p>', $rendered);
-        $this->assertStringNotContainsString('data-video-provider', $rendered);
+        $this->assertSame($expected, VideoEmbedRenderer::renderAll($input));
     }
 
-    public function testRenderAllDropsUnknownProviderPlaceholders(): void
+    public static function renderAllAsTextProvider(): iterable
     {
-        $html = '<p>Before</p><div data-video-provider="evil" data-video-id="xxxx"></div><p>After</p>';
-        $rendered = VideoEmbedRenderer::renderAll($html);
-
-        $this->assertStringNotContainsString('data-video-provider', $rendered);
-        $this->assertStringNotContainsString('<iframe', $rendered);
-        $this->assertStringContainsString('<p>Before</p>', $rendered);
-        $this->assertStringContainsString('<p>After</p>', $rendered);
+        yield 'substitutes watch url' => [
+            '<p>See:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            '<p>See:</p>[YouTube: https://www.youtube.com/watch?v=dQw4w9WgXcQ]',
+        ];
+        yield 'handles all providers' => [
+            '<div data-video-provider="youtube" data-video-id="aaa11111111"></div>'
+            . '<div data-video-provider="dailymotion" data-video-id="x7ufrcj"></div>'
+            . '<div data-video-provider="vimeo" data-video-id="76979871"></div>',
+            '[YouTube: https://www.youtube.com/watch?v=aaa11111111]'
+            . '[Dailymotion: https://www.dailymotion.com/video/x7ufrcj]'
+            . '[Vimeo: https://vimeo.com/76979871]',
+        ];
+        yield 'unknown provider dropped' => [
+            '<p>Before</p><div data-video-provider="evil" data-video-id="x"></div><p>After</p>',
+            '<p>Before</p><p>After</p>',
+        ];
+        yield 'malformed id dropped' => [
+            '<div data-video-provider="youtube" data-video-id="../../etc/passwd"></div>',
+            '',
+        ];
+        yield 'no placeholder passthrough' => [
+            '<p>No video</p>',
+            '<p>No video</p>',
+        ];
     }
 
-    public function testRenderAllDropsPlaceholdersWithUnsafeIds(): void
+    #[DataProvider('renderAllAsTextProvider')]
+    public function testRenderAllAsText(string $input, string $expected): void
     {
-        $html = '<div data-video-provider="youtube" data-video-id="../../etc/passwd"></div>';
-        $rendered = VideoEmbedRenderer::renderAll($html);
-
-        $this->assertStringNotContainsString('<iframe', $rendered);
-        $this->assertStringNotContainsString('etc/passwd', $rendered);
+        $this->assertSame($expected, VideoEmbedRenderer::renderAllAsText($input));
     }
 
-    public function testRenderAllIgnoresMissingDataVideoIdAttribute(): void
+    public static function renderAllAsLinkProvider(): iterable
     {
-        $html = '<div data-video-provider="youtube"></div>';
-        $rendered = VideoEmbedRenderer::renderAll($html);
-
-        $this->assertSame('', $rendered);
-    }
-
-    public function testRenderAllShortCircuitsWhenNoPlaceholder(): void
-    {
-        $html = '<p>No video here</p>';
-        $this->assertSame($html, VideoEmbedRenderer::renderAll($html));
-    }
-
-    public function testRenderAllDropsPlaceholderWithNonEmptyBody(): void
-    {
-        // Tampered placeholder (the editor's atom node never produces
-        // children). Drop the whole element — including any smuggled child
-        // such as an iframe surviving GLPI_ALLOW_IFRAME_IN_RICH_TEXT=true.
-        $html = '<p>Before</p>'
-              . '<div data-video-provider="youtube" data-video-id="abc12345678"><iframe src="https://evil.example/x"></iframe></div>'
-              . '<p>After</p>';
-
-        $rendered = VideoEmbedRenderer::renderAll($html);
-
-        $this->assertStringNotContainsString('evil.example', $rendered);
-        $this->assertStringNotContainsString('data-video-provider', $rendered);
-        $this->assertStringNotContainsString('<iframe', $rendered);
-        $this->assertStringContainsString('<p>Before</p>', $rendered);
-        $this->assertStringContainsString('<p>After</p>', $rendered);
-    }
-
-    public function testRenderAllDropsPlaceholderWithTextBody(): void
-    {
-        $html = '<div data-video-provider="youtube" data-video-id="abc12345678">Some text</div>';
-        $this->assertSame('', VideoEmbedRenderer::renderAll($html));
-    }
-
-    public function testRenderAllDropsTamperedPlaceholderWithNestedDiv(): void
-    {
-        // Nested <div> in the body breaks the atom-node contract. Drop the
-        // whole block, including the OUTER </div> — the lazy regex used
-        // previously stopped at the first </div> and leaked a stray closing tag.
-        $html = '<p>Before</p>'
-              . '<div data-video-provider="youtube" data-video-id="abc12345678"><div class="inner">x</div></div>'
-              . '<p>After</p>';
-
-        $rendered = VideoEmbedRenderer::renderAll($html);
-
-        $this->assertSame('<p>Before</p><p>After</p>', $rendered);
-    }
-
-    public function testRenderAllDropsUnclosedPlaceholderAndKeepsTrailingHtml(): void
-    {
-        // Unbalanced placeholder (no matching </div>). Drop the opening tag —
-        // it carries the data-video-* attributes — and keep scanning so any
-        // later content (including valid placeholders) is still processed.
-        $html = '<p>Before</p>'
-              . '<div data-video-provider="youtube" data-video-id="abc12345678">'
-              . '<p>Trailing paragraph</p>'
-              . '<div data-video-provider="vimeo" data-video-id="76979871"></div>';
-
-        $rendered = VideoEmbedRenderer::renderAll($html);
-
-        $this->assertStringNotContainsString('data-video-provider', $rendered);
-        $this->assertStringContainsString('<p>Before</p>', $rendered);
-        $this->assertStringContainsString('<p>Trailing paragraph</p>', $rendered);
-        $this->assertStringContainsString('https://player.vimeo.com/video/76979871?dnt=1', $rendered);
-    }
-
-    public function testRenderAllAsTextSubstitutesWatchUrl(): void
-    {
-        $html = '<p>See:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>';
-        $rendered = VideoEmbedRenderer::renderAllAsText($html);
-
-        $this->assertStringContainsString('[YouTube: https://www.youtube.com/watch?v=dQw4w9WgXcQ]', $rendered);
-        $this->assertStringNotContainsString('<iframe', $rendered);
-        $this->assertStringNotContainsString('data-video-provider', $rendered);
-    }
-
-    public function testRenderAllAsTextHandlesAllProviders(): void
-    {
-        $html = '<div data-video-provider="youtube" data-video-id="aaa11111111"></div>'
-              . '<div data-video-provider="dailymotion" data-video-id="x7ufrcj"></div>'
-              . '<div data-video-provider="vimeo" data-video-id="76979871"></div>';
-
-        $rendered = VideoEmbedRenderer::renderAllAsText($html);
-
-        $this->assertStringContainsString('[YouTube: https://www.youtube.com/watch?v=aaa11111111]', $rendered);
-        $this->assertStringContainsString('[Dailymotion: https://www.dailymotion.com/video/x7ufrcj]', $rendered);
-        $this->assertStringContainsString('[Vimeo: https://vimeo.com/76979871]', $rendered);
-    }
-
-    public function testRenderAllAsTextDropsUnknownProvider(): void
-    {
-        $html = '<p>Before</p><div data-video-provider="evil" data-video-id="x"></div><p>After</p>';
-        $rendered = VideoEmbedRenderer::renderAllAsText($html);
-
-        $this->assertStringNotContainsString('evil', $rendered);
-        $this->assertStringContainsString('<p>Before</p>', $rendered);
-        $this->assertStringContainsString('<p>After</p>', $rendered);
-    }
-
-    public function testRenderAllAsTextDropsMalformedId(): void
-    {
-        $html = '<div data-video-provider="youtube" data-video-id="../../etc/passwd"></div>';
-        $this->assertSame('', VideoEmbedRenderer::renderAllAsText($html));
-    }
-
-    public function testRenderAllAsTextShortCircuitsWhenNoPlaceholder(): void
-    {
-        $html = '<p>No video</p>';
-        $this->assertSame($html, VideoEmbedRenderer::renderAllAsText($html));
-    }
-
-    public function testRenderAllAsLinkProducesAnchorToWatchUrl(): void
-    {
-        $html = '<p>See:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>';
-        $rendered = VideoEmbedRenderer::renderAllAsLink($html);
-
-        $this->assertStringContainsString(
-            '<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" rel="noopener noreferrer">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a>',
-            $rendered
-        );
-        $this->assertStringNotContainsString('<iframe', $rendered);
-        $this->assertStringNotContainsString('data-video-provider', $rendered);
-    }
-
-    public function testRenderAllAsLinkHandlesAllProviders(): void
-    {
-        $html = '<div data-video-provider="youtube" data-video-id="aaa11111111"></div>'
-              . '<div data-video-provider="dailymotion" data-video-id="x7ufrcj"></div>'
-              . '<div data-video-provider="vimeo" data-video-id="76979871"></div>';
-
-        $rendered = VideoEmbedRenderer::renderAllAsLink($html);
-
-        $this->assertStringContainsString('href="https://www.youtube.com/watch?v=aaa11111111"', $rendered);
-        $this->assertStringContainsString('href="https://www.dailymotion.com/video/x7ufrcj"', $rendered);
-        $this->assertStringContainsString('href="https://vimeo.com/76979871"', $rendered);
-    }
-
-    public function testRenderAllAsLinkAppliesStartOffsetToHref(): void
-    {
-        $html = '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ" data-video-start="90"></div>';
-        $rendered = VideoEmbedRenderer::renderAllAsLink($html);
-
-        // YouTube watch URLs use &t=NNs as the seek suffix.
-        $this->assertStringContainsString('href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&amp;t=90s"', $rendered);
-    }
-
-    public function testRenderAllAsLinkDropsUnknownProvider(): void
-    {
-        $html = '<p>Before</p><div data-video-provider="evil" data-video-id="x"></div><p>After</p>';
-        $rendered = VideoEmbedRenderer::renderAllAsLink($html);
-
-        $this->assertStringNotContainsString('evil', $rendered);
-        $this->assertStringNotContainsString('<a ', $rendered);
-        $this->assertStringContainsString('<p>Before</p>', $rendered);
-        $this->assertStringContainsString('<p>After</p>', $rendered);
-    }
-
-    public function testRenderAllAsLinkDropsMalformedId(): void
-    {
-        $html = '<div data-video-provider="youtube" data-video-id="../../etc/passwd"></div>';
-        $rendered = VideoEmbedRenderer::renderAllAsLink($html);
-
-        $this->assertSame('', $rendered);
-        $this->assertStringNotContainsString('etc/passwd', $rendered);
-    }
-
-    public function testRenderAllAsLinkDropsPlaceholderWithNonEmptyBody(): void
-    {
+        yield 'anchor to watch url' => [
+            '<p>See:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            '<p>See:</p><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" rel="noopener noreferrer">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a>',
+        ];
+        yield 'handles all providers' => [
+            '<div data-video-provider="youtube" data-video-id="aaa11111111"></div>'
+            . '<div data-video-provider="dailymotion" data-video-id="x7ufrcj"></div>'
+            . '<div data-video-provider="vimeo" data-video-id="76979871"></div>',
+            '<a href="https://www.youtube.com/watch?v=aaa11111111" rel="noopener noreferrer">https://www.youtube.com/watch?v=aaa11111111</a>'
+            . '<a href="https://www.dailymotion.com/video/x7ufrcj" rel="noopener noreferrer">https://www.dailymotion.com/video/x7ufrcj</a>'
+            . '<a href="https://vimeo.com/76979871" rel="noopener noreferrer">https://vimeo.com/76979871</a>',
+        ];
+        // YouTube watch URLs use &t=NNs as the seek suffix; the & is escaped on output.
+        yield 'start offset applied to href' => [
+            '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ" data-video-start="90"></div>',
+            '<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&amp;t=90s" rel="noopener noreferrer">https://www.youtube.com/watch?v=dQw4w9WgXcQ&amp;t=90s</a>',
+        ];
+        yield 'unknown provider dropped' => [
+            '<p>Before</p><div data-video-provider="evil" data-video-id="x"></div><p>After</p>',
+            '<p>Before</p><p>After</p>',
+        ];
+        yield 'malformed id dropped' => [
+            '<div data-video-provider="youtube" data-video-id="../../etc/passwd"></div>',
+            '',
+        ];
         // Tampered placeholder — drop the whole element so any smuggled child
         // (e.g. an iframe to evil.example) cannot survive through the <a>.
-        $html = '<div data-video-provider="youtube" data-video-id="abc12345678"><iframe src="https://evil.example/x"></iframe></div>';
-        $rendered = VideoEmbedRenderer::renderAllAsLink($html);
-
-        $this->assertStringNotContainsString('evil.example', $rendered);
-        $this->assertStringNotContainsString('<a ', $rendered);
+        yield 'non-empty body with smuggled iframe dropped' => [
+            '<div data-video-provider="youtube" data-video-id="abc12345678"><iframe src="https://evil.example/x"></iframe></div>',
+            '',
+        ];
+        yield 'no placeholder passthrough' => [
+            '<p>No video</p>',
+            '<p>No video</p>',
+        ];
     }
 
-    public function testRenderAllAsLinkShortCircuitsWhenNoPlaceholder(): void
+    #[DataProvider('renderAllAsLinkProvider')]
+    public function testRenderAllAsLink(string $input, string $expected): void
     {
-        $html = '<p>No video</p>';
-        $this->assertSame($html, VideoEmbedRenderer::renderAllAsLink($html));
+        $this->assertSame($expected, VideoEmbedRenderer::renderAllAsLink($input));
     }
 }
