@@ -89,6 +89,11 @@ class FrontEnd
         if (self::isViteDevServerRunning()) {
             return 'http://localhost:' . (int) GLPI_VITE_DEV_SERVER_PORT . '/js/src/vue/app.js';
         }
-        return 'build/vue/app.js';
+        $manifest = json_decode(
+            file_get_contents(GLPI_ROOT . '/public/build/vue/vite/manifest.json'),
+            true
+        );
+
+        return 'build/vue/' . $manifest['js/src/vue/app.js']['file'];
     }
 }
