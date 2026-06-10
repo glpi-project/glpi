@@ -50,7 +50,7 @@
                 <span class="ms-2 fw-bold text-truncate d-block">{{ category.title }}</span>
             </button>
             {% if can_create %}
-                {% set add_href = category.id > 0 ? path('glpi_knowbaseitem_form_central', {knowbaseitemcategories_id: category.id}) : path('glpi_knowbaseitem_form_central') %}
+                {% set add_href = category.id > 0 ? path('/front/knowbaseitem.form.php', {knowbaseitemcategories_id: category.id}) : path('/front/knowbaseitem.form.php') %}
                 {% set add_title = category.id > 0 ? __('Create an article in this category') : __('Create an uncategorized article') %}
                 <a
                     href="{{ add_href }}"
