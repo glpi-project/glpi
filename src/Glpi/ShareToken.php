@@ -55,7 +55,7 @@ class ShareToken extends CommonDBChild
 
     public static array $undisclosedFields = ['token'];
 
-    private ?int $was_active_before_purge = null;
+    private ?bool $was_active_before_purge = null;
 
     public static function getTypeName($nb = 0): string
     {
@@ -85,7 +85,7 @@ class ShareToken extends CommonDBChild
             return;
         }
 
-        if ((int) ($this->fields['is_active'] ?? 0) !== 1) {
+        if (!$this->isActive()) {
             return;
         }
 
@@ -108,19 +108,19 @@ class ShareToken extends CommonDBChild
             return;
         }
 
-        $new_active = (int) $this->fields['is_active'];
-        $other_active = $this->countOtherActiveTokens();
+        $new_active = $this->isActive();
+        $other_active = $this->countOtherActiveTokens() > 0;
 
-        if ($new_active === 1 && $other_active === 0) {
+        if ($new_active && !$other_active) {
             $this->logSharingTransition(enabled: true);
-        } elseif ($new_active === 0 && $other_active === 0) {
+        } elseif (!$new_active && !$other_active) {
             $this->logSharingTransition(enabled: false);
         }
     }
 
     public function pre_deleteItem()
     {
-        $this->was_active_before_purge = (int) ($this->fields['is_active'] ?? 0);
+        $this->was_active_before_purge = $this->isActive();
 
         return parent::pre_deleteItem();
     }
@@ -133,7 +133,7 @@ class ShareToken extends CommonDBChild
             return;
         }
 
-        if ($this->was_active_before_purge !== 1) {
+        if (!$this->was_active_before_purge) {
             return;
         }
 
