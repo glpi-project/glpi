@@ -40,8 +40,7 @@ use Item_DeviceSoundCard;
 
 class SoundCard extends Device
 {
-    protected $ignored = ['controllers' => null];
-    protected $extra_data = ['controllers' => null];
+    protected $extra_data = ['usb' => null];
 
     public function prepare(): array
     {
@@ -51,6 +50,9 @@ class SoundCard extends Device
             'manufacturer'  => 'manufacturers_id',
             'description'   => 'comment',
         ];
+        
+        $usb_vendor = new \USBVendor();
+
         foreach ($this->data as &$val) {
             foreach ($mapping as $origin => $dest) {
                 if (property_exists($val, $origin)) {
@@ -59,22 +61,27 @@ class SoundCard extends Device
             }
             $val->is_dynamic = 1;
 
-            if (isset($this->extra_data['controllers'])) {
-                $found_controller = false;
-                foreach ($this->extra_data['controllers'] as $controller) {
-                    $match_name = property_exists($controller, 'name') && $controller->name === $val->name;
+            if (isset($this->extra_data['usb'])) {
+                $found_usb = false;
+                foreach ($this->extra_data['usb'] as $usb) {
+                    $match_name = property_exists($usb, 'name') && property_exists($val, 'name') && $usb->name === $val->name;
 
                     if ($match_name) {
-                        $found_controller = $controller;
-                        if (property_exists($controller, 'name')) {
-                            $this->ignored['controllers'][$controller->name] = $controller->name;
-                        }
+                        $found_usb = $usb;
                         break;
                     }
                 }
 
-                if ($found_controller) {
-                    if ($this->applyPciInfoFromController($val, $found_controller)) {
+                if ($found_usb) {
+                    if (property_exists($found_usb, 'vendorid') && property_exists($found_usb, 'productid')) {
+                        $manufacturer = $usb_vendor->getManufacturer($found_usb->vendorid);
+                        if ($manufacturer !== false) {
+                            $val->manufacturers_id = $manufacturer;
+                        }
+                        $product_name = $usb_vendor->getProductName($found_usb->vendorid, $found_usb->productid);
+                        if ($product_name !== false) {
+                            $val->designation = $product_name;
+                        }
                         $val->devicesoundcardmodels_id = $val->designation;
                     }
                 }
