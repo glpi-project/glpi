@@ -6445,7 +6445,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'tag',
-                'rights' => ALLSTANDARDRIGHT,
+                'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'device',
@@ -7949,7 +7949,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'tag',
-                'rights' => self::RIGHT_NONE,
+                'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'entity',
