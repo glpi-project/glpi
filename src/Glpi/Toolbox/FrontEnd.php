@@ -94,6 +94,6 @@ class FrontEnd
             true
         );
 
-        return 'build/vue/' . $manifest['js/src/vue/app.js']['file'];
+        return 'build/vue/' . $manifest['app'];
     }
 }

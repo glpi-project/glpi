@@ -36,10 +36,29 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig(({ mode }) => {
     const plugins = [vue()];
 
+    plugins.push({
+        name: 'entry-manifest-plugin',
+        enforce: 'post',
+        generateBundle(options, bundle) {
+            const manifestFile = 'vite/manifest.json';
+            const entryPoints = Object.keys(bundle).filter((file) => bundle[file].isEntry);
+            const manifest = {};
+            entryPoints.forEach((entry) => {
+                const chunk = bundle[entry];
+                manifest[chunk.name] = chunk.fileName;
+            });
+            this.emitFile({
+                type: 'asset',
+                fileName: manifestFile,
+                name: manifestFile,
+                source: JSON.stringify(manifest, null, 2),
+            });
+        }
+    });
+
     return {
         base: './',
         build: {
-            manifest: 'vite/manifest.json',
             sourcemap: mode !== 'production',
             rolldownOptions: {
                 input: 'js/src/vue/app.js',
