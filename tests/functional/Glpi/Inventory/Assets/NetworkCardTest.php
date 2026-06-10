@@ -978,4 +978,57 @@ class NetworkCardTest extends AbstractInventoryAsset
         // but the connection is down
         $this->assertEquals('2', $network_port->fields['ifstatus']);
     }
+
+    public function testInventoryUsbBluetooth()
+    {
+        $device_net = new \DeviceNetworkCard();
+        $item_net   = new \Item_DeviceNetworkCard();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <NETWORKS>
+      <DESCRIPTION>Bluetooth Device (Personal Area Network)</DESCRIPTION>
+      <MACADDR>3C:0A:F3:8B:09:B8</MACADDR>
+      <MANUFACTURER>Realtek Semiconductor Corp.</MANUFACTURER>
+      <MODEL>Realtek Bluetooth Adapter</MODEL>
+      <PNPDEVICEID>BTH\MS_BTHPAN\6&amp;1aac2cac&amp;0&amp;2</PNPDEVICEID>
+      <SPEED>3</SPEED>
+      <STATUS>Down</STATUS>
+      <TYPE>bluetooth</TYPE>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <USBDEVICES>
+      <CAPTION>Realtek Bluetooth Adapter</CAPTION>
+      <MANUFACTURER>Realtek Semiconductor Corp.</MANUFACTURER>
+      <NAME>Realtek Bluetooth Adapter</NAME>
+      <PRODUCTID>C829</PRODUCTID>
+      <SERIAL>00E04C000001</SERIAL>
+      <VENDORID>0BDA</VENDORID>
+    </USBDEVICES>
+    <HARDWARE>
+      <NAME>pc_usb_bt</NAME>
+    </HARDWARE>
+    <VERSIONCLIENT>FusionInventory-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-usb-bt</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'pc_usb_bt']));
+        $computers_id = $computer->fields['id'];
+
+        // The component must have been imported using the USB data
+        $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->assertCount(1, $cards);
+
+        $card = current($cards);
+        $device_net->getFromDB($card['devicenetworkcards_id']);
+
+        $this->assertEquals('Realtek Bluetooth Adapter', $device_net->fields['designation']);
+        $this->assertEquals('3c:0a:f3:8b:09:b8', $card['mac']);
+    }
 }

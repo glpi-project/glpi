@@ -46,7 +46,7 @@ use USBVendor;
 
 class Peripheral extends InventoryAsset
 {
-    protected $extra_data = ['inputs' => null];
+    protected $extra_data = ['inputs' => null, 'ignored' => null];
 
     public function prepare(): array
     {
@@ -58,6 +58,11 @@ class Peripheral extends InventoryAsset
         $usbvendor = new USBVendor();
 
         foreach ($this->data as $k => &$val) {
+            if (property_exists($val, 'name') && isset($this->extra_data['ignored'][$val->name])) {
+                unset($this->data[$k]);
+                continue;
+            }
+
             if (property_exists($val, 'name')) {
                 foreach ($mapping as $origin => $dest) {
                     if (property_exists($val, $origin)) {

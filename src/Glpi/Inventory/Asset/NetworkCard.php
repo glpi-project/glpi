@@ -45,8 +45,8 @@ class NetworkCard extends Device
 
     private Conf $conf;
 
-    protected $extra_data = ['controllers' => null];
-    protected $ignored = ['controllers' => null];
+    protected $extra_data = ['controllers' => null, 'usbdevices' => null];
+    protected $ignored = ['controllers' => null, 'usbdevices' => null];
     /** @var string[] */
     private array $cards_macs = [];
 
@@ -108,8 +108,8 @@ class NetworkCard extends Device
                 }
             }
 
+            $found_controller = false;
             if (isset($this->extra_data['controllers'])) {
-                $found_controller = false;
                 // Search in controller if find NAME = CONTROLLER TYPE
                 foreach ($this->extra_data['controllers'] as $controller) {
                     if (
@@ -126,23 +126,50 @@ class NetworkCard extends Device
                         }
                     }
                 }
+            }
 
-                if ($found_controller) {
-                    if ($this->applyPciInfoFromController($val, $found_controller)) {
-                        $val->devicenetworkcardmodels_id = $val->designation;
+            $found_usb = false;
+            if (!$found_controller && isset($this->extra_data['usbdevices'])) {
+                foreach ($this->extra_data['usbdevices'] as $usb) {
+                    if (
+                        property_exists($usb, 'name') && property_exists($val, 'model') && $val->model === $usb->name
+                        && property_exists($usb, 'manufacturer') && property_exists($val, 'manufacturer') && $val->manufacturer === $usb->manufacturer
+                        && !isset($this->ignored['usbdevices'][$usb->name])
+                    ) {
+                        $found_usb = $usb;
+                        break;
                     }
-
-                    if (property_exists($val, 'mac')) {
-                        $val->mac = strtolower($val->mac);
-                        $val->mac_default = $val->mac;
-                    }
-
-                    if (property_exists($val, 'name')) {
-                        $this->ignored['controllers'][$val->name] = $val->name;
-                    }
-                } else {
-                    unset($this->data[$k]);
                 }
+            }
+
+            if ($found_controller) {
+                if ($this->applyPciInfoFromController($val, $found_controller)) {
+                    $val->devicenetworkcardmodels_id = $val->designation;
+                }
+
+                if (property_exists($val, 'mac')) {
+                    $val->mac = strtolower($val->mac);
+                    $val->mac_default = $val->mac;
+                }
+
+                if (property_exists($val, 'name')) {
+                    $this->ignored['controllers'][$val->name] = $val->name;
+                }
+            } elseif ($found_usb) {
+                if ($this->applyUsbInfoFromDevice($val, $found_usb)) {
+                    $val->devicenetworkcardmodels_id = $val->designation;
+                }
+
+                if (property_exists($val, 'mac')) {
+                    $val->mac = strtolower($val->mac);
+                    $val->mac_default = $val->mac;
+                }
+
+                if (property_exists($found_usb, 'name')) {
+                    $this->ignored['usbdevices'][$found_usb->name] = $found_usb->name;
+                }
+            } else {
+                unset($this->data[$k]);
             }
 
             //network ports
