@@ -1412,9 +1412,9 @@ class TransferTest extends DbTestCase
         } catch (\Throwable $e) {
             ob_end_clean();
             throw $e;
+        } finally {
+            unset($_SESSION['glpitransfer_list']);
         }
-
-        unset($_SESSION['glpitransfer_list']);
 
         $this->assertNotEmpty($output);
     }
