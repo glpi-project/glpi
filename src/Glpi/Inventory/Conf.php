@@ -1158,6 +1158,8 @@ class Conf extends CommonGLPI
         }
 
         $defaults = self::getDefaults();
+        $existing_config = Config::getConfigurationValues('inventory');
+        $defaults = array_merge($defaults, $existing_config);
 
         $ext_configs = array_filter($values, static fn($k, $v) => str_starts_with($v, '_'), ARRAY_FILTER_USE_BOTH);
 
@@ -1184,9 +1186,7 @@ class Conf extends CommonGLPI
             $values['stale_agents_status_condition'] = ['all'];
         }
 
-        $existing_config = Config::getConfigurationValues('inventory');
-
-        $enabled_inventory = (int) ($values['enabled_inventory'] ?? $existing_config['enabled_inventory'] ?? $defaults['enabled_inventory']) === 1;
+        $enabled_inventory = (int) ($values['enabled_inventory'] ?? $defaults['enabled_inventory']) === 1;
         if ($enabled_inventory) {
             $allowed_auth_required = [
                 self::CLIENT_CREDENTIALS,
@@ -1198,7 +1198,7 @@ class Conf extends CommonGLPI
                 Config::setConfigurationValues('inventory', ['enabled_inventory' => $values['enabled_inventory']]);
             }
 
-            $auth_required = $values['auth_required'] ?? $existing_config['auth_required'] ?? null;
+            $auth_required = $values['auth_required'] ?? $defaults['auth_required'] ?? null;
             if (!is_string($auth_required) || !in_array($auth_required, $allowed_auth_required, true)) {
                 Session::addMessageAfterRedirect(
                     __s('Inventory is enabled. Please select a valid authorization header method.'),
