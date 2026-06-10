@@ -307,18 +307,6 @@ export class KnowbaseItemPage extends GlpiPage
         return this.page.getByRole('textbox', { name: 'Category name' });
     }
 
-    public getEditCategoryButton(title: string): Locator
-    {
-        return this.getAsideCategory(title).getByRole('button', {
-            name: new RegExp(`Edit ${title}`, 'i'),
-        });
-    }
-
-    public getCategoryCommentInput(title: string): Locator
-    {
-        return this.getAsideCategory(title).getByRole('textbox', { name: 'Comment' });
-    }
-
     public async doToggleAsideCategory(title: string): Promise<void>
     {
         await this.getAsideCategoryToggle(title).click();

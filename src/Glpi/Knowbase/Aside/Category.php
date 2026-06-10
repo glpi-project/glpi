@@ -46,7 +46,6 @@ final class Category implements Node
         public readonly string $title,
         public readonly string $illustration,
         public readonly int $id,
-        public readonly string $comment = '',
     ) {}
 
     public function addArticle(Article $article): void

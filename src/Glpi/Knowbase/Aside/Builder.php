@@ -76,7 +76,6 @@ final class Builder
                 id: (int) $cat_data['id'],
                 title: $cat_data['name'] ?? '',
                 illustration: $cat_data['illustration'] ?? '',
-                comment: (string) ($cat_data['comment'] ?? ''),
             );
             $this->populateNode($category, (int) $cat_data['id']);
             $node->addCategory($category);

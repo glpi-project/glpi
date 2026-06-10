@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, glpi_toast_error */
+/* global _ */
 
 import { get } from "/js/modules/Ajax.js";
 
@@ -63,7 +63,6 @@ export class GlpiKnowbaseAsideController
         this.#initCategoryToggle();
         this.#initSearch();
         this.#initCreateCategory();
-        this.#initEditCategory();
     }
 
     #initCreateCategory()
@@ -224,155 +223,6 @@ export class GlpiKnowbaseAsideController
         error.classList.add('d-block');
         error.textContent = message;
         input.focus();
-    }
-
-    #initEditCategory()
-    {
-        this.#aside.addEventListener('click', (e) => {
-            const trigger = e.target.closest('[data-glpi-kb-aside-category-edit]');
-            if (!trigger) {
-                return;
-            }
-            e.preventDefault();
-            const node = trigger.closest('[data-glpi-kb-aside-category]');
-            if (node) {
-                this.#openEditPanel(node, trigger.dataset.glpiKbCategoryId);
-            }
-        });
-    }
-
-    /**
-     * Fetch and inject the inline edit panel for a category.
-     *
-     * @param {HTMLElement} node        The category tree node.
-     * @param {string}      category_id
-     */
-    async #openEditPanel(node, category_id)
-    {
-        // Only one edit panel open at a time.
-        this.#aside.querySelector('[data-glpi-kb-category-edit-form]')?.remove();
-
-        let response;
-        try {
-            response = await fetch(
-                `${CFG_GLPI.root_doc}/Knowbase/Aside/Category/${category_id}/EditForm`,
-                { headers: { 'X-Requested-With': 'XMLHttpRequest' } },
-            );
-        } catch {
-            glpi_toast_error(__('An unexpected error occurred.'));
-            return;
-        }
-        if (!response.ok) {
-            glpi_toast_error(
-                response.status === 403
-                    ? __('You are not allowed to edit this category.')
-                    : __('An unexpected error occurred.'),
-            );
-            return;
-        }
-
-        const header = node.querySelector('[data-glpi-kb-aside-category-header]');
-        header.insertAdjacentHTML('afterend', await response.text());
-
-        const panel = node.querySelector('[data-glpi-kb-category-edit-form]');
-        if (!panel) {
-            return;
-        }
-
-        // insertAdjacentHTML does not execute <script> tags; re-create them so
-        // the bundled illustration picker initialises.
-        for (const old_script of panel.querySelectorAll('script')) {
-            const script = document.createElement('script');
-            for (const attr of old_script.attributes) {
-                script.setAttribute(attr.name, attr.value);
-            }
-            script.textContent = old_script.textContent;
-            old_script.replaceWith(script);
-        }
-
-        panel.scrollIntoView({ block: 'nearest' });
-
-        panel.querySelector('[data-glpi-kb-category-edit-cancel]')
-            ?.addEventListener('click', () => panel.remove());
-
-        panel.querySelector('[data-glpi-kb-category-edit-save]')
-            ?.addEventListener('click', () => this.#saveEditPanel(panel, category_id));
-    }
-
-    /**
-     * @param {HTMLElement} panel
-     * @param {string}      category_id
-     */
-    async #saveEditPanel(panel, category_id)
-    {
-        const comment = panel.querySelector('[data-glpi-kb-category-edit-comment]')?.value ?? '';
-        const illustration = panel.querySelector('[data-glpi-icon-picker-value]')?.value ?? '';
-
-        this.#clearEditPanelError(panel);
-
-        const body = new FormData();
-        body.append('comment', comment);
-        body.append('illustration', illustration);
-
-        let response;
-        try {
-            response = await fetch(`${CFG_GLPI.root_doc}/Knowbase/Aside/Category/${category_id}`, {
-                method: 'POST',
-                headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                body,
-            });
-        } catch {
-            this.#showEditPanelError(panel, __('An unexpected error occurred.'));
-            return;
-        }
-
-        if (response.ok) {
-            const data = await response.json();
-            // Refresh the node icon in place so the change shows without a reload.
-            const node = panel.closest('[data-glpi-kb-aside-category]');
-            const illustration = node?.querySelector('[data-glpi-kb-aside-category-illustration]');
-            if (illustration && data.illustration_html) {
-                illustration.innerHTML = data.illustration_html;
-            }
-            panel.remove();
-            return;
-        }
-
-        if (response.status === 422) {
-            const data = await response.json();
-            this.#showEditPanelError(
-                panel,
-                data.errors?._global ?? data.errors?.comment ?? __('An unexpected error occurred.'),
-            );
-            return;
-        }
-
-        this.#showEditPanelError(panel, __('An unexpected error occurred.'));
-    }
-
-    /**
-     * @param {HTMLElement} panel
-     * @param {string}      message
-     */
-    #showEditPanelError(panel, message)
-    {
-        const error = panel.querySelector('[data-glpi-kb-category-edit-error]');
-        if (error) {
-            error.textContent = message;
-            error.classList.remove('d-none');
-        }
-    }
-
-    /**
-     * @param {HTMLElement} panel
-     */
-    #clearEditPanelError(panel)
-    {
-        const error = panel.querySelector('[data-glpi-kb-category-edit-error]');
-        if (error) {
-            error.textContent = '';
-            error.classList.add('d-none');
-        }
     }
 
     #initCategoryToggle()
