@@ -266,7 +266,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid-active',
             'client_secret' => 'secret',
-            'tenant_id'     => 'tid-active'
+            'tenant_id'     => 'tid-active',
         ], ['client_secret']);
 
         $this->createItem(OAuthApplication::class, [
@@ -275,7 +275,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid-inactive',
             'client_secret' => 'secret',
-            'tenant_id'     => 'tenant'
+            'tenant_id'     => 'tenant',
         ], ['client_secret']);
 
         $applications = OAuthApplication::getActiveApplications();
@@ -304,7 +304,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => 'secret',
-            'tenant_id'     => 'tenant'
+            'tenant_id'     => 'tenant',
         ], ['client_secret']);
 
         $protocol_key  = 'oauth_imap_' . $app->getID();
