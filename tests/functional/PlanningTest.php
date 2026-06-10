@@ -481,12 +481,12 @@ class PlanningTest extends DbTestCase
         $_SESSION['glpi_plannings']['plannings']["user_$users_id"]['color'] = $actor_color;
 
         $category = $this->createItem('PlanningEventCategory', [
-            'name'  => 'categorie with color',
+            'name'  => 'category with color',
             'color' => $category_color,
         ]);
 
         $this->createItem('PlanningExternalEvent', [
-            'name'                      => 'event with categorie',
+            'name'                      => 'event with category',
             'users_id'                  => $users_id,
             'planningeventcategories_id' => $category->getID(),
             'plan' => [
@@ -496,7 +496,7 @@ class PlanningTest extends DbTestCase
         ], ['plan']); //'plan'  tells `createItem` not to check this field among the fields returned by the db (virtual field)
 
         $this->createItem('PlanningExternalEvent', [
-            'name'     => 'event without categorie',
+            'name'     => 'event without category',
             'users_id' => $users_id,
             'plan' => [
                 'begin' => '2027-01-01 10:00:00',
@@ -512,8 +512,8 @@ class PlanningTest extends DbTestCase
 
         $this->assertCount(2, $events);
 
-        $with_cat    = current(array_filter($events, fn($e) => $e['title'] === 'event with categorie'));
-        $without_cat = current(array_filter($events, fn($e) => $e['title'] === 'event without categorie'));
+        $with_cat    = current(array_filter($events, fn($e) => $e['title'] === 'event with category'));
+        $without_cat = current(array_filter($events, fn($e) => $e['title'] === 'event without category'));
 
         $this->assertEquals($category_color, $with_cat['color'], 'category color override actor_color');
         $this->assertEquals($actor_color, $without_cat['color'], 'actor_color if no category');
