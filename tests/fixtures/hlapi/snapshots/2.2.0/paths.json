@@ -10445,7 +10445,7 @@
             ]
         }
     },
-    "/Assets/Custom/Issue21162": {
+    "/Assets/Custom/{itemtype}": {
         "get": {
             "responses": {
                 "200": {
@@ -10454,7 +10454,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21162"
+                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}"
                                 }
                             }
                         },
@@ -10462,7 +10462,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21162"
+                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}"
                                 }
                             }
                         },
@@ -10470,7 +10470,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21162"
+                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}"
                                 }
                             }
                         }
@@ -10478,6 +10478,17 @@
                 }
             },
             "parameters": [
+                {
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
+                },
                 {
                     "$ref": "#/components/parameters/filter"
                 },
@@ -10522,12 +10533,24 @@
                     }
                 }
             },
-            "parameters": [],
+            "parameters": [
+                {
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
+                }
+            ],
             "requestBody": {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21162"
+                            "$ref": "#/components/schemas/CustomAsset_{itemtype}"
                         }
                     }
                 }
@@ -10541,7 +10564,150 @@
             ]
         }
     },
-    "/Assets/Custom/Issue21424": {
+    "/Assets/Custom/{itemtype}/{id}": {
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomAsset_{itemtype}"
+                            }
+                        },
+                        "text/csv": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomAsset_{itemtype}"
+                            }
+                        },
+                        "application/xml": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomAsset_{itemtype}"
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
+                },
+                {
+                    "name": "id",
+                    "description": "The ID of the Asset",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "patch": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomAsset_{itemtype}"
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
+                },
+                {
+                    "name": "id",
+                    "description": "The ID of the Asset",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/CustomAsset_{itemtype}"
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
+                },
+                {
+                    "name": "id",
+                    "description": "The ID of the Asset",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Custom/{itemtype}Model": {
         "get": {
             "responses": {
                 "200": {
@@ -10550,7 +10716,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21424"
+                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
                                 }
                             }
                         },
@@ -10558,7 +10724,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21424"
+                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
                                 }
                             }
                         },
@@ -10566,7 +10732,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21424"
+                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
                                 }
                             }
                         }
@@ -10574,6 +10740,17 @@
                 }
             },
             "parameters": [
+                {
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
+                },
                 {
                     "$ref": "#/components/parameters/filter"
                 },
@@ -10618,12 +10795,24 @@
                     }
                 }
             },
-            "parameters": [],
+            "parameters": [
+                {
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
+                }
+            ],
             "requestBody": {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21424"
+                            "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
                         }
                     }
                 }
@@ -10637,7 +10826,150 @@
             ]
         }
     },
-    "/Assets/Custom/Car": {
+    "/Assets/Custom/{itemtype}Model/{id}": {
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
+                            }
+                        },
+                        "text/csv": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
+                            }
+                        },
+                        "application/xml": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
+                },
+                {
+                    "name": "id",
+                    "description": "The ID of the Asset",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "patch": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
+                },
+                {
+                    "name": "id",
+                    "description": "The ID of the Asset",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/CustomAsset_{itemtype}Model"
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
+                },
+                {
+                    "name": "id",
+                    "description": "The ID of the Asset",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "format": "int32",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Custom/{itemtype}Type": {
         "get": {
             "responses": {
                 "200": {
@@ -10646,7 +10978,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Car"
+                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
                                 }
                             }
                         },
@@ -10654,7 +10986,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Car"
+                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
                                 }
                             }
                         },
@@ -10662,7 +10994,7 @@
                             "schema": {
                                 "type": "array",
                                 "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Car"
+                                    "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
                                 }
                             }
                         }
@@ -10670,6 +11002,17 @@
                 }
             },
             "parameters": [
+                {
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
+                },
                 {
                     "$ref": "#/components/parameters/filter"
                 },
@@ -10714,108 +11057,24 @@
                     }
                 }
             },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Car"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21724": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21724"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21724"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21724"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
             "parameters": [
                 {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
                 }
             ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
             "requestBody": {
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21724"
+                            "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
                         }
                     }
                 }
@@ -10829,33 +11088,24 @@
             ]
         }
     },
-    "/Assets/Custom/AllCapacities": {
+    "/Assets/Custom/{itemtype}Type/{id}": {
         "get": {
             "responses": {
                 "200": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_AllCapacities"
-                                }
+                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
                             }
                         },
                         "text/csv": {
                             "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_AllCapacities"
-                                }
+                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
                             }
                         },
                         "application/xml": {
                             "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_AllCapacities"
-                                }
+                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
                             }
                         }
                     }
@@ -10863,92 +11113,16 @@
             },
             "parameters": [
                 {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
                     }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_AllCapacities"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21162/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21162"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21162"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21162"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
+                },
                 {
                     "name": "id",
                     "description": "The ID of the Asset",
@@ -10975,13 +11149,24 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21162"
+                                "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
                             }
                         }
                     }
                 }
             },
             "parameters": [
+                {
+                    "name": "itemtype",
+                    "description": "Asset type",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
+                    }
+                },
                 {
                     "name": "id",
                     "description": "The ID of the Asset",
@@ -10998,7 +11183,7 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21162"
+                            "$ref": "#/components/schemas/CustomAsset_{itemtype}Type"
                         }
                     }
                 }
@@ -11015,2505 +11200,16 @@
             "responses": [],
             "parameters": [
                 {
-                    "name": "id",
-                    "description": "The ID of the Asset",
+                    "name": "itemtype",
+                    "description": "Asset type",
                     "in": "path",
                     "required": true,
                     "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
+                        "type": "string",
+                        "format": "string",
+                        "pattern": ""
                     }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21424/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21424"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21424"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21424"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21424"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21424"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Car/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Car"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Car"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Car"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Car"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Car"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21724/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21724"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21724"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21724"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21724"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21724"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/AllCapacities/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_AllCapacities"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_AllCapacities"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_AllCapacities"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_AllCapacities"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_AllCapacities"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21162Model": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21162Model"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21162Model"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21162Model"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/filter"
                 },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21162Model"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21424Model": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21424Model"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21424Model"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21424Model"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21424Model"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/CarModel": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_CarModel"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_CarModel"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_CarModel"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_CarModel"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21724Model": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21724Model"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21724Model"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21724Model"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21724Model"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/AllCapacitiesModel": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_AllCapacitiesModel"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_AllCapacitiesModel"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_AllCapacitiesModel"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_AllCapacitiesModel"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21162Model/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21162Model"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21162Model"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21162Model"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21162Model"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21162Model"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21424Model/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21424Model"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21424Model"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21424Model"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21424Model"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21424Model"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/CarModel/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_CarModel"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_CarModel"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_CarModel"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_CarModel"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_CarModel"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21724Model/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21724Model"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21724Model"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21724Model"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21724Model"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21724Model"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/AllCapacitiesModel/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_AllCapacitiesModel"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_AllCapacitiesModel"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_AllCapacitiesModel"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_AllCapacitiesModel"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_AllCapacitiesModel"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21162Type": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21162Type"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21162Type"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21162Type"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21162Type"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21424Type": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21424Type"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21424Type"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21424Type"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21424Type"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/CarType": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_CarType"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_CarType"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_CarType"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_CarType"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21724Type": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21724Type"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21724Type"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_Issue21724Type"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21724Type"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/AllCapacitiesType": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_AllCapacitiesType"
-                                }
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_AllCapacitiesType"
-                                }
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/components/schemas/CustomAsset_AllCapacitiesType"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "$ref": "#/components/parameters/filter"
-                },
-                {
-                    "$ref": "#/components/parameters/start"
-                },
-                {
-                    "$ref": "#/components/parameters/limit"
-                },
-                {
-                    "$ref": "#/components/parameters/sort"
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_AllCapacitiesType"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21162Type/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21162Type"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21162Type"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21162Type"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21162Type"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21162Type"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21424Type/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21424Type"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21424Type"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21424Type"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21424Type"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21424Type"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/CarType/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_CarType"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_CarType"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_CarType"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_CarType"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_CarType"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/Issue21724Type/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21724Type"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21724Type"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21724Type"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_Issue21724Type"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_Issue21724Type"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
-    "/Assets/Custom/AllCapacitiesType/{id}": {
-        "get": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_AllCapacitiesType"
-                            }
-                        },
-                        "text/csv": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_AllCapacitiesType"
-                            }
-                        },
-                        "application/xml": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_AllCapacitiesType"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CustomAsset_AllCapacitiesType"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/CustomAsset_AllCapacitiesType"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [
                 {
                     "name": "id",
                     "description": "The ID of the Asset",
