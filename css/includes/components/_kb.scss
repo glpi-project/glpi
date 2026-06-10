@@ -326,7 +326,7 @@
 
         // Suggestion placeholder when typing slash command
         .suggestion.is-empty::after {
-            content: var(--suggestion-placeholder, "Keep typing to filter...");
+            content: var(--suggestion-placeholder);
             color: var(--tblr-muted);
             pointer-events: none;
             margin-left: 0.25rem;
