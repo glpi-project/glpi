@@ -38,8 +38,8 @@ namespace Glpi\Inventory\Asset;
 use Glpi\Inventory\Conf;
 use Item_Devices;
 use PCIVendor;
-use USBVendor;
 use stdClass;
+use USBVendor;
 
 use function Safe\strtotime;
 
@@ -253,8 +253,8 @@ abstract class Device extends InventoryAsset
     /**
      * Apply manufacturer and product name from a USB device to an asset value.
      *
-     * Looks up vendor/product information in the USB database using separate 
-     * `vendorid`/`productid` fields on the usb object, then sets 
+     * Looks up vendor/product information in the USB database using separate
+     * `vendorid`/`productid` fields on the usb object, then sets
      * `manufacturers_id` and `designation` on `$val`.
      *
      * @param stdClass $val Asset value object to update

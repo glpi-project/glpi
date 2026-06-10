@@ -52,6 +52,7 @@ use Glpi\Inventory\Asset\Firmware;
 use Glpi\Inventory\Asset\InventoryAsset;
 use Glpi\Inventory\Asset\InventoryNetworkPort;
 use Glpi\Inventory\Asset\NetworkCard;
+use Glpi\Inventory\Asset\Peripheral;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use NetworkEquipment;
