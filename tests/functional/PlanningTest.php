@@ -517,5 +517,30 @@ class PlanningTest extends DbTestCase
 
         $this->assertEquals($category_color, $with_cat['color'], 'category color override actor_color');
         $this->assertEquals($actor_color, $without_cat['color'], 'actor_color if no category');
+
+        // event-specific color ext override actor color
+        $event_specific_color = '#AABBCC';
+        $plannings_backup = $_SESSION['glpi_plannings']['plannings'];
+        $_SESSION['glpi_plannings']['plannings'] = [
+            "user_$users_id" => ['color' => $actor_color, 'display' => true, 'type' => 'user'],
+            'external_test'  => [
+                'color'   => $event_specific_color,
+                'display' => true,
+                'type'    => 'external',
+                'name'    => 'Test external',
+                'url'     => 'file://' . realpath(GLPI_ROOT . '/tests/fixtures/ical/sample_2.ics'),
+            ],
+        ];
+
+        $ext_events = \Planning::constructEventsArray([
+            'start' => '2019-11-01 00:00:00',
+            'end'   => '2019-11-30 23:59:59',
+        ]);
+
+        $_SESSION['glpi_plannings']['plannings'] = $plannings_backup;
+
+        $ext_event = current(array_filter($ext_events, fn($e) => $e['title'] === 'Another event'));
+        $this->assertNotFalse($ext_event, 'External event "Another event" should be found in sample_2.ics');
+        $this->assertEquals($event_specific_color, $ext_event['color'], 'event-specific color overrides actor color');
     }
 }
