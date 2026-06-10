@@ -2907,6 +2907,7 @@ TWIG, $twig_params);
                 'has_other_favorites'  => $has_other_favorites,
                 'can_create'           => self::canCreate(),
                 'can_create_category'  => KnowbaseItemCategory::canCreate(),
+                'can_update_category'  => KnowbaseItemCategory::canUpdate(),
             ]
         );
     }

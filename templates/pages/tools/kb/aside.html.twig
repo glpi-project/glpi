@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro render_category(category, can_create = false, can_create_category = false) %}
+{% macro render_category(category, can_create = false, can_create_category = false, can_update_category = false) %}
     {% import _self as macros %}
     <li class="node" data-glpi-kb-aside-category role="group" aria-label="{{ category.title }}">
         <div class="d-flex align-items-center mb-2" data-glpi-kb-aside-category-header>
@@ -75,9 +75,21 @@
                     <i class="ti ti-folder-plus" aria-hidden="true"></i>
                 </button>
             {% endif %}
+            {% if can_update_category and category.id > 0 %}
+                <button
+                    type="button"
+                    class="d-flex align-items-center ms-1 p-1 text-secondary border-0 bg-transparent"
+                    data-glpi-kb-aside-category-edit
+                    data-glpi-kb-category-id="{{ category.id }}"
+                    aria-label="{{ __('Edit %s')|format(category.title) }}"
+                    title="{{ __('Edit this category') }}"
+                >
+                    <i class="ti ti-pencil" aria-hidden="true"></i>
+                </button>
+            {% endif %}
         </div>
         <ul>
-            {{ macros.render_node(category, can_create, can_create_category) }}
+            {{ macros.render_node(category, can_create, can_create_category, can_update_category) }}
         </ul>
     </li>
 {% endmacro %}
@@ -103,13 +115,13 @@
     </li>
 {% endmacro %}
 
-{% macro render_node(node, can_create = false, can_create_category = false) %}
+{% macro render_node(node, can_create = false, can_create_category = false, can_update_category = false) %}
     {% import _self as macros %}
     {% for article in node.articles %}
         {{ macros.render_article(article) }}
     {% endfor %}
     {% for category in node.categories %}
-        {{ macros.render_category(category, can_create, can_create_category) }}
+        {{ macros.render_category(category, can_create, can_create_category, can_update_category) }}
     {% endfor %}
 {% endmacro %}
 
@@ -175,12 +187,12 @@
                 illustration: "",
                 articles: tree.articles,
                 categories: [],
-            }, can_create, false) }}
+            }, can_create, false, false) }}
         {% endif %}
 
         {# Render each categories #}
         {% for category in tree.categories %}
-            {{ macros.render_category(category, can_create, can_create_category) }}
+            {{ macros.render_category(category, can_create, can_create_category, can_update_category) }}
         {% endfor %}
     </ul>
     {% if can_create_category %}

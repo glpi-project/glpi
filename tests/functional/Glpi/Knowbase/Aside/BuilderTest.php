@@ -231,6 +231,32 @@ final class BuilderTest extends DbTestCase
         $this->assertSame($cat->getID(), $found->id);
     }
 
+    public function testBuildTreeIncludesCategoryComment(): void
+    {
+        $this->login();
+
+        $this->createItem(KnowbaseItemCategory::class, [
+            'name'                      => 'Commented',
+            'knowbaseitemcategories_id' => 0,
+            'entities_id'               => $this->getTestRootEntity(only_id: true),
+            'is_recursive'              => 1,
+            'comment'                   => 'Some helpful description',
+        ]);
+
+        $tree = (new Builder())->buildTree();
+
+        $found = null;
+        foreach ($tree->getCategories() as $node) {
+            if ($node->title === 'Commented') {
+                $found = $node;
+                break;
+            }
+        }
+
+        $this->assertNotNull($found);
+        $this->assertSame('Some helpful description', $found->comment);
+    }
+
     private function makeCategory(string $name, int $parent_id = 0): KnowbaseItemCategory
     {
         return $this->createItem(KnowbaseItemCategory::class, [

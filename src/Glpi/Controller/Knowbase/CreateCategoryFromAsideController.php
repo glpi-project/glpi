@@ -39,11 +39,13 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Knowbase\Aside\Category as AsideCategory;
+use Glpi\UI\IllustrationManager;
 use KnowbaseItem;
 use KnowbaseItemCategory;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class CreateCategoryFromAsideController extends AbstractController
@@ -122,8 +124,76 @@ final class CreateCategoryFromAsideController extends AbstractController
                 'category'            => $node,
                 'can_create'          => KnowbaseItem::canCreate(),
                 'can_create_category' => KnowbaseItemCategory::canCreate(),
+                'can_update_category' => KnowbaseItemCategory::canUpdate(),
             ],
         );
+    }
+
+    #[Route(
+        "/Knowbase/Aside/Category/{id}/EditForm",
+        name: "knowbase_aside_category_edit_form",
+        requirements: ['id' => '\d+'],
+        methods: 'GET',
+    )]
+    public function editForm(int $id): Response
+    {
+        $category = new KnowbaseItemCategory();
+        if (!$category->getFromDB($id)) {
+            throw new BadRequestHttpException();
+        }
+        if (!$category->can($id, UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return $this->render('pages/tools/kb/category_edit_form.html.twig', [
+            'id'           => $id,
+            'illustration' => ((string) ($category->fields['illustration'] ?? '')) ?: 'kb-faq',
+            'comment'      => (string) ($category->fields['comment'] ?? ''),
+        ]);
+    }
+
+    #[Route(
+        "/Knowbase/Aside/Category/{id}",
+        name: "knowbase_aside_category_update",
+        requirements: ['id' => '\d+'],
+        methods: 'POST',
+    )]
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $category = new KnowbaseItemCategory();
+        if (!$category->getFromDB($id)) {
+            throw new BadRequestHttpException();
+        }
+        if (!$category->can($id, UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $input = ['id' => $id];
+        if ($request->request->has('illustration')) {
+            $input['illustration'] = $request->request->getString('illustration');
+        }
+        if ($request->request->has('comment')) {
+            $input['comment'] = $request->request->getString('comment');
+        }
+
+        if ($category->update($input) === false) {
+            return new JsonResponse([
+                'errors' => $this->collectSessionErrors(),
+            ], 422);
+        }
+
+        $illustration = (string) $category->fields['illustration'];
+
+        return new JsonResponse([
+            'id'                => $id,
+            'illustration'      => $illustration,
+            'comment'           => (string) $category->fields['comment'],
+            // Pre-rendered markup so the tree node icon refreshes without a reload.
+            'illustration_html' => (new IllustrationManager())->renderIcon(
+                $illustration !== '' ? $illustration : 'kb-faq',
+                20,
+            ),
+        ]);
     }
 
     /**
