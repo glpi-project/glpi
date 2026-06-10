@@ -992,7 +992,7 @@ class NetworkCardTest extends AbstractInventoryAsset
       <MACADDR>3C:0A:F3:8B:09:B8</MACADDR>
       <MANUFACTURER>Realtek Semiconductor Corp.</MANUFACTURER>
       <MODEL>Realtek Bluetooth Adapter</MODEL>
-      <PNPDEVICEID>BTH\MS_BTHPAN\6&amp;1aac2cac&amp;0&amp;2</PNPDEVICEID>
+      <PNPDEVICEID>BTH\\MS_BTHPAN\\6&amp;1aac2cac&amp;0&amp;2</PNPDEVICEID>
       <SPEED>3</SPEED>
       <STATUS>Down</STATUS>
       <TYPE>bluetooth</TYPE>

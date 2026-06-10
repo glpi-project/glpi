@@ -300,7 +300,7 @@ class SoundCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-        $this->doInventory($xml_source);
+        $this->doInventory($xml_source, true);
 
         $sounds = $device_sound->find();
         $this->assertCount(1, $sounds);
