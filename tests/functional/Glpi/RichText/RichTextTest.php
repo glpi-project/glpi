@@ -833,6 +833,60 @@ HTML,
             'expected_result'        => '<p>Before</p><p>After</p>',
             'extra_params'           => ['allow_video_embeds' => true],
         ];
+
+        // XSS payloads: assert the exact neutralized output rather than a set of
+        // "does not contain" checks — the sanitized result inherently proves no
+        // script / handler / disallowed scheme survived.
+        yield 'XSS: inline script tag is stripped' => [
+            'content'                => '<p>Hello</p><script>alert("xss")</script>',
+            'expected_result'        => '<p>Hello</p>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: img onerror handler is stripped' => [
+            'content'                => '<img src="x" onerror="alert(1)">',
+            'expected_result'        => '<img src="x" loading="lazy">',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: svg onload handler is stripped' => [
+            'content'                => '<svg onload="alert(1)"></svg>',
+            'expected_result'        => '<p>&lt;svg onload&#61;&#34;alert(1)&#34;&gt;&lt;/svg&gt;</p>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: javascript: scheme in href is stripped' => [
+            'content'                => '<a href="javascript:alert(1)">click</a>',
+            'expected_result'        => '<a>click</a>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: data: scheme iframe is stripped' => [
+            'content'                => '<iframe src="data:text/html,<script>alert(1)</script>"></iframe>',
+            'expected_result'        => '<p>&lt;iframe src&#61;&#34;data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;&#34;&gt;&lt;/iframe&gt;</p>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: attribute breakout on video placeholder provider is dropped' => [
+            'content'                => '<div data-video-provider="youtube&quot; onclick=&quot;alert(1)" data-video-id="dQw4w9WgXcQ"></div>',
+            'expected_result'        => '',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: attribute breakout on video placeholder id is dropped' => [
+            'content'                => '<div data-video-provider="youtube" data-video-id="x&quot;><script>alert(1)</script>"></div>',
+            'expected_result'        => '',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: unknown provider with script payload in body is dropped' => [
+            'content'                => '<div data-video-provider="evil" data-video-id="x"><script>alert(1)</script></div>',
+            'expected_result'        => '',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: script in placeholder body is stripped, then the empty placeholder is materialized' => [
+            'content'                => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"><script>alert(1)</script></div>',
+            'expected_result'        => '<div class="video-embed-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="YouTube video player" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" frameborder="0"></iframe></div>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: nested div used to desync the placeholder walker is dropped' => [
+            'content'                => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"><div></div><script>alert(1)</script></div>',
+            'expected_result'        => '',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
     }
 
     #[DataProvider('getEnhancedHtmlProvider')]
@@ -854,74 +908,4 @@ HTML,
         );
     }
 
-    public static function getEnhancedHtmlXssProvider(): iterable
-    {
-        yield 'inline script tag' => [
-            'content' => '<p>Hello</p><script>alert("xss")</script>',
-        ];
-
-        yield 'img onerror handler' => [
-            'content' => '<img src="x" onerror="alert(1)">',
-        ];
-
-        yield 'svg onload handler' => [
-            'content' => '<svg onload="alert(1)"></svg>',
-        ];
-
-        yield 'javascript: scheme in href' => [
-            'content' => '<a href="javascript:alert(1)">click</a>',
-        ];
-
-        yield 'data: scheme in iframe src' => [
-            'content' => '<iframe src="data:text/html,<script>alert(1)</script>"></iframe>',
-        ];
-
-        yield 'attribute breakout on video placeholder provider' => [
-            'content' => '<div data-video-provider="youtube&quot; onclick=&quot;alert(1)" data-video-id="dQw4w9WgXcQ"></div>',
-        ];
-
-        yield 'attribute breakout on video placeholder id' => [
-            'content' => '<div data-video-provider="youtube" data-video-id="x&quot;><script>alert(1)</script>"></div>',
-        ];
-
-        yield 'unknown video provider with script payload in body' => [
-            'content' => '<div data-video-provider="evil" data-video-id="x"><script>alert(1)</script></div>',
-        ];
-
-        yield 'tampered video placeholder with script in body' => [
-            'content' => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"><script>alert(1)</script></div>',
-        ];
-
-        yield 'nested div used to desync the placeholder walker' => [
-            'content' => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"><div></div><script>alert(1)</script></div>',
-        ];
-    }
-
-    #[DataProvider('getEnhancedHtmlXssProvider')]
-    public function testGetEnhancedHtmlNeutralizesXssPayloads(string $content): void
-    {
-        $richtext = new RichText();
-
-        $result = $richtext->getEnhancedHtml($content, [
-            'text_maxsize'       => 0,
-            'allow_video_embeds' => true,
-        ]);
-
-        $this->assertStringNotContainsString('<script', $result);
-        $this->assertStringNotContainsString('</script', $result);
-        $this->assertStringNotContainsStringIgnoringCase('javascript:', $result);
-        $this->assertStringNotContainsStringIgnoringCase('onerror=', $result);
-        $this->assertStringNotContainsStringIgnoringCase('onload=', $result);
-        $this->assertStringNotContainsStringIgnoringCase('onclick=', $result);
-
-        if (preg_match_all('/<iframe[^>]*\bsrc="([^"]*)"/i', $result, $iframe_matches)) {
-            foreach ($iframe_matches[1] as $src) {
-                $this->assertMatchesRegularExpression(
-                    '#^https://(?:www\.youtube-nocookie\.com|player\.vimeo\.com|www\.dailymotion\.com)/#',
-                    $src,
-                    'Iframe src must come from an allow-listed video provider',
-                );
-            }
-        }
-    }
 }
