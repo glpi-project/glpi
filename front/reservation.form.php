@@ -36,6 +36,7 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
+use Safe\DateTime;
 
 use function Safe\parse_url;
 use function Safe\strtotime;
@@ -124,7 +125,7 @@ if (isset($_POST["update"])) {
         );
     }
 
-    $fn_redirect_back((new \DateTime($rr->fields["begin"]))->format('Y-m-d'));
+    $fn_redirect_back((new DateTime($rr->fields["begin"]))->format('Y-m-d'));
 } elseif (isset($_POST["add"])) {
     Reservation::handleAddForm($_POST);
     $fn_redirect_back();
