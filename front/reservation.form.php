@@ -124,7 +124,7 @@ if (isset($_POST["update"])) {
         );
     }
 
-    $fn_redirect_back(substr($rr->fields["begin"], 0, 10));
+    $fn_redirect_back((new \DateTime($rr->fields["begin"]))->format('Y-m-d'));
 } elseif (isset($_POST["add"])) {
     Reservation::handleAddForm($_POST);
     $fn_redirect_back();
