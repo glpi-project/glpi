@@ -150,7 +150,7 @@ if (isset($_GET['getvcard'])) {
         //TRANS: %s is the user login
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
-    Html::back();
+    Html::redirect(User::getFormURLWithID($_POST["id"]));
 } elseif (isset($_POST["change_auth_method"])) {
     Session::checkRight('user', User::UPDATEAUTHENT);
     $user->check($_POST['id'], UPDATE);
