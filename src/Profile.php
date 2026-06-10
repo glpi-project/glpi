@@ -3964,4 +3964,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     {
         return __("Users with this profile will see the tiles below if defined, overriding the one found in the entities configuration.");
     }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
 }

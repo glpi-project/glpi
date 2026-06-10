@@ -37,8 +37,6 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
-Session::checkRight("profile", READ);
-
 if (!isset($_GET['id'])) {
     $_GET['id'] = "";
 }
@@ -91,9 +89,11 @@ if (isset($_POST["add"])) {
         //TRANS: %s is the user login
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
-    Html::back();
+    Html::redirect(Profile::getFormURLWithID($_POST["id"]));
 }
 
+// display form
+$prof->check($_GET["id"], READ);
 $menus = ["admin", "profile"];
 Profile::displayFullPageForItem($_GET["id"], $menus, [
     'formoptions'  => " data-track-changes='true'",
