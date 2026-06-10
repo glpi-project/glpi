@@ -1198,7 +1198,7 @@ class Conf extends CommonGLPI
                 Config::setConfigurationValues('inventory', ['enabled_inventory' => $values['enabled_inventory']]);
             }
 
-            $auth_required = $values['auth_required'] ?? null;
+            $auth_required = $values['auth_required'] ?? $existing_config['auth_required'] ?? null;
             if (!is_string($auth_required) || !in_array($auth_required, $allowed_auth_required, true)) {
                 Session::addMessageAfterRedirect(
                     __s('Inventory is enabled. Please select a valid authorization header method.'),
