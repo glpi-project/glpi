@@ -228,6 +228,7 @@ class OAuthApplication extends CommonDBTM
         return $input;
     }
 
+    /** @param array<string, mixed> $input */
     public function checkRequiredFields(array $input): bool
     {
         $errors = [];
