@@ -1747,25 +1747,25 @@ class MailCollector extends CommonDBTM
             if ($content_type === 'text/html') {
                 $this->body_is_html = true;
                 $raw_content = $this->getDecodedContent($part);
-
                 $content = '';
-
+                // Since mailbody can be big we use extract functions based on substring instead
+                // of regex capture groups to avoid backtracking errors.
                 // Extract everything located prior to doctype/html declaration
-                $pre_content_matches = [];
-                if (preg_match('/^(?<pre_content>.*?)(?:<!doctype|<html)/is', $raw_content, $pre_content_matches)) {
-                    $content .= trim($pre_content_matches['pre_content']);
+                $pre_content = Toolbox::extract_before($raw_content, '/(?:<!doctype|<html)/is');
+                if ($pre_content) {
+                    $content .= trim($pre_content);
                 }
 
                 // Extract everything located inside the body
-                $body_matches = [];
-                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $raw_content, $body_matches)) {
-                    $content .= $body_matches['body'];
+                $body_match = Toolbox::extract_between($raw_content, '/<body[^>]*>/i', '/<\/body>/i');
+                if ($body_match) {
+                    $content .= trim($body_match);
                 }
 
                 // Extract everything located after the html closing tag
-                $post_content_matches = [];
-                if (preg_match('/(?:<\/html>)(?<post_content>.*?)$/is', $raw_content, $post_content_matches)) {
-                    $content .= trim($post_content_matches['post_content']);
+                $post_content = Toolbox::extract_after($raw_content, '/<\/html>/i');
+                if ($post_content) {
+                    $content .= trim($post_content);
                 }
 
                 // If we have extracted content, use it, otherwise fallback to original
