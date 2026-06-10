@@ -103,6 +103,9 @@ final class CheckOrphanedUserPicturesCommand extends AbstractCommand
         return $has_error ? Command::FAILURE : Command::SUCCESS;
     }
 
+    /**
+     * @return iterable<array{id: int|string, name: string, picture: string}>
+     */
     protected function getUsers(): iterable
     {
         global $DB;
@@ -134,6 +137,9 @@ final class CheckOrphanedUserPicturesCommand extends AbstractCommand
         ]);
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     protected function validatePicture(array $row): int
     {
         $path = GLPI_PICTURE_DIR . '/' . $row['picture'];
@@ -145,6 +151,9 @@ final class CheckOrphanedUserPicturesCommand extends AbstractCommand
         return self::PICTURE_OK;
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     protected function getDetailedError(int $type, array $row): string
     {
         $message = match ($type) {
