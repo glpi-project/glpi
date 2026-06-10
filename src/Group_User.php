@@ -932,6 +932,12 @@ class Group_User extends CommonDBRelation
         }
     }
 
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
     /**
      * Get parents members for a given group
      *
