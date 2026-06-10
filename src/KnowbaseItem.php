@@ -425,9 +425,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      * @param ?string $answer
      *
      * @return ?string
+     *
+     * @phpstan-ignore method.unused
      */
     private function relinkEmbeddedDocumentsFromLinkedItemContext(?string $answer): ?string
     {
+        /** @var \DBmysql $DB */
         global $DB;
 
         if ($answer === null || $answer === '') {
@@ -519,6 +522,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         string $source_itemtype,
         int $source_items_id
     ): bool {
+        /** @var \DBmysql $DB */
         global $DB;
 
         $source_link = $DB->request([
