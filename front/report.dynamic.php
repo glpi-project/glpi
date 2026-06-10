@@ -48,8 +48,9 @@ $item = getItemForItemtype($itemtype);
 if ($item instanceof AllAssets) {
     Session::checkCentralAccess();
 } else {
+    $item::checkReAuthenticationOrRedirect();
     if (!$item::canView()) {
-        throw new AccessDeniedHttpException();
+        throw new AccessDeniedHttpException(); // @todo c'est surement pas le  bon check de droits au dessus
     }
 }
 
