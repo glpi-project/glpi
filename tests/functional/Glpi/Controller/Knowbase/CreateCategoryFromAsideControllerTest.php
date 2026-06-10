@@ -296,19 +296,19 @@ final class CreateCategoryFromAsideControllerTest extends DbTestCase
         ]);
 
         $response = $this->postUpdate($category->getID(), [
-            'illustration' => 'kb-graduation',
+            'illustration' => 'browse-kb',
             'comment'      => 'Updated description',
         ]);
 
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertSame(200, $response->getStatusCode());
         $body = json_decode((string) $response->getContent(), true);
-        $this->assertSame('kb-graduation', $body['illustration']);
+        $this->assertSame('browse-kb', $body['illustration']);
         $this->assertSame('Updated description', $body['comment']);
 
         $updated = new KnowbaseItemCategory();
         $this->assertTrue($updated->getFromDB($category->getID()));
-        $this->assertSame('kb-graduation', $updated->fields['illustration']);
+        $this->assertSame('browse-kb', $updated->fields['illustration']);
         $this->assertSame('Updated description', $updated->fields['comment']);
     }
 
