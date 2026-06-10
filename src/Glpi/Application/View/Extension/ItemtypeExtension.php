@@ -235,13 +235,15 @@ class ItemtypeExtension extends AbstractExtension
         }
 
         if ($instance instanceof Group) {
-            return $instance->getGroupLink(true);
+            $enable_anonymization = $options['enable_anonymization'] ?? true;
+            return $instance->getGroupLink($enable_anonymization, $options);
         }
         if ($instance instanceof User) {
-            return $instance->getUserLink(true);
+            $enable_anonymization = $options['enable_anonymization'] ?? true;
+            return $instance->getUserLink($enable_anonymization, $options);
         }
 
-        return $instance->getLink();
+        return $instance->getLink($options);
     }
 
     /**

@@ -920,18 +920,19 @@ class Group extends CommonTreeDropdown
     /**
      * Get group link.
      *
-     * @param bool $enable_anonymization
+     * @param bool  $enable_anonymization
+     * @param array<string, mixed> $options
      *
      * @return string
      */
-    public function getGroupLink(bool $enable_anonymization = false): string
+    public function getGroupLink(bool $enable_anonymization = false, $options = []): string
     {
         if ($enable_anonymization && Session::getCurrentInterface() === 'helpdesk' && ($anon = static::getAnonymizedName()) !== null) {
             // if anonymized name active, return only the anonymized name
             return $anon;
         }
 
-        return $this->getLink();
+        return $this->getLink($options);
     }
 
     public function post_addItem()
