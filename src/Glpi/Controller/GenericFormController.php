@@ -69,6 +69,7 @@ class GenericFormController extends AbstractController
         $this->checkIsValidClass($class);
 
         /** @var class-string<CommonDBTM> $class */
+        $class::checkReAuthenticationOrRedirect();
 
         if (!$class::canView()) {
             throw new AccessDeniedHttpException();
