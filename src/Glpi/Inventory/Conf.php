@@ -1184,13 +1184,20 @@ class Conf extends CommonGLPI
             $values['stale_agents_status_condition'] = ['all'];
         }
 
-        $enabled_inventory = (int) ($values['enabled_inventory'] ?? $defaults['enabled_inventory']) === 1;
+        $existing_config = Config::getConfigurationValues('inventory');
+
+        $enabled_inventory = (int) ($values['enabled_inventory'] ?? $existing_config['enabled_inventory'] ?? $defaults['enabled_inventory']) === 1;
         if ($enabled_inventory) {
             $allowed_auth_required = [
                 self::CLIENT_CREDENTIALS,
                 self::BASIC_AUTH,
                 self::NO_AUTH,
             ];
+
+            if (isset($values['enabled_inventory'])) {
+                Config::setConfigurationValues('inventory', ['enabled_inventory' => $values['enabled_inventory']]);
+            }
+
             $auth_required = $values['auth_required'] ?? null;
             if (!is_string($auth_required) || !in_array($auth_required, $allowed_auth_required, true)) {
                 Session::addMessageAfterRedirect(
