@@ -1,0 +1,334 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units;
+
+use Change;
+use Change_User;
+use CommonITILActor;
+use Glpi\Tests\DbTestCase;
+use Problem;
+use Problem_User;
+use Ticket;
+use Ticket_User;
+use User;
+use UserITILObjectCount;
+
+class UserITILObjectCountTest extends DbTestCase
+{
+    /**
+     * Validate requester counters when several users are attached to tickets and tickets change lifecycle.
+     *
+     * @return void
+     */
+    public function testTicketCountersWithManyUsersAndLifecycleChanges(): void
+    {
+        $this->login();
+
+        $users = $this->createUsers(12);
+
+        $ticket = $this->createItilObject(Ticket::class);
+        $this->setUserActors($ticket, 'requester', $users);
+
+        foreach ($users as $user) {
+            $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::REQUESTER, 1);
+        }
+
+        $second_ticket = $this->createItilObject(Ticket::class);
+        $this->setUserActors($second_ticket, 'requester', array_slice($users, 0, 3));
+
+        foreach (array_slice($users, 0, 3) as $user) {
+            $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::REQUESTER, 2);
+        }
+
+        foreach (array_slice($users, 3) as $user) {
+            $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::REQUESTER, 1);
+        }
+
+        $this->deleteItem(Ticket::class, $second_ticket->getID());
+        foreach (array_slice($users, 0, 3) as $user) {
+            $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::REQUESTER, 1);
+        }
+
+        $restored_ticket = new Ticket();
+        $this->assertTrue($restored_ticket->restore(['id' => $second_ticket->getID()]));
+        foreach (array_slice($users, 0, 3) as $user) {
+            $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::REQUESTER, 2);
+        }
+
+        $this->setUserActors($ticket, 'requester', array_slice($users, 1));
+        $this->assertCounter($users[0]->getID(), Ticket::class, CommonITILActor::REQUESTER, 1);
+        $this->assertCounter($users[1]->getID(), Ticket::class, CommonITILActor::REQUESTER, 2);
+    }
+
+    /**
+     * Validate counter refresh hooks for every supported ITIL object type and user actor role.
+     *
+     * @return void
+     */
+    public function testCountersForAllUserActorRolesAndItilTypes(): void
+    {
+        $this->login();
+
+        $roles = [
+            CommonITILActor::REQUESTER,
+            CommonITILActor::OBSERVER,
+            CommonITILActor::ASSIGN,
+        ];
+
+        foreach ([Ticket::class, Problem::class, Change::class] as $itemtype) {
+            foreach ($roles as $actor_type) {
+                $user = $this->createUsers(1)[0];
+                $item = $this->createItilObject($itemtype);
+
+                $this->addUserActorWithRelation($itemtype, $item->getID(), $user->getID(), $actor_type);
+                $this->assertCounter($user->getID(), $itemtype, $actor_type, 1);
+
+                $this->removeUserActorWithRelation($itemtype, $item->getID(), $user->getID(), $actor_type);
+                $this->assertCounter($user->getID(), $itemtype, $actor_type, 0);
+            }
+        }
+    }
+
+    /**
+     * Validate counters when a relation keeps the same user but changes actor role.
+     *
+     * @return void
+     */
+    public function testCounterRefreshWhenActorTypeChangesOnSameRelation(): void
+    {
+        $this->login();
+
+        $user = $this->createUsers(1)[0];
+        $ticket = $this->createItilObject(Ticket::class);
+
+        $relation_id = $this->addUserActorWithRelation(
+            Ticket::class,
+            $ticket->getID(),
+            $user->getID(),
+            CommonITILActor::REQUESTER
+        );
+        $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::REQUESTER, 1);
+        $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::ASSIGN, 0);
+
+        $this->updateUserActorTypeWithRelation(Ticket::class, $relation_id, CommonITILActor::ASSIGN);
+        $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::REQUESTER, 0);
+        $this->assertCounter($user->getID(), Ticket::class, CommonITILActor::ASSIGN, 1);
+    }
+
+    /**
+     * @param int $count Number of users to create.
+     *
+     * @return User[]
+     */
+    private function createUsers(int $count): array
+    {
+        $users = [];
+        for ($i = 0; $i < $count; $i++) {
+            $users[] = $this->createItem(User::class, [
+                'name' => $this->getUniqueString(),
+            ]);
+        }
+
+        return $users;
+    }
+
+    /**
+     * Create a minimal ITIL object with auto assignment disabled.
+     *
+     * @param class-string<Ticket|Problem|Change> $itemtype ITIL object type to create.
+     *
+     * @return Ticket|Problem|Change
+     */
+    private function createItilObject(string $itemtype): Ticket|Problem|Change
+    {
+        return $this->createItem(
+            $itemtype,
+            $this->getMinimalCreationInput($itemtype) + [
+                '_skip_auto_assign' => true,
+            ],
+            ['_skip_auto_assign']
+        );
+    }
+
+    /**
+     * Replace one actor list through the public ITIL object input format.
+     *
+     * @param Ticket|Problem|Change $item ITIL object to update.
+     * @param string $input_key Actor input key, for example requester, observer or assign.
+     * @param User[] $users Users to keep in the actor list.
+     *
+     * @return void
+     */
+    private function setUserActors(Ticket|Problem|Change $item, string $input_key, array $users): void
+    {
+        $actors = [];
+        foreach ($users as $user) {
+            $actors[] = [
+                'itemtype'          => User::class,
+                'items_id'          => $user->getID(),
+                'use_notification'  => 0,
+                'alternative_email' => '',
+            ];
+        }
+
+        $this->updateItem(
+            $item::class,
+            $item->getID(),
+            [
+                '_actors' => [
+                    $input_key => $actors,
+                ],
+            ],
+            ['_actors']
+        );
+    }
+
+    /**
+     * Remove one user actor using the underlying relation object.
+     *
+     * @param class-string<Ticket|Problem|Change> $itemtype ITIL object type.
+     * @param int $items_id ITIL object identifier.
+     * @param int $users_id User identifier.
+     * @param int $actor_type One of the CommonITILActor::* role constants.
+     *
+     * @return void
+     */
+    private function removeUserActorWithRelation(string $itemtype, int $items_id, int $users_id, int $actor_type): void
+    {
+        $relation_class = match ($itemtype) {
+            Ticket::class  => Ticket_User::class,
+            Problem::class => Problem_User::class,
+            Change::class  => Change_User::class,
+            default        => throw new \RuntimeException("Unsupported ITIL object type: $itemtype"),
+        };
+
+        $relation = new $relation_class();
+        $relation_fk = $relation_class::getItilObjectForeignKey();
+        $relations = $relation->find([
+            $relation_fk => $items_id,
+            'users_id'   => $users_id,
+            'type'       => $actor_type,
+        ]);
+
+        $this->assertCount(1, $relations);
+        $relation_data = reset($relations);
+        $this->assertTrue($relation->delete(['id' => $relation_data['id']]));
+    }
+
+    /**
+     * Add one user actor using the underlying relation object.
+     *
+     * @param class-string<Ticket|Problem|Change> $itemtype ITIL object type.
+     * @param int $items_id ITIL object identifier.
+     * @param int $users_id User identifier.
+     * @param int $actor_type One of the CommonITILActor::* role constants.
+     *
+     * @return void
+     */
+    private function addUserActorWithRelation(string $itemtype, int $items_id, int $users_id, int $actor_type): int
+    {
+        $relation_class = match ($itemtype) {
+            Ticket::class  => Ticket_User::class,
+            Problem::class => Problem_User::class,
+            Change::class  => Change_User::class,
+            default        => throw new \RuntimeException("Unsupported ITIL object type: $itemtype"),
+        };
+
+        $relation = new $relation_class();
+        $relation_fk = $relation_class::getItilObjectForeignKey();
+
+        $relation_id = (int) $relation->add([
+            $relation_fk         => $items_id,
+            'users_id'           => $users_id,
+            'type'               => $actor_type,
+            'use_notification'   => 0,
+            'alternative_email'  => '',
+        ]);
+        $this->assertGreaterThan(0, $relation_id);
+
+        return $relation_id;
+    }
+
+    /**
+     * Update actor role on an existing relation.
+     *
+     * @param class-string<Ticket|Problem|Change> $itemtype ITIL object type.
+     * @param int $relation_id Relation identifier.
+     * @param int $actor_type One of the CommonITILActor::* role constants.
+     *
+     * @return void
+     */
+    private function updateUserActorTypeWithRelation(string $itemtype, int $relation_id, int $actor_type): void
+    {
+        $relation_class = match ($itemtype) {
+            Ticket::class  => Ticket_User::class,
+            Problem::class => Problem_User::class,
+            Change::class  => Change_User::class,
+            default        => throw new \RuntimeException("Unsupported ITIL object type: $itemtype"),
+        };
+
+        $relation = new $relation_class();
+        $this->assertTrue($relation->update([
+            'id'   => $relation_id,
+            'type' => $actor_type,
+        ]));
+    }
+
+    /**
+     * Assert the materialized counter value for a user and actor role.
+     *
+     * @param int $users_id User identifier.
+     * @param class-string<Ticket|Problem|Change> $itemtype ITIL object type.
+     * @param int $actor_type One of the CommonITILActor::* role constants.
+     * @param int $expected Expected counter value.
+     *
+     * @return void
+     */
+    private function assertCounter(int $users_id, string $itemtype, int $actor_type, int $expected): void
+    {
+        global $DB;
+
+        $row = $DB->request([
+            'FROM'  => UserITILObjectCount::getTable(),
+            'WHERE' => [
+                'users_id'    => $users_id,
+                'itemtype'    => $itemtype,
+                'actor_type'  => $actor_type,
+            ],
+        ])->current();
+
+        $this->assertSame($expected, (int) ($row['count'] ?? 0));
+    }
+}

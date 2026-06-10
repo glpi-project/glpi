@@ -3728,57 +3728,43 @@ HTML;
 
         $tab[] = [
             'id'                 => '60',
-            'table'              => 'glpi_tickets',
+            'table'              => 'glpi_users',
             'field'              => 'id',
             'name'               => __('Number of tickets as requester'),
-            'forcegroupby'       => true,
-            'usehaving'          => true,
-            'datatype'           => 'count',
+            'datatype'           => 'number',
             'massiveaction'      => false,
-            'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => 'glpi_tickets_users',
-                    'joinparams'         => [
-                        'jointype'           => 'child',
-                        'condition'          => ['NEWTABLE.type' => CommonITILActor::REQUESTER],
-                    ],
-                ],
-            ],
+            'computation'        => '(SELECT COALESCE(MAX(' . DBmysql::quoteName('uic.count') . '), 0)
+                                      FROM ' . DBmysql::quoteName(UserITILObjectCount::getTable()) . ' AS ' . DBmysql::quoteName('uic') . '
+                                      WHERE ' . DBmysql::quoteName('uic.users_id') . ' = ' . DBmysql::quoteName('TABLE.id') . '
+                                        AND ' . DBmysql::quoteName('uic.itemtype') . ' = ' . DBmysql::quoteValue(Ticket::class) . '
+                                        AND ' . DBmysql::quoteName('uic.actor_type') . ' = ' . CommonITILActor::REQUESTER . ')',
         ];
 
         $tab[] = [
             'id'                 => '61',
-            'table'              => 'glpi_tickets',
+            'table'              => 'glpi_users',
             'field'              => 'id',
             'name'               => __('Number of written tickets'),
-            'forcegroupby'       => true,
-            'usehaving'          => true,
-            'datatype'           => 'count',
+            'datatype'           => 'number',
             'massiveaction'      => false,
-            'joinparams'         => [
-                'jointype'           => 'child',
-                'linkfield'          => 'users_id_recipient',
-            ],
+            'computation'        => '(SELECT COUNT(' . DBmysql::quoteName('t.id') . ') 
+                                      FROM ' . DBmysql::quoteName('glpi_tickets') . ' AS ' . DBmysql::quoteName('t') . ' 
+                                      WHERE ' . DBmysql::quoteName('t.users_id_recipient') . ' = ' . DBmysql::quoteName('TABLE.id') . ')',
+            'nosort'             => true,
         ];
 
         $tab[] = [
             'id'                 => '64',
-            'table'              => 'glpi_tickets',
+            'table'              => 'glpi_users',
             'field'              => 'id',
             'name'               => __('Number of assigned tickets'),
-            'forcegroupby'       => true,
-            'usehaving'          => true,
-            'datatype'           => 'count',
+            'datatype'           => 'number',
             'massiveaction'      => false,
-            'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => 'glpi_tickets_users',
-                    'joinparams'         => [
-                        'jointype'           => 'child',
-                        'condition'          => ['NEWTABLE.type' => CommonITILActor::ASSIGN],
-                    ],
-                ],
-            ],
+            'computation'        => '(SELECT COALESCE(MAX(' . DBmysql::quoteName('uic.count') . '), 0)
+                                      FROM ' . DBmysql::quoteName(UserITILObjectCount::getTable()) . ' AS ' . DBmysql::quoteName('uic') . '
+                                      WHERE ' . DBmysql::quoteName('uic.users_id') . ' = ' . DBmysql::quoteName('TABLE.id') . '
+                                        AND ' . DBmysql::quoteName('uic.itemtype') . ' = ' . DBmysql::quoteValue(Ticket::class) . '
+                                        AND ' . DBmysql::quoteName('uic.actor_type') . ' = ' . CommonITILActor::ASSIGN . ')',
         ];
 
         $tab[] = [

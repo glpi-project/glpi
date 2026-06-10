@@ -188,6 +188,9 @@ abstract class CommonITILActor extends CommonDBRelation
     {
         global $CFG_GLPI;
 
+        $users_id = (int) ($this->fields['users_id'] ?? 0);
+        $actor_type = (int) ($this->fields['type'] ?? 0);
+
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
         $item = $this->getConnexityItem(static::$itemtype_1, static::getItilObjectForeignKey());
@@ -225,6 +228,10 @@ abstract class CommonITILActor extends CommonDBRelation
         $this->_force_log_option = $this->getForceLogOption();
         parent::post_deleteFromDB();
         $this->_force_log_option = $current_log_option;
+
+        if ($users_id > 0) {
+            UserITILObjectCount::refreshForActor(static::class, $users_id, $actor_type);
+        }
     }
 
     public function prepareInputForAdd($input)
@@ -347,5 +354,47 @@ abstract class CommonITILActor extends CommonDBRelation
         $this->_force_log_option = $this->getForceLogOption();
         parent::post_addItem();
         $this->_force_log_option = $current_log_option;
+
+        if (isset($this->fields['users_id']) && (int) $this->fields['users_id'] > 0) {
+            UserITILObjectCount::refreshForActor(
+                static::class,
+                (int) $this->fields['users_id'],
+                (int) ($this->fields['type'] ?? 0)
+            );
+        }
     }
+
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+
+        $users_to_refresh = [];
+        if (
+            isset($this->oldvalues['type'])
+            && isset($this->fields['users_id'])
+            && (int) $this->fields['users_id'] > 0
+        ) {
+            $users_to_refresh[] = [
+                'users_id' => (int) $this->fields['users_id'],
+                'type'     => (int) $this->oldvalues['type'],
+            ];
+        }
+        if (isset($this->oldvalues['users_id']) && (int) $this->oldvalues['users_id'] > 0) {
+            $users_to_refresh[] = [
+                'users_id' => (int) $this->oldvalues['users_id'],
+                'type'     => (int) ($this->oldvalues['type'] ?? $this->fields['type'] ?? 0),
+            ];
+        }
+        if (isset($this->fields['users_id']) && (int) $this->fields['users_id'] > 0) {
+            $users_to_refresh[] = [
+                'users_id' => (int) $this->fields['users_id'],
+                'type'     => (int) ($this->fields['type'] ?? 0),
+            ];
+        }
+
+        foreach ($users_to_refresh as $target) {
+            UserITILObjectCount::refreshForActor(static::class, $target['users_id'], $target['type']);
+        }
+    }
+
 }
