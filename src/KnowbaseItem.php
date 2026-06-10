@@ -430,80 +430,80 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     {
         global $DB;
 
-    if ($answer === null || $answer === '') {
-        return $answer;
-    }
-
-    $source_itemtype = $this->input['_itemtype'] ?? null;
-    $source_items_id = $this->input['_items_id'] ?? null;
-    if (
-        !is_string($source_itemtype)
-        || !is_a($source_itemtype, CommonDBTM::class, true)
-        || !is_numeric($source_items_id)
-        || (int) $source_items_id <= 0
-    ) {
-        return $answer;
-    }
-    $source_items_id = (int) $source_items_id;
-
-    $decoded_answer = html_entity_decode(
-        html_entity_decode($answer, ENT_QUOTES | ENT_HTML5),
-        ENT_QUOTES | ENT_HTML5
-    );
-
-    $matches = [];
-    preg_match_all('/(?:https?:\/\/[^"\'\s<>]+)?\/front\/document\.send\.php\?[^"\'\s<>]+/i', $decoded_answer, $matches);
-    if (count($matches[0]) === 0) {
-        return $answer;
-    }
-
-    $document_item = new Document_Item();
-    foreach (array_unique($matches[0]) as $document_url) {
-        if (!is_string($document_url) || $document_url === '') {
-            continue;
+        if ($answer === null || $answer === '') {
+            return $answer;
         }
 
-        $query = parse_url($document_url, PHP_URL_QUERY);
-        if (!is_string($query)) {
-            continue;
-        }
-
-        parse_str($query, $params);
-        $document_id = (int) ($params['docid'] ?? 0);
+        $source_itemtype = $this->input['_itemtype'] ?? null;
+        $source_items_id = $this->input['_items_id'] ?? null;
         if (
-            $document_id <= 0
-            || ($params['itemtype'] ?? null) !== $source_itemtype
-            || (int) ($params['items_id'] ?? 0) !== $source_items_id
+            !is_string($source_itemtype)
+            || !is_a($source_itemtype, CommonDBTM::class, true)
+            || !is_numeric($source_items_id)
+            || (int) $source_items_id <= 0
         ) {
-            continue;
+            return $answer;
+        }
+        $source_items_id = (int) $source_items_id;
+
+        $decoded_answer = html_entity_decode(
+            html_entity_decode($answer, ENT_QUOTES | ENT_HTML5),
+            ENT_QUOTES | ENT_HTML5
+        );
+
+        $matches = [];
+        preg_match_all('/(?:https?:\/\/[^"\'\s<>]+)?\/front\/document\.send\.php\?[^"\'\s<>]+/i', $decoded_answer, $matches);
+        if (count($matches[0]) === 0) {
+            return $answer;
         }
 
-        if (!$this->canRelinkEmbeddedDocumentFromSourceContext($document_id, $source_itemtype, $source_items_id)) {
-            continue;
+        $document_item = new Document_Item();
+        foreach (array_unique($matches[0]) as $document_url) {
+            if (!is_string($document_url) || $document_url === '') {
+                continue;
+            }
+
+            $query = parse_url($document_url, PHP_URL_QUERY);
+            if (!is_string($query)) {
+                continue;
+            }
+
+            parse_str($query, $params);
+            $document_id = (int) ($params['docid'] ?? 0);
+            if (
+                $document_id <= 0
+                || ($params['itemtype'] ?? null) !== $source_itemtype
+                || (int) ($params['items_id'] ?? 0) !== $source_items_id
+            ) {
+                continue;
+            }
+
+            if (!$this->canRelinkEmbeddedDocumentFromSourceContext($document_id, $source_itemtype, $source_items_id)) {
+                continue;
+            }
+
+            $target_link = [
+                'documents_id' => $document_id,
+                'itemtype'     => self::class,
+                'items_id'     => $this->getID(),
+            ];
+            if (!$document_item->alreadyExists($target_link)) {
+                $document_item->add($target_link);
+            }
+
+            $params['itemtype'] = self::class;
+            $params['items_id'] = $this->getID();
+            $base_url = strtok($document_url, '?');
+            if ($base_url === false) {
+                continue;
+            }
+
+            $updated_url = $base_url . '?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+            $decoded_answer = str_replace($document_url, $updated_url, $decoded_answer);
         }
 
-        $target_link = [
-            'documents_id' => $document_id,
-            'itemtype'     => self::class,
-            'items_id'     => $this->getID(),
-        ];
-        if (!$document_item->alreadyExists($target_link)) {
-            $document_item->add($target_link);
-        }
-
-        $params['itemtype'] = self::class;
-        $params['items_id'] = $this->getID();
-        $base_url = strtok($document_url, '?');
-        if ($base_url === false) {
-            continue;
-        }
-
-        $updated_url = $base_url . '?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
-        $decoded_answer = str_replace($document_url, $updated_url, $decoded_answer);
+        return htmlspecialchars($decoded_answer, ENT_QUOTES | ENT_HTML5);
     }
-
-    return htmlspecialchars($decoded_answer, ENT_QUOTES | ENT_HTML5);
-}
 
     /**
      * Ensure a document can be safely re-linked from a source context.
