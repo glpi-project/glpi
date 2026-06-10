@@ -313,7 +313,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if (isset($this->input["_visibility"]['_type']) && !empty($this->input["_visibility"]["_type"])) {
             $this->input["_visibility"]['knowbaseitems_id'] = $this->getID();
             $item                                           = null;
-
+            if (isset($this->input["_visibility"]['entities_id']) && $this->input["_visibility"]['entities_id'] == -1) {
+                // "No restriction" value selected
+                $this->input["_visibility"]['entities_id'] = 'NULL';
+                $this->input["_visibility"]['no_entity_restriction'] = 1;
+            }
             switch ($this->input["_visibility"]['_type']) {
                 case 'User':
                     if (

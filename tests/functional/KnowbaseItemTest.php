@@ -36,6 +36,7 @@ namespace test\units;
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
+use Knowbase;
 use KnowbaseItem_User;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -1223,6 +1224,7 @@ HTML,
     protected function testGetVisibilityCriteriaProvider_KB(): iterable
     {
         // Create set of test subjects
+        $this->login();
         $glpi_user = getItemByTypeName("User", "glpi", true);
         $tech_user = getItemByTypeName("User", "tech", true);
         $this->createItems("KnowbaseItem", [
@@ -1352,6 +1354,38 @@ HTML,
             ],
         ]);
 
+        // Create KnowBase items with specific visibility for users
+        $this->createItems(\KnowbaseItem::class,[
+            [
+                'name'     => 'KB 14',
+                'answer'   => 'KB 14',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                '_visibility' => [
+                    'entities_id' => -1,
+                    'is_recursive' => 1,
+                    '_type' => \User::class,
+                    'users_id' => $tech_user,
+                ],
+            ],
+            [
+                'name'     => 'KB 15',
+                'answer'   => 'KB 15',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                '_visibility' => [
+                    'entities_id' => -1,
+                    'is_recursive' => 1,
+                    '_type' => \User::class,
+                    'users_id' => $normal_user,
+                ],
+            ],
+        ]);
+
         // Add group restrictions for articles 4 to 7
         $kb_4 = getItemByTypeName("KnowbaseItem", "KB 4", true);
         $kb_5 = getItemByTypeName("KnowbaseItem", "KB 5", true);
@@ -1397,6 +1431,38 @@ HTML,
             ],
         ]);
 
+        // Create KnowBase items with specific visibility for groups
+        $this->createItems(\KnowbaseItem::class,[
+            [
+                'name'     => 'KB 16',
+                'answer'   => 'KB 16',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                '_visibility' => [
+                    'entities_id' => -1,
+                    'is_recursive' => 1,
+                    '_type' => \Group::class,
+                    'groups_id' => $group_a,
+                ],
+            ],
+            [
+                'name'     => 'KB 17',
+                'answer'   => 'KB 17',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                '_visibility' => [
+                    'entities_id' => -1,
+                    'is_recursive' => 1,
+                    '_type' => \Group::class,
+                    'groups_id' => $group_b,
+                ],
+            ],
+        ]);
+
         // Add profiles restrictions for article 8 to 11
         $kb_8 = getItemByTypeName("KnowbaseItem", "KB 8", true);
         $kb_9 = getItemByTypeName("KnowbaseItem", "KB 9", true);
@@ -1433,6 +1499,38 @@ HTML,
             ],
         ]);
 
+        // Create KnowBase items with specific visibility for profiles
+        $this->createItems(\KnowbaseItem::class,[
+            [
+                'name'     => 'KB 18',
+                'answer'   => 'KB 18',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                '_visibility' => [
+                    'entities_id' => -1,
+                    'is_recursive' => 1,
+                    '_type' => \Profile::class,
+                    'profiles_id' => getItemByTypeName("Profile", "Technician", true),
+                ],
+            ],
+            [
+                'name'     => 'KB 19',
+                'answer'   => 'KB 19',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                '_visibility' => [
+                    'entities_id' => -1,
+                    'is_recursive' => 1,
+                    '_type' => \Profile::class,
+                    'profiles_id' => getItemByTypeName("Profile", "Hotliner", true),
+                ],
+            ],
+        ]);
+
         // Add entity restriction for articles 12 and 13
         $kb_12 = getItemByTypeName("KnowbaseItem", "KB 12", true);
         $kb_13 = getItemByTypeName("KnowbaseItem", "KB 13", true);
@@ -1454,7 +1552,7 @@ HTML,
         yield [
             'articles' => [
                 'FAQ 2', 'KB 2', 'KB 3', 'KB 4', 'KB 6', 'KB 7', 'KB 8', 'KB 9',
-                'KB 10', 'KB 12', 'KB 13',
+                'KB 10', 'KB 12', 'KB 13', 'KB 14', 'KB 16', 'KB 18',
             ],
         ];
 
@@ -1463,6 +1561,7 @@ HTML,
         yield [
             'articles' => [
                 'FAQ 2', 'KB 2', 'KB 3', 'KB 4', 'KB 7', 'KB 8', 'KB 10', 'KB 12',
+                'KB 14', 'KB 16', 'KB 18',
             ],
         ];
 
@@ -1472,7 +1571,8 @@ HTML,
             'articles' => [
                 'FAQ 1', 'FAQ 2', 'FAQ 3', 'KB 1', 'KB 2', 'KB 3', 'KB 4',
                 'KB 5', 'KB 6', 'KB 7', 'KB 8', 'KB 9', 'KB 10', 'KB 11',
-                'KB 12', 'KB 13',
+                'KB 12', 'KB 13', 'KB 14', 'KB 15', 'KB 16', 'KB 17',
+                'KB 18', 'KB 19',
             ],
         ];
     }
@@ -1515,6 +1615,7 @@ HTML,
                 'as_map'       => 0,
                 'browse'       => 0,
                 'unpublished'  => 1,
+                'export_all'   => 1,
             ];
             ob_start();
             \Search::showList('KnowbaseItem', $params);
