@@ -9932,9 +9932,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Monitor.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$designation\\.$#',
+	'message' => '#^Access to an undefined property object\:\:\$designation\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 2,
+	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
@@ -9992,9 +9992,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$mac_default\\.$#',
+	'message' => '#^Access to an undefined property object\:\:\$mac_default\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
@@ -10058,9 +10058,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type object supplied for foreach, only iterables are supported\\.$#',
+	'message' => '#^Argument of an invalid type object supplied for foreach, only iterables are supported\.$#',
 	'identifier' => 'foreach.nonIterable',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
@@ -10840,7 +10840,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$designation\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 2,
+	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/SoundCard.php',
 ];
 $ignoreErrors[] = [
@@ -20676,6 +20676,18 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 1,
 	'path' => __DIR__ . '/src/autoload/legacy-autoloader.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot access offset mixed on object\\.$#',
+	'identifier' => 'offsetAccess.nonOffsetAccessible',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Peripheral.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$val of method Glpi\\\\Inventory\\\\Asset\\\\Device\\:\\:applyUsbInfoFromDevice\\(\\) expects stdClass, object given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 
 return ['parameters' => ['ignoreErrors' => $ignoreErrors]];

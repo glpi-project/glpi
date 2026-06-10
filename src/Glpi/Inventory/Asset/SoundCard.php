@@ -50,7 +50,7 @@ class SoundCard extends Device
             'manufacturer'  => 'manufacturers_id',
             'description'   => 'comment',
         ];
-        
+
         $usb_vendor = new \USBVendor();
 
         foreach ($this->data as &$val) {
