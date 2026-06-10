@@ -53,19 +53,40 @@
                                 item.fields['provider'],
                                 providers,
                                 __('Provider'),
-                                {display_emptychoice: false}
+                                {
+                                    display_emptychoice: false,
+                                    required: true
+                                }
                             ) }}
 
-                            {{ fields.textField('client_id', item.fields['client_id'], __('Client ID')) }}
+                            {{ fields.textField(
+                                'client_id',
+                                item.fields['client_id'],
+                                __('Client ID'),
+                                {
+                                    required: true
+                                }
+                            ) }}
 
-                            {{ fields.passwordField('client_secret', '', __('Client Secret'), {
-                                is_disclosable: true,
-                                helper: item.isNewItem() ? '' : __('Leave empty to keep the current secret'),
-                            }) }}
+                            {{ fields.passwordField(
+                                'client_secret',
+                                '',
+                                __('Client Secret'),
+                                {
+                                    is_disclosable: true,
+                                    helper: item.isNewItem() ? '' : __('Leave empty to keep the current secret'),
+                                    required: true
+                                }
+                            ) }}
 
-                            {{ fields.textField('tenant_id', item.fields['tenant_id'], __('Tenant ID'), {
-                                helper: __('Required for Microsoft Azure (directory/tenant ID)'),
-                            }) }}
+                            {{ fields.textField(
+                                'tenant_id',
+                                item.fields['tenant_id'],
+                                __('Tenant ID'),
+                                {
+                                    helper: __('Required for Microsoft Azure (directory/tenant ID)'),
+                                }
+                            ) }}
 
                             {{ fields.textareaField(
                                 'comment',
@@ -82,3 +103,8 @@
 
     {{ include('components/form/buttons.html.twig') }}
 </div>
+
+<script>
+    import("/js/modules/Form/OAuthApplication.js")
+        .then((m) => new m.OAuthApplicationController('{{ constant('OAuthApplication::AZURE') }}'));
+</script>

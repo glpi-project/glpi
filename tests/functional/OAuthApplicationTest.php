@@ -99,6 +99,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => 'secret',
+            'tenant_id'     => 'tenant',
         ], ['client_secret']);
 
         $id = $app->getID();
@@ -118,6 +119,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => '',
             'client_secret' => 'secret',
+            'tenant_id'     => 'tenant',
         ]);
 
         $this->assertFalse($result);
@@ -132,6 +134,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => '',
+            'tenant_id'     => 'tenant',
         ]);
 
         $this->assertFalse($result);
@@ -182,6 +185,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => $plain_secret,
+            'tenant_id'     => 'tenant',
         ], ['client_secret']);
 
         // Stored value must differ from plaintext
@@ -202,6 +206,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => 'first-secret',
+            'tenant_id'     => 'tenant',
         ], ['client_secret']);
 
         $new_secret = 'new-secret-value';
@@ -226,6 +231,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => 'original-secret',
+            'tenant_id'     => 'tenant',
         ], ['client_secret']);
 
         $stored_after_add = $app->fields['client_secret'];
@@ -260,6 +266,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid-active',
             'client_secret' => 'secret',
+            'tenant_id'     => 'tid-active'
         ], ['client_secret']);
 
         $this->createItem(OAuthApplication::class, [
@@ -268,6 +275,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid-inactive',
             'client_secret' => 'secret',
+            'tenant_id'     => 'tenant'
         ], ['client_secret']);
 
         $applications = OAuthApplication::getActiveApplications();
@@ -296,19 +304,22 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => 'secret',
+            'tenant_id'     => 'tenant'
         ], ['client_secret']);
 
         $protocol_key  = 'oauth_imap_' . $app->getID();
         $host_linked   = '{mail.example.com/' . $protocol_key . '/novalidate-cert}INBOX';
         $host_unlinked = '{mail.other.com/imap/ssl}INBOX';
 
-        $mc_id = $this->createItem(MailCollector::class, [
+        // createItem is not usable here: MailCollector always reconstructs `host` from its
+        // component fields, dropping unregistered protocols like oauth_imap_X in the process.
+        $DB->insert(MailCollector::getTable(), [
             'name'  => 'Linked collector',
             'host'  => $host_linked,
             'login' => 'user@example.com',
         ]);
         $mc_linked = new MailCollector();
-        $mc_linked->getFromDB($mc_id);
+        $mc_linked->getFromDB($DB->insertId());
 
         /** @var MailCollector $mc_other */
         $mc_other = $this->createItem(MailCollector::class, [
@@ -364,6 +375,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => 'secret',
+            'tenant_id'     => 'tenant',
         ], ['client_secret']);
 
         $protocol_key = 'oauth_imap_' . $app->getID();
@@ -395,6 +407,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => 'secret',
+            'tenant_id'     => 'tenant',
         ], ['client_secret']);
 
         /** @var MailCollector $mc_other */
@@ -430,6 +443,7 @@ class OAuthApplicationTest extends DbTestCase
             'provider'      => 'azure',
             'client_id'     => 'cid',
             'client_secret' => 'secret',
+            'tenant_id'     => 'tenant',
         ], ['client_secret']);
 
         $protocol_key = 'oauth_imap_' . $app->getID();

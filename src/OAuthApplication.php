@@ -54,7 +54,7 @@ class OAuthApplication extends CommonDBTM
 
     public static function getSectorizedDetails(): array
     {
-        return ['config', Notification::class, self::class];
+        return ['config', self::class];
     }
 
     public static function getIcon(): string
@@ -201,31 +201,7 @@ class OAuthApplication extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        if (empty($input['provider'])) {
-            Session::addMessageAfterRedirect(
-                msg: __s('A valid provider is required'),
-                message_type: ERROR
-            );
-            return false;
-        } elseif (!array_key_exists($input['provider'], self::getProviders())) {
-            Session::addMessageAfterRedirect(
-                msg: __s('Invalid provider'),
-                message_type: ERROR
-            );
-            return false;
-        }
-        if (empty($input['client_id'])) {
-            Session::addMessageAfterRedirect(
-                msg: __s('Client ID is required'),
-                message_type: ERROR
-            );
-            return false;
-        }
-        if (empty($input['client_secret'])) {
-            Session::addMessageAfterRedirect(
-                msg: __s('Client secret is required'),
-                message_type: ERROR
-            );
+        if (!$this->checkRequiredFields($input)) {
             return false;
         }
 
@@ -236,23 +212,49 @@ class OAuthApplication extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        if (!empty($input['provider']) && !array_key_exists($input['provider'], self::getProviders())) {
-            Session::addMessageAfterRedirect(
-                msg: __s('Invalid provider'),
-                message_type: ERROR
-            );
+        if (!empty($input['client_secret'])) {
+            $input['client_secret'] = (new GLPIKey())->encrypt($input['client_secret']);
+        } else {
+            unset($input['client_secret']);
+        }
+
+        // Merge current DB fields so validation always has all required data
+        $full = array_merge($this->fields, $input);
+
+        if (!$this->checkRequiredFields($full)) {
             return false;
         }
 
-        if (isset($input['client_secret'])) {
-            if (!empty($input['client_secret'])) {
-                $input['client_secret'] = (new GLPIKey())->encrypt($input['client_secret']);
-            } else {
-                unset($input['client_secret']);
-            }
+        return $input;
+    }
+
+    public function checkRequiredFields(array $input): bool
+    {
+        $errors = [];
+
+        if (empty($input['provider'])) {
+            $errors[] = __s('A valid provider is required');
+        } elseif (!array_key_exists($input['provider'], self::getProviders())) {
+            $errors[] = __s('Invalid provider');
         }
 
-        return $input;
+        if (empty($input['client_id'])) {
+            $errors[] = __s('Client ID is required');
+        }
+
+        if (empty($input['client_secret'])) {
+            $errors[] = __s('Client secret is required');
+        }
+
+        if (($input['provider'] ?? null) === self::AZURE && empty($input['tenant_id'])) {
+            $errors[] = __s('Tenant ID is required');
+        }
+
+        foreach ($errors as $error) {
+            Session::addMessageAfterRedirect(msg: $error, message_type: ERROR);
+        }
+
+        return empty($errors);
     }
 
     /**
