@@ -149,6 +149,14 @@ class Peripheral extends InventoryAsset
         $value = $this->data;
 
         foreach ($value as $key => $val) {
+            // Skip devices that have been claimed by another asset (e.g. NetworkCard via USB)
+            if (
+                property_exists($val, 'name')
+                && isset($this->extra_data['ignored'][$val->name])
+            ) {
+                continue;
+            }
+
             $input = [
                 'itemtype'     => GPeripheral::class,
                 'name'         => $val->name ?? '',
