@@ -807,7 +807,7 @@ class Group_User extends CommonDBRelation
 
             // add the planning for the user
             $plannings['plannings'][$planning_k]['users']['user_' . $this->fields['users_id']] = [
-                'color'   => Planning::getPaletteColor('bg', $nb_users),
+                'color'   => Planning::getPaletteColor($nb_users),
                 'display' => true,
                 'type'    => 'user',
             ];

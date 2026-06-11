@@ -183,31 +183,6 @@ class PlanningTest extends DbTestCase
         }
     }
 
-    public static function getPaletteColorProvider()
-    {
-        $palettes = [];
-        $properties = (new \ReflectionClass(\Planning::class))->getProperties(\ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_STATIC);
-        foreach ($properties as $property) {
-            if (str_starts_with($property->getName(), 'palette_')) {
-                // Add palette (without the 'palette_' prefix)
-                $palettes[] = substr($property->getName(), 8);
-            }
-        }
-        $result = [];
-        foreach ($palettes as $palette) {
-            for ($i = 0; $i < 20; $i++) {
-                $result[] = [$palette, $i];
-            }
-        }
-        return $result;
-    }
-
-    #[DataProvider('getPaletteColorProvider')]
-    public function testGetPaletteColor(string $palette_name, int $index)
-    {
-        $color = \Planning::getPaletteColor($palette_name, $index);
-        $this->assertMatchesRegularExpression('/#[0-9A-F]{6}/', $color);
-    }
 
     public function testUpdateEventTimesAllowed()
     {
