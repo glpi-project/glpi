@@ -36,8 +36,10 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
+use Safe\DateTime;
 
 use function Safe\parse_url;
+use function Safe\strtotime;
 
 global $CFG_GLPI;
 
@@ -49,17 +51,14 @@ if (Session::getCurrentInterface() == "helpdesk") {
     Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
 }
 
-$fn_redirect_back = static function ($begin_year = null, $begin_month = null) {
+$fn_redirect_back = static function ($begin_date = null) {
     $back_url = Html::getBackUrl();
-    if ($begin_year === null && $begin_month === null) {
+    if ($begin_date === null) {
         // Try to get from POST data
         if (isset($_POST['resa']["begin"])) {
-            $begin = $_POST['resa']["begin"];
-            [$begin_year, $begin_month] = explode("-", $begin);
+            $begin_date = date('Y-m-d', strtotime($_POST['resa']["begin"]) ?: time());
         } else {
-            // Default to current month/year
-            $begin_year  = date('Y');
-            $begin_month = date('m');
+            $begin_date = date('Y-m-d');
         }
     }
 
@@ -73,14 +72,12 @@ $fn_redirect_back = static function ($begin_year = null, $begin_month = null) {
     }
     if (str_contains($back_url, 'front/reservation.php')) {
         $back_url .= (!str_contains($back_url, '?') ? '?' : '&') . Toolbox::append_params([
-            'month' => $begin_month,
-            'year' => $begin_year,
+            'defaultDate' => $begin_date,
         ]);
     } else {
         $back_url .= (!str_contains($back_url, '?') ? '?' : '&') . Toolbox::append_params([
             'tab_params' => [
-                'month' => $begin_month,
-                'year' => $begin_year,
+                'defaultDate' => $begin_date,
             ],
         ]);
     }
@@ -128,8 +125,7 @@ if (isset($_POST["update"])) {
         );
     }
 
-    [$begin_year, $begin_month] = explode("-", $rr->fields["begin"]);
-    $fn_redirect_back($begin_year, $begin_month);
+    $fn_redirect_back((new DateTime($rr->fields["begin"]))->format('Y-m-d'));
 } elseif (isset($_POST["add"])) {
     Reservation::handleAddForm($_POST);
     $fn_redirect_back();
