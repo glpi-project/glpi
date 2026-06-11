@@ -311,6 +311,10 @@ class MailCollector extends CommonDBTM
             $protocol_choices['/' . $key] = $protocol['label'];
         }
 
+        foreach (getAllDataFromTable(OAuthApplication::getTable(), ['is_active' => 1]) as $app) {
+            $protocol_choices['/oauth_imap_' . $app['id']] = $app['name'];
+        }
+
         TemplateRenderer::getInstance()->display('pages/setup/mailcollector/setup_form.html.twig', [
             'item'             => $this,
             'protocol_choices' => $protocol_choices,

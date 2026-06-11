@@ -38,23 +38,26 @@ export class OAuthApplicationController
 
     constructor(azure_provider_value) {
         this.#azure_provider_value = azure_provider_value;
-        this.#provider_select      = $('select[name="provider"]');
-        this.#tenant_id_field      = $('[data-testid="form-field-tenant_id"]');
+        this.#provider_select      = document.querySelector('select[name="provider"]');
+        this.#tenant_id_field      = document.querySelector('[data-testid="form-field-tenant_id"]');
 
-        this.#provider_select.on('change', () => this.#syncTenantIdRequired());
+        this.#provider_select.addEventListener('change', () => this.#syncTenantIdRequired());
         this.#syncTenantIdRequired();
     }
 
     #syncTenantIdRequired() {
-        const is_azure = this.#provider_select.val() === this.#azure_provider_value;
-        const input    = this.#tenant_id_field.find('input');
-        const label    = this.#tenant_id_field.find('label');
+        const is_azure = this.#provider_select.value === this.#azure_provider_value;
+        const input    = this.#tenant_id_field.querySelector('input');
+        const label    = this.#tenant_id_field.querySelector('label');
 
-        input.prop('required', is_azure);
+        input.required = is_azure;
 
-        label.find('span.required').remove();
+        label.querySelector('span.required')?.remove();
         if (is_azure) {
-            label.append('<span class="required">*</span>');
+            const span = document.createElement('span');
+            span.className = 'required';
+            span.textContent = '*';
+            label.append(span);
         }
     }
 }

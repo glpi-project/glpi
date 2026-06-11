@@ -105,7 +105,7 @@ class OAuthApplication extends CommonDBTM
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item instanceof self && $tabnum === 1) {
-            $item->showLinkedMailCollectors();
+            $item->getLinkedMailCollectors(true);
             return true;
         }
         return false;
@@ -137,8 +137,10 @@ class OAuthApplication extends CommonDBTM
 
     /**
      * Displays the tab content listing MailCollectors linked to this application.
+     *
+     * @return array|void
      */
-    public function showLinkedMailCollectors(): void
+    public function getLinkedMailCollectors($show = false)
     {
         global $DB;
 
@@ -159,23 +161,27 @@ class OAuthApplication extends CommonDBTM
             ];
         }
 
-        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-            'is_tab'          => true,
-            'nofilter'        => true,
-            'nosort'          => true,
-            'columns'         => [
-                'name'              => __('Name'),
-                'is_active'         => __('Active'),
-                'last_collect_date' => __('Last collection date'),
-            ],
-            'formatters'      => [
-                'name'              => 'raw_html',
-                'last_collect_date' => 'datetime',
-            ],
-            'entries'         => $entries,
-            'total_number'    => count($entries),
-            'filtered_number' => count($entries),
-        ]);
+        if ($show) {
+            TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+                'is_tab'          => true,
+                'nofilter'        => true,
+                'nosort'          => true,
+                'columns'         => [
+                    'name'              => __('Name'),
+                    'is_active'         => __('Active'),
+                    'last_collect_date' => __('Last collection date'),
+                ],
+                'formatters'      => [
+                    'name'              => 'raw_html',
+                    'last_collect_date' => 'datetime',
+                ],
+                'entries'         => $entries,
+                'total_number'    => count($entries),
+                'filtered_number' => count($entries),
+            ]);
+        } else {
+            return $entries;
+        }
     }
 
     public function cleanDBonPurge(): void
@@ -252,10 +258,25 @@ class OAuthApplication extends CommonDBTM
         }
 
         foreach ($errors as $error) {
-            Session::addMessageAfterRedirect(msg: $error, message_type: ERROR);
+            Session::addMessageAfterRedirect($error, message_type: ERROR);
         }
 
         return empty($errors);
+    }
+
+    public function pre_deleteItem()
+    {
+        $lkd_collectors = $this->getLinkedMailCollectors();
+        if (is_array($lkd_collectors) && count($lkd_collectors) > 0) {
+            Session::addMessageAfterRedirect(__('The app could not be deleted, it is linked with the following receiver(s): '), message_type: ERROR);
+            foreach ($lkd_collectors as $collector) {
+                $message[] = $collector['name'];
+                Session::addMessageAfterRedirect('- ' . $collector['name'], message_type: ERROR);
+            }
+
+            return false;
+        }
+        return true;
     }
 
     /**

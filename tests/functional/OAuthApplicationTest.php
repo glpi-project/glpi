@@ -80,13 +80,14 @@ class OAuthApplicationTest extends DbTestCase
             'client_secret' => 'secret',
         ], ['client_secret']);
 
-        $app = $this->updateItem(OAuthApplication::class, $app->getID(), [
+        $updatedapp = $this->updateItem(OAuthApplication::class, $app->getID(), [
             'name'      => 'New name',
             'is_active' => 1,
         ]);
 
-        $this->assertSame('New name', $app->fields['name']);
-        $this->assertSame(1, (int) $app->fields['is_active']);
+        $this->assertSame('New name', $updatedapp->fields['name']);
+        $this->assertSame(1, (int) $updatedapp->fields['is_active']);
+        $this->assertSame($app->fields['client_secret'], $updatedapp->fields['client_secret']);
     }
 
     public function testPurge(): void
@@ -359,10 +360,10 @@ class OAuthApplicationTest extends DbTestCase
     }
 
     // -------------------------------------------------------------------------
-    // cleanDBonPurge
+    // pre_deleteItem
     // -------------------------------------------------------------------------
 
-    public function testCleanDBonPurge(): void
+    public function testDeleteOAuthAppLinkedToACollector(): void
     {
         global $DB;
 
@@ -370,7 +371,7 @@ class OAuthApplicationTest extends DbTestCase
 
         /** @var OAuthApplication $app */
         $app = $this->createItem(OAuthApplication::class, [
-            'name'          => 'App to purge',
+            'name'          => 'App blocked on delete',
             'is_active'     => 1,
             'provider'      => 'azure',
             'client_id'     => 'cid',
@@ -380,50 +381,26 @@ class OAuthApplicationTest extends DbTestCase
 
         $protocol_key = 'oauth_imap_' . $app->getID();
 
-        $DB->insert(MailCollector::getTable(), [
-            'name'  => 'Collector to clean',
-            'host'  => '{mail.example.com/' . $protocol_key . '/ssl}INBOX',
-            'login' => 'user@example.com',
+        $mc_deletion = $this->createItem(MailCollector::class, [
+            'name'      => 'Delete collector',
+            'host'      => '{mail.example.com/' . $protocol_key . '/ssl/novalidate-cert}INBOX',
+            'login'     => 'user@example.com',
+            'is_active' => 1,
         ]);
-        $mc = new MailCollector();
-        $mc->getFromDB($DB->insertId());
 
-        // Purge the application
-        $this->assertTrue($app->delete(['id' => $app->getID()], true));
+        $this->assertFalse($app->delete(['id' => $app->getID()], true));
 
-        // The linked collector's host must now be cleared
-        $mc->getFromDB($mc->getID());
-        $this->assertSame('', $mc->fields['host']);
-    }
+        // App must still exist in DB
+        $this->assertTrue($app->getFromDB($app->getID()));
 
-    public function testCleanDBonPurgeDoesNotAffectUnrelatedCollectors(): void
-    {
-        $this->login();
+        $this->hasSessionMessages(ERROR, [
+            'The app could not be deleted, it is linked with the following receiver(s): ',
+            '- ' . $mc_deletion->getLink(),
+        ]);
 
-        /** @var OAuthApplication $app */
-        $app = $this->createItem(OAuthApplication::class, [
-            'name'          => 'App to purge 2',
-            'is_active'     => 1,
-            'provider'      => 'azure',
-            'client_id'     => 'cid',
-            'client_secret' => 'secret',
-            'tenant_id'     => 'tenant',
-        ], ['client_secret']);
+        $this->deleteItem((MailCollector::class), $mc_deletion->getID(), true);
 
-        /** @var MailCollector $mc_other */
-        $mc_other = $this->createItem(MailCollector::class, [
-            'name'  => 'Unrelated collector',
-            'host'  => '{mail.other.com/imap/ssl}INBOX',
-            'login' => 'user2@example.com',
-        ], ['host', 'server_type']);
-
-        $host_before_purge = $mc_other->fields['host'];
-
-        $this->assertTrue($app->delete(['id' => $app->getID()], true));
-
-        // Unrelated collector must be untouched
-        $mc_other->getFromDB($mc_other->getID());
-        $this->assertSame($host_before_purge, $mc_other->fields['host']);
+        $this->deleteItem((OAuthApplication::class), $app->getID(), true);
     }
 
     // -------------------------------------------------------------------------

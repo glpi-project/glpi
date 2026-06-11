@@ -75,7 +75,7 @@
                                 {
                                     is_disclosable: true,
                                     helper: item.isNewItem() ? '' : __('Leave empty to keep the current secret'),
-                                    required: true
+                                    required: item.isNewItem()
                                 }
                             ) }}
 
