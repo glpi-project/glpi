@@ -1589,126 +1589,113 @@ HTML
     {
         $this->login();
 
-        $ticket = new \Ticket();
-        $ticket_id = $ticket->add([
+        $ticket = $this->createItem(\Ticket::class, [
             'name'    => __FUNCTION__,
             'content' => __FUNCTION__,
         ]);
-        $this->integer($ticket_id)->isGreaterThan(0);
 
-        $document = new \Document();
-        $document_id = $document->add([
+        $document = $this->createItem(\Document::class, [
             'name'     => __FUNCTION__,
             'filename' => 'test.txt',
         ]);
-        $this->integer($document_id)->isGreaterThan(0);
 
-        $document_item = new \Document_Item();
-        $this->integer($document_item->add([
-            'documents_id' => $document_id,
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $document->getID(),
             'itemtype'     => \Ticket::class,
-            'items_id'     => $ticket_id,
-        ]))->isGreaterThan(0);
+            'items_id'     => $ticket->getID(),
+        ]);
 
-        $doc_url = '/front/document.send.php?docid=' . $document_id
-            . '&amp;itemtype=Ticket&amp;items_id=' . $ticket_id;
+        $doc_url = '/front/document.send.php?docid=' . $document->getID()
+            . '&amp;itemtype=Ticket&amp;items_id=' . $ticket->getID();
 
-        $kb = new \KnowbaseItem();
-        $kb_id = $kb->add([
+        $kb = $this->createItem(\KnowbaseItem::class, [
             'name'          => __FUNCTION__,
             'answer'        => '<p><a href="' . $doc_url . '">doc</a></p>',
             'is_faq'        => 0,
             'users_id'      => \Session::getLoginUserID(),
             '_itemtype'     => \Ticket::class,
-            '_items_id'     => $ticket_id,
+            '_items_id'     => $ticket->getID(),
             '_do_item_link' => false,
-        ]);
-        $this->integer($kb_id)->isGreaterThan(0);
-        $this->boolean($kb->getFromDB($kb_id))->isTrue();
+        ], ['answer']);
 
-        $this->string($kb->fields['answer'])->contains('itemtype=KnowbaseItem');
-        $this->string($kb->fields['answer'])->contains('items_id=' . $kb_id);
-        $this->string($kb->fields['answer'])->notContains('itemtype=Ticket');
+        $this->assertTrue($kb->getFromDB($kb->getID()));
 
-        $this->integer(countElementsInTable(\Document_Item::getTable(), [
-            'documents_id' => $document_id,
-            'itemtype'     => \KnowbaseItem::class,
-            'items_id'     => $kb_id,
-        ]))->isEqualTo(1);
+        $this->assertStringContainsString('itemtype=KnowbaseItem', $kb->fields['answer']);
+        $this->assertStringContainsString('items_id=' . $kb->getID(), $kb->fields['answer']);
+        $this->assertStringNotContainsString('itemtype=Ticket', $kb->fields['answer']);
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(\Document_Item::getTable(), [
+                'documents_id' => $document->getID(),
+                'itemtype'     => \KnowbaseItem::class,
+                'items_id'     => $kb->getID(),
+            ])
+        );
     }
 
     public function testRelinkEmbeddedDocumentsBlockedWithoutSourceAccess(): void
     {
         $this->login();
 
-        $ticket = new \Ticket();
-        $ticket_id = $ticket->add([
+        $ticket = $this->createItem(\Ticket::class, [
             'name'    => __FUNCTION__,
             'content' => __FUNCTION__,
         ]);
-        $this->integer($ticket_id)->isGreaterThan(0);
 
-        $document = new \Document();
-        $document_id = $document->add([
+        $document = $this->createItem(\Document::class, [
             'name'     => __FUNCTION__,
             'filename' => 'test.txt',
         ]);
-        $this->integer($document_id)->isGreaterThan(0);
 
-        $document_item = new \Document_Item();
-        $this->integer($document_item->add([
-            'documents_id' => $document_id,
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $document->getID(),
             'itemtype'     => \Ticket::class,
-            'items_id'     => $ticket_id,
-        ]))->isGreaterThan(0);
+            'items_id'     => $ticket->getID(),
+        ]);
 
-        $profile = new \Profile();
-        $profile_id = $profile->add([
+        $profile = $this->createItem(\Profile::class, [
             'name'      => __FUNCTION__,
             'interface' => 'central',
+            'knowbase'  => \KnowbaseItem::PUBLISHFAQ | CREATE,
+            'ticket'    => 0,
         ]);
-        $this->integer($profile_id)->isGreaterThan(0);
 
-        // Droits : KB publish + create, aucun droit ticket
-        $DB->update(\Profile::getTable(), [
-            'knowbase' => \KnowbaseItem::PUBLISHFAQ | CREATE,
-        ], ['id' => $profile_id]);
-
-        $user = new \User();
-        $user_id = $user->add([
+        $user = $this->createItem(\User::class, [
             'name'         => __FUNCTION__,
             'password'     => 'testpassword',
             'password2'    => 'testpassword',
-            '_profiles_id' => $profile_id,
+            '_profiles_id' => $profile->getID(),
             '_entities_id' => 0,
-        ]);
-        $this->integer($user_id)->isGreaterThan(0);
+        ], ['password', 'password2']);
 
-        $this->login(__FUNCTION__, 'testpassword');
+        $this->login($user->fields['name'], 'testpassword');
 
-        $doc_url = '/front/document.send.php?docid=' . $document_id
-            . '&amp;itemtype=Ticket&amp;items_id=' . $ticket_id;
+        $doc_url = '/front/document.send.php?docid=' . $document->getID()
+            . '&amp;itemtype=Ticket&amp;items_id=' . $ticket->getID();
 
-        $kb = new \KnowbaseItem();
-        $kb_id = $kb->add([
+        $kb = $this->createItem(\KnowbaseItem::class, [
             'name'          => __FUNCTION__,
             'answer'        => '<p><a href="' . $doc_url . '">doc</a></p>',
             'is_faq'        => 1,
-            'users_id'      => $user_id,
+            'users_id'      => $user->getID(),
             '_itemtype'     => \Ticket::class,
-            '_items_id'     => $ticket_id,
+            '_items_id'     => $ticket->getID(),
             '_do_item_link' => false,
-        ]);
-        $this->integer($kb_id)->isGreaterThan(0);
-        $this->boolean($kb->getFromDB($kb_id))->isTrue();
+        ], ['answer']);
 
-        $this->string($kb->fields['answer'])->notContains('itemtype=KnowbaseItem');
-        $this->string($kb->fields['answer'])->contains('itemtype=Ticket');
+        $this->assertTrue($kb->getFromDB($kb->getID()));
 
-        $this->integer(countElementsInTable(\Document_Item::getTable(), [
-            'documents_id' => $document_id,
-            'itemtype'     => \KnowbaseItem::class,
-            'items_id'     => $kb_id,
-        ]))->isEqualTo(0);
+        $this->assertStringNotContainsString('itemtype=KnowbaseItem', $kb->fields['answer']);
+        $this->assertStringContainsString('itemtype=Ticket', $kb->fields['answer']);
+
+        $this->assertEquals(
+            0,
+            countElementsInTable(\Document_Item::getTable(), [
+                'documents_id' => $document->getID(),
+                'itemtype'     => \KnowbaseItem::class,
+                'items_id'     => $kb->getID(),
+            ])
+        );
     }
 }
