@@ -171,16 +171,20 @@ class NetworkPort extends InventoryAsset
             if ($this->main_asset instanceof Computer) {
                 $port_name = property_exists($val, 'name') ? strtolower((string) $val->name) : '';
                 $found = false;
-                $networks = $this->extra_data['networks'] ?? [];
-                foreach ($networks as $network) {
-                    $net_descr = property_exists($network, 'description')
-                        ? strtolower((string) $network->description)
-                        : '';
-                    if ($port_name !== '' && $net_descr !== '' && $port_name === $net_descr) {
-                        $found = true;
-                        break;
+                
+                if (isset($this->extra_data['networks'])) {
+                    $networks = is_array($this->extra_data['networks']) ? $this->extra_data['networks'] : [$this->extra_data['networks']];
+                    foreach ($networks as $network) {
+                        $net_descr = property_exists($network, 'description')
+                            ? strtolower((string) $network->description)
+                            : '';
+                        if ($port_name !== '' && $net_descr !== '' && $port_name === $net_descr) {
+                            $found = true;
+                            break;
+                        }
                     }
                 }
+                
                 if (!$found) {
                     unset($this->data[$k]);
                     continue;

@@ -9514,7 +9514,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
-	'count' => 5,
+	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
