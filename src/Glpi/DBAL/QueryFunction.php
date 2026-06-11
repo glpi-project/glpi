@@ -494,12 +494,8 @@ class QueryFunction
      */
     public static function timestampdiff(string $unit, string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
-        $values = [];
-        if ($expression1 instanceof QueryExpression) {
-            $values = array_merge($values, $expression1->getValues());
-        }
         $unit_expr = new QueryExpression($unit);
-        $values = array_merge($values, $unit_expr->getValues());
+        $values = $unit_expr->getValues();
         if ($expression1 instanceof QueryExpression) {
             $values = array_merge($values, $expression1->getValues());
         }
