@@ -1725,7 +1725,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         ) {
                             $ORWHERE = [
                                 static::$items_id_1 => $item_2->getID(),
-                                static::$items_id_2 => $item_2->getID(),
+                                static::$items_id_2 => $item_1->getID(),
                             ];
                             if (preg_match('/^itemtype/', static::$itemtype_1)) {
                                 $ORWHERE[static::$itemtype_1] = $item_2->getType();
