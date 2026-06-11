@@ -309,49 +309,13 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
         ]);
         $this->assertCount($expected_count, $iterator);
 
-        //first port on both GenericAsset and std inventory (since handlePorts is now correctly skipped for GenericAsset)
+        //first port on GenericAsset, last on std inventory
         $expecteds = [
             0 => [
-                'logical_number' => 83886080,
-                'name' => 'mgmt0',
-                'instantiation_type' => 'NetworkPortEthernet',
-                'mac' => '8c:60:4f:8d:ae:a1',
-                'ifmtu' => 1500,
-                'ifspeed' => 1000000000,
-                'ifinternalstatus' => '2',
-                'ifconnectionstatus' => 0,
-                'iflastchange' => '0.00 seconds',
-                'ifinbytes' => 1883240436,
-                'ifinerrors' => 0,
-                'ifoutbytes' => 0,
-                'ifouterrors' => 0,
-                'ifstatus' => '2',
-                'ifdescr' => 'mgmt0',
-                'ifalias' => null,
-                'portduplex' => '1',
-                'trunk' => 0,
-                'lastup' => null,
-            ],
-            163 => [
                 'logical_number' => 0,
                 'name' => 'Management',
                 'instantiation_type' => 'NetworkPortAggregate',
                 'mac' => '8c:60:4f:8d:ae:fc',
-                'ifmtu' => 0,
-                'ifspeed' => 0,
-                'ifinternalstatus' => null,
-                'ifconnectionstatus' => 0,
-                'iflastchange' => null,
-                'ifinbytes' => 0,
-                'ifinerrors' => 0,
-                'ifoutbytes' => 0,
-                'ifouterrors' => 0,
-                'ifstatus' => null,
-                'ifdescr' => null,
-                'ifalias' => null,
-                'portduplex' => null,
-                'trunk' => 0,
-                'lastup' => null,
             ],
         ];
 
@@ -388,6 +352,21 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
                     'is_recursive' => 0,
                     'is_deleted' => 0,
                     'is_dynamic' => 1,
+                    'ifmtu' => 0,
+                    'ifspeed' => 0,
+                    'ifinternalstatus' => null,
+                    'ifconnectionstatus' => 0,
+                    'iflastchange' => null,
+                    'ifinbytes' => 0,
+                    'ifinerrors' => 0,
+                    'ifoutbytes' => 0,
+                    'ifouterrors' => 0,
+                    'ifstatus' => null,
+                    'ifdescr' => null,
+                    'ifalias' => null,
+                    'portduplex' => null,
+                    'trunk' => 0,
+                    'lastup' => null,
                 ];
 
                 $this->assertIsArray($port);
