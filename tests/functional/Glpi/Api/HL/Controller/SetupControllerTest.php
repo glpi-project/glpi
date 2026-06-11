@@ -157,12 +157,14 @@ class SetupControllerTest extends HLAPITestCase
                         'number_time' => 30,
                         'definition_time' => 'hour',
                     ]);
-                    $ola = $this->createItem('OLA', [
+                    $ola_group_id = getItemByTypeName(\Group::class, '_test_group_1', true);
+                    $ola = $this->createItem(\OLA::class, [
                         'name' => 'Test OLA for AutoCRUD',
                         'entities_id' => $entity,
                         'slms_id' => $slm->getID(),
                         'number_time' => 30,
                         'definition_time' => 'hour',
+                        'groups_id' => $ola_group_id,
                     ]);
                     foreach ($content as $type) {
                         if ($type['itemtype'] === 'CronTask' || $type['itemtype'] === 'QueuedWebhook') {
@@ -194,7 +196,11 @@ class SetupControllerTest extends HLAPITestCase
                         } elseif ($type['itemtype'] === 'AuthLdapReplicate') {
                             $create_params['host'] = 'ldap.example.com';
                         }
-                        $this->api->autoTestCRUD($type['href'], $create_params);
+                        $extra_options = [];
+                        if ($type['itemtype'] === 'OLA') {
+                            $extra_options['create_only_params'] = ['group' => $ola_group_id];
+                        }
+                        $this->api->autoTestCRUD($type['href'], $create_params, [], $extra_options);
                     }
                 });
         });
@@ -210,6 +216,7 @@ class SetupControllerTest extends HLAPITestCase
 
         $entity = $this->getTestRootEntity(true);
         $slm = $this->createItem(SLM::class, ['name' => 'Test SLM for AutoSearch', 'entities_id' => $entity]);
+        $ola_group_id = getItemByTypeName(\Group::class, '_test_group_1', true);
         $sla = $this->createItem('SLA', [
             'name' => 'Test SLA for AutoCRUD',
             'entities_id' => $entity,
@@ -223,6 +230,7 @@ class SetupControllerTest extends HLAPITestCase
             'slms_id' => $slm->getID(),
             'number_time' => 30,
             'definition_time' => 'hour',
+            'groups_id' => $ola_group_id,
         ]);
 
         foreach ([...$types_20, ...$types_23] as $type) {
@@ -233,10 +241,15 @@ class SetupControllerTest extends HLAPITestCase
             $create_request = new Request('POST', '/Setup/' . $type);
             $create_request->setParameter('name', 'testCRUDNoRights' . random_int(0, 10000));
             $create_request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
-            if ($type === 'SLA' || $type === 'OLA') {
+            if ($type === 'SLA') {
                 $create_request->setParameter('slm', $slm->getID());
                 $create_request->setParameter('time', 2);
                 $create_request->setParameter('time_unit', 'hour');
+            } elseif ($type === 'OLA') {
+                $create_request->setParameter('slm', $slm->getID());
+                $create_request->setParameter('time', 2);
+                $create_request->setParameter('time_unit', 'hour');
+                $create_request->setParameter('group', $ola_group_id);
             } elseif ($type === 'FieldUnicity') {
                 $create_request->setParameter('itemtype', 'Computer');
                 $create_request->setParameter('fields', 'serial');

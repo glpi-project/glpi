@@ -317,6 +317,8 @@ final class HLAPIHelper
             // Expect the new location to be a singleton (i.e. /endpoint instead of /endpoint/{id})
             'new_location_singleton' => false,
             'skip_update_test' => false,
+            // Params sent in the POST request but not returned by the GET response
+            'create_only_params' => [],
         ], $extra_options);
         $this->test->resetSession();
         $this->test->login();
@@ -376,6 +378,9 @@ final class HLAPIHelper
             $create_params['entity'] = getItemByTypeName('Entity', '_test_root_entity', true);
         }
         foreach ($create_params as $key => $value) {
+            $request->setParameter($key, $value);
+        }
+        foreach ($extra_options['create_only_params'] as $key => $value) {
             $request->setParameter($key, $value);
         }
         // remove writeonly properties from $create_params so checks below don't fail

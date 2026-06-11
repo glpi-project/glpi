@@ -37,7 +37,7 @@
 
    <ul>
       {% for data in dates %}
-         {% if data['timestamp'] != 0 %}
+         {% if data['timestamp'] is not null %}
             <li class="{{ data['class'] }}">
                &nbsp;
                <time title="{{ data['date']|formatted_datetime }}"

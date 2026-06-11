@@ -35,6 +35,7 @@
 
 namespace Glpi\ContentTemplates\Parameters;
 
+use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
 use OLA;
 
 /**
@@ -44,6 +45,11 @@ use OLA;
  */
 class OLAParameters extends LevelAgreementParameters
 {
+    public function getAvailableParameters(): array
+    {
+        return parent::getAvailableParameters() + [new ObjectParameter(new GroupParameters()),];
+    }
+
     public static function getDefaultNodeName(): string
     {
         return 'ola';
