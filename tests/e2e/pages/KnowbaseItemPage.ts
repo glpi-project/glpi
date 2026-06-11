@@ -290,6 +290,35 @@ export class KnowbaseItemPage extends GlpiPage
         });
     }
 
+    public getCreateRootCategoryButton(): Locator
+    {
+        return this.page.getByRole('button', { name: 'New category' });
+    }
+
+    public getCreateSubCategoryButton(parent_title: string): Locator
+    {
+        return this.getAsideCategory(parent_title).getByRole('button', {
+            name: new RegExp(`Create a sub-category in ${parent_title}`, 'i'),
+        });
+    }
+
+    public getCategoryNameInput(): Locator
+    {
+        return this.page.getByRole('textbox', { name: 'Category name' });
+    }
+
+    public getEditCategoryButton(title: string): Locator
+    {
+        return this.getAsideCategory(title).getByRole('button', {
+            name: new RegExp(`Edit ${title}`, 'i'),
+        });
+    }
+
+    public getCategoryCommentInput(title: string): Locator
+    {
+        return this.getAsideCategory(title).getByRole('textbox', { name: 'Comment' });
+    }
+
     public async doToggleAsideCategory(title: string): Promise<void>
     {
         await this.getAsideCategoryToggle(title).click();

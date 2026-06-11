@@ -1,0 +1,65 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="card card-sm mb-2" data-glpi-kb-category-edit-form data-glpi-kb-category-id="{{ id }}">
+    <div class="card-body">
+        <div class="mb-2">
+            {{ include('components/illustration/icon_picker.html.twig', {
+                name: 'illustration',
+                value: illustration,
+                size: 40,
+            }, with_context: false) }}
+        </div>
+        <div class="mb-2">
+            <label class="form-label" for="kb-category-comment-{{ id }}">{{ _n('Comment', 'Comments', get_plural_number()) }}</label>
+            <textarea
+                id="kb-category-comment-{{ id }}"
+                class="form-control"
+                rows="2"
+                data-glpi-kb-category-edit-comment
+            >{{ comment }}</textarea>
+        </div>
+        <div class="alert alert-danger d-none" role="alert" data-glpi-kb-category-edit-error></div>
+        <div class="d-flex justify-content-end">
+            <button
+                type="button"
+                class="btn btn-ghost-secondary me-2"
+                data-glpi-kb-category-edit-cancel
+            >{{ __('Cancel') }}</button>
+            <button
+                type="button"
+                class="btn btn-primary"
+                data-glpi-kb-category-edit-save
+            >{{ __('Save') }}</button>
+        </div>
+    </div>
+</div>

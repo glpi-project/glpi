@@ -795,6 +795,46 @@
         cursor: pointer;
     }
 
+    // Allow the toggle button to shrink below its intrinsic content width
+    // so text-truncate engages on the title and the action icons that follow
+    // are never pushed off-screen (matters most for deeply-nested categories
+    // where the tree indentation already eats into the available width).
+    [data-glpi-kb-aside-category-toggle] {
+        min-width: 0;
+
+        > span {
+            min-width: 0;
+        }
+    }
+
+    // Per-category action buttons (create article, create sub-category),
+    // revealed on row hover/focus. visibility:hidden (not opacity:0) keeps them
+    // out of the tab order and unclickable until shown. flex-shrink: 0 keeps
+    // them at their natural width even when the title is long.
+    [data-glpi-kb-aside-category-add],
+    [data-glpi-kb-aside-category-create],
+    [data-glpi-kb-aside-category-edit] {
+        flex-shrink: 0;
+        visibility: hidden;
+    }
+
+    [data-glpi-kb-aside-category-header]:hover [data-glpi-kb-aside-category-add],
+    [data-glpi-kb-aside-category-header]:hover [data-glpi-kb-aside-category-create],
+    [data-glpi-kb-aside-category-header]:hover [data-glpi-kb-aside-category-edit],
+    [data-glpi-kb-aside-category-header]:focus-within [data-glpi-kb-aside-category-add],
+    [data-glpi-kb-aside-category-header]:focus-within [data-glpi-kb-aside-category-create],
+    [data-glpi-kb-aside-category-header]:focus-within [data-glpi-kb-aside-category-edit] {
+        visibility: visible;
+    }
+
+    @media (hover: none) {
+        [data-glpi-kb-aside-category-add],
+        [data-glpi-kb-aside-category-create],
+        [data-glpi-kb-aside-category-edit] {
+            visibility: visible;
+        }
+    }
+
     // KB aside tree hierarchy connector lines
     .kb-tree {
         list-style: none;

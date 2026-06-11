@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _ */
+/* global _, glpi_toast_error */
 
 import { get } from "/js/modules/Ajax.js";
 
@@ -62,6 +62,317 @@ export class GlpiKnowbaseAsideController
         this.#aside = aside;
         this.#initCategoryToggle();
         this.#initSearch();
+        this.#initCreateCategory();
+        this.#initEditCategory();
+    }
+
+    #initCreateCategory()
+    {
+        this.#aside.addEventListener('click', (e) => {
+            const sub_trigger = e.target.closest('[data-glpi-kb-aside-category-create]');
+            if (sub_trigger) {
+                e.preventDefault();
+                const node = sub_trigger.closest('[data-glpi-kb-aside-category]');
+                const list = node?.querySelector(':scope > ul');
+                if (list) {
+                    this.#startInlineCreate(list, sub_trigger.dataset.glpiKbParentId ?? '0');
+                }
+                return;
+            }
+
+            const root_trigger = e.target.closest('[data-glpi-kb-aside-category-create-root]');
+            if (root_trigger) {
+                e.preventDefault();
+                const list = this.#aside.querySelector('[data-glpi-kb-aside-tree] > ul');
+                if (list) {
+                    this.#startInlineCreate(list, '0');
+                }
+            }
+        });
+    }
+
+    /**
+     * Spawn an editable list item to create a category inline under the given list.
+     *
+     * @param {HTMLElement} list      The <ul> the new category belongs to.
+     * @param {string}      parent_id Parent category id ('0' for a root category).
+     */
+    #startInlineCreate(list, parent_id)
+    {
+        // Only one inline editor at a time.
+        this.#aside.querySelector('[data-glpi-kb-aside-category-new]')?.remove();
+
+        const li = document.createElement('li');
+        li.className = 'node';
+        li.setAttribute('data-glpi-kb-aside-category-new', '');
+
+        const row = document.createElement('div');
+        row.className = 'd-flex align-items-center mb-2';
+
+        const icon = document.createElement('i');
+        icon.className = 'ti ti-folder me-1 fs-4';
+        icon.setAttribute('aria-hidden', 'true');
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'form-control form-control-sm';
+        input.autocomplete = 'off';
+        input.setAttribute('aria-label', __('Category name'));
+
+        const error = document.createElement('div');
+        error.className = 'invalid-feedback';
+        error.setAttribute('role', 'alert');
+
+        row.append(icon, input);
+        li.append(row, error);
+        list.append(li);
+
+        input.scrollIntoView({ block: 'nearest' });
+        input.focus();
+
+        // True while a create request is in flight, so the blur handler does not
+        // cancel an item that is about to be replaced by the created node.
+        let submitting = false;
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const name = input.value.trim();
+                if (name === '') {
+                    this.#showInlineError(input, error, __('Title is mandatory'));
+                    return;
+                }
+                submitting = true;
+                this.#submitInlineCreate(li, input, error, name, parent_id)
+                    .finally(() => {
+                        submitting = false;
+                    });
+            } else if (e.key === 'Escape') {
+                e.preventDefault();
+                li.remove();
+            }
+        });
+
+        input.addEventListener('blur', () => {
+            if (!submitting) {
+                li.remove();
+            }
+        });
+    }
+
+    /**
+     * @param {HTMLElement} li
+     * @param {HTMLInputElement} input
+     * @param {HTMLElement} error
+     * @param {string} name
+     * @param {string} parent_id
+     */
+    async #submitInlineCreate(li, input, error, name, parent_id)
+    {
+        const body = new FormData();
+        body.append('name', name);
+        body.append('knowbaseitemcategories_id', parent_id);
+
+        let response;
+        try {
+            response = await fetch(`${CFG_GLPI.root_doc}/Knowbase/Aside/Category`, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body,
+            });
+        } catch {
+            this.#showInlineError(input, error, __('An unexpected error occurred.'));
+            return;
+        }
+
+        if (response.ok) {
+            const data = await response.json();
+            const template = document.createElement('template');
+            template.innerHTML = (data.html ?? '').trim();
+            const node = template.content.firstElementChild;
+            if (node) {
+                li.replaceWith(node);
+                node.scrollIntoView({ block: 'nearest' });
+            } else {
+                li.remove();
+            }
+            return;
+        }
+
+        if (response.status === 422) {
+            const data = await response.json();
+            this.#showInlineError(
+                input,
+                error,
+                data.errors?.name ?? data.errors?._global ?? __('An unexpected error occurred.'),
+            );
+            return;
+        }
+
+        this.#showInlineError(input, error, __('An unexpected error occurred.'));
+    }
+
+    /**
+     * @param {HTMLInputElement} input
+     * @param {HTMLElement} error
+     * @param {string} message
+     */
+    #showInlineError(input, error, message)
+    {
+        input.classList.add('is-invalid');
+        input.setAttribute('aria-invalid', 'true');
+        error.classList.add('d-block');
+        error.textContent = message;
+        input.focus();
+    }
+
+    #initEditCategory()
+    {
+        this.#aside.addEventListener('click', (e) => {
+            const trigger = e.target.closest('[data-glpi-kb-aside-category-edit]');
+            if (!trigger) {
+                return;
+            }
+            e.preventDefault();
+            const node = trigger.closest('[data-glpi-kb-aside-category]');
+            if (node) {
+                this.#openEditPanel(node, trigger.dataset.glpiKbCategoryId);
+            }
+        });
+    }
+
+    /**
+     * Fetch and inject the inline edit panel for a category.
+     *
+     * @param {HTMLElement} node        The category tree node.
+     * @param {string}      category_id
+     */
+    async #openEditPanel(node, category_id)
+    {
+        // Only one edit panel open at a time.
+        this.#aside.querySelector('[data-glpi-kb-category-edit-form]')?.remove();
+
+        let response;
+        try {
+            response = await fetch(
+                `${CFG_GLPI.root_doc}/Knowbase/Aside/Category/${category_id}/EditForm`,
+                { headers: { 'X-Requested-With': 'XMLHttpRequest' } },
+            );
+        } catch {
+            glpi_toast_error(__('An unexpected error occurred.'));
+            return;
+        }
+        if (!response.ok) {
+            glpi_toast_error(
+                response.status === 403
+                    ? __('You are not allowed to edit this category.')
+                    : __('An unexpected error occurred.'),
+            );
+            return;
+        }
+
+        const header = node.querySelector('[data-glpi-kb-aside-category-header]');
+        header.insertAdjacentHTML('afterend', await response.text());
+
+        const panel = node.querySelector('[data-glpi-kb-category-edit-form]');
+        if (!panel) {
+            return;
+        }
+
+        // insertAdjacentHTML does not execute <script> tags; re-create them so
+        // the bundled illustration picker initialises.
+        for (const old_script of panel.querySelectorAll('script')) {
+            const script = document.createElement('script');
+            for (const attr of old_script.attributes) {
+                script.setAttribute(attr.name, attr.value);
+            }
+            script.textContent = old_script.textContent;
+            old_script.replaceWith(script);
+        }
+
+        panel.scrollIntoView({ block: 'nearest' });
+
+        panel.querySelector('[data-glpi-kb-category-edit-cancel]')
+            ?.addEventListener('click', () => panel.remove());
+
+        panel.querySelector('[data-glpi-kb-category-edit-save]')
+            ?.addEventListener('click', () => this.#saveEditPanel(panel, category_id));
+    }
+
+    /**
+     * @param {HTMLElement} panel
+     * @param {string}      category_id
+     */
+    async #saveEditPanel(panel, category_id)
+    {
+        const comment = panel.querySelector('[data-glpi-kb-category-edit-comment]')?.value ?? '';
+        const illustration = panel.querySelector('[data-glpi-icon-picker-value]')?.value ?? '';
+
+        this.#clearEditPanelError(panel);
+
+        const body = new FormData();
+        body.append('comment', comment);
+        body.append('illustration', illustration);
+
+        let response;
+        try {
+            response = await fetch(`${CFG_GLPI.root_doc}/Knowbase/Aside/Category/${category_id}`, {
+                method: 'POST',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                body,
+            });
+        } catch {
+            this.#showEditPanelError(panel, __('An unexpected error occurred.'));
+            return;
+        }
+
+        if (response.ok) {
+            const data = await response.json();
+            // Refresh the node icon in place so the change shows without a reload.
+            const node = panel.closest('[data-glpi-kb-aside-category]');
+            const illustration = node?.querySelector('[data-glpi-kb-aside-category-illustration]');
+            if (illustration && data.illustration_html) {
+                illustration.innerHTML = data.illustration_html;
+            }
+            panel.remove();
+            return;
+        }
+
+        if (response.status === 422) {
+            const data = await response.json();
+            this.#showEditPanelError(
+                panel,
+                data.errors?._global ?? data.errors?.comment ?? __('An unexpected error occurred.'),
+            );
+            return;
+        }
+
+        this.#showEditPanelError(panel, __('An unexpected error occurred.'));
+    }
+
+    /**
+     * @param {HTMLElement} panel
+     * @param {string}      message
+     */
+    #showEditPanelError(panel, message)
+    {
+        const error = panel.querySelector('[data-glpi-kb-category-edit-error]');
+        if (error) {
+            error.textContent = message;
+            error.classList.remove('d-none');
+        }
+    }
+
+    /**
+     * @param {HTMLElement} panel
+     */
+    #clearEditPanelError(panel)
+    {
+        const error = panel.querySelector('[data-glpi-kb-category-edit-error]');
+        if (error) {
+            error.textContent = '';
+            error.classList.add('d-none');
+        }
     }
 
     #initCategoryToggle()
