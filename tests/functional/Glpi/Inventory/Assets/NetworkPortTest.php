@@ -677,6 +677,18 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertSame($expected_input, $db_input);
 
         $this->assertEquals(10001, $networkport->fields['logical_number']);
+
+        // The Dummy NETWORK_PORTS entry (IFNUMBER=10002, no MAC, no matching NETWORKS.DESCRIPTION)
+        // must NOT have created a ghost NetworkPortEthernet for this Computer.
+        $this->assertSame(
+            1,
+            countElementsInTable(\NetworkPort::getTable(), [
+                'itemtype'           => 'Computer',
+                'items_id'           => $computer_id,
+                'instantiation_type' => 'NetworkPortEthernet',
+            ]),
+            'A NETWORK_PORTS entry with no matching NETWORKS.DESCRIPTION must not create a ghost port'
+        );
     }
 
     public function testVlanChange()
