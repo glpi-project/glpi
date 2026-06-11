@@ -37,6 +37,7 @@ namespace Glpi;
 use CommonDBChild;
 use Glpi\Security\ShareTokenManager;
 use GLPIKey;
+use Log;
 use Session;
 
 /**
@@ -53,6 +54,8 @@ class ShareToken extends CommonDBChild
     public static int $checkParentRights = self::HAVE_SAME_RIGHT_ON_ITEM;
 
     public static array $undisclosedFields = ['token'];
+
+    private ?bool $was_active_before_purge = null;
 
     public static function getTypeName($nb = 0): string
     {
@@ -72,5 +75,114 @@ class ShareToken extends CommonDBChild
         }
 
         return parent::prepareInputForAdd($input);
+    }
+
+    public function post_addItem()
+    {
+        parent::post_addItem();
+
+        if (!empty($this->input['_no_history'])) {
+            return;
+        }
+
+        if (!$this->isActive()) {
+            return;
+        }
+
+        if ($this->countOtherActiveTokens() > 0) {
+            return;
+        }
+
+        $this->logSharingTransition(enabled: true);
+    }
+
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+
+        if (!empty($this->input['_no_history'])) {
+            return;
+        }
+
+        if (!in_array('is_active', $this->updates, true)) {
+            return;
+        }
+
+        $new_active = $this->isActive();
+        $other_active = $this->countOtherActiveTokens() > 0;
+
+        if ($new_active && !$other_active) {
+            $this->logSharingTransition(enabled: true);
+        } elseif (!$new_active && !$other_active) {
+            $this->logSharingTransition(enabled: false);
+        }
+    }
+
+    public function pre_deleteItem()
+    {
+        $this->was_active_before_purge = $this->isActive();
+
+        return parent::pre_deleteItem();
+    }
+
+    public function post_purgeItem()
+    {
+        parent::post_purgeItem();
+
+        if (!empty($this->input['_no_history'])) {
+            return;
+        }
+
+        if (!$this->was_active_before_purge) {
+            return;
+        }
+
+        if ($this->countOtherActiveTokens() > 0) {
+            return;
+        }
+
+        $this->logSharingTransition(enabled: false);
+    }
+
+    /**
+     * Count active tokens for the same parent item, excluding the current one.
+     */
+    private function countOtherActiveTokens(): int
+    {
+        return (int) countElementsInTable(self::getTable(), [
+            'itemtype'  => $this->fields['itemtype'],
+            'items_id'  => $this->fields['items_id'],
+            'is_active' => 1,
+            ['NOT' => ['id' => $this->getID()]],
+        ]);
+    }
+
+    /**
+     * Write a sharing transition entry against the parent item.
+     *
+     * The transition is encoded with HISTORY_ADD_RELATION (enabled) or
+     * HISTORY_DEL_RELATION (disabled), combined with itemtype_link set to
+     * ShareToken::class so HistoryBuilder can pick it up unambiguously.
+     *
+     * Best-effort transition logging: a race window exists when two concurrent
+     * operations both observe countOtherActiveTokens() === 0 before either has
+     * committed. Result: duplicate "Sharing enabled" entries on simultaneous
+     * first-token creations (or symmetric on last-token deletions). Acceptable
+     * for V1; tighten with a transactional SELECT ... FOR UPDATE if needed.
+     */
+    private function logSharingTransition(bool $enabled): void
+    {
+        $parent = $this->getItem(getFromDB: true, getEmpty: false);
+        if (!$parent) {
+            return;
+        }
+
+        Log::history(
+            $parent->getID(),
+            $parent::class,
+            [0, '', $enabled ? '1' : '0'],
+            self::class,
+            $enabled ? Log::HISTORY_ADD_RELATION : Log::HISTORY_DEL_RELATION,
+        );
     }
 }

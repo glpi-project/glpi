@@ -36,6 +36,7 @@ namespace Glpi\Knowbase\History;
 
 use Document;
 use Entity;
+use Glpi\ShareToken;
 use Glpi\UI\IllustrationManager;
 use Group;
 use KnowbaseItem;
@@ -69,6 +70,7 @@ final class HistoryBuilder
         $this->addCategoryChangesToHistory();
         $this->addDocumentChangesToHistory();
         $this->addPermissionChangesToHistory();
+        $this->addSharingChangesToHistory();
         $this->addNameChangesToHistory();
         $this->addIllustrationChangesToHistory();
 
@@ -258,6 +260,37 @@ final class HistoryBuilder
             $this->history->addEvent(new LogEvent(
                 label: __("Permissions updated"),
                 description: $description,
+                date: $row['date_mod'],
+                author: $row['user_name'],
+            ));
+        }
+    }
+
+    // TODO for next implementation (item agnostic): lift to a generic SharingHistorySource
+    // when a second itemtype implements ShareableInterface. The write side (ShareToken hooks) is already generic :
+    // only this read path is KnowbaseItem-specific.
+    private function addSharingChangesToHistory(): void
+    {
+        global $DB;
+
+        $logs = $DB->request([
+            'SELECT' => ['date_mod', 'user_name', 'linked_action'],
+            'FROM'   => Log::getTable(),
+            'WHERE'  => [
+                'itemtype'      => KnowbaseItem::class,
+                'items_id'      => $this->kb->getID(),
+                'itemtype_link' => ShareToken::class,
+                'linked_action' => [Log::HISTORY_ADD_RELATION, Log::HISTORY_DEL_RELATION],
+            ],
+            'ORDER' => 'id DESC',
+        ]);
+
+        foreach ($logs as $row) {
+            $enabled = (int) $row['linked_action'] === Log::HISTORY_ADD_RELATION;
+
+            $this->history->addEvent(new LogEvent(
+                label: $enabled ? __("Sharing enabled") : __("Sharing disabled"),
+                description: __("Updated by"),
                 date: $row['date_mod'],
                 author: $row['user_name'],
             ));
