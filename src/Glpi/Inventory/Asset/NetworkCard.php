@@ -54,7 +54,7 @@ class NetworkCard extends Device
     public function prepare(): array
     {
         $mapping = [
-            'model'         => 'devicenetworkcardmodels_id',
+            'name'          => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'macaddr'       => 'mac',
         ];
@@ -117,14 +117,10 @@ class NetworkCard extends Device
                 foreach ($this->extra_data['controllers'] as $controller) {
                     if (
                         property_exists($controller, 'type')
-                        && (
-                            $val->description == $controller->type
-                            || strtolower($val->description . " controller") == strtolower($controller->type)
-                            || (property_exists($val, 'model') && (
-                                $val->model == $controller->type
-                                || strtolower($val->model . " controller") == strtolower($controller->type)
-                            ))
-                        )
+                        && ($val->description == $controller->type
+                        || strtolower($val->description . " controller")
+                              == strtolower($controller->type))
+                        && !isset($this->ignored['controllers'][$controller->name])
                     ) {
                         $found_controller = $controller;
                         if (property_exists($val, 'macaddr')) {
@@ -136,7 +132,7 @@ class NetworkCard extends Device
 
                 if ($found_controller) {
                     if (property_exists($found_controller, 'pciid')) {
-                        $exploded = explode(":", $found_controller->pciid);
+                        $exploded = explode(":", $found_controller->pciids);
 
                         //manufacturer
                         if ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0])) {
@@ -166,8 +162,8 @@ class NetworkCard extends Device
                         $val->mac_default = $val->mac;
                     }
 
-                    if (property_exists($found_controller, 'name')) {
-                        $this->ignored['controllers'][$found_controller->name] = $found_controller->name;
+                    if (property_exists($val, 'name')) {
+                        $this->ignored['controllers'][$val->name] = $val->name;
                     }
                 } else {
                     unset($this->data[$k]);
