@@ -336,11 +336,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
     public function post_addItem()
     {
         // Relink embedded document URLs from source item context before addFiles saves to DB
-        $relinked_answer = $this->relinkEmbeddedDocumentsFromLinkedItemContext(
-            $this->input['answer'] ?? $this->fields['answer'] ?? null
-        );
-        if ($relinked_answer !== null) {
+        $original_answer = $this->input['answer'] ?? $this->fields['answer'] ?? null;
+        $relinked_answer = $this->relinkEmbeddedDocumentsFromLinkedItemContext($original_answer);
+        if ($relinked_answer !== null && $relinked_answer !== $original_answer) {
             $this->input['answer'] = $relinked_answer;
+            $this->fields['answer'] = $relinked_answer;
+            $this->updateInDB(['answer']);
         }
 
         // Handle rich-text images and uploaded documents
