@@ -5875,6 +5875,21 @@ JS);
     }
 
     /**
+     * Check if the given string is a valid hexadecimal color code.
+     * Accepts 3 or 6 digit hex colors.
+     *
+     * @param string|null $color The color string to validate
+     * @return bool True if valid hex color, false otherwise
+     */
+    public static function isValidHexColor(?string $color): bool
+    {
+        if (empty($color)) {
+            return false;
+        }
+        return preg_match('/^#[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$/', $color) === 1;
+    }
+
+    /**
      * Invert the input color (usefull for label bg on top of a background)
      * inpiration: https://github.com/onury/invert-color
      *

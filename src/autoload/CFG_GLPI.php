@@ -706,3 +706,11 @@ $CFG_GLPI['environment_types'] = [Computer::class];
 
 
 $CFG_GLPI['possible_proxy_exclusions'] = new ProxyExclusions();
+
+$CFG_GLPI['taggable_types'] = array_merge(
+    $CFG_GLPI['asset_types'],
+    $CFG_GLPI['itil_types'],
+    $CFG_GLPI['management_types'],
+    $CFG_GLPI['tools_types'],
+    $CFG_GLPI['admin_types'],
+);

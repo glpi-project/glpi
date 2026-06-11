@@ -194,6 +194,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
             'assignable_types',
             'location_types',
             'state_types',
+            'taggable_types',
             'ticket_types',
             'unicity_types',
         ];

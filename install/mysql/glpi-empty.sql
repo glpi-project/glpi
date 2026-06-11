@@ -10531,4 +10531,39 @@ CREATE TABLE `glpi_sharetokens` (
   KEY `date_expiration` (`date_expiration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+### Dump table glpi_tags
+
+DROP TABLE IF EXISTS `glpi_tags`;
+CREATE TABLE `glpi_tags` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `entities_id` int unsigned NOT NULL DEFAULT '0',
+  `is_recursive` tinyint NOT NULL DEFAULT '0',
+  `is_active` tinyint NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL,
+  `comment` text,
+  `color` varchar(7) NULL DEFAULT NULL,
+  `bg_color` varchar(7) NULL DEFAULT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`entities_id`,`name`),
+  KEY `is_recursive` (`is_recursive`),
+  KEY `is_active` (`is_active`),
+  KEY `name` (`name`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+### Dump table glpi_tags_itemtypes
+
+DROP TABLE IF EXISTS `glpi_tags_itemtypes`;
+CREATE TABLE `glpi_tags_itemtypes` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tags_id` int unsigned NOT NULL DEFAULT '0',
+  `itemtype` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`itemtype`,`tags_id`),
+  KEY `tags_id` (`tags_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;

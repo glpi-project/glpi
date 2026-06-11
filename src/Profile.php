@@ -1191,6 +1191,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 $fn_get_rights(LineOperator::class, 'central'),
                                 $fn_get_rights(OAuthClient::class, 'central'),
                                 $fn_get_rights(DefaultFilter::class, 'central'),
+                                $fn_get_rights(Tag::class, 'central'),
                             ],
                         ],
                     ],
@@ -3201,6 +3202,20 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => Form::$rightname],
+            ],
+        ];
+
+        $tab[] = [
+            'id'                 => '123',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Tag::getTypeName(1),
+            'datatype'           => 'right',
+            'rightclass'         => Tag::class,
+            'rightname'          => Tag::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Tag::$rightname],
             ],
         ];
 
