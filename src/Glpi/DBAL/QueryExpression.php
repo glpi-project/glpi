@@ -55,17 +55,18 @@ class QueryExpression
      * @param ?string $alias     The query expression alias
      * @param array<int, mixed> $values    The query expression values
      */
-    public function __construct($expression, ?string $alias = null, array $values = [])
+    public function __construct(string|QueryExpression $expression, ?string $alias = null, array $values = [])
     {
-        if ($expression === null || $expression === '' || $expression === false) {
+        if ($expression === '') {
             throw new RuntimeException('Cannot build an empty expression');
         }
-        $this->expression = $expression;
         $this->alias = $alias;
-        $this->values = $values;
 
         if ($expression instanceof QueryExpression) {
+            $this->expression = $expression->getValue();
             $values = array_merge($expression->getValues(), $values);
+        } else {
+            $this->expression = $expression;
         }
         $this->setValues($values);
     }
