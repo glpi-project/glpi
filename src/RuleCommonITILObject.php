@@ -1114,6 +1114,11 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                 continue;
             }
 
+            $item_has_name_field = $item->isField('name');
+            if (!$item_has_name_field) {
+                continue;
+            }
+
             $criteria = ['name' => $name];
             if ($item->isEntityAssign()) {
                 $criteria['entities_id'] = $entity;
@@ -1125,8 +1130,8 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                 $criteria['is_template'] = 0;
             }
 
-            if ($item->getFromDBByCrit($criteria)) {
-                return ['id' => $item->getID(), 'itemtype' => $itemtype];
+            foreach ($item->getSeveralFromDBByCrit($criteria, [], 1) as $first_item) {
+                return ['id' => $first_item->getID(), 'itemtype' => $itemtype];
             }
         }
 
