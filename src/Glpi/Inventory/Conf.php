@@ -385,6 +385,7 @@ class Conf extends CommonGLPI
         ]);
         echo '</div>';
         echo '<div class="col">';
+
         if ($config['enabled_inventory'] == false) {
             echo "<div class='alert alert-info d-flex align-items-center m-0' role='alert'>";
             echo "<span class='ms-2'>";
@@ -392,85 +393,86 @@ class Conf extends CommonGLPI
             echo __s("The inventory is disabled, remember to activate it if necessary");
             echo "</span>";
             echo "</div>";
-        } else {
-            echo '</div>';
-            echo '</div>';
-            echo "</td>";
-            echo "</tr>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            $auth_rand = mt_rand();
-            echo "<i class='ti ti-shield me-2'></i>";
-            echo "<label for='dropdown_auth_required{$auth_rand}'>" . __s('Authorization header') . "</label>";
-            echo "<span class='required'>*</span>";
-            echo "</td>";
-            echo "<td colspan='3'>";
-            Dropdown::showFromArray('auth_required', [
-                '' => Dropdown::EMPTY_VALUE,
-                self::CLIENT_CREDENTIALS => __s('OAuth - Client credentials'),
-                self::BASIC_AUTH => __s('Basic Authentication'),
-                self::NO_AUTH => __('None (not recommended)'),
-            ], [
-                'value' => $config['auth_required'] ?? '',
-                'required' => true,
-                'rand' => $auth_rand,
-            ]);
-            echo "<div id='oauth_client_hint_row' class='mt-1'>";
-            echo "<div class='alert alert-info d-inline-flex align-items-center mb-0 py-2' role='note'>";
-            echo "<i class='ti ti-info-circle flex-shrink-0 me-1'></i>";
-            echo "<span>";
-            echo __s('Using OAuth Client Credentials requires a registered OAuth client with the "inventory" scope.');
-            echo '<br>';
-            echo sprintf(
-                __s('The generated client ID and secret must then be set in the GLPI Agent configuration using the %s and %s parameters.'),
-                '<code>oauth-client-id</code>',
-                '<code>oauth-client-secret</code>'
-            );
-            echo ' <a href="' . htmlescape(OAuthClient::getFormURL()) . '">';
-            echo __s('Add an OAuth client');
-            echo ' <i class="ti ti-external-link ms-1"></i>';
-            echo '</a>';
-            echo "</span>";
-            echo "</div>";
-            echo "</div>";
-            echo "<div id='no_auth_warning_row' class='mt-1'>";
-            echo "<div class='alert alert-warning d-inline-flex align-items-center mb-0 py-2' role='alert'>";
-            echo "<i class='ti ti-alert-triangle flex-shrink-0 me-1'></i>";
-            echo "<span>";
-            echo __s('Not using any authentication on inventory is not recommended and poses a security risk. Any agent will be able to send inventory data without verification.');
-            echo "</span>";
-            echo "</div>";
-            echo "</div>";
-            echo "</td></tr>";
+        }
 
-            echo "<tr class='tab_bg_1' id='basic_auth_login_row'>";
-            echo "<td>";
-            echo "<i class='ti ti-abc me-2'></i>";
-            echo "<label for='basic_auth_login'>" . __s('Login') . "</label>";
-            echo "<span class='required'>*</span>";
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            echo Html::input("basic_auth_login", [
-                "value" => $config["basic_auth_login"] ?? '',
-            ]);
-            echo "</td>";
-            echo "</tr>";
-            echo "<tr class='tab_bg_1' id='basic_auth_password_row'>";
-            echo "<td>";
-            echo "<i class='ti ti-password me-2'></i>";
-            echo "<label for='basic_auth_password'>" . __s('Password') . "</label>";
-            echo "<span class='required'>*</span>";
-            echo "</label>";
-            echo "</td>";
-            echo "<td>";
-            echo Html::input("basic_auth_password", [
-                "value" => (new GLPIKey())->decrypt($config['basic_auth_password'] ?? ''),
-                "type" => "password",
-            ]);
-            echo "</td>";
-            echo "</tr>";
-            echo Html::scriptBlock("
+        echo '</div>';
+        echo '</div>';
+        echo "</td>";
+        echo "</tr>";
+        echo "<tr class='tab_bg_1'>";
+        echo "<td>";
+        $auth_rand = mt_rand();
+        echo "<i class='ti ti-shield me-2'></i>";
+        echo "<label for='dropdown_auth_required{$auth_rand}'>" . __s('Authorization header') . "</label>";
+        echo "<span class='required'>*</span>";
+        echo "</td>";
+        echo "<td colspan='3'>";
+        Dropdown::showFromArray('auth_required', [
+            '' => Dropdown::EMPTY_VALUE,
+            self::CLIENT_CREDENTIALS => __s('OAuth - Client credentials'),
+            self::BASIC_AUTH => __s('Basic Authentication'),
+            self::NO_AUTH => __('None (not recommended)'),
+        ], [
+            'value' => $config['auth_required'] ?? '',
+            'required' => true,
+            'rand' => $auth_rand,
+        ]);
+        echo "<div id='oauth_client_hint_row' class='mt-1'>";
+        echo "<div class='alert alert-info d-inline-flex align-items-center mb-0 py-2' role='note'>";
+        echo "<i class='ti ti-info-circle flex-shrink-0 me-1'></i>";
+        echo "<span>";
+        echo __s('Using OAuth Client Credentials requires a registered OAuth client with the "inventory" scope.');
+        echo '<br>';
+        echo sprintf(
+            __s('The generated client ID and secret must then be set in the GLPI Agent configuration using the %s and %s parameters.'),
+            '<code>oauth-client-id</code>',
+            '<code>oauth-client-secret</code>'
+        );
+        echo ' <a href="' . htmlescape(OAuthClient::getFormURL()) . '">';
+        echo __s('Add an OAuth client');
+        echo ' <i class="ti ti-external-link ms-1"></i>';
+        echo '</a>';
+        echo "</span>";
+        echo "</div>";
+        echo "</div>";
+        echo "<div id='no_auth_warning_row' class='mt-1'>";
+        echo "<div class='alert alert-warning d-inline-flex align-items-center mb-0 py-2' role='alert'>";
+        echo "<i class='ti ti-alert-triangle flex-shrink-0 me-1'></i>";
+        echo "<span>";
+        echo __s('Not using any authentication on inventory is not recommended and poses a security risk. Any agent will be able to send inventory data without verification.');
+        echo "</span>";
+        echo "</div>";
+        echo "</div>";
+        echo "</td></tr>";
+
+        echo "<tr class='tab_bg_1' id='basic_auth_login_row'>";
+        echo "<td>";
+        echo "<i class='ti ti-abc me-2'></i>";
+        echo "<label for='basic_auth_login'>" . __s('Login') . "</label>";
+        echo "<span class='required'>*</span>";
+        echo "</label>";
+        echo "</td>";
+        echo "<td>";
+        echo Html::input("basic_auth_login", [
+            "value" => $config["basic_auth_login"] ?? '',
+        ]);
+        echo "</td>";
+        echo "</tr>";
+        echo "<tr class='tab_bg_1' id='basic_auth_password_row'>";
+        echo "<td>";
+        echo "<i class='ti ti-password me-2'></i>";
+        echo "<label for='basic_auth_password'>" . __s('Password') . "</label>";
+        echo "<span class='required'>*</span>";
+        echo "</label>";
+        echo "</td>";
+        echo "<td>";
+        echo Html::input("basic_auth_password", [
+            "value" => (new GLPIKey())->decrypt($config['basic_auth_password'] ?? ''),
+            "type" => "password",
+        ]);
+        echo "</td>";
+        echo "</tr>";
+        echo Html::scriptBlock("
                 function toggleDisplayLoginInputs(select) {
                     const selectedValue = $(select).val();
                     const isBasicAuth = selectedValue == '" . self::BASIC_AUTH . "';
@@ -489,6 +491,12 @@ class Conf extends CommonGLPI
 
                 toggleDisplayLoginInputs(selectAuthHeader);
             ");
+
+        if ($config['enabled_inventory'] != false) {
+            echo '</div>';
+            echo '</div>';
+            echo "</td>";
+            echo "</tr>";
             echo "<tr>";
             echo "<th colspan='4'>";
             echo __s('Import options');
