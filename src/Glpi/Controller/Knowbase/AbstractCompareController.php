@@ -45,8 +45,10 @@ abstract class AbstractCompareController extends AbstractController
         string $old_answer,
         string $new_answer,
     ): JsonResponse {
-        // Load full rich text content
-        $rich_text_options = ['text_maxsize' => 0];
+        // KB revisions may contain video placeholders — diff them against
+        // their rendered iframe form so video-only edits show a meaningful
+        // delta instead of two empty <div> shells.
+        $rich_text_options = ['text_maxsize' => 0, 'allow_video_embeds' => true];
         $old_answer = RichText::getEnhancedHtml($old_answer, $rich_text_options);
         $new_answer = RichText::getEnhancedHtml($new_answer, $rich_text_options);
 

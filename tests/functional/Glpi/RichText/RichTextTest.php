@@ -453,6 +453,20 @@ HTML,
             'encode_output_entities' => false,
             'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id&#61;5">&#64;normal</a>',
         ];
+
+        // Video embed placeholder attributes are inert and preserved in every context.
+        // They never materialize into an iframe on their own — that is gated downstream
+        // by getEnhancedHtml(allow_video_embeds) — so keeping them everywhere is safe.
+        yield 'data-video-* placeholder attributes are preserved' => [
+            'content'                => '<p>Watch this:</p><div class="video-embed" data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<p>Watch this:</p><div class="video-embed" data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+        ];
+        yield 'data-video-start placeholder attribute is preserved' => [
+            'content'                => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ" data-video-start="90"></div>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ" data-video-start="90"></div>',
+        ];
     }
 
     #[DataProvider('getSafeHtmlProvider')]
@@ -653,6 +667,17 @@ Text in a paragraph
  [an image] Should I yell for the important words? 
 PLAINTEXT,
         ];
+
+        // Video embed placeholders are replaced by their watch URL in plaintext
+        yield 'Video embed placeholder substituted in plaintext output' => [
+            'content'                => '<p>Watch:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            'keep_presentation'      => false,
+            'compact'                => false,
+            'encode_output_entities' => false,
+            'preserve_case'          => true,
+            'preserve_line_breaks'   => false,
+            'expected_result'        => 'Watch:[YouTube: https://www.youtube.com/watch?v=dQw4w9WgXcQ]',
+        ];
     }
 
     #[DataProvider('getTextFromHtmlProvider')]
@@ -771,10 +796,84 @@ HTML,
             'content'                => '<span contenteditable="false" data-user-mention="true" data-user-id="5">@normal</span>',
             'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id=5">@normal</a>',
         ];
+
+        // Cross-context safety now comes from the materialization gate, not from
+        // attribute stripping: the inert placeholder survives sanitization in every
+        // context but only getEnhancedHtml(allow_video_embeds) turns it into an iframe.
+        yield 'Without allow_video_embeds, placeholder is kept inert (never materialized)' => [
+            'content'                => '<p>Watch this:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            'expected_result'        => '<p>Watch this:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+        ];
+
+        yield 'With allow_video_embeds, placeholder is materialized as a sandboxed iframe' => [
+            'content'                => '<p>Watch this:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+            'expected_result'        => '<p>Watch this:</p><div class="video-embed-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="YouTube video player" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation" frameborder="0"></iframe></div>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+
+        yield 'Unknown provider with allow_video_embeds is dropped' => [
+            'content'                => '<p>Before</p><div data-video-provider="malicious" data-video-id="exploit"></div><p>After</p>',
+            'expected_result'        => '<p>Before</p><p>After</p>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+
+        // XSS payloads: assert the exact neutralized output rather than a set of
+        // "does not contain" checks — the sanitized result inherently proves no
+        // script / handler / disallowed scheme survived.
+        yield 'XSS: inline script tag is stripped' => [
+            'content'                => '<p>Hello</p><script>alert("xss")</script>',
+            'expected_result'        => '<p>Hello</p>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: img onerror handler is stripped' => [
+            'content'                => '<img src="x" onerror="alert(1)">',
+            'expected_result'        => '<img src="x" loading="lazy">',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: svg onload handler is stripped' => [
+            'content'                => '<svg onload="alert(1)"></svg>',
+            'expected_result'        => '<p>&lt;svg onload&#61;&#34;alert(1)&#34;&gt;&lt;/svg&gt;</p>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: javascript: scheme in href is stripped' => [
+            'content'                => '<a href="javascript:alert(1)">click</a>',
+            'expected_result'        => '<a>click</a>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: data: scheme iframe is stripped' => [
+            'content'                => '<iframe src="data:text/html,<script>alert(1)</script>"></iframe>',
+            'expected_result'        => '<p>&lt;iframe src&#61;&#34;data:text/html,&lt;script&gt;alert(1)&lt;/script&gt;&#34;&gt;&lt;/iframe&gt;</p>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: attribute breakout on video placeholder provider is dropped' => [
+            'content'                => '<div data-video-provider="youtube&quot; onclick=&quot;alert(1)" data-video-id="dQw4w9WgXcQ"></div>',
+            'expected_result'        => '',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: attribute breakout on video placeholder id is dropped' => [
+            'content'                => '<div data-video-provider="youtube" data-video-id="x&quot;><script>alert(1)</script>"></div>',
+            'expected_result'        => '',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: unknown provider with script payload in body is dropped' => [
+            'content'                => '<div data-video-provider="evil" data-video-id="x"><script>alert(1)</script></div>',
+            'expected_result'        => '',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: script in placeholder body is stripped, then the empty placeholder is materialized' => [
+            'content'                => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"><script>alert(1)</script></div>',
+            'expected_result'        => '<div class="video-embed-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="YouTube video player" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation" frameborder="0"></iframe></div>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+        yield 'XSS: nested div used to desync the placeholder walker is dropped' => [
+            'content'                => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"><div></div><script>alert(1)</script></div>',
+            'expected_result'        => '',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
     }
 
     #[DataProvider('getEnhancedHtmlProvider')]
-    public function testGetEnhancedHtml(string $content, string $expected_result)
+    public function testGetEnhancedHtml(string $content, string $expected_result, array $extra_params = [])
     {
         $richtext = new RichText();
 
@@ -782,7 +881,7 @@ HTML,
         ini_set('pcre.backtrack_limit', 100); // Lower limit to ensure the effectiveness of regex
         $this->assertEquals(100, ini_get('pcre.backtrack_limit'));
 
-        $result = $richtext->getEnhancedHtml($content, ['text_maxsize' => 0]);
+        $result = $richtext->getEnhancedHtml($content, ['text_maxsize' => 0] + $extra_params);
 
         ini_set('pcre.backtrack_limit', $save_pcre_backtrack_limit);
 
@@ -791,4 +890,5 @@ HTML,
             $result,
         );
     }
+
 }
