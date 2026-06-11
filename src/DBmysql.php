@@ -410,6 +410,7 @@ class DBmysql
         $start_time = microtime(true);
 
         $this->checkForDeprecatedTableOptions($query);
+        $this->checkForDDLInsideTransaction($query);
 
         $res = $this->dbh->query($query);
         if (!$res) {
@@ -1773,7 +1774,7 @@ class DBmysql
         ];
     }
 
-    private function isInTransaction(): bool
+    public function isInTransaction(): bool
     {
         return $this->transaction_level > 0;
     }
@@ -1866,18 +1867,18 @@ class DBmysql
         if (!$this->isInNestedTransaction()) {
             // A simple transaction is underway, roll it back.
             $success = $this->dbh->rollback();
+            if ($success) {
+                $this->transaction_level--;
+            } else {
+                throw new RuntimeException("Failed to rollback transaction.");
+            }
         } else {
-            // A nested transaction is already underway, roolback to current savepoint.
+            // A nested transaction is already underway, rollback to current savepoint.
             $savepoint = $this->formatAndQuoteSavePointName(
                 $this->transaction_level
             );
-            $success = $this->doQuery("ROLLBACK TO $savepoint");
-        }
-
-        if ($success) {
+            $this->doQuery("ROLLBACK TO $savepoint");
             $this->transaction_level--;
-        } else {
-            throw new RuntimeException("Failed to rollback transaction.");
         }
     }
 
@@ -2253,6 +2254,30 @@ class DBmysql
                     'Usage of signed integers in primary or foreign keys is discouraged, please use unsigned integers instead in `%s`.`%s`.',
                     $table_matches['table'],
                     $field_matches['field']
+                ),
+                E_USER_WARNING
+            );
+        }
+    }
+
+    /**
+     * Warn when a DDL statement is executed inside an active transaction.
+     *
+     * DDL statements (ALTER, CREATE, DROP, RENAME, TRUNCATE) cause an implicit
+     * commit in MySQL/MariaDB, which silently invalidates all open savepoints.
+     * Running such a statement inside a transaction is almost certainly a bug.
+     */
+    private function checkForDDLInsideTransaction(string $query): void
+    {
+        if (!$this->isInTransaction()) {
+            return;
+        }
+
+        if (preg_match('/^\s*(ALTER|CREATE|DROP|RENAME|TRUNCATE)\s+/i', $query)) {
+            trigger_error(
+                sprintf(
+                    'DDL statement executed inside a transaction will cause an implicit commit: "%s".',
+                    substr($query, 0, 200)
                 ),
                 E_USER_WARNING
             );
