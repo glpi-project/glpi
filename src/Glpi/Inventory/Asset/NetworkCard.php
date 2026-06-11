@@ -111,8 +111,8 @@ class NetworkCard extends Device
 
             $found_controller = false;
             if (isset($this->extra_data['controllers'])) {
-                // Search in controller if find NAME = CONTROLLER TYPE
-                foreach ($this->extra_data['controllers'] as $controller) {
+                $controllers = is_array($this->extra_data['controllers']) ? $this->extra_data['controllers'] : [$this->extra_data['controllers']];
+                foreach ($controllers as $controller) {
                     /** @var \stdClass $controller */
                     if (
                         property_exists($controller, 'type')
@@ -132,7 +132,8 @@ class NetworkCard extends Device
 
             $found_usb = false;
             if (!$found_controller && isset($this->extra_data['usbdevices'])) {
-                foreach ($this->extra_data['usbdevices'] as $usbdevice) {
+                $usbdevices = is_array($this->extra_data['usbdevices']) ? $this->extra_data['usbdevices'] : [$this->extra_data['usbdevices']];
+                foreach ($usbdevices as $usbdevice) {
                     /** @var \stdClass $usbdevice */
                     if (
                         property_exists($usbdevice, 'name') && property_exists($val, 'model') && $val->model === $usbdevice->name

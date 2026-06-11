@@ -65,12 +65,12 @@ class SoundCard extends Device
             if (isset($this->extra_data['usbdevices'])) {
                 $found_usb = false;
                 $usbdevices = is_array($this->extra_data['usbdevices']) ? $this->extra_data['usbdevices'] : [$this->extra_data['usbdevices']];
-                foreach ($usbdevices as $usb) {
-                    /** @var \stdClass $usb */
-                    $match_name = property_exists($usb, 'name') && property_exists($val, 'name') && $usb->name === $val->name;
+                foreach ($usbdevices as $usbdevice) {
+                    /** @var \stdClass $usbdevice */
+                    $match_name = property_exists($usbdevice, 'name') && property_exists($val, 'name') && $usbdevice->name === $val->name;
 
                     if ($match_name) {
-                        $found_usb = $usb;
+                        $found_usb = $usbdevice;
                         break;
                     }
                 }
