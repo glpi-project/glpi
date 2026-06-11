@@ -329,7 +329,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         // If so, check whether the new units required fit into the rack without modifying the positions
         $hasIssues = false;
         $itemtype = $this->getItemtypeForModel();
-        $positionsToCheck = [];
         foreach ($this->getItemsRackForModel() as $item_rack) {
             $rack = Rack::getById($item_rack['racks_id']);
             $filled = $rack->getFilled($itemtype, $item_rack['items_id']);
@@ -339,6 +338,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
             $depth = $input['depth'] ?? $this->fields['depth'];
 
             // Collect the positions to check
+            $positionsToCheck = [];
             for ($i = 0; $i < $requiredUnits; $i++) {
                 $positionsToCheck[] = $item_rack['position'] + $i;
 
