@@ -1606,7 +1606,7 @@ HTML
         ]);
 
         $doc_url = '/front/document.send.php?docid=' . $document->getID()
-            . '&amp;itemtype=Ticket&amp;items_id=' . $ticket->getID();
+            . '&itemtype=Ticket&items_id=' . $ticket->getID();
 
         $kb = $this->createItem(\KnowbaseItem::class, [
             'name'          => __FUNCTION__,
@@ -1657,8 +1657,18 @@ HTML
         $profile = $this->createItem(\Profile::class, [
             'name'      => __FUNCTION__,
             'interface' => 'central',
-            'knowbase'  => \KnowbaseItem::PUBLISHFAQ | CREATE,
-            'ticket'    => 0,
+        ]);
+
+        $this->createItem(\ProfileRight::class, [
+            'profiles_id' => $profile->getID(),
+            'name'        => 'knowbase',
+            'rights'      => \KnowbaseItem::PUBLISHFAQ | CREATE,
+        ]);
+
+        $this->createItem(\ProfileRight::class, [
+            'profiles_id' => $profile->getID(),
+            'name'        => 'ticket',
+            'rights'      => 0,
         ]);
 
         $user = $this->createItem(\User::class, [
@@ -1672,7 +1682,7 @@ HTML
         $this->login($user->fields['name'], 'testpassword');
 
         $doc_url = '/front/document.send.php?docid=' . $document->getID()
-            . '&amp;itemtype=Ticket&amp;items_id=' . $ticket->getID();
+            . '&itemtype=Ticket&items_id=' . $ticket->getID();
 
         $kb = $this->createItem(\KnowbaseItem::class, [
             'name'          => __FUNCTION__,
