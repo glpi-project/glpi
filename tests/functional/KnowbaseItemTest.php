@@ -36,7 +36,6 @@ namespace test\units;
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
-use Knowbase;
 use KnowbaseItem_User;
 use PHPUnit\Framework\Attributes\DataProvider;
 
