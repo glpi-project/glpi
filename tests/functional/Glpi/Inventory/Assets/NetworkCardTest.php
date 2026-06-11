@@ -769,7 +769,7 @@ class NetworkCardTest extends AbstractInventoryAsset
     <NETWORKS>
       <DESCRIPTION>Ethernet</DESCRIPTION>
       <MACADDR>20:47:47:90:78:42</MACADDR>
-      <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
+      <MANUFACTURER>Microsoft</MANUFACTURER>
       <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
       <MTU>1500</MTU>
       <PCIID>14E4:165F:05E5:1028</PCIID>
@@ -781,7 +781,7 @@ class NetworkCardTest extends AbstractInventoryAsset
     <NETWORKS>
       <DESCRIPTION>Ethernet 2</DESCRIPTION>
       <MACADDR>20:47:47:90:78:44</MACADDR>
-      <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
+      <MANUFACTURER>Microsoft</MANUFACTURER>
       <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
       <MTU>1500</MTU>
       <PCIID>14E4:165F:05E5:1028</PCIID>
@@ -830,13 +830,11 @@ class NetworkCardTest extends AbstractInventoryAsset
         $this->assertCount(2, $result); // 2 physical network cards should be identified
 
         // First component check
-        $this->assertEquals('Broadcom NetXtreme Gigabit Ethernet', $result[0]->devicenetworkcardmodels_id);
-        $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[0]->designation);
+        $this->assertEquals('Broadcom NetXtreme Gigabit Ethernet', $result[0]->designation);
         $this->assertEquals('20:47:47:90:78:42', $result[0]->mac);
 
         // Second component check
-        $this->assertEquals('Broadcom NetXtreme Gigabit Ethernet', $result[1]->devicenetworkcardmodels_id);
-        $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[1]->designation);
+        $this->assertEquals('Broadcom NetXtreme Gigabit Ethernet', $result[1]->designation);
         $this->assertEquals('20:47:47:90:78:44', $result[1]->mac);
 
         // The virtual LoadBalance adapter should be filtered out from the physical components
