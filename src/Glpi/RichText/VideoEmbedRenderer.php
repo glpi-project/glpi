@@ -74,7 +74,7 @@ final class VideoEmbedRenderer
      *
      * @return string Safe iframe HTML, or empty string on invalid input.
      */
-    public static function render(string $provider, string $video_id, ?int $start = null): string
+    public function render(string $provider, string $video_id, ?int $start = null): string
     {
         if (!isset(self::PROVIDER_URL_TEMPLATES[$provider])) {
             return '';
@@ -89,18 +89,15 @@ final class VideoEmbedRenderer
             $src .= $separator . 'start=' . $start;
         }
 
-        $title = sprintf(__('%s video player'), self::getProviderDisplayName($provider));
+        $title = sprintf(__('%s video player'), $this->getProviderDisplayName($provider));
 
-        // `allow-scripts` + `allow-same-origin` together can defeat the sandbox, but only when the
-        // framed document is same-origin with the parent — here `$src` is always cross-origin
-        // (youtube-nocookie / player.vimeo.com / dailymotion.com), so the combination is safe and
-        // both flags are required for the providers' players to work.
-        // Deployments enforcing a strict CSP must allow these hosts in `frame-src`.
+        // `allow-same-origin` is required (else the opaque-origin frame can't read its own storage
+        // and the player won't start); safe here as `$src` is always a cross-origin provider host,
+        // so the Same-Origin Policy still blocks parent-DOM access. Strict CSP needs these in `frame-src`.
         return sprintf(
             '<div class="video-embed-wrapper">'
             . '<iframe src="%s" title="%s" loading="lazy" allowfullscreen'
-            . ' referrerpolicy="strict-origin-when-cross-origin"'
-            . ' sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"'
+            . ' sandbox="allow-scripts allow-same-origin allow-presentation"'
             . ' frameborder="0"></iframe>'
             . '</div>',
             htmlescape($src),
@@ -113,26 +110,26 @@ final class VideoEmbedRenderer
      * (non-whitespace body — the atom node never produces children) and those
      * with an unknown provider or malformed id are dropped.
      */
-    public static function renderAll(string $sanitized_html): string
+    public function renderAll(string $sanitized_html): string
     {
         if (!str_contains($sanitized_html, 'data-video-provider')) {
             return $sanitized_html;
         }
 
-        return self::replacePlaceholders(
+        return $this->replacePlaceholders(
             $sanitized_html,
-            static function (string $provider, string $opening, string $body): string {
+            function (string $provider, string $opening, string $body): string {
                 if (trim($body) !== '') {
                     return '';
                 }
-                $video_id = self::extractAttribute($opening, 'data-video-id');
+                $video_id = $this->extractAttribute($opening, 'data-video-id');
                 if ($video_id === null) {
                     return '';
                 }
-                $start_raw = self::extractAttribute($opening, 'data-video-start');
+                $start_raw = $this->extractAttribute($opening, 'data-video-start');
                 $start = ($start_raw !== null && ctype_digit($start_raw)) ? (int) $start_raw : null;
 
-                return self::render($provider, $video_id, $start);
+                return $this->render($provider, $video_id, $start);
             }
         );
     }
@@ -141,23 +138,23 @@ final class VideoEmbedRenderer
      * Plaintext fallback so video-only KB articles don't collapse to empty
      * search snippets / plaintext notifications.
      */
-    public static function renderAllAsText(string $html): string
+    public function renderAllAsText(string $html): string
     {
         if (!str_contains($html, 'data-video-provider')) {
             return $html;
         }
 
-        return self::replacePlaceholders(
+        return $this->replacePlaceholders(
             $html,
-            static function (string $provider, string $opening, string $body): string {
-                $watch_url = self::buildWatchUrlFromPlaceholder($provider, $opening, $body);
+            function (string $provider, string $opening, string $body): string {
+                $watch_url = $this->buildWatchUrlFromPlaceholder($provider, $opening, $body);
                 if ($watch_url === null) {
                     return '';
                 }
 
                 return sprintf(
                     '[%s: %s]',
-                    self::getProviderDisplayName($provider),
+                    $this->getProviderDisplayName($provider),
                     $watch_url
                 );
             }
@@ -171,16 +168,16 @@ final class VideoEmbedRenderer
      * href and text are built from the validated id + hardcoded templates and
      * are htmlescape'd on output.
      */
-    public static function renderAllAsLink(string $html): string
+    public function renderAllAsLink(string $html): string
     {
         if (!str_contains($html, 'data-video-provider')) {
             return $html;
         }
 
-        return self::replacePlaceholders(
+        return $this->replacePlaceholders(
             $html,
-            static function (string $provider, string $opening, string $body): string {
-                $watch_url = self::buildWatchUrlFromPlaceholder($provider, $opening, $body);
+            function (string $provider, string $opening, string $body): string {
+                $watch_url = $this->buildWatchUrlFromPlaceholder($provider, $opening, $body);
                 if ($watch_url === null) {
                     return '';
                 }
@@ -196,21 +193,21 @@ final class VideoEmbedRenderer
      * placeholder is tampered (non-empty body, unknown provider, malformed id).
      * Shared by {@see self::renderAllAsText()} and {@see self::renderAllAsLink()}.
      */
-    private static function buildWatchUrlFromPlaceholder(string $provider, string $opening, string $body): ?string
+    private function buildWatchUrlFromPlaceholder(string $provider, string $opening, string $body): ?string
     {
         if (trim($body) !== '' || !isset(self::PROVIDER_WATCH_TEMPLATES[$provider])) {
             return null;
         }
-        $video_id = self::extractAttribute($opening, 'data-video-id');
+        $video_id = $this->extractAttribute($opening, 'data-video-id');
         if ($video_id === null || preg_match(self::VIDEO_ID_PATTERN, $video_id) !== 1) {
             return null;
         }
-        $start_raw = self::extractAttribute($opening, 'data-video-start');
+        $start_raw = $this->extractAttribute($opening, 'data-video-start');
         $start = ($start_raw !== null && ctype_digit($start_raw)) ? (int) $start_raw : null;
 
         $watch_url = sprintf(self::PROVIDER_WATCH_TEMPLATES[$provider], rawurlencode($video_id));
         if ($start !== null && $start > 0) {
-            $watch_url .= self::buildWatchStartSuffix($provider, $start);
+            $watch_url .= $this->buildWatchStartSuffix($provider, $start);
         }
 
         return $watch_url;
@@ -220,7 +217,7 @@ final class VideoEmbedRenderer
      * Seek suffix to append to a provider's canonical watch URL.
      * Each provider has its own convention for the timestamp parameter.
      */
-    private static function buildWatchStartSuffix(string $provider, int $start): string
+    private function buildWatchStartSuffix(string $provider, int $start): string
     {
         return match ($provider) {
             'youtube'     => '&t=' . $start . 's',
@@ -239,7 +236,7 @@ final class VideoEmbedRenderer
      *
      * @param callable(string $provider, string $opening, string $body): string $render
      */
-    private static function replacePlaceholders(string $html, callable $render): string
+    private function replacePlaceholders(string $html, callable $render): string
     {
         $result = '';
         $offset = 0;
@@ -261,7 +258,7 @@ final class VideoEmbedRenderer
             $opening_start = (int) strpos($html, $opening, $offset);
             $opening_end = $opening_start + strlen($opening);
 
-            $close_start = self::findMatchingDivClose($html, $opening_end);
+            $close_start = $this->findMatchingDivClose($html, $opening_end);
             if ($close_start === null) {
                 // Unbalanced placeholder: drop the opening tag (it carries
                 // the data-video-* attributes) and keep scanning. Falling
@@ -287,7 +284,7 @@ final class VideoEmbedRenderer
      * Offset of the `</div>` that closes the `<div>` opened just before
      * $offset, accounting for nested `<div>` children. Null if unbalanced.
      */
-    private static function findMatchingDivClose(string $html, int $offset): ?int
+    private function findMatchingDivClose(string $html, int $offset): ?int
     {
         $depth = 1;
         $cursor = $offset;
@@ -329,7 +326,7 @@ final class VideoEmbedRenderer
      *
      * @return string|null Attribute value, or null if absent.
      */
-    private static function extractAttribute(string $tag, string $attr): ?string
+    private function extractAttribute(string $tag, string $attr): ?string
     {
         $pattern = '/\b' . preg_quote($attr, '/') . '="([^"]*)"/i';
         if (preg_match($pattern, $tag, $m) === 1 && isset($m[1])) {
@@ -341,7 +338,7 @@ final class VideoEmbedRenderer
     /**
      * Display name for a supported provider key.
      */
-    private static function getProviderDisplayName(string $provider): string
+    private function getProviderDisplayName(string $provider): string
     {
         return match ($provider) {
             'youtube'     => 'YouTube',

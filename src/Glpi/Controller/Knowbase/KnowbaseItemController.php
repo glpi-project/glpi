@@ -77,8 +77,8 @@ final class KnowbaseItemController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $safe = RichText::getSafeHtml($kbitem->fields['answer'], false, true);
-        return new Response(VideoEmbedRenderer::renderAllAsLink($safe));
+        $safe = RichText::getSafeHtml($kbitem->fields['answer'], false);
+        return new Response((new VideoEmbedRenderer())->renderAllAsLink($safe));
     }
 
     #[Route(
@@ -136,9 +136,9 @@ final class KnowbaseItemController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        // Sanitize HTML content to prevent XSS. allow_video_embeds=true preserves KB
-        // video placeholders through sanitization.
-        $answer = RichText::getSafeHtml($answer, false, true);
+        // Sanitize HTML content to prevent XSS. KB video placeholders are preserved
+        // by the sanitizer (inert data-video-* attributes).
+        $answer = RichText::getSafeHtml($answer, false);
 
         $update_data = [
             'id' => $id,

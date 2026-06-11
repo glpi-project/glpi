@@ -454,14 +454,18 @@ HTML,
             'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id&#61;5">&#64;normal</a>',
         ];
 
-        // By default (non-KB context), video embed placeholder attributes are stripped
-        // so a placeholder pasted into a ticket / problem / change cannot leak an iframe.
-        // The KB context opts in via the third $allow_video_embeds flag — tested separately
-        // in testGetSafeHtmlPreservesVideoEmbedsWhenAllowed().
-        yield 'data-video-* attributes are stripped from non-KB contexts by default' => [
+        // Video embed placeholder attributes are inert and preserved in every context.
+        // They never materialize into an iframe on their own — that is gated downstream
+        // by getEnhancedHtml(allow_video_embeds) — so keeping them everywhere is safe.
+        yield 'data-video-* placeholder attributes are preserved' => [
             'content'                => '<p>Watch this:</p><div class="video-embed" data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
             'encode_output_entities' => false,
-            'expected_result'        => '<p>Watch this:</p><div class="video-embed"></div>',
+            'expected_result'        => '<p>Watch this:</p><div class="video-embed" data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
+        ];
+        yield 'data-video-start placeholder attribute is preserved' => [
+            'content'                => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ" data-video-start="90"></div>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ" data-video-start="90"></div>',
         ];
     }
 
@@ -476,30 +480,6 @@ HTML,
         $this->assertEquals(
             $expected_result,
             $richtext->getSafeHtml($content, $encode_output_entities)
-        );
-    }
-
-    public static function getSafeHtmlAllowingVideoEmbedsProvider(): iterable
-    {
-        yield 'YouTube placeholder is preserved when video embeds are allowed' => [
-            'content'         => '<p>Watch this:</p><div class="video-embed" data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
-            'expected_result' => '<p>Watch this:</p><div class="video-embed" data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
-        ];
-
-        yield 'Start offset attribute is preserved when video embeds are allowed' => [
-            'content'         => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ" data-video-start="90"></div>',
-            'expected_result' => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ" data-video-start="90"></div>',
-        ];
-    }
-
-    #[DataProvider('getSafeHtmlAllowingVideoEmbedsProvider')]
-    public function testGetSafeHtmlPreservesVideoEmbedsWhenAllowed(string $content, string $expected_result): void
-    {
-        $richtext = new RichText();
-
-        $this->assertEquals(
-            $expected_result,
-            $richtext->getSafeHtml($content, false, true)
         );
     }
 
@@ -817,14 +797,17 @@ HTML,
             'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id=5">@normal</a>',
         ];
 
-        yield 'Without allow_video_embeds, placeholder is stripped (cross-context safety)' => [
+        // Cross-context safety now comes from the materialization gate, not from
+        // attribute stripping: the inert placeholder survives sanitization in every
+        // context but only getEnhancedHtml(allow_video_embeds) turns it into an iframe.
+        yield 'Without allow_video_embeds, placeholder is kept inert (never materialized)' => [
             'content'                => '<p>Watch this:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
-            'expected_result'        => '<p>Watch this:</p><div></div>',
+            'expected_result'        => '<p>Watch this:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
         ];
 
         yield 'With allow_video_embeds, placeholder is materialized as a sandboxed iframe' => [
             'content'                => '<p>Watch this:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
-            'expected_result'        => '<p>Watch this:</p><div class="video-embed-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="YouTube video player" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" frameborder="0"></iframe></div>',
+            'expected_result'        => '<p>Watch this:</p><div class="video-embed-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="YouTube video player" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation" frameborder="0"></iframe></div>',
             'extra_params'           => ['allow_video_embeds' => true],
         ];
 
@@ -879,7 +862,7 @@ HTML,
         ];
         yield 'XSS: script in placeholder body is stripped, then the empty placeholder is materialized' => [
             'content'                => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"><script>alert(1)</script></div>',
-            'expected_result'        => '<div class="video-embed-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="YouTube video player" loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" frameborder="0"></iframe></div>',
+            'expected_result'        => '<div class="video-embed-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="YouTube video player" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation" frameborder="0"></iframe></div>',
             'extra_params'           => ['allow_video_embeds' => true],
         ];
         yield 'XSS: nested div used to desync the placeholder walker is dropped' => [

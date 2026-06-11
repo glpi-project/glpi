@@ -222,8 +222,7 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(iframe).toHaveCount(1);
             await expect(iframe).toHaveAttribute('src', /^https:\/\/www\.youtube-nocookie\.com\/embed\/dQw4w9WgXcQ$/);
             await expect(iframe).toHaveAttribute('loading', 'lazy');
-            await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-popups');
-            await expect(iframe).toHaveAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+            await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
         });
 
         test('Saved Dailymotion embed renders as a sandboxed iframe', async ({ page, profile, api }) => {
@@ -242,8 +241,7 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(iframe).toHaveCount(1);
             await expect(iframe).toHaveAttribute('src', /^https:\/\/www\.dailymotion\.com\/embed\/video\/x7ufrcj$/);
             await expect(iframe).toHaveAttribute('loading', 'lazy');
-            await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-popups');
-            await expect(iframe).toHaveAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+            await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
         });
 
         test('Saved Vimeo embed renders as a sandboxed iframe', async ({ page, profile, api }) => {
@@ -262,8 +260,7 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(iframe).toHaveCount(1);
             await expect(iframe).toHaveAttribute('src', /^https:\/\/player\.vimeo\.com\/video\/76979871\?dnt=1$/);
             await expect(iframe).toHaveAttribute('loading', 'lazy');
-            await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-popups');
-            await expect(iframe).toHaveAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+            await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
         });
 
         test('Stored placeholder with an unknown provider is dropped at render', async ({ page, profile, api }) => {

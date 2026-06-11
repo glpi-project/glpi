@@ -86,8 +86,8 @@ final class SaveTranslationController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        // allow_video_embeds=true preserves KB video placeholders through sanitization.
-        $answer = RichText::getSafeHtml($answer, false, true);
+        // KB video placeholders are preserved by the sanitizer (inert data-video-* attributes).
+        $answer = RichText::getSafeHtml($answer, false);
 
         // Empty-check on the rendered plaintext so video-only translations
         // (whose placeholder div has no inline text) are not rejected.

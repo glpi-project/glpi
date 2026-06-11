@@ -47,8 +47,8 @@ class VideoEmbedRendererTest extends GLPITestCase
      * template is caught by the assertSame comparisons below.
      */
     private const IFRAME = '<div class="video-embed-wrapper"><iframe src="%s" title="%s"'
-        . ' loading="lazy" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"'
-        . ' sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"'
+        . ' loading="lazy" allowfullscreen'
+        . ' sandbox="allow-scripts allow-same-origin allow-presentation"'
         . ' frameborder="0"></iframe></div>';
 
     public static function renderProvider(): iterable
@@ -107,7 +107,7 @@ class VideoEmbedRendererTest extends GLPITestCase
     ): void {
         $this->assertSame(
             sprintf(self::IFRAME, htmlescape($expected_src), htmlescape($expected_title)),
-            VideoEmbedRenderer::render($provider, $video_id, $start),
+            (new VideoEmbedRenderer())->render($provider, $video_id, $start),
         );
     }
 
@@ -128,7 +128,7 @@ class VideoEmbedRendererTest extends GLPITestCase
         string $video_id,
         ?int $start,
     ): void {
-        $this->assertSame('', VideoEmbedRenderer::render($provider, $video_id, $start));
+        $this->assertSame('', (new VideoEmbedRenderer())->render($provider, $video_id, $start));
     }
 
     public static function renderAllProvider(): iterable
@@ -199,7 +199,7 @@ class VideoEmbedRendererTest extends GLPITestCase
     #[DataProvider('renderAllProvider')]
     public function testRenderAll(string $input, string $expected): void
     {
-        $this->assertSame($expected, VideoEmbedRenderer::renderAll($input));
+        $this->assertSame($expected, (new VideoEmbedRenderer())->renderAll($input));
     }
 
     public static function renderAllAsTextProvider(): iterable
@@ -233,7 +233,7 @@ class VideoEmbedRendererTest extends GLPITestCase
     #[DataProvider('renderAllAsTextProvider')]
     public function testRenderAllAsText(string $input, string $expected): void
     {
-        $this->assertSame($expected, VideoEmbedRenderer::renderAllAsText($input));
+        $this->assertSame($expected, (new VideoEmbedRenderer())->renderAllAsText($input));
     }
 
     public static function renderAllAsLinkProvider(): iterable
@@ -278,6 +278,6 @@ class VideoEmbedRendererTest extends GLPITestCase
     #[DataProvider('renderAllAsLinkProvider')]
     public function testRenderAllAsLink(string $input, string $expected): void
     {
-        $this->assertSame($expected, VideoEmbedRenderer::renderAllAsLink($input));
+        $this->assertSame($expected, (new VideoEmbedRenderer())->renderAllAsLink($input));
     }
 }
