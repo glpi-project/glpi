@@ -1777,7 +1777,7 @@ TWIG, $twig_params);
             if (!$event['editable']) {
                 $new_event['editable'] = false;
             }
-            
+
             // Recompute text color based on the final background color for readability
             $new_event['textColor'] = Toolbox::getFgColor($new_event['color'], 100);
 
