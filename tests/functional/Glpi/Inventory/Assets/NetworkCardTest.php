@@ -1031,4 +1031,106 @@ class NetworkCardTest extends AbstractInventoryAsset
         $this->assertEquals('Realtek Bluetooth Adapter', $device_net->fields['designation']);
         $this->assertEquals('3c:0a:f3:8b:09:b8', $card['mac']);
     }
+
+    public function testPhysicalAndVirtualNetworkCardsFallback()
+    {
+        $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <CONTROLLERS>
+      <CAPTION>NetXtreme BCM5720 Gigabit Ethernet PCIe</CAPTION>
+      <MANUFACTURER>Broadcom Inc. and subsidiaries</MANUFACTURER>
+      <NAME>NetXtreme BCM5720 Gigabit Ethernet PCIe</NAME>
+      <PCISUBSYSTEMID>1028:05e5</PCISUBSYSTEMID>
+      <PRODUCTID>165f</PRODUCTID>
+      <TYPE>Broadcom NetXtreme Gigabit Ethernet</TYPE>
+      <VENDORID>14e4</VENDORID>
+    </CONTROLLERS>
+    <NETWORKS>
+      <DESCRIPTION>Ethernet</DESCRIPTION>
+      <MACADDR>20:47:47:90:78:42</MACADDR>
+      <MANUFACTURER>Microsoft</MANUFACTURER>
+      <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
+      <MTU>1500</MTU>
+      <PCIID>14E4:165F:05E5:1028</PCIID>
+      <SPEED>1000</SPEED>
+      <STATUS>Up</STATUS>
+      <TYPE>ethernet</TYPE>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <NETWORKS>
+      <DESCRIPTION>Ethernet 2</DESCRIPTION>
+      <MACADDR>20:47:47:90:78:44</MACADDR>
+      <MANUFACTURER>Microsoft</MANUFACTURER>
+      <MODEL>Broadcom NetXtreme Gigabit Ethernet</MODEL>
+      <MTU>1500</MTU>
+      <PCIID>14E4:165F:05E5:1028</PCIID>
+      <SPEED>1000</SPEED>
+      <STATUS>Up</STATUS>
+      <TYPE>ethernet</TYPE>
+      <VIRTUALDEV>0</VIRTUALDEV>
+    </NETWORKS>
+    <NETWORKS>
+      <DESCRIPTION>LoadBalance</DESCRIPTION>
+      <IPADDRESS>192.168.10.250</IPADDRESS>
+      <IPGATEWAY>192.168.10.254</IPGATEWAY>
+      <IPMASK>255.255.255.0</IPMASK>
+      <IPSUBNET>192.168.10.0</IPSUBNET>
+      <MACADDR>20:47:47:90:78:42</MACADDR>
+      <MANUFACTURER>Microsoft</MANUFACTURER>
+      <MODEL>Microsoft Network Adapter Multiplexor Driver</MODEL>
+      <MTU>1500</MTU>
+      <SPEED>2000</SPEED>
+      <STATUS>Up</STATUS>
+      <TYPE>ethernet</TYPE>
+      <VIRTUALDEV>1</VIRTUALDEV>
+    </NETWORKS>
+    <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>glpi-server.local-2023-11-22</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+
+        $converter = new \Glpi\Inventory\Converter();
+        $data = $converter->convert($xml);
+        $json = json_decode($data);
+
+        $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+        $asset->setExtraData((array) $json->content);
+        $conf = new \Glpi\Inventory\Conf();
+        $this->login();
+        $conf->saveConf(['component_networkcardvirtual' => 1]);
+        $this->logOut();
+        $asset->checkConf($conf);
+        $result = $asset->prepare();
+
+        $this->assertIsArray($result);
+        $this->assertCount(2, $result); // 2 physical network cards should be identified
+
+        // First component check
+        $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[0]->devicenetworkcardmodels_id);
+        $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[0]->designation);
+        $this->assertEquals('20:47:47:90:78:42', $result[0]->mac);
+
+        // Second component check
+        $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[1]->devicenetworkcardmodels_id);
+        $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[1]->designation);
+        $this->assertEquals('20:47:47:90:78:44', $result[1]->mac);
+
+        // The virtual LoadBalance adapter should be filtered out from the physical components
+        // but remain in ports.
+        $ports = $asset->getNetworkPorts();
+        $this->assertIsArray($ports);
+        $this->assertCount(3, $ports);
+        $this->assertArrayHasKey('Ethernet-20:47:47:90:78:42', $ports);
+        $this->assertArrayHasKey('Ethernet 2-20:47:47:90:78:44', $ports);
+        $this->assertArrayHasKey('LoadBalance-20:47:47:90:78:42', $ports);
+
+        // Check MAC Address mapping
+        $this->assertEquals('20:47:47:90:78:42', $ports['Ethernet-20:47:47:90:78:42']->mac);
+        $this->assertEquals('20:47:47:90:78:44', $ports['Ethernet 2-20:47:47:90:78:44']->mac);
+        $this->assertEquals('20:47:47:90:78:42', $ports['LoadBalance-20:47:47:90:78:42']->mac);
+    }
 }

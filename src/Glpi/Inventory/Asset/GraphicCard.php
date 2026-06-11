@@ -37,7 +37,6 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_DeviceGraphicCard;
-use PCIVendor;
 
 class GraphicCard extends Device
 {
@@ -49,9 +48,9 @@ class GraphicCard extends Device
         $mapping = [
             'name'   => 'designation',
         ];
-        $pcivendor = new PCIVendor();
 
         foreach ($this->data as $k => &$val) {
+            /** @var \stdClass $val */
             if (property_exists($val, 'name')) {
                 foreach ($mapping as $origin => $dest) {
                     if (property_exists($val, $origin)) {
@@ -59,22 +58,17 @@ class GraphicCard extends Device
                     }
                 }
 
-                $this->ignored['controllers'][$val->name] = $val->name;
-                if (isset($val->chipset)) {
-                    $this->ignored['controllers'][$val->chipset] = $val->chipset;
-                }
-
                 $val->is_dynamic = 1;
 
                 if (isset($this->extra_data['controllers'])) {
                     $found_controller = false;
-                    foreach ((array) $this->extra_data['controllers'] as $controller) {
+                    $controllers = is_array($this->extra_data['controllers']) ? $this->extra_data['controllers'] : [$this->extra_data['controllers']];
+                    foreach ($controllers as $controller) {
+                        /** @var \stdClass $controller */
                         if (
-                            property_exists($controller, 'name')
-                            && (
-                                $controller->name === $val->name
-                                || (isset($val->chipset) && $controller->name === $val->chipset)
-                            )
+                            (property_exists($controller, 'pcislot') && property_exists($val, 'pcislot') && $controller->pcislot === $val->pcislot)
+                            || (property_exists($controller, 'type') && $controller->type === $val->name)
+                            || (property_exists($controller, 'name') && isset($val->chipset) && $controller->name === $val->chipset)
                         ) {
                             $found_controller = $controller;
                             break;
@@ -82,39 +76,23 @@ class GraphicCard extends Device
                     }
 
                     if ($found_controller) {
-                        if (property_exists($found_controller, 'pciid')) {
-                            $exploded = explode(":", $found_controller->pciid);
+                        if (property_exists($found_controller, 'name')) {
+                            $this->ignored['controllers'][$found_controller->name] = $found_controller->name;
+                            $val->name = $found_controller->name;
+                        } elseif (property_exists($found_controller, 'caption')) {
+                            $val->name = $found_controller->caption;
+                        }
 
-                            //manufacturer
-                            if ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0])) {
-                                $val->manufacturers_id = $pci_manufacturer;
-                            }
+                        if ($this->applyPciInfoFromController($val, $found_controller)) {
+                            $val->devicegraphiccardmodels_id = $val->designation;
+                            $val->name = $val->designation;
+                        }
 
-                            //product name
-                            if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
-                                $val->designation = $pci_product;
-                                $val->devicegraphiccardmodels_id = $pci_product;
-                            }
-                        } elseif (property_exists($found_controller, 'vendorid')) {
-                            //manufacturer
-                            if ($pci_manufacturer = $pcivendor->getManufacturer($found_controller->vendorid)) {
-                                $val->manufacturers_id = $pci_manufacturer;
-                            }
-
-                            if (property_exists($found_controller, 'productid')) {
-                                //product name
-                                if ($pci_product = $pcivendor->getProductName($found_controller->vendorid, $found_controller->productid)) {
-                                    $val->designation = $pci_product;
-                                    $val->devicegraphiccardmodels_id = $pci_product;
-                                }
-                            }
+                        if (preg_match('/^(.*)\s+\[(.*)\]$/', $val->name, $matches)) {
+                            $val->name = trim($matches[1]);
+                            $val->chipset = trim($matches[2]);
                         }
                     }
-                }
-
-                // Use caption for designation if available (after PCI lookup, as fallback)
-                if (property_exists($val, 'caption') && !empty($val->caption)) {
-                    $val->designation = $val->caption;
                 }
             } else {
                 unset($this->data[$k]);

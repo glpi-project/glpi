@@ -45,15 +45,15 @@ class NetworkCard extends Device
 
     private Conf $conf;
 
-    protected array $extra_data = ['controllers' => null];
-    protected array $ignored = ['controllers' => null];
+    protected array $extra_data = ['controllers' => null, 'usbdevices' => null];
+    protected array $ignored = ['controllers' => null, 'usbdevices' => null];
     /** @var string[] */
     private array $cards_macs = [];
 
     public function prepare(): array
     {
         $mapping = [
-            'name'          => 'designation',
+            'model'         => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'macaddr'       => 'mac',
         ];
@@ -72,6 +72,7 @@ class NetworkCard extends Device
             'speed'       => 'speed',
         ];
 
+        /** @var \stdClass $val */
         foreach ($this->data as $k => &$val) {
             if (
                 !property_exists($val, 'description')
@@ -108,16 +109,17 @@ class NetworkCard extends Device
                 }
             }
 
+            $found_controller = false;
             if (isset($this->extra_data['controllers'])) {
-                $found_controller = false;
                 // Search in controller if find NAME = CONTROLLER TYPE
                 foreach ($this->extra_data['controllers'] as $controller) {
+                    /** @var \stdClass $controller */
                     if (
                         property_exists($controller, 'type')
                         && ($val->description == $controller->type
-                        || strtolower($val->description . " controller")
-                              == strtolower($controller->type))
-                        && !isset($this->ignored['controllers'][$controller->name])
+                        || strtolower($val->description . " controller") == strtolower($controller->type)
+                        || (property_exists($val, 'model') && ($val->model == $controller->type))
+                        )
                     ) {
                         $found_controller = $controller;
                         if (property_exists($val, 'macaddr')) {
@@ -126,7 +128,23 @@ class NetworkCard extends Device
                         }
                     }
                 }
+            }
 
+            $found_usb = false;
+            if (!$found_controller && isset($this->extra_data['usbdevices'])) {
+                foreach ($this->extra_data['usbdevices'] as $usbdevice) {
+                    /** @var \stdClass $usbdevice */
+                    if (
+                        property_exists($usbdevice, 'name') && property_exists($val, 'model') && $val->model === $usbdevice->name
+                        && property_exists($usbdevice, 'manufacturer') && property_exists($val, 'manufacturer') && $val->manufacturer === $usbdevice->manufacturer
+                    ) {
+                        $found_usb = $usbdevice;
+                        break;
+                    }
+                }
+            }
+
+            if (isset($this->extra_data['controllers']) || isset($this->extra_data['usbdevices'])) {
                 if ($found_controller) {
                     if ($this->applyPciInfoFromController($val, $found_controller)) {
                         $val->devicenetworkcardmodels_id = $val->designation;
@@ -137,8 +155,21 @@ class NetworkCard extends Device
                         $val->mac_default = $val->mac;
                     }
 
-                    if (property_exists($val, 'name')) {
-                        $this->ignored['controllers'][$val->name] = $val->name;
+                    if (property_exists($found_controller, 'name')) {
+                        $this->ignored['controllers'][$found_controller->name] = $found_controller->name;
+                    }
+                } elseif ($found_usb) {
+                    if ($this->applyUsbInfoFromDevice($val, $found_usb)) {
+                        $val->devicenetworkcardmodels_id = $val->designation;
+                    }
+
+                    if (property_exists($val, 'mac')) {
+                        $val->mac = strtolower($val->mac);
+                        $val->mac_default = $val->mac;
+                    }
+
+                    if (property_exists($found_usb, 'name')) {
+                        $this->ignored['usbdevices'][$found_usb->name] = $found_usb->name;
                     }
                 } else {
                     unset($this->data[$k]);

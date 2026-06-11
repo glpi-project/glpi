@@ -80,16 +80,18 @@ class GraphicCardTest extends AbstractInventoryAsset
 <REQUEST>
   <CONTENT>
     <CONTROLLERS>
+      <CAPTION>GeminiLake [UHD Graphics 600]</CAPTION>
       <MANUFACTURER>Intel Corporation</MANUFACTURER>
       <NAME>GeminiLake [UHD Graphics 600]</NAME>
+      <PCISLOT>00:02.0</PCISLOT>
+      <PCISUBSYSTEMID>0000:0000</PCISUBSYSTEMID>
+      <PRODUCTID>3185</PRODUCTID>
       <TYPE>Microsoft Basic Display Driver</TYPE>
       <VENDORID>8086</VENDORID>
-      <PRODUCTID>3185</PRODUCTID>
-      <PCISLOT>00:02.0</PCISLOT>
     </CONTROLLERS>
     <VIDEOS>
-      <CHIPSET>UHD Graphics 600</CHIPSET>
-      <NAME>GeminiLake</NAME>
+      <CHIPSET>Intel(R) BXT Mobile/Desktop Gra</CHIPSET>
+      <NAME>Microsoft Basic Display Driver</NAME>
       <RESOLUTION>1360x768</RESOLUTION>
       <PCISLOT>00:02.0</PCISLOT>
     </VIDEOS>

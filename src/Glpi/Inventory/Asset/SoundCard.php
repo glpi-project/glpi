@@ -40,7 +40,7 @@ use Item_DeviceSoundCard;
 
 class SoundCard extends Device
 {
-    protected array $ignored = ['controllers' => null];
+    protected array $extra_data = ['usbdevices' => null];
 
     public function prepare(): array
     {
@@ -50,6 +50,10 @@ class SoundCard extends Device
             'manufacturer'  => 'manufacturers_id',
             'description'   => 'comment',
         ];
+
+        $usb_vendor = new \USBVendor();
+
+        /** @var \stdClass $val */
         foreach ($this->data as &$val) {
             foreach ($mapping as $origin => $dest) {
                 if (property_exists($val, $origin)) {
@@ -57,7 +61,34 @@ class SoundCard extends Device
                 }
             }
             $val->is_dynamic = 1;
-            $this->ignored['controllers'][$val->name] = $val->name;
+
+            if (isset($this->extra_data['usbdevices'])) {
+                $found_usb = false;
+                $usbdevices = is_array($this->extra_data['usbdevices']) ? $this->extra_data['usbdevices'] : [$this->extra_data['usbdevices']];
+                foreach ($usbdevices as $usb) {
+                    /** @var \stdClass $usb */
+                    $match_name = property_exists($usb, 'name') && property_exists($val, 'name') && $usb->name === $val->name;
+
+                    if ($match_name) {
+                        $found_usb = $usb;
+                        break;
+                    }
+                }
+
+                if ($found_usb) {
+                    if (property_exists($found_usb, 'vendorid') && property_exists($found_usb, 'productid')) {
+                        $manufacturer = $usb_vendor->getManufacturer($found_usb->vendorid);
+                        if ($manufacturer !== false) {
+                            $val->manufacturers_id = $manufacturer;
+                        }
+                        $product_name = $usb_vendor->getProductName($found_usb->vendorid, $found_usb->productid);
+                        if ($product_name !== false) {
+                            $val->designation = $product_name;
+                        }
+                        $val->devicesoundcardmodels_id = $val->designation;
+                    }
+                }
+            }
         }
         return $this->data;
     }
