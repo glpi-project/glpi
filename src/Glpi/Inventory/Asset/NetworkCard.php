@@ -204,7 +204,7 @@ class NetworkCard extends Device
                             && ($np_name !== '' && $vp_name !== '' && $np_name === $vp_name)
                         ) {
                             if (property_exists($np, 'ifnumber') && $np->ifnumber !== '') {
-                                $val_port->logical_number = $np->ifnumber;
+                                $val_port->logical_number = (int) $np->ifnumber;
                             }
                             break;
                         }
