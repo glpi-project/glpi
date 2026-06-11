@@ -1509,6 +1509,7 @@ class DBmysql
         $query = $this->buildUpdateOrInsert($table, $params, $where, $onlyone);
         $stmt = $this->prepare($query->getQuery());
         $this->executeStatement($stmt, $query->getParams());
+        $this->affected_rows = (int) $stmt->affected_rows;
         return true;
     }
 
