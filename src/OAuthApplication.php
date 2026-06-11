@@ -136,11 +136,10 @@ class OAuthApplication extends CommonDBTM
     }
 
     /**
-     * Displays the tab content listing MailCollectors linked to this application.
-     *
-     * @return array|void
+     * @param bool $show
+     * @return list<array{id: int, name: string, is_active: string, last_collect_date: mixed}>|void
      */
-    public function getLinkedMailCollectors($show = false)
+    public function getLinkedMailCollectors(bool $show = false)
     {
         global $DB;
 
