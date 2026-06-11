@@ -34,11 +34,11 @@
 
 namespace tests\units\Glpi\Inventory\Asset;
 
-use Glpi\Asset\Asset_NetworkCardAsset;
-use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Tests\AbstractInventoryAsset;
+use Item_DeviceNetworkCard;
+use Item_Peripheral;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class PeripheralTest extends AbstractInventoryAsset
@@ -1364,15 +1364,15 @@ class PeripheralTest extends AbstractInventoryAsset
         $computers_id = $computer->fields['id'];
 
         // The component must have been imported using the USB data for NetworkCard
-        $item_net = new Asset_NetworkCardAsset();
+        $item_net = new Item_DeviceNetworkCard();
         $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(1, $cards);
 
         // Check that the USB device was NOT imported as a Peripheral
-        $item_peripheral = new Asset_PeripheralAsset();
+        $item_peripheral = new Item_Peripheral();
         $peripherals = $item_peripheral->find([
-            'itemtype_asset' => 'Computer',
-            'items_id_asset' => $computers_id,
+            'itemtype' => 'Computer',
+            'items_id' => $computers_id,
         ]);
         $this->assertCount(0, $peripherals);
     }
