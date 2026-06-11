@@ -109,7 +109,8 @@ JAVASCRIPT;
 
         if ($update) {
             $JS .= <<<JAVASCRIPT
-                $('#tree_category').fancytree('option', 'source', {$category_list});
+                Wunderbaum.Wunderbaum.getTree('#tree_category').setOption('source', {$category_list});
+                Wunderbaum.Wunderbaum.getTree('#tree_category').reload();
 JAVASCRIPT;
 
             $params['criteria'][] = $_SESSION['treebrowse'][$itemtype];
@@ -121,56 +122,82 @@ JAVASCRIPT;
 
             $JS .= <<<JAVASCRIPT
             $(function() {
-                $('#tree_category').fancytree({
-                    // load plugins
-                    extensions: ['filter', 'glyph', 'persist'],
-
-                    // Scroll node into visible area, when focused by keyboard
-                    autoScroll: true,
-
-                    // enable font-awesome icons
-                    glyph: {
-                        preset: "awesome5",
-                        map: {}
-                    },
-
-                    persist: {
-                        cookiePrefix: '$js_itemtype',
-                        expandLazy: true,
-                        overrideSource: true,
-                        store: "auto"
-                    },
-
-                    // load json data
+                function saveState(tree) {
+                    const state = {
+                        active: tree.activeNode ? tree.activeNode.key : null,
+                        expanded: tree.findAll((n) => n.expanded).map(node => node.key),
+                    };
+                    localStorage.setItem('wunderbaum-state-$js_itemtype', JSON.stringify(state));
+                }
+                function restoreState(tree) {
+                    let persistedState = localStorage.getItem('wunderbaum-state-$js_itemtype');
+                    if (persistedState) {
+                        persistedState = JSON.parse(persistedState);
+                        if (persistedState.active) {
+                            const activeNode = tree.findKey(persistedState.active);
+                            if (activeNode) {
+                                activeNode.setActive(true, {
+                                    scroll: true,
+                                });
+                            }
+                        }
+                        if (persistedState.expanded) {
+                            if (!Array.isArray(persistedState.expanded)) {
+                                persistedState.expanded = [persistedState.expanded];
+                            }
+                            persistedState.expanded.forEach(key => {
+                                const node = tree.findKey(key);
+                                if (node) {
+                                    node.setExpanded(true);
+                                }
+                            });
+                        }
+                    }
+                }
+                const tree = new Wunderbaum.Wunderbaum({
+                    element: document.getElementById('tree_category'),
                     source: {$category_list},
-
-                    // filter plugin options
-                    filter: {
-                        mode: "hide", // remove unmatched nodes
-                        autoExpand: true, // if results found in children, auto-expand parent
-                        nodata: '{$no_cat_found}', // message when no data found
+                    render: (e) => {
+                        e.nodeElem.querySelector('.wb-title').innerHTML = e.node.title;
                     },
-
-                    // events
-                    activate: function(event, data) {
-                        var node = data.node;
-                        var key  = node.key;
-
-                        window.loadNode(key);
+                    iconMap: {
+                        error: "ti ti-alert-triangle",
+                        noData: "ti ti-help",
+                        expanderExpanded: "ti ti-chevron-down",
+                        expanderCollapsed: "ti ti-chevron-right",
+                        checkChecked: "ti ti-square-check",
+                        checkUnchecked: "ti ti-square",
+                        checkUnknown: "ti ti-square-minus",
+                        folder: "ti ti-folder",
+                        folderOpen: "ti ti-folder-open",
+                        folderLazy: "ti ti-folder-symlink",
+                        doc: "ti ti-file",
                     },
-
+                    init: () => {
+                        if ($initial_cat_id !== -1) {
+                            tree.findKey($initial_cat_id).setActive(true, {
+                                scroll: true,
+                            });
+                        } else if (localStorage.getItem('wunderbaum-state-$js_itemtype')) {
+                            restoreState(tree);
+                        } else {
+                            tree.findKey(-1).setActive(true, {
+                                scroll: true,
+                            });
+                        }
+                    },
+                    activate: (e) => {
+                        window.loadNode(e.node.key);
+                        saveState(e.tree);
+                    },
+                    expand: () => {
+                        saveState(tree);
+                    }
                 });
 
-                var tree = $.ui.fancytree.getTree("#tree_category")
-                if ($initial_cat_id !== -1) {
-                    // URL parameter takes precedence over persisted state
-                    tree.activateKey($initial_cat_id);
-                } else if (tree.activeNode === null) {
-                    tree.activateKey(-1);
-                }
-                $(document).on('keyup', '#browser_tree_search', function() {
-                    var search_text = $(this).val();
-                    $.ui.fancytree.getTree("#tree_category").filterNodes(search_text);
+                document.getElementById('browser_tree_search').addEventListener('keyup', function() {
+                    const searchText = this.value;
+                    tree.filterNodes(searchText, { mode: "hide", autoExpand: true, nodata: '$no_cat_found' });
                 });
             });
 

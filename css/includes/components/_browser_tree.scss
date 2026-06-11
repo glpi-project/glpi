@@ -32,27 +32,16 @@
  */
 
 #tree_browse {
-    display: flex;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: 250px 1fr;
 
     .browser_tree {
-        flex-basis: 250px;
-        flex-shrink: 0;
         padding-right: 10px;
         padding-left: 2px;
 
         .browser-tree-container {
             overflow-x: hidden;
             overflow-y: auto;
-            flex: 1;
-
-            .fancytree-container {
-                overflow-y: auto;
-
-                i.fa.sub_items {
-                    color: #787878;
-                }
-            }
         }
 
         .browser_tree_search {
