@@ -41,6 +41,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
+use Glpi\Inventory\MainAsset\Computer;
 use Glpi\Inventory\MainAsset\NetworkEquipment;
 use Glpi\Inventory\MainAsset\Printer;
 use mysqli_stmt;
@@ -168,7 +169,7 @@ class NetworkPort extends InventoryAsset
             // physical and virtual interfaces (VIRTUALDEV). Entries absent from NETWORKS
             // have no declared interface counterpart and would otherwise create orphan
             // ghost ports on the asset.
-            if ($this->main_asset instanceof \Glpi\Inventory\MainAsset\Computer) {
+            if ($this->main_asset instanceof Computer) {
                 $port_name = property_exists($val, 'name') ? strtolower((string) $val->name) : '';
                 $found = false;
                 foreach (($this->extra_data['networks'] ?? []) as $network) {
