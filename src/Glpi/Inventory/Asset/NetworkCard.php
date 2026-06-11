@@ -53,7 +53,7 @@ class NetworkCard extends Device
     public function prepare(): array
     {
         $mapping = [
-            'name'          => 'designation',
+            'model'         => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'macaddr'       => 'mac',
         ];
@@ -142,34 +142,36 @@ class NetworkCard extends Device
                 }
             }
 
-            if ($found_controller) {
-                if ($this->applyPciInfoFromController($val, $found_controller)) {
-                    $val->devicenetworkcardmodels_id = $val->designation;
-                }
+            if (isset($this->extra_data['controllers']) || isset($this->extra_data['usbdevices'])) {
+                if ($found_controller) {
+                    if ($this->applyPciInfoFromController($val, $found_controller)) {
+                        $val->devicenetworkcardmodels_id = $val->designation;
+                    }
 
-                if (property_exists($val, 'mac')) {
-                    $val->mac = strtolower($val->mac);
-                    $val->mac_default = $val->mac;
-                }
+                    if (property_exists($val, 'mac')) {
+                        $val->mac = strtolower($val->mac);
+                        $val->mac_default = $val->mac;
+                    }
 
-                if (property_exists($val, 'name')) {
-                    $this->ignored['controllers'][$val->name] = $val->name;
-                }
-            } elseif ($found_usb) {
-                if ($this->applyUsbInfoFromDevice($val, $found_usb)) {
-                    $val->devicenetworkcardmodels_id = $val->designation;
-                }
+                    if (property_exists($val, 'name')) {
+                        $this->ignored['controllers'][$val->name] = $val->name;
+                    }
+                } elseif ($found_usb) {
+                    if ($this->applyUsbInfoFromDevice($val, $found_usb)) {
+                        $val->devicenetworkcardmodels_id = $val->designation;
+                    }
 
-                if (property_exists($val, 'mac')) {
-                    $val->mac = strtolower($val->mac);
-                    $val->mac_default = $val->mac;
-                }
+                    if (property_exists($val, 'mac')) {
+                        $val->mac = strtolower($val->mac);
+                        $val->mac_default = $val->mac;
+                    }
 
-                if (property_exists($found_usb, 'name')) {
-                    $this->ignored['usbdevices'][$found_usb->name] = $found_usb->name;
+                    if (property_exists($found_usb, 'name')) {
+                        $this->ignored['usbdevices'][$found_usb->name] = $found_usb->name;
+                    }
+                } else {
+                    unset($this->data[$k]);
                 }
-            } else {
-                unset($this->data[$k]);
             }
 
             //network ports

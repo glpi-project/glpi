@@ -40,7 +40,7 @@ use Item_DeviceSoundCard;
 
 class SoundCard extends Device
 {
-    protected $extra_data = ['usb' => null];
+    protected $extra_data = ['usbdevices' => null];
 
     public function prepare(): array
     {
@@ -61,9 +61,9 @@ class SoundCard extends Device
             }
             $val->is_dynamic = 1;
 
-            if (isset($this->extra_data['usb'])) {
+            if (isset($this->extra_data['usbdevices'])) {
                 $found_usb = false;
-                foreach ($this->extra_data['usb'] as $usb) {
+                foreach ($this->extra_data['usbdevices'] as $usb) {
                     $match_name = property_exists($usb, 'name') && property_exists($val, 'name') && $usb->name === $val->name;
 
                     if ($match_name) {
