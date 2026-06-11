@@ -86,7 +86,7 @@
     },
     "scripts": {
         "build:pack": "webpack --config .webpack.config.js",
-        "build:vue": "webpack --config .vue.webpack.config.js",
+        "build:vue": "vite build --mode development",
         "build:illustration-translations": "php bin/console tools:generate_illustration_translations --allow-superuser",
         "build": "npm run build:pack && npm run build:vue && npm run build:illustration-translations",
         "dependencies:postinstall": "php -r \"file_put_contents('.package.hash', sha1_file('package-lock.json'));\"",
@@ -94,10 +94,10 @@
         "postinstall": "patch-package --patch-dir tools/patches/npm",
         "test": "vitest",
         "test:run": "vitest run",
-        "watch:vue": "webpack --config .vue.webpack.config.js --watch",
+        "watch:vue": "vite build --mode development --watch",
         "watch": "npm run watch:vue",
         "test:e2e": "cypress open --project tests",
-        "serve:vue": "webpack serve --config .vue.webpack.config.js",
+        "serve:vue": "vite serve --mode development",
         "vue:gettext:extract": "vue-gettext-extract --config .gettext.config.js"
     },
     "devDependencies": {
@@ -148,6 +148,7 @@
         "stylelint-config-standard-scss": "^17.0.0",
         "terser": "^5.48.0",
         "typescript": "^6.0.3",
+        "vite": "^8.0.0",
         "vitest": "^4.1.8",
         "vue-eslint-parser": "^10.4.0",
         "vue-loader": "^17.4.2",
@@ -160,6 +161,10 @@
         "monaco-editor": {
             "dompurify": "^3.4.0"
         },
-        "uuid": "^14.0.0"
+        "uuid": "^14.0.0",
+        "serialize-javascript": "^7.0.3",
+        "vite": {
+            "rolldown": "^v1.0.0-beta.55"
+        }
     }
 }

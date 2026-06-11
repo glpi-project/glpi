@@ -146,7 +146,6 @@ class ImportMapGenerator
             // Scan GLPI core directories
             $this->addModulesToImportMap($core_modules, $this->glpi_root . '/js/modules', $this->glpi_root);
             $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/js/modules', $this->glpi_root);
-            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/build', $this->glpi_root);
 
             // Cache core modules
             if ($should_use_cache) {
