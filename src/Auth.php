@@ -1052,6 +1052,11 @@ class Auth extends CommonGLPI
                 $this->denied_by_rule = true;
             }
 
+            // Capture restore need before clearing the flag (original DB state still in fields).
+            $needs_ldap_restore = $this->user_present
+                && ($this->user->fields['authtype'] ?? 0) == self::LDAP
+                && ($this->user->fields['is_deleted_ldap'] || !$this->user->fields['is_active']);
+
             //Set user an not deleted from LDAP
             $this->user->fields['is_deleted_ldap'] = 0;
 
@@ -1078,6 +1083,10 @@ class Auth extends CommonGLPI
                     unset($input['api_token'], $input['cookie_token'], $input['password_forget_token'], $input['personal_token']);
 
                     $this->user->update($input);
+
+                    if ($needs_ldap_restore) {
+                        User::manageRestoredUserInLdap($this->user->fields['id']);
+                    }
                 } elseif ($CFG_GLPI["is_users_auto_add"]) {
                     // Auto add user
                     $input = $this->user->fields;

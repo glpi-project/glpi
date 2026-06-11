@@ -387,4 +387,119 @@ class RuleRightCollectionTest extends DbTestCase
         // Compare the generated XML with the expected XML
         $this->assertEquals($expected, $xml);
     }
+
+    public static function allRulesProvider(): iterable
+    {
+        yield 'rule matches when TYPE criterion is satisfied' => [
+            'auth_type'       => \Auth::DB_GLPI,
+            'expected_result' => 1,
+        ];
+        yield 'rule does not match when TYPE criterion is not satisfied' => [
+            'auth_type'       => \Auth::MAIL,
+            'expected_result' => 0,
+        ];
+    }
+
+    /**
+     * Minimal test of testAllRules(): verify result = 1 on match, result = 0 on no-match.
+     * Uses the built-in TYPE criterion to avoid any LDAP/mail connection dependency.
+     */
+    #[DataProvider('allRulesProvider')]
+    public function testAllRules(int $auth_type, int $expected_result): void
+    {
+        $this->login();
+
+        // --- arrange ---
+        $profile = getItemByTypeName(\Profile::class, 'Self-Service');
+
+        $rule = $this->createItem(\RuleRight::class, [
+            'sub_type'     => \RuleRight::class,
+            'name'         => __FUNCTION__,
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'is_recursive' => 1,
+            'entities_id'  => 0,
+            'condition'    => 0,
+        ]);
+
+        // Criteria: TYPE PATTERN_IS Auth::DB_GLPI
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'TYPE',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => \Auth::DB_GLPI,
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'profiles_id',
+            'value'       => $profile->getID(),
+        ]);
+
+        // Raw input as sent by the rule preview UI (standard fields already uppercased)
+        $input = ['TYPE' => $auth_type, 'LOGIN' => 'testuser'];
+
+        $collection = new \RuleRightCollection();
+
+        // --- act ---
+        $output = $collection->testAllRules($input, [], $input);
+
+        // --- assert ---
+        $this->assertArrayHasKey('result', $output);
+        $this->assertEquals($expected_result, $output['result'][$rule->getID()]['result']);
+    }
+
+    public function testTestAllRulesPreservesCustomLdapFieldForPatternEnd(): void
+    {
+        $this->login();
+
+        // --- arrange : create a rule with ---
+        $this->createItem(\RuleRightParameter::class, [
+            'name'  => 'Organizational Unit',
+            'value' => 'ou',
+        ]);
+
+        // Create a RuleRight with PATTERN_END criteria on custom LDAP field 'ou'
+        $rule = $this->createItem(\Rule::class, [
+            'sub_type'     => \RuleRight::class,
+            'name'         => 'Test PATTERN_END on custom LDAP field',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'is_recursive' => 1,
+            'entities_id'  => 0,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'ou',
+            'condition' => \Rule::PATTERN_END,
+            'pattern'   => 'dept',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'profiles_id',
+            'value'       => 5, // 'normal' profile
+        ]);
+
+        // Input simulating a rule preview with LDAP type and a custom field 'ou'
+        // whose value ends with 'dept'
+        $input = [
+            'TYPE'  => \Auth::LDAP,
+            'LOGIN' => 'testuser',
+            'ou'    => 'it_dept',
+        ];
+
+        $collection = new \RuleRightCollection();
+
+        // --- act ---
+        $output = $collection->testAllRules($input, [], $input);
+
+        // --- assert ---
+        $this->assertArrayHasKey('result', $output);
+        // The rule should have matched (result = 1) because 'it_dept' ends with 'dept'
+        $this->assertEquals(1, $output['result'][$rule->getID()]['result'], 'rule not reported as matched but it should.');
+    }
 }

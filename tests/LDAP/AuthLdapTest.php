@@ -3201,4 +3201,35 @@ class AuthLdapTest extends DbTestCase
             'User should still be member of the rule-assigned group after sync'
         );
     }
+
+    /**
+     * A user disabled in AD (is_deleted_ldap=1, is_active=0) must be
+     * re-activated during the login request once they are re-enabled in LDAP.
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testLoginRestoresLdapDeletedUser(): void
+    {
+        global $CFG_GLPI;
+
+        // First login imports the user into GLPI.
+        $first_auth = $this->realLogin('brazil8', 'password', false);
+        $user_id = $first_auth->user->fields['id'];
+
+        // Simulate the user being disabled in AD and synced.
+        $user = new \User();
+        $this->assertTrue($user->update(['id' => $user_id, 'is_active' => 0, 'is_deleted_ldap' => 1]));
+
+        $original_restore_cfg = $CFG_GLPI['user_restored_ldap'] ?? null;
+        $CFG_GLPI['user_restored_ldap'] = AuthLDAP::RESTORED_USER_ENABLE;
+
+        // Login after re-enablement in AD must restore the account.
+        $auth = new \Auth();
+        $auth->login('brazil8', 'password', false, false, 'ldap-' . $this->ldap->getID());
+
+        $CFG_GLPI['user_restored_ldap'] = $original_restore_cfg;
+
+        $user->getFromDB($user_id);
+        $this->assertSame(1, (int) $user->fields['is_active']);
+        $this->assertSame(0, (int) $user->fields['is_deleted_ldap']);
+    }
 }
