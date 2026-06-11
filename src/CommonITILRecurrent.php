@@ -310,10 +310,9 @@ abstract class CommonITILRecurrent extends CommonDropdown
             $values = [$field => $values];
         }
         $options['display'] = false;
-        switch ($field) {
-            case 'periodicity':
-                $options['value'] = $values[$field];
-                return (string) Dropdown::showFromArray($name, static::getPeriodicityPossibleValues(), $options);
+        if ($field === 'periodicity') {
+            $options['value'] = $values[$field];
+            return (string) Dropdown::showFromArray($name, static::getPeriodicityPossibleValues(), $options);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
