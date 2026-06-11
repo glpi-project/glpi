@@ -333,7 +333,7 @@ final class Parser
                         $sql_having_values = array_merge($sql_having_values, $it->getValues());
                     } else {
                         $sql_where_string .= $it->analyseCrit($criteria_array);
-                        $sql_where_values = array_merge($sql_having_values, $it->getValues());
+                        $sql_where_values = array_merge($sql_where_values, $it->getValues());
                     }
                 }
                 $buffer = [];
