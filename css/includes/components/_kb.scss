@@ -795,6 +795,24 @@
         cursor: pointer;
     }
 
+    // "+" button to create an article in a category, revealed on row
+    // hover/focus. visibility:hidden (not opacity:0) keeps it out of the tab
+    // order and unclickable until shown.
+    [data-glpi-kb-aside-category-add] {
+        visibility: hidden;
+    }
+
+    [data-glpi-kb-aside-category-header]:hover [data-glpi-kb-aside-category-add],
+    [data-glpi-kb-aside-category-header]:focus-within [data-glpi-kb-aside-category-add] {
+        visibility: visible;
+    }
+
+    @media (hover: none) {
+        [data-glpi-kb-aside-category-add] {
+            visibility: visible;
+        }
+    }
+
     // KB aside tree hierarchy connector lines
     .kb-tree {
         list-style: none;
