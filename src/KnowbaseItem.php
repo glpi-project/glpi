@@ -335,6 +335,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public function post_addItem()
     {
+        // Relink embedded document URLs from source item context before addFiles saves to DB
+        $original_answer = $this->input['answer'] ?? $this->fields['answer'] ?? null;
+        $relinked_answer = $this->relinkEmbeddedDocumentsFromLinkedItemContext($original_answer);
+        if ($relinked_answer !== null && $relinked_answer !== $original_answer) {
+            $this->input['answer'] = $relinked_answer;
+            $this->fields['answer'] = $relinked_answer;
+            $this->updateInDB(['answer']);
+        }
+
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles(
             $this->input,
@@ -419,6 +428,135 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
         $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, "_categories");
     }
 
+    /**
+     * Recontextualize embedded document URLs from source item to current KnowbaseItem.
+     *
+     * @param ?string $answer
+     *
+     * @return ?string
+     */
+    private function relinkEmbeddedDocumentsFromLinkedItemContext(?string $answer): ?string
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if ($answer === null || $answer === '') {
+            return $answer;
+        }
+
+        $source_itemtype = $this->input['_itemtype'] ?? null;
+        $source_items_id = $this->input['_items_id'] ?? null;
+        if (
+            !is_string($source_itemtype)
+            || !is_a($source_itemtype, CommonDBTM::class, true)
+            || !is_numeric($source_items_id)
+            || (int) $source_items_id <= 0
+        ) {
+            return $answer;
+        }
+        $source_items_id = (int) $source_items_id;
+
+        $decoded_answer = html_entity_decode(
+            html_entity_decode($answer, ENT_QUOTES | ENT_HTML5),
+            ENT_QUOTES | ENT_HTML5
+        );
+
+        $matches = [];
+        preg_match_all('/(?:https?:\/\/[^"\'\s<>]+)?\/front\/document\.send\.php\?[^"\'\s<>]+/i', $decoded_answer, $matches);
+        if (count($matches[0]) === 0) {
+            return $answer;
+        }
+
+        $document_item = new Document_Item();
+        foreach (array_unique($matches[0]) as $document_url) {
+            if (!is_string($document_url) || $document_url === '') {
+                continue;
+            }
+
+            $query = parse_url($document_url, PHP_URL_QUERY);
+            if (!is_string($query)) {
+                continue;
+            }
+
+            parse_str($query, $params);
+            $document_id = (int) ($params['docid'] ?? 0);
+            if (
+                $document_id <= 0
+                || ($params['itemtype'] ?? null) !== $source_itemtype
+                || (int) ($params['items_id'] ?? 0) !== $source_items_id
+            ) {
+                continue;
+            }
+
+            if (!$this->canRelinkEmbeddedDocumentFromSourceContext($document_id, $source_itemtype, $source_items_id)) {
+                continue;
+            }
+
+            $target_link = [
+                'documents_id' => $document_id,
+                'itemtype'     => self::class,
+                'items_id'     => $this->getID(),
+            ];
+            if (!$document_item->alreadyExists($target_link)) {
+                $document_item->add($target_link);
+            }
+
+            $params['itemtype'] = self::class;
+            $params['items_id'] = $this->getID();
+            $base_url = strtok($document_url, '?');
+            if ($base_url === false) {
+                continue;
+            }
+
+            $updated_url = $base_url . '?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+            $decoded_answer = str_replace($document_url, $updated_url, $decoded_answer);
+        }
+
+        return htmlspecialchars($decoded_answer, ENT_QUOTES | ENT_HTML5);
+    }
+
+    /**
+     * Ensure a document can be safely re-linked from a source context.
+     *
+     * @param int    $document_id
+     * @param string $source_itemtype
+     * @param int    $source_items_id
+     *
+     * @return bool
+     */
+    private function canRelinkEmbeddedDocumentFromSourceContext(
+        int $document_id,
+        string $source_itemtype,
+        int $source_items_id
+    ): bool {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $source_link = $DB->request([
+            'FROM'  => Document_Item::getTable(),
+            'COUNT' => 'cpt',
+            'WHERE' => [
+                'documents_id' => $document_id,
+                'itemtype'     => $source_itemtype,
+                'items_id'     => $source_items_id,
+            ],
+            'LIMIT' => 1,
+        ])->current();
+
+        if (
+            (int) ($source_link['cpt'] ?? 0) <= 0
+            && !is_a($source_itemtype, CommonITILObject::class, true)
+        ) {
+            return false;
+        }
+
+        $document = new Document();
+        return $document->getFromDB($document_id)
+            && $document->canViewFile([
+                'itemtype' => $source_itemtype,
+                'items_id' => $source_items_id,
+            ]);
+    }
 
     /**
      * @since 0.83
