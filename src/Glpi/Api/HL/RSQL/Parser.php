@@ -258,7 +258,6 @@ final class Parser
      */
     public function parse(array $tokens): Result
     {
-        $it = new DBmysqlIterator($this->db);
         // We are building a SQL string instead of criteria array because it isn't worth the complexity or overhead.
         // Everything done here should be standard SQL. If there is a platform difference, it should be handled in the callables for each operator.
         // SQL already will process logical separators (AND, OR) in the correct order, so we don't need to worry about that.
@@ -328,6 +327,7 @@ final class Parser
                         };
                     }
                     $criteria_array = $buffer['operator']($buffer['field'], $value);
+                    $it = new DBmysqlIterator($this->db);
                     if (isset($flat_props[$buffer['property']]['computation'])) {
                         $sql_having_string .= $it->analyseCrit($criteria_array);
                         $sql_having_values = array_merge($sql_having_values, $it->getValues());
