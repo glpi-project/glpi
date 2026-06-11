@@ -117,9 +117,11 @@ class NetworkCard extends Device
                 foreach ($this->extra_data['controllers'] as $controller) {
                     if (
                         property_exists($controller, 'type')
-                        && ($val->description == $controller->type
+                        && (
+                            $val->description == $controller->type
                         || strtolower($val->description . " controller") == strtolower($controller->type)
                         || (property_exists($val, 'model') && ($val->model == $controller->type))
+                        )
                     ) {
                         $found_controller = $controller;
                         if (property_exists($val, 'macaddr')) {
