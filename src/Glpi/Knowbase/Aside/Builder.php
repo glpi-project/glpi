@@ -68,11 +68,15 @@ final class Builder
             ));
         }
 
-        $categories = (new KnowbaseItemCategory())->find([
-            'knowbaseitemcategories_id' => $category_id,
+        $categories = $DB->request([
+            'FROM'  => KnowbaseItemCategory::getTable(),
+            'WHERE' => [
+                'knowbaseitemcategories_id' => $category_id,
+            ] + getEntitiesRestrictCriteria(KnowbaseItemCategory::getTable(), '', '', true),
         ]);
         foreach ($categories as $cat_data) {
             $category = new Category(
+                id: (int) $cat_data['id'],
                 title: $cat_data['name'] ?? '',
                 illustration: $cat_data['illustration'] ?? '',
             );

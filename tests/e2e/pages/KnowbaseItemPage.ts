@@ -92,6 +92,15 @@ export class KnowbaseItemPage extends GlpiPage
         );
     }
 
+    public async gotoAndWait(id: number): Promise<void>
+    {
+        await this.goto(id);
+        // AsideController removes pe-none from the search input once it has
+        // attached all listeners (including drag handlers).
+        // eslint-disable-next-line playwright/no-raw-locators -- ready signal selector exposed by AsideController.js
+        await this.page.locator('[data-glpi-kb-aside-search-input]:not(.pe-none)').waitFor();
+    }
+
     public async doToggleFaqStatus(): Promise<void>
     {
         const faq_toggle = this.getButton('Add to FAQ');
@@ -355,6 +364,53 @@ export class KnowbaseItemPage extends GlpiPage
         }
 
         await name_input.press('Enter');
+    }
+
+    public getAsideCategoryById(category_id: number): Locator
+    {
+        return this.page.locator(`[data-glpi-kb-aside-category-id="${category_id}"]`);
+    }
+
+    public getAsideArticleById(article_id: number): Locator
+    {
+        return this.page.locator(`[data-glpi-kb-article-id="${article_id}"]`);
+    }
+
+    public getAsideArticleInCategoryById(category_id: number, article_title: string): Locator
+    {
+        return this.getAsideCategoryById(category_id).getByRole('link', { name: article_title });
+    }
+
+    public getAsideNestedCategoryById(parent_id: number, child_id: number): Locator
+    {
+        return this.getAsideCategoryById(parent_id).locator(
+            `[data-glpi-kb-aside-category-id="${child_id}"]`,
+        );
+    }
+
+    private getAsideCategoryTitleById(category_id: number): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- scoped child combinator on a server-rendered data attribute
+        return this.getAsideCategoryById(category_id).locator('> [data-glpi-kb-aside-category-title]');
+    }
+
+    public async doDragArticleToCategoryById(
+        article_id: number,
+        _from_category_id: number,
+        to_category_id: number,
+    ): Promise<void> {
+        await this.getAsideArticleById(article_id).dragTo(
+            this.getAsideCategoryTitleById(to_category_id),
+        );
+    }
+
+    public async doDragCategoryToCategoryById(
+        source_category_id: number,
+        target_category_id: number,
+    ): Promise<void> {
+        await this.getAsideCategoryById(source_category_id).dragTo(
+            this.getAsideCategoryTitleById(target_category_id),
+        );
     }
 }
 

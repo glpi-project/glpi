@@ -30,31 +30,62 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro render_category(category) %}
+{% macro move_button(label) %}
+    <button
+        type="button"
+        class="btn btn-sm btn-ghost-secondary p-0 border-0 bg-transparent kb-aside-move-btn"
+        draggable="false"
+        data-glpi-kb-aside-move
+        aria-label="{{ label }}"
+    >
+        <i class="ti ti-dots-vertical fs-4" aria-hidden="true"></i>
+    </button>
+{% endmacro %}
+
+{% macro render_category(category, draggable_articles = false, draggable_categories = false) %}
     {% import _self as macros %}
-    <li class="node" data-glpi-kb-aside-category role="group" aria-label="{{ category.title }}">
-        <button
-            type="button"
-            class="d-flex align-items-center mb-2 p-0 w-100 text-start border-0 bg-transparent"
-            data-glpi-kb-aside-category-toggle
-            aria-label="{{ category.title }}"
-            aria-expanded="true"
+    <li
+        class="node"
+        data-glpi-kb-aside-category
+        data-glpi-kb-aside-category-id="{{ category.id }}"
+        {% if draggable_categories %}draggable="true"{% endif %}
+        role="group"
+        aria-label="{{ category.title }}"
+    >
+        <div
+            class="d-flex align-items-center mb-2 kb-aside-row"
+            data-glpi-kb-aside-category-title
         >
-            <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
-            {% if category.illustration %}
-                {{ render_illustration(category.illustration, 20) }}
+            <button
+                type="button"
+                class="d-flex align-items-center p-0 flex-grow-1 text-start border-0 bg-transparent"
+                draggable="false"
+                data-glpi-kb-aside-category-toggle
+                aria-label="{{ category.title }}"
+                aria-expanded="true"
+            >
+                <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
+                {% if category.illustration %}
+                    {{ render_illustration(category.illustration, 20) }}
+                {% endif %}
+                <span class="ms-2 fw-bold text-truncate d-block">{{ category.title }}</span>
+            </button>
+            {% if draggable_categories %}
+                {{ macros.move_button(__('Move %s')|format(category.title)) }}
             {% endif %}
-            <span class="ms-2 fw-bold text-truncate d-block">{{ category.title }}</span>
-        </button>
+        </div>
         <ul>
-            {{ macros.render_node(category) }}
+            {{ macros.render_node(category, draggable_articles, draggable_categories) }}
         </ul>
     </li>
 {% endmacro %}
 
-{% macro render_article(article, add_margin = false, favorite_state = null) %}
+{% macro render_article(article, add_margin = false, favorite_state = null, draggable = false) %}
+    {% import _self as macros %}
     <li
         data-glpi-kb-article-id="{{ article.id }}"
+        data-glpi-kb-article-title="{{ article.title }}"
+        {% if draggable %}draggable="true"{% endif %}
         {% if favorite_state is not null %}
             data-glpi-kb-favorite-current="{{ favorite_state }}"
         {% endif %}
@@ -62,25 +93,36 @@
             data-glpi-kb-article-current
             aria-current="page"
         {% endif %}
-        class="article {{ add_margin ? 'mb-2' : '' }}"
+        class="article d-flex align-items-center kb-aside-row {{ add_margin ? 'mb-2' : '' }}"
     >
-        <a class="text-dark text-hover-link text-truncate d-block" href="{{ article.link }}">
+        <a
+            class="text-dark text-hover-link text-truncate d-block flex-grow-1"
+            href="{{ article.link }}"
+            draggable="false"
+        >
             {% if article.illustration %}
                 {{ render_illustration(article.illustration, 20) }}
             {% endif %}
             {{ article.title }}
         </a>
+        {% if draggable %}
+            {{ macros.move_button(__('Move %s')|format(article.title)) }}
+        {% endif %}
     </li>
 {% endmacro %}
 
-{% macro render_node(node) %}
+{% macro render_node(node, draggable_articles = false, draggable_categories = false) %}
     {% import _self as macros %}
     {% for article in node.articles %}
-        {{ macros.render_article(article) }}
+        {{ macros.render_article(article, false, null, draggable_articles) }}
     {% endfor %}
     {% for category in node.categories %}
-        {{ macros.render_category(category) }}
+        {{ macros.render_category(category, draggable_articles, draggable_categories) }}
     {% endfor %}
+    {# Empty-state keeps a drop target (and minimum height) in empty categories. #}
+    {% if node.articles is empty and node.categories is empty %}
+        <li class="kb-aside-empty" aria-hidden="true">{{ __('No articles') }}</li>
+    {% endif %}
 {% endmacro %}
 
 {% import _self as macros %}
@@ -135,21 +177,65 @@
         </ul>
 </div>
 
-<div class="card-body" data-glpi-kb-aside-tree>
+<div
+    class="card-body"
+    data-glpi-kb-aside-tree
+    {% if can_reorder_articles ?? false %}data-glpi-kb-aside-can-reorder-articles{% endif %}
+    {% if can_reorder_categories ?? false %}data-glpi-kb-aside-can-reorder-categories{% endif %}
+>
     <ul class="kb-tree ps-0">
-        {# Render root articles in a special "uncategorized" category #}
-        {% if tree.articles|length %}
-            {{ macros.render_category({
-                title: __("Uncategorized"),
-                illustration: "",
-                articles: tree.articles,
-                categories: [],
-            }) }}
+        {% if can_reorder_categories ?? false %}
+            <li class="kb-aside-root-dropzone" data-glpi-kb-aside-root-dropzone aria-hidden="true">
+                <div class="kb-aside-row d-flex align-items-center">
+                    <i class="ti ti-corner-left-up me-1 fs-4" aria-hidden="true"></i>
+                    <span class="ms-2 fw-bold text-truncate d-block">{{ __('Top level') }}</span>
+                </div>
+            </li>
         {% endif %}
 
-        {# Render each categories #}
+        {# Render root articles in a special "uncategorized" pseudo-category. #}
+        {# The pseudo-category itself is never draggable (id=0), but its articles can be. #}
+        {% if tree.articles|length %}
+            <li
+                class="node"
+                data-glpi-kb-aside-category
+                data-glpi-kb-aside-category-id="0"
+                data-glpi-kb-aside-category-uncategorized
+                role="group"
+                aria-label="{{ __('Uncategorized') }}"
+            >
+                <div
+                    class="d-flex align-items-center mb-2 kb-aside-row"
+                    data-glpi-kb-aside-category-title
+                >
+                    <button
+                        type="button"
+                        class="d-flex align-items-center p-0 flex-grow-1 text-start border-0 bg-transparent"
+                        draggable="false"
+                        data-glpi-kb-aside-category-toggle
+                        aria-label="{{ __('Uncategorized') }}"
+                        aria-expanded="true"
+                    >
+                        <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
+                        {{ render_illustration('kb-faq', 20) }}
+                        <span class="ms-2 fw-bold text-truncate d-block">{{ __('Uncategorized') }}</span>
+                    </button>
+                </div>
+                <ul>
+                    {% for article in tree.articles %}
+                        {{ macros.render_article(article, false, null, can_reorder_articles ?? false) }}
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+
+        {# Render each top-level category. #}
         {% for category in tree.categories %}
-            {{ macros.render_category(category) }}
+            {{ macros.render_category(
+                category,
+                can_reorder_articles ?? false,
+                can_reorder_categories ?? false,
+            ) }}
         {% endfor %}
     </ul>
     <p class="text-muted" data-glpi-kb-aside-no-results hidden>

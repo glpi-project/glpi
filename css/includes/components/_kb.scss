@@ -740,8 +740,21 @@
 }
 
 [data-main-page-aside="knowbaseitem"] {
+    display: flex;
+    flex-direction: column;
+    
+    // Bounded height aligned with .kb-article / .kb-sidepanel so the aside
+    // scrolls internally instead of overflowing the viewport.
+    max-height: calc(100vh - 150px);
     max-width: 300px;
     background-color: #fff;
+
+    // Only the tree scrolls; header and favorites stay fixed above it.
+    [data-glpi-kb-aside-tree] {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+    }
 
     .node, .article {
         list-style: none;
@@ -770,8 +783,9 @@
     }
 
     // Current article entry when it is not yet a favorite: hidden until the user favorites it.
+    // !important needed to override the Tabler `.d-flex` utility on the article <li>.
     [data-glpi-kb-favorite-current="pending"] {
-        display: none;
+        display: none !important;
     }
 
     // Favorites section hidden when there are no favorites to display (set server-side or by JS).
@@ -785,14 +799,136 @@
     }
 
     // Tree items hidden by the search filter.
+    // !important needed to override the Tabler `.d-flex` utility on the article <li>.
     [data-glpi-kb-search-hidden] {
-        display: none;
+        display: none !important;
     }
 
     // Clear button: interactive only when active (has text to clear).
     [data-glpi-kb-aside-search-clear]:not([disabled]) {
         pointer-events: auto;
         cursor: pointer;
+    }
+
+    // Whole-row drag affordance: the row itself is the grab handle.
+    .kb-aside-row {
+        transition: background-color 0.1s ease;
+        border-radius: 4px;
+    }
+
+    li[draggable="true"] > .kb-aside-row,
+    li[draggable="true"].kb-aside-row {
+        cursor: grab;
+
+        &:hover {
+            background-color: var(--tblr-info-bg-subtle);
+
+            // Override the yellow that .text-hover-link (Bootstrap) and the
+            // current-article rule apply on hover — yellow on pale-blue reads
+            // poorly. Use the matching deep info shade.
+            > a {
+                color: var(--tblr-info-text-emphasis) !important;
+            }
+        }
+    }
+
+    // Source element while it is being dragged: faded in place.
+    .kb-aside-source-dragging,
+    .kb-aside-source-dragging > .kb-aside-row,
+    .kb-aside-source-dragging > a,
+    .kb-aside-source-dragging > button {
+        opacity: 0.4;
+    }
+
+    // Cursor stays grabbing while a drag is in progress anywhere in the tree.
+    &.kb-aside-dragging,
+    &.kb-aside-dragging * {
+        cursor: grabbing !important;
+    }
+
+    // Drop target for the thin "Top level" root zone: solid fill.
+    .kb-aside-target {
+        background-color: var(--tblr-info);
+        box-shadow: inset 4px 0 0 var(--tblr-info-text-emphasis);
+        color: #fff;
+
+        a {
+            color: #fff !important;
+        }
+    }
+
+    // Drop target for a whole category block: outline it (drop "into" it).
+    .kb-aside-target-block {
+        outline: 2px solid var(--tblr-info);
+        outline-offset: -2px;
+        border-radius: 4px;
+        background-color: var(--tblr-info-bg-subtle);
+    }
+
+    // Empty-state row: drop target + "no articles" hint for empty categories.
+    .kb-aside-empty {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        font-style: italic;
+        color: var(--tblr-secondary);
+    }
+
+    // "Top level" drop zone: hidden by default, revealed only while a category
+    // is being dragged so it can be dropped at the tree root.
+    .kb-aside-root-dropzone {
+        display: none;
+        margin: 0 0 0.25rem;
+        padding: 0.25rem 0.5rem;
+        border: 1px dashed var(--tblr-border-color);
+        border-radius: 4px;
+        color: var(--tblr-secondary);
+    }
+
+    &.kb-aside-dragging-category .kb-aside-root-dropzone {
+        display: block;
+    }
+
+    // Keyboard/touch-only fallback for drag-to-reparent (pointer users drag
+    // directly). display:none so its slot never shortens the category title.
+    .kb-aside-move-btn {
+        display: none;
+        margin-left: 0.5rem;
+        padding: 0 0.25rem;
+        color: var(--tblr-secondary);
+        line-height: 1;
+
+        &:hover,
+        &:focus-visible {
+            color: var(--tblr-primary);
+        }
+    }
+
+    li.article:focus-within > .kb-aside-move-btn,
+    [data-glpi-kb-aside-category-title]:focus-within > .kb-aside-move-btn {
+        display: inline-flex;
+    }
+
+    @media (hover: none) {
+        .kb-aside-move-btn {
+            display: inline-flex;
+        }
+    }
+
+    // "Move to" picker modal: a compact nested list of categories.
+    .kb-move-picker {
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+
+    .kb-move-picker-list {
+        list-style: none;
+        padding-left: 1rem;
+        margin: 0;
+
+        // First level has no extra indent.
+        .kb-move-picker > & {
+            padding-left: 0;
+        }
     }
 
     // KB aside tree hierarchy connector lines
@@ -823,7 +959,7 @@
                     left: -1rem;
                     top: 0;
                     width: calc(1rem - #{$gap}); // leave a small gap before the content
-                    height: 0.625rem; // half of the 20px illustration = 10px
+                    height: 0.875rem; // .kb-aside-row padding-top 4px + half of the 20px illustration = 14px
                     border-left: 1px solid var(--tblr-border-color);
                     border-bottom: 1px solid var(--tblr-border-color);
                 }
@@ -832,7 +968,7 @@
                     content: '';
                     position: absolute;
                     left: -1rem;
-                    top: 0.625rem;
+                    top: 0.875rem;
                     bottom: 0;
                     width: 1px;
                     background-color: var(--tblr-border-color);
