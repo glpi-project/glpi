@@ -470,8 +470,7 @@ function buildEditorPreview(node) {
     iframe.title = providerName ? `${providerName} ${__('video player')}` : __('video player');
     iframe.setAttribute('frameborder', '0');
     iframe.setAttribute('allowfullscreen', '');
-    iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation allow-popups');
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
     wrapper.appendChild(iframe);
     return wrapper;
 }

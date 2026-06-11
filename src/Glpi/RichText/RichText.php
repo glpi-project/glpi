@@ -57,16 +57,13 @@ final class RichText
      *
      * @param null|string $content              HTML string to be made safe
      * @param bool        $encode_output        Indicates whether the output should be encoded (encoding of HTML special chars)
-     * @param bool        $allow_video_embeds   When true, preserves Knowbase video embed placeholders
-     *                                          (`<div data-video-provider data-video-id>`). Off by default
-     *                                          so non-KB contexts (tickets, problems, …) cannot smuggle them.
      *
      * @return string
      *
      * @psalm-taint-escape html
      * @psalm-taint-escape has_quotes
      */
-    public static function getSafeHtml(?string $content, bool $encode_output = false, bool $allow_video_embeds = false): string
+    public static function getSafeHtml(?string $content, bool $encode_output = false): string
     {
 
         if (empty($content)) {
@@ -81,7 +78,7 @@ final class RichText
             $content
         );
 
-        $content = self::getHtmlSanitizer($allow_video_embeds)->sanitize($content);
+        $content = self::getHtmlSanitizer()->sanitize($content);
 
         // Remove extra lines
         $content = trim($content, "\r\n");
@@ -119,7 +116,7 @@ final class RichText
         $content = self::normalizeHtmlContent($content);
 
         // Substitute video placeholders before strip_tags collapses them.
-        $content = VideoEmbedRenderer::renderAllAsText($content);
+        $content = (new VideoEmbedRenderer())->renderAllAsText($content);
 
         if ($keep_presentation) {
             if ($compact) {
@@ -298,8 +295,8 @@ final class RichText
             'user_mentions'       => true,
             'images_lazy'         => true,
             'text_maxsize'        => GLPI_TEXT_MAXSIZE,
-            // KB-only flag : preserves video embed placeholders through sanitize and
-            // materializes them into sandboxed iframes here. Non-KB callers leave it false.
+            // Materialize KB video embed placeholders into sandboxed iframes. Off by
+            // default so callers opt in explicitly.
             'allow_video_embeds'  => false,
         ];
         $p = array_replace($p, $params);
@@ -307,7 +304,7 @@ final class RichText
         $content_size = strlen($content ?? '');
 
         // Sanitize content first (security and to decode HTML entities)
-        $content = self::getSafeHtml($content, false, (bool) $p['allow_video_embeds']);
+        $content = self::getSafeHtml($content, false);
 
         if ($p['user_mentions']) {
             $content = UserMention::refreshUserMentionsHtmlToDisplay($content);
@@ -322,7 +319,7 @@ final class RichText
         }
 
         if ($p['allow_video_embeds']) {
-            $content = VideoEmbedRenderer::renderAll($content);
+            $content = (new VideoEmbedRenderer())->renderAll($content);
         }
 
         if ($p['text_maxsize'] > 0 && $content_size > $p['text_maxsize']) {
@@ -576,8 +573,7 @@ JAVASCRIPT;
     }
 
     /**
-     * Build the shared GLPI HTML sanitizer config (sans Knowbase video embed attrs).
-     * Extracted to allow {@see self::getHtmlSanitizer()} to derive a KB variant.
+     * Build the shared GLPI HTML sanitizer config.
      */
     private static function buildBaseSanitizerConfig(): HtmlSanitizerConfig
     {
@@ -672,37 +668,24 @@ JAVASCRIPT;
             $config = $config->allowAttribute($attribute, 'span');
         }
 
+        // Inert placeholders for KB video embeds. Allowed in every context: the
+        // attributes carry no behaviour, materialization into iframes staying gated
+        // downstream by getEnhancedHtml(allow_video_embeds).
+        $config = $config
+            ->allowAttribute('data-video-provider', ['div'])
+            ->allowAttribute('data-video-id', ['div'])
+            ->allowAttribute('data-video-start', ['div']);
+
         return $config;
     }
 
-    private static function getHtmlSanitizer(bool $allow_video_embeds = false): HtmlSanitizer
+    private static function getHtmlSanitizer(): HtmlSanitizer
     {
         static $sanitizer = null;
-        static $kb_sanitizer = null;
 
-        if ($allow_video_embeds && $kb_sanitizer !== null) {
-            return $kb_sanitizer;
+        if ($sanitizer === null) {
+            $sanitizer = new HtmlSanitizer(self::buildBaseSanitizerConfig());
         }
-        if (!$allow_video_embeds && $sanitizer !== null) {
-            return $sanitizer;
-        }
-
-        $config = self::buildBaseSanitizerConfig();
-
-        if ($allow_video_embeds) {
-            // KB-only - preserves video embed placeholders so VideoEmbedRenderer can
-            // materialize them downstream. Generic rich text contexts like ITIL stay
-            // unaware of those attributes.
-            $config = $config
-                ->allowAttribute('data-video-provider', ['div'])
-                ->allowAttribute('data-video-id', ['div'])
-                ->allowAttribute('data-video-start', ['div']);
-
-            $kb_sanitizer = new HtmlSanitizer($config);
-            return $kb_sanitizer;
-        }
-
-        $sanitizer = new HtmlSanitizer($config);
 
         return $sanitizer;
     }
