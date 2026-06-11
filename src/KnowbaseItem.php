@@ -335,6 +335,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      **/
     public function post_addItem()
     {
+        // Relink embedded document URLs from source item context before addFiles saves to DB
+        $relinked_answer = $this->relinkEmbeddedDocumentsFromLinkedItemContext(
+            $this->input['answer'] ?? $this->fields['answer'] ?? null
+        );
+        if ($relinked_answer !== null) {
+            $this->input['answer'] = $relinked_answer;
+        }
+
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles(
             $this->input,
@@ -425,8 +433,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
      * @param ?string $answer
      *
      * @return ?string
-     *
-     * @phpstan-ignore method.unused
      */
     private function relinkEmbeddedDocumentsFromLinkedItemContext(?string $answer): ?string
     {

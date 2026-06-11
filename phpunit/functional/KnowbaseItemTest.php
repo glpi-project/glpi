@@ -1659,16 +1659,9 @@ HTML
             'interface' => 'central',
         ]);
 
-        $this->createItem(\ProfileRight::class, [
-            'profiles_id' => $profile->getID(),
-            'name'        => 'knowbase',
-            'rights'      => \KnowbaseItem::PUBLISHFAQ | CREATE,
-        ]);
-
-        $this->createItem(\ProfileRight::class, [
-            'profiles_id' => $profile->getID(),
-            'name'        => 'ticket',
-            'rights'      => 0,
+        \ProfileRight::updateProfileRights($profile->getID(), [
+            'knowbase' => \KnowbaseItem::PUBLISHFAQ | CREATE,
+            'ticket'   => 0,
         ]);
 
         $user = $this->createItem(\User::class, [
