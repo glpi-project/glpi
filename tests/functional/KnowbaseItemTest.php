@@ -1355,7 +1355,7 @@ HTML,
         ]);
 
         // Create KnowBase items with specific visibility for users
-        $this->createItems(\KnowbaseItem::class,[
+        $this->createItems(\KnowbaseItem::class, [
             [
                 'name'     => 'KB 14',
                 'answer'   => 'KB 14',
@@ -1432,7 +1432,7 @@ HTML,
         ]);
 
         // Create KnowBase items with specific visibility for groups
-        $this->createItems(\KnowbaseItem::class,[
+        $this->createItems(\KnowbaseItem::class, [
             [
                 'name'     => 'KB 16',
                 'answer'   => 'KB 16',
@@ -1500,7 +1500,7 @@ HTML,
         ]);
 
         // Create KnowBase items with specific visibility for profiles
-        $this->createItems(\KnowbaseItem::class,[
+        $this->createItems(\KnowbaseItem::class, [
             [
                 'name'     => 'KB 18',
                 'answer'   => 'KB 18',
