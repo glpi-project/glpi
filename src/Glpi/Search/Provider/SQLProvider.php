@@ -2104,13 +2104,10 @@ final class SQLProvider implements SearchProviderInterface
                         $l = $nott ? 'AND' : 'OR';
                         $operator = $nott ? '<>' : '=';
                         $values[] = 0;
-                        if (strtolower($val) !== 'null' && !is_null($val)) {
-                            $values[] = $val;
-                        }
                         $criteria = [
                             $l => [
                                 [
-                                    new QueryExpression("$tocompute $operator ?", values: array_merge($values)),
+                                    new QueryExpression("$tocompute $operator ?", values: $values),
                                 ],
                             ],
                         ];
