@@ -423,4 +423,61 @@ class PlanningExternalEventTest extends AbstractPlanningEventTest
         }
         $this->assertTrue($found, 'The created event should be in guest\'s vCalendars');
     }
+
+    /**
+     * Test that documents can be uploaded and attached to a PlanningExternalEvent, and that duplicates are not created
+     */
+    public function testUploadDocuments()
+    {
+        $this->login();
+
+        $doc_item = new \Document_Item();
+        $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
+
+        // Create event with document
+        $planning_event = $this->createItem(PlanningExternalEvent::class, [
+            'name' => 'Event with document',
+            'users_id' => Session::getLoginUserID(),
+            'plan' => [
+                'begin' => '2025-01-15 10:00:00',
+                'end' => '2025-01-15 12:00:00',
+            ],
+            '_filename' => [
+                0 => $filename,
+            ],
+        ], ['plan']);
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $documents = $doc_item->find([
+            'itemtype' => PlanningExternalEvent::class,
+            'items_id' => $planning_event->getID(),
+        ]);
+        $this->assertCount(1, $documents, 'One document should be attached to the event');
+
+        // Try to attach the same document again
+        $this->updateItem(PlanningExternalEvent::class, $planning_event->getID(), [
+            '_filename' => [
+                0 => $filename,
+            ],
+        ]);
+        $documents = $doc_item->find([
+            'itemtype' => PlanningExternalEvent::class,
+            'items_id' => $planning_event->getID(),
+        ]);
+        $this->assertCount(1, $documents, 'Duplicate document should not be attached to the event');
+
+        // Attach a second document
+        $filename2 = '5e5e92ffd9bd91.44444444bar.txt';
+        $this->updateItem(PlanningExternalEvent::class, $planning_event->getID(), [
+            '_filename' => [
+                0 => $filename,
+                1 => $filename2,
+            ],
+        ]);
+        copy(FIXTURE_DIR . '/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename2);
+        $documents = $doc_item->find([
+            'itemtype' => PlanningExternalEvent::class,
+            'items_id' => $planning_event->getID(),
+        ]);
+        $this->assertCount(2, $documents, 'Second document should be attached to the event');
+    }
 }
