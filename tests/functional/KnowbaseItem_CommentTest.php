@@ -182,10 +182,10 @@ class KnowbaseItem_CommentTest extends DbTestCase
         KnowbaseItem_Comment::showForItem($kb1);
         $html = ob_get_clean();
 
-        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"kb-comment-node comment\s+timeline-item KnowbaseItemComment /", $html, $results);
         $this->assertCount(3, $results[0]);
 
-        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"kb-comment-node comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
         $this->assertCount(3, $results[0]);
 
         preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary edit_item /", $html, $results);
@@ -203,10 +203,10 @@ class KnowbaseItem_CommentTest extends DbTestCase
         KnowbaseItem_Comment::showForItem($kb1);
         $html = ob_get_clean();
 
-        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"kb-comment-node comment\s+timeline-item KnowbaseItemComment /", $html, $results);
         $this->assertCount(3, $results[0]);
 
-        preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
+        preg_match_all("/li id=\"kbcomment\d+\" class=\"kb-comment-node comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
         $this->assertCount(3, $results[0]);
 
         preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary edit_item /", $html, $results);

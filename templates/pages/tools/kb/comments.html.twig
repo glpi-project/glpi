@@ -32,62 +32,76 @@
 
 {% macro kb_comment(comment, level, can_comment) %}
     {% set has_answers = comment['answers'] is defined and comment['answers']|length > 0 %}
-    <li id="kbcomment{{ comment['id'] }}" class="comment {{ level > 0 ? 'subcomment' : '' }} timeline-item KnowbaseItemComment {{ has_answers ? "has_answers" : "" }}"
+    <li id="kbcomment{{ comment['id'] }}" class="kb-comment-node comment {{ level > 0 ? 'subcomment' : '' }} timeline-item KnowbaseItemComment {{ has_answers ? "has_answers" : "" }}"
         data-id="{{ comment['id'] }}" data-kbitem_id="{{ comment['knowbaseitems_id'] }}" data-lang="{{ comment['language'] }}">
-        <div class="d-flex flex-wrap align-items-start {{ level == 0 ? "mt-6" : "mt-3" }}">
-            <a href="{{ comment['user_info']['link'] }}" class="me-3 mt-n2 ms-n2">
-                {% if comment['user_info']['avatar'] is not empty %}
-                    {% set avatar_style = 'background-image: url(' ~ comment['user_info']['avatar'] ~ ');' %}
-                {% else %}
-                    {% set avatar_style = 'background-color: ' ~ comment['user_info']['initials_bg_color'] %}
-                {% endif %}
-                <span class="avatar avatar-md rounded" style="{{ avatar_style }}">
-                    {% if comment['user_info']['avatar'] is empty %}
-                        {{ comment['user_info']['initials'] }}
+
+        <div class="kb-comment-layout {{ level == 0 ? "mt-6" : "mt-3" }} {{ not has_answers ? 'no-answers' : '' }}">
+            <input type="checkbox" id="toggle_{{ comment['id'] }}" class="kb-toggle-checkbox" checked="checked">
+
+            <div class="kb-thread-gutter">
+                <a href="{{ comment['user_info']['link'] }}" class="avatar-link">
+                    {% if comment['user_info']['avatar'] is not empty %}
+                        {% set avatar_style = 'background-image: url(' ~ comment['user_info']['avatar'] ~ ');' %}
+                    {% else %}
+                        {% set avatar_style = 'background-color: ' ~ comment['user_info']['initials_bg_color'] %}
                     {% endif %}
-                </span>
-            </a>
-            <div class="h_item d-flex timeline-content flex-column">
-                <div class="d-flex flex-column ps-2">
-                    <div class="h_info d-flex">
-                        <div class="h_date">{{ comment['date_creation']|formatted_datetime }}</div>
-                        <div class="d-inline-flex ms-auto">
-                            {% if can_comment %}
-                                <button type="button" class="btn btn-sm btn-ghost-secondary add_answer ms-1" title="{{ __('Add an answer') }}">
-                                    <i class="ti ti-arrow-back-up"></i>
-                                </button>
-                            {% endif %}
-                            {% if can_comment and comment['users_id'] == session('glpiID') %}
-                                <button type="button" class="btn btn-sm btn-ghost-secondary edit_item ms-1" title="{{ __('Edit') }}">
-                                    <i class="ti ti-edit"></i>
-                                </button>
-                            {% endif %}
+                    <span class="avatar avatar-md rounded" style="{{ avatar_style }}">
+                        {% if comment['user_info']['avatar'] is empty %}
+                            {{ comment['user_info']['initials'] }}
+                        {% endif %}
+                    </span>
+                </a>
+                <div class="kb-thread-line"></div>
+            </div>
+
+            <div class="kb-thread-body">
+                <div class="kb-comment-content h_item d-flex timeline-content flex-column w-100 mt-2">
+                    <div class="d-flex flex-column ps-2">
+                        <div class="h_info d-flex pt-1">
+                            <div class="h_date timeline-header mt-0 mb-1 d-flex creator">
+                                {{ include('components/itilobject/timeline/timeline_item_header_badges.html.twig', {
+                                    'users_id': comment['users_id'],
+                                    'date_creation': comment['date_creation'],
+                                    'date_mod': comment['date_mod'] ?? comment['date_creation'],
+                                    'users_id_editor': comment['users_id'],
+                                    'anchor': 'kbcomment' ~ comment['id']
+                                }, with_context = false) }}
+                            </div>
+                            <div class="d-inline-flex ms-auto">
+                                {% if can_comment %}
+                                    <button type="button" class="btn btn-sm btn-ghost-secondary add_answer ms-1" title="{{ __('Add an answer') }}">
+                                        <i class="ti ti-arrow-back-up"></i>
+                                    </button>
+                                {% endif %}
+                                {% if can_comment and comment['users_id'] == session('glpiID') %}
+                                    <button type="button" class="btn btn-sm btn-ghost-secondary edit_item ms-1" title="{{ __('Edit') }}">
+                                        <i class="ti ti-edit"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                    <div class="h_content KnowbaseItemComment">
-                        <div class="displayed_content">
-                            <div class="item_content">
-                                <p>{{ comment['comment'] }}</p>
+                        <div class="h_content KnowbaseItemComment py-1">
+                            <div class="displayed_content">
+                                <div class="item_content">
+                                    <p>{{ comment['comment'] }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div class="kb-toggle-wrapper">
+                    <label for="toggle_{{ comment['id'] }}" class="kb-toggle-icon"></label>
+                </div>
+                <ul class="kb-nested-replies comments">
+                    {% if has_answers %}
+                        {% for answer in comment['answers'] %}
+                            {{ _self.kb_comment(answer, level + 1, can_comment) }}
+                        {% endfor %}
+                    {% endif %}
+                </ul>
             </div>
         </div>
-       {% if has_answers %}
-            <input type="checkbox" id="toggle_{{ comment['id'] }}" class="toggle_comments" checked="checked">
-            <label for="toggle_{{ comment['id'] }}" class="toggle_label"></label>
-            {% set nb_sub_answers = 0 %}
-            {% set answers_html %}
-                {% for answer in comment['answers'] %}
-                    {{ _self.kb_comment(answer, level + 1, can_comment) }}
-                    {% set nb_sub_answers = nb_sub_answers + answer['answers']|length %}
-                {% endfor %}
-            {% endset %}
-            <ul class="{{ nb_sub_answers > 0 ? "has_sub_answers" : "" }}">
-                {{ answers_html }}
-            </ul>
-        {% endif %}
     </li>
 {% endmacro %}
 
@@ -126,23 +140,53 @@
         <script>
             $(() => {
                 const _bindForm = function(form) {
-                    form.find('input[type=reset]').on('click', (e) => {
-                        e.preventDefault();
+                    form.find('button[name="cancel"], input[type=reset]').on('click', (e) => {
+                        const nestedReplies = form.closest('.kb-nested-replies');
+                        const layout = form.closest('.kb-comment-layout');
+                        // form.remove() is also called by comment_form.html.twig's own JS.
+                        // We use setTimeout to ensure we check the length AFTER it's removed.
+                        setTimeout(() => {
+                            if (nestedReplies.length > 0 && nestedReplies.children().length === 0) {
+                                layout.addClass('no-answers');
+                            }
+                        }, 10);
+                        // Fallback removal if the other script didn't catch it
                         form.remove();
                         $('.displayed_content').show();
                     });
                 };
 
+                const focusToEnd = (element) => {
+                    if (element.length === 0) return;
+                    const el = element.get(0);
+                    el.focus({ preventScroll: true });
+                    if (typeof el.setSelectionRange === 'function') {
+                        const len = el.value.length;
+                        el.setSelectionRange(len, len);
+                    }
+                };
+
                 $('.add_answer').on('click', (e) => {
-                    const add_btn = $(e.target);
+                    const add_btn = $(e.currentTarget);
                     const comment = add_btn.closest('.comment');
+
+                    // Expand the replies section if it is retracted
+                    const checkbox = $(`#toggle_${comment.data('id')}`);
+                    if (checkbox.length > 0 && !checkbox.prop('checked')) {
+                        checkbox.prop('checked', true);
+                    }
+
                     const _data = {
                         'kbitem_id': comment.data('kbitem_id'),
                         'answer'   : comment.data('id'),
                         'language' : comment.data('lang')
                     };
 
-                    if (comment.find('#newcomment' + add_btn.data('id')).length > 0) {
+                    // Scroll to existing form if already open
+                    const existingForm = $(`#newcomment${comment.data('id')}`);
+                    if (existingForm.length > 0) {
+                        existingForm.get(0).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        focusToEnd(existingForm.find('textarea'));
                         return;
                     }
 
@@ -152,14 +196,13 @@
                         cache: false,
                         data: _data,
                     }).then((data) => {
-                        const _form = $(`<li class="newcomment comment subcomment timeline-item KnowbaseItemComment" id="newcomment${comment.data('id')}">${data}</li>`);
+                        const _form = $(`<li class="kb-comment-node newcomment comment subcomment timeline-item KnowbaseItemComment" id="newcomment${comment.data('id')}">${data}</li>`);
                         _bindForm(_form);
-                        if (add_btn.closest('.comment').find("ul").length > 0) {
-                            add_btn.closest('.comment').find("ul").append(_form);
-                        } else {
-                            $("<div class='ms-5 w-100'>").append(_form).insertAfter(add_btn.parents('.h_item'));
-                        }
+                        const layout = comment.children('.kb-comment-layout');
+                        layout.removeClass('no-answers');
+                        layout.find('.kb-nested-replies').first().append(_form);
                         $(`#newcomment${comment.data('id')}`).get(0).scrollIntoView(false);
+                        focusToEnd(_form.find('textarea'));
                     }, () => {
                         glpi_alert({
                             title: '{{ __('Unable to load comment!')|e('js') }}',
@@ -169,7 +212,7 @@
                 });
 
                 $('.edit_item').on('click', (e) => {
-                    const edit_btn = $(e.target)
+                    const edit_btn = $(e.currentTarget);
                     const comment = edit_btn.closest('.comment');
                     const _data = {
                         'kbitem_id': comment.data('kbitem_id'),
@@ -177,7 +220,9 @@
                         'language' : comment.data('lang')
                     };
 
-                    if (comment.find('#editcomment' + edit_btn.data('id')).length > 0) {
+                    const existingForm = comment.find(`#editcomment${comment.data('id')}`);
+                    if (existingForm.length > 0) {
+                        focusToEnd(existingForm.find('textarea'));
                         return;
                     }
 
@@ -197,6 +242,7 @@
                             .closest('.comment')
                             .find('.h_content').first()
                             .append(_form);
+                        focusToEnd(_form.find('textarea'));
                     }, () => {
                         glpi_alert({
                             title: '{{ __('Unable to load comment!')|e('js') }}',
