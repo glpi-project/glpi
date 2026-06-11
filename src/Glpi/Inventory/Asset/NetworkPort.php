@@ -78,7 +78,6 @@ class NetworkPort extends InventoryAsset
     private mysqli_stmt $vlan_stmt;
     private mysqli_stmt $pvlan_stmt;
     protected Conf $conf;
-    /** @var array<string, mixed> */
     protected array $extra_data = ['networks' => null];
 
     public function prepare(): array
@@ -172,7 +171,8 @@ class NetworkPort extends InventoryAsset
             if ($this->main_asset instanceof Computer) {
                 $port_name = property_exists($val, 'name') ? strtolower((string) $val->name) : '';
                 $found = false;
-                foreach (($this->extra_data['networks'] ?? []) as $network) {
+                $networks = $this->extra_data['networks'] ?? [];
+                foreach ($networks as $network) {
                     $net_descr = property_exists($network, 'description')
                         ? strtolower((string) $network->description)
                         : '';
@@ -867,7 +867,7 @@ class NetworkPort extends InventoryAsset
         //remove management port for Printer on netinventory
         //to prevent twice IP (NetworkPortAggregate / NetworkPortEthernet)
         if ($mainasset instanceof Printer && !$this->item->isNewItem()) {
-            if (empty($this->extra_data[$this->main_asset::class]->getManagementPorts())) {
+            if (empty($mainasset->getManagementPorts())) {
                 //remove all port management ports
                 $networkport = new GlobalNetworkPort();
                 $networkport->deleteByCriteria([
