@@ -41,7 +41,7 @@ use Glpi\System\Log\LogViewer;
 
 global $CFG_GLPI;
 
-Session::checkRight("logs", READ);
+Session::checkRight(LogViewer::$rightname, READ);
 
 $filepath = $_REQUEST['filepath'] ?? null;
 
