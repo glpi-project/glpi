@@ -38,6 +38,7 @@ use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\Tag;
 use Glpi\RichText\RichText;
 use Glpi\Tests\GLPITestCase;
+use KnowbaseItem;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class RichTextTest extends GLPITestCase
@@ -761,6 +762,61 @@ HTML,
             'content'                => '<span contenteditable="false" data-user-mention="true" data-user-id="5">@normal</span>',
             'expected_result'        => '<a class="user-mention" href="' . $CFG_GLPI['root_doc'] . '/front/user.form.php?id=5">@normal</a>',
         ];
+    }
+
+    public static function normalizeForDisplayProvider(): iterable
+    {
+        yield 'empty string is returned as-is' => [
+            'html'     => '',
+            'expected' => '',
+        ];
+
+        yield 'table width attribute is removed and max-width style is added' => [
+            'html'     => '<table width="600"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+
+        yield 'table width in style is replaced by max-width' => [
+            'html'     => '<table style="width: 800px;"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+
+        yield 'td width attribute is removed' => [
+            'html'     => '<table><tr><td width="200">Cell</td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+
+        yield 'img gets max-width and height style' => [
+            'html'     => '<p><img src="/img.png" alt="test" /></p>',
+            'expected' => '<p><img src="/img.png" alt="test" style="max-width: 100%; height: auto;"></p>',
+        ];
+
+        yield 'table border-width is preserved' => [
+            'html'     => '<table style="border-width: 2px; width: 600px;"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="border-width: 2px; max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+        yield 'img min-width in style is stripped' => [
+            'html'     => '<p><img src="/img.png" style="min-width: 800px;" /></p>',
+            'expected' => '<p><img src="/img.png" style="max-width: 100%; height: auto;"></p>',
+        ];
+        yield 'table min-width in style is replaced by max-width' => [
+            'html'     => '<table style="min-width: 600px; color: red;"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="color: red; max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+        yield 'th width attribute is removed' => [
+            'html'     => '<table><tr><th width="150">Header</th></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><th style="">Header</th></tr></table>',
+        ];
+        yield 'img width in style is stripped' => [
+            'html'     => '<p><img src="/img.png" style="width: 800px;" /></p>',
+            'expected' => '<p><img src="/img.png" style="max-width: 100%; height: auto;"></p>',
+        ];
+    }
+
+    #[DataProvider('normalizeForDisplayProvider')]
+    public function testNormalizeForDisplay(string $html, string $expected): void
+    {
+        $this->assertEquals($expected, KnowbaseItem::normalizeKbRevisionDiffHtml($html));
     }
 
     #[DataProvider('getEnhancedHtmlProvider')]
