@@ -1412,6 +1412,7 @@ class DBmysql
         //JOINS
         $this->iterator = new DBmysqlIterator($this);
         $query .= $this->iterator->analyseJoins($joins);
+        $values = array_merge($values, $this->iterator->getValues());
 
         $query .= " SET ";
         foreach ($params as $field => $value) {
@@ -1440,18 +1441,20 @@ class DBmysql
         $query = rtrim($query, ', ');
 
         $query .= " WHERE " . $this->iterator->analyseCrit($clauses['WHERE']);
+        $values = array_merge($values, $this->iterator->getValues());
 
         // ORDER BY
         if (!empty($clauses['ORDER'])) {
             $query .= $this->iterator->handleOrderClause($clauses['ORDER']);
+            $values = array_merge($values, $this->iterator->getValues());
         }
 
         if (!empty($clauses['LIMIT'])) {
             $offset = (!empty($clauses['START'])) ? $clauses['START'] : null;
             $query .= $this->iterator->handleLimits($clauses['LIMIT'], $offset);
+            $values = array_merge($values, $this->iterator->getValues());
         }
 
-        $values = array_merge($values, $this->iterator->getValues());
         $update = new Update();
         return $update
             ->setQuery($query)
