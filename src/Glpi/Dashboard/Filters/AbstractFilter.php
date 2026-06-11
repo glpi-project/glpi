@@ -209,6 +209,47 @@ abstract class AbstractFilter
         return self::field($fieldname, $field, $label, $value !== null);
     }
 
+    /**
+     * @param array<int|string> $values
+     * @param array<string, mixed> $add_params
+     */
+    protected static function displayMultipleList(
+        string $label,
+        array $values,
+        string $fieldname,
+        string $itemtype,
+        array $add_params = [],
+    ): string {
+        $rand  = mt_rand();
+        $field = $itemtype::dropdown([
+            'name'                => $fieldname,
+            'values'              => $values,
+            'rand'                => $rand,
+            'display'             => false,
+            'display_emptychoice' => false,
+            'emptylabel'          => '',
+            'placeholder'         => $label,
+            'on_change'           => "on_change_{$rand}()",
+            'allowClear'          => true,
+            'width'               => '',
+            'multiple'            => true,
+        ] + $add_params);
+
+        $js = "
+            var on_change_{$rand} = function() {
+                var dom_elem = $('#dropdown_" . \jsescape($fieldname . $rand) . "');
+                var selected = dom_elem.val() || [];
+
+                GLPI.Dashboard.getActiveDashboard().saveFilter('" . \jsescape($fieldname) . "', selected);
+
+                dom_elem.closest('fieldset').toggleClass('filled', selected.length > 0);
+            };
+        ";
+        $field .= Html::scriptBlock($js);
+
+        return self::field($fieldname, $field, $label, count($values) > 0);
+    }
+
     protected static function getDatesCriteria(string $field, array $dates): array
     {
         $begin = strtotime($dates[0]);
