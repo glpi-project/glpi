@@ -46,7 +46,7 @@ class NetworkCard extends Device
 
     private Conf $conf;
 
-    protected array $extra_data = ['controllers' => null];
+    protected array $extra_data = ['controllers' => null, 'network_ports' => null];
     protected array $ignored = ['controllers' => null];
     /** @var string[] */
     private array $cards_macs = [];
@@ -187,6 +187,27 @@ class NetworkCard extends Device
                         $val_port->virtualdev = 0;
                     } else {
                         $val_port->logical_number = 0;
+                    }
+                }
+
+                if (isset($this->extra_data['network_ports']) && is_iterable($this->extra_data['network_ports'])) {
+                    /** @var iterable<object> $network_ports */
+                    $network_ports = $this->extra_data['network_ports'];
+                    foreach ($network_ports as $np) {
+                        $np_mac = property_exists($np, 'mac') ? strtolower((string) $np->mac) : '';
+                        $vp_mac = property_exists($val_port, 'mac') ? strtolower((string) $val_port->mac) : '';
+                        $np_name = property_exists($np, 'name') ? strtolower((string) $np->name) : '';
+                        $vp_name = property_exists($val_port, 'name') ? strtolower((string) $val_port->name) : '';
+
+                        if (
+                            ($np_mac !== '' && $vp_mac !== '' && $np_mac === $vp_mac)
+                            && ($np_name !== '' && $vp_name !== '' && $np_name === $vp_name)
+                        ) {
+                            if (property_exists($np, 'ifnumber') && $np->ifnumber !== '') {
+                                $val_port->logical_number = (int) $np->ifnumber;
+                            }
+                            break;
+                        }
                     }
                 }
 
