@@ -454,10 +454,15 @@ class Config extends CommonDBTM
             $input['smtp_oauth_refresh_token'] = '';
         }
 
+        if (isset($input["_blank_smtp_passwd"]) && $input["_blank_smtp_passwd"]) {
+            $input['smtp_passwd'] = '';
+        }
+
         if (isset($input['smtp_passwd']) && empty($input['smtp_passwd'])) {
             unset($input['smtp_passwd']);
         }
-        if (isset($input["_blank_smtp_passwd"]) && $input["_blank_smtp_passwd"]) {
+
+        if (($input['smtp_mode'] ?? null) === MAIL_SMTPOAUTH) {
             $input['smtp_passwd'] = '';
         }
 
