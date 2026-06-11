@@ -9916,13 +9916,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$designation\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Access to an undefined property object\\:\\:\\$devicenetworkcardmodels_id\\.$#',
-	'identifier' => 'property.notFound',
-	'count' => 1,
+	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
