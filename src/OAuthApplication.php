@@ -137,7 +137,7 @@ class OAuthApplication extends CommonDBTM
 
     /**
      * @param bool $show
-     * @return list<array{id: int, name: string, is_active: string, last_collect_date: mixed}>|void
+     * @return list<array{id: int, name: string, plain_name: string, is_active: string, last_collect_date: mixed}>|void
      */
     public function getLinkedMailCollectors(bool $show = false)
     {
@@ -155,6 +155,7 @@ class OAuthApplication extends CommonDBTM
             $entries[] = [
                 'id'                => $collector->getID(),
                 'name'              => $collector->getLink(),
+                'plain_name'        => $row['name'],
                 'is_active'         => $row['is_active'] ? __('Yes') : __('No'),
                 'last_collect_date' => $row['last_collect_date'],
             ];
@@ -267,10 +268,9 @@ class OAuthApplication extends CommonDBTM
     {
         $lkd_collectors = $this->getLinkedMailCollectors();
         if (is_array($lkd_collectors) && count($lkd_collectors) > 0) {
-            Session::addMessageAfterRedirect(__('The app could not be deleted, it is linked with the following receiver(s): '), message_type: ERROR);
+            Session::addMessageAfterRedirect(__s('The app could not be deleted, it is linked with the following receiver(s): '), message_type: ERROR);
             foreach ($lkd_collectors as $collector) {
-                $message[] = $collector['name'];
-                Session::addMessageAfterRedirect('- ' . $collector['name'], message_type: ERROR);
+                Session::addMessageAfterRedirect(htmlescape('- ' . $collector['plain_name']), message_type: ERROR);
             }
 
             return false;
