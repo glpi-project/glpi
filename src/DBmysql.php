@@ -1410,10 +1410,16 @@ class DBmysql
         $query  = "UPDATE " . self::quoteName($table);
 
         //JOINS
+        // track how many values have already been consumed to only fetch the new ones
+        // and keep them in the same order as the placeholders in the query.
         $this->iterator = new DBmysqlIterator($this);
         $query .= $this->iterator->analyseJoins($joins);
-        $values = array_merge($values, $this->iterator->getValues());
+        // JOIN placeholders come first in the query.
+        $values = $this->iterator->getValues();
+        $consumed = count($values);
 
+        // SET placeholders come after the JOIN ones; collect them separately
+        $set_values = [];
         $query .= " SET ";
         foreach ($params as $field => $value) {
             if ($value instanceof QueryParam) {
@@ -1422,38 +1428,41 @@ class DBmysql
                 $qvalues = $value->getValues();
                 if (count($qvalues)) {
                     $query .= self::quoteName($field) . " = ?, ";
-                    $values = array_merge($values, $qvalues);
+                    $set_values = array_merge($set_values, $qvalues);
                 } else {
                     $query .= self::quoteName($field) . " = " . $value->getValue() . ", ";
                 }
             } elseif ($value === null || $value === 'NULL' || $value === 'null') {
                 $query .= self::quoteName($field) . " = ?, ";
-                $values[] = null;
+                $set_values[] = null;
             } elseif (is_bool($value)) {
                 $query .= self::quoteName($field) . " = ?, ";
                 // transform boolean as int (prevent `false` to be transformed to empty string)
-                $values[] = (int) $value;
+                $set_values[] = (int) $value;
             } else {
                 $query .= self::quoteName($field) . " = ?, ";
-                $values[] = $value;
+                $set_values[] = $value;
             }
         }
         $query = rtrim($query, ', ');
+        // append SET values after the JOIN values and before the WHERE ones.
+        $values = array_merge($values, $set_values);
 
         $query .= " WHERE " . $this->iterator->analyseCrit($clauses['WHERE']);
-        $values = array_merge($values, $this->iterator->getValues());
 
         // ORDER BY
         if (!empty($clauses['ORDER'])) {
             $query .= $this->iterator->handleOrderClause($clauses['ORDER']);
-            $values = array_merge($values, $this->iterator->getValues());
         }
 
         if (!empty($clauses['LIMIT'])) {
             $offset = (!empty($clauses['START'])) ? $clauses['START'] : null;
             $query .= $this->iterator->handleLimits($clauses['LIMIT'], $offset);
-            $values = array_merge($values, $this->iterator->getValues());
         }
+
+        // WHERE/ORDER/LIMIT placeholders come last: only fetch the values added
+        // by the iterator since the JOIN analysis (skip the already consumed ones).
+        $values = array_merge($values, array_slice($this->iterator->getValues(), $consumed));
 
         $update = new Update();
         return $update

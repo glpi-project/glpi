@@ -271,6 +271,32 @@ class DBTest extends GLPITestCase
                 . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
                 . ' SET `field` = ? WHERE `id` IN (?, ?)',
                 ['value', 1, 2],
+            ], [
+                // JOIN with a placeholder in its ON clause: values must be ordered
+                // as they appear in the query (JOIN, then SET, then WHERE).
+                'glpi_rulecriterias', [
+                    'criteria' => 'name',
+                ], [
+                    'criteria' => 'servicepack_name',
+                ],
+                [
+                    'INNER JOIN' => [
+                        'glpi_rules' => [
+                            'FKEY' => [
+                                'glpi_rulecriterias' => 'rules_id',
+                                'glpi_rules'         => 'id',
+                                [
+                                    'AND' => ['glpi_rules.sub_type' => 'RuleDictionnaryOperatingSystemServicePack'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'UPDATE `glpi_rulecriterias`'
+                . ' INNER JOIN `glpi_rules` ON (`glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`'
+                . ' AND `glpi_rules`.`sub_type` = ?)'
+                . ' SET `criteria` = ? WHERE `criteria` = ?',
+                ['RuleDictionnaryOperatingSystemServicePack', 'name', 'servicepack_name'],
             ],
         ];
     }
