@@ -19162,7 +19162,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset mixed on object\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Peripheral.php',
 ];
 $ignoreErrors[] = [
