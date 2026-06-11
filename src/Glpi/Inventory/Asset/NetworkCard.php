@@ -54,7 +54,7 @@ class NetworkCard extends Device
     public function prepare(): array
     {
         $mapping = [
-            'name'          => 'designation',
+            'model'         => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'macaddr'       => 'mac',
         ];
@@ -118,8 +118,8 @@ class NetworkCard extends Device
                     if (
                         property_exists($controller, 'type')
                         && ($val->description == $controller->type
-                        || strtolower($val->description . " controller")
-                              == strtolower($controller->type))
+                        || strtolower($val->description . " controller") == strtolower($controller->type)
+                        || (property_exists($val, 'model') && ($val->model == $controller->type))
                     ) {
                         $found_controller = $controller;
                         if (property_exists($val, 'macaddr')) {
