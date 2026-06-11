@@ -1509,6 +1509,17 @@ $(() => {
         } else {
             navigator.clipboard.writeText(text);
             glpi_toast_info(__("Copied to clipboard"));
+            flashIconButton($(this), $(this).attr('class'), 'ti ti-check', 1500);
+        }
+    });
+
+    $(document).on('click', '[data-disclose-password]', function(e) {
+        e.preventDefault();
+        const target = $(this).data('disclose-password');
+        if ($("#" + CSS.escape(target)).prop('type') === 'password') {
+            showDisclosablePasswordField(target);
+        } else {
+            hideDisclosablePasswordField(target);
         }
     });
 });
@@ -1551,6 +1562,9 @@ $(document.body).on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
  */
 function showDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "text");
+    const btn = $(`[data-disclose-password="${CSS.escape(item)}"]`);
+    btn.find('.ti-eye').removeClass('ti-eye').addClass('ti-eye-off');
+    btn.attr('aria-pressed', 'true');
 }
 
 /**
@@ -1559,7 +1573,10 @@ function showDisclosablePasswordField(item) {
  */
 function hideDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "password");
-}
+    const btn = $(`[data-disclose-password="${CSS.escape(item)}"]`);
+    btn.find('.ti-eye-off').removeClass('ti-eye-off').addClass('ti-eye');
+    btn.attr('aria-pressed', 'false');
+};
 
 /**
  * Copies the password from a disclosable password field to the clipboard
@@ -1573,6 +1590,8 @@ function copyDisclosablePasswordFieldToClipboard(item) {
     $("#" + CSS.escape(item)).select();
     try {
         document.execCommand("copy");
+        const btn = $("#" + CSS.escape(item)).closest('.btn-group').find('.ti-clipboard-copy').closest('button');
+        flashIconButton(btn, btn.attr('class'), 'ti ti-check', 1500);
     } catch {
         alert("Copy to clipboard failed'");
     }
