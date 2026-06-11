@@ -642,14 +642,17 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         global $DB;
 
         $delay = Entity::getUsedConfig('send_domains_alert_expired_delay', $entities_id);
+        $date_expr = new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > ?");
+        $date_delai_expr = clone $date_expr;
+        $date_zero_expr = clone $date_expr;
         return [
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'NOT' => ['date_expiration' => null],
                 'entities_id'  => $entities_id,
                 'is_deleted'   => 0,
-                new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > $delay"),
-                new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > 0"),
+                $date_delai_expr->setValues([$delay]),
+                $date_zero_expr->setValues([0]),
             ],
         ];
     }
@@ -666,14 +669,16 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         global $DB;
 
         $delay = Entity::getUsedConfig('send_domains_alert_close_expiries_delay', $entities_id);
+        $date_delai_expr = new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > ?");
+        $date_zero_expr = new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") < ?");
         return [
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'NOT' => ['date_expiration' => null],
                 'entities_id'  => $entities_id,
                 'is_deleted'   => 0,
-                new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") > -$delay"),
-                new QueryExpression("DATEDIFF(CURDATE(), " . $DB->quoteName('date_expiration') . ") < 0"),
+                $date_delai_expr->setValues([-$delay]),
+                $date_zero_expr->setValues([0]),
             ],
         ];
     }

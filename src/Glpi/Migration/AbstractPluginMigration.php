@@ -40,6 +40,7 @@ use CommonDBRelation;
 use CommonDBTM;
 use Config;
 use DBmysql;
+use Glpi\Exception\Database\StatementException;
 use Glpi\Message\MessageType;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\RichText\RichText;
@@ -691,8 +692,8 @@ abstract class AbstractPluginMigration
                         $items_id_field => $source_items_id,
                     ]
                 );
-            } catch (RuntimeException $e) {
-                if (!str_contains($e->getMessage(), '(1062)')) {
+            } catch (StatementException $e) {
+                if ($e->getCode() !== 1062) {
                     throw $e;
                 }
                 // Bulk update failed: fall back to row-by-row to only remove conflicting entries.
@@ -714,8 +715,8 @@ abstract class AbstractPluginMigration
                             ],
                             where: ['id' => $source_row['id']]
                         );
-                    } catch (RuntimeException $inner_e) {
-                        if (!str_contains($inner_e->getMessage(), '(1062)')) {
+                    } catch (StatementException $inner_e) {
+                        if ($inner_e->getCode() !== 1062) {
                             throw $inner_e;
                         }
                         $this->db->delete($table, ['id' => $source_row['id']]);

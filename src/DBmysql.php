@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\Parts\Delete;
+use Glpi\DBAL\Parts\Insert;
+use Glpi\DBAL\Parts\Update;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
@@ -221,6 +224,7 @@ class DBmysql
      * Indicates whether the data fetched from DB must be unsanitized.
      */
     private bool $must_unsanitize_data = false;
+    private int $affected_rows = 0;
 
     /**
      * Constructor / Connect to the MySQL Database
@@ -407,7 +411,8 @@ class DBmysql
         $duration = (microtime(true) - $start_time) * 1000;
 
         $debug_data['time'] = $duration;
-        $debug_data['rows'] = $this->affectedRows();
+        $this->affected_rows = (int) $this->dbh->affected_rows;
+        $debug_data['rows'] = $this->getAffectedRows();
 
         // Trigger warning errors if any SQL warnings was produced by the query
         $sql_warnings = $this->fetchQueryWarnings(); // Ensure that we collect warning after affected rows
@@ -473,7 +478,7 @@ class DBmysql
     }
 
     /**
-     * Give result from a sql result
+     * Give result from a SQL result
      *
      * @param mysqli_result $result MySQL result handler
      * @param int           $i      Row offset to give
@@ -916,10 +921,23 @@ class DBmysql
      * Get number of affected rows in previous MySQL operation
      *
      * @return int number of affected rows on success, and -1 if the last query failed.
+     * @deprecated 12
      */
     public function affectedRows()
     {
-        return (int) $this->dbh->affected_rows;
+        Toolbox::deprecated('This method does not work when statements are used!');
+        return $this->getAffectedRows();
+    }
+
+    /**
+     * Get number of affected rows in previous MySQL operation
+     * Rely on a class variable since GLPI v12 and statements usage, as $this->dbh->affected_rows is not reliable when statements are used.
+     *
+     * @return int number of affected rows on success, and -1 if the last query failed.
+     */
+    public function getAffectedRows(): int
+    {
+        return $this->affected_rows;
     }
 
     /**
@@ -1241,7 +1259,7 @@ class DBmysql
             return $name;
         }
 
-        // do not quote alreay quoted names
+        // do not quote already quoted names
         if (preg_match('/^`[^`]+`$/', $name) === 1) {
             return $name;
         }
@@ -1285,43 +1303,48 @@ class DBmysql
     /**
      * Builds an insert statement
      *
-     * @since 9.3
-     *
      * @param string $table  Table name
-     * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
+     * @param QuerySubQuery|array<string, mixed>  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
      * @phpstan-param array<string, mixed>|QuerySubQuery $params
      *
-     * @return string
+     * @return Insert
      */
-    public function buildInsert($table, $params)
+    public function buildInsert(string $table, array|QuerySubQuery $params): Insert
     {
         $query = "INSERT INTO " . self::quoteName($table) . ' ';
 
         if ($params instanceof QuerySubQuery) {
             // INSERT INTO ... SELECT Query where the sub-query returns all columns needed for the insert
             $query .= $params->getQuery();
+            $values = $params->getValues();
         } else {
             $fields = [];
+            $parameters = [];
             $values = [];
             foreach ($params as $key => $value) {
                 $fields[] = static::quoteName($key);
                 if ($value instanceof QueryExpression) {
-                    $values[] = $value->getValue();
+                    $parameters[] = $value->getValue();
+                    $values = array_merge($values, $value->getValues());
                     unset($params[$key]);
                 } elseif ($value instanceof QueryParam) {
-                    $values[] = $value->getValue();
+                    $parameters[] = $value->getValue();
                 } else {
-                    $values[] = self::quoteValue($value);
+                    $values[] = $value;
+                    $parameters[] = '?';
                 }
             }
             $query .= "(";
             $query .= implode(', ', $fields);
             $query .= ") VALUES (";
-            $query .= implode(", ", $values);
+            $query .= implode(', ', $parameters);
             $query .= ")";
         }
 
-        return $query;
+        $insert = new Insert();
+        return $insert
+            ->setQuery($query)
+            ->setParams($values);
     }
 
     /**
@@ -1336,9 +1359,10 @@ class DBmysql
      */
     public function insert($table, $params)
     {
-        $this->doQuery(
-            $this->buildInsert($table, $params)
-        );
+        $query = $this->buildInsert($table, $params);
+        $stmt = $this->prepare($query->getQuery());
+        $this->executeStatement($stmt, $query->getParams());
+        $this->affected_rows = (int) $stmt->affected_rows;
         return true;
     }
 
@@ -1349,14 +1373,15 @@ class DBmysql
      *
      * @param string $table   Table name
      * @param array  $params  Query parameters ([field name => field value)
-     * @param array  $clauses Clauses to use. If not 'WHERE' key specified, will b the WHERE clause (@see DBmysqlIterator capabilities)
+     * @param array  $clauses Clauses to use. If not 'WHERE' key specified, will be the WHERE clause (@see DBmysqlIterator capabilities)
      * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return string
+     * @return Update
      */
-    public function buildUpdate($table, $params, $clauses, array $joins = [])
+    public function buildUpdate($table, $params, $clauses, array $joins = []): Update
     {
+        $values = [];
         //when no explicit "WHERE", we only have a WHERE clause.
         if (!isset($clauses['WHERE'])) {
             $clauses  = ['WHERE' => $clauses];
@@ -1385,38 +1410,64 @@ class DBmysql
         $query  = "UPDATE " . self::quoteName($table);
 
         //JOINS
+        // track how many values have already been consumed to only fetch the new ones
+        // and keep them in the same order as the placeholders in the query.
         $this->iterator = new DBmysqlIterator($this);
         $query .= $this->iterator->analyseJoins($joins);
+        // JOIN placeholders come first in the query.
+        $values = $this->iterator->getValues();
+        $consumed = count($values);
 
+        // SET placeholders come after the JOIN ones; collect them separately
+        $set_values = [];
         $query .= " SET ";
         foreach ($params as $field => $value) {
-            if ($value instanceof QueryParam || $value instanceof QueryExpression) {
-                //no quote for query parameters nor expressions
+            if ($value instanceof QueryParam) {
                 $query .= self::quoteName($field) . " = " . $value->getValue() . ", ";
+            } elseif ($value instanceof QueryExpression) {
+                $qvalues = $value->getValues();
+                if (count($qvalues)) {
+                    $query .= self::quoteName($field) . " = ?, ";
+                    $set_values = array_merge($set_values, $qvalues);
+                } else {
+                    $query .= self::quoteName($field) . " = " . $value->getValue() . ", ";
+                }
             } elseif ($value === null || $value === 'NULL' || $value === 'null') {
-                $query .= self::quoteName($field) . " = NULL, ";
+                $query .= self::quoteName($field) . " = ?, ";
+                $set_values[] = null;
             } elseif (is_bool($value)) {
+                $query .= self::quoteName($field) . " = ?, ";
                 // transform boolean as int (prevent `false` to be transformed to empty string)
-                $query .= self::quoteName($field) . " = '" . (int) $value . "', ";
+                $set_values[] = (int) $value;
             } else {
-                $query .= self::quoteName($field) . " = " . self::quoteValue($value) . ", ";
+                $query .= self::quoteName($field) . " = ?, ";
+                $set_values[] = $value;
             }
         }
         $query = rtrim($query, ', ');
+        // append SET values after the JOIN values and before the WHERE ones.
+        $values = array_merge($values, $set_values);
 
         $query .= " WHERE " . $this->iterator->analyseCrit($clauses['WHERE']);
 
         // ORDER BY
-        if (isset($clauses['ORDER']) && !empty($clauses['ORDER'])) {
+        if (!empty($clauses['ORDER'])) {
             $query .= $this->iterator->handleOrderClause($clauses['ORDER']);
         }
 
-        if (isset($clauses['LIMIT']) && !empty($clauses['LIMIT'])) {
-            $offset = (isset($clauses['START']) && !empty($clauses['START'])) ? $clauses['START'] : null;
+        if (!empty($clauses['LIMIT'])) {
+            $offset = (!empty($clauses['START'])) ? $clauses['START'] : null;
             $query .= $this->iterator->handleLimits($clauses['LIMIT'], $offset);
         }
 
-        return $query;
+        // WHERE/ORDER/LIMIT placeholders come last: only fetch the values added
+        // by the iterator since the JOIN analysis (skip the already consumed ones).
+        $values = array_merge($values, array_slice($this->iterator->getValues(), $consumed));
+
+        $update = new Update();
+        return $update
+            ->setQuery($query)
+            ->setParams($values);
     }
 
     /**
@@ -1435,7 +1486,9 @@ class DBmysql
     public function update($table, $params, $where, array $joins = [])
     {
         $query = $this->buildUpdate($table, $params, $where, $joins);
-        $this->doQuery($query);
+        $stmt = $this->prepare($query->getQuery());
+        $this->executeStatement($stmt, $query->getParams());
+        $this->affected_rows = (int) $stmt->affected_rows;
         return true;
     }
 
@@ -1454,7 +1507,9 @@ class DBmysql
     public function updateOrInsert($table, $params, $where, $onlyone = true)
     {
         $query = $this->buildUpdateOrInsert($table, $params, $where, $onlyone);
-        $this->doQuery($query);
+        $stmt = $this->prepare($query->getQuery());
+        $this->executeStatement($stmt, $query->getParams());
+        $this->affected_rows = (int) $stmt->affected_rows;
         return true;
     }
 
@@ -1463,10 +1518,8 @@ class DBmysql
      * @param array $params
      * @param array $where
      * @param bool $onlyone
-     *
-     * @return string
      */
-    public function buildUpdateOrInsert($table, $params, $where, $onlyone = true): string
+    public function buildUpdateOrInsert($table, $params, $where, $onlyone = true): Update|Insert
     {
         $req = $this->request(array_merge(['FROM' => $table], $where));
         $data = array_merge($where, $params);
@@ -1489,7 +1542,7 @@ class DBmysql
      * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return string
+     * @return Delete
      */
     public function buildDelete($table, $where, array $joins = [])
     {
@@ -1501,10 +1554,14 @@ class DBmysql
         $query  = "DELETE " . self::quoteName($table) . " FROM " . self::quoteName($table);
 
         $this->iterator = new DBmysqlIterator($this);
-        $query .= $this->iterator->analyseJoins($joins);
-        $query .= " WHERE " . $this->iterator->analyseCrit($where);
+        $query .= $this->iterator->analyseJoins($joins); //TODO: maybe rely on DBAL\LeftJoin
+        $query .= " WHERE " . $this->iterator->analyseCrit($where); //TODO: maybe rely on DBAL\Where
+        $values = $this->iterator->getValues();
 
-        return $query;
+        $delete = new Delete();
+        return $delete
+            ->setQuery($query)
+            ->setParams($values);
     }
 
     /**
@@ -1522,7 +1579,9 @@ class DBmysql
     public function delete($table, $where, array $joins = [])
     {
         $query = $this->buildDelete($table, $where, $joins);
-        $this->doQuery($query);
+        $stmt = $this->prepare($query->getQuery());
+        $this->executeStatement($stmt, $query->getParams());
+        $this->affected_rows = (int) $stmt->affected_rows;
         return true;
     }
 
@@ -1996,6 +2055,11 @@ class DBmysql
             return;
         }
         $params = array_values($params); //no need for the keys
+        foreach ($params as &$param) {
+            if ($param === false) {
+                $param = 0;
+            }
+        }
 
         if ($types === null) {
             //no types specified, assume all strings
@@ -2004,15 +2068,31 @@ class DBmysql
             $types = implode('', $types);
         }
 
-        if (false === $stmt->bind_param($types, ...$params)) {
+        try {
+            if (false === $stmt->bind_param($types, ...$params)) {
+                throw new StatementException(
+                    sprintf(
+                        'Error binding params in SQL query "%s": %s (%d).',
+                        $this->current_query,
+                        $stmt->error,
+                        $stmt->errno
+                    ),
+                    $stmt->errno
+                );
+            }
+        } catch (ArgumentCountError $e) {
+            $scount = substr_count($this->current_query, '?');
+            $vcount = count($params);
             throw new StatementException(
                 sprintf(
-                    'Error binding params in SQL query "%s": %s (%d).',
+                    "Number of placeholders (%d) in SQL statement does not match number of values (%d).\n     SQL query:\n%s\n    Parameters:\n%s",
+                    $scount,
+                    $vcount,
                     $this->current_query,
-                    $stmt->error,
-                    $stmt->errno
+                    var_export($params, true)
                 ),
-                $stmt->errno
+                $e->getCode(),
+                $e
             );
         }
     }

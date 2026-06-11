@@ -32,62 +32,78 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\DBAL;
+namespace Glpi\DBAL\Parts;
 
-use AbstractQuery;
 use DBmysqlIterator;
-use RuntimeException;
 
-/**
- *  Sub query class
- **/
-class QuerySubQuery extends AbstractQuery
+abstract class BasePart
 {
-    private DBmysqlIterator $dbiterator;
+    protected string $query;
+    /** @var array<int, mixed> */
+    protected array $params;
 
     /**
-     * Create a sub query
-     *
-     * @param array   $crit Array of query criteria. Any valid DBmysqlIterator parameters are valid.
-     * @param ?string $alias Alias for the whole subquery
+     * @param array<string|int, mixed> $criteria
      */
-    public function __construct(array $crit, $alias = null)
+    public function withCriteria(array $criteria): static
     {
         global $DB;
 
-        parent::__construct($alias);
-        if ($crit === []) {
-            throw new RuntimeException('Cannot build an empty subquery');
+        if ($criteria === []) {
+            return $this;
         }
 
-        $this->dbiterator = new DBmysqlIterator($DB);
-        $this->dbiterator->buildQuery($crit);
+        $iterator = new DBmysqlIterator($DB);
+        $it_criteria = $this->getFromClause();
+        if (property_exists($this, 'clause')) {
+            $it_criteria += [$this->clause => $criteria];
+        } else {
+            $it_criteria += $criteria;
+        }
+        $iterator->buildQuery($it_criteria);
+
+        return $this
+            ->setQuery($iterator->getSql())
+            ->setParams($iterator->getValues())
+        ;
     }
 
     /**
-     *
-     * Get SQL query
-     *
-     * @return string
+     * @return array{FROM: string}
      */
-    public function getQuery()
+    public function getFromClause(): array
     {
-        global $DB;
+        return [
+            'FROM' => 'table',
+        ];
+    }
 
-        $sql = "(" . $this->dbiterator->getSql() . ")";
+    public function setQuery(string $query): static
+    {
+        $this->query = $query;
+        return $this;
+    }
 
-        if ($this->alias !== null) {
-            $sql .= ' AS ' . $DB->quoteName($this->alias);
-        }
-        return $sql;
+    public function getQuery(): string
+    {
+        return $this->query ?? '';
+    }
+
+    /**
+     * @param array<int, mixed> $values
+     */
+    public function setParams(array $values): static
+    {
+        $this->params = $values;
+        return $this;
     }
 
     /**
      * @return array<int, mixed>
      */
-    public function getValues(): array
+    public function getParams(): array
     {
-        return $this->dbiterator->getValues();
+        return $this->params ?? [];
     }
 
     public function __toString()

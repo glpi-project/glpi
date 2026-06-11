@@ -17660,12 +17660,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getLeftJoinCriteria\\(\\) has parameter \\$already_link_tables with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getLeftJoinCriteria\\(\\) has parameter \\$joinparams with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -17673,12 +17667,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getLeftJoinCriteria\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Search\\\\Provider\\\\SQLProvider\\:\\:getMetaLeftJoinCriteria\\(\\) has parameter \\$already_link_tables2 with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
@@ -28232,19 +28220,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Search.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Search\\:\\:addLeftJoin\\(\\) has parameter \\$already_link_tables with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Search\\:\\:addLeftJoin\\(\\) has parameter \\$joinparams with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Search\\:\\:addMetaLeftJoin\\(\\) has parameter \\$already_link_tables2 with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Search.php',

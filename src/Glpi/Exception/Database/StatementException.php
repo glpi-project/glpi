@@ -34,6 +34,6 @@
 
 namespace Glpi\Exception\Database;
 
-use Exception;
+use RuntimeException;
 
-final class StatementException extends Exception {}
+final class StatementException extends RuntimeException {}
