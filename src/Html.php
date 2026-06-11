@@ -818,7 +818,7 @@ TWIG,
         if (FrontEnd::isViteDevServerRunning()) {
             $tpl_vars['js_modules'][] = ['path' => FrontEnd::getViteDevServerClient(), 'options' => ['no_version' => true]];
         }
-        $tpl_vars['js_modules'][] = ['path' => FrontEnd::getViteEntrypoint(), 'options' => ['no_version' => true]];
+        $tpl_vars['js_modules'][] = ['path' => FrontEnd::getViteVueEntrypoint(), 'options' => ['no_version' => true]];
         $tpl_vars['js_files'][] = ['path' => 'js/common_ajax_controller.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
 
@@ -5527,16 +5527,6 @@ JS);
                 break;
             case 'fullcalendar':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/fullcalendar.js';
-                if (isset($_SESSION['glpilanguage'])) {
-                    foreach ([2, 3] as $loc) {
-                        $filename = "lib/fullcalendar/core/locales/"
-                         . strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]) . ".js";
-                        if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
-                            $_SESSION['glpi_js_toload'][$name][] = $filename;
-                            break;
-                        }
-                    }
-                }
                 break;
             case 'rateit':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery.rateit.js';

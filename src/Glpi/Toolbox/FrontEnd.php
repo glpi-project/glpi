@@ -76,24 +76,38 @@ class FrontEnd
                 $is_vite_running = false;
             }
         }
-        return (bool) $is_vite_running;
+        return (bool)$is_vite_running;
     }
 
     public static function getViteDevServerClient(): string
     {
-        return 'http://localhost:' . (int) GLPI_VITE_DEV_SERVER_PORT . '/@vite/client';
+        return 'http://localhost:' . (int)GLPI_VITE_DEV_SERVER_PORT . '/@vite/client';
     }
 
-    public static function getViteEntrypoint(): string
+    /**
+     * @return array<string, string>
+     * @throws \Safe\Exceptions\FilesystemException
+     * @throws \Safe\Exceptions\JsonException
+     */
+    private static function getManifest(): array
+    {
+        static $manifest;
+
+        if (is_null($manifest)) {
+            $manifest = json_decode(
+                file_get_contents(GLPI_ROOT . '/public/build/vue/vite/manifest.json'),
+                true
+            );
+        }
+
+        return $manifest;
+    }
+
+    public static function getViteVueEntrypoint(): string
     {
         if (self::isViteDevServerRunning()) {
-            return 'http://localhost:' . (int) GLPI_VITE_DEV_SERVER_PORT . '/js/src/vue/app.js';
+            return 'http://localhost:' . (int)GLPI_VITE_DEV_SERVER_PORT . '/js/src/vue/app.js';
         }
-        $manifest = json_decode(
-            file_get_contents(GLPI_ROOT . '/public/build/vue/vite/manifest.json'),
-            true
-        );
-
-        return 'build/vue/' . $manifest['app'];
+        return 'build/vue/' . self::getManifest()['app'];
     }
 }

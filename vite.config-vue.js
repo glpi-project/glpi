@@ -67,8 +67,8 @@ export default defineConfig(({ mode }) => {
                     format: 'esm',
                     dir: 'public/build/vue',
                     entryFileNames: '[name]-[hash].js',
-                    chunkFileNames: 'vue-sfc/[name]-[hash].js',
-                    assetFileNames: 'vue-sfc/[name]-[hash][extname]',
+                    chunkFileNames: '[name]-[hash].js',
+                    assetFileNames: '[name]-[hash][extname]',
                     comments: {
                         legal: true,
                     },

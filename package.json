@@ -86,15 +86,16 @@
     },
     "scripts": {
         "build:pack": "webpack --config .webpack.config.js",
-        "build:vue": "vite build --mode development",
+        "build:legacy": "vite build -c vite.config-legacy.js --mode development",
+        "build:vue": "vite build -c vite.config-vue.js --mode development",
         "build:illustration-translations": "php bin/console tools:generate_illustration_translations --allow-superuser",
-        "build": "npm run build:pack && npm run build:vue && npm run build:illustration-translations",
+        "build": "npm run build:legacy && npm run build:vue && npm run build:illustration-translations",
         "dependencies:postinstall": "php -r \"file_put_contents('.package.hash', sha1_file('package-lock.json'));\"",
         "dependencies": "npm run dependencies:postinstall",
         "postinstall": "patch-package --patch-dir tools/patches/npm",
         "test": "vitest",
         "test:run": "vitest run",
-        "watch:vue": "vite build --mode development --watch",
+        "watch:vue": "vite build -c vite.config-vue.js --mode development --watch",
         "watch": "npm run watch:vue",
         "test:e2e": "cypress open --project tests",
         "serve:vue": "vite serve --mode development",
@@ -104,6 +105,7 @@
         "@axe-core/playwright": "^4.11.3",
         "@eslint/eslintrc": "^3.3.5",
         "@eslint/js": "^9.39.4",
+        "@laynezh/vite-plugin-lib-assets": "^2.1.3",
         "@playwright/test": "^1.60.0",
         "@testing-library/cypress": "^10.1.3",
         "@testing-library/jest-dom": "^6.9.1",
@@ -162,9 +164,6 @@
             "dompurify": "^3.4.0"
         },
         "uuid": "^14.0.0",
-        "serialize-javascript": "^7.0.3",
-        "vite": {
-            "rolldown": "^v1.0.0-beta.55"
-        }
+        "serialize-javascript": "^7.0.3"
     }
 }
