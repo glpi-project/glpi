@@ -127,6 +127,14 @@ class Config extends CommonDBTM
             $menu['options'][APIClient::class]['page']            = Config::getFormURL(false) . '?forcetab=Config$8';
             $menu['options'][APIClient::class]['links']['search'] = Config::getFormURL(false) . '?forcetab=Config$8';
             $menu['options'][APIClient::class]['links']['add']    = '/front/apiclient.form.php';
+
+            if (OAuthApplication::canView()) {
+                $menu['options'][OAuthApplication::class]['icon']            = OAuthApplication::getIcon();
+                $menu['options'][OAuthApplication::class]['title']           = OAuthApplication::getTypeName(Session::getPluralNumber());
+                $menu['options'][OAuthApplication::class]['page']            = OAuthApplication::getSearchURL(false);
+                $menu['options'][OAuthApplication::class]['links']['search'] = OAuthApplication::getSearchURL(false);
+                $menu['options'][OAuthApplication::class]['links']['add']    = OAuthApplication::getFormURL(false);
+            }
         }
         if (count($menu)) {
             return $menu;

@@ -173,6 +173,10 @@ class MailCollector extends CommonDBTM
         if (countElementsInTable(self::getTable()) > 0) {
             $links["<i class='ti ti-list'></i>" . __s('Not imported emails')] = "/front/notimportedemail.php";
         }
+        if (OAuthApplication::canView()) {
+            $links["<i class='" . OAuthApplication::getIcon() . "'></i>" . __s('OAuth Applications')]
+                = OAuthApplication::getSearchURL(false);
+        }
         return $links;
     }
 
@@ -305,6 +309,10 @@ class MailCollector extends CommonDBTM
         $protocol_choices = [];
         foreach (Toolbox::getMailServerProtocols(allow_plugins_protocols: true) as $key => $protocol) {
             $protocol_choices['/' . $key] = $protocol['label'];
+        }
+
+        foreach (getAllDataFromTable(OAuthApplication::getTable(), ['is_active' => 1]) as $app) {
+            $protocol_choices['/oauth_imap_' . $app['id']] = $app['name'];
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/mailcollector/setup_form.html.twig', [
