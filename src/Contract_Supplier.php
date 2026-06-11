@@ -197,6 +197,14 @@ TWIG, $twig_params);
                 $duration .= " -> " . Infocom::getWarrantyExpir($data["begin_date"], $data["duration"], 0, true);
             }
             $entry['duration'] = $duration;
+            $entry['expiration'] = Infocom::getWarrantyExpir(
+                $data["begin_date"],
+                $data["duration"],
+                0,
+                true,
+                $data["renewal"] == 1,
+                $data["periodicity"]
+            );
             $entries[] = $entry;
         }
 
@@ -210,12 +218,12 @@ TWIG, $twig_params);
                 'num' => _x('phone', 'Number'),
                 'type' => ContractType::getTypeName(1),
                 'begin_date' => __('Start date'),
-                'duration' => __('Initial contract period'),
+                'expiration' => __('Expiration'),
             ],
             'formatters' => [
                 'name' => 'raw_html',
                 'begin_date' => 'date',
-                'duration' => 'raw_html',
+                'expiration' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
