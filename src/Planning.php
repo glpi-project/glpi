@@ -1757,6 +1757,7 @@ TWIG, $twig_params);
                 'typeColor'   => (empty($event['event_type_color'])
                               ? self::getPaletteColor('ev', $event['itemtype'])
                               : $event['event_type_color']),
+                'catColor'    => $event['event_cat_color'] ?? "",
                 'url'         => $event['url'] ?? "",
                 'ajaxurl'     => $event['ajaxurl'] ?? "",
                 'itemtype'    => $event['itemtype'] ?? "",
@@ -1776,12 +1777,7 @@ TWIG, $twig_params);
             if (!$event['editable']) {
                 $new_event['editable'] = false;
             }
-
-            // Category color has highest priority, then user calendar color
-            if (!empty($event['event_cat_color'])) {
-                $new_event['color'] = $event['event_cat_color'];
-            }
-
+            
             // Recompute text color based on the final background color for readability
             $new_event['textColor'] = Toolbox::getFgColor($new_event['color'], 100);
 

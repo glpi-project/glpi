@@ -251,6 +251,7 @@
 
          .fc-content {
             margin-right: 8px;
+            margin-left: 8px;
          }
 
          .fc-time {
@@ -289,6 +290,15 @@
             bottom: 0;
             top: 0;
             right: 0;
+         }
+
+         .event_category {
+            position: absolute;
+            width: 7px;
+            bottom: 0;
+            top: 0;
+            left: 0;
+            z-index: 3;
          }
       }
 

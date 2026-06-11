@@ -470,7 +470,8 @@ class PlanningTest extends DbTestCase
         }
     }
 
-    //The category color takes precedence over the actor color, if no category is specified, the user swatch color is used
+    // Background color priority: event-specific color (external calendars) > actor/user swatch color
+    // Category color is never used as background — it is exposed in catColor for the left band indicator
     public function testEventColorPriority(): void
     {
         $this->login();
@@ -515,8 +516,10 @@ class PlanningTest extends DbTestCase
         $with_cat    = current(array_filter($events, fn($e) => $e['title'] === 'event with category'));
         $without_cat = current(array_filter($events, fn($e) => $e['title'] === 'event without category'));
 
-        $this->assertEquals($category_color, $with_cat['color'], 'category color override actor_color');
-        $this->assertEquals($actor_color, $without_cat['color'], 'actor_color if no category');
+        $this->assertEquals($actor_color, $with_cat['color'], 'actor color is used as background even with a category');
+        $this->assertEquals($actor_color, $without_cat['color'], 'actor color is used as background when no category');
+        $this->assertEquals($category_color, $with_cat['catColor'], 'category color is exposed in catColor for the band');
+        $this->assertEmpty($without_cat['catColor'], 'catColor is empty when no category');
 
         // event-specific color ext override actor color
         $event_specific_color = '#AABBCC';

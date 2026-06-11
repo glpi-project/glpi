@@ -179,6 +179,10 @@ var GLPIPlanning  = {
                 var eventtype_marker = `<span class="event_type" style="background-color: ${_.escape(extProps.typeColor)}"></span>`;
                 element.append(eventtype_marker);
 
+                if (extProps.catColor) {
+                    element.append(`<span class="event_category" style="background-color: ${_.escape(extProps.catColor)}"></span>`);
+                }
+
                 var content = extProps.content;
                 var tooltip = extProps.tooltip;
                 if (view.type !== 'dayGridMonth'
