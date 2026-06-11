@@ -335,11 +335,11 @@ trait PlanningEvent
      * @param string $day
      *
      * @see addInstanceException
-     * @return bool
+     * @return void
      */
-    public function deleteInstance(int $id = 0, string $day = ""): bool
+    public function deleteInstance(int $id = 0, string $day = "")
     {
-        return $this->addInstanceException($id, $day);
+        $this->addInstanceException($id, $day);
     }
 
     /**

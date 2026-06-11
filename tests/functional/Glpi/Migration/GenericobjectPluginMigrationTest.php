@@ -66,8 +66,6 @@ class GenericobjectPluginMigrationTest extends DbTestCase
 
         parent::setUpBeforeClass();
 
-        self::clearDb();
-
         // Load it once for the whole class.
         // This will create new tables, therefore cannot be executed inside the test DB transaction.
         $queries = $DB->getQueriesFromFile(sprintf('%s/tests/fixtures/genericobject-migration/genericobject-db.sql', GLPI_ROOT));
@@ -78,13 +76,6 @@ class GenericobjectPluginMigrationTest extends DbTestCase
 
     public static function tearDownAfterClass(): void
     {
-        self::clearDb();
-
-        parent::tearDownAfterClass();
-    }
-
-    private static function clearDb(): void
-    {
         global $DB;
 
         $tables = $DB->listTables('glpi\_plugin\_genericobject\_%');
@@ -93,6 +84,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
         }
 
         $DB->clearSchemaCache();
+        parent::tearDownAfterClass();
     }
 
     public function setUp(): void

@@ -36,20 +36,27 @@
 namespace Glpi\Features;
 
 use DropdownVisibility;
-use Glpi\DBAL\QueryExpression;
+use LogicException;
 
 trait State
 {
     /**
      * Check if itemtype class is present in configuration array
      *
-     * @return bool
+     * @return void
      */
-    private function hasStates(): bool
+    private function checkSetup(): void
     {
         global $CFG_GLPI;
 
-        return in_array(static::class, $CFG_GLPI['state_types']);
+        if (!in_array(static::class, $CFG_GLPI['state_types'])) {
+            throw new LogicException(
+                sprintf(
+                    'Class %s must be present in $CFG_GLPI[\'state_types\']',
+                    static::class
+                )
+            );
+        }
     }
 
     /**
@@ -57,10 +64,7 @@ trait State
      */
     public function isStateVisible(int $id): bool
     {
-        if (!$this->hasStates()) {
-            return false;
-        }
-
+        $this->checkSetup();
         $dropdownVisibility = new DropdownVisibility();
         return $dropdownVisibility->getFromDBByCrit([
             'itemtype' => \State::class,
@@ -75,12 +79,7 @@ trait State
      */
     public function getStateVisibilityCriteria(): array
     {
-        if (!$this->hasStates()) {
-            return [
-                'WHERE' => [new QueryExpression('false')],
-            ];
-        }
-
+        $this->checkSetup();
         return [
             'LEFT JOIN' => [
                 DropdownVisibility::getTable() => [
