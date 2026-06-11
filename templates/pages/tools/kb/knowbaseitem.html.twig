@@ -60,6 +60,16 @@
             no_label: true
         }) }}
     {% endif %}
+
+    {# Auto-draft: any new article submitted from the web form is born as a
+       draft. Existing articles are toggled via the action menu (see
+       KnowbaseItem::getEditorActions), not via this form. #}
+    {% if item.isNewItem %}
+        {{ inputs.hidden('is_draft', 1) }}
+    {% elseif item.fields['is_draft']|default(0) %}
+        {% set draft_badge %}<span class="badge bg-warning text-dark">{{ __('Draft') }}</span>{% endset %}
+        {{ fields.htmlField('', draft_badge, __('Status')) }}
+    {% endif %}
     {% if item.fields['users_id'] %}
         {% set user_field = call('getUserLink', [item.fields['users_id']]) %}
         {{ fields.htmlField('', user_field, __('Writer')) }}

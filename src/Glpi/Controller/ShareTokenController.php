@@ -82,6 +82,21 @@ final class ShareTokenController extends AbstractController
         $manager = new ShareTokenManager();
         $name = $request->getPayload()->getString('name') ?: null;
 
+        // Block share-link creation on items that report themselves as
+        // not currently shareable (e.g. draft knowledge base articles).
+        $item = getItemForItemtype($itemtype);
+        if (
+            $item instanceof ShareableInterface
+            && $item instanceof \CommonDBTM
+            && $item->getFromDB($items_id)
+            && !$item->canBeShared()
+        ) {
+            return new JsonResponse(
+                ['success' => false, 'message' => __('This item cannot be shared in its current state.')],
+                Response::HTTP_CONFLICT,
+            );
+        }
+
         $input = [
             'itemtype'  => $itemtype,
             'items_id'  => $items_id,

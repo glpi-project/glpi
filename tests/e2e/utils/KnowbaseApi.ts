@@ -48,11 +48,20 @@ export class KnowbaseApi
     public async createArticle({
         name = 'My article',
         answer = 'My content',
+        is_draft = false,
     } = {}): Promise<number> {
         return await this.api.createItem('KnowbaseItem', {
             name       : name,
             entities_id: getWorkerEntityId(),
             answer     : `<p>${answer}</p>`,
+            is_draft   : is_draft ? 1 : 0,
+        });
+    }
+
+    public async setDraftStatus(article_id: number, is_draft: boolean): Promise<number>
+    {
+        return await this.api.updateItem('KnowbaseItem', article_id, {
+            is_draft: is_draft ? 1 : 0,
         });
     }
 

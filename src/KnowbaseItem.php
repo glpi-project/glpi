@@ -52,6 +52,7 @@ use Glpi\Knowbase\History\HistoryBuilder;
 use Glpi\Knowbase\LastUpdateInfo;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
+use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Glpi\UI\IllustrationManager;
@@ -61,6 +62,7 @@ use function Safe\preg_match;
 use function Safe\preg_match_all;
 use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
+use function Safe\strtotime;
 
 /**
  * KnowbaseItem Class
@@ -166,6 +168,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return true;
         }
 
+        // Draft is only visible to its author and KNOWBASEADMIN (handled above).
+        // Reject every other viewer regardless of their visibility scope.
+        if (!empty($this->fields['is_draft'])) {
+            return false;
+        }
+
         if ($this->fields["is_faq"]) {
             return ((Session::haveRightsOr(self::$rightname, [READ, self::READFAQ])
                   && $this->haveVisibilityAccess())
@@ -176,14 +184,49 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function canUpdateItem(): bool
     {
-        // Personal knowbase or visibility and write access
-        return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
-              || (Session::getCurrentInterface() === "central"
-                  && $this->fields['users_id'] === Session::getLoginUserID())
-              || ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
-                   || (!$this->fields["is_faq"]
-                       && Session::haveRight(self::$rightname, UPDATE)))
-                  && $this->haveVisibilityAccess()));
+        if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+            return true;
+        }
+        if (
+            Session::getCurrentInterface() === "central"
+            && (int) $this->fields['users_id'] === Session::getLoginUserID()
+        ) {
+            return true;
+        }
+        // A draft is only writable by its author and KNOWBASEADMIN
+        // (handled above); visibility-list membership is read-only.
+        if (!empty($this->fields['is_draft'])) {
+            return false;
+        }
+        return ((($this->fields["is_faq"] && Session::haveRight(self::$rightname, self::PUBLISHFAQ))
+                || (!$this->fields["is_faq"]
+                    && Session::haveRight(self::$rightname, UPDATE)))
+            && $this->haveVisibilityAccess());
+    }
+
+    public function canDeleteItem(): bool
+    {
+        if (!parent::canDeleteItem()) {
+            return false;
+        }
+        return $this->canDisposeDraft();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        if (!parent::canPurgeItem()) {
+            return false;
+        }
+        return $this->canDisposeDraft();
+    }
+
+    private function canDisposeDraft(): bool
+    {
+        if (empty($this->fields['is_draft'])) {
+            return true;
+        }
+        return (int) $this->fields['users_id'] === Session::getLoginUserID()
+            || Session::haveRight(self::$rightname, self::KNOWBASEADMIN);
     }
 
     /**
@@ -386,7 +429,22 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // Handle categories
         $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, "_categories");
 
-        NotificationEvent::raiseEvent('new', $this);
+        // Notify the author that the new article was saved as a draft.
+        // (The article is invisible to anyone else until they publish it
+        // via the action menu.)
+        if (!empty($this->fields['is_draft'])) {
+            Session::addMessageAfterRedirect(
+                htmlescape(__('Article saved as draft. It is only visible to you until you publish it.')),
+                false,
+                INFO
+            );
+        }
+
+        // Do not announce drafts to visibility targets — only the author
+        // (and KNOWBASEADMIN) can see them at all.
+        if (empty($this->fields['is_draft'])) {
+            NotificationEvent::raiseEvent('new', $this);
+        }
     }
 
     /**
@@ -705,7 +763,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         // Specific case for anonymous users + multi entities
         if (!Session::getLoginUserID()) {
-            $where = ['is_faq' => 1];
+            // Drafts must never appear publicly
+            $where = [
+                'is_faq'   => 1,
+                self::getTableField('is_draft') => 0,
+            ];
             if (Session::isMultiEntitiesMode()) {
                 $where[Entity_KnowbaseItem::getTableField('entities_id')] = 0;
                 $where[Entity_KnowbaseItem::getTableField('is_recursive')] = 1;
@@ -713,6 +775,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         } else {
             $where = self::getVisibilityCriteriaKB();
             $where['is_faq'] = 1;
+            // Explicit even though getVisibilityCriteriaKB already filters drafts
+            // out for non-admins: keeps the FAQ contract readable in isolation.
+            $where[self::getTableField('is_draft')] = 0;
         }
 
         return $where;
@@ -730,36 +795,47 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         // Special case for KB Admins
         if (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
-            // See all articles
+            // See all articles, drafts included.
             return [new QueryExpression('1')];
         }
 
         // Prepare criteria, which will use an OR statement (the user can read
         // the article if any of the user/group/profile/entity criteria are
         // validated)
-        $where = ['OR' => []];
+        $visibility = ['OR' => []];
 
         // Special case: the user may be the article's author
         $user = Session::getLoginUserID();
         $author_check = [self::getTableField('users_id') => $user];
-        $where['OR'][] = $author_check;
+        $visibility['OR'][] = $author_check;
 
         // Filter on users
-        $where['OR'][] = self::getVisibilityCriteriaKB_User();
+        $visibility['OR'][] = self::getVisibilityCriteriaKB_User();
 
         // Filter on groups (if the current user have any)
         $groups = $_SESSION["glpigroups"] ?? [];
         if (count($groups)) {
-            $where['OR'][] = self::getVisibilityCriteriaKB_Group();
+            $visibility['OR'][] = self::getVisibilityCriteriaKB_Group();
         }
 
         // Filter on profiles
-        $where['OR'][] = self::getVisibilityCriteriaKB_Profile();
+        $visibility['OR'][] = self::getVisibilityCriteriaKB_Profile();
 
         // Filter on entities
-        $where['OR'][] = self::getVisibilityCriteriaKB_Entity();
+        $visibility['OR'][] = self::getVisibilityCriteriaKB_Entity();
 
-        return $where;
+        // Draft gate: a non-admin user only sees published articles, plus
+        // their own drafts. Wrapped as AND with the visibility OR so a
+        // collaborator on the visibility list still cannot peek at the draft.
+        return [
+            'AND' => [
+                $visibility,
+                ['OR' => [
+                    [self::getTableField('is_draft') => 0],
+                    [self::getTableField('users_id') => $user],
+                ]],
+            ],
+        ];
     }
 
     /**
@@ -872,6 +948,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $input["users_id"] = Session::getLoginUserID();
         }
 
+        $input = $this->coerceDraftInput($input);
+
         return $this->prepareIllustrationInput($input);
     }
 
@@ -882,7 +960,66 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $input["name"] = __('New item');
         }
 
+        $input = $this->coerceDraftInput($input);
+
         return $this->prepareIllustrationInput($input);
+    }
+
+    /**
+     * Normalise the `is_draft` input and enforce its mutual exclusion with
+     * `is_faq`. A FAQ entry is public by definition, so it cannot be a draft:
+     * if both flags arrive truthy, `is_draft` is dropped and the operator is
+     * notified via a session warning. The UI keeps these toggles in two
+     * different surfaces (FAQ in the action menu, Draft via auto-creation +
+     * action menu), so reaching this branch normally only happens from the
+     * REST API or a forced direct call.
+     *
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
+     */
+    private function coerceDraftInput(array $input): array
+    {
+        if (array_key_exists('is_draft', $input)) {
+            $input['is_draft'] = !empty($input['is_draft']) ? 1 : 0;
+        }
+
+        $effective_is_faq = array_key_exists('is_faq', $input)
+            ? !empty($input['is_faq'])
+            : !empty($this->fields['is_faq'] ?? 0);
+        $effective_is_draft = array_key_exists('is_draft', $input)
+            ? (bool) $input['is_draft']
+            : !empty($this->fields['is_draft'] ?? 0);
+
+        if ($effective_is_faq && $effective_is_draft) {
+            $input['is_draft'] = 0;
+            Session::addMessageAfterRedirect(
+                htmlescape(__('A FAQ entry cannot be a draft — draft flag was removed.')),
+                false,
+                WARNING
+            );
+            return $input;
+        }
+
+        // Demoting a published article to draft is reserved to its author and
+        // to KNOWBASEADMIN: any other UPDATE holder could otherwise hide a
+        // colleague's article and leave only the author/admin able to restore.
+        $is_demote = !empty($input['is_draft'])
+            && !empty($this->fields['id'])
+            && empty($this->fields['is_draft']);
+        if (
+            $is_demote
+            && (int) ($this->fields['users_id'] ?? 0) !== Session::getLoginUserID()
+            && !Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
+        ) {
+            $input['is_draft'] = 0;
+            Session::addMessageAfterRedirect(
+                htmlescape(__('Only the author or a knowledge base administrator can move a published article back to draft.')),
+                false,
+                WARNING
+            );
+        }
+
+        return $input;
     }
 
     /**
@@ -920,11 +1057,41 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         // Update categories
         $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, '_categories');
-        NotificationEvent::raiseEvent('update', $this);
+
+        // Demoting to draft disables existing share tokens (instead of deleting
+        // them) so the author can reactivate them from the sharing panel after
+        // publishing again. ShareTokenManager already filters on is_active=1
+        // at resolution, so disabled tokens are unreachable in the meantime.
+        if (
+            in_array('is_draft', $this->updates, true)
+            && !empty($this->fields['is_draft'])
+        ) {
+            /** @var DBmysql $DB */
+            global $DB;
+            $DB->update(
+                ShareToken::getTable(),
+                ['is_active' => 0],
+                [
+                    'itemtype' => self::class,
+                    'items_id' => (int) $this->fields['id'],
+                ]
+            );
+        }
+
+        // Drafts must not notify visibility targets about updates: the
+        // content is still author-private. Notifications resume on publish.
+        if (empty($this->fields['is_draft'])) {
+            NotificationEvent::raiseEvent('update', $this);
+        }
     }
 
     public function post_purgeItem()
     {
+        // A draft never raised a 'new' notification; skip 'delete' too so the
+        // visibility targets are not informed of a draft they could not see.
+        if (!empty($this->fields['is_draft'])) {
+            return;
+        }
         NotificationEvent::raiseEvent('delete', $this);
     }
 
@@ -1033,6 +1200,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['views']        = $this->fields['view'];
             $params['can_edit']     = $can_update;
             $params['illustration'] = $this->fields['illustration'] ?? '';
+            $params['is_draft']     = !empty($this->fields['is_draft']);
+            // Drives the JS confirmation modal before demoting to draft.
+            $params['has_share_tokens'] = !empty(
+                (new ShareTokenManager())->getTokensForItem(self::class, $this->fields['id'])
+            );
 
             // Translations informations
             $params['translations_count']    = KnowbaseItemTranslation::getNumberOfTranslationsForItem($this);
@@ -1280,6 +1452,19 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     'checked' => $this->fields['is_faq'] ? '1' : '0',
                 ],
             );
+            // Draft toggle: when checked, the article is hidden from every
+            // viewer except the author and KNOWBASEADMIN.
+            $toggles[] = new EditorAction(
+                label: __("Mark as draft"),
+                icon: "ti ti-pencil-off",
+                type: EditorActionType::TOGGLE_VALUE,
+                params: [
+                    'id'      => $this->fields['id'],
+                    'field'   => 'is_draft',
+                    'checked' => $this->fields['is_draft'] ? '1' : '0',
+                ],
+                tooltip: __("Hides the article from everyone except you and knowledge base admins. Visibility targets are kept."),
+            );
         }
         if ($toggles !== []) {
             if ($actions !== []) {
@@ -1312,6 +1497,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public function canManageSharing(): bool
     {
         return $this->can($this->getID(), UPDATE);
+    }
+
+    public function canBeShared(): bool
+    {
+        return empty($this->fields['is_draft']);
     }
 
     public function getShareableViewTemplate(): string
@@ -1515,7 +1705,17 @@ TWIG, $twig_params);
         switch ($type) {
             case 'myunpublished':
             case 'allmy':
+                // Author-scoped by users_id = currentUser in the second switch
+                // below — the draft gate from $restrict_where would be redundant.
+                break;
+
             case 'allunpublished':
+                // Defense-in-depth: this type is not author-scoped, so
+                // apply the draft gate at the query layer too.
+                $criteria['WHERE'] = array_merge(
+                    $criteria['WHERE'],
+                    $restrict_where
+                );
                 break;
 
             default:
@@ -2115,6 +2315,9 @@ TWIG, $twig_params);
                 $criteria['WHERE']['glpi_entities_knowbaseitems.is_recursive'] = 1;
             }
         }
+        // Recent/popular widgets are a browsing surface, not a moderation
+        // view: drafts are always filtered out, regardless of role.
+        $criteria['WHERE'][self::getTableField('is_draft')] = 0;
 
         // Only published
         $criteria['WHERE'][] = [
@@ -2476,6 +2679,14 @@ TWIG, $twig_params);
             'search'             => false,
         ];
 
+        $tab[] = [
+            'id'                 => '90',
+            'table'              => self::getTable(),
+            'field'              => 'is_draft',
+            'name'               => __('Draft'),
+            'datatype'           => 'bool',
+        ];
+
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
@@ -2492,6 +2703,60 @@ TWIG, $twig_params);
         }
         $values[self::READFAQ]       = __('Read the FAQ');
         return $values;
+    }
+
+    /**
+     * Crontask metadata for `purgedraftitems`.
+     *
+     * @param string $name
+     * @return array<string, string>
+     */
+    public static function cronInfo($name)
+    {
+        return [
+            'description' => __('Purge old knowledge base drafts'),
+            'parameter'   => __('Knowledge base drafts retention period (in days)'),
+        ];
+    }
+
+    /**
+     * Purge abandoned drafts. A draft is considered abandoned when its
+     * `date_mod` is older than the configured retention (default 7 days).
+     * Anchoring on `date_mod` — not `date_creation` — ensures an author who
+     * keeps editing a draft daily never sees their work deleted.
+     *
+     * @used-by CronTask
+     */
+    public static function cronPurgedraftitems(CronTask $task): int
+    {
+        global $DB;
+
+        $delay  = max(1, (int) $task->fields['param']);
+        $cutoff = date('Y-m-d H:i:s', strtotime(sprintf('-%d day', $delay)));
+
+        $count = 0;
+        $item  = new self();
+        foreach ($DB->request([
+            'SELECT' => 'id',
+            'FROM'   => self::getTable(),
+            'WHERE'  => ['is_draft' => 1, 'date_mod' => ['<', $cutoff]],
+        ]) as $row) {
+            if ($item->delete(['id' => $row['id']], true)) {
+                $count++;
+            } else {
+                // Surface the failure in the cron log so operators can diagnose
+                // (FK constraint, hook refusal) instead of running a silent cron
+                // that keeps reporting 0 while drafts pile up in DB.
+                $task->log(sprintf(
+                    'cronPurgedraftitems: failed to purge draft knowbaseitem #%d',
+                    (int) $row['id'],
+                ));
+            }
+        }
+
+        $task->addVolume($count);
+
+        return $count > 0 ? 1 : 0;
     }
 
     public function pre_updateInDB()
@@ -2590,51 +2855,28 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get ids of KBI in given category
+     * Get ids of KBI in given category, gated by the canonical browse ACL.
      *
-     * @param int           $category_id   id of the parent category
-     * @param KnowbaseItem  $kbi           used only for unit tests
+     * @param int $category_id id of the parent category
      *
-     * @return array        Array of ids
+     * @return array Array of ids, or [-1] when no row matches (avoids empty IN).
      */
-    public static function getForCategory($category_id, $kbi = null)
+    public static function getForCategory($category_id): array
     {
         global $DB;
 
-        if ($kbi === null) {
-            $kbi = new self();
-        }
+        $criteria = self::getListRequest(
+            ['knowbaseitemcategories_id' => (int) $category_id],
+            'browse'
+        );
 
-        $ids = $DB->request([
-            'SELECT' => self::getTable() . '.id',
+        $ids = array_map(
+            static fn($row) => (int) $row['id'],
+            iterator_to_array($DB->request($criteria), false)
+        );
 
-            'FROM'   => self::getTable(),
-            'LEFT JOIN' => [
-                'glpi_knowbaseitems_knowbaseitemcategories' => [
-                    'ON'  => [
-                        'glpi_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitems_id',
-                        'glpi_knowbaseitems'             => 'id',
-                    ],
-                ],
-            ],
-            'WHERE'  => ['glpi_knowbaseitems_knowbaseitemcategories.knowbaseitemcategories_id' => $category_id],
-        ]);
-
-        // Get array of ids
-        $ids = array_map(static fn($row) => $row['id'], iterator_to_array($ids, false));
-
-        // Filter on canViewItem
-        $ids = array_filter($ids, static function ($id) use ($kbi) {
-            $kbi->getFromDB($id);
-            return $kbi->canViewItem();
-        });
-
-        // Avoid empty IN
-        if (count($ids) === 0) {
-            $ids[] = -1;
-        }
-
-        return $ids;
+        // Avoid empty IN clauses in callers (CommonDropdown).
+        return $ids === [] ? [-1] : $ids;
     }
 
     public static function getIcon()

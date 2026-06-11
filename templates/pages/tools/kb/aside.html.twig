@@ -62,13 +62,21 @@
             data-glpi-kb-article-current
             aria-current="page"
         {% endif %}
-        class="article {{ add_margin ? 'mb-2' : '' }}"
+        {% if article.is_draft %}
+            data-glpi-kb-article-draft
+        {% endif %}
+        class="article {{ add_margin ? 'mb-2' : '' }} {{ article.is_draft ? 'kb-aside-article-draft' : '' }}"
     >
         <a class="text-dark text-hover-link text-truncate d-block" href="{{ article.link }}">
             {% if article.illustration %}
                 {{ render_illustration(article.illustration, 20) }}
             {% endif %}
             {{ article.title }}
+            {% if article.is_draft %}
+                {# Draft rows are de-emphasized visually (muted + italic, see _kb.scss);
+                   this hidden label carries the state for screen readers. #}
+                <span class="visually-hidden" data-glpi-kb-aside-draft-label>{{ __('Draft') }}</span>
+            {% endif %}
         </a>
     </li>
 {% endmacro %}
@@ -135,7 +143,11 @@
         </ul>
 </div>
 
-<div class="card-body" data-glpi-kb-aside-tree>
+<nav
+    class="card-body"
+    data-glpi-kb-aside-tree
+    aria-label="{{ __('Knowledge base articles tree') }}"
+>
     <ul class="kb-tree ps-0">
         {# Render root articles in a special "uncategorized" category #}
         {% if tree.articles|length %}
@@ -155,7 +167,7 @@
     <p class="text-muted" data-glpi-kb-aside-no-results hidden>
         {{ __("No articles found.") }}
     </p>
-</div>
+</nav>
 
 <script type="module">
     (async () => {

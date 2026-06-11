@@ -100,6 +100,15 @@ export class GlpiKnowbaseArticleController
     /** @type {DocumentLinkController|null} */
     #document_link_controller = null;
 
+    /** @type {string} The page mode passed to the constructor: 'add', 'edit', 'view'. */
+    #mode = '';
+
+    /**
+     * @type {boolean} Tracks whether the auto-draft toast has already been
+     * shown for this session. We only want it once per "new article" flow.
+     */
+    #draft_toast_shown = false;
+
     #handleTitleKeydown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -118,6 +127,22 @@ export class GlpiKnowbaseArticleController
 
     #handleTitleInput = () => {
         setHasUnsavedChanges(true);
+        this.#notifyAutoDraft();
+    };
+
+    /**
+     * On the "new article" form, the first user change to title/content/
+     * illustration tells the operator that the article will be persisted as
+     * a draft on submit (auto-draft model, Notion/Outline style). Idempotent.
+     */
+    #notifyAutoDraft = () => {
+        if (this.#draft_toast_shown || this.#mode !== 'add' || this.#item_id !== null) {
+            return;
+        }
+        this.#draft_toast_shown = true;
+        glpi_toast_info(
+            __('This new article will be saved as a draft, visible only to you until you publish it.')
+        );
     };
 
     /**
@@ -139,6 +164,7 @@ export class GlpiKnowbaseArticleController
     constructor(container, side_panel_container, offcanvas_container, mode)
     {
         this.#container = container;
+        this.#mode = mode;
         if (mode === "edit") {
             this.#side_panel = new GlpiKnowbaseArticleSidePanelController(
                 side_panel_container,
@@ -178,7 +204,20 @@ export class GlpiKnowbaseArticleController
         const actions = this.#container.querySelectorAll("[data-glpi-kb-action]");
         for (const action of actions) {
             action.addEventListener("click", (e) => {
-                e.preventDefault();
+                // Do NOT preventDefault when the user clicked the inner
+                // checkbox of a toggle action. The browser's activation
+                // behaviour for input[type=checkbox] performs a pre-click
+                // flip BEFORE the click handler runs and then *reverses* it
+                // if preventDefault is observed — that rollback runs after
+                // our handler returns, silently undoing any manual flip we
+                // would do here. Letting the native flip stand is simpler
+                // and matches the user's intent.
+                const target_is_toggle_input = e.target instanceof HTMLInputElement
+                    && e.target.type === 'checkbox'
+                    && e.target.closest('[data-glpi-kb-action]') === action;
+                if (!target_is_toggle_input) {
+                    e.preventDefault();
+                }
                 try {
                     this.#executeAction(e);
                 } catch (e) {
@@ -435,7 +474,6 @@ export class GlpiKnowbaseArticleController
     #executeAction(event)
     {
         const element = event.currentTarget;
-        const target = event.target;
 
         const type = element.dataset.glpiKbAction;
         const params = this.#extractParamsFromDataset(element.dataset);
@@ -448,8 +486,12 @@ export class GlpiKnowbaseArticleController
                 event.stopPropagation();
                 const toggle = element.querySelector('input[type="checkbox"]');
                 if (toggle) {
-                    const clicked_on_toggle = target === toggle;
-                    if (!clicked_on_toggle) {
+                    // When the user clicked the checkbox itself, the
+                    // browser already toggled it natively (we deliberately
+                    // skipped preventDefault for that case). Otherwise we
+                    // flip manually so the click bubble from the label,
+                    // icon or button area still updates the visual.
+                    if (event.target !== toggle) {
                         toggle.checked = !toggle.checked;
                     }
                     this.#toggleValue(params.id, params.field, toggle);
@@ -460,8 +502,7 @@ export class GlpiKnowbaseArticleController
                 event.stopPropagation();
                 const toggle = element.querySelector('input[type="checkbox"]');
                 if (toggle) {
-                    const clicked_on_toggle = target === toggle;
-                    if (!clicked_on_toggle) {
+                    if (event.target !== toggle) {
                         toggle.checked = !toggle.checked;
                     }
                     this.#updateFavoritesAside(toggle.checked);
@@ -550,14 +591,141 @@ export class GlpiKnowbaseArticleController
     async #toggleValue(id, field, toggle)
     {
         const value = toggle.checked;
+
+        // Demoting to draft disables active share tokens server-side. Warn
+        // before the POST so the author can keep the article published.
+        if (field === 'is_draft' && value === true && this.#hasShareTokens()) {
+            const confirmed = await glpi_confirm_danger({
+                title: __('Mark as draft'),
+                message: __('Public share links for this article will be disabled. You can reactivate them from the sharing panel after publishing the article again.'),
+                confirm_label: __('Mark as draft'),
+            });
+            if (!confirmed) {
+                toggle.checked = !value;
+                return;
+            }
+        }
+
         try {
-            await post(`Knowbase/${id}/ToggleField`, {
+            const response = await post(`Knowbase/${id}/ToggleField`, {
                 field: field,
                 value: value,
             });
+            let data = {};
+            try {
+                data = await response.json();
+            } catch {
+                // Older callers may not parse JSON yet — fall through and
+                // assume the requested value was applied.
+            }
+
+            // Server may have coerced the value (e.g. mutual exclusion between
+            // is_draft and is_faq). Realign the visible checkbox with reality
+            // and let the user know.
+            if (data.rejected) {
+                toggle.checked = Boolean(data.applied);
+                if (field === 'is_draft') {
+                    glpi_toast_error(__('A FAQ entry cannot be a draft. Remove it from the FAQ first.'));
+                } else if (field === 'is_faq') {
+                    glpi_toast_error(__('A draft cannot be promoted to the FAQ. Publish it first.'));
+                }
+                return;
+            }
+
+            if (field === 'is_draft') {
+                this.#syncAsideDraftState(id, value);
+                this.#syncHeaderDraftBadge(value);
+                glpi_toast_info(value
+                    ? __('Article moved back to draft. It is now only visible to you.')
+                    : __('Article published. It is now visible to readers.')
+                );
+            } else if (field === 'is_faq') {
+                glpi_toast_info(value
+                    ? __('Article added to the FAQ.')
+                    : __('Article removed from the FAQ.')
+                );
+            }
         } catch (e) {
             toggle.checked = !value;
             throw e;
+        }
+    }
+
+    /**
+     * @returns {boolean} Page-load snapshot of whether the article had any
+     * active share tokens. Drives the confirmation prompt before demoting
+     * a published article to draft.
+     */
+    #hasShareTokens()
+    {
+        const root = this.#container.querySelector('[data-glpi-knowbase-article]')
+            ?? this.#container.closest('[data-glpi-knowbase-article]');
+        return root?.dataset.glpiKbHasShareTokens === '1';
+    }
+
+    /**
+     * Keep the aside `<li>` in sync with the article's draft state so the
+     * Draft badge appears/disappears without a full page reload.
+     *
+     * @param {number} id
+     * @param {boolean} is_draft
+     */
+    #syncAsideDraftState(id, is_draft)
+    {
+        const entry = document.querySelector(
+            `[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${id}"]`
+        );
+        if (!entry) {
+            return;
+        }
+        entry.toggleAttribute('data-glpi-kb-article-draft', is_draft);
+        entry.classList.toggle('kb-aside-article-draft', is_draft);
+
+        const link = entry.querySelector('a');
+        if (!link) {
+            return;
+        }
+        // No visible badge in the tree: drafts are conveyed by the muted/italic
+        // row (see _kb.scss). This screen-reader-only label carries the state.
+        let label = link.querySelector('[data-glpi-kb-aside-draft-label]');
+        if (is_draft && !label) {
+            label = document.createElement('span');
+            label.dataset.glpiKbAsideDraftLabel = '';
+            label.className = 'visually-hidden';
+            label.textContent = __('Draft');
+            link.appendChild(label);
+        } else if (!is_draft && label) {
+            label.remove();
+        }
+    }
+
+    /**
+     * Toggle the Draft chip next to the article title without a reload.
+     *
+     * @param {boolean} is_draft
+     */
+    #syncHeaderDraftBadge(is_draft)
+    {
+        const article = this.#container.querySelector(
+            '[data-glpi-knowbase-article-content]'
+        );
+        if (!article) {
+            return;
+        }
+        const title = article.querySelector('[data-glpi-kb-subject]');
+        let badge = article.querySelector('[data-glpi-kb-article-draft-badge]');
+        if (is_draft && !badge && title) {
+            badge = document.createElement('span');
+            badge.dataset.glpiKbArticleDraftBadge = '';
+            badge.className = 'badge bg-secondary-lt ms-2';
+            badge.title = __('Draft — only visible to you and knowledge base admins until it is published');
+            const icon = document.createElement('i');
+            icon.className = 'ti ti-pencil me-1';
+            icon.setAttribute('aria-hidden', 'true');
+            badge.append(icon, __('Draft'));
+            title.after(badge);
+        } else if (!is_draft && badge) {
+            badge.remove();
         }
     }
 
@@ -996,6 +1164,7 @@ export class GlpiKnowbaseArticleController
                 item_id: this.#item_id,
                 onUpdate: () => {
                     setHasUnsavedChanges(true);
+                    this.#notifyAutoDraft();
                 },
             });
         } else {
@@ -1143,6 +1312,10 @@ export class GlpiKnowbaseArticleController
             add: '1',
             name: title,
             answer: answer,
+            // Auto-draft: anything created from the web form is born hidden
+            // until the author publishes it from the action menu. Server-side
+            // coercion still wins if is_faq=1 is also somehow submitted.
+            is_draft: '1',
         };
 
         const illustration_input = this.#container.querySelector(

@@ -35,6 +35,7 @@
     data-glpi-knowbase-article
     data-glpi-kb-item-id="{{ item_id }}"
     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}"
+    data-glpi-kb-has-share-tokens="{{ has_share_tokens|default(false) ? '1' : '0' }}"
     {% if mode == 'edit' %}
         data-glpi-kb-default-language="{{ default_language }}"
         data-glpi-kb-existing-translations="{{ existing_translations|json_encode }}"
@@ -108,6 +109,15 @@
                 data-placeholder="{{ __('Untitled article') }}"
                 spellcheck="true"
             >{{ subject }}</h1>
+            {% if is_draft|default(false) %}
+                <span
+                    class="badge bg-secondary-lt ms-2"
+                    data-glpi-kb-article-draft-badge
+                    title="{{ __('Draft — only visible to you and knowledge base admins until it is published') }}"
+                >
+                    <i class="ti ti-pencil me-1" aria-hidden="true"></i>{{ __('Draft') }}
+                </span>
+            {% endif %}
             <div class="ms-auto d-flex align-items-center gap-2">
                 {# Edit/Save/Cancel buttons #}
                 {% if mode == 'edit' and can_edit %}
@@ -162,6 +172,13 @@
                                             type="button"
                                             class="dropdown-item {{ action.is_danger ? "text-danger" : "" }}"
                                             aria-label="{{ action.label }}"
+                                            {% if action.tooltip %}
+                                                {# Bootstrap tooltip (not raw title): "hover focus" makes it reachable by keyboard; container=body avoids clipping by the dropdown overflow. GLPI inits [data-bs-toggle=tooltip] globally. #}
+                                                data-bs-toggle="tooltip"
+                                                data-bs-trigger="hover focus"
+                                                data-bs-container="body"
+                                                title="{{ action.tooltip }}"
+                                            {% endif %}
                                             data-glpi-kb-action="{{ action.type.value }}"
                                             {% for key, param in action.params %}
                                                 data-glpi-kb-action-param-{{ key }}="{{ param }}"

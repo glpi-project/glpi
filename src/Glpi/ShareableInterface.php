@@ -47,6 +47,14 @@ interface ShareableInterface
     public function canManageSharing(): bool;
 
     /**
+     * Indicates whether the item's current state allows it to be publicly
+     * served via a share token. Implementations can return false to block
+     * access (e.g. an unpublished draft) without having to deactivate or
+     * delete the existing tokens.
+     */
+    public function canBeShared(): bool;
+
+    /**
      * Get the Twig template path for the anonymous public view.
      */
     public function getShareableViewTemplate(): string;
