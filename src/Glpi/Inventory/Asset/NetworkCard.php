@@ -120,7 +120,6 @@ class NetworkCard extends Device
                         && ($val->description == $controller->type
                         || strtolower($val->description . " controller")
                               == strtolower($controller->type))
-                        && !isset($this->ignored['controllers'][$controller->name])
                     ) {
                         $found_controller = $controller;
                         if (property_exists($val, 'macaddr')) {
@@ -162,8 +161,8 @@ class NetworkCard extends Device
                         $val->mac_default = $val->mac;
                     }
 
-                    if (property_exists($val, 'name')) {
-                        $this->ignored['controllers'][$val->name] = $val->name;
+                    if (property_exists($found_controller, 'name')) {
+                        $this->ignored['controllers'][$found_controller->name] = $found_controller->name;
                     }
                 } else {
                     unset($this->data[$k]);
