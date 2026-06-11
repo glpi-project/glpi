@@ -116,7 +116,8 @@ class NetworkCard extends Device
                     /** @var \stdClass $controller */
                     if (
                         property_exists($controller, 'type')
-                        && ($val->description == $controller->type
+                        && (
+                            $val->description == $controller->type
                         || strtolower($val->description . " controller") == strtolower($controller->type)
                         || (property_exists($val, 'model') && ($val->model == $controller->type))
                         )

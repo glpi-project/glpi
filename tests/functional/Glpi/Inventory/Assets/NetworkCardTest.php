@@ -1093,13 +1093,13 @@ class NetworkCardTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
-        $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+        $asset = new NetworkCard($computer, $json->content->networks);
         $asset->setExtraData((array) $json->content);
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
         $this->login();
         $conf->saveConf(['component_networkcardvirtual' => 1]);
         $this->logOut();

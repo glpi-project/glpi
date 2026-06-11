@@ -37,6 +37,7 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_DeviceGraphicCard;
+
 use function Safe\preg_match;
 
 class GraphicCard extends Device
