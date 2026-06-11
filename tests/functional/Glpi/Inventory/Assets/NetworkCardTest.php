@@ -995,7 +995,7 @@ class NetworkCardTest extends AbstractInventoryAsset
       <PNPDEVICEID>BTH\\MS_BTHPAN\\6&amp;1aac2cac&amp;0&amp;2</PNPDEVICEID>
       <SPEED>3</SPEED>
       <STATUS>Down</STATUS>
-      <TYPE>bluetooth</TYPE>
+      <TYPE>ethernet</TYPE>
       <VIRTUALDEV>0</VIRTUALDEV>
     </NETWORKS>
     <USBDEVICES>
