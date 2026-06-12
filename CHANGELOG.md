@@ -76,6 +76,7 @@ The present file will list all changes made to the project; according to the
 - `hotkeys-js` JS library
 - `jquery-prettytextdiff` JS library
 - `jquery.rateit` JS library
+- `jquery.fancytree` JS library. Use `Wunderbaum` instead.
 - `Forms/FaIconSelector` JS module
 - `Knowbase` JS module
 - `league/csv` PHP library. Use `phpoffice/phpspreadsheet` instead.
