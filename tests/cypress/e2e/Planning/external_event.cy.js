@@ -38,7 +38,7 @@ describe('External event', () => {
     it('Accessibility - Form', () => {
         cy.visit('/front/planning.php');
         cy.disableAnimations();
-        cy.get('#planning_container .fc-slats td:not(.fc-axis)').first().click();
+        cy.get('#planning_container td.fc-timegrid-slot-lane').first().click();
         cy.get('.modal.show').injectAndCheckA11y();
     });
 });

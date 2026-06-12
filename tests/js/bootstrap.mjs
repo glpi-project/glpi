@@ -49,9 +49,16 @@ await import('lodash').then((lodash) => {
 // Add a flag variable to know in other scripts if they are run in tests. Should not affect how they behave, just how functions/vars in non-modules are bound.
 window.GLPI_TEST_ENV = true;
 
+Object.defineProperty(window, 'location', {
+    value: new URL('http://localhost'),
+    configurable: true,
+});
+
+document.documentElement.lang = 'en';
+
 // Set faux CFG_GLPI variable. We cannot get the real values since they are set inline in PHP.
 window.CFG_GLPI = {
-    root_doc: '/'
+    root_doc: ''
 };
 
 // Mock localization

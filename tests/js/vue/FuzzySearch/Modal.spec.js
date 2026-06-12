@@ -62,7 +62,7 @@ describe('FuzzySearch/Modal Vue Component', () => {
     });
     test('get menus after display', async () => {
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/fuzzysearch.php', 'GET', {}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/fuzzysearch.php', 'GET', {}, () => {
             return [];
         }));
 
@@ -84,7 +84,7 @@ describe('FuzzySearch/Modal Vue Component', () => {
     });
     test('list populated', async () => {
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/fuzzysearch.php', 'GET', {}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/fuzzysearch.php', 'GET', {}, () => {
             return [
                 {
                     url: 'url1',
@@ -114,7 +114,7 @@ describe('FuzzySearch/Modal Vue Component', () => {
     });
     test('fuzzy filter', async () => {
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/fuzzysearch.php', 'GET', {}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/fuzzysearch.php', 'GET', {}, () => {
             return [
                 {
                     url: 'url1',
@@ -159,7 +159,7 @@ describe('FuzzySearch/Modal Vue Component', () => {
     });
     test('arrow keys navigation', async () => {
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/fuzzysearch.php', 'GET', {}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/fuzzysearch.php', 'GET', {}, () => {
             return [
                 {
                     url: 'url1',

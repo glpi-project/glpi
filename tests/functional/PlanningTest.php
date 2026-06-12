@@ -92,28 +92,28 @@ class PlanningTest extends DbTestCase
             'recurring_evt_1' => [
                 'title'   => 'Recur event',
                 'tooltip' => "Recur event<br>Monday, 11 am to 12 am starting on 1st of July",
-                'color'   => '#ff0000',
+                'backgroundColor'   => '#ff0000',
                 'rrule'   => "DTSTART:20190701T090000\nRRULE:FREQ=WEEKLY;BYDAY=MO\n",
             ],
             'simple_evt_1'    => [
                 'title'   => 'Base event with no desc',
                 'tooltip' => 'Base event with no desc',
-                'color'   => '#ff0000',
+                'backgroundColor'   => '#ff0000',
             ],
             'simple_evt_2'    => [
                 'title'   => 'An event in 2020/01/05',
                 'tooltip' => "An event in 2020/01/05<br>Description of &quot;&lt;my event&gt;&quot;",
-                'color'   => '#ff0000',
+                'backgroundColor'   => '#ff0000',
             ],
             'task_1'          => [
                 'title'   => 'Test task',
                 'tooltip' => "Test task<br>Description of the task.",
-                'color'   => '#ff0000',
+                'backgroundColor'   => '#ff0000',
             ],
             'another_evt_1'   => [
                 'title'   => 'Another event',
                 'tooltip' => "Another event<br>Another event description",
-                'color'   => '#a500b3',
+                'backgroundColor'   => '#a500b3',
             ],
         ];
 
@@ -126,14 +126,14 @@ class PlanningTest extends DbTestCase
         // Add calendars
         $_SESSION['glpi_plannings']['plannings'] = [
             'external_1' => [
-                'color'   => '#ff0000',
+                'backgroundColor'   => '#ff0000',
                 'display' => true,
                 'type'    => 'external',
                 'name'    => 'External calendar 1',
                 'url'     => 'file://' . realpath(GLPI_ROOT . '/tests/fixtures/ical/sample_1.ics'),
             ],
             'external_2' => [
-                'color'   => '#a500b3',
+                'backgroundColor'   => '#a500b3',
                 'display' => true,
                 'type'    => 'external',
                 'name'    => 'External calendar 2',
@@ -175,7 +175,7 @@ class PlanningTest extends DbTestCase
                 $this->assertArrayHasKey($index, $events_list);
                 $this->assertEquals($event_data['title'], $events_list[$index]['title']);
                 $this->assertEquals($event_data['tooltip'], $events_list[$index]['tooltip']);
-                $this->assertEquals($event_data['color'], $events_list[$index]['color']);
+                $this->assertEquals($event_data['backgroundColor'], $events_list[$index]['backgroundColor']);
                 if (array_key_exists('rrule', $event_data)) {
                     $this->assertEquals($event_data['rrule'], $events_list[$index]['rrule']);
                 }
