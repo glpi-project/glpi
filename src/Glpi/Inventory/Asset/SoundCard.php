@@ -37,6 +37,7 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_DeviceSoundCard;
+use USBVendor;
 
 class SoundCard extends Device
 {
@@ -46,12 +47,11 @@ class SoundCard extends Device
     {
         $mapping = [
             'name'          => 'designation',
-            'caption'       => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'description'   => 'comment',
         ];
 
-        $usb_vendor = new \USBVendor();
+        $usb_vendor = new USBVendor();
 
         /** @var \stdClass $val */
         foreach ($this->data as &$val) {
