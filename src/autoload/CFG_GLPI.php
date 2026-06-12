@@ -591,10 +591,10 @@ $CFG_GLPI['javascript'] = [
     'helpdesk'  => [
         'dashboard' => ['dashboard'],
         'planning'  => ['clipboard', 'fullcalendar', 'planning'],
-        'ticket'    => ['rateit', 'dashboard'],
+        'ticket'    => ['dashboard'],
         'problem'   => ['sortable'],
-        'change'    => ['sortable', 'rateit'],
-        'stat'      => ['charts', 'rateit'],
+        'change'    => ['sortable'],
+        'stat'      => ['charts'],
     ],
     'tools'     => [
         'project'                 => ['sortable'],

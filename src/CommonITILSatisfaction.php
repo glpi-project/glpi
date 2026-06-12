@@ -283,27 +283,11 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'inquest_max_rate' . static::getConfigSufix()
         );
 
-        if ($value < 0) {
-            $value = 0;
-        }
-        if ($value > $max_rate) {
-            $value = $max_rate;
-        }
-
-        $rand = mt_rand();
-        $out = "<div id='rateit_$rand' class='rateit'></div>";
-        $out .= Html::scriptBlock("
-            $(function () {
-                $('#rateit_$rand').rateit({
-                    max: $max_rate,
-                    resetable: false,
-                    value: $value,
-                    readonly: true,
-                });
-            });
-        ");
-
-        return $out;
+        return TemplateRenderer::getInstance()->render('components/form/rating.html.twig', [
+            'value' => max(0, min($value, $max_rate)),
+            'max' => $max_rate,
+            'readonly' => true,
+        ]);
     }
 
 
