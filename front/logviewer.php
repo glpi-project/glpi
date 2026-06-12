@@ -41,7 +41,7 @@ use Glpi\System\Log\LogViewer;
 
 global $CFG_GLPI;
 
-Session::checkRight("logs", READ);
+Session::checkRight(LogViewer::$rightname, READ);
 
 $filepath = $_REQUEST['filepath'] ?? null;
 
@@ -58,11 +58,11 @@ if (($_GET['action'] ?? '') === 'download_log_file') {
     $logparser = new LogParser();
     $logparser->download($filepath);
 } elseif (($_POST['action'] ?? '') === 'empty') {
-    Session::checkRight('config', UPDATE);
+    Session::checkRight(Config::$rightname, UPDATE); // no UPDATE right for LogViewer -> Config::$rightname used
     $logparser->empty($filepath);
     Html::back();
 } elseif (($_POST['action'] ?? '') === 'delete') {
-    Session::checkRight('config', UPDATE);
+    Session::checkRight(Config::$rightname, UPDATE);
     $logparser->delete($filepath);
     Html::redirect($CFG_GLPI["root_doc"] . "/front/logs.php");
 } else {
