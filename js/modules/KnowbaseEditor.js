@@ -30,8 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
-/* global TiptapCore, TiptapStarterKit, TiptapLink, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
-/* global TiptapTable, TiptapTableRow, TiptapTableHeader, TiptapTableCell */
+/* global TiptapCore, TiptapStarterKit, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
+/* global TableKit */
 /* global TiptapFileHandler, glpi_toast_error */
 
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
@@ -107,14 +107,11 @@ class KnowbaseEditor {
                 heading: {
                     levels: [1, 2, 3, 4, 5, 6],
                 },
-                // Disable Link from StarterKit - we configure it separately below
-                // (StarterKit v3 includes Link by default)
-                link: false,
-            }),
-            TiptapLink.configure({
-                openOnClick: false,
-                HTMLAttributes: {
-                    rel: 'noopener noreferrer',
+                link: {
+                    openOnClick: false,
+                    HTMLAttributes: {
+                        rel: 'noopener noreferrer',
+                    },
                 },
             }),
             TiptapImage.configure({
@@ -133,12 +130,11 @@ class KnowbaseEditor {
                     offset: 8,
                 },
             }),
-            TiptapTable.configure({
-                resizable: true,
+            TableKit.configure({
+                table: {
+                    resizable: true,
+                }
             }),
-            TiptapTableRow,
-            TiptapTableHeader,
-            TiptapTableCell,
         ];
 
         // Add FileHandler for image drag & drop and paste (only for existing articles)
