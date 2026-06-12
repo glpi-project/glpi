@@ -38,7 +38,6 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_DeviceNetworkCard;
-use PCIVendor;
 
 class NetworkCard extends Device
 {
@@ -46,15 +45,15 @@ class NetworkCard extends Device
 
     private Conf $conf;
 
-    protected array $extra_data = ['controllers' => null];
-    protected array $ignored = ['controllers' => null];
+    protected array $extra_data = ['controllers' => null, 'usbdevices' => null];
+    protected array $ignored = ['controllers' => null, 'usbdevices' => null];
     /** @var string[] */
     private array $cards_macs = [];
 
     public function prepare(): array
     {
         $mapping = [
-            'name'          => 'designation',
+            'model'         => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'macaddr'       => 'mac',
         ];
@@ -72,8 +71,8 @@ class NetworkCard extends Device
             'wwn'         => 'wwn',
             'speed'       => 'speed',
         ];
-        $pcivendor = new PCIVendor();
 
+        /** @var \stdClass $val */
         foreach ($this->data as $k => &$val) {
             if (
                 !property_exists($val, 'description')
@@ -110,16 +109,24 @@ class NetworkCard extends Device
                 }
             }
 
+            $found_controller = false;
             if (isset($this->extra_data['controllers'])) {
-                $found_controller = false;
-                // Search in controller if find NAME = CONTROLLER TYPE
-                foreach ($this->extra_data['controllers'] as $controller) {
+                $controllers = is_array($this->extra_data['controllers']) ? $this->extra_data['controllers'] : [$this->extra_data['controllers']];
+                foreach ($controllers as $controller) {
+                    /** @var \stdClass $controller */
                     if (
                         property_exists($controller, 'type')
-                        && ($val->description == $controller->type
-                        || strtolower($val->description . " controller")
-                              == strtolower($controller->type))
-                        && !isset($this->ignored['controllers'][$controller->name])
+                        && (
+                            $val->description == $controller->type
+                            || strtolower($val->description . " controller") == strtolower($controller->type)
+                            || (
+                                property_exists($val, 'model')
+                                && (
+                                    $val->model == $controller->type
+                                    || strtolower($val->model . " controller") == strtolower($controller->type)
+                                )
+                            )
+                        )
                     ) {
                         $found_controller = $controller;
                         if (property_exists($val, 'macaddr')) {
@@ -128,32 +135,27 @@ class NetworkCard extends Device
                         }
                     }
                 }
+            }
 
+            $found_usb = false;
+            if (!$found_controller && isset($this->extra_data['usbdevices'])) {
+                $usbdevices = is_array($this->extra_data['usbdevices']) ? $this->extra_data['usbdevices'] : [$this->extra_data['usbdevices']];
+                foreach ($usbdevices as $usbdevice) {
+                    /** @var \stdClass $usbdevice */
+                    if (
+                        property_exists($usbdevice, 'name') && property_exists($val, 'model') && $val->model === $usbdevice->name
+                        && property_exists($usbdevice, 'manufacturer') && property_exists($val, 'manufacturer') && $val->manufacturer === $usbdevice->manufacturer
+                    ) {
+                        $found_usb = $usbdevice;
+                        break;
+                    }
+                }
+            }
+
+            if (isset($this->extra_data['controllers']) || isset($this->extra_data['usbdevices'])) {
                 if ($found_controller) {
-                    if (property_exists($found_controller, 'pciid')) {
-                        $exploded = explode(":", $found_controller->pciids);
-
-                        //manufacturer
-                        if ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0])) {
-                            $val->manufacturers_id = $pci_manufacturer;
-                        }
-
-                        //product name
-                        if ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1])) {
-                            $val->designation = $pci_product;
-                        }
-                    } elseif (property_exists($found_controller, 'vendorid')) {
-                        //manufacturer
-                        if ($pci_manufacturer = $pcivendor->getManufacturer($found_controller->vendorid)) {
-                            $val->manufacturers_id = $pci_manufacturer;
-                        }
-
-                        if (property_exists($found_controller, 'productid')) {
-                            //product name
-                            if ($pci_product = $pcivendor->getProductName($found_controller->vendorid, $found_controller->productid)) {
-                                $val->designation = $pci_product;
-                            }
-                        }
+                    if ($this->applyPciInfoFromController($val, $found_controller)) {
+                        $val->devicenetworkcardmodels_id = $val->designation;
                     }
 
                     if (property_exists($val, 'mac')) {
@@ -161,8 +163,21 @@ class NetworkCard extends Device
                         $val->mac_default = $val->mac;
                     }
 
-                    if (property_exists($val, 'name')) {
-                        $this->ignored['controllers'][$val->name] = $val->name;
+                    if (property_exists($found_controller, 'name')) {
+                        $this->ignored['controllers'][$found_controller->name] = $found_controller->name;
+                    }
+                } elseif ($found_usb) {
+                    if ($this->applyUsbInfoFromDevice($val, $found_usb)) {
+                        $val->devicenetworkcardmodels_id = $val->designation;
+                    }
+
+                    if (property_exists($val, 'mac')) {
+                        $val->mac = strtolower($val->mac);
+                        $val->mac_default = $val->mac;
+                    }
+
+                    if (property_exists($found_usb, 'name')) {
+                        $this->ignored['usbdevices'][$found_usb->name] = $found_usb->name;
                     }
                 } else {
                     unset($this->data[$k]);

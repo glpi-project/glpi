@@ -37,7 +37,9 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_Devices;
+use PCIVendor;
 use stdClass;
+use USBVendor;
 
 use function Safe\strtotime;
 
@@ -203,6 +205,82 @@ abstract class Device extends InventoryAsset
                 }
             }
         }
+    }
+
+    /**
+     * Apply manufacturer and product name from a PCI controller to an asset value.
+     *
+     * Looks up vendor/product information in the PCI database using either a combined
+     * `pciid` field (colon-separated, e.g. "8086:1234") or separate `vendorid`/`productid`
+     * fields on the controller object, then sets `manufacturers_id` and `designation` on `$val`.
+     *
+     * @param stdClass $val        Asset value object to update
+     * @param stdClass $controller Controller object containing PCI identifiers
+     *
+     * @return bool True if any field was updated
+     */
+    protected function applyPciInfoFromController(stdClass $val, stdClass $controller): bool
+    {
+        $pcivendor = new PCIVendor();
+        $updated = false;
+
+        if (property_exists($controller, 'pciid')) {
+            $exploded = explode(":", $controller->pciid);
+            if (!empty($exploded[0]) && ($pci_manufacturer = $pcivendor->getManufacturer($exploded[0]))) {
+                $val->manufacturers_id = $pci_manufacturer;
+                $updated = true;
+            }
+            if (!empty($exploded[0]) && isset($exploded[1]) && ($pci_product = $pcivendor->getProductName($exploded[0], $exploded[1]))) {
+                $val->designation = $pci_product;
+                $updated = true;
+            }
+        } elseif (property_exists($controller, 'vendorid')) {
+            if ($pci_manufacturer = $pcivendor->getManufacturer($controller->vendorid)) {
+                $val->manufacturers_id = $pci_manufacturer;
+                $updated = true;
+            }
+            if (property_exists($controller, 'productid')) {
+                if ($pci_product = $pcivendor->getProductName($controller->vendorid, $controller->productid)) {
+                    $val->designation = $pci_product;
+                    $updated = true;
+                }
+            }
+        }
+
+        return $updated;
+    }
+
+    /**
+     * Apply manufacturer and product name from a USB device to an asset value.
+     *
+     * Looks up vendor/product information in the USB database using separate
+     * `vendorid`/`productid` fields on the usb object, then sets
+     * `manufacturers_id` and `designation` on `$val`.
+     *
+     * @param stdClass $val Asset value object to update
+     * @param stdClass $usb USB device object containing identifiers
+     *
+     * @return bool True if any field was updated
+     */
+    protected function applyUsbInfoFromDevice(stdClass $val, stdClass $usb): bool
+    {
+        $usbvendor = new USBVendor();
+        $updated = false;
+
+        if (property_exists($usb, 'vendorid')) {
+            if ($usb_manufacturer = $usbvendor->getManufacturer($usb->vendorid)) {
+                $val->manufacturers_id = $usb_manufacturer;
+                $updated = true;
+            }
+            if (property_exists($usb, 'productid')) {
+                if ($usb_product = $usbvendor->getProductName($usb->vendorid, $usb->productid)) {
+                    $val->designation = $usb_product;
+                    $updated = true;
+                }
+            }
+        }
+
+        return $updated;
     }
 
     /**
