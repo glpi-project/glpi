@@ -118,8 +118,14 @@ class NetworkCard extends Device
                         property_exists($controller, 'type')
                         && (
                             $val->description == $controller->type
-                        || strtolower($val->description . " controller") == strtolower($controller->type)
-                        || (property_exists($val, 'model') && ($val->model == $controller->type))
+                            || strtolower($val->description . " controller") == strtolower($controller->type)
+                            || (
+                                property_exists($val, 'model')
+                                && (
+                                    $val->model == $controller->type
+                                    || strtolower($val->model . " controller") == strtolower($controller->type)
+                                )
+                            )
                         )
                     ) {
                         $found_controller = $controller;
