@@ -2529,6 +2529,8 @@ HTML;
                 'templateResult'    => $param["templateResult"],
                 'templateSelection' => $param["templateSelection"],
                 'init'              => $param["init"],
+                'allowclear'        => !empty($param["allowClear"]),
+                'placeholder'       => $param["placeholder"] ?? '',
             ];
             $output .= Html::jsAdaptDropdown($field_id, $adapt_params);
         }
