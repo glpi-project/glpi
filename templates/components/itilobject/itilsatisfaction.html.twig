@@ -72,18 +72,19 @@
                 }
             ) }}
 
-            {% set select_dom %}
-                <select id="satisfaction_data" name="satisfaction">
-                    {% for i in range(0, max_rate) %}
-                        <option value="{{ i }}" {% if i == item.fields['satisfaction'] %} selected {% endif %}>{{ i }}</option>
-                    {% endfor %}
-                </select>
-                <div class="rateit" id="stars"></div>
+            {% set rating_input %}
+                {{ include('components/form/rating.html.twig', {
+                    field_id: 'satisfaction_data',
+                    field_name: 'satisfaction',
+                    value: item.fields['satisfaction'],
+                    max: 5,
+                    readonly: false
+                }, with_context: false) }}
             {% endset %}
 
             {{ fields.htmlField(
                 'satisfaction',
-                select_dom,
+                rating_input,
                 __('Satisfaction with the resolution of the %s')|format(parent_item.getTypeName(1)),
                 {
                     'full_width': true,
@@ -114,20 +115,6 @@
                 ) }}
 
             {% endif %}
-
-            <script>
-                $(function() {
-                    $('#stars').rateit({
-                        value: {{ item.fields['satisfaction'] }},
-                        min: 0,
-                        max: {{ max_rate }},
-                        step: 1,
-                        backingfld: '#satisfaction_data',
-                        ispreset: true,
-                        resetable: false
-                    });
-                });
-            </script>
 
             {% if not expired %}
                 {{ include('components/form/buttons.html.twig') }}
