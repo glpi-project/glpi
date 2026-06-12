@@ -830,11 +830,11 @@ class NetworkCardTest extends AbstractInventoryAsset
         $this->assertCount(2, $result); // 2 physical network cards should be identified
 
         // First component check
-        $this->assertEquals('Broadcom NetXtreme Gigabit Ethernet', $result[0]->designation);
+        $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[0]->designation);
         $this->assertEquals('20:47:47:90:78:42', $result[0]->mac);
 
         // Second component check
-        $this->assertEquals('Broadcom NetXtreme Gigabit Ethernet', $result[1]->designation);
+        $this->assertEquals('NetXtreme BCM5720 Gigabit Ethernet PCIe', $result[1]->designation);
         $this->assertEquals('20:47:47:90:78:44', $result[1]->mac);
 
         // The virtual LoadBalance adapter should be filtered out from the physical components
