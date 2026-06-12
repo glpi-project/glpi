@@ -91,10 +91,6 @@ class NetworkCard extends Device
                 }
             }
 
-            if (empty($val->designation) && !empty($val->description)) {
-                $val->designation = $val->description;
-            }
-
             if (property_exists($val, 'status')) {
                 switch ($val->status) {
                     case 'up':
@@ -121,9 +117,17 @@ class NetworkCard extends Device
                 foreach ($this->extra_data['controllers'] as $controller) {
                     if (
                         property_exists($controller, 'type')
-                        && ($val->designation == $controller->type
-                        || strtolower($val->designation . " controller")
-                              == strtolower($controller->type))
+                        && (
+                            $val->description == $controller->type
+                            || strtolower($val->description . " controller") == strtolower($controller->type)
+                            || (
+                                property_exists($val, 'model') 
+                                && (
+                                    $val->model == $controller->type
+                                    || strtolower($val->model . " controller") == strtolower($controller->type)
+                                )
+                            )
+                        )
                     ) {
                         $found_controller = $controller;
                         if (property_exists($val, 'macaddr')) {
