@@ -75,6 +75,7 @@ The present file will list all changes made to the project; according to the
 - `diff-match-patch` JS library
 - `hotkeys-js` JS library
 - `jquery-prettytextdiff` JS library
+- `jquery.rateit` JS library
 - `Forms/FaIconSelector` JS module
 - `Knowbase` JS module
 - `league/csv` PHP library. Use `phpoffice/phpspreadsheet` instead.

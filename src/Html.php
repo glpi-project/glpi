@@ -725,11 +725,6 @@ TWIG,
                 Html::requireJs('reservations');
             }
 
-            if (in_array('rateit', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'lib/jquery.rateit.css'];
-                Html::requireJs('rateit');
-            }
-
             if (in_array('dashboard', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'css/standalone/dashboard.scss'];
             }
@@ -776,11 +771,6 @@ TWIG,
             if (in_array('home-scss-file', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'css/helpdesk_home.scss'];
             }
-        }
-
-        if (Session::getCurrentInterface() == "helpdesk") {
-            $tpl_vars['css_files'][] = ['path' => 'lib/jquery.rateit.css'];
-            Html::requireJs('rateit');
         }
 
         // Sortable required for drag and drop of display preferences and some other things like dashboards, kanban, etc
@@ -5544,9 +5534,6 @@ JS);
                         }
                     }
                 }
-                break;
-            case 'rateit':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery.rateit.js';
                 break;
             case 'fileupload':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery-file-upload.js';
