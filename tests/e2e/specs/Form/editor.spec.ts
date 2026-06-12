@@ -1010,6 +1010,7 @@ test('Can save a form with many inputs', async ({ page, profile, api }) => {
                 root_items_id: 0,
                 subtree_depth: 0,
                 selectable_tree_root: true,
+                is_multiple_items: false,
             }),
         });
     }

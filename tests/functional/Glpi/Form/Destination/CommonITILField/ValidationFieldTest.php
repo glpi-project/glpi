@@ -105,7 +105,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[0]->getID(),
                 "GLPI User" => [
                     'itemtype' => User::class,
-                    'items_id' => $users[3]->getID(),
+                    'items_ids' => [$users[3]->getID()],
                 ],
             ],
             expected_validations: [],
@@ -129,7 +129,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 "Assignee" => User::getForeignKeyField() . '-' . $users[2]->getID(),
                 "GLPI User" => [
                     'itemtype' => User::class,
-                    'items_id' => $users[3]->getID(),
+                    'items_ids' => [$users[3]->getID()],
                 ],
             ],
             expected_validations: [],
@@ -212,7 +212,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[1]->getID(),
                 "GLPI User" => [
                     'itemtype' => User::class,
-                    'items_id' => $users[3]->getID(),
+                    'items_ids' => [$users[3]->getID()],
                 ],
             ],
             expected_validations: [
@@ -291,7 +291,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[1]->getID(),
                 "GLPI User" => [
                     'itemtype' => User::class,
-                    'items_id' => $users[3]->getID(),
+                    'items_ids' => [$users[3]->getID()],
                 ],
             ],
             expected_validations: [
@@ -338,7 +338,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[0]->getID(),
                 "GLPI User" => [
                     'itemtype' => User::class,
-                    'items_id' => $users[1]->getID(),
+                    'items_ids' => [$users[1]->getID()],
                 ],
             ],
             expected_validations: [
@@ -365,7 +365,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[0]->getID(),
                 "GLPI User" => [
                     'itemtype' => User::class,
-                    'items_id' => $users[1]->getID(),
+                    'items_ids' => [$users[1]->getID()],
                 ],
             ],
             expected_validations: [
@@ -434,7 +434,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 "Assignee" => Group::getForeignKeyField() . '-' . $groups[1]->getID(),
                 "GLPI User" => [
                     'itemtype' => User::class,
-                    'items_id' => $users[1]->getID(),
+                    'items_ids' => [$users[1]->getID()],
                 ],
             ],
             expected_validations: [
@@ -641,6 +641,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
             'root_items_id'        => 0,
             'subtree_depth'        => 0,
             'selectable_tree_root' => false,
+            'is_multiple_items'    => false,
         ]));
         return $this->createForm($builder);
     }

@@ -7970,18 +7970,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILActorField.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, float\\|int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getITILCategory\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ITILCategoryFieldStrategy\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -8438,19 +8426,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, int\\<0, max\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$item of static method Glpi\\\\Form\\\\Export\\\\Specification\\\\DataRequirementSpecification\\:\\:fromItem\\(\\) expects CommonDBTM, CommonDBTM\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of class Glpi\\\\Form\\\\Condition\\\\ConditionHandler\\\\ItemConditionHandler constructor expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
@@ -8466,12 +8442,6 @@ $ignoreErrors[] = [
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeItemDefaultValueConfig\\:\\:getItemsId\\(\\) should return int\\|null but returns int\\|string\\|null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItemDefaultValueConfig.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Group\\|false\\.$#',
