@@ -85,7 +85,6 @@
         "vue": "^3.5.35"
     },
     "scripts": {
-        "build:pack": "webpack --config .webpack.config.js",
         "build:legacy": "vite build -c vite.config-legacy.js --mode development",
         "build:vue": "vite build -c vite.config-vue.js --mode development",
         "build:illustration-translations": "php bin/console tools:generate_illustration_translations --allow-superuser",
@@ -118,9 +117,6 @@
         "@vue/test-utils": "^2.4.10",
         "axe-core": "^4.12.0",
         "axios": "^1.16.1",
-        "clean-webpack-plugin": "^4.0.0",
-        "copy-webpack-plugin": "^14.0.0",
-        "css-loader": "^7.1.4",
         "csso-cli": "^4.0.2",
         "cypress": "^15.16.0",
         "cypress-axe": "^1.7.0",
@@ -131,21 +127,12 @@
         "eslint-plugin-mocha": "^11.3.0",
         "eslint-plugin-playwright": "^2.10.4",
         "eslint-plugin-vue": "^10.9.1",
-        "exports-loader": "^5.0.0",
         "glob": "^13.0.6",
         "globals": "^17.6.0",
         "jsdom": "^29.1.1",
-        "mini-css-extract-plugin": "^2.10.2",
-        "monaco-editor-webpack-plugin": "^7.1.1",
-        "null-loader": "^4.0.1",
         "patch-package": "^8.0.1",
         "playwright-ctrf-json-reporter": "^0.0.29",
-        "rtlcss-webpack-plugin": "^4.0.7",
-        "sass": "^1.100.0",
-        "sass-loader": "^17.0.0",
-        "script-loader": "^0.7.2",
-        "strip-sourcemap-loader": "^0.0.1",
-        "style-loader": "^4.0.0",
+        "sass-embedded": "^1.100.0",
         "stylelint": "^17.12.0",
         "stylelint-config-standard-scss": "^17.0.0",
         "terser": "^5.48.0",
@@ -153,11 +140,7 @@
         "vite": "^8.0.0",
         "vitest": "^4.1.8",
         "vue-eslint-parser": "^10.4.0",
-        "vue-loader": "^17.4.2",
-        "vue3-gettext": "^4.0.0-beta.1",
-        "webpack": "^5.107.2",
-        "webpack-cli": "^7.0.3",
-        "webpack-dev-server": "^5.2.4"
+        "vue3-gettext": "^4.0.0-beta.1"
     },
     "overrides": {
         "monaco-editor": {

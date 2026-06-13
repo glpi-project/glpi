@@ -126,6 +126,10 @@ const copyFilePlugin = {
                 fs.copyFileSync(file, targetPath);
             }
         }
+    },
+    closeBundle() {
+        //FIXME This hook should not be needed but Vite currently hangs after the build is technically finished
+        process.exit(0);
     }
 };
 
@@ -201,6 +205,12 @@ export default defineConfig(async ({ mode }) => {
             css: {
                 lightningcss: {
                     errorRecovery: true,
+                },
+                preprocessorOptions: {
+                    scss: {
+                        // Bootstrap 5 is fairly outdated
+                        silenceDeprecations: ['mixed-decls', 'color-functions', 'global-builtin', 'import', 'if-function']
+                    }
                 }
             },
             worker: {
