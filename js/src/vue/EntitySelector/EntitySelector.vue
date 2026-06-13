@@ -36,8 +36,8 @@
         tree_data,
         loadTreeData,
         changeFullStructure: doChangeFullStructure,
-        changeEntity: doChangeEntity
-    } = useEntitySelector();
+        changeEntity
+    } = useEntitySelector(useTemplateRef('entity_selector'));
 
     /**
      * Function for enumerating tree data and performing an action on each node.
@@ -208,20 +208,10 @@
             }
         });
     }
-
-    function changeEntity(entity_id, is_recursive) {
-        doChangeEntity(entity_id, is_recursive).then(response => {
-            if (response.ok) {
-                window.location.reload();
-            } else {
-                window.glpi_toast_error(__('An error occurred while changing the entity. Please try again.'));
-            }
-        });
-    }
 </script>
 
 <template>
-    <div>
+    <div ref="entity_selector">
         <a ref="entity_dropdown_toggle" href="#" class="dropdown-item dropdown-toggle entity-dropdown-toggle" data-bs-toggle="dropdown"
            data-bs-auto-close="outside" :title="current_entity" :aria-label="__('Select the desired entity')">
             <i class="fa-fw ti ti-stack"></i>
@@ -247,12 +237,18 @@
             <div v-if="!loading" class="flexbox-item-grow mt-2 position-relative" :style="`height: calc(30px + ${32 * max_items}px)`">
                 <div class="w-100 h-100 overflow-x-auto overflow-y-hidden">
                     <ul class="w-100 list-group rounded-0" @wheel.prevent.stop="onListScroll">
-                        <li v-for="node in visible_in_dom" :key="node.key" :class="`list-group-item p-0 border-0 cursor-pointer`" :style="`${node.selected ? 'background-color: var(--tblr-primary)' : ''}`">
-                            <div :style="{paddingLeft: node.level * indent_size + 'px'}" :data-node-id="node.key" class="text-nowrap d-flex align-items-center pt-1">
+                        <li v-for="node in visible_in_dom" :key="node.key" :class="`list-group-item p-0 border-0 cursor-pointer`"
+                            :style="`${node.selected ? 'background-color: var(--tblr-primary)' : ''}`"
+                            tabindex="0" :data-node-level="node.level" :data-has-children="node.children.length > 0"
+                            :data-key="node.key"
+                            :aria-expanded="node.children.length > 0 ? node.expanded : undefined"
+                            >
+                            <div :style="{paddingLeft: node.level * indent_size + 'px'}" class="text-nowrap d-flex align-items-center pt-1">
                                 <button v-if="node.children.length" :title="node.expanded ? __('Collapse') : __('Expand')"
                                         :aria-label="node.expanded ? __('Collapse') : __('Expand')"
                                         class="btn btn-ghost-secondary btn-sm btn-icon p-1 cursor-pointer collapse-item"
-                                        @click.prevent.stop="onExpandToggleClick(node)">
+                                        @click.prevent.stop="onExpandToggleClick(node)"
+                                        tabindex="-1" aria-hidden="true">
                                     <i :class="node.expanded ? 'ti ti-chevron-down' : 'ti ti-chevron-right'"></i>
                                 </button>
                                 <div v-else style="width: 25px"></div>
@@ -264,7 +260,8 @@
                                 <button v-if="node.children.length" class="btn btn-ghost-secondary btn-sm btn-icon p-1"
                                         :title="__('Select this entity and all its children')"
                                         :aria-label="__('Select this entity and all its children')"
-                                        @click.prevent.stop="changeEntity(node.key, true)" data-bs-toggle="tooltip" data-bs-placement="top">
+                                        @click.prevent.stop="changeEntity(node.key, true)" data-bs-toggle="tooltip" data-bs-placement="top"
+                                        tabindex="-1" aria-hidden="true">
                                     <i class="ti ti-chevrons-down"></i>
                                 </button>
                             </div>
