@@ -204,7 +204,10 @@ export class GlpiPage
         entity_name: string
     ): Promise<void> {
         // eslint-disable-next-line playwright/no-raw-locators
-        await this.getButton(entity_name).locator('//ancestor::li').getByRole('button', { name: 'Select this entity and all its children' }).click();
+        await this.getButton(entity_name).locator('//ancestor::li').getByRole('button', {
+            name: 'Select this entity and all its children',
+            includeHidden: true, // Button is hidden in the accessibility tree because it is replaced by keyboard controls.
+        }).click();
     }
 
     public async doSwitchToEntityWithoutRecursion(
