@@ -750,6 +750,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
             'vendor', // composer imported libs
 
             'public\/lib', // libs packaged using webpack
+            'public\/build', // compiled GLPI JS/CSS
         ];
         if (file_exists($directory . DIRECTORY_SEPARATOR . 'setup.php')
             && file_exists($directory . DIRECTORY_SEPARATOR . 'hook.php')) {
