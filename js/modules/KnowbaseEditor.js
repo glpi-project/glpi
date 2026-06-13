@@ -72,7 +72,7 @@ class KnowbaseEditor {
         this.#options = {
             content: '',
             readonly: true,
-            placeholder: __('Start writing...'),
+            placeholder: __('Type / to insert...'),
             onUpdate: null,
             item_id: null,
             ...options
@@ -123,6 +123,7 @@ class KnowbaseEditor {
             }),
             TiptapPlaceholder.configure({
                 placeholder: this.#options.placeholder,
+                showOnlyCurrent: false,
             }),
             TiptapBubbleMenu.configure({
                 element: this.#bubbleMenuElement,

@@ -316,12 +316,21 @@
         }
 
         // Placeholder
-        p.is-editor-empty:first-child::before {
+        p.is-empty::before {
             content: attr(data-placeholder);
             float: inline-start;
             color: var(--tblr-muted);
             pointer-events: none;
             height: 0;
+        }
+
+        // Suggestion placeholder when typing slash command
+        .suggestion.is-empty::after {
+            content: var(--suggestion-placeholder);
+            color: var(--tblr-muted);
+            pointer-events: none;
+            margin-left: 0.25rem;
+            font-style: italic;
         }
 
         // Typography
