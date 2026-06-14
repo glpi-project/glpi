@@ -42,6 +42,7 @@ use Glpi\Tests\Glpi\ValidationStepTrait;
 use NotificationEventMailing;
 use NotificationTargetCommonITILObject;
 use PHPUnit\Framework\Attributes\DataProvider;
+use QueuedNotification;
 use Rule;
 use RuleCommonITILObject;
 use RuntimeException;
@@ -1623,5 +1624,41 @@ abstract class CommonITILValidationTest extends DbTestCase
         ]);
         // Substitute timerange expired
         $this->assertEmpty($notification_target->target);
+    }
+
+    public function testValidationAnswerNotification(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+        $itil = $this->createItem($this->getITILClassname(), [
+            'name' => 'Test Notification Recipients',
+            'content' => 'Test Notification Recipients',
+        ]);
+        $validation = $this->createItem($this->getValidationClassname(), [
+            $itil::getForeignKeyField() => $itil->getID(),
+            'itemtype_target' => 'User',
+            'items_id_target' => $_SESSION['glpiID'],
+        ]);
+        $queued_notification = new QueuedNotification();
+
+        $CFG_GLPI["use_notifications"] = true;
+        $CFG_GLPI['notifications_mailing'] = true;
+
+        $this->assertEquals(0, countElementsInTable($queued_notification::getTable(), ['event' => 'validation_answer']));
+
+        // Updating the submission comment should not trigger the validation_answer notification
+        $validation->update([
+            'id' => $validation->getID(),
+            'comment_submission' => 'This is a comment.',
+        ]);
+        $this->assertEquals(0, countElementsInTable($queued_notification::getTable(), ['event' => 'validation_answer']));
+
+        $validation->update([
+            'id' => $validation->getID(),
+            'status' => CommonITILValidation::ACCEPTED,
+        ]);
+        // Administrator + Approver
+        $this->assertEquals(2, countElementsInTable($queued_notification::getTable(), ['event' => 'validation_answer']));
     }
 }
