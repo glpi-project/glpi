@@ -539,10 +539,12 @@ abstract class CommonITILValidation extends CommonDBChild
 
         // -- notifications
         if (
-            count($this->updates)
+            in_array('status', $this->updates)
+            && (int) $this->fields["status"] !== self::WAITING
             && $donotif
         ) {
-            $options  = ['validation_id'     => $this->fields["id"],
+            $options  = [
+                'validation_id'     => $this->fields["id"],
                 'validation_status' => $this->fields["status"],
             ];
             NotificationEvent::raiseEvent('validation_answer', $this->getItem(), $options, $this);
