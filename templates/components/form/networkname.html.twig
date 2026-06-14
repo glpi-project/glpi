@@ -56,10 +56,8 @@
                   {% set session_get_plural = get_plural_number() %}
                   {% set rand = random() %}
 
-                  {% if ID %}
-                     <input type="hidden" name="itemtype" value="{{ item.fields['itemtype'] }}">
-                     <input type="hidden" name="items_id" value="{{ item.fields['items_id'] }}">
-                  {% endif %}
+                  <input type="hidden" name="itemtype" value="{{ item.fields['itemtype'] }}">
+                  <input type="hidden" name="items_id" value="{{ item.fields['items_id'] }}">
 
                   {{ fields.textField(
                      'name',
