@@ -1377,6 +1377,59 @@ class TransferTest extends DbTestCase
         unset($_SESSION['glpitransfer_list']);
     }
 
+    /**
+     * Transferring an item (e.g. a Computer) that is linked to a ticket must not
+     * fail and must move the linked ticket along with it when "keep_ticket" is set.
+     */
+    public function testTransferItemLinkedToTicket(): void
+    {
+        $this->login();
+
+        $source_entity      = (int) getItemByTypeName('Entity', '_test_child_1', true);
+        $destination_entity = (int) getItemByTypeName('Entity', '_test_child_2', true);
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => __FUNCTION__,
+            'entities_id' => $source_entity,
+        ]);
+        $computer_id = $computer->getID();
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => 'ticket linked to computer',
+            'content'     => 'ticket content',
+            'entities_id' => $source_entity,
+        ]);
+        $ticket_id = $ticket->getID();
+
+        $item_ticket = $this->createItem(\Item_Ticket::class, [
+            'tickets_id' => $ticket_id,
+            'itemtype'   => \Computer::class,
+            'items_id'   => $computer_id,
+        ]);
+
+        // Configure the transfer to move linked tickets along with the item.
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
+        $transfer->fields['keep_ticket'] = 2;
+        $this->assertTrue($transfer->update($transfer->fields));
+
+        $transfer->moveItems([\Computer::class => [$computer_id]], $destination_entity, $transfer->fields);
+
+        // The computer has been moved.
+        $this->assertTrue($computer->getFromDB($computer_id));
+        $this->assertEquals($destination_entity, $computer->fields['entities_id']);
+
+        // The linked ticket has been moved to the destination entity.
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $this->assertEquals($destination_entity, $ticket->fields['entities_id']);
+
+        // The relation between the computer and the ticket is preserved.
+        $this->assertTrue($item_ticket->getFromDB($item_ticket->getID()));
+        $this->assertEquals($ticket_id, $item_ticket->fields['tickets_id']);
+        $this->assertEquals(\Computer::class, $item_ticket->fields['itemtype']);
+        $this->assertEquals($computer_id, $item_ticket->fields['items_id']);
+    }
+
     private function createMassiveActionMock(string $action): \MassiveAction
     {
         $ma = $this->getMockBuilder(\MassiveAction::class)
