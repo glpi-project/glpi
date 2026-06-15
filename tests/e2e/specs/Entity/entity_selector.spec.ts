@@ -160,8 +160,8 @@ test('Keyboard navigation in entity selector', async ({ page, profile }) => {
     const glpi_page = new GlpiPage(page);
 
     await glpi_page.doOpenEntitySelector();
-    const entity_04 = glpi_page.getEntityFromTree("E2E worker entity 04");
-    const entity_05 = glpi_page.getEntityFromTree("E2E worker entity 05");
+    const entity_04 = page.getByRole('listitem').filter({ hasText: 'E2E worker entity 04' });
+    const entity_05 = page.getByRole('listitem').filter({ hasText: 'E2E worker entity 05' });
 
     await page.getByRole('listitem').filter({ hasText: 'Root entity' }).first().focus();
 
