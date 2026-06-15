@@ -567,19 +567,6 @@ class MassiveAction
     }
 
     /**
-     * Extract itemtypes from the input
-     *
-     * @return array<int, string> itemtypes to process
-     * // @todo a supprimer si pas besoin
-     * // @todo ajouter un test
-     **/
-    public function getItemtypes(): array
-    {
-        return array_keys($this->items);
-    }
-
-
-    /**
      * Get 'add to transfer list' action when needed
      *
      * @param array $actions
