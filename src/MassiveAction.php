@@ -1069,20 +1069,14 @@ class MassiveAction
                             "infocom"  => UPDATE,
                         ]);
                     } else {
-                        // redirect to reauth if needed // @todo cleanup
-                        // @todo normalement, on ne prend pas cette option
-                        // pas possible de faire redirection ici, c'est géré en ajax : pas d'effet
-                        // mais on peut afficher un bouton vers la reauth et on redirige vers la page actuelle
+                        // display subform if auth is granted or a reauth is needed (means action will be possible after reauthenticated)
+                        // Notice that no redirection can be done here (file called using ajax)
                         $reauth_needed = null;
-                        $allowed = $so_item->canGlobal(UPDATE, $reauth_needed); // @todo juste update ? action delete/purge/etc
+                        $allowed = $so_item->canGlobal(UPDATE, $reauth_needed); // @todo handle action delete/purge/etc - use canMassiveAction() ?
                         if (!$allowed && !$reauth_needed) {
-                            // just to throw the redirect Exception, maybe we can refactor
-                            // maybe we can refactor \CommonDBTM::checkGlobal to call \CommonDBTM::throwAccessDeniedException.
-                            // then we can just call this method here instead of checkGlobal()
-                            $so_item->checkGlobal(UPDATE);
+                            echo 'Missing right';
+                            throw new RuntimeException('Missing authorization');
                         }
-                        // continue event if not currently authorized, to show the submit button
-                        // right check (and reauth redirection) will be process on form submission
                     }
 
                     $itemtype_search_options = SearchOption::getOptionsForItemtype($so_itemtype);

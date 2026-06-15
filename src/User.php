@@ -3284,8 +3284,7 @@ HTML;
             case 'clean_ldap_fields':
                 foreach ($ids as $id) {
 
-                    $reauth_needed = null; // @todo vraiment utile ? filtrage avant, non ?
-                    if ($item->can($id, UPDATE, reauth_needed: $reauth_needed)) {
+                    if ($item->can($id, UPDATE)) {
                         if (
                             $item instanceof User
                             && (
@@ -3304,10 +3303,6 @@ HTML;
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
-                        if ($reauth_needed) {
-                            self::redirectToReauthPrompt();
-                        }
-
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
