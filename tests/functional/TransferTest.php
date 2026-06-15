@@ -1416,7 +1416,12 @@ class TransferTest extends DbTestCase
             unset($_SESSION['glpitransfer_list']);
         }
 
-        $this->assertNotEmpty($output);
+        $this->assertStringContainsString('<tbody>', $output);
+
+        $this->assertStringContainsString(
+            sprintf('(%d)', $item_soundcard->getID()),
+            $output
+        );
     }
 
     private function createMassiveActionMock(string $action): \MassiveAction
