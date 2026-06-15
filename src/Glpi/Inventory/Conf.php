@@ -392,6 +392,8 @@ class Conf extends CommonGLPI
             echo __s("The inventory is disabled, remember to activate it if necessary");
             echo "</span>";
             echo "</div>";
+
+            echo Html::hidden('auth_required', ['value' => self::NO_AUTH]);
         } else {
             echo '</div>';
             echo '</div>';
