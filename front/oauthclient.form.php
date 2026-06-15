@@ -55,6 +55,7 @@ if (isset($_POST["add"])) {
     $client->delete($_POST);
     Html::redirect($CFG_GLPI["root_doc"] . "/front/oauthclient.php");
 } else {
+    $client->check($_GET["id"], READ);
     $menus = ["config", "oauthclient"];
     OAuthClient::displayFullPageForItem($_GET["id"], $menus);
 }
