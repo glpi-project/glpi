@@ -125,7 +125,6 @@ class ConfigTest extends DbTestCase
             'Config$12'     => "Management",
             'Config$9'      => "Logs purge",
             'Config$5'      => "System",
-            'Config$10'     => "Security",
             'Config$7'      => "Performance",
             'Config$8'      => "API",
             'Config$11'      => "Impact analysis",
