@@ -3209,8 +3209,8 @@ final class Transfer extends CommonDBTM
                 ],
             ],
             'WHERE'     => [
-                'glpi_items_tickets.items_id'  => $ID,
-                'glpi_items_tickets.itemtype'  => $itemtype,
+                'items_id'  => $ID,
+                'itemtype'  => $itemtype,
             ],
         ]);
 
