@@ -50,20 +50,14 @@ export function useEntitySelector(container_el)
             if (event.key === 'ArrowDown') {
                 event.preventDefault();
                 // Focus the next visible list item
-                let next = list_item.nextElementSibling;
-                while (next && next.offsetParent === null) {
-                    next = next.nextElementSibling;
-                }
+                const next = list_item.nextElementSibling;
                 if (next) {
                     next.focus();
                 }
             } else if (event.key === 'ArrowUp') {
                 event.preventDefault();
                 // Focus the previous visible list item
-                let prev = list_item.previousElementSibling;
-                while (prev && prev.offsetParent === null) {
-                    prev = prev.previousElementSibling;
-                }
+                const prev = list_item.previousElementSibling;
                 if (prev) {
                     prev.focus();
                 }
@@ -73,10 +67,7 @@ export function useEntitySelector(container_el)
                     list_item.querySelector('.collapse-item').click();
                     // Need to wait for DOM changes since child items are not in the DOM until the parent is expanded
                     nextTick().then(() => {
-                        let next = list_item.nextElementSibling;
-                        while (next && next.offsetParent === null) {
-                            next = next.nextElementSibling;
-                        }
+                        const next = list_item.nextElementSibling;
                         if (next && parseInt(next.dataset.nodeLevel) > parseInt(list_item.dataset.nodeLevel)) {
                             next.focus();
                         }
@@ -91,7 +82,7 @@ export function useEntitySelector(container_el)
                     const level = parseInt(list_item.dataset.nodeLevel);
                     if (level > 0) {
                         let prev = list_item.previousElementSibling;
-                        while (prev && (prev.offsetParent === null || parseInt(prev.dataset.nodeLevel) >= level)) {
+                        while (prev && parseInt(prev.dataset.nodeLevel) >= level) {
                             prev = prev.previousElementSibling;
                         }
                         if (prev) {

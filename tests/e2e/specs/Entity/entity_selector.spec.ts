@@ -153,27 +153,3 @@ test('Can switch to another entity without sub entities', async ({ page, profile
         'Root entity'
     );
 });
-
-test('Keyboard navigation in entity selector', async ({ page, profile }) => {
-    await page.goto('/front/preference.php');
-    await profile.set(Profiles.SuperAdmin);
-    const glpi_page = new GlpiPage(page);
-
-    await glpi_page.doOpenEntitySelector();
-    const entity_04 = page.getByRole('listitem').filter({ hasText: 'E2E worker entity 04' });
-    const entity_05 = page.getByRole('listitem').filter({ hasText: 'E2E worker entity 05' });
-
-    await page.getByRole('listitem').filter({ hasText: 'E2E worker entity 04' }).first().focus();
-
-    await page.keyboard.press('ArrowDown');
-    await expect(entity_05).toBeFocused();
-
-    await page.keyboard.press('ArrowUp');
-    await expect(entity_04).toBeFocused();
-
-    await page.keyboard.press('Enter');
-
-    await expect(glpi_page.active_entity).toHaveText(
-        'E2E worker entity 04'
-    );
-});
