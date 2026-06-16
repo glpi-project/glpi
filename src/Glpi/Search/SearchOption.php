@@ -801,7 +801,8 @@ final class SearchOption implements ArrayAccess
         ) {
             if ($itemtype !== AllAssets::getType()) {
                 $entity_opt = self::getOptionNumber($itemtype, 'completename', 'Entity');
-                if ($entity_opt > 0) {
+                $options = self::getOptionsForItemtype($itemtype);
+                if ($entity_opt > 0 && empty($options[$entity_opt]['nodefaultcolumn'])) {
                     $toview[] = $entity_opt;
                 }
             } else {
