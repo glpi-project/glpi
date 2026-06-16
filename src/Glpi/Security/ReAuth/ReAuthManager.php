@@ -37,6 +37,7 @@ declare(strict_types=1);
 namespace Glpi\Security\ReAuth;
 
 use Glpi\Exception\RedirectException;
+use InvalidArgumentException;
 use RuntimeException;
 use Safe\DateTime;
 
@@ -160,9 +161,14 @@ final class ReAuthManager
      *
      * @param array<int, class-string<\CommonGLPI>> $item_types item type to check
      */
-    public function atLeastOneitemTypesRequiresReauthentication(mixed $item_types): bool
+    public function atLeastOneitemTypesRequiresReauthentication(array $item_types): bool
     {
-        // @todo ajouter vérif sur la validité des item_types (doivent être des class-string de CommonGLPI) ?
+        foreach ($item_types as $item_type) {
+            if (!is_a($item_type, \CommonGLPI::class, true)) {
+                throw new InvalidArgumentException(sprintf('Invalid item type "%s"', (string) $item_type));
+            }
+        }
+
         return array_reduce(
             $item_types,
             fn($carry, string $item_type) => $carry || $item_type::isUserReauthenticationNeeded(),
