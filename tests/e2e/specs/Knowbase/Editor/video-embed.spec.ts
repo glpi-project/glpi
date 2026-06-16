@@ -69,12 +69,12 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(placeholder).toHaveAttribute('data-video-id', 'dQw4w9WgXcQ');
         });
 
-        test('Insert Dailymotion video via the /Video dialog', async ({ page, profile, api }) => {
+        test('Insert a direct video file URL via the /Video dialog', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);
 
             const id = await api.createItem('KnowbaseItem', {
-                name: 'Insert Dailymotion via dialog',
+                name: 'Insert direct video via dialog',
                 entities_id: getWorkerEntityId(),
                 answer: '<p>Content</p>',
             });
@@ -87,42 +87,14 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await kb.slashMenu.selectByClick('Video');
 
             const dialog = kb.videoDialog;
-            await dialog.getByLabel('Video URL').fill('https://www.dailymotion.com/video/x7ufrcj');
+            await dialog.getByLabel('Video URL').fill('https://cdn.example.com/clip.mp4');
             await dialog.getByRole('button', { name: 'Insert' }).click();
             await expect(dialog).toBeHidden();
 
             const placeholder = kb.videoEmbedPlaceholders;
             await expect(placeholder).toHaveCount(1);
-            await expect(placeholder).toHaveAttribute('data-video-provider', 'dailymotion');
-            await expect(placeholder).toHaveAttribute('data-video-id', 'x7ufrcj');
-        });
-
-        test('Insert Vimeo video via the /Video dialog', async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: 'Insert Vimeo via dialog',
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Content</p>',
-            });
-
-            await kb.goto(id);
-            await kb.editor.enterEditMode();
-            await kb.editor.clearContent();
-
-            await kb.slashMenu.open();
-            await kb.slashMenu.selectByClick('Video');
-
-            const dialog = kb.videoDialog;
-            await dialog.getByLabel('Video URL').fill('https://vimeo.com/76979871');
-            await dialog.getByRole('button', { name: 'Insert' }).click();
-            await expect(dialog).toBeHidden();
-
-            const placeholder = kb.videoEmbedPlaceholders;
-            await expect(placeholder).toHaveCount(1);
-            await expect(placeholder).toHaveAttribute('data-video-provider', 'vimeo');
-            await expect(placeholder).toHaveAttribute('data-video-id', '76979871');
+            await expect(placeholder).toHaveAttribute('data-video-provider', 'video');
+            await expect(placeholder).toHaveAttribute('data-video-src', 'https://cdn.example.com/clip.mp4');
         });
 
         test('Dialog rejects an unsupported URL and stays open', async ({ page, profile, api }) => {
@@ -225,42 +197,24 @@ test.describe('Knowledge Base Editor - Video Embed', () => {
             await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
         });
 
-        test('Saved Dailymotion embed renders as a sandboxed iframe', async ({ page, profile, api }) => {
+        test('Saved direct video embed renders as a <video> element', async ({ page, profile, api }) => {
             await profile.set(Profiles.SuperAdmin);
             const kb = new KnowbaseItemPage(page);
 
             const id = await api.createItem('KnowbaseItem', {
-                name: 'Stored Dailymotion embed',
+                name: 'Stored direct video embed',
                 entities_id: getWorkerEntityId(),
-                answer: '<p>Watch:</p><div class="video-embed" data-video-provider="dailymotion" data-video-id="x7ufrcj"></div>',
+                answer: '<p>Watch:</p><div class="video-embed" data-video-provider="video" data-video-src="https://cdn.example.com/clip.mp4"></div>',
             });
 
             await kb.goto(id);
 
-            const iframe = kb.videoEmbedIframes;
-            await expect(iframe).toHaveCount(1);
-            await expect(iframe).toHaveAttribute('src', /^https:\/\/www\.dailymotion\.com\/embed\/video\/x7ufrcj$/);
-            await expect(iframe).toHaveAttribute('loading', 'lazy');
-            await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
-        });
-
-        test('Saved Vimeo embed renders as a sandboxed iframe', async ({ page, profile, api }) => {
-            await profile.set(Profiles.SuperAdmin);
-            const kb = new KnowbaseItemPage(page);
-
-            const id = await api.createItem('KnowbaseItem', {
-                name: 'Stored Vimeo embed',
-                entities_id: getWorkerEntityId(),
-                answer: '<p>Watch:</p><div class="video-embed" data-video-provider="vimeo" data-video-id="76979871"></div>',
-            });
-
-            await kb.goto(id);
-
-            const iframe = kb.videoEmbedIframes;
-            await expect(iframe).toHaveCount(1);
-            await expect(iframe).toHaveAttribute('src', /^https:\/\/player\.vimeo\.com\/video\/76979871\?dnt=1$/);
-            await expect(iframe).toHaveAttribute('loading', 'lazy');
-            await expect(iframe).toHaveAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
+            const video = kb.videoEmbedVideos;
+            await expect(video).toHaveCount(1);
+            await expect(video).toHaveAttribute('src', 'https://cdn.example.com/clip.mp4');
+            await expect(video).toHaveAttribute('controls', '');
+            await expect(video).toHaveAttribute('preload', 'metadata');
+            await expect(kb.videoEmbedIframes).toHaveCount(0);
         });
 
         test('Stored placeholder with an unknown provider is dropped at render', async ({ page, profile, api }) => {

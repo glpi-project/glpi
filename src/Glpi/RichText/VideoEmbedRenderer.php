@@ -37,35 +37,44 @@ namespace Glpi\RichText;
 use function Safe\preg_match;
 
 /**
- * Reconstructs sandboxed iframes from the inert `<div data-video-provider ...>`
- * placeholders stored by the KB Tiptap editor, using a hard-coded provider
- * allowlist so no user-supplied iframe ever traverses the HTML sanitizer.
+ * Reconstructs sandboxed iframes (YouTube) and `<video>` elements (direct file
+ * URLs) from the inert `<div data-video-provider ...>` placeholders stored by
+ * the KB Tiptap editor, using a hard-coded provider allowlist so no
+ * user-supplied media ever traverses the HTML sanitizer.
  */
 final class VideoEmbedRenderer
 {
     /**
-     * Provider key → embed URL `sprintf` template. Privacy-friendly defaults:
-     * youtube-nocookie, vimeo dnt=1.
+     * Synthetic provider key for a direct video file URL embedded as `<video>`;
+     * the URL lives in `data-video-src` instead of a `data-video-id`.
+     */
+    private const DIRECT_VIDEO_PROVIDER = 'video';
+
+    /**
+     * Provider key → embed URL `sprintf` template. Privacy-friendly default:
+     * youtube-nocookie.
      */
     private const PROVIDER_URL_TEMPLATES = [
-        'youtube'     => 'https://www.youtube-nocookie.com/embed/%s',
-        'dailymotion' => 'https://www.dailymotion.com/embed/video/%s',
-        'vimeo'       => 'https://player.vimeo.com/video/%s?dnt=1',
+        'youtube' => 'https://www.youtube-nocookie.com/embed/%s',
     ];
 
     /**
      * Provider key → canonical watch URL template, used by the plaintext fallback.
      */
     private const PROVIDER_WATCH_TEMPLATES = [
-        'youtube'     => 'https://www.youtube.com/watch?v=%s',
-        'dailymotion' => 'https://www.dailymotion.com/video/%s',
-        'vimeo'       => 'https://vimeo.com/%s',
+        'youtube' => 'https://www.youtube.com/watch?v=%s',
     ];
 
     /**
      * Strict pattern for accepted video IDs.
      */
     private const VIDEO_ID_PATTERN = '/^[A-Za-z0-9_-]{1,32}$/';
+
+    /**
+     * Accepted direct video file URL: http(s) scheme + allowlisted extension
+     * (optionally followed by a query string or fragment).
+     */
+    private const DIRECT_VIDEO_URL_PATTERN = '#^https?://[^\s<>"]+\.(?:mp4|webm|ogg|ogv|mov)(?:[?\#][^\s<>"]*)?$#i';
 
     /**
      * @param string   $provider Must be a key of {@see self::PROVIDER_URL_TEMPLATES}.
@@ -106,6 +115,36 @@ final class VideoEmbedRenderer
     }
 
     /**
+     * Render a direct video file URL as a native `<video>` element.
+     *
+     * @param string $src Must match {@see self::DIRECT_VIDEO_URL_PATTERN}.
+     *
+     * @return string Safe `<video>` HTML, or empty string on invalid input.
+     */
+    public function renderDirectVideo(string $src): string
+    {
+        if (!$this->isValidDirectVideoSrc($src)) {
+            return '';
+        }
+
+        return sprintf(
+            '<div class="video-embed-wrapper">'
+            . '<video src="%s" title="%s" controls preload="metadata"></video>'
+            . '</div>',
+            htmlescape($src),
+            htmlescape(__('Embedded video'))
+        );
+    }
+
+    /**
+     * Whether $src is an acceptable direct video file URL.
+     */
+    private function isValidDirectVideoSrc(string $src): bool
+    {
+        return preg_match(self::DIRECT_VIDEO_URL_PATTERN, $src) === 1;
+    }
+
+    /**
      * Replace each placeholder by its iframe. Tampered placeholders
      * (non-whitespace body — the atom node never produces children) and those
      * with an unknown provider or malformed id are dropped.
@@ -121,6 +160,10 @@ final class VideoEmbedRenderer
             function (string $provider, string $opening, string $body): string {
                 if (trim($body) !== '') {
                     return '';
+                }
+                if ($provider === self::DIRECT_VIDEO_PROVIDER) {
+                    $src = $this->extractAttribute($opening, 'data-video-src');
+                    return $src !== null ? $this->renderDirectVideo($src) : '';
                 }
                 $video_id = $this->extractAttribute($opening, 'data-video-id');
                 if ($video_id === null) {
@@ -195,7 +238,14 @@ final class VideoEmbedRenderer
      */
     private function buildWatchUrlFromPlaceholder(string $provider, string $opening, string $body): ?string
     {
-        if (trim($body) !== '' || !isset(self::PROVIDER_WATCH_TEMPLATES[$provider])) {
+        if (trim($body) !== '') {
+            return null;
+        }
+        if ($provider === self::DIRECT_VIDEO_PROVIDER) {
+            $src = $this->extractAttribute($opening, 'data-video-src');
+            return ($src !== null && $this->isValidDirectVideoSrc($src)) ? $src : null;
+        }
+        if (!isset(self::PROVIDER_WATCH_TEMPLATES[$provider])) {
             return null;
         }
         $video_id = $this->extractAttribute($opening, 'data-video-id');
@@ -220,10 +270,8 @@ final class VideoEmbedRenderer
     private function buildWatchStartSuffix(string $provider, int $start): string
     {
         return match ($provider) {
-            'youtube'     => '&t=' . $start . 's',
-            'dailymotion' => '?start=' . $start,
-            'vimeo'       => '#t=' . $start . 's',
-            default       => '',
+            'youtube' => '&t=' . $start . 's',
+            default   => '',
         };
     }
 
@@ -341,10 +389,9 @@ final class VideoEmbedRenderer
     private function getProviderDisplayName(string $provider): string
     {
         return match ($provider) {
-            'youtube'     => 'YouTube',
-            'dailymotion' => 'Dailymotion',
-            'vimeo'       => 'Vimeo',
-            default       => $provider,
+            'youtube'                   => 'YouTube',
+            self::DIRECT_VIDEO_PROVIDER => __('Video'),
+            default                     => $provider,
         };
     }
 }

@@ -96,6 +96,12 @@ export class KnowbaseItemPage extends GlpiPage
         return this.page.getByTitle(/video player$/i);
     }
 
+    public get videoEmbedVideos(): Locator
+    {
+        // VideoEmbedRenderer emits direct <video> elements with title="Embedded video".
+        return this.page.getByTitle('Embedded video');
+    }
+
     public get subject(): Locator
     {
         // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute used by ArticleController.js, not a test ID

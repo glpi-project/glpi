@@ -34,9 +34,11 @@
 
 /**
  * VideoEmbed Tiptap node — stores videos as inert
- * `<div data-video-provider data-video-id></div>` placeholders. The iframe is
- * rebuilt server-side (RichText\VideoEmbedRenderer) or in the nodeView, never
- * stored, so user content never injects an iframe through the sanitizer.
+ * `<div data-video-provider data-video-id></div>` placeholders (YouTube), or
+ * `<div data-video-provider="video" data-video-src></div>` for a direct video
+ * file URL. The iframe / `<video>` is rebuilt server-side
+ * (RichText\VideoEmbedRenderer) or in the nodeView, never stored, so user
+ * content never injects media through the sanitizer.
  *
  * YouTube URL-parsing regexes adapted from the MIT @tiptap/extension-youtube
  * package (Copyright (c) Tiptap GmbH).
@@ -44,16 +46,40 @@
 
 const { Node, mergeAttributes } = TiptapCore;
 
-const ALLOWED_PROVIDERS = new Set(['youtube', 'dailymotion', 'vimeo']);
+// Direct video files are stored under this synthetic provider key, with the URL
+// in data-video-src instead of an id.
+const DIRECT_VIDEO_PROVIDER = 'video';
+
+const ALLOWED_PROVIDERS = new Set(['youtube', DIRECT_VIDEO_PROVIDER]);
 const VALID_ID_PATTERN = /^[A-Za-z0-9_-]{1,32}$/;
+// Allowlisted extensions for a directly embedded <video> file URL.
+const VIDEO_FILE_EXTENSION_PATTERN = /\.(?:mp4|webm|ogg|ogv|mov)$/i;
 
 // Mirror of VideoEmbedRenderer::getProviderDisplayName — provider brand names
 // aren't translated, so the values are safe to use as accessible-name fragments.
 const PROVIDER_DISPLAY_NAMES = {
-    youtube:     'YouTube',
-    dailymotion: 'Dailymotion',
-    vimeo:       'Vimeo',
+    youtube: 'YouTube',
 };
+
+/**
+ * Validate a direct video file URL: http(s) scheme + allowlisted extension.
+ *
+ * @param {string} src
+ * @returns {boolean}
+ */
+function isValidDirectVideoSrc(src) {
+    if (typeof src !== 'string' || src.length === 0) {
+        return false;
+    }
+    let url;
+    try {
+        url = new URL(src.trim());
+    } catch {
+        return false;
+    }
+    return (url.protocol === 'http:' || url.protocol === 'https:')
+        && VIDEO_FILE_EXTENSION_PATTERN.test(url.pathname);
+}
 
 /**
  * Parse a "t=" / "start=" query parameter into seconds. Accepts plain seconds
@@ -116,65 +142,23 @@ function parseYouTubeUrl(url) {
 }
 
 /**
+ * Recognize a direct video file URL (http(s) + allowlisted extension).
+ *
  * @param {URL} url
- * @returns {{provider: string, videoId: string, start: number|null}|null}
+ * @returns {{provider: string, videoId: null, src: string, start: number|null}|null}
  */
-function parseDailymotionUrl(url) {
-    const host = url.hostname.replace(/^www\./, '');
-
-    if (host === 'dai.ly') {
-        const id = url.pathname.slice(1).split(/[/?]/)[0];
-        return VALID_ID_PATTERN.test(id)
-            ? { provider: 'dailymotion', videoId: id, start: null }
-            : null;
-    }
-
-    if (host !== 'dailymotion.com') {
+function parseDirectVideoUrl(url) {
+    if (!VIDEO_FILE_EXTENSION_PATTERN.test(url.pathname)) {
         return null;
     }
-
-    const match = url.pathname.match(/^\/(?:video|embed\/video)\/([^/?]+)/);
-    if (match && VALID_ID_PATTERN.test(match[1])) {
-        return { provider: 'dailymotion', videoId: match[1], start: null };
-    }
-
-    return null;
-}
-
-/**
- * @param {URL} url
- * @returns {{provider: string, videoId: string, start: number|null}|null}
- */
-function parseVimeoUrl(url) {
-    const host = url.hostname.replace(/^www\./, '');
-
-    if (host === 'player.vimeo.com') {
-        const match = url.pathname.match(/^\/video\/(\d+)/);
-        return match && VALID_ID_PATTERN.test(match[1])
-            ? { provider: 'vimeo', videoId: match[1], start: null }
-            : null;
-    }
-
-    if (host !== 'vimeo.com') {
-        return null;
-    }
-
-    // Last numeric segment — handles /ID, /channels/X/ID, /album/X/video/ID, etc.
-    const segments = url.pathname.split('/').filter(Boolean);
-    for (let i = segments.length - 1; i >= 0; i--) {
-        if (/^\d+$/.test(segments[i]) && VALID_ID_PATTERN.test(segments[i])) {
-            return { provider: 'vimeo', videoId: segments[i], start: null };
-        }
-    }
-
-    return null;
+    return { provider: DIRECT_VIDEO_PROVIDER, videoId: null, src: url.href, start: null };
 }
 
 /**
  * Parse any supported video URL into normalized attrs, or null if unrecognized.
  *
  * @param {string} rawUrl
- * @returns {{provider: string, videoId: string, start: number|null}|null}
+ * @returns {{provider: string, videoId: string|null, src?: string, start: number|null}|null}
  */
 function parseVideoUrl(rawUrl) {
     if (typeof rawUrl !== 'string' || rawUrl.length === 0) {
@@ -190,8 +174,7 @@ function parseVideoUrl(rawUrl) {
         return null;
     }
     return parseYouTubeUrl(url)
-        || parseDailymotionUrl(url)
-        || parseVimeoUrl(url);
+        || parseDirectVideoUrl(url);
 }
 
 /**
@@ -253,7 +236,7 @@ export function showVideoDialog(editor) {
     // Body — help + error message
     const help = document.createElement('p');
     help.className = 'text-muted small mt-1 mb-0';
-    help.textContent = __('Supported providers: YouTube, Dailymotion, Vimeo.');
+    help.textContent = __('Supported: a YouTube URL, or a direct video file URL (MP4, WebM, Ogg).');
     body.appendChild(help);
 
     const errorMsg = document.createElement('p');
@@ -293,7 +276,7 @@ export function showVideoDialog(editor) {
         if (errorMsg.style.display !== 'none') {
             return;
         }
-        errorMsg.textContent = __('This video URL is not recognized. Use a YouTube, Dailymotion or Vimeo URL.');
+        errorMsg.textContent = __('This video URL is not recognized. Use a YouTube URL or a direct video file URL (MP4, WebM, Ogg).');
         errorMsg.setAttribute('role', 'alert');
         errorMsg.style.display = '';
     };
@@ -368,13 +351,11 @@ export function showVideoDialog(editor) {
 }
 
 /**
- * Mirrors VideoEmbedRenderer::PROVIDER_URL_TEMPLATES. Privacy-friendly defaults
- * (youtube-nocookie, vimeo dnt=1).
+ * Mirrors VideoEmbedRenderer::PROVIDER_URL_TEMPLATES. Privacy-friendly default
+ * (youtube-nocookie).
  */
 const EMBED_URL_TEMPLATES = {
-    youtube:     'https://www.youtube-nocookie.com/embed/{id}',
-    dailymotion: 'https://www.dailymotion.com/embed/video/{id}',
-    vimeo:       'https://player.vimeo.com/video/{id}?dnt=1',
+    youtube: 'https://www.youtube-nocookie.com/embed/{id}',
 };
 
 /**
@@ -407,9 +388,7 @@ function parseEmbedSrc(src) {
         return null;
     }
     const patterns = [
-        { provider: 'youtube',     re: /^https?:\/\/(?:www\.)?youtube(?:-nocookie)?\.com\/embed\/([^/?#&]+)/ },
-        { provider: 'dailymotion', re: /^https?:\/\/(?:www\.)?dailymotion\.com\/embed\/video\/([^/?#&]+)/ },
-        { provider: 'vimeo',       re: /^https?:\/\/player\.vimeo\.com\/video\/(\d+)/ },
+        { provider: 'youtube', re: /^https?:\/\/(?:www\.)?youtube(?:-nocookie)?\.com\/embed\/([^/?#&]+)/ },
     ];
     for (const { provider, re } of patterns) {
         const m = src.match(re);
@@ -423,32 +402,59 @@ function parseEmbedSrc(src) {
 }
 
 /**
- * Render the videoEmbed node inside the editor as the live iframe — used both
- * in edit mode and when Tiptap re-hydrates over the readonly view.
+ * Render the videoEmbed node inside the editor as the live media element — used
+ * both in edit mode and when Tiptap re-hydrates over the readonly view. YouTube
+ * becomes a sandboxed iframe; a direct file URL becomes a `<video>`.
  *
  * @param {object} node - ProseMirror node
  * @returns {HTMLElement}
  */
 function buildEditorPreview(node) {
-    const src = buildEmbedSrc(node.attrs.provider, node.attrs.videoId, node.attrs.start);
+    const isDirect = node.attrs.provider === DIRECT_VIDEO_PROVIDER;
     const providerName = PROVIDER_DISPLAY_NAMES[node.attrs.provider] || null;
 
     const wrapper = document.createElement('div');
     wrapper.className = 'video-embed-wrapper';
     wrapper.contentEditable = 'false';
     wrapper.setAttribute('role', 'figure');
-    wrapper.setAttribute(
-        'aria-label',
-        providerName ? `${providerName} ${__('video')}` : __('Invalid video')
-    );
     wrapper.setAttribute('data-video-provider', node.attrs.provider);
-    wrapper.setAttribute('data-video-id', node.attrs.videoId);
-    if (node.attrs.start) {
-        wrapper.setAttribute('data-video-start', String(node.attrs.start));
+
+    let media = null;
+    if (isDirect) {
+        wrapper.setAttribute('aria-label', __('Video'));
+        if (isValidDirectVideoSrc(node.attrs.src)) {
+            wrapper.setAttribute('data-video-src', node.attrs.src);
+            media = document.createElement('video');
+            media.src = node.attrs.src;
+            media.title = __('Embedded video');
+            media.controls = true;
+            media.preload = 'metadata';
+        }
+    } else {
+        const src = buildEmbedSrc(node.attrs.provider, node.attrs.videoId, node.attrs.start);
+        wrapper.setAttribute(
+            'aria-label',
+            providerName ? `${providerName} ${__('video')}` : __('Invalid video')
+        );
+        if (node.attrs.videoId) {
+            wrapper.setAttribute('data-video-id', node.attrs.videoId);
+        }
+        if (node.attrs.start) {
+            wrapper.setAttribute('data-video-start', String(node.attrs.start));
+        }
+        if (src) {
+            media = document.createElement('iframe');
+            media.src = src;
+            media.loading = 'lazy';
+            media.title = providerName ? `${providerName} ${__('video player')}` : __('video player');
+            media.setAttribute('frameborder', '0');
+            media.setAttribute('allowfullscreen', '');
+            media.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
+        }
     }
 
-    if (!src) {
-        // Fallback: provider/id invalid → show the dashed placeholder so the
+    if (!media) {
+        // Fallback: provider/id/src invalid → show the dashed placeholder so the
         // author still sees something they can delete.
         wrapper.classList.add('video-embed-edit-placeholder');
         const inner = document.createElement('div');
@@ -464,14 +470,7 @@ function buildEditorPreview(node) {
         return wrapper;
     }
 
-    const iframe = document.createElement('iframe');
-    iframe.src = src;
-    iframe.loading = 'lazy';
-    iframe.title = providerName ? `${providerName} ${__('video player')}` : __('video player');
-    iframe.setAttribute('frameborder', '0');
-    iframe.setAttribute('allowfullscreen', '');
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
-    wrapper.appendChild(iframe);
+    wrapper.appendChild(media);
     return wrapper;
 }
 
@@ -501,6 +500,13 @@ export const VideoEmbed = Node.create({
                     ? { 'data-video-id': attrs.videoId }
                     : {},
             },
+            src: {
+                default: null,
+                parseHTML: (element) => element.getAttribute('data-video-src'),
+                renderHTML: (attrs) => attrs.src
+                    ? { 'data-video-src': attrs.src }
+                    : {},
+            },
             start: {
                 default: null,
                 parseHTML: (element) => {
@@ -522,23 +528,33 @@ export const VideoEmbed = Node.create({
                 tag: 'div[data-video-provider]',
                 getAttrs: (dom) => {
                     const provider = dom.getAttribute('data-video-provider');
-                    const videoId = dom.getAttribute('data-video-id');
-                    if (!ALLOWED_PROVIDERS.has(provider) || !videoId || !VALID_ID_PATTERN.test(videoId)) {
+                    if (!ALLOWED_PROVIDERS.has(provider)) {
                         return false;
                     }
-                    return null;
+                    if (provider === DIRECT_VIDEO_PROVIDER) {
+                        return isValidDirectVideoSrc(dom.getAttribute('data-video-src')) ? null : false;
+                    }
+                    const videoId = dom.getAttribute('data-video-id');
+                    return videoId && VALID_ID_PATTERN.test(videoId) ? null : false;
                 },
             },
             {
                 // Rendered form coming from the server's `|safe_html` filter
-                // (re-entering edit mode over the already-materialized iframe).
+                // (re-entering edit mode over the already-materialized media).
                 tag: 'div.video-embed-wrapper',
                 getAttrs: (dom) => {
                     const iframe = dom.querySelector('iframe');
-                    if (!iframe) {
-                        return false;
+                    if (iframe) {
+                        return parseEmbedSrc(iframe.getAttribute('src')) || false;
                     }
-                    return parseEmbedSrc(iframe.getAttribute('src')) || false;
+                    const video = dom.querySelector('video');
+                    if (video) {
+                        const src = video.getAttribute('src');
+                        return isValidDirectVideoSrc(src)
+                            ? { provider: DIRECT_VIDEO_PROVIDER, videoId: null, src, start: null }
+                            : false;
+                    }
+                    return false;
                 },
             },
         ];
@@ -557,7 +573,13 @@ export const VideoEmbed = Node.create({
     addCommands() {
         return {
             setVideoEmbed: (attrs) => ({ chain }) => {
-                if (!attrs || !ALLOWED_PROVIDERS.has(attrs.provider) || !VALID_ID_PATTERN.test(attrs.videoId)) {
+                if (!attrs || !ALLOWED_PROVIDERS.has(attrs.provider)) {
+                    return false;
+                }
+                const valid = attrs.provider === DIRECT_VIDEO_PROVIDER
+                    ? isValidDirectVideoSrc(attrs.src)
+                    : VALID_ID_PATTERN.test(attrs.videoId);
+                if (!valid) {
                     return false;
                 }
                 return chain().insertContent({ type: this.name, attrs }).run();

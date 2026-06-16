@@ -467,6 +467,11 @@ HTML,
             'encode_output_entities' => false,
             'expected_result'        => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ" data-video-start="90"></div>',
         ];
+        yield 'data-video-src placeholder attribute is preserved' => [
+            'content'                => '<p>Watch this:</p><div class="video-embed" data-video-provider="video" data-video-src="https://cdn.example.com/clip.mp4"></div>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<p>Watch this:</p><div class="video-embed" data-video-provider="video" data-video-src="https://cdn.example.com/clip.mp4"></div>',
+        ];
     }
 
     #[DataProvider('getSafeHtmlProvider')]
@@ -808,6 +813,18 @@ HTML,
         yield 'With allow_video_embeds, placeholder is materialized as a sandboxed iframe' => [
             'content'                => '<p>Watch this:</p><div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ"></div>',
             'expected_result'        => '<p>Watch this:</p><div class="video-embed-wrapper"><iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="YouTube video player" loading="lazy" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation" frameborder="0"></iframe></div>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+
+        yield 'With allow_video_embeds, direct video placeholder is materialized as a <video>' => [
+            'content'                => '<p>Watch this:</p><div data-video-provider="video" data-video-src="https://cdn.example.com/clip.mp4"></div>',
+            'expected_result'        => '<p>Watch this:</p><div class="video-embed-wrapper"><video src="https://cdn.example.com/clip.mp4" title="Embedded video" controls preload="metadata"></video></div>',
+            'extra_params'           => ['allow_video_embeds' => true],
+        ];
+
+        yield 'Direct video with disallowed scheme is dropped' => [
+            'content'                => '<p>Before</p><div data-video-provider="video" data-video-src="javascript:alert(1)//x.mp4"></div><p>After</p>',
+            'expected_result'        => '<p>Before</p><p>After</p>',
             'extra_params'           => ['allow_video_embeds' => true],
         ];
 

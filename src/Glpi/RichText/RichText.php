@@ -669,11 +669,12 @@ JAVASCRIPT;
         }
 
         // Inert placeholders for KB video embeds. Allowed in every context: the
-        // attributes carry no behaviour, materialization into iframes staying gated
-        // downstream by getEnhancedHtml(allow_video_embeds).
+        // attributes carry no behaviour, materialization into iframes / <video>
+        // staying gated downstream by getEnhancedHtml(allow_video_embeds).
         $config = $config
             ->allowAttribute('data-video-provider', ['div'])
             ->allowAttribute('data-video-id', ['div'])
+            ->allowAttribute('data-video-src', ['div'])
             ->allowAttribute('data-video-start', ['div']);
 
         return $config;

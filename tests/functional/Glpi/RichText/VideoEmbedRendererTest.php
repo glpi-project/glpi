@@ -51,6 +51,13 @@ class VideoEmbedRendererTest extends GLPITestCase
         . ' sandbox="allow-scripts allow-same-origin allow-presentation"'
         . ' frameborder="0"></iframe></div>';
 
+    /**
+     * Exact `<video>` markup produced by {@see VideoEmbedRenderer::renderDirectVideo()}.
+     * `%s` placeholders: already-escaped src, already-escaped title.
+     */
+    private const VIDEO = '<div class="video-embed-wrapper"><video src="%s" title="%s" controls'
+        . ' preload="metadata"></video></div>';
+
     public static function renderProvider(): iterable
     {
         yield 'YouTube nominal' => [
@@ -66,27 +73,6 @@ class VideoEmbedRendererTest extends GLPITestCase
             'start'          => 75,
             'expected_src'   => 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?start=75',
             'expected_title' => 'YouTube video player',
-        ];
-        yield 'Dailymotion nominal' => [
-            'provider'       => 'dailymotion',
-            'video_id'       => 'x7ufrcj',
-            'start'          => null,
-            'expected_src'   => 'https://www.dailymotion.com/embed/video/x7ufrcj',
-            'expected_title' => 'Dailymotion video player',
-        ];
-        yield 'Vimeo nominal (dnt=1)' => [
-            'provider'       => 'vimeo',
-            'video_id'       => '76979871',
-            'start'          => null,
-            'expected_src'   => 'https://player.vimeo.com/video/76979871?dnt=1',
-            'expected_title' => 'Vimeo video player',
-        ];
-        yield 'Vimeo start offset uses & separator' => [
-            'provider'       => 'vimeo',
-            'video_id'       => '76979871',
-            'start'          => 42,
-            'expected_src'   => 'https://player.vimeo.com/video/76979871?dnt=1&start=42',
-            'expected_title' => 'Vimeo video player',
         ];
         yield 'Underscore and dash in id are accepted' => [
             'provider'       => 'youtube',
@@ -131,6 +117,41 @@ class VideoEmbedRendererTest extends GLPITestCase
         $this->assertSame('', (new VideoEmbedRenderer())->render($provider, $video_id, $start));
     }
 
+    public static function renderDirectVideoProvider(): iterable
+    {
+        yield 'mp4 over https'        => ['https://cdn.example.com/clip.mp4'];
+        yield 'webm over http'        => ['http://cdn.example.com/clip.webm'];
+        yield 'ogg with query string' => ['https://cdn.example.com/clip.ogv?token=abc'];
+        yield 'uppercase extension'   => ['https://cdn.example.com/CLIP.MP4'];
+    }
+
+    #[DataProvider('renderDirectVideoProvider')]
+    public function testRenderDirectVideoProducesVideoElement(string $src): void
+    {
+        $this->assertSame(
+            sprintf(self::VIDEO, htmlescape($src), htmlescape('Embedded video')),
+            (new VideoEmbedRenderer())->renderDirectVideo($src),
+        );
+    }
+
+    public static function rejectedDirectVideoProvider(): iterable
+    {
+        yield 'javascript scheme'      => ['javascript:alert(1)//clip.mp4'];
+        yield 'data scheme'            => ['data:video/mp4;base64,AAAA'];
+        yield 'no scheme'              => ['cdn.example.com/clip.mp4'];
+        yield 'disallowed extension'   => ['https://cdn.example.com/clip.exe'];
+        yield 'no extension'           => ['https://cdn.example.com/clip'];
+        yield 'extension not at end'   => ['https://cdn.example.com/clip.mp4/extra'];
+        yield 'quote injection'        => ['https://cdn.example.com/clip.mp4"><script>'];
+        yield 'empty string'           => [''];
+    }
+
+    #[DataProvider('rejectedDirectVideoProvider')]
+    public function testRenderDirectVideoReturnsEmptyForInvalidInputs(string $src): void
+    {
+        $this->assertSame('', (new VideoEmbedRenderer())->renderDirectVideo($src));
+    }
+
     public static function renderAllProvider(): iterable
     {
         yield 'unrelated html untouched' => [
@@ -140,10 +161,18 @@ class VideoEmbedRendererTest extends GLPITestCase
         yield 'replaces every placeholder' => [
             'input' => '<div data-video-provider="youtube" data-video-id="aaa11111111"></div>'
                 . '<p>Between</p>'
-                . '<div data-video-provider="vimeo" data-video-id="123456789"></div>',
+                . '<div data-video-provider="video" data-video-src="https://cdn.example.com/clip.mp4"></div>',
             'expected' => sprintf(self::IFRAME, 'https://www.youtube-nocookie.com/embed/aaa11111111', 'YouTube video player')
                 . '<p>Between</p>'
-                . sprintf(self::IFRAME, 'https://player.vimeo.com/video/123456789?dnt=1', 'Vimeo video player'),
+                . sprintf(self::VIDEO, 'https://cdn.example.com/clip.mp4', 'Embedded video'),
+        ];
+        yield 'direct video invalid src dropped' => [
+            'input'    => '<div data-video-provider="video" data-video-src="javascript:alert(1)//x.mp4"></div>',
+            'expected' => '',
+        ];
+        yield 'direct video missing src dropped' => [
+            'input'    => '<div data-video-provider="video"></div>',
+            'expected' => '',
         ];
         yield 'unknown provider dropped' => [
             'input'    => '<p>Before</p><div data-video-provider="evil" data-video-id="xxxx"></div><p>After</p>',
@@ -190,9 +219,9 @@ class VideoEmbedRendererTest extends GLPITestCase
             'input' => '<p>Before</p>'
                 . '<div data-video-provider="youtube" data-video-id="abc12345678">'
                 . '<p>Trailing paragraph</p>'
-                . '<div data-video-provider="vimeo" data-video-id="76979871"></div>',
+                . '<div data-video-provider="youtube" data-video-id="bbb22222222"></div>',
             'expected' => '<p>Before</p><p>Trailing paragraph</p>'
-                . sprintf(self::IFRAME, 'https://player.vimeo.com/video/76979871?dnt=1', 'Vimeo video player'),
+                . sprintf(self::IFRAME, 'https://www.youtube-nocookie.com/embed/bbb22222222', 'YouTube video player'),
         ];
     }
 
@@ -210,11 +239,9 @@ class VideoEmbedRendererTest extends GLPITestCase
         ];
         yield 'handles all providers' => [
             'input' => '<div data-video-provider="youtube" data-video-id="aaa11111111"></div>'
-                . '<div data-video-provider="dailymotion" data-video-id="x7ufrcj"></div>'
-                . '<div data-video-provider="vimeo" data-video-id="76979871"></div>',
+                . '<div data-video-provider="video" data-video-src="https://cdn.example.com/clip.mp4"></div>',
             'expected' => '[YouTube: https://www.youtube.com/watch?v=aaa11111111]'
-                . '[Dailymotion: https://www.dailymotion.com/video/x7ufrcj]'
-                . '[Vimeo: https://vimeo.com/76979871]',
+                . '[Video: https://cdn.example.com/clip.mp4]',
         ];
         yield 'unknown provider dropped' => [
             'input'    => '<p>Before</p><div data-video-provider="evil" data-video-id="x"></div><p>After</p>',
@@ -244,11 +271,9 @@ class VideoEmbedRendererTest extends GLPITestCase
         ];
         yield 'handles all providers' => [
             'input' => '<div data-video-provider="youtube" data-video-id="aaa11111111"></div>'
-                . '<div data-video-provider="dailymotion" data-video-id="x7ufrcj"></div>'
-                . '<div data-video-provider="vimeo" data-video-id="76979871"></div>',
+                . '<div data-video-provider="video" data-video-src="https://cdn.example.com/clip.mp4"></div>',
             'expected' => '<a href="https://www.youtube.com/watch?v=aaa11111111" rel="noopener noreferrer">https://www.youtube.com/watch?v=aaa11111111</a>'
-                . '<a href="https://www.dailymotion.com/video/x7ufrcj" rel="noopener noreferrer">https://www.dailymotion.com/video/x7ufrcj</a>'
-                . '<a href="https://vimeo.com/76979871" rel="noopener noreferrer">https://vimeo.com/76979871</a>',
+                . '<a href="https://cdn.example.com/clip.mp4" rel="noopener noreferrer">https://cdn.example.com/clip.mp4</a>',
         ];
         // YouTube watch URLs use &t=NNs as the seek suffix; the & is escaped on output.
         yield 'start offset applied to href' => [
