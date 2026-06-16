@@ -125,6 +125,7 @@ if (isset($_GET['getvcard'])) {
     );
     $user->redirectToList();
 } elseif (isset($_POST["force_ldap_resynch"])) {
+    User::checkReAuthenticationOrRedirect();
     Session::checkRight('user', User::UPDATEAUTHENT);
     $user->check($_POST['id'], UPDATE);
 
@@ -132,6 +133,7 @@ if (isset($_GET['getvcard'])) {
     AuthLDAP::forceOneUserSynchronization($user);
     Html::back();
 } elseif (isset($_POST["clean_ldap_fields"])) {
+    User::checkReAuthenticationOrRedirect();
     Session::checkRight('user', User::UPDATEAUTHENT);
     $user->check($_POST['id'], UPDATE);
 
@@ -151,6 +153,7 @@ if (isset($_GET['getvcard'])) {
     );
     Html::redirect(User::getFormURLWithID($_POST["id"]));
 } elseif (isset($_POST["change_auth_method"])) {
+    User::checkReAuthenticationOrRedirect();
     Session::checkRight('user', User::UPDATEAUTHENT);
     $user->check($_POST['id'], UPDATE);
 
@@ -159,6 +162,7 @@ if (isset($_GET['getvcard'])) {
     }
     Html::back();
 } elseif (isset($_POST['language'])) {
+    $user->check($_POST['id'], UPDATE);
     $user->update(
         [
             'id'        => Session::getLoginUserID(),
@@ -171,6 +175,8 @@ if (isset($_GET['getvcard'])) {
 // start impersonation
 elseif (isset($_POST['impersonate']) && $_POST['impersonate']) {
     User::checkReAuthenticationOrRedirect();
+    Session::checkRight('user', User::IMPERSONATE);
+
     if (!Session::startImpersonating($_POST['id'])) {
         Session::addMessageAfterRedirect(__s('Unable to impersonate user'), false, ERROR);
         Html::back();
@@ -189,16 +195,22 @@ elseif (isset($_POST['impersonate']) && !$_POST['impersonate']) {
 
     Html::redirect(User::getFormURLWithID($impersonated_user_id));
 } elseif (isset($_POST['disable_2fa'])) {
+    User::checkReAuthenticationOrRedirect();
     Session::checkRight('user', User::UPDATEAUTHENT);
+
     $user->check($_POST['id'], UPDATE);
     (new TOTPManager())->disable2FAForUser($_POST['id']);
     Html::back();
 } else {
     if (isset($_GET["ext_auth"])) {
+        User::checkReAuthenticationOrRedirect();
+        Session::checkRight('user', User::READAUTHENT);
+
         Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
         User::showAddExtAuthForm();
         Html::footer();
     } elseif (isset($_POST['add_ext_auth_ldap'])) {
+        User::checkReAuthenticationOrRedirect();
         Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
         if (isset($_POST['login']) && !empty($_POST['login'])) {
@@ -207,6 +219,7 @@ elseif (isset($_POST['impersonate']) && !$_POST['impersonate']) {
         Html::back();
     } elseif (isset($_POST['add_ext_auth_simple'])) {
         if (isset($_POST['login']) && !empty($_POST['login'])) {
+            User::checkReAuthenticationOrRedirect();
             Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
             $input = ['name'     => $_POST['login'],
                 '_extauth' => 1,
