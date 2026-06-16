@@ -1033,7 +1033,6 @@ class Config extends CommonDBTM
                 if (Config::canUpdate()) {
                     $tabs[9]  = self::createTabEntry(__('Logs purge'), 0, $item::class, Event::getIcon());
                     $tabs[5]  = self::createTabEntry(__('System'));
-                    $tabs[10] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
                     $tabs[7]  = self::createTabEntry(__('Performance'), 0, $item::class, 'ti ti-dashboard');
                     $tabs[8]  = self::createTabEntry(__('API'), 0, $item::class, 'ti ti-api-app');
                     $tabs[11] = self::createTabEntry(Impact::getTypeName(), 0, $item::class, Impact::getIcon());
