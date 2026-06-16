@@ -163,17 +163,17 @@ test('Keyboard navigation in entity selector', async ({ page, profile }) => {
     const entity_04 = page.getByRole('listitem').filter({ hasText: 'E2E worker entity 04' });
     const entity_05 = page.getByRole('listitem').filter({ hasText: 'E2E worker entity 05' });
 
-    await page.getByRole('listitem').filter({ hasText: 'Root entity' }).first().focus();
-
-    await page.keyboard.press('ArrowDown');
-    await expect(entity_04).toBeFocused();
+    await page.getByRole('listitem').filter({ hasText: 'E2E worker entity 04' }).first().focus();
 
     await page.keyboard.press('ArrowDown');
     await expect(entity_05).toBeFocused();
 
+    await page.keyboard.press('ArrowUp');
+    await expect(entity_04).toBeFocused();
+
     await page.keyboard.press('Enter');
 
     await expect(glpi_page.active_entity).toHaveText(
-        'E2E worker entity 05'
+        'E2E worker entity 04'
     );
 });
