@@ -32,6 +32,8 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set rand = random() %}
+
 <div class="asset">
     {{ include('components/form/header.html.twig') }}
 
@@ -55,7 +57,8 @@
                                 __('Provider'),
                                 {
                                     display_emptychoice: false,
-                                    required: true
+                                    required: true,
+                                    rand: rand,
                                 }
                             ) }}
 
@@ -79,14 +82,19 @@
                                 }
                             ) }}
 
-                            {{ fields.textField(
-                                'tenant_id',
-                                item.fields['tenant_id'],
-                                __('Tenant ID'),
-                                {
-                                    helper: __('Required for Microsoft Azure (directory/tenant ID)'),
-                                }
-                            ) }}
+                            <div id="tenant_id_container_{{ rand }}">
+                                {% if item.isNewItem() or item.fields['provider'] == constant('OAuthApplication::AZURE') %}
+                                    {{ fields.textField(
+                                        'tenant_id',
+                                        item.fields['tenant_id'],
+                                        __('Tenant ID'),
+                                        {
+                                            helper: __('Required for Microsoft Azure (directory/tenant ID)'),
+                                            required: true,
+                                        }
+                                    ) }}
+                                {% endif %}
+                            </div>
 
                             {{ fields.textareaField(
                                 'comment',
@@ -104,7 +112,12 @@
     {{ include('components/form/buttons.html.twig') }}
 </div>
 
-<script>
-    import("/js/modules/Form/OAuthApplication.js")
-        .then((m) => new m.OAuthApplicationController('{{ constant('OAuthApplication::AZURE') }}'));
-</script>
+{% do call('Ajax::updateItemOnSelectEvent', [
+    'dropdown_provider' ~ rand,
+    'tenant_id_container_' ~ rand,
+    config('root_doc') ~ '/ajax/oauthapplication_tenant_field.php',
+    {
+        'provider': '__VALUE__',
+        'item_id': item.fields['id'] ?? 0,
+    }
+]) %}

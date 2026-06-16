@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -30,34 +32,33 @@
  * ---------------------------------------------------------------------
  */
 
-export class OAuthApplicationController
-{
-    #azure_provider_value;
-    #provider_select;
-    #tenant_id_field;
+use Glpi\Application\View\TemplateRenderer;
 
-    constructor(azure_provider_value) {
-        this.#azure_provider_value = azure_provider_value;
-        this.#provider_select      = document.querySelector('select[name="provider"]');
-        this.#tenant_id_field      = document.querySelector('[data-testid="form-field-tenant_id"]');
+header("Content-Type: text/html; charset=UTF-8");
+Html::header_nocache();
 
-        this.#provider_select.addEventListener('change', () => this.#syncTenantIdRequired());
-        this.#syncTenantIdRequired();
-    }
+Session::checkRight('config', UPDATE);
 
-    #syncTenantIdRequired() {
-        const is_azure = this.#provider_select.value === this.#azure_provider_value;
-        const input    = this.#tenant_id_field.querySelector('input');
-        const label    = this.#tenant_id_field.querySelector('label');
+$provider = $_REQUEST['provider'] ?? '';
+$item_id  = (int) ($_REQUEST['item_id'] ?? 0);
 
-        input.required = is_azure;
-
-        label.querySelector('span.required')?.remove();
-        if (is_azure) {
-            const span = document.createElement('span');
-            span.className = 'required';
-            span.textContent = '*';
-            label.append(span);
-        }
-    }
+if ($provider !== OAuthApplication::AZURE) {
+    return;
 }
+
+$item = new OAuthApplication();
+$tenant_id = ($item_id > 0 && $item->getFromDB($item_id)) ? ($item->fields['tenant_id'] ?? '') : '';
+
+// language=twig
+echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+    {% import 'components/form/fields_macros.html.twig' as fields %}
+    {{ fields.textField(
+        'tenant_id',
+        tenant_id,
+        __('Tenant ID'),
+        {
+            helper: __('Required for Microsoft Azure (directory/tenant ID)'),
+            required: true,
+        }
+    ) }}
+TWIG, ['tenant_id' => $tenant_id]);

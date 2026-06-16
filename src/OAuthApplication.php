@@ -211,6 +211,10 @@ final class OAuthApplication extends CommonDBTM
             return false;
         }
 
+        if (($input['provider'] ?? null) === self::GOOGLE && !empty($input['tenant_id'])) {
+            unset($input['tenant_id']);
+        }
+
         $input['client_secret'] = (new GLPIKey())->encrypt($input['client_secret']);
 
         return $input;
@@ -229,6 +233,10 @@ final class OAuthApplication extends CommonDBTM
 
         if (!$this->checkRequiredFields($full)) {
             return false;
+        }
+
+        if (($input['provider'] ?? null) === self::GOOGLE && !empty($input['tenant_id'])) {
+            unset($input['tenant_id']);
         }
 
         return $input;
