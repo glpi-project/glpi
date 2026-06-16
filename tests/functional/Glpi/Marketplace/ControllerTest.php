@@ -44,6 +44,8 @@ class ControllerTest extends GLPITestCase
         $controller = new Controller('testplugin');
 
         $this->callPrivateMethod($controller, 'clearCache');
+        restore_error_handler();
+        restore_exception_handler();
 
         $this->hasSessionMessages(INFO, ['Cache cleared successfully.']);
     }
