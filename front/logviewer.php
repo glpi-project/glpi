@@ -41,8 +41,6 @@ use Glpi\System\Log\LogViewer;
 
 global $CFG_GLPI;
 
-Session::checkRight(LogViewer::$rightname, READ);
-
 $filepath = $_REQUEST['filepath'] ?? null;
 
 // no file to view specified -> redirect to list of system logs
@@ -54,6 +52,8 @@ $logparser = new LogParser();
 if ($logparser->getFullPath($filepath) === null) {
     throw new NotFoundHttpException('Not found');
 }
+
+LogParser::checkReAuthenticationOrRedirect();
 
 // download log file
 if (($_GET['action'] ?? '') === 'download_log_file') {

@@ -98,6 +98,7 @@ if (isset($_POST["add"])) {
     );
     Html::redirect(User::getFormURLWithID($_POST["id"]));
 } elseif (isset($_GET['_in_modal'])) {
+    $group->check($_GET["id"], READ);
     Html::popHeader(Group::getTypeName(Session::getPluralNumber()), in_modal: true);
     $group->showForm($_GET["id"]);
     Html::popFooter();
