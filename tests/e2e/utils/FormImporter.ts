@@ -46,7 +46,7 @@ export class FormImporter
         this.request = request;
     }
 
-    public async importForm(filename: string): Promise<ImportedFormInfo>
+    public async importForm(filename: string, entity_id: number|null = null): Promise<ImportedFormInfo>
     {
         const file_path = path.join(__dirname, `../../fixtures/forms/${filename}`);
 
@@ -58,7 +58,7 @@ export class FormImporter
                 json: readFileSync(file_path).toString(),
                 'replacements[0][itemtype]'      : "Entity",
                 'replacements[0][original_name]' : "Root entity",
-                'replacements[0][replacement_id]': getWorkerEntityId(),
+                'replacements[0][replacement_id]': entity_id ?? getWorkerEntityId(),
             },
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',

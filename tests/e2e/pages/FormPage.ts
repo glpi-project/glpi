@@ -763,13 +763,13 @@ export class FormPage extends GlpiPage
     public async doEnableMultipleDropdownMode(
         question: Locator
     ): Promise<void> {
-        await question.getByRole('checkbox', { name: 'Allow multiple options' }).check();
+        await question.getByRole('checkbox', { name: /Allow multiple (options|items)/ }).check();
     }
 
     public async doDisableMultipleDropdownMode(
         question: Locator
     ): Promise<void> {
-        await question.getByRole('checkbox', { name: 'Allow multiple options' }).uncheck();
+        await question.getByRole('checkbox', { name: /Allow multiple (options|items)/ }).uncheck();
     }
 
     public async doFillVisibilityCondition(
