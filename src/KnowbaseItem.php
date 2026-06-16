@@ -2368,14 +2368,6 @@ TWIG, $twig_params);
         return $this->getLinkURL();
     }
 
-    /**
-     * Normalize HTML for display in constrained contexts (e.g. compare revision kb).
-     * *
-     * Removes explicit width attributes and inline width
-     *
-     * @param string $html HTML string to normalize.
-     * @return string Normalized HTML string.
-     */
     public static function normalizeKbRevisionDiffHtml(string $html): string
     {
         if ($html === '') {
@@ -2396,7 +2388,7 @@ TWIG, $twig_params);
                 /** @var DOMElement $node */
                 $node->removeAttribute('width');
                 $style = $node->getAttribute('style');
-                $style = preg_replace('/(?<![a-zA-Z-])(?:min-)?width\s*:[^;]+;?\s*/i', '', $style);
+                $style = preg_replace('/(?<![a-zA-Z-])(?:(?:min|max)-)?width\s*:[^;]+;?\s*/i', '', $style);
                 if ($node->tagName === 'table') {
                     $style = rtrim($style, '; ') . '; max-width: 100%; box-sizing: border-box;';
                 }
@@ -2408,6 +2400,7 @@ TWIG, $twig_params);
         if ($imgs !== false) {
             foreach ($imgs as $img) {
                 /** @var DOMElement $img */
+                $img->removeAttribute('width');
                 $style = $img->getAttribute('style');
                 $style = preg_replace('/(?<![a-zA-Z-])(?:(?:min|max)-)?width\s*:[^;]+;?\s*/i', '', $style);
                 $style = rtrim($style, '; ') . '; max-width: 100%; height: auto;';
