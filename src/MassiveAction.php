@@ -1072,7 +1072,7 @@ class MassiveAction
                         // display subform if auth is granted or a reauth is needed (means action will be possible after reauthenticated)
                         // Notice that no redirection can be done here (file called using ajax)
                         $reauth_needed = null;
-                        $allowed = $so_item->canGlobal(UPDATE, $reauth_needed); // @todo handle action delete/purge/etc - use canMassiveAction() ?
+                        $allowed = $so_item->canGlobal(UPDATE, $reauth_needed);
                         if (!$allowed && !$reauth_needed) {
                             echo 'Missing right';
                             throw new RuntimeException('Missing authorization');
