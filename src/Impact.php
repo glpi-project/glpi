@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssignableItemInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
@@ -926,7 +927,7 @@ HTML;
         }
 
         // Return empty result if the user doesn't have READ rights
-        if (!Session::haveRight($itemtype::$rightname, READ)) {
+        if (!Session::haveRightsOr($itemtype::$rightname, [READ, READ_ASSIGNED, READ_OWNED])) {
             return [
                 "items" => [],
                 "total" => 0,
@@ -960,6 +961,11 @@ HTML;
                 $base_request,
                 $itemtype::getVisibilityCriteria()
             );
+        }
+
+        // Add assignable criteria if the item is assignable
+        if (is_subclass_of($itemtype, AssignableItemInterface::class, true)) {
+            $base_request['WHERE'][] = $itemtype::getAssignableVisiblityCriteria();
         }
 
         $item = new $itemtype();
@@ -1047,7 +1053,7 @@ HTML;
         foreach ($itemtypes as $itemtype) {
             /** @var class-string $itemtype */
             // Do not display this itemtype if the user doesn't have READ rights
-            if (!Session::haveRight($itemtype::$rightname, READ)) {
+            if (!Session::haveRightsOr($itemtype::$rightname, [READ, READ_ASSIGNED, READ_OWNED])) {
                 continue;
             }
 
