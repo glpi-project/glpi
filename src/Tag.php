@@ -92,20 +92,20 @@ class Tag extends CommonDropdown
     {
         global $CFG_GLPI;
 
-        if (!isset($input['itemtypes'])) {
+        if (!isset($input['_itemtypes'])) {
             return $input;
         }
 
-        if (!is_array($input['itemtypes'])) {
-            $input['itemtypes'] = [];
+        if (!is_array($input['_itemtypes'])) {
+            $input['_itemtypes'] = [];
         }
 
-        $input['itemtypes'] = array_unique($input['itemtypes']);
+        $input['_itemtypes'] = array_unique($input['_itemtypes']);
 
         // Remove itemtypes which are not taggable
-        foreach ($input['itemtypes'] as $key => $itemtype) {
+        foreach ($input['_itemtypes'] as $key => $itemtype) {
             if (!in_array($itemtype, $CFG_GLPI['taggable_types'])) {
-                unset($input['itemtypes'][$key]);
+                unset($input['_itemtypes'][$key]);
             }
         }
 
@@ -258,12 +258,12 @@ class Tag extends CommonDropdown
     {
         parent::post_addItem();
 
-        if (!isset($this->input['itemtypes'])) {
+        if (!isset($this->input['_itemtypes'])) {
             return;
         }
 
         $tag_itemtype = new Tag_Itemtype();
-        foreach ($this->input['itemtypes'] as $itemtype) {
+        foreach ($this->input['_itemtypes'] as $itemtype) {
             $tag_itemtype->add([
                 'tags_id' => $this->getID(),
                 'itemtype' => $itemtype,
@@ -275,21 +275,21 @@ class Tag extends CommonDropdown
     {
         parent::post_updateItem($history);
 
-        if (!isset($this->input['itemtypes'])) {
+        if (!isset($this->input['_itemtypes'])) {
             return;
         }
 
         $old_itemtypes = $this->getItemtypes();
         $tag_itemtype = new Tag_Itemtype();
         foreach ($old_itemtypes as $itemtype) {
-            if (!in_array($itemtype, $this->input['itemtypes'], true)) {
+            if (!in_array($itemtype, $this->input['_itemtypes'], true)) {
                 $tag_itemtype->deleteByCriteria([
                     'tags_id' => $this->getID(),
                     'itemtype' => $itemtype,
                 ]);
             }
         }
-        foreach ($this->input['itemtypes'] as $itemtype) {
+        foreach ($this->input['_itemtypes'] as $itemtype) {
             if (!in_array($itemtype, $old_itemtypes, true)) {
                 $tag_itemtype->add([
                     'tags_id' => $this->getID(),

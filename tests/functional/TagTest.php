@@ -35,6 +35,8 @@
 namespace tests\units;
 
 use Computer;
+use Glpi\Form\Category;
+use Glpi\SocketModel;
 use Glpi\Tests\DbTestCase;
 use GlpiPlugin\Tester\Computer as TesterComputer;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -47,6 +49,111 @@ use Tag_Itemtype;
 
 class TagTest extends DbTestCase
 {
+    /**
+     * Test that taggable items are correctly identified
+     */
+    public function testTaggableItem(): void
+    {
+        global $CFG_GLPI;
+
+        // Classes that are not taggable
+        $not_taggable_classes = [
+            \CommonImplicitTreeDropdown::class,
+            \Log::class,
+            \RuleMatchedLog::class,
+            \NotificationMailingSetting::class,
+            \KnowbaseItem_Revision::class,
+            \DisplayPreference::class,
+            \OlaLevel_Ticket::class,
+            \ImpactCompound::class,
+            \ImpactContext::class,
+            \NotificationEvent::class,
+            Rule::class,
+            \PendingReasonCron::class,
+            \CleanSoftwareCron::class,
+            \SavedSearch::class,
+            \AuthLdapReplicate::class,
+            \AuthLdapReplicate::class,
+            \KnowbaseItem_Comment::class,
+            \ValidatorSubstitute::class,
+            \CommonITILRecurrentCron::class,
+            \CommonITILValidationCron::class,
+            \FieldUnicity::class,
+            \AgentType::class,
+            \ObjectLock::class,
+            \OAuthClient::class,
+            \NotImportedEmail::class,
+            \RuleCollection::class,
+            \ImpactItem::class,
+            \PurgeLogs::class,
+            \SlaLevel_Ticket::class,
+            \Alert::class,
+            \CronTask::class,
+            \NotificationSettingConfig::class,
+            \RefusedEquipment::class,
+            \Plugin::class,
+            \Transfer::class,
+            \SNMPCredential::class,
+            \Config::class,
+            \QueuedNotification::class,
+            \Lockedfield::class,
+            \APIClient::class,
+            Tag::class,
+            \DefaultFilter::class,
+        ];
+
+        // Classes that are taggable and are subclasses of CommonDBConnexity
+        $taggable_connexity = [
+            \Database::class,
+            \NetworkName::class,
+            \DomainRecord::class,
+            \Item_DeviceSimcard::class,
+        ];
+
+        // Classes that are taggable but not discoverable by getClasses()
+        $undiscoverable_taggable = [
+            Category::class,
+            SocketModel::class,
+        ];
+
+        // Get all classes that are subclasses of CommonDBTM
+        $classes = $this->getClasses();
+        $classes = array_merge($classes, $undiscoverable_taggable);
+        $taggable_classes = [];
+
+        // Check each class to see if it is taggable
+        foreach ($classes as $class) {
+            if (
+                is_subclass_of($class, \CommonDBTM::class)
+                && (!is_subclass_of($class, \CommonDBConnexity::class) || in_array($class, $taggable_connexity))
+                && !is_subclass_of($class, \CommonITILSatisfaction::class)
+                && !is_subclass_of($class, Rule::class)
+                && !is_subclass_of($class, \RuleCollection::class)
+                && !is_subclass_of($class, \NotificationSetting::class)
+                && !is_subclass_of($class, \CommonITILTask::class)
+                && !in_array($class, $not_taggable_classes)
+                && !(new \ReflectionClass($class))->isAbstract()
+            ) {
+                $this->assertContains($class, $CFG_GLPI['taggable_types'], "Class $class should be taggable");
+                $taggable_classes[] = $class;
+            }
+        }
+
+        // Filter out plugin and custom asset classes from the taggable_types for comparison
+        $CFG_GLPI['taggable_types'] = array_filter($CFG_GLPI['taggable_types'], function ($class) {
+            return !str_starts_with($class, 'GlpiPlugin') && !str_starts_with($class, 'Glpi\\CustomAsset');
+        });
+
+        // Check that all classes in taggable_types are covered by the test loop
+        $this->assertCount(
+            count($CFG_GLPI['taggable_types']),
+            $taggable_classes,
+            "Some classes in taggable_types are not covered by the test loop.\n"
+            . "Add them to \$not_taggable_classes or \$undiscoverable_taggable:\n- "
+            . implode("\n- ", array_diff($CFG_GLPI['taggable_types'], $taggable_classes))
+        );
+    }
+
     public static function providerTestRights(): iterable
     {
         yield 'no rights' => [
@@ -128,10 +235,10 @@ class TagTest extends DbTestCase
      *
      * @return Tag Created tag
      */
-    private function createTag(array $input, array $skip_fields = ['itemtypes']): Tag
+    private function createTag(array $input, array $skip_fields = []): Tag
     {
         $tag = $this->createItem(Tag::class, $input, $skip_fields);
-        $this->verifItemtypes($tag, $input['itemtypes'] ?? []);
+        $this->verifItemtypes($tag, $input['_itemtypes'] ?? []);
 
         return $tag;
     }
@@ -145,10 +252,10 @@ class TagTest extends DbTestCase
       *
       * @return Tag Updated tag
       */
-    private function updateTag(Tag $tag, array $input, array $skip_fields = ['itemtypes']): Tag
+    private function updateTag(Tag $tag, array $input, array $skip_fields = []): Tag
     {
         $tag = $this->updateItem(Tag::class, $tag->getID(), $input, $skip_fields);
-        $this->verifItemtypes($tag, $input['itemtypes'] ?? []);
+        $this->verifItemtypes($tag, $input['_itemtypes'] ?? []);
         return $tag;
     }
 
@@ -199,7 +306,7 @@ class TagTest extends DbTestCase
         // Test add
         $tag = $this->createTag([
             'name' => 'Test Tag',
-            'itemtypes' => $input_itemtypes,
+            '_itemtypes' => $input_itemtypes,
         ]);
         $this->assertSame($expected_itemtypes, $tag->getItemtypes());
         $this->deleteItem(Tag::class, $tag->getID());
@@ -207,12 +314,12 @@ class TagTest extends DbTestCase
         // Test update
         $tag = $this->createTag([
             'name' => 'Test Tag',
-            'itemtypes' => [Printer::class],
+            '_itemtypes' => [Printer::class],
         ]);
 
         $this->updateTag($tag, [
             'name' => 'Test Tag',
-            'itemtypes' => $input_itemtypes,
+            '_itemtypes' => $input_itemtypes,
         ]);
         $this->assertSame($expected_itemtypes, $tag->getItemtypes());
         $this->deleteItem(Tag::class, $tag->getID());
@@ -294,7 +401,7 @@ class TagTest extends DbTestCase
     {
         $tag = $this->createTag([
             'name'      => 'Test Plugin Uninstall Tag Associations',
-            'itemtypes' => [Computer::class, TesterComputer::class],
+            '_itemtypes' => [Computer::class, TesterComputer::class],
         ]);
 
         // Insert a legacy-style plugin class directly (bypasses taggable_types validation)
@@ -326,7 +433,7 @@ class TagTest extends DbTestCase
     {
         $tag = $this->createTag([
             'name' => 'Test Tag',
-            'itemtypes' => [
+            '_itemtypes' => [
                 Printer::class,
                 Computer::class,
                 TesterComputer::class,

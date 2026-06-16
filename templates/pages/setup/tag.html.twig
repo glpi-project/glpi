@@ -37,7 +37,7 @@
 {% set preview_id = 'tag_preview_' ~ random() %}
 
 {% block more_fields %}
-    {{ fields.dropdownItemTypes('itemtypes', null, _n('Associated Itemtype', 'Associated Itemtypes', get_plural_number()), {
+    {{ fields.dropdownItemTypes('_itemtypes', null, _n('Associated Itemtype', 'Associated Itemtypes', get_plural_number()), {
         types: config('taggable_types'),
         multiple: true,
         values: item.getItemtypes,
