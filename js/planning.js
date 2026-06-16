@@ -89,6 +89,15 @@ var GLPIPlanning  = {
         var loadedLocales = Object.keys(FullCalendarLocales);
         const list_full_year_range = options.full_view ? 5 : 1; // +/- number of years to display in list full view
 
+        let localeToLoad = document.documentElement.lang || 'en';
+        // document language -> document lang without region -> english
+        if (!loadedLocales.includes(localeToLoad)) {
+            localeToLoad = localeToLoad.split('-')[0];
+        }
+        if (!loadedLocales.includes(localeToLoad)) {
+            localeToLoad = 'en';
+        }
+
         this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {
             plugins:     options.plugins,
             height:      options.height,
@@ -108,7 +117,7 @@ var GLPIPlanning  = {
             listDayAltFormat: false,
             header: options.header,
             hiddenDays: hidden_days,
-            locale: loadedLocales.length === 1 ? loadedLocales[0] : undefined,
+            locale: localeToLoad,
             //resources: options.resources,
             resources: function(fetchInfo, successCallback) {
             // Filter resources by whether their id is in visible_res.
