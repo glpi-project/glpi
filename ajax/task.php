@@ -57,10 +57,7 @@ if ($tasktemplates_id === null) {
 }
 
 // Mandatory parameter: items_id
-$parents_id = $_POST['items_id'] ?? 0;
-if (!$parents_id) {
-    throw new BadRequestHttpException("Missing or invalid parameter: 'items_id'");
-}
+$parents_id = (int)($_POST['items_id'] ?? 0);
 
 // Mandatory parameter: itemtype
 $parents_itemtype = $_POST['itemtype'] ?? '';
@@ -74,14 +71,13 @@ if (!$template->getFromDB($tasktemplates_id)) {
     throw new BadRequestHttpException("Unable to load template: $tasktemplates_id");
 }
 
-// Load parent item
+// Load parent item and render template content with its context.
+// When items_id=0 (e.g. massive action context where no single item is known),
+// the raw template content is kept as-is.
 $parent = new $parents_itemtype();
-if (!$parent->getFromDB($parents_id)) {
-    throw new BadRequestHttpException("Unable to load parent item: $parents_itemtype $parents_id");
+if ($parents_id > 0 && $parent->getFromDB($parents_id)) {
+    $template->fields['content'] = $template->getRenderedContent($parent);
 }
-
-// Render template content using twig
-$template->fields['content'] = $template->getRenderedContent($parent);
 
 //load taskcategorie name (use to create OPTION dom)
 //need when template is used and when GLPI preselected type if defined

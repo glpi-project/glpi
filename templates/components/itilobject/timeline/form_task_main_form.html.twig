@@ -397,4 +397,60 @@
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
         </form>
     {% endif %}
+
+    <script type="text/javascript">
+        function itiltasktemplate_update{{ rand }}(value) {
+            $.ajax({
+                url: `${CFG_GLPI.root_doc}/ajax/task.php`,
+                type: 'POST',
+                data: {
+                    tasktemplates_id: value,
+                    items_id: '{{ item.fields['id']|e('js') }}',
+                    itemtype: '{{ item.getType()|e('js') }}'
+                }
+            }).done(function (data) {
+                if (data.content && data.content.trim() !== '') {
+                    setRichTextEditorContent("content_{{ rand }}", data.content);
+                }
+
+                if (data.taskcategories_id !== undefined) {
+                    const taskcategories_id = isNaN(parseInt(data.taskcategories_id))
+                        ? 0
+                        : parseInt(data.taskcategories_id);
+                    var newOption = new Option(data.taskcategories_name, taskcategories_id, true, true);
+                    $("#dropdown_taskcategories_id{{ rand }}").append(newOption).trigger('change');
+                }
+
+                if (data.is_private !== undefined) {
+                    $("#is_private_{{ rand }}")
+                        .prop("checked", data.is_private == "0" ? false : true);
+                }
+
+                if (data.state !== undefined) {
+                    $("#dropdown_state{{ rand }}").trigger('setValue', data.state);
+                }
+
+                if (data.actiontime !== undefined) {
+                    $("#dropdown_actiontime{{ rand }}").trigger('setValue', data.actiontime);
+                }
+
+                if (data.users_id_tech !== undefined) {
+                    $("#dropdown_users_id_tech{{ rand }}").trigger('setValue', data.users_id_tech);
+                }
+
+                if (data.groups_id_tech !== undefined) {
+                    $("#dropdown_groups_id_tech{{ rand }}").trigger('setValue', data.groups_id_tech);
+                }
+
+                if (data.pendingreasons_id > 0) {
+                    $("#enable-pending-reasons-{{ rand }}").prop("checked", true);
+                    $("#pending-reasons-setup-{{ rand }}").collapse('show');
+                    var newOption = new Option(data.pendingreasons_name, data.pendingreasons_id, true, true);
+                    $("#dropdown_pendingreasons_id{{ rand }}")
+                        .append(newOption)
+                        .trigger('change');
+                }
+            });
+        }
+    </script>
 </div>
