@@ -56,7 +56,6 @@ $user      = new User();
 $groupuser = new Group_User();
 
 if (empty($_GET["id"]) && isset($_GET["name"])) {
-    Session::checkRight(User::$rightname, READ);
     if ($user->getFromDBbyName($_GET["name"])) {
         $user->check($user->fields['id'], READ);
         Html::redirect($user->getFormURLWithID($user->fields['id']));
