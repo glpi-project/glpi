@@ -69,7 +69,7 @@ export class GlpiPage
         this.page = page;
 
         // Define locators
-        this.user_menu             = this.getLink('User menu');
+        this.user_menu             = this.getButton('User menu');
         this.logout_link           = this.getLink('Logout');
         this.change_profile_button = this.getButton('Change profile');
         this.history_rows          = page.getByRole('row');

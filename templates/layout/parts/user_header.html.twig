@@ -36,8 +36,9 @@
    {% if user is not null %}
       <div class="navbar-nav flex-row order-md-last user-menu">
          <div class="nav-item dropdown">
-            <a href="#" class="nav-link d-flex lh-1 text-reset p-1 dropdown-toggle user-menu-dropdown-toggle {% if is_debug_active %}bg-red-lt{% endif %}"
+            <button type="button" class="nav-link d-flex lh-1 text-reset p-1 border-0 dropdown-toggle user-menu-dropdown-toggle {% if is_debug_active %}bg-red-lt{% else %}bg-transparent{% endif %}"
                data-bs-toggle="dropdown" data-bs-auto-close="outside"
+               aria-haspopup="true" aria-expanded="false"
                aria-label="{{ __('User menu') }}">
                {% if not anonymous %}
                   <div class="pe-2 d-none d-xl-block">
@@ -56,7 +57,7 @@
                      'avatar_size': '',
                   }) }}
                {% endif %}
-            </a>
+            </button>
             <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight" data-testid="user-menu-dropdown">
                <h6 class="dropdown-header">{{ get_item_name(user) }}</h6>
 
