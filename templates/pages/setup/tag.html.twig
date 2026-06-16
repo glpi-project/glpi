@@ -42,12 +42,8 @@
         multiple: true,
         values: item.getItemtypes,
     }) }}
-    {{ fields.colorField('bg_color', item.isNewItem ? generate_bg_color : item.getBackgroundColor(), __('Background Color'), {
-        auto_value: true,
-    }) }}
-    {{ fields.colorField('color', item.isNewItem ? item.generateTextColor(generate_bg_color) : item.getTextColor(), __('Color'), {
-        auto_value: true,
-    }) }}
+    {{ fields.colorField('bg_color', item.isNewItem ? generate_bg_color : item.getBackgroundColor(), __('Background Color')) }}
+    {{ fields.colorField('color', item.isNewItem ? item.generateTextColor(generate_bg_color) : item.getTextColor(), __('Color')) }}
 
     {{ fields.smallTitle(__('Preview')) }}
 
