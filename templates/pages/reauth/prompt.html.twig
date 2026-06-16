@@ -32,6 +32,12 @@
 
 {% extends 'layout/page_card_notlogged.html.twig' %}
 
+{% block logo_block %}
+   <a href="{{ index_path() }}" title="{{ __('Home') }}">
+      <span class="glpi-logo mb-4" title="GLPI"></span>
+   </a>
+{% endblock %}
+
 {% block header_block %}
    <span class="card-title">{{ __('Re-authentication required') }}</span>
 {% endblock %}
