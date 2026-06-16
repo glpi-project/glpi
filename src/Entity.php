@@ -1551,6 +1551,7 @@ class Entity extends CommonTreeDropdown implements
             'massiveaction'      => false,
             'nosearch'           => true,
             'datatype'           => 'specific',
+            'additionalfields'   => ['id'],
         ];
 
         $tab[] = [
@@ -1588,6 +1589,7 @@ class Entity extends CommonTreeDropdown implements
             'massiveaction'      => false,
             'nosearch'           => true,
             'datatype'           => 'specific',
+            'additionalfields'   => ['id'],
         ];
 
         $tab[] = [
@@ -2673,23 +2675,24 @@ class Entity extends CommonTreeDropdown implements
 
             case 'inquest_config':
             case 'inquest_config_change':
-                if ($values[$field] === self::CONFIG_PARENT) {
+                if ((int) $values[$field] === self::CONFIG_PARENT) {
                     return __s('Inheritance of the parent entity');
                 }
                 $inherit = '';
+                $entity_id = (int) ($values['id'] ?? 0);
                 $inquest_rate = self::getUsedConfig(
                     $field,
-                    $options['entity']->fields['entities_id'],
+                    $entity_id,
                     str_replace('config', 'rate', $field)
                 );
                 $inherit .= '<br>';
-                if ($inquest_rate === 0) {
+                if ((int) $inquest_rate === 0) {
                     $inherit .= __s('Disabled');
                 } else {
                     $inherit .= htmlescape(CommonITILSatisfaction::getTypeInquestName($values[$field])) . '<br>';
                     $inqconf = self::getUsedConfig(
                         $field,
-                        $options['entity']->fields['entities_id'],
+                        $entity_id,
                         str_replace('config', 'delay', $field)
                     );
 
@@ -2698,13 +2701,17 @@ class Entity extends CommonTreeDropdown implements
                     //TRANS: %d is the percentage. %% to display %
                     $inherit .= sprintf(__s('%d%%'), $inquest_rate);
 
-                    if ($values[$field] === 2) {
-                        $inherit .= "<br>";
-                        $inherit .= htmlescape(self::getUsedConfig(
+                    if ((int) $values[$field] === 2) {
+                        $url = self::getUsedConfig(
                             $field,
-                            $options['entity']->fields['entities_id'],
-                            str_replace('config', 'URL', $field)
-                        ));
+                            $entity_id,
+                            str_replace('config', 'URL', $field),
+                            ''
+                        );
+                        if ($url !== '') {
+                            $inherit .= "<br>";
+                            $inherit .= '<a href="' . htmlescape($url) . '" target="_blank">' . htmlescape($url) . '</a>';
+                        }
                     }
                 }
                 return $inherit;
