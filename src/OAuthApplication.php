@@ -278,7 +278,9 @@ final class OAuthApplication extends CommonDBTM
         if (is_array($lkd_collectors) && count($lkd_collectors) > 0) {
             Session::addMessageAfterRedirect(__s('The app could not be deleted, it is linked with the following receiver(s): '), message_type: ERROR);
             foreach ($lkd_collectors as $collector) {
-                Session::addMessageAfterRedirect(htmlescape('- ' . $collector['plain_name']), message_type: ERROR);
+                $col = new MailCollector();
+                $col->getFromDB($collector['id']);
+                Session::addMessageAfterRedirect('- ' . $col->getLink(), message_type: ERROR);
             }
 
             return false;
