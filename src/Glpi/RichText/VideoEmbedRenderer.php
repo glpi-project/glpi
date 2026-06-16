@@ -35,6 +35,7 @@
 namespace Glpi\RichText;
 
 use function Safe\preg_match;
+use function Safe\preg_replace_callback;
 
 /**
  * Reconstructs sandboxed iframes (YouTube) and `<video>` elements (direct file
@@ -77,13 +78,12 @@ final class VideoEmbedRenderer
     private const DIRECT_VIDEO_URL_PATTERN = '#^https?://[^\s<>"]+\.(?:mp4|webm|ogg|ogv|mov)(?:[?\#][^\s<>"]*)?$#i';
 
     /**
-     * @param string   $provider Must be a key of {@see self::PROVIDER_URL_TEMPLATES}.
-     * @param string   $video_id Must match {@see self::VIDEO_ID_PATTERN}.
-     * @param int|null $start    Playback offset in seconds.
+     * @param string $provider Must be a key of {@see self::PROVIDER_URL_TEMPLATES}.
+     * @param string $video_id Must match {@see self::VIDEO_ID_PATTERN}.
      *
      * @return string Safe iframe HTML, or empty string on invalid input.
      */
-    public function render(string $provider, string $video_id, ?int $start = null): string
+    public function render(string $provider, string $video_id): string
     {
         if (!isset(self::PROVIDER_URL_TEMPLATES[$provider])) {
             return '';
@@ -93,11 +93,6 @@ final class VideoEmbedRenderer
         }
 
         $src = sprintf(self::PROVIDER_URL_TEMPLATES[$provider], rawurlencode($video_id));
-        if ($start !== null && $start > 0) {
-            $separator = str_contains($src, '?') ? '&' : '?';
-            $src .= $separator . 'start=' . $start;
-        }
-
         $title = sprintf(__('%s video player'), $this->getProviderDisplayName($provider));
 
         // `allow-same-origin` is required (else the opaque-origin frame can't read its own storage
@@ -106,8 +101,7 @@ final class VideoEmbedRenderer
         return sprintf(
             '<div class="video-embed-wrapper">'
             . '<iframe src="%s" title="%s" loading="lazy" allowfullscreen'
-            . ' sandbox="allow-scripts allow-same-origin allow-presentation"'
-            . ' frameborder="0"></iframe>'
+            . ' sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>'
             . '</div>',
             htmlescape($src),
             htmlescape($title)
@@ -145,9 +139,8 @@ final class VideoEmbedRenderer
     }
 
     /**
-     * Replace each placeholder by its iframe. Tampered placeholders
-     * (non-whitespace body — the atom node never produces children) and those
-     * with an unknown provider or malformed id are dropped.
+     * Replace each placeholder by its iframe / `<video>`. Placeholders with an
+     * unknown provider or malformed id/src are dropped.
      */
     public function renderAll(string $sanitized_html): string
     {
@@ -157,10 +150,7 @@ final class VideoEmbedRenderer
 
         return $this->replacePlaceholders(
             $sanitized_html,
-            function (string $provider, string $opening, string $body): string {
-                if (trim($body) !== '') {
-                    return '';
-                }
+            function (string $provider, string $opening): string {
                 if ($provider === self::DIRECT_VIDEO_PROVIDER) {
                     $src = $this->extractAttribute($opening, 'data-video-src');
                     return $src !== null ? $this->renderDirectVideo($src) : '';
@@ -169,10 +159,8 @@ final class VideoEmbedRenderer
                 if ($video_id === null) {
                     return '';
                 }
-                $start_raw = $this->extractAttribute($opening, 'data-video-start');
-                $start = ($start_raw !== null && ctype_digit($start_raw)) ? (int) $start_raw : null;
 
-                return $this->render($provider, $video_id, $start);
+                return $this->render($provider, $video_id);
             }
         );
     }
@@ -189,8 +177,8 @@ final class VideoEmbedRenderer
 
         return $this->replacePlaceholders(
             $html,
-            function (string $provider, string $opening, string $body): string {
-                $watch_url = $this->buildWatchUrlFromPlaceholder($provider, $opening, $body);
+            function (string $provider, string $opening): string {
+                $watch_url = $this->buildWatchUrlFromPlaceholder($provider, $opening);
                 if ($watch_url === null) {
                     return '';
                 }
@@ -219,8 +207,8 @@ final class VideoEmbedRenderer
 
         return $this->replacePlaceholders(
             $html,
-            function (string $provider, string $opening, string $body): string {
-                $watch_url = $this->buildWatchUrlFromPlaceholder($provider, $opening, $body);
+            function (string $provider, string $opening): string {
+                $watch_url = $this->buildWatchUrlFromPlaceholder($provider, $opening);
                 if ($watch_url === null) {
                     return '';
                 }
@@ -233,14 +221,11 @@ final class VideoEmbedRenderer
 
     /**
      * Validate a placeholder and build its canonical watch URL, or null if the
-     * placeholder is tampered (non-empty body, unknown provider, malformed id).
+     * provider is unknown or the id/src is malformed.
      * Shared by {@see self::renderAllAsText()} and {@see self::renderAllAsLink()}.
      */
-    private function buildWatchUrlFromPlaceholder(string $provider, string $opening, string $body): ?string
+    private function buildWatchUrlFromPlaceholder(string $provider, string $opening): ?string
     {
-        if (trim($body) !== '') {
-            return null;
-        }
         if ($provider === self::DIRECT_VIDEO_PROVIDER) {
             $src = $this->extractAttribute($opening, 'data-video-src');
             return ($src !== null && $this->isValidDirectVideoSrc($src)) ? $src : null;
@@ -252,118 +237,26 @@ final class VideoEmbedRenderer
         if ($video_id === null || preg_match(self::VIDEO_ID_PATTERN, $video_id) !== 1) {
             return null;
         }
-        $start_raw = $this->extractAttribute($opening, 'data-video-start');
-        $start = ($start_raw !== null && ctype_digit($start_raw)) ? (int) $start_raw : null;
 
-        $watch_url = sprintf(self::PROVIDER_WATCH_TEMPLATES[$provider], rawurlencode($video_id));
-        if ($start !== null && $start > 0) {
-            $watch_url .= $this->buildWatchStartSuffix($provider, $start);
-        }
-
-        return $watch_url;
+        return sprintf(self::PROVIDER_WATCH_TEMPLATES[$provider], rawurlencode($video_id));
     }
 
     /**
-     * Seek suffix to append to a provider's canonical watch URL.
-     * Each provider has its own convention for the timestamp parameter.
-     */
-    private function buildWatchStartSuffix(string $provider, int $start): string
-    {
-        return match ($provider) {
-            'youtube' => '&t=' . $start . 's',
-            default   => '',
-        };
-    }
-
-    /**
-     * Walk the HTML and replace each `<div data-video-provider=...>...</div>`
-     * block by whatever $render() returns. Nested `<div>` elements inside the
-     * body are balanced so the matching outer `</div>` is consumed too —
-     * preventing stray closing tags when a tampered placeholder contains a
-     * child div.
+     * Materialize each EMPTY `<div data-video-provider=...></div>` placeholder —
+     * the only form the editor's atom node produces — via $render(). Non-empty
+     * such divs are left as-is: the HTML-emitting callers ({@see self::renderAll()},
+     * {@see self::renderAllAsLink()}) pass already-sanitized input, and
+     * {@see self::renderAllAsText()} only emits plain text.
      *
-     * @param callable(string $provider, string $opening, string $body): string $render
+     * @param callable(string $provider, string $opening): string $render
      */
     private function replacePlaceholders(string $html, callable $render): string
     {
-        $result = '';
-        $offset = 0;
-        $length = strlen($html);
-
-        while ($offset < $length) {
-            if (
-                preg_match(
-                    '#<div\b[^>]*\bdata-video-provider="([^"]+)"[^>]*>#i',
-                    substr($html, $offset),
-                    $matches
-                ) !== 1
-                || !isset($matches[0], $matches[1])
-            ) {
-                break;
-            }
-            $opening = $matches[0];
-            $provider = $matches[1];
-            $opening_start = (int) strpos($html, $opening, $offset);
-            $opening_end = $opening_start + strlen($opening);
-
-            $close_start = $this->findMatchingDivClose($html, $opening_end);
-            if ($close_start === null) {
-                // Unbalanced placeholder: drop the opening tag (it carries
-                // the data-video-* attributes) and keep scanning. Falling
-                // through would leak `<div data-video-provider="...">` into
-                // the output via the trailing substr().
-                $result .= substr($html, $offset, $opening_start - $offset);
-                $offset = $opening_end;
-                continue;
-            }
-
-            $body = substr($html, $opening_end, $close_start - $opening_end);
-
-            $result .= substr($html, $offset, $opening_start - $offset);
-            $result .= $render($provider, $opening, $body);
-
-            $offset = $close_start + 6; // strlen('</div>')
-        }
-
-        return $result . substr($html, $offset);
-    }
-
-    /**
-     * Offset of the `</div>` that closes the `<div>` opened just before
-     * $offset, accounting for nested `<div>` children. Null if unbalanced.
-     */
-    private function findMatchingDivClose(string $html, int $offset): ?int
-    {
-        $depth = 1;
-        $cursor = $offset;
-        $length = strlen($html);
-
-        while ($cursor < $length) {
-            $next_open = stripos($html, '<div', $cursor);
-            $next_close = stripos($html, '</div>', $cursor);
-
-            if ($next_close === false) {
-                return null;
-            }
-
-            if ($next_open !== false && $next_open < $next_close) {
-                $tag_end = strpos($html, '>', $next_open);
-                if ($tag_end === false) {
-                    return null;
-                }
-                $depth++;
-                $cursor = $tag_end + 1;
-                continue;
-            }
-
-            $depth--;
-            if ($depth === 0) {
-                return $next_close;
-            }
-            $cursor = $next_close + 6;
-        }
-
-        return null;
+        return preg_replace_callback(
+            '#<div\b[^>]*\bdata-video-provider="([^"]+)"[^>]*>\s*</div>#i',
+            static fn(array $m): string => $render($m[1], $m[0]),
+            $html
+        );
     }
 
     /**

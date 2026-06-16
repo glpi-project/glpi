@@ -82,35 +82,8 @@ function isValidDirectVideoSrc(src) {
 }
 
 /**
- * Parse a "t=" / "start=" query parameter into seconds. Accepts plain seconds
- * ("90") and the YouTube-style "1h2m3s" format.
- *
  * @param {URL} url
- * @returns {number|null}
- */
-function parseStartParam(url) {
-    const raw = url.searchParams.get('t') || url.searchParams.get('start');
-    if (!raw) {
-        return null;
-    }
-    if (/^\d+$/.test(raw)) {
-        const n = parseInt(raw, 10);
-        return n > 0 ? n : null;
-    }
-    const matches = raw.match(/^(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?$/);
-    if (!matches) {
-        return null;
-    }
-    const h = parseInt(matches[1] || '0', 10);
-    const m = parseInt(matches[2] || '0', 10);
-    const s = parseInt(matches[3] || '0', 10);
-    const total = h * 3600 + m * 60 + s;
-    return total > 0 ? total : null;
-}
-
-/**
- * @param {URL} url
- * @returns {{provider: string, videoId: string, start: number|null}|null}
+ * @returns {{provider: string, videoId: string}|null}
  */
 function parseYouTubeUrl(url) {
     const host = url.hostname.replace(/^www\./, '');
@@ -118,7 +91,7 @@ function parseYouTubeUrl(url) {
     if (host === 'youtu.be') {
         const id = url.pathname.slice(1).split('/')[0];
         return VALID_ID_PATTERN.test(id)
-            ? { provider: 'youtube', videoId: id, start: parseStartParam(url) }
+            ? { provider: 'youtube', videoId: id }
             : null;
     }
 
@@ -129,13 +102,13 @@ function parseYouTubeUrl(url) {
     if (url.pathname === '/watch') {
         const id = url.searchParams.get('v');
         return id && VALID_ID_PATTERN.test(id)
-            ? { provider: 'youtube', videoId: id, start: parseStartParam(url) }
+            ? { provider: 'youtube', videoId: id }
             : null;
     }
 
     const pathMatch = url.pathname.match(/^\/(?:shorts|embed|live|v)\/([^/?]+)/);
     if (pathMatch && VALID_ID_PATTERN.test(pathMatch[1])) {
-        return { provider: 'youtube', videoId: pathMatch[1], start: parseStartParam(url) };
+        return { provider: 'youtube', videoId: pathMatch[1] };
     }
 
     return null;
@@ -145,20 +118,20 @@ function parseYouTubeUrl(url) {
  * Recognize a direct video file URL (http(s) + allowlisted extension).
  *
  * @param {URL} url
- * @returns {{provider: string, videoId: null, src: string, start: number|null}|null}
+ * @returns {{provider: string, videoId: null, src: string}|null}
  */
 function parseDirectVideoUrl(url) {
     if (!VIDEO_FILE_EXTENSION_PATTERN.test(url.pathname)) {
         return null;
     }
-    return { provider: DIRECT_VIDEO_PROVIDER, videoId: null, src: url.href, start: null };
+    return { provider: DIRECT_VIDEO_PROVIDER, videoId: null, src: url.href };
 }
 
 /**
  * Parse any supported video URL into normalized attrs, or null if unrecognized.
  *
  * @param {string} rawUrl
- * @returns {{provider: string, videoId: string|null, src?: string, start: number|null}|null}
+ * @returns {{provider: string, videoId: string|null, src?: string}|null}
  */
 function parseVideoUrl(rawUrl) {
     if (typeof rawUrl !== 'string' || rawUrl.length === 0) {
@@ -361,19 +334,14 @@ const EMBED_URL_TEMPLATES = {
 /**
  * @param {string} provider
  * @param {string} videoId
- * @param {number|null} start
  * @returns {string|null}
  */
-function buildEmbedSrc(provider, videoId, start) {
+function buildEmbedSrc(provider, videoId) {
     const template = EMBED_URL_TEMPLATES[provider];
     if (!template || !VALID_ID_PATTERN.test(videoId || '')) {
         return null;
     }
-    let src = template.replace('{id}', encodeURIComponent(videoId));
-    if (start && start > 0) {
-        src += `${src.includes('?') ? '&' : '?'}start=${Math.floor(start)}`;
-    }
-    return src;
+    return template.replace('{id}', encodeURIComponent(videoId));
 }
 
 /**
@@ -381,7 +349,7 @@ function buildEmbedSrc(provider, videoId, start) {
  * rendered HTML from the server's `|safe_html` filter.
  *
  * @param {string} src
- * @returns {{provider: string, videoId: string, start: number|null}|null}
+ * @returns {{provider: string, videoId: string}|null}
  */
 function parseEmbedSrc(src) {
     if (typeof src !== 'string') {
@@ -393,9 +361,7 @@ function parseEmbedSrc(src) {
     for (const { provider, re } of patterns) {
         const m = src.match(re);
         if (m && VALID_ID_PATTERN.test(m[1])) {
-            const startMatch = src.match(/[?&]start=(\d+)/);
-            const start = startMatch ? parseInt(startMatch[1], 10) : null;
-            return { provider, videoId: m[1], start: start && start > 0 ? start : null };
+            return { provider, videoId: m[1] };
         }
     }
     return null;
@@ -431,7 +397,7 @@ function buildEditorPreview(node) {
             media.preload = 'metadata';
         }
     } else {
-        const src = buildEmbedSrc(node.attrs.provider, node.attrs.videoId, node.attrs.start);
+        const src = buildEmbedSrc(node.attrs.provider, node.attrs.videoId);
         wrapper.setAttribute(
             'aria-label',
             providerName ? `${providerName} ${__('video')}` : __('Invalid video')
@@ -439,15 +405,11 @@ function buildEditorPreview(node) {
         if (node.attrs.videoId) {
             wrapper.setAttribute('data-video-id', node.attrs.videoId);
         }
-        if (node.attrs.start) {
-            wrapper.setAttribute('data-video-start', String(node.attrs.start));
-        }
         if (src) {
             media = document.createElement('iframe');
             media.src = src;
             media.loading = 'lazy';
             media.title = providerName ? `${providerName} ${__('video player')}` : __('video player');
-            media.setAttribute('frameborder', '0');
             media.setAttribute('allowfullscreen', '');
             media.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-presentation');
         }
@@ -507,17 +469,6 @@ export const VideoEmbed = Node.create({
                     ? { 'data-video-src': attrs.src }
                     : {},
             },
-            start: {
-                default: null,
-                parseHTML: (element) => {
-                    const raw = element.getAttribute('data-video-start');
-                    const n = raw ? parseInt(raw, 10) : NaN;
-                    return Number.isFinite(n) && n > 0 ? n : null;
-                },
-                renderHTML: (attrs) => attrs.start
-                    ? { 'data-video-start': String(attrs.start) }
-                    : {},
-            },
         };
     },
 
@@ -551,7 +502,7 @@ export const VideoEmbed = Node.create({
                     if (video) {
                         const src = video.getAttribute('src');
                         return isValidDirectVideoSrc(src)
-                            ? { provider: DIRECT_VIDEO_PROVIDER, videoId: null, src, start: null }
+                            ? { provider: DIRECT_VIDEO_PROVIDER, videoId: null, src }
                             : false;
                     }
                     return false;

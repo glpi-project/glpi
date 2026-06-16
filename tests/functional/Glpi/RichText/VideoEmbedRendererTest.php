@@ -48,8 +48,7 @@ class VideoEmbedRendererTest extends GLPITestCase
      */
     private const IFRAME = '<div class="video-embed-wrapper"><iframe src="%s" title="%s"'
         . ' loading="lazy" allowfullscreen'
-        . ' sandbox="allow-scripts allow-same-origin allow-presentation"'
-        . ' frameborder="0"></iframe></div>';
+        . ' sandbox="allow-scripts allow-same-origin allow-presentation"></iframe></div>';
 
     /**
      * Exact `<video>` markup produced by {@see VideoEmbedRenderer::renderDirectVideo()}.
@@ -63,21 +62,12 @@ class VideoEmbedRendererTest extends GLPITestCase
         yield 'YouTube nominal' => [
             'provider'       => 'youtube',
             'video_id'       => 'dQw4w9WgXcQ',
-            'start'          => null,
             'expected_src'   => 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
-            'expected_title' => 'YouTube video player',
-        ];
-        yield 'YouTube with start offset' => [
-            'provider'       => 'youtube',
-            'video_id'       => 'dQw4w9WgXcQ',
-            'start'          => 75,
-            'expected_src'   => 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?start=75',
             'expected_title' => 'YouTube video player',
         ];
         yield 'Underscore and dash in id are accepted' => [
             'provider'       => 'youtube',
             'video_id'       => 'A_B-c1234567',
-            'start'          => null,
             'expected_src'   => 'https://www.youtube-nocookie.com/embed/A_B-c1234567',
             'expected_title' => 'YouTube video player',
         ];
@@ -87,34 +77,32 @@ class VideoEmbedRendererTest extends GLPITestCase
     public function testRenderProducesSandboxedIframe(
         string $provider,
         string $video_id,
-        ?int $start,
         string $expected_src,
         string $expected_title,
     ): void {
         $this->assertSame(
             sprintf(self::IFRAME, htmlescape($expected_src), htmlescape($expected_title)),
-            (new VideoEmbedRenderer())->render($provider, $video_id, $start),
+            (new VideoEmbedRenderer())->render($provider, $video_id),
         );
     }
 
     public static function rejectedRenderProvider(): iterable
     {
-        yield 'Unknown provider' => ['provider' => 'twitch', 'video_id' => 'abc12345', 'start' => null];
-        yield 'Empty id'         => ['provider' => 'youtube', 'video_id' => '', 'start' => null];
-        yield 'Path traversal'   => ['provider' => 'youtube', 'video_id' => '../../etc/passwd', 'start' => null];
-        yield 'Quote injection'  => ['provider' => 'youtube', 'video_id' => 'abc"><script>', 'start' => null];
-        yield 'Whitespace in id' => ['provider' => 'youtube', 'video_id' => 'abc 12345', 'start' => null];
-        yield 'Id over 32 chars' => ['provider' => 'youtube', 'video_id' => str_repeat('a', 33), 'start' => null];
-        yield 'Slash in id'      => ['provider' => 'youtube', 'video_id' => 'abc/def', 'start' => null];
+        yield 'Unknown provider' => ['provider' => 'twitch', 'video_id' => 'abc12345'];
+        yield 'Empty id'         => ['provider' => 'youtube', 'video_id' => ''];
+        yield 'Path traversal'   => ['provider' => 'youtube', 'video_id' => '../../etc/passwd'];
+        yield 'Quote injection'  => ['provider' => 'youtube', 'video_id' => 'abc"><script>'];
+        yield 'Whitespace in id' => ['provider' => 'youtube', 'video_id' => 'abc 12345'];
+        yield 'Id over 32 chars' => ['provider' => 'youtube', 'video_id' => str_repeat('a', 33)];
+        yield 'Slash in id'      => ['provider' => 'youtube', 'video_id' => 'abc/def'];
     }
 
     #[DataProvider('rejectedRenderProvider')]
     public function testRenderReturnsEmptyForInvalidInputs(
         string $provider,
         string $video_id,
-        ?int $start,
     ): void {
-        $this->assertSame('', (new VideoEmbedRenderer())->render($provider, $video_id, $start));
+        $this->assertSame('', (new VideoEmbedRenderer())->render($provider, $video_id));
     }
 
     public static function renderDirectVideoProvider(): iterable
@@ -190,37 +178,26 @@ class VideoEmbedRendererTest extends GLPITestCase
             'input'    => '<p>No video here</p>',
             'expected' => '<p>No video here</p>',
         ];
-        // Tampered placeholder (the editor's atom node never produces children):
-        // drop the whole element, including any smuggled child such as an iframe
-        // surviving GLPI_ALLOW_IFRAME_IN_RICH_TEXT=true.
-        yield 'non-empty body with smuggled iframe dropped' => [
-            'input' => '<p>Before</p>'
-                . '<div data-video-provider="youtube" data-video-id="abc12345678"><iframe src="https://evil.example/x"></iframe></div>'
-                . '<p>After</p>',
-            'expected' => '<p>Before</p><p>After</p>',
+        // renderAll only materializes EMPTY placeholders (the editor's atom node
+        // never produces children); a <div data-video-provider> with a body is left as-is.
+        yield 'non-empty placeholder left untouched' => [
+            'input'    => '<p>Before</p><div data-video-provider="youtube" data-video-id="abc12345678">Some text</div><p>After</p>',
+            'expected' => '<p>Before</p><div data-video-provider="youtube" data-video-id="abc12345678">Some text</div><p>After</p>',
         ];
-        yield 'text body dropped' => [
-            'input'    => '<div data-video-provider="youtube" data-video-id="abc12345678">Some text</div>',
-            'expected' => '',
+        yield 'nested div placeholder left untouched' => [
+            'input'    => '<p>Before</p><div data-video-provider="youtube" data-video-id="abc12345678"><div class="inner">x</div></div><p>After</p>',
+            'expected' => '<p>Before</p><div data-video-provider="youtube" data-video-id="abc12345678"><div class="inner">x</div></div><p>After</p>',
         ];
-        // Nested <div> in the body breaks the atom-node contract. Drop the whole
-        // block, including the OUTER </div> — the lazy regex used previously
-        // stopped at the first </div> and leaked a stray closing tag.
-        yield 'nested div tampered dropped' => [
-            'input' => '<p>Before</p>'
-                . '<div data-video-provider="youtube" data-video-id="abc12345678"><div class="inner">x</div></div>'
-                . '<p>After</p>',
-            'expected' => '<p>Before</p><p>After</p>',
-        ];
-        // Unbalanced placeholder (no matching </div>): drop the opening tag — it
-        // carries the data-video-* attributes — and keep scanning so any later
-        // valid placeholder is still processed.
-        yield 'unclosed placeholder keeps trailing html' => [
+        // An empty placeholder is still materialized even when it follows an
+        // unclosed non-empty one; the non-empty opening tag is inert and kept.
+        yield 'empty placeholder after an unclosed one is still rendered' => [
             'input' => '<p>Before</p>'
                 . '<div data-video-provider="youtube" data-video-id="abc12345678">'
                 . '<p>Trailing paragraph</p>'
                 . '<div data-video-provider="youtube" data-video-id="bbb22222222"></div>',
-            'expected' => '<p>Before</p><p>Trailing paragraph</p>'
+            'expected' => '<p>Before</p>'
+                . '<div data-video-provider="youtube" data-video-id="abc12345678">'
+                . '<p>Trailing paragraph</p>'
                 . sprintf(self::IFRAME, 'https://www.youtube-nocookie.com/embed/bbb22222222', 'YouTube video player'),
         ];
     }
@@ -275,11 +252,6 @@ class VideoEmbedRendererTest extends GLPITestCase
             'expected' => '<a href="https://www.youtube.com/watch?v=aaa11111111" rel="noopener noreferrer">https://www.youtube.com/watch?v=aaa11111111</a>'
                 . '<a href="https://cdn.example.com/clip.mp4" rel="noopener noreferrer">https://cdn.example.com/clip.mp4</a>',
         ];
-        // YouTube watch URLs use &t=NNs as the seek suffix; the & is escaped on output.
-        yield 'start offset applied to href' => [
-            'input'    => '<div data-video-provider="youtube" data-video-id="dQw4w9WgXcQ" data-video-start="90"></div>',
-            'expected' => '<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ&amp;t=90s" rel="noopener noreferrer">https://www.youtube.com/watch?v=dQw4w9WgXcQ&amp;t=90s</a>',
-        ];
         yield 'unknown provider dropped' => [
             'input'    => '<p>Before</p><div data-video-provider="evil" data-video-id="x"></div><p>After</p>',
             'expected' => '<p>Before</p><p>After</p>',
@@ -288,11 +260,10 @@ class VideoEmbedRendererTest extends GLPITestCase
             'input'    => '<div data-video-provider="youtube" data-video-id="../../etc/passwd"></div>',
             'expected' => '',
         ];
-        // Tampered placeholder — drop the whole element so any smuggled child
-        // (e.g. an iframe to evil.example) cannot survive through the <a>.
-        yield 'non-empty body with smuggled iframe dropped' => [
-            'input'    => '<div data-video-provider="youtube" data-video-id="abc12345678"><iframe src="https://evil.example/x"></iframe></div>',
-            'expected' => '',
+        // Non-empty placeholder left untouched: only empty placeholders are rewritten.
+        yield 'non-empty placeholder left untouched' => [
+            'input'    => '<div data-video-provider="youtube" data-video-id="abc12345678">Some text</div>',
+            'expected' => '<div data-video-provider="youtube" data-video-id="abc12345678">Some text</div>',
         ];
         yield 'no placeholder passthrough' => [
             'input'    => '<p>No video</p>',

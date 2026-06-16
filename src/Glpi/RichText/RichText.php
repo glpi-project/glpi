@@ -304,7 +304,7 @@ final class RichText
         $content_size = strlen($content ?? '');
 
         // Sanitize content first (security and to decode HTML entities)
-        $content = self::getSafeHtml($content, false);
+        $content = self::getSafeHtml($content);
 
         if ($p['user_mentions']) {
             $content = UserMention::refreshUserMentionsHtmlToDisplay($content);
@@ -572,10 +572,7 @@ JAVASCRIPT;
         return $out;
     }
 
-    /**
-     * Build the shared GLPI HTML sanitizer config.
-     */
-    private static function buildBaseSanitizerConfig(): HtmlSanitizerConfig
+    private static function getHtmlSanitizer(): HtmlSanitizer
     {
         $config = (new HtmlSanitizerConfig())
             ->allowSafeElements()
@@ -674,20 +671,8 @@ JAVASCRIPT;
         $config = $config
             ->allowAttribute('data-video-provider', ['div'])
             ->allowAttribute('data-video-id', ['div'])
-            ->allowAttribute('data-video-src', ['div'])
-            ->allowAttribute('data-video-start', ['div']);
+            ->allowAttribute('data-video-src', ['div']);
 
-        return $config;
-    }
-
-    private static function getHtmlSanitizer(): HtmlSanitizer
-    {
-        static $sanitizer = null;
-
-        if ($sanitizer === null) {
-            $sanitizer = new HtmlSanitizer(self::buildBaseSanitizerConfig());
-        }
-
-        return $sanitizer;
+        return new HtmlSanitizer($config);
     }
 }
