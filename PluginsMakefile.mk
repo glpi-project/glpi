@@ -80,6 +80,10 @@ test-setup: ## Setup the plugin for tests
 	@$(CONSOLE) plugin:enable --env=testing $(PLUGIN_DIR)
 .PHONY: test-setup
 
+test-uninstall: ## Uninstall the plugin in test env
+	@$(CONSOLE) plugin:uninstall --env=testing $(PLUGIN_DIR) -q
+.PHONY: uninstall
+
 test-e2e-setup: ## Setup the plugin for end-to-end tests
 	@$(CONSOLE) plugin:install --env=e2e_testing $(PLUGIN_DIR) -u glpi --force
 	@$(CONSOLE) plugin:enable --env=e2e_testing $(PLUGIN_DIR)
