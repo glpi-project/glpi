@@ -57,7 +57,7 @@ if ($tasktemplates_id === null) {
 }
 
 // Mandatory parameter: items_id
-$parents_id = (int)($_POST['items_id'] ?? 0);
+$parents_id = (int) ($_POST['items_id'] ?? 0);
 
 // Mandatory parameter: itemtype
 $parents_itemtype = $_POST['itemtype'] ?? '';
