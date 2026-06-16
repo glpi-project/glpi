@@ -328,7 +328,7 @@ final class Engine
             $operators[] = $condition->getLogicOperator();
         }
 
-        if (empty($evaluated)) {
+        if ($evaluated === []) {
             return false;
         }
 
