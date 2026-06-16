@@ -37,8 +37,8 @@ namespace Glpi\Marketplace;
 
 use CommonGLPI;
 use Config;
-use Glpi\Cache\CacheManager;
 use CronTask;
+use Glpi\Cache\CacheManager;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
 use GLPINetwork;
