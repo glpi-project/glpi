@@ -36,12 +36,12 @@ namespace tests\functional\Glpi\Console\Plugin;
 
 use Glpi\Console\Cache\ClearCommand;
 use Glpi\Console\Plugin\InstallCommand;
-use Glpi\Tests\DbTestCase;
+use Glpi\Tests\GLPITestCase;
 use Plugin;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class InstallCommandTest extends DbTestCase
+class InstallCommandTest extends GLPITestCase
 {
     private ?string $plugin_dir = null;
     private string $plugin_name = '';
@@ -50,7 +50,7 @@ class InstallCommandTest extends DbTestCase
     {
         parent::setUp();
 
-        $this->plugin_name = 'testcacheinstall' . uniqid();
+        $this->plugin_name = 'testcacheinstall' . substr(uniqid(), -6);
         $this->plugin_dir  = GLPI_ROOT . '/plugins/' . $this->plugin_name;
 
         mkdir($this->plugin_dir);
@@ -94,6 +94,8 @@ class InstallCommandTest extends DbTestCase
     {
         $tester = new CommandTester($this->buildApplication()->find('plugin:install'));
         $tester->execute(['directory' => [$this->plugin_name]]);
+        restore_error_handler();
+        restore_exception_handler();
 
         $this->assertStringContainsString('Cache cleared successfully.', $tester->getDisplay());
     }
@@ -107,6 +109,8 @@ class InstallCommandTest extends DbTestCase
 
         $tester = new CommandTester($this->buildApplication()->find('plugin:install'));
         $tester->execute(['directory' => [$this->plugin_name], '--force' => true]);
+        restore_error_handler();
+        restore_exception_handler();
 
         $this->assertStringContainsString('Cache cleared successfully.', $tester->getDisplay());
     }
@@ -118,6 +122,8 @@ class InstallCommandTest extends DbTestCase
         // Even if other plugins fail, cache clearing is unconditional.
         $tester = new CommandTester($this->buildApplication()->find('plugin:install'));
         $tester->execute(['--all' => true]);
+        restore_error_handler();
+        restore_exception_handler();
 
         $this->assertStringContainsString('Cache cleared successfully.', $tester->getDisplay());
     }

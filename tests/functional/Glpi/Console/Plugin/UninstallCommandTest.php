@@ -36,12 +36,12 @@ namespace tests\functional\Glpi\Console\Plugin;
 
 use Glpi\Console\Cache\ClearCommand;
 use Glpi\Console\Plugin\UninstallCommand;
-use Glpi\Tests\DbTestCase;
+use Glpi\Tests\GLPITestCase;
 use Plugin;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class UninstallCommandTest extends DbTestCase
+class UninstallCommandTest extends GLPITestCase
 {
     private ?string $plugin_dir = null;
     private string $plugin_name = '';
@@ -97,6 +97,8 @@ class UninstallCommandTest extends DbTestCase
         $tester->execute(
             ['directory' => [$this->plugin_name], '--no-interaction' => true]
         );
+        restore_error_handler();
+        restore_exception_handler();
 
         $this->assertStringContainsString('Cache cleared successfully.', $tester->getDisplay());
     }
