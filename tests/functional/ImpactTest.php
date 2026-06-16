@@ -38,14 +38,14 @@ use CommonDBTM;
 use Computer;
 use Glpi\Plugin\Hooks;
 use Glpi\Tests\DbTestCase;
+use Group;
+use Group_Item;
+use Group_User;
 use ImpactCompound;
 use ImpactItem;
 use ImpactRelation;
 use Item_Ticket;
 use Ticket;
-use Group;
-use Group_Item;
-use Group_User;
 
 class ImpactTest extends DbTestCase
 {
