@@ -178,7 +178,7 @@ class UserEmail extends CommonDBChild
         $html = "<div class='d-flex'>"
             . "<input title='" . __s('Default email') . "' type='radio' name='_default_email' value='-__JS_PLACEHOLDER__' aria-label='" . __s('Set as default email') . "'>"
             . "&nbsp;"
-            . "<input type='text' size='30' class='form-control' " . "name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'  aria-label='" . __s('Email address') . "'>"
+            . "<input type='text' class='form-control' " . "name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'  aria-label='" . __s('Email address') . "'>"
             . "</div>";
 
         return str_replace(
@@ -220,7 +220,7 @@ class UserEmail extends CommonDBChild
             $result .= "<input type='hidden' name='$field_name' value='$value'>";
             $result .= sprintf('%s <span class="b">(%s)</span>', $value, __s('D'));
         } else {
-            $result .= "<input type='text' size=30 class='form-control' name='$field_name' value='$value' aria-label='" . __s('Email address') . "'>";
+            $result .= "<input type='text' class='form-control' name='$field_name' value='$value' aria-label='" . __s('Email address') . "'>";
         }
         $result .= "</div>";
 
