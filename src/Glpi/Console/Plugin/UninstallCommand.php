@@ -35,8 +35,10 @@
 
 namespace Glpi\Console\Plugin;
 
+use Glpi\Console\Cache\ClearCommand;
 use Plugin;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -109,6 +111,10 @@ class UninstallCommand extends AbstractPluginCommand
                 OutputInterface::VERBOSITY_NORMAL
             );
         }
+
+        $clear_cache_command = new ClearCommand();
+        $clear_cache_command->setApplication($this->getApplication());
+        $clear_cache_command->run(new ArrayInput([]), $output);
 
         return $failed ? Command::FAILURE : Command::SUCCESS;
     }

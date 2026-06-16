@@ -37,6 +37,7 @@ namespace Glpi\Marketplace;
 
 use CommonGLPI;
 use Config;
+use Glpi\Cache\CacheManager;
 use CronTask;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
@@ -597,7 +598,9 @@ class Controller extends CommonGLPI
      */
     public function installPlugin(bool $disable_messages = false): bool
     {
-        $state =  $this->setPluginState("install");
+        $state = $this->setPluginState("install");
+
+        $this->clearCache();
 
         if ($disable_messages) {
             $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
@@ -614,7 +617,23 @@ class Controller extends CommonGLPI
      */
     public function uninstallPlugin(): bool
     {
-        return $this->setPluginState("uninstall") == Plugin::NOTINSTALLED;
+        $state = $this->setPluginState("uninstall");
+
+        $this->clearCache();
+
+        return $state == Plugin::NOTINSTALLED;
+    }
+
+
+    private function clearCache(): void
+    {
+        $success = (new CacheManager())->resetAllCaches();
+
+        Session::addMessageAfterRedirect(
+            $success ? __s('Cache cleared successfully.') : __s('Failed to clear cache.'),
+            false,
+            $success ? INFO : ERROR
+        );
     }
 
 
