@@ -1489,61 +1489,6 @@ class Entity extends CommonTreeDropdown implements
         ];
 
         $tab[] = [
-            'id'                 => 'assets',
-            'name'               => _n('Asset', 'Assets', Session::getPluralNumber()),
-        ];
-
-        $tab[] = [
-            'id'                 => '38',
-            'table'              => static::getTable(),
-            'field'              => 'autofill_buy_date',
-            'name'               => __('Date of purchase'),
-            'massiveaction'      => false,
-            'nosearch'           => true,
-            'datatype'           => 'specific',
-        ];
-
-        $tab[] = [
-            'id'                 => '39',
-            'table'              => static::getTable(),
-            'field'              => 'autofill_order_date',
-            'name'               => __('Order date'),
-            'massiveaction'      => false,
-            'nosearch'           => true,
-            'datatype'           => 'specific',
-        ];
-
-        $tab[] = [
-            'id'                 => '40',
-            'table'              => static::getTable(),
-            'field'              => 'autofill_delivery_date',
-            'name'               => __('Delivery date'),
-            'massiveaction'      => false,
-            'nosearch'           => true,
-            'datatype'           => 'specific',
-        ];
-
-        $tab[] = [
-            'id'                 => '41',
-            'table'              => static::getTable(),
-            'field'              => 'autofill_use_date',
-            'name'               => __('Startup date'),
-            'massiveaction'      => false,
-            'nosearch'           => true,
-            'datatype'           => 'specific',
-        ];
-
-        $tab[] = [
-            'id'                 => '42',
-            'table'              => static::getTable(),
-            'field'              => 'autofill_warranty_date',
-            'name'               => __('Start date of warranty'),
-            'massiveaction'      => false,
-            'nosearch'           => true,
-            'datatype'           => 'specific',
-        ];
-
-        $tab[] = [
             'id'                 => '43',
             'table'              => static::getTable(),
             'field'              => 'inquest_config',
@@ -1615,6 +1560,61 @@ class Entity extends CommonTreeDropdown implements
             'name'               => sprintf(__('Satisfaction survey URL (%s)'), Change::getTypeName(1)),
             'massiveaction'      => false,
             'datatype'           => 'string',
+        ];
+
+        $tab[] = [
+            'id'                 => 'assets',
+            'name'               => _n('Asset', 'Assets', Session::getPluralNumber()),
+        ];
+
+        $tab[] = [
+            'id'                 => '38',
+            'table'              => static::getTable(),
+            'field'              => 'autofill_buy_date',
+            'name'               => __('Date of purchase'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific',
+        ];
+
+        $tab[] = [
+            'id'                 => '39',
+            'table'              => static::getTable(),
+            'field'              => 'autofill_order_date',
+            'name'               => __('Order date'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific',
+        ];
+
+        $tab[] = [
+            'id'                 => '40',
+            'table'              => static::getTable(),
+            'field'              => 'autofill_delivery_date',
+            'name'               => __('Delivery date'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific',
+        ];
+
+        $tab[] = [
+            'id'                 => '41',
+            'table'              => static::getTable(),
+            'field'              => 'autofill_use_date',
+            'name'               => __('Startup date'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific',
+        ];
+
+        $tab[] = [
+            'id'                 => '42',
+            'table'              => static::getTable(),
+            'field'              => 'autofill_warranty_date',
+            'name'               => __('Start date of warranty'),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
