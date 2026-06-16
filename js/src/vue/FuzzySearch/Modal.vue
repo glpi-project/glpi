@@ -1,5 +1,5 @@
 <script setup>
-    /* global hotkeys, fuzzy */
+    /* global fuzzy */
     import {computed, ref, watch} from "vue";
 
     let shortcut = `<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>G</kbd>`;

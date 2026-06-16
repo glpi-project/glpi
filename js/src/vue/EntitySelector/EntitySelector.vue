@@ -1,5 +1,5 @@
 <script setup>
-    import {computed, onMounted, ref, useTemplateRef, watch, useId} from "vue";
+    import {computed, onMounted, ref, useTemplateRef, watch, useId, onUnmounted} from "vue";
     import {useEntitySelector} from "./useEntitySelector.js";
 
     const props = defineProps({
@@ -30,6 +30,17 @@
      * This is NOT the number of entries which are actually in the DOM currently.
      */
     let total_filtered = ref(0);
+
+    async function hotkey_listener(e) {
+        if ((e.ctrlKey || e.metaKey) && e.altKey && e.key.toLowerCase() === 'e') {
+            e.stopPropagation();
+            e.preventDefault();
+            $('.user-menu-dropdown-toggle:visible').dropdown('show');
+            await new Promise(r => setTimeout(r, 100));
+            $('.user-menu-dropdown-toggle:visible').parent().find('.entity-dropdown-toggle').dropdown('show');
+            onShowSelector();
+        }
+    }
 
     const {
         loading,
@@ -177,16 +188,6 @@
         return [selected.key, ...selected.parents.map((parent) => parent.key)];
     });
 
-
-    window.hotkeys('ctrl+alt+e, option+command+e', async function(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        $('.user-menu-dropdown-toggle:visible').dropdown('show');
-        await new Promise(r => setTimeout(r, 100));
-        $('.user-menu-dropdown-toggle:visible').parent().find('.entity-dropdown-toggle').dropdown('show');
-        onShowSelector();
-    });
-
     function onShowSelector() {
         if (loading.value || tree_data.value.length > 0) {
             return;
@@ -197,6 +198,12 @@
 
     onMounted(() => {
         entity_dropdown_toggle.value.addEventListener('show.bs.dropdown', onShowSelector);
+        document.addEventListener('keydown', hotkey_listener);
+    });
+
+    onUnmounted(() => {
+        entity_dropdown_toggle.value.removeEventListener('show.bs.dropdown', onShowSelector);
+        document.removeEventListener('keydown', hotkey_listener);
     });
 
     function changeFullStructure() {

@@ -73,6 +73,7 @@ The present file will list all changes made to the project; according to the
 #### Removed
 
 - `diff-match-patch` JS library
+- `hotkeys-js` JS library
 - `jquery-prettytextdiff` JS library
 - `Forms/FaIconSelector` JS module
 - `Knowbase` JS module
