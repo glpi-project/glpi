@@ -289,24 +289,6 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         return true;
     }
 
-    /**
-     * Is the license may be recursive
-     *
-     * @return bool
-     **/
-    public function maybeRecursive()
-    {
-        $soft = new Software();
-        if (
-            isset($this->fields["softwares_id"])
-            && $soft->getFromDB($this->fields["softwares_id"])
-        ) {
-            return $soft->isRecursive();
-        }
-
-        return true;
-    }
-
     public function rawSearchOptions()
     {
         $tab = [];
