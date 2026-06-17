@@ -117,41 +117,7 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implemen
     #[Override]
     protected function getFormInlineScript(): string
     {
-        // language=Twig
-        $js = <<<TWIG
-            import("/js/modules/Forms/QuestionDropdown.js").then((m) => {
-                {% if question is not null %}
-                    const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
-                    container.data(
-                        'manager',
-                        new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container)
-                    );
-                {% else %}
-                    $(document).on('glpi-form-editor-question-type-changed', function(e, question, type) {
-                        if (type === '{{ question_type|escape('js') }}') {
-                            const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            container.data(
-                                'manager',
-                                new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container, true)
-                            );
-                        }
-                    });
-
-                    $(document).on('glpi-form-editor-question-duplicated', function(e, question, new_question) {
-                        const question_type = question.find('input[data-glpi-form-editor-original-name="type"]').val();
-                        if (question_type === '{{ question_type|escape('js') }}') {
-                            const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
-                            container.data(
-                                'manager',
-                                new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container, true)
-                            );
-                        }
-                    });
-                {% endif %}
-            });
-TWIG;
-
-        return $js;
+        return "{% include 'pages/admin/form/question_type/dropdown/form_inline_script.html.twig' %}";
     }
 
     #[Override]
@@ -163,48 +129,8 @@ TWIG;
     #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
-        $template = <<<TWIG
-        {% import 'components/form/fields_macros.html.twig' as fields %}
-
-        <div data-glpi-form-editor-preview-dropdown>
-            {{ fields.dropdownArrayField(
-                'default_value',
-                checked_values|first,
-                values,
-                '',
-                {
-                    'init': init,
-                    'no_label': true,
-                    'multiple': false,
-                    'disabled': is_multiple_dropdown,
-                    'display_emptychoice': true,
-                    'field_class': 'single-preview-dropdown col-12' ~ (is_multiple_dropdown ? ' d-none' : ''),
-                    'mb': '',
-                    'aria_label': default_option_label
-                }
-            ) }}
-            {{ fields.dropdownArrayField(
-                'default_value',
-                '',
-                values,
-                '',
-                {
-                    'init': init,
-                    'no_label': true,
-                    'multiple': true,
-                    'disabled': not is_multiple_dropdown,
-                    'values': checked_values,
-                    'field_class': 'multiple-preview-dropdown col-12' ~ (not is_multiple_dropdown ? ' d-none' : ''),
-                    'mb': '',
-                    'aria_label': default_options_label
-                }
-            ) }}
-        </div>
-TWIG;
-
         $parent = parent::renderAdministrationTemplate($question);
 
-        $twig = TemplateRenderer::getInstance();
         $values = array_combine(
             array_map(fn($option) => $option['uuid'], $this->getValues($question)),
             array_map(fn($option) => $option['value'], $this->getValues($question))
@@ -213,66 +139,37 @@ TWIG;
             fn($option) => $option['uuid'],
             array_filter($this->getValues($question), fn($option) => $option['checked'])
         );
-        return $twig->renderFromStringTemplate($template, [
-            'question'              => $question,
-            'init'                  => $question != null,
-            'values'                => $values,
-            'checked_values'        => $checked_values,
-            'is_multiple_dropdown'  => $this->isMultipleDropdown($question),
-            'default_option_label'  => __('Default option'),
-            'default_options_label' => __('Default options'),
-        ]) . $parent;
+
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/form/question_type/dropdown/administration_template.html.twig',
+            [
+                'question'              => $question,
+                'init'                  => $question != null,
+                'values'                => $values,
+                'checked_values'        => $checked_values,
+                'is_multiple_dropdown'  => $this->isMultipleDropdown($question),
+                'default_option_label'  => __('Default option'),
+                'default_options_label' => __('Default options'),
+            ]
+        ) . $parent;
     }
 
     #[Override]
     public function renderAdministrationOptionsTemplate(?Question $question): string
     {
-        $template = <<<TWIG
-            {% set rand = random() %}
-
-            <div class="d-flex gap-2">
-                <label class="form-check form-switch mb-0">
-                    <input type="hidden" name="is_multiple_dropdown" value="0"
-                    data-glpi-form-editor-specific-question-extra-data>
-                    <input class="form-check-input" type="checkbox" name="is_multiple_dropdown"
-                        value="1" {{ is_multiple_dropdown ? 'checked' : '' }}
-                        data-glpi-form-editor-specific-question-extra-data>
-                    <span class="form-check-label">{{ is_multiple_dropdown_label }}</span>
-                </label>
-            </div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'is_multiple_dropdown'       => $this->isMultipleDropdown($question),
-            'is_multiple_dropdown_label' => __('Allow multiple options'),
-        ]);
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/form/question_type/dropdown/administration_options.html.twig',
+            [
+                'is_multiple_dropdown'       => $this->isMultipleDropdown($question),
+                'is_multiple_dropdown_label' => __('Allow multiple options'),
+            ]
+        );
     }
 
     #[Override]
     public function renderEndUserTemplate(
         Question $question,
     ): string {
-        $template = <<<TWIG
-            {% import 'components/form/fields_macros.html.twig' as fields %}
-
-            {{ fields.dropdownArrayField(
-                question.getEndUserInputName(),
-                not is_multiple ? checked_values|first : '',
-                values,
-                '',
-                {
-                    'no_label'           : true,
-                    'values'             : checked_values,
-                    'multiple'           : is_multiple,
-                    'mb'                 : '',
-                    'aria_label'         : label,
-                    'display_emptychoice': checked_values|length == 0,
-                }
-            ) }}
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
         $checked_values = array_map(
             fn($option) => $option['uuid'],
             array_filter($this->getValues($question), fn($option) => $option['checked'])
@@ -289,13 +186,16 @@ TWIG;
             $translated_options[$uuid] = FormTranslation::translate($question, $key) ?? $option;
         }
 
-        return $twig->renderFromStringTemplate($template, [
-            'question'       => $question,
-            'label'          => $question->fields['name'],
-            'values'         => $translated_options,
-            'checked_values' => $checked_values,
-            'is_multiple'    => $this->isMultipleDropdown($question),
-        ]);
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/form/question_type/dropdown/end_user_template.html.twig',
+            [
+                'question'       => $question,
+                'label'          => $question->fields['name'],
+                'values'         => $translated_options,
+                'checked_values' => $checked_values,
+                'is_multiple'    => $this->isMultipleDropdown($question),
+            ]
+        );
     }
 
     /**
@@ -311,53 +211,6 @@ TWIG;
     ): string {
         global $CFG_GLPI;
 
-        $template = <<<TWIG
-            {% set rand = random() %}
-
-            <div class="col-12 mb-0">
-                <select
-                    id="dropdown_{{ rand }}"
-                    name="{{ input_name }}"
-                    class="form-select select2"
-                    aria-label="{{ label }}"
-                    {{ is_multiple ? 'multiple' : '' }}
-                >
-                    {% for uuid, text in initial_values %}
-                        <option value="{{ uuid }}" selected>{{ text }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <script>
-            (function() {
-                var el = $('#dropdown_{{ rand }}');
-                el.select2({
-                    ajax: {
-                        url:      '{{ ajax_url|e('js') }}',
-                        type:     'POST',
-                        dataType: 'json',
-                        delay:    250,
-                        data: function(params) {
-                            return {
-                                searchText:  params.term || '',
-                                page:        params.page || 1,
-                                page_limit:  50,
-                                question_id: '{{ question_id|e('js') }}',
-                            };
-                        },
-                        processResults: function(data) {
-                            return { results: data.results, pagination: data.pagination };
-                        },
-                    },
-                    allowClear:  true,
-                    placeholder: '',
-                    width:       '100%',
-                    multiple:    {{ is_multiple ? 'true' : 'false' }},
-                });
-            })();
-            </script>
-TWIG;
-
         $initial_values = [];
         foreach ($checked_values as $uuid) {
             if (isset($options[$uuid])) {
@@ -366,14 +219,17 @@ TWIG;
             }
         }
 
-        return TemplateRenderer::getInstance()->renderFromStringTemplate($template, [
-            'label'          => $question->fields['name'],
-            'input_name'     => $question->getEndUserInputName(),
-            'question_id'    => $question->fields['id'],
-            'ajax_url'       => $CFG_GLPI['root_doc'] . '/Form/Question/DropdownValues',
-            'initial_values' => $initial_values,
-            'is_multiple'    => $this->isMultipleDropdown($question),
-        ]);
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/form/question_type/dropdown/end_user_template_ajax.html.twig',
+            [
+                'label'          => $question->fields['name'],
+                'input_name'     => $question->getEndUserInputName(),
+                'question_id'    => $question->fields['id'],
+                'ajax_url'       => $CFG_GLPI['root_doc'] . '/Form/Question/DropdownValues',
+                'initial_values' => $initial_values,
+                'is_multiple'    => $this->isMultipleDropdown($question),
+            ]
+        );
     }
 
     #[Override]

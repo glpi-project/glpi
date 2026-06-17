@@ -1,0 +1,68 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+<div data-glpi-form-editor-preview-dropdown>
+    {{ fields.dropdownArrayField(
+        'default_value',
+        checked_values|first,
+        values,
+        '',
+        {
+            'init': init,
+            'no_label': true,
+            'multiple': false,
+            'disabled': is_multiple_dropdown,
+            'display_emptychoice': true,
+            'field_class': 'single-preview-dropdown col-12' ~ (is_multiple_dropdown ? ' d-none' : ''),
+            'mb': '',
+            'aria_label': default_option_label
+        }
+    ) }}
+    {{ fields.dropdownArrayField(
+        'default_value',
+        '',
+        values,
+        '',
+        {
+            'init': init,
+            'no_label': true,
+            'multiple': true,
+            'disabled': not is_multiple_dropdown,
+            'values': checked_values,
+            'field_class': 'multiple-preview-dropdown col-12' ~ (not is_multiple_dropdown ? ' d-none' : ''),
+            'mb': '',
+            'aria_label': default_options_label
+        }
+    ) }}
+</div>
