@@ -634,7 +634,6 @@ TWIG, $twig_params);
             'name'            => Entity::getTypeName(1),
             'massiveaction'   => false,
             'datatype'        => 'dropdown',
-            'nodefaultcolumn' => true,
         ];
 
         $tab[] = [

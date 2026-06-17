@@ -174,7 +174,7 @@ class SLM extends CommonDBTM
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% extends 'generic_show_form.html.twig' %}
             {% import 'components/form/fields_macros.html.twig' as fields %}
-            
+
             {% block more_fields %}
                 {{ fields.dropdownField('Calendar', 'calendars_id', item.fields['use_ticket_calendar'] ? -1 : item.fields['calendars_id'], 'Calendar'|itemtype_name(1), {
                     emptylabel: empty_label,
@@ -237,7 +237,6 @@ TWIG, $twig_params);
             'name'            => Entity::getTypeName(1),
             'massiveaction'   => false,
             'datatype'        => 'dropdown',
-            'nodefaultcolumn' => true,
         ];
 
         $tab[] = [
