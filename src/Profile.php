@@ -1171,7 +1171,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 ];
                 $GLPI_CACHE->set($cache_key, $all_rights);
             }
-            $all_rights = $all_rights ?? $GLPI_CACHE->get($cache_key);
+            $all_rights ??= $GLPI_CACHE->get($cache_key);
 
             // Add rights for custom assets
             $definitions = AssetDefinitionManager::getInstance()->getDefinitions(only_active: true);
