@@ -832,6 +832,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     {
         global $GLPI_CACHE;
 
+        $cache_key = 'profile_rights_core_' . (Session::getLanguage() ?? '');
+
         /**
          * Helper function to streamline rights definition
          * @param class-string<CommonDBTM>|null $itemtype
@@ -861,7 +863,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $dropdown_rights = (new Profile())->getRights();
             unset($dropdown_rights[DELETE], $dropdown_rights[UNLOCK]);
 
-            if (!$GLPI_CACHE->has('profile_rights_core')) {
+            if (!$GLPI_CACHE->has($cache_key)) {
                 $all_rights = [
                     'central' => [
                         'tracking' => [
@@ -1167,9 +1169,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                         ],
                     ],
                 ];
-                $GLPI_CACHE->set('profile_rights_core', $all_rights);
+                $GLPI_CACHE->set($cache_key, $all_rights);
             }
-            $all_rights = $GLPI_CACHE->get('profile_rights_core');
+            $all_rights = $all_rights ?? $GLPI_CACHE->get($cache_key);
 
             // Add rights for custom assets
             $definitions = AssetDefinitionManager::getInstance()->getDefinitions(only_active: true);
