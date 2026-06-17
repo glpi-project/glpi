@@ -1112,30 +1112,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/report.networking.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Binary operation "\\." between array\\|int\\|string and \'\\?\' results in an error\\.$#',
-	'identifier' => 'binaryOp.invalid',
-	'count' => 1,
-	'path' => __DIR__ . '/front/reservation.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$haystack of function str_contains expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 3,
-	'path' => __DIR__ . '/front/reservation.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of function parse_str expects string, array\\|int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/reservation.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$url of function Safe\\\\parse_url expects string, string\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/front/reservation.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of method CommonGLPI\\:\\:getFormURLWithID\\(\\) expects int, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

@@ -39,6 +39,7 @@ use Glpi\Event;
 use Safe\DateTime;
 
 use function Safe\parse_url;
+use function Safe\strtotime;
 
 global $CFG_GLPI;
 
@@ -51,11 +52,11 @@ if (Session::getCurrentInterface() == "helpdesk") {
 }
 
 $fn_redirect_back = static function ($begin_date = null) {
-    $back_url = Html::getBackUrl();
+    $back_url = Html::getBackUrl() ?: '';
     if ($begin_date === null) {
         // Try to get from POST data
         if (isset($_POST['resa']["begin"])) {
-            $begin_date = date('Y-m-d', \strtotime($_POST['resa']["begin"]) ?: time());
+            $begin_date = date('Y-m-d', strtotime($_POST['resa']["begin"]) ?: time());
         } else {
             $begin_date = date('Y-m-d');
         }
@@ -63,8 +64,10 @@ $fn_redirect_back = static function ($begin_date = null) {
 
     // Remove old month/year params
     $back_url_params = [];
-    $back_url_base = parse_url($back_url, PHP_URL_PATH) ?? '';
-    parse_str(parse_url($back_url, PHP_URL_QUERY) ?? '', $back_url_params);
+    $path_result = parse_url($back_url, PHP_URL_PATH);
+    $back_url_base = is_string($path_result) ? $path_result : '';
+    $query_result = parse_url($back_url, PHP_URL_QUERY);
+    parse_str(is_string($query_result) ? $query_result : '', $back_url_params);
     unset($back_url_params['month'], $back_url_params['year'], $back_url_params['tab_params']);
     $back_url = $back_url_params !== []
         ? $back_url_base . '?' . Toolbox::append_params($back_url_params)
