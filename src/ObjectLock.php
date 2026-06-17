@@ -53,6 +53,17 @@ class ObjectLock extends CommonDBTM
         return _n('Object Lock', 'Object Locks', $nb);
     }
 
+    public static function getFormURLWithID($id = 0, $full = true): string
+    {
+        $object_lock = new self();
+        if (!$object_lock->getFromDB($id)) {
+            return '';
+        }
+        $itemtype = $object_lock->fields['itemtype'];
+        $items_id = $object_lock->fields['items_id'];
+        return $itemtype::getFormURLWithID($items_id, $full);
+    }
+
     /**
      * @inheritDoc
      * @return int Always 0 (Root entity)
