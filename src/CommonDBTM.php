@@ -1811,11 +1811,11 @@ class CommonDBTM extends CommonGLPI
                     $this->clearSavedInput();
                 }
 
-                Webhook::raise('update', $this);
                 $this->post_updateItem($history);
                 if ($this instanceof CacheableListInterface) {
                     $this->invalidateListCache();
                 }
+                Webhook::raise('update', $this);
 
                 return true;
             }
