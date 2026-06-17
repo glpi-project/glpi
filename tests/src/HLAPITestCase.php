@@ -394,7 +394,9 @@ final class HLAPIHelper
         $this->call($request, function ($call) use ($extra_options, &$new_item_location, $endpoint) {
             /** @var HLAPICallAsserter $call */
             $call->response
-                ->isOK()
+                ->status(function ($status) use ($endpoint) {
+                    $this->test->assertEquals(201, $status, 'The POST route path of endpoint "' . $endpoint . '" does not return a 201 status code');
+                })
                 ->jsonContent(function ($content) use ($extra_options, $endpoint) {
                     $this->test->assertArrayHasKey('id', $content, 'The response for the POST route path of endpoint "' . $endpoint . '" does not have an "id" field');
                     $this->test->assertGreaterThan(0, $content['id'], 'The response for the POST route path of endpoint "' . $endpoint . '" has an "id" field that is not valid');

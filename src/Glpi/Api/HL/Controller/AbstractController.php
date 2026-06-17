@@ -226,7 +226,7 @@ abstract class AbstractController
             return self::getCRUDErrorResponse(self::CRUD_ACTION_CREATE);
         }
 
-        return self::getItemLinkResponse($new_id, $api_path);
+        return self::getItemLinkResponse($new_id, $api_path, 201);
     }
 
     /**
