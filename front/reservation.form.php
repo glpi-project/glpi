@@ -39,7 +39,6 @@ use Glpi\Event;
 use Safe\DateTime;
 
 use function Safe\parse_url;
-use function Safe\strtotime;
 
 global $CFG_GLPI;
 
@@ -56,7 +55,7 @@ $fn_redirect_back = static function ($begin_date = null) {
     if ($begin_date === null) {
         // Try to get from POST data
         if (isset($_POST['resa']["begin"])) {
-            $begin_date = date('Y-m-d', strtotime($_POST['resa']["begin"]) ?: time());
+            $begin_date = date('Y-m-d', \strtotime($_POST['resa']["begin"]) ?: time());
         } else {
             $begin_date = date('Y-m-d');
         }
@@ -67,9 +66,9 @@ $fn_redirect_back = static function ($begin_date = null) {
     $back_url_base = parse_url($back_url, PHP_URL_PATH) ?? '';
     parse_str(parse_url($back_url, PHP_URL_QUERY) ?? '', $back_url_params);
     unset($back_url_params['month'], $back_url_params['year'], $back_url_params['tab_params']);
-    if ($back_url_params !== []) {
-        $back_url = $back_url_base . '?' . Toolbox::append_params($back_url_params);
-    }
+    $back_url = $back_url_params !== []
+        ? $back_url_base . '?' . Toolbox::append_params($back_url_params)
+        : $back_url_base;
     if (str_contains($back_url, 'front/reservation.php')) {
         $back_url .= (!str_contains($back_url, '?') ? '?' : '&') . Toolbox::append_params([
             'defaultDate' => $begin_date,
