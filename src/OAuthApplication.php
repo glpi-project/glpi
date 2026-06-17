@@ -36,7 +36,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 final class OAuthApplication extends CommonDBTM
 {
-    public static string $rightname = 'config';
+    public static string $rightname = 'oauth_application';
 
     public bool $dohistory = true;
 
