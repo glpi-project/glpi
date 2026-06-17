@@ -301,7 +301,6 @@ class KnowbaseItem_ItemTest extends DbTestCase
         ];
         yield 'table with existing max-width gets it replaced (no duplicate)' => [
             'html'     => '<table style="max-width: 500px;"><tr><td>Cell</td></tr></table>',
-            // With current code this FAILS (produces duplicate max-width) — add to expose the bug
             'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
         ];
         yield 'img width HTML attribute is removed' => [
