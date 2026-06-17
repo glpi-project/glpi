@@ -62,15 +62,6 @@ final class OAuthApplication extends CommonDBTM
         return 'ti ti-lock-access';
     }
 
-    public static function canCreate(): bool
-    {
-        return static::canUpdate();
-    }
-
-    public static function canPurge(): bool
-    {
-        return static::canUpdate();
-    }
 
     public function defineTabs($options = []): array
     {
