@@ -603,9 +603,7 @@ class Toolbox
 
         // if $mime is defined, ignore mime type by extension
         if ($mime === null && preg_match('/\.(...)$/', $path)) {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = finfo_file($finfo, $path);
-            unset($finfo);
+            $mime = self::getMime($path);
         }
 
         $can_be_inlined = false;
@@ -2423,7 +2421,7 @@ class Toolbox
      * @since 0.85.5
      *
      * @param string         $file  path of the file
-     * @param bool|string $type  check if $file is the correct type
+     * @param bool|string $type  check if $file is the correct type (only matches with the first part of the mime like "image" for "image/png)
      *
      * @return bool|string (if $type not given) else boolean
      *
