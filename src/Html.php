@@ -1453,6 +1453,25 @@ TWIG,
     }
 
     /**
+     * Returns the help/documentation URL for the current interface.
+     *
+     * @return string
+     */
+    public static function getHelpURL(): string
+    {
+        global $CFG_GLPI;
+
+        $help_url_key = Session::getCurrentInterface() === 'central'
+            ? 'central_doc_url'
+            : 'helpdesk_doc_url';
+        $help_url = !empty($CFG_GLPI[$help_url_key])
+            ? $CFG_GLPI[$help_url_key]
+            : 'https://glpi-project.org/documentation';
+
+        return URL::sanitizeURL($help_url);
+    }
+
+    /**
      * Returns template variables that can be used for page header in any context.
      *
      * @return array
@@ -1485,20 +1504,13 @@ TWIG,
             // may remove this header for security reasons.
         }
 
-        $help_url_key = Session::getCurrentInterface() === 'central'
-            ? 'central_doc_url'
-            : 'helpdesk_doc_url';
-        $help_url = !empty($CFG_GLPI[$help_url_key])
-            ? $CFG_GLPI[$help_url_key]
-            : 'https://glpi-project.org/documentation';
-
         return [
             'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
             'is_impersonate_active' => Session::isImpersonateActive(),
             'found_new_version'   => $found_new_version,
             'user'                  => $user instanceof User ? $user : null,
             'platform'              => $platform,
-            'help_url'              => URL::sanitizeURL($help_url),
+            'help_url'              => self::getHelpURL(),
         ];
     }
 
