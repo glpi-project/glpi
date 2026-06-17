@@ -1385,7 +1385,7 @@ class EntityTest extends DbTestCase
     {
         $this->login();
 
-        $old_entity = $this->createItem(
+        $this->createItem(
             'Entity',
             [
                 'name'        => 'Existing entity',
@@ -1548,12 +1548,10 @@ class EntityTest extends DbTestCase
 
         $this->login();
 
-        $fn_get_current_entities = static function () use ($DB) {
-            return iterator_to_array($DB->request([
-                'SELECT' => ['id', 'name', 'entities_id'],
-                'FROM' => 'glpi_entities',
-            ]));
-        };
+        $fn_get_current_entities = (static fn() => iterator_to_array($DB->request([
+            'SELECT' => ['id', 'name', 'entities_id'],
+            'FROM' => 'glpi_entities',
+        ])));
 
         $fn_find_entities_in_selector = static function ($selector, $entities, $parent_id = 0, &$found = []) use (&$fn_find_entities_in_selector) {
             foreach ($selector as $item) {
@@ -2251,5 +2249,93 @@ class EntityTest extends DbTestCase
 
         // Assert
         $this->assertEquals($expected_strategy, $actual_strategy);
+    }
+
+    /** @return iterable<string, array{inquest_config: int, inquest_rate: int, inquest_delay: int, inquest_URL: string|null, contains: array<string>, not_contains: array<string>}> */
+    public static function inquestConfigDisplayProvider(): iterable
+    {
+        yield 'CONFIG_PARENT shows inheritance label' => [
+            'inquest_config' => Entity::CONFIG_PARENT,
+            'inquest_rate'   => 0,
+            'inquest_delay'  => 0,
+            'inquest_URL'    => null,
+            'contains'       => ['Inheritance of the parent entity'],
+            'not_contains'   => [],
+        ];
+
+        yield 'internal survey, rate disabled' => [
+            'inquest_config' => \CommonITILSatisfaction::TYPE_INTERNAL,
+            'inquest_rate'   => 0,
+            'inquest_delay'  => 0,
+            'inquest_URL'    => null,
+            'contains'       => ['Disabled'],
+            'not_contains'   => ['-2'],
+        ];
+
+        yield 'internal survey, rate set' => [
+            'inquest_config' => \CommonITILSatisfaction::TYPE_INTERNAL,
+            'inquest_rate'   => 50,
+            'inquest_delay'  => 3,
+            'inquest_URL'    => null,
+            'contains'       => ['Internal survey', '3', '50%'],
+            'not_contains'   => ['-2'],
+        ];
+
+        yield 'external survey with URL' => [
+            'inquest_config' => \CommonITILSatisfaction::TYPE_EXTERNAL,
+            'inquest_rate'   => 100,
+            'inquest_delay'  => 1,
+            'inquest_URL'    => 'https://example.com/survey',
+            'contains'       => ['External survey', 'https://example.com/survey', '<a href='],
+            'not_contains'   => ['-2'],
+        ];
+
+        yield 'external survey without URL shows no -2' => [
+            'inquest_config' => \CommonITILSatisfaction::TYPE_EXTERNAL,
+            'inquest_rate'   => 100,
+            'inquest_delay'  => 1,
+            'inquest_URL'    => null,
+            'contains'       => ['External survey'],
+            'not_contains'   => ['-2', '<a href='],
+        ];
+    }
+
+    /**
+     * @param array<string> $contains
+     * @param array<string> $not_contains
+     */
+    #[DataProvider('inquestConfigDisplayProvider')]
+    public function testInquestConfigSpecificValueToDisplay(
+        int $inquest_config,
+        int $inquest_rate,
+        int $inquest_delay,
+        ?string $inquest_URL,
+        array $contains,
+        array $not_contains
+    ): void {
+        $this->login();
+
+        $entity = $this->createItem(Entity::class, [
+            'name'           => 'Test inquest display',
+            'entities_id'    => getItemByTypeName('Entity', '_test_root_entity', true),
+            'inquest_config' => $inquest_config,
+            'inquest_rate'   => $inquest_rate,
+            'inquest_delay'  => $inquest_delay,
+            'inquest_URL'    => $inquest_URL ?? '',
+        ]);
+
+        $result = Entity::getSpecificValueToDisplay(
+            'inquest_config',
+            ['inquest_config' => $inquest_config, 'id' => $entity->getID()],
+            ['html' => true]
+        );
+
+        foreach ($contains as $expected) {
+            $this->assertStringContainsString($expected, $result);
+        }
+
+        foreach ($not_contains as $unexpected) {
+            $this->assertStringNotContainsString($unexpected, $result);
+        }
     }
 }
