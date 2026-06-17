@@ -19722,7 +19722,7 @@ msgid_plural "Printers"
 msgstr[0] "Tiskárna"
 msgstr[1] "Tiskáren"
 msgstr[2] "Tiskáren"
-msgstr[3] "Tiskáreny"
+msgstr[3] "Tiskárny"
 
 #: src/Rule.php:628
 msgid "Rules management"
