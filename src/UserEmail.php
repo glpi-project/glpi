@@ -175,7 +175,7 @@ class UserEmail extends CommonDBChild
     #[Override()]
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
     {
-        $html = "<div class='d-flex'>"
+        $html = "<div class='d-flex' role='group' aria-label='" . __s('Email') . "'>"
             . "<input title='" . __s('Default email') . "' type='radio' name='_default_email' value='-__JS_PLACEHOLDER__' aria-label='" . __s('Set as default email') . "'>"
             . "&nbsp;"
             . "<input type='text' class='form-control' " . "name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'  aria-label='" . __s('Email address') . "'>"
@@ -206,7 +206,7 @@ class UserEmail extends CommonDBChild
         }
         $result = "";
         $field_name = htmlescape($field_name . "[$id]");
-        $result .= "<div class='d-flex align-items-center'>";
+        $result .= "<div class='d-flex align-items-center' role='group' aria-label='" . __s('Email') . "'>";
         $result .= "<input title='" . __s('Default email') . "' type='radio' name='_default_email'
              value='" . htmlescape($this->getID()) . "'";
         if (!$canedit) {

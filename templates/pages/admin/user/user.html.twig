@@ -247,7 +247,8 @@
                                 {% endif %}
                             {% endif %}
 
-                            {{ fields.smallTitle(__('Contact information')) }}
+                            <div role="group" aria-labelledby="pref_section_contact">
+                            {{ fields.smallTitle(__('Contact information'), '', '', 'pref_section_contact') }}
                             {% set emails_field %}
                                 {{ call('UserEmail::showForUser', [item]) }}
                                 {{ call('UserEmail::showAddEmailButton', [item]) }}
@@ -258,9 +259,11 @@
                             {% if not simple_form %}
                                 {{ fields.textField('phone2', item.fields['phone2'], __('Phone 2')) }}
                             {% endif %}
+                            </div>
 
                             {% if not item.isNewItem() and ((caneditpassword ?? false) or is_preference_form) %}
-                                {{ fields.smallTitle(__('Passwords and access keys')) }}
+                                <div role="group" aria-labelledby="pref_section_passwords">
+                                {{ fields.smallTitle(__('Passwords and access keys'), '', '', 'pref_section_passwords') }}
                                 {{ fields.passwordField('api_token', item.fields['api_token']|decrypt, __('API token'), {
                                     can_regenerate: true,
                                     is_disclosable: true,
@@ -311,11 +314,14 @@
                                     {% endset %}
                                     {{ fields.htmlField('_change_pw', change_pw_field, __('Password')) }}
                                 {% endif %}
+                                </div>
                             {% endif %}
                             {% if item.isNewItem() %}
-                                {{ fields.smallTitle(__('Passwords and access keys')) }}
+                                <div role="group" aria-labelledby="pref_section_passwords">
+                                {{ fields.smallTitle(__('Passwords and access keys'), '', '', 'pref_section_passwords') }}
                                 <div>
                                     {{ include('pages/admin/user/change_other_password.html.twig') }}
+                                </div>
                                 </div>
                             {% endif %}
                         </div>
