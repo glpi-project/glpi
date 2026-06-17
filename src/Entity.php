@@ -2701,7 +2701,7 @@ class Entity extends CommonTreeDropdown implements
                     //TRANS: %d is the percentage. %% to display %
                     $inherit .= sprintf(__s('%d%%'), $inquest_rate);
 
-                    if ((int) $values[$field] === 2) {
+                    if ((int) $values[$field] === CommonITILSatisfaction::TYPE_EXTERNAL) {
                         $url = self::getUsedConfig(
                             $field,
                             $entity_id,
