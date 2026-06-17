@@ -31,7 +31,6 @@
  */
 
 import '/build/vue/app.js';
-import Toolbar from "/js/src/vue/Debug/Toolbar.vue";
 import {flushPromises, mount} from "@vue/test-utils";
 
 describe("Debug Bar", () => {
@@ -116,6 +115,7 @@ describe("Debug Bar", () => {
     });
 
     async function mountToolbar() {
+        const Toolbar = await import("/js/src/vue/Debug/Toolbar.vue").then(module => module.default);
         const wrapper = mount(Toolbar, {
             attachTo: document.body,
             props: {
@@ -336,8 +336,8 @@ describe("Debug Bar", () => {
     });
 
     it('Client performance', async () => {
-        vi.useFakeTimers();
         const wrapper = await mountToolbar();
+        vi.useFakeTimers();
         vi.advanceTimersByTime(500);
         vi.useRealTimers();
 
