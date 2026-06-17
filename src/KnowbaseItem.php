@@ -2401,6 +2401,7 @@ TWIG, $twig_params);
             foreach ($imgs as $img) {
                 /** @var DOMElement $img */
                 $img->removeAttribute('width');
+                $img->removeAttribute('height');
                 $style = $img->getAttribute('style');
                 $style = preg_replace('/(?<![a-zA-Z-])(?:(?:min|max)-)?width\s*:[^;]+;?\s*/i', '', $style);
                 $style = rtrim($style, '; ') . '; max-width: 100%; height: auto;';
