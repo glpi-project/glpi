@@ -410,12 +410,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/task.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Part \\$parents_itemtype \\(class\\-string\\<CommonITILObject\\>\\|CommonITILObject\\) of encapsed string cannot be cast to string\\.$#',
-	'identifier' => 'encapsedStringPart.nonString',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/task.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method can\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
