@@ -106,7 +106,7 @@
                         </select>
                         <input v-else class="form-control" :id="`itemtype${rand}`" v-model.lazy="current_itemtype">
                         <button class="btn btn-sm btn-outline-secondary" @click="itemtype_input_mode = itemtype_input_mode === 'select' ? 'input' : 'select'"
-                                title="Toggle manual input">
+                                title="Toggle manual input" aria-label="Toggle manual input">
                             <i class="ti ti-switch-horizontal"></i>
                         </button>
                     </div>
