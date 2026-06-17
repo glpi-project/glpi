@@ -87,6 +87,16 @@ class QuestionTypeItem extends AbstractQuestionType implements
     }
 
     #[Override]
+    public function formatPredefinedValue(string $value): ?string
+    {
+        if (!ctype_digit($value) || (int) $value <= 0) {
+            return null;
+        }
+
+        return json_encode(new QuestionTypeItemDefaultValueConfig((int) $value));
+    }
+
+    #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
     {
         if (is_array($value) && isset($value['items_id'])) {
