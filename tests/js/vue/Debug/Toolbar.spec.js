@@ -116,6 +116,35 @@ describe("Debug Bar", () => {
 
     async function mountToolbar() {
         const Toolbar = await import("/js/src/vue/Debug/Toolbar.vue").then(module => module.default);
+
+        // import all widgets at once, assigning each to variable for use in the mount options later, and then await all to reduce test time
+
+        const [
+            WidgetButton,
+            WidgetServerPerformance,
+            WidgetSQLRequests,
+            WidgetHTTPRequests,
+            WidgetRequestSummary,
+            WidgetGlobals,
+            WidgetClientPerformance,
+            WidgetProfiler,
+            WidgetProfilerTable,
+            WidgetSearchOptions,
+            WidgetThemeSwitcher
+        ] = await Promise.all([
+            import('/js/src/vue/Debug/WidgetButton.vue').then(module => module.default),
+            import('/js/src/vue/Debug/Widget/ServerPerformance.vue').then(module => module.default),
+            import('/js/src/vue/Debug/Widget/SQLRequests.vue').then(module => module.default),
+            import('/js/src/vue/Debug/Widget/HTTPRequests.vue').then(module => module.default),
+            import('/js/src/vue/Debug/Widget/RequestSummary.vue').then(module => module.default),
+            import('/js/src/vue/Debug/Widget/Globals.vue').then(module => module.default),
+            import('/js/src/vue/Debug/Widget/ClientPerformance.vue').then(module => module.default),
+            import('/js/src/vue/Debug/Widget/Profiler.vue').then(module => module.default),
+            import('/js/src/vue/Debug/Widget/ProfilerTable.vue').then(module => module.default),
+            import('/js/src/vue/Debug/Widget/SearchOptions.vue').then(module => module.default),
+            import('/js/src/vue/Debug/Widget/ThemeSwitcher.vue').then(module => module.default),
+        ]);
+
         const wrapper = mount(Toolbar, {
             attachTo: document.body,
             props: {
@@ -167,17 +196,17 @@ describe("Debug Bar", () => {
             },
             global: {
                 components: {
-                    'widget-button': await import('/js/src/vue/Debug/WidgetButton.vue').then(module => module.default),
-                    'widget-server-performance': await import('/js/src/vue/Debug/Widget/ServerPerformance.vue').then(module => module.default),
-                    'widget-sqlrequests': await import('/js/src/vue/Debug/Widget/SQLRequests.vue').then(module => module.default),
-                    'widget-httprequests': await import('/js/src/vue/Debug/Widget/HTTPRequests.vue').then(module => module.default),
-                    'widget-request-summary': await import('/js/src/vue/Debug/Widget/RequestSummary.vue').then(module => module.default),
-                    'widget-globals': await import('/js/src/vue/Debug/Widget/Globals.vue').then(module => module.default),
-                    'widget-client-performance': await import('/js/src/vue/Debug/Widget/ClientPerformance.vue').then(module => module.default),
-                    'widget-profiler': await import('/js/src/vue/Debug/Widget/Profiler.vue').then(module => module.default),
-                    'widget-profiler-table': await import('/js/src/vue/Debug/Widget/ProfilerTable.vue').then(module => module.default),
-                    'widget-search-options': await import('/js/src/vue/Debug/Widget/SearchOptions.vue').then(module => module.default),
-                    'widget-theme-switcher': await import('/js/src/vue/Debug/Widget/ThemeSwitcher.vue').then(module => module.default),
+                    'widget-button': WidgetButton,
+                    'widget-server-performance': WidgetServerPerformance,
+                    'widget-sqlrequests': WidgetSQLRequests,
+                    'widget-httprequests': WidgetHTTPRequests,
+                    'widget-request-summary': WidgetRequestSummary,
+                    'widget-globals': WidgetGlobals,
+                    'widget-client-performance': WidgetClientPerformance,
+                    'widget-profiler': WidgetProfiler,
+                    'widget-profiler-table': WidgetProfilerTable,
+                    'widget-search-options': WidgetSearchOptions,
+                    'widget-theme-switcher': WidgetThemeSwitcher,
                 }
             }
         });
