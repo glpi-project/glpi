@@ -3544,4 +3544,279 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     }
 
 
+    public function testGetUniqueItemByNameReturnsMatchingItem(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'affectbyname-test-create',
+            'entities_id' => $entity_id,
+        ]);
+
+        //add a seconde computer
+        $this->createItem(\Computer::class, [
+            'name'        => 'server-2',
+            'entities_id' => $entity_id,
+        ]);
+
+        //add another ticket type item that is set after Computer in the list of ticket types
+        $this->createItem(\Monitor::class, [
+            'name'        => 'affectbyname-test-create',
+            'entities_id' => $entity_id,
+        ]);
+
+        $result = RuleCommonITILObject::getUniqueItemByName('affectbyname-test-create', $entity_id);
+
+        //only the computer should be returned (first item found)
+        $this->assertEquals($computer->getID(), $result['id']);
+        $this->assertEquals(\Computer::class, $result['itemtype']);
+    }
+
+    public function testGetUniqueItemByNameReturnsEmptyWhenNotFound(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        $result = RuleCommonITILObject::getUniqueItemByName('nonexistent-asset-xyz-' . mt_rand(), $entity_id);
+
+        $this->assertEmpty($result);
+
+        //create a non ticket type item with the same name, it should not be returned
+        $this->createItem(Entity::class, [
+            'name'        => 'test-entity',
+            'entities_id' => $entity_id,
+        ]);
+
+        $result = RuleCommonITILObject::getUniqueItemByName('test-entity', $entity_id);
+        $this->assertEmpty($result);
+    }
+
+    public function testGetUniqueItemByNameExcludesNonValidItems(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+
+        //Test with a deleted item
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'deleted-server-findme',
+            'entities_id' => $entity_id,
+        ]);
+        $this->assertTrue((new \Computer())->delete(['id' => $computer->getID()]));
+
+        $result = RuleCommonITILObject::getUniqueItemByName('deleted-server-findme', $entity_id);
+
+        $this->assertSame([], $result);
+
+        //Test with a template
+
+        $this->createItem(\Computer::class, [
+            'name'        => 'template-server-findme',
+            'entities_id' => $entity_id,
+            'is_template' => 1,
+        ]);
+
+        $result = RuleCommonITILObject::getUniqueItemByName('template-server-findme', $entity_id);
+
+        $this->assertEmpty($result);
+    }
+
+    public function testGetUniqueItemByNameRestrictsToEntity(): void
+    {
+        $this->login();
+
+        $root_entity   = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $child_entity  = getItemByTypeName(Entity::class, '_test_child_1', true);
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'entity-restricted-server',
+            'entities_id' => $child_entity,
+        ]);
+
+        $result = RuleCommonITILObject::getUniqueItemByName('entity-restricted-server', $root_entity);
+
+        $this->assertEmpty($result);
+
+        $result = RuleCommonITILObject::getUniqueItemByName('entity-restricted-server', $child_entity);
+
+        $this->assertSame($computer->getID(), $result['id']);
+    }
+
+    public function testAffectEquipmentByNameOnCreate(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_item_table = $this->getITILLinkClass('Item')::getTable();
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'affectbyname-test-create',
+            'entities_id' => $entity_id,
+        ]);
+
+        //add a seconde computer
+        $this->createItem(\Computer::class, [
+            'name'        => 'server-2',
+            'entities_id' => $entity_id,
+        ]);
+
+        //add another ticket type item that is set after Computer in the list of ticket types
+        $this->createItem(\Monitor::class, [
+            'name'        => 'affectbyname-test-create',
+            'entities_id' => $entity_id,
+        ]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion(RuleCommonITILObject::ONADD)
+            ->setEntity($entity_id)
+            ->addCriteria('name', Rule::PATTERN_CONTAIN, 'affectbyname-trigger')
+            ->addAction('affectbyname', 'affectobject', 'affectbyname-test-create');
+        $this->createRule($rule_builder);
+
+        $itil = $this->createItem($itil_class, [
+            'name'        => 'affectbyname-trigger ticket',
+            'content'     => 'test',
+            'entities_id' => $entity_id,
+        ]);
+
+        //only the first computer should be linked to the ITIL object (first item found)
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_item_table,
+                [
+                    'itemtype' => \Computer::class,
+                    'items_id' => $computer->getID(),
+                    $itil_fk   => $itil->getID(),
+                ]
+            ),
+        );
+    }
+
+    public function testAffectEquipmentByNameOnUpdate(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_item_table = $this->getITILLinkClass('Item')::getTable();
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'affectbyname-test-update',
+            'entities_id' => $entity_id,
+        ]);
+
+        //add a seconde computer
+        $this->createItem(\Computer::class, [
+            'name'        => 'server-2',
+            'entities_id' => $entity_id,
+        ]);
+
+        //add another ticket type item that is set after Computer in the list of ticket types
+        $this->createItem(\Monitor::class, [
+            'name'        => 'affectbyname-test-update',
+            'entities_id' => $entity_id,
+        ]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion(RuleCommonITILObject::ONUPDATE)
+            ->setEntity($entity_id)
+            ->addCriteria('name', Rule::PATTERN_CONTAIN, 'affectbyname-trigger')
+            ->addAction('affectbyname', 'affectobject', 'affectbyname-test-update');
+        $this->createRule($rule_builder);
+
+        $itil = $this->createItem($itil_class, [
+            'name'        => 'no match yet',
+            'content'     => 'test',
+            'entities_id' => $entity_id,
+        ]);
+
+        // No link before update
+        $this->assertEquals(
+            0,
+            countElementsInTable(
+                $itil_item_table,
+                [
+                    'itemtype' => \Computer::class,
+                    'items_id' => $computer->getID(),
+                    $itil_fk => $itil->getID(),
+                ]
+            )
+        );
+
+        $this->updateItem($itil_class, $itil->getID(), ['name' => 'affectbyname-trigger updated']);
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_item_table,
+                [
+                    'itemtype' => \Computer::class,
+                    'items_id' => $computer->getID(),
+                    $itil_fk   => $itil->getID(),
+                ]
+            ),
+        );
+    }
+
+    public function testAffectEquipmentByNameWithRegex(): void
+    {
+        $this->login();
+
+        $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
+        $itil_class = $this->getITILObjectClass();
+        $itil_fk = $itil_class::getForeignKeyField();
+        $itil_item_table = $this->getITILLinkClass('Item')::getTable();
+
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'regex-test-target',
+            'entities_id' => $entity_id,
+        ]);
+
+        //add a seconde computer
+        $this->createItem(\Computer::class, [
+            'name'        => 'server-2',
+            'entities_id' => $entity_id,
+        ]);
+
+        //add another ticket type item that is set after Computer in the list of ticket types
+        $this->createItem(\Monitor::class, [
+            'name'        => 'regex-test-target',
+            'entities_id' => $entity_id,
+        ]);
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, $this->getTestedClass());
+        $rule_builder
+            ->setCondtion(RuleCommonITILObject::ONADD)
+            ->setEntity($entity_id)
+            ->addCriteria('content', Rule::REGEX_MATCH, '/(regex-test-target)/')
+            ->addAction('affectbyname', 'affectobject', '#0');
+        $this->createRule($rule_builder);
+
+        $itil = $this->createItem($itil_class, [
+            'name'        => 'ticket with regex equipment assignment',
+            'content'     => 'please assign regex-test-target to this ticket',
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                $itil_item_table,
+                [
+                    'itemtype' => \Computer::class,
+                    'items_id' => $computer->getID(),
+                    $itil_fk   => $itil->getID(),
+                ]
+            ),
+        );
+    }
 }
