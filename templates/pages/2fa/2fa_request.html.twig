@@ -55,7 +55,7 @@
                     if (form.attr('data-code-type') === 'code') {
                         // Switch to backup code
                         form.attr('data-code-type', 'backup_code');
-                        $('input[name="totp_code[]"]')
+                        $('input[name="totp_code"]')
                             .attr('disabled', 'disabled')
                             .addClass('d-none');
                         $('input[name="backup_code"]')
@@ -69,7 +69,7 @@
                         $('input[name="backup_code"]')
                             .attr('disabled', 'disabled')
                             .toggleClass('d-none');
-                        $('input[name="totp_code[]"]')
+                        $('input[name="totp_code"]')
                             .removeAttr('disabled')
                             .removeClass('d-none');
                         btn.text('{{ __('Use a backup code') }}');

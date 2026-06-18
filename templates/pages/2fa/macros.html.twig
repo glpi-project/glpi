@@ -32,58 +32,23 @@
 
 {% macro tfa_code_input(digits = 6) %}
    <div class="d-flex justify-content-center" dir="ltr">
-      {% for i in 1..digits %}
-         <input type="text" class="form-control text-center {{ i != 1 ? 'ms-2' : '' }} fw-bold" name="totp_code[]"
-             maxlength="1" pattern="[0-9]" inputmode="numeric" required style="width: 2.5em; font-size: 1.5em"
-             aria-label="{{ __('2FA code digit %s of %s')|format(i, digits) }}">
-      {% endfor %}
+      <input type="text" id="totp_code" name="totp_code"
+             class="form-control text-center fw-bold"
+             maxlength="{{ digits }}" pattern="[0-9]{{ '{' ~ digits ~ '}' }}"
+             inputmode="numeric" autocomplete="one-time-code" required
+             aria-label="{{ __('Authentication code') }}"
+             style="max-width: 12em; font-size: 1.5em; letter-spacing: 0.3em">
    </div>
    <script>
        $(document).ready(function() {
-           const input_fields = $('input[name="totp_code[]"]');
-           input_fields.first().focus();
-           input_fields.parent().on('keyup', 'input[name="totp_code[]"]', function(e) {
-               if (e.which === 8) {
-                   return;
-               }
-               if ($(this).val().length === 1) {
-                   const next = $(this).next();
-                   if (next.length === 0) {
-                       $(this).closest('form').find('button[name="continue"]').click();
-                       input_fields.prop('disabled', true);
-                   }
+           const field = $('#totp_code');
+           field.trigger('focus');
+           // Auto-submit once the full code is entered (parity with previous UX)
+           field.on('input', function() {
+               if (this.value.length === {{ digits }}) {
+                   $(this).closest('form').find('button[name="continue"]').trigger('click');
                }
            });
-           input_fields.parent().on('keydown', 'input[name="totp_code[]"]', function(e) {
-               if (e.which === 8) {
-                   $(this).prev().focus();
-               }
-               if ($(this).val().length === 1) {
-                   // Move to the next input if there is one, otherwise submit the form
-                   const next = $(this).next();
-                   if (next.length) {
-                       next.focus();
-                   } else {
-                       $(this).closest('form').find('button[name="continue"]').click();
-                       input_fields.prop('disabled', true);
-                   }
-               }
-           });
-           // Pasting in any of the fields will fill all of them
-           input_fields.on('paste', function(e) {
-              const pasted_data = e.originalEvent.clipboardData.getData('text');
-              // Clear all fields
-              input_fields.val('');
-              let last_filled = 0;
-              input_fields.each(function(index) {
-                 if (pasted_data[index]) {
-                    $(this).val(pasted_data[index]);
-                    last_filled = index;
-                 }
-              });
-              // focus on the field after the last one filled (or the last if all filled)
-              input_fields.eq(Math.min(input_fields.length, last_filled + 1)).focus();
-          });
        });
    </script>
 {% endmacro %}
@@ -99,39 +64,43 @@
             {% endif %}
          </div>
          <div class="card-body">
-            <div class="col">
-               <div>{{ __('1. Install an authenticator app on your mobile device such as Google Authenticator or Authy.') }}</div>
-               <div class="mt-2">{{ __('2. Scan the following QR code or enter the code shown into your authenticator app.') }}</div>
-               <div class="col-md-6 mx-auto">
-                  <div class="text-center">
-                     <img src="{{ qrcode }}" alt="{{ __('QR Code') }}" />
-                  </div>
-               </div>
-               <div class="mx-auto">
-                  <div>
-                     <div class="btn-group d-flex">
-                        <input class="form-control" alt="{{ __('2FA secret') }}" value="{{ secret }}" aria-label="{{ __('2FA secret') }}" />
-                        <button type="button" class="btn btn-icon flex-grow-0 flex-shrink-0" name="copy_secret" data-clipboard-text="{{ secret }}">
-                           <i class="ti ti-clipboard-copy"></i>
-                        </button>
-                        <script>
-                           $(document).ready(function() {
-                               $('button[name="copy_secret"]').on('click', function() {
-                                   navigator.clipboard.writeText($(this).data('clipboard-text'));
-                               });
-                           });
-                        </script>
+            <ol class="col mb-0">
+               <li>{{ __('Install an authenticator app on your mobile device such as Google Authenticator or Authy.') }}</li>
+               <li class="mt-2">
+                  {{ __('Scan the following QR code or enter the code shown into your authenticator app.') }}
+                  <div class="col-md-6 mx-auto">
+                     <div class="text-center">
+                        <img src="{{ qrcode }}" alt="{{ __('QR Code') }}" />
                      </div>
-                     <input type="hidden" name="secret" value="{{ secret }}" />
-                     <input type="hidden" name="_idor_token" value="{{ idor_token('', {'secret': secret}) }}" />
                   </div>
-               </div>
-               <div class="mt-3">{{ __('3. After entering the code into your authenticator, enter the code shown in the app to finish the setup') }}</div>
-               <div class="col-md-6 mx-auto mt-2">
-                  {# Show code input here to verify it is set correctly #}
-                  {{ _self.tfa_code_input() }}
-               </div>
-            </div>
+                  <div class="mx-auto">
+                     <div>
+                        <div class="btn-group d-flex">
+                           <input class="form-control" alt="{{ __('2FA secret') }}" value="{{ secret }}" aria-label="{{ __('2FA secret') }}" />
+                           <button type="button" class="btn btn-icon flex-grow-0 flex-shrink-0" name="copy_secret" data-clipboard-text="{{ secret }}">
+                              <i class="ti ti-clipboard-copy"></i>
+                           </button>
+                           <script>
+                              $(document).ready(function() {
+                                  $('button[name="copy_secret"]').on('click', function() {
+                                      navigator.clipboard.writeText($(this).data('clipboard-text'));
+                                  });
+                              });
+                           </script>
+                        </div>
+                        <input type="hidden" name="secret" value="{{ secret }}" />
+                        <input type="hidden" name="_idor_token" value="{{ idor_token('', {'secret': secret}) }}" />
+                     </div>
+                  </div>
+               </li>
+               <li class="mt-3">
+                  {{ __('After entering the code into your authenticator, enter the code shown in the app to finish the setup') }}
+                  <div class="col-md-6 mx-auto mt-2">
+                     {# Show code input here to verify it is set correctly #}
+                     {{ _self.tfa_code_input() }}
+                  </div>
+               </li>
+            </ol>
          </div>
          <div class="card-footer d-flex flex-wrap">
             {% if enforced and in_grace_period %}

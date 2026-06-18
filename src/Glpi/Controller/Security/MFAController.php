@@ -104,7 +104,7 @@ final class MFAController extends AbstractController
         }
         $totp = new TOTPManager();
         $backup_code = $request->request->get('backup_code');
-        $totp_code = implode('', $request->request->all('totp_code'));
+        $totp_code = preg_replace('/\s+/', '', $request->request->getString('totp_code')) ?? '';
         $secret = $request->request->get('secret');
         $algorithm = null;
 
