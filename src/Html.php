@@ -702,6 +702,14 @@ TWIG,
                 }
             }
 
+            //TODO Stop using sector-based JS loading
+
+            //Remove huge memory waste by loading dashboard and related libraries (looking at you echarts...)
+            //on pages when there is no right to view dashboards (mainly for simplified interface users)
+            if (!Grid::canViewOneDashboard()) {
+                $jslibs = array_diff($jslibs, ['dashboard']);
+            }
+
             if (in_array('dashboard', $jslibs)) {
                 // include more js libs for dashboard case
                 $jslibs = array_merge($jslibs, [
