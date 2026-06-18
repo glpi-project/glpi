@@ -81,7 +81,6 @@ use function Safe\curl_init;
 use function Safe\error_log;
 use function Safe\fclose;
 use function Safe\filemtime;
-use function Safe\finfo_open;
 use function Safe\fopen;
 use function Safe\fread;
 use function Safe\fwrite;
