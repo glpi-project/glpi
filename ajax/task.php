@@ -75,8 +75,12 @@ if (!$template->getFromDB($tasktemplates_id)) {
 // When items_id=0 (e.g. massive action context where no single item is known),
 // the raw template content is kept as-is.
 $parent = new $parents_itemtype();
-if ($parents_id > 0 && $parent->getFromDB($parents_id)) {
-    $template->fields['content'] = $template->getRenderedContent($parent);
+if ($parents_id > 0) {
+    if ($parent->getFromDB($parents_id)) {
+        $template->fields['content'] = $template->getRenderedContent($parent);
+    } else {
+        throw new BadRequestHttpException("Unable to load parent item: $parents_id");
+    }
 }
 
 //load taskcategorie name (use to create OPTION dom)
