@@ -41,14 +41,7 @@
    </div>
    <script>
        $(document).ready(function() {
-           const field = $('#totp_code');
-           field.trigger('focus');
-           // Auto-submit once the full code is entered (parity with previous UX)
-           field.on('input', function() {
-               if (this.value.length === {{ digits }}) {
-                   $(this).closest('form').find('button[name="continue"]').trigger('click');
-               }
-           });
+           $('#totp_code').trigger('focus');
        });
    </script>
 {% endmacro %}
