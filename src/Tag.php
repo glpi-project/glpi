@@ -120,11 +120,11 @@ class Tag extends CommonDropdown
      */
     private function prepareColorsInput(array $input): array
     {
-        if (empty($input['bg_color']) || !Html::isValidHexColor($input['bg_color'])) {
+        if (isset($input['bg_color']) && (empty($input['bg_color']) || !Html::isValidHexColor($input['bg_color']))) {
             $input['bg_color'] = $this->generateBackgroundColor($input['name']);
         }
-        if (empty($input['color']) || !Html::isValidHexColor($input['color'])) {
-            $input['color'] = $this->generateTextColor($input['bg_color']);
+        if (isset($input['color']) && (empty($input['color']) || !Html::isValidHexColor($input['color']))) {
+            $input['color'] = $this->generateTextColor($input['bg_color'] ?? ($this->fields['bg_color'] ?? ''));
         }
         return $input;
     }
