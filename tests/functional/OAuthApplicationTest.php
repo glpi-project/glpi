@@ -365,8 +365,6 @@ class OAuthApplicationTest extends DbTestCase
 
     public function testDeleteOAuthAppLinkedToACollector(): void
     {
-        global $DB;
-
         $this->login();
 
         /** @var OAuthApplication $app */
@@ -447,6 +445,66 @@ class OAuthApplicationTest extends DbTestCase
 
         $tabs = $app->getTabNameForItem($app);
         $this->assertStringContainsString('tab-count-badge">2<', $tabs[1]);
+    }
+
+    // -------------------------------------------------------------------------
+    // cleanDBonPurge
+    // -------------------------------------------------------------------------
+
+    public function testCleanDBonPurgeDisablesLinkedCollectors(): void
+    {
+        $this->login();
+
+        /** @var OAuthApplication $app */
+        $app = $this->createItem(OAuthApplication::class, [
+            'name'          => 'App for cleanDBonPurge',
+            'is_active'     => 1,
+            'provider'      => 'azure',
+            'client_id'     => 'cid',
+            'client_secret' => 'secret',
+            'tenant_id'     => 'tenant',
+        ], ['client_secret']);
+
+        $protocol_key = 'oauth_imap_' . $app->getID();
+
+        /** @var MailCollector $mc1 */
+        $mc1 = $this->createItem(MailCollector::class, [
+            'name'      => 'Linked collector A',
+            'host'      => '{mail.example.com/' . $protocol_key . '/ssl}INBOX',
+            'login'     => 'a@example.com',
+            'is_active' => 1,
+        ], ['host', 'server_type']);
+
+        /** @var MailCollector $mc2 */
+        $mc2 = $this->createItem(MailCollector::class, [
+            'name'      => 'Linked collector B',
+            'host'      => '{mail.example.com/' . $protocol_key . '}INBOX',
+            'login'     => 'b@example.com',
+            'is_active' => 1,
+        ], ['host', 'server_type']);
+
+        /** @var MailCollector $mc_unlinked */
+        $mc_unlinked = $this->createItem(MailCollector::class, [
+            'name'      => 'Unlinked collector',
+            'host'      => '{mail.other.com/imap/ssl}INBOX',
+            'login'     => 'c@example.com',
+            'is_active' => 1,
+        ], ['host', 'server_type']);
+
+        $app->cleanDBonPurge();
+
+        // Linked collectors must be deactivated and their host cleared.
+        $mc1->getFromDB($mc1->getID());
+        $this->assertSame(0, (int) $mc1->fields['is_active']);
+        $this->assertSame('', $mc1->fields['host']);
+
+        $mc2->getFromDB($mc2->getID());
+        $this->assertSame(0, (int) $mc2->fields['is_active']);
+        $this->assertSame('', $mc2->fields['host']);
+
+        // Unlinked collector must not be touched.
+        $mc_unlinked->getFromDB($mc_unlinked->getID());
+        $this->assertSame(1, (int) $mc_unlinked->fields['is_active']);
     }
 
     // -------------------------------------------------------------------------
