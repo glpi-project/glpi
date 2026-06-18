@@ -71,16 +71,12 @@ if (!$template->getFromDB($tasktemplates_id)) {
     throw new BadRequestHttpException("Unable to load template: $tasktemplates_id");
 }
 
-// Load parent item and render template content with its context.
-// When items_id=0 (e.g. massive action context where no single item is known),
-// the raw template content is kept as-is.
+// Load parent item
 $parent = new $parents_itemtype();
-if ($parents_id > 0) {
-    if ($parent->getFromDB($parents_id)) {
-        $template->fields['content'] = $template->getRenderedContent($parent);
-    } else {
-        throw new BadRequestHttpException("Unable to load parent item: $parents_id");
-    }
+if ($parent->getFromDB($parents_id)) {
+    $template->fields['content'] = $template->getRenderedContent($parent);
+} else {
+    throw new BadRequestHttpException("Unable to load parent item: $parents_itemtype $parents_id");
 }
 
 //load taskcategorie name (use to create OPTION dom)
