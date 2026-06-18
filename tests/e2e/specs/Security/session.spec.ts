@@ -167,4 +167,43 @@ test.describe('Session', () => {
 
         await expect(anonymousPage).toHaveURL(/\/front\/central\.php/);
     });
+
+    test('2FA setup screen has accessible structure', async ({ anonymousPage, api }) => {
+        test.slow();
+
+        const username = `e2e_tests_2fa${Date.now()}`;
+        const user_id = await api.createItem('User', {
+            name: username,
+            login: username,
+            password: 'glpi',
+            password2: 'glpi',
+            _profiles_id: Profiles.SuperAdmin,
+        });
+        const group_id = await api.createItem('Group', {
+            name: `e2e_tests_group_2fa${Date.now()}`,
+            entities_id: 0,
+            '2fa_enforced': 1,
+        });
+        await api.createItem('Group_User', {
+            groups_id: group_id,
+            users_id: user_id,
+        });
+
+        await anonymousPage.setExtraHTTPHeaders({ 'Accept-Language': 'en-GB,en;q=0.9' });
+        const login_page = new LoginPage(anonymousPage);
+        await login_page.goto();
+        await login_page.doLogin(username, 'glpi');
+        await expect(anonymousPage).toHaveURL(/\/MFA\/Setup/);
+
+        // Setup instructions are a semantic ordered list of 3 steps (criterion 9.3)
+        await expect(anonymousPage.getByRole('list').getByRole('listitem')).toHaveCount(3);
+
+        // The code entry is a single accessible field, not the former 6 per-digit inputs
+        await expect(anonymousPage.getByRole('textbox', { name: 'Authentication code' })).toBeVisible();
+        await expect(anonymousPage.getByRole('textbox', { name: /digit \d of \d/ })).toHaveCount(0);
+
+        const secret = await anonymousPage.getByRole('textbox', { name: '2FA secret' }).inputValue();
+        await login_page.doFillTotpCode(authenticator.generate(secret));
+        await expect(anonymousPage).toHaveURL(/\/MFA\/ShowBackupCodes/);
+    });
 });
