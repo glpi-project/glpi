@@ -963,12 +963,16 @@ HTML;
             );
         }
 
+        $item = new $itemtype();
+
         // Add assignable criteria if the item is assignable
-        if (is_subclass_of($itemtype, AssignableItemInterface::class, true)) {
-            $base_request['WHERE'][] = $itemtype::getAssignableVisiblityCriteria();
+        if ($item instanceof AssignableItemInterface) {
+            $visibility_criteria = $item->getAssignableVisiblityCriteria();
+            if (count($visibility_criteria)) {
+                $base_request['WHERE'][] = $visibility_criteria;
+            }
         }
 
-        $item = new $itemtype();
         if ($item->isEntityAssign()) {
             $base_request['WHERE'] = array_merge_recursive(
                 $base_request['WHERE'],

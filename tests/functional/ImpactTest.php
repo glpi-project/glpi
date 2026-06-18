@@ -602,19 +602,27 @@ class ImpactTest extends DbTestCase
     {
         $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
         $this->login();
+        $assigned_user_id = getItemByTypeName('User', 'normal', true);
 
         $c1 = $this->createItem(Computer::class, ['name' => 'impact-test-read-1', 'entities_id' => $entity_id]);
         $c2 = $this->createItem(Computer::class, ['name' => 'impact-test-read-2', 'entities_id' => $entity_id]);
+        $c3 = $this->createItem(Computer::class, [
+            'name' => 'impact-test-read-3',
+            'entities_id' => $entity_id,
+            'users_id_tech' => $assigned_user_id,
+        ]);
+
 
         $_SESSION['glpiactiveprofile'][Computer::$rightname] = READ;
 
         $result = \Impact::searchAsset(Computer::class, [], 'impact-test-read');
 
-        $this->assertSame(2, $result['total']);
+        $this->assertSame(3, $result['total']);
 
         $ids = array_column($result['items'], 'id');
         $this->assertContains($c1->getID(), $ids);
         $this->assertContains($c2->getID(), $ids);
+        $this->assertContains($c3->getID(), $ids);
     }
 
     public function testSearchAssetReadAssignedRight(): void
