@@ -410,6 +410,14 @@ class Config extends CommonDBTM
             Toolbox::deprecated('Usage of "MAIL_SMTPSSL" and "MAIL_SMTPTLS" SMTP mode is deprecated. Switch to "MAIL_SMTP" mode.');
         }
 
+        if (isset($input['smtp_passwd']) && empty($input['smtp_passwd'])) {
+            unset($input['smtp_passwd']);
+        }
+
+        if (isset($input["_blank_smtp_passwd"]) && $input["_blank_smtp_passwd"]) {
+            $input['smtp_passwd'] = '';
+        }
+
         if (array_key_exists('smtp_mode', $input) && (int) $input['smtp_mode'] === MAIL_SMTPOAUTH) {
             $input['smtp_check_certificate'] = 1;
             $input['smtp_passwd']          = '';
@@ -452,13 +460,6 @@ class Config extends CommonDBTM
             $input['smtp_oauth_client_secret'] = '';
             $input['smtp_oauth_options'] = '{}';
             $input['smtp_oauth_refresh_token'] = '';
-        }
-
-        if (isset($input['smtp_passwd']) && empty($input['smtp_passwd'])) {
-            unset($input['smtp_passwd']);
-        }
-        if (isset($input["_blank_smtp_passwd"]) && $input["_blank_smtp_passwd"]) {
-            $input['smtp_passwd'] = '';
         }
 
         return $input;
