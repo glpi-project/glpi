@@ -34,15 +34,16 @@
 #tree_browse {
     display: grid;
     grid-template-columns: 250px 1fr;
+
     --wb-border-color: var(--tblr-border-color);
     --wb-focus-border-color: var(--tblr-focus-ring-color);
     --wb-background-color: var(--tblr-card-bg);
     --wb-node-text-color: var(--tblr-body-color);
-    --wb-active-color-grayscale: rgba(var(--tblr-secondary-rgb), 0.08);
-    --wb-active-color: rgba(var(--tblr-secondary-rgb), 0.08);
-    --wb-hover-color: rgba(var(--tblr-secondary-rgb), 0.08);
-    --wb-active-hover-color-grayscale: rgba(var(--tblr-secondary-rgb), 0.08);
-    --wb-active-hover-color: rgba(var(--tblr-secondary-rgb), 0.08);
+    --wb-active-color-grayscale: rgb(var(--tblr-secondary-rgb), 0.08);
+    --wb-active-color: rgb(var(--tblr-secondary-rgb), 0.08);
+    --wb-hover-color: rgb(var(--tblr-secondary-rgb), 0.08);
+    --wb-active-hover-color-grayscale: rgb(var(--tblr-secondary-rgb), 0.08);
+    --wb-active-hover-color: rgb(var(--tblr-secondary-rgb), 0.08);
     --wb-active-border-color-grayscale: var(--tblr-border-color);
     --wb-active-border-color: var(--tblr-border-color);
 
