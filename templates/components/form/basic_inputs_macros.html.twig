@@ -171,10 +171,16 @@
         id: name ~ '_' ~ (options.rand ?? random()),
     }|merge(options) %}
 
+    {% set describedby = options.id ~ '_format' %}
     {{ _self.input(name, value, options|merge({
         'type': 'text',
         'input_addclass': 'rounded-0',
+        'additional_attributes': (options.additional_attributes ?? {})|merge({
+            'placeholder': '#RRGGBB',
+            'aria-describedby': describedby,
+        }),
     })) }}
+    <span id="{{ describedby }}" class="visually-hidden">{{ __('Expected format: a hexadecimal color code, for example #FF0000.') }}</span>
     <script>
         $(function () {
             $("#{{ options.id|e('css')|e('js') }}").spectrum({
