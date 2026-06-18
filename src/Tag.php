@@ -326,7 +326,7 @@ class Tag extends CommonDropdown
 
         $tab[] = [
             'id'                 => '12',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'bg_color',
             'name'               => __('Background color'),
             'datatype'           => 'color',
