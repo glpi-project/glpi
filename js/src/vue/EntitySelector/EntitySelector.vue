@@ -1,5 +1,5 @@
 <script setup>
-    import {computed, onMounted, ref, useTemplateRef, watch, useId, onUnmounted} from "vue";
+    import {computed, onMounted, ref, useTemplateRef, watch, useId, onBeforeUnmount} from "vue";
     import {useEntitySelector} from "./useEntitySelector.js";
 
     const props = defineProps({
@@ -201,7 +201,7 @@
         document.addEventListener('keydown', hotkey_listener);
     });
 
-    onUnmounted(() => {
+    onBeforeUnmount(() => {
         entity_dropdown_toggle.value.removeEventListener('show.bs.dropdown', onShowSelector);
         document.removeEventListener('keydown', hotkey_listener);
     });

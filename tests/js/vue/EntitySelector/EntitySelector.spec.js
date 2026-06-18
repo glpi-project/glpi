@@ -39,7 +39,6 @@ enableAutoUnmount(afterEach);
 
 describe('EntitySelector Vue Component', () => {
     beforeEach(() => {
-       window.hotkeys.unbind();
         vi.useFakeTimers();
     });
 
