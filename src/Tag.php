@@ -318,7 +318,7 @@ class Tag extends CommonDropdown
 
         $tab[] = [
             'id'                 => '11',
-            'table'              => $this->getTable(),
+            'table'              => static::getTable(),
             'field'              => 'color',
             'name'               => __('Color'),
             'datatype'           => 'color',
