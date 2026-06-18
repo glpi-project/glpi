@@ -76,7 +76,7 @@ $parent = new $parents_itemtype();
 if ($parent->getFromDB($parents_id)) {
     $template->fields['content'] = $template->getRenderedContent($parent);
 } else {
-    throw new BadRequestHttpException("Unable to load parent item: $parents_itemtype $parents_id");
+    throw new BadRequestHttpException("Unable to load parent item: " . $parents_itemtype . " " . $parents_id);
 }
 
 //load taskcategorie name (use to create OPTION dom)
