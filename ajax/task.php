@@ -60,7 +60,7 @@ if ($tasktemplates_id === null) {
 $parents_id = (int) ($_POST['items_id'] ?? 0);
 
 // Mandatory parameter: itemtype
-$parents_itemtype = $_POST['itemtype'] ?? '';
+$parents_itemtype = (string) ($_POST['itemtype'] ?? '');
 if (empty($parents_itemtype) || !is_subclass_of($parents_itemtype, CommonITILObject::class)) {
     throw new BadRequestHttpException("Missing or invalid parameter: 'itemtype'");
 }
@@ -76,7 +76,13 @@ $parent = new $parents_itemtype();
 if ($parent->getFromDB($parents_id)) {
     $template->fields['content'] = $template->getRenderedContent($parent);
 } else {
-    throw new BadRequestHttpException("Unable to load parent item: " . $parents_itemtype . " " . $parents_id);
+    throw new BadRequestHttpException(
+        sprintf(
+            'Unable to load parent item: %s %s',
+            $parents_itemtype,
+            $parents_id
+        )
+    );
 }
 
 //load taskcategorie name (use to create OPTION dom)
