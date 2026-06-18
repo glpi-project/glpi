@@ -6258,6 +6258,7 @@ CREATE TABLE `glpi_projecttasks` (
   `percent_done` int NOT NULL DEFAULT '0',
   `auto_percent_done` tinyint NOT NULL DEFAULT '0',
   `is_milestone` tinyint NOT NULL DEFAULT '0',
+  `recall` int NOT NULL DEFAULT '-2',
   `projecttasktemplates_id` int unsigned NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,

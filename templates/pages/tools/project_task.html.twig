@@ -195,22 +195,29 @@
         }
     ) }}
 
-    {% if id and not item.fields.is_milestone %}
-        {% set recall_dropdown = call('PlanningRecall::dropdown', [{
-            'itemtype': 'ProjectTask',
-            'items_id': id,
-            'users_id': session('glpiID'),
-            'field': 'plan_end_date',
-            'display': false,
-        }]) %}
-        {{ fields.htmlField(
-            '',
-            recall_dropdown,
-            _x('Planning', 'Reminder'),
-        ) }}
+    {% set recall_values = {
+        '-2':     __('None'),
+        '0':      _n('%d minute', '%d minutes', 0)|format(0),
+        '900':    _n('%d minute', '%d minutes', 15)|format(15),
+        '1800':   _n('%d minute', '%d minutes', 30)|format(30),
+        '2700':   _n('%d minute', '%d minutes', 45)|format(45),
+        '3600':   _n('%d hour', '%d hours', 1)|format(1),
+        '7200':   _n('%d hour', '%d hours', 2)|format(2),
+        '10800':  _n('%d hour', '%d hours', 3)|format(3),
+        '14400':  _n('%d hour', '%d hours', 4)|format(4),
+        '43200':  _n('%d hour', '%d hours', 12)|format(12),
+        '86400':  _n('%d day', '%d days', 1)|format(1),
+        '172800': _n('%d day', '%d days', 2)|format(2),
+        '604800': _n('%d week', '%d weeks', 1)|format(1),
+    } %}
+    {{ fields.dropdownArrayField(
+        'recall',
+        item.fields.recall,
+        recall_values,
+        _x('Planning', 'Reminder'),
+    ) }}
 
-        {{ fields.nullField() }}
-    {% endif %}
+    {{ fields.nullField() }}
 
     {{ fields.dropdownArrayField(
         'planned_duration',

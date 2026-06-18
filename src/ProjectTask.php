@@ -328,9 +328,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             );
         }
 
-        if (isset($this->input['_planningrecall'])) {
-            $this->input['_planningrecall']['items_id'] = $this->fields['id'];
-            PlanningRecall::manageDatas($this->input['_planningrecall']);
+        if (in_array('recall', $this->updates, true)) {
+            $this->handlePlanningRecall();
         }
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -396,16 +395,50 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             Project::recalculatePercentDone($this->fields['projects_id']);
         }
 
-        if (isset($this->input['_planningrecall'])) {
-            $this->input['_planningrecall']['items_id'] = $this->fields['id'];
-            PlanningRecall::manageDatas($this->input['_planningrecall']);
-        }
+        $this->handlePlanningRecall();
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
             // Clean reload of the project
             $this->getFromDB($this->fields['id']);
 
             NotificationEvent::raiseEvent('new', $this);
+        }
+    }
+
+    private function handlePlanningRecall(): void
+    {
+        global $DB;
+
+        $recall_data = [
+            'itemtype'    => static::class,
+            'items_id'    => $this->fields['id'],
+            'before_time' => (int) $this->fields['recall'],
+            'field'       => 'plan_end_date',
+        ];
+
+        $team = ProjectTaskTeam::getTeamFor($this->fields['id']);
+        foreach ($team as $type => $actors) {
+            switch ($type) {
+                case User::class:
+                    foreach ($actors as $actor) {
+                        $recall_data['users_id'] = $actor['items_id'];
+                        PlanningRecall::manageDatas($recall_data);
+                    }
+                    break;
+                case Group::class:
+                    foreach ($actors as $actor) {
+                        $iterator = $DB->request([
+                            'SELECT' => 'users_id',
+                            'FROM'   => Group_User::getTable(),
+                            'WHERE'  => ['groups_id' => $actor['items_id']],
+                        ]);
+                        foreach ($iterator as $row) {
+                            $recall_data['users_id'] = $row['users_id'];
+                            PlanningRecall::manageDatas($recall_data);
+                        }
+                    }
+                    break;
+            }
         }
     }
 

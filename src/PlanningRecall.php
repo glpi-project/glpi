@@ -59,6 +59,9 @@ class PlanningRecall extends CommonDBChild
 
     public function canCreateItem(): bool
     {
+        if ($this->fields['itemtype'] === ProjectTask::class) {
+            return in_array((int) $this->fields['users_id'], ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
+        }
         return (int) $this->fields['users_id'] === Session::getLoginUserID();
     }
 

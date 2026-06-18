@@ -213,15 +213,59 @@ class ProjectTaskTeam extends CommonDBRelation
 
     public function post_addItem()
     {
+        $this->getFromDB($this->fields['id']);
+        $task = new ProjectTask();
+        $task->getFromDB($this->fields['projecttasks_id']);
+
         if (!isset($this->input['_disablenotif'])) {
-            // Read again to be sure that the data is up to date
-            $this->getFromDB($this->fields['id']);
-            // Get linked task
-            $task = new ProjectTask();
-            $task->getFromDB($this->fields['projecttasks_id']);
-            // Raise update event on task
             NotificationEvent::raiseEvent("update", $task);
         }
+
+        if ((int) $task->fields['recall'] >= 0) {
+            $recall_data = [
+                'itemtype'    => ProjectTask::class,
+                'items_id'    => $task->getID(),
+                'before_time' => (int) $task->fields['recall'],
+                'field'       => 'plan_end_date',
+            ];
+            foreach ($this->resolveToUsers() as $users_id) {
+                $recall_data['users_id'] = $users_id;
+                PlanningRecall::manageDatasBypassRights($recall_data);
+            }
+        }
+    }
+
+    public function post_deleteItem()
+    {
+        foreach ($this->resolveToUsers() as $users_id) {
+            $recall = PlanningRecall::getForItem(ProjectTask::class, $this->fields['projecttasks_id'], $users_id);
+            if ($recall !== null) {
+                $recall->delete(['id' => $recall->getID()]);
+            }
+        }
+    }
+
+    private function resolveToUsers(): array
+    {
+        global $DB;
+
+        $users = [];
+        switch ($this->fields['itemtype']) {
+            case User::class:
+                $users[] = (int) $this->fields['items_id'];
+                break;
+            case Group::class:
+                $iterator = $DB->request([
+                    'SELECT' => 'users_id',
+                    'FROM'   => Group_User::getTable(),
+                    'WHERE'  => ['groups_id' => $this->fields['items_id']],
+                ]);
+                foreach ($iterator as $row) {
+                    $users[] = (int) $row['users_id'];
+                }
+                break;
+        }
+        return $users;
     }
 
 
@@ -261,6 +305,38 @@ class ProjectTaskTeam extends CommonDBRelation
         }
 
         return $team;
+    }
+
+    /**
+     * Get team users for a project task (only the list of users ids)
+     * 
+     * @param int $tasks_id
+     * @return array
+     **/
+    public static function getUserInTeamFor($tasks_id)
+    {
+        $task_team = ProjectTaskTeam::getTeamFor($tasks_id);
+        $user_ids  = [];
+
+        foreach ($task_team as $type => $actors) {
+            switch ($type) {
+                case User::class:
+                    foreach ($actors as $actor) {
+                        $user_ids[] = (int) $actor['items_id'];
+                    }
+                    break;
+                case Group::class:
+                    foreach ($actors as $actor) {
+                        $group_user = new Group_User();
+                        foreach ($group_user->find(['groups_id' => $actor['items_id']]) as $user) {
+                            $user_ids[] = $user['users_id'];
+                        }
+                    }
+                    break;
+            }
+        }
+
+        return $user_ids;
     }
 
     public function prepareInputForAdd($input)
