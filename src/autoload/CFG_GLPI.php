@@ -689,27 +689,32 @@ $CFG_GLPI['environment_types'] = [Computer::class];
 
 
 $CFG_GLPI['possible_proxy_exclusions'] = new ProxyExclusions();
+$extra_taggable_types = [
+    PlanningExternalEvent::class, DCRoom::class, Datacenter::class, SLM::class,
+    AuthLDAP::class, AuthMail::class, Agent::class,
+    DeviceBatteryModel::class, DeviceFirmwareModel::class,
+    MailCollector::class, Webhook::class, NotificationTemplate::class,
+    KnowbaseItem::class, Notification::class,
+    TicketRecurrent::class, RecurrentChange::class, Link::class, Rack::class,
+    PDU::class, CartridgeItem::class, ConsumableItem::class, Enclosure::class,
+    Line::class, DatabaseInstance::class, Software::class, PassiveDCEquipment::class,
+    Cable::class, Domain::class, Cluster::class,
+    Database::class, NetworkName::class, DomainRecord::class, Item_DeviceSimcard::class,
+    DeviceBatteryType::class, DeviceFirmwareType::class, DeviceHardDriveType::class,
+];
 
-/** List of itemtypes that can be tagged */
-$CFG_GLPI['taggable_types'] = array_values(array_diff(array_unique(array_merge(
-    $CFG_GLPI['asset_types'],
-    $CFG_GLPI['itil_types'],
-    $CFG_GLPI['management_types'],
-    $CFG_GLPI['tools_types'],
-    $CFG_GLPI['admin_types'],
-    $CFG_GLPI['dropdown_types'],
-    $CFG_GLPI['device_types'],
-    [
-        PlanningExternalEvent::class, DCRoom::class, Datacenter::class, SLM::class,
-        AuthLDAP::class, AuthMail::class, Agent::class,
-        DeviceBatteryModel::class, DeviceFirmwareModel::class,
-        MailCollector::class, Webhook::class, NotificationTemplate::class,
-        KnowbaseItem::class, Notification::class,
-        TicketRecurrent::class, RecurrentChange::class, Link::class, Rack::class,
-        PDU::class, CartridgeItem::class, ConsumableItem::class, Enclosure::class,
-        Line::class, DatabaseInstance::class, Software::class, PassiveDCEquipment::class,
-        Cable::class, Domain::class, Cluster::class,
-        Database::class, NetworkName::class, DomainRecord::class, Item_DeviceSimcard::class,
-        DeviceBatteryType::class, DeviceFirmwareType::class, DeviceHardDriveType::class,
-    ],
-)), [Tag::class, DefaultFilter::class]));
+$excluded_taggable_types = [Tag::class, DefaultFilter::class];
+
+$CFG_GLPI['taggable_types'] = array_values(array_diff(
+    array_unique(array_merge(
+        $CFG_GLPI['asset_types'],
+        $CFG_GLPI['itil_types'],
+        $CFG_GLPI['management_types'],
+        $CFG_GLPI['tools_types'],
+        $CFG_GLPI['admin_types'],
+        $CFG_GLPI['dropdown_types'],
+        $CFG_GLPI['device_types'],
+        $extra_taggable_types,
+    )),
+    $excluded_taggable_types
+));
