@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\QuestionType;
 use Computer;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
@@ -385,6 +386,46 @@ final class QuestionTypeItemTest extends DbTestCase
                 ],
             ],
         ];
+    }
+
+    public static function formatPredefinedValueProvider(): array
+    {
+        return [
+            'valid positive integer' => [
+                'value'    => '42',
+                'expected' => json_encode((new QuestionTypeItemDefaultValueConfig(42))->jsonSerialize()),
+            ],
+            'valid id of 1' => [
+                'value'    => '1',
+                'expected' => json_encode((new QuestionTypeItemDefaultValueConfig(1))->jsonSerialize()),
+            ],
+            'zero is rejected' => [
+                'value'    => '0',
+                'expected' => null,
+            ],
+            'negative number is rejected' => [
+                'value'    => '-5',
+                'expected' => null,
+            ],
+            'non-numeric string is rejected' => [
+                'value'    => 'abc',
+                'expected' => null,
+            ],
+            'float string is rejected' => [
+                'value'    => '1.5',
+                'expected' => null,
+            ],
+            'empty string is rejected' => [
+                'value'    => '',
+                'expected' => null,
+            ],
+        ];
+    }
+
+    #[DataProvider('formatPredefinedValueProvider')]
+    public function testFormatPredefinedValue(string $value, ?string $expected): void
+    {
+        $this->assertSame($expected, (new QuestionTypeItem())->formatPredefinedValue($value));
     }
 
     #[DataProvider('formatRawAnswerProvider')]
