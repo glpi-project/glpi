@@ -285,7 +285,7 @@
 {% macro dateField(name, value, label = '', options = {}) %}
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-        {{ _inputs.date(name, value, options) }}
+        {{ _inputs.date(name, value, options|merge({'field_label': label})) }}
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
@@ -295,7 +295,7 @@
 {% macro datetimeField(name, value, label = '', options = {}) %}
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
-        {{ _inputs.datetime(name, value, options) }}
+        {{ _inputs.datetime(name, value, options|merge({'field_label': label})) }}
    {% endset %}
 
    {{ _self.field(name, field, label, options) }}
