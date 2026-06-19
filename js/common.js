@@ -1297,6 +1297,21 @@ function initTooltips(container) {
     );
 }
 
+// Tooltip ARIA pattern: dismiss the focused element's tooltip on Escape.
+document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") {
+        return;
+    }
+    const active = document.activeElement;
+    if (active === null) {
+        return;
+    }
+    const instance = bootstrap.Tooltip.getInstance(active);
+    if (instance !== null) {
+        instance.hide();
+    }
+});
+
 /**
  * Returns CSRF token that can be used for AJAX requests.
  *

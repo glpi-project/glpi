@@ -523,8 +523,10 @@
         {# Indeed, otherwise, due to the usage of `data-bs-html="true"`, any code snippet would be interpreted. #}
         {% set helper_safe_text = options.helper|escape|nl2br %}
         {% set helper %}
-        <span class="form-help"
+        <span class="form-help" tabindex="0"
+              aria-label="{{ options.helper }}"
               data-bs-toggle="tooltip"
+              data-bs-trigger="hover focus"
               data-bs-placement="top"
               data-bs-html="true"
               data-bs-title="{{ helper_safe_text|raw }}">
