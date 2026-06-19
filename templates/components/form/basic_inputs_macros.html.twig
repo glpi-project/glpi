@@ -241,6 +241,7 @@
         'disabled': false,
         'maybeempty': false,
         'addCalendarButton': true,
+        'field_label': '',
     }|merge(options) %}
 
     {% set editable = not options.readonly and not options.disabled %}
@@ -315,6 +316,16 @@
             {# No time and no date, doesn't make sense so fallback to full format #}
             {% set date_format = 'Y-m-d H:i:S' %}
         {% endif %}
+
+        {# flatpickr hides the real input and builds an unlabelled altInput; expose the field label and a human-readable format hint on it #}
+        {% set a11y_name = options.field_label is not empty ? options.field_label : __('Enter or select a date') %}
+        {% if options.enableTime and not options.noCalendar %}
+            {% set format_hint = call('Toolbox::getDateFormat', ['php']) ~ ' HH:MM:SS' %}
+        {% elseif options.enableTime and options.noCalendar %}
+            {% set format_hint = 'HH:MM:SS' %}
+        {% else %}
+            {% set format_hint = call('Toolbox::getDateFormat', ['php']) %}
+        {% endif %}
         <script>
             $(function() {
                 $("#{{ options.id|e('css')|e('js') }}").flatpickr({
@@ -330,8 +341,29 @@
                     allowInput: {{ options.readonly ? 'false' : 'true' }},
                     clickOpens: {{ options.readonly ? 'false' : 'true' }},
                     locale: getFlatPickerLocale("{{ locale['language']|e('js') }}", "{{ locale['region']|e('js') }}"),
+                    onReady(selectedDates, dateStr, instance) {
+                        const altInput = instance.altInput;
+                        altInput.setAttribute('aria-label', '{{ a11y_name|e('js') }}');
+                        altInput.setAttribute('placeholder', '{{ format_hint|e('js') }}');
+                        altInput.setAttribute('aria-haspopup', 'dialog');
+                        altInput.setAttribute('aria-expanded', 'false');
+                        instance.calendarContainer.id = instance.input.id + '_calendar';
+                        altInput.setAttribute('aria-controls', instance.calendarContainer.id);
+                        // flatpickr does not close on Escape while the altInput is focused
+                        altInput.addEventListener('keydown', (event) => {
+                            if (event.key === 'Escape' && instance.isOpen) {
+                                event.stopPropagation();
+                                instance.close();
+                                altInput.focus();
+                            }
+                        });
+                    },
+                    onOpen(selectedDates, dateStr, instance) {
+                        instance.altInput.setAttribute('aria-expanded', 'true');
+                    },
                     onClose(dates, currentdatestring, picker) {
                         picker.setDate(picker.altInput.value, true, picker.config.altFormat)
+                        picker.altInput.setAttribute('aria-expanded', 'false');
                     },
                     plugins: [
                         CustomFlatpickrButtons()
