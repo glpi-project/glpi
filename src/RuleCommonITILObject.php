@@ -1114,8 +1114,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                 continue;
             }
 
-            $item_has_name_field = $item->isField('name');
-            if (!$item_has_name_field) {
+            if (!$item->isField('name')) {
                 continue;
             }
 

@@ -3652,22 +3652,15 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
         $itil_class = $this->getITILObjectClass();
         $itil_fk = $itil_class::getForeignKeyField();
-        $itil_item_table = $this->getITILLinkClass('Item')::getTable();
+        $itil_item_class = $this->getITILLinkClass('Item');
+        $itil_item_table =  $itil_item_class::getTable();
 
-        $computer = $this->createItem(\Computer::class, [
-            'name'        => 'affectbyname-test-create',
-            'entities_id' => $entity_id,
-        ]);
+        $rule_action_name = 'affectbyname-test-create';
+        $rule_criteria_name = 'affectbyname-trigger';
 
-        //add a seconde computer
+        //add a computer who's name doesn't match the rule action
         $this->createItem(\Computer::class, [
             'name'        => 'server-2',
-            'entities_id' => $entity_id,
-        ]);
-
-        //add another ticket type item that is set after Computer in the list of ticket types
-        $this->createItem(\Monitor::class, [
-            'name'        => 'affectbyname-test-create',
             'entities_id' => $entity_id,
         ]);
 
@@ -3675,28 +3668,57 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $rule_builder
             ->setCondtion(RuleCommonITILObject::ONADD)
             ->setEntity($entity_id)
-            ->addCriteria('name', Rule::PATTERN_CONTAIN, 'affectbyname-trigger')
-            ->addAction('affectbyname', 'affectobject', 'affectbyname-test-create');
+            ->addCriteria('name', Rule::PATTERN_CONTAIN, $rule_criteria_name)
+            ->addAction('affectbyname', 'affectobject', $rule_action_name);
         $this->createRule($rule_builder);
 
+        //test before creating an item with the name used in the rule action.
         $itil = $this->createItem($itil_class, [
-            'name'        => 'affectbyname-trigger ticket',
+            'name'        => $rule_criteria_name,
             'content'     => 'test',
             'entities_id' => $entity_id,
         ]);
 
-        //only the first computer should be linked to the ITIL object (first item found)
+        //No item should be linked
         $this->assertEquals(
-            1,
+            0,
             countElementsInTable(
                 $itil_item_table,
                 [
-                    'itemtype' => \Computer::class,
-                    'items_id' => $computer->getID(),
                     $itil_fk   => $itil->getID(),
                 ]
             ),
         );
+
+        //Now add 2 items who's names matche the rule action
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => $rule_action_name,
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->createItem(\Monitor::class, [
+            'name'        => $rule_action_name,
+            'entities_id' => $entity_id,
+        ]);
+
+        //create the ITIL item again to trigger the rule
+        $itil = $this->createItem($itil_class, [
+            'name'        => $rule_criteria_name,
+            'content'     => 'test',
+            'entities_id' => $entity_id,
+        ]);
+
+        $linked_items = iterator_to_array(
+            $itil_item_class::getSeveralFromDBByCrit([
+                $itil_fk => $itil->getID(),
+            ])
+        );
+        $this->assertCount(1, $linked_items);
+
+        //Only the computer is linked (first item)
+        $item_link = array_pop($linked_items);
+        $this->assertEquals(\Computer::class, $item_link->fields['itemtype']);
+        $this->assertEquals($computer->getID(), $item_link->fields['items_id']);
     }
 
     public function testAffectEquipmentByNameOnUpdate(): void
@@ -3706,22 +3728,15 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
         $itil_class = $this->getITILObjectClass();
         $itil_fk = $itil_class::getForeignKeyField();
-        $itil_item_table = $this->getITILLinkClass('Item')::getTable();
+        $itil_item_class = $this->getITILLinkClass('Item');
+        $itil_item_table = $itil_item_class::getTable();
 
-        $computer = $this->createItem(\Computer::class, [
-            'name'        => 'affectbyname-test-update',
-            'entities_id' => $entity_id,
-        ]);
+        $rule_action_name = 'affectbyname-test-update';
+        $rule_criteria_name = 'affectbyname-trigger';
 
-        //add a seconde computer
+        //add an item who's name doesn't match the rule action
         $this->createItem(\Computer::class, [
             'name'        => 'server-2',
-            'entities_id' => $entity_id,
-        ]);
-
-        //add another ticket type item that is set after Computer in the list of ticket types
-        $this->createItem(\Monitor::class, [
-            'name'        => 'affectbyname-test-update',
             'entities_id' => $entity_id,
         ]);
 
@@ -3729,12 +3744,12 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $rule_builder
             ->setCondtion(RuleCommonITILObject::ONUPDATE)
             ->setEntity($entity_id)
-            ->addCriteria('name', Rule::PATTERN_CONTAIN, 'affectbyname-trigger')
-            ->addAction('affectbyname', 'affectobject', 'affectbyname-test-update');
+            ->addCriteria('name', Rule::PATTERN_CONTAIN, $rule_criteria_name)
+            ->addAction('affectbyname', 'affectobject', $rule_action_name);
         $this->createRule($rule_builder);
 
         $itil = $this->createItem($itil_class, [
-            'name'        => 'no match yet',
+            'name'        => $rule_criteria_name . ' (before update)',
             'content'     => 'test',
             'entities_id' => $entity_id,
         ]);
@@ -3745,26 +3760,49 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             countElementsInTable(
                 $itil_item_table,
                 [
-                    'itemtype' => \Computer::class,
-                    'items_id' => $computer->getID(),
                     $itil_fk => $itil->getID(),
                 ]
             )
         );
 
-        $this->updateItem($itil_class, $itil->getID(), ['name' => 'affectbyname-trigger updated']);
+        //test update beofore creating an item with the name used in the rule action.
+        $this->updateItem($itil_class, $itil->getID(), ['name' => $rule_criteria_name . ' (after update)']);
 
+        //no link should be created since no item matches the rule action name
         $this->assertEquals(
-            1,
+            0,
             countElementsInTable(
                 $itil_item_table,
                 [
-                    'itemtype' => \Computer::class,
-                    'items_id' => $computer->getID(),
                     $itil_fk   => $itil->getID(),
                 ]
             ),
         );
+
+        //create 2 items who's name matches the rule action
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => $rule_action_name,
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->createItem(\Monitor::class, [
+            'name'        => $rule_action_name,
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->updateItem($itil_class, $itil->getID(), ['name' => $rule_criteria_name . ' (after update 2)']);
+
+        $linked_items = iterator_to_array(
+            $itil_item_class::getSeveralFromDBByCrit([
+                $itil_fk => $itil->getID(),
+            ])
+        );
+        $this->assertCount(1, $linked_items);
+
+        //Only the computer is linked (first item)
+        $item_link = array_pop($linked_items);
+        $this->assertEquals(\Computer::class, $item_link->fields['itemtype']);
+        $this->assertEquals($computer->getID(), $item_link->fields['items_id']);
     }
 
     public function testAffectEquipmentByNameWithRegex(): void
@@ -3774,22 +3812,14 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
         $itil_class = $this->getITILObjectClass();
         $itil_fk = $itil_class::getForeignKeyField();
-        $itil_item_table = $this->getITILLinkClass('Item')::getTable();
+        $itil_item_class = $this->getITILLinkClass('Item');
+        $itil_item_table = $itil_item_class::getTable();
 
-        $computer = $this->createItem(\Computer::class, [
-            'name'        => 'regex-test-target',
-            'entities_id' => $entity_id,
-        ]);
+        $rule_action_name = 'regex-test-target';
 
-        //add a seconde computer
+        //create an item with a name that matches the regex
         $this->createItem(\Computer::class, [
             'name'        => 'server-2',
-            'entities_id' => $entity_id,
-        ]);
-
-        //add another ticket type item that is set after Computer in the list of ticket types
-        $this->createItem(\Monitor::class, [
-            'name'        => 'regex-test-target',
             'entities_id' => $entity_id,
         ]);
 
@@ -3797,26 +3827,55 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $rule_builder
             ->setCondtion(RuleCommonITILObject::ONADD)
             ->setEntity($entity_id)
-            ->addCriteria('content', Rule::REGEX_MATCH, '/(regex-test-target)/')
+            ->addCriteria('content', Rule::REGEX_MATCH, '/(' . $rule_action_name . ')/')
             ->addAction('affectbyname', 'affectobject', '#0');
         $this->createRule($rule_builder);
 
         $itil = $this->createItem($itil_class, [
             'name'        => 'ticket with regex equipment assignment',
-            'content'     => 'please assign regex-test-target to this ticket',
+            'content'     => 'please assign ' . $rule_action_name . ' to this ticket',
             'entities_id' => $entity_id,
         ]);
 
+        //No item should be linked since no item matches the rule action name
         $this->assertEquals(
-            1,
+            0,
             countElementsInTable(
                 $itil_item_table,
                 [
-                    'itemtype' => \Computer::class,
-                    'items_id' => $computer->getID(),
                     $itil_fk   => $itil->getID(),
                 ]
             ),
         );
+
+        //create 2 items who's name matches the rule action
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => $rule_action_name,
+            'entities_id' => $entity_id,
+        ]);
+
+        $this->createItem(\Monitor::class, [
+            'name'        => $rule_action_name,
+            'entities_id' => $entity_id,
+        ]);
+
+        // create the ITIL item again to trigger the rule
+        $itil = $this->createItem($itil_class, [
+            'name'        => 'ticket with regex equipment assignment',
+            'content'     => 'please assign ' . $rule_action_name . ' to this ticket',
+            'entities_id' => $entity_id,
+        ]);
+
+        $linked_items = iterator_to_array(
+            $itil_item_class::getSeveralFromDBByCrit([
+                $itil_fk => $itil->getID(),
+            ])
+        );
+        $this->assertCount(1, $linked_items);
+
+        //Only the computer is linked (first item)
+        $item_link = array_pop($linked_items);
+        $this->assertEquals(\Computer::class, $item_link->fields['itemtype']);
+        $this->assertEquals($computer->getID(), $item_link->fields['items_id']);
     }
 }
