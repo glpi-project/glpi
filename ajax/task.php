@@ -56,14 +56,11 @@ if ($tasktemplates_id === null) {
     return;
 }
 
-// Mandatory parameter: items_id
+// Optional parameter: items_id (0 = massive action context, no parent to load)
 $parents_id = (int) ($_POST['items_id'] ?? 0);
 
-// Mandatory parameter: itemtype
+// Optional parameter: itemtype
 $parents_itemtype = (string) ($_POST['itemtype'] ?? '');
-if (empty($parents_itemtype) || !is_subclass_of($parents_itemtype, CommonITILObject::class)) {
-    throw new BadRequestHttpException("Missing or invalid parameter: 'itemtype'");
-}
 
 // Load task template
 $template = new TaskTemplate();
@@ -71,25 +68,32 @@ if (!$template->getFromDB($tasktemplates_id)) {
     throw new BadRequestHttpException("Unable to load template: $tasktemplates_id");
 }
 
-// Load parent item
-$parent = new $parents_itemtype();
-if ($parent->getFromDB($parents_id)) {
-    $template->fields['content'] = $template->getRenderedContent($parent);
-} else {
-    throw new BadRequestHttpException(
-        sprintf(
-            'Unable to load parent item: %s %s',
-            $parents_itemtype,
-            $parents_id
-        )
-    );
+// Load parent item (optional: not available in massive action context)
+$parent = null;
+if ($parents_itemtype !== '') {
+    if (!is_subclass_of($parents_itemtype, CommonITILObject::class)) {
+        throw new BadRequestHttpException("Missing or invalid parameter: 'itemtype'");
+    }
+    $parent = new $parents_itemtype();
+    if ($parents_id > 0) {
+        if (!$parent->getFromDB($parents_id)) {
+            throw new BadRequestHttpException(
+                sprintf(
+                    'Unable to load parent item: %s %s',
+                    $parents_itemtype,
+                    $parents_id
+                )
+            );
+        }
+        $template->fields['content'] = $template->getRenderedContent($parent);
+    }
 }
 
 //load taskcategorie name (use to create OPTION dom)
 //need when template is used and when GLPI preselected type if defined
 $template->fields['taskcategories_name'] = "";
 if ($template->fields['taskcategories_id']) {
-    $entityRestrict = getEntitiesRestrictCriteria(getTableForItemType(TaskCategory::getType()), "", $parent->fields['entities_id'], true);
+    $entityRestrict = getEntitiesRestrictCriteria(getTableForItemType(TaskCategory::getType()), "", $parent?->fields['entities_id'] ?? null, true);
 
     $taskcategory = new TaskCategory();
     if (
