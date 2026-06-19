@@ -532,6 +532,13 @@ body .toast {
     );
 }
 
+.form-control:focus-visible,
+.form-select:focus-visible,
+.form-check-input:focus-visible {
+    outline: 2px solid var(--tblr-body-color);
+    outline-offset: 1px;
+}
+
 .tooltip {
     --tblr-tooltip-color: var(--tblr-body-bg); /* Text color */
     --tblr-tooltip-bg: var(--tblr-body-color); /* Background color */
