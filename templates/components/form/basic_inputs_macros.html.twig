@@ -344,7 +344,10 @@
                     onReady(selectedDates, dateStr, instance) {
                         const altInput = instance.altInput;
                         altInput.setAttribute('aria-label', '{{ a11y_name|e('js') }}');
-                        altInput.setAttribute('placeholder', '{{ format_hint|e('js') }}');
+                        // keep a caller-provided placeholder; only fall back to the format hint
+                        if (!altInput.getAttribute('placeholder')) {
+                            altInput.setAttribute('placeholder', '{{ format_hint|e('js') }}');
+                        }
                         altInput.setAttribute('aria-haspopup', 'dialog');
                         altInput.setAttribute('aria-expanded', 'false');
                         instance.calendarContainer.id = instance.input.id + '_calendar';
