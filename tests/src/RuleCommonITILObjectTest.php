@@ -3555,7 +3555,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'entities_id' => $entity_id,
         ]);
 
-        //add a seconde computer
+        //add a second computer
         $this->createItem(\Computer::class, [
             'name'        => 'server-2',
             'entities_id' => $entity_id,
@@ -3582,7 +3582,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
         $result = RuleCommonITILObject::getUniqueItemByName('nonexistent-asset-xyz-' . mt_rand(), $entity_id);
 
-        $this->assertEmpty($result);
+        $this->assertSame([], $result);
 
         //create a non ticket type item with the same name, it should not be returned
         $this->createItem(Entity::class, [
@@ -3591,7 +3591,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         ]);
 
         $result = RuleCommonITILObject::getUniqueItemByName('test-entity', $entity_id);
-        $this->assertEmpty($result);
+        $this->assertSame([], $result);
     }
 
     public function testGetUniqueItemByNameExcludesNonValidItems(): void
@@ -3621,7 +3621,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
         $result = RuleCommonITILObject::getUniqueItemByName('template-server-findme', $entity_id);
 
-        $this->assertEmpty($result);
+        $this->assertSame([], $result);
     }
 
     public function testGetUniqueItemByNameRestrictsToEntity(): void
@@ -3638,7 +3638,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
         $result = RuleCommonITILObject::getUniqueItemByName('entity-restricted-server', $root_entity);
 
-        $this->assertEmpty($result);
+        $this->assertSame([], $result);
 
         $result = RuleCommonITILObject::getUniqueItemByName('entity-restricted-server', $child_entity);
 
@@ -3765,7 +3765,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             )
         );
 
-        //test update beofore creating an item with the name used in the rule action.
+        //test update before creating an item with the name used in the rule action.
         $this->updateItem($itil_class, $itil->getID(), ['name' => $rule_criteria_name . ' (after update)']);
 
         //no link should be created since no item matches the rule action name
