@@ -1303,7 +1303,7 @@ document.addEventListener("keydown", (event) => {
         return;
     }
     const active = document.activeElement;
-    if (active === null) {
+    if (active === null || typeof bootstrap === "undefined") {
         return;
     }
     const instance = bootstrap.Tooltip.getInstance(active);
