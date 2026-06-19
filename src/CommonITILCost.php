@@ -656,7 +656,7 @@ TWIG, $twig_params);
                     $('#datatable_costs{$ID}{$rand}').on('click', 'tbody tr', (e) => {
                         const cost_id = $(e.currentTarget).data('id');
                         if (cost_id) {
-                            $('#viewcost{$ID}_{$rand}').load('/ajax/viewsubitem.php',{
+                            $('#viewcost{$ID}_{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($cost_class) . "',
                                 parenttype: '" . jsescape($parent_class) . "',
                                 '" . jsescape($items_id_field) . "': $ID,
