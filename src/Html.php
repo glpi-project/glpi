@@ -707,7 +707,7 @@ TWIG,
             //Remove huge memory waste by loading dashboard and related libraries (looking at you echarts...)
             //on pages when there is no right to view dashboards (mainly for simplified interface users)
             if (!Grid::canViewOneDashboard()) {
-                $jslibs = array_diff($jslibs, ['dashboard']);
+                $jslibs = array_filter($jslibs, static fn($lib) => $lib !== 'dashboard');
             }
 
             if (in_array('dashboard', $jslibs)) {
