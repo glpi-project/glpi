@@ -453,6 +453,19 @@ class ProfileTest extends DbTestCase
         $this->assertArrayHasKey(\Computer::class, $types);
     }
 
+    public function testEnclosureHasDedicatedProfileRight(): void
+    {
+        $this->assertSame('enclosure', \Enclosure::$rightname);
+
+        $asset_rights = \Profile::getRightsForForm('central', 'assets', 'general');
+        $enclosure_rights = array_filter(
+            $asset_rights,
+            static fn(array $right): bool => $right['field'] === \Enclosure::$rightname,
+        );
+
+        $this->assertCount(1, $enclosure_rights);
+    }
+
     public function testExcludedSearchOptionsPrepareInput(): void
     {
         $this->login();

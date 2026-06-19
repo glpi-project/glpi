@@ -991,6 +991,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 $fn_get_rights(Consumable::class, 'central'),
                                 $fn_get_rights(Phone::class, 'central'),
                                 $fn_get_rights(Peripheral::class, 'central'),
+                                $fn_get_rights(Enclosure::class, 'central'),
                                 $fn_get_rights(NetworkName::class, 'central', [
                                     'label' => __('Internet'),
                                 ]),
@@ -1968,6 +1969,20 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => Datacenter::$rightname],
+            ],
+        ];
+
+        $tab[] = [
+            'id'                 => '178',
+            'table'              => 'glpi_profilerights',
+            'field'              => 'rights',
+            'name'               => Enclosure::getTypeName(Session::getPluralNumber()),
+            'datatype'           => 'right',
+            'rightclass'         => Enclosure::class,
+            'rightname'          => Enclosure::$rightname,
+            'joinparams'         => [
+                'jointype'           => 'child',
+                'condition'          => ['NEWTABLE.name' => Enclosure::$rightname],
             ],
         ];
 
