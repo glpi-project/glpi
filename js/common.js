@@ -1546,6 +1546,35 @@ $(document.body).on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
 });
 
 /**
+ * Toggles a disclosable password field between its hidden and revealed states.
+ * The button's label changes between show/hide so it can be operated with the
+ * keyboard and announces the action it will perform next.
+ * @param {HTMLButtonElement} button The toggle button that was activated
+ * @param {string} item The ID of the field to reveal/hide
+ */
+function toggleDisclosablePasswordField(button, item) {
+    const field = document.getElementById(item);
+    if (field === null) {
+        return;
+    }
+
+    const reveal = field.type === "password";
+    field.type = reveal ? "text" : "password";
+
+    const label = reveal ? button.dataset.hideLabel : button.dataset.showLabel;
+    if (label !== undefined) {
+        button.setAttribute("aria-label", label);
+        button.setAttribute("title", label);
+    }
+
+    const icon = button.querySelector("i.disclose");
+    if (icon !== null) {
+        icon.classList.toggle("ti-eye", !reveal);
+        icon.classList.toggle("ti-eye-off", reveal);
+    }
+}
+
+/**
  * Converts a disclosable password field to a normal text field
  * @param {string} item The ID of the field to be shown
  */
