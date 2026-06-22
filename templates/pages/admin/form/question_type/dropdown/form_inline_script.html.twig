@@ -32,7 +32,7 @@
 
 import("/js/modules/Forms/QuestionDropdown.js").then((m) => {
     {% if question is not null %}
-        const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
+        const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand|e('css')|e('js') }}"]');
         container.data(
             'manager',
             new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container)
