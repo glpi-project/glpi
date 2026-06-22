@@ -260,21 +260,21 @@ const setRichTextEditorContent = function(editor_id, content) {
 if (typeof tinyMCE != 'undefined') {
     tinyMCE.PluginManager.add('glpi_upload_doc', (editor) => {
         let last_paste_content = null;
-        let last_paste_image_file = null;
+        let last_paste_image_files = [];
         const rtf_img_types = {
             'pngblip': 'image/png',
             'jpegblip': 'image/jpeg',
         };
+        const supported_img_types = Object.values(rtf_img_types);
         editor.on('paste', (e) => {
             last_paste_content = e.clipboardData;
-            // Keep the first image file from clipboard items so PastePreProcess can
-            // use the binary data if present.
-            last_paste_image_file = null;
+            // Collect all image files from clipboard items so PastePreProcess can
+            // use the binary data instead of any URL the pasted HTML may contain.
+            last_paste_image_files = [];
             if (last_paste_content && last_paste_content.items) {
                 for (const item of last_paste_content.items) {
-                    if (item.kind === 'file' && Object.values(rtf_img_types).includes(item.type)) {
-                        last_paste_image_file = item.getAsFile();
-                        break;
+                    if (item.kind === 'file' && supported_img_types.includes(item.type)) {
+                        last_paste_image_files.push(item.getAsFile());
                     }
                 }
             }
@@ -314,14 +314,12 @@ if (typeof tinyMCE != 'undefined') {
                     const rtf_content = base64_img_contents.shift();
                     src = `data:${rtf_content['type']};base64,${rtf_content['content']}`;
                     image.attr('src', src);
-                }
-                // If the clipboard carries binary image data, prefer it over whatever
-                // src the pasted HTML contains by converting it to a blob URL — the
-                // upload flow below then handles it identically to a directly pasted image.
-                if (last_paste_image_file !== null) {
-                    src = URL.createObjectURL(last_paste_image_file);
+                } else if (last_paste_image_files.length > 0) {
+                    // If the clipboard carries binary image data, prefer it over whatever
+                    // src the pasted HTML contains by converting it to a blob URL — the
+                    // upload flow below then handles it identically to a directly pasted image.
+                    src = URL.createObjectURL(last_paste_image_files.shift());
                     image.attr('src', src);
-                    last_paste_image_file = null;
                 }
                 if (src.match(new RegExp('^(data|blob):')) !== null) {
                     const upload_id = Math.random().toString();
