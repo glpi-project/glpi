@@ -739,7 +739,7 @@ class CronTask extends CommonDBTM
      **/
     public static function getStateName($state)
     {
-        return match ($state) {
+        return match ((int) $state) {
             self::STATE_RUNNING => __('Running'),
             self::STATE_WAITING => __('Scheduled'),
             self::STATE_DISABLE => __('Disabled'),
@@ -779,7 +779,7 @@ class CronTask extends CommonDBTM
      **/
     public static function getModeName($mode)
     {
-        return match ($mode) {
+        return match ((int) $mode) {
             self::MODE_INTERNAL => __('GLPI'),
             self::MODE_EXTERNAL => __('CLI'),
             default => '???',
