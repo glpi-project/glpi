@@ -80,6 +80,7 @@
     }
 
     // missing border (TODO open a pr upstream ?)
+    // Uses the a11y-compliant control border so the boundary keeps >=3:1 on the dark surface.
     .form-check-input:not(:checked),
     .form-select,
     .form-file-text,
@@ -87,7 +88,7 @@
     .form-selectgroup-label,
     .form-selectgroup-check,
     .form-imagecheck-figure::before {
-        border-color: var(--tblr-border-color);
+        border-color: var(--glpi-form-control-border-color);
     }
 
     .card {

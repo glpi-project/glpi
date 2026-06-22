@@ -86,6 +86,7 @@
     --glpi-form-header-danger-fg: var(--tblr-danger);
     --glpi-form-header-danger-bg: color-mix(in srgb, var(--glpi-form-header-danger-fg), var(--tblr-bg-surface) 90%);
     --glpi-form-header-danger-border-color: color-mix(in srgb, var(--glpi-form-header-danger-fg), var(--tblr-bg-surface) 75%);
+    --glpi-form-control-border-color: color-mix(in srgb, var(--tblr-body-color), transparent 40%);
     --glpi-topbar-height: 79px;
     --glpi-contextbar-height: 56px;
     --glpi-content-margin: 24px;
@@ -640,5 +641,18 @@ html {
 input.form-check-input[type="radio"]:disabled,
 input.form-check-input[type="checkbox"]:disabled {
     opacity: 0.9;
+}
+
+// Tabler's default control border (#e5e7eb) sits at ~1.2:1 on white, well below
+// the 3:1 needed to perceive the field boundary.
+.form-control,
+.form-select,
+.form-check-input {
+    border-color: var(--glpi-form-control-border-color);
+}
+
+// The checked state otherwise paints the border with the pale primary (~1.5:1 on white).
+.form-check-input:checked {
+    border-color: var(--glpi-form-control-border-color);
 }
 
