@@ -84,11 +84,6 @@ final class ReAuthManager
         return $current_limit_timestamp !== null && $current_limit_timestamp > $calculated_limit_timestamp;
     }
 
-    public function initiate(): void
-    {
-        $this->authenticate();
-    }
-
     public function verify(string $user_input): bool
     {
         $strategy = $this->getStrategy();
