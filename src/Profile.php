@@ -35,10 +35,10 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Dashboard\Grid;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Form\Form;
