@@ -48,13 +48,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ReAuthController extends AbstractController
 {
-    private ReAuthManager $reAuthManager;
-
     public function __construct(
-        private readonly ?UrlGeneratorInterface $router = null
-    ) {
-        $this->reAuthManager = new ReAuthManager();
-    }
+        private readonly UrlGeneratorInterface $router,
+        private readonly ReAuthManager $reAuthManager = new ReAuthManager(),
+    ) {}
 
     #[Route(
         path: "/ReAuth/Prompt",
@@ -62,7 +59,7 @@ class ReAuthController extends AbstractController
         methods: ['GET']
     )]
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
-    public function prompt(Request $request, string $error = ''): Response
+    public function prompt(string $error = ''): Response
     {
         return new Response(
             TemplateRenderer::getInstance()->render(
@@ -97,7 +94,7 @@ class ReAuthController extends AbstractController
             );
         }
 
-        return $this->prompt($request, __('Verification failed. Please try again.'));
+        return $this->prompt(__('Verification failed. Please try again.'));
     }
 
     /**
