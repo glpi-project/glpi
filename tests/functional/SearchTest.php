@@ -6919,6 +6919,58 @@ class SearchTest extends DbTestCase
         $this->assertContains($computer_high->getID(), $ids_found, 'Computer with 67% free space should match ">= 67"');
         $this->assertNotContains($computer_low->getID(), $ids_found, 'Computer with 10% free space must NOT match ">= 67"');
     }
+
+    public function testCertificateRawSearchOptionsInheritance(): void
+    {
+        $item = new \Certificate();
+        $so = $item->rawSearchOptions();
+        $ids = array_column($so, 'id');
+
+        // No duplicate numeric IDs — would indicate parent options being re-added manually
+        $numeric_ids = array_values(array_filter($ids, 'is_numeric'));
+        $this->assertCount(count($numeric_ids), array_unique($numeric_ids), 'Certificate::rawSearchOptions() contains duplicate numeric IDs');
+
+        // id=1 (Name) is inherited from CommonDBTM
+        $this->assertContains(1, $ids);
+        $this->assertContains(86, $ids);
+    }
+
+    public function testSoftwareLicenseRawSearchOptionsInheritance(): void
+    {
+        $item = new \SoftwareLicense();
+        $so = $item->rawSearchOptions();
+        $ids = array_column($so, 'id');
+
+        // No duplicate numeric IDs — would indicate parent options being re-added manually
+        $numeric_ids = array_values(array_filter($ids, 'is_numeric'));
+        $this->assertCount(count($numeric_ids), array_unique($numeric_ids), 'SoftwareLicense::rawSearchOptions() contains duplicate numeric IDs');
+
+        // id=1 keeps the license-specific forcegroupby override
+        $name_opt = current(array_filter($so, fn($opt) => ($opt['id'] ?? null) === '1'));
+        $this->assertNotFalse($name_opt);
+        $this->assertSame('name', $name_opt['field']);
+        $this->assertTrue($name_opt['forcegroupby'] ?? false, 'id=1 must keep forcegroupby=true from the SoftwareLicense override');
+
+        // id=2 keeps the license-specific forcegroupby override
+        $id_opt = current(array_filter($so, fn($opt) => ($opt['id'] ?? null) === '2'));
+        $this->assertNotFalse($id_opt);
+        $this->assertSame('id', $id_opt['field']);
+        $this->assertTrue($id_opt['forcegroupby'] ?? false, 'id=2 must keep forcegroupby=true from the SoftwareLicense override');
+
+        // id=13 keeps its license-specific forcegroupby override
+        $father_opt = current(array_filter($so, fn($opt) => ($opt['id'] ?? null) === '13'));
+        $this->assertNotFalse($father_opt);
+        $this->assertSame('completename', $father_opt['field']);
+        $this->assertTrue($father_opt['forcegroupby'] ?? false, 'id=13 must keep forcegroupby=true from the SoftwareLicense override');
+
+        // assert that inherited options are present
+        $this->assertContains('14', $ids);
+        $this->assertContains('19', $ids);
+        $this->assertContains('16', $ids);
+        $this->assertContains('121', $ids);
+        $this->assertContains('80', $ids);
+        $this->assertContains('86', $ids);
+    }
 }
 
 // @codingStandardsIgnoreStart
