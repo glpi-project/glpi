@@ -35,7 +35,6 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryParam;
 use Glpi\Debug\Profiler;
@@ -3915,23 +3914,8 @@ class CommonDBTM extends CommonGLPI
         }
 
         // Add asset URL search option for asset types
-        $asset_types = $CFG_GLPI["asset_types"] ?? [];
-        if (in_array(static::class, $asset_types)) {
-            $url_prefix = $CFG_GLPI['url_base'] . static::getFormURL(false) . '?id=';
-            $tab[] = [
-                'id'            => 290,
-                'table'         => static::getTable(),
-                'field'         => 'asset_url',
-                'name'          => __('Asset URL'),
-                'massiveaction' => false,
-                'nometa'        => true,
-                'nosort'        => true,
-                'datatype'      => 'string',
-                'computation'   => QueryFunction::concat([
-                    new QueryExpression($DB::quoteValue($url_prefix)),
-                    'TABLE.id',
-                ]),
-            ];
+        if (in_array(static::class, $CFG_GLPI["asset_types"])) {
+            $tab = array_merge($tab, BarcodeManager::rawSearchOptionsToAdd(get_class($this)));
         }
 
         // add objectlock search options

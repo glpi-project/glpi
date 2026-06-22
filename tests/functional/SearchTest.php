@@ -6957,39 +6957,25 @@ class SearchTest extends DbTestCase
         $this->assertContains('86', $ids);
     }
 
-    public static function typeHasAssetUrlSearchOptionProvider(): array
+    public function testTypeHasAssetUrlSearchOption(): void
     {
-        return [
-            [Computer::class, true],
-            [\Monitor::class, true],
-            [\NetworkEquipment::class, true],
-            [\Peripheral::class, true],
-            [\Phone::class, true],
-            [\Printer::class, true],
-            [\SoftwareLicense::class, false],
-            [\Certificate::class, false],
-            [Appliance::class, true],
-            [\Software::class, false],
-            [User::class, false],
-            [Group::class, false],
-            [Location::class, false],
-            [Document::class, false],
-        ];
-    }
+        global $CFG_GLPI;
 
-    #[DataProvider('typeHasAssetUrlSearchOptionProvider')]
-    public function testTypeHasAssetUrlSearchOption(string $itemtype, bool $expected): void
-    {
-        $item = new $itemtype();
-        $options = $item->rawSearchOptions();
+        foreach ($CFG_GLPI["asset_types"] as $itemtype) {
+            $item = new $itemtype();
+            $options = $item->rawSearchOptions();
 
-        $filtered_options = array_filter($options, function ($option) {
-            return isset($option['id']) && $option['id'] === 290
-                   && isset($option['field']) && $option['field'] === 'asset_url';
-        });
+            $filtered_options = array_filter($options, function ($option) {
+                return isset($option['id']) && $option['id'] === 290
+                    && isset($option['field']) && $option['field'] === 'asset_url';
+            });
 
-        $expected_count = $expected ? 1 : 0;
-        $this->assertEquals($expected_count, count($filtered_options));
+            if (count($filtered_options) === 0) {
+                \Toolbox::logInFile('custom', "Itemtype $itemtype does not have the asset_url search option (id=290)");
+            }
+
+            $this->assertEquals(1, count($filtered_options));
+        }
     }
 
     public function testSearchByAssetUrl(): void

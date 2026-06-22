@@ -501,6 +501,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+        $tab = array_merge($tab, BarcodeManager::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
     }
