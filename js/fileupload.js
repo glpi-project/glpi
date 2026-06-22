@@ -260,12 +260,24 @@ const setRichTextEditorContent = function(editor_id, content) {
 if (typeof tinyMCE != 'undefined') {
     tinyMCE.PluginManager.add('glpi_upload_doc', (editor) => {
         let last_paste_content = null;
+        let last_paste_image_file = null;
         const rtf_img_types = {
             'pngblip': 'image/png',
             'jpegblip': 'image/jpeg',
         };
         editor.on('paste', (e) => {
             last_paste_content = e.clipboardData;
+            // Keep the first image file from clipboard items so PastePreProcess can
+            // use the binary data if present.
+            last_paste_image_file = null;
+            if (last_paste_content && last_paste_content.items) {
+                for (const item of last_paste_content.items) {
+                    if (/^image\//.test(item.type) && item.kind === 'file') {
+                        last_paste_image_file = item.getAsFile();
+                        break;
+                    }
+                }
+            }
         });
         editor.on('PastePreProcess', (event) => {
             const base64_img_contents = [];
@@ -302,6 +314,14 @@ if (typeof tinyMCE != 'undefined') {
                     const rtf_content = base64_img_contents.shift();
                     src = `data:${rtf_content['type']};base64,${rtf_content['content']}`;
                     image.attr('src', src);
+                }
+                // If the clipboard carries binary image data, prefer it over whatever
+                // src the pasted HTML contains by converting it to a blob URL — the
+                // upload flow below then handles it identically to a directly pasted image.
+                if (last_paste_image_file !== null) {
+                    src = URL.createObjectURL(last_paste_image_file);
+                    image.attr('src', src);
+                    last_paste_image_file = null;
                 }
                 if (src.match(new RegExp('^(data|blob):')) !== null) {
                     const upload_id = Math.random().toString();
