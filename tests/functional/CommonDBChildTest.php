@@ -36,10 +36,118 @@ namespace tests\units;
 
 use CommonDBChild;
 use Computer;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 class CommonDBChildTest extends DbTestCase
 {
+    public function tearDown(): void
+    {
+        unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
+        parent::tearDown();
+    }
+
+    /**
+     * No core CommonDBChild flags itself as requiring re-authentication, so this
+     * uses a stub to prove the new can(..., &$reauth_needed) signature is inherited
+     * from CommonDBTM through the CommonDBChild/CommonDBConnexity hierarchy and that
+     * the reauth flag is correctly produced. Exercises the new-item CREATE path
+     * (no DB load needed).
+     */
+    #[Group('reauth')]
+    public function testCanProducesReauthFlagThroughChildHierarchy(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $this->fakeWebContext();
+        $instance = $this->getFakeCommonDBChild(true);
+
+        // --- act + assert : not re-authenticated → can() returns false and sets reauth_needed ---
+        $this->setReauthenticated(false);
+        $reauth_needed = null;
+        $input = [];
+        $this->assertFalse($instance->can(-1, CREATE, $input, $reauth_needed));
+        $this->assertTrue($reauth_needed);
+
+        // --- act + assert : re-authenticated → can() returns true and clears reauth_needed ---
+        $this->setReauthenticated(true);
+        $reauth_needed = null;
+        $input = [];
+        $this->assertTrue($instance->can(-1, CREATE, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    #[Group('reauth')]
+    public function testCanWithoutCreateRightDoesNotRequireReauth(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+        $instance = $this->getFakeCommonDBChild(false);
+
+        // --- act + assert ---
+        $reauth_needed = null;
+        $input = [];
+        $this->assertFalse($instance->can(-1, CREATE, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    /** Creates an anonymous CommonDBChild stub; $rights_granted controls whether static can*() methods return true. */
+    private function getFakeCommonDBChild(bool $rights_granted): CommonDBChild
+    {
+        return new class ($rights_granted) extends CommonDBChild {
+            public static string $itemtype = Computer::class;
+            public static string $items_id = 'computers_id';
+            public static bool $allowed = true;
+
+            public function __construct(bool $allowed = true)
+            {
+                self::$allowed = $allowed;
+            }
+
+            public static function canCreate(): bool
+            {
+                return self::$allowed;
+            }
+
+            // No real parent item in this stub : keep the item-level check trivially true.
+            public function canCreateItem(): bool
+            {
+                return true;
+            }
+
+            public static function itemTypeRequiresReauthentication(): bool
+            {
+                return true;
+            }
+
+            // Avoid any DB access when can() initializes a new item.
+            public function getEmpty()
+            {
+                $this->fields = ['id' => 0];
+                return true;
+            }
+        };
+    }
+
+    private function fakeWebContext(): void
+    {
+        $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
+        $_SERVER['REQUEST_URI'] = '/front/computer.form.php';
+    }
+
+    private function setReauthenticated(bool $reauthenticated): void
+    {
+        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s');
+        if ($reauthenticated) {
+            (new ReAuthManager())->authenticate();
+        } else {
+            unset($_SESSION['glpi_reauth_until']);
+        }
+    }
+
     public function testPrepareInputForAddWithMandatoryFkeyRelation(): void
     {
         $instance = new class extends CommonDBChild {

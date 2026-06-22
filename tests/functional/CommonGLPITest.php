@@ -34,9 +34,11 @@
 
 namespace tests\units;
 
+use CommonGLPI;
 use Computer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -44,6 +46,15 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class CommonGLPITest extends DbTestCase
 {
+    public function tearDown(): void
+    {
+        // Restore state mutated by the re-authentication tests.
+        unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
+        ReauthTestItem::$allowed = true;
+        ReauthTestItem::$requires_reauth = true;
+        parent::tearDown();
+    }
+
     public static function displayProvider(): iterable
     {
         $computer_id = \getItemByTypeName(Computer::class, '_test_pc01', true);
@@ -144,5 +155,179 @@ class CommonGLPITest extends DbTestCase
 
         $crawler = new Crawler($html);
         $this->assertCount(0, $crawler->filter('#header-friendlyname'));
+    }
+
+    /**
+     * isUserReauthenticationNeeded() must stay disabled on CLI/API contexts,
+     * even when the itemtype is flagged as requiring re-authentication.
+     */
+    public function testIsUserReauthenticationNeededIsFalseOnCommandLine(): void
+    {
+        // --- arrange ---
+        ReauthTestItem::$requires_reauth = true;
+        // Default test context is CLI : the reauth branch must be skipped.
+
+        // --- act + assert ---
+        $this->assertFalse(ReauthTestItem::isUserReauthenticationNeeded());
+    }
+
+    public function testIsUserReauthenticationNeededIsFalseOnApi(): void
+    {
+        // --- arrange ---
+        ReauthTestItem::$requires_reauth = true;
+        $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
+        $_SERVER['REQUEST_URI'] = '/apirest.php/User';
+
+        // --- act + assert ---
+        $this->assertFalse(ReauthTestItem::isUserReauthenticationNeeded());
+    }
+
+    public function testIsUserReauthenticationNeededIsFalseWhenItemtypeDoesNotRequireIt(): void
+    {
+        // --- arrange ---
+        ReauthTestItem::$requires_reauth = false;
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+
+        // --- act + assert ---
+        $this->assertFalse(ReauthTestItem::isUserReauthenticationNeeded());
+    }
+
+    public function testIsUserReauthenticationNeededIsTrueWhenRequiredAndNotReAuthenticated(): void
+    {
+        // --- arrange ---
+        ReauthTestItem::$requires_reauth = true;
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+
+        // --- act + assert ---
+        $this->assertTrue(ReauthTestItem::isUserReauthenticationNeeded());
+    }
+
+    public function testIsUserReauthenticationNeededIsFalseWhenAlreadyReAuthenticated(): void
+    {
+        // --- arrange ---
+        ReauthTestItem::$requires_reauth = true;
+        $this->fakeWebContext();
+        $this->setReauthenticated(true);
+
+        // --- act + assert ---
+        $this->assertFalse(ReauthTestItem::isUserReauthenticationNeeded());
+    }
+
+    public function testCanReturnsTrueWhenAllowedAndReAuthenticated(): void
+    {
+        // --- arrange ---
+        ReauthTestItem::$allowed = true;
+        ReauthTestItem::$requires_reauth = true;
+        $this->fakeWebContext();
+        $this->setReauthenticated(true);
+        $reauth_needed = null;
+        $item = new ReauthTestItem();
+
+        // --- act + assert ---
+        $this->assertTrue($item->can(1, READ, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    public function testCanRequiresReauthWhenAllowedButNotReAuthenticated(): void
+    {
+        // --- arrange ---
+        ReauthTestItem::$allowed = true;
+        ReauthTestItem::$requires_reauth = true;
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+        $reauth_needed = null;
+        $item = new ReauthTestItem();
+
+        // --- act + assert : allowed by rights, but re-authentication is the only missing requirement ---
+        $this->assertFalse($item->can(1, READ, $input, $reauth_needed));
+        $this->assertTrue($reauth_needed);
+    }
+
+    public function testCanReturnsFalseWithoutReauthWhenNotAllowed(): void
+    {
+        // --- arrange ---
+        ReauthTestItem::$allowed = false;
+        ReauthTestItem::$requires_reauth = true;
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+        $reauth_needed = null;
+        $item = new ReauthTestItem();
+
+        // --- act + assert ---
+        $this->assertFalse($item->can(1, READ, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    public function testCanIgnoresReauthWhenItemtypeDoesNotRequireIt(): void
+    {
+        // --- arrange ---
+        ReauthTestItem::$allowed = true;
+        ReauthTestItem::$requires_reauth = false;
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+        $reauth_needed = null;
+        $item = new ReauthTestItem();
+
+        // --- act + assert ---
+        $this->assertTrue($item->can(1, READ, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    private function fakeWebContext(): void
+    {
+        $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
+        $_SERVER['REQUEST_URI'] = '/front/central.php';
+    }
+
+    private function setReauthenticated(bool $reauthenticated): void
+    {
+        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s');
+        if ($reauthenticated) {
+            (new ReAuthManager())->authenticate();
+        } else {
+            unset($_SESSION['glpi_reauth_until']);
+        }
+    }
+}
+
+/**
+ * Minimal CommonGLPI itemtype used to drive the re-authentication branches of
+ * CommonGLPI::can() / isUserReauthenticationNeeded() without touching the DB.
+ */
+class ReauthTestItem extends CommonGLPI
+{
+    public static bool $allowed = true;
+    public static bool $requires_reauth = true;
+
+    public static function canView(): bool
+    {
+        return self::$allowed;
+    }
+
+    public static function canCreate(): bool
+    {
+        return self::$allowed;
+    }
+
+    public static function canUpdate(): bool
+    {
+        return self::$allowed;
+    }
+
+    public static function canDelete(): bool
+    {
+        return self::$allowed;
+    }
+
+    public static function canPurge(): bool
+    {
+        return self::$allowed;
+    }
+
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return self::$requires_reauth;
     }
 }
