@@ -318,7 +318,7 @@ class ProjectTaskTeam extends CommonDBRelation
 
     /**
      * Get team users for a project task (only the list of users ids)
-     * 
+     *
      * @param int $tasks_id
      * @return array
      **/

@@ -55,7 +55,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $project = $this->createItem(
             Project::class,
             [
-                'name' => __FUNCTION__
+                'name' => __FUNCTION__,
             ]
         );
         $task    = $this->createItem(
@@ -259,7 +259,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $group = $this->createItem(
             Group::class,
             [
-                'name' => __FUNCTION__
+                'name' => __FUNCTION__,
             ]
         );
         $this->createItem(
@@ -295,7 +295,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $group = $this->createItem(
             Group::class,
             [
-                'name' => __FUNCTION__
+                'name' => __FUNCTION__,
             ]
         );
         $this->createItem(
@@ -321,7 +321,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $group = $this->createItem(
             Group::class,
             [
-                'name' => __FUNCTION__
+                'name' => __FUNCTION__,
             ]
         );
         $this->createItem(
@@ -349,7 +349,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $group  = $this->createItem(
             Group::class,
             [
-                'name' => __FUNCTION__
+                'name' => __FUNCTION__,
             ]
         );
         $this->createItem(
@@ -392,7 +392,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $group = $this->createItem(
             Group::class,
             [
-                'name' => __FUNCTION__
+                'name' => __FUNCTION__,
             ]
         );
 
@@ -420,7 +420,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $group = $this->createItem(
             Group::class,
             [
-                'name' => __FUNCTION__
+                'name' => __FUNCTION__,
             ]
         );
 
@@ -445,7 +445,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $group      = $this->createItem(
             Group::class,
             [
-                'name' => __FUNCTION__
+                'name' => __FUNCTION__,
             ]
         );
         $group_user = $this->createItem(
@@ -472,7 +472,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $group      = $this->createItem(
             Group::class,
             [
-                'name' => __FUNCTION__
+                'name' => __FUNCTION__,
             ]
         );
 
@@ -506,7 +506,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $group = $this->createItem(
             Group::class,
             [
-                'name' => __FUNCTION__
+                'name' => __FUNCTION__,
             ]
         );
         $this->createItem(
