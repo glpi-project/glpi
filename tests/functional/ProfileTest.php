@@ -36,7 +36,6 @@ namespace tests\units;
 
 use Glpi\Asset\AssetDefinition;
 use Glpi\DBAL\QueryExpression;
-use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 
