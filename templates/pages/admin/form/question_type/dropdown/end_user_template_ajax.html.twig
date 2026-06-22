@@ -35,7 +35,7 @@
 <div class="col-12 mb-0">
     <select
         id="dropdown_{{ rand }}"
-        name="{{ input_name }}{% if is_multiple %}[]{% endif %}"
+        name="{{ input_name }}{{ is_multiple ? '[]' : '' }}"
         class="form-select select2"
         aria-label="{{ label }}"
         {{ is_multiple ? 'multiple' : '' }}
