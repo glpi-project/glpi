@@ -272,7 +272,7 @@ if (typeof tinyMCE != 'undefined') {
             last_paste_image_file = null;
             if (last_paste_content && last_paste_content.items) {
                 for (const item of last_paste_content.items) {
-                    if (/^image\//.test(item.type) && item.kind === 'file') {
+                    if (item.kind === 'file' && Object.values(rtf_img_types).includes(item.type)) {
                         last_paste_image_file = item.getAsFile();
                         break;
                     }
