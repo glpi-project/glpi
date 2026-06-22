@@ -3882,7 +3882,7 @@ class CommonDBTM extends CommonGLPI
      */
     public function rawSearchOptions()
     {
-        global $CFG_GLPI, $DB;
+        global $CFG_GLPI;
 
         $tab = [];
 
@@ -3914,9 +3914,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         // Add asset URL search option for asset types
-        if (in_array(static::class, $CFG_GLPI["asset_types"])) {
-            $tab = array_merge($tab, BarcodeManager::rawSearchOptionsToAdd(get_class($this)));
-        }
+        $tab = array_merge($tab, BarcodeManager::rawSearchOptionsToAdd(get_class($this)));
 
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));

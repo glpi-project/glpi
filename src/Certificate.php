@@ -360,7 +360,6 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
-        $tab = array_merge($tab, BarcodeManager::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
     }

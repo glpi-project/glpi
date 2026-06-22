@@ -75,6 +75,10 @@ class BarcodeManager
     {
         global $CFG_GLPI, $DB;
 
+        if (!in_array($itemtype, $CFG_GLPI["asset_types"])) {
+            return [];
+        }
+
         $url_prefix = $CFG_GLPI['url_base'] . $itemtype::getFormURL(false) . '?id=';
 
         return [

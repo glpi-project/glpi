@@ -6970,11 +6970,11 @@ class SearchTest extends DbTestCase
                     && isset($option['field']) && $option['field'] === 'asset_url';
             });
 
-            if (count($filtered_options) === 0) {
-                \Toolbox::logInFile('custom', "Itemtype $itemtype does not have the asset_url search option (id=290)");
-            }
-
-            $this->assertEquals(1, count($filtered_options));
+            $this->assertEquals(
+                1,
+                count($filtered_options),
+                "Itemtype $itemtype does not have the asset_url search option (id=290)"
+            );
         }
     }
 
@@ -7009,7 +7009,7 @@ class SearchTest extends DbTestCase
         $this->assertEquals(1, $result['data']['totalcount']);
         $this->assertEquals($computer->getID(), $result['data']['rows'][0]['raw']['id']);
 
-        //sreach a non-existing asset URL
+        //sreach for a non-existing asset URL
         $result = \Search::getDatas(
             Computer::class,
             [
