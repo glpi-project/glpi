@@ -33,11 +33,11 @@
 {% macro tfa_code_input(digits = 6) %}
    <div class="d-flex justify-content-center" dir="ltr">
       <input type="text" id="totp_code" name="totp_code"
-             class="form-control text-center fw-bold"
+             class="form-control totp-code-input"
              maxlength="{{ digits }}" pattern="[0-9]{{ '{' ~ digits ~ '}' }}"
              inputmode="numeric" autocomplete="one-time-code" required
              aria-label="{{ __('Authentication code') }}"
-             style="max-width: 12em; font-size: 1.5em; letter-spacing: 0.3em">
+             style="--otp-digits: {{ digits }}">
    </div>
    <script>
        $(document).ready(function() {
