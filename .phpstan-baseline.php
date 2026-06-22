@@ -13196,18 +13196,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Disk.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Enclosure.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getLink\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Enclosure.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call static method dropdown\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'staticMethod.nonObject',
 	'count' => 1,

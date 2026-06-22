@@ -470,7 +470,10 @@ class ProfileTest extends DbTestCase
         $enclosure_rights = iterator_to_array($DB->request([
             'SELECT' => ['profiles_id', 'rights'],
             'FROM'   => \ProfileRight::getTable(),
-            'WHERE'  => ['name' => \Enclosure::$rightname],
+            'WHERE'  => [
+                'name'        => \Enclosure::$rightname,
+                'profiles_id' => range(1, 8),
+            ],
             'ORDER'  => 'profiles_id',
         ]));
         $this->assertSame([
