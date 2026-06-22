@@ -454,9 +454,11 @@ $break_tablet: 1400px;
                         border: none;
                         background-color: transparent;
                         min-height: 24px;
+                        padding-right: 18px;
 
                         .select2-selection__rendered {
                             padding: 0;
+                            line-height: 18px;
                         }
 
                         .select2-selection__choice {
@@ -475,12 +477,14 @@ $break_tablet: 1400px;
                         }
 
                         .select2-search--inline .select2-search__field {
-                            color: var(--tblr-body-color);
+                            color: #74838f;
                             font-weight: bold;
                             font-size: 12px;
-                            min-width: 80px;
                             margin: 0;
                             outline: none;
+                            line-height: 18px;
+                            field-sizing: content;
+                            width: auto !important;
                         }
                     }
 

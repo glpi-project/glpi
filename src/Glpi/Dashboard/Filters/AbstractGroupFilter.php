@@ -162,7 +162,6 @@ abstract class AbstractGroupFilter extends AbstractFilter
 
     public static function getSearchCriteria(string $table, $value): array
     {
-        global $DB;
         $criteria = [];
 
         $values = is_array($value) ? $value : [$value];
