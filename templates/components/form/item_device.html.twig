@@ -50,21 +50,6 @@
          <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
             <div class="row flex-row align-items-start flex-grow-1">
                <div class="row flex-row">
-                  <script>
-                     function showField(item) {
-                        // BC - Remove in 11.0
-                        showDisclosablePasswordField(item);
-                     }
-                     function hideField(item) {
-                        // BC - Remove in 11.0
-                        hideDisclosablePasswordField(item);
-                     }
-                     function copyToClipboard(item) {
-                        // BC - Remove in 11.0
-                        copyDisclosablePasswordFieldToClipboard(item);
-                     }
-                  </script>
-
                   {% set field_options = field_options|merge(params) %}
 
                   <input type="hidden" name={{ get_static(item, 'itemtype_1') }} value={{ item.fields[get_static(item, 'itemtype_1')] }}>

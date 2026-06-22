@@ -1577,6 +1577,7 @@ function toggleDisclosablePasswordField(button, item) {
 /**
  * Converts a disclosable password field to a normal text field
  * @param {string} item The ID of the field to be shown
+ * @deprecated Use {@link toggleDisclosablePasswordField} instead. Kept for backward compatibility.
  */
 function showDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "text");
@@ -1585,6 +1586,7 @@ function showDisclosablePasswordField(item) {
 /**
  * Converts a normal text field to a password field
  * @param {string} item The ID of the field to be hidden
+ * @deprecated Use {@link toggleDisclosablePasswordField} instead. Kept for backward compatibility.
  */
 function hideDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "password");
@@ -1595,18 +1597,23 @@ function hideDisclosablePasswordField(item) {
  * @param {string} item The ID of the field to be copied
  */
 function copyDisclosablePasswordFieldToClipboard(item) {
-    const is_password_input = $("#" + CSS.escape(item)).prop("type") === "password";
-    if (is_password_input) {
-        showDisclosablePasswordField(item);
+    const field = document.getElementById(item);
+    if (field === null) {
+        return;
     }
-    $("#" + CSS.escape(item)).select();
+
+    const is_password_input = field.type === "password";
+    if (is_password_input) {
+        field.type = "text";
+    }
+    field.select();
     try {
         document.execCommand("copy");
     } catch {
-        alert("Copy to clipboard failed'");
+        alert("Copy to clipboard failed");
     }
     if (is_password_input) {
-        hideDisclosablePasswordField(item);
+        field.type = "password";
     }
 }
 
