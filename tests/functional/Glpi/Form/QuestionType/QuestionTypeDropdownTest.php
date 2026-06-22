@@ -112,7 +112,7 @@ final class QuestionTypeDropdownTest extends DbTestCase
             $html,
             'Multiple dropdown with >50 options must use array name (answers_X[]) so all selected values are submitted and the condition engine receives an array'
         );
-        $this->assertStringContainsString('multiple', $html);
+        $this->assertMatchesRegularExpression('/<select[^>]+\bmultiple\b/', $html);
         $this->assertStringContainsString('DropdownValues', $html, 'Should use the AJAX template');
     }
 
