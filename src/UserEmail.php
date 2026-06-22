@@ -46,6 +46,15 @@ class UserEmail extends CommonDBChild
     public static string $items_id        = 'users_id';
     public bool $dohistory              = true;
 
+    /**
+     * 1-based position of the email row being rendered, for distinct accessible names
+     * ("Email address 1", "Email address 2"...). Reset in showForUser(), the single
+     * entry point that renders the rows, before each render pass.
+     *
+     * @internal
+     */
+    private static int $display_index = 0;
+
 
     public static function getTypeName($nb = 0)
     {
@@ -175,16 +184,25 @@ class UserEmail extends CommonDBChild
     #[Override()]
     public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
     {
+        // Number the added row by counting the email inputs already in the DOM at click
+        // time, so its label continues the server-rendered numbering. Assumes rows are
+        // only appended (no client-side removal); revisit if a remove control is added.
+        $position_expr = "'+(document.querySelectorAll('[name^=" . $field_name . "]').length + 1)+'";
+
         $html = "<div class='d-flex' role='group' aria-label='" . _sn('Email', 'Emails', 1) . "'>"
-            . "<input title='" . __s('Default email') . "' type='radio' name='_default_email' value='-__JS_PLACEHOLDER__' aria-label='" . __s('Set as default email') . "'>"
+            . "<input title='" . __s('Default email') . "' type='radio' name='_default_email' value='-__JS_PLACEHOLDER__' aria-label='" . htmlescape(sprintf(__('Set as default email %s'), '__LABEL_POS__')) . "'>"
             . "&nbsp;"
-            . "<input type='text' class='form-control' " . "name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'  aria-label='" . __s('Email address') . "'>"
+            . "<input type='text' class='form-control' " . "name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'  aria-label='" . htmlescape(sprintf(__('Email address %s'), '__LABEL_POS__')) . "'>"
             . "</div>";
 
-        return str_replace(
-            '__JS_PLACEHOLDER__',
-            "'+{$child_count_js_var}+'", // string closing, + operator, JS variable name, + operator, string reopening
-            jsescape($html)
+        // The label placeholders are replaced after jsescape() so the counting expression
+        // stays executable JS, mirroring the `'+var+'` id placeholder of the parent class.
+        return strtr(
+            jsescape($html),
+            [
+                '__JS_PLACEHOLDER__' => "'+{$child_count_js_var}+'",
+                '__LABEL_POS__'      => $position_expr,
+            ]
         );
     }
 
@@ -204,6 +222,7 @@ class UserEmail extends CommonDBChild
         } else {
             $value = htmlescape($this->fields['email']);
         }
+        $position = ++self::$display_index;
         $result = "";
         $field_name = htmlescape($field_name . "[$id]");
         $result .= "<div class='d-flex align-items-center' role='group' aria-label='" . _sn('Email', 'Emails', 1) . "'>";
@@ -215,12 +234,12 @@ class UserEmail extends CommonDBChild
         if ($this->fields['is_default']) {
             $result .= " checked";
         }
-        $result .= " aria-label='" . __s('Set as default email') . "'>&nbsp;";
+        $result .= " aria-label='" . htmlescape(sprintf(__('Set as default email %s'), $position)) . "'>&nbsp;";
         if (!$canedit || $this->fields['is_dynamic']) {
             $result .= "<input type='hidden' name='$field_name' value='$value'>";
             $result .= sprintf('%s <span class="b">(%s)</span>', $value, __s('D'));
         } else {
-            $result .= "<input type='text' class='form-control' name='$field_name' value='$value' aria-label='" . __s('Email address') . "'>";
+            $result .= "<input type='text' class='form-control' name='$field_name' value='$value' aria-label='" . htmlescape(sprintf(__('Email address %s'), $position)) . "'>";
         }
         $result .= "</div>";
 
@@ -261,6 +280,7 @@ class UserEmail extends CommonDBChild
             }
         }
 
+        self::$display_index = 0; // restart the per-render numbering used for aria-labels
         parent::showChildsForItemForm($user, '_useremails', $canedit);
     }
 
