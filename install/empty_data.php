@@ -8343,6 +8343,38 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'name' => 'datacenter',
                 'rights' => READ,
             ], [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'enclosure',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'enclosure',
+                'rights' => READ,
+            ], [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'enclosure',
+                'rights' => ALLSTANDARDRIGHT,
+            ], [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'enclosure',
+                'rights' => ALLSTANDARDRIGHT,
+            ], [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'enclosure',
+                'rights' => self::RIGHT_NONE,
+            ], [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'enclosure',
+                'rights' => ALLSTANDARDRIGHT,
+            ], [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'enclosure',
+                'rights' => ALLSTANDARDRIGHT,
+            ], [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'enclosure',
+                'rights' => READ,
+            ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'rule_asset',
                 'rights' => READ | UPDATE | CREATE | PURGE | RuleAsset::PARENT,
