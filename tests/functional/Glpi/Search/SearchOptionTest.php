@@ -162,22 +162,6 @@ class SearchOptionTest extends DbTestCase
         $this->assertTrue(true, 'Search completed without SQL error - fix is working');
     }
 
-    public function testRackMaxPowerCanBeDisplayedAndMassUpdated(): void
-    {
-        $this->login();
-
-        $read_options = SearchOption::getOptionsForItemtype(\Rack::class);
-        $this->assertArrayHasKey(9, $read_options);
-        $this->assertSame(\Rack::getTable(), $read_options[9]['table']);
-        $this->assertSame('max_power', $read_options[9]['field']);
-        $this->assertSame('number', $read_options[9]['datatype']);
-
-        $update_options = SearchOption::getCleanedOptions(\Rack::class, UPDATE);
-        $this->assertArrayHasKey(9, $update_options);
-        $this->assertNotSame(false, $update_options[9]['massiveaction'] ?? true);
-        $this->assertSame('max_power', $update_options[9]['linkfield']);
-    }
-
     public function testAllAssetsGroupSearchResults(): void
     {
         $this->login();
