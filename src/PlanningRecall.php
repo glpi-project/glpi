@@ -65,6 +65,25 @@ class PlanningRecall extends CommonDBChild
         return (int) $this->fields['users_id'] === Session::getLoginUserID();
     }
 
+    public function canUpdateItem(): bool
+    {
+        if ($this->fields['itemtype'] === ProjectTask::class) {
+            return in_array((int) $this->fields['users_id'], ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
+        }
+        return parent::canUpdateItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        if ($this->fields['itemtype'] === ProjectTask::class) {
+            // Allow purging when the task still exists; team membership is not required
+            // because the recall may need to be cleaned up after the user leaves the team.
+            $task = new ProjectTask();
+            return $task->getFromDB((int) $this->fields['items_id']);
+        }
+        return parent::canPurgeItem();
+    }
+
     public function cleanDBonPurge()
     {
         $class = new Alert();

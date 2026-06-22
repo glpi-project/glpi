@@ -229,16 +229,25 @@ class ProjectTaskTeam extends CommonDBRelation
                 'field'       => 'plan_end_date',
             ];
             foreach ($this->resolveToUsers() as $users_id) {
+                if (PlanningRecall::getForItem(ProjectTask::class, $task->getID(), $users_id) !== null) {
+                    continue;
+                }
                 $recall_data['users_id'] = $users_id;
-                PlanningRecall::manageDatasBypassRights($recall_data);
+                PlanningRecall::manageDatas($recall_data);
             }
         }
     }
 
-    public function post_deleteItem()
+    public function post_purgeItem()
     {
+        $projecttasks_id = $this->fields['projecttasks_id'];
+        $still_in_team = array_flip(self::getUserInTeamFor($projecttasks_id));
+
         foreach ($this->resolveToUsers() as $users_id) {
-            $recall = PlanningRecall::getForItem(ProjectTask::class, $this->fields['projecttasks_id'], $users_id);
+            if (isset($still_in_team[$users_id])) {
+                continue;
+            }
+            $recall = PlanningRecall::getForItem(ProjectTask::class, $projecttasks_id, $users_id);
             if ($recall !== null) {
                 $recall->delete(['id' => $recall->getID()]);
             }

@@ -831,7 +831,10 @@ class Group_User extends CommonDBRelation
             if (!$task->getFromDB($row['id']) || (int) $task->fields['recall'] < 0) {
                 continue;
             }
-            PlanningRecall::manageDatasBypassRights([
+            if (PlanningRecall::getForItem(ProjectTask::class, $task->getID(), $this->fields['users_id']) !== null) {
+                continue;
+            }
+            PlanningRecall::manageDatas([
                 'itemtype'    => ProjectTask::class,
                 'items_id'    => $row['id'],
                 'users_id'    => (int) $this->fields['users_id'],
@@ -916,7 +919,13 @@ class Group_User extends CommonDBRelation
         Group::updateLastGroupChange();
 
         foreach (ProjectTask::getActiveProjectTaskIDsForGroup([(int) $this->fields['groups_id']]) as $row) {
-            $recall = PlanningRecall::getForItem(ProjectTask::class, $row['id'], (int) $this->fields['users_id']);
+            $projecttasks_id = $row['id'];
+            $still_in_team = array_flip(ProjectTaskTeam::getUserInTeamFor($projecttasks_id));
+
+            if (isset($still_in_team[$users_id])) {
+                continue;
+            }
+            $recall = PlanningRecall::getForItem(ProjectTask::class, $projecttasks_id, $users_id);
             if ($recall !== null) {
                 $recall->delete(['id' => $recall->getID()]);
             }

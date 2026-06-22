@@ -52,32 +52,46 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
 
     private function createProjectAndTask(int $recall = -2, string $end_date = '+2 days'): array
     {
-        $project = $this->createItem(Project::class, ['name' => __FUNCTION__]);
-        $task    = $this->createItem(ProjectTask::class, [
-            'name'          => __FUNCTION__,
-            'projects_id'   => $project->getID(),
-            'plan_end_date' => date('Y-m-d H:i:s', strtotime($end_date)),
-            'recall'        => $recall,
-        ]);
+        $project = $this->createItem(
+            Project::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+        $task    = $this->createItem(
+            ProjectTask::class,
+            [
+                'name'          => __FUNCTION__,
+                'projects_id'   => $project->getID(),
+                'plan_end_date' => date('Y-m-d H:i:s', strtotime($end_date)),
+                'recall'        => $recall,
+            ]
+        );
         return [$project, $task];
     }
 
     private function addUserToTeam(ProjectTask $task, int $users_id): ProjectTaskTeam
     {
-        return $this->createItem(ProjectTaskTeam::class, [
-            'projecttasks_id' => $task->getID(),
-            'itemtype'        => User::class,
-            'items_id'        => $users_id,
-        ]);
+        return $this->createItem(
+            ProjectTaskTeam::class,
+            [
+                'projecttasks_id' => $task->getID(),
+                'itemtype'        => User::class,
+                'items_id'        => $users_id,
+            ]
+        );
     }
 
     private function addGroupToTeam(ProjectTask $task, int $groups_id): ProjectTaskTeam
     {
-        return $this->createItem(ProjectTaskTeam::class, [
-            'projecttasks_id' => $task->getID(),
-            'itemtype'        => Group::class,
-            'items_id'        => $groups_id,
-        ]);
+        return $this->createItem(
+            ProjectTaskTeam::class,
+            [
+                'projecttasks_id' => $task->getID(),
+                'itemtype'        => Group::class,
+                'items_id'        => $groups_id,
+            ]
+        );
     }
 
     private function assertHasRecall(int $task_id, int $users_id, int $before_time): void
@@ -238,6 +252,38 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $this->assertNoRecall($task->getID(), $users_id);
     }
 
+    public function testNoRecallDuplicatedWhenUserAddedDirectlyAndAlreadyInTeamViaGroup(): void
+    {
+        $this->login();
+        $tech  = getItemByTypeName(User::class, 'tech');
+        $group = $this->createItem(
+            Group::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => $tech->getID(),
+            ]
+        );
+
+        [, $task] = $this->createProjectAndTask(HOUR_TIMESTAMP);
+        $this->addGroupToTeam($task, $group->getID());
+        $this->assertHasRecall($task->getID(), $tech->getID(), HOUR_TIMESTAMP);
+
+        // Add the same user directly — they already have a recall via the group
+        $this->addUserToTeam($task, $tech->getID());
+
+        $this->assertSame(1, countElementsInTable(PlanningRecall::getTable(), [
+            'itemtype' => ProjectTask::class,
+            'items_id' => $task->getID(),
+            'users_id' => $tech->getID(),
+        ]));
+    }
+
     // -------------------------------------------------------------------------
     // ProjectTaskTeam — group added / removed
     // -------------------------------------------------------------------------
@@ -246,11 +292,19 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
     {
         $this->login();
         $tech  = getItemByTypeName(User::class, 'tech');
-        $group = $this->createItem(Group::class, ['name' => __FUNCTION__]);
-        $this->createItem(Group_User::class, [
-            'groups_id' => $group->getID(),
-            'users_id'  => $tech->getID(),
-        ]);
+        $group = $this->createItem(
+            Group::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => $tech->getID(),
+            ]
+        );
 
         [, $task] = $this->createProjectAndTask(HOUR_TIMESTAMP);
         $this->assertNoRecall($task->getID(), $tech->getID());
@@ -264,11 +318,19 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
     {
         $this->login();
         $tech  = getItemByTypeName(User::class, 'tech');
-        $group = $this->createItem(Group::class, ['name' => __FUNCTION__]);
-        $this->createItem(Group_User::class, [
-            'groups_id' => $group->getID(),
-            'users_id'  => $tech->getID(),
-        ]);
+        $group = $this->createItem(
+            Group::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => $tech->getID(),
+            ]
+        );
 
         [, $task]   = $this->createProjectAndTask(HOUR_TIMESTAMP);
         $team_entry = $this->addGroupToTeam($task, $group->getID());
@@ -279,6 +341,46 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $this->assertNoRecall($task->getID(), $tech->getID());
     }
 
+    public function testRecallKeptForDirectMemberWhenGroupRemovedFromTeam(): void
+    {
+        $this->login();
+        $tech   = getItemByTypeName(User::class, 'tech');
+        $normal = getItemByTypeName(User::class, 'normal');
+        $group  = $this->createItem(
+            Group::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => $tech->getID(),
+            ]
+        );
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => $normal->getID(),
+            ]
+        );
+
+        [, $task]   = $this->createProjectAndTask(HOUR_TIMESTAMP);
+        $team_group = $this->addGroupToTeam($task, $group->getID());
+        $this->addUserToTeam($task, $tech->getID()); // tech is also directly in the team
+        $this->assertHasRecall($task->getID(), $tech->getID(), HOUR_TIMESTAMP);
+        $this->assertHasRecall($task->getID(), $normal->getID(), HOUR_TIMESTAMP);
+
+        $this->deleteItem(ProjectTaskTeam::class, $team_group->getID());
+
+        // tech is still directly in team → recall must be preserved
+        $this->assertHasRecall($task->getID(), $tech->getID(), HOUR_TIMESTAMP);
+        // normal was only in the group → recall must be deleted
+        $this->assertNoRecall($task->getID(), $normal->getID());
+    }
+
     // -------------------------------------------------------------------------
     // Group_User — user joins / leaves group
     // -------------------------------------------------------------------------
@@ -287,7 +389,12 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
     {
         $this->login();
         $tech  = getItemByTypeName(User::class, 'tech');
-        $group = $this->createItem(Group::class, ['name' => __FUNCTION__]);
+        $group = $this->createItem(
+            Group::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
 
         [, $task] = $this->createProjectAndTask(HOUR_TIMESTAMP);
         $this->addGroupToTeam($task, $group->getID());
@@ -295,10 +402,13 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         // Tech not in group yet → no recall
         $this->assertNoRecall($task->getID(), $tech->getID());
 
-        $this->createItem(Group_User::class, [
-            'groups_id' => $group->getID(),
-            'users_id'  => $tech->getID(),
-        ]);
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => $tech->getID(),
+            ]
+        );
 
         $this->assertHasRecall($task->getID(), $tech->getID(), HOUR_TIMESTAMP);
     }
@@ -307,7 +417,12 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
     {
         $this->login();
         $tech  = getItemByTypeName(User::class, 'tech');
-        $group = $this->createItem(Group::class, ['name' => __FUNCTION__]);
+        $group = $this->createItem(
+            Group::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
 
         // Group is NOT added to any task team
         $this->createItem(Group_User::class, [
@@ -327,11 +442,19 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
     {
         $this->login();
         $tech       = getItemByTypeName(User::class, 'tech');
-        $group      = $this->createItem(Group::class, ['name' => __FUNCTION__]);
-        $group_user = $this->createItem(Group_User::class, [
-            'groups_id' => $group->getID(),
-            'users_id'  => $tech->getID(),
-        ]);
+        $group      = $this->createItem(
+            Group::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+        $group_user = $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => $tech->getID(),
+            ]
+        );
 
         [, $task] = $this->createProjectAndTask(HOUR_TIMESTAMP);
         $this->addGroupToTeam($task, $group->getID());
@@ -342,6 +465,36 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $this->assertNoRecall($task->getID(), $tech->getID());
     }
 
+    public function testRecallKeptWhenUserLeavesGroupButIsDirectlyInTaskTeam(): void
+    {
+        $this->login();
+        $tech       = getItemByTypeName(User::class, 'tech');
+        $group      = $this->createItem(
+            Group::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+
+        $group_user = $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => $tech->getID(),
+            ]
+        );
+
+        [, $task] = $this->createProjectAndTask(HOUR_TIMESTAMP);
+        $this->addGroupToTeam($task, $group->getID());
+        $this->addUserToTeam($task, $tech->getID()); // also directly in team
+        $this->assertHasRecall($task->getID(), $tech->getID(), HOUR_TIMESTAMP);
+
+        // Remove from group — user is still directly in the task team
+        $this->deleteItem(Group_User::class, $group_user->getID(), true);
+
+        $this->assertHasRecall($task->getID(), $tech->getID(), HOUR_TIMESTAMP);
+    }
+
     // -------------------------------------------------------------------------
     // Group purged from GLPI
     // -------------------------------------------------------------------------
@@ -350,11 +503,19 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
     {
         $this->login();
         $tech  = getItemByTypeName(User::class, 'tech');
-        $group = $this->createItem(Group::class, ['name' => __FUNCTION__]);
-        $this->createItem(Group_User::class, [
-            'groups_id' => $group->getID(),
-            'users_id'  => $tech->getID(),
-        ]);
+        $group = $this->createItem(
+            Group::class,
+            [
+                'name' => __FUNCTION__
+            ]
+        );
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => $tech->getID(),
+            ]
+        );
 
         [, $task] = $this->createProjectAndTask(HOUR_TIMESTAMP);
         $this->addGroupToTeam($task, $group->getID());
