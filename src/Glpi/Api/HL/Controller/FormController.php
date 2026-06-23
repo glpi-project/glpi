@@ -53,6 +53,8 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Session;
 
+use function Safe\json_encode;
+
 #[Route(path: '/Form', priority: 1, tags: ['Forms'])]
 final class FormController extends AbstractController
 {
