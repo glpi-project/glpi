@@ -49,19 +49,24 @@ Html::header_nocache();
 
 try {
     $ma = new MassiveAction($_POST, $_GET, 'process');
-    [$referer, $item_types] = get_item_type_redirection_path_from_post();
+    $item_types = get_item_types_from_post();
 
     $reauth_manager = new ReAuthManager();
     if ($reauth_manager->atLeastOneitemTypesRequiresReauthentication($item_types)) {
-        // A reauthentication is required: processing is interrupted by a redirect to the reauth
-        // form, then this file is reentered after a successful reauthentication. The HTTP referer
-        // is lost across that round-trip, so we store the post-processing redirection target in
-        // session and reuse it once reauthenticated.
-        // When no reauthentication is required, we keep MassiveAction's default redirect
-        // (Html::getBackUrl()), which sends the user back to the page that triggered the action.
-        $_SESSION['glpi_reauth_massiveaction_redirect'] = $referer;
-        $ma->setRedirect($_SESSION['glpi_reauth_massiveaction_redirect']);
+        // First pass (reauth needed): throws RedirectException. Before throwing,
+        // redirectToReauth() stores the calling page in glpi_reauth_cancel_url.
         $reauth_manager->checkReAuthenticationOrRedirect();
+
+        // Reached here means reauth is valid. Two sub-cases:
+        // a) Second pass (back from reauth form): the ReAuth controller injects
+        //    _glpi_http_referer into POST, so Html::getBackUrl() would return
+        //    massiveaction.php (which is unreleavant)  — we use getCancelURL() = calling page stored on first pass.
+        // b) First pass within active reauth window (15 min): no _glpi_http_referer in POST;
+        //    Html::getBackUrl() reads the real HTTP Referer = calling page.
+        $back_url = isset($_POST['_glpi_http_referer'])
+            ? $reauth_manager->getCancelURL()
+            : Html::getBackUrl();
+        $ma->setRedirect($back_url);
     }
 }
 // process redirect exceptions
@@ -125,24 +130,17 @@ if (isset($results['messages']) && is_array($results['messages']) && count($resu
 Html::redirect($results['redirect']);
 
 /**
- * Returns the redirection path and item types, based on the POST data.
+ * Returns the item types from POST data, for re-authentication checks.
  *
- * @return array{string, array<class-string<CommonGLPI>>} [redirection path, item types]
+ * @return array<class-string<CommonGLPI>>
  */
-function get_item_type_redirection_path_from_post(): array
+function get_item_types_from_post(): array
 {
-    global $CFG_GLPI;
-
     /** @var array<class-string<CommonGLPI>> $items */
     $items = isset($_POST['items']) ? array_keys($_POST['items']) : [];
     // ensure item types are glpi class names - phpstan complains "will always evaluate to true"
-    // but this filtering a required for security -> forbiddynamicinstantiationrule
-    // can be added to phpstan baseline
+    // but this filtering is required for security -> forbiddynamicinstantiationrule
     $items = array_filter($items, fn($item) => is_a($item, CommonGLPI::class, true));
 
-    return match (count($items)) {
-        0 => [$CFG_GLPI["root_doc"], []],
-        1 => [(new $items[0]())->getRedirectToListUrl(), $items], // phpstan complains (forbiddynamicinstantiationrule), but filtering is done just above.
-        default => [$CFG_GLPI["root_doc"] . '/front/allassets.php', $items]
-    };
+    return array_values($items);
 }
