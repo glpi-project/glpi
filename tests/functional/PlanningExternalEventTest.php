@@ -435,6 +435,7 @@ class PlanningExternalEventTest extends AbstractPlanningEventTest
         $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
 
         // Create event with document
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
         $planning_event = $this->createItem(PlanningExternalEvent::class, [
             'name' => 'Event with document',
             'users_id' => Session::getLoginUserID(),
@@ -446,7 +447,6 @@ class PlanningExternalEventTest extends AbstractPlanningEventTest
                 0 => $filename,
             ],
         ], ['plan']);
-        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
         $documents = $doc_item->find([
             'itemtype' => PlanningExternalEvent::class,
             'items_id' => $planning_event->getID(),
@@ -454,6 +454,7 @@ class PlanningExternalEventTest extends AbstractPlanningEventTest
         $this->assertCount(1, $documents, 'One document should be attached to the event');
 
         // Try to attach the same document again
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
         $this->updateItem(PlanningExternalEvent::class, $planning_event->getID(), [
             '_filename' => [
                 0 => $filename,
@@ -467,13 +468,14 @@ class PlanningExternalEventTest extends AbstractPlanningEventTest
 
         // Attach a second document
         $filename2 = '5e5e92ffd9bd91.44444444bar.txt';
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        copy(FIXTURE_DIR . '/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename2);
         $this->updateItem(PlanningExternalEvent::class, $planning_event->getID(), [
             '_filename' => [
                 0 => $filename,
                 1 => $filename2,
             ],
         ]);
-        copy(FIXTURE_DIR . '/uploads/bar.txt', GLPI_TMP_DIR . '/' . $filename2);
         $documents = $doc_item->find([
             'itemtype' => PlanningExternalEvent::class,
             'items_id' => $planning_event->getID(),
