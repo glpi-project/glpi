@@ -95,7 +95,7 @@ export class UserPage extends GlpiPage
 
     public getDefaultEmailRadios(): Locator
     {
-        return this.page.getByRole('radio', { name: /^Set as default email \d+$/ })
+        return this.page.getByRole('radio', { name: /^Set \d+ email as default$/ })
             .filter({ visible: true });
     }
 }
