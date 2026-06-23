@@ -36,7 +36,7 @@
 {% set form_id = 'project_task_' ~ rand %}
 {% set content_field_id = 'content_' ~ rand %}
 {% set params = {
-    'form_id': form_id,
+    'form_id' : form_id,
 } %}
 
 {% block form_fields %}
@@ -47,7 +47,7 @@
         item.fields.projecttasktemplates_id,
         'ProjectTaskTemplate'|itemtype_name,
         {
-            'entity': item.getEntityID(),
+            'entity' : item.getEntityID(),
         }
     ) }}
 
@@ -73,9 +73,9 @@
         projecttasks_id,
         __('As child of'),
         {
-            'entity': item.getEntityID(),
-            'condition': {'glpi_projecttasks.projects_id': projects_id},
-            'used': [item.getID()],
+            'entity' : item.getEntityID(),
+            'condition' : {'glpi_projecttasks.projects_id': projects_id},
+            'used' : [item.getID()],
         }
     ) }}
 
@@ -98,10 +98,10 @@
             item.fields.auto_projectstates,
             __('Automatically calculate'),
             {
-                'helper': __("When automatic computation is active, state is computed based on this task percent done. Don't forget to define them in the general config."),
-                'field_class': 'col-12 w-100',
-                'label_class': 'col-auto',
-                'input_class': 'col',
+                'helper' : __("When automatic computation is active, state is computed based on this task percent done. Don't forget to define them in the general config."),
+                'field_class' : 'col-12 w-100',
+                'label_class' : 'col-auto',
+                'input_class' : 'col',
             }
         ) }}
     {% endset %}
@@ -112,8 +112,8 @@
         item.fields.projectstates_id,
         _x('item', 'State'),
         {
-            disabled: item.fields.auto_projectstates,
-            add_field_html: auto_status,
+            disabled : item.fields.auto_projectstates,
+            add_field_html : auto_status,
         }
     ) }}
 
@@ -123,10 +123,10 @@
             item.fields.auto_percent_done,
             __('Automatically calculate'),
             {
-                'helper': __('When automatic computation is active, percentage is computed based on the average of all child task percent done.'),
-                'field_class': 'col-12 w-100',
-                'label_class': 'col-auto',
-                'input_class': 'col',
+                'helper' : __('When automatic computation is active, percentage is computed based on the average of all child task percent done.'),
+                'field_class' : 'col-12 w-100',
+                'label_class' : 'col-auto',
+                'input_class' : 'col',
             }
         ) }}
     {% endset %}
@@ -136,11 +136,11 @@
         item.fields.percent_done,
         __('Percent done'),
         {
-            'value': item.fields.percent_done,
-            'min': 0,
-            'max': 100,
-            'step': 5,
-            'unit': '%',
+            'value' : item.fields.percent_done,
+            'min' : 0,
+            'max' : 100,
+            'step' : 5,
+            'unit' : '%',
             'add_field_html': auto_percent,
          }|merge(item.fields.auto_percent_done ? {'specific_tags': {'disabled': 'disabled'}} : {})
     ) }}
@@ -226,7 +226,7 @@
         __('Planned duration'),
         {
             'field_class' : 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
-            'display_emptychoice': true,
+            'display_emptychoice' : true,
         },
     ) }}
 
@@ -237,7 +237,7 @@
         __('Effective duration'),
         {
             'field_class' : 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
-            'display_emptychoice': true,
+            'display_emptychoice' : true,
         },
     ) }}
 
@@ -271,11 +271,11 @@
         item.fields.content,
         __("Description"),
         {
-            'name': 'content',
-            'enable_richtext': true,
-            'id': content_field_id,
-            'label_class': "col-xxl-2",
-            'input_class': "col-xxl-10",
+            'name ': 'content',
+            'enable_richtext' : true,
+            'id' : content_field_id,
+            'label_class' : "col-xxl-2",
+            'input_class' : "col-xxl-10",
             'field_class' : "col-12",
         }
     ) }}
@@ -285,8 +285,8 @@
         item.fields.comment,
         __("Comments"),
         {
-            'label_class': "col-xxl-2",
-            'input_class': "col-xxl-10",
+            'label_class' : "col-xxl-2",
+            'input_class' : "col-xxl-10",
             'field_class' : "col-12",
         }
     ) }}
