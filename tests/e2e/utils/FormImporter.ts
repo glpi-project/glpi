@@ -73,8 +73,13 @@ export class FormImporter
         }
 
         const dom = new JSDOM(body);
+
+        // The response is a full page: the layout chrome (e.g. "last visited
+        // items") may contain links to previously imported forms. Restrict the
+        // lookup to the import results table so we always pick the form that was
+        // just imported, not an unrelated one.
         const link = dom.window.document.querySelector(
-            'a[href^="/front/form/form.form.php?id="]'
+            'table a[href^="/front/form/form.form.php?id="]'
         ) as HTMLAnchorElement;
 
         if (link === null) {
