@@ -872,12 +872,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/manuallink.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_a\\(\\) with arguments class\\-string\\<CommonGLPI\\>, \'CommonGLPI\' and true will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/front/massiveaction.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Instantiating an object from an unrestricted dynamic string is forbidden \\(see https\\://github\\.com/glpi\\-project/phpstan\\-glpi\\?tab\\=readme\\-ov\\-file\\#forbiddynamicinstantiationrule\\)\\.$#',
 	'identifier' => 'glpi.forbidDynamicInstantiation',
 	'count' => 1,
@@ -1046,8 +1040,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/report.dynamic.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call static method canView\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'staticMethod.nonObject',
+	'message' => '#^Cannot call method checkGlobal\\(\\) on CommonDBTM\\|false\\.$#',
+	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/front/report.dynamic.php',
 ];

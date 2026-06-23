@@ -102,10 +102,6 @@ class ReAuthController extends AbstractController
      */
     private function buildTemplateContext(): array
     {
-        if ($this->router === null) {
-            throw new \RuntimeException('URL generator is not available.');
-        }
-
         return [
             'redirect'      => $this->reAuthManager->getTargetURL(),
             'cancel_url'    => $this->reAuthManager->getCancelURL(),

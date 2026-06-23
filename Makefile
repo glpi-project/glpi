@@ -284,10 +284,10 @@ cypress-open: ## Open cypress UI
 	$(PHP) node_modules/.bin/cypress open --e2e --browser electron --project tests $(c)
 .PHONY: cypress-open
 
-playwright: ## Run playwright tests
+playwright: ## Run playwright tests - require a test db : make e2e-db-install
 	@$(eval c ?=)
 	$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
-	$(PLAYWRIGHT) test $(c)
+	$(PLAYWRIGHT) test --retries=2 $(c)
 .PHONY: playwright
 
 playwright-report: ## View playwright reports

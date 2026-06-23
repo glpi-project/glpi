@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
             sprintf(__('%s adds a user to an entity'), $_SESSION["glpiname"])
         );
     }
-    Html::redirect(User::getFormURLWithID($_POST["users_id"]));
+    Html::redirect(User::getFormURLWithID($_POST["users_id"] ?? 0));
 }
 
 throw new BadRequestHttpException();
