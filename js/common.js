@@ -1577,7 +1577,7 @@ function toggleDisclosablePasswordField(button, item) {
 /**
  * Converts a disclosable password field to a normal text field
  * @param {string} item The ID of the field to be shown
- * @deprecated Use {@link toggleDisclosablePasswordField} instead. Kept for backward compatibility.
+ * @deprecated 12.0 Use {@link toggleDisclosablePasswordField} instead. Kept for backward compatibility.
  */
 function showDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "text");
@@ -1586,7 +1586,7 @@ function showDisclosablePasswordField(item) {
 /**
  * Converts a normal text field to a password field
  * @param {string} item The ID of the field to be hidden
- * @deprecated Use {@link toggleDisclosablePasswordField} instead. Kept for backward compatibility.
+ * @deprecated 12.0 Use {@link toggleDisclosablePasswordField} instead. Kept for backward compatibility.
  */
 function hideDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "password");
