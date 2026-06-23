@@ -265,7 +265,6 @@ if (typeof tinyMCE != 'undefined') {
             'pngblip': 'image/png',
             'jpegblip': 'image/jpeg',
         };
-        const supported_img_types = Object.values(rtf_img_types);
         editor.on('paste', (e) => {
             last_paste_content = e.clipboardData;
             // Collect all image files from clipboard items so PastePreProcess can
