@@ -254,6 +254,7 @@ class ProjectTaskTeam extends CommonDBRelation
         }
     }
 
+    /** @return array<int> */
     private function resolveToUsers(): array
     {
         global $DB;
@@ -320,7 +321,7 @@ class ProjectTaskTeam extends CommonDBRelation
      * Get team users for a project task (only the list of users ids)
      *
      * @param int $tasks_id
-     * @return array
+     * @return array<int>
      **/
     public static function getUserInTeamFor($tasks_id)
     {

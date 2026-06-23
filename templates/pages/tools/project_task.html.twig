@@ -182,7 +182,7 @@
         item.fields.plan_end_date,
         __('Planned end date'),
         {
-            'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+            'field_class' : 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
         }
     ) }}
 
@@ -191,24 +191,24 @@
         item.fields.real_end_date,
         __('Real end date'),
         {
-            'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+            'field_class' : 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
         }
     ) }}
 
     {% set recall_values = {
-        '-2':     __('None'),
-        '0':      _n('%d minute', '%d minutes', 0)|format(0),
-        '900':    _n('%d minute', '%d minutes', 15)|format(15),
-        '1800':   _n('%d minute', '%d minutes', 30)|format(30),
-        '2700':   _n('%d minute', '%d minutes', 45)|format(45),
-        '3600':   _n('%d hour', '%d hours', 1)|format(1),
-        '7200':   _n('%d hour', '%d hours', 2)|format(2),
-        '10800':  _n('%d hour', '%d hours', 3)|format(3),
-        '14400':  _n('%d hour', '%d hours', 4)|format(4),
-        '43200':  _n('%d hour', '%d hours', 12)|format(12),
-        '86400':  _n('%d day', '%d days', 1)|format(1),
-        '172800': _n('%d day', '%d days', 2)|format(2),
-        '604800': _n('%d week', '%d weeks', 1)|format(1),
+        '-2' :     __('None'),
+        '0' :      _n('%d minute', '%d minutes', 0)|format(0),
+        '900' :    _n('%d minute', '%d minutes', 15)|format(15),
+        '1800' :   _n('%d minute', '%d minutes', 30)|format(30),
+        '2700' :   _n('%d minute', '%d minutes', 45)|format(45),
+        '3600' :   _n('%d hour', '%d hours', 1)|format(1),
+        '7200' :   _n('%d hour', '%d hours', 2)|format(2),
+        '10800' :  _n('%d hour', '%d hours', 3)|format(3),
+        '14400' :  _n('%d hour', '%d hours', 4)|format(4),
+        '43200' :  _n('%d hour', '%d hours', 12)|format(12),
+        '86400' :  _n('%d day', '%d days', 1)|format(1),
+        '172800' : _n('%d day', '%d days', 2)|format(2),
+        '604800' : _n('%d week', '%d weeks', 1)|format(1),
     } %}
     {{ fields.dropdownArrayField(
         'recall',
@@ -225,7 +225,7 @@
         duration_dropdown_to_add,
         __('Planned duration'),
         {
-            'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+            'field_class' : 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
             'display_emptychoice': true,
         },
     ) }}
@@ -236,7 +236,7 @@
         duration_dropdown_to_add,
         __('Effective duration'),
         {
-            'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+            'field_class' : 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
             'display_emptychoice': true,
         },
     ) }}
