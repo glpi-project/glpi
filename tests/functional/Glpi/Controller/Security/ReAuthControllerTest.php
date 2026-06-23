@@ -38,7 +38,6 @@ use Glpi\Controller\Security\ReAuthController;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\Group;
-use RuntimeException;
 use Safe\DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;

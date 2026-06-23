@@ -50,18 +50,17 @@ Html::header_nocache();
 try {
     $ma = new MassiveAction($_POST, $_GET, 'process');
     [$referer, $item_types] = get_item_type_redirection_path_from_post();
-    // Store final url
-    // current requested page is the massive action processing
-    // but redirection should be to the page that triggered the massive action process
-    // we can determine the url to reach after massive action processed, only before it's done
-    // -> store it in session, then reuse it on third pass on these file
-    if (!empty($item_types)) {
-        $_SESSION['glpi_reauth_massiveaction_redirect'] = $referer;
-    }
-    $ma->setRedirect($_SESSION['glpi_reauth_massiveaction_redirect']);
 
     $reauth_manager = new ReAuthManager();
     if ($reauth_manager->atLeastOneitemTypesRequiresReauthentication($item_types)) {
+        // A reauthentication is required: processing is interrupted by a redirect to the reauth
+        // form, then this file is reentered after a successful reauthentication. The HTTP referer
+        // is lost across that round-trip, so we store the post-processing redirection target in
+        // session and reuse it once reauthenticated.
+        // When no reauthentication is required, we keep MassiveAction's default redirect
+        // (Html::getBackUrl()), which sends the user back to the page that triggered the action.
+        $_SESSION['glpi_reauth_massiveaction_redirect'] = $referer;
+        $ma->setRedirect($_SESSION['glpi_reauth_massiveaction_redirect']);
         $reauth_manager->checkReAuthenticationOrRedirect();
     }
 }
