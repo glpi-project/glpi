@@ -716,6 +716,14 @@ TWIG, $twig_params);
      **/
     public function getActiveTimeBetween($start, $end)
     {
+        // Mirror Calendar::getActiveTimeBetween(): the `'NULL'` SQL sentinel string
+        // and empty bounds are not parseable dates and would make `Safe\strtotime()`
+        // throw an uncaught `DatetimeException` (e.g. on the "No calendar" branch
+        // below). Return early instead.
+        if (empty($start) || empty($end) || $start === 'NULL' || $end === 'NULL') {
+            return 0;
+        }
+
         if ($end < $start) {
             return 0;
         }
