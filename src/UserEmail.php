@@ -190,7 +190,7 @@ class UserEmail extends CommonDBChild
         $position_expr = "'+(document.querySelectorAll('[name^=" . $field_name . "]').length + 1)+'";
 
         $html = "<div class='d-flex' role='group' aria-label='" . _sn('Email', 'Emails', 1) . "'>"
-            . "<input title='" . __s('Default email') . "' type='radio' name='_default_email' value='-__JS_PLACEHOLDER__' aria-label='" . htmlescape(sprintf(__('Set as default email %s'), '__LABEL_POS__')) . "'>"
+            . "<input title='" . __s('Default email') . "' type='radio' name='_default_email' value='-__JS_PLACEHOLDER__' aria-label='" . htmlescape(sprintf(__('Set %s email as default'), '__LABEL_POS__')) . "'>"
             . "&nbsp;"
             . "<input type='text' class='form-control' " . "name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'  aria-label='" . htmlescape(sprintf(__('Email address %s'), '__LABEL_POS__')) . "'>"
             . "</div>";
@@ -234,7 +234,7 @@ class UserEmail extends CommonDBChild
         if ($this->fields['is_default']) {
             $result .= " checked";
         }
-        $result .= " aria-label='" . htmlescape(sprintf(__('Set as default email %s'), $position)) . "'>&nbsp;";
+        $result .= " aria-label='" . htmlescape(sprintf(__('Set %s email as default'), $position)) . "'>&nbsp;";
         if (!$canedit || $this->fields['is_dynamic']) {
             $result .= "<input type='hidden' name='$field_name' value='$value'>";
             $result .= sprintf('%s <span class="b">(%s)</span>', $value, __s('D'));
