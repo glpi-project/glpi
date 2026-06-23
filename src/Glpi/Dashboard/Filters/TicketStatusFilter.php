@@ -42,7 +42,7 @@ class TicketStatusFilter extends AbstractFilter
 {
     public static function getName(): string
     {
-        return _n("Ticket status", "Ticket status", Session::getPluralNumber());
+        return _n("Ticket status", "Ticket statuses", Session::getPluralNumber());
     }
 
     public static function getId(): string
