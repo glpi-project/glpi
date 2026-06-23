@@ -273,7 +273,7 @@ if (typeof tinyMCE != 'undefined') {
             last_paste_image_files = [];
             if (last_paste_content && last_paste_content.items) {
                 for (const item of last_paste_content.items) {
-                    if (item.kind === 'file' && supported_img_types.includes(item.type)) {
+                    if (item.kind === 'file' && isImage(item)) {
                         last_paste_image_files.push(item.getAsFile());
                     }
                 }
