@@ -38,18 +38,20 @@ use CommonGLPI;
 use Computer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTestTrait;
 use KnowbaseItem;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CommonGLPITest extends DbTestCase
 {
+    use ReAuthTestTrait;
+
     public function tearDown(): void
     {
         // Restore state mutated by the re-authentication tests.
-        unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
+        $this->restoreWebContext();
         ReauthTestItem::$allowed = true;
         ReauthTestItem::$requires_reauth = true;
         parent::tearDown();
@@ -275,21 +277,6 @@ class CommonGLPITest extends DbTestCase
         $this->assertFalse($reauth_needed);
     }
 
-    private function fakeWebContext(): void
-    {
-        $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
-        $_SERVER['REQUEST_URI'] = '/front/central.php';
-    }
-
-    private function setReauthenticated(bool $reauthenticated): void
-    {
-        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s');
-        if ($reauthenticated) {
-            (new ReAuthManager())->authenticate();
-        } else {
-            unset($_SESSION['glpi_reauth_until']);
-        }
-    }
 }
 
 /**

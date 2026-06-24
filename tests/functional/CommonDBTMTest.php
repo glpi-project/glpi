@@ -46,8 +46,8 @@ use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Exception\RedirectException;
-use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTestTrait;
 use Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -58,10 +58,11 @@ use User;
 
 class CommonDBTMTest extends DbTestCase
 {
+    use ReAuthTestTrait;
+
     public function tearDown(): void
     {
-        // Restore the CLI flag toggled by the re-authentication tests.
-        unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
+        $this->restoreWebContext();
         parent::tearDown();
     }
 
@@ -2414,28 +2415,6 @@ class CommonDBTMTest extends DbTestCase
         // --- act + assert ---
         $this->expectException(RedirectException::class);
         (new Group())->checkGlobal(READ);
-    }
-
-    private function fakeWebContext(): void
-    {
-        $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
-        $_SERVER['REQUEST_SCHEME'] = 'https';
-        $_SERVER['HTTP_HOST']      = 'glpi.example.org';
-        $_SERVER['REQUEST_URI']    = '/front/group.form.php?id=1';
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['HTTP_REFERER']   = 'https://glpi.example.org/front/group.php';
-        $_GET  = [];
-        $_POST = [];
-    }
-
-    private function setReauthenticated(bool $reauthenticated): void
-    {
-        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s');
-        if ($reauthenticated) {
-            (new ReAuthManager())->authenticate();
-        } else {
-            unset($_SESSION['glpi_reauth_until']);
-        }
     }
 
     public static function displayFullPageForItemProvider(): iterable

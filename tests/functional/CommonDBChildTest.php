@@ -36,15 +36,17 @@ namespace tests\units;
 
 use CommonDBChild;
 use Computer;
-use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTestTrait;
 use PHPUnit\Framework\Attributes\Group;
 
 class CommonDBChildTest extends DbTestCase
 {
+    use ReAuthTestTrait;
+
     public function tearDown(): void
     {
-        unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
+        $this->restoreWebContext();
         parent::tearDown();
     }
 
@@ -130,22 +132,6 @@ class CommonDBChildTest extends DbTestCase
                 return true;
             }
         };
-    }
-
-    private function fakeWebContext(): void
-    {
-        $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
-        $_SERVER['REQUEST_URI'] = '/front/computer.form.php';
-    }
-
-    private function setReauthenticated(bool $reauthenticated): void
-    {
-        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s');
-        if ($reauthenticated) {
-            (new ReAuthManager())->authenticate();
-        } else {
-            unset($_SESSION['glpi_reauth_until']);
-        }
     }
 
     public function testPrepareInputForAddWithMandatoryFkeyRelation(): void
