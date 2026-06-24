@@ -369,14 +369,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param int  $users_id User ID
      * @param bool $tech     false = used items, true = managed items
      *
-     * @return array{field_user: string, groups_ids: int[], criteria: array}
+     * @return array{field_user: string, groups_ids: int[], criteria: array<string, mixed>}
      */
     private static function getItemsForUserCriteria(int $users_id, bool $tech): array
     {
         global $DB;
-    
+
         $field_user = $tech ? 'users_id_tech' : 'users_id';
-    
+
         $iterator = $DB->request([
             'SELECT' => ['glpi_groups.id'],
             'FROM'   => 'glpi_groups',
@@ -390,11 +390,11 @@ class User extends CommonDBTM implements TreeBrowseInterface
             ],
             'WHERE' => ['glpi_groups_users.users_id' => $users_id],
         ]);
-    
+
         $groups_ids = array_column(iterator_to_array($iterator), 'id');
-    
+
         $criteria = [$field_user => $users_id];
-    
+
         if (count($groups_ids) > 0) {
             $criteria = [
                 'OR' => [
@@ -408,7 +408,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 ],
             ];
         }
-    
+
         return [
             'field_user' => $field_user,
             'groups_ids' => $groups_ids,
@@ -428,26 +428,26 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public static function countItemsForUser(int $users_id, bool $tech): int
     {
         global $CFG_GLPI, $DB;
-    
+
         $user_criteria = self::getItemsForUserCriteria($users_id, $tech);
         $count = 0;
-    
+
         foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
             if (!class_exists($itemtype)) {
                 continue;
             }
-    
+
             $item = getItemForItemtype($itemtype);
             if (!$item || !$item::canView()) {
                 continue;
             }
-    
+
             $table = $itemtype::getTable();
-    
+
             if (!$DB->fieldExists($table, $user_criteria['field_user'])) {
                 continue;
             }
-    
+
             $query = [
                 'COUNT' => 'cpt',
                 'FROM'  => $table,
@@ -466,18 +466,18 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 ],
                 'WHERE' => $user_criteria['criteria'],
             ];
-    
+
             if ($item->maybeTemplate()) {
                 $query['WHERE']['is_template'] = 0;
             }
-    
+
             if ($item->maybeDeleted()) {
                 $query['WHERE']['is_deleted'] = 0;
             }
-    
+
             $count += $DB->request($query)->current()['cpt'];
         }
-    
+
         return $count;
     }
 
