@@ -323,7 +323,7 @@ class ProjectTaskTeam extends CommonDBRelation
      * @param int $tasks_id
      * @return array<int>
      **/
-    public static function getUserInTeamFor($tasks_id)
+    public static function getUserInTeamFor($tasks_id): array
     {
         $task_team = ProjectTaskTeam::getTeamFor($tasks_id);
         $user_ids  = [];
@@ -339,7 +339,7 @@ class ProjectTaskTeam extends CommonDBRelation
                     foreach ($actors as $actor) {
                         $group_user = new Group_User();
                         foreach ($group_user->find(['groups_id' => $actor['items_id']]) as $user) {
-                            $user_ids[] = $user['users_id'];
+                            $user_ids[] = (int) $user['users_id'];
                         }
                     }
                     break;
