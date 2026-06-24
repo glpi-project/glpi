@@ -629,11 +629,13 @@ abstract class AbstractDefinition extends CommonDBTM
         }
 
         unset($profiles[$profile_id]);
+        $encoded = json_encode($profiles);
         $DB->update(
             static::getTable(),
-            ['profiles' => json_encode($profiles)],
+            ['profiles' => $encoded],
             ['id' => $this->getID()]
         );
+        $this->fields['profiles'] = $encoded;
     }
 
     /**

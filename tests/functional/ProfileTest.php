@@ -442,6 +442,17 @@ class ProfileTest extends DbTestCase
             profiles: [$profile_id => READ]
         );
 
+        // Also create an inactive definition to ensure it is cleaned up as well.
+        $inactive_asset_definition = $this->initAssetDefinition(
+            profiles: [$profile_id => READ]
+        );
+        $this->updateItem(
+            \Glpi\Asset\AssetDefinition::class,
+            $inactive_asset_definition->getID(),
+            ['is_active' => false]
+        );
+        $inactive_asset_definition->getFromDB($inactive_asset_definition->getID());
+
         $this->assertArrayHasKey(
             $profile_id,
             $this->callPrivateMethod($asset_definition, 'getDecodedProfilesField')
@@ -449,12 +460,17 @@ class ProfileTest extends DbTestCase
         $this->assertArrayHasKey(
             $profile_id,
             $this->callPrivateMethod($dropdown_definition, 'getDecodedProfilesField')
+        );
+        $this->assertArrayHasKey(
+            $profile_id,
+            $this->callPrivateMethod($inactive_asset_definition, 'getDecodedProfilesField')
         );
 
         $this->deleteItem(\Profile::class, $profile_id);
 
         $asset_definition->getFromDB($asset_definition->getID());
         $dropdown_definition->getFromDB($dropdown_definition->getID());
+        $inactive_asset_definition->getFromDB($inactive_asset_definition->getID());
 
         $this->assertArrayNotHasKey(
             $profile_id,
@@ -463,6 +479,10 @@ class ProfileTest extends DbTestCase
         $this->assertArrayNotHasKey(
             $profile_id,
             $this->callPrivateMethod($dropdown_definition, 'getDecodedProfilesField')
+        );
+        $this->assertArrayNotHasKey(
+            $profile_id,
+            $this->callPrivateMethod($inactive_asset_definition, 'getDecodedProfilesField')
         );
     }
 
