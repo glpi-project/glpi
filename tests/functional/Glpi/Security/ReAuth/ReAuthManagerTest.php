@@ -65,10 +65,10 @@ class ReAuthManagerTest extends DbTestCase
         // [offset_to_now (null = unset), expected]
         yield 'validity ok' => [ReAuthManager::REAUTH_DELAY_SECONDS, true];
         yield 'validity expired' => [-ReAuthManager::REAUTH_DELAY_SECONDS, false];
+        yield 'validity exactly now' => [0, false];
         yield 'validity not set' => [null, false];
     }
 
-    /** Returns true/false based on the session validity window. */
     #[DataProvider('isReAuthenticatedProvider')]
     public function testIsReAuthenticated(?int $offset, bool $expected): void
     {

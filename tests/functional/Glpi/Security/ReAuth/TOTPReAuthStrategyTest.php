@@ -93,6 +93,21 @@ class TOTPReAuthStrategyTest extends DbTestCase
         $this->assertFalse($strategy->verify($users_id, '000000'));
     }
 
+    /**
+     * Defensive: verify() is normally gated by isAvailable(), but a user without
+     * a TOTP secret must never be granted re-authentication.
+     */
+    public function testVerifyReturnsFalseWhenNoSecretConfigured(): void
+    {
+        // --- arrange : test user has no TOTP secret ---
+        $strategy = new TOTPReAuthStrategy();
+        $users_id = getItemByTypeName(User::class, TU_USER, true);
+        assert(!(new TOTPManager())->is2FAEnabled($users_id), 'Fixture: test user must not have TOTP enabled');
+
+        // --- act + assert ---
+        $this->assertFalse($strategy->verify($users_id, '000000'));
+    }
+
     /** Test $strategy->getPromptTemplate(), $strategy->getPriority() & $strategy->getLabel() */
     public function testMetadata(): void
     {
