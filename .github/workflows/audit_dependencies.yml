@@ -34,7 +34,7 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
         with:
           ref: ${{ matrix.branch }}
       - name: "Restore dependencies cache"

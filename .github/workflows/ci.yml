@@ -49,7 +49,7 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Restore dependencies cache"
         uses: actions/cache@v5
         with:
@@ -169,7 +169,7 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Restore dependencies cache"
         uses: actions/cache@v5
         with:
@@ -266,7 +266,7 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Restore dependencies cache"
         uses: actions/cache@v5
         with:
@@ -337,7 +337,7 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Restore dependencies cache"
         uses: actions/cache@v5
         with:
@@ -399,7 +399,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Setup Node.js"
         uses: "actions/setup-node@v6"
         with:
