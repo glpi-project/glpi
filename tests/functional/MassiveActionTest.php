@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Change;
+use Change_Problem;
 use Change_Ticket;
 use CommonDBTM;
 use Contract;
@@ -1720,5 +1721,82 @@ class MassiveActionTest extends DbTestCase
                 'content'    => 'task from change massive action',
             ])
         );
+    }
+
+    public static function unlinkProvider(): array
+    {
+        return [
+            'Problem - Ticket' => [Problem::class, Ticket::class,  Problem_Ticket::class],
+            'Ticket - Problem' => [Ticket::class,  Problem::class, Problem_Ticket::class],
+            'Change - Ticket'  => [Change::class,  Ticket::class,  Change_Ticket::class],
+            'Ticket - Change'  => [Ticket::class,  Change::class,  Change_Ticket::class],
+            'Change - Problem' => [Change::class,  Problem::class, Change_Problem::class],
+            'Problem - Change' => [Problem::class, Change::class,  Change_Problem::class],
+        ];
+    }
+
+    #[DataProvider('unlinkProvider')]
+    public function testUnlinkMassiveAction(string $source_itemtype, string $target_itemtype, string $link_class): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $source = $this->createItem($source_itemtype, ['name' => 'source', 'content' => 'content']);
+        $target = $this->createItem($target_itemtype, ['name' => 'target', 'content' => 'content']);
+        $this->createItem($link_class, [
+            $source_itemtype::getForeignKeyField() => $source->getID(),
+            $target_itemtype::getForeignKeyField() => $target->getID(),
+        ]);
+
+        $this->processMassiveActionsForOneItemtype(
+            'unlink',
+            $target,
+            [$target->getID()],
+            ['source_itemtype' => $source_itemtype, 'source_items_id' => $source->getID()],
+            1,
+            0,
+            $link_class
+        );
+
+        $this->assertSame(0, countElementsInTable($link_class::getTable(), [
+            $source_itemtype::getForeignKeyField() => $source->getID(),
+            $target_itemtype::getForeignKeyField() => $target->getID(),
+        ]));
+        $this->assertSame(1, countElementsInTable($source_itemtype::getTable(), ['id' => $source->getID(), 'is_deleted' => 0]));
+        $this->assertSame(1, countElementsInTable($target_itemtype::getTable(), ['id' => $target->getID(), 'is_deleted' => 0]));
+    }
+
+    #[DataProvider('unlinkProvider')]
+    public function testUnlinkMassiveActionNoRight(string $source_itemtype, string $target_itemtype, string $link_class): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $source = $this->createItem($source_itemtype, ['name' => 'source', 'content' => 'content']);
+        $target = $this->createItem($target_itemtype, ['name' => 'target', 'content' => 'content']);
+        $this->createItem($link_class, [
+            $source_itemtype::getForeignKeyField() => $source->getID(),
+            $target_itemtype::getForeignKeyField() => $target->getID(),
+        ]);
+
+        // canDeleteItem() on the link allows deletion if EITHER linked item can be
+        // updated. Strip UPDATE from both sides so the rights check fails
+        // and the action returns ACTION_NORIGHT.
+        $_SESSION['glpiactiveprofile'][$source_itemtype::$rightname] = 0;
+        $_SESSION['glpiactiveprofile'][$target_itemtype::$rightname] = 0;
+
+        $this->processMassiveActionsForOneItemtype(
+            'unlink',
+            $target,
+            [$target->getID()],
+            ['source_itemtype' => $source_itemtype, 'source_items_id' => $source->getID()],
+            0,
+            1,
+            $link_class
+        );
+
+        // Link must still exist, nothing was deleted.
+        $this->assertSame(1, countElementsInTable($link_class::getTable(), [
+            $source_itemtype::getForeignKeyField() => $source->getID(),
+            $target_itemtype::getForeignKeyField() => $target->getID(),
+        ]));
     }
 }
