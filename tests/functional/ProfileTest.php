@@ -447,7 +447,7 @@ class ProfileTest extends DbTestCase
             profiles: [$profile_id => READ]
         );
         $this->updateItem(
-            \Glpi\Asset\AssetDefinition::class,
+            AssetDefinition::class,
             $inactive_asset_definition->getID(),
             ['is_active' => false]
         );
