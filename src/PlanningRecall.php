@@ -68,7 +68,13 @@ class PlanningRecall extends CommonDBChild
     public function canUpdateItem(): bool
     {
         if ($this->fields['itemtype'] === ProjectTask::class) {
-            return in_array((int) $this->fields['users_id'], ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
+            if ((int) $this->fields['users_id'] === Session::getLoginUserID()) {
+                // The owner can update their own recall only while still in the task team.
+                return in_array((int) $this->fields['users_id'], ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
+            }
+            // Non-owners need project-level update rights or be in the task team
+            return Session::haveRight('project', UPDATE)
+                || in_array(Session::getLoginUserID(), ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
         }
         return parent::canUpdateItem();
     }
@@ -76,10 +82,17 @@ class PlanningRecall extends CommonDBChild
     public function canPurgeItem(): bool
     {
         if ($this->fields['itemtype'] === ProjectTask::class) {
-            // Allow purging when the task still exists; team membership is not required
-            // because the recall may need to be cleaned up after the user leaves the team.
             $task = new ProjectTask();
-            return $task->getFromDB((int) $this->fields['items_id']);
+            if (!$task->getFromDB((int) $this->fields['items_id'])) {
+                return false;
+            }
+            // The owner can always purge their own recall (even after leaving the team, for cleanup).
+            if ((int) $this->fields['users_id'] === Session::getLoginUserID()) {
+                return true;
+            }
+            // Non-owners need project-level update rights or be in the task team
+            return Session::haveRight('project', UPDATE)
+                || in_array(Session::getLoginUserID(), ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
         }
         return parent::canPurgeItem();
     }

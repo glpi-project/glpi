@@ -526,4 +526,88 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
 
         $this->assertNoRecall($task->getID(), $tech->getID());
     }
+
+    // -------------------------------------------------------------------------
+    // Authorization — ownership and rights checks on update / purge
+    // -------------------------------------------------------------------------
+
+    public function testOwnerCanUpdateOwnRecallWhenInTeam(): void
+    {
+        $this->login();
+        $tech = getItemByTypeName(User::class, 'tech');
+
+        [, $task] = $this->createProjectAndTask(HOUR_TIMESTAMP);
+        $this->addUserToTeam($task, $tech->getID());
+
+        $recall = new PlanningRecall();
+        $this->assertTrue($recall->getFromDBByCrit([
+            'itemtype' => ProjectTask::class,
+            'items_id' => $task->getID(),
+            'users_id' => $tech->getID(),
+        ]));
+
+        $this->login('tech', 'tech');
+        $this->assertTrue($recall->canUpdateItem());
+    }
+
+    public function testNonOwnerCannotUpdateOtherUsersRecall(): void
+    {
+        $this->login();
+        $tech   = getItemByTypeName(User::class, 'tech');
+        $normal = getItemByTypeName(User::class, 'normal');
+
+        [, $task] = $this->createProjectAndTask(HOUR_TIMESTAMP);
+        $this->addUserToTeam($task, $tech->getID());
+
+        $recall = new PlanningRecall();
+        $this->assertTrue($recall->getFromDBByCrit([
+            'itemtype' => ProjectTask::class,
+            'items_id' => $task->getID(),
+            'users_id' => $tech->getID(),
+        ]));
+
+        // normal is not the recall owner and has no task update rights
+        $this->login('normal', 'normal');
+        $this->assertFalse($recall->canUpdateItem());
+    }
+
+    public function testOwnerCanPurgeOwnRecall(): void
+    {
+        $this->login();
+        $tech = getItemByTypeName(User::class, 'tech');
+
+        [, $task] = $this->createProjectAndTask(HOUR_TIMESTAMP);
+        $this->addUserToTeam($task, $tech->getID());
+
+        $recall = new PlanningRecall();
+        $this->assertTrue($recall->getFromDBByCrit([
+            'itemtype' => ProjectTask::class,
+            'items_id' => $task->getID(),
+            'users_id' => $tech->getID(),
+        ]));
+
+        $this->login('tech', 'tech');
+        $this->assertTrue($recall->canPurgeItem());
+    }
+
+    public function testNonOwnerCannotPurgeOtherUsersRecall(): void
+    {
+        $this->login();
+        $tech   = getItemByTypeName(User::class, 'tech');
+        $normal = getItemByTypeName(User::class, 'normal');
+
+        [, $task] = $this->createProjectAndTask(HOUR_TIMESTAMP);
+        $this->addUserToTeam($task, $tech->getID());
+
+        $recall = new PlanningRecall();
+        $this->assertTrue($recall->getFromDBByCrit([
+            'itemtype' => ProjectTask::class,
+            'items_id' => $task->getID(),
+            'users_id' => $tech->getID(),
+        ]));
+
+        // normal is not the recall owner and has no task update rights
+        $this->login('normal', 'normal');
+        $this->assertFalse($recall->canPurgeItem());
+    }
 }
