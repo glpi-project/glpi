@@ -43,10 +43,8 @@
 {% endblock %}
 
 {% block content_block %}
-   {% if error is defined and error %}
-      <div class="alert alert-danger mb-3">
-         {{ error }}
-      </div>
+   {% if failed ?? false %}
+       <twig:Alert:Danger :title="__('Authentication failure')" />
    {% endif %}
 
    <form method="post" action="{{ action }}" data-submit-once autocomplete="off">

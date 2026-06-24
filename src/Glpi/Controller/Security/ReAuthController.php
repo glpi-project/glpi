@@ -59,14 +59,14 @@ class ReAuthController extends AbstractController
         methods: ['GET']
     )]
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
-    public function prompt(string $error = ''): Response
+    public function prompt(bool $failed = false): Response
     {
         return new Response(
             TemplateRenderer::getInstance()->render(
                 'pages/reauth/prompt.html.twig',
                 [
                     ...$this->buildTemplateContext(),
-                    'error' => $error,
+                    'failed' => $failed,
                 ]
             )
         );
@@ -94,7 +94,7 @@ class ReAuthController extends AbstractController
             );
         }
 
-        return $this->prompt(__('Verification failed. Please try again.'));
+        return $this->prompt(true);
     }
 
     /**
