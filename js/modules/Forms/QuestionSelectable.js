@@ -193,6 +193,43 @@ export class GlpiFormQuestionTypeSelectable {
         option
             .find('button[data-glpi-form-editor-question-option-remove]')
             .on('click', (event) => this.#removeOption(event));
+
+        option
+            .find('[data-glpi-form-editor-question-option-copy-uuid]')
+            .on('click', (event) => this.#copyOptionUuidToClipboard(event));
+    }
+
+    /**
+     * Copy the option's UUID to the clipboard and briefly confirm on the button.
+     *
+     * @param {JQuery.ClickEvent} event
+     */
+    #copyOptionUuidToClipboard(event) {
+        const button = $(event.currentTarget);
+        const option = button.closest('[data-glpi-form-selectable-question-option]');
+        const uuid = option.find(`input[type="${CSS.escape(this._inputType)}"]`).val();
+
+        // Write the uuid to the clipboard
+        navigator.clipboard.writeText(uuid);
+
+        // Swap the button to a "Copied" confirmation state, then restore it.
+        // Keep the original markup so repeated clicks don't lose it.
+        if (button.data('copy-reset-timeout')) {
+            clearTimeout(button.data('copy-reset-timeout'));
+        } else {
+            button.data('copy-original-html', button.html());
+        }
+
+        button
+            .addClass('text-success')
+            .html(`<i class="ti ti-check me-1"></i><span>${__("Copied")}</span>`);
+
+        button.data('copy-reset-timeout', setTimeout(() => {
+            button
+                .removeClass('text-success')
+                .html(button.data('copy-original-html'))
+                .removeData('copy-reset-timeout');
+        }, 2000));
     }
 
     /**
@@ -314,6 +351,7 @@ export class GlpiFormQuestionTypeSelectable {
         $(input).siblings('input[type="radio"], input[type="checkbox"]').prop('disabled', false);
         $(input).parent().removeAttr('data-glpi-form-editor-question-extra-details');
         $(input).siblings('button[data-glpi-form-editor-question-option-remove]').removeClass('d-none');
+        $(input).siblings('button[data-glpi-form-editor-question-option-copy-uuid]').removeClass('d-none');
     }
 
     /**
