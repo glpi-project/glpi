@@ -42,6 +42,7 @@ use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTestTrait;
 use KnowbaseItem;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Symfony\Component\DomCrawler\Crawler;
 
 class CommonGLPITest extends DbTestCase
@@ -163,6 +164,7 @@ class CommonGLPITest extends DbTestCase
      * isUserReauthenticationNeeded() must stay disabled on CLI/API contexts,
      * even when the itemtype is flagged as requiring re-authentication.
      */
+    #[Group('reauth')]
     public function testIsUserReauthenticationNeededIsFalseOnCommandLine(): void
     {
         // --- arrange ---
@@ -173,6 +175,7 @@ class CommonGLPITest extends DbTestCase
         $this->assertFalse(ReauthTestItem::isUserReauthenticationNeeded());
     }
 
+    #[Group('reauth')]
     public function testIsUserReauthenticationNeededIsFalseOnApi(): void
     {
         // --- arrange ---
@@ -184,6 +187,7 @@ class CommonGLPITest extends DbTestCase
         $this->assertFalse(ReauthTestItem::isUserReauthenticationNeeded());
     }
 
+    #[Group('reauth')]
     public function testIsUserReauthenticationNeededIsFalseWhenItemtypeDoesNotRequireIt(): void
     {
         // --- arrange ---
@@ -195,6 +199,7 @@ class CommonGLPITest extends DbTestCase
         $this->assertFalse(ReauthTestItem::isUserReauthenticationNeeded());
     }
 
+    #[Group('reauth')]
     public function testIsUserReauthenticationNeededIsTrueWhenRequiredAndNotReAuthenticated(): void
     {
         // --- arrange ---
@@ -206,6 +211,7 @@ class CommonGLPITest extends DbTestCase
         $this->assertTrue(ReauthTestItem::isUserReauthenticationNeeded());
     }
 
+    #[Group('reauth')]
     public function testIsUserReauthenticationNeededIsFalseWhenAlreadyReAuthenticated(): void
     {
         // --- arrange ---
@@ -217,6 +223,7 @@ class CommonGLPITest extends DbTestCase
         $this->assertFalse(ReauthTestItem::isUserReauthenticationNeeded());
     }
 
+    #[Group('reauth')]
     public function testCanReturnsTrueWhenAllowedAndReAuthenticated(): void
     {
         // --- arrange ---
@@ -232,6 +239,7 @@ class CommonGLPITest extends DbTestCase
         $this->assertFalse($reauth_needed);
     }
 
+    #[Group('reauth')]
     public function testCanRequiresReauthWhenAllowedButNotReAuthenticated(): void
     {
         // --- arrange ---
@@ -247,6 +255,7 @@ class CommonGLPITest extends DbTestCase
         $this->assertTrue($reauth_needed);
     }
 
+    #[Group('reauth')]
     public function testCanReturnsFalseWithoutReauthWhenNotAllowed(): void
     {
         // --- arrange ---
@@ -262,6 +271,7 @@ class CommonGLPITest extends DbTestCase
         $this->assertFalse($reauth_needed);
     }
 
+    #[Group('reauth')]
     public function testCanIgnoresReauthWhenItemtypeDoesNotRequireIt(): void
     {
         // --- arrange ---
