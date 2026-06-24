@@ -35,15 +35,20 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\AbstractQuestionTypeSelectable;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
-use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Form\QuestionType\AbstractQuestionTypeSelectableTest;
 use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
+use Override;
 
-final class QuestionTypeDropdownTest extends DbTestCase
+final class QuestionTypeDropdownTest extends AbstractQuestionTypeSelectableTest
 {
-    use FormTesterTrait;
+    #[Override]
+    protected function getQuestionType(): AbstractQuestionTypeSelectable
+    {
+        return new QuestionTypeDropdown();
+    }
 
     public function testSingleValueDropdownAnswerIsDisplayedInTicketDescription(): void
     {

@@ -150,6 +150,21 @@ TWIG;
     }
 
     #[Override]
+    public function formatPredefinedValue(string $value): ?string
+    {
+        $uuids = array_filter(
+            array_map('trim', explode(',', $value)),
+            fn($uuid) => $uuid !== ''
+        );
+
+        if ($uuids === []) {
+            return null;
+        }
+
+        return implode(',', $uuids);
+    }
+
+    #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
     {
         if (is_array($value)) {

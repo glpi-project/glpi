@@ -34,15 +34,20 @@
 
 namespace tests\units\Glpi\Form\QuestionType;
 
+use Glpi\Form\QuestionType\AbstractQuestionTypeSelectable;
 use Glpi\Form\QuestionType\QuestionTypeRadio;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
-use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Form\QuestionType\AbstractQuestionTypeSelectableTest;
 use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
+use Override;
 
-final class QuestionTypeRadioTest extends DbTestCase
+final class QuestionTypeRadioTest extends AbstractQuestionTypeSelectableTest
 {
-    use FormTesterTrait;
+    #[Override]
+    protected function getQuestionType(): AbstractQuestionTypeSelectable
+    {
+        return new QuestionTypeRadio();
+    }
 
     public function testRadioAnswerIsDisplayedInTicketDescription(): void
     {
