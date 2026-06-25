@@ -53,8 +53,11 @@
                     <div id="search-overlay" class="search-overlay bg-dark"></div>
                     <div class="input-icon search-bar-container">
                         <span class="input-icon-addon">
-                            <i class="ti ti-search"></i>
+                            <i class="ti ti-search" aria-hidden="true"></i>
                         </span>
+                        <label for="search-input" class="visually-hidden">
+                            {{ __("Search for knowledge base entries or forms") }}
+                        </label>
                         <input
                             id="search-input"
                             type="text"
@@ -86,7 +89,7 @@
                     <div class="alert alert-warning alert-dismissible bg-white" role="alert">
                         <div class="d-flex mb-2">
                             <div>
-                                <i class="ti ti-alert-triangle me-1"></i>
+                                <i class="ti ti-alert-triangle me-1" aria-hidden="true"></i>
                             </div>
                             <div>
                                 {{ password_alert }}
@@ -116,7 +119,7 @@
                                 <section class="card-body">
                                     <div class="d-flex">
                                         <div class="aspect-ratio-1">
-                                            {{ render_illustration(tile.getIllustration(), 70) }}
+                                            {{ render_illustration(tile.getIllustration(), 70, decorative=true) }}
                                         </div>
                                         <div class="ms-4">
                                             <h2 class="card-title mb-2 text-break">
