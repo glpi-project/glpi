@@ -922,10 +922,10 @@ class Group_User extends CommonDBRelation
             $projecttasks_id = $row['id'];
             $still_in_team = array_flip(ProjectTaskTeam::getUserInTeamFor($projecttasks_id));
 
-            if (isset($still_in_team[$users_id])) {
+            if (isset($still_in_team[(int) $this->fields['users_id']])) {
                 continue;
             }
-            $recall = PlanningRecall::getForItem(ProjectTask::class, $projecttasks_id, $users_id);
+            $recall = PlanningRecall::getForItem(ProjectTask::class, $projecttasks_id, (int) $this->fields['users_id']);
             if ($recall !== null) {
                 $recall->delete(['id' => $recall->getID()]);
             }
