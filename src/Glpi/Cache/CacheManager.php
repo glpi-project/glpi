@@ -326,7 +326,20 @@ class CacheManager
         // Clear Symfony cache
         $this->clearSymfonyCache();
 
-        // Clear compiled templates
+        $success = $this->resetCompiledTemplates() && $success;
+
+        return $success;
+    }
+
+    /**
+     * Reset compiled Twig templates cache.
+     *
+     * @return bool
+     */
+    public function resetCompiledTemplates(): bool
+    {
+        $success = true;
+
         $tpl_cache_dir = $this->cache_dir . '/templates';
         if (file_exists($tpl_cache_dir)) {
             $tpl_files = glob($tpl_cache_dir . '/**/*.php');

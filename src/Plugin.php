@@ -3353,6 +3353,8 @@ class Plugin extends CommonDBTM
             $to_clear[] = Grid::getAllDashboardCardsCacheKey($language);
         }
 
+        (new CacheManager())->resetCompiledTemplates();
+
         return $GLPI_CACHE->deleteMultiple($to_clear);
     }
 
