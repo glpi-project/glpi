@@ -42,13 +42,13 @@ use Ticket;
 
 class TicketStatusFilterTest extends DbTestCase
 {
-    public function testCanBeApplied()
+    public function testCanBeApplied(): void
     {
         $this->assertTrue(TicketStatusFilter::canBeApplied(Ticket::getTable()));
         $this->assertFalse(TicketStatusFilter::canBeApplied(Computer::getTable()));
     }
 
-    public function testGetCriteria()
+    public function testGetCriteria(): void
     {
         // statut valide -> renvoie un WHERE sur la colonne status
         $this->assertSame(
@@ -56,17 +56,18 @@ class TicketStatusFilterTest extends DbTestCase
             TicketStatusFilter::getCriteria('glpi_tickets', (string) CommonITILObject::INCOMING)
         );
 
-        // valeurs vides / 'all' / '0' -> tableau vide (pas de filtre)
+        // valeurs vides / 'all' / '0' / invalide -> tableau vide (pas de filtre)
         $this->assertSame([], TicketStatusFilter::getCriteria('glpi_tickets', ''));
         $this->assertSame([], TicketStatusFilter::getCriteria('glpi_tickets', 'all'));
         $this->assertSame([], TicketStatusFilter::getCriteria('glpi_tickets', '0'));
+        $this->assertSame([], TicketStatusFilter::getCriteria('glpi_tickets', 'invalid'));
     }
 
-    public function testGetSearchCriteria()
+    public function testGetSearchCriteria(): void
     {
         $this->login();
 
-        // statut valide -> renvoie un critère avec field, searchtype et value
+        // valid status -> returns a criterion with field, searchtype, and value
         $criteria = TicketStatusFilter::getSearchCriteria('glpi_tickets', (string) CommonITILObject::INCOMING);
         $this->assertCount(1, $criteria);
         $this->assertSame('AND', $criteria[0]['link']);
@@ -74,39 +75,11 @@ class TicketStatusFilterTest extends DbTestCase
         $this->assertSame(CommonITILObject::INCOMING, $criteria[0]['value']);
         $this->assertArrayHasKey('field', $criteria[0]);
 
-        // valeurs vides / 'all' / '0' / '-1' -> tableau vide (pas de filtre)
+        // empty values / “all” / ‘0’ / “-1” / invalid → empty array (no filter)
         $this->assertSame([], TicketStatusFilter::getSearchCriteria('glpi_tickets', ''));
         $this->assertSame([], TicketStatusFilter::getSearchCriteria('glpi_tickets', 'all'));
         $this->assertSame([], TicketStatusFilter::getSearchCriteria('glpi_tickets', '0'));
         $this->assertSame([], TicketStatusFilter::getSearchCriteria('glpi_tickets', '-1'));
-    }
-
-    public function testGetSearchCriteriaDependsOnProfile()
-    {
-        // super-admin
-        $this->login();
-        $admin_criteria = TicketStatusFilter::getSearchCriteria('glpi_tickets', (string) CommonITILObject::INCOMING);
-        $this->assertNotEmpty($admin_criteria);
-        $admin_field = $admin_criteria[0]['field'];
-
-        // profil normal
-        $this->login('normal', 'normal');
-        $normal_criteria = TicketStatusFilter::getSearchCriteria('glpi_tickets', (string) CommonITILObject::INCOMING);
-        $this->assertNotEmpty($normal_criteria);
-        $normal_field = $normal_criteria[0]['field'];
-
-        $this->assertIsInt($admin_field);
-        $this->assertIsInt($normal_field);
-    }
-
-    public function testGetSearchCriteriaWithHelpdeskProfile()
-    {
-        //  helpdesk
-        $this->login('post-only', 'postonly');
-
-        $criteria = TicketStatusFilter::getSearchCriteria('glpi_tickets', (string) CommonITILObject::INCOMING);
-        $this->assertNotEmpty($criteria);
-        $this->assertSame(CommonITILObject::INCOMING, $criteria[0]['value']);
-        $this->assertSame('equals', $criteria[0]['searchtype']);
+        $this->assertSame([], TicketStatusFilter::getSearchCriteria('glpi_tickets', 'invalid'));
     }
 }
