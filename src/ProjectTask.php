@@ -395,7 +395,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             Project::recalculatePercentDone($this->fields['projects_id']);
         }
 
-        $this->handlePlanningRecall();
+        if ((int) $this->fields['recall'] >= 0) {
+            $this->handlePlanningRecall();
+        }
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
             // Clean reload of the project
