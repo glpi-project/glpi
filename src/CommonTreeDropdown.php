@@ -868,6 +868,7 @@ TWIG, $twig_params);
 
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
+        $tab = array_merge($tab, BarcodeManager::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
     }
