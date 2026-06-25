@@ -688,7 +688,7 @@ class Auth extends CommonGLPI
                             'LIMIT'  => 1,
                         ]);
                         $known_validator = $it->current()['validator'] ?? null;
-                        if (self::checkPassword($validator, $known_validator)) {
+                        if ($known_validator !== null && self::checkPassword($validator, $known_validator)) {
                             $user = new User();
                             $user->getFromDB($it->current()['users_id']);
                             $this->user->fields['name'] = $user->fields['name'];
