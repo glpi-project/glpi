@@ -6359,7 +6359,7 @@ HTML;
                 ),
             ];
 
-            $DB->delete('glpi_user_tokens', [
+            $DB->delete('glpi_usertokens', [
                 'type' => 'rememberme',
                 'users_id' => new QuerySubQuery([
                     'SELECT' => ['id'],

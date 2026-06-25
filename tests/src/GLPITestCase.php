@@ -239,7 +239,7 @@ class GLPITestCase extends TestCase
     {
         $method = new ReflectionMethod($instance, $methodName);
 
-        return $method->invoke($instance, ...$args);
+        return $method->invoke(is_string($instance) ? null : $instance, ...$args);
     }
 
     /**

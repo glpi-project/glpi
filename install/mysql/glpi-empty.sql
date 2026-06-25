@@ -10529,16 +10529,16 @@ CREATE TABLE `glpi_sharetokens` (
   KEY `date_expiration` (`date_expiration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-DROP TABLE IF EXISTS `glpi_user_tokens`;
-CREATE TABLE `glpi_user_tokens` (
+DROP TABLE IF EXISTS `glpi_usertokens`;
+CREATE TABLE `glpi_usertokens` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
     `users_id` int unsigned NOT NULL,
     `type` varchar(64) NOT NULL,
-    `selector` char(16) NOT NULL,
-    `validator` varchar(255) NOT NULL,
+    `token_uid` char(16) NOT NULL,
+    `token_hash` varchar(255) NOT NULL,
     `date_expiration` timestamp NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY `selector` (`selector`),
+    UNIQUE KEY `token_uid` (`token_uid`),
     KEY `users_id` (`users_id`),
     KEY `type` (`type`),
     KEY `date_expiration` (`date_expiration`)

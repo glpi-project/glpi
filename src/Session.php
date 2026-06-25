@@ -2294,11 +2294,11 @@ class Session
         // Remove remember me token and cookie
         $cookie_name = session_name() . '_rememberme';
         if (is_numeric($users_id) && isset($_COOKIE[$cookie_name])) {
-            [$selector] = explode(':', $_COOKIE[$cookie_name]);
-            if (!empty($selector)) {
-                $DB->delete('glpi_user_tokens', [
+            [$token_uid] = explode(':', $_COOKIE[$cookie_name]);
+            if (!empty($token_uid)) {
+                $DB->delete('glpi_usertokens', [
                     'users_id' => $users_id,
-                    'selector' => $selector,
+                    'token_uid' => $token_uid,
                     'type' => 'rememberme',
                 ]);
             }

@@ -675,20 +675,20 @@ class Auth extends CommonGLPI
                         $data = $_COOKIE[$cookie_name];
                     }
                     if (!empty($data) && str_contains($data, ':')) {
-                        [$selector, $validator] = explode(':', $data);
+                        [$token_uid, $token_hash] = explode(':', $data);
 
                         $it = $DB->request([
-                            'SELECT' => ['users_id', 'validator'],
-                            'FROM'   => 'glpi_user_tokens',
+                            'SELECT' => ['users_id', 'token_hash'],
+                            'FROM'   => 'glpi_usertokens',
                             'WHERE'  => [
                                 'type'     => 'rememberme',
-                                'selector' => $selector,
+                                'token_uid' => $token_uid,
                                 'date_expiration'   => ['>', date('Y-m-d H:i:s')],
                             ],
                             'LIMIT'  => 1,
                         ]);
-                        $known_validator = $it->current()['validator'] ?? null;
-                        if ($known_validator !== null && self::checkPassword($validator, $known_validator)) {
+                        $known_hash = $it->current()['token_hash'] ?? null;
+                        if ($known_hash !== null && self::checkPassword($token_hash, $known_hash)) {
                             $user = new User();
                             $user->getFromDB($it->current()['users_id']);
                             $this->user->fields['name'] = $user->fields['name'];
@@ -1167,8 +1167,8 @@ class Auth extends CommonGLPI
         if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me) {
             self::setRememberMeCookie(
                 users_id: $this->user->getID(),
-                selector: bin2hex(random_bytes(8)),
-                validator: bin2hex(random_bytes(16)),
+                token_uid: bin2hex(random_bytes(8)),
+                token: bin2hex(random_bytes(16)),
             );
         }
 
@@ -1746,17 +1746,17 @@ class Auth extends CommonGLPI
      * Defines "rememberme" cookie.
      *
      * @param int $users_id The ID of the user for which the remember me cookie is being set.
-     * @param string $selector The value used in the query to the DB to fetch the remember me token.
-     * @param string $validator The non-hashed token value. A hashed version of this value is stored in the DB and compared to the hashed value of the cookie when validating the remember me token.
+     * @param string $token_uid The value used in the query to the DB to fetch the remember me token.
+     * @param string $token The non-hashed token value. A hashed version of this value is stored in the DB and compared to the hashed value of the cookie when validating the remember me token.
      *
      * @return void
      */
-    public static function setRememberMeCookie(int $users_id, string $selector, string $validator): void
+    private static function setRememberMeCookie(int $users_id, string $token_uid, string $token): void
     {
         global $CFG_GLPI, $DB;
 
-        if (empty($selector) || empty($validator)) {
-            throw new InvalidArgumentException('Selector and validator must not be empty.');
+        if (empty($token_uid) || empty($token)) {
+            throw new InvalidArgumentException('Token UID and hash must not be empty.');
         }
 
         $cookie_name     = session_name() . '_rememberme';
@@ -1765,19 +1765,19 @@ class Auth extends CommonGLPI
         $cookie_domain   = ini_get('session.cookie_domain');
         $cookie_secure   = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
         $cookie_samesite = ini_get('session.cookie_samesite');
-        $hashed_validator = password_hash($validator, PASSWORD_DEFAULT);
+        $token_hash = password_hash($token, PASSWORD_DEFAULT);
 
-        $DB->insert('glpi_user_tokens', [
+        $DB->insert('glpi_usertokens', [
             'type' => 'rememberme',
             'users_id' => $users_id,
-            'selector' => $selector,
-            'validator' => $hashed_validator,
+            'token_uid' => $token_uid,
+            'token_hash' => $token_hash,
             'date_expiration' => date('Y-m-d H:i:s', $cookie_lifetime),
         ]);
 
         setcookie(
             $cookie_name,
-            $selector . ':' . $validator,
+            $token_uid . ':' . $token,
             [
                 'expires'  => $cookie_lifetime,
                 'path'     => $cookie_path,
@@ -1788,6 +1788,6 @@ class Auth extends CommonGLPI
             ]
         );
 
-        $_COOKIE[$cookie_name] = $selector . ':' . $validator;
+        $_COOKIE[$cookie_name] = $token_uid . ':' . $token;
     }
 }

@@ -1563,7 +1563,7 @@ TWIG, ['msg' => __('Last run list')]);
 
         // Clean expired remember me tokens
         $cookie_lifetime = time() + $CFG_GLPI['login_remember_time'];
-        $DB->delete('glpi_user_tokens', [
+        $DB->delete('glpi_usertokens', [
             'type' => 'rememberme',
             'date_expiration' => ['<', $cookie_lifetime],
         ]);

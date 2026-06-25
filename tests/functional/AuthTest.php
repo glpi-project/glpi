@@ -320,11 +320,7 @@ class AuthTest extends DbTestCase
         $user = getItemByTypeName(User::class, TU_USER);
         $this->assertnull($user->fields['last_login']);
 
-        Auth::setRememberMeCookie(
-            users_id: $user->getID(),
-            selector: bin2hex(random_bytes(8)),
-            validator: bin2hex(random_bytes(16))
-        );
+        $this->callPrivateMethod(Auth::class, 'setRememberMeCookie', $user->getID(), bin2hex(random_bytes(8)), bin2hex(random_bytes(16)));
         $first_cookie_value = $_COOKIE[$cookie_name];
         $this->assertTrue((new Auth())->login('', ''));
 
@@ -334,11 +330,7 @@ class AuthTest extends DbTestCase
 
         // Delete the cookie and then set another one to simulate a new login on another device
         unset($_COOKIE[$cookie_name]);
-        Auth::setRememberMeCookie(
-            users_id: $user->getID(),
-            selector: bin2hex(random_bytes(8)),
-            validator: bin2hex(random_bytes(16))
-        );
+        $this->callPrivateMethod(Auth::class, 'setRememberMeCookie', $user->getID(), bin2hex(random_bytes(8)), bin2hex(random_bytes(16)));
         $this->assertTrue((new Auth())->login('', ''));
 
         // Restore the first cookie value to ensure it is still valid
