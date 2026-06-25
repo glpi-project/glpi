@@ -291,31 +291,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
     public function rawSearchOptions()
     {
-        // Filter out entries that we need to override (to add forcegroupby)
-        $tab = array_values(array_filter(
-            parent::rawSearchOptions(),
-            fn($opt) => !in_array($opt['id'] ?? null, ['1', '2', '13'])
-        ));
-
-        $tab[] = [
-            'id'                 => '1',
-            'table'              => static::getTable(),
-            'field'              => 'name',
-            'name'               => __('Name'),
-            'datatype'           => 'itemlink',
-            'massiveaction'      => false,
-            'forcegroupby'       => true,
-        ];
-
-        $tab[] = [
-            'id'                 => '2',
-            'table'              => static::getTable(),
-            'field'              => 'id',
-            'name'               => __('ID'),
-            'massiveaction'      => false,
-            'datatype'           => 'number',
-            'forcegroupby'       => true,
-        ];
+        $tab = parent::rawSearchOptions();
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
@@ -401,16 +377,6 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             'field'              => 'allow_overquota',
             'name'               => __('Allow Over-Quota'),
             'datatype'           => 'bool',
-        ];
-
-        $tab[] = [
-            'id'                 => '13',
-            'table'              => static::getTable(),
-            'field'              => 'completename',
-            'name'               => __('Father'),
-            'datatype'           => 'itemlink',
-            'forcegroupby'       => true,
-            'joinparams'        => ['condition' => [new QueryExpression('true')]], // Add virtual condition to relink table
         ];
 
         $tab[] = [
