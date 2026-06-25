@@ -172,7 +172,7 @@ final class ReAuthManager
     }
 
     /**
-     * Record the request that was requested before checking that a reauth is needed.
+     * Record the request that was requires reauthentication (url + POST/GET data)
      */
     private function setRequestedTarget(): void
     {

@@ -3210,7 +3210,7 @@ class CommonDBTM extends CommonGLPI
             return;
         }
 
-        // not allowed beacause of reauth : redirect to reauth prompt
+        // not allowed because of missing reauth : redirect to reauth prompt
         if ($reauth_needed) {
             self::redirectToReauthPrompt();
         }
@@ -6554,6 +6554,8 @@ class CommonDBTM extends CommonGLPI
 
     /**
      * Display a full helpdesk page (header + content + footer) for a given item
+     *
+     * Right checks and reauth process are processed in this method.
      *
      * @param int|string  $id      Id of the item to be displayed, may be a
      *                             string due to some weird default values.

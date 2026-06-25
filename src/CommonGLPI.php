@@ -212,6 +212,8 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
     /**
+     * Redirect to reauth prompt ff user is not reauthenticated and the current itemtype requires reauth.
+     *
      * @throws RedirectException
      */
     final public static function checkReAuthenticationOrRedirect(): true
