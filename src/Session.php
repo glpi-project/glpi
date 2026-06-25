@@ -50,6 +50,7 @@ use function Safe\ini_get;
 use function Safe\preg_match;
 use function Safe\scandir;
 use function Safe\session_id;
+use function Safe\session_name;
 use function Safe\session_regenerate_id;
 use function Safe\session_save_path;
 use function Safe\session_start;
@@ -2285,9 +2286,25 @@ class Session
     */
     public static function cleanOnLogout()
     {
-        Session::destroy();
-        //Remove cookie to allow new login
-        Auth::setRememberMeCookie('');
+        global $DB;
+
+        $users_id = self::getLoginUserID();
+        self::destroy();
+
+        // Remove remember me token and cookie
+        if (is_numeric($users_id)) {
+            $cookie_name = session_name() . '_rememberme';
+            [$selector] = explode(':', $_COOKIE[$cookie_name]);
+            if (!empty($selector)) {
+                $DB->delete('glpi_user_tokens', [
+                    'users_id' => $users_id,
+                    'selector' => $selector,
+                    'type' => 'rememberme',
+                ]);
+            }
+            setcookie($cookie_name, '', ['expires' => time() - 3600, 'path' => '/']);
+            unset($_COOKIE[$cookie_name]);
+        }
     }
 
     /**

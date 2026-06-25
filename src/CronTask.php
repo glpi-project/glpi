@@ -1537,6 +1537,8 @@ TWIG, ['msg' => __('Last run list')]);
      **/
     public static function cronSession(self $task): int
     {
+        global $DB, $CFG_GLPI;
+
         // max time to keep the file session
         try {
             $maxlifetime = (int) ini_get('session.gc_maxlifetime');
@@ -1558,6 +1560,13 @@ TWIG, ['msg' => __('Last run list')]);
                 }
             }
         }
+
+        // Clean expired remember me tokens
+        $cookie_lifetime = time() + $CFG_GLPI['login_remember_time'];
+        $DB->delete('glpi_user_tokens', [
+            'type' => 'rememberme',
+            'date_expiration' => ['<', $cookie_lifetime],
+        ]);
 
         $task->setVolume($nb);
         if ($nb) {

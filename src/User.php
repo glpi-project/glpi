@@ -49,7 +49,6 @@ use Glpi\Security\TOTPManager;
 use LDAP\Connection;
 use LDAP\Result;
 use Sabre\VObject\Component\VCard;
-use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -99,7 +98,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
         'password_history',
         'personal_token',
         'api_token',
-        'cookie_token',
         '2fa',
     ];
 
@@ -129,8 +127,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
         unset($input['personal_token_date']);
         unset($input['api_token']);
         unset($input['api_token_date']);
-        unset($input['cookie_token']);
-        unset($input['cookie_token_date']);
         return $input;
     }
 
@@ -981,7 +977,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         $glpi_key = new GLPIKey();
-        foreach (['api_token', 'cookie_token', 'password_forget_token', 'personal_token'] as $token_field) {
+        foreach (['api_token', 'password_forget_token', 'personal_token'] as $token_field) {
             if (
                 array_key_exists($token_field, $input)
                 && $input[$token_field] !== null
@@ -1235,7 +1231,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 'api_token',
                 '_reset_api_token',
                 '_regenerate_api_token',
-                'cookie_token',
                 'password_forget_token',
                 'personal_token',
                 '_reset_personal_token',
@@ -1448,7 +1443,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             );
         }
 
-        foreach (['api_token', 'cookie_token', 'password_forget_token', 'personal_token'] as $token_field) {
+        foreach (['api_token', 'password_forget_token', 'personal_token'] as $token_field) {
             if (
                 array_key_exists($token_field, $input)
                 && $input[$token_field] !== null
@@ -5881,7 +5876,7 @@ HTML;
      *
      * @param string $field Field storing the token
      *
-     * @return string
+     * @return string The encrypted token.
      */
     public static function getUniqueToken($field = 'personal_token')
     {
@@ -5943,44 +5938,21 @@ HTML;
      */
     public function getAuthToken($field = 'personal_token', $force_new = false)
     {
-        global $CFG_GLPI;
-
         if ($this->isNewItem()) {
             return false;
         }
 
-        // check date validity for cookie token
-        $outdated = false;
-        if ($field === 'cookie_token') {
-            if (empty($this->fields[$field . "_date"])) {
-                $outdated = true;
-            } else {
-                $date_create = new DateTime($this->fields[$field . "_date"]);
-                $date_expir = $date_create->add(new DateInterval('PT' . $CFG_GLPI["login_remember_time"] . 'S'));
-
-                if ($date_expir < new DateTime()) {
-                    $outdated = true;
-                }
-            }
-        }
-
         // token exists, is not oudated, and we may use it
-        if (!empty($this->fields[$field]) && !$force_new && !$outdated) {
+        if (!empty($this->fields[$field]) && !$force_new) {
             return (new GLPIKey())->decrypt($this->fields[$field]);
         }
 
         // else get a new token
         $token = self::getUniqueToken($field);
 
-        // for cookie token, we need to store it hashed
-        $hash = $token;
-        if ($field === 'cookie_token') {
-            $hash = Auth::getPasswordHash($token);
-        }
-
         // save this token in db
-        $this->update(['id'             => $this->getID(),
-            $field           => $hash,
+        $this->update(['id' => $this->getID(),
+            $field => $token,
             $field . "_date" => $_SESSION['glpi_currenttime'],
         ]);
 
@@ -6374,25 +6346,32 @@ HTML;
 
         // Disable users if their password has expire for too long.
         if (-1 !== $lock_delay) {
+            $lock_conditions = [
+                'is_deleted' => 0,
+                'is_active'  => 1,
+                'authtype'   => Auth::DB_GLPI,
+                new QueryExpression(
+                    QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
+                        date: 'password_last_update',
+                        interval: $expiration_delay + $lock_delay,
+                        interval_unit: 'DAY'
+                    )
+                ),
+            ];
+
+            $DB->delete('glpi_user_tokens', [
+                'type' => 'rememberme',
+                'users_id' => new QuerySubQuery([
+                    'SELECT' => ['id'],
+                    'FROM'   => self::getTable(),
+                    'WHERE'  => $lock_conditions,
+                ]),
+            ]);
+
             $DB->update(
                 self::getTable(),
-                [
-                    'is_active'         => 0,
-                    'cookie_token'      => null,
-                    'cookie_token_date' => null,
-                ],
-                [
-                    'is_deleted' => 0,
-                    'is_active'  => 1,
-                    'authtype'   => Auth::DB_GLPI,
-                    new QueryExpression(
-                        QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
-                            date: 'password_last_update',
-                            interval: $expiration_delay + $lock_delay,
-                            interval_unit: 'DAY'
-                        )
-                    ),
-                ]
+                ['is_active' => 0],
+                $lock_conditions
             );
         }
 

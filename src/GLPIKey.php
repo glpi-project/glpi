@@ -75,7 +75,6 @@ class GLPIKey
         'glpi_snmpcredentials.auth_passphrase',
         'glpi_snmpcredentials.priv_passphrase',
         'glpi_users.api_token',
-        'glpi_users.cookie_token',
         'glpi_users.password_forget_token',
         'glpi_users.personal_token',
     ];

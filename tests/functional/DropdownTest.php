@@ -2510,7 +2510,7 @@ HTML;
                 $dd,
                 'filterDisplayWith',
                 new User(),
-                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token']
+                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'password_forget_token']
             )
         );
 
@@ -2522,7 +2522,7 @@ HTML;
                 $dd,
                 'filterDisplayWith',
                 new User(),
-                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token']
+                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'password_forget_token']
             )
         );
 
@@ -2534,7 +2534,7 @@ HTML;
                 $dd,
                 'filterDisplayWith',
                 new User(),
-                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'cookie_token', 'password_forget_token']
+                ['id', 'firstname', 'password', 'personal_token', 'api_token', 'password_forget_token']
             )
         );
     }

@@ -705,7 +705,6 @@ class UserTest extends DbTestCase
         $inputs = [
             'api_token'             => \bin2hex(\random_bytes(16)),
             '_reset_api_token'      => true,
-            'cookie_token'          => \bin2hex(\random_bytes(16)),
             'password_forget_token' => \bin2hex(\random_bytes(16)),
             'personal_token'        => \bin2hex(\random_bytes(16)),
             '_reset_personal_token' => true,
@@ -2142,7 +2141,6 @@ class UserTest extends DbTestCase
                 $this->assertArrayHasKey('password', $fields);
                 $this->assertArrayHasKey('personal_token', $fields);
                 $this->assertArrayHasKey('api_token', $fields);
-                $this->assertArrayHasKey('cookie_token', $fields);
                 $this->assertArrayHasKey('password_forget_token', $fields);
                 $this->assertArrayHasKey('password_forget_token_date', $fields);
 
@@ -2151,7 +2149,6 @@ class UserTest extends DbTestCase
                 $this->assertEquals(false, \array_key_exists('password', $fields));
                 $this->assertEquals(false, \array_key_exists('personal_token', $fields));
                 $this->assertEquals(false, \array_key_exists('api_token', $fields));
-                $this->assertEquals(false, \array_key_exists('cookie_token', $fields));
                 $this->assertEquals($disclose, \array_key_exists('password_forget_token', $fields));
                 $this->assertEquals($disclose, \array_key_exists('password_forget_token_date', $fields));
             }
@@ -2165,7 +2162,6 @@ class UserTest extends DbTestCase
             'name'                       => 'test',
             'password'                   => \bin2hex(\random_bytes(16)),
             'api_token'                  => \bin2hex(\random_bytes(16)),
-            'cookie_token'               => \bin2hex(\random_bytes(16)),
             'password_forget_token'      => \bin2hex(\random_bytes(16)),
             'personal_token'             => \bin2hex(\random_bytes(16)),
             'password_forget_token_date' => '2024-10-25 13:15:12',
@@ -2607,7 +2603,7 @@ class UserTest extends DbTestCase
 
         // Simulate Auth::login() update cycle (copies fields, calls update).
         $input = $user->fields;
-        unset($input['api_token'], $input['cookie_token'], $input['password_forget_token'], $input['personal_token']);
+        unset($input['api_token'], $input['password_forget_token'], $input['personal_token']);
         $user->update($input);
 
         // The profile must now be assigned in Profile_User.
