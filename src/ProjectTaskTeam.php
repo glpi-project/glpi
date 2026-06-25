@@ -325,6 +325,8 @@ class ProjectTaskTeam extends CommonDBRelation
      **/
     public static function getUserInTeamFor($tasks_id): array
     {
+        global $DB;
+
         $task_team = ProjectTaskTeam::getTeamFor($tasks_id);
         $user_ids  = [];
 
