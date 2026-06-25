@@ -494,7 +494,7 @@ class CategoryProviderTest extends DbTestCase
     public function testAncestorNamesAreTranslated(): void
     {
         $this->login();
-        
+
         $parent = $this->createItem(Category::class, ['name' => 'Parent category']);
         $child  = $this->createItem(Category::class, [
             'name'                => 'Child category',
