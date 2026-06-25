@@ -477,7 +477,7 @@ $break_tablet: 1400px;
                         }
 
                         .select2-search--inline .select2-search__field {
-                            color: #74838f;
+                            color: var(--tblr-body-color);
                             font-weight: bold;
                             font-size: 12px;
                             margin: 0;
