@@ -116,7 +116,7 @@ if (isset($_POST["add"])) {
     );
     $group->redirectToList();
 } else {
-    $group->check($_GET["id"], READ);
+    // Right and re-authentication checks are performed inside displayFullPageForItem().
     $menus = ["admin", "group"];
     Group::displayFullPageForItem($_GET["id"], $menus, [
         'formoptions'  => "data-track-changes=true",

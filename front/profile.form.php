@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
 }
 
 // display form
-$prof->check($_GET["id"], READ);
+// Right and re-authentication checks are performed inside displayFullPageForItem().
 $menus = ["admin", "profile"];
 Profile::displayFullPageForItem($_GET["id"], $menus, [
     'formoptions'  => " data-track-changes='true'",

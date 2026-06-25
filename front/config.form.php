@@ -86,8 +86,7 @@ if (!empty($_POST['reset_translation_cache'])) {
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
 
-$config->checkGlobal(READ);
-
+// Right and re-authentication checks are performed inside displayFullPageForItem().
 Config::displayFullPageForItem($_POST['id'], ["config", "config"], [
     'formoptions'  => "data-track-changes=true",
 ]);

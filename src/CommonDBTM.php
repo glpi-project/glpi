@@ -6594,22 +6594,14 @@ class CommonDBTM extends CommonGLPI
 
         // New item, check create rights
         if (static::isNewID($id)) {
-            // New item, check create rights
-            if (!static::canCreate()) {
-                throw new AccessDeniedHttpException('Missing CREATE right. Cannot view the new item form.');
-            }
+            $item->checkGlobal(CREATE);
 
             // Tab name will be generic (item isn't saved yet)
             $title = static::getBrowserTabNameForNewItem();
         } else {
-            // Existing item, try to load it and check read rights
-            if (!$item->getFromDB($id)) {
-                throw new NotFoundHttpException();
-            }
-
-            if (!$item->can($id, READ)) {
-                throw new AccessDeniedHttpException('Missing READ right. Cannot view the item.');
-            }
+            // Existing item : check() loads it and checks read rights.
+            // It throws NotFound/AccessDenied or redirects to the re-authentication prompt when needed.
+            $item->check($id, READ);
 
             // Tab name will be specific to the loaded item
             $title = $item->getBrowserTabName();
