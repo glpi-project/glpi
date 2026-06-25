@@ -30,7 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set title = title|default('') %}
+{# decorative icons duplicate an adjacent label, so they must not be named #}
+{% set title = (decorative ?? false) ? '' : title|default('') %}
 <svg
     {% if title is not empty %}
         role="img"

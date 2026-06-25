@@ -106,8 +106,10 @@ final class IllustrationManager
 
     /**
      * @param int|null $size Height and width (px). Will be set to 100% if null.
+     * @param bool $decorative Hide the icon from assistive technologies when it
+     *                         only duplicates an adjacent text label.
      */
-    public function renderIcon(string $icon_id, ?int $size = null): string
+    public function renderIcon(string $icon_id, ?int $size = null, bool $decorative = false): string
     {
         if ($icon_id === '') {
             return '';
@@ -120,7 +122,7 @@ final class IllustrationManager
                 $size
             );
         } else {
-            return $this->renderNativeIcon($icon_id, $size);
+            return $this->renderNativeIcon($icon_id, $size, $decorative);
         }
     }
 
@@ -320,7 +322,7 @@ final class IllustrationManager
         }
     }
 
-    private function renderNativeIcon(string $icon_id, ?int $size = null): string
+    private function renderNativeIcon(string $icon_id, ?int $size = null, bool $decorative = false): string
     {
         global $TRANSLATE;
 
@@ -339,11 +341,12 @@ final class IllustrationManager
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [
-            'file_path' => $this->icons_sprites_path,
-            'icon_id'   => $icon_id,
-            'width'     => $size,
-            'height'    => $size,
-            'title'     => $title,
+            'file_path'  => $this->icons_sprites_path,
+            'icon_id'    => $icon_id,
+            'width'      => $size,
+            'height'     => $size,
+            'title'      => $title,
+            'decorative' => $decorative,
         ]);
     }
 
