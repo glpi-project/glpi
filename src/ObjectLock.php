@@ -65,11 +65,17 @@ class ObjectLock extends CommonDBTM
     }
 
     /**
-     * @inheritDoc
-     * @return int Always 0 (Root entity)
+     * Get the entity ID of the locked item since the ObjectLock table is not linked to an entity.
+     * @return int The entity ID of the locked item, or 0 if the itemtype or items_id is not set or if the item cannot be found.
      **/
     public function getEntityID()
     {
+        if (isset($this->fields['itemtype'], $this->fields['items_id'])) {
+            $item = getItemForItemtype($this->fields['itemtype']);
+            if ($item && $item->getFromDB($this->fields['items_id'])) {
+                return $item->getEntityID();
+            }
+        }
         return 0;
     }
 
