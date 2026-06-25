@@ -5652,10 +5652,11 @@ JAVASCRIPT;
      * Build parent condition for search
      *
      * @param string $fieldID field used in the condition: tickets_id, items_id
+     * @param string $table   table name to qualify column references; prevents MySQL 1052 when JOINed tables share the same column name
      *
      * @return string
      */
-    public static function buildCanViewCondition($fieldID)
+    public static function buildCanViewCondition($fieldID, $table = '')
     {
 
         $condition = "";
@@ -5671,19 +5672,21 @@ JAVASCRIPT;
             $groups = '-1';
         }
 
+        $field_ref = $table ? "`$table`.`$fieldID`" : "`$fieldID`";
+
         if (Session::haveRight("ticket", Ticket::READMY)) {
             // Add tickets where the users is requester, observer or recipient
             // Subquery for requester/observer user
             $user_query = "SELECT `tickets_id`
             FROM `glpi_tickets_users`
             WHERE `users_id` = '$user' AND type IN ($requester, $obs)";
-            $condition .= "OR `$fieldID` IN ($user_query) ";
+            $condition .= "OR $field_ref IN ($user_query) ";
 
             // Subquery for recipient
             $recipient_query = "SELECT `id`
             FROM `glpi_tickets`
             WHERE `users_id_recipient` = '$user'";
-            $condition .= "OR `$fieldID` IN ($recipient_query) ";
+            $condition .= "OR $field_ref IN ($recipient_query) ";
         }
 
         if (Session::haveRight("ticket", Ticket::READGROUP)) {
@@ -5692,7 +5695,7 @@ JAVASCRIPT;
             $group_query = "SELECT `tickets_id`
             FROM `glpi_groups_tickets`
             WHERE `groups_id` IN ($groups) AND type IN ($requester, $obs)";
-            $condition .= "OR `$fieldID` IN ($group_query) ";
+            $condition .= "OR $field_ref IN ($group_query) ";
         }
 
         if (
@@ -5706,7 +5709,7 @@ JAVASCRIPT;
             $user_query = "SELECT `tickets_id`
             FROM `glpi_tickets_users`
             WHERE `users_id` = '$user' AND type = $assign";
-            $condition .= "OR `$fieldID` IN ($user_query) ";
+            $condition .= "OR $field_ref IN ($user_query) ";
         }
 
         if (Session::haveRight("ticket", Ticket::READASSIGN)) {
@@ -5715,14 +5718,14 @@ JAVASCRIPT;
             $group_query = "SELECT `tickets_id`
             FROM `glpi_groups_tickets`
             WHERE `groups_id` IN ($groups) AND type = $assign";
-            $condition .= "OR `$fieldID` IN ($group_query) ";
+            $condition .= "OR $field_ref IN ($group_query) ";
 
             if (Session::haveRight('ticket', Ticket::READNEWTICKET)) {
                 // Add new tickets
                 $tickets_query = "SELECT `id`
                FROM `glpi_tickets`
                WHERE `status` = '" . CommonITILObject::INCOMING . "'";
-                $condition .= "OR `$fieldID` IN ($tickets_query) ";
+                $condition .= "OR $field_ref IN ($tickets_query) ";
             }
         }
 
@@ -5738,7 +5741,7 @@ JAVASCRIPT;
             FROM `glpi_ticketvalidations`
             WHERE (`itemtype_target` = 'User' AND `items_id_target` = '$user')
                 OR (`itemtype_target` = 'Group' AND `items_id_target` IN (SELECT `glpi_groups_users`.`groups_id` FROM `glpi_groups_users` WHERE `glpi_groups_users`.`users_id` = '$user'))";
-            $condition .= "OR `$fieldID` IN ($validation_query) ";
+            $condition .= "OR $field_ref IN ($validation_query) ";
         }
 
         return $condition;
