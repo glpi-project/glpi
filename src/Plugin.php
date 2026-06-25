@@ -3353,6 +3353,7 @@ class Plugin extends CommonDBTM
             $to_clear[] = Grid::getAllDashboardCardsCacheKey($language);
         }
 
+        // FIXME Try to separate template cache for each Twig namespace, in order to be able to reset only the plugin Twig templates cache.
         (new CacheManager())->resetCompiledTemplates();
 
         return $GLPI_CACHE->deleteMultiple($to_clear);
