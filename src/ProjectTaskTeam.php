@@ -337,8 +337,12 @@ class ProjectTaskTeam extends CommonDBRelation
                     break;
                 case Group::class:
                     foreach ($actors as $actor) {
-                        $group_user = new Group_User();
-                        foreach ($group_user->find(['groups_id' => $actor['items_id']]) as $user) {
+                        $iterator = $DB->request([
+                            'SELECT' => 'users_id',
+                            'FROM'   => Group_User::getTable(),
+                            'WHERE'  => ['groups_id' => $actor['items_id']],
+                        ]);
+                        foreach ($iterator as $user) {
                             $user_ids[] = (int) $user['users_id'];
                         }
                     }

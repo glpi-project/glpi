@@ -421,7 +421,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             switch ($type) {
                 case User::class:
                     foreach ($actors as $actor) {
-                        $recall_data['users_id'] = $actor['items_id'];
+                        $recall_data['users_id'] = (int) $actor['items_id'];
                         PlanningRecall::manageDatas($recall_data);
                     }
                     break;
@@ -433,7 +433,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                             'WHERE'  => ['groups_id' => $actor['items_id']],
                         ]);
                         foreach ($iterator as $row) {
-                            $recall_data['users_id'] = $row['users_id'];
+                            $recall_data['users_id'] = (int) $row['users_id'];
                             PlanningRecall::manageDatas($recall_data);
                         }
                     }
