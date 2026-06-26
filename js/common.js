@@ -1934,7 +1934,12 @@ function setupAdaptDropdown(config)
         options.placeholder = config.placeholder;
     }
     if (config.allowclear && $('#' + field_id + ' option[value=""]').length === 0) {
-        $('#' + field_id).prepend('<option value=""></option>');
+        const $select = $('#' + field_id);
+        const hasSelected = $select.find('option[selected]').length > 0;
+        $select.prepend('<option value=""></option>');
+        if (!hasSelected) {
+            $select.val('');
+        }
     }
     const select2_el = $('#' + field_id).select2(options);
 

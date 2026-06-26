@@ -98,7 +98,7 @@ class TicketStatusFilter extends AbstractFilter
             is_string($value) ? $value : "",
             'ticketstatus',
             Ticket::class,
-            ['value' => 'all', 'showtype' => 'search'],
+            ['value' => 'all'],
             'dropdownStatus',
         );
     }
