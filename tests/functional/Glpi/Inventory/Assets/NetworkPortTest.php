@@ -588,6 +588,71 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertEmpty($lockedfield->getLockedValues($networkport->getType(), $networkport->fields['id']));
     }
 
+    public function testNetworkPortEthernetSpeed()
+    {
+        $networkport = new \NetworkPort();
+        $ethernet    = new \NetworkPortEthernet();
+
+        //import a NetworkEquipement with an Ethernet port reporting a 1 Gbit/s speed.
+        //SNMP inventory only provides `ifspeed` (in bits/s), not `speed`.
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <INFO>
+                <IPS>
+                  <IP>192.168.1.27</IP>
+                </IPS>
+                <MAC>00:24:13:ea:a7:00</MAC>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <MODEL>Catalyst 2960-24TC</MODEL>
+                <NAME>CB-27.example.com</NAME>
+                <SERIAL>FOC1247X5DX</SERIAL>
+                <TYPE>NETWORKING</TYPE>
+              </INFO>
+              <PORTS>
+                <PORT>
+                  <IFDESCR>GigabitEthernet0/1</IFDESCR>
+                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                  <IFMTU>1500</IFMTU>
+                  <IFNAME>Gi0/1</IFNAME>
+                  <IFNUMBER>10001</IFNUMBER>
+                  <IFPORTDUPLEX>2</IFPORTDUPLEX>
+                  <IFSPEED>1000000000</IFSPEED>
+                  <IFSTATUS>1</IFSTATUS>
+                  <IFTYPE>6</IFTYPE>
+                  <MAC>00:24:13:ea:a7:01</MAC>
+                </PORT>
+              </PORTS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>";
+
+        //networkequipement inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check networkequipement
+        $networkquipement_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $networkquipement_id);
+
+        //get networkport
+        $this->assertTrue(
+            $networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet'])
+        );
+
+        //the raw speed (in bits/s) is correctly stored on the NetworkPort.
+        $this->assertSame(1000000000, $networkport->fields['ifspeed']);
+
+        //the Ethernet instantiation speed (in Mbit/s) must match the reported speed,
+        //and not the default value of the column (10 Mbit/s).
+        $this->assertTrue($ethernet->getFromDbByCrit(['networkports_id' => $networkport->fields['id']]));
+        $this->assertSame(1000, $ethernet->fields['speed']);
+    }
+
     public function testVlanChange()
     {
         $networkport = new \NetworkPort();
