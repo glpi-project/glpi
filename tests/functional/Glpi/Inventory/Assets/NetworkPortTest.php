@@ -593,7 +593,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $networkport = new \NetworkPort();
         $ethernet    = new \NetworkPortEthernet();
 
-        //import a NetworkEquipement with an Ethernet port reporting a 1 Gbit/s speed.
+        //import a NetworkEquipment with an Ethernet port reporting a 1 Gbit/s speed.
         //SNMP inventory only provides `ifspeed` (in bits/s), not `speed`.
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
         <REQUEST>
@@ -636,8 +636,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $inventory = $this->doInventory($xml_source, true);
 
         //check networkequipement
-        $networkquipement_id = $inventory->getItem()->fields['id'];
-        $this->assertGreaterThan(0, $networkquipement_id);
+        $networkequipment_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $networkequipment_id);
 
         //get networkport
         $this->assertTrue(
