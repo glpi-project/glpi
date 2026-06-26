@@ -414,7 +414,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $recall_data = [
             'itemtype'    => static::class,
             'items_id'    => $this->fields['id'],
-            'before_time' => (int) $this->fields['recall'],
+            'before_time' => $this->fields['recall'] !== null ? (int) $this->fields['recall'] : null,
             'field'       => 'plan_end_date',
         ];
 
@@ -539,6 +539,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function prepareInputForUpdate($input)
     {
+        if (array_key_exists('recall', $input) && $input['recall'] === '') {
+            $input['recall'] = null;
+        }
+
         if (isset($input['auto_percent_done']) && $input['auto_percent_done']) {
             unset($input['percent_done']);
         }
@@ -600,6 +604,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function prepareInputForAdd($input)
     {
+        if (array_key_exists('recall', $input) && $input['recall'] === '') {
+            $input['recall'] = null;
+        }
+
         if (!isset($input['projects_id']) || (int) $input['projects_id'] === 0) {
             Session::addMessageAfterRedirect(
                 __s('A linked project is mandatory'),

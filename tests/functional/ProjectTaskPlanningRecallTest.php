@@ -50,7 +50,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
     // Helpers
     // -------------------------------------------------------------------------
 
-    private function createProjectAndTask(int $recall = -2, string $end_date = '+2 days'): array
+    private function createProjectAndTask(?int $recall = null, string $end_date = '+2 days'): array
     {
         $project = $this->createItem(
             Project::class,
@@ -141,7 +141,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $this->login();
         $users_id = Session::getLoginUserID();
 
-        [, $task] = $this->createProjectAndTask(-2);
+        [, $task] = $this->createProjectAndTask(null);
         $this->addUserToTeam($task, $users_id);
 
         $this->assertNoRecall($task->getID(), $users_id);
@@ -186,7 +186,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $this->login();
         $users_id = Session::getLoginUserID();
 
-        [, $task] = $this->createProjectAndTask(-2);
+        [, $task] = $this->createProjectAndTask(null);
         $this->addUserToTeam($task, $users_id);
 
         $this->assertNoRecall($task->getID(), $users_id);
@@ -205,7 +205,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $this->addUserToTeam($task, $users_id);
         $this->assertHasRecall($task->getID(), $users_id, HOUR_TIMESTAMP);
 
-        $this->updateItem(ProjectTask::class, $task->getID(), ['recall' => -2]);
+        $this->updateItem(ProjectTask::class, $task->getID(), ['recall' => null]);
 
         $this->assertNoRecall($task->getID(), $users_id);
     }
@@ -232,7 +232,7 @@ class ProjectTaskPlanningRecallTest extends DbTestCase
         $this->login();
         $users_id = Session::getLoginUserID();
 
-        [, $task] = $this->createProjectAndTask(-2);
+        [, $task] = $this->createProjectAndTask(null);
         $this->addUserToTeam($task, $users_id);
 
         $this->assertNoRecall($task->getID(), $users_id);

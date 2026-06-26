@@ -221,7 +221,7 @@ class ProjectTaskTeam extends CommonDBRelation
             NotificationEvent::raiseEvent("update", $task);
         }
 
-        if ((int) $task->fields['recall'] >= 0) {
+        if ($task->fields['recall'] !== null) {
             $recall_data = [
                 'itemtype'    => ProjectTask::class,
                 'items_id'    => $task->getID(),

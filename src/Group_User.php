@@ -828,7 +828,7 @@ class Group_User extends CommonDBRelation
 
         foreach (ProjectTask::getActiveProjectTaskIDsForGroup([(int) $this->fields['groups_id']]) as $row) {
             $task = new ProjectTask();
-            if (!$task->getFromDB($row['id']) || (int) $task->fields['recall'] < 0) {
+            if (!$task->getFromDB($row['id']) || $task->fields['recall'] === null) {
                 continue;
             }
             if (PlanningRecall::getForItem(ProjectTask::class, $task->getID(), $this->fields['users_id']) !== null) {

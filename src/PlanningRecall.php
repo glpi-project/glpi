@@ -176,7 +176,7 @@ class PlanningRecall extends CommonDBChild
             !isset($data['itemtype'])
             || !isset($data['items_id'])
             || !isset($data['users_id'])
-            || !isset($data['before_time'])
+            || !array_key_exists('before_time', $data)
             || !isset($data['field'])
         ) {
             return false;
@@ -203,7 +203,7 @@ class PlanningRecall extends CommonDBChild
                             "Y-m-d H:i:s",
                             strtotime($item->fields[$data['field']]) - $data['before_time']
                         );
-                        if ($data['before_time'] >= 0) {
+                        if ($data['before_time'] !== null) {
                             if ($pr->can($pr->fields['id'], UPDATE)) {
                                 $pr->update(['id'          => $pr->fields['id'],
                                     'before_time' => $data['before_time'],
@@ -232,7 +232,7 @@ class PlanningRecall extends CommonDBChild
                             strtotime($item->fields[$data['field']])
                             - $data['before_time']
                         );
-                        if ($data['before_time'] >= 0) {
+                        if ($data['before_time'] !== null) {
                             $pr->add($data);
                         }
                     }
