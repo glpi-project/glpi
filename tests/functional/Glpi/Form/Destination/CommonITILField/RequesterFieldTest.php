@@ -742,6 +742,8 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
@@ -756,6 +758,8 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
