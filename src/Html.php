@@ -4025,6 +4025,7 @@ JAVASCRIPT
         $ajax_limit_count    = (int) $CFG_GLPI['ajax_limit_count'];
         $templateresult      = $params["templateResult"] ?? "templateResult";
         $templateselection   = $params["templateSelection"] ?? "templateSelection";
+        $allowclear          = !empty($params["allowclear"]) ? 'true' : 'false';
 
         // escape values for JS
         $id = jsescape($id);
@@ -4042,6 +4043,7 @@ JAVASCRIPT
                 ajax_limit_count: {$ajax_limit_count},
                 templateresult: {$templateresult},
                 templateselection: {$templateselection},
+                allowclear: {$allowclear},
             };
 JS;
 

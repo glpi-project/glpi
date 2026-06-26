@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -54,14 +53,9 @@ class TicketStatusFilter extends AbstractFilter
     {
         global $DB;
 
-        return $DB->fieldExists($table, 'status');
+        return $table === Ticket::getTable() && $DB->fieldExists($table, 'status');
     }
 
-    /**
-     * @param string $table
-     * @param $value
-     * @return array
-     */
     /**
      * @return array<string, array<string, int>>
      */
@@ -93,6 +87,7 @@ class TicketStatusFilter extends AbstractFilter
                 'value'      => (int) $value,
             ];
         }
+
         return $criteria;
     }
 
@@ -103,10 +98,8 @@ class TicketStatusFilter extends AbstractFilter
             is_string($value) ? $value : "",
             'ticketstatus',
             Ticket::class,
-            [
-                'condition' => ['id' => -1],
-                'toadd'     => Ticket::getAllStatusArray(),
-            ]
+            ['value' => 'all', 'showtype' => 'search'],
+            'dropdownStatus',
         );
     }
 }

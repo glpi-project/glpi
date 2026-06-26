@@ -134,8 +134,17 @@ abstract class AbstractFilter
         $rand  = mt_rand();
         $class = $filled ? "filled" : "";
 
+        // First Step: Add 'filled' class if the filter has a default value on load
         $js = "
             $(function () {
+                var select_elem = $('#filter-{$rand} select');
+                if (select_elem.length > 0) {
+                    var initial_val = select_elem.val();
+                    if (initial_val !== null && initial_val !== '') {
+                        $('#filter-{$rand}').addClass('filled');
+                    }
+                }
+
                 $('#filter-{$rand} input')
                     .on('input', function() {
                         var str_len = $(this).val().length;
@@ -177,13 +186,13 @@ abstract class AbstractFilter
         string $value,
         string $fieldname,
         string $itemtype,
-        array $add_params = []
+        array $add_params = [],
+        string $function = 'dropdown',
     ): string {
         $value     = !empty($value) ? $value : null;
         $rand      = mt_rand();
-        $field     = $itemtype::dropdown([
+        $field     = $itemtype::$function([
             'name'                => $fieldname,
-            'value'               => $value,
             'rand'                => $rand,
             'display'             => false,
             'display_emptychoice' => false,
@@ -192,7 +201,7 @@ abstract class AbstractFilter
             'on_change'           => "on_change_{$rand}()",
             'allowClear'          => true,
             'width'               => '',
-        ] + $add_params);
+        ] + ($value !== null ? ['value' => $value] : []) + $add_params);
 
         $js = "
             var on_change_{$rand} = function() {
@@ -203,6 +212,11 @@ abstract class AbstractFilter
 
                 $(dom_elem).closest('fieldset').toggleClass('filled', selected !== null);
             };
+
+            $(function() {
+             if ($('#dropdown_" . \jsescape($fieldname . $rand) . "').val()) on_change_{$rand}();
+            });
+
         ";
         $field .= Html::scriptBlock($js);
 
