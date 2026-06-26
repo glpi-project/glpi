@@ -3886,7 +3886,8 @@
                             "tickettype",
                             "group_requester",
                             "group_tech",
-                            "user_tech"
+                            "user_tech",
+                            "ticketstatus"
                         ]
                     }
                 }
