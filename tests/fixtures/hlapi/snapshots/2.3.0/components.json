@@ -5471,6 +5471,7 @@
                             "location",
                             "manufacturer",
                             "requesttype",
+                            "sla",
                             "state",
                             "tickettype",
                             "group_requester",

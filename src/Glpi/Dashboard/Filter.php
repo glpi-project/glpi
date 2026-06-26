@@ -45,6 +45,7 @@ use Glpi\Dashboard\Filters\{
     LocationFilter,
     ManufacturerFilter,
     RequestTypeFilter,
+    SlaFilter,
     StateFilter,
     TicketTypeFilter,
     UserTechFilter
@@ -107,6 +108,7 @@ class Filter extends CommonDBChild
             LocationFilter::class,
             ManufacturerFilter::class,
             RequestTypeFilter::class,
+            SlaFilter::class,
             StateFilter::class,
             TicketTypeFilter::class,
             GroupRequesterFilter::class,
