@@ -5656,7 +5656,7 @@ JAVASCRIPT;
      *
      * @return string
      */
-    public static function buildCanViewCondition($fieldID, $table = '')
+    public static function buildCanViewCondition(string $fieldID, string $table = '')
     {
 
         $condition = "";

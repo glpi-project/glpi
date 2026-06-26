@@ -767,6 +767,7 @@ HTML,
         $this->assertStringContainsString("`$table`.`itemtype`", $condition);
         $this->assertStringNotContainsString('(`itemtype` = ', $condition);
         $this->assertStringNotContainsString('OR `items_id` IN', $condition);
+        $this->assertStringContainsString("OR `$table`.`items_id` IN", $condition);
     }
 
     /**
