@@ -1821,7 +1821,7 @@ TWIG, $twig_params);
             ];
         }
         $criteria = [];
-        if (!empty($column_ids)) {
+        if (!empty($column_ids) && !$get_default) {
             $criteria = [
                 'projectstates_id'   => $column_ids,
             ];
@@ -1926,7 +1926,7 @@ TWIG, $twig_params);
         }
 
         foreach (array_keys($columns) as $column_id) {
-            if ($column_id !== 0 && !in_array($column_id, $column_ids)) {
+            if ($column_id !== 0 && !$get_default && !in_array($column_id, $column_ids)) {
                 unset($columns[$column_id]);
             }
         }
