@@ -291,13 +291,10 @@ final class RichText
     public static function getEnhancedHtml(?string $content, array $params = []): string
     {
         $p = [
-            'images_gallery'      => false,
-            'user_mentions'       => true,
-            'images_lazy'         => true,
-            'text_maxsize'        => GLPI_TEXT_MAXSIZE,
-            // Materialize KB video embed placeholders into sandboxed iframes. Off by
-            // default so callers opt in explicitly.
-            'allow_video_embeds'  => false,
+            'images_gallery' => false,
+            'user_mentions'  => true,
+            'images_lazy'    => true,
+            'text_maxsize'   => GLPI_TEXT_MAXSIZE,
         ];
         $p = array_replace($p, $params);
 
@@ -318,9 +315,10 @@ final class RichText
             $content = self::replaceImagesByGallery($content);
         }
 
-        if ($p['allow_video_embeds']) {
-            $content = (new VideoEmbedRenderer())->renderAll($content);
-        }
+        // Materialize video embed placeholders into sandboxed iframes / <video>.
+        // Unconditional: a placeholder with no rendering would leave the user with
+        // no access to the video. No-op when no placeholder is present.
+        $content = (new VideoEmbedRenderer())->renderAll($content);
 
         if ($p['text_maxsize'] > 0 && $content_size > $p['text_maxsize']) {
             // Safe: $content has been through getSafeHtml + htmlescaping transformers above; the wrapping markup is static.
@@ -574,6 +572,12 @@ JAVASCRIPT;
 
     private static function getHtmlSanitizer(): HtmlSanitizer
     {
+        static $sanitizer = null;
+
+        if ($sanitizer !== null) {
+            return $sanitizer;
+        }
+
         $config = (new HtmlSanitizerConfig())
             ->allowSafeElements()
             ->allowLinkSchemes([
@@ -665,14 +669,15 @@ JAVASCRIPT;
             $config = $config->allowAttribute($attribute, 'span');
         }
 
-        // Inert placeholders for KB video embeds. Allowed in every context: the
-        // attributes carry no behaviour, materialization into iframes / <video>
-        // staying gated downstream by getEnhancedHtml(allow_video_embeds).
+        // Inert placeholders for video embeds. Allowed in every context: the
+        // attributes carry no behaviour; materialization into iframes / <video>
+        // is done downstream by VideoEmbedRenderer (renderAll / renderAllAsText / renderAllAsLink).
         $config = $config
             ->allowAttribute('data-video-provider', ['div'])
             ->allowAttribute('data-video-id', ['div'])
             ->allowAttribute('data-video-src', ['div']);
 
-        return new HtmlSanitizer($config);
+        $sanitizer = new HtmlSanitizer($config);
+        return $sanitizer;
     }
 }

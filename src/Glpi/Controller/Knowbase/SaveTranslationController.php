@@ -86,17 +86,18 @@ final class SaveTranslationController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        // KB video placeholders are preserved by the sanitizer (inert data-video-* attributes).
-        $answer = RichText::getSafeHtml($answer, false);
-
-        // Empty-check on the rendered plaintext so video-only translations
-        // (whose placeholder div has no inline text) are not rejected.
+        // Empty-check on the rendered plaintext first (avoids a useless sanitize on
+        // empty content). getTextFromHtml runs renderAllAsText, so video-only
+        // translations (placeholder div with no inline text) are not rejected.
         if (trim(RichText::getTextFromHtml($answer, false)) === '') {
             return new JsonResponse([
                 'success' => false,
                 'message' => __('Content cannot be empty'),
             ], Response::HTTP_BAD_REQUEST);
         }
+
+        // KB video placeholders are preserved by the sanitizer (inert data-video-* attributes).
+        $answer = RichText::getSafeHtml($answer, false);
 
         // Make sure title is not empty if specified
         if ($name !== null) {
