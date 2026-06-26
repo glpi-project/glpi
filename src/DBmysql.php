@@ -2274,7 +2274,7 @@ class DBmysql
         }
 
         if (preg_match('/^\s*(ALTER|CREATE|DROP|RENAME|TRUNCATE)\s+/i', $query)) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'DDL statement executed inside a transaction will cause an implicit commit: "%s".',
                     substr($query, 0, 200)
