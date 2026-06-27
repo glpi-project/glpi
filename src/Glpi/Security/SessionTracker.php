@@ -45,6 +45,11 @@ use RuntimeException;
 use Session;
 use User;
 
+use function Safe\ini_get;
+use function Safe\session_id;
+use function Safe\session_save_path;
+use function Safe\unlink;
+
 final class SessionTracker extends CommonGLPI
 {
     /**
@@ -60,7 +65,7 @@ final class SessionTracker extends CommonGLPI
             'SELECT' => ['id'],
             'FROM' => 'glpi_user_sessions',
             'WHERE' => ['login_session_uid' => $login_session_uid],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ]);
         return $it->count() > 0;
     }
