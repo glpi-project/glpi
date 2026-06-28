@@ -34,6 +34,8 @@
 {# @var \Glpi\Form\AccessControl\ControlType\AllowListConfig config #}
 {# @var string label #}
 
+{%  set can_update = access_control.can(access_control.fields['id'], constant('UPDATE')) %}
+
 {# Multi dropdown (User, Group and Profile) #}
 {{ call(
     "\\Glpi\\Form\\AccessControl\\ControlType\\AllowListDropdown::show",
@@ -44,7 +46,10 @@
             'groups_id'  : config.getGroupIds(),
             'profiles_id': config.getProfileIds(),
         },
-        {'aria_label': label}
+        {
+            'aria_label': label,
+            'disabled' : not can_update,
+        }
     ]
 )|raw }}
 
@@ -53,29 +58,31 @@
     <a href="" data-glpi-dropdown-count-preview></a>
 </div>
 
-<script>
-    // Each time the dropdown is modified, populate the helper link
-    const $select = $("select[name='_access_control[{{ access_control.getId() }}][_allow_list_dropdown][]']")
-    $select.on('change', async function() {
-        const response = await $.get(
-            "{{ path('/Form/AllowListDropdown/CountUsers') }}",
-            {
-                values: $(this).val()
-            }
-        );
+{% if can_update %}
+    <script>
+        // Each time the dropdown is modified, populate the helper link
+        const $select = $("select[name='_access_control[{{ access_control.getId() }}][_allow_list_dropdown][]']")
+        $select.on('change', async function() {
+            const response = await $.get(
+                "{{ path('/Form/AllowListDropdown/CountUsers') }}",
+                {
+                    values: $(this).val()
+                }
+            );
 
-        $('[data-glpi-dropdown-count-preview]')
-            .attr('href', response.link ?? null)
-            .html("{{ __('There are %d user(s) matching these criteria.')|e('js') }}"
-            .replace("%d", response.count))
-        ;
-    });
+            $('[data-glpi-dropdown-count-preview]')
+                .attr('href', response.link ?? null)
+                .html("{{ __('There are %d user(s) matching these criteria.')|e('js') }}"
+                .replace("%d", response.count))
+            ;
+        });
 
-    // Make sure this doens't trigger the "unsaved changes" detection if the form
-    // was not actually changed when this code is reached.
-    let restore_unsaved_form_status = hasUnsavedChanges() == false;
-    $select.trigger('change');
-    if (restore_unsaved_form_status) {
-        setHasUnsavedChanges(false);
-    }
-</script>
+        // Make sure this doens't trigger the "unsaved changes" detection if the form
+        // was not actually changed when this code is reached.
+        let restore_unsaved_form_status = hasUnsavedChanges() == false;
+        $select.trigger('change');
+        if (restore_unsaved_form_status) {
+            setHasUnsavedChanges(false);
+        }
+    </script>
+{% endif %}

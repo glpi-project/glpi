@@ -38,6 +38,7 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
+use Session;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,7 +50,7 @@ final class ExportController extends AbstractController
     public function __invoke(Request $request): Response
     {
         // Right check
-        if (!Form::canView()) {
+        if (Session::getCurrentInterface() !== 'central') {
             throw new AccessDeniedHttpException();
         }
 
@@ -57,7 +58,7 @@ final class ExportController extends AbstractController
         $ids = $request->query->all()["ids"] ?? [];
 
         // Ensure user can view all forms
-        $forms = array_filter(Form::getByIds($ids), fn(Form $form) => $form->can($form->getID(), READ));
+        $forms = array_filter(Form::getByIds($ids), static fn(Form $form) => $form->can($form->getID(), READ));
 
         // Execute export
         $serializer = new FormSerializer();

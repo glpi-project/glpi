@@ -55,7 +55,7 @@ final class CountUsersController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        if (!Form::canView()) {
+        if (!Form::canUpdate()) {
             throw new AccessDeniedHttpException();
         }
 

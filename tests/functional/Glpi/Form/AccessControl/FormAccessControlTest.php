@@ -89,17 +89,17 @@ class FormAccessControlTest extends DbTestCase
         yield [
             'tech',
             'tech',
-            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false],
+            ['view' => true, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false],
         ];
         yield [
             'normal',
             'normal',
-            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false],
+            ['view' => true, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false],
         ];
         yield [
             'post-only',
             'postonly',
-            ['view' => false, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false],
+            ['view' => true, 'create' => false, 'update' => false, 'delete' => false, 'purge' => false],
         ];
     }
 
