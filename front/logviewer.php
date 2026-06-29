@@ -45,6 +45,7 @@ Session::checkRight(LogViewer::$rightname, READ);
 
 $filepath = $_REQUEST['filepath'] ?? null;
 
+// no file to view specified -> redirect to list of system logs
 if ($filepath === null) {
     Html::redirect($CFG_GLPI["root_doc"] . "/front/logs.php");
 }
@@ -54,18 +55,32 @@ if ($logparser->getFullPath($filepath) === null) {
     throw new NotFoundHttpException('Not found');
 }
 
+// download log file
 if (($_GET['action'] ?? '') === 'download_log_file') {
-    $logparser = new LogParser();
+    LogViewer::checkReAuthenticationOrRedirect();
+    Session::checkRight(LogViewer::$rightname, READ);
     $logparser->download($filepath);
-} elseif (($_POST['action'] ?? '') === 'empty') {
-    Session::checkRight(Config::$rightname, UPDATE); // no UPDATE right for LogViewer -> Config::$rightname used
+    // no redirect, log file opened/downloaded without changing page.
+}
+// empty log file
+elseif (($_POST['action'] ?? '') === 'empty') {
+    // LogViewer just has a READ right, so UPDATE is checked on Config
+    Config::checkReAuthenticationOrRedirect();
+    Session::checkRight(Config::$rightname, UPDATE);
     $logparser->empty($filepath);
     Html::back();
-} elseif (($_POST['action'] ?? '') === 'delete') {
-    Session::checkRight(Config::$rightname, UPDATE);
+}
+// delete log file
+elseif (($_POST['action'] ?? '') === 'delete') {
+    Config::checkReAuthenticationOrRedirect();
+    Session::checkRight(Config::$rightname, UPDATE); // LogViewer just has a READ right, so UPDATE is checked on Config
     $logparser->delete($filepath);
     Html::redirect($CFG_GLPI["root_doc"] . "/front/logs.php");
-} else {
+}
+// display logs
+else {
+    LogViewer::checkReAuthenticationOrRedirect();
+    Session::checkRight(LogViewer::$rightname, READ);
     Html::header(
         LogViewer::getTypeName(Session::getPluralNumber()),
         '',
