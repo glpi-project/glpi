@@ -779,7 +779,7 @@ PLAINTEXT;
     {
         $this->login();
 
-        $state = $this->createItem(\ProjectState::class, [
+        $state = $this->createItem(ProjectState::class, [
             'name'        => 'In progress',
             'color'       => '#ff0000',
             'is_finished' => 0,
@@ -790,7 +790,7 @@ PLAINTEXT;
             'entities_id' => 0,
         ]);
 
-        $this->createItem(\ProjectTask::class, [
+        $this->createItem(ProjectTask::class, [
             'name'                   => 'Task 1',
             'projects_id'            => $project->getID(),
             'projectstates_id'       => $state->getID(),
