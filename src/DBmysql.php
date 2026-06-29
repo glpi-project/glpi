@@ -1774,7 +1774,7 @@ class DBmysql
         ];
     }
 
-    public function isInTransaction(): bool
+    private function isInTransaction(): bool
     {
         return $this->transaction_level > 0;
     }
