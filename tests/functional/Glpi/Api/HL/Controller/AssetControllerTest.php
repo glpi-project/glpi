@@ -34,9 +34,12 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Appliance_Item;
+use Appliance_Item_Relation;
 use Certificate;
 use Computer;
 use DatabaseInstance;
+use Domain;
 use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Asset\Asset;
@@ -893,5 +896,66 @@ class AssetControllerTest extends HLAPITestCase
         ], [
             'date_creation' => '2026-03-01T10:00:00+00:00',
         ]);
+    }
+
+    public function testCreateDeleteApplianceItemRelation()
+    {
+        $this->loginWeb();
+
+        $computer = $this->createItem(Computer::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $appliance_id = $this->createItem('Appliance', [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+        $appliance_item = $this->createItem(Appliance_Item::class, [
+            'itemtype' => 'Computer',
+            'items_id' => $computer->getID(),
+            'appliances_id' => $appliance_id,
+        ]);
+        $domain = $this->createItem(Domain::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $this->login();
+        $appliance_item_api_endpoint = '/Assets/Computer/' . $computer->getID() . '/Appliance/' . $appliance_item->getID();
+
+        $this->api->call(new Request('POST', $appliance_item_api_endpoint . '/Domain/' . $domain->getID()), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        // Verify the relation exists
+        $this->assertCount(1, getAllDataFromTable(Appliance_Item_Relation::getTable(), [
+            'appliances_items_id' => $appliance_item->getID(),
+            'itemtype' => Domain::class,
+            'items_id' => $domain->getID(),
+        ]));
+
+        // Trying to add another of the same relation should return 200 (idempotent resource) without creating a duplicate
+        $this->api->call(new Request('POST', $appliance_item_api_endpoint . '/Domain/' . $domain->getID()), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+        $this->assertCount(1, getAllDataFromTable(Appliance_Item_Relation::getTable(), [
+            'appliances_items_id' => $appliance_item->getID(),
+            'itemtype' => Domain::class,
+            'items_id' => $domain->getID(),
+        ]));
+
+        // Delete the relation
+        $this->api->call(new Request('DELETE', $appliance_item_api_endpoint . '/Domain/' . $domain->getID()), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        $this->assertCount(0, getAllDataFromTable(Appliance_Item_Relation::getTable(), [
+            'appliances_items_id' => $appliance_item->getID(),
+            'itemtype' => Domain::class,
+            'items_id' => $domain->getID(),
+        ]));
     }
 }

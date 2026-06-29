@@ -4247,6 +4247,82 @@ EOT,
         );
     }
 
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Appliance/{id}/{relation_type}/{relation_id}', methods: ['POST'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+        'relation_type' => 'Environment|Domain|Location|Network',
+        'relation_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\Route(description: 'Create an appliance relationship for the link between an asset and an appliance')]
+    public function createItemApplianceRelation(Request $request): Response
+    {
+        $appliance_items_id = $request->getAttribute('id');
+        $itemtype = $request->getAttribute('relation_type');
+        $items_id = $request->getAttribute('relation_id');
+        $air = new Appliance_Item_Relation();
+
+        $input = [
+            'appliances_items_id' => $appliance_items_id,
+            'itemtype' => $itemtype,
+            'items_id' => $items_id,
+        ];
+        if (!$air->can(0, CREATE, $input)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        $created_response = AbstractController::getCRUDCreateResponse($items_id, self::getAPIPathForRouteFunction(self::class, 'getItemApplianceLink', [
+            'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+            'asset_id' => $request->getAttribute('asset_id'),
+            'id' => $appliance_items_id,
+        ]));
+
+        $air->getFromDBByCrit($input);
+
+        if ($air->getID()) {
+            // These resources are idempotent, so we can return a 200 OK instead of 409 (conflict)
+            return $created_response;
+        }
+
+        // Unicity check
+        if (!$air->add($input)) {
+            return self::getCRUDErrorResponse(self::CRUD_ACTION_CREATE);
+        }
+
+        return $created_response;
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Appliance/{id}/{relation_type}/{relation_id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+        'relation_type' => 'Environment|Domain|Location|Network',
+        'relation_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\Route(description: 'Delete an appliance relationship for the link between an asset and an appliance')]
+    public function deleteItemApplianceRelation(Request $request): Response
+    {
+        $appliance_items_id = $request->getAttribute('id');
+        $itemtype = $request->getAttribute('relation_type');
+        $items_id = $request->getAttribute('relation_id');
+        $air = new Appliance_Item_Relation();
+
+        $air->getFromDBByCrit([
+            'appliances_items_id' => $appliance_items_id,
+            'itemtype' => $itemtype,
+            'items_id' => $items_id,
+        ]);
+
+        $input = ['id' => $air->getID()];
+        if (!$air->can($air->getID(), PURGE, $input)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        if (!$air->delete($input, true)) {
+            return self::getCRUDErrorResponse(self::CRUD_ACTION_DELETE);
+        }
+
+        return new JSONResponse(null, 204);
+    }
+
     #[Route(path: '/{asset_itemtype}/{asset_id}/Domain', methods: ['POST'], requirements: [
         'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Appliance|Certificate|Unmanaged',
         'asset_id' => '\d+',
