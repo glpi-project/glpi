@@ -97,7 +97,7 @@ final class SaveTranslationController extends AbstractController
         }
 
         // KB video placeholders are preserved by the sanitizer (inert data-video-* attributes).
-        $answer = RichText::getSafeHtml($answer, false);
+        $answer = RichText::getSafeHtml($answer);
 
         // Make sure title is not empty if specified
         if ($name !== null) {

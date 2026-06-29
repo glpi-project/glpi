@@ -138,7 +138,7 @@ final class KnowbaseItemController extends AbstractController
 
         // Sanitize HTML content to prevent XSS. KB video placeholders are preserved
         // by the sanitizer (inert data-video-* attributes).
-        $answer = RichText::getSafeHtml($answer, false);
+        $answer = RichText::getSafeHtml($answer);
 
         $update_data = [
             'id' => $id,
