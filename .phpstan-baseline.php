@@ -872,12 +872,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/manuallink.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instantiating an object from an unrestricted dynamic string is forbidden \\(see https\\://github\\.com/glpi\\-project/phpstan\\-glpi\\?tab\\=readme\\-ov\\-file\\#forbiddynamicinstantiationrule\\)\\.$#',
-	'identifier' => 'glpi.forbidDynamicInstantiation',
-	'count' => 1,
-	'path' => __DIR__ . '/front/massiveaction.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$items_id of static method Glpi\\\\Event\\:\\:log\\(\\) expects int\\|string, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -11980,12 +11974,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Security\\\\TOTPManager\\:\\:getGracePeriodDaysLeft\\(\\) should return int but returns int\\|false\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Security/TOTPManager.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'secret\' might not exist on array\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Security/TOTPManager.php',
 ];

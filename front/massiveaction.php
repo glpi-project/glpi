@@ -66,7 +66,9 @@ try {
         $back_url = isset($_POST['_glpi_http_referer'])
             ? $reauth_manager->getCancelURL()
             : Html::getBackUrl();
-        $ma->setRedirect($back_url);
+        if ($back_url) {
+            $ma->setRedirect($back_url);
+        }
     }
 }
 // process redirect exceptions
