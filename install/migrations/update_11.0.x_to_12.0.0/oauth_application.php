@@ -64,3 +64,5 @@ if (!$DB->tableExists('glpi_oauthapplications')) {
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC";
     $DB->doQuery($query);
 }
+
+$migration->addRight(OAuthApplication::$rightname, ALLSTANDARDRIGHT, ['config' => UPDATE]);
