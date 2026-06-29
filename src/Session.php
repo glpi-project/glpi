@@ -90,9 +90,6 @@ class Session
     {
 
         self::start();
-        if (isset($_SESSION['login_session_uid'])) {
-            SessionTracker::revokeSession($_SESSION['login_session_uid'], 'expired');
-        }
         // Unset all of the session variables.
         session_unset();
         /**
@@ -2318,7 +2315,7 @@ class Session
         global $DB;
 
         if (isset($_SESSION['login_session_uid'])) {
-            SessionTracker::revokeSession($_SESSION['login_session_uid'], 'user');
+            SessionTracker::revokeSession($_SESSION['login_session_uid'], SessionTracker::REVOKE_REASON_USER);
         }
 
         $users_id = self::getLoginUserID();

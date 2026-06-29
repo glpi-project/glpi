@@ -47,7 +47,7 @@ class SessionTrackerTest extends DbTestCase
     {
         global $DB;
         $this->assertFalse(SessionTracker::isSessionValid('invalid_token_hash'));
-        $DB->insert('glpi_user_sessions', [
+        $DB->insert('glpi_users_sessions', [
             'users_id' => 2,
             'login_session_uid' => '1c4568cf2706e5b3df66340d71330925',
             'session_file' => 'sess_session_token_hash1',
@@ -58,7 +58,7 @@ class SessionTrackerTest extends DbTestCase
             'last_activity_at' => QueryFunction::now(),
         ]);
         $this->assertTrue(SessionTracker::isSessionValid('1c4568cf2706e5b3df66340d71330925'));
-        $DB->insert('glpi_user_session_history', [
+        $DB->insert('glpi_users_sessionhistories', [
             'users_id' => 2,
             'login_session_uid' => 'e6c6d4409b15d4d07ac535451f41f714',
             'ip_address' => '::1',
@@ -73,9 +73,9 @@ class SessionTrackerTest extends DbTestCase
     public function testRecordNewSession(): void
     {
         $test_users_id = getItemByTypeName('User', TU_USER, true);
-        $active_sessions_count = countElementsInTable('glpi_user_sessions', ['users_id' => $test_users_id]);
+        $active_sessions_count = countElementsInTable('glpi_users_sessions', ['users_id' => $test_users_id]);
         $this->login();
-        $this->assertEquals($active_sessions_count + 1, countElementsInTable('glpi_user_sessions', ['users_id' => $test_users_id]));
+        $this->assertEquals($active_sessions_count + 1, countElementsInTable('glpi_users_sessions', ['users_id' => $test_users_id]));
     }
 
     public function testUpdateLastSessionActivity(): void
@@ -84,16 +84,16 @@ class SessionTrackerTest extends DbTestCase
         $this->login();
         $login_session_uid = $DB->request([
             'SELECT' => 'login_session_uid',
-            'FROM' => 'glpi_user_sessions',
+            'FROM' => 'glpi_users_sessions',
             'WHERE' => ['users_id' => $_SESSION['glpiID']],
             'ORDER' => ['created_at DESC'],
         ])->current()['login_session_uid'];
         $this->assertNotNull($login_session_uid);
-        $DB->update('glpi_user_sessions', ['last_activity_at' => '2024-01-01 00:00:00'], ['login_session_uid' => $login_session_uid]);
+        $DB->update('glpi_users_sessions', ['last_activity_at' => '2024-01-01 00:00:00'], ['login_session_uid' => $login_session_uid]);
         SessionTracker::updateLastSessionActivity();
         $updated_last_activity = $DB->request([
             'SELECT' => 'last_activity_at',
-            'FROM' => 'glpi_user_sessions',
+            'FROM' => 'glpi_users_sessions',
             'WHERE' => ['login_session_uid' => $login_session_uid],
         ])->current()['last_activity_at'];
         $this->assertGreaterThan('2024-01-01 00:00:00', $updated_last_activity);
@@ -105,15 +105,15 @@ class SessionTrackerTest extends DbTestCase
         $this->login();
         $login_session_uid = $DB->request([
             'SELECT' => 'login_session_uid',
-            'FROM' => 'glpi_user_sessions',
+            'FROM' => 'glpi_users_sessions',
             'WHERE' => ['users_id' => $_SESSION['glpiID']],
             'ORDER' => ['created_at DESC'],
         ])->current()['login_session_uid'];
         $this->assertNotNull($login_session_uid);
 
         SessionTracker::revokeSession($login_session_uid, 'admin');
-        $this->assertEquals(0, countElementsInTable('glpi_user_sessions', ['login_session_uid' => $login_session_uid]));
-        $this->assertEquals(1, countElementsInTable('glpi_user_session_history', [
+        $this->assertEquals(0, countElementsInTable('glpi_users_sessions', ['login_session_uid' => $login_session_uid]));
+        $this->assertEquals(1, countElementsInTable('glpi_users_sessionhistories', [
             'login_session_uid' => $login_session_uid,
             'logout_reason' => 'admin',
         ]));
@@ -134,7 +134,7 @@ class SessionTrackerTest extends DbTestCase
         global $DB;
         $test_users_id = getItemByTypeName('User', TU_USER, true);
         // Create 2 sessions for the user.
-        $DB->insert('glpi_user_sessions', [
+        $DB->insert('glpi_users_sessions', [
             'users_id' => $test_users_id,
             'login_session_uid' => '1c4568cf2706e5b3df66340d71330925',
             'session_file' => 'sess_session_token_hash1',
@@ -144,7 +144,7 @@ class SessionTrackerTest extends DbTestCase
             'created_at' => '2026-01-01 00:00:00',
             'last_activity_at' => '2026-01-01 00:00:00',
         ]);
-        $DB->insert('glpi_user_sessions', [
+        $DB->insert('glpi_users_sessions', [
             'users_id' => $test_users_id,
             'login_session_uid' => 'e6c6d4409b15d4d07ac535451f41f714',
             'session_file' => 'sess_session_token_hash2',
@@ -157,21 +157,21 @@ class SessionTrackerTest extends DbTestCase
         $this->login();
         $current_login_session_uid = $DB->request([
             'SELECT' => 'login_session_uid',
-            'FROM' => 'glpi_user_sessions',
+            'FROM' => 'glpi_users_sessions',
             'WHERE' => ['users_id' => $test_users_id],
             'ORDER' => ['created_at DESC'],
         ])->current()['login_session_uid'];
         $this->assertNotNull($current_login_session_uid);
 
         SessionTracker::revokeAllSessionsExceptCurrent($test_users_id);
-        $this->assertEquals(1, countElementsInTable('glpi_user_sessions', ['login_session_uid' => $current_login_session_uid]));
+        $this->assertEquals(1, countElementsInTable('glpi_users_sessions', ['login_session_uid' => $current_login_session_uid]));
     }
 
     public function testRevokeSessionByAge(): void
     {
         global $DB;
         $test_users_id = getItemByTypeName('User', TU_USER, true);
-        $DB->insert('glpi_user_sessions', [
+        $DB->insert('glpi_users_sessions', [
             'users_id' => $test_users_id,
             'login_session_uid' => 'login_session_uid_old',
             'session_file' => 'sess_session_token_hash_old',
@@ -181,7 +181,7 @@ class SessionTrackerTest extends DbTestCase
             'created_at' => QueryFunction::dateSub(QueryFunction::now(), '31', 'DAY'),
             'last_activity_at' => QueryFunction::dateSub(QueryFunction::now(), '31', 'DAY'),
         ]);
-        $DB->insert('glpi_user_sessions', [
+        $DB->insert('glpi_users_sessions', [
             'users_id' => $test_users_id,
             'login_session_uid' => 'login_session_uid_recent',
             'session_file' => 'sess_session_token_hash_recent',
@@ -191,7 +191,7 @@ class SessionTrackerTest extends DbTestCase
             'created_at' => QueryFunction::dateSub(QueryFunction::now(), '1', 'MINUTE'),
             'last_activity_at' => QueryFunction::dateSub(QueryFunction::now(), '1', 'MINUTE'),
         ]);
-        $DB->insert('glpi_user_sessions', [
+        $DB->insert('glpi_users_sessions', [
             'users_id' => $test_users_id,
             'login_session_uid' => 'login_session_uid_current',
             'session_file' => 'sess_session_token_hash_current',
@@ -203,9 +203,9 @@ class SessionTrackerTest extends DbTestCase
         ]);
 
         SessionTracker::revokeSessionsByAge(30);
-        $this->assertEquals(0, countElementsInTable('glpi_user_sessions', [
+        $this->assertEquals(0, countElementsInTable('glpi_users_sessions', [
             'login_session_uid' => ['login_session_uid_old', 'login_session_uid_recent'],
         ]));
-        $this->assertEquals(1, countElementsInTable('glpi_user_sessions', ['login_session_uid' => 'login_session_uid_current']));
+        $this->assertEquals(1, countElementsInTable('glpi_users_sessions', ['login_session_uid' => 'login_session_uid_current']));
     }
 }

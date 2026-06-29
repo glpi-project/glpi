@@ -55,9 +55,9 @@ if (!$DB->tableExists('glpi_usertokens')) {
 SQL);
 }
 
-if (!$DB->tableExists('glpi_user_sessions')) {
+if (!$DB->tableExists('glpi_users_sessions')) {
     $DB->doQuery(<<<SQL
-        CREATE TABLE `glpi_user_sessions` (
+        CREATE TABLE `glpi_users_sessions` (
             `id` int unsigned NOT NULL AUTO_INCREMENT,
             `users_id` int unsigned NOT NULL,
             `login_session_uid` varchar(64) NOT NULL,
@@ -75,9 +75,9 @@ if (!$DB->tableExists('glpi_user_sessions')) {
 SQL);
 }
 
-if (!$DB->tableExists('glpi_user_session_history')) {
+if (!$DB->tableExists('glpi_users_sessionhistories')) {
     $DB->doQuery(<<<SQL
-        CREATE TABLE `glpi_user_session_history` (
+        CREATE TABLE `glpi_users_sessionhistories` (
             `id` int unsigned NOT NULL AUTO_INCREMENT,
             `users_id` int unsigned NOT NULL,
             `login_session_uid` varchar(64) NOT NULL,

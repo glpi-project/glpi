@@ -35,7 +35,6 @@
 namespace Glpi\Security;
 
 use Auth;
-use CommonGLPI;
 use Glpi\Application\Environment;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -50,8 +49,12 @@ use function Safe\session_id;
 use function Safe\session_save_path;
 use function Safe\unlink;
 
-final class SessionTracker extends CommonGLPI
+final class SessionTracker
 {
+    public const REVOKE_REASON_USER = 'user';
+    public const REVOKE_REASON_ADMIN = 'admin';
+    public const REVOKE_REASON_EXPIRED = 'expired';
+
     /**
      * Checks if the given login session UID corresponds to a known active session.
      * @param string $login_session_uid
@@ -63,7 +66,7 @@ final class SessionTracker extends CommonGLPI
 
         $it = $DB->request([
             'SELECT' => ['id'],
-            'FROM' => 'glpi_user_sessions',
+            'FROM' => 'glpi_users_sessions',
             'WHERE' => ['login_session_uid' => $login_session_uid],
             'LIMIT' => 1,
         ]);
@@ -71,7 +74,7 @@ final class SessionTracker extends CommonGLPI
     }
 
     /**
-     * Record the new session to the database
+     * Record the new session to the database or update an existing one if the PHP session was just regenerated.
      * @param Auth $auth
      * @return bool true on success, false on failure. If false is returned, the session should be destroyed and the authentication process should be aborted.
      * @internal
@@ -88,8 +91,27 @@ final class SessionTracker extends CommonGLPI
             $ip = '::1';
         }
 
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => 'glpi_users_sessions',
+            'WHERE' => ['login_session_uid' => $_SESSION['login_session_uid']],
+            'LIMIT' => 1,
+        ]);
+
+        $session_exists = $it->count() > 0;
+        if ($session_exists) {
+            $DB->update('glpi_users_sessions', [
+                'users_id' => $_SESSION['glpiID'],
+                'session_file' => 'sess_' . session_id(),
+                'ip_address' => $ip, // Update IP in case it changed (mobile users, VPNs, etc)
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? '',
+                'last_activity_at' => Session::getCurrentTime(),
+            ], ['login_session_uid' => $_SESSION['login_session_uid']]);
+            return true;
+        }
+
         try {
-            $DB->insert('glpi_user_sessions', [
+            $DB->insert('glpi_users_sessions', [
                 'users_id' => $_SESSION['glpiID'],
                 'login_session_uid' => $_SESSION['login_session_uid'],
                 'session_file' => 'sess_' . session_id(),
@@ -99,7 +121,7 @@ final class SessionTracker extends CommonGLPI
                 'created_at' => Session::getCurrentTime(),
                 'last_activity_at' => Session::getCurrentTime(),
             ]);
-            $DB->insert('glpi_user_session_history', [
+            $DB->insert('glpi_users_sessionhistories', [
                 'users_id' => $_SESSION['glpiID'],
                 'login_session_uid' => $_SESSION['login_session_uid'],
                 'ip_address' => $ip,
@@ -124,14 +146,15 @@ final class SessionTracker extends CommonGLPI
         global $DB;
 
         if (session_status() === PHP_SESSION_ACTIVE) {
-            $DB->update('glpi_user_sessions', ['last_activity_at' => date('Y-m-d H:i:s')], ['login_session_uid' => $_SESSION['login_session_uid']]);
+            $DB->update('glpi_users_sessions', ['last_activity_at' => date('Y-m-d H:i:s')], ['login_session_uid' => $_SESSION['login_session_uid']]);
         }
     }
 
     /**
      * Revokes a session by a login session UID. If the reason is 'admin', the current user must have admin rights or be the owner of the session to revoke it.
      * @param string $login_session_uid
-     * @param 'user'|'admin'|'expired' $reason
+     * @param string $reason
+     * @phpstan-param self::REVOKE_REASON_* $reason
      * @return void
      * @throws AccessDeniedHttpException
      */
@@ -141,15 +164,15 @@ final class SessionTracker extends CommonGLPI
 
         $it = $DB->request([
             'SELECT' => ['users_id', 'session_file'],
-            'FROM' => 'glpi_user_sessions',
+            'FROM' => 'glpi_users_sessions',
             'WHERE' => ['login_session_uid' => $login_session_uid],
             'LIMIT' => 1,
         ]);
         $session = $it->current();
         $users_id = $session['users_id'] ?? null;
 
-        $DB->delete('glpi_user_sessions', ['login_session_uid' => $login_session_uid]);
-        $DB->update('glpi_user_session_history', [
+        $DB->delete('glpi_users_sessions', ['login_session_uid' => $login_session_uid]);
+        $DB->update('glpi_users_sessionhistories', [
             'logged_out_at' => Session::getCurrentTime(),
             'logout_reason' => $reason,
             'users_id_revoked_by' => $_SESSION['glpiID'] ?? null,
@@ -157,7 +180,7 @@ final class SessionTracker extends CommonGLPI
             'login_session_uid' => $login_session_uid,
             'logged_out_at' => null, // Possibility of reused session IDs since this history is kept indefinitely.
         ]);
-        if ($reason !== 'expired' && $users_id) {
+        if ($reason !== self::REVOKE_REASON_EXPIRED && $users_id) {
             $DB->delete('glpi_usertokens', [
                 'users_id' => $users_id,
                 'token_uid' => $login_session_uid,
@@ -171,7 +194,7 @@ final class SessionTracker extends CommonGLPI
             }
         }
 
-        if ($reason === 'admin' && $users_id) {
+        if ($reason === self::REVOKE_REASON_ADMIN && $users_id) {
             Log::history($users_id, User::class, [0, '', 'Session revoked'], User::class, Log::HISTORY_LOG_SIMPLE_MESSAGE);
         }
     }
@@ -200,12 +223,12 @@ final class SessionTracker extends CommonGLPI
 
         $it_active_sessions = $DB->request([
             'SELECT' => ['users_id', 'login_session_uid'],
-            'FROM' => 'glpi_user_sessions',
+            'FROM' => 'glpi_users_sessions',
             'WHERE' => $where,
         ]);
 
         foreach ($it_active_sessions as $session) {
-            self::revokeSession($session['login_session_uid'], 'admin');
+            self::revokeSession($session['login_session_uid'], self::REVOKE_REASON_ADMIN);
         }
     }
 
@@ -221,14 +244,14 @@ final class SessionTracker extends CommonGLPI
         $threshold_time = date('Y-m-d H:i:s', time() - $max_age_seconds);
         $it = $DB->request([
             'SELECT' => ['login_session_uid'],
-            'FROM' => 'glpi_user_sessions',
+            'FROM' => 'glpi_users_sessions',
             'WHERE' => [
                 'last_activity_at' => ['<', $threshold_time],
             ],
         ]);
 
         foreach ($it as $session) {
-            self::revokeSession($session['login_session_uid'], 'expired');
+            self::revokeSession($session['login_session_uid'], self::REVOKE_REASON_EXPIRED);
         }
     }
 }

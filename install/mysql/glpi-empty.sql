@@ -10544,8 +10544,8 @@ CREATE TABLE `glpi_usertokens` (
     KEY `date_expiration` (`date_expiration`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-DROP TABLE IF EXISTS `glpi_user_sessions`;
-CREATE TABLE `glpi_user_sessions` (
+DROP TABLE IF EXISTS `glpi_users_sessions`;
+CREATE TABLE `glpi_users_sessions` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
     `users_id` int unsigned NOT NULL,
     `login_session_uid` varchar(64) NOT NULL,
@@ -10561,8 +10561,8 @@ CREATE TABLE `glpi_user_sessions` (
     KEY `last_activity_at` (`last_activity_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-DROP TABLE IF EXISTS `glpi_user_session_history`;
-CREATE TABLE `glpi_user_session_history` (
+DROP TABLE IF EXISTS `glpi_users_sessionhistories`;
+CREATE TABLE `glpi_users_sessionhistories` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
     `users_id` int unsigned NOT NULL,
     `login_session_uid` varchar(64) NOT NULL,
