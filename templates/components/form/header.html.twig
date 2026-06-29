@@ -68,7 +68,8 @@
 {% endif %}
    <div id="mainformtable">
       {% if include_header_content %}
-         {{ include('components/form/header_content.html.twig') }}
+         {# RGAA 9.1 : item neuf = pas de navheader, ce titre est le h1 ; sinon il est subordonné au h1 du navheader #}
+         {{ include('components/form/header_content.html.twig', { level: item.isNewItem() ? 1 : 2 }) }}
       {% endif %}
 
       {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params ?? []}) }}
