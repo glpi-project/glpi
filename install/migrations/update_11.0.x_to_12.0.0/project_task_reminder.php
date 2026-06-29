@@ -40,8 +40,6 @@ use Glpi\DBAL\QueryExpression;
  */
 
 $migration->addField('glpi_projecttasks', 'recall', 'integer', ['nodefault' => true, 'null' => true]);
-$migration->changeField('glpi_projecttasks', 'recall', 'recall', 'integer', ['nodefault' => true, 'null' => true]);
-$migration->addPostQuery("UPDATE `glpi_projecttasks` SET `recall` = NULL WHERE `recall` = -2");
 
 if (!countElementsInTable('glpi_crontasks', ['itemtype' => 'ProjectTask', 'name' => 'projecttasksreminder'])) {
     $DB->insert(
