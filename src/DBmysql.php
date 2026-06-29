@@ -2261,7 +2261,7 @@ class DBmysql
     }
 
     /**
-     * Warn when a DDL statement is executed inside an active transaction.
+     * Block DDL statement execution inside an active transaction.
      *
      * DDL statements (ALTER, CREATE, DROP, RENAME, TRUNCATE) cause an implicit
      * commit in MySQL/MariaDB, which silently invalidates all open savepoints.
