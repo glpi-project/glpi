@@ -424,7 +424,7 @@ final class Form extends CommonDBTM implements
 
                 global $PHPLOGGER;
                 $PHPLOGGER->error(
-                    'Unable to get code integrity check summary.',
+                    'An error occurred during DB transaction rollback.',
                     ['exception' => $rollback_e]
                 );
             }
