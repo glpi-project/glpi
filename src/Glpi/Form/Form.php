@@ -419,7 +419,7 @@ final class Form extends CommonDBTM implements
             // Do not keep half updated data
             try {
                 $DB->rollback();
-            } catch (Throwable) {
+            } catch (Throwable $rollback_e) {
                 // Catch rollback failures so the original exception is propagated
 
                 global $PHPLOGGER;
