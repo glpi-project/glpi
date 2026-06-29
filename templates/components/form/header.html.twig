@@ -68,7 +68,7 @@
 {% endif %}
    <div id="mainformtable">
       {% if include_header_content %}
-         {# RGAA 9.1 : item neuf = pas de navheader, ce titre est le h1 ; sinon il est subordonné au h1 du navheader #}
+         {# New item has no navigation header, so this title is the page h1; otherwise it sits below the navheader h1 #}
          {{ include('components/form/header_content.html.twig', {level: item.isNewItem() ? 1 : 2}) }}
       {% endif %}
 

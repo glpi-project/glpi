@@ -39,7 +39,7 @@
 {% set in_navheader = in_navheader|default(false) %}
 {% set header_toolbar = header_toolbar|default([]) %}
 {% set entity_name = entity_name|default('') %}
-{# RGAA 9.1 : le niveau du titre dépend du contexte d'appel (navheader vs corps, neuf vs existant) #}
+{# Heading level depends on the calling context (navheader vs body, new vs existing item) #}
 {% set level = level|default(3) %}
 {% set level = level in [1, 2, 3, 4, 5, 6] ? level : 3 %}
 
