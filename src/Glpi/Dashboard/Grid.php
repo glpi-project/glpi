@@ -546,6 +546,8 @@ TWIG, $twig_params);
      */
     public function initEmbedSession(array $params = [])
     {
+        global $CFG_GLPI;
+
         // load minimal session
         Session::start();
         $_SESSION["glpiactive_entity"]           = $params['entities_id'];
@@ -560,7 +562,8 @@ TWIG, $twig_params);
         $_SESSION['glpiactiveentities']        = $entities;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
 
-        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+        $_SESSION['glpi_use_mode']  = Session::NORMAL_MODE;
+        $_SESSION['glpilist_limit'] = $CFG_GLPI['list_limit'] ?? 20;
     }
 
     /**
