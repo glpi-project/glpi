@@ -44,7 +44,7 @@ global $CFG_GLPI;
 $rr = new Reservation();
 
 if (Session::getCurrentInterface() == "helpdesk") {
-    Html::helpHeader(__('Simplified interface'));
+    Html::helpHeader(Reservation::getTypeName(Session::getPluralNumber()));
 } else {
     Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
 }
