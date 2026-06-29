@@ -209,8 +209,14 @@ final class AnswersHandler
         } catch (Throwable $e) {
             try {
                 $DB->rollback();
-            } catch (Throwable) {
-                // Ignore rollback failures so the original exception is propagated
+            } catch (Throwable $rollback_e) {
+                // Catch rollback failures so the original exception is propagated
+
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    'Unable to get code integrity check summary.',
+                    ['exception' => $rollback_e]
+                );
             }
 
             // Propagate the exception
