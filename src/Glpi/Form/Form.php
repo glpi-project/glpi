@@ -420,7 +420,13 @@ final class Form extends CommonDBTM implements
             try {
                 $DB->rollback();
             } catch (Throwable) {
-                // Ignore rollback failures so the original exception is propagated
+                // Catch rollback failures so the original exception is propagated
+
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    'Unable to get code integrity check summary.',
+                    ['exception' => $rollback_e]
+                );
             }
 
             // Propagate exception to ensure the server return an error code
