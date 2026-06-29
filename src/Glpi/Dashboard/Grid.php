@@ -548,6 +548,8 @@ TWIG, $twig_params);
     {
         global $CFG_GLPI;
 
+        self::$embed = true;
+
         // load minimal session
         Session::start();
         $_SESSION["glpiactive_entity"]           = $params['entities_id'];

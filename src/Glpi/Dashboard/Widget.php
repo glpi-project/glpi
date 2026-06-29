@@ -45,6 +45,7 @@ use Line;
 use Mexitek\PHPColors\Color;
 use Plugin;
 use Search;
+use Session;
 use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
 
@@ -1790,7 +1791,13 @@ HTML;
             'no_sort'            => true,
             'list_limit'         => $p['limit'],
         ]);
-        Search::showList($p['itemtype'], $params);
+        // In embed mode, bypass per-user rights filters so all items in the active
+        // entity are visible (entity scoping is still enforced via glpiactiveentities).
+        if (Grid::$embed) {
+            Session::callAsSystem(fn() => Search::showList($p['itemtype'], $params));
+        } else {
+            Search::showList($p['itemtype'], $params);
+        }
 
         $crawler = new Crawler(ob_get_clean());
         $search_result = $crawler->filter('.search-results')->outerHtml();
