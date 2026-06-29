@@ -36,12 +36,13 @@
 namespace Glpi\Dashboard\Filters;
 
 use Group_Item;
+use Session;
 
 class GroupTechFilter extends AbstractGroupFilter
 {
     public static function getName(): string
     {
-        return __("Technician group") . (" / ") . __("Assigned group");
+        return __("Technician group") . (" / ") . _n('Assigned group', 'Assigned groups', Session::getPluralNumber());
     }
 
     public static function getId(): string
