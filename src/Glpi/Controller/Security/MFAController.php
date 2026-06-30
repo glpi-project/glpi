@@ -48,8 +48,6 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
-use function Safe\preg_replace;
-
 final class MFAController extends AbstractController
 {
     #[Route(
@@ -106,7 +104,7 @@ final class MFAController extends AbstractController
         }
         $totp = new TOTPManager();
         $backup_code = $request->request->get('backup_code');
-        $totp_code = preg_replace('/\s+/', '', $request->request->getString('totp_code'));
+        $totp_code = implode('', $request->request->all('totp_code'));
         $secret = $request->request->get('secret');
         $algorithm = null;
 

@@ -30,22 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro tfa_code_input(digits = 6) %}
-   <div class="d-flex justify-content-center" dir="ltr">
-      <input type="text" id="totp_code" name="totp_code"
-             class="form-control totp-code-input"
-             maxlength="{{ digits }}" pattern="[0-9]{{ '{' ~ digits ~ '}' }}"
-             inputmode="numeric" autocomplete="one-time-code" required
-             aria-label="{{ __('Authentication code') }}"
-             style="--otp-digits: {{ digits }}">
-   </div>
-   <script>
-       $(document).ready(function() {
-           $('#totp_code').trigger('focus');
-       });
-   </script>
-{% endmacro %}
-
 {% macro tfa_setup(secret, qrcode, enforced = false, in_grace_period = false, grace_period_days_left = 0) %}
    <form method="post" action="{{ path('MFA/Verify') }}" autocomplete="off" class="{{ enforced ? 'm-n5' : '' }}">
       <div class="card mx-auto" style="width: fit-content">
@@ -90,7 +74,7 @@
                   {{ __('After entering the code into your authenticator, enter the code shown in the app to finish the setup') }}
                   <div class="col-md-6 mx-auto mt-2">
                      {# Show code input here to verify it is set correctly #}
-                     {{ _self.tfa_code_input() }}
+                     <twig:Mfa:CodeInput />
                   </div>
                </li>
             </ol>

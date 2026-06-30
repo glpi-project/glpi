@@ -516,20 +516,12 @@ body .toast {
     outline: none !important;
 }
 
-.totp-code-input {
-    --otp-cell: 2ch;
-
-    width: calc(var(--otp-digits, 6) * var(--otp-cell) + 1px);
-    padding-inline: 0.5ch 0;
+.totp-code-digit {
+    width: 2.5em;
+    padding-inline: 0;
     font-family: var(--tblr-font-monospace, monospace);
     font-size: 1.75em;
     font-weight: 700;
-    letter-spacing: 1ch;
-    background-image: repeating-linear-gradient(
-        90deg,
-        transparent 0 calc(var(--otp-cell) - 1px),
-        var(--tblr-border-color) calc(var(--otp-cell) - 1px) var(--otp-cell)
-    );
 }
 
 .form-control:focus-visible,

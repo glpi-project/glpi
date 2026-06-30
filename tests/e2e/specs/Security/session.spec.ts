@@ -198,9 +198,9 @@ test.describe('Session', () => {
         // Setup instructions are a semantic ordered list of 3 steps (criterion 9.3)
         await expect(anonymousPage.getByRole('list').getByRole('listitem')).toHaveCount(3);
 
-        // The code entry is a single accessible field, not the former 6 per-digit inputs
-        await expect(anonymousPage.getByRole('textbox', { name: 'Authentication code' })).toBeVisible();
-        await expect(anonymousPage.getByRole('textbox', { name: /digit \d of \d/ })).toHaveCount(0);
+        // The code entry is a labelled group of per-digit fields (no auto-submit)
+        await expect(anonymousPage.getByRole('group', { name: 'Authentication code' })).toBeVisible();
+        await expect(anonymousPage.getByRole('textbox', { name: /Digit \d of \d/ })).toHaveCount(6);
 
         const secret = await anonymousPage.getByRole('textbox', { name: '2FA secret' }).inputValue();
         await login_page.doFillTotpCode(authenticator.generate(secret));
