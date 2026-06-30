@@ -52,7 +52,7 @@ test.describe('Planning View', () => {
 
     test('Create event', async () => {
         await shared_planning_page.gotoView('month');
-        await shared_planning_page.page.getByRole('gridcell', { name: /1/ }).first().dispatchEvent('click');
+        await shared_planning_page.page.getByRole('gridcell', { name: /1/ }).first().click();
         await shared_planning_page.fillNewEventForm({
             name: 'Test event from month view',
             description: 'Test description',
