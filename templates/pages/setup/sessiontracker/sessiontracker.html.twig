@@ -327,12 +327,11 @@
         const reset_filter_buttons = document.querySelectorAll('button.reset-filters');
         reset_filter_buttons.forEach(button => {
             button.addEventListener('click', () => {
-                applyFilters({
-                    'user': '',
-                    'status': 'active',
-                    'type': 'all',
-                    'ip': '',
-                });
+                user_filter.value = '';
+                status_filter.value = 'active';
+                type_filter.value = 'all';
+                ip_filter.value = '';
+                reloadWithFilters();
             });
         });
 
