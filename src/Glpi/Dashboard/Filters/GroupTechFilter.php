@@ -36,7 +36,6 @@
 namespace Glpi\Dashboard\Filters;
 
 use Group_Item;
-use Session;
 
 class GroupTechFilter extends AbstractGroupFilter
 {
