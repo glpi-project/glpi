@@ -1,8 +1,8 @@
 diff --git a/src/CachedKeySet.php b/src/CachedKeySet.php
-index ee529f9f..8e8e8d68 100644
+index ee529f9..1cf9bf9 100644
 --- a/src/CachedKeySet.php
 +++ b/src/CachedKeySet.php
-@@ -80,9 +80,9 @@ public function __construct(
+@@ -80,9 +80,9 @@ class CachedKeySet implements ArrayAccess
          ClientInterface $httpClient,
          RequestFactoryInterface $httpFactory,
          CacheItemPoolInterface $cache,
@@ -14,7 +14,7 @@ index ee529f9f..8e8e8d68 100644
      ) {
          $this->jwksUri = $jwksUri;
          $this->httpClient = $httpClient;
-@@ -212,15 +212,21 @@ private function rateLimitExceeded(): bool
+@@ -212,15 +212,21 @@ class CachedKeySet implements ArrayAccess
          }
  
          $cacheItem = $this->cache->getItem($this->rateLimitCacheKey);
@@ -41,7 +41,7 @@ index ee529f9f..8e8e8d68 100644
          return false;
      }
 diff --git a/src/ExpiredException.php b/src/ExpiredException.php
-index 12fef094..25f44513 100644
+index 12fef09..25f4451 100644
 --- a/src/ExpiredException.php
 +++ b/src/ExpiredException.php
 @@ -6,6 +6,8 @@ class ExpiredException extends \UnexpectedValueException implements JWTException
@@ -53,7 +53,7 @@ index 12fef094..25f44513 100644
      public function setPayload(object $payload): void
      {
          $this->payload = $payload;
-@@ -15,4 +17,14 @@ public function getPayload(): object
+@@ -15,4 +17,14 @@ class ExpiredException extends \UnexpectedValueException implements JWTException
      {
          return $this->payload;
      }
@@ -69,7 +69,7 @@ index 12fef094..25f44513 100644
 +    }
  }
 diff --git a/src/JWK.php b/src/JWK.php
-index 63fb2484..d5175b21 100644
+index 63fb248..485127d 100644
 --- a/src/JWK.php
 +++ b/src/JWK.php
 @@ -52,7 +52,7 @@ class JWK
@@ -81,7 +81,7 @@ index 63fb2484..d5175b21 100644
      {
          $keys = [];
  
-@@ -93,7 +93,7 @@ public static function parseKeySet(array $jwks, string $defaultAlg = null): arra
+@@ -93,7 +93,7 @@ class JWK
       *
       * @uses createPemFromModulusAndExponent
       */
@@ -90,7 +90,7 @@ index 63fb2484..d5175b21 100644
      {
          if (empty($jwk)) {
              throw new InvalidArgumentException('JWK must not be empty');
-@@ -172,6 +172,12 @@ public static function parseKey(array $jwk, string $defaultAlg = null): ?Key
+@@ -172,6 +172,12 @@ class JWK
                  // This library works internally with EdDSA keys (Ed25519) encoded in standard base64.
                  $publicKey = JWT::convertBase64urlToBase64($jwk['x']);
                  return new Key($publicKey, $jwk['alg']);
@@ -104,7 +104,7 @@ index 63fb2484..d5175b21 100644
                  break;
          }
 diff --git a/src/JWT.php b/src/JWT.php
-index 26349206..c18e4cc0 100644
+index 2634920..756b8c3 100644
 --- a/src/JWT.php
 +++ b/src/JWT.php
 @@ -31,6 +31,8 @@ class JWT
@@ -116,8 +116,7 @@ index 26349206..c18e4cc0 100644
      /**
       * When checking nbf, iat or expiration times,
       * we want to provide some extra leeway time to
-@@ -95,8 +97,8 @@ class JWT
-      */
+@@ -96,7 +98,7 @@ class JWT
      public static function decode(
          string $jwt,
          $keyOrKeyArray,
@@ -126,7 +125,7 @@ index 26349206..c18e4cc0 100644
      ): stdClass {
          // Validate JWT
          $timestamp = \is_null(static::$timestamp) ? \time() : static::$timestamp;
-@@ -127,6 +129,16 @@ public static function decode(
+@@ -127,6 +129,16 @@ class JWT
          if (!$payload instanceof stdClass) {
              throw new UnexpectedValueException('Payload must be a JSON object');
          }
@@ -143,7 +142,7 @@ index 26349206..c18e4cc0 100644
          $sig = static::urlsafeB64Decode($cryptob64);
          if (empty($header->alg)) {
              throw new UnexpectedValueException('Empty algorithm');
-@@ -154,7 +166,7 @@ public static function decode(
+@@ -154,7 +166,7 @@ class JWT
          // token can actually be used. If it's not yet that time, abort.
          if (isset($payload->nbf) && floor($payload->nbf) > ($timestamp + static::$leeway)) {
              $ex = new BeforeValidException(
@@ -152,7 +151,7 @@ index 26349206..c18e4cc0 100644
              );
              $ex->setPayload($payload);
              throw $ex;
-@@ -165,7 +177,7 @@ public static function decode(
+@@ -165,7 +177,7 @@ class JWT
          // correctly used the nbf claim).
          if (!isset($payload->nbf) && isset($payload->iat) && floor($payload->iat) > ($timestamp + static::$leeway)) {
              $ex = new BeforeValidException(
@@ -161,7 +160,7 @@ index 26349206..c18e4cc0 100644
              );
              $ex->setPayload($payload);
              throw $ex;
-@@ -175,6 +187,7 @@ public static function decode(
+@@ -175,6 +187,7 @@ class JWT
          if (isset($payload->exp) && ($timestamp - static::$leeway) >= $payload->exp) {
              $ex = new ExpiredException('Expired token');
              $ex->setPayload($payload);
@@ -169,9 +168,7 @@ index 26349206..c18e4cc0 100644
              throw $ex;
          }
  
-@@ -198,13 +211,13 @@ public static function decode(
-      */
-     public static function encode(
+@@ -200,11 +213,11 @@ class JWT
          array $payload,
          $key,
          string $alg,
@@ -186,7 +183,7 @@ index 26349206..c18e4cc0 100644
              $header = \array_merge($header, $head);
          }
          $header['alg'] = $alg;
-@@ -248,10 +261,19 @@ public static function sign(
+@@ -248,10 +261,19 @@ class JWT
                  if (!\is_string($key)) {
                      throw new InvalidArgumentException('key must be a string when using hmac');
                  }
@@ -207,7 +204,7 @@ index 26349206..c18e4cc0 100644
                  if (!$success) {
                      throw new DomainException('OpenSSL unable to sign data');
                  }
-@@ -310,7 +332,15 @@ private static function verify(
+@@ -310,7 +332,15 @@ class JWT
          list($function, $algorithm) = static::$supported_algs[$alg];
          switch ($function) {
              case 'openssl':
@@ -224,7 +221,7 @@ index 26349206..c18e4cc0 100644
                  if ($success === 1) {
                      return true;
                  }
-@@ -347,6 +377,7 @@ private static function verify(
+@@ -347,6 +377,7 @@ class JWT
                  if (!\is_string($keyMaterial)) {
                      throw new InvalidArgumentException('key must be a string when using hmac');
                  }
@@ -232,7 +229,7 @@ index 26349206..c18e4cc0 100644
                  $hash = \hash_hmac($algorithm, $msg, $keyMaterial, true);
                  return self::constantTimeEquals($hash, $signature);
          }
-@@ -384,12 +415,7 @@ public static function jsonDecode(string $input)
+@@ -384,12 +415,7 @@ class JWT
       */
      public static function jsonEncode(array $input): string
      {
@@ -246,7 +243,7 @@ index 26349206..c18e4cc0 100644
          if ($errno = \json_last_error()) {
              self::handleJsonError($errno);
          } elseif ($json === 'null') {
-@@ -666,4 +692,57 @@ private static function readDER(string $der, int $offset = 0): array
+@@ -666,4 +692,57 @@ class JWT
  
          return [$pos, $data];
      }
