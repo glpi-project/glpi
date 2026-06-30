@@ -421,12 +421,6 @@ final class Form extends CommonDBTM implements
                 $DB->rollback();
             } catch (Throwable $rollback_e) {
                 // Catch rollback failures so the original exception is propagated
-
-                global $PHPLOGGER;
-                $PHPLOGGER->error(
-                    'An error occurred during DB transaction rollback.',
-                    ['exception' => $rollback_e]
-                );
             }
 
             // Propagate exception to ensure the server return an error code

@@ -1851,7 +1851,19 @@ class DBmysql
         if ($success) {
             $this->transaction_level--;
         } else {
-            throw new RuntimeException("Failed to commit transaction.");
+            $exception = new RuntimeException("Failed to commit transaction.");
+            ;
+
+            // Error is logged here since it is likely to caught and silented by the caller.
+            // It may result in being logged twice, but it is probalby preferable than risking having it not logged
+            // at all for a few specific cases.
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                'An error occurred during DB transaction commit.',
+                ['exception' => $exception]
+            );
+
+            throw $exception;
         }
     }
 
@@ -1870,7 +1882,18 @@ class DBmysql
             if ($success) {
                 $this->transaction_level--;
             } else {
-                throw new RuntimeException("Failed to rollback transaction.");
+                $exception = new RuntimeException("Failed to rollback transaction.");
+
+                // Error is logged here since it is likely to caught and silented by the caller.
+                // It may result in being logged twice, but it is probalby preferable than risking having it not logged
+                // at all for a few specific cases.
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    'An error occurred during DB transaction rollback.',
+                    ['exception' => $exception]
+                );
+
+                throw $exception;
             }
         } else {
             // A nested transaction is already underway, rollback to current savepoint.

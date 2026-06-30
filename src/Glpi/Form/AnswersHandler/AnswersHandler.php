@@ -211,12 +211,6 @@ final class AnswersHandler
                 $DB->rollback();
             } catch (Throwable $rollback_e) {
                 // Catch rollback failures so the original exception is propagated
-
-                global $PHPLOGGER;
-                $PHPLOGGER->error(
-                    'An error occurred during DB transaction rollback.',
-                    ['exception' => $rollback_e]
-                );
             }
 
             // Propagate the exception
