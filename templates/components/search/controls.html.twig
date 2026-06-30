@@ -361,6 +361,50 @@ $(document).ready(function() {
       refreshSearchResults();
    });
 
+    // Keep flatpickr calendars inside the search panel's dropdown-menu so Bootstrap's
+    // composedPath() check treats calendar interactions as "inside" the dropdown,
+    // preventing it from closing without needing e.preventDefault().
+    // Flatpickr calls positionCalendar() internally via a closure so overriding the
+    // instance property does nothing — the `position` config function is the correct
+    // hook. getBoundingClientRect() accounts for Popper transforms so the formula
+    // (inputBounds - dropdownRect) gives correct container-relative coordinates.
+    const _flatpickrOrig = $.fn.flatpickr;
+    $.fn.flatpickr = function (config) {
+        const dropdown = $(this).closest('.dropdown-menu-card')[0];
+        if (dropdown) {
+            config = Object.assign({}, config, {
+                appendTo: dropdown,
+                position(fpInstance, positionElement) {
+                    const input = (positionElement || fpInstance._positionElement).getBoundingClientRect();
+                    const cal = fpInstance.calendarContainer;
+                    const r = dropdown.getBoundingClientRect();
+                    const showOnTop = window.innerHeight - input.bottom < cal.offsetHeight
+                        && input.top > cal.offsetHeight;
+                    cal.style.top = (showOnTop
+                        ? input.top - r.top - cal.offsetHeight - 2
+                        : input.bottom - r.top + 2) + 'px';
+                    cal.style.left = Math.max(0, input.left - r.left) + 'px';
+                    cal.style.right = 'auto';
+                    cal.classList.toggle('arrowTop', !showOnTop);
+                    cal.classList.toggle('arrowBottom', showOnTop);
+                },
+            });
+
+            // Because the calendar is now appended inside the search <form>, flatpickr's
+            // purely-visual number inputs (year, hour, minute) become part of the form's
+            // HTML5 constraint validation. The minute input carries a "step" (time_step), so
+            // a value such as ":11" is reported invalid and form.checkValidity() returns
+            // false — which silently blocks the "Search" button. Detach those inputs from the
+            // form (they are never submitted) so they can no longer affect its validity.
+            config.onReady = [].concat(config.onReady || [], function (selectedDates, dateStr, instance) {
+                instance.calendarContainer.querySelectorAll('input').forEach(function (input) {
+                    input.setAttribute('form', 'flatpickr-no-form');
+                });
+            });
+        }
+        return _flatpickrOrig.call(this, config);
+    };
+
    $('.default-filter').change(function(event) {
       const search_params = new URLSearchParams(window.location.search);
       if (!$(this).is(":checked")) {
