@@ -1791,8 +1791,8 @@ HTML;
             'no_sort'            => true,
             'list_limit'         => $p['limit'],
         ]);
-        // In embed mode, bypass per-user rights filters so all items in the active
-        // entity are visible (entity scoping is still enforced via glpiactiveentities).
+        // In embed mode, bypass all right checks so items in the active entity are
+        // visible (entity scoping is still enforced via glpiactiveentities in the session).
         if (Grid::$embed) {
             Session::callAsSystem(fn() => Search::showList($p['itemtype'], $params));
         } else {
