@@ -55,7 +55,7 @@ class MFAControllerTest extends DbTestCase
         // First MFA_MAX_ATTEMPTS failures must report "Invalid TOTP code"
         for ($i = 0; $i < TOTPManager::MFA_MAX_ATTEMPTS; $i++) {
             $_SESSION['mfa_pre_auth'] = ['user_id' => $users_id];
-            $request = Request::create('/MFA/Verify', 'POST', ['totp_code' => 'invalid']);
+            $request = Request::create('/MFA/Verify', 'POST', ['totp_code' => str_split('invalid')]);
             try {
                 $controller->verify($request);
                 $this->fail('Expected AuthenticationFailedException was not thrown');
@@ -66,7 +66,7 @@ class MFAControllerTest extends DbTestCase
 
         // The next attempt must be blocked by the rate limit, not report a code error
         $_SESSION['mfa_pre_auth'] = ['user_id' => $users_id];
-        $request = Request::create('/MFA/Verify', 'POST', ['totp_code' => 'invalid']);
+        $request = Request::create('/MFA/Verify', 'POST', ['totp_code' => str_split('invalid')]);
         try {
             $controller->verify($request);
             $this->fail('Expected rate-limit exception was not thrown');
