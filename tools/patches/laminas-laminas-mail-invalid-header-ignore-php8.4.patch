@@ -1,3 +1,47 @@
+diff --git a/src/Address.php b/src/Address.php
+index 7b2956f2..8bcbd14d 100644
+--- a/src/Address.php
++++ b/src/Address.php
+@@ -60,7 +60,12 @@ class Address implements Address\AddressInterface
+      */
+     public function __construct($email, $name = null, $comment = null)
+     {
+-        $emailAddressValidator = new EmailAddressValidator(Hostname::ALLOW_DNS | Hostname::ALLOW_LOCAL);
++        $emailAddressValidator = new EmailAddressValidator(
++            [
++                'allow'  => Hostname::ALLOW_DNS | Hostname::ALLOW_LOCAL,
++                'strict' => false,
++            ]
++        );
+         if (! is_string($email) || empty($email)) {
+             throw new Exception\InvalidArgumentException('Email must be a valid email address');
+         }
+diff --git a/src/Headers.php b/src/Headers.php
+index 23475bc3..066040c2 100644
+--- a/src/Headers.php
++++ b/src/Headers.php
+@@ -278,10 +278,17 @@ class Headers implements Countable, Iterator
+         }
+ 
+         if ($fieldValue === null) {
+-            $headers = $this->loadHeader($headerFieldNameOrLine);
+-            $headers = is_array($headers) ? $headers : [$headers];
+-            foreach ($headers as $header) {
+-                $this->addHeader($header);
++            try {
++                $headers = $this->loadHeader($headerFieldNameOrLine);
++                $headers = is_array($headers) ? $headers : [$headers];
++                foreach ($headers as $header) {
++                    $this->addHeader($header);
++                }
++            } catch (\Laminas\Mail\Header\Exception\InvalidArgumentException $e) {
++                // Header line cannot be parsed, ignore it and add a warning
++                $parts = explode(':', $headerFieldNameOrLine, 2);
++                $msg = count($parts) !== 2 ? $e->getMessage() : sprintf('Invalid header "%s"', $parts[0]);
++                trigger_error($msg, E_USER_WARNING);
+             }
+         } elseif (is_array($fieldValue)) {
+             foreach ($fieldValue as $i) {
 diff --git a/src/Protocol/Smtp.php b/src/Protocol/Smtp.php
 index 0bbe3ee4..b1612ded 100644
 --- a/src/Protocol/Smtp.php

@@ -176,26 +176,20 @@
             "bin/console dependencies install"
         ],
         "patch": [
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch || true",
-            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-atoum-4.1.0...4.2.0.patch || true",
-            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-atoum-php8.4-compat.patch || true",
-            "patch -f -p1 -d vendor/atoum/atoum/ < tools/patches/atoum-atoum-php8.5-compat.patch || true",
-            "patch -f -p1 -d vendor/atoum/stubs/ < tools/patches/atoum-stubs-php8.4-compat.patch || true",
-            "patch -f -p1 -d vendor/firebase/php-jwt/ < tools/patches/firebase-php-jwt-v6.10.0-to-v7.0.2.patch || true",
-            "patch -f -p1 -d vendor/friendsoftwig/twigcs/ < tools/patches/friendsoftwig-twigcs-php8.4-compat.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-php8.4-compat.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-servicemanager/ < tools/patches/laminas-laminas-servicemanager-php8.4-compat.patch || true",
-            "patch -f -p1 -d vendor/league/csv/ < tools/patches/league-csv-php8.4-compat.patch || true",
-            "patch -f -p1 -d vendor/michelf/php-markdown/ < tools/patches/michelf-php-markdown-php8-compat.patch || true",
-            "patch -f -p1 -d vendor/psr/http-factory/ < tools/patches/psr-http-factory-php8.4-compat.patch || true",
-            "patch -f -p1 -d vendor/scssphp/scssphp/ < tools/patches/scssphp-scssphp-php8.4-compat.patch || true",
-            "patch -f -p1 -d vendor/symfony/string/ < tools/patches/symfony-string-php8.5-compat.patch || true",
-            "(patch -f -p1 -d vendor/twig/twig/ < tools/patches/twig-twig-v3.11.3...v3.27.0.patch --dry-run && patch -f -p1 -d vendor/twig/twig/ < tools/patches/twig-twig-v3.11.3...v3.27.0.patch) || true",
-            "patch -f -p1 -d vendor/twig/twig/ < tools/patches/twig-twig-php7.4-compat.patch || true",
-            "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.4-compat.patch || true",
-            "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.5-compat.patch || true"
+            "VENDOR_DIR='vendor/atoum/atoum/' PATCH_FILE='tools/patches/atoum-atoum-4.1.0...4.2.0-php8.4-php8.5.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/atoum/stubs/' PATCH_FILE='tools/patches/atoum-stubs-php8.4-compat.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/firebase/php-jwt/' PATCH_FILE='tools/patches/firebase-php-jwt-v6.10.0-to-v7.0.2.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/friendsoftwig/twigcs/' PATCH_FILE='tools/patches/friendsoftwig-twigcs-php8.4-compat.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/guzzlehttp/guzzle/' PATCH_FILE='tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/laminas/laminas-mail/' PATCH_FILE='tools/patches/laminas-laminas-mail-invalid-header-ignore-php8.4.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/laminas/laminas-servicemanager/' PATCH_FILE='tools/patches/laminas-laminas-servicemanager-php8.4-compat.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/league/csv/' PATCH_FILE='tools/patches/league-csv-php8.4-compat.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/michelf/php-markdown/' PATCH_FILE='tools/patches/michelf-php-markdown-php8-compat.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/psr/http-factory/' PATCH_FILE='tools/patches/psr-http-factory-php8.4-compat.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/scssphp/scssphp/' PATCH_FILE='tools/patches/scssphp-scssphp-php8.4-compat.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/symfony/string/' PATCH_FILE='tools/patches/symfony-string-php8.5-compat.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/twig/twig/' PATCH_FILE='tools/patches/twig-twig-v3.11.3...v3.27.0-php7.4.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/wapmorgan/unified-archive/' PATCH_FILE='tools/patches/wapmorgan-unified-archive-php8.4-php8.5.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
         ]
     }
 }
