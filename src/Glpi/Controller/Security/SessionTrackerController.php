@@ -49,7 +49,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SessionTrackerController extends AbstractController
 {
     #[Route(
-        path: "/Security/Session/{session_token_hash}/Revoke",
+        path: "/Security/Session/{login_session_uid}/Revoke",
         name: "security_sessions_revoke",
         methods: ["POST"],
     )]
@@ -58,11 +58,11 @@ final class SessionTrackerController extends AbstractController
     {
         global $DB;
 
-        $session_token_hash = $request->attributes->getString('session_token_hash');
+        $login_session_uid = $request->attributes->getString('login_session_uid');
         $it = $DB->request([
             'SELECT' => ['users_id'],
-            'FROM' => 'glpi_user_sessions',
-            'WHERE' => ['session_token_hash' => $session_token_hash],
+            'FROM' => 'glpi_users_sessions',
+            'WHERE' => ['login_session_uid' => $login_session_uid],
             'LIMIT' => 1,
         ]);
         $session = $it->current();
@@ -71,7 +71,7 @@ final class SessionTrackerController extends AbstractController
         if ($users_id !== Session::getLoginUserID() && !Session::haveRight('config', UPDATE)) {
             throw new \Glpi\Exception\Http\AccessDeniedHttpException();
         }
-        SessionTracker::revokeSession($session_token_hash, 'admin');
+        SessionTracker::revokeSession($login_session_uid, SessionTracker::REVOKE_REASON_ADMIN);
         return new Response();
     }
 
