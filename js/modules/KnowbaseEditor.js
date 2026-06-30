@@ -123,7 +123,7 @@ class KnowbaseEditor {
             }),
             TiptapPlaceholder.configure({
                 placeholder: this.#options.placeholder,
-                showOnlyCurrent: false,
+                showOnlyCurrent: true,
             }),
             TiptapBubbleMenu.configure({
                 element: this.#bubbleMenuElement,
