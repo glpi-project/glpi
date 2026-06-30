@@ -168,30 +168,30 @@ class Session
             if (
                 !$auth->user->fields['is_deleted']
                 && ($auth->user->fields['is_active']
-                    && (($auth->user->fields['begin_date'] < $_SESSION["glpi_currenttime"])
-                        || is_null($auth->user->fields['begin_date']))
-                    && (($auth->user->fields['end_date'] > $_SESSION["glpi_currenttime"])
-                        || is_null($auth->user->fields['end_date'])))
+                && (($auth->user->fields['begin_date'] < $_SESSION["glpi_currenttime"])
+                    || is_null($auth->user->fields['begin_date']))
+                && (($auth->user->fields['end_date'] > $_SESSION["glpi_currenttime"])
+                    || is_null($auth->user->fields['end_date'])))
             ) {
-                $_SESSION["glpiID"] = $auth->user->fields['id'];
-                $_SESSION["glpifriendlyname"] = $auth->user->getFriendlyName();
-                $_SESSION["glpiname"] = $auth->user->fields['name'];
-                $_SESSION["glpirealname"] = $auth->user->fields['realname'];
-                $_SESSION["glpifirstname"] = $auth->user->fields['firstname'];
-                $_SESSION["glpidefault_entity"] = $auth->user->fields['entities_id'];
-                $_SESSION["glpiextauth"] = $auth->extauth;
+                $_SESSION["glpiID"]              = $auth->user->fields['id'];
+                $_SESSION["glpifriendlyname"]    = $auth->user->getFriendlyName();
+                $_SESSION["glpiname"]            = $auth->user->fields['name'];
+                $_SESSION["glpirealname"]        = $auth->user->fields['realname'];
+                $_SESSION["glpifirstname"]       = $auth->user->fields['firstname'];
+                $_SESSION["glpidefault_entity"]  = $auth->user->fields['entities_id'];
+                $_SESSION["glpiextauth"]         = $auth->extauth;
                 if (isset($_SESSION['phpCAS']['user'])) {
-                    $_SESSION["glpiauthtype"] = Auth::CAS;
-                    $_SESSION["glpiextauth"] = 0;
+                    $_SESSION["glpiauthtype"]     = Auth::CAS;
+                    $_SESSION["glpiextauth"]      = 0;
                 } else {
-                    $_SESSION["glpiauthtype"] = $auth->user->fields['authtype'];
+                    $_SESSION["glpiauthtype"]     = $auth->user->fields['authtype'];
                 }
-                $_SESSION["glpi_use_mode"] = $auth->user->fields['use_mode'];
-                $_SESSION["glpi_plannings"] = importArrayFromDB($auth->user->fields['plannings']);
-                $_SESSION["glpicrontimer"] = time();
+                $_SESSION["glpi_use_mode"]       = $auth->user->fields['use_mode'];
+                $_SESSION["glpi_plannings"]      = importArrayFromDB($auth->user->fields['plannings']);
+                $_SESSION["glpicrontimer"]       = time();
                 // Default tab
                 // $_SESSION['glpi_tab']=1;
-                $_SESSION['glpi_tabs'] = [];
+                $_SESSION['glpi_tabs']           = [];
 
                 $auth->user->computePreferences();
                 foreach ($CFG_GLPI['user_pref_field'] as $field) {
@@ -256,12 +256,9 @@ class Session
         } else {
             $auth->auth_succeded = false;
             $auth->addToError(__("You don't have right to connect"));
-            if (!Session::getCurrentInterface()) {
-                $auth->auth_succeded = false;
-                $auth->addToError(__("You don't have right to connect"));
-            }
         }
     }
+
 
     /**
      * Set the directory where are store the session file
@@ -2031,8 +2028,8 @@ class Session
     /**
      * Impersonate user having given id.
      *
-     * Be sure to write User::checkReAuthenticationOrRedirect() before calling this method
-     * to ensure that the user can process reauthentication if needed.
+     * Be sure to call User::checkReAuthenticationOrRedirect() before calling this method
+     * to ensure that the user has reauthenticated if needed.
      *
      * @param int $user_id
      *

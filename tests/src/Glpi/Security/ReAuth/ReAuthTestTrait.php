@@ -54,6 +54,9 @@ trait ReAuthTestTrait
         $_SERVER['REQUEST_URI']    = $request_uri;
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['HTTP_REFERER']   = 'https://glpi.example.org/front/central.php';
+        // A real web request always carries a client IP; without it SessionTracker::recordNewSession()
+        // would try to insert a NULL ip_address when login() is called under the faked web context.
+        $_SERVER['REMOTE_ADDR']    = '127.0.0.1';
         $_GET  = [];
         $_POST = [];
     }
@@ -70,6 +73,7 @@ trait ReAuthTestTrait
             $_SERVER['REQUEST_URI'],
             $_SERVER['REQUEST_METHOD'],
             $_SERVER['HTTP_REFERER'],
+            $_SERVER['REMOTE_ADDR'],
         );
     }
 
