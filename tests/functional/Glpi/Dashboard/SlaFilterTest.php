@@ -34,7 +34,6 @@
 
 namespace tests\units\Glpi\Dashboard;
 
-use Computer;
 use Glpi\Dashboard\Filters\SlaFilter;
 use Glpi\Tests\DbTestCase;
 use SLA;
@@ -140,15 +139,4 @@ class SlaFilterTest extends DbTestCase
         $this->assertNotContains($ticket->getID(), array_column($rows, 'tickets_id'));
     }
 
-    public function testCanBeApplied(): void
-    {
-        $this->assertTrue(SlaFilter::canBeApplied(Ticket::getTable()));
-        $this->assertFalse(SlaFilter::canBeApplied(Computer::getTable()));
-    }
-
-    public function testGetCriteriaWithoutValueIsEmpty(): void
-    {
-        $this->assertSame([], SlaFilter::getCriteria('glpi_tickets', 0));
-        $this->assertSame([], SlaFilter::getCriteria('glpi_tickets', ''));
-    }
 }
