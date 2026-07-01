@@ -55,6 +55,40 @@ class StatusCheckerTest extends GLPITestCase
         $this->assertIsArray($status);
     }
 
+    public function testDbVersions()
+    {
+        $statusPublic = StatusChecker::getServiceStatus(service: null, public_only: true);
+        $statusPrivate = StatusChecker::getServiceStatus(service: null, public_only: false);
+
+        foreach (['public' => $statusPublic, 'private' => $statusPrivate] as $visibility => $status) {
+            $this->assertIsArray($status['glpi']['database_version']);
+            $this->assertArrayHasKey('status', $status['glpi']['database_version']);
+
+            // Verify value types
+            $this->assertIsString($status['glpi']['database_version']['defined']);
+            $this->assertIsString($status['glpi']['database_version']['installed']);
+            $this->assertIsString($status['glpi']['database_version']['status']);
+
+            // Verify "uptodate" type according to visibility
+            $this->{$visibility == 'public' ? 'assertFalse' : 'assertIsBool'}($status['glpi']['database_version']['uptodate']);
+
+            // Verify versions
+            $this->assertEquals(
+                $visibility == 'public' ? StatusChecker::VALUE_REDACTED : GLPI_SCHEMA_VERSION,
+                $status['glpi']['database_version']['defined'],
+            );
+        }
+
+        $this->assertEquals(StatusChecker::VALUE_REDACTED, $statusPublic['glpi']['database_version']['installed']);
+
+        // Verify "status" represents "uptodate" value
+        $this->assertEquals(StatusChecker::STATUS_NO_DATA, $statusPublic['glpi']['database_version']['status']);
+        $this->assertEquals(
+            $statusPrivate['glpi']['database_version']['uptodate'] ? StatusChecker::STATUS_OK : StatusChecker::STATUS_WARNING,
+            $statusPrivate['glpi']['database_version']['status'],
+        );
+    }
+
     public function testDefaultStatus()
     {
         $status = StatusChecker::getServiceStatus(service: null);

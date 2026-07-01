@@ -45,6 +45,7 @@ use Plugin;
 use RuntimeException;
 use Throwable;
 use Toolbox;
+use Update;
 
 use function Safe\fclose;
 
@@ -75,6 +76,12 @@ final class StatusChecker
      */
     public const STATUS_NO_DATA = 'NO_DATA';
 
+    /**
+     * The value is hidden.
+     * This is likely when value is sensitive and method is called with `$public_only = true`).
+     */
+    public const VALUE_REDACTED = 'REDACTED';
+
     private static array $cached_status = [];
 
     /**
@@ -86,6 +93,7 @@ final class StatusChecker
     public static function getServices(): array
     {
         return [
+            'glpi'            => [self::class, 'getGLPIStatus'],
             'db'              => [self::class, 'getDBStatus'],
             'cas'             => [self::class, 'getCASStatus'],
             'ldap'            => [self::class, 'getLDAPStatus'],
@@ -129,11 +137,7 @@ final class StatusChecker
     {
         $services = self::getServices();
         if ($service === 'all' || $service === null) {
-            $status = [
-                'glpi'   => [
-                    'status' => self::STATUS_OK,
-                ],
-            ];
+            $status = [];
             foreach (array_keys($services) as $name) {
                 $service_status = self::getServiceStatus($name, $public_only);
                 $status[$name] = $service_status;
@@ -152,6 +156,43 @@ final class StatusChecker
             return $service_check_method($public_only);
         }
         return [];
+    }
+
+    /**
+     * Get GLPI service's status
+     *
+     * @param bool $public_only True if only public status information should be given.
+     * @return array{status: string, database_version: array{defined: string, installed: string, uptodate: bool, status: string}}
+     */
+    public static function getGLPIStatus(bool $public_only = true): array
+    {
+        $cache_key = 'glpi.' . ($public_only ? 'public' : 'private');
+        if (!isset(self::$cached_status[$cache_key])) {
+            global $CFG_GLPI;
+
+            $status = [
+                'status' => self::STATUS_OK,
+                'database_version' => [
+                    'defined' => $public_only ? self::VALUE_REDACTED : GLPI_SCHEMA_VERSION,
+                    'installed' => $public_only ? self::VALUE_REDACTED : trim($CFG_GLPI['dbversion'] ?? ''),
+                    'uptodate' => $public_only ? false : Update::isDbUpToDate(),
+                ],
+            ];
+
+            // Compute database_version status from "uptodate" state
+            $status['database_version']['status'] = (
+                $public_only
+                ? self::STATUS_NO_DATA
+                : ($status['database_version']['uptodate'] ? self::STATUS_OK : self::STATUS_WARNING)
+            );
+
+            // Propagate database_version status to root status
+            $status['status'] = $status['database_version']['status'];
+
+            self::$cached_status[$cache_key] = $status;
+        }
+
+        return self::$cached_status[$cache_key];
     }
 
     /**
