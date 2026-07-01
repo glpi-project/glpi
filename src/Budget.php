@@ -378,6 +378,7 @@ class Budget extends CommonDropdown
                 'SELECT' => [
                     new QueryExpression($DB::quoteValue($itemtype), '_itemtype'),
                     $item_table => ['id', 'entities_id'],
+                    new QueryExpression('0', 'is_deleted'),
                     new QueryExpression('NULL', 'serial'),
                     new QueryExpression('NULL', 'otherserial'),
                     new QueryExpression('NULL', 'devices_id'),
