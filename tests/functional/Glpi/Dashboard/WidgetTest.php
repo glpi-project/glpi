@@ -34,14 +34,85 @@
 
 namespace tests\units\Glpi\Dashboard;
 
+use Glpi\Dashboard\Grid;
 use Glpi\Dashboard\Widget;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
+use Ticket;
 
 /* Test for inc/dashboard/widget.class.php */
 
 class WidgetTest extends DbTestCase
 {
+    public function tearDown(): void
+    {
+        Grid::$embed = false;
+        parent::tearDown();
+    }
+
+    public function testSearchShowListInEmbedModeReturnsResults(): void
+    {
+        // Create a ticket while logged in so it exists in the DB
+        $this->login();
+        $this->createItem(Ticket::class, [
+            'name'    => 'Embed dashboard test ticket',
+            'content' => 'Test',
+            'status'  => Ticket::INCOMING,
+        ]);
+
+        // Switch to embed session (no user, no profile)
+        $grid = new Grid('');
+        $grid->initEmbedSession([
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+
+        $this->assertTrue(Grid::$embed);
+        $this->assertArrayHasKey('glpilist_limit', $_SESSION);
+
+        $html = Widget::searchShowList([
+            'itemtype'   => Ticket::class,
+            's_criteria' => [],
+            'limit'      => 20,
+            'color'      => '#CCCCCC',
+        ]);
+
+        $this->assertStringContainsString('Embed dashboard test ticket', $html);
+    }
+
+    public function testSearchShowListWithoutEmbedModeReturnsNoResults(): void
+    {
+        // Create a ticket while logged in
+        $this->login();
+        $this->createItem(Ticket::class, [
+            'name'    => 'Embed dashboard test ticket',
+            'content' => 'Test',
+            'status'  => Ticket::INCOMING,
+        ]);
+
+        // Simulate a session without any profile (as initEmbedSession used to leave it)
+        Session::destroy();
+        Session::start();
+        $_SESSION['glpiactiveentities']        = [0];
+        $_SESSION['glpiactiveentities_string'] = "'0'";
+        $_SESSION['glpiactive_entity']         = 0;
+        $_SESSION['glpigroups']                = [];
+        $_SESSION['glpilist_limit']            = 20;
+        $_SESSION['glpiname']                  = '';
+        // Grid::$embed stays false
+
+        $html = Widget::searchShowList([
+            'itemtype'   => Ticket::class,
+            's_criteria' => [],
+            'limit'      => 20,
+            'color'      => '#CCCCCC',
+        ]);
+
+        $this->assertStringNotContainsString('Embed dashboard test ticket', $html);
+    }
+
+
     public function testGetAllTypes()
     {
         $types = Widget::getAllTypes();
