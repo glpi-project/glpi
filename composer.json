@@ -39,7 +39,7 @@
         "elvanto/litemoji": "^5.2",
         "gettext/languages": "^2.12",
         "glpi-project/inventory_format": "^1.2",
-        "guzzlehttp/guzzle": "^7.10",
+        "guzzlehttp/guzzle": "^7.12",
         "guzzlehttp/psr7": "^2.12",
         "html2text/html2text": "^4.3",
         "laminas/laminas-i18n": "^2.30",
