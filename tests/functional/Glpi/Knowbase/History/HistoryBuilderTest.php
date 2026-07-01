@@ -61,6 +61,17 @@ use User;
 
 final class HistoryBuilderTest extends DbTestCase
 {
+    /**
+     * Formatted name of the user performing the actions (logged in via login()).
+     * Resolved dynamically because the _test_user id is not a stable fixture value.
+     */
+    private function loggedInUserName(): string
+    {
+        $user = new User();
+        $user->getFromDB(getItemByTypeName(User::class, TU_USER, true));
+        return $user->getNameID(['forceid' => true]);
+    }
+
     public function testNewKnowbaseItemReturnsCreationEvent(): void
     {
         $this->login();
@@ -277,7 +288,7 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Permissions updated",
                 description: sprintf("Access granted to %s by", $entity_name),
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -355,13 +366,13 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Permissions updated",
                 description: sprintf("Access revoked from %s by", $entity_name),
                 date: "2026-01-15 12:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Permissions updated",
                 description: sprintf("Access granted to %s by", $entity_name),
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -457,13 +468,13 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Permissions updated",
                 description: sprintf("Access granted to %s by", $user_name),
                 date: "2026-01-15 12:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Permissions updated",
                 description: sprintf("Access granted to %s by", $entity_name),
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -546,13 +557,13 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Removed from the FAQ",
                 description: "Updated by",
                 date: "2026-01-15 12:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Added to the FAQ",
                 description: "Updated by",
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -588,7 +599,7 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Sharing enabled",
                 description: "Updated by",
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -627,13 +638,13 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Sharing disabled",
                 description: "Updated by",
                 date: "2026-01-15 12:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Sharing enabled",
                 description: "Updated by",
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -674,7 +685,7 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Sharing enabled",
                 description: "Updated by",
                 date: "2026-01-15 12:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -715,13 +726,13 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Sharing disabled",
                 description: "Updated by",
                 date: "2026-01-15 12:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Sharing enabled",
                 description: "Updated by",
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -765,7 +776,7 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Sharing enabled",
                 description: "Updated by",
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -846,7 +857,7 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Sharing enabled",
                 description: "Updated by",
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -892,19 +903,19 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Sharing enabled",
                 description: "Updated by",
                 date: "2026-01-15 13:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Sharing disabled",
                 description: "Updated by",
                 date: "2026-01-15 12:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Sharing enabled",
                 description: "Updated by",
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -970,7 +981,7 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Service catalog updated",
                 description: "Category updated by",
                 date: "2026-01-15 16:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
                 new_value: "My category ({$category->getID()})",
                 old_value: " (0)",
             ),
@@ -978,32 +989,32 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Service catalog updated",
                 description: "Removed from the service catalog by",
                 date: "2026-01-15 15:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Service catalog updated",
                 description: "Unpinned from the top by",
                 date: "2026-01-15 14:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Service catalog updated",
                 description: "Description updated by",
                 date: "2026-01-15 13:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
                 new_value: "Service catalog description",
             ),
             new LogEvent(
                 label: "Service catalog updated",
                 description: "Pinned to the top by",
                 date: "2026-01-15 12:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Service catalog updated",
                 description: "Added to the service catalog by",
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
