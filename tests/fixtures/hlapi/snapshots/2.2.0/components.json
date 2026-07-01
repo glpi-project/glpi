@@ -3887,11 +3887,8 @@
                             "group_requester",
                             "group_tech",
                             "user_tech",
-<<<<<<< add/assign-user-filter
-                            "user_assigned"
-=======
+                            "user_assigned",
                             "ticketstatus"
->>>>>>> main
                         ]
                     }
                 }
