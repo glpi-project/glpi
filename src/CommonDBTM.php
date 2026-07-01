@@ -2960,12 +2960,12 @@ class CommonDBTM extends CommonGLPI
             return true;
         }
 
-        // reauth - store reauth status in $item_type_requires_reauth, set it to $reauth_needed only if it's the sole missing requirement.
-        $item_type_requires_reauth = static::isUserReauthenticationNeeded();
+        // reauth - store reauth status in $is_user_reauthentication_needed, set it to $reauth_needed only if it's the sole missing requirement.
+        $is_user_reauthentication_needed = static::isUserReauthenticationNeeded();
         $reauth_needed = false; // set to false until we are sure that the only missing criteria is the reauth
 
         /**
-         * Returns the correct value for $allowed depending on $item_type_requires_reauth
+         * Returns the correct value for $allowed depending on $is_user_reauthentication_needed
          *
          * Core logic to respond with reauth and authorization is in this method
          *
@@ -2978,14 +2978,14 @@ class CommonDBTM extends CommonGLPI
          *
          * @return array{bool, bool} first value is the allowed result, second value is reauth_needed
          */
-        $allowed_against_reauth = static function (bool $allowed) use ($item_type_requires_reauth) {
+        $allowed_against_reauth = static function (bool $allowed) use ($is_user_reauthentication_needed) {
             if (!$allowed) {
                 // case 3 - not allowed
                 return [false, false];
             }
 
-            if ($item_type_requires_reauth) {
-                // case 1 - allowed but $item_type_requires_reauth
+            if ($is_user_reauthentication_needed) {
+                // case 1 - allowed but $is_user_reauthentication_needed
                 return [false, true];
             }
 
@@ -3016,9 +3016,22 @@ class CommonDBTM extends CommonGLPI
             // check if private
             $allowed = $this->isPrivate() && ($this->fields['users_id'] == Session::getLoginUserID());
             // global check
+            // When a reauth is needed, we intentionally skip canCreateItem() and rely on the
+            // global canCreate() only. Some canCreateItem() implementations call ->can() on a
+            // related itemtype that also requires reauth (e.g. Profile_User::canCreateItem()
+            // calls User->can(READ), and User requires reauth). On the first pass that nested
+            // can() returns false *because* of the pending reauth, not because a right is
+            // missing, so canCreateItem() would return false. The full check would then yield
+            // $allowed = false -> allowed_against_reauth(false) = [false, false] -> a plain
+            // AccessDeniedHttpException, and the reauth prompt would never be shown.
+            // By checking canCreate() only, $allowed stays true so the reauth is triggered;
+            // canCreateItem() is not bypassed, only deferred: it is enforced on the second
+            // pass, once the reauth is valid and this branch takes the full check below.
+            // Caveat: if canCreateItem() would be false for a genuine reason, a useless reauth
+            // is prompted before the second-pass denial.
             if (!$allowed) {
-                $allowed = $item_type_requires_reauth
-                    ? static::canCreate() // Just check canCreate(), canCreateItem() will return false without informations about reauth need on User, so reauth will be triggered
+                $allowed = $is_user_reauthentication_needed
+                    ? static::canCreate()
                     : (static::canCreate() && $this->canCreateItem());
             }
 
