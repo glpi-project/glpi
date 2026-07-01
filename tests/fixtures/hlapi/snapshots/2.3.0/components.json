@@ -5476,7 +5476,7 @@
                             "group_requester",
                             "group_tech",
                             "user_tech",
-                            "user_assigned"
+                            "user_assigned",
                             "ticketstatus"
                         ]
                     }
