@@ -150,6 +150,10 @@ class ReAuthManagerTest extends DbTestCase
         $this->assertSame('GET', $manager->getRedirectMethod());
         $this->assertSame('https://glpi.example.org/front/user.php', $manager->getCancelURL());
         $this->assertSame('bar', $manager->getRedirectData()['foo']);
+        $this->assertSame(
+            'https://glpi.example.org/front/user.php',
+            $manager->getRedirectData()['_glpi_http_referer']
+        );
     }
 
     /** POST body and method are persisted in session before the RedirectException is thrown. */

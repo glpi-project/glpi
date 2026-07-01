@@ -96,7 +96,7 @@ if (isset($_POST["add"])) {
         //TRANS: %s is the user login
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
-    Html::redirect(User::getFormURLWithID($_POST["id"]));
+    Html::back();
 } elseif (isset($_GET['_in_modal'])) {
     $group->check($_GET["id"], READ);
     Html::popHeader(Group::getTypeName(Session::getPluralNumber()), in_modal: true);

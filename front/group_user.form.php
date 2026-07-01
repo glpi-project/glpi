@@ -51,7 +51,7 @@ if (isset($_POST["add"])) {
     try {
         $group_user->check(-1, CREATE, $_POST);
     } catch (ItemLinkException $e) {
-        Html::redirect(User::getFormURLWithID($_POST["users_id"] ?? 0));
+        Html::back();
     }
 
     if ($group_user->add($_POST)) {
@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
         );
     }
 
-    Html::redirect(User::getFormURLWithID($_POST["users_id"] ?? 0));
+    Html::back();
 }
 
 throw new BadRequestHttpException();

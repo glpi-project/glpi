@@ -53,19 +53,14 @@ try {
 
     $reauth_manager = new ReAuthManager();
     if ($reauth_manager->atLeastOneitemTypesRequiresReauthentication($item_types)) {
-        // First pass (reauth needed): throws RedirectException. Before throwing,
-        // redirectToReauth() stores the calling page in glpi_reauth_cancel_url.
+        // First pass (reauth needed): throws RedirectException.
         $reauth_manager->checkReAuthenticationOrRedirect();
 
-        // Reached here means reauth is valid. Two sub-cases:
-        // a) Second pass (back from reauth form): the ReAuth controller injects
-        //    _glpi_http_referer into POST, so Html::getBackUrl() would return
-        //    massiveaction.php (which is unreleavant)  — we use getCancelURL() = calling page stored on first pass.
-        // b) First pass within active reauth window (15 min): no _glpi_http_referer in POST;
-        //    Html::getBackUrl() reads the real HTTP Referer = calling page.
-        $back_url = isset($_POST['_glpi_http_referer'])
-            ? $reauth_manager->getCancelURL()
-            : Html::getBackUrl();
+        // Reauth is valid. Whether we are back from the reauth form (the ReAuth
+        // flow injects _glpi_http_referer = calling page) or still within the
+        // active reauth window (real HTTP Referer = calling page), getBackUrl()
+        // returns the calling page.
+        $back_url = Html::getBackUrl();
         if ($back_url) {
             $ma->setRedirect($back_url);
         }

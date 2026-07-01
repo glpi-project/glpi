@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
         //TRANS: %s is the user login
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
-    Html::redirect(Profile::getFormURLWithID($_POST["id"]));
+    Html::back();
 }
 
 // display form

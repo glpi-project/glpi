@@ -140,7 +140,7 @@ final class ReAuthManager
     {
         $reauth_data = $_SESSION['glpi_reauth_data'] ?? [];
 
-        return $reauth_data + ['_glpi_http_referer' => $this->getTargetURL()];
+        return $reauth_data + ['_glpi_http_referer' => $this->getCancelURL()];
     }
 
     /**
