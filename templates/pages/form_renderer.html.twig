@@ -273,7 +273,7 @@
                     {{ __("Your form has been submitted successfully.") }}
                 </p>
                 {% if not unauthenticated_user %}
-                    <ul class="mt-3 d-flex list-unstyled mb-0" role="list">
+                    <ul class="mt-3 d-flex list-unstyled mb-0">
                         <li class="me-2">
                             {% if get_current_interface() == 'central' %}
                                 <a class="btn btn-outline-secondary" href="{{ path('/ServiceCatalog') }}">
