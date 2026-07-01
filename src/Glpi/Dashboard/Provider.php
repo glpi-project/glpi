@@ -54,7 +54,6 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use Glpi\Search\Input\QueryBuilder;
-use Glpi\Search\SearchOption;
 use Group;
 use Group_Ticket;
 use Profile_User;

@@ -36,7 +36,6 @@
 namespace Glpi\Api\HL\Controller;
 
 use CommonDBTM;
-use Document;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RoutePath;

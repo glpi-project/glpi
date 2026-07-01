@@ -44,6 +44,7 @@ return RectorConfig::configure()
     ->withSets([
         GlpiSetList::GLPI_DEFAULT_SET,
     ])
+    ->withImportNames(importNames: false, importDocBlockNames: false, importShortClasses: false, removeUnusedImports: true)
     ->withPaths([
         __DIR__ . '/ajax',
         __DIR__ . '/dependency_injection',
