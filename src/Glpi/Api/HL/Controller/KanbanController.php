@@ -399,9 +399,7 @@ class KanbanController extends AbstractController
                     break;
                 }
             }
-            $cards = array_filter($cards, static function ($card) use ($valid_card_types, $itemtype) {
-                return in_array($card['itemtype'], $valid_card_types[$itemtype] ?? [], true);
-            });
+            $cards = array_filter($cards, static fn($card) => in_array($card['itemtype'], $valid_card_types[$itemtype] ?? [], true));
         } else {
             $cards_valid = false;
         }
