@@ -37,10 +37,10 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\parse_url;
 
@@ -928,6 +928,9 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function showTabsContent($options = [])
     {
+        /** @var Kernel $kernel */
+        global $kernel;
+
         // for objects not in table like central
         if (isset($this->fields['id'])) {
             $ID = $this->fields['id'];
@@ -942,7 +945,7 @@ class CommonGLPI implements CommonGLPIInterface
         $cleaned_options = $options;
         unset($cleaned_options['id'], $cleaned_options['stock_image']);
 
-        $request        = Request::createFromGlobals();
+        $request        = $kernel->getMainRequest();
         $target         = $request->getBasePath() . $request->getPathInfo();
         $withtemplate   = "";
 
@@ -1041,6 +1044,9 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function showNavigationHeader($options = [])
     {
+        /** @var Kernel $kernel */
+        global $kernel;
+
         // for objects not in table like central
         if (isset($this->fields['id'])) {
             $ID = $this->fields['id'];
@@ -1052,7 +1058,7 @@ class CommonGLPI implements CommonGLPIInterface
             }
         }
 
-        $request        = Request::createFromGlobals();
+        $request        = $kernel->getMainRequest();
         $target         = $request->getBasePath() . $request->getPathInfo();
         $extraparamhtml = "";
 

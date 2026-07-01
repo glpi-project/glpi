@@ -39,12 +39,12 @@ use Glpi\Controller\InventoryController;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
+use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Session\SessionInfo;
 use Laminas\I18n\Translator\Translator;
 use Safe\Exceptions\InfoException;
 use Safe\Exceptions\SessionException;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\ini_get;
 use function Safe\preg_match;
@@ -382,7 +382,10 @@ class Session
      */
     public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
-        if (Request::createFromGlobals()->isXmlHttpRequest() && $url === null) {
+        /** @var Kernel $kernel */
+        global $kernel;
+
+        if ($kernel->getMainRequest()->isXmlHttpRequest() && $url === null) {
             return;
         }
 
@@ -967,12 +970,13 @@ class Session
      */
     public static function getPreferredLanguage(): string
     {
-        global $CFG_GLPI;
+        /** @var Kernel $kernel */
+        global $CFG_GLPI, $kernel;
 
         if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             // Use Symfony Request to parse Accept-Language header
             // Will normalizes language tags (pl-PL -> pl_PL)
-            $request = Request::createFromGlobals();
+            $request = $kernel->getMainRequest();
             $accepted_languages = $request->getLanguages();
 
             foreach ($accepted_languages as $language) {
@@ -1028,10 +1032,13 @@ class Session
      **/
     public static function isCron()
     {
+        /** @var Kernel $kernel */
+        global $kernel;
+
         return (self::isInventory() || isset($_SESSION["glpicronuserrunning"]))
             && (
                 isCommandLine()
-                || str_starts_with(Request::createFromGlobals()->getPathInfo(), '/front/cron.php')
+                || str_starts_with($kernel->getMainRequest()->getPathInfo(), '/front/cron.php')
             );
     }
 

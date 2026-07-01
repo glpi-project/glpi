@@ -49,6 +49,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
@@ -61,6 +62,8 @@ final class Kernel extends BaseKernel
     private LoggerInterface $logger;
 
     private bool $in_reboot = false;
+
+    private ?Request $main_request = null;
 
     public function __construct(?string $env = null)
     {
@@ -92,6 +95,34 @@ final class Kernel extends BaseKernel
     {
         // FIXME: Inject it as a DI parameter when corresponding services will be instanciated from the DI system.
         return GLPI_CACHE_DIR . '/' . GLPI_FILES_VERSION . '-' . Environment::get()->value;
+    }
+
+    /**
+     * Get the main request object.
+     *
+     * @FIXME   This method exist to prevent using `Request::createFromGlobals()` too late in the application process.
+     *          Indeed, an exception may be thrown when uploaded files have been moved already, since Symfony throws
+     *          a `FileNotFoundException` when the `$_FILES` state refers to an unexisting file in the temporary upload
+     *          dir.
+     *          The goal is to replace all usages of this method by a way to get the request object directly from
+     *          the dependency injection system.
+     *
+     * @return Request
+     */
+    public function getMainRequest(): Request
+    {
+        if ($this->main_request !== null) {
+            // Web context case.
+            //
+            // The `main_request` property is set in web context, when the `public/index.php` script
+            // call the `Kernel::handle($request)` method.
+            return $this->main_request;
+        }
+
+        // CLI and test suite contexts.
+        //
+        // Fallback to a request object created from globals each time, since some tests are mocking super globals.
+        return Request::createFromGlobals();
     }
 
     #[Override()]
@@ -158,6 +189,16 @@ final class Kernel extends BaseKernel
         parent::reboot($warmupDir);
 
         $this->in_reboot = false;
+    }
+
+    #[Override()]
+    public function handle(Request $request, int $type = HttpKernelInterface::MAIN_REQUEST, bool $catch = true): Response
+    {
+        if (HttpKernelInterface::MAIN_REQUEST === $type) {
+            $this->main_request = $request;
+        }
+
+        return parent::handle($request, $type, $catch);
     }
 
     #[Override()]

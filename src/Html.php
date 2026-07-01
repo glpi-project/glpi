@@ -50,6 +50,7 @@ use Glpi\Exception\RedirectException;
 use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Inventory\Inventory;
+use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\System\Log\LogViewer;
 use Glpi\Toolbox\FrontEnd;
@@ -58,7 +59,6 @@ use Glpi\UI\ThemeManager;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use ScssPhp\ScssPhp\Compiler;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\file_get_contents;
 use function Safe\filesize;
@@ -1686,8 +1686,9 @@ TWIG,
     {
         /**
          * @var bool $FOOTER_LOADED
+         * @var Kernel $kernel
          */
-        global $CFG_GLPI, $FOOTER_LOADED;
+        global $CFG_GLPI, $FOOTER_LOADED, $kernel;
 
         // If in modal : display popFooter
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1751,7 +1752,7 @@ TWIG,
         Profiler::getInstance()->stopAll();
         if (
             $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
-            && !str_starts_with(Request::createFromGlobals()->getPathInfo(), '/install/')
+            && !str_starts_with($kernel->getMainRequest()->getPathInfo(), '/install/')
         ) {
             $tpl_vars['debug_info'] = DebugProfile::getCurrent()->getDebugInfo();
         }
