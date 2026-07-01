@@ -355,8 +355,8 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                 7 => ITILActorFieldStrategy::SPECIFIC_VALUES, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_SUPPLIER
                 8 => ITILActorFieldStrategy::SPECIFIC_ANSWERS, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_SUPPLIER
                 9 => ITILActorFieldStrategy::SPECIFIC_ANSWERS, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_ACTORS
-                // 10 => Group from an object // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
-                // 11 => Tech group from an object // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                10 => ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                11 => ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
                 // 12 => Form author supervisor // PluginFormcreatorTarget_Actor::ACTOR_TYPE_SUPERVISOR
             ];
 
@@ -381,7 +381,11 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                         }
                     }
 
-                    if ($strategy === ITILActorFieldStrategy::SPECIFIC_ANSWERS) {
+                    if (
+                        $strategy === ITILActorFieldStrategy::SPECIFIC_ANSWERS
+                        || $strategy === ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER
+                        || $strategy === ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER
+                    ) {
                         foreach ($ids as $id) {
                             $mapped_item = $migration->getMappedItemTarget(
                                 'PluginFormcreatorQuestion',

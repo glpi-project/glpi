@@ -325,7 +325,7 @@
             data-glpi-kb-content
             data-testid="content"
         >
-            {{ answer|safe_html }}
+            {{ answer|enhanced_html({text_maxsize: 0}) }}
         </div>
 
         {# Documents and Related Items section #}

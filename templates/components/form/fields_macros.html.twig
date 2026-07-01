@@ -54,13 +54,15 @@
    </div>
 {% endmacro %}
 
-{% macro smallTitle(label, icon = '', helper = '', id = '') %}
+{% macro smallTitle(label, icon = '', helper = '', id = '', level = 4) %}
    {% set margins = 'mt-2 mb-2' %}
    {% set id = id != '' ? id : 'formsection' ~ random() %}
+   {% set level = level in [1, 2, 3, 4, 5, 6] ? level : 4 %}
 
    <div class="card border-0 shadow-none p-0 m-0 {{ margins }}">
       <div id="{{ id }}" class="card-header mb-1 p-0 ps-3 py-1">
-         <h4 class="card-subtitle {{ icon|length ? 'ms-4' : '' }}">
+         {# fs-4 keeps the visual size constant regardless of the heading level #}
+         <h{{ level }} class="card-subtitle fs-4 {{ icon|length ? 'ms-4' : '' }}">
             {% if icon|length %}
                <div class="ribbon ribbon-bookmark ribbon-top ribbon-start bg-blue s-1">
                   <i class="fs-2x {{ icon }}"></i>
@@ -71,7 +73,7 @@
                <span class="form-help" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
                      data-bs-title="{{ helper }}">?</span>
             {% endif %}
-         </h4>
+         </h{{ level }}>
       </div>
    </div>
 {% endmacro %}

@@ -775,6 +775,44 @@ PLAINTEXT;
         $this->assertStringContainsString('toggle-all-notes', $html);
     }
 
+    public function testGetKanbanColumnsReturnsTasksWhenNoStateIsSaved(): void
+    {
+        $this->login();
+
+        $state = $this->createItem(ProjectState::class, [
+            'name'        => 'In progress',
+            'color'       => '#ff0000',
+            'is_finished' => 0,
+        ]);
+
+        $project = $this->createItem(\Project::class, [
+            'name'       => 'Kanban Test Project',
+            'entities_id' => 0,
+        ]);
+
+        $this->createItem(ProjectTask::class, [
+            'name'                   => 'Task 1',
+            'projects_id'            => $project->getID(),
+            'projectstates_id'       => $state->getID(),
+            'projecttasktemplates_id' => 0,
+        ]);
+
+        // Simulate first load with no saved state: $column_ids = [], $get_default = true
+        $columns = \Project::getKanbanColumns($project->getID(), 'projectstates_id', [], true);
+
+        $this->assertArrayHasKey($state->getID(), $columns);
+        $this->assertCount(1, $columns[$state->getID()]['items']);
+
+        // Normal filtering ($get_default = false): only the requested column is returned.
+        $columns_filtered = \Project::getKanbanColumns($project->getID(), 'projectstates_id', [$state->getID()], false);
+        $this->assertArrayHasKey($state->getID(), $columns_filtered);
+        $this->assertCount(1, $columns_filtered[$state->getID()]['items']);
+
+        // Requesting only column 0 must exclude the task's state column.
+        $columns_no_status = \Project::getKanbanColumns($project->getID(), 'projectstates_id', [0], false);
+        $this->assertArrayNotHasKey($state->getID(), $columns_no_status);
+    }
+
     public function testNotepadDisplayWithUpdateRights()
     {
         $this->login();

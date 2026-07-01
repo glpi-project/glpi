@@ -35,6 +35,8 @@
 
 use Com\Tecnick\Barcode\Barcode;
 use Com\Tecnick\Barcode\Model;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
 
 class BarcodeManager
 {
@@ -62,6 +64,39 @@ class BarcodeManager
             [10, 10, 10, 10]
         )->setBackgroundColor('white');
         return $qrcode;
+    }
+
+    /**
+     * @param string $itemtype
+     *
+     * @return array<mixed, array<string, mixed>>
+     */
+    public static function rawSearchOptionsToAdd(string $itemtype): array
+    {
+        global $CFG_GLPI, $DB;
+
+        if (!in_array($itemtype, $CFG_GLPI["asset_types"])) {
+            return [];
+        }
+
+        $url_prefix = $CFG_GLPI['url_base'] . $itemtype::getFormURL(false) . '?id=';
+
+        return [
+            [
+                'id'            => 290,
+                'table'         => $itemtype::getTable(),
+                'field'         => 'asset_url',
+                'name'          => __('Asset URL'),
+                'massiveaction' => false,
+                'nometa'        => true,
+                'nosort'        => true,
+                'datatype'      => 'string',
+                'computation'   => QueryFunction::concat([
+                    new QueryExpression($DB::quoteValue($url_prefix)),
+                    'TABLE.id',
+                ]),
+            ],
+        ];
     }
 
     /**

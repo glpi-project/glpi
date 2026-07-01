@@ -49,9 +49,9 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Restore dependencies cache"
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
@@ -61,7 +61,7 @@ jobs:
             app_home_deps-${{ matrix.php-version }}-
             app_home_deps-
       - name: "Restore lint cache"
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             files/_cache/php-cs-fixer
@@ -169,9 +169,9 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Restore dependencies cache"
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
@@ -264,9 +264,9 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Restore dependencies cache"
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
@@ -333,9 +333,9 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Restore dependencies cache"
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
@@ -394,7 +394,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Setup Node.js"
         uses: "actions/setup-node@v6"
         with:

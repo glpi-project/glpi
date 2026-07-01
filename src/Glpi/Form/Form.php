@@ -417,7 +417,11 @@ final class Form extends CommonDBTM implements
             );
 
             // Do not keep half updated data
-            $DB->rollback();
+            try {
+                $DB->rollback();
+            } catch (Throwable $rollback_e) {
+                // Catch rollback failures so the original exception is propagated
+            }
 
             // Propagate exception to ensure the server return an error code
             throw $e;

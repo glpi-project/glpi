@@ -46,8 +46,12 @@ use Glpi\Dashboard\Filters\{
     ManufacturerFilter,
     RequestTypeFilter,
     StateFilter,
+    TicketStatusFilter,
     TicketTypeFilter,
+<<<<<<< add/assign-user-filter
     UserAssignedFilter,
+=======
+>>>>>>> main
     UserTechFilter,
 };
 use Glpi\Plugin\Hooks;
@@ -113,7 +117,11 @@ class Filter extends CommonDBChild
             GroupRequesterFilter::class,
             GroupTechFilter::class,
             UserTechFilter::class,
+<<<<<<< add/assign-user-filter
             UserAssignedFilter::class,
+=======
+            TicketStatusFilter::class,
+>>>>>>> main
         ];
 
         foreach (($PLUGIN_HOOKS[Hooks::DASHBOARD_FILTERS] ?? []) as $plugin => $hook_filters) {

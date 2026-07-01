@@ -44,13 +44,13 @@ use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
+use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
 use LDAP\Connection;
 use LDAP\Result;
 use Sabre\VObject\Component\VCard;
 use Safe\Exceptions\FilesystemException;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\fclose;
 use function Safe\fopen;
@@ -3109,7 +3109,8 @@ HTML;
 
     public function pre_updateInDB()
     {
-        global $DB;
+        /** @var Kernel $kernel */
+        global $DB, $kernel;
 
         if (($key = array_search('name', $this->updates)) !== false) {
             /// Check if user does not exists
@@ -3154,7 +3155,7 @@ HTML;
         if (
             Session::getLoginUserID() === (int) $this->input['id']
             && !Session::haveRight("user", UPDATE)
-            && !str_starts_with(Request::createFromGlobals()->getPathInfo(), "/front/login.php")
+            && !str_starts_with($kernel->getMainRequest()->getPathInfo(), "/front/login.php")
             && isset($this->fields["authtype"])
         ) {
             // extauth ldap case

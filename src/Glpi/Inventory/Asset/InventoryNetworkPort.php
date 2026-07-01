@@ -577,6 +577,16 @@ trait InventoryNetworkPort
         if (property_exists($data, 'speed')) {
             $input['speed'] = $data->speed;
             $input['speed_other_value'] = $data->speed;
+        } elseif (property_exists($data, 'ifspeed') && $data->ifspeed > 0) {
+            // network equipment (SNMP) inventory only provides `ifspeed` (in bits/s),
+            // while the instantiation `speed` is expected in Mbit/s.
+            $speed = (int) ($data->ifspeed / 1000000);
+            // ignore out of range values (the `speed` column is a signed int):
+            // some interfaces report a saturated/garbage ifspeed (e.g. 4294967295000000).
+            if ($speed > 0 && $speed <= 2147483647) {
+                $input['speed'] = $speed;
+                $input['speed_other_value'] = $speed;
+            }
         }
 
         if (property_exists($data, 'wwn')) {

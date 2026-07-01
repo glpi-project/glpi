@@ -39,7 +39,7 @@
         "elvanto/litemoji": "^5.2",
         "gettext/languages": "^2.12",
         "glpi-project/inventory_format": "^1.2",
-        "guzzlehttp/guzzle": "^7.11",
+        "guzzlehttp/guzzle": "^7.12",
         "guzzlehttp/psr7": "^2.12",
         "html2text/html2text": "^4.3",
         "laminas/laminas-i18n": "^2.33",
@@ -107,7 +107,7 @@
         "twig/string-extra": "^3.24",
         "twig/twig": "^3.27",
         "wapmorgan/unified-archive": "^1.3",
-        "webonyx/graphql-php": "^15.32"
+        "webonyx/graphql-php": "^15.33"
     },
     "require-dev": {
         "ext-xml": "*",
@@ -211,11 +211,9 @@
             "bin/console dependencies install --allow-superuser"
         ],
         "patch": [
-            "patch -f -p1 -d vendor/guzzlehttp/guzzle/ < tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-address-no-length-check.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-invalid-header-ignore.patch || true",
-            "patch -f -p1 -d vendor/laminas/laminas-mail/ < tools/patches/laminas-laminas-mail-invalid-address-ignore.patch || true",
-            "patch -f -p1 -d vendor/wapmorgan/unified-archive/ < tools/patches/wapmorgan-unified-archive-php-8.5-compat.patch || true"
+            "VENDOR_DIR='vendor/guzzlehttp/guzzle/' PATCH_FILE='tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/laminas/laminas-mail/' PATCH_FILE='tools/patches/laminas-laminas-mail-invalid-header-ignore.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
+            "VENDOR_DIR='vendor/wapmorgan/unified-archive/' PATCH_FILE='tools/patches/wapmorgan-unified-archive-php-8.5-compat.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
         ]
     }
 }

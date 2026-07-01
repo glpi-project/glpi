@@ -344,12 +344,8 @@ class CommandLoader implements CommandLoaderInterface
 
     private function findSymfonyCommands(): void
     {
-        /** @var Kernel|null $kernel */
+        /** @var Kernel $kernel */
         global $kernel;
-
-        if (!$kernel instanceof Kernel) {
-            return;
-        }
 
         if (!Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             return;

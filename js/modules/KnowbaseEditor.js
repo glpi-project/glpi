@@ -36,6 +36,7 @@
 
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
+import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
 
@@ -72,7 +73,7 @@ class KnowbaseEditor {
         this.#options = {
             content: '',
             readonly: true,
-            placeholder: __('Start writing...'),
+            placeholder: __('Type / to insert...'),
             onUpdate: null,
             item_id: null,
             ...options
@@ -120,6 +121,7 @@ class KnowbaseEditor {
             }),
             TiptapPlaceholder.configure({
                 placeholder: this.#options.placeholder,
+                showOnlyCurrent: true,
             }),
             TiptapBubbleMenu.configure({
                 element: this.#bubbleMenuElement,
@@ -135,6 +137,7 @@ class KnowbaseEditor {
                     resizable: true,
                 }
             }),
+            VideoEmbed,
         ];
 
         // Add FileHandler for image drag & drop and paste (only for existing articles)

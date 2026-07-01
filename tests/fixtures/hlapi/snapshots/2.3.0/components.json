@@ -5477,6 +5477,7 @@
                             "group_tech",
                             "user_tech",
                             "user_assigned"
+                            "ticketstatus"
                         ]
                     }
                 }

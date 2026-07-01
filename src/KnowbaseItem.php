@@ -2513,16 +2513,17 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get KB answer, with id on titles to set anchors
+     * Get KB answer with heading anchors. The HTML is returned raw — sanitization
+     * and display enrichments (lazy images, gallery, video iframes…) are applied
+     * by the `|enhanced_html` filter in the article templates.
      *
      * @return string
+     *
+     * @psalm-taint-source html
      */
     public function getAnswer()
     {
         $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
-        $answer = RichText::getEnhancedHtml($answer, [
-            'text_maxsize' => 0, // Show all text without read more button
-        ]);
 
         $callback = static function ($matches) {
             // 1 => tag name, 2 => existing attributes, 3 => title contents

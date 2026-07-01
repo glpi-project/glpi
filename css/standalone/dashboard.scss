@@ -432,6 +432,8 @@ $break_tablet: 1400px;
                 }
 
                 .select2 {
+                    min-width: 100px;
+
                     & ~ a,
                     & ~ span { // remove icons next select2
                         display: none;
@@ -448,8 +450,52 @@ $break_tablet: 1400px;
                         height: 24px;
                     }
 
-                    .select2-container {
-                        margin-right: 0;
+                    .select2-selection.select2-selection--multiple {
+                        border: none;
+                        background-color: transparent;
+                        min-height: 24px;
+                        padding-right: 18px;
+
+                        .select2-selection__rendered {
+                            padding: 0;
+                            line-height: 18px;
+                        }
+
+                        .select2-selection__choice {
+                            font-weight: bold;
+                            font-size: 12px;
+                            background-color: transparent;
+                            border: 1px solid var(--tblr-border-color);
+                            border-radius: 3px;
+                            padding: 0 4px;
+                            margin: 2px 2px 0 0;
+                        }
+
+                        .select2-selection__choice__remove {
+                            color: var(--tblr-info);
+                            margin-right: 3px;
+                        }
+
+                        .select2-search--inline .select2-search__field {
+                            color: var(--tblr-body-color);
+                            font-weight: bold;
+                            font-size: 12px;
+                            margin: 0;
+                            outline: none;
+                            line-height: 18px;
+                            field-sizing: content;
+                            width: auto !important;
+                        }
+                    }
+
+                    // override select2 focus/open border on multiple selection
+                    &.select2-container--focus,
+                    &.select2-container--open {
+                        .select2-selection--multiple {
+                            border: none;
+                            outline: none;
+                            box-shadow: none;
+                        }
                     }
 
                     .select2-selection__rendered {
@@ -525,6 +571,22 @@ $break_tablet: 1400px;
                     input,
                     .select2-selection__rendered {
                         color: #509ee3 !important;
+                    }
+
+                    .select2 {
+                        width: auto !important;
+                    }
+
+                    .select2-selection--multiple {
+                        .select2-selection__choice {
+                            color: var(--tblr-info) !important;
+                            border-color: currentcolor;
+                        }
+
+                        .select2-search--inline .select2-search__field {
+                            color: var(--tblr-info) !important;
+                            min-width: 4px !important;
+                        }
                     }
 
                     .flatpickr,

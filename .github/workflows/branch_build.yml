@@ -22,7 +22,7 @@ jobs:
           --volume /glpi:/var/www/glpi
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Deploy source into app container"
         run: |
           sudo cp --no-target-directory --preserve --recursive `pwd` /glpi

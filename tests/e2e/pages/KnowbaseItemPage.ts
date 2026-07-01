@@ -78,6 +78,30 @@ export class KnowbaseItemPage extends GlpiPage
         return this.page.locator('.image-dialog');
     }
 
+    public get videoDialog(): Locator
+    {
+        return this.page.getByRole('dialog', { name: 'Insert video' });
+    }
+
+    public get videoEmbedPlaceholders(): Locator
+    {
+        // VideoEmbedExtension nodeView wraps each placeholder in a role="figure"
+        // labelled "<Provider> video" (or "Invalid video" for tampered nodes).
+        return this.page.getByRole('figure', { name: /\bvideo$/i });
+    }
+
+    public get videoEmbedIframes(): Locator
+    {
+        // VideoEmbedRenderer emits iframes with title="<Provider> video player".
+        return this.page.getByTitle(/video player$/i);
+    }
+
+    public get videoEmbedVideos(): Locator
+    {
+        // VideoEmbedRenderer emits direct <video> elements with title="Embedded video".
+        return this.page.getByTitle('Embedded video');
+    }
+
     public get subject(): Locator
     {
         // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute used by ArticleController.js, not a test ID

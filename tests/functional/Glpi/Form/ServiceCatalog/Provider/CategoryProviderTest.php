@@ -34,12 +34,14 @@
 
 namespace tests\units\Glpi\Form\ServiceCatalog\Provider;
 
+use DropdownTranslation;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\Provider\CategoryProvider;
 use Glpi\Tests\DbTestCase;
 use Session;
+use User;
 
 class CategoryProviderTest extends DbTestCase
 {
@@ -484,5 +486,53 @@ class CategoryProviderTest extends DbTestCase
         $this->assertCount(2, $ancestors);
         $this->assertEquals($category2->getID(), $ancestors[0]['id']);
         $this->assertEquals($category2_1->getID(), $ancestors[1]['id']);
+    }
+
+    /**
+     * Non-regression test: ancestor names in breadcrumb must use the translated value.
+     */
+    public function testAncestorNamesAreTranslated(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(Category::class, ['name' => 'Parent category']);
+        $child  = $this->createItem(Category::class, [
+            'name'                => 'Child category',
+            'forms_categories_id' => $parent->getID(),
+        ]);
+
+        $this->createItem(DropdownTranslation::class, [
+            'items_id' => $parent->getID(),
+            'itemtype' => Category::class,
+            'language' => 'fr_FR',
+            'field'    => 'name',
+            'value'    => 'Catégorie parente',
+        ]);
+        $this->createItem(DropdownTranslation::class, [
+            'items_id' => $child->getID(),
+            'itemtype' => Category::class,
+            'language' => 'fr_FR',
+            'field'    => 'name',
+            'value'    => 'Catégorie enfant',
+        ]);
+
+        $this->createItem(User::class, [
+            'name'         => 'fr_FR',
+            'language'     => 'fr_FR',
+            '_entities_id' => $this->getTestRootEntity(only_id: true),
+            '_profiles_id' => 1,
+        ]);
+        $this->login('fr_FR');
+
+        $item_request = new ItemRequest(
+            access_parameters: new FormAccessParameters(),
+            category_id: $child->getID(),
+        );
+
+        $ancestors = $this->provider->getAncestors($item_request);
+
+        $this->assertCount(2, $ancestors);
+        $this->assertEquals('Catégorie parente', $ancestors[0]['name']);
+        $this->assertEquals('Catégorie enfant', $ancestors[1]['name']);
     }
 }

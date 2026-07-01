@@ -307,7 +307,13 @@ final class FormSerializer extends AbstractFormSerializer
             $forms = $this->doImportFormFormSpecs($form_spec, $mapper);
             $DB->commit();
         } catch (Throwable $e) {
-            $DB->rollback();
+            try {
+                $DB->rollback();
+            } catch (Throwable $rollback_e) {
+                // Catch rollback failures so the original exception is propagated
+            }
+
+            // Propagate the exception
             throw $e;
         }
         return $forms;

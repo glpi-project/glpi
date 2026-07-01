@@ -3921,6 +3921,9 @@ class CommonDBTM extends CommonGLPI
             ];
         }
 
+        // Add asset URL search option for asset types
+        $tab = array_merge($tab, BarcodeManager::rawSearchOptionsToAdd(get_class($this)));
+
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 

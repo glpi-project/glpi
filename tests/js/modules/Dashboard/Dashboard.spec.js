@@ -603,7 +603,13 @@ describe('Dashboard', () => {
             'filter2': 'filter2_value',
         });
         expect(window.sortable).toHaveBeenCalledWith('#filter-selector', 'reload');
-        expect(dashboard.refreshCardsImpactedByFilter).toHaveBeenCalledWith('filter2');
+        expect(dashboard.refreshCardsImpactedByFilter).toHaveBeenCalledWith(
+            'filter2',
+            {
+                'filter1': 'filter1_value',
+                'filter2': 'filter2_value',
+            }
+        );
     });
 
     test('refreshCardsImpactedByFilter', () => {
@@ -617,10 +623,10 @@ describe('Dashboard', () => {
         `);
         dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
 
-        dashboard.refreshCardsImpactedByFilter('filter1');
+        dashboard.refreshCardsImpactedByFilter('filter1', {});
 
-        expect(dashboard.getCardsAjax).toHaveBeenNthCalledWith(1, `[gs-id="${CSS.escape(4)}"]`);
-        expect(dashboard.getCardsAjax).toHaveBeenNthCalledWith(2, `[gs-id="${CSS.escape(6)}"]`);
+        expect(dashboard.getCardsAjax).toHaveBeenNthCalledWith(1, `[gs-id="${CSS.escape(4)}"]`, {});
+        expect(dashboard.getCardsAjax).toHaveBeenNthCalledWith(2, `[gs-id="${CSS.escape(6)}"]`, {});
     });
 
     test('saveDashboard', async () => {
@@ -1714,7 +1720,12 @@ describe('Dashboard', () => {
         expect(dashboard.setFiltersInDB).toHaveBeenCalledWith({
             filter2: 'value2',
         });
-        expect(dashboard.refreshCardsImpactedByFilter).toHaveBeenCalledWith('filter1');
+        expect(dashboard.refreshCardsImpactedByFilter).toHaveBeenCalledWith(
+            'filter1',
+            {
+                filter2: 'value2',
+            }
+        );
     });
 
     test('Single ajax mode - Animate on load', () => {

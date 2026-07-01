@@ -39,6 +39,8 @@ use Glpi\DBAL\QueryExpression;
  * @var Migration $migration
  */
 
+$migration->addField('glpi_projecttasks', 'recall', 'integer', ['nodefault' => true, 'null' => true]);
+
 if (!countElementsInTable('glpi_crontasks', ['itemtype' => 'ProjectTask', 'name' => 'projecttasksreminder'])) {
     $DB->insert(
         'glpi_crontasks',

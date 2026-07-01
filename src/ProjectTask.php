@@ -328,9 +328,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             );
         }
 
-        if (isset($this->input['_planningrecall'])) {
-            $this->input['_planningrecall']['items_id'] = $this->fields['id'];
-            PlanningRecall::manageDatas($this->input['_planningrecall']);
+        if (in_array('recall', $this->updates, true)) {
+            $this->handlePlanningRecall();
         }
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -396,9 +395,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             Project::recalculatePercentDone($this->fields['projects_id']);
         }
 
-        if (isset($this->input['_planningrecall'])) {
-            $this->input['_planningrecall']['items_id'] = $this->fields['id'];
-            PlanningRecall::manageDatas($this->input['_planningrecall']);
+        if ($this->fields['recall'] !== null) {
+            $this->handlePlanningRecall();
         }
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -406,6 +404,43 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $this->getFromDB($this->fields['id']);
 
             NotificationEvent::raiseEvent('new', $this);
+        }
+    }
+
+    private function handlePlanningRecall(): void
+    {
+        global $DB;
+
+        $recall_data = [
+            'itemtype'    => static::class,
+            'items_id'    => $this->fields['id'],
+            'before_time' => $this->fields['recall'] !== null ? (int) $this->fields['recall'] : null,
+            'field'       => 'plan_end_date',
+        ];
+
+        $team = ProjectTaskTeam::getTeamFor($this->fields['id']);
+        foreach ($team as $type => $actors) {
+            switch ($type) {
+                case User::class:
+                    foreach ($actors as $actor) {
+                        $recall_data['users_id'] = (int) $actor['items_id'];
+                        PlanningRecall::manageDatas($recall_data);
+                    }
+                    break;
+                case Group::class:
+                    foreach ($actors as $actor) {
+                        $iterator = $DB->request([
+                            'SELECT' => 'users_id',
+                            'FROM'   => Group_User::getTable(),
+                            'WHERE'  => ['groups_id' => $actor['items_id']],
+                        ]);
+                        foreach ($iterator as $row) {
+                            $recall_data['users_id'] = (int) $row['users_id'];
+                            PlanningRecall::manageDatas($recall_data);
+                        }
+                    }
+                    break;
+            }
         }
     }
 
@@ -504,6 +539,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function prepareInputForUpdate($input)
     {
+        if (array_key_exists('recall', $input) && $input['recall'] === '') {
+            $input['recall'] = null;
+        }
+
         if (isset($input['auto_percent_done']) && $input['auto_percent_done']) {
             unset($input['percent_done']);
         }
@@ -565,6 +604,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function prepareInputForAdd($input)
     {
+        if (array_key_exists('recall', $input) && $input['recall'] === '') {
+            $input['recall'] = null;
+        }
+
         if (!isset($input['projects_id']) || (int) $input['projects_id'] === 0) {
             Session::addMessageAfterRedirect(
                 __s('A linked project is mandatory'),

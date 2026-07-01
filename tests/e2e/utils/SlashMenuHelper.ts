@@ -43,7 +43,8 @@ export type SlashCommand =
     | 'Code Block'
     | 'Table'
     | 'Divider'
-    | 'Image';
+    | 'Image'
+    | 'Video';
 
 export class SlashMenuHelper {
     private readonly page: Page;

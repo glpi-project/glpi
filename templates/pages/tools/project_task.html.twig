@@ -36,7 +36,7 @@
 {% set form_id = 'project_task_' ~ rand %}
 {% set content_field_id = 'content_' ~ rand %}
 {% set params = {
-    'form_id': form_id,
+    'form_id' : form_id,
 } %}
 
 {% block form_fields %}
@@ -47,7 +47,7 @@
         item.fields.projecttasktemplates_id,
         'ProjectTaskTemplate'|itemtype_name,
         {
-            'entity': item.getEntityID(),
+            'entity' : item.getEntityID(),
         }
     ) }}
 
@@ -73,9 +73,9 @@
         projecttasks_id,
         __('As child of'),
         {
-            'entity': item.getEntityID(),
-            'condition': {'glpi_projecttasks.projects_id': projects_id},
-            'used': [item.getID()],
+            'entity' : item.getEntityID(),
+            'condition' : {'glpi_projecttasks.projects_id': projects_id},
+            'used' : [item.getID()],
         }
     ) }}
 
@@ -98,10 +98,10 @@
             item.fields.auto_projectstates,
             __('Automatically calculate'),
             {
-                'helper': __("When automatic computation is active, state is computed based on this task percent done. Don't forget to define them in the general config."),
-                'field_class': 'col-12 w-100',
-                'label_class': 'col-auto',
-                'input_class': 'col',
+                'helper' : __("When automatic computation is active, state is computed based on this task percent done. Don't forget to define them in the general config."),
+                'field_class' : 'col-12 w-100',
+                'label_class' : 'col-auto',
+                'input_class' : 'col',
             }
         ) }}
     {% endset %}
@@ -112,8 +112,8 @@
         item.fields.projectstates_id,
         _x('item', 'State'),
         {
-            disabled: item.fields.auto_projectstates,
-            add_field_html: auto_status,
+            disabled : item.fields.auto_projectstates,
+            add_field_html : auto_status,
         }
     ) }}
 
@@ -123,10 +123,10 @@
             item.fields.auto_percent_done,
             __('Automatically calculate'),
             {
-                'helper': __('When automatic computation is active, percentage is computed based on the average of all child task percent done.'),
-                'field_class': 'col-12 w-100',
-                'label_class': 'col-auto',
-                'input_class': 'col',
+                'helper' : __('When automatic computation is active, percentage is computed based on the average of all child task percent done.'),
+                'field_class' : 'col-12 w-100',
+                'label_class' : 'col-auto',
+                'input_class' : 'col',
             }
         ) }}
     {% endset %}
@@ -136,11 +136,11 @@
         item.fields.percent_done,
         __('Percent done'),
         {
-            'value': item.fields.percent_done,
-            'min': 0,
-            'max': 100,
-            'step': 5,
-            'unit': '%',
+            'value' : item.fields.percent_done,
+            'min' : 0,
+            'max' : 100,
+            'step' : 5,
+            'unit' : '%',
             'add_field_html': auto_percent,
          }|merge(item.fields.auto_percent_done ? {'specific_tags': {'disabled': 'disabled'}} : {})
     ) }}
@@ -182,7 +182,7 @@
         item.fields.plan_end_date,
         __('Planned end date'),
         {
-            'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+            'field_class' : 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
         }
     ) }}
 
@@ -191,26 +191,33 @@
         item.fields.real_end_date,
         __('Real end date'),
         {
-            'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+            'field_class' : 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
         }
     ) }}
 
-    {% if id and not item.fields.is_milestone %}
-        {% set recall_dropdown = call('PlanningRecall::dropdown', [{
-            'itemtype': 'ProjectTask',
-            'items_id': id,
-            'users_id': session('glpiID'),
-            'field': 'plan_end_date',
-            'display': false,
-        }]) %}
-        {{ fields.htmlField(
-            '',
-            recall_dropdown,
-            _x('Planning', 'Reminder'),
-        ) }}
+    {% set recall_values = {
+        '': __('None'),
+        '0': _n('%d minute', '%d minutes', 0)|format(0),
+        '900': _n('%d minute', '%d minutes', 15)|format(15),
+        '1800': _n('%d minute', '%d minutes', 30)|format(30),
+        '2700': _n('%d minute', '%d minutes', 45)|format(45),
+        '3600': _n('%d hour', '%d hours', 1)|format(1),
+        '7200': _n('%d hour', '%d hours', 2)|format(2),
+        '10800': _n('%d hour', '%d hours', 3)|format(3),
+        '14400': _n('%d hour', '%d hours', 4)|format(4),
+        '43200': _n('%d hour', '%d hours', 12)|format(12),
+        '86400': _n('%d day', '%d days', 1)|format(1),
+        '172800': _n('%d day', '%d days', 2)|format(2),
+        '604800': _n('%d week', '%d weeks', 1)|format(1),
+    } %}
+    {{ fields.dropdownArrayField(
+        'recall',
+        item.fields.recall,
+        recall_values,
+        _x('Planning', 'Reminder'),
+    ) }}
 
-        {{ fields.nullField() }}
-    {% endif %}
+    {{ fields.nullField() }}
 
     {{ fields.dropdownArrayField(
         'planned_duration',
@@ -218,8 +225,8 @@
         duration_dropdown_to_add,
         __('Planned duration'),
         {
-            'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
-            'display_emptychoice': true,
+            'field_class' : 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+            'display_emptychoice' : true,
         },
     ) }}
 
@@ -229,8 +236,8 @@
         duration_dropdown_to_add,
         __('Effective duration'),
         {
-            'field_class': 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
-            'display_emptychoice': true,
+            'field_class' : 'col-12 col-sm-6 is_milestone ' ~ (item.fields.is_milestone ? 'd-none' : ''),
+            'display_emptychoice' : true,
         },
     ) }}
 
@@ -265,10 +272,10 @@
         __("Description"),
         {
             'name': 'content',
-            'enable_richtext': true,
-            'id': content_field_id,
-            'label_class': "col-xxl-2",
-            'input_class': "col-xxl-10",
+            'enable_richtext' : true,
+            'id' : content_field_id,
+            'label_class' : "col-xxl-2",
+            'input_class' : "col-xxl-10",
             'field_class' : "col-12",
         }
     ) }}
@@ -278,8 +285,8 @@
         item.fields.comment,
         __("Comments"),
         {
-            'label_class': "col-xxl-2",
-            'input_class': "col-xxl-10",
+            'label_class' : "col-xxl-2",
+            'input_class' : "col-xxl-10",
             'field_class' : "col-12",
         }
     ) }}

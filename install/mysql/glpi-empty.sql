@@ -6258,6 +6258,7 @@ CREATE TABLE `glpi_projecttasks` (
   `percent_done` int NOT NULL DEFAULT '0',
   `auto_percent_done` tinyint NOT NULL DEFAULT '0',
   `is_milestone` tinyint NOT NULL DEFAULT '0',
+  `recall` int,
   `projecttasktemplates_id` int unsigned NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
@@ -10542,6 +10543,41 @@ CREATE TABLE `glpi_usertokens` (
     KEY `users_id` (`users_id`),
     KEY `type` (`type`),
     KEY `date_expiration` (`date_expiration`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_users_sessions`;
+CREATE TABLE `glpi_users_sessions` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `users_id` int unsigned NOT NULL,
+    `login_session_uid` varchar(64) NOT NULL,
+    `session_file` varchar(261) NOT NULL COMMENT 'Current session filename. PHP allows up to 256 characters for session IDs + the "sess_" prefix used by default.',
+    `ip_address` varchar(45) NOT NULL,
+    `user_agent` varchar(512) NOT NULL,
+    `auth_type` tinyint NOT NULL,
+    `created_at` timestamp NOT NULL,
+    `last_activity_at` timestamp NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `login_session_uid` (`login_session_uid`),
+    KEY `users_id` (`users_id`),
+    KEY `last_activity_at` (`last_activity_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_users_sessionhistories`;
+CREATE TABLE `glpi_users_sessionhistories` (
+    `id` int unsigned NOT NULL AUTO_INCREMENT,
+    `users_id` int unsigned NOT NULL,
+    `login_session_uid` varchar(64) NOT NULL,
+    `ip_address` varchar(45) NOT NULL,
+    `user_agent` varchar(512) NOT NULL,
+    `auth_type` tinyint NOT NULL,
+    `logged_in_at` timestamp NOT NULL,
+    `logged_out_at` timestamp NULL DEFAULT NULL,
+    `logout_reason` enum('user', 'admin', 'expired') DEFAULT NULL,
+    `users_id_revoked_by` int unsigned DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `users_id` (`users_id`, `logged_in_at` DESC),
+    KEY `users_id_revoked_by` (`users_id_revoked_by`),
+    KEY `logged_out_at` (`logged_out_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

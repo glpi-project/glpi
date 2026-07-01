@@ -33,7 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
-use Symfony\Component\HttpFoundation\Request;
+use Glpi\Kernel\Kernel;
 use Twig\Runtime\EscaperRuntime;
 
 use function Safe\preg_match;
@@ -57,7 +57,10 @@ function isCommandLine(): bool
  */
 function isAPI()
 {
-    $path = Request::createFromGlobals()->getPathInfo();
+    /** @var Kernel $kernel */
+    global $kernel;
+
+    $path = $kernel->getMainRequest()->getPathInfo();
 
     return str_starts_with($path, '/api.php') || str_starts_with($path, '/apirest.php');
 }

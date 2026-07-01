@@ -444,6 +444,15 @@ class ProfileTest extends DbTestCase
         }
     }
 
+    public function testGetHelpdeskItemtypesIncludesPluginTypes(): void
+    {
+        $types = \Profile::getHelpdeskItemtypes();
+
+        $this->assertArrayHasKey(\ConsumableItem::class, $types);
+        $this->assertSame(\ConsumableItem::getTypeName(), $types[\ConsumableItem::class]);
+        $this->assertArrayHasKey(\Computer::class, $types);
+    }
+
     public function testExcludedSearchOptionsPrepareInput(): void
     {
         $this->login();

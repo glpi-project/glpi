@@ -253,7 +253,7 @@
    {{ fields.dropdownYesNo('search_pagination_on_top', config['search_pagination_on_top'], __('Show search pagination above results'), field_options) }}
 
    {% if get_current_interface() == 'central' %}
-      {{ fields.smallTitle(__('Assistance'), 'ti ti-headset') }}
+      {{ fields.smallTitle(__('Assistance'), 'ti ti-headset', level = 5) }}
 
       {{ fields.dropdownYesNo('followup_private', config['followup_private'], __('Private followups by default'), field_options) }}
       {% if has_profile_right('ticket', constant('Ticket::READMY')) or has_profile_right('ticket', constant('Ticket::READALL')) or has_profile_right('ticket', constant('Ticket::READASSIGN')) %}
@@ -334,14 +334,15 @@
    {% endset %}
    <div class="hr-text my-3">
       <i class="ti ti-palette"></i>
-      <span>{{ __('Priority colors') }}</span>
+      {# heading rather than span: adds this divider label to the heading outline (RGAA 9.1) #}
+      <h5 class="m-0 fs-5 fw-medium">{{ __('Priority colors') }}</h5>
    </div>
    {{ fields.htmlField('', priority_colors, '', field_options|merge({
       input_class: 'col-12',
       field_class: 'col-12'
    })) }}
 
-   {{ fields.smallTitle(__('Due date progression'), 'ti ti-clock-play') }}
+   {{ fields.smallTitle(__('Due date progression'), 'ti ti-clock-play', level = 5) }}
    {% set unit_options = {
       '%': '%',
       'hours': _n('Hour', 'Hours', get_plural_number()),
@@ -377,7 +378,7 @@
    })) }}
 
    {% if get_current_interface() == 'central' and config('lock_use_lock_item') %}
-      {{ fields.smallTitle(__('Item locks'), 'ti ti-lock') }}
+      {{ fields.smallTitle(__('Item locks'), 'ti ti-lock', level = 5) }}
       {{ fields.dropdownYesNo('lock_autolock_mode', config['lock_autolock_mode'], __('Auto-lock Mode'), field_options) }}
       {{ fields.dropdownYesNo(
          'lock_directunlock_notification',
@@ -388,7 +389,7 @@
    {% endif %}
 
    {% if call('\\Glpi\\Dashboard\\Grid::canViewOneDashboard') %}
-      {{ fields.smallTitle(__('Dashboards'), call('Glpi\\Dashboard\\Dashboard::getIcon'), '', 'section-dashboards') }}
+      {{ fields.smallTitle(__('Dashboards'), call('Glpi\\Dashboard\\Dashboard::getIcon'), '', 'section-dashboards', level = 5) }}
       {% macro dropdownDashboard(name, config, thecontext = "core", disabled_option = false) %}
          {% do call('\\Glpi\\Dashboard\\Grid::dropdownDashboard', [name, {
             value: config[name],
@@ -423,7 +424,7 @@
       ) }}
    {% endif %}
 
-   {{ fields.smallTitle(_n('Notification', 'Notifications', get_plural_number()), 'ti ti-bell') }}
+   {{ fields.smallTitle(_n('Notification', 'Notifications', get_plural_number()), 'ti ti-bell', level = 5) }}
    {% set enable_notif_helper %}
       • {{ __('Disable notifications by default on ITIL objects actor configuration, with ability to derogate to it.') }}
       • {{ __('Disable all notifications on all other objects, without ability to derogate to it.') }}

@@ -1808,12 +1808,20 @@ HTML;
     {
         global $CFG_GLPI;
 
+        $default_right = 'validate';
+        if (static::class === self::class) {
+            // Impossible to know the itemtype the validation is for (probably from the approval template form)
+            $default_right = ['validate_request', 'validate_incident', 'validate'];
+        } elseif (static::$itemtype == Ticket::class) {
+            $default_right = ['validate_request', 'validate_incident'];
+        }
+
         $params = [
             'prefix'             => null,
             'id'                 => 0,
             'parents_id'         => null,
             'entity'             => $_SESSION['glpiactive_entity'],
-            'right'              => static::$itemtype == Ticket::class ? ['validate_request', 'validate_incident'] : 'validate',
+            'right'              => $default_right,
             'groups_id'          => 0,
             'itemtype_target'    => '',
             'items_id_target'    => 0,

@@ -1928,9 +1928,18 @@ function setupAdaptDropdown(config)
         },
         templateResult: config.templateresult,
         templateSelection: config.templateselection,
+        allowClear: !!config.allowclear,
     };
     if (config.placeholder !== undefined && config.placeholder !== '') {
         options.placeholder = config.placeholder;
+    }
+    if (config.allowclear && $('#' + field_id + ' option[value=""]').length === 0) {
+        const $select = $('#' + field_id);
+        const hasSelected = $select.find('option[selected]').length > 0;
+        $select.prepend('<option value=""></option>');
+        if (!hasSelected) {
+            $select.val('');
+        }
     }
     const select2_el = $('#' + field_id).select2(options);
 

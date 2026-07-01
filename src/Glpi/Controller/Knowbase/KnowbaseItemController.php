@@ -41,6 +41,7 @@ use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\RichText\RichText;
+use Glpi\RichText\VideoEmbedRenderer;
 use Group_KnowbaseItem;
 use KnowbaseItem;
 use KnowbaseItem_Profile;
@@ -68,16 +69,16 @@ final class KnowbaseItemController extends AbstractController
     public function content(Request $request): Response
     {
         $id = $request->attributes->getInt('knowbaseitems_id');
-        if (!KnowbaseItem::canView()) {
-            throw new AccessDeniedHttpException();
-        }
         $kbitem = new KnowbaseItem();
         if (!$kbitem->getFromDB($id)) {
             throw new NotFoundHttpException();
-        } elseif (!$kbitem->canViewItem()) {
+        }
+        if (!$kbitem->can($id, READ)) {
             throw new AccessDeniedHttpException();
         }
-        return new Response(RichText::getSafeHtml($kbitem->fields['answer']));
+
+        $safe = RichText::getSafeHtml($kbitem->fields['answer'], false);
+        return new Response((new VideoEmbedRenderer())->renderAllAsLink($safe));
     }
 
     #[Route(
@@ -135,7 +136,8 @@ final class KnowbaseItemController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        // Sanitize HTML content to prevent XSS
+        // Sanitize HTML content to prevent XSS. KB video placeholders are preserved
+        // by the sanitizer (inert data-video-* attributes).
         $answer = RichText::getSafeHtml($answer);
 
         $update_data = [

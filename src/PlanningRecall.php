@@ -59,7 +59,42 @@ class PlanningRecall extends CommonDBChild
 
     public function canCreateItem(): bool
     {
+        if ($this->fields['itemtype'] === ProjectTask::class) {
+            return in_array((int) $this->fields['users_id'], ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
+        }
         return (int) $this->fields['users_id'] === Session::getLoginUserID();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        if ($this->fields['itemtype'] === ProjectTask::class) {
+            if ((int) $this->fields['users_id'] === Session::getLoginUserID()) {
+                // The owner can update their own recall only while still in the task team.
+                return in_array((int) $this->fields['users_id'], ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
+            }
+            // Non-owners need project-level update rights or be in the task team
+            return Session::haveRight('project', UPDATE)
+                && in_array(Session::getLoginUserID(), ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
+        }
+        return parent::canUpdateItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        if ($this->fields['itemtype'] === ProjectTask::class) {
+            $task = new ProjectTask();
+            if (!$task->getFromDB((int) $this->fields['items_id'])) {
+                return false;
+            }
+            // The owner can always purge their own recall (even after leaving the team, for cleanup).
+            if ((int) $this->fields['users_id'] === Session::getLoginUserID()) {
+                return true;
+            }
+            // Non-owners need project-level update rights or be in the task team
+            return Session::haveRight('project', UPDATE)
+                && in_array(Session::getLoginUserID(), ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
+        }
+        return parent::canPurgeItem();
     }
 
     public function cleanDBonPurge()
@@ -141,7 +176,7 @@ class PlanningRecall extends CommonDBChild
             !isset($data['itemtype'])
             || !isset($data['items_id'])
             || !isset($data['users_id'])
-            || !isset($data['before_time'])
+            || !array_key_exists('before_time', $data)
             || !isset($data['field'])
         ) {
             return false;
@@ -168,7 +203,7 @@ class PlanningRecall extends CommonDBChild
                             "Y-m-d H:i:s",
                             strtotime($item->fields[$data['field']]) - $data['before_time']
                         );
-                        if ($data['before_time'] >= 0) {
+                        if ($data['before_time'] !== null && $data['before_time'] >= 0) {
                             if ($pr->can($pr->fields['id'], UPDATE)) {
                                 $pr->update(['id'          => $pr->fields['id'],
                                     'before_time' => $data['before_time'],
@@ -197,7 +232,7 @@ class PlanningRecall extends CommonDBChild
                             strtotime($item->fields[$data['field']])
                             - $data['before_time']
                         );
-                        if ($data['before_time'] >= 0) {
+                        if ($data['before_time'] !== null && $data['before_time'] >= 0) {
                             $pr->add($data);
                         }
                     }

@@ -798,10 +798,14 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 3, // Assignee
                     'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
-            'field_config' => fn($migration, $form) => (new AssigneeField())->getDefaultConfig($form),
+            'field_config' => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER],
+            ),
         ];
 
         yield 'Tech group from an object' => [
@@ -810,10 +814,50 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 3, // Assignee
                     'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
-            'field_config' => fn($migration, $form) => (new AssigneeField())->getDefaultConfig($form),
+            'field_config' => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+            ),
+        ];
+
+        yield 'Group from an object with question' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3, // Assignee
+                    'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    'actor_value' => 74, // Computer question
+                ],
+            ],
+            'field_config' => fn($migration, $form) => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 74)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                ]
+            ),
+        ];
+
+        yield 'Tech group from an object with question' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3, // Assignee
+                    'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    'actor_value' => 74, // Computer question
+                ],
+            ],
+            'field_config' => fn($migration, $form) => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 74)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                ]
+            ),
         ];
 
         yield 'Form author\'s supervisor' => [

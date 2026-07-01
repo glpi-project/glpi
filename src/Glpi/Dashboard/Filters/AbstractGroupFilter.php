@@ -73,66 +73,88 @@ abstract class AbstractGroupFilter extends AbstractFilter
             || in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true);
     }
 
+    /**
+     * Resolve a raw filter value (scalar or array) into a flat list of group IDs.
+     *
+     * @param mixed $value
+     * @return int[]
+     */
+    private static function resolveGroupIds($value): array
+    {
+        $values = is_array($value) ? $value : [$value];
+
+        $groups_ids = [];
+        foreach ($values as $v) {
+            if ($v === 'mygroups') {
+                foreach ($_SESSION['glpigroups'] as $g) {
+                    $groups_ids[] = (int) $g;
+                }
+            } elseif ((int) $v > 0) {
+                $groups_ids[] = (int) $v;
+            }
+        }
+
+        return array_values(array_unique($groups_ids));
+    }
+
     public static function getCriteria(string $table, $value): array
     {
         global $DB;
 
-        $criteria = [];
+        $criteria  = [];
+        $groups_ids = self::resolveGroupIds($value);
 
-        $groups_id = null;
-        if ((int) $value > 0) {
-            $groups_id = (int) $value;
-        } elseif ($value == 'mygroups') {
-            $groups_id = $_SESSION['glpigroups'];
+        if (count($groups_ids) === 0) {
+            return $criteria;
         }
 
-        if ($groups_id != null) {
-            if ($DB->fieldExists($table, static::getGroupFieldName())) {
-                $criteria["WHERE"] = [
-                    $table . '.' . static::getGroupFieldName() => $groups_id,
-                ];
-            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true)) {
-                $main_item = match ($table) {
-                    Ticket::getTable() => new Ticket(),
-                    Change::getTable() => new Change(),
-                    Problem::getTable() => new Problem(),
-                    default => throw new UnexpectedValueException(),
-                };
-                $grouplink = $main_item->grouplinkclass;
-                $gl_table  = $grouplink::getTable();
-                $fk        = $main_item::getForeignKeyField();
+        $groups_ids_value = count($groups_ids) === 1 ? $groups_ids[0] : $groups_ids;
 
-                $criteria["JOIN"] = [
-                    "$gl_table as gl" => [
-                        'ON' => [
-                            'gl'   => $fk,
-                            $table => 'id',
-                        ],
+        if ($DB->fieldExists($table, static::getGroupFieldName())) {
+            $criteria["WHERE"] = [
+                $table . '.' . static::getGroupFieldName() => $groups_ids_value,
+            ];
+        } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true)) {
+            $main_item = match ($table) {
+                Ticket::getTable() => new Ticket(),
+                Change::getTable() => new Change(),
+                Problem::getTable() => new Problem(),
+                default => throw new UnexpectedValueException(),
+            };
+            $grouplink = $main_item->grouplinkclass;
+            $gl_table  = $grouplink::getTable();
+            $fk        = $main_item::getForeignKeyField();
+
+            $criteria["JOIN"] = [
+                "$gl_table as gl" => [
+                    'ON' => [
+                        'gl'   => $fk,
+                        $table => 'id',
                     ],
-                ];
-                $criteria["WHERE"] = [
-                    "gl.type"      => static::getGroupType(),
-                    "gl.groups_id" => $groups_id,
-                ];
-            } else {
-                $group_item_table = Group_Item::getTable();
-                $criteria['JOIN'] = [
-                    $group_item_table => [
-                        'ON' => [
-                            $group_item_table => 'items_id',
-                            $table => 'id', [
-                                'AND' => [
-                                    $group_item_table . '.itemtype' => getItemtypeForTable($table),
-                                ],
+                ],
+            ];
+            $criteria["WHERE"] = [
+                "gl.type"      => static::getGroupType(),
+                "gl.groups_id" => $groups_ids_value,
+            ];
+        } else {
+            $group_item_table = Group_Item::getTable();
+            $criteria['JOIN'] = [
+                $group_item_table => [
+                    'ON' => [
+                        $group_item_table => 'items_id',
+                        $table => 'id', [
+                            'AND' => [
+                                $group_item_table . '.itemtype' => getItemtypeForTable($table),
                             ],
                         ],
                     ],
-                ];
-                $criteria["WHERE"] = [
-                    $group_item_table . ".type" => static::getGroupType(),
-                    $group_item_table . '.groups_id' => $groups_id,
-                ];
-            }
+                ],
+            ];
+            $criteria["WHERE"] = [
+                $group_item_table . ".type"      => static::getGroupType(),
+                $group_item_table . '.groups_id' => $groups_ids_value,
+            ];
         }
 
         return $criteria;
@@ -140,33 +162,49 @@ abstract class AbstractGroupFilter extends AbstractFilter
 
     public static function getSearchCriteria(string $table, $value): array
     {
-        global $DB;
-
         $criteria = [];
 
-        $groups_id = null;
-        if ((int) $value > 0) {
-            $groups_id =  (int) $value;
-        } elseif ($value == 'mygroups') {
-            $groups_id =  'mygroups';
+        $values = is_array($value) ? $value : [$value];
+        $resolved = [];
+        foreach ($values as $v) {
+            if ($v === 'mygroups') {
+                $resolved[] = 'mygroups';
+            } elseif ((int) $v > 0) {
+                $resolved[] = (int) $v;
+            }
+        }
+        $resolved = array_values(array_unique($resolved));
+
+        if (count($resolved) === 0) {
+            return $criteria;
         }
 
-        if ($groups_id != null) {
+        $build = function (int|string $groups_id) use ($table): array {
             if (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true)) {
-                $criteria[] = [
-                    'link'       => 'AND',
-                    'field'      => static::getITILSearchOptionID(), // requester group
-                    'searchtype' => 'equals',
-                    'value'      => $groups_id,
-                ];
-            } else {
-                $criteria[] = [
-                    'link'       => 'AND',
-                    'field'      => self::getSearchOptionID($table, static::getGroupFieldName(), 'glpi_groups'),
+                return [
+                    'field'      => static::getITILSearchOptionID(),
                     'searchtype' => 'equals',
                     'value'      => $groups_id,
                 ];
             }
+            return [
+                'field'      => self::getSearchOptionID($table, static::getGroupFieldName(), 'glpi_groups'),
+                'searchtype' => 'equals',
+                'value'      => $groups_id,
+            ];
+        };
+
+        if (count($resolved) === 1) {
+            $criteria[] = ['link' => 'AND'] + $build($resolved[0]);
+        } else {
+            $sub = [];
+            foreach ($resolved as $i => $groups_id) {
+                $sub[] = ['link' => $i === 0 ? 'AND' : 'OR'] + $build($groups_id);
+            }
+            $criteria[] = [
+                'link'     => 'AND',
+                'criteria' => $sub,
+            ];
         }
 
         return $criteria;
@@ -174,9 +212,10 @@ abstract class AbstractGroupFilter extends AbstractFilter
 
     public static function getHtml($value): string
     {
-        return self::displayList(
+        $values = is_array($value) ? array_values($value) : ($value !== null && $value !== '' ? [$value] : []);
+        return self::displayMultipleList(
             static::getName(),
-            is_string($value) ? $value : "",
+            $values,
             static::getId(),
             Group::class,
             [

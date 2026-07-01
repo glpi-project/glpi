@@ -42,6 +42,7 @@ use Glpi\Config\ProxyExclusions;
 use Glpi\Dashboard\Grid;
 use Glpi\Event;
 use Glpi\Helpdesk\HelpdeskTranslation;
+use Glpi\Kernel\Kernel;
 use Glpi\Mail\SMTP\OauthConfig;
 use Glpi\Plugin\Hooks;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
@@ -49,7 +50,6 @@ use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\ArrayNormalizer;
 use Glpi\UI\ThemeManager;
 use Safe\Exceptions\OpcacheException;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\chdir;
 use function Safe\exec;
@@ -1380,13 +1380,14 @@ class Config extends CommonDBTM
      */
     public static function loadLegacyConfiguration()
     {
-        global $CFG_GLPI, $DB;
+        /** @var Kernel $kernel */
+        global $CFG_GLPI, $DB, $kernel;
 
         // Compute URLs base path.
         $root_doc = '';
         if (isset($_SERVER['REQUEST_URI'])) {
             // $_SERVER['REQUEST_URI'] is set, meaning that GLPI is accessed from web server.
-            $root_doc = Request::createFromGlobals()->getBasePath();
+            $root_doc = $kernel->getMainRequest()->getBasePath();
         }
         $CFG_GLPI['root_doc'] = $root_doc;
         $CFG_GLPI['typedoc_icon_dir'] = $root_doc . '/pics/icones';
