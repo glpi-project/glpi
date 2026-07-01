@@ -51,7 +51,6 @@ use LDAP\Connection;
 use LDAP\Result;
 use Sabre\VObject\Component\VCard;
 use Safe\Exceptions\FilesystemException;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\fclose;
 use function Safe\fopen;

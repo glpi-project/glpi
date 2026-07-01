@@ -46,7 +46,6 @@ use Glpi\Session\SessionInfo;
 use Laminas\I18n\Translator\Translator;
 use Safe\Exceptions\InfoException;
 use Safe\Exceptions\SessionException;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\ini_get;
 use function Safe\preg_match;

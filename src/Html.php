@@ -57,7 +57,6 @@ use Glpi\UI\ThemeManager;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use ScssPhp\ScssPhp\Compiler;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\file_get_contents;
 use function Safe\filesize;
