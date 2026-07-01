@@ -114,7 +114,7 @@ class UserAssignedFilter extends AbstractFilter
                     'link'       => 'AND',
                     'field'      => 5,// tech
                     'searchtype' => 'equals',
-                    'value'      => $value === 'myself' ? (int) Session::getLoginUserID() : (int) $value,
+                    'value'      => is_numeric($value) ? (int) $value : $value,
                 ];
             }
         }

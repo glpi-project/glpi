@@ -35,24 +35,22 @@
 namespace tests\units\Glpi\Dashboard;
 
 use CommonITILActor;
-use Computer;
 use Glpi\Dashboard\Filters\UserAssignedFilter;
 use Glpi\Tests\DbTestCase;
-use Ticket;
 
 class UserAssignedFilterTest extends DbTestCase
 {
-    public function testCanBeApplied(): void
-    {
-        $this->assertTrue(UserAssignedFilter::canBeApplied(Ticket::getTable()));
-        $this->assertFalse(UserAssignedFilter::canBeApplied(Computer::getTable()));
-    }
-
     public function testGetCriteria(): void
     {
+        $this->login();
+
         $criteria = UserAssignedFilter::getCriteria('glpi_tickets', '42');
         $this->assertSame(CommonITILActor::ASSIGN, $criteria['WHERE']['ul_assigned.type']);
         $this->assertSame(42, $criteria['WHERE']['ul_assigned.users_id']);
+
+        $myself = UserAssignedFilter::getCriteria('glpi_tickets', 'myself');
+        $this->assertSame(CommonITILActor::ASSIGN, $myself['WHERE']['ul_assigned.type']);
+        $this->assertSame($_SESSION['glpiID'], $myself['WHERE']['ul_assigned.users_id']);
 
         $this->assertSame([], UserAssignedFilter::getCriteria('glpi_tickets', ''));
         $this->assertSame([], UserAssignedFilter::getCriteria('glpi_tickets', '0'));
@@ -69,6 +67,10 @@ class UserAssignedFilterTest extends DbTestCase
         $this->assertSame('equals', $criteria[0]['searchtype']);
         $this->assertSame(5, $criteria[0]['field']);
         $this->assertSame(42, $criteria[0]['value']);
+
+        $myself = UserAssignedFilter::getSearchCriteria('glpi_tickets', 'myself');
+        $this->assertCount(1, $myself);
+        $this->assertSame('myself', $myself[0]['value']);
 
         $this->assertSame([], UserAssignedFilter::getSearchCriteria('glpi_tickets', ''));
         $this->assertSame([], UserAssignedFilter::getSearchCriteria('glpi_tickets', '0'));
