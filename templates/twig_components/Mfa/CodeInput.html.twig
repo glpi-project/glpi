@@ -31,7 +31,7 @@
  #}
 
 <div class="d-flex justify-content-center gap-2" dir="ltr"
-     role="group" aria-label="{{ __('Authentication code') }}" data-tfa-code-input>
+     role="group" aria-label="{{ __('Authentication code') }}" data-mfa-code-input>
    {% for i in 1..this.digits %}
       <input type="text" name="totp_code[]"
              class="form-control text-center fw-bold totp-code-digit"
@@ -41,5 +41,5 @@
    {% endfor %}
 </div>
 <script type="module">
-    import('/js/modules/Security/TfaCodeInput.js').then((m) => m.TfaCodeInput.init());
+    import('/js/modules/Security/MfaCodeInput.js').then((m) => m.MfaCodeInput.init());
 </script>

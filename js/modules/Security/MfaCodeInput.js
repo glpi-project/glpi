@@ -35,7 +35,7 @@
  * Deliberately does not auto-submit: the user validates with the form button,
  * which avoids an unexpected context change for assistive technologies.
  */
-export class TfaCodeInput
+export class MfaCodeInput
 {
     /** @type {HTMLInputElement[]} */
     #inputs;
@@ -46,12 +46,12 @@ export class TfaCodeInput
      */
     static init(root = document)
     {
-        root.querySelectorAll('[data-tfa-code-input]').forEach((el) => {
-            if (el.dataset.tfaCodeInputReady === 'true') {
+        root.querySelectorAll('[data-mfa-code-input]').forEach((el) => {
+            if (el.dataset.mfaCodeInputReady === 'true') {
                 return;
             }
-            el.dataset.tfaCodeInputReady = 'true';
-            new TfaCodeInput(el);
+            el.dataset.mfaCodeInputReady = 'true';
+            new MfaCodeInput(el);
         });
     }
 

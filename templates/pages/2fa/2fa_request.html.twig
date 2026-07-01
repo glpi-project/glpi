@@ -51,7 +51,7 @@
                     const card_title = btn.closest('.card').find('.card-title');
                     const form = btn.closest('form');
 
-                    const code_group = $('[data-tfa-code-input]');
+                    const code_group = $('[data-mfa-code-input]');
                     if (form.attr('data-code-type') === 'code') {
                         // Switch to backup code
                         form.attr('data-code-type', 'backup_code');

@@ -30,12 +30,12 @@
  * ---------------------------------------------------------------------
  */
 
-import { TfaCodeInput } from '/js/modules/Security/TfaCodeInput.js';
+import { MfaCodeInput } from '/js/modules/Security/MfaCodeInput.js';
 
 function setup(digits = 6, { wrapInForm = false } = {}) {
     document.body.innerHTML = '';
     const container = document.createElement('div');
-    container.setAttribute('data-tfa-code-input', '');
+    container.setAttribute('data-mfa-code-input', '');
     for (let i = 0; i < digits; i++) {
         const input = document.createElement('input');
         input.type = 'text';
@@ -49,7 +49,7 @@ function setup(digits = 6, { wrapInForm = false } = {}) {
         root.appendChild(container);
     }
     document.body.appendChild(root);
-    new TfaCodeInput(container);
+    new MfaCodeInput(container);
     return { inputs: [...container.querySelectorAll('input')], form: wrapInForm ? root : null };
 }
 
@@ -74,9 +74,9 @@ function paste(input, text) {
     return ev;
 }
 
-describe('TfaCodeInput', () => {
+describe('MfaCodeInput', () => {
     test('Class exists', () => {
-        expect(TfaCodeInput).toBeDefined();
+        expect(MfaCodeInput).toBeDefined();
     });
 
     test('typing a digit advances focus to the next field', () => {
@@ -152,7 +152,7 @@ describe('TfaCodeInput', () => {
     test('init() wires every container found on the page', () => {
         document.body.innerHTML = '';
         const container = document.createElement('div');
-        container.setAttribute('data-tfa-code-input', '');
+        container.setAttribute('data-mfa-code-input', '');
         for (let i = 0; i < 6; i++) {
             const input = document.createElement('input');
             input.maxLength = 1;
@@ -160,7 +160,7 @@ describe('TfaCodeInput', () => {
         }
         document.body.appendChild(container);
 
-        TfaCodeInput.init();
+        MfaCodeInput.init();
 
         const inputs = [...container.querySelectorAll('input')];
         type(inputs[0], '1');
@@ -170,14 +170,14 @@ describe('TfaCodeInput', () => {
     test('init() does not bind the same container twice', () => {
         document.body.innerHTML = '';
         const container = document.createElement('div');
-        container.setAttribute('data-tfa-code-input', '');
+        container.setAttribute('data-mfa-code-input', '');
         const input = document.createElement('input');
         input.maxLength = 1;
         container.appendChild(input);
         document.body.appendChild(container);
 
-        TfaCodeInput.init();
-        expect(() => TfaCodeInput.init()).not.toThrow();
-        expect(container.dataset.tfaCodeInputReady).toBe('true');
+        MfaCodeInput.init();
+        expect(() => MfaCodeInput.init()).not.toThrow();
+        expect(container.dataset.mfaCodeInputReady).toBe('true');
     });
 });
