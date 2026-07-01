@@ -67,6 +67,16 @@ $(function() {
             locale:          getFlatPickerLocale("{{ locale['language']|e('js') }}", "{{ locale['region']|e('js') }}"),
             minuteIncrement: {{ timestep }},
             allowInput:      true,
+            onReady:         function(dates, str, instance) {
+                // The calendar is appended to <body>, so its clicks never bubble
+                // through the search filters dropdown. Stop them from reaching the
+                // document so Bootstrap's dropdown auto-close (a document 'click'
+                // listener) doesn't treat calendar navigation (month arrows, etc.)
+                // as an outside click and close the panel.
+                instance.calendarContainer.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
+            },
             onClose:         function(dates, str, picker) {
                 picker.setDate(picker.altInput.value, true, picker.config.altFormat);
             },
