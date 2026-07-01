@@ -37,7 +37,6 @@ namespace Glpi\Dashboard\Filters;
 use Change;
 use CommonITILActor;
 use Problem;
-use Session;
 use Ticket;
 use UnexpectedValueException;
 use User;
