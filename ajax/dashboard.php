@@ -51,20 +51,12 @@ if (!isset($_REQUEST["action"])) {
 $request_data = array_merge($_REQUEST, json_decode($_REQUEST['data'] ?? '{}', true));
 unset($request_data['data']);
 
-$embed = false;
-if (
-    in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])
+// Session check is disabled for this script when "embed" mode is used.
+// Indeed, it is declared as stateless by `\Glpi\Http\SessionManager::isResourceStateless()`,
+// to prevent using the session cookie for embed dashboards.
+$is_embed_request = in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])
     && array_key_exists('embed', $request_data)
-    && (bool) $request_data['embed']
-) {
-    // Session check is disabled for this script when "embed" mode is used.
-    // Indeed, it is declared as stateless by `\Glpi\Http\SessionManager::isResourceStateless()`,
-    // to prevent using the session cookie for embed dashboards.
-    if (Grid::checkToken($request_data) === false) {
-        throw new AccessDeniedHttpException();
-    }
-    $embed = true;
-}
+    && (bool) $request_data['embed'];
 
 $dashboard = new Dashboard($_REQUEST['dashboard'] ?? "");
 
@@ -181,8 +173,8 @@ switch ($_GET['action'] ?? null) {
 
 Profiler::getInstance()->start('Grid::construct');
 $grid = new Grid($_REQUEST['dashboard'] ?? "");
-if ($embed) {
-    $grid->initEmbedSession($_REQUEST);
+if ($is_embed_request) {
+    $grid->initEmbed($_REQUEST);
 }
 Profiler::getInstance()->stop('Grid::construct');
 

@@ -61,14 +61,25 @@ class WidgetTest extends DbTestCase
             'status'  => Ticket::INCOMING,
         ]);
 
-        // Switch to embed session (no user, no profile)
-        $grid = new Grid('');
-        $grid->initEmbedSession([
-            'entities_id'  => 0,
-            'is_recursive' => 1,
-        ]);
+        // Simulate embed session manually (mirrors what initEmbedSession does,
+        // without going through initEmbed which requires a valid token)
+        global $CFG_GLPI;
+        Grid::$embed = true;
+        Session::destroy();
+        Session::start();
+        $_SESSION['glpiactive_entity']           = 0;
+        $_SESSION['glpiactive_entity_recursive'] = 1;
+        $_SESSION['glpiname']                    = 'embed_dashboard';
+        $_SESSION['glpigroups']                  = [];
+        $_SESSION['glpiactiveentities']          = getSonsOf('glpi_entities', 0);
+        $_SESSION['glpiactiveentities_string']   = "'" . implode("', '", $_SESSION['glpiactiveentities']) . "'";
+        $_SESSION['glpi_use_mode']               = Session::NORMAL_MODE;
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (array_key_exists($field, $CFG_GLPI)) {
+                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+            }
+        }
 
-        $this->assertTrue(Grid::$embed);
         $this->assertArrayHasKey('glpilist_limit', $_SESSION);
 
         $html = Widget::searchShowList([

@@ -544,11 +544,9 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public function initEmbedSession(array $params = [])
+    protected function initEmbedSession(array $params = [])
     {
         global $CFG_GLPI;
-
-        self::$embed = true;
 
         // load minimal session
         Session::start();
@@ -564,8 +562,14 @@ TWIG, $twig_params);
         $_SESSION['glpiactiveentities']        = $entities;
         $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
 
-        $_SESSION['glpi_use_mode']  = Session::NORMAL_MODE;
-        $_SESSION['glpilist_limit'] = $CFG_GLPI['list_limit'] ?? 20;
+        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
+
+        // Restore user preference defaults wiped by session_start() (mirrors PostBootListener).
+        foreach ($CFG_GLPI['user_pref_field'] as $field) {
+            if (array_key_exists($field, $CFG_GLPI)) {
+                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+            }
+        }
     }
 
     /**
