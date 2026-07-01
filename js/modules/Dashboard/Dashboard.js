@@ -438,7 +438,7 @@ class GLPIDashboard {
             const filters = this.getFiltersFromDB();
             delete filters[filter_id];
             this.setFiltersInDB(filters);
-            this.refreshCardsImpactedByFilter(filter_id);
+            this.refreshCardsImpactedByFilter(filter_id, filters);
         });
 
         // save new or existing widget (submit form)
@@ -775,20 +775,22 @@ class GLPIDashboard {
         // store current filter in localStorage
         const filters = this.getFiltersFromDB();
         filters[filter_id] = value;
+
+        // persist (async, no need to wait: the refresh below carries the filters)
         this.setFiltersInDB(filters);
 
         // refresh sortable
         sortable(this.filters_selector, 'reload');
 
-        // refresh all card impacted by the changed filter
-        this.refreshCardsImpactedByFilter(filter_id);
+        // we directly apply the filters we already have in memory. no more re-reading from the server, no more waiting
+        this.refreshCardsImpactedByFilter(filter_id, filters);
     }
 
-    refreshCardsImpactedByFilter(filter_id) {
+    refreshCardsImpactedByFilter(filter_id, filters) {
         $('.dashboard .card.filter-'+filter_id).each((i, elem) => {
             const gridstack_item = $(elem).closest(".grid-stack-item");
             const card_id = gridstack_item.attr('gs-id');
-            this.getCardsAjax(`[gs-id="${CSS.escape(card_id)}"]`);
+            this.getCardsAjax(`[gs-id="${CSS.escape(card_id)}"]`, filters);
         });
     }
 
@@ -1131,10 +1133,11 @@ class GLPIDashboard {
             .trigger('change');
     }
 
-    getCardsAjax(specific_one) {
+    getCardsAjax(specific_one, filters) {
         specific_one = specific_one || "";
 
-        const filters = this.getFiltersFromDB();
+        // Callers that already know the filters can pass them in to avoid a redundant synch round-trip to the server
+        filters = filters || this.getFiltersFromDB();
         const force = (specific_one.length > 0 ? 1 : 0);
 
         const requested_cards = [];
@@ -1337,7 +1340,7 @@ class GLPIDashboard {
         if (this.current_name.length > 0) {
             filters[this.current_name] = sub_filters;
         }
-        $.ajax({
+        return $.ajax({
             method: 'POST',
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
             data: {
