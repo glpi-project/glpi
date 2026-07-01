@@ -215,7 +215,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'get_card':
-        if (!$dashboard->canViewCurrent() && !$embed) {
+        if (!$dashboard->canViewCurrent() && !$is_embed_request) {
             throw new AccessDeniedHttpException();
         }
 
@@ -228,7 +228,7 @@ switch ($_REQUEST['action']) {
     case 'get_cards':
         header("Content-Type: application/json; charset=UTF-8");
 
-        if (!$dashboard->canViewCurrent() && !$embed) {
+        if (!$dashboard->canViewCurrent() && !$is_embed_request) {
             throw new AccessDeniedHttpException();
         }
 
@@ -272,7 +272,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'get_dashboard_items':
-        if (!$dashboard->canViewCurrent() && !$embed) {
+        if (!$dashboard->canViewCurrent() && !$is_embed_request) {
             throw new AccessDeniedHttpException();
         }
 
