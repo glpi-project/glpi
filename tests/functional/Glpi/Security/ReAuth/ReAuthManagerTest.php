@@ -148,7 +148,7 @@ class ReAuthManagerTest extends DbTestCase
         // expected data defined in fakeWebRequest()
         $this->assertSame('https://glpi.example.org/front/user.form.php', $manager->getTargetURL());
         $this->assertSame('GET', $manager->getRedirectMethod());
-        $this->assertSame('https://glpi.example.org/front/user.php', $manager->getCancelURL());
+        $this->assertSame('https://glpi.example.org/front/user.php', $manager->getOriginURL());
         $this->assertSame('bar', $manager->getRedirectData()['foo']);
         $this->assertSame(
             'https://glpi.example.org/front/user.php',
@@ -185,7 +185,7 @@ class ReAuthManagerTest extends DbTestCase
         $manager = new ReAuthManager();
         unset(
             $_SESSION['glpi_reauth_target_url'],
-            $_SESSION['glpi_reauth_cancel_url'],
+            $_SESSION['glpi_reauth_origin_url'],
             $_SESSION['glpi_reauth_httpmethod'],
             $_SESSION['glpi_reauth_data'],
         );
@@ -193,9 +193,9 @@ class ReAuthManagerTest extends DbTestCase
         // --- assert ---
         $this->assertSame('/', $manager->getTargetURL());
         $this->assertSame('GET', $manager->getRedirectMethod());
-        $this->assertSame($CFG_GLPI['root_doc'], $manager->getCancelURL());
-        // getRedirectData() always injects the referer pointing to the target URL.
-        $this->assertSame(['_glpi_http_referer' => '/'], $manager->getRedirectData());
+        $this->assertSame($CFG_GLPI['root_doc'], $manager->getOriginURL());
+        // getRedirectData() injects the referer pointing to the origin URL (calling page).
+        $this->assertSame(['_glpi_http_referer' => $CFG_GLPI['root_doc']], $manager->getRedirectData());
     }
 
     /** Throws InvalidArgumentException when a non-CommonGLPI class is passed. */

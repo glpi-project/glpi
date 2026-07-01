@@ -104,7 +104,7 @@ class ReAuthController extends AbstractController
     {
         return [
             'redirect'      => $this->reAuthManager->getTargetURL(),
-            'cancel_url'    => $this->reAuthManager->getCancelURL(),
+            'cancel_url'    => $this->reAuthManager->getOriginURL(),
             'action'        => $this->router->generate('reauth_verify'),
             'label'         => $this->reAuthManager->getLabel(),
             'template'      => $this->reAuthManager->getPromptTemplate(),

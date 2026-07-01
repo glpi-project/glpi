@@ -69,7 +69,7 @@ final class ReAuthManager
         global $CFG_GLPI;
 
         $this->setRequestedTarget();
-        $this->setCancelURL(\Html::getRefererUrl() ?? $CFG_GLPI["root_doc"]);
+        $this->setOriginURL(\Html::getRefererUrl() ?? $CFG_GLPI["root_doc"]);
         throw new RedirectException('/ReAuth/Prompt');
     }
 
@@ -120,27 +120,38 @@ final class ReAuthManager
         return $_SESSION['glpi_reauth_target_url'] ?? '/';
     }
 
-    public function getCancelURL(): string
+    /**
+     * URL of the page the user was on when the reauth-requiring action was triggered.
+     *
+     * Used both as the "Cancel" target on the reauth prompt and as the referer
+     * of the replayed request (@see getRedirectData()).
+     */
+    public function getOriginURL(): string
     {
         global $CFG_GLPI;
 
-        return $_SESSION['glpi_reauth_cancel_url'] ?? $CFG_GLPI["root_doc"];
+        return $_SESSION['glpi_reauth_origin_url'] ?? $CFG_GLPI["root_doc"];
     }
 
-    public function setCancelURL(string $url): void
+    public function setOriginURL(string $url): void
     {
-        $_SESSION['glpi_reauth_cancel_url'] = $url;
+        $_SESSION['glpi_reauth_origin_url'] = $url;
     }
 
     /**
      * query data + _glpi_http_referer
+     *
+     * `_glpi_http_referer` is set to the origin page (the referer captured on
+     * the first pass, @see getOriginURL()) so that Html::back()/getBackUrl() on
+     * the replayed request returns the original page and not the reauth flow.
+     *
      * @return array<string, string>
      */
     public function getRedirectData(): array
     {
         $reauth_data = $_SESSION['glpi_reauth_data'] ?? [];
 
-        return $reauth_data + ['_glpi_http_referer' => $this->getCancelURL()];
+        return $reauth_data + ['_glpi_http_referer' => $this->getOriginURL()];
     }
 
     /**
