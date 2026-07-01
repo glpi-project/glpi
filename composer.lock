@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0744bb5d9bf7345ac7b0edee731ac6c4",
+    "content-hash": "a7fcf22e3ebc948668e6027de80c5a96",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -636,16 +636,16 @@
         },
         {
             "name": "donatj/phpuseragentparser",
-            "version": "v1.11.0",
+            "version": "v1.12.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/donatj/PhpUserAgent.git",
-                "reference": "c98541c5198bb75564d7db4a8971773bc848361e"
+                "reference": "f76fed972ce4a3d7d58fe99a8627132606b58046"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/donatj/PhpUserAgent/zipball/c98541c5198bb75564d7db4a8971773bc848361e",
-                "reference": "c98541c5198bb75564d7db4a8971773bc848361e",
+                "url": "https://api.github.com/repos/donatj/PhpUserAgent/zipball/f76fed972ce4a3d7d58fe99a8627132606b58046",
+                "reference": "f76fed972ce4a3d7d58fe99a8627132606b58046",
                 "shasum": ""
             },
             "require": {
@@ -656,7 +656,7 @@
                 "camspiers/json-pretty": "~1.0",
                 "donatj/drop": "*",
                 "ext-json": "*",
-                "phpunit/phpunit": "~4.8|~9"
+                "phpunit/phpunit": "~4.8|~8|~9"
             },
             "type": "library",
             "autoload": {
@@ -690,7 +690,7 @@
             ],
             "support": {
                 "issues": "https://github.com/donatj/PhpUserAgent/issues",
-                "source": "https://github.com/donatj/PhpUserAgent/tree/v1.11.0"
+                "source": "https://github.com/donatj/PhpUserAgent/tree/v1.12.0"
             },
             "funding": [
                 {
@@ -706,7 +706,7 @@
                     "type": "ko_fi"
                 }
             ],
-            "time": "2025-09-10T21:58:40+00:00"
+            "time": "2026-06-16T21:13:33+00:00"
         },
         {
             "name": "egulias/email-validator",
