@@ -408,10 +408,10 @@ describe("Debug Bar", () => {
         const wrapper = await mountToolbar();
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/debug.php', 'GET', {action: 'get_itemtypes'}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/debug.php', 'GET', {action: 'get_itemtypes'}, () => {
             return ['Profile', 'User'];
         }));
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/debug.php', 'GET', {action: 'get_search_options', itemtype: 'Profile'}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/debug.php', 'GET', {action: 'get_search_options', itemtype: 'Profile'}, () => {
             return {
                 "1": {
                     "table": "glpi_profiles",
@@ -434,7 +434,7 @@ describe("Debug Bar", () => {
             };
         }));
 
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/debug.php', 'GET', {action: 'get_search_options', itemtype: 'User'}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/debug.php', 'GET', {action: 'get_search_options', itemtype: 'User'}, () => {
             return {};
         }));
 
@@ -464,7 +464,7 @@ describe("Debug Bar", () => {
         const wrapper = await mountToolbar();
 
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/debug.php', 'GET', {action: 'get_themes'}, () => {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/debug.php', 'GET', {action: 'get_themes'}, () => {
             return [
                 {
                     "key": "auror",

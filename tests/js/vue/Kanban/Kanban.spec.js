@@ -38,17 +38,17 @@ describe('Kanban', () => {
     beforeEach(() => {
         document.body.innerHTML = '<div id="kanban-app"></div>';
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/kanban.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/kanban.php', 'GET', {
             action: 'load_column_state'
         }, () => {
             return {"state":{"0":{"column":"0","folded": "false"}, "1":{"column":"1","folded": "false"}},"timestamp":"2026-06-17 08:59:14"};
         }));
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/kanban.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/kanban.php', 'GET', {
             action: 'get_kanbans'
         }, () => {
             return {"-1": "Global", "1": "Project 1"};
         }));
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/kanban.php', 'GET', {
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/kanban.php', 'GET', {
             action: 'refresh'
         }, () => {
             return {"0":{"name":"No status","_protected":true}};

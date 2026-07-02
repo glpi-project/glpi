@@ -35,7 +35,7 @@
 import useScheduler from "../FullCalendar/useScheduler.js";
 import { watch, ref, onMounted, onUnmounted } from "vue";
 
-export default function usePlanningScheduler(calendar_el, current_view, full_view, date_picker_el, event_context_menu_el) {
+export default function usePlanningScheduler(calendar_el, current_view, full_view, date_picker_el, event_context_menu_el, now) {
     const calendar_api = ref(null);
     let date_picker_flatpickr = null;
 
@@ -45,6 +45,8 @@ export default function usePlanningScheduler(calendar_el, current_view, full_vie
 
         if (full_view) {
             date_picker_flatpickr = new flatpickr(date_picker_el.value, {
+                // keep the date picker in sync with the calendar's own notion of "now"
+                now: now,
                 onChange: function (selected_date) {
                     // convert to UTC to avoid timezone issues
                     const date = new Date(

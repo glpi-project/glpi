@@ -73,7 +73,8 @@
         current_view,
         props.full_view,
         useTemplateRef('date_picker'),
-        event_context_menu
+        event_context_menu,
+        props.now
     );
     provide('scheduler', scheduler);
     const {

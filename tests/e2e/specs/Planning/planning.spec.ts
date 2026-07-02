@@ -50,6 +50,7 @@ test.describe('Planning View', () => {
         await expect(shared_planning_page.page.locator('div.fc')).toBeVisible();
     });
 
+    /* eslint-disable-next-line playwright/expect-expect -- expects are done in fillNewEventForm */
     test('Create event', async () => {
         await shared_planning_page.gotoView('month');
         await shared_planning_page.page.getByRole('gridcell', { name: /1/ }).first().click();

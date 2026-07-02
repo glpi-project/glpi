@@ -68,6 +68,7 @@ describe('Planning/PlanningScheduler Vue Component', async () => {
         });
 
         vi.useFakeTimers();
+        vi.setSystemTime(new Date('2026-06-05T21:02:10'));
     });
 
     afterEach(() => {
