@@ -35,7 +35,6 @@
 namespace tests\units;
 
 use CommonDBConnexity;
-use CommonDBRelation;
 use CommonDBTM;
 use Computer;
 use Document;
@@ -900,7 +899,6 @@ class CommonDBTMTest extends DbTestCase
     {
         $computer = new Computer();
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
-        $bkp_current = $_SESSION['glpi_currenttime'];
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
         //test with date set
@@ -1021,25 +1019,25 @@ class CommonDBTMTest extends DbTestCase
     {
         return [
             [
-                'relation_itemtype' => \Infocom::getType(),
+                'relation_itemtype' => \Infocom::class,
                 'config_name'       => 'infocom_types',
             ],
             [
-                'relation_itemtype' => \ReservationItem::getType(),
+                'relation_itemtype' => \ReservationItem::class,
                 'config_name'       => 'reservation_types',
             ],
             [
-                'relation_itemtype' => \Contract_Item::getType(),
+                'relation_itemtype' => \Contract_Item::class,
                 'config_name'       => 'contract_types',
                 'linked_itemtype'   => \Contract::class,
             ],
             [
-                'relation_itemtype' => Document_Item::getType(),
+                'relation_itemtype' => Document_Item::class,
                 'config_name'       => 'document_types',
                 'linked_itemtype'   => Document::class,
             ],
             [
-                'relation_itemtype' => \KnowbaseItem_Item::getType(),
+                'relation_itemtype' => \KnowbaseItem_Item::class,
                 'config_name'       => 'kb_types',
                 'linked_itemtype'   => \KnowbaseItem::class,
             ],
@@ -1084,7 +1082,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, $computer_1_id);
         $relation_item_1_id = $relation_item->add(
             [
-                'itemtype' => $computer->getType(),
+                'itemtype' => $computer::class,
                 'items_id' => $computer_1_id,
             ] + $linked_item_input
         );
@@ -1101,7 +1099,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, $computer_2_id);
         $relation_item_2_id = $relation_item->add(
             [
-                'itemtype' => $computer->getType(),
+                'itemtype' => $computer::class,
                 'items_id' => $computer_2_id,
             ] + $linked_item_input
         );
@@ -1109,7 +1107,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($relation_item->getFromDB($relation_item_2_id));
 
         $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI[$config_name] = [$computer->getType()];
+        $CFG_GLPI[$config_name] = [$computer::class];
         $computer->delete(['id' => $computer_1_id], true);
         $CFG_GLPI = $cfg_backup;
 
@@ -1537,7 +1535,7 @@ class CommonDBTMTest extends DbTestCase
         // Check the document exists and is linked to the computer
         $document_item = new Document_Item();
         $this->assertTrue(
-            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $document_item->getFromDbByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
         );
         $document = new Document();
         $this->assertTrue(
@@ -1600,7 +1598,7 @@ class CommonDBTMTest extends DbTestCase
         // Check the document is linked to the computer
         $document_item = new Document_Item();
         $this->assertTrue(
-            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $document_item->getFromDbByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
         );
 
         // Check that first document has been updated
@@ -1648,7 +1646,7 @@ class CommonDBTMTest extends DbTestCase
         // No document should be created since tag is not in content
         $document_item = new Document_Item();
         $this->assertFalse(
-            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $document_item->getFromDbByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
         );
     }
 
@@ -1695,7 +1693,7 @@ class CommonDBTMTest extends DbTestCase
         // Document should be created and linked since tag is in content
         $document_item = new Document_Item();
         $this->assertTrue(
-            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $document_item->getFromDbByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
         );
         $document = new Document();
         $this->assertTrue(
@@ -1742,7 +1740,7 @@ class CommonDBTMTest extends DbTestCase
         // because this is a file picker upload, not a pasted image
         $document_item = new Document_Item();
         $this->assertTrue(
-            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $document_item->getFromDbByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
         );
         $document = new Document();
         $this->assertTrue(

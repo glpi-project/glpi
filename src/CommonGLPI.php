@@ -43,7 +43,6 @@ use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
 use Glpi\Security\ReAuth\ReAuthManager;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\parse_url;
 
