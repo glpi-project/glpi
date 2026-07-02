@@ -50,7 +50,7 @@ class ReAuthController extends AbstractController
 {
     public function __construct(
         private readonly UrlGeneratorInterface $router,
-        private readonly ReAuthManager $reAuthManager = new ReAuthManager(),
+        private readonly ReAuthManager $reAuthManager,
     ) {}
 
     #[Route(

@@ -50,7 +50,7 @@ final class ReAuthControllerTest extends DbTestCase
     {
         // --- arrange ---
         $this->login();
-        $controller = new ReAuthController($this->getRouterMock());
+        $controller = new ReAuthController($this->getRouterMock(), ReAuthManager::getInstance());
 
         // --- act ---
         $response = $controller->prompt();
@@ -67,7 +67,7 @@ final class ReAuthControllerTest extends DbTestCase
         $this->login();
         unset($_SESSION['glpi_reauth_until']);
         $expected_reauth_until = (new DateTime($_SESSION['glpi_currenttime']))->getTimestamp() + ReAuthManager::REAUTH_DELAY_SECONDS;
-        $controller = new ReAuthController($this->getRouterMock());
+        $controller = new ReAuthController($this->getRouterMock(), ReAuthManager::getInstance());
 
         // --- act : submit the correct password ---
         $response = $controller->verify(Request::create('/ReAuth/Verify', 'POST', ['user_input' => TU_PASS]));
@@ -83,7 +83,7 @@ final class ReAuthControllerTest extends DbTestCase
         // --- arrange : logged-in user, not yet re-authenticated ---
         $this->login();
         unset($_SESSION['glpi_reauth_until']);
-        $controller = new ReAuthController($this->getRouterMock());
+        $controller = new ReAuthController($this->getRouterMock(), ReAuthManager::getInstance());
 
         // --- act : submit a wrong password ---
         $response = $controller->verify(Request::create('/ReAuth/Verify', 'POST', ['user_input' => 'wrong-password']));

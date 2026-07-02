@@ -97,7 +97,7 @@ trait ReAuthTestTrait
     {
         $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s');
         if ($reauthenticated) {
-            (new ReAuthManager())->authenticate();
+            (ReAuthManager::getInstance())->authenticate();
         } else {
             unset($_SESSION['glpi_reauth_until']);
         }

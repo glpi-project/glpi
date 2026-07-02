@@ -76,7 +76,7 @@ class ReAuthManagerTest extends DbTestCase
     public function testIsReAuthenticated(?int $offset, bool $expected): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
+        $manager = ReAuthManager::getInstance();
         if ($offset === null) {
             unset($_SESSION['glpi_reauth_until']);
         } else {
@@ -91,7 +91,7 @@ class ReAuthManagerTest extends DbTestCase
     public function testAuthenticateSetsValidityToNowPlusDelay(): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
+        $manager = ReAuthManager::getInstance();
         unset($_SESSION['glpi_reauth_until']);
 
         // --- act ---
@@ -107,7 +107,7 @@ class ReAuthManagerTest extends DbTestCase
     public function testCheckReAuthenticationOrRedirectDoesNothingWhenReAuthenticated(): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
+        $manager = ReAuthManager::getInstance();
         $manager->authenticate();
 
         // --- act ---
@@ -121,7 +121,7 @@ class ReAuthManagerTest extends DbTestCase
     public function testCheckReAuthenticationOrRedirectThrowsWhenNotReAuthenticated(): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
+        $manager = ReAuthManager::getInstance();
         unset($_SESSION['glpi_reauth_until']);
         $this->fakeWebContext(request_uri: '/front/user.form.php?id=2');
 
@@ -134,7 +134,7 @@ class ReAuthManagerTest extends DbTestCase
     public function testRedirectToReauthStoresPostRequestData(): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
+        $manager = ReAuthManager::getInstance();
         $this->fakeWebContext(
             request_uri: '/front/user.form.php?id=2',
             method: 'POST',
@@ -166,7 +166,7 @@ class ReAuthManagerTest extends DbTestCase
     public function testRedirectToReauthStoresUrlWithoutGetParams(): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
+        $manager = ReAuthManager::getInstance();;
         $requested_url = '/front/user.form.php?id=2&another_param=value';
         $this->fakeWebContext(request_uri: $requested_url);
 
@@ -194,7 +194,7 @@ class ReAuthManagerTest extends DbTestCase
         global $CFG_GLPI;
 
         // --- arrange ---
-        $manager = new ReAuthManager();
+        $manager = ReAuthManager::getInstance();
         $this->fakeWebContext(
             request_uri: '/front/user.form.php?id=2',
             referer: 'https://glpi.example.org/ReAuth/Prompt',
@@ -217,7 +217,7 @@ class ReAuthManagerTest extends DbTestCase
         global $CFG_GLPI;
 
         // --- arrange ---
-        $manager = new ReAuthManager();
+        $manager = ReAuthManager::getInstance();
         unset(
             $_SESSION['glpi_reauth_requested_url'],
             $_SESSION['glpi_reauth_origin_url'],
@@ -257,7 +257,7 @@ class ReAuthManagerTest extends DbTestCase
     public function testAtLeastOneItemTypeRequiresReauthenticationThrowsOnInvalidType(): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
+        $manager = ReAuthManager::getInstance();
 
         // --- act + assert ---
         $this->expectException(InvalidArgumentException::class);
@@ -278,7 +278,7 @@ class ReAuthManagerTest extends DbTestCase
     public function testAtLeastOneItemTypeRequiresReauthentication(array $itemtypes, bool $expected): void
     {
         // --- arrange : web context, not yet re-authenticated ---
-        $manager = new ReAuthManager();
+        $manager = ReAuthManager::getInstance();
         $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
         unset($_SESSION['glpi_reauth_until']);
 
