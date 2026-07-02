@@ -4451,18 +4451,17 @@ final class SQLProvider implements SearchProviderInterface
                 && (string) $criterion['value'] !== ''
                 && !empty($searchopt[$criterion['field']]['forcegroupby'])
             ) {
-                $ids[] = $criterion['field'];
+                $ids[] = (int) $criterion['field'];
             }
         }
         return array_values(array_unique($ids));
     }
 
     /**
-     * Minimal FROM for the inner/COUNT queries: base table + default join + the 1:1
-     * $data['tocompute'] joins, deferring display-only 1:N (forcegroupby) joins — except those in
-     * $keep_forcegroupby_ids (filtered in WHERE, so still referenced). Aliases are deterministic
-     * ({@see computeComplexJoinID()}) so they match the $WHERE fragment. Only valid without meta
-     * criterion / all_search (their WHERE may reference joins absent from $data['tocompute']).
+     * Minimal FROM for the inner/COUNT queries: base + default join + 1:1 joins, deferring
+     * display-only 1:N (forcegroupby) joins except those in $keep_forcegroupby_ids (WHERE-filtered).
+     * Uses its own $already_link_tables so a kept filter join re-emits any `beforejoin` parent a
+     * deferred join would otherwise have supplied. Not valid with meta criterion / all_search.
      *
      * @param array<int|string, mixed> $data
      * @param array<int|string, mixed> $searchopt
@@ -4491,8 +4490,8 @@ final class SQLProvider implements SearchProviderInterface
             ) {
                 continue;
             }
-            // Defer display-only 1:N joins, but keep those filtered in WHERE.
-            if (!empty($searchopt[$val]['forcegroupby']) && !in_array($val, $keep_forcegroupby_ids, true)) {
+            // Defer display-only 1:N joins; keep WHERE-filtered ones ((int) $val: mixed id types).
+            if (!empty($searchopt[$val]['forcegroupby']) && !in_array((int) $val, $keep_forcegroupby_ids, true)) {
                 continue;
             }
             $ljoin = Search::addLeftJoin(
@@ -4515,8 +4514,9 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     /**
-     * Inner-subquery ORDER BY: plain main-table columns only (guaranteed by canUseDeferredJoin),
-     * with a trailing `id` for stable pagination.
+     * Inner-subquery ORDER BY: bare main-table column per sort field + trailing `id` for stable
+     * paging. The outer ORDER BY can't be reused (it uses the `ITEM_x` SELECT aliases, absent
+     * here); canUseDeferredJoin() guarantees each sort field is a plain column, so this is valid.
      *
      * @param array<int|string, mixed> $sort_fields
      * @param array<int|string, mixed> $searchopt
@@ -4643,6 +4643,16 @@ final class SQLProvider implements SearchProviderInterface
                 || !empty($opt['forcegroupby'])
                 || !empty($opt['nosort'])
                 || isset($opt['computation'])
+            ) {
+                return false;
+            }
+            // Skip if the sort has a computed ORDER expression (date_delay, IP, plugin, …): the
+            // inner subquery can only order by the bare column. getOrderByCriteria() returns the
+            // `ITEM_x` alias only for plain columns, so anything else disqualifies deferral.
+            $order_exprs = self::getOrderByCriteria($data['itemtype'], [$sort_field]);
+            if (
+                count($order_exprs) !== 1
+                || !str_starts_with($order_exprs[0]->getValue(), '`ITEM_' . $data['itemtype'] . '_' . $ID . '`')
             ) {
                 return false;
             }
@@ -5865,6 +5875,14 @@ final class SQLProvider implements SearchProviderInterface
 
             if ($data['search']['start'] > $data['data']['totalcount']) {
                 $data['search']['start'] = 0;
+                // A SQL LIMIT already fetched the (empty) out-of-range page; rebuild with the
+                // clamped start and re-run so the first page is returned, as before optimization.
+                if ($data['sql']['has_sql_limit'] ?? false) {
+                    self::constructSQL($data);
+                    $stmt = $DBread->prepare($data['sql']['search']->getQuery());
+                    $DBread->executeStatement($stmt, $data['sql']['search']->getParams());
+                    $result = $stmt->get_result();
+                }
             }
 
             // Search case
@@ -6003,6 +6021,10 @@ final class SQLProvider implements SearchProviderInterface
             Profiler::getInstance()->pause('SQLProvider::constructData - giveItem');
             while (($i < $data['data']['totalcount']) && ($i <= $data['data']['end'])) {
                 $row = $DBread->fetchAssoc($result);
+                if ($row === null || $row === false) {
+                    // Defensive: fewer rows than totalcount expects; don't parse a null row.
+                    break;
+                }
 
                 $newrow        = [];
                 $newrow['raw'] = $row;
