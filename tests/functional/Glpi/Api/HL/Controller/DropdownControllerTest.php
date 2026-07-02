@@ -54,7 +54,6 @@ class DropdownControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('GET', '/Dropdowns'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -102,7 +101,6 @@ class DropdownControllerTest extends HLAPITestCase
             ],
         ];
         $this->api->call(new Request('GET', '/Dropdowns'), function ($call) use ($dataset) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($dataset) {
@@ -118,7 +116,6 @@ class DropdownControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('GET', '/Dropdowns'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -147,7 +144,6 @@ class DropdownControllerTest extends HLAPITestCase
         $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
 
         $this->api->call(new Request('GET', '/Dropdowns'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -169,7 +165,6 @@ class DropdownControllerTest extends HLAPITestCase
                         $new_location = null;
                         $new_items_id = null;
                         $this->api->call($create_request, function ($call) use (&$new_location, &$new_items_id) {
-                            /** @var \HLAPICallAsserter $call */
                             $call->response
                                 ->isOK()
                                 ->headers(function ($headers) use (&$new_location) {
@@ -220,7 +215,6 @@ class DropdownControllerTest extends HLAPITestCase
         $this->api->call(new Request('GET', '/Dropdowns/Location', [
             'GLPI-Entity' => getItemByTypeName('Entity', '_test_child_1', true),
         ]), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -251,7 +245,6 @@ class DropdownControllerTest extends HLAPITestCase
         $this->login();
 
         $this->api->call(new Request('GET', '/Dropdowns/State/' . $state->getID()), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertTrue($content['visibilities']['computer']);
@@ -269,12 +262,10 @@ class DropdownControllerTest extends HLAPITestCase
             'printer' => false,
         ]);
         $this->api->call($update_request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
 
         $this->api->call(new Request('GET', '/Dropdowns/State/' . $state->getID()), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertFalse($content['visibilities']['computer']);

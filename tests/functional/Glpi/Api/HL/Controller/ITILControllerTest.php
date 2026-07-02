@@ -78,7 +78,6 @@ class ITILControllerTest extends HLAPITestCase
             $request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
             $itil_base_path = null;
             $this->api->call($request, function ($call) use ($itil_type, &$itil_base_path) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->headers(function ($headers) use ($itil_type, &$itil_base_path) {
@@ -106,7 +105,6 @@ class ITILControllerTest extends HLAPITestCase
             $request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
             $itil_base_path = null;
             $this->api->call($request, function ($call) use ($itil_type, &$itil_base_path) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->headers(function ($headers) use ($itil_type, &$itil_base_path) {
@@ -134,7 +132,6 @@ class ITILControllerTest extends HLAPITestCase
             $request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
             $itil_base_path = null;
             $this->api->call($request, function ($call) use ($itil_type, &$itil_base_path) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->headers(function ($headers) use ($itil_type, &$itil_base_path) {
@@ -150,7 +147,6 @@ class ITILControllerTest extends HLAPITestCase
                     $request = new Request('POST', $itil_base_path . '/Timeline/' . $subtype);
                     $request->setParameter('content', 'test' . $i);
                     $this->api->call($request, function ($call) {
-                        /** @var \HLAPICallAsserter $call */
                         $call->response->isOK();
                     });
                 }
@@ -158,7 +154,6 @@ class ITILControllerTest extends HLAPITestCase
 
             // Get timeline
             $this->api->call(new Request('GET', $itil_base_path . '/Timeline'), function ($call) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->jsonContent(function ($content) {
@@ -205,7 +200,6 @@ class ITILControllerTest extends HLAPITestCase
             $request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
             $itil_base_path = null;
             $this->api->call($request, function ($call) use ($itil_type, &$itil_base_path) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->headers(function ($headers) use ($itil_type, &$itil_base_path) {
@@ -222,7 +216,6 @@ class ITILControllerTest extends HLAPITestCase
                     $request = new Request('POST', $itil_base_path . '/Timeline/' . $subtype);
                     $request->setParameter('content', 'test' . $i);
                     $this->api->call($request, function ($call) {
-                        /** @var \HLAPICallAsserter $call */
                         $call->response->isOK();
                     });
                 }
@@ -231,7 +224,6 @@ class ITILControllerTest extends HLAPITestCase
             // Get the specific subtype
             foreach ($subtypes as $subtype) {
                 $this->api->call(new Request('GET', $itil_base_path . '/Timeline/' . $subtype), function ($call) use ($subtype) {
-                    /** @var \HLAPICallAsserter $call */
                     $call->response
                         ->isOK()
                         ->jsonContent(function ($content) use ($subtype) {
@@ -340,12 +332,10 @@ class ITILControllerTest extends HLAPITestCase
         $request->setParameter('itemtype', 'Change');
         $request->setParameter('items_id', $tickets_id + 1);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
         // verify the parent was not changed
         $this->api->call(new Request('GET', "/Assistance/Ticket/$tickets_id/Timeline/Followup/$fup_id"), function ($call) use ($tickets_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) use ($tickets_id) {
                 $this->assertEquals($tickets_id, $content['items_id']);
@@ -357,12 +347,10 @@ class ITILControllerTest extends HLAPITestCase
         $request = new Request('PATCH', "/Assistance/Ticket/$tickets_id/Timeline/Task/$task_id");
         $request->setParameter('tickets_id', $tickets_id + 1);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
         // verify the parent was not changed
         $this->api->call(new Request('GET', "/Assistance/Ticket/$tickets_id/Timeline/Task/$task_id"), function ($call) use ($tickets_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) use ($tickets_id) {
                 $this->assertEquals($tickets_id, $content['tickets_id']);
@@ -374,12 +362,10 @@ class ITILControllerTest extends HLAPITestCase
         $request->setParameter('itemtype', 'Change');
         $request->setParameter('items_id', $tickets_id + 1);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
         // verify the parent was not changed
         $this->api->call(new Request('GET', "/Assistance/Ticket/$tickets_id/Timeline/Solution/$solution_id"), function ($call) use ($tickets_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) use ($tickets_id) {
                 $this->assertEquals($tickets_id, $content['items_id']);
@@ -391,12 +377,10 @@ class ITILControllerTest extends HLAPITestCase
         $request = new Request('PATCH', "/Assistance/Ticket/$tickets_id/Timeline/Validation/$validation_id");
         $request->setParameter('tickets_id', $tickets_id + 1);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
         // verify the parent was not changed
         $this->api->call(new Request('GET', "/Assistance/Ticket/$tickets_id/Timeline/Validation/$validation_id"), function ($call) use ($tickets_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) use ($tickets_id) {
                 $this->assertEquals($tickets_id, $content['tickets_id']);
@@ -408,12 +392,10 @@ class ITILControllerTest extends HLAPITestCase
         $request->setParameter('itemtype', 'Change');
         $request->setParameter('items_id', $tickets_id + 1);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
         });
         // verify the parent was not changed
         $this->api->call(new Request('GET', "/Assistance/Ticket/$tickets_id/Timeline/Document/$document_item_id"), function ($call) use ($tickets_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isOK();
             $call->response->jsonContent(function ($content) use ($tickets_id) {
                 $this->assertEquals($tickets_id, $content['items_id']);
@@ -529,7 +511,6 @@ class ITILControllerTest extends HLAPITestCase
             if ($itil_type !== Ticket::class) {
                 $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = CommonITILObject::READMY;
                 $this->api->call($request, function ($call) use ($func_name) {
-                    /** @var \HLAPICallAsserter $call */
                     $call->response
                         ->isOK()
                         ->jsonContent(function ($content) use ($func_name) {
@@ -545,7 +526,6 @@ class ITILControllerTest extends HLAPITestCase
             } else {
                 $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = CommonITILObject::READMY;
                 $this->api->call($request, function ($call) use ($func_name) {
-                    /** @var \HLAPICallAsserter $call */
                     $call->response
                         ->isOK()
                         ->jsonContent(function ($content) use ($func_name) {
@@ -558,7 +538,6 @@ class ITILControllerTest extends HLAPITestCase
 
                 $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = Ticket::READGROUP;
                 $this->api->call($request, function ($call) use ($func_name) {
-                    /** @var \HLAPICallAsserter $call */
                     $call->response
                         ->isOK()
                         ->jsonContent(function ($content) use ($func_name) {
@@ -569,7 +548,6 @@ class ITILControllerTest extends HLAPITestCase
 
                 $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = Ticket::OWN;
                 $this->api->call($request, function ($call) use ($func_name) {
-                    /** @var \HLAPICallAsserter $call */
                     $call->response
                         ->isOK()
                         ->jsonContent(function ($content) use ($func_name) {
@@ -581,7 +559,6 @@ class ITILControllerTest extends HLAPITestCase
 
                 $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = Ticket::READASSIGN;
                 $this->api->call($request, function ($call) use ($func_name) {
-                    /** @var \HLAPICallAsserter $call */
                     $call->response
                         ->isOK()
                         ->jsonContent(function ($content) use ($func_name) {
@@ -594,7 +571,6 @@ class ITILControllerTest extends HLAPITestCase
 
                 $_SESSION['glpiactiveprofile'][$itil_type::$rightname] = Ticket::READNEWTICKET;
                 $this->api->call($request, function ($call) use ($func_name) {
-                    /** @var \HLAPICallAsserter $call */
                     $call->response
                         ->isOK()
                         ->jsonContent(function ($content) use ($func_name) {
@@ -637,7 +613,6 @@ class ITILControllerTest extends HLAPITestCase
         $request->setParameter('id', $members[0]['id']);
         $request->setParameter('role', $members[0]['role']);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
 
@@ -648,7 +623,6 @@ class ITILControllerTest extends HLAPITestCase
             $request->setParameter('id', $member['id']);
             $request->setParameter('role', $member['role']);
             $this->api->call($request, function ($call) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response->isOK();
             });
         }
@@ -656,13 +630,10 @@ class ITILControllerTest extends HLAPITestCase
         // Get all members
         $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember"), function ($call) use ($members) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isAccessDenied();
+            $call->response->isAccessDenied();
         });
         $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $original_ticket_rights;
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember"), function ($call) use ($members) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($members) {
@@ -677,21 +648,17 @@ class ITILControllerTest extends HLAPITestCase
         // Get by role
         $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/requester"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/observer"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/assigned"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
 
         $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $original_ticket_rights;
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/requester"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -700,7 +667,6 @@ class ITILControllerTest extends HLAPITestCase
                 });
         });
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/observer"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -709,7 +675,6 @@ class ITILControllerTest extends HLAPITestCase
                 });
         });
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/assigned"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -725,7 +690,6 @@ class ITILControllerTest extends HLAPITestCase
         $request->setParameter('id', $members[0]['id']);
         $request->setParameter('role', $members[0]['role']);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
 
@@ -736,14 +700,12 @@ class ITILControllerTest extends HLAPITestCase
             $request->setParameter('id', $member['id']);
             $request->setParameter('role', $member['role']);
             $this->api->call($request, function ($call) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response->isOK();
             });
         }
 
         // Verify removal
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {

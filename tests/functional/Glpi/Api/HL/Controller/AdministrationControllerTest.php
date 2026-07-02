@@ -45,14 +45,12 @@ class AdministrationControllerTest extends HLAPITestCase
     public function testSearchUsers()
     {
         $this->api->call(new Request('GET', '/Administration/User'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isUnauthorizedError();
         });
 
         $this->login();
         $this->api->call(new Request('GET', '/Administration/User'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -71,7 +69,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $request = new Request('GET', '/Administration/User');
         $request->setParameter('filter', 'username==' . TU_USER);
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -86,7 +83,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $request = new Request('GET', '/Administration/User');
         $request->setParameter('filter', 'emails.email=like=*glpi.com');
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -123,7 +119,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $request = new Request('GET', '/Administration/User');
         $request->setParameter('filter', 'emails.email==' . TU_USER . '@glpi.com');
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -186,7 +181,6 @@ class AdministrationControllerTest extends HLAPITestCase
     {
         $this->login('glpi', 'glpi');
         $this->api->call(new Request('GET', "/Administration/$type/$id"), function ($call) use ($id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($id) {
@@ -200,7 +194,6 @@ class AdministrationControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('GET', '/Administration/User/username/' . TU_USER), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -213,7 +206,6 @@ class AdministrationControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('GET', '/Administration/User/me'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -225,7 +217,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $request = new Request('GET', '/Administration/User/me');
         $request->setParameter('filter', 'username==' . TU_USER . '_other');
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });
     }
@@ -234,7 +225,6 @@ class AdministrationControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('GET', '/Administration/User/me/email'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -268,7 +258,6 @@ class AdministrationControllerTest extends HLAPITestCase
         ])->current()['id'];
 
         $this->api->call(new Request('GET', "/Administration/User/me/email/$email_id"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -279,14 +268,12 @@ class AdministrationControllerTest extends HLAPITestCase
 
         // Try getting an email that doesn't exist
         $this->api->call(new Request('GET', "/Administration/User/me/email/999999999"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });
 
         // Log in as another user and try to get the email of the first user (should fail)
         $this->login('tech', 'tech');
         $this->api->call(new Request('GET', "/Administration/User/me/email/$email_id"), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });
     }
@@ -308,7 +295,6 @@ class AdministrationControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('GET', '/Administration/User/me/picture'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->content(function ($content) {
@@ -318,7 +304,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
 
         $this->api->call(new Request('GET', '/Administration/User/me'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -327,7 +312,6 @@ class AdministrationControllerTest extends HLAPITestCase
         });
 
         $this->api->call(new Request('GET', '/Administration/User/me/picture'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->content(function ($content) {
@@ -342,7 +326,6 @@ class AdministrationControllerTest extends HLAPITestCase
 
         $tu_id = getItemByTypeName('User', TU_USER, true);
         $this->api->call(new Request('GET', '/Administration/User/' . $tu_id . '/Picture'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->content(function ($content) {
@@ -352,7 +335,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
 
         $this->api->call(new Request('GET', '/Administration/User/' . $tu_id . '/Picture'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->content(function ($content) {
@@ -366,7 +348,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $this->login();
 
         $this->api->call(new Request('GET', '/Administration/User/username/' . TU_USER . '/Picture'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->content(function ($content) {
@@ -376,7 +357,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $this->addCustomUserPicture($_SESSION['glpiID'], GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
 
         $this->api->call(new Request('GET', '/Administration/User/username/' . TU_USER . '/Picture'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->content(function ($content) {
@@ -444,7 +424,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $request->setParameter('filter', 'username=in=(testuser1,testuser2,testuser3)');
         $request->setParameter('sort', 'firstname,username');
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -456,7 +435,6 @@ class AdministrationControllerTest extends HLAPITestCase
         });
         $request->setParameter('sort', 'firstname:desc,username');
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -510,7 +488,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $this->login();
         foreach ($used_endpoints as $endpoint) {
             $this->api->call(new Request('GET', $endpoint), function ($call) use ($expected_used) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->jsonContent(function ($content) use ($expected_used) {
@@ -523,7 +500,6 @@ class AdministrationControllerTest extends HLAPITestCase
         }
         foreach ($managed_endpoints as $endpoint) {
             $this->api->call(new Request('GET', $endpoint), function ($call) use ($expected_managed) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->jsonContent(function ($content) use ($expected_managed) {
@@ -540,7 +516,6 @@ class AdministrationControllerTest extends HLAPITestCase
     {
         $this->login(api_options: ['scope' => 'api']);
         $this->api->call(new Request('GET', '/Administration/User/Me'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isAccessDenied()
                 ->jsonContent(function ($content) {
@@ -548,7 +523,6 @@ class AdministrationControllerTest extends HLAPITestCase
                 });
         });
         $this->api->call(new Request('GET', '/Administration/User/Me/Emails/Default'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isAccessDenied()
                 ->jsonContent(function ($content) {
@@ -557,14 +531,10 @@ class AdministrationControllerTest extends HLAPITestCase
         });
         $this->login(api_options: ['scope' => 'user']);
         $this->api->call(new Request('GET', '/Administration/User/Me'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+            $call->response->isOK();
         });
         $this->api->call(new Request('GET', '/Administration/User/Me/Emails/Default'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+            $call->response->isOK();
         });
     }
 
@@ -572,7 +542,6 @@ class AdministrationControllerTest extends HLAPITestCase
     {
         $this->login(api_options: ['scope' => 'api']);
         $this->api->call(new Request('GET', '/Administration/User/me'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isAccessDenied()
                 ->jsonContent(function ($content) {
@@ -580,7 +549,6 @@ class AdministrationControllerTest extends HLAPITestCase
                 });
         });
         $this->api->call(new Request('GET', '/Administration/User/me/Emails/Default'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isAccessDenied()
                 ->jsonContent(function ($content) {
@@ -590,7 +558,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $this->login(api_options: ['scope' => 'email']);
         // Access to email scope doesn't allow broad access to current user info
         $this->api->call(new Request('GET', '/Administration/User/me'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isAccessDenied()
                 ->jsonContent(function ($content) {
@@ -598,9 +565,7 @@ class AdministrationControllerTest extends HLAPITestCase
                 });
         });
         $this->api->call(new Request('GET', '/Administration/User/me/Emails/Default'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+            $call->response->isOK();
         });
     }
 
@@ -620,7 +585,6 @@ class AdministrationControllerTest extends HLAPITestCase
 
         $tu_id = getItemByTypeName('User', TU_USER, true);
         $this->api->call(new Request('GET', '/Administration/User/' . $tu_id . '/Preference'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -634,7 +598,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $this->login();
 
         $this->api->call(new Request('GET', '/Administration/User/' . TU_USER . '/Preference'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -648,7 +611,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $this->login();
 
         $this->api->call(new Request('GET', '/Administration/User/me/Preference'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -666,7 +628,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $request->setParameter('palette', 'teclib');
         $request->setParameter('language', 'fr_FR');
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -685,7 +646,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $request->setParameter('palette', 'teclib');
         $request->setParameter('language', 'fr_FR');
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -704,7 +664,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $request->setParameter('palette', 'teclib');
         $request->setParameter('language', 'fr_FR');
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -721,7 +680,6 @@ class AdministrationControllerTest extends HLAPITestCase
 
         $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
         $this->api->call(new Request('GET', '/Administration/EventLog'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -740,7 +698,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $_SESSION['glpiactiveprofile']['system_logs'] = 0;
 
         $this->api->call(new Request('GET', '/Administration/EventLog'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
     }
@@ -758,7 +715,6 @@ class AdministrationControllerTest extends HLAPITestCase
         $this->loginWeb();
         $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
         $this->api->call(new Request('GET', '/Administration/EventLog/' . $eventlog_id), function ($call) use ($eventlog_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($eventlog_id) {
@@ -769,7 +725,6 @@ class AdministrationControllerTest extends HLAPITestCase
 
         $_SESSION['glpiactiveprofile']['system_logs'] = 0;
         $this->api->call(new Request('GET', '/Administration/EventLog/' . $eventlog_id), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response->isAccessDenied();
         });
     }
