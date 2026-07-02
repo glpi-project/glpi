@@ -699,7 +699,7 @@ $extra_taggable_types = [
     PDU::class, CartridgeItem::class, ConsumableItem::class, Enclosure::class,
     Line::class, DatabaseInstance::class, Software::class, PassiveDCEquipment::class,
     Cable::class, Domain::class, Cluster::class,
-    Database::class, NetworkName::class, DomainRecord::class, Item_DeviceSimcard::class,
+    Database::class, DomainRecord::class, Item_DeviceSimcard::class,
     DeviceBatteryType::class, DeviceFirmwareType::class, DeviceHardDriveType::class,
 ];
 
