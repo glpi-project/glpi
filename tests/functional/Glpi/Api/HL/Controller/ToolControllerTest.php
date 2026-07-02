@@ -173,7 +173,7 @@ class ToolControllerTest extends HLAPITestCase
         $reminders_id = $this->createItem(Reminder::class, [
             'name' => 'Test Reminder',
             'text' => 'This is a test reminder.',
-            'users_id' => $_SESSION['glpiID']
+            'users_id' => $_SESSION['glpiID'],
         ])->getID();
 
         $this->api->call(new Request('GET', '/Tools/Reminder/' . $reminders_id . '/Translation'), function ($call) {
@@ -236,7 +236,7 @@ class ToolControllerTest extends HLAPITestCase
         $reminders_id = $this->createItem(Reminder::class, [
             'name' => 'Test Reminder',
             'text' => 'This is a test reminder.',
-            'users_id' => 99
+            'users_id' => 99,
         ])->getID();
 
         $this->api->call(new Request('GET', '/Tools/Reminder/' . $reminders_id . '/Translation'), function ($call) {
