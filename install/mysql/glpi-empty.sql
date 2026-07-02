@@ -10581,6 +10581,8 @@ CREATE TABLE `glpi_users_sessionhistories` (
     KEY `users_id` (`users_id`, `logged_in_at` DESC),
     KEY `users_id_revoked_by` (`users_id_revoked_by`),
     KEY `logged_out_at` (`logged_out_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 ### Dump table glpi_tags
 
 DROP TABLE IF EXISTS `glpi_tags`;
