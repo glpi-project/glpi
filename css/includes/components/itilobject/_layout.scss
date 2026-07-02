@@ -49,6 +49,11 @@
             transition: all 400ms ease;
         }
 
+        .itil-left-side:focus,
+        .itil-right-side:focus {
+            outline: none;
+        }
+
         .itil-left-side {
             height: 100%;
             border-top: 0 !important;
