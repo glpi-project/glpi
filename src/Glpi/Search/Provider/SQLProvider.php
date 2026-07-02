@@ -5881,7 +5881,9 @@ final class SQLProvider implements SearchProviderInterface
                     self::constructSQL($data);
                     $stmt = $DBread->prepare($data['sql']['search']->getQuery());
                     $DBread->executeStatement($stmt, $data['sql']['search']->getParams());
-                    $result = $stmt->get_result();
+                    if ($rebuilt_result = $stmt->get_result()) {
+                        $result = $rebuilt_result;
+                    }
                 }
             }
 

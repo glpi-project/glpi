@@ -11732,12 +11732,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Output/Tcpdf.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Argument of an invalid type array\\<string\\>\\|null supplied for foreach, only iterables are supported\\.$#',
-	'identifier' => 'foreach.nonIterable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type list\\<array\\<int\\>\\|int\\|string\\|null\\>\\|null supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
 	'count' => 1,
