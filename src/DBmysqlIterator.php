@@ -687,11 +687,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * @param mixed $value
      *
-     * @return mixed
+     * @return string
      */
     private function analyseCriterionValue($value)
     {
-        $crit_value = null;
         if (is_array($value)) {
             $crit_value = '(' . str_repeat('?, ', count($value) - 1) . '?)';
             foreach ($value as $v) {
