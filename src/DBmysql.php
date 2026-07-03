@@ -2209,6 +2209,7 @@ class DBmysql
         $duration = (microtime(true) - $start_time) * 1000;
         $debug_data['time'] = $duration;
         $debug_data['rows'] = $this->getAffectedRows();
+        $debug_data['warnings'] = $this->getSQLWarnings($query);
 
         if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
             Profile::getCurrent()->addSQLQueryData(
@@ -2217,7 +2218,7 @@ class DBmysql
                 $debug_data['time'],
                 $debug_data['rows'],
                 $debug_data['errors'],
-                $this->getSQLWarnings($query)
+                $debug_data['warnings']
             );
         }
     }
