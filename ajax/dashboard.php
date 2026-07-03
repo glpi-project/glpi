@@ -174,7 +174,7 @@ switch ($_GET['action'] ?? null) {
 Profiler::getInstance()->start('Grid::construct');
 $grid = new Grid($_REQUEST['dashboard'] ?? "");
 if ($is_embed_request) {
-    $grid->initEmbed($_REQUEST);
+    $grid->initEmbed($request_data);
 }
 Profiler::getInstance()->stop('Grid::construct');
 
