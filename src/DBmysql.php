@@ -2210,7 +2210,7 @@ class DBmysql
 
         $duration = (microtime(true) - $start_time) * 1000;
         $debug_data['time'] = $duration;
-        $debug_data['rows'] = $this->getAffectedRows();
+        $debug_data['rows'] = (int) $stmt->affected_rows;
         $debug_data['warnings'] = $this->getSQLWarnings($query);
 
         if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
