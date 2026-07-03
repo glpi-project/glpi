@@ -637,7 +637,7 @@ class QueryFunction
         }
 
         $path = new QueryExpression($DB::quoteValue($path));
-        $values = array_merge($values, $candidate->getParams());
+        $values = array_merge($values, $target->getParams(), $candidate->getParams());
 
         return self::getExpression(
             'JSON_CONTAINS',
