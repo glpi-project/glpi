@@ -61,24 +61,16 @@ class WidgetTest extends DbTestCase
             'status'  => Ticket::INCOMING,
         ]);
 
-        // Simulate embed session manually (mirrors what initEmbedSession does,
-        // without going through initEmbed which requires a valid token)
-        global $CFG_GLPI;
-        Grid::$embed = true;
-        Session::destroy();
-        Session::start();
-        $_SESSION['glpiactive_entity']           = 0;
-        $_SESSION['glpiactive_entity_recursive'] = 1;
-        $_SESSION['glpiname']                    = 'embed_dashboard';
-        $_SESSION['glpigroups']                  = [];
-        $_SESSION['glpiactiveentities']          = getSonsOf('glpi_entities', 0);
-        $_SESSION['glpiactiveentities_string']   = "'" . implode("', '", $_SESSION['glpiactiveentities']) . "'";
-        $_SESSION['glpi_use_mode']               = Session::NORMAL_MODE;
-        foreach ($CFG_GLPI['user_pref_field'] as $field) {
-            if (array_key_exists($field, $CFG_GLPI)) {
-                $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+        // Use an anonymous subclass to call the protected initEmbedSession directly,
+        // so the test stays in sync with the real implementation automatically.
+        $grid = new class('') extends Grid {
+            public function initEmbedSessionForTest(array $params): void
+            {
+                Grid::$embed = true;
+                $this->initEmbedSession($params);
             }
-        }
+        };
+        $grid->initEmbedSessionForTest(['entities_id' => 0, 'is_recursive' => 1]);
 
         $this->assertArrayHasKey('glpilist_limit', $_SESSION);
 
