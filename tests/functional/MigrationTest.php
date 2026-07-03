@@ -1623,7 +1623,10 @@ class MigrationTest extends DbTestCase
                     'values' => $params,
                 ];
 
-                parent::executeStatement($stmt, $params, $types);
+                // Proxy execution to the real DB instance since the statement was
+                // prepared on its connection and the mock has no mysqli handler.
+                global $DB;
+                $DB->executeStatement($stmt, $params, $types);
             }
         };
         $db->disableTableCaching();

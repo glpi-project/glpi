@@ -1874,11 +1874,12 @@ class DBmysqlIteratorTest extends DbTestCase
         $mysqli_stmt->method('get_result')->willReturn($mysqli_result);
 
         $db = $this->getMockBuilder(\DBMysql::class)
-            ->onlyMethods(['connect', 'doQuery', 'numrows', 'prepare'])
+            ->onlyMethods(['connect', 'doQuery', 'numrows', 'prepare', 'executeStatement'])
             ->getMock();
         $db->method('doQuery')->willReturn($mysqli_result);
         $db->method('numrows')->willReturn(1);
         $db->method('prepare')->willReturn($mysqli_stmt);
+        $db->method('executeStatement')->willReturnCallback(static function (): void {});
 
         // Check result with active unsanitization
         $db->setMustUnsanitizeData(true);
