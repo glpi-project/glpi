@@ -87,9 +87,10 @@ final class ToggleFieldController extends AbstractController
         $applied = $item->getFromDB($id) ? (int) ($item->fields[$field] ?? 0) : 0;
 
         return new JsonResponse([
-            'field'    => $field,
-            'applied'  => $applied === 1,
-            'rejected' => $applied !== ($value ? 1 : 0),
+            'field'             => $field,
+            'applied'           => $applied === 1,
+            'rejected'          => $applied !== ($value ? 1 : 0),
+            'visibility_status' => $item->getEffectiveVisibilityStatus(),
         ]);
     }
 }

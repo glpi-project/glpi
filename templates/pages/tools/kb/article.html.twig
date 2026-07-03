@@ -109,14 +109,31 @@
                 data-placeholder="{{ __('Untitled article') }}"
                 spellcheck="true"
             >{{ subject }}</h1>
-            {% if is_draft|default(false) %}
+            {% if visibility_status is defined %}
+            {% if visibility_status == 'draft' %}
                 <span
                     class="badge bg-secondary-lt ms-2"
-                    data-glpi-kb-article-draft-badge
-                    title="{{ __('Draft — only visible to you and knowledge base admins until it is published') }}"
+                    data-glpi-kb-visibility-status="draft"
+                    title="{{ __('Draft. Only visible to you and knowledge base admins until it is published') }}"
                 >
                     <i class="ti ti-pencil me-1" aria-hidden="true"></i>{{ __('Draft') }}
                 </span>
+            {% elseif visibility_status == 'no_audience' %}
+                <span
+                    class="badge bg-yellow-lt ms-2"
+                    data-glpi-kb-visibility-status="no_audience"
+                    title="{{ __('Published, but no visibility target is set. No one can see it') }}"
+                >
+                    <i class="ti ti-eye-off me-1" aria-hidden="true"></i>{{ __('No audience') }}
+                </span>
+            {% else %}
+                <span
+                    class="badge bg-green-lt ms-2"
+                    data-glpi-kb-visibility-status="published"
+                >
+                    <i class="ti ti-eye me-1" aria-hidden="true"></i>{{ __('Published') }}
+                </span>
+            {% endif %}
             {% endif %}
             <div class="ms-auto d-flex align-items-center gap-2">
                 {# Edit/Save/Cancel buttons #}
@@ -331,6 +348,37 @@
                 {% endif %}
             </div>
 
+        {% endif %}
+
+        {% if can_edit and visibility_status is defined %}
+            <div
+                class="alert alert-secondary d-flex align-items-center mt-3 {{ visibility_status == 'draft' ? '' : 'd-none' }}"
+                role="status"
+                data-glpi-kb-visibility-banner="draft"
+            >
+                <span class="flex-fill">{{ __('Only you and knowledge base admins can see this. Visibility targets are kept. Publishing restores them instantly.') }}</span>
+                <button type="button" class="btn btn-primary btn-sm ms-3" data-glpi-kb-publish data-glpi-kb-action-param-id="{{ item_id }}">
+                    <i class="ti ti-check me-1" aria-hidden="true"></i>{{ __('Publish') }}
+                </button>
+            </div>
+            <div
+                class="alert alert-warning d-flex align-items-center mt-3 {{ visibility_status == 'no_audience' ? '' : 'd-none' }}"
+                role="status"
+                data-glpi-kb-visibility-banner="no_audience"
+            >
+                <span class="flex-fill">{{ __('Published, but no one can reach it. No visibility target is set, so this article is invisible to every reader.') }}</span>
+                <button
+                    type="button"
+                    class="btn btn-outline-warning btn-sm ms-3"
+                    data-glpi-kb-action="OPEN_MODAL"
+                    data-glpi-kb-action-param-id="{{ item_id }}"
+                    data-glpi-kb-action-param-key="SidePanel/targets"
+                    data-glpi-kb-action-param-title="{{ __('Permissions and sharing') }}"
+                    data-glpi-kb-action-param-icon="ti ti-eye"
+                >
+                    <i class="ti ti-user-plus me-1" aria-hidden="true"></i>{{ __('Define who can see it') }}
+                </button>
+            </div>
         {% endif %}
 
         <hr class="mt-4 mb-4">

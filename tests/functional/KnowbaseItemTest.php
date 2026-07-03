@@ -2711,4 +2711,104 @@ HTML,
             'KNOWBASEADMIN must keep seeing other authors drafts in allunpublished.'
         );
     }
+
+    public static function provideVisibilityStatus(): iterable
+    {
+        yield 'draft wins with no targets' => [
+            'is_draft' => true, 'target_count' => 0, 'is_faq_reachable' => false, 'expected' => KnowbaseItem::VISIBILITY_DRAFT,
+        ];
+        yield 'draft wins with targets' => [
+            'is_draft' => true, 'target_count' => 3, 'is_faq_reachable' => false, 'expected' => KnowbaseItem::VISIBILITY_DRAFT,
+        ];
+        yield 'published, no target' => [
+            'is_draft' => false, 'target_count' => 0, 'is_faq_reachable' => false, 'expected' => KnowbaseItem::VISIBILITY_NO_AUDIENCE,
+        ];
+        yield 'published, negative guard' => [
+            'is_draft' => false, 'target_count' => -1, 'is_faq_reachable' => false, 'expected' => KnowbaseItem::VISIBILITY_NO_AUDIENCE,
+        ];
+        yield 'published with targets' => [
+            'is_draft' => false, 'target_count' => 2, 'is_faq_reachable' => false, 'expected' => KnowbaseItem::VISIBILITY_PUBLISHED,
+        ];
+        yield 'faq single-entity reaches audience without a target' => [
+            'is_draft' => false, 'target_count' => 0, 'is_faq_reachable' => true, 'expected' => KnowbaseItem::VISIBILITY_PUBLISHED,
+        ];
+        yield 'faq not reachable (multi-entity) with no target is no audience' => [
+            'is_draft' => false, 'target_count' => 0, 'is_faq_reachable' => false, 'expected' => KnowbaseItem::VISIBILITY_NO_AUDIENCE,
+        ];
+    }
+
+    #[DataProvider('provideVisibilityStatus')]
+    public function testComputeVisibilityStatus(bool $is_draft, int $target_count, bool $is_faq_reachable, string $expected): void
+    {
+        $this->assertSame($expected, KnowbaseItem::computeVisibilityStatus($is_draft, $target_count, $is_faq_reachable));
+    }
+
+    public function testGetEffectiveVisibilityStatus(): void
+    {
+        $this->login();
+
+        $kb = new KnowbaseItem();
+        $id = (int) $kb->add(['name' => 'Status probe', 'answer' => 'body', 'is_faq' => 0]);
+        $this->assertGreaterThan(0, $id);
+        $this->assertTrue($kb->getFromDB($id));
+
+        // No target -> no audience
+        $this->assertSame(KnowbaseItem::VISIBILITY_NO_AUDIENCE, $kb->getEffectiveVisibilityStatus());
+
+        // Add a user target -> published
+        $link = new KnowbaseItem_User();
+        $this->assertGreaterThan(0, (int) $link->add([
+            'knowbaseitems_id' => $id,
+            'users_id'         => getItemByTypeName('User', TU_USER, true),
+        ]));
+        $this->assertTrue($kb->getFromDB($id));
+        $this->assertSame(KnowbaseItem::VISIBILITY_PUBLISHED, $kb->getEffectiveVisibilityStatus());
+
+        // Flag as draft -> draft wins despite the target
+        $this->assertTrue($kb->update(['id' => $id, 'is_draft' => 1]));
+        $this->assertTrue($kb->getFromDB($id));
+        $this->assertSame(KnowbaseItem::VISIBILITY_DRAFT, $kb->getEffectiveVisibilityStatus());
+    }
+
+    public function testEffectiveStatusAfterPublishNoTargets(): void
+    {
+        $this->login();
+        $kb = new KnowbaseItem();
+        $id = (int) $kb->add(['name' => 'Publish probe', 'answer' => 'body', 'is_draft' => 1]);
+        $this->assertTrue($kb->getFromDB($id));
+        $this->assertSame(KnowbaseItem::VISIBILITY_DRAFT, $kb->getEffectiveVisibilityStatus());
+
+        // Publishing a draft that has no target lands in NO_AUDIENCE, not PUBLISHED.
+        $this->assertTrue($kb->update(['id' => $id, 'is_draft' => 0]));
+        $this->assertTrue($kb->getFromDB($id));
+        $this->assertSame(KnowbaseItem::VISIBILITY_NO_AUDIENCE, $kb->getEffectiveVisibilityStatus());
+    }
+
+    public function testEffectiveStatusFaqRequiresPublicFaq(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+        $kb = new KnowbaseItem();
+        $id = (int) $kb->add(['name' => 'FAQ probe', 'answer' => 'body', 'is_faq' => 1, 'is_draft' => 0]);
+        $this->assertTrue($kb->getFromDB($id));
+
+        $original_faq  = $CFG_GLPI['use_public_faq'];
+        $original_mode = $_SESSION['glpi_multientitiesmode'] ?? 1;
+        try {
+            // Single-entity, public FAQ disabled: a target-less FAQ article
+            // reaches nobody but the author/KB admin.
+            $_SESSION['glpi_multientitiesmode'] = 0;
+            $CFG_GLPI['use_public_faq'] = false;
+            $this->assertSame(KnowbaseItem::VISIBILITY_NO_AUDIENCE, $kb->getEffectiveVisibilityStatus());
+
+            // Single-entity, public FAQ enabled: now reachable anonymously.
+            $CFG_GLPI['use_public_faq'] = true;
+            $this->assertSame(KnowbaseItem::VISIBILITY_PUBLISHED, $kb->getEffectiveVisibilityStatus());
+        } finally {
+            $CFG_GLPI['use_public_faq'] = $original_faq;
+            $_SESSION['glpi_multientitiesmode'] = $original_mode;
+        }
+    }
 }

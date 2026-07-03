@@ -58,8 +58,10 @@
                             <div class="col">
                                 <div class="fs-2">
                                     {{ result.name }}
-                                    {% if result.is_draft|default(false) %}
-                                        <span class="badge bg-warning text-dark ms-1">{{ __('Draft') }}</span>
+                                    {% if result.visibility_status == 'draft' %}
+                                        <span class="badge bg-secondary-lt ms-1" title="{{ __('Draft. Only visible to you and knowledge base admins until it is published') }}"><i class="ti ti-pencil me-1" aria-hidden="true"></i>{{ __('Draft') }}</span>
+                                    {% elseif result.visibility_status == 'no_audience' %}
+                                        <span class="badge bg-yellow-lt ms-1" title="{{ __('Published, but no visibility target is set. No one can see it') }}"><i class="ti ti-eye-off me-1" aria-hidden="true"></i>{{ __('No audience') }}</span>
                                     {% endif %}
                                 </div>
                                 <div class="fs-4 knowbaseitem-content-preview">{{ result.content_preview }}</div>

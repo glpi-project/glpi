@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, bootstrap, setHasUnsavedChanges */
+/* global glpi_ajax_dialog, glpi_alert, glpi_confirm_danger, glpi_toast_error, glpi_toast_info, glpi_toast_warning, bootstrap, setHasUnsavedChanges */
 
 import { get, post } from "/js/modules/Ajax.js";
 import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkController.js";
@@ -201,6 +201,13 @@ export class GlpiKnowbaseArticleController
 
     #initEventListeners()
     {
+        this.#container.querySelectorAll('[data-glpi-kb-publish]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const id = Number(btn.dataset.glpiKbActionParamId);
+                this.#applyDraftState(id, false);
+            });
+        });
+
         const actions = this.#container.querySelectorAll("[data-glpi-kb-action]");
         for (const action of actions) {
             action.addEventListener("click", (e) => {
@@ -592,63 +599,84 @@ export class GlpiKnowbaseArticleController
     {
         const value = toggle.checked;
 
-        // Demoting to draft disables active share tokens server-side. Warn
-        // before the POST so the author can keep the article published.
-        if (field === 'is_draft' && value === true && this.#hasShareTokens()) {
+        if (field === 'is_draft') {
+            try {
+                const ok = await this.#applyDraftState(id, value);
+                if (!ok) {
+                    toggle.checked = !value; // realign the switch on cancel/reject
+                }
+            } catch (e) {
+                toggle.checked = !value;
+                throw e;
+            }
+            return;
+        }
+
+        // is_faq (and any future plain ALLOWED_FIELDS toggle)
+        try {
+            const response = await post(`Knowbase/${id}/ToggleField`, { field: field, value: value });
+            let data = {};
+            try { data = await response.json(); } catch { /* older callers */ }
+
+            if (data.rejected) {
+                toggle.checked = Boolean(data.applied);
+                glpi_toast_error(__('A draft cannot be promoted to the FAQ. Publish it first.'));
+                return;
+            }
+            // FAQ membership can change the effective status: a single-entity
+            // public FAQ article reaches its audience without an explicit target.
+            if (data.visibility_status) {
+                this.#syncHeaderVisibilityBadge(data.visibility_status);
+            }
+            glpi_toast_info(value ? __('Article added to the FAQ.') : __('Article removed from the FAQ.'));
+        } catch (e) {
+            toggle.checked = !value;
+            throw e;
+        }
+    }
+
+    /**
+     * Set the draft flag and reconcile the header (badge + banner) and aside
+     * with the effective status the server recomputes.
+     *
+     * @param {number} id
+     * @param {boolean} is_draft
+     * @returns {Promise<boolean>} true when applied, false on cancel/reject
+     */
+    async #applyDraftState(id, is_draft)
+    {
+        // Demoting to draft disables active share tokens server-side. Warn first.
+        if (is_draft && this.#hasShareTokens()) {
             const confirmed = await glpi_confirm_danger({
                 title: __('Mark as draft'),
                 message: __('Public share links for this article will be disabled. You can reactivate them from the sharing panel after publishing the article again.'),
                 confirm_label: __('Mark as draft'),
             });
             if (!confirmed) {
-                toggle.checked = !value;
-                return;
+                return false;
             }
         }
 
-        try {
-            const response = await post(`Knowbase/${id}/ToggleField`, {
-                field: field,
-                value: value,
-            });
-            let data = {};
-            try {
-                data = await response.json();
-            } catch {
-                // Older callers may not parse JSON yet — fall through and
-                // assume the requested value was applied.
-            }
+        const response = await post(`Knowbase/${id}/ToggleField`, { field: 'is_draft', value: is_draft });
+        let data = {};
+        try { data = await response.json(); } catch { /* older callers */ }
 
-            // Server may have coerced the value (e.g. mutual exclusion between
-            // is_draft and is_faq). Realign the visible checkbox with reality
-            // and let the user know.
-            if (data.rejected) {
-                toggle.checked = Boolean(data.applied);
-                if (field === 'is_draft') {
-                    glpi_toast_error(__('A FAQ entry cannot be a draft. Remove it from the FAQ first.'));
-                } else if (field === 'is_faq') {
-                    glpi_toast_error(__('A draft cannot be promoted to the FAQ. Publish it first.'));
-                }
-                return;
-            }
-
-            if (field === 'is_draft') {
-                this.#syncAsideDraftState(id, value);
-                this.#syncHeaderDraftBadge(value);
-                glpi_toast_info(value
-                    ? __('Article moved back to draft. It is now only visible to you.')
-                    : __('Article published. It is now visible to readers.')
-                );
-            } else if (field === 'is_faq') {
-                glpi_toast_info(value
-                    ? __('Article added to the FAQ.')
-                    : __('Article removed from the FAQ.')
-                );
-            }
-        } catch (e) {
-            toggle.checked = !value;
-            throw e;
+        if (data.rejected) {
+            glpi_toast_error(__('A FAQ entry cannot be a draft. Remove it from the FAQ first.'));
+            return false;
         }
+
+        const status = data.visibility_status ?? (is_draft ? 'draft' : 'published');
+        this.#syncAsideDraftState(id, is_draft);
+        this.#syncHeaderVisibilityBadge(status);
+        if (is_draft) {
+            glpi_toast_info(__('Article moved back to draft. It is now only visible to you and knowledge base admins.'));
+        } else if (status === 'no_audience') {
+            glpi_toast_warning(__('Article published, but no one can see it yet. No visibility target is set.'));
+        } else {
+            glpi_toast_info(__('Article published. It is now visible to readers.'));
+        }
+        return true;
     }
 
     /**
@@ -700,33 +728,59 @@ export class GlpiKnowbaseArticleController
     }
 
     /**
-     * Toggle the Draft chip next to the article title without a reload.
+     * Rebuild the header status chip and toggle the CTA banner to match the
+     * effective status, without a page reload.
      *
-     * @param {boolean} is_draft
+     * @param {string} status  'draft' | 'no_audience' | 'published'
      */
-    #syncHeaderDraftBadge(is_draft)
+    #syncHeaderVisibilityBadge(status)
     {
-        const article = this.#container.querySelector(
-            '[data-glpi-knowbase-article-content]'
-        );
+        const article = this.#container.querySelector('[data-glpi-knowbase-article-content]');
         if (!article) {
             return;
         }
         const title = article.querySelector('[data-glpi-kb-subject]');
-        let badge = article.querySelector('[data-glpi-kb-article-draft-badge]');
-        if (is_draft && !badge && title) {
-            badge = document.createElement('span');
-            badge.dataset.glpiKbArticleDraftBadge = '';
-            badge.className = 'badge bg-secondary-lt ms-2';
-            badge.title = __('Draft — only visible to you and knowledge base admins until it is published');
+        article.querySelector('[data-glpi-kb-visibility-status]')?.remove();
+
+        const SPECS = {
+            draft: {
+                cls: 'bg-secondary-lt', icon: 'ti ti-pencil', label: __('Draft'),
+                title: __('Draft. Only visible to you and knowledge base admins until it is published'),
+            },
+            no_audience: {
+                cls: 'bg-yellow-lt', icon: 'ti ti-eye-off', label: __('No audience'),
+                title: __('Published, but no visibility target is set. No one can see it'),
+            },
+            published: {
+                cls: 'bg-green-lt', icon: 'ti ti-eye', label: __('Published'), title: '',
+            },
+        };
+        const spec = SPECS[status];
+        if (spec && title) {
+            const badge = document.createElement('span');
+            badge.dataset.glpiKbVisibilityStatus = status;
+            badge.className = `badge ${spec.cls} ms-2`;
+            if (spec.title) {
+                badge.title = spec.title;
+            }
             const icon = document.createElement('i');
-            icon.className = 'ti ti-pencil me-1';
+            icon.className = `${spec.icon} me-1`;
             icon.setAttribute('aria-hidden', 'true');
-            badge.append(icon, __('Draft'));
+            badge.append(icon, spec.label);
             title.after(badge);
-        } else if (!is_draft && badge) {
-            badge.remove();
         }
+
+        this.#syncVisibilityBanner(status);
+    }
+
+    /**
+     * @param {string} status
+     */
+    #syncVisibilityBanner(status)
+    {
+        this.#container.querySelectorAll('[data-glpi-kb-visibility-banner]').forEach((el) => {
+            el.classList.toggle('d-none', el.dataset.glpiKbVisibilityBanner !== status);
+        });
     }
 
     /**

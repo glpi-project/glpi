@@ -212,24 +212,25 @@ final class KnowbaseItemController extends AbstractController
         $total_count = $DB->request($count_criteria)->current()['cpt'] ?? 0;
         $results = [];
 
+        $is_multi_entities = Session::isMultiEntitiesMode();
+        $use_public_faq    = !empty($CFG_GLPI['use_public_faq']);
         foreach ($it as $data) {
             $icon_class = "";
             $icon_title = "";
             if (
                 $data['is_faq']
-                && (!Session::isMultiEntitiesMode()
-                    || (isset($data['visibility_count'])
-                        && $data['visibility_count'] > 0))
+                && (!$is_multi_entities
+                    || (isset($data['visibility_count']) && $data['visibility_count'] > 0))
             ) {
                 $icon_class = "ti ti-help faq";
                 $icon_title = __("This item is part of the FAQ");
-            } elseif (
-                isset($data['visibility_count'])
-                && $data['visibility_count'] <= 0
-            ) {
-                $icon_class = "ti ti-eye-off not-published";
-                $icon_title = __("This item is not published yet");
             }
+
+            $visibility_status = KnowbaseItem::computeVisibilityStatus(
+                !empty($data['is_draft']),
+                (int) ($data['visibility_count'] ?? 0),
+                !empty($data['is_faq']) && !$is_multi_entities && $use_public_faq
+            );
 
             $results[] = [
                 'id' => $data['id'],
@@ -245,7 +246,7 @@ final class KnowbaseItemController extends AbstractController
                 'url' => KnowbaseItem::getFormURLWithID($data['id']),
                 'icon' => $icon_class,
                 'icon_title' => $icon_title,
-                'is_draft' => !empty($data['is_draft']),
+                'visibility_status' => $visibility_status,
             ];
         }
 

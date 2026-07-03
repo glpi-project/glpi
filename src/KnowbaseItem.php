@@ -85,6 +85,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public const PUBLISHFAQ    = 4096;
     public const COMMENTS      = 8192;
 
+    public const VISIBILITY_DRAFT       = 'draft';
+    public const VISIBILITY_NO_AUDIENCE = 'no_audience';
+    public const VISIBILITY_PUBLISHED   = 'published';
+
     public static string $rightname   = 'knowbase';
 
     public function getCloneRelations(): array
@@ -658,6 +662,53 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
+     * Effective visibility status from the two orthogonal fields.
+     * Precedence: an explicit draft wins over an implicit "no audience".
+     */
+    public static function computeVisibilityStatus(bool $is_draft, int $target_count, bool $is_faq_reachable = false): string
+    {
+        if ($is_draft) {
+            return self::VISIBILITY_DRAFT;
+        }
+        if ($target_count <= 0 && !$is_faq_reachable) {
+            return self::VISIBILITY_NO_AUDIENCE;
+        }
+        return self::VISIBILITY_PUBLISHED;
+    }
+
+    public function getVisibilityTargetCount(): int
+    {
+        $id = (int) $this->getID();
+        if ($id <= 0) {
+            return 0;
+        }
+        $criteria = ['knowbaseitems_id' => $id];
+        return countElementsInTable(KnowbaseItem_User::getTable(), $criteria)
+            + countElementsInTable(Group_KnowbaseItem::getTable(), $criteria)
+            + countElementsInTable(KnowbaseItem_Profile::getTable(), $criteria)
+            + countElementsInTable(Entity_KnowbaseItem::getTable(), $criteria);
+    }
+
+    public function getEffectiveVisibilityStatus(): string
+    {
+        global $CFG_GLPI;
+
+        // A target-less FAQ article only reaches an audience through the public
+        // FAQ channel: anonymous access, which requires use_public_faq. In
+        // multi-entity mode that access still needs a root-recursive entity
+        // target, which is already counted by getVisibilityTargetCount().
+        $is_faq_reachable = !empty($this->fields['is_faq'])
+            && !Session::isMultiEntitiesMode()
+            && !empty($CFG_GLPI['use_public_faq']);
+
+        return self::computeVisibilityStatus(
+            !empty($this->fields['is_draft']),
+            $this->getVisibilityTargetCount(),
+            $is_faq_reachable
+        );
+    }
+
+    /**
      * Return visibility joins to add to DBIterator parameters
      *
      * @since 9.2
@@ -993,7 +1044,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if ($effective_is_faq && $effective_is_draft) {
             $input['is_draft'] = 0;
             Session::addMessageAfterRedirect(
-                htmlescape(__('A FAQ entry cannot be a draft — draft flag was removed.')),
+                htmlescape(__('A FAQ entry cannot be a draft. The draft flag was removed.')),
                 false,
                 WARNING
             );
@@ -1201,6 +1252,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['can_edit']     = $can_update;
             $params['illustration'] = $this->fields['illustration'] ?? '';
             $params['is_draft']     = !empty($this->fields['is_draft']);
+            $params['visibility_status'] = $this->getEffectiveVisibilityStatus();
             // Drives the JS confirmation modal before demoting to draft.
             $params['has_share_tokens'] = !empty(
                 (new ShareTokenManager())->getTokensForItem(self::class, $this->fields['id'])
@@ -2137,6 +2189,9 @@ TWIG, $twig_params);
                 echo $output::showHeaderItem('&nbsp;', $header_num);
             }
 
+            $is_multi_entities = Session::isMultiEntitiesMode();
+            $use_public_faq    = !empty($CFG_GLPI['use_public_faq']);
+
             // Num of the row (1=header_line)
             $row_num = 1;
             foreach ($main_iterator as $data) {
@@ -2174,21 +2229,31 @@ TWIG, $twig_params);
                 $fa_title = "";
                 if (
                     $data['is_faq']
-                    && (!Session::isMultiEntitiesMode()
-                        || (isset($data['visibility_count'])
-                            && $data['visibility_count'] > 0))
+                    && (!$is_multi_entities
+                        || (isset($data['visibility_count']) && $data['visibility_count'] > 0))
                 ) {
                     $icon_class = "ti-help faq";
                     $fa_title = __s("This item is part of the FAQ");
-                } elseif (
-                    isset($data['visibility_count'])
-                    && $data['visibility_count'] <= 0
-                ) {
-                    $icon_class = "ti-eye-off not-published";
-                    $fa_title = __s("This item is not published yet");
                 }
+
+                $visibility_status = self::computeVisibilityStatus(
+                    !empty($data['is_draft']),
+                    (int) ($data['visibility_count'] ?? 0),
+                    !empty($data['is_faq']) && !$is_multi_entities && $use_public_faq
+                );
+                $status_badge = "";
+                if ($visibility_status === self::VISIBILITY_DRAFT) {
+                    $status_badge = "<span class='badge bg-secondary-lt ms-1' title='"
+                        . __s('Draft. Only visible to you and knowledge base admins until it is published')
+                        . "'><i class='ti ti-pencil me-1' aria-hidden='true'></i>" . __s('Draft') . "</span>";
+                } elseif ($visibility_status === self::VISIBILITY_NO_AUDIENCE) {
+                    $status_badge = "<span class='badge bg-yellow-lt ms-1' title='"
+                        . __s('Published, but no visibility target is set. No one can see it')
+                        . "'><i class='ti ti-eye-off me-1' aria-hidden='true'></i>" . __s('No audience') . "</span>";
+                }
+
                 echo $output::showItem(
-                    "<div class='kb'>$toadd <i class='ti $icon_class' title='$fa_title'></i> <a $href>" . Html::resume_text($name, 80) . "</a></div>
+                    "<div class='kb'>$toadd <i class='ti $icon_class' title='$fa_title'></i> <a $href>" . Html::resume_text($name, 80) . "</a>$status_badge</div>
                                    <div class='kb_resume'>" . Html::resume_text(RichText::getTextFromHtml($answer, false, false), 600) . "</div>",
                     $item_num,
                     $row_num

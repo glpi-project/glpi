@@ -356,5 +356,39 @@ export class KnowbaseItemPage extends GlpiPage
 
         await name_input.press('Enter');
     }
+
+    public getStatusBadge(status: 'draft' | 'no_audience' | 'published'): Locator
+    {
+        const article = this.page.getByRole('article');
+        if (status === 'draft') {
+            return article.getByTitle(/Draft — only visible/);
+        }
+        if (status === 'no_audience') {
+            return article.getByTitle(/no visibility target is set/);
+        }
+        return article.getByText('Published', { exact: true });
+    }
+
+    public getVisibilityBanner(status: 'draft' | 'no_audience'): Locator
+    {
+        const messages: Record<'draft' | 'no_audience', string> = {
+            draft: 'Only you and knowledge base admins can see this',
+            no_audience: 'Published, but no one can reach it',
+        };
+        return this.page.getByRole('status').filter({
+            visible: true,
+            hasText: messages[status],
+        });
+    }
+
+    public get publishButton(): Locator
+    {
+        return this.getButton('Publish');
+    }
+
+    public get defineAudienceButton(): Locator
+    {
+        return this.getButton('Define who can see it');
+    }
 }
 
