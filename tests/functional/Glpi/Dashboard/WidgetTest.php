@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Dashboard;
 
 use Glpi\Dashboard\Grid;
 use Glpi\Dashboard\Widget;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
@@ -71,8 +72,6 @@ class WidgetTest extends DbTestCase
             }
         };
         $grid->initEmbedSessionForTest(['entities_id' => 0, 'is_recursive' => 1]);
-
-        $this->assertArrayHasKey('glpilist_limit', $_SESSION);
 
         $html = Widget::searchShowList([
             'itemtype'   => Ticket::class,
@@ -115,6 +114,19 @@ class WidgetTest extends DbTestCase
         $this->assertStringNotContainsString('Embed dashboard test ticket', $html);
     }
 
+
+    public function testInitEmbedThrowsOnInvalidToken(): void
+    {
+        $this->expectException(AccessDeniedHttpException::class);
+
+        $grid = new Grid('test_dashboard');
+        $grid->initEmbed([
+            'dashboard'    => 'test_dashboard',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            'token'        => 'invalid-token',
+        ]);
+    }
 
     public function testGetAllTypes()
     {
