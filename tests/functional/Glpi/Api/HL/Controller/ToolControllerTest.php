@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Api\HL\Controller;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Reminder;
 
 class ToolControllerTest extends HLAPITestCase
 {
@@ -161,6 +162,92 @@ class ToolControllerTest extends HLAPITestCase
                         );
                     }
                 });
+        });
+    }
+
+    public function testCRUDReminderTranslations(): void
+    {
+        $this->loginWeb();
+        $this->login();
+
+        $reminders_id = $this->createItem(Reminder::class, [
+            'name' => 'Test Reminder',
+            'text' => 'This is a test reminder.',
+            'users_id' => $_SESSION['glpiID'],
+        ])->getID();
+
+        $this->api->call(new Request('GET', '/Tools/Reminder/' . $reminders_id . '/Translation'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEmpty($content);
+                });
+        });
+
+        $create_request = new Request('POST', '/Tools/Reminder/' . $reminders_id . '/Translation/fr_FR');
+        $create_request->setParameter('text', 'Ceci est un rappel de test.');
+        $this->api->call($create_request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', '/Tools/Reminder/' . $reminders_id . '/Translation/fr_FR'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('Ceci est un rappel de test.', $content['text']);
+                });
+        });
+
+        $update_request = new Request('PATCH', '/Tools/Reminder/' . $reminders_id . '/Translation/fr_FR');
+        $update_request->setParameter('text', 'Ceci est un rappel de test mis à jour.');
+        $this->api->call($update_request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', '/Tools/Reminder/' . $reminders_id . '/Translation/fr_FR'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('Ceci est un rappel de test mis à jour.', $content['text']);
+                });
+        });
+
+        $this->api->call(new Request('DELETE', '/Tools/Reminder/' . $reminders_id . '/Translation/fr_FR'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', '/Tools/Reminder/' . $reminders_id . '/Translation/fr_FR'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isNotFoundError();
+        });
+    }
+
+    public function testCRUDNoRightsReminderTranslations(): void
+    {
+        $this->loginWeb();
+        $this->login();
+
+        $reminders_id = $this->createItem(Reminder::class, [
+            'name' => 'Test Reminder',
+            'text' => 'This is a test reminder.',
+            'users_id' => 99,
+        ])->getID();
+
+        $this->api->call(new Request('GET', '/Tools/Reminder/' . $reminders_id . '/Translation'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+        $create_request = new Request('POST', '/Tools/Reminder/' . $reminders_id . '/Translation/fr_FR');
+        $create_request->setParameter('text', 'Ceci est un rappel de test.');
+        $this->api->call($create_request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
         });
     }
 }
