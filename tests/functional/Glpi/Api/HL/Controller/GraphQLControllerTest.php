@@ -464,4 +464,18 @@ class GraphQLControllerTest extends HLAPITestCase
                 });
         });
     }
+
+    public function testRFC3339DateTimeFormat(): void
+    {
+        $this->login();
+
+        $this->graphql->call('query { Ticket(limit: 1) { date } }', function ($call) {
+            $call->response
+                ->isOK()
+                ->data('Ticket', function ($tickets) {
+                    $ticket = $tickets[0];
+                    $this->assertMatchesRegularExpression('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/', $ticket['date']);
+                });
+        });
+    }
 }
