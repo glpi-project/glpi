@@ -39,6 +39,7 @@ use Glpi\Event;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use UserEmail;
 
 class AdministrationControllerTest extends HLAPITestCase
 {
@@ -798,5 +799,74 @@ class AdministrationControllerTest extends HLAPITestCase
             create_params: $create_params,
             extra_options: ['skip_update_test' => $itemtype === 'ApprovalSubstitute']
         );
+    }
+
+    public function testCRUDUserEmails(): void
+    {
+        $this->login();
+        $users_id = getItemByTypeName('User', TU_USER, true);
+
+        $this->api->autoTestCRUD(
+            endpoint: "/Administration/User/$users_id/Email",
+            create_params: [
+                'user' => $users_id,
+                'email' => TU_USER . '@example.com',
+                'is_default' => 0,
+            ],
+            extra_options: ['skip_update_test' => true],
+        );
+    }
+
+    public function testCRUDNoRightsUserEmails(): void
+    {
+        global $DB;
+
+        $this->login('post-only', 'postonly');
+        $users_id = getItemByTypeName('User', TU_USER, true);
+
+        $DB->insert(UserEmail::getTable(), [
+            'users_id' => $users_id,
+            'email' => TU_USER . '@example.com',
+            'is_default' => 0,
+        ]);
+        $useremail_id = $DB->insertId();
+
+        $this->api->call(new Request('GET', "/Administration/User/$users_id"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+        $this->api->call(new Request('GET', "/Administration/User/$users_id/Email/$useremail_id"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+        $create_request = new Request('POST', "/Administration/User/$users_id/Email");
+        $create_request->setParameter('email', TU_USER . '@example.com');
+        $this->api->call($create_request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+        $this->api->call(new Request('DELETE', "/Administration/User/$users_id/Email/$useremail_id"), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isAccessDenied();
+        });
+    }
+
+    public function testAddDuplicateUserEmail()
+    {
+        $this->login();
+        $users_id = getItemByTypeName('User', TU_USER, true);
+
+        $create_request = new Request('POST', "/Administration/User/$users_id/Email");
+        $create_request->setParameter('email', TU_USER . '@example.com');
+        // First call should succeed
+        $this->api->call($create_request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+        // Second call should fail with a 409 status
+        $this->api->call($create_request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->status(fn($status) => $this->assertEquals(409, $status));
+        });
     }
 }
