@@ -200,7 +200,7 @@ const filesToCopy = [
     },
     {
         package: 'select2',
-        from: 'src/scss/**/*.scss',
+        from: 'dist/css/select2.css',
         to: scssOutputPath,
     },
     {
