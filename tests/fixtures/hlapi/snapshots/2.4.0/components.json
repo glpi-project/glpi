@@ -8795,6 +8795,21 @@
                     "format": "int64",
                     "readOnly": true
                 },
+                "user": {
+                    "type": "object",
+                    "x-itemtype": "User",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "User"
+                },
                 "email": {
                     "type": "string"
                 },
