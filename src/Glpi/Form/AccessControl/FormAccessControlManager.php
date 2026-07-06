@@ -254,6 +254,7 @@ final class FormAccessControlManager
      */
     protected function getPossibleAccessControlsStrategies(): array
     {
+        //NOTE: If you add new strategies, please update the HLAPI read resrictions as well
         $types = [
             new AllowList(),
             new DirectAccess(),

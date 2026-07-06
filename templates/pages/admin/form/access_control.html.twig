@@ -62,6 +62,7 @@
             {% for access_control in access_controls %}
                 {% set strategy = access_control.getStrategy() %}
                 {% set config = access_control.getConfig() %}
+                {% set can_update = access_control.can(access_control.fields['id'], constant('UPDATE')) %}
 
                 <section
                     class="mb-5"
@@ -85,6 +86,7 @@
                                 name="{{ access_control.getNormalizedInputName("is_active") }}"
                                 value="1"
                                 {{ access_control.fields.is_active == true ? "checked" : "" }}
+                                {{ not can_update ? "disabled" : "" }}
                             >
                         </label>
                     </h3>

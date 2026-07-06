@@ -4610,6 +4610,7 @@ JS;
         $options = [
             'id'        => $field_id,
             'selected'  => $value,
+            'disabled'  => $params['disabled'] ?? false,
         ];
 
         // manage multiple select (with multiple values)
