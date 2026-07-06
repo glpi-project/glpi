@@ -64,7 +64,7 @@ test('Articles created from the form are saved as drafts and surface a toast', a
     // we hit the unique badge (not the literal word "Draft" that may appear
     // elsewhere, e.g. in the aside).
     await expect(
-        page.getByRole('article').getByTitle(/Draft — only visible/)
+        page.getByRole('article').getByTitle(/Draft\. Only visible/)
     ).toBeVisible();
 });
 

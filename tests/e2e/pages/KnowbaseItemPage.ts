@@ -361,7 +361,7 @@ export class KnowbaseItemPage extends GlpiPage
     {
         const article = this.page.getByRole('article');
         if (status === 'draft') {
-            return article.getByTitle(/Draft — only visible/);
+            return article.getByTitle(/Draft\. Only visible/);
         }
         if (status === 'no_audience') {
             return article.getByTitle(/no visibility target is set/);
