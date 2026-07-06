@@ -1127,17 +1127,13 @@ export class GlpiKnowbaseArticleController
 
     async #addArticle()
     {
-        const title = this.#title_element
+        let title = this.#title_element
             ? this.#title_element.textContent.trim()
             : '';
         const answer = this.#editor ? this.#editor.getHTML() : '';
 
         if (title.length === 0) {
-            glpi_toast_error(__("Title cannot be empty"));
-            if (this.#title_element) {
-                this.#title_element.focus();
-            }
-            return;
+            title = __("Untitled article");
         }
 
         const form = document.createElement('form');
