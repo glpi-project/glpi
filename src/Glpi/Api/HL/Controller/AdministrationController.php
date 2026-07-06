@@ -707,6 +707,7 @@ EOT,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'description' => 'ID',
                     ],
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User') + ['x-version-introduced' => '2.4.0'],
                     'email' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Email address',
@@ -1340,6 +1341,105 @@ EOT,
             }
         }
         return self::getNotFoundErrorResponse();
+    }
+
+    #[Route(path: '/User/{users_id}/Email', methods: ['GET'], requirements: [
+        'users_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\SearchRoute(schema_name: 'EmailAddress[]')]
+    public function getUserEmails(Request $request): Response
+    {
+        $users_id = (int) $request->getAttribute('users_id');
+        $user = new User();
+        if (!$user->can($users_id, READ) && $users_id !== $this->getMyUserID()) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';user.id==' . $users_id;
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema(
+            schema: $this->getKnownSchema('EmailAddress', $this->getAPIVersion($request)),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/User/{users_id}/Email/{id}', methods: ['GET'], requirements: [
+        'users_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\GetRoute(schema_name: 'EmailAddress')]
+    public function getUserEmail(Request $request): Response
+    {
+        $users_id = (int) $request->getAttribute('users_id');
+        $user = new User();
+        if (!$user->can($users_id, READ) && $users_id !== $this->getMyUserID()) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        return ResourceAccessor::getOneBySchema(
+            schema: $this->getKnownSchema('EmailAddress', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getAttributes(),
+        );
+    }
+
+    #[Route(path: '/User/{users_id}/Email', methods: ['POST'], requirements: [
+        'users_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\CreateRoute(schema_name: 'EmailAddress')]
+    public function addUserEmail(Request $request): Response
+    {
+        global $DB;
+        $users_id = (int) $request->getAttribute('users_id');
+        $request->setParameter('user', $users_id);
+
+        $user = new User();
+        if (!$user->can($users_id, UPDATE) && $users_id !== $this->getMyUserID()) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        // Do our own unicity check since UserEmail doesn't and it will result in a SQL error
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => UserEmail::getTable(),
+            'WHERE' => [
+                'users_id' => $users_id,
+                'email' => $request->getParameter('email'),
+            ],
+            'LIMIT' => 1,
+        ]);
+        if (count($it)) {
+            return new Response(409);
+        }
+
+        return ResourceAccessor::createBySchema(
+            schema: $this->getKnownSchema('EmailAddress', $this->getAPIVersion($request)),
+            request_params: $request->getParameters(),
+            get_route: [self::class, 'getUserEmail'],
+            extra_get_route_params: ['mapped' => ['users_id' => $users_id]]
+        );
+    }
+
+    #[Route(path: '/User/{users_id}/Email/{id}', methods: ['DELETE'], requirements: [
+        'users_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\DeleteRoute(schema_name: 'EmailAddress')]
+    public function deleteUserEmail(Request $request): Response
+    {
+        $users_id = (int) $request->getAttribute('users_id');
+        $user = new User();
+        if (!$user->can($users_id, UPDATE) && $users_id !== $this->getMyUserID()) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        return ResourceAccessor::deleteBySchema(
+            schema: $this->getKnownSchema('EmailAddress', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getAttributes()
+        );
     }
 
     /**

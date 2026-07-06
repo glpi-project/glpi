@@ -63062,6 +63062,194 @@
             ]
         }
     },
+    "/Administration/User/{users_id}/Email": {
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": null
+                        },
+                        "text/csv": {
+                            "schema": null
+                        },
+                        "application/xml": {
+                            "schema": null
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/filter"
+                },
+                {
+                    "$ref": "#/components/parameters/start"
+                },
+                {
+                    "$ref": "#/components/parameters/limit"
+                },
+                {
+                    "$ref": "#/components/parameters/sort"
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/EmailAddress"
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Administration/User/{users_id}/Email/{id}": {
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmailAddress"
+                            }
+                        },
+                        "text/csv": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmailAddress"
+                            }
+                        },
+                        "application/xml": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmailAddress"
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
     "/Administration/User/Me/Picture": {
         "get": {
             "responses": {
