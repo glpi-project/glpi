@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 - New schemas/endpoints for Service Catalog information in High-Level API v2.4.
 - New schemas/endpoints for reminder translations in High-Level API v2.4.
+- New endpoints for viewing, adding and deleting emails for other users in High-Level API v2.4.
 
 ### Changed
 
