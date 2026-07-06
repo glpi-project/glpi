@@ -224,6 +224,7 @@ class GLPIPDF extends TCPDF
             $register($font_path);
         }
 
+        asort($list);
         return $list;
     }
 
