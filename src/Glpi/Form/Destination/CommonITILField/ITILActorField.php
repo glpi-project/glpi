@@ -165,7 +165,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
 
             // Process each actor found by the strategy
             foreach ($itilactors as $itilactor) {
-                if (!$this->isActorAllowed($itilactor, $answers_set)) {
+                if (!$this->isActorAllowed($itilactor, $input)) {
                     continue;
                 }
                 $this->addActorToInput($input, $itilactor);
@@ -207,8 +207,11 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
      *     use_notification?: int|string,
      *     alternative_email?: string
      * } $itilactor
+     * @param array $input The ITIL object input being built, used to read the
+     *                      actual target entity (already computed by
+     *                      `EntityField` before actors are processed).
      */
-    private function isActorAllowed(array $itilactor, AnswersSet $answers_set): bool
+    private function isActorAllowed(array $itilactor, array $input): bool
     {
         if (!isset($itilactor['itemtype'], $itilactor['items_id'])) {
             return false;
@@ -227,8 +230,12 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                 return true;
             }
 
-            $form = $answers_set->getItem();
-            $entities_id = $form instanceof Form ? $form->getEntityID() : 0;
+            // The entity in which the ITIL object will actually be created
+            // may differ from the form's own entity (it can depend on the
+            // requester, on a specific answer, ...). It is already resolved
+            // at this point by the EntityField, so it must be used instead
+            // of the form's entity to check assignment rights.
+            $entities_id = $input['entities_id'] ?? -1;
             if ($entities_id < 0) {
                 return false;
             }
