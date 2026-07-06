@@ -3531,7 +3531,7 @@ JS;
                 'zh_CN'  => 'zh-Hans',
                 'zh_TW'  => 'zh-Hant',
                 'zh_HK'  => 'zh_HK',
-                'is_IS'  => 'is_IS'
+                'is_IS'  => 'is_IS',
             ];
             if (isset($tinymce_lang_map[$_SESSION['glpilanguage']])) {
                 $language = $tinymce_lang_map[$_SESSION['glpilanguage']];
