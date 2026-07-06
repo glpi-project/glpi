@@ -47,6 +47,7 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Planning;
 use Reminder;
+use ReminderTranslation;
 use Reservation;
 use ReservationItem;
 use RSSFeed;
@@ -236,6 +237,25 @@ final class ToolController extends AbstractController
                     ],
                 ],
             ],
+            'ReminderTranslation' => [
+                'x-version-introduced' => '2.4.0',
+                'x-itemtype' => ReminderTranslation::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'reminder' => self::getDropdownTypeSchema(class: Reminder::class, full_schema: 'Reminder'),
+                    'language' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 10],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'text' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
         ];
     }
 
@@ -344,5 +364,165 @@ final class ToolController extends AbstractController
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Reminder/{reminder_id}/Translation', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\SearchRoute(schema_name: 'ReminderTranslation')]
+    public function searchReminderTranslations(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';reminder.id==' . $request->getAttribute('reminder_id');
+        $request->setParameter('filter', $filters);
+
+        $reminder = new Reminder();
+        if (!$reminder->getFromDB($request->getAttribute('reminder_id'))) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        if (!$reminder->can($reminder->getID(), READ)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        return ResourceAccessor::searchBySchema(
+            schema: $this->getKnownSchema('ReminderTranslation', $this->getAPIVersion($request)),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/Reminder/{reminder_id}/Translation/{language}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\GetRoute(schema_name: 'ReminderTranslation')]
+    public function getReminderTranslation(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';reminder.id==' . $request->getAttribute('reminder_id');
+        $request->setParameter('filter', $filters);
+
+        $reminder = new Reminder();
+        if (!$reminder->getFromDB($request->getAttribute('reminder_id'))) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        if (!$reminder->can($reminder->getID(), READ)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        return ResourceAccessor::getOneBySchema(
+            schema: $this->getKnownSchema('ReminderTranslation', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters(),
+            field: 'language'
+        );
+    }
+
+    #[Route(path: '/Reminder/{reminder_id}/Translation/{language}', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\CreateRoute(schema_name: 'ReminderTranslation')]
+    public function createReminderTranslation(Request $request): Response
+    {
+        $request->setParameter('reminder', $request->getAttribute('reminder_id'));
+        $request->setParameter('language', $request->getAttribute('language'));
+
+        $reminder = new Reminder();
+        if (!$reminder->getFromDB($request->getAttribute('reminder_id'))) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        if (!$reminder->can($reminder->getID(), UPDATE)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        return ResourceAccessor::createBySchema(
+            schema: $this->getKnownSchema('ReminderTranslation', $this->getAPIVersion($request)),
+            request_params: $request->getParameters(),
+            get_route: [self::class, 'getReminderTranslation'],
+            extra_get_route_params: [
+                'mapped' => [
+                    'reminder_id' => $request->getAttribute('reminder_id'),
+                    'language' => $request->getAttribute('language'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/Reminder/{reminder_id}/Translation/{language}', methods: ['PATCH'])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\UpdateRoute(schema_name: 'ReminderTranslation')]
+    public function updateReminderTranslation(Request $request): Response
+    {
+        global $DB;
+
+        $reminder = new Reminder();
+        if (!$reminder->getFromDB($request->getAttribute('reminder_id'))) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => ReminderTranslation::getTable(),
+            'WHERE' => [
+                'reminders_id' => $request->getAttribute('reminder_id'),
+                'language' => $request->getAttribute('language'),
+            ],
+            'LIMIT' => 1,
+        ]);
+
+        if (!count($it)) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        if (!$reminder->can($reminder->getID(), UPDATE)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        $request->setAttribute('id', $it->current()['id']);
+
+        return ResourceAccessor::updateBySchema(
+            schema: $this->getKnownSchema('ReminderTranslation', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters(),
+            field: 'language'
+        );
+    }
+
+    #[Route(path: '/Reminder/{reminder_id}/Translation/{language}', methods: ['DELETE'])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\DeleteRoute(schema_name: 'ReminderTranslation')]
+    public function deleteReminderTranslation(Request $request): Response
+    {
+        global $DB;
+
+        $reminder = new Reminder();
+        if (!$reminder->getFromDB($request->getAttribute('reminder_id'))) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        if (!$reminder->can($reminder->getID(), UPDATE)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM' => ReminderTranslation::getTable(),
+            'WHERE' => [
+                'reminders_id' => $request->getAttribute('reminder_id'),
+                'language' => $request->getAttribute('language'),
+            ],
+            'LIMIT' => 1,
+        ]);
+
+        if (!count($it)) {
+            return self::getNotFoundErrorResponse();
+        }
+
+        $request->setAttribute('id', $it->current()['id']);
+
+        return ResourceAccessor::deleteBySchema(
+            schema: $this->getKnownSchema('ReminderTranslation', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters(),
+            field: 'language'
+        );
     }
 }

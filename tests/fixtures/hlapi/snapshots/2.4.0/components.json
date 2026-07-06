@@ -21611,6 +21611,66 @@
                 }
             }
         },
+        "ReminderTranslation": {
+            "x-itemtype": "ReminderTranslation",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "reminder": {
+                    "type": "object",
+                    "x-itemtype": "Reminder",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Reminder"
+                },
+                "language": {
+                    "type": "string",
+                    "maxLength": 10
+                },
+                "name": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string",
+                    "format": "html"
+                },
+                "user": {
+                    "type": "object",
+                    "x-itemtype": "User",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "User"
+                },
+                "date_creation": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "date_mod": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
         "RemoteManagement": {
             "x-itemtype": "Item_RemoteManagement",
             "type": "object",
