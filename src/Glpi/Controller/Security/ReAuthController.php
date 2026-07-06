@@ -63,7 +63,7 @@ class ReAuthController extends AbstractController
     {
         return new Response(
             TemplateRenderer::getInstance()->render(
-                'pages/reauth/prompt.html.twig',
+                'pages/reauth/prompt.html.twig', // includes the template defined in $this->buildTemplateContext() ('template' key).
                 [
                     ...$this->buildTemplateContext(),
                     'failed' => $failed,
