@@ -7088,12 +7088,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Helpdesk/Translation/AddNewHelpdeskTranslationController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$files of method Glpi\\\\Inventory\\\\Conf\\:\\:importFiles\\(\\) expects array\\{filename\\: string, filepath\\: string\\}, array\\<string, string\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/InventoryController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$connect_string of static method AuthMail\\:\\:testAuth\\(\\) expects string, bool\\|float\\|int\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

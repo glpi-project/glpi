@@ -37,7 +37,6 @@
 namespace Glpi\Inventory;
 
 use Agent;
-use CommonDBTM;
 use CommonDevice;
 use CommonGLPI;
 use Computer;
@@ -62,6 +61,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Features\StateInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\Toolbox\ArrayNormalizer;
+use Glpi\Toolbox\FileInfo;
 use GLPIKey;
 use Html;
 use Item_Disk;
@@ -181,35 +181,50 @@ class Conf extends CommonGLPI
     /**
      * Import inventory files
      *
-     * @param array{filename: string, filepath: string} $files Files to import
+     * @param FileInfo[]|array<string, string> $files Files to import. Passing an array of
+     *                                                `filename => filepath` is deprecated since 12.0.0,
+     *                                                use an array of {@see FileInfo} instead.
      *
-     * @return array{}|array{filename: array{success: bool, message: string, asset: CommonDBTM}}
+     * @return array<string, ImportResult> Results indexed by file name
      */
     public function importFiles($files): array
     {
         $result = [];
 
-        foreach ($files as $filename => $filepath) {
+        foreach ($files as $key => $file) {
+            if ($file instanceof FileInfo) {
+                $filename = $file->getFilename();
+                $filepath = $file->getFilepath();
+            } else {
+                // deprecated v12.0.0
+                Toolbox::deprecated(
+                    'Passing an array of "filename => filepath" to Conf::importFiles() is deprecated. '
+                    . 'Use an array of ' . FileInfo::class . ' instead.'
+                );
+                $filename = $key;
+                $filepath = $file;
+            }
+
             if (UnifiedArchive::canOpen($filepath) && $archive = UnifiedArchive::open($filepath)) {
                 $unarchived_files = $archive->getFiles();
                 foreach ($unarchived_files as $inventory_file) {
                     if ($this->isInventoryFile($inventory_file)) {
+                        $entry_name = $filename . '/' . basename($inventory_file);
                         $contents = $archive->getFileContent($inventory_file);
-                        $result[$filename . '/' . basename($inventory_file)] = $this->importContentFile(null, $contents);
+                        $result[$entry_name] = $this->importContentFile($entry_name, null, $contents);
                     }
                 }
             } elseif ($this->isInventoryFile($filename)) {
-                $result[$filename] = $this->importContentFile($filepath, file_get_contents($filepath));
+                $result[$filename] = $this->importContentFile($filename, $filepath, file_get_contents($filepath));
             } else {
-                $result[$filename] = [
-                    'success' => false,
-                    'message' => sprintf(
+                $result[$filename] = new ImportResult(
+                    filename: $filename,
+                    success: false,
+                    message: sprintf(
                         __('File has not been imported: `%s`.'),
                         sprintf('`%s` format is not supported', pathinfo($filename, PATHINFO_EXTENSION))
                     ),
-                    'items'   => [],
-                    'request' => null,
-                ];
+                );
             }
         }
 
@@ -231,20 +246,18 @@ class Conf extends CommonGLPI
     /**
      * Import contents of a file
      *
+     * @param string  $filename          File name (used to label the result)
      * @param ?string $path              File path
      * @param string  $contents          File contents
      *
-     * @return array{success: bool, message: ?string, items: CommonDBTM[], request: Request}
+     * @return ImportResult
      */
-    protected function importContentFile($path, $contents): array
+    protected function importContentFile($filename, $path, $contents): ImportResult
     {
         $inventory_request = new Request();
-        $result = [
-            'success' => false,
-            'message' => null,
-            'items'   => [],
-            'request' => null,
-        ];
+        $success = false;
+        $message = null;
+        $items = [];
 
         try {
             $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -267,24 +280,25 @@ class Conf extends CommonGLPI
                     $response = $xml->ERROR;
                 }
                 $response = str_replace('&nbsp;', ' ', $response);
-                $result['message'] = sprintf(__('File has not been imported: `%s`.'), $response);
+                $message = sprintf(__('File has not been imported: `%s`.'), $response);
             } else {
-                $result = [
-                    'success' => true,
-                    'message' => __('File has been successfully imported.'),
-                    'items'   => $inventory_request->getInventory()->getItems(),
-                ];
+                $success = true;
+                $message = __('File has been successfully imported.');
+                $items   = $inventory_request->getInventory()->getItems();
             }
         } catch (Throwable $e) {
-            $result = [
-                'success' => false,
-                'message' => sprintf(__('An error occurs during import: `%s`.'), $e->getMessage()),
-                'items'   => $inventory_request->getInventory()->getItems(),
-            ];
+            $success = false;
+            $message = sprintf(__('An error occurs during import: `%s`.'), $e->getMessage());
+            $items   = $inventory_request->getInventory()->getItems();
         }
 
-        $result['request'] = $inventory_request;
-        return $result;
+        return new ImportResult(
+            filename: $filename,
+            success: $success,
+            message: $message,
+            items: $items,
+            request: $inventory_request,
+        );
     }
 
     /**
