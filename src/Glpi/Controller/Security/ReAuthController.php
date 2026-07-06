@@ -87,9 +87,9 @@ class ReAuthController extends AbstractController
 
             return new Response(
                 TemplateRenderer::getInstance()->render('pages/redirect_post.html.twig', [
-                    'http_method' => $this->reAuthManager->getRedirectMethod(),
-                    'url'         => $this->reAuthManager->getTargetURL(),
-                    'post_data'   => $this->reAuthManager->getRedirectData(),
+                    'http_method' => $this->reAuthManager->getRequestedMethod(),
+                    'url'         => $this->reAuthManager->getRequestedURL(),
+                    'post_data'   => $this->reAuthManager->getRequestedPostData(),
                 ])
             );
         }
@@ -103,7 +103,7 @@ class ReAuthController extends AbstractController
     private function buildTemplateContext(): array
     {
         return [
-            'redirect'      => $this->reAuthManager->getTargetURL(),
+            'redirect'      => $this->reAuthManager->getRequestedURL(),
             'cancel_url'    => $this->reAuthManager->getOriginURL(),
             'action'        => $this->router->generate('reauth_verify'),
             'label'         => $this->reAuthManager->getLabel(),

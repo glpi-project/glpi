@@ -115,9 +115,9 @@ final class ReAuthManager
         return $this->getStrategy()->getPromptTemplate();
     }
 
-    public function getTargetURL(): string
+    public function getRequestedURL(): string
     {
-        return $_SESSION['glpi_reauth_target_url'] ?? '/';
+        return $_SESSION['glpi_reauth_requested_url'] ?? '/';
     }
 
     /**
@@ -147,9 +147,9 @@ final class ReAuthManager
      *
      * @return array<string, string>
      */
-    public function getRedirectData(): array
+    public function getRequestedPostData(): array
     {
-        $reauth_data = $_SESSION['glpi_reauth_data'] ?? [];
+        $reauth_data = $_SESSION['glpi_reauth_requested_post_data'] ?? [];
 
         return $reauth_data + ['_glpi_http_referer' => $this->getOriginURL()];
     }
@@ -157,9 +157,9 @@ final class ReAuthManager
     /**
      * @return 'POST'|'GET'
      */
-    public function getRedirectMethod(): string
+    public function getRequestedMethod(): string
     {
-        return $_SESSION['glpi_reauth_httpmethod'] ?? 'GET';
+        return $_SESSION['glpi_reauth_requested_httpmethod'] ?? 'GET';
     }
 
     /**
@@ -167,7 +167,7 @@ final class ReAuthManager
      *
      * @param array<int, class-string<\CommonGLPI>> $item_types item type to check
      */
-    public function atLeastOneitemTypesRequiresReauthentication(array $item_types): bool
+    public function atLeastOneItemTypesRequiresReauthentication(array $item_types): bool
     {
         foreach ($item_types as $item_type) {
             if (!is_a($item_type, \CommonGLPI::class, true)) {
@@ -191,7 +191,7 @@ final class ReAuthManager
 
         $this->setRequestedURL($current_url);
         $this->setRequestedMethod($_SERVER['REQUEST_METHOD'] === 'POST' ? 'POST' : 'GET');
-        $this->setRequestedData($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : $_GET);
+        $this->setRequestedPostData($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : $_GET);
     }
 
     private function getStrategy(): ReAuthStrategyInterface
@@ -236,13 +236,13 @@ final class ReAuthManager
 
     private function setRequestedURL(string $url): void
     {
-        $_SESSION['glpi_reauth_target_url'] = $url;
+        $_SESSION['glpi_reauth_requested_url'] = $url;
     }
 
     /** @param array<string, string> $post */
-    private function setRequestedData(array $post): void
+    private function setRequestedPostData(array $post): void
     {
-        $_SESSION['glpi_reauth_data'] = $post;
+        $_SESSION['glpi_reauth_requested_post_data'] = $post;
     }
 
     /**
@@ -250,7 +250,7 @@ final class ReAuthManager
      */
     private function setRequestedMethod(string $http_method): void
     {
-        $_SESSION['glpi_reauth_httpmethod'] = match ($http_method) {
+        $_SESSION['glpi_reauth_requested_httpmethod'] = match ($http_method) {
             'GET'  => 'GET',
             'POST' => 'POST',
             default => throw new \LogicException(sprintf('Unsupported HTTP method for redirect: %s', $http_method)),

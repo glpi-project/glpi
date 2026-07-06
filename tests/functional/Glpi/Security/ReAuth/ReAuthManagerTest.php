@@ -146,13 +146,13 @@ class ReAuthManagerTest extends DbTestCase
 
         // --- assert : the GET request that triggered reauth is recorded for replay ---
         // expected data defined in fakeWebRequest()
-        $this->assertSame('https://glpi.example.org/front/user.form.php', $manager->getTargetURL());
-        $this->assertSame('GET', $manager->getRedirectMethod());
+        $this->assertSame('https://glpi.example.org/front/user.form.php', $manager->getRequestedURL());
+        $this->assertSame('GET', $manager->getRequestedMethod());
         $this->assertSame('https://glpi.example.org/front/user.php', $manager->getOriginURL());
-        $this->assertSame('bar', $manager->getRedirectData()['foo']);
+        $this->assertSame('bar', $manager->getRequestedPostData()['foo']);
         $this->assertSame(
             'https://glpi.example.org/front/user.php',
-            $manager->getRedirectData()['_glpi_http_referer']
+            $manager->getRequestedPostData()['_glpi_http_referer']
         );
     }
 
@@ -172,8 +172,8 @@ class ReAuthManagerTest extends DbTestCase
         }
 
         // --- assert ---
-        $this->assertSame('POST', $manager->getRedirectMethod());
-        $this->assertSame('value', $manager->getRedirectData()['name']);
+        $this->assertSame('POST', $manager->getRequestedMethod());
+        $this->assertSame('value', $manager->getRequestedPostData()['name']);
     }
 
     /** All getters return safe defaults when the re-auth session keys are absent. */
@@ -184,18 +184,18 @@ class ReAuthManagerTest extends DbTestCase
         // --- arrange ---
         $manager = new ReAuthManager();
         unset(
-            $_SESSION['glpi_reauth_target_url'],
+            $_SESSION['glpi_reauth_requested_url'],
             $_SESSION['glpi_reauth_origin_url'],
-            $_SESSION['glpi_reauth_httpmethod'],
-            $_SESSION['glpi_reauth_data'],
+            $_SESSION['glpi_reauth_requested_httpmethod'],
+            $_SESSION['glpi_reauth_requested_post_data'],
         );
 
         // --- assert ---
-        $this->assertSame('/', $manager->getTargetURL());
-        $this->assertSame('GET', $manager->getRedirectMethod());
+        $this->assertSame('/', $manager->getRequestedURL());
+        $this->assertSame('GET', $manager->getRequestedMethod());
         $this->assertSame($CFG_GLPI['root_doc'], $manager->getOriginURL());
-        // getRedirectData() injects the referer pointing to the origin URL (calling page).
-        $this->assertSame(['_glpi_http_referer' => $CFG_GLPI['root_doc']], $manager->getRedirectData());
+        // getRequestedPostData() injects the referer pointing to the origin URL (calling page).
+        $this->assertSame(['_glpi_http_referer' => $CFG_GLPI['root_doc']], $manager->getRequestedPostData());
     }
 
     /** Throws InvalidArgumentException when a non-CommonGLPI class is passed. */
@@ -206,7 +206,7 @@ class ReAuthManagerTest extends DbTestCase
 
         // --- act + assert ---
         $this->expectException(InvalidArgumentException::class);
-        $manager->atLeastOneitemTypesRequiresReauthentication([\stdClass::class]);
+        $manager->atLeastOneItemTypesRequiresReauthentication([\stdClass::class]);
     }
 
     public static function atLeastOneItemTypeRequiresReauthenticationProvider(): iterable
@@ -228,7 +228,7 @@ class ReAuthManagerTest extends DbTestCase
         unset($_SESSION['glpi_reauth_until']);
 
         // --- act + assert ---
-        $this->assertSame($expected, $manager->atLeastOneitemTypesRequiresReauthentication($itemtypes));
+        $this->assertSame($expected, $manager->atLeastOneItemTypesRequiresReauthentication($itemtypes));
     }
 
     /**

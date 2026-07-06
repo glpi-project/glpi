@@ -52,7 +52,7 @@ try {
     $item_types = get_item_types_from_post();
 
     $reauth_manager = new ReAuthManager();
-    if ($reauth_manager->atLeastOneitemTypesRequiresReauthentication($item_types)) {
+    if ($reauth_manager->atLeastOneItemTypesRequiresReauthentication($item_types)) {
         // First pass (reauth needed): throws RedirectException.
         $reauth_manager->checkReAuthenticationOrRedirect();
 
