@@ -47,7 +47,7 @@ $CFG_GLPI = [];
 $CFG_GLPI['app_name'] = 'GLPI';
 
 // Languages dictionnary:
-// 0=> regionalized lang code
+// 0 => regionalized lang code
 // 1 => translated (native) name
 // 2 => MO file Name
 // 3 => jquery lang code
