@@ -2824,4 +2824,74 @@ class UserTest extends DbTestCase
         ]);
         $this->assertTrue(User::isValidUserForEntity($recursive_user->getID(), $child1_entity_id));
     }
+
+    /**
+     * The `pdffont` user preference stores a font key that must exist in the
+     * fonts shipped with TCPDF. The TCPDF 7.0 migration dropped several fonts
+     * (Arabic `aealarabiya`/`aefurat` and the CJK CID fonts
+     * `kozminproregular`, `kozgopromedium`, `msungstdlight`, `stsongstdlight`,
+     * `hysmyeongjostdmedium`), so a value saved with a previous version may no
+     * longer be valid.
+     *
+     * This test documents how the preference behaves on save when the selected
+     * font is (in)valid.
+     */
+    public function testPdffontPreference()
+    {
+        $this->login();
+
+        $font_list = \GLPIPDF::getFontList();
+        // Sanity checks on the font list provided by the current TCPDF version.
+        $this->assertArrayHasKey('times', $font_list);
+        // Font dropped by the TCPDF 7.0 migration.
+        $this->assertArrayNotHasKey('kozminproregular', $font_list);
+
+        $user = new User();
+        $uid  = $user->add(['name' => $this->getUniqueString()]);
+        $this->assertGreaterThan(0, $uid);
+
+        // A font available in the current font list is accepted and stored.
+        $this->assertTrue($user->update([
+            'id'      => $uid,
+            'pdffont' => 'times',
+        ]));
+        $this->hasNoSessionMessages([ERROR, WARNING]);
+        $this->assertTrue($user->getFromDB($uid));
+        $this->assertSame('times', $user->fields['pdffont']);
+
+        // Saving the preferences form with a font that no longer exists (e.g. a
+        // value inherited from a previous TCPDF version) is refused: the bad
+        // value is discarded with an error message while the other submitted
+        // fields are still saved and the previous font is kept.
+        $this->assertTrue($user->update([
+            'id'       => $uid,
+            'realname' => 'Font Tester',
+            'pdffont'  => 'kozminproregular',
+        ]));
+        $this->hasSessionMessages(
+            ERROR,
+            ['The following field has an incorrect value: &quot;PDF export font&quot;.']
+        );
+        $this->assertTrue($user->getFromDB($uid));
+        $this->assertSame('Font Tester', $user->fields['realname']); // other field saved
+        $this->assertSame('times', $user->fields['pdffont']); // font preference unchanged
+
+        // A stale value may already be stored in database (saved before the
+        // migration). It stays untouched as long as `pdffont` is not part of
+        // the submitted input...
+        global $DB;
+        $DB->update(User::getTable(), ['pdffont' => 'kozminproregular'], ['id' => $uid]);
+        $this->assertTrue($user->update([
+            'id'       => $uid,
+            'realname' => 'Font Tester 2',
+        ]));
+        $this->hasNoSessionMessages([ERROR, WARNING]);
+        $this->assertTrue($user->getFromDB($uid));
+        $this->assertSame('kozminproregular', $user->fields['pdffont']);
+
+        // ... but GLPIPDF silently falls back to the default font at export
+        // time, so PDF generation does not break.
+        $pdf = new \GLPIPDF(['font' => $user->fields['pdffont']]);
+        $this->assertSame('helvetica', $pdf->getFontFamily());
+    }
 }
