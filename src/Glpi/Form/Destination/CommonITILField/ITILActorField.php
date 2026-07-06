@@ -207,9 +207,10 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
      *     use_notification?: int|string,
      *     alternative_email?: string
      * } $itilactor
-     * @param array $input The ITIL object input being built, used to read the
-     *                      actual target entity (already computed by
-     *                      `EntityField` before actors are processed).
+     * @param array<string, mixed> $input The ITIL object input being built,
+     *                      used to read the actual target entity (already
+     *                      computed by `EntityField` before actors are
+     *                      processed).
      */
     private function isActorAllowed(array $itilactor, array $input): bool
     {
