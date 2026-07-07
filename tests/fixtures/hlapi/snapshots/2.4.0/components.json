@@ -13154,6 +13154,39 @@
                 }
             }
         },
+        "KanbanView": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "column": {
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    "folded": {
+                        "type": "boolean"
+                    },
+                    "visible": {
+                        "type": "boolean"
+                    },
+                    "cards": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "itemtype": {
+                                    "type": "string"
+                                },
+                                "items_id": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "LDAPDirectory": {
             "x-itemtype": "AuthLDAP",
             "type": "object",

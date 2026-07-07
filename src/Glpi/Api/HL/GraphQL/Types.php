@@ -60,13 +60,20 @@ class Types
      * @param string $schema_name
      * @param array<string, mixed> $schema
      * @param string $api_version
-     * @return ObjectType
+     * @return ObjectType|ListOfType<ObjectType>
      */
-    private static function convertRESTSchemaToGraphQLSchema(string $schema_name, array $schema, string $api_version): ObjectType
+    private static function convertRESTSchemaToGraphQLSchema(string $schema_name, array $schema, string $api_version): ObjectType|ListOfType
     {
         $fields = [];
-        foreach ($schema['properties'] as $name => $property) {
-            $fields[$name] = static fn() => self::convertRESTPropertyToGraphQLType($property, $name, $schema_name, $api_version);
+        $is_array_of_objects = $schema['type'] === Doc\Schema::TYPE_ARRAY && isset($schema['items']['properties']);
+        if ($is_array_of_objects) {
+            foreach ($schema['items']['properties'] as $name => $property) {
+                $fields[$name] = static fn() => self::convertRESTPropertyToGraphQLType($property, $name, $schema_name, $api_version);
+            }
+        } else {
+            foreach ($schema['properties'] as $name => $property) {
+                $fields[$name] = static fn() => self::convertRESTPropertyToGraphQLType($property, $name, $schema_name, $api_version);
+            }
         }
         $type_config = [
             'name' => $schema_name,
@@ -75,7 +82,7 @@ class Types
         if (isset($schema['x-graphql-resolver'])) {
             $type_config['resolveField'] = $schema['x-graphql-resolver'];
         }
-        return new ObjectType($type_config);
+        return $is_array_of_objects ? new ListOfType(new ObjectType($type_config)) : new ObjectType($type_config);
     }
 
     /**
