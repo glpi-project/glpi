@@ -87,6 +87,12 @@ final class ReAuthManager
      */
     public function isReAuthenticated(): bool
     {
+        // Emergency escape hatch (set in config/local_define.php): lets a server admin
+        // locked out of the reauth-gated admin pages regain access. Intentionally undocumented.
+        if (GLPI_DISABLE_REAUTH === true) {
+            return true;
+        }
+
         $current_limit_timestamp = $_SESSION['glpi_reauth_until'] ?? null;
         $calculated_limit_timestamp = (new DateTime($_SESSION['glpi_currenttime']))->getTimestamp();
 
