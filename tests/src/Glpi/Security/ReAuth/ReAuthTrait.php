@@ -40,7 +40,7 @@ use Glpi\Security\ReAuth\ReAuthManager;
  * Helpers shared by the re-authentication tests: fake a web request context and
  * toggle the current session's re-authentication state.
  */
-trait ReAuthTestTrait
+trait ReAuthTrait
 {
     /**
      * Simulate a web (non-CLI) request context so that re-authentication
@@ -97,9 +97,14 @@ trait ReAuthTestTrait
     {
         $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s');
         if ($reauthenticated) {
-            (ReAuthManager::getInstance())->authenticate();
+            ($this->getReAuthManager())->authenticate();
         } else {
             unset($_SESSION['glpi_reauth_until']);
         }
+    }
+
+    private function getReAuthManager(): ReAuthManager
+    {
+        return ReAuthManager::getInstance();
     }
 }

@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Controller\Security;
 use Glpi\Controller\Security\ReAuthController;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use PHPUnit\Framework\Attributes\Group;
 use Safe\DateTime;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,12 +46,14 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[Group('reauth')]
 final class ReAuthControllerTest extends DbTestCase
 {
+    use ReAuthTrait;
+
     /** Returns a 200 response containing the verify action URL. */
     public function testPromptRendersTheReAuthForm(): void
     {
         // --- arrange ---
         $this->login();
-        $controller = new ReAuthController($this->getRouterMock(), ReAuthManager::getInstance());
+        $controller = new ReAuthController($this->getRouterMock(), $this->getReAuthManager());
 
         // --- act ---
         $response = $controller->prompt();
@@ -67,7 +70,7 @@ final class ReAuthControllerTest extends DbTestCase
         $this->login();
         unset($_SESSION['glpi_reauth_until']);
         $expected_reauth_until = (new DateTime($_SESSION['glpi_currenttime']))->getTimestamp() + ReAuthManager::REAUTH_DELAY_SECONDS;
-        $controller = new ReAuthController($this->getRouterMock(), ReAuthManager::getInstance());
+        $controller = new ReAuthController($this->getRouterMock(), $this->getReAuthManager());
 
         // --- act : submit the correct password ---
         $response = $controller->verify(Request::create('/ReAuth/Verify', 'POST', ['user_input' => TU_PASS]));
@@ -83,7 +86,7 @@ final class ReAuthControllerTest extends DbTestCase
         // --- arrange : logged-in user, not yet re-authenticated ---
         $this->login();
         unset($_SESSION['glpi_reauth_until']);
-        $controller = new ReAuthController($this->getRouterMock(), ReAuthManager::getInstance());
+        $controller = new ReAuthController($this->getRouterMock(), $this->getReAuthManager());
 
         // --- act : submit a wrong password ---
         $response = $controller->verify(Request::create('/ReAuth/Verify', 'POST', ['user_input' => 'wrong-password']));

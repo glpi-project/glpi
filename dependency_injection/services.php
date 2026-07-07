@@ -83,10 +83,6 @@ return static function (ContainerConfigurator $container): void {
         'Twig\Components\\',
         $projectDir . '/src/Twig/Components'
     );
-    // ReAuthManager is a singleton (private constructor via SingletonTrait),
-    // so it is not instantiable by the container. Bridge it as a pseudo-service
-    // through its getInstance() factory so it can be autowired while legacy
-    // call-sites keep using ReAuthManager::getInstance().
     $services->set(ReAuthManager::class)
         ->factory([ReAuthManager::class, 'getInstance']);
 
