@@ -115,6 +115,27 @@
                 spellcheck="true"
             >{{ subject }}</h1>
             <div class="ms-auto d-flex align-items-center gap-2">
+                {# Share (publish to web) #}
+                {% if can_edit and mode != 'add' %}
+                    <div class="dropdown" data-glpi-share-dropdown>
+                        <button type="button"
+                                class="btn btn-outline-secondary {{ is_published ? 'active' : '' }}"
+                                data-bs-toggle="dropdown"
+                                data-bs-auto-close="outside"
+                                aria-expanded="false"
+                                data-glpi-share-button
+                                data-glpi-itemtype="KnowbaseItem"
+                                data-glpi-items-id="{{ item_id }}">
+                            <i class="ti {{ is_published ? 'ti-world' : 'ti-share' }} me-1"></i>{{ __('Share') }}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end p-3"
+                             style="min-width: 360px;"
+                             data-glpi-share-menu
+                             data-bs-popper="static">
+                        </div>
+                    </div>
+                {% endif %}
+
                 {# Edit/Save/Cancel buttons #}
                 {% if mode == 'edit' and can_edit %}
                     <div class="kb-editor-actions d-flex gap-2">
@@ -535,6 +556,14 @@
                 "/js/modules/Knowbase/UploadController.js"
             );
             new uploadModule.DocumentUploadController(uploadPane, uploadModal);
+        }
+
+        const share_dropdown = document.querySelector('[data-glpi-share-dropdown]');
+        if (share_dropdown) {
+            const { GlpiKnowbaseSharePopoverController } = await import(
+                "/js/modules/Knowbase/SharePopoverController.js"
+            );
+            new GlpiKnowbaseSharePopoverController(share_dropdown);
         }
     })();
 </script>

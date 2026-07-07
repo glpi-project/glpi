@@ -52,6 +52,7 @@ use Glpi\Knowbase\History\HistoryBuilder;
 use Glpi\Knowbase\LastUpdateInfo;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
+use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Glpi\UI\IllustrationManager;
@@ -1094,6 +1095,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
             // Add actions
             $params['actions'] = $this->getEditorActions();
+
+            // Public sharing state (for the header "Share" button)
+            $params['is_published'] = (new ShareTokenManager())
+                ->hasActiveToken(self::class, $this->fields['id']);
         } elseif ($mode === "add") {
             $params['can_edit']     = $this->can(-1, CREATE);
             $params['illustration'] = '';
@@ -1105,6 +1110,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     'id' => $prefilled_category_id,
                 ];
             }
+
+            $params['is_published'] = false;
         }
 
         $out = TemplateRenderer::getInstance()->render(
@@ -1282,8 +1289,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
 
-            $label = __('Permissions and sharing');
-            $icon  = "ti ti-eye";
+            $label = __('Permissions');
+            $icon  = "ti ti-lock";
             $actions[] = new EditorAction(
                 label: $label,
                 icon: $icon,

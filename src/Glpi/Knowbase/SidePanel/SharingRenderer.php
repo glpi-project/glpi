@@ -57,12 +57,12 @@ final class SharingRenderer implements RendererInterface
     {
         $id = $item->getID();
         $manager = new ShareTokenManager();
-        $token = $manager->getActiveToken(KnowbaseItem::class, $id);
+        $token = $manager->getToken(KnowbaseItem::class, $id);
 
         return [
             'id'           => $id,
             'itemtype'     => KnowbaseItem::class,
-            'is_published' => $token !== null,
+            'is_published' => $token !== null && (int) $token['is_active'] === 1,
             'token'        => $token,
             'can_edit'     => $item->canEdit($id),
         ];

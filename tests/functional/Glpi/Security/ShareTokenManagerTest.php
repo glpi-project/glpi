@@ -90,4 +90,38 @@ final class ShareTokenManagerTest extends DbTestCase
             $active['token'],
         );
     }
+
+    public function testGetTokenReturnsRowRegardlessOfActiveState(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $manager = new ShareTokenManager();
+
+        $this->assertNull($manager->getToken(KnowbaseItem::class, $kb->getID()));
+
+        $token = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ]);
+
+        $active = $manager->getToken(KnowbaseItem::class, $kb->getID());
+        $this->assertNotNull($active);
+        $this->assertSame($token->getID(), (int) $active['id']);
+        $this->assertSame(
+            $manager->decryptToken((string) $token->fields['token']),
+            $active['token'],
+        );
+
+        $this->updateItem(ShareToken::class, $token->getID(), ['is_active' => 0]);
+
+        $inactive = $manager->getToken(KnowbaseItem::class, $kb->getID());
+        $this->assertNotNull($inactive);
+        $this->assertSame($token->getID(), (int) $inactive['id']);
+        $this->assertSame(0, (int) $inactive['is_active']);
+        $this->assertSame(
+            $manager->decryptToken((string) $token->fields['token']),
+            $inactive['token'],
+        );
+    }
 }
