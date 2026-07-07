@@ -136,7 +136,8 @@
                 "CVE-2026-48805": "Patch has been applied manually.",
                 "CVE-2026-48806": "Patch has been applied manually.",
                 "CVE-2026-48807": "Patch has been applied manually.",
-                "CVE-2026-48808": "Patch has been applied manually."
+                "CVE-2026-48808": "Patch has been applied manually.",
+                "CVE-2026-49981": "Patch has been applied manually."
             }
         }
     },
