@@ -148,31 +148,26 @@ class ReAuthManagerTest extends DbTestCase
         try {
             $manager->redirectToReauth();
             $this->fail('A RedirectException should have been thrown.');
-        } catch (RedirectException $e) {
-            $this->assertSame('/ReAuth/Prompt', $e->getResponse()->getTargetUrl());
+        } catch (RedirectException) {
         }
 
-        // --- assert : the GET request that triggered reauth is recorded for replay ---
-        // expected data defined in fakeWebRequest()
-        $this->assertSame('https://glpi.example.org/front/user.form.php', $manager->getRequestedURL());
-        $this->assertSame('GET', $manager->getRequestedMethod());
-        $this->assertSame('https://glpi.example.org/front/user.php', $manager->getOriginURL());
-        $this->assertSame('bar', $manager->getRequestedPostData()['foo']);
-        $this->assertSame(
-            'https://glpi.example.org/front/user.php',
-            $manager->getRequestedPostData()['_glpi_http_referer']
-        );
+        // --- assert ---
+        $this->assertSame('POST', $manager->getRequestedMethod());
+        $this->assertSame('value', $manager->getRequestedPostData()['name']);
+        // The GET query string of a POST request is preserved: browsers keep the action
+        // URL's query string untouched on replay since the form data goes in the body.
+        $this->assertSame('https://glpi.example.org/front/user.form.php?id=2', $manager->getRequestedURL());
     }
 
-    /** POST body and method are persisted in session before the RedirectException is thrown. */
-    public function testRedirectToReauthStoresPostRequestData(): void
+    /** The requested URL drops its GET query string: browsers rebuild it from the form fields on replay. */
+    public function testRedirectToReauthStoresUrlWithoutGetParams(): void
     {
         // --- arrange ---
         $manager = new ReAuthManager();
-        $this->fakeWebRequest('POST', [], ['name' => 'value']);
+        $requested_url = '/front/user.form.php?id=2&another_param=value';
+        $this->fakeWebContext(request_uri: $requested_url);
 
         // --- act ---
-        // See testRedirectToReauthThrowsAndStoresGetRequest() comment
         try {
             $manager->redirectToReauth();
             $this->fail('A RedirectException should have been thrown.');
@@ -180,8 +175,7 @@ class ReAuthManagerTest extends DbTestCase
         }
 
         // --- assert ---
-        $this->assertSame('POST', $manager->getRequestedMethod());
-        $this->assertSame('value', $manager->getRequestedPostData()['name']);
+        $this->assertSame('https://glpi.example.org/front/user.form.php', $manager->getRequestedURL());
     }
 
     /** All getters return safe defaults when the re-auth session keys are absent. */

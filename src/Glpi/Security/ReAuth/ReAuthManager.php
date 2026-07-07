@@ -187,11 +187,18 @@ final class ReAuthManager
      */
     private function setRequestedTarget(): void
     {
-        $current_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . explode('?', $_SERVER['REQUEST_URI'])[0];
+        $is_post = $_SERVER['REQUEST_METHOD'] === 'POST';
+
+        // For POST requests, the GET query string in the action URL is preserved by the
+        // browser on replay, so it must be stored. For GET requests, the browser rebuilds
+        // the query string from the form fields on submit, so keeping it here would be
+        // both useless and misleading.
+        $request_path = $is_post ? $_SERVER['REQUEST_URI'] : explode('?', $_SERVER['REQUEST_URI'])[0];
+        $current_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $request_path; // @todo utiliser requete symfony présente dans main à la base ? &| sanitize url
 
         $this->setRequestedURL($current_url);
-        $this->setRequestedMethod($_SERVER['REQUEST_METHOD'] === 'POST' ? 'POST' : 'GET');
-        $this->setRequestedPostData($_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST : $_GET);
+        $this->setRequestedMethod($is_post ? 'POST' : 'GET');
+        $this->setRequestedPostData($is_post ? $_POST : $_GET);
     }
 
     private function getStrategy(): ReAuthStrategyInterface
