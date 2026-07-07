@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import '/build/vue/app.js';
+import '/js/src/vue/app.js';
 import EntitySelector from '/js/src/vue/EntitySelector/EntitySelector.vue';
 import '/lib/fuzzy.js';
 import {enableAutoUnmount, flushPromises, mount} from "@vue/test-utils";
