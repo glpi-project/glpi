@@ -311,11 +311,16 @@ export class GlpiFormEditorController
 
         // Handle conditions count changes
         document.addEventListener('conditions_count_changed', (e) => {
+            const is_validation = $(e.detail.container).closest(
+                '[data-glpi-form-editor-validation-dropdown-container]'
+            ).length > 0;
+
             this.#updateConditionsCount(
                 $(e.detail.container).closest(
                     '[data-glpi-form-editor-block],[data-glpi-form-editor-section-details],[data-glpi-form-editor-container]'
                 ),
-                e.detail.conditions_count
+                e.detail.conditions_count,
+                is_validation ? 'validation' : 'visibility',
             );
         });
 
@@ -2984,8 +2989,8 @@ export class GlpiFormEditorController
             .addClass('d-flex');
     }
 
-    #updateConditionsCount(container, value) {
-        container.find('[data-glpi-editor-validation-conditions-count-badge], [data-glpi-editor-visibility-conditions-count-badge]')
+    #updateConditionsCount(container, value, type) {
+        container.find(`[data-glpi-editor-${CSS.escape(type)}-conditions-count-badge]`)
             .html(value);
     }
 
