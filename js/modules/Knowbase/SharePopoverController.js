@@ -44,8 +44,8 @@ export class GlpiKnowbaseSharePopoverController
     #button;
     /** @type {number} */
     #itemsId;
-    /** @type {boolean} */
-    #loaded = false;
+    /** @type {Promise<void>|null} */
+    #initialLoad = null;
 
     /**
      * @param {HTMLElement} root - the `.dropdown` wrapping the Share button + menu
@@ -57,16 +57,40 @@ export class GlpiKnowbaseSharePopoverController
         this.#button  = root.querySelector('[data-glpi-share-button]');
         this.#itemsId = Number(this.#button.dataset.glpiItemsId);
         this.#initEventListeners();
+
+        // Bootstrap toggles the dropdown via data-bs-toggle independently of
+        // this controller, which is instantiated after async module imports.
+        // On a fast open the show.bs.dropdown event can therefore fire before
+        // the listener above is attached; if the dropdown is already open,
+        // load the content now since we missed that event.
+        if (this.#button.getAttribute('aria-expanded') === 'true') {
+            this.#ensureContentLoaded();
+        }
+    }
+
+    /**
+     * Fetch the popover content once. De-duplicates concurrent/repeat calls and
+     * allows a retry if the initial load failed.
+     *
+     * @returns {Promise<void>}
+     */
+    #ensureContentLoaded()
+    {
+        if (this.#initialLoad === null) {
+            this.#initialLoad = this.#reload().catch((error) => {
+                this.#initialLoad = null;
+                throw error;
+            });
+        }
+
+        return this.#initialLoad;
     }
 
     #initEventListeners()
     {
-        // Lazy-load the popover content the first time it opens.
-        this.#root.addEventListener('show.bs.dropdown', async () => {
-            if (!this.#loaded) {
-                await this.#reload();
-                this.#loaded = true;
-            }
+        // Load the popover content the first time it opens (no-op afterwards).
+        this.#root.addEventListener('show.bs.dropdown', () => {
+            this.#ensureContentLoaded();
         });
 
         // Toggle publish on/off.
@@ -108,6 +132,10 @@ export class GlpiKnowbaseSharePopoverController
             }
             await post(`Share/Token/${token_id}/Regenerate`);
             await this.#reload();
+            // Confirming the danger dialog is a click outside the dropdown,
+            // which auto-closes it (data-bs-auto-close="outside"); reopen so the
+            // freshly generated link stays visible for the user to copy.
+            bootstrap.Dropdown.getOrCreateInstance(this.#button).show();
         });
     }
 
