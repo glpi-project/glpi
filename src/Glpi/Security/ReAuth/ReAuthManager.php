@@ -41,6 +41,8 @@ use InvalidArgumentException;
 use RuntimeException;
 use Safe\DateTime;
 
+use function Safe\parse_url;
+
 final class ReAuthManager
 {
     public const int REAUTH_DELAY_SECONDS = 15 * MINUTE_TIMESTAMP;
@@ -69,7 +71,13 @@ final class ReAuthManager
         global $CFG_GLPI;
 
         $this->setRequestedTarget();
-        $this->setOriginURL(\Html::getRefererUrl() ?? $CFG_GLPI["root_doc"]);
+
+        $referer = \Html::getRefererUrl();
+        // Set Origin URL except if it's a path to the reauth controller, to prevent looping.
+        $this->setOriginURL(
+            ($referer !== null && !$this->isReAuthRoute($referer)) ? $referer : $CFG_GLPI["root_doc"]
+        );
+
         throw new RedirectException('/ReAuth/Prompt');
     }
 
@@ -229,6 +237,13 @@ final class ReAuthManager
         usort($available, static fn($a, $b) => $b->getPriority() <=> $a->getPriority());
 
         return $available[0];
+    }
+
+    private function isReAuthRoute(string $url): bool
+    {
+        $path = parse_url($url, PHP_URL_PATH) ?? '';
+
+        return str_starts_with($path, '/ReAuth/');
     }
 
     /**

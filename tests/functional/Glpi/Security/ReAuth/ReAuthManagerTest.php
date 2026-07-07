@@ -184,6 +184,33 @@ class ReAuthManagerTest extends DbTestCase
         $this->assertArrayNotHasKey('_glpi_http_referer', $manager->getRequestedPostData());
     }
 
+    /**
+     * A referer pointing to the reauth prompt itself (e.g. abandoned then reached again from
+     * another reauth-gated page) must not be stored as the origin URL, or the "Cancel" link
+     * and the replayed request's referer would point back into the reauth flow.
+     */
+    public function testRedirectToReauthDoesNotStoreReauthRouteAsOriginUrl(): void
+    {
+        global $CFG_GLPI;
+
+        // --- arrange ---
+        $manager = new ReAuthManager();
+        $this->fakeWebContext(
+            request_uri: '/front/user.form.php?id=2',
+            referer: 'https://glpi.example.org/ReAuth/Prompt',
+        );
+
+        // --- act ---
+        try {
+            $manager->redirectToReauth();
+            $this->fail('A RedirectException should have been thrown.');
+        } catch (RedirectException) {
+        }
+
+        // --- assert ---
+        $this->assertSame($CFG_GLPI['root_doc'], $manager->getOriginURL());
+    }
+
     /** All getters return safe defaults when the re-auth session keys are absent. */
     public function testGettersReturnDefaultsWhenSessionEmpty(): void
     {
