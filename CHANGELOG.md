@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 - New endpoints for viewing, adding and deleting emails for other users in High-Level API v2.4.
 - Endpoints to add or remove relations for links between assets and appliances in High-Level API v2.4.
 - New schemas/endpoints for custom asset definitions and fields in High-Level API v2.4.
+- New schema/endpoints to view and change Kanban view state data in High-Level API v2.4.
 
 ### Changed
 
