@@ -17418,6 +17418,2686 @@
             ]
         }
     },
+    "/Assets/Computer/{asset_id}/Appliance/{id}/Environment/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Monitor/{asset_id}/Appliance/{id}/Environment/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/NetworkEquipment/{asset_id}/Appliance/{id}/Environment/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Peripheral/{asset_id}/Appliance/{id}/Environment/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Phone/{asset_id}/Appliance/{id}/Environment/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Printer/{asset_id}/Appliance/{id}/Environment/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/SoftwareLicense/{asset_id}/Appliance/{id}/Environment/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Certificate/{asset_id}/Appliance/{id}/Environment/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Unmanaged/{asset_id}/Appliance/{id}/Environment/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Appliance/{asset_id}/Appliance/{id}/Environment/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Computer/{asset_id}/Appliance/{id}/Domain/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Monitor/{asset_id}/Appliance/{id}/Domain/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/NetworkEquipment/{asset_id}/Appliance/{id}/Domain/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Peripheral/{asset_id}/Appliance/{id}/Domain/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Phone/{asset_id}/Appliance/{id}/Domain/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Printer/{asset_id}/Appliance/{id}/Domain/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/SoftwareLicense/{asset_id}/Appliance/{id}/Domain/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Certificate/{asset_id}/Appliance/{id}/Domain/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Unmanaged/{asset_id}/Appliance/{id}/Domain/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Appliance/{asset_id}/Appliance/{id}/Domain/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Computer/{asset_id}/Appliance/{id}/Location/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Monitor/{asset_id}/Appliance/{id}/Location/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/NetworkEquipment/{asset_id}/Appliance/{id}/Location/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Peripheral/{asset_id}/Appliance/{id}/Location/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Phone/{asset_id}/Appliance/{id}/Location/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Printer/{asset_id}/Appliance/{id}/Location/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/SoftwareLicense/{asset_id}/Appliance/{id}/Location/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Certificate/{asset_id}/Appliance/{id}/Location/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Unmanaged/{asset_id}/Appliance/{id}/Location/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Appliance/{asset_id}/Appliance/{id}/Location/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Computer/{asset_id}/Appliance/{id}/Network/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Monitor/{asset_id}/Appliance/{id}/Network/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/NetworkEquipment/{asset_id}/Appliance/{id}/Network/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Peripheral/{asset_id}/Appliance/{id}/Network/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Phone/{asset_id}/Appliance/{id}/Network/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Printer/{asset_id}/Appliance/{id}/Network/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/SoftwareLicense/{asset_id}/Appliance/{id}/Network/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Certificate/{asset_id}/Appliance/{id}/Network/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Unmanaged/{asset_id}/Appliance/{id}/Network/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Assets/Appliance/{asset_id}/Appliance/{id}/Network/{relation_id}": {
+        "post": {
+            "responses": {
+                "201": {
+                    "headers": [],
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64",
+                                        "readOnly": true
+                                    },
+                                    "href": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "relation_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
     "/Assets/Computer/{asset_id}/Domain": {
         "post": {
             "responses": {
