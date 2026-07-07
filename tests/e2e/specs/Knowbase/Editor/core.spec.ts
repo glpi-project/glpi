@@ -32,8 +32,10 @@
 
 import { expect, test } from "../../../fixtures/glpi_fixture";
 import { KnowbaseItemPage } from "../../../pages/KnowbaseItemPage";
+import { KnowbaseApi } from '../../../utils/KnowbaseApi';
 import { Profiles } from "../../../utils/Profiles";
 import { getWorkerEntityId } from "../../../utils/WorkerEntities";
+import { getUniqueName } from "../../../utils/Random";
 
 test.describe('Knowledge Base Editor - Core', () => {
     test('Can enter edit mode', async ({ page, profile, api }) => {
@@ -172,5 +174,79 @@ test.describe('Knowledge Base Editor - Core', () => {
         await kb.editor.cancel();
         await expect(kb.subject).toHaveText('Title Before Cancel');
         await expect(kb.subject).toHaveAttribute('contenteditable', 'false');
+    });
+
+    test('Renaming an article updates its name in the aside tree', async ({
+        page,
+        profile,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const category_name = getUniqueName(`E2E Category`);
+        const original_name = getUniqueName(`Original article`);
+        const renamed_name  = getUniqueName(`Renamed article`);
+
+        const category_id = await api.createItem('KnowbaseItemCategory', {
+            name: category_name,
+            entities_id: getWorkerEntityId(),
+        });
+        const article_id = await api.createItem('KnowbaseItem', {
+            name: original_name,
+            answer: '<p>Some content</p>',
+            entities_id: getWorkerEntityId(),
+            _categories: [category_id],
+        });
+
+        await kb.goto(article_id);
+
+        // The aside tree shows the original name.
+        await expect(kb.getAsideCategoryArticle(category_name, original_name)).toBeVisible();
+
+        // Rename the article inline.
+        await kb.editor.enterEditMode();
+        await kb.subject.click();
+        await page.keyboard.press('Control+a');
+        await page.keyboard.type(renamed_name);
+        await kb.editor.save();
+
+        await expect(kb.subject).toHaveText(renamed_name);
+
+        // The aside tree reflects the new name without a page reload.
+        await expect(kb.getAsideCategoryArticle(category_name, renamed_name)).toBeVisible();
+        await expect(kb.getAsideCategoryArticle(category_name, original_name)).toBeHidden();
+    });
+
+    test('Renaming a favorited article updates its name in the favorites section', async ({
+        page,
+        profile,
+        api,
+    }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+        const kb_api = new KnowbaseApi(api);
+
+        const original_name = getUniqueName(`Original favorite`);
+        const renamed_name  = getUniqueName(`Renamed favorite`);
+
+        const article_id = await kb_api.createArticle({ name: original_name });
+        await kb_api.addFavorite(article_id);
+
+        await kb.goto(article_id);
+
+        // The favorites section shows the original name.
+        await expect(kb.getFavoriteArticle(original_name)).toBeVisible();
+
+        // Rename the article inline.
+        await kb.editor.enterEditMode();
+        await kb.subject.click();
+        await page.keyboard.press('Control+a');
+        await page.keyboard.type(renamed_name);
+        await kb.editor.save();
+
+        // The favorites entry reflects the new name without a page reload.
+        await expect(kb.getFavoriteArticle(renamed_name)).toBeVisible();
+        await expect(kb.getFavoriteArticle(original_name)).toBeHidden();
     });
 });

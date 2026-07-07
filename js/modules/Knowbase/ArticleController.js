@@ -528,6 +528,28 @@ export class GlpiKnowbaseArticleController
     }
 
     /**
+     * Update the article title displayed in the knowledge base aside tree.
+     * The same article can appear both in the favorites section and in the
+     * category tree, so every matching entry is updated.
+     *
+     * @param {string} title
+     */
+    #updateAsideTitle(title)
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+
+        const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
+        const entries = aside.querySelectorAll(
+            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] [data-glpi-kb-article-title]`
+        );
+        for (const entry of entries) {
+            entry.textContent = title;
+        }
+    }
+
+    /**
      * @param {number} id
      * @param {HTMLInputElement} toggle
      */
@@ -1099,6 +1121,7 @@ export class GlpiKnowbaseArticleController
             this.#original_content = this.#editor.getHTML();
             if (new_title !== null) {
                 this.#original_title = new_title;
+                this.#updateAsideTitle(new_title);
             }
             this.#editor.setEditable(false);
             this.#disableTitleEditing();
@@ -1490,6 +1513,7 @@ export class GlpiKnowbaseArticleController
             if (new_title !== null) {
                 this.#original_title = new_title;
                 this.#base_title = this.#original_title;
+                this.#updateAsideTitle(new_title);
             }
 
             glpi_toast_info(__("Article saved successfully"));

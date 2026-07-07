@@ -68,7 +68,7 @@
             {% if article.illustration %}
                 {{ render_illustration(article.illustration, 20) }}
             {% endif %}
-            {{ article.title }}
+            <span data-glpi-kb-article-title>{{ article.title }}</span>
         </a>
     </li>
 {% endmacro %}
