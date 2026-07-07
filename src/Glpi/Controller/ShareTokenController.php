@@ -131,6 +131,61 @@ final class ShareTokenController extends AbstractController
     }
 
     #[Route(
+        "/Share/Token/{token_id}/Regenerate",
+        name: "glpi_share_token_regenerate",
+        methods: ["POST"],
+        requirements: ['token_id' => '\d+'],
+    )]
+    public function regenerate(int $token_id): JsonResponse
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $token = new ShareToken();
+        if (!$token->getFromDB($token_id)) {
+            throw new NotFoundHttpException();
+        }
+
+        $this->checkRightToUpdateToken($token);
+
+        $itemtype = (string) $token->fields['itemtype'];
+        $items_id = (int) $token->fields['items_id'];
+        $name     = $token->fields['name'];
+
+        $error_response = new JsonResponse(
+            ['success' => false, 'message' => __('Failed to regenerate share link')],
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+        );
+
+        // Invalidate the current link and issue a fresh one atomically, so the item is never
+        // left with zero or two active tokens.
+        $DB->beginTransaction();
+
+        if ((new ShareToken())->delete(['id' => $token_id], true) === false) {
+            $DB->rollBack();
+            return $error_response;
+        }
+
+        $new_token = new ShareToken();
+        if ($new_token->add([
+            'itemtype'  => $itemtype,
+            'items_id'  => $items_id,
+            'name'      => $name,
+            'is_active' => 1,
+        ]) === false) {
+            $DB->rollBack();
+            return $error_response;
+        }
+
+        $DB->commit();
+
+        $fields = $new_token->fields;
+        $fields['token'] = (new ShareTokenManager())->decryptToken((string) $fields['token']);
+
+        return new JsonResponse(['success' => true, 'token' => $fields]);
+    }
+
+    #[Route(
         "/Share/Token/{token_id}/Delete",
         name: "glpi_share_token_delete",
         methods: ["POST"],

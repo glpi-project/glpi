@@ -1,0 +1,85 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units\Glpi\Controller;
+
+use Glpi\Controller\ShareTokenController;
+use Glpi\Security\ShareTokenManager;
+use Glpi\ShareToken;
+use Glpi\Tests\DbTestCase;
+use KnowbaseItem;
+use User;
+
+final class ShareTokenControllerTest extends DbTestCase
+{
+    private function createKnowbaseItem(): KnowbaseItem
+    {
+        return $this->createItem(KnowbaseItem::class, [
+            'users_id'    => getItemByTypeName(User::class, TU_USER, true),
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name'        => $this->getUniqueString(),
+            'answer'      => '<p>Test content</p>',
+        ]);
+    }
+
+    public function testRegenerateReplacesTokenWithNewActiveOne(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $old = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ]);
+        $old_id    = $old->getID();
+        $manager   = new ShareTokenManager();
+        $old_plain = $manager->decryptToken((string) $old->fields['token']);
+
+        $controller = new ShareTokenController();
+        $response   = $controller->regenerate($old_id);
+
+        $payload = json_decode((string) $response->getContent(), true);
+        $this->assertTrue($payload['success']);
+
+        // Old token row is purged.
+        $this->assertFalse((new ShareToken())->getFromDB($old_id));
+
+        // Exactly one active token remains, with a different token value.
+        $tokens = $manager->getTokensForItem(KnowbaseItem::class, $kb->getID());
+        $this->assertCount(1, $tokens);
+        $new_plain = $manager->decryptToken((string) $tokens[0]['token']);
+        $this->assertNotSame($old_plain, $new_plain);
+        $this->assertSame($new_plain, $payload['token']['token']);
+    }
+}
