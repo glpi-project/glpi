@@ -49,7 +49,7 @@ final class SharingRenderer implements RendererInterface
     #[Override]
     public function getTemplate(): string
     {
-        return "pages/tools/kb/modal/sharing.html.twig";
+        return "pages/tools/kb/share_popover.html.twig";
     }
 
     #[Override]
@@ -57,19 +57,14 @@ final class SharingRenderer implements RendererInterface
     {
         $id = $item->getID();
         $manager = new ShareTokenManager();
-        $tokens = \array_map(
-            function (array $row) use ($manager): array {
-                $row['token'] = $manager->decryptToken((string) $row['token']);
-                return $row;
-            },
-            $manager->getTokensForItem(KnowbaseItem::class, $id),
-        );
+        $token = $manager->getActiveToken(KnowbaseItem::class, $id);
 
         return [
-            'id'       => $id,
-            'itemtype' => KnowbaseItem::class,
-            'tokens'   => $tokens,
-            'can_edit' => $item->canEdit($id),
+            'id'           => $id,
+            'itemtype'     => KnowbaseItem::class,
+            'is_published' => $token !== null,
+            'token'        => $token,
+            'can_edit'     => $item->canEdit($id),
         ];
     }
 }
