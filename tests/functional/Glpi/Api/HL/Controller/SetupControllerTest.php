@@ -49,6 +49,8 @@ use NotImportedEmail;
 use QueuedWebhook;
 use SLM;
 
+use function Safe\json_encode;
+
 class SetupControllerTest extends HLAPITestCase
 {
     public function testIndex()
@@ -611,5 +613,293 @@ class SetupControllerTest extends HLAPITestCase
             ],
             extra_options: ['skip_create_test' => true, 'skip_update_test' => true],
         );
+    }
+
+    public function testCRUDAssetDefinition()
+    {
+        $create_input = [
+            "system_name" => "Car",
+            "label" => "Car",
+            "icon" => "ti-car",
+            "comment" => "",
+            "is_active" => true,
+            "capacities" => json_encode([
+                ['name' => 'Glpi\\Asset\\Capacity\\HasCertificatesCapacity', 'config' => []],
+                ['name' => 'Glpi\\Asset\\Capacity\\HasContractsCapacity', 'config' => []],
+                ['name' => 'Glpi\\Asset\\Capacity\\HasDocumentsCapacity', 'config' => []],
+                ['name' => 'Glpi\\Asset\\Capacity\\HasInfocomCapacity', 'config' => []],
+                ['name' => 'Glpi\\Asset\\Capacity\\HasHistoryCapacity', 'config' => []],
+                ['name' => 'Glpi\\Asset\\Capacity\\HasKnowbaseCapacity', 'config' => []],
+                ['name' => 'Glpi\\Asset\\Capacity\\HasLinksCapacity', 'config' => []],
+                ['name' => 'Glpi\\Asset\\Capacity\\HasNotepadCapacity', 'config' => []],
+                ['name' => 'Glpi\\Asset\\Capacity\\IsProjectAssetCapacity', 'config' => []],
+                ['name' => 'Glpi\\Asset\\Capacity\\IsReservableCapacity', 'config' => []],
+            ]),
+            "translations" => "{\"fr_FR\":{\"one\":\"Voiture\",\"many\":\"Voitures\",\"other\":\"Voitures\"}}",
+            "date_creation" => "2025-10-16T09:51:25+00:00",
+            "date_mod" => "2026-06-29T23:09:20+00:00",
+        ];
+
+        $this->login();
+
+        // Create
+        $request = new Request('POST', '/Setup/AssetDefinition');
+        foreach ($create_input as $key => $value) {
+            $request->setParameter($key, $value);
+        }
+
+        $asset_definition_location = null;
+        $this->api->call($request, function ($call) use (&$asset_definition_location) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$asset_definition_location) {
+                    $this->assertNotEmpty($headers['Location']);
+                    $asset_definition_location = $headers['Location'];
+                });
+        });
+
+        // Get
+        $this->api->call(new Request('GET', $asset_definition_location), function ($call) use ($create_input) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($create_input) {
+                    foreach ($create_input as $key => $value) {
+                        if ($key === 'capacities' || $key === 'translations') {
+                            $actual_value = json_decode($content[$key], true);
+                            $expected_value = json_decode($value, true);
+                            foreach ($expected_value as $index => $expected_item) {
+                                $this->assertEquals($expected_item, $actual_value[$index]);
+                            }
+                        } else {
+                            $this->assertEquals($value, $content[$key]);
+                        }
+                    }
+                });
+        });
+
+        // Search
+        $request = new Request('GET', '/Setup/AssetDefinition');
+        $request->setParameter('filter', 'system_name==Car');
+        $this->api->call($request, function ($call) use ($create_input) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($create_input) {
+                    $this->assertCount(1, $content);
+                    foreach ($create_input as $key => $value) {
+                        if ($key === 'capacities' || $key === 'translations') {
+                            $actual_value = json_decode($content[0][$key], true);
+                            $expected_value = json_decode($value, true);
+                            foreach ($expected_value as $index => $expected_item) {
+                                $this->assertEquals($expected_item, $actual_value[$index]);
+                            }
+                        } else {
+                            $this->assertEquals($value, $content[0][$key]);
+                        }
+                    }
+                });
+        });
+
+        // Update
+        $update_input = [
+            "label" => "Updated Car",
+            "is_active" => false,
+        ];
+        $request = new Request('PATCH', $asset_definition_location);
+        foreach ($update_input as $key => $value) {
+            $request->setParameter($key, $value);
+        }
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        // Get after update
+        $this->api->call(new Request('GET', $asset_definition_location), function ($call) use ($update_input) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($update_input) {
+                    $this->assertEquals($update_input['label'], $content['label']);
+                    $this->assertEquals($update_input['is_active'], $content['is_active']);
+                });
+        });
+
+        // Cannot change system name
+        $request = new Request('PATCH', $asset_definition_location);
+        $request->setParameter('system_name', 'NewCar');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isNotOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('Failed to update item(s)', $content['title']);
+                    $this->assertStringContainsString('The system name cannot be changed', $content['additional_messages'][0]['message']);
+                });
+        });
+
+        // Delete
+        $this->api->call(new Request('DELETE', $asset_definition_location), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        // Ensure deleted
+        $this->api->call(new Request('GET', $asset_definition_location), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isNotFoundError();
+        });
+    }
+
+    public function testCRUDAssetDefinitionCustomField()
+    {
+        $fields = [
+            [
+                "system_name" => "horsepower",
+                "label" => "Horsepower",
+                "type" => "Glpi\\Asset\\CustomFieldType\\NumberType",
+                "field_options" => "{\"full_width\":\"0\",\"required\":\"0\",\"readonly\":\"\",\"hidden\":\"\",\"min\":\"0\",\"max\":\"300\",\"step\":\"1.00\"}",
+                "itemtype" => null,
+                "default_value" => "\"180\"",
+                "translations" => "[]",
+                "date_creation" => "2025-11-27T18:26:29+00:00",
+                "date_mod" => "2025-11-27T18:26:29+00:00",
+            ],
+            [
+                "system_name" => "had_accident",
+                "label" => "Had Accident",
+                "type" => "Glpi\\Asset\\CustomFieldType\\BooleanType",
+                "field_options" => "[]",
+                "itemtype" => null,
+                "default_value" => "false",
+                "translations" => "{\"fr_FR\":\"a eu un accident\"}",
+                "date_creation" => "2026-03-15T22:59:46+00:00",
+                "date_mod" => "2026-06-29T23:09:36+00:00",
+            ],
+            [
+                "system_name" => "last_service_date",
+                "label" => "Last Service Date",
+                "type" => "Glpi\\Asset\\CustomFieldType\\DateType",
+                "field_options" => "{\"full_width\":\"0\",\"required\":\"0\",\"readonly\":\"\",\"hidden\":\"\"}",
+                "itemtype" => null,
+                "default_value" => null,
+                "translations" => "[]",
+                "date_creation" => "2026-04-21T18:13:24+00:00",
+                "date_mod" => "2026-04-21T18:13:24+00:00",
+            ],
+        ];
+
+        $car_definition = $this->initAssetDefinition('Car');
+
+        $this->login();
+
+        $custom_field_locations = [];
+
+        foreach ($fields as $field) {
+            // Create
+            $request = new Request('POST', '/Setup/AssetDefinition/' . $car_definition->getID() . '/CustomField');
+            foreach ($field as $key => $value) {
+                $request->setParameter($key, $value);
+            }
+
+            $this->api->call($request, function ($call) use ($field, &$custom_field_locations) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response
+                    ->isOK()
+                    ->headers(function ($headers) use ($field, &$custom_field_locations) {
+                        $this->assertNotEmpty($headers['Location']);
+                        $custom_field_locations[$field['system_name']] = $headers['Location'];
+                    });
+            });
+
+            // Get
+            $this->api->call(new Request('GET', $custom_field_locations[$field['system_name']]), function ($call) use ($field) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response
+                    ->isOK()
+                    ->jsonContent(function ($content) use ($field) {
+                        foreach ($field as $key => $value) {
+                            if ($key === 'field_options' || $key === 'translations') {
+                                $actual_value = json_decode($content[$key], true);
+                                $expected_value = json_decode($value, true);
+                                $this->assertEquals($expected_value, $actual_value);
+                            } else {
+                                $this->assertEquals($value, $content[$key]);
+                            }
+                        }
+                    });
+            });
+        }
+
+        // Search
+        $request = new Request('GET', '/Setup/AssetDefinition/' . $car_definition->getID() . '/CustomField');
+        $request->setParameter('filter', 'system_name==horsepower');
+        $this->api->call($request, function ($call) use ($fields) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($fields) {
+                    $this->assertCount(1, $content);
+                    foreach ($fields[0] as $key => $value) {
+                        if ($key === 'field_options' || $key === 'translations') {
+                            $actual_value = json_decode($content[0][$key], true);
+                            $expected_value = json_decode($value, true);
+                            $this->assertEquals($expected_value, $actual_value);
+                        } else {
+                            $this->assertEquals($value, $content[0][$key]);
+                        }
+                    }
+                });
+        });
+
+        // Update one of the fields
+        $update_input = [
+            "label" => "Updated Horsepower",
+            "field_options" => "{\"full_width\":\"0\",\"required\":\"1\",\"readonly\":\"\",\"hidden\":\"\",\"min\":\"0\",\"max\":\"400\",\"step\":\"1.00\"}",
+        ];
+        $request = new Request('PATCH', $custom_field_locations['horsepower']);
+        foreach ($update_input as $key => $value) {
+            $request->setParameter($key, $value);
+        }
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response->isOK();
+        });
+
+        // Get after update
+        $this->api->call(new Request('GET', $custom_field_locations['horsepower']), function ($call) use ($update_input) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($update_input) {
+                    $this->assertEquals($update_input['label'], $content['label']);
+                    $expected_field_options = json_decode($update_input['field_options'], true);
+                    $actual_field_options = json_decode($content['field_options'], true);
+                    foreach ($expected_field_options as $key => $value) {
+                        $this->assertEquals($value, $actual_field_options[$key]);
+                    }
+                });
+        });
+
+        // Delete all custom fields
+        foreach ($custom_field_locations as $system_name => $location) {
+            $this->api->call(new Request('DELETE', $location), function ($call) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response->isOK();
+            });
+        }
+
+        // Search after deletion to ensure they are gone
+        $request = new Request('GET', '/Setup/AssetDefinition/' . $car_definition->getID() . '/CustomField');
+        $this->api->call($request, function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEmpty($content);
+                });
+        });
     }
 }
