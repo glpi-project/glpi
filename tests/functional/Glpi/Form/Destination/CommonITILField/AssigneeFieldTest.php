@@ -263,6 +263,12 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
 
     public function testSpecificActorsExcludesUnauthorizedActors(): void
     {
+        // The ticket's entity defaults to the active entity of whoever
+        // submits the form (see EntityFieldStrategy::FORM_FILLER). Without a
+        // logged in user, it would fall back to the root entity, unrelated
+        // to the entity used below for the authorized actors.
+        $this->login();
+
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $entities_id = $this->getTestRootEntity(only_id: true);
         $authorized_user = $this->createItem(User::class, [

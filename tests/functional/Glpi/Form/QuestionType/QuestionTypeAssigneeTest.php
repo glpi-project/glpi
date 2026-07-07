@@ -315,6 +315,11 @@ final class QuestionTypeAssigneeTest extends AbstractQuestionTypeActorsTest
             'entities_id' => $this->getTestRootEntity(only_id: true),
         ]);
 
+        // The form is submitted from this same entity, so the fallback check
+        // on the current active entity (see QuestionTypeAssignee) does not
+        // interfere with the parent/child entity check being tested here.
+        $this->setEntity($entity->getID(), false);
+
         // Create a profile that allows the user to be assigned
         $this->createItem(Profile_User::class, [
             'users_id'     => $user->getID(),
