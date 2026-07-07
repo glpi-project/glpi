@@ -671,32 +671,37 @@ class Auth extends CommonGLPI
 
                 if ($CFG_GLPI["login_remember_time"]) {
                     $data = null;
-                    if (array_key_exists($cookie_name, $_COOKIE)) {
-                        $data = $_COOKIE[$cookie_name];
-                    }
-                    if (!empty($data) && str_contains($data, ':')) {
-                        [$token_uid, $token_hash] = explode(':', $data);
-
-                        $it = $DB->request([
-                            'SELECT' => ['users_id', 'token_hash'],
-                            'FROM'   => 'glpi_usertokens',
-                            'WHERE'  => [
-                                'type'     => 'rememberme',
-                                'token_uid' => $token_uid,
-                                'date_expiration'   => ['>', date('Y-m-d H:i:s')],
-                            ],
-                            'LIMIT'  => 1,
-                        ]);
-                        $known_hash = $it->current()['token_hash'] ?? null;
-                        if ($known_hash !== null && self::checkPassword($token_hash, $known_hash)) {
-                            $user = new User();
-                            $user->getFromDB($it->current()['users_id']);
-                            $this->user->fields['name'] = $user->fields['name'];
-                            $user->update(['id' => $user->getID(), 'last_login' => date("Y-m-d H:i:s")]);
-                            return true;
-                        } else {
-                            $this->addToError(__("Invalid cookie data"));
+                    try {
+                        if (array_key_exists($cookie_name, $_COOKIE)) {
+                            $data = $_COOKIE[$cookie_name];
                         }
+                        if (!empty($data) && str_contains($data, ':')) {
+                            [$token_uid, $token_hash] = explode(':', $data);
+
+                            $it = $DB->request([
+                                'SELECT' => ['users_id', 'token_hash'],
+                                'FROM' => 'glpi_usertokens',
+                                'WHERE' => [
+                                    'type' => 'rememberme',
+                                    'token_uid' => $token_uid,
+                                    'date_expiration' => ['>', date('Y-m-d H:i:s')],
+                                ],
+                                'LIMIT' => 1,
+                            ]);
+                            $known_hash = $it->current()['token_hash'] ?? null;
+                            if ($known_hash !== null && self::checkPassword($token_hash, $known_hash)) {
+                                $user = new User();
+                                $user->getFromDB($it->current()['users_id']);
+                                $this->user->fields['name'] = $user->fields['name'];
+                                $user->update(['id' => $user->getID(), 'last_login' => date("Y-m-d H:i:s")]);
+                                return true;
+                            } else {
+                                $this->addToError(__("Invalid cookie data"));
+                            }
+                        }
+                    } catch (Throwable) {
+                        // Probably an old cookie format, ignore it and remove the cookie
+                        $this->addToError(__("Invalid cookie data"));
                     }
                 } else {
                     $this->addToError(__("Auto login disabled"));
