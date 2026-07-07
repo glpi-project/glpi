@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Inventory;
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Inventory\ImportResult;
 use Glpi\Tests\GLPITestCase;
 use LogicException;
@@ -114,5 +115,30 @@ class ImportResultTest extends GLPITestCase
 
         $this->expectException(LogicException::class);
         unset($result['success']);
+    }
+
+    public function testTemplateDoesNotTriggerDeprecatedArrayAccess(): void
+    {
+        $result = new ImportResult(
+            filename: 'computer_1.json',
+            success: true,
+            message: 'OK',
+            items: [],
+        );
+
+        $errors = [];
+        set_error_handler(static function ($errno, $errstr) use (&$errors) {
+            $errors[] = $errstr;
+            return true;
+        }, E_USER_DEPRECATED);
+
+        TemplateRenderer::getInstance()->render(
+            'pages/admin/inventory/upload_result.html.twig',
+            ['imported_files' => ['computer_1.json' => $result]]
+        );
+
+        restore_error_handler();
+
+        $this->assertSame([], $errors);
     }
 }
