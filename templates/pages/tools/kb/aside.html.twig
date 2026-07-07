@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro render_category(category) %}
+{% macro render_category(category, show_actions = false) %}
     {% import _self as macros %}
     <li class="node" data-glpi-kb-aside-category role="group" aria-label="{{ category.title }}">
         <button
@@ -47,12 +47,13 @@
             <span class="ms-2 fw-bold text-truncate d-block">{{ category.title }}</span>
         </button>
         <ul>
-            {{ macros.render_node(category) }}
+            {{ macros.render_node(category, show_actions) }}
         </ul>
     </li>
 {% endmacro %}
 
-{% macro render_article(article, add_margin = false, favorite_state = null) %}
+{% macro render_article(article, add_margin = false, favorite_state = null, show_actions = false) %}
+    {% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
     <li
         data-glpi-kb-article-id="{{ article.id }}"
         {% if favorite_state is not null %}
@@ -64,22 +65,27 @@
         {% endif %}
         class="article {{ add_margin ? 'mb-2' : '' }}"
     >
-        <a class="text-dark text-hover-link text-truncate d-block" href="{{ article.link }}">
-            {% if article.illustration %}
-                {{ render_illustration(article.illustration, 20) }}
+        <div class="article-line d-flex align-items-center">
+            <a class="text-dark text-hover-link text-truncate flex-grow-1" href="{{ article.link }}">
+                {% if article.illustration %}
+                    {{ render_illustration(article.illustration, 20) }}
+                {% endif %}
+                <span data-glpi-kb-article-title>{{ article.title }}</span>
+            </a>
+            {% if show_actions %}
+                {{ actions_menu.render_actions_menu_lazy() }}
             {% endif %}
-            <span data-glpi-kb-article-title>{{ article.title }}</span>
-        </a>
+        </div>
     </li>
 {% endmacro %}
 
-{% macro render_node(node) %}
+{% macro render_node(node, show_actions = false) %}
     {% import _self as macros %}
     {% for article in node.articles %}
-        {{ macros.render_article(article) }}
+        {{ macros.render_article(article, false, null, show_actions) }}
     {% endfor %}
     {% for category in node.categories %}
-        {{ macros.render_category(category) }}
+        {{ macros.render_category(category, show_actions) }}
     {% endfor %}
 {% endmacro %}
 
@@ -127,9 +133,10 @@
                         article,
                         true,
                         current_is_favorite ? 'active' : 'pending',
+                        show_actions,
                     ) }}
                 {% else %}
-                    {{ macros.render_article(article, true) }}
+                    {{ macros.render_article(article, true, null, show_actions) }}
                 {% endif %}
             {% endfor %}
         </ul>
@@ -144,12 +151,12 @@
                 illustration: "",
                 articles: tree.articles,
                 categories: [],
-            }) }}
+            }, show_actions) }}
         {% endif %}
 
         {# Render each categories #}
         {% for category in tree.categories %}
-            {{ macros.render_category(category) }}
+            {{ macros.render_category(category, show_actions) }}
         {% endfor %}
     </ul>
     <p class="text-muted" data-glpi-kb-aside-no-results hidden>

@@ -2870,6 +2870,14 @@ TWIG, $twig_params);
             return null;
         }
 
+        // Whether to render the per-article dots menu trigger. This is a cheap
+        // session-level check: the menu content itself (and its per-article
+        // permission gating) is lazy-loaded on demand, so we never load every
+        // tree article here just to know if any action is available.
+        $show_actions = KnowbaseItem_Favorite::canCreate()
+            || self::canUpdate()
+            || self::canPurge();
+
         return TemplateRenderer::getInstance()->render(
             'pages/tools/kb/aside.html.twig',
             [
@@ -2877,6 +2885,7 @@ TWIG, $twig_params);
                 'favorites'           => $favorites,
                 'current_is_favorite' => $current_is_favorite,
                 'has_other_favorites' => $has_other_favorites,
+                'show_actions'        => $show_actions,
             ]
         );
     }

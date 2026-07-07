@@ -97,3 +97,28 @@
         {% endif %}
     </div>
 {% endmacro %}
+
+{# Renders a dots menu whose items are lazy-loaded (on hover/open) by the aside
+ # controller, so the tree never has to build every article's actions up-front.
+ # The menu starts with a loading placeholder that gets replaced with the
+ # fetched items. #}
+{% macro render_actions_menu_lazy() %}
+    <div class="dropdown cursor-pointer d-flex align-items-center">
+        <i
+            class="ti ti-dots-vertical"
+            data-glpi-kb-dots
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            role="button"
+            title="{{ __('More actions') }}"
+        ></i>
+        <ul class="dropdown-menu" data-bs-popper="none" data-glpi-kb-actions-menu>
+            <li data-glpi-kb-actions-loading>
+                <span class="dropdown-item-text text-muted d-flex align-items-center">
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    {{ __('Loading...') }}
+                </span>
+            </li>
+        </ul>
+    </div>
+{% endmacro %}
