@@ -37,14 +37,13 @@ import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkControl
 import { LinkItemFormController } from "/js/modules/Knowbase/LinkItemFormController.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
 import { GlpiKnowbaseServiceCatalogPanelController } from "/js/modules/Knowbase/ServiceCatalogPanelController.js";
-
-const EditorActionType = Object.freeze({
-    LOAD_SIDE_PANEL: 'LOAD_SIDE_PANEL',
-    TOGGLE_VALUE:    'TOGGLE_VALUE',
-    TOGGLE_FAVORITE: 'TOGGLE_FAVORITE',
-    DELETE_ARTICLE:  'DELETE_ARTICLE',
-    OPEN_MODAL:      'OPEN_MODAL',
-});
+import {
+    EditorActionType,
+    extractParamsFromDataset,
+    toggleFavorite,
+    toggleField,
+    deleteArticle,
+} from "/js/modules/Knowbase/EditorActions.js";
 
 export class GlpiKnowbaseArticleController
 {
@@ -438,7 +437,7 @@ export class GlpiKnowbaseArticleController
         const target = event.target;
 
         const type = element.dataset.glpiKbAction;
-        const params = this.#extractParamsFromDataset(element.dataset);
+        const params = extractParamsFromDataset(element.dataset);
 
         switch (type) {
             case EditorActionType.LOAD_SIDE_PANEL:
@@ -476,22 +475,6 @@ export class GlpiKnowbaseArticleController
                 this.#openModal(params.id, params.key, params.title, params.icon ?? null);
                 break;
         }
-    }
-
-    /** @param {DOMStringMap} dataset */
-    #extractParamsFromDataset(dataset)
-    {
-        const params = {};
-        const prefix = 'glpiKbActionParam';
-
-        for (const [key, value] of Object.entries(dataset)) {
-            if (key.startsWith(prefix)) {
-                const param_name = key.slice(prefix.length).toLowerCase();
-                params[param_name] = value;
-            }
-        }
-
-        return params;
     }
 
     /**
@@ -557,7 +540,7 @@ export class GlpiKnowbaseArticleController
     {
         const value = toggle.checked;
         try {
-            await post(`Knowbase/${id}/ToggleFavorite`, { value: value });
+            await toggleFavorite(id, value);
         } catch (e) {
             toggle.checked = !value;
             throw e;
@@ -573,10 +556,7 @@ export class GlpiKnowbaseArticleController
     {
         const value = toggle.checked;
         try {
-            await post(`Knowbase/${id}/ToggleField`, {
-                field: field,
-                value: value,
-            });
+            await toggleField(id, field, value);
         } catch (e) {
             toggle.checked = !value;
             throw e;
@@ -597,7 +577,7 @@ export class GlpiKnowbaseArticleController
             return;
         }
 
-        const response = await post(`Knowbase/KnowbaseItem/${id}/Delete`, {});
+        const response = await deleteArticle(id);
         const body = await response.json();
         window.location.href = body.redirect;
     }
