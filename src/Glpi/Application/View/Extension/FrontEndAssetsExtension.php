@@ -194,7 +194,7 @@ class FrontEndAssetsExtension extends AbstractExtension
     {
         $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
 
-        if (!str_starts_with($path, '/')) {
+        if (!filter_var($path, FILTER_VALIDATE_URL) && !str_starts_with($path, '/')) {
             $path = '/' . $path; // be sure to have a path starting with `/`
 
             // FIXME Trigger a warning in GLPI 12.0.
@@ -228,6 +228,9 @@ class FrontEndAssetsExtension extends AbstractExtension
      */
     private function getVersionnedPath(string $path, array $options = []): string
     {
+        if ($options['no_version'] ?? false) {
+            return $path;
+        }
         $version = $options['version'] ?? GLPI_VERSION;
         $path .= (str_contains($path, '?') ? '&' : '?') . 'v=' . FrontEnd::getVersionCacheKey($version);
 
