@@ -755,6 +755,148 @@
                 }
             }
         },
+        "AssetDefinition": {
+            "x-itemtype": "Glpi\\Asset\\AssetDefinition",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "system_name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "label": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "icon": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "picture": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "is_active": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "capacities": {
+                    "type": "string"
+                },
+                "profiles": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "translations": {
+                    "type": "string"
+                },
+                "custom_fields": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-full-schema": "AssetDefinitionCustomField",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            },
+                            "system_name": {
+                                "type": "string",
+                                "maxLength": 255
+                            },
+                            "label": {
+                                "type": "string",
+                                "maxLength": 255
+                            }
+                        }
+                    }
+                },
+                "date_creation": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "date_mod": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "AssetDefinitionCustomField": {
+            "x-itemtype": "Glpi\\Asset\\CustomFieldDefinition",
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "asset_definition": {
+                    "type": "object",
+                    "x-itemtype": "Glpi\\Asset\\AssetDefinition",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "system_name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "AssetDefinition"
+                },
+                "system_name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "label": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "Glpi\\Asset\\CustomFieldType\\DateTimeType",
+                        "Glpi\\Asset\\CustomFieldType\\DateType",
+                        "Glpi\\Asset\\CustomFieldType\\DropdownType",
+                        "Glpi\\Asset\\CustomFieldType\\NumberType",
+                        "Glpi\\Asset\\CustomFieldType\\BooleanType",
+                        "Glpi\\Asset\\CustomFieldType\\TextType",
+                        "Glpi\\Asset\\CustomFieldType\\URLType",
+                        "Glpi\\Asset\\CustomFieldType\\StringType"
+                    ]
+                },
+                "field_options": {
+                    "type": "string"
+                },
+                "itemtype": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "default_value": {
+                    "type": "string"
+                },
+                "translations": {
+                    "type": "string"
+                },
+                "date_creation": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "date_mod": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
         "AssetStats": {
             "type": "object",
             "properties": {
