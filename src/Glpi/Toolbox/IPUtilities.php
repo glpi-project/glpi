@@ -158,7 +158,6 @@ class IPUtilities
 
         // IP version detection
         $ip_length = strlen($ip);
-        $max_mask = $ip_length * 8;
 
         $net_mask = '';
         $host_mask = '';
