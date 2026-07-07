@@ -45,20 +45,28 @@ trait ReAuthTestTrait
     /**
      * Simulate a web (non-CLI) request context so that re-authentication
      * redirects can be triggered from a test.
+     *
+     * @param array<string, string> $get
+     * @param array<string, string> $post
      */
-    private function fakeWebContext(string $request_uri = '/front/central.php'): void
-    {
+    private function fakeWebContext(
+        string $request_uri = '/front/central.php',
+        string $method = 'GET',
+        array $get = [],
+        array $post = [],
+        string $referer = 'https://glpi.example.org/front/central.php',
+    ): void {
         $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
         $_SERVER['REQUEST_SCHEME'] = 'https';
         $_SERVER['HTTP_HOST']      = 'glpi.example.org';
         $_SERVER['REQUEST_URI']    = $request_uri;
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['HTTP_REFERER']   = 'https://glpi.example.org/front/central.php';
+        $_SERVER['REQUEST_METHOD'] = $method;
+        $_SERVER['HTTP_REFERER']   = $referer;
         // A real web request always carries a client IP; without it SessionTracker::recordNewSession()
         // would try to insert a NULL ip_address when login() is called under the faked web context.
         $_SERVER['REMOTE_ADDR']    = '127.0.0.1';
-        $_GET  = [];
-        $_POST = [];
+        $_GET  = $get;
+        $_POST = $post;
     }
 
     /**

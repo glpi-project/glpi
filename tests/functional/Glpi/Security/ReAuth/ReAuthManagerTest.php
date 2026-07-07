@@ -38,6 +38,7 @@ use Computer;
 use Glpi\Exception\RedirectException;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTestTrait;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -47,6 +48,8 @@ use User;
 #[Group('reauth')]
 class ReAuthManagerTest extends DbTestCase
 {
+    use ReAuthTestTrait;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -120,19 +123,24 @@ class ReAuthManagerTest extends DbTestCase
         // --- arrange ---
         $manager = new ReAuthManager();
         unset($_SESSION['glpi_reauth_until']);
-        $this->fakeWebRequest();
+        $this->fakeWebContext(request_uri: '/front/user.form.php?id=2');
 
         // --- act + assert ---
         $this->expectException(RedirectException::class);
         $manager->checkReAuthenticationOrRedirect();
     }
 
-    /** GET request URL and data are stored in session before the RedirectException is thrown. */
-    public function testRedirectToReauthThrowsAndStoresGetRequest(): void
+    /** POST body and method are persisted in session before the RedirectException is thrown. */
+    public function testRedirectToReauthStoresPostRequestData(): void
     {
         // --- arrange ---
         $manager = new ReAuthManager();
-        $this->fakeWebRequest('GET', ['foo' => 'bar']);
+        $this->fakeWebContext(
+            request_uri: '/front/user.form.php?id=2',
+            method: 'POST',
+            post: ['name' => 'value'],
+            referer: 'https://glpi.example.org/front/user.php',
+        );
 
         // --- act ---
         // try/catch because $this->expectException() stop the test at the point exception is thrown
@@ -229,28 +237,5 @@ class ReAuthManagerTest extends DbTestCase
 
         // --- act + assert ---
         $this->assertSame($expected, $manager->atLeastOneItemTypesRequiresReauthentication($itemtypes));
-    }
-
-    /**
-     * Populate the superglobals that ReAuthManager::redirectToReauth() reads to
-     * record the request that triggered the re-authentication.
-     *
-     * Also sets GLPI_IS_COMMAND_LINE = false to simulate a web request context.
-     *
-     * @param array<string, string> $get
-     * @param array<string, string> $post
-     */
-    private function fakeWebRequest(string $method = 'GET', array $get = [], array $post = []): void
-    {
-        // Simulate a web context: PHPUnit runs in CLI, so isCommandLine() would return true otherwise.
-        $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
-
-        $_SERVER['REQUEST_SCHEME'] = 'https';
-        $_SERVER['HTTP_HOST']      = 'glpi.example.org';
-        $_SERVER['REQUEST_URI']    = '/front/user.form.php?id=2';
-        $_SERVER['REQUEST_METHOD'] = $method;
-        $_SERVER['HTTP_REFERER']   = 'https://glpi.example.org/front/user.php';
-        $_GET  = $get;
-        $_POST = $post;
     }
 }
