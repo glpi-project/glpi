@@ -824,6 +824,31 @@
         list-style: none;
     }
 
+    // Article line: title link truncates, kebab menu sits at the end.
+    .article {
+        .article-line > a {
+            // Required so `text-truncate` shrinks below its content in the flex row.
+            min-width: 0;
+        }
+
+        // Kebab menu: revealed on hover/focus (or while its dropdown is open) to
+        // keep the tree uncluttered while staying keyboard reachable.
+        .dropdown {
+            opacity: 0;
+
+            [data-glpi-kb-dots] {
+                font-size: 1.25rem;
+                line-height: 1;
+            }
+        }
+
+        &:hover .dropdown,
+        &:focus-within .dropdown,
+        .dropdown:has([aria-expanded="true"]) {
+            opacity: 1;
+        }
+    }
+
     // Collapsed category: hide children and rotate chevron
     .node[data-glpi-kb-aside-category-collapsed] {
         > ul {
@@ -878,7 +903,9 @@
         padding: 0;
         margin: 0;
 
-        ul {
+        // Exclude the kebab menu's own <ul class="dropdown-menu"> so the tree
+        // connectors and list spacing never bleed into the actions dropdown.
+        ul:not(.dropdown-menu) {
             list-style: none;
             padding: 0 0 0 1.5rem;
             margin: 0;
