@@ -87,8 +87,8 @@ final class ReAuthManager
      */
     public function isReAuthenticated(): bool
     {
-        // Emergency escape hatch (set in config/local_define.php): lets a server admin
-        // locked out of the reauth-gated admin pages regain access. Intentionally undocumented.
+        // bypass reauth - this constant will be removed in a next glpi 12.x release
+        // do not rely on it
         if (GLPI_DISABLE_REAUTH === true) {
             return true;
         }
