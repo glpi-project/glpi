@@ -40,6 +40,7 @@ import { GlpiKnowbaseServiceCatalogPanelController } from "/js/modules/Knowbase/
 import {
     EditorActionType,
     extractParamsFromDataset,
+    syncToggleCheckboxes,
     toggleFavorite,
     toggleField,
     deleteArticle,
@@ -539,10 +540,12 @@ export class GlpiKnowbaseArticleController
     async #toggleFavorite(id, toggle)
     {
         const value = toggle.checked;
+        // Reflect the change on every menu for this article, aside included.
+        syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, value);
         try {
             await toggleFavorite(id, value);
         } catch (e) {
-            toggle.checked = !value;
+            syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, !value);
             throw e;
         }
     }
@@ -555,10 +558,12 @@ export class GlpiKnowbaseArticleController
     async #toggleValue(id, field, toggle)
     {
         const value = toggle.checked;
+        // Reflect the change on every menu for this article, aside included.
+        syncToggleCheckboxes(id, EditorActionType.TOGGLE_VALUE, value, field);
         try {
             await toggleField(id, field, value);
         } catch (e) {
-            toggle.checked = !value;
+            syncToggleCheckboxes(id, EditorActionType.TOGGLE_VALUE, !value, field);
             throw e;
         }
     }

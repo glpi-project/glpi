@@ -101,3 +101,31 @@ export function deleteArticle(id)
 {
     return post(`Knowbase/KnowbaseItem/${id}/Delete`, {});
 }
+
+/**
+ * Keep every rendered menu checkbox for a given article/action in sync across
+ * the whole page (article editor header + aside tree + aside favorites). The
+ * same article is shown in several places, each with its own dots menu.
+ *
+ * Lazy aside menus that are not loaded yet simply have no checkbox to update;
+ * they fetch fresh state when opened.
+ *
+ * @param {number|string} id
+ * @param {string} type EditorActionType.TOGGLE_FAVORITE or TOGGLE_VALUE
+ * @param {boolean} checked
+ * @param {string|null} field field name for TOGGLE_VALUE (e.g. 'is_faq')
+ */
+export function syncToggleCheckboxes(id, type, checked, field = null)
+{
+    let selector = `[data-glpi-kb-action="${type}"][data-glpi-kb-action-param-id="${id}"]`;
+    if (field !== null) {
+        selector += `[data-glpi-kb-action-param-field="${field}"]`;
+    }
+
+    for (const button of document.querySelectorAll(selector)) {
+        const toggle = button.querySelector('input[type="checkbox"]');
+        if (toggle) {
+            toggle.checked = checked;
+        }
+    }
+}

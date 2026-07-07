@@ -30,9 +30,17 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _ */
+/* global _, glpi_confirm_danger, glpi_toast_error */
 
 import { get } from "/js/modules/Ajax.js";
+import {
+    EditorActionType,
+    extractParamsFromDataset,
+    syncToggleCheckboxes,
+    toggleFavorite,
+    toggleField,
+    deleteArticle,
+} from "/js/modules/Knowbase/EditorActions.js";
 
 export class GlpiKnowbaseAsideController
 {
@@ -55,6 +63,14 @@ export class GlpiKnowbaseAsideController
     #favorites_originally_hidden = false;
 
     /**
+     * In-flight/resolved dots menu content, keyed by article id. The tree
+     * renders only the dots trigger; the menu items are fetched on demand
+     * (prefetched on hover) so we never build every article's actions up-front.
+     * @type {Map<number, Promise<string>>}
+     */
+    #actions_cache = new Map();
+
+    /**
      * @param {HTMLElement} aside
      */
     constructor(aside)
@@ -62,6 +78,7 @@ export class GlpiKnowbaseAsideController
         this.#aside = aside;
         this.#initCategoryToggle();
         this.#initSearch();
+        this.#initActions();
     }
 
     #initCategoryToggle()
@@ -309,5 +326,315 @@ export class GlpiKnowbaseAsideController
         }
 
         return has_visible;
+    }
+
+    /**
+     * Wire up the per-article kebab menu actions (add to favorites, add to FAQ,
+     * delete). Clicks are delegated so entries added later (e.g. a cloned
+     * favorite) work without re-binding.
+     */
+    #initActions()
+    {
+        this.#aside.addEventListener('click', (e) => {
+            const button = e.target.closest('[data-glpi-kb-action]');
+            if (!button || !this.#aside.contains(button)) {
+                return;
+            }
+
+            e.preventDefault();
+            try {
+                this.#executeAction(e, button);
+            } catch (error) {
+                glpi_toast_error(__("An unexpected error occurred."));
+                throw error;
+            }
+        });
+
+        // Prefetch the menu content as soon as the row is hovered or focused, so
+        // it is ready by the time the user opens the kebab (no visible latency).
+        const prefetch = (e) => {
+            const line = e.target.closest('.article[data-glpi-kb-article-id]');
+            if (line && this.#aside.contains(line)) {
+                this.#populateMenus(parseInt(line.dataset.glpiKbArticleId));
+            }
+        };
+        this.#aside.addEventListener('mouseover', prefetch);
+        this.#aside.addEventListener('focusin', prefetch);
+
+        // Fallback for opens that outran the prefetch (touch, instant clicks,
+        // keyboard): make sure the content is loaded when the menu opens.
+        this.#aside.addEventListener('show.bs.dropdown', (e) => {
+            const line = e.target.closest('.article[data-glpi-kb-article-id]');
+            if (line) {
+                this.#populateMenus(parseInt(line.dataset.glpiKbArticleId));
+            }
+        });
+    }
+
+    /**
+     * Fetch (once) and inject the kebab menu items for an article into every
+     * not-yet-populated menu bearing that id (tree + favorites).
+     *
+     * @param {number} id
+     */
+    async #populateMenus(id)
+    {
+        if (!Number.isInteger(id)) {
+            return;
+        }
+
+        const selector = `[data-glpi-kb-article-id="${id}"] `
+            + `[data-glpi-kb-actions-menu]:not([data-glpi-kb-actions-loaded])`;
+        if (this.#aside.querySelector(selector) === null) {
+            return; // Nothing left to populate for this id.
+        }
+
+        let html;
+        try {
+            html = await this.#loadActions(id);
+        } catch {
+            // Drop the cached rejection so a later hover/open can retry.
+            this.#actions_cache.delete(id);
+            return;
+        }
+
+        for (const menu of this.#aside.querySelectorAll(selector)) {
+            menu.innerHTML = html;
+            menu.setAttribute('data-glpi-kb-actions-loaded', '');
+        }
+    }
+
+    /**
+     * @param {number} id
+     * @returns {Promise<string>} rendered menu items HTML
+     */
+    #loadActions(id)
+    {
+        if (!this.#actions_cache.has(id)) {
+            this.#actions_cache.set(
+                id,
+                get(`Knowbase/${id}/AsideActions`).then((response) => response.text()),
+            );
+        }
+        return this.#actions_cache.get(id);
+    }
+
+    /**
+     * @param {Event} e
+     * @param {HTMLElement} button
+     */
+    #executeAction(e, button)
+    {
+        const type = button.dataset.glpiKbAction;
+        const params = extractParamsFromDataset(button.dataset);
+        const id = parseInt(params.id);
+
+        switch (type) {
+            case EditorActionType.TOGGLE_FAVORITE: {
+                // Keep the dropdown open when toggling.
+                e.stopPropagation();
+                const toggle = button.querySelector('input[type="checkbox"]');
+                if (!toggle) {
+                    break;
+                }
+                if (e.target !== toggle) {
+                    toggle.checked = !toggle.checked;
+                }
+                this.#onToggleFavorite(id, toggle.checked);
+                break;
+            }
+            case EditorActionType.TOGGLE_VALUE: {
+                // Keep the dropdown open when toggling.
+                e.stopPropagation();
+                const toggle = button.querySelector('input[type="checkbox"]');
+                if (!toggle) {
+                    break;
+                }
+                if (e.target !== toggle) {
+                    toggle.checked = !toggle.checked;
+                }
+                this.#onToggleField(id, params.field, toggle.checked);
+                break;
+            }
+            case EditorActionType.DELETE_ARTICLE:
+                this.#onDelete(id);
+                break;
+        }
+    }
+
+    /**
+     * @param {number} id
+     * @param {boolean} value
+     */
+    async #onToggleFavorite(id, value)
+    {
+        this.#updateFavoritesSection(id, value);
+        // Sync every menu for this article, page-wide (aside + article header).
+        syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, value);
+        try {
+            await toggleFavorite(id, value);
+        } catch (error) {
+            // Revert the optimistic UI changes.
+            this.#updateFavoritesSection(id, !value);
+            syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, !value);
+            throw error;
+        }
+    }
+
+    /**
+     * @param {number} id
+     * @param {string} field
+     * @param {boolean} value
+     */
+    async #onToggleField(id, field, value)
+    {
+        // Sync every menu for this article, page-wide (aside + article header).
+        syncToggleCheckboxes(id, EditorActionType.TOGGLE_VALUE, value, field);
+        try {
+            await toggleField(id, field, value);
+        } catch (error) {
+            syncToggleCheckboxes(id, EditorActionType.TOGGLE_VALUE, !value, field);
+            throw error;
+        }
+    }
+
+    /**
+     * @param {number} id
+     */
+    async #onDelete(id)
+    {
+        const confirmed = await glpi_confirm_danger({
+            title: __('Delete article'),
+            message: __('Are you sure you want to delete this article?'),
+            confirm_label: __('Delete'),
+        });
+        if (!confirmed) {
+            return;
+        }
+
+        const response = await deleteArticle(id);
+        const body = await response.json();
+
+        // Deleting the article currently being viewed: leave the page.
+        const current = this.#aside.querySelector('[data-glpi-kb-article-current]');
+        if (current && parseInt(current.dataset.glpiKbArticleId) === id) {
+            window.location.href = body.redirect;
+            return;
+        }
+
+        // Otherwise remove every entry for this article (tree + favorites) in
+        // place. Categories are left as-is: the server renders empty categories
+        // too, so a now-empty category should stay visible (as it would on reload).
+        for (const entry of this.#aside.querySelectorAll(`[data-glpi-kb-article-id="${id}"]`)) {
+            entry.remove();
+        }
+
+        const favorites = this.#aside.querySelector('[data-glpi-kb-aside-favorites]');
+        if (favorites) {
+            this.#refreshFavoritesVisibility(favorites);
+        }
+    }
+
+    /**
+     * Add or remove the article from the favorites section to mirror its new
+     * favorite state, then refresh the section visibility.
+     *
+     * @param {number} id
+     * @param {boolean} is_favorited
+     */
+    #updateFavoritesSection(id, is_favorited)
+    {
+        const favorites = this.#aside.querySelector('[data-glpi-kb-aside-favorites]');
+        if (!favorites) {
+            return;
+        }
+        const list = favorites.querySelector('ul');
+        if (!list) {
+            return;
+        }
+
+        // The current article has a dedicated entry that is only toggled between
+        // "pending" (hidden) and "active" (shown) states, never added/removed.
+        const current = favorites.querySelector('[data-glpi-kb-favorite-current]');
+        if (current && parseInt(current.dataset.glpiKbArticleId) === id) {
+            current.setAttribute('data-glpi-kb-favorite-current', is_favorited ? 'active' : 'pending');
+            this.#refreshFavoritesVisibility(favorites);
+            return;
+        }
+
+        if (is_favorited) {
+            const already_listed = list.querySelector(`:scope > [data-glpi-kb-article-id="${id}"]`);
+            if (!already_listed) {
+                const source = this.#aside.querySelector(
+                    `[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${id}"]`
+                );
+                if (source) {
+                    const clone = source.cloneNode(true);
+                    clone.classList.add('mb-2');
+                    clone.removeAttribute('data-glpi-kb-search-hidden');
+                    // The source row's dots menu is still open (the user just
+                    // clicked a toggle inside it); close it in the clone.
+                    this.#resetClonedDropdown(clone);
+                    list.appendChild(clone);
+                }
+            }
+        } else {
+            for (const entry of list.querySelectorAll(`:scope > [data-glpi-kb-article-id="${id}"]`)) {
+                if (!entry.hasAttribute('data-glpi-kb-favorite-current')) {
+                    entry.remove();
+                }
+            }
+        }
+
+        this.#refreshFavoritesVisibility(favorites);
+    }
+
+    /**
+     * Reset a cloned article row's dots menu to a closed state. The source row
+     * is cloned while its dropdown is still open (the user just clicked a toggle
+     * inside it), and the clone is not a Bootstrap-managed instance — so without
+     * this it would render a second, orphaned open menu that never closes.
+     *
+     * @param {HTMLElement} clone
+     */
+    #resetClonedDropdown(clone)
+    {
+        for (const shown of clone.querySelectorAll('.show')) {
+            shown.classList.remove('show');
+        }
+        const trigger = clone.querySelector('[data-bs-toggle="dropdown"]');
+        if (trigger) {
+            trigger.setAttribute('aria-expanded', 'false');
+        }
+        const menu = clone.querySelector('.dropdown-menu');
+        if (menu) {
+            // Drop any inline positioning Popper may have applied while open.
+            menu.removeAttribute('style');
+        }
+    }
+
+    /**
+     * Show or hide the favorites section (and matching header border) depending
+     * on whether it still holds any visible entry.
+     *
+     * @param {HTMLElement} favorites_el
+     */
+    #refreshFavoritesVisibility(favorites_el)
+    {
+        const header = this.#aside.querySelector('[data-glpi-kb-aside-header]');
+        const has_visible = favorites_el.querySelector(
+            '[data-glpi-kb-article-id]:not([data-glpi-kb-favorite-current="pending"])'
+        ) !== null;
+
+        if (has_visible) {
+            favorites_el.removeAttribute('data-glpi-kb-aside-favorites-hidden');
+            header?.removeAttribute('data-glpi-kb-aside-header-no-border');
+        } else {
+            favorites_el.setAttribute('data-glpi-kb-aside-favorites-hidden', '');
+            header?.setAttribute('data-glpi-kb-aside-header-no-border', '');
+        }
+
+        // Keep the "restore after search" baseline in sync with the live state.
+        this.#favorites_originally_hidden = !has_visible;
     }
 }
