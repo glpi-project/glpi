@@ -78,7 +78,7 @@ final class ReAuthManager
             ($referer !== null && !$this->isReAuthRoute($referer)) ? $referer : $CFG_GLPI["root_doc"]
         );
 
-        throw new RedirectException($CFG_GLPI['root_doc'].'/ReAuth/Prompt');
+        throw new RedirectException($CFG_GLPI['root_doc'] . '/ReAuth/Prompt');
     }
 
     /**
