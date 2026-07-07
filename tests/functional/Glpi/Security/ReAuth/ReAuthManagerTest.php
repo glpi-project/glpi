@@ -157,6 +157,9 @@ class ReAuthManagerTest extends DbTestCase
         // The GET query string of a POST request is preserved: browsers keep the action
         // URL's query string untouched on replay since the form data goes in the body.
         $this->assertSame('https://glpi.example.org/front/user.form.php?id=2', $manager->getRequestedURL());
+        // _glpi_http_referer is only meaningful for POST replays: Html::getRefererUrl()
+        // reads it from $_POST, so it must be present here.
+        $this->assertArrayHasKey('_glpi_http_referer', $manager->getRequestedPostData());
     }
 
     /** The requested URL drops its GET query string: browsers rebuild it from the form fields on replay. */
@@ -176,6 +179,9 @@ class ReAuthManagerTest extends DbTestCase
 
         // --- assert ---
         $this->assertSame('https://glpi.example.org/front/user.form.php', $manager->getRequestedURL());
+        // _glpi_http_referer would only ever land in $_GET on replay, which
+        // Html::getRefererUrl() never reads, so it must not be injected here.
+        $this->assertArrayNotHasKey('_glpi_http_referer', $manager->getRequestedPostData());
     }
 
     /** All getters return safe defaults when the re-auth session keys are absent. */
@@ -196,8 +202,8 @@ class ReAuthManagerTest extends DbTestCase
         $this->assertSame('/', $manager->getRequestedURL());
         $this->assertSame('GET', $manager->getRequestedMethod());
         $this->assertSame($CFG_GLPI['root_doc'], $manager->getOriginURL());
-        // getRequestedPostData() injects the referer pointing to the origin URL (calling page).
-        $this->assertSame(['_glpi_http_referer' => $CFG_GLPI['root_doc']], $manager->getRequestedPostData());
+        // Default method is GET: no _glpi_http_referer is injected (see testRedirectToReauthStoresPostRequestData).
+        $this->assertSame([], $manager->getRequestedPostData());
     }
 
     /** Throws InvalidArgumentException when a non-CommonGLPI class is passed. */

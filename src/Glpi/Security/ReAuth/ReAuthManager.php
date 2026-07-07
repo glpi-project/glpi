@@ -139,17 +139,24 @@ final class ReAuthManager
     }
 
     /**
-     * query data + _glpi_http_referer
+     * query data + _glpi_http_referer (POST replays only)
      *
      * `_glpi_http_referer` is set to the origin page (the referer captured on
      * the first pass, @see getOriginURL()) so that Html::back()/getBackUrl() on
      * the replayed request returns the original page and not the reauth flow.
+     * Html::getRefererUrl() only reads $_POST['_glpi_http_referer'], so it is
+     * pointless to inject it for a replayed GET request (it would only ever
+     * land in $_GET).
      *
      * @return array<string, string>
      */
     public function getRequestedPostData(): array
     {
         $reauth_data = $_SESSION['glpi_reauth_requested_post_data'] ?? [];
+
+        if ($this->getRequestedMethod() !== 'POST') {
+            return $reauth_data;
+        }
 
         return $reauth_data + ['_glpi_http_referer' => $this->getOriginURL()];
     }
@@ -198,7 +205,7 @@ final class ReAuthManager
 
         $this->setRequestedURL($current_url);
         $this->setRequestedMethod($is_post ? 'POST' : 'GET');
-        $this->setRequestedPostData($is_post ? $_POST : $_GET);
+        $this->setRequestedData($is_post ? $_POST : $_GET);
     }
 
     private function getStrategy(): ReAuthStrategyInterface
@@ -247,7 +254,7 @@ final class ReAuthManager
     }
 
     /** @param array<string, string> $post */
-    private function setRequestedPostData(array $post): void
+    private function setRequestedData(array $post): void
     {
         $_SESSION['glpi_reauth_requested_post_data'] = $post;
     }
