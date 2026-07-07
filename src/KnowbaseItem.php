@@ -1260,6 +1260,28 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             );
         }
 
+        // Include base actions that are available for articles in the aside
+        $management = $this->getAsideActions();
+        if ($management !== []) {
+            if ($actions !== []) {
+                $actions[] = new EditorActionSeparator();
+            }
+            array_push($actions, ...$management);
+        }
+
+        return $actions;
+    }
+
+    /**
+     * Build the actions that will be available on the aside dots menu for
+     * the loaded article.
+     *
+     * @return array<EditorAction|EditorActionSeparator>
+     */
+    public function getAsideActions(): array
+    {
+        $actions = [];
+
         // Toggle actions
         $toggles = [];
         if (KnowbaseItem_Favorite::canCreate()) {
@@ -1285,15 +1307,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
         }
-        if ($toggles !== []) {
-            if ($actions !== []) {
-                $actions[] = new EditorActionSeparator();
-            }
-            array_push($actions, ...$toggles);
-        }
+        array_push($actions, ...$toggles);
 
         if ($this->can($this->fields['id'], PURGE)) {
-            $actions[] = new EditorActionSeparator();
+            if ($toggles !== []) {
+                $actions[] = new EditorActionSeparator();
+            }
             $actions[] = new EditorAction(
                 label: __("Delete article"),
                 icon: "ti ti-trash",
