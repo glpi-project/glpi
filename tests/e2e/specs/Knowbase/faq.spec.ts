@@ -47,7 +47,7 @@ test('Can toggle FAQ from false to true', async ({ page, profile, api }) => {
     });
 
     await kb.goto(id);
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
 
     // Toggle value
     const faq_toggle = kb.getButton('Add to FAQ');
@@ -57,7 +57,7 @@ test('Can toggle FAQ from false to true', async ({ page, profile, api }) => {
 
     // Validate value was saved
     await page.reload();
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     const faq_toggle_after_reload = kb.getButton('Add to FAQ');
     await expect(faq_toggle_after_reload.getByRole('checkbox')).toBeChecked();
 });
@@ -74,7 +74,7 @@ test('Can toggle FAQ from true to false', async ({ page, profile, api }) => {
     });
 
     await kb.goto(id);
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
 
     // Toggle value
     const faq_toggle = kb.getButton('Add to FAQ');
@@ -84,7 +84,7 @@ test('Can toggle FAQ from true to false', async ({ page, profile, api }) => {
 
     // Validate value was saved
     await page.reload();
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     const faq_toggle_after_reload = kb.getButton('Add to FAQ');
     await expect(faq_toggle_after_reload.getByRole('checkbox')).not.toBeChecked();
 });

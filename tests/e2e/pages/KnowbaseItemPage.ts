@@ -116,6 +116,18 @@ export class KnowbaseItemPage extends GlpiPage
         );
     }
 
+    /**
+     * The article header's dots menu trigger. Scoped to the article content so
+     * it is not confused with the per-row "More actions" menus that the aside
+     * tree renders on every article.
+     */
+    public get articleActionsMenu(): Locator
+    {
+        return this.page
+            .getByTestId('kb-article')
+            .getByRole('button', { name: 'More actions' });
+    }
+
     public async doToggleFaqStatus(): Promise<void>
     {
         const faq_toggle = this.getButton('Add to FAQ');
@@ -146,6 +158,87 @@ export class KnowbaseItemPage extends GlpiPage
         return this.favoritesSection.getByRole('link', { name: title });
     }
 
+    public get aside(): Locator
+    {
+        return this.page.getByRole('main').getByRole('complementary');
+    }
+
+    public getAsideTreeArticleRow(id: number): Locator
+    {
+        return this.aside.locator(`[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${id}"]`);
+    }
+
+    /**
+     * The dots menu trigger button of an article in the aside tree.
+     */
+    public getAsideArticleMenuTrigger(id: number): Locator
+    {
+        return this.getAsideTreeArticleRow(id).getByRole('button', { name: 'More actions' });
+    }
+
+    /**
+     * Open the (lazy-loaded) dots menu of an article in the aside tree.
+     */
+    public async doOpenAsideArticleMenu(id: number): Promise<void>
+    {
+        const row = this.getAsideTreeArticleRow(id);
+        await row.hover();
+        await this.getAsideArticleMenuTrigger(id).click();
+        // The aside menu content is lazy-loaded; wait until it is rendered.
+        await expect(row.getByRole('button', { name: 'Add to favorites' })).toBeVisible();
+    }
+
+    /**
+     * An action button inside an aside tree article's dots menu.
+     */
+    public getAsideArticleAction(id: number, name: string): Locator
+    {
+        return this.getAsideTreeArticleRow(id).getByRole('button', { name });
+    }
+
+    public async doToggleAsideFavorite(id: number): Promise<void>
+    {
+        const response_promise = this.page.waitForResponse(
+            response => response.url().includes('/ToggleFavorite')
+        );
+        await this.getAsideArticleAction(id, 'Add to favorites').click();
+        await response_promise;
+    }
+
+    public async doToggleAsideFaq(id: number): Promise<void>
+    {
+        const response_promise = this.page.waitForResponse(
+            response => response.url().includes('/ToggleField')
+        );
+        await this.getAsideArticleAction(id, 'Add to FAQ').click();
+        await response_promise;
+    }
+
+    public async doDeleteAsideArticle(id: number): Promise<void>
+    {
+        await this.getAsideArticleAction(id, 'Delete article').click();
+
+        const confirm_button = this.page.getByRole('button', { name: 'Delete', exact: true });
+        await expect(confirm_button).toBeVisible();
+
+        const response_promise = this.page.waitForResponse(
+            response => response.url().includes('/Delete')
+        );
+        await confirm_button.click();
+        await response_promise;
+    }
+
+    /**
+     * "Add to favorites" toggles currently visible in the aside, i.e. inside an
+     * open dots menu. Used to assert that only a single menu is open at a time.
+     */
+    public get openAsideFavoriteToggles(): Locator
+    {
+        return this.aside
+            .getByRole('button', { name: 'Add to favorites' })
+            .filter({ visible: true });
+    }
+
     public get childEntitiesCheckbox(): Locator
     {
         return this.page.getByRole('checkbox', { name: 'Child entities' });
@@ -161,7 +254,7 @@ export class KnowbaseItemPage extends GlpiPage
 
     public async doOpenCommentsPanel(): Promise<void>
     {
-        await this.page.getByTitle('More actions').click();
+        await this.articleActionsMenu.click();
         await this.getButton('Comments').click();
     }
 
@@ -241,7 +334,7 @@ export class KnowbaseItemPage extends GlpiPage
 
     public async doEnableSchedulePanel(): Promise<void>
     {
-        await this.page.getByTitle('More actions').click();
+        await this.articleActionsMenu.click();
         await this.getButton('Schedule visibility').click();
         await expect(this.page.getByTestId('schedule-panel')).toBeVisible();
     }
@@ -260,7 +353,7 @@ export class KnowbaseItemPage extends GlpiPage
 
     public async doOpenVisibilityModal(): Promise<void>
     {
-        await this.page.getByTitle('More actions').click();
+        await this.articleActionsMenu.click();
         await this.getButton('Permissions and sharing').click();
     }
 
@@ -281,7 +374,7 @@ export class KnowbaseItemPage extends GlpiPage
 
     public async doOpenHistoryPanel(): Promise<void>
     {
-        await this.page.getByTitle('More actions').click();
+        await this.articleActionsMenu.click();
         await this.getButton('History').click();
     }
 
@@ -357,7 +450,7 @@ export class KnowbaseItemPage extends GlpiPage
 
     public async doOpenSharingTab(): Promise<Locator>
     {
-        await this.page.getByTitle('More actions').click();
+        await this.articleActionsMenu.click();
         await this.getButton('Permissions and sharing').click();
 
         const modal = this.page.getByRole('dialog');
