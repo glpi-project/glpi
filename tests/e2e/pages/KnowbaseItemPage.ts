@@ -354,7 +354,7 @@ export class KnowbaseItemPage extends GlpiPage
     public async doOpenVisibilityModal(): Promise<void>
     {
         await this.articleActionsMenu.click();
-        await this.getButton('Permissions and sharing').click();
+        await this.getButton('Permissions').click();
     }
 
     public getVisibilityModal(): Locator
@@ -453,30 +453,37 @@ export class KnowbaseItemPage extends GlpiPage
         await this.asideSearchClearButton.click();
     }
 
-    public async doOpenSharingTab(): Promise<Locator>
+    /**
+     * Open the header "Share" popover and wait for its lazily-loaded content
+     * to be ready.
+     */
+    public async openSharePopover(): Promise<void>
     {
-        await this.articleActionsMenu.click();
-        await this.getButton('Permissions and sharing').click();
-
-        const modal = this.page.getByRole('dialog');
-        await expect(modal).toBeVisible();
-
-        await modal.getByRole('tab', { name: 'Sharing' }).click();
-        return modal;
+        await this.getButton('Share').click();
+        await expect(this.publishSwitch()).toBeVisible();
     }
 
-    public async doCreateSharingLink(modal: Locator, name?: string): Promise<void>
+    public publishSwitch(): Locator
     {
-        await modal.getByRole('button', { name: 'Create a sharing link' }).click();
+        return this.page.getByRole('switch', { name: 'Publish to web' });
+    }
 
-        const name_input = modal.getByPlaceholder('Link name (optional)');
-        await expect(name_input).toBeVisible();
+    public shareLink(): Locator
+    {
+        return this.page.getByLabel('Public share link');
+    }
 
-        if (name) {
-            await name_input.fill(name);
-        }
+    public regenerateButton(): Locator
+    {
+        return this.page.getByRole('button', { name: 'Regenerate link' });
+    }
 
-        await name_input.press('Enter');
+    /**
+     * Confirm the "Regenerate link" danger dialog opened by regenerateButton().
+     */
+    public async confirmRegenerate(): Promise<void>
+    {
+        await this.page.getByRole('button', { name: 'Regenerate', exact: true }).click();
     }
 }
 
