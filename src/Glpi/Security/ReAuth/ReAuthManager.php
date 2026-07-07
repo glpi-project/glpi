@@ -243,7 +243,10 @@ final class ReAuthManager
     {
         global $CFG_GLPI;
 
-        $path = parse_url($url, PHP_URL_PATH) ?? '';
+        $path = parse_url($url, PHP_URL_PATH);
+        if (!is_string($path)) {
+            return false;
+        }
 
         return str_starts_with($path, $CFG_GLPI['root_doc'] . '/ReAuth/');
     }
