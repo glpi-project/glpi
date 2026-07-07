@@ -3016,23 +3016,8 @@ class CommonDBTM extends CommonGLPI
             // check if private
             $allowed = $this->isPrivate() && ($this->fields['users_id'] == Session::getLoginUserID());
             // global check
-            // When a reauth is needed, we intentionally skip canCreateItem() and rely on the
-            // global canCreate() only. Some canCreateItem() implementations call ->can() on a
-            // related itemtype that also requires reauth (e.g. Profile_User::canCreateItem()
-            // calls User->can(READ), and User requires reauth). On the first pass that nested
-            // can() returns false *because* of the pending reauth, not because a right is
-            // missing, so canCreateItem() would return false. The full check would then yield
-            // $allowed = false -> allowed_against_reauth(false) = [false, false] -> a plain
-            // AccessDeniedHttpException, and the reauth prompt would never be shown.
-            // By checking canCreate() only, $allowed stays true so the reauth is triggered;
-            // canCreateItem() is not bypassed, only deferred: it is enforced on the second
-            // pass, once the reauth is valid and this branch takes the full check below.
-            // Caveat: if canCreateItem() would be false for a genuine reason, a useless reauth
-            // is prompted before the second-pass denial.
             if (!$allowed) {
-                $allowed = $is_user_reauthentication_needed
-                    ? static::canCreate()
-                    : (static::canCreate() && $this->canCreateItem());
+                $allowed = static::canCreate() && $this->canCreateItem();
             }
 
             [$allowed, $reauth_needed] = $allowed_against_reauth($allowed);
