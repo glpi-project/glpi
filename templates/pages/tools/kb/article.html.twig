@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
+
 <div
     class="d-flex mx-n2 my-n2 pe-none"
     data-glpi-knowbase-article
@@ -140,61 +142,7 @@
                 {% endif %}
 
                 {# Actions dropdown #}
-                <div class="dropdown cursor-pointer d-flex align-items-center">
-                    {% if actions|length > 0 %}
-                        <i
-                            class="ti ti-dots-vertical"
-                            data-glpi-kb-dots
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            role="button"
-                            title="{{ __('More actions') }}"
-                        ></i>
-                        <ul class="dropdown-menu" data-bs-popper="none">
-                            {% set add_separator = false %}
-                            {% for action in actions %}
-                                {% if action is instanceof('\\Glpi\\Knowbase\\EditorActionSeparator') %}
-                                    {# Will add an extra border on the next iteration #}
-                                    {% set add_separator = true %}
-                                {% else %}
-                                    <li class="{{ add_separator ? 'border-top' : '' }}">
-                                        <button
-                                            type="button"
-                                            class="dropdown-item {{ action.is_danger ? "text-danger" : "" }}"
-                                            aria-label="{{ action.label }}"
-                                            data-glpi-kb-action="{{ action.type.value }}"
-                                            {% for key, param in action.params %}
-                                                data-glpi-kb-action-param-{{ key }}="{{ param }}"
-                                            {% endfor %}
-                                        >
-                                            <i class="{{ action.icon }}"></i>
-                                            <span>{{ action.label }}</span>
-
-                                            {% if action.counter is not null %}
-                                                <span
-                                                    class="badge glpi-badge ms-auto"
-                                                    data-testid="{{ action.params.key }}-counter"
-                                                    data-glpi-kb-action-counter="{{ action.params.key }}"
-                                                >{{ action.counter }}</span>
-                                            {% endif %}
-
-                                            {% if action.type == constant('Glpi\\Knowbase\\EditorActionType::TOGGLE_VALUE') or action.type == constant('Glpi\\Knowbase\\EditorActionType::TOGGLE_FAVORITE') %}
-                                                <span class="form-check form-switch ms-auto mb-0">
-                                                    <input
-                                                        type="checkbox"
-                                                        class="form-check-input ms-0"
-                                                        {{ action.params.checked ? 'checked' : '' }}
-                                                    >
-                                                </span>
-                                            {% endif %}
-                                        </button>
-                                    </li>
-                                    {% set add_separator = false %}
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
+                {{ actions_menu.render_actions_menu(actions) }}
             </div>
         </div>
 
