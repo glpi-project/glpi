@@ -4675,6 +4675,14 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $this->assertSame(countElementsInTable(\Computer::getTable()), $nbcomputers);
         $this->assertSame(countElementsInTable(\Printer::getTable()), $nbprinters);
+
+        //unsupported file
+        $result = $conf->importFiles([new FileInfo('InventoryTest.php', __FILE__)]);
+        $this->assertFalse($result['InventoryTest.php']->isSuccess());
+        $this->assertSame(
+            'File `InventoryTest.php` has not been imported. (`php` format is not supported)',
+            $result['InventoryTest.php']->getMessage()
+        );
     }
 
     public function testImportFilesLegacyArray()
@@ -4708,6 +4716,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             realpath(self::INV_FIXTURES . 'computer_1.json'),
             realpath(self::INV_FIXTURES . 'networkequipment_1.json'),
             realpath(self::INV_FIXTURES . 'printer_1.json'),
+            realpath(__FILE__),
         ];
 
         UnifiedArchive::create($json_paths, self::INVENTORY_ARCHIVE_PATH);
@@ -4715,7 +4724,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $conf = new Conf();
         $result = $conf->importFiles([new FileInfo('to_inventory.zip', self::INVENTORY_ARCHIVE_PATH)]);
 
-        $this->assertCount(3, $result);
+        $this->assertCount(4, $result);
 
         // Expected result for computer_1.json
         $this->assertTrue($result['to_inventory.zip/computer_1.json']->isSuccess());
@@ -4728,6 +4737,12 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         // Expected result for printer_1.json
         $this->assertTrue($result['to_inventory.zip/printer_1.json']->isSuccess());
         $this->assertInstanceOf('Printer', $result['to_inventory.zip/printer_1.json']->getItems()[0]);
+
+        $this->assertFalse($result['to_inventory.zip/InventoryTest.php']->isSuccess());
+        $this->assertSame(
+            'File `to_inventory.zip/InventoryTest.php` has not been imported. (`php` format is not supported)',
+            $result['to_inventory.zip/InventoryTest.php']->getMessage()
+        );
 
         //1 computer 2 printers and a network equipment has been inventoried
         $nbcomputers++;

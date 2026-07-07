@@ -204,10 +204,20 @@ class Conf extends CommonGLPI
             if (UnifiedArchive::canOpen($filepath) && $archive = UnifiedArchive::open($filepath)) {
                 $unarchived_files = $archive->getFiles();
                 foreach ($unarchived_files as $inventory_file) {
+                    $entry_name = $filename . '/' . basename($inventory_file);
                     if ($this->isInventoryFile($inventory_file)) {
-                        $entry_name = $filename . '/' . basename($inventory_file);
                         $contents = $archive->getFileContent($inventory_file);
                         $result[$entry_name] = $this->importContentFile($entry_name, null, $contents);
+                    } else {
+                        $result[$entry_name] = new ImportResult(
+                            filename: $inventory_file,
+                            success: false,
+                            message: sprintf(
+                                __('File `%s` has not been imported.') . ' (%s)',
+                                $entry_name,
+                                sprintf('`%s` format is not supported', pathinfo($inventory_file, PATHINFO_EXTENSION))
+                            ),
+                        );
                     }
                 }
             } elseif ($this->isInventoryFile($filename)) {
@@ -217,7 +227,8 @@ class Conf extends CommonGLPI
                     filename: $filename,
                     success: false,
                     message: sprintf(
-                        __('File has not been imported: `%s`.'),
+                        __('File `%s` has not been imported.') . ' (%s)',
+                        $filename,
                         sprintf('`%s` format is not supported', pathinfo($filename, PATHINFO_EXTENSION))
                     ),
                 );
