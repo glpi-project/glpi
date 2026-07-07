@@ -39,6 +39,7 @@ use Document;
 use Document_Item;
 use Entity;
 use Entity_KnowbaseItem;
+use Glpi\Controller\ShareTokenController;
 use Glpi\Form\Category;
 use Glpi\Knowbase\History\CreationEvent;
 use Glpi\Knowbase\History\CurrentTranslationEvent;
@@ -922,6 +923,60 @@ final class HistoryBuilderTest extends DbTestCase
                 author: 2,
             ),
         ], $events);
+    }
+
+    public function testSharingLinkRegeneratedAppearsAsSingleEventWithoutSpuriousPair(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $token = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ], skip_fields: ['token']);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $response = (new ShareTokenController())->regenerate($token->getID());
+        $payload = json_decode((string) $response->getContent(), true);
+        $this->assertTrue($payload['success']);
+
+        $kb->getFromDB($kb->getID());
+        $events = (new HistoryBuilder($kb))->buildHistory()->getEvents();
+
+        $this->assertEquals([
+            new LogEvent(
+                label: "Sharing link regenerated",
+                description: "Updated by",
+                date: "2026-01-15 12:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new LogEvent(
+                label: "Sharing enabled",
+                description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+
+        // No spurious "Sharing disabled" event from the purge+add pair.
+        $disabled_events = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof LogEvent && $e->getLabel() === "Sharing disabled"
+        ));
+        $this->assertCount(0, $disabled_events);
     }
 
     public function testServiceCatalogChanges(): void

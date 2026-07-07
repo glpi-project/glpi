@@ -39,6 +39,7 @@ use Glpi\Security\ShareTokenManager;
 use Glpi\ShareToken;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
+use Log;
 use User;
 
 final class ShareTokenControllerTest extends DbTestCase
@@ -81,5 +82,60 @@ final class ShareTokenControllerTest extends DbTestCase
         $new_plain = $manager->decryptToken((string) $tokens[0]['token']);
         $this->assertNotSame($old_plain, $new_plain);
         $this->assertSame($new_plain, $payload['token']['token']);
+    }
+
+    public function testRegenerateLogsSingleRegeneratedHistoryEntry(): void
+    {
+        global $DB;
+
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $old = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ]);
+
+        $sharing_log_criteria = [
+            'itemtype'      => KnowbaseItem::class,
+            'items_id'      => $kb->getID(),
+            'itemtype_link' => ShareToken::class,
+        ];
+
+        $logs_before = iterator_to_array($DB->request([
+            'FROM'  => Log::getTable(),
+            'WHERE' => $sharing_log_criteria,
+        ]));
+        $ids_before = array_column($logs_before, 'id');
+
+        $controller = new ShareTokenController();
+        $response   = $controller->regenerate($old->getID());
+        $payload    = json_decode((string) $response->getContent(), true);
+        $this->assertTrue($payload['success']);
+
+        $logs_after = iterator_to_array($DB->request([
+            'FROM'  => Log::getTable(),
+            'WHERE' => $sharing_log_criteria,
+        ]));
+
+        $new_logs = array_values(array_filter(
+            $logs_after,
+            static fn(array $row) => !in_array($row['id'], $ids_before, true)
+        ));
+
+        // Exactly one new sharing log row, encoding the regeneration.
+        $this->assertCount(1, $new_logs);
+        $this->assertSame(Log::HISTORY_UPDATE_RELATION, (int) $new_logs[0]['linked_action']);
+
+        // The automatic "disabled"/"enabled" pair must not have been written by the regenerate.
+        $spurious = array_filter(
+            $new_logs,
+            static fn(array $row) => in_array(
+                (int) $row['linked_action'],
+                [Log::HISTORY_ADD_RELATION, Log::HISTORY_DEL_RELATION],
+                true
+            )
+        );
+        $this->assertCount(0, $spurious);
     }
 }

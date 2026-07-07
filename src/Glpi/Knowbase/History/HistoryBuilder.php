@@ -280,16 +280,26 @@ final class HistoryBuilder
                 'itemtype'      => KnowbaseItem::class,
                 'items_id'      => $this->kb->getID(),
                 'itemtype_link' => ShareToken::class,
-                'linked_action' => [Log::HISTORY_ADD_RELATION, Log::HISTORY_DEL_RELATION],
+                'linked_action' => [
+                    Log::HISTORY_ADD_RELATION,
+                    Log::HISTORY_DEL_RELATION,
+                    Log::HISTORY_UPDATE_RELATION,
+                ],
             ],
             'ORDER' => 'id DESC',
         ]);
 
         foreach ($logs as $row) {
-            $enabled = (int) $row['linked_action'] === Log::HISTORY_ADD_RELATION;
+            $linked_action = (int) $row['linked_action'];
+
+            $label = match ($linked_action) {
+                Log::HISTORY_UPDATE_RELATION => __("Sharing link regenerated"),
+                Log::HISTORY_ADD_RELATION    => __("Sharing enabled"),
+                default                      => __("Sharing disabled"),
+            };
 
             $this->history->addEvent(new LogEvent(
-                label: $enabled ? __("Sharing enabled") : __("Sharing disabled"),
+                label: $label,
                 description: __("Updated by"),
                 date: $row['date_mod'],
                 author: $row['user_name'],

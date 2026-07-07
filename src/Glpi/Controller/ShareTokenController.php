@@ -158,26 +158,31 @@ final class ShareTokenController extends AbstractController
         );
 
         // Invalidate the current link and issue a fresh one atomically, so the item is never
-        // left with zero or two active tokens.
+        // left with zero or two active tokens. The automatic "disabled"/"enabled" history
+        // entries are suppressed on both operations (_no_history) so that a single explicit
+        // "Sharing link regenerated" entry is written instead, once the new token exists.
         $DB->beginTransaction();
 
-        if ((new ShareToken())->delete(['id' => $token_id], true) === false) {
+        if ((new ShareToken())->delete(['id' => $token_id, '_no_history' => true], true) === false) {
             $DB->rollBack();
             return $error_response;
         }
 
         $new_token = new ShareToken();
         if ($new_token->add([
-            'itemtype'  => $itemtype,
-            'items_id'  => $items_id,
-            'name'      => $name,
-            'is_active' => 1,
+            'itemtype'     => $itemtype,
+            'items_id'     => $items_id,
+            'name'         => $name,
+            'is_active'    => 1,
+            '_no_history'  => true,
         ]) === false) {
             $DB->rollBack();
             return $error_response;
         }
 
         $DB->commit();
+
+        $new_token->logRegeneration();
 
         $fields = $new_token->fields;
         $fields['token'] = (new ShareTokenManager())->decryptToken((string) $fields['token']);
