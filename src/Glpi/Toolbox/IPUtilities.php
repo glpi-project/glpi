@@ -34,6 +34,7 @@
 
 namespace Glpi\Toolbox;
 
+use LogicException;
 use Safe\Exceptions\NetworkException;
 
 use function Safe\inet_ntop;
@@ -132,15 +133,9 @@ class IPUtilities
      */
     public static function isCidrMatch(string $ip, string $range): bool
     {
-        $ipv6 = str_contains($ip, ':');
-        $max_mask = $ipv6 ? 128 : 32;
-        [$subnet, $mask] = explode('/', $range);
-        $subnet = inet_pton($subnet);
+        [$start, $end] = self::cidrToRange($range);
         $ip = inet_pton($ip);
-        $mask = $mask === '' ? $max_mask : (int) $mask;
-        $subnet = substr($subnet, 0, $mask / 8);
-        $ip = substr($ip, 0, $mask / 8);
-        return $subnet === $ip;
+        return $ip >= inet_pton($start) && $ip <= inet_pton($end);
     }
 
     /**
@@ -149,16 +144,41 @@ class IPUtilities
      * @return array
      * @phpstan-return list{string, string}
      * @throws NetworkException
+     * @throws LogicException
      */
     public static function cidrToRange(string $cidr): array
     {
-        $ipv6 = str_contains($cidr, ':');
-        $max_mask = $ipv6 ? 128 : 32;
-        [$subnet, $mask] = explode('/', $cidr);
-        $subnet = inet_pton($subnet);
-        $mask = $mask === '' ? $max_mask : (int) $mask;
-        $start = $subnet & str_repeat("\xFF", (int) ($mask / 8)) . str_repeat("\x00", (int) (($max_mask - $mask) / 8));
-        $end = $subnet | str_repeat("\x00", (int) ($mask / 8)) . str_repeat("\xFF", (int) (($max_mask - $mask) / 8));
-        return [inet_ntop($start), inet_ntop($end)];
+        if (!str_contains($cidr, '/')) {
+            throw new LogicException("Invalid CIDR notation: $cidr");
+        }
+        [$ip, $mask] = explode('/', $cidr);
+
+        $mask = (int) $mask;
+        $ip = inet_pton($ip);
+
+        // IP version detection
+        $ip_length = strlen($ip);
+        $max_mask = $ip_length * 8;
+
+        $net_mask = '';
+        $host_mask = '';
+
+        for ($i = 0; $i < $ip_length; $i++) {
+            if ($mask >= 8) {
+                $net_mask .= chr(0xFF);
+                $host_mask .= chr(0x00);
+                $mask -= 8;
+            } elseif ($mask > 0) {
+                $net_bits = (0xFF << (8 - $mask)) & 0xFF;
+                $net_mask .= chr($net_bits);
+                $host_mask .= chr(~$net_bits & 0xFF);
+                $mask = 0;
+            } else {
+                $net_mask .= chr(0x00);
+                $host_mask .= chr(0xFF);
+            }
+        }
+
+        return [inet_ntop($ip & $net_mask), inet_ntop($ip | $host_mask)];
     }
 }
