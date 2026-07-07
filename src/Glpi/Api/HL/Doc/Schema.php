@@ -365,10 +365,14 @@ class Schema implements ArrayAccess
             return null;
         }
 
-        $schema['properties'] = self::filterPropertiesByAPIVersion($schema['properties'], $schema_versions, $api_version);
+        if (array_key_exists('type', $schema) && $schema['type'] === self::TYPE_ARRAY && isset($schema['items']['properties'])) {
+            $schema['items']['properties'] = self::filterPropertiesByAPIVersion($schema['items']['properties'], $schema_versions, $api_version);
+        } else {
+            $schema['properties'] = self::filterPropertiesByAPIVersion($schema['properties'], $schema_versions, $api_version);
+        }
 
         // If all properties were filtered out, the schema can be considered not applicable
-        if (empty($schema['properties'])) {
+        if (empty($schema['properties']) && empty($schema['items']['properties'] ?? [])) {
             return null;
         }
 

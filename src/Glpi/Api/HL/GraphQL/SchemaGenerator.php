@@ -70,6 +70,7 @@ final readonly class SchemaGenerator
             if ($schema_info['x-singleton'] ?? false) {
                 $query_type_config['fields'][$schema_name] = [
                     'type' => fn(): Type => Types::load($schema_name, $this->api_version),
+                    'args' => $schema_info['x-graphql-query-args'] ?? [],
                 ];
                 if ($has_custom_resolver) {
                     $query_type_config['fields'][$schema_name]['resolve'] = $schema_info['x-graphql-resolver'];
