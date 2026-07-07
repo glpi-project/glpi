@@ -117718,5 +117718,1085 @@
                 }
             ]
         }
+    },
+    "/Kanban/Project/{items_id}/View/{users_id}": {
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/KanbanView"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/filter"
+                },
+                {
+                    "$ref": "#/components/parameters/start"
+                },
+                {
+                    "$ref": "#/components/parameters/limit"
+                },
+                {
+                    "$ref": "#/components/parameters/sort"
+                },
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Kanban/Ticket/{items_id}/View/{users_id}": {
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/KanbanView"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/filter"
+                },
+                {
+                    "$ref": "#/components/parameters/start"
+                },
+                {
+                    "$ref": "#/components/parameters/limit"
+                },
+                {
+                    "$ref": "#/components/parameters/sort"
+                },
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Kanban/Change/{items_id}/View/{users_id}": {
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/KanbanView"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/filter"
+                },
+                {
+                    "$ref": "#/components/parameters/start"
+                },
+                {
+                    "$ref": "#/components/parameters/limit"
+                },
+                {
+                    "$ref": "#/components/parameters/sort"
+                },
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Kanban/Problem/{items_id}/View/{users_id}": {
+        "get": {
+            "responses": {
+                "200": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/KanbanView"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/filter"
+                },
+                {
+                    "$ref": "#/components/parameters/start"
+                },
+                {
+                    "$ref": "#/components/parameters/limit"
+                },
+                {
+                    "$ref": "#/components/parameters/sort"
+                },
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "delete": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Kanban/Project/{items_id}/View/{users_id}/Column/{column_id}": {
+        "patch": {
+            "responses": {
+                "200": []
+            },
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "folded": {
+                                    "type": "boolean",
+                                    "format": "boolean"
+                                },
+                                "visible": {
+                                    "type": "boolean",
+                                    "format": "boolean"
+                                },
+                                "position": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Kanban/Ticket/{items_id}/View/{users_id}/Column/{column_id}": {
+        "patch": {
+            "responses": {
+                "200": []
+            },
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "folded": {
+                                    "type": "boolean",
+                                    "format": "boolean"
+                                },
+                                "visible": {
+                                    "type": "boolean",
+                                    "format": "boolean"
+                                },
+                                "position": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Kanban/Change/{items_id}/View/{users_id}/Column/{column_id}": {
+        "patch": {
+            "responses": {
+                "200": []
+            },
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "folded": {
+                                    "type": "boolean",
+                                    "format": "boolean"
+                                },
+                                "visible": {
+                                    "type": "boolean",
+                                    "format": "boolean"
+                                },
+                                "position": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Kanban/Problem/{items_id}/View/{users_id}/Column/{column_id}": {
+        "patch": {
+            "responses": {
+                "200": []
+            },
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "folded": {
+                                    "type": "boolean",
+                                    "format": "boolean"
+                                },
+                                "visible": {
+                                    "type": "boolean",
+                                    "format": "boolean"
+                                },
+                                "position": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Kanban/Project/{items_id}/View/{users_id}/Column/{column_id}/Cards": {
+        "patch": {
+            "responses": {
+                "200": []
+            },
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "itemtype": {
+                                        "type": "string",
+                                        "format": "string"
+                                    },
+                                    "items_id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "position": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "put": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "itemtype": {
+                                        "type": "string",
+                                        "format": "string"
+                                    },
+                                    "items_id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "position": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Kanban/Ticket/{items_id}/View/{users_id}/Column/{column_id}/Cards": {
+        "patch": {
+            "responses": {
+                "200": []
+            },
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "itemtype": {
+                                        "type": "string",
+                                        "format": "string"
+                                    },
+                                    "items_id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "position": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "put": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "itemtype": {
+                                        "type": "string",
+                                        "format": "string"
+                                    },
+                                    "items_id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "position": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Kanban/Change/{items_id}/View/{users_id}/Column/{column_id}/Cards": {
+        "patch": {
+            "responses": {
+                "200": []
+            },
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "itemtype": {
+                                        "type": "string",
+                                        "format": "string"
+                                    },
+                                    "items_id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "position": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "put": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "itemtype": {
+                                        "type": "string",
+                                        "format": "string"
+                                    },
+                                    "items_id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "position": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
+    },
+    "/Kanban/Problem/{items_id}/View/{users_id}/Column/{column_id}/Cards": {
+        "patch": {
+            "responses": {
+                "200": []
+            },
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "itemtype": {
+                                        "type": "string",
+                                        "format": "string"
+                                    },
+                                    "items_id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "position": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        },
+        "put": {
+            "responses": [],
+            "parameters": [
+                {
+                    "name": "items_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                },
+                {
+                    "name": "users_id",
+                    "description": "",
+                    "in": "path",
+                    "required": true,
+                    "schema": {
+                        "type": "integer",
+                        "pattern": "\\d+"
+                    }
+                }
+            ],
+            "requestBody": {
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "itemtype": {
+                                        "type": "string",
+                                        "format": "string"
+                                    },
+                                    "items_id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "position": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "oauth": [
+                        "api"
+                    ]
+                }
+            ]
+        }
     }
 }

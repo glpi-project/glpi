@@ -440,6 +440,9 @@ final class Search
     {
         if (!$this->context->isUnionSearchMode()) {
             $itemtype = $this->context->getSchemaItemtype(); //should not that use self::getItemFromSchema()?
+            if ($itemtype === null) {
+                return;
+            }
             /** @var CommonDBTM $item */
             $item = getItemForItemtype($itemtype);
             $entity_restrict = [];

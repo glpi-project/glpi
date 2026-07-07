@@ -50,6 +50,7 @@ use Glpi\Api\HL\Controller\DropdownController;
 use Glpi\Api\HL\Controller\GraphQLController;
 use Glpi\Api\HL\Controller\InventoryController;
 use Glpi\Api\HL\Controller\ITILController;
+use Glpi\Api\HL\Controller\KanbanController;
 use Glpi\Api\HL\Controller\KnowbaseController;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Api\HL\Controller\NotepadController;
@@ -269,6 +270,7 @@ EOT;
             self::$instance->registerController(new InventoryController());
             self::$instance->registerController(new NotificationController());
             self::$instance->registerController(new ServiceCatalogController());
+            self::$instance->registerController(new KanbanController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {
