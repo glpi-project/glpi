@@ -49,6 +49,7 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\OAuth\Server;
 use Glpi\System\Status\StatusChecker;
 use Glpi\Toolbox\MarkdownRenderer;
@@ -920,7 +921,7 @@ HTML;
     )]
     public function getLocales(Request $request): Response
     {
-        global $TRANSLATE, $CFG_GLPI;
+        global $TRANSLATE;
 
         $messages = $TRANSLATE->getAllMessages($_GET['domain']);
         if (!($messages instanceof TextDomain)) {
@@ -939,7 +940,7 @@ HTML;
         $po_file = GLPI_ROOT . '/locales/' . preg_replace(
             '/\.mo$/',
             '.po',
-            $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1]
+            LanguageRegistry::get($_SESSION['glpilanguage'])->mo_file
         );
         $po_file_handle = fopen(
             $po_file,

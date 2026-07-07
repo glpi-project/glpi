@@ -40,6 +40,7 @@ use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Kernel\Kernel;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\SessionTracker;
 use Glpi\Session\SessionInfo;
@@ -853,16 +854,17 @@ class Session
             $trytoload = $CFG_GLPI["language"];
         }
 
-        if (isset($CFG_GLPI["languages"][$trytoload])) {
-            $newfile = "/" . $CFG_GLPI["languages"][$trytoload][1];
+        $language = LanguageRegistry::tryGet($trytoload);
+        if ($language !== null) {
+            $newfile = "/" . $language->mo_file;
         }
 
         if (empty($newfile) || !is_file(GLPI_I18N_DIR . $newfile)) {
             $newfile = "/en_GB.mo";
         }
 
-        if (isset($CFG_GLPI["languages"][$trytoload][5])) {
-            $_SESSION['glpipluralnumber'] = $CFG_GLPI["languages"][$trytoload][5];
+        if ($language !== null) {
+            $_SESSION['glpipluralnumber'] = $language->plural_number;
         }
 
         $_SESSION['glpiisrtl'] = self::isRTL($trytoload);
@@ -946,7 +948,7 @@ class Session
      */
     public static function loadAllCoreLocales(): void
     {
-        global $CFG_GLPI, $TRANSLATE;
+        global $TRANSLATE;
 
         $core_folders = is_dir(GLPI_LOCAL_I18N_DIR) ? scandir(GLPI_LOCAL_I18N_DIR) : [];
         $core_folders = array_filter($core_folders, static function ($dir) {
@@ -964,8 +966,8 @@ class Session
         $core_folders = [GLPI_I18N_DIR, ...$core_folders];
 
         foreach ($core_folders as $core_folder) {
-            foreach ($CFG_GLPI['languages'] as $lang => $data) {
-                $mofile = "$core_folder/" . $data['1'];
+            foreach (LanguageRegistry::all() as $lang => $language) {
+                $mofile = "$core_folder/" . $language->mo_file;
                 $phpfile = str_replace('.mo', '.php', $mofile);
 
                 // Load local PHP file if it exists
@@ -998,17 +1000,11 @@ class Session
             $accepted_languages = $request->getLanguages();
 
             foreach ($accepted_languages as $language) {
-                // Direct match with locale key (e.g., 'pl_PL')
-                if (array_key_exists($language, $CFG_GLPI['languages'])) {
-                    return $language;
-                }
-
-                // Fallback using main_languages mapping (e.g., 'pl' -> 'pl_PL')
-                if (isset($CFG_GLPI['main_languages'][$language])) {
-                    $main_lang = $CFG_GLPI['main_languages'][$language];
-                    if (array_key_exists($main_lang, $CFG_GLPI['languages'])) {
-                        return $main_lang;
-                    }
+                // Region-tolerant resolution: direct match (e.g. 'pl_PL'),
+                // then fallback through the main languages mapping ('pl' -> 'pl_PL').
+                $resolved = LanguageRegistry::resolve($language);
+                if ($resolved !== null) {
+                    return $resolved;
                 }
             }
         }
@@ -2490,11 +2486,7 @@ class Session
      */
     public static function isRTL($locale): bool
     {
-        if (function_exists('locale_is_right_to_left')) {
-            return locale_is_right_to_left($locale);
-        }
-
-        return (bool) preg_match('/^(?:ar|he|fa|ur|ps|sd|ug|ckb|yi|dv|ku_arab|ku-arab)(?:[_-].*)?$/i', $locale);
+        return LanguageRegistry::get($locale)->isRTL();
     }
 
     public static function getLoginSessionUID(): ?string

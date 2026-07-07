@@ -42,6 +42,7 @@ use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\Console\Exception\EarlyExitException;
 use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
 use Glpi\Kernel\Kernel;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\System\Requirement\RequirementInterface;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
@@ -220,8 +221,6 @@ class Application extends BaseApplication
     protected function configureIO(InputInterface $input, OutputInterface $output): void
     {
 
-        global $CFG_GLPI;
-
         $this->output = $output;
         ConsoleErrorDisplayHandler::setOutput($output);
 
@@ -229,7 +228,7 @@ class Application extends BaseApplication
 
         // Trigger error on invalid lang. This is not done before as error handler would not be set.
         $lang = $input->getParameterOption('--lang', null, true);
-        if (null !== $lang && !array_key_exists($lang, $CFG_GLPI['languages'])) {
+        if (null !== $lang && !LanguageRegistry::has($lang)) {
             throw new RuntimeException(
                 sprintf(__('Invalid "--lang" option value "%s".'), $lang)
             );

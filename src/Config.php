@@ -43,6 +43,7 @@ use Glpi\Dashboard\Grid;
 use Glpi\Event;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Kernel\Kernel;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Mail\SMTP\OauthConfig;
 use Glpi\Plugin\Hooks;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
@@ -955,35 +956,32 @@ class Config extends CommonDBTM
      **/
     public static function getLanguage($lang)
     {
-        global $CFG_GLPI;
-
         // Alternative language code: en-EN --> en_EN
         $altLang = str_replace("-", "_", $lang);
 
-        // Search in order : ID or extjs dico or tinymce dico / native lang / english name
-        //                   / extjs dico / tinymce dico
-        // ID  or extjs dico or tinymce dico
-        foreach ($CFG_GLPI["languages"] as $ID => $language) {
+        // Search in order : ID or jquery dico or js dico / native lang / english name
+        // ID or jquery dico or js dico
+        foreach (LanguageRegistry::all() as $ID => $language) {
             if (
                 (strcasecmp($lang, $ID) == 0)
                 || (strcasecmp($altLang, $ID) == 0)
-                || (strcasecmp($lang, $language[2]) == 0)
-                || (strcasecmp($lang, $language[3]) == 0)
+                || (strcasecmp($lang, $language->jquery_code) == 0)
+                || (strcasecmp($lang, $language->js_code) == 0)
             ) {
                 return $ID;
             }
         }
 
         // native lang
-        foreach ($CFG_GLPI["languages"] as $ID => $language) {
-            if (strcasecmp($lang, $language[0]) == 0) {
+        foreach (LanguageRegistry::all() as $ID => $language) {
+            if (strcasecmp($lang, $language->native_name) == 0) {
                 return $ID;
             }
         }
 
         // english lang name
-        foreach ($CFG_GLPI["languages"] as $ID => $language) {
-            if (strcasecmp($lang, $language[4]) == 0) {
+        foreach (LanguageRegistry::all() as $ID => $language) {
+            if (strcasecmp($lang, $language->english_name) == 0) {
                 return $ID;
             }
         }

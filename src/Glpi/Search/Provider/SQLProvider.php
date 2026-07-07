@@ -70,6 +70,7 @@ use Glpi\Features\AssignableItemInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Form;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Search\Input\QueryBuilder;
@@ -7735,8 +7736,11 @@ final class SQLProvider implements SearchProviderInterface
                     return \htmlescape($out);
 
                 case "language":
-                    if (isset($data[$ID][0]['name'], $CFG_GLPI['languages'][$data[$ID][0]['name']])) {
-                        return $CFG_GLPI['languages'][$data[$ID][0]['name']][0];
+                    $language = isset($data[$ID][0]['name'])
+                        ? LanguageRegistry::tryGet($data[$ID][0]['name'])
+                        : null;
+                    if ($language !== null) {
+                        return $language->native_name;
                     }
                     return __('Default value');
                 case 'progressbar':

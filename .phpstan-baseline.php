@@ -8414,12 +8414,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Helpdesk/DefaultDataManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$lang of method Glpi\\\\Helpdesk\\\\DefaultDataManager\\:\\:applyTranslation\\(\\) expects string, int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Helpdesk/DefaultDataManager.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method listTranslationsHandlers\\(\\) on Entity\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -16004,12 +15998,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Plugin.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$language of static method Glpi\\\\Dashboard\\\\Grid\\:\\:getAllDashboardCardsCacheKey\\(\\) expects string\\|null, int\\|string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Plugin.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$name of static method Plugin\\:\\:messageMissingRequirement\\(\\) expects string, int\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -18782,7 +18770,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$string of function strtolower expects string, array\\<int\\|string, array\\<int\\<0, max\\>\\|string, list\\<string\\>\\|string\\>\\|int\\|string\\>\\|class\\-string\\|string given\\.$#',
+	'message' => '#^Parameter \\#1 \\$string of function strtolower expects string, array\\<int\\|string, array\\<int\\|string, list\\<string\\>\\|string\\>\\|int\\|string\\>\\|string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/autoload/CFG_GLPI.php',

@@ -45,6 +45,7 @@ use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Kernel\Kernel;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\SessionTracker;
 use Glpi\Security\TOTPManager;
@@ -312,7 +313,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         // Fallback for invalid language
-        if (!isset($CFG_GLPI['languages'][$this->fields["language"]])) {
+        if (!LanguageRegistry::has($this->fields["language"])) {
             $this->fields["language"] = $CFG_GLPI["language"];
         }
     }

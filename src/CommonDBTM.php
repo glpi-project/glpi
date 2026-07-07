@@ -47,6 +47,7 @@ use Glpi\Features\AssignableItem;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumbInterface;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
@@ -4961,8 +4962,9 @@ class CommonDBTM extends CommonGLPI
                         break;
 
                     case "language":
-                        if (isset($CFG_GLPI['languages'][$value ?? ''])) {
-                            return htmlescape($CFG_GLPI['languages'][$value][0]);
+                        $language = LanguageRegistry::tryGet($value ?? '');
+                        if ($language !== null) {
+                            return htmlescape($language->native_name);
                         }
                         return __s('Default value');
                 }

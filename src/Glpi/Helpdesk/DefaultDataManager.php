@@ -62,6 +62,7 @@ use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\ItemTranslation\ItemTranslation;
+use Glpi\Locale\LanguageRegistry;
 use ITILCategory;
 use Location;
 use RuntimeException;
@@ -217,7 +218,7 @@ final class DefaultDataManager
     /** @param Form[] $forms */
     private function addFormsTranslations(array $forms): void
     {
-        global $CFG_GLPI, $DB, $TRANSLATE;
+        global $DB, $TRANSLATE;
 
         // List all values that need to be translated
         /** @var TranslationHandler[] $values_to_translate */
@@ -244,7 +245,7 @@ final class DefaultDataManager
         ]);
         $add_translation_stmt = $DB->prepare($add_translation_query);
 
-        foreach (array_keys($CFG_GLPI['languages']) as $lang) {
+        foreach (array_keys(LanguageRegistry::all()) as $lang) {
             foreach ($values_to_translate as $value_to_translate) {
                 // Translate value
                 $translated_value = $this->applyTranslation(

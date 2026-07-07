@@ -35,6 +35,7 @@
 
 namespace Glpi\Marketplace\Api;
 
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Toolbox\HttpClient;
 use GLPINetwork;
 use Session;
@@ -368,11 +369,9 @@ class Plugins
      */
     public function getTopTags(): array
     {
-        global $CFG_GLPI;
-
         $response  = $this->request('tags/top', [
             'headers' => [
-                'X-Lang' => $CFG_GLPI['languages'][$_SESSION['glpilanguage']][2],
+                'X-Lang' => LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code,
             ],
         ]);
 
