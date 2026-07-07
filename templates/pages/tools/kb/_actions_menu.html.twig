@@ -83,14 +83,17 @@
     {% import _self as self %}
     <div class="dropdown cursor-pointer d-flex align-items-center">
         {% if actions|length > 0 %}
-            <i
-                class="ti ti-dots-vertical"
+            <button
+                type="button"
+                class="border-0 bg-transparent p-0 text-reset lh-1"
                 data-glpi-kb-dots
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
-                role="button"
+                aria-label="{{ __('More actions') }}"
                 title="{{ __('More actions') }}"
-            ></i>
+            >
+                <i class="ti ti-dots-vertical" aria-hidden="true"></i>
+            </button>
             <ul class="dropdown-menu" data-bs-popper="none">
                 {{ self.render_actions_items(actions) }}
             </ul>
@@ -104,14 +107,17 @@
  # fetched items. #}
 {% macro render_actions_menu_lazy() %}
     <div class="dropdown cursor-pointer d-flex align-items-center">
-        <i
-            class="ti ti-dots-vertical"
+        <button
+            type="button"
+            class="border-0 bg-transparent p-0 text-reset lh-1"
             data-glpi-kb-dots
             data-bs-toggle="dropdown"
             aria-expanded="false"
-            role="button"
+            aria-label="{{ __('More actions') }}"
             title="{{ __('More actions') }}"
-        ></i>
+        >
+            <i class="fs-08x ti ti-dots-vertical " aria-hidden="true"></i>
+        </button>
         <ul class="dropdown-menu" data-bs-popper="none" data-glpi-kb-actions-menu>
             <li data-glpi-kb-actions-loading>
                 <span class="dropdown-item-text text-muted d-flex align-items-center">
