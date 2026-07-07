@@ -637,7 +637,7 @@ msgstr "新しいバージョンがあります: %s"
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "メインへ"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -654,7 +654,7 @@ msgstr "ホーム"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "パンくずリスト"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:432
 msgid "On left"
@@ -688,15 +688,15 @@ msgstr "ユーザー偽装を終了"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "サイドバー"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "ナビゲーション切替"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "メインナビゲーション"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -2037,7 +2037,7 @@ msgstr "状態"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "時間指定"
 
 #: templates/components/form/pictures.html.twig
 #: src/CommonDCModelDropdown.php:465 src/CommonDropdown.php:186
@@ -18764,7 +18764,7 @@ msgstr "無効なIPアドレス"
 #: src/Item_Process.php:51
 msgid "Process"
 msgid_plural "Processes"
-msgstr[0] "処理"
+msgstr[0] "プロセス"
 
 #: src/Item_Process.php:166
 msgid "PID"
@@ -21870,11 +21870,11 @@ msgstr "標準にリセット"
 #: src/DisplayPreference.php:672 src/DisplayPreference.php:685
 #: src/Central.php:76 src/Config.php:695
 msgid "Personal View"
-msgstr "個人表示"
+msgstr "個人"
 
 #: src/DisplayPreference.php:683 src/Central.php:78 src/Config.php:697
 msgid "Global View"
-msgstr "全体表示"
+msgstr "全体"
 
 #: src/DisplayPreference.php:694
 msgid "Helpdesk View"
@@ -22650,7 +22650,7 @@ msgstr "標準インターフェース"
 
 #: src/Central.php:77 src/Config.php:696
 msgid "Group View"
-msgstr "グループ表示"
+msgstr "グループ"
 
 #: src/Central.php:559
 #, php-format
@@ -30145,7 +30145,7 @@ msgstr "アイテムを選択していません"
 
 #: src/MassiveAction.php:388
 msgid "Invalid process"
-msgstr "無効なプロセス"
+msgstr "無効な処理"
 
 #: src/MassiveAction.php:561 src/MassiveAction.php:1000
 msgid "Select the type of the item on which applying this action"

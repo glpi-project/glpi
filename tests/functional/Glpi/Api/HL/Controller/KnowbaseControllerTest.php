@@ -93,7 +93,6 @@ class KnowbaseControllerTest extends HLAPITestCase
 
         $last_revision_id = null;
         $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $kbi->getID() . '/Revision'), function ($call) use (&$last_revision_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use (&$last_revision_id) {
@@ -103,7 +102,6 @@ class KnowbaseControllerTest extends HLAPITestCase
         });
         // Get last revision
         $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $kbi->getID() . '/Revision/' . $last_revision_id), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -130,7 +128,6 @@ class KnowbaseControllerTest extends HLAPITestCase
 
         $last_revision_id = null;
         $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $kbi->getID() . '/fr_FR/Revision'), function ($call) use (&$last_revision_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use (&$last_revision_id) {
@@ -140,7 +137,6 @@ class KnowbaseControllerTest extends HLAPITestCase
         });
         // Get last revision
         $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $kbi->getID() . '/fr_FR/Revision/' . $last_revision_id), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {

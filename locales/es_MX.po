@@ -662,7 +662,7 @@ msgstr "Una nueva versión esta disponible: %s"
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Ir al contenido principal"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -679,7 +679,7 @@ msgstr "Inicio"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "Breadcrumbs"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:432
 msgid "On left"
@@ -713,15 +713,15 @@ msgstr "Parar la suplantación"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "Barra lateral"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Alternar navegación"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Navegación principal"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -2086,7 +2086,7 @@ msgstr "Estado"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Especifique una hora"
 
 #: templates/components/form/pictures.html.twig
 #: src/CommonDCModelDropdown.php:465 src/CommonDropdown.php:186

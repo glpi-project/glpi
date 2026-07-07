@@ -70,33 +70,39 @@ class GenerateAPISnapshotCommand extends AbstractCommand
             throw new EarlyExitException('<comment>' . __('Aborted.') . '</comment>', 0);
         }
 
-        $version = $input->getArgument('version');
-        if (str_starts_with($version, 'v')) {
-            $version = substr($version, 1);
+        $selected_version = $input->getArgument('version');
+        $supported_versions = array_filter(array_column(Router::getAPIVersions(), 'version'), static fn($version) => !str_starts_with($version, '1.0'));
+        if (str_starts_with($selected_version, 'v')) {
+            $selected_version = substr($selected_version, 1);
+        }
+        if ($selected_version === 'all') {
+            $versions_to_generate = $supported_versions;
+        } else {
+            if (!in_array($selected_version, $supported_versions, true)) {
+                throw new EarlyExitException("<error>Version $selected_version is not a supported API version. Supported versions are: " . implode(', ', $supported_versions) . "</error>", 1);
+            }
+            $versions_to_generate = [$selected_version];
         }
 
-        $supported_versions = array_column(Router::getAPIVersions(), 'version');
-        if (!in_array($version, $supported_versions, true)) {
-            throw new EarlyExitException("<error>Version $version is not a supported API version. Supported versions are: " . implode(', ', $supported_versions) . "</error>", 1);
+        foreach ($versions_to_generate as $version) {
+            $output->writeln("<info>Generating API snapshot for version $version</info>");
+            $oapi = new OpenAPIGenerator(Router::getInstance(), $version);
+
+            $SNAPSHOT_DIR = GLPI_ROOT . "/tests/fixtures/hlapi/snapshots/{$version}";
+            $PATHS_FILE = $SNAPSHOT_DIR . '/paths.json';
+            $COMPONENTS_FILE = $SNAPSHOT_DIR . '/components.json';
+            if (!is_dir($SNAPSHOT_DIR) && !mkdir($SNAPSHOT_DIR, 0o755, true) && !is_dir($SNAPSHOT_DIR)) {
+                throw new \RuntimeException(sprintf('Directory "%s" was missing and not able to be created', $SNAPSHOT_DIR));
+            }
+
+            $paths = $oapi->generatePathSnapshot();
+            file_put_contents($PATHS_FILE, json_encode($paths, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            unset($path_item, $paths);
+
+            $schema_components = $oapi->generateComponentsSnapshot();
+            file_put_contents($COMPONENTS_FILE, json_encode(['schemas' => $schema_components], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+            unset($component_schema, $schema_components);
         }
-
-        $output->writeln("<info>Generating API snapshot for version $version</info>");
-        $oapi = new OpenAPIGenerator(Router::getInstance(), $version);
-
-        $SNAPSHOT_DIR = GLPI_ROOT . "/tests/fixtures/hlapi/snapshots/{$version}";
-        $PATHS_FILE = $SNAPSHOT_DIR . '/paths.json';
-        $COMPONENTS_FILE = $SNAPSHOT_DIR . '/components.json';
-        if (!is_dir($SNAPSHOT_DIR) && !mkdir($SNAPSHOT_DIR, 0o755, true) && !is_dir($SNAPSHOT_DIR)) {
-            throw new \RuntimeException(sprintf('Directory "%s" was missing and not able to be created', $SNAPSHOT_DIR));
-        }
-
-        $paths = $oapi->generatePathSnapshot();
-        file_put_contents($PATHS_FILE, json_encode($paths, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-        unset($path_item, $paths);
-
-        $schema_components = $oapi->generateComponentsSnapshot();
-        file_put_contents($COMPONENTS_FILE, json_encode(['schemas' => $schema_components], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-        unset($component_schema, $schema_components);
 
         return 0;
     }

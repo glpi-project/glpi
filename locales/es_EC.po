@@ -7,6 +7,7 @@
 # Lorenzo Salvador Osorio Orellana, 2025
 # Cédric Anne, 2026
 # Soporte Infraestructura Standby, 2026
+# Jonathan Ronquillo, 2026
 # 
 #, fuzzy
 msgid ""
@@ -15,7 +16,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 14:22+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Soporte Infraestructura Standby, 2026\n"
+"Last-Translator: Jonathan Ronquillo, 2026\n"
 "Language-Team: Spanish (Ecuador) (https://app.transifex.com/glpi/teams/1637/es_EC/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -80,11 +81,11 @@ msgstr "Seleccione una base de datos:"
 
 #: templates/install/step3.html.twig
 msgid "Create a new database:"
-msgstr ""
+msgstr "Crear nueva base de datos:"
 
 #: templates/install/step3.html.twig
 msgid "Or use an existing one:"
-msgstr ""
+msgstr "O use una existente:"
 
 #: templates/install/step3.html.twig
 msgid "Please select a database to update:"
@@ -93,21 +94,24 @@ msgstr "Por favor, seleccione la base de datos que desea actualizar:"
 #: templates/install/install.install_required.html.twig install/update.php:99
 #: install/update.php:119 install/install.php:67 install/install.php:89
 msgid "GLPI setup"
-msgstr ""
+msgstr "Configuración de GLPI"
 
 #: templates/install/install.install_required.html.twig
 msgid "The GLPI database must be configured and installed."
-msgstr ""
+msgstr "La base de datos de GLPI primero debe ser configurada e instalada."
 
 #: templates/install/install.install_required.html.twig
 msgid "Go to install page"
-msgstr ""
+msgstr "Ir a la página de instalación"
 
 #: templates/install/install.install_required.html.twig
 msgid ""
 "If you see this page when the installation has already been done, it means "
 "that the GLPI database configuration file has been removed or corrupted."
 msgstr ""
+"Si esta viendo esta página cuando la instalación ya se ha terminado, "
+"siginifica que el archivo de  configuración de la base de datos de GLPI ha "
+"sido quitado o dañado."
 
 #: templates/install/post_update_step.html.twig
 #: src/Glpi/Console/Database/UpdateCommand.php:286

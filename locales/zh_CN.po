@@ -637,7 +637,7 @@ msgstr "新版本可用:%s."
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "转到主内容"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -654,7 +654,7 @@ msgstr "主页"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "面包屑导航"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:432
 msgid "On left"
@@ -688,15 +688,15 @@ msgstr "停止代理"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "侧边栏"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "切换导航"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "主导航"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -2037,7 +2037,7 @@ msgstr "状态: "
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "指定时间"
 
 #: templates/components/form/pictures.html.twig
 #: src/CommonDCModelDropdown.php:465 src/CommonDropdown.php:186

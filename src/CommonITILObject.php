@@ -726,37 +726,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $ticket->getEmpty();
         if (in_array($this->getType(), [Change::class, Problem::class]) && $tickets_id) {
             $ticket->getFromDB($tickets_id);
-
-            // copy fields from original ticket, only when fields are not already set by the user (contained in _saved array)
-            $fields = [
-                'content',
-                'name',
-                'impact',
-                'urgency',
-                'priority',
-                'time_to_resolve',
-                'entities_id',
-            ];
-            foreach ($fields as $field) {
-                if (!isset($options['_saved'][$field])) {
-                    $options[$field] = $ticket->fields[$field];
-                }
-            }
-
-            if (!isset($options['_saved']['itilcategories_id'])) {
-                //page is reloaded on category change, we only want category on the very first load
-                $category = new ITILCategory();
-                $options['itilcategories_id'] = 0;
-                if (
-                    $category->getFromDB($ticket->fields['itilcategories_id'])
-                    && (
-                        ($this->getType() === Change::class && $category->fields['is_change'])
-                        || ($this->getType() === Problem::class && $category->fields['is_problem'])
-                    )
-                ) {
-                    $options['itilcategories_id'] = $ticket->fields['itilcategories_id'];
-                }
-            }
+            $this->setPredefinedFieldsFromITILObject($ticket, $options);
         }
 
         // check original problem for change
@@ -765,18 +735,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $problem->getEmpty();
         if ($this instanceof Change && $problems_id) {
             $problem->getFromDB($problems_id);
-
-            $options['content']             = $problem->fields['content'];
-            $options['name']                = $problem->fields['name'];
-            $options['impact']              = $problem->fields['impact'];
-            $options['urgency']             = $problem->fields['urgency'];
-            $options['priority']            = $problem->fields['priority'];
-            if (isset($options['problems_id'])) {
-                //page is reloaded on category change, we only want category on the very first load
-                $options['itilcategories_id'] = $problem->fields['itilcategories_id'];
-            }
-            $options['time_to_resolve']     = $problem->fields['time_to_resolve'];
-            $options['entities_id']         = $problem->fields['entities_id'];
+            $this->setPredefinedFieldsFromITILObject($problem, $options);
         }
 
         // Store predefined fields to be able not to take into account on change template
@@ -871,6 +830,47 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         return $predefined_fields;
     }
 
+    /**
+     *  Override current option values if we transform a ticket (form change and problem) or a problem (for change)
+     *  override values in options with field values from orignal item.
+     *  Handle reload when setting category.
+     *
+     * @param CommonITILObject $item, the original item we're creating from
+     * @param array<mixed> $options The current options array (PASSED BY REFERENCE)
+     */
+    protected function setPredefinedFieldsFromITILObject(CommonITILObject $item, array &$options): void
+    {
+        // copy fields from original ticket, only when fields are not already set by the user (contained in _saved array)
+        $fields = [
+            'content',
+            'name',
+            'impact',
+            'urgency',
+            'priority',
+            'time_to_resolve',
+            'entities_id',
+        ];
+        foreach ($fields as $field) {
+            if (!isset($options['_saved'][$field])) {
+                $options[$field] = $item->fields[$field];
+            }
+        }
+
+        if (!isset($options['_saved']['itilcategories_id'])) {
+            //page is reloaded on category change, we only want category on the very first load
+            $category = new ITILCategory();
+            $options['itilcategories_id'] = 0;
+            if (
+                $category->getFromDB($item->fields['itilcategories_id'])
+                && (
+                    ($this->getType() === Change::class && $category->fields['is_change'])
+                    || ($this->getType() === Problem::class && $category->fields['is_problem'])
+                )
+            ) {
+                $options['itilcategories_id'] = $item->fields['itilcategories_id'];
+            }
+        }
+    }
 
     /**
      * Retrieve all possible entities for an itilobject posted data.

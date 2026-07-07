@@ -3514,13 +3514,35 @@ JS;
         global $CFG_GLPI, $DB;
 
         $language = $_SESSION['glpilanguage'];
-        if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
-            $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
-            if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
+        if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs7/$language.js")) {
+            // Some GLPI language codes don't match tinymce-i18n file names.
+            // Use a dedicated mapping to find the correct tinymce language file.
+            $tinymce_lang_map = [
+                'fr_FR'  => 'fr_FR',
+                'fr_CA'  => 'fr_FR',
+                'fr_BE'  => 'fr_FR',
+                'he_IL'  => 'he_IL',
+                'nb_NO'  => 'nb_NO',
+                'nn_NO'  => 'nb_NO',
+                'pt_BR'  => 'pt_BR',
+                'pt_PT'  => 'pt_PT',
+                'ro_RO'  => 'ro',
+                'uk_UA'  => 'uk',
+                'zh_CN'  => 'zh_CN',
+                'zh_TW'  => 'zh_TW',
+                'zh_HK'  => 'zh_HK',
+                'is_IS'  => 'is_IS',
+            ];
+            if (isset($tinymce_lang_map[$_SESSION['glpilanguage']])) {
+                $language = $tinymce_lang_map[$_SESSION['glpilanguage']];
+            } else {
+                $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
+            }
+            if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs7/$language.js")) {
                 $language = "en_GB";
             }
         }
-        $language_url = $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs6/' . $language . '.js';
+        $language_url = $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs7/' . $language . '.js';
 
         // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();

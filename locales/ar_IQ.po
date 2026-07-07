@@ -642,7 +642,7 @@ msgstr "يتوفر إصدار جديد: %s."
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "انتقل إلى المحتوى الرئيسي"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -693,15 +693,15 @@ msgstr "التوقف عن انتحال الشخصية"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "الشريط الجانبي"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "تبديل التنقل"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Main navigation"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -1216,7 +1216,7 @@ msgstr "تحديث"
 #: templates/components/form/item_itilobject_item_list.html.twig
 #, php-format
 msgid "New %s for this user"
-msgstr ""
+msgstr "%s جديد لهذا المستخدم"
 
 #: templates/components/form/item_itilobject_item_list.html.twig
 #: src/DomainRecord.php:445
@@ -2085,7 +2085,7 @@ msgstr "الحالة"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "حدد وقتاً"
 
 #: templates/components/form/pictures.html.twig
 #: src/CommonDCModelDropdown.php:465 src/CommonDropdown.php:186
@@ -8429,7 +8429,7 @@ msgstr "إضافة المستندات إلى إشعارات التذاكر"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Add documents into notifications sent to anonymous users"
-msgstr ""
+msgstr "إرفاق المستندات بالإشعارات المرسلة إلى المستخدمين المجهولين"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 #: templates/pages/admin/entity/notifications.html.twig src/Entity.php:1221
@@ -11749,7 +11749,7 @@ msgstr "توسيع الفئات في دليل الخدمة"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Default sort order in the service catalog"
-msgstr ""
+msgstr "ترتيب الفرز الافتراضي في كتالوج الخدمات"
 
 #: templates/pages/admin/helpdesk_home_config_for_entity.html.twig
 msgid "Save general settings"
@@ -12238,7 +12238,7 @@ msgstr "أو"
 
 #: templates/pages/admin/rules/preview_criteria.html.twig
 msgid "No rule criteria to display"
-msgstr ""
+msgstr "لا توجد معايير قواعد لعرضها"
 
 #: templates/pages/admin/rules/preview_criteria.html.twig
 #: templates/pages/admin/rules/form.html.twig
@@ -16232,7 +16232,7 @@ msgstr "عدد العناصر"
 #: src/NotificationTargetTicket.php:679
 msgctxt "quantity"
 msgid "Number of linked project tasks"
-msgstr ""
+msgstr "عدد مهام المشروع المرتبطة"
 
 #: src/NotificationTargetTicket.php:694
 msgid "Solution rejection comment"
@@ -16271,12 +16271,12 @@ msgstr "تم إنتاج إجابة لطلب الموافقة"
 #: src/NotificationTargetTicket.php:871 src/NotificationTargetTicket.php:876
 msgid "Linked project task"
 msgid_plural "Linked project tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "مهام المشروع المرتبطة"
+msgstr[1] "مهمة المشروع المرتبطة"
+msgstr[2] "مهام المشروع المرتبطة"
+msgstr[3] "مهام المشروع المرتبطة"
+msgstr[4] "مهام المشروع المرتبطة"
+msgstr[5] "مهام المشروع المرتبطة"
 
 #: src/NotificationTargetTicket.php:897
 #: src/NotificationTargetCommonITILObject.php:2539
@@ -18492,12 +18492,12 @@ msgstr "فني سابق مسؤول عن التذكرة"
 #: src/NotificationTargetCommonITILObject.php:965
 #, php-format
 msgid "Manager of the group in charge of the %s"
-msgstr ""
+msgstr "مدير المجموعة المسؤولة عن %s"
 
 #: src/NotificationTargetCommonITILObject.php:969
 #, php-format
 msgid "Group in charge of the %s except manager users"
-msgstr ""
+msgstr "المجموعة المسؤولة عن %s باستثناء المستخدمين المديرين"
 
 #: src/NotificationTargetCommonITILObject.php:971
 msgid "Requester group manager"
@@ -18510,12 +18510,12 @@ msgstr "مجموعة الطالب باستثناء المستخدمين المد
 #: src/NotificationTargetCommonITILObject.php:976
 #, php-format
 msgid "Technician in charge of the %s"
-msgstr ""
+msgstr "الفني المسؤول عن %s"
 
 #: src/NotificationTargetCommonITILObject.php:979
 #, php-format
 msgid "Group in charge of the %s"
-msgstr ""
+msgstr "المجموعة المسؤولة عن %s"
 
 #: src/NotificationTargetCommonITILObject.php:982
 msgid "Observer group manager"
@@ -18646,7 +18646,7 @@ msgstr "عدد المشاكل المرتبطة"
 #: src/NotificationTargetCommonITILObject.php:2261
 msgctxt "quantity"
 msgid "Number of linked projects"
-msgstr ""
+msgstr "عدد المشاريع المرتبطة"
 
 #: src/NotificationTargetCommonITILObject.php:2262
 msgid "Number of sent reminders since status is pending"
@@ -18740,12 +18740,12 @@ msgstr[5] "مشكلة مرتبطة"
 #: src/NotificationTargetCommonITILObject.php:2519
 msgid "Linked project"
 msgid_plural "Linked projects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "المشاريع المرتبطة"
+msgstr[1] "مشروع مرتبط"
+msgstr[2] "المشاريع المرتبطة"
+msgstr[3] "المشاريع المرتبطة"
+msgstr[4] "المشاريع المرتبطة"
+msgstr[5] "المشاريع المرتبطة"
 
 #: src/NotificationTargetCommonITILObject.php:2306
 msgid "No defined category"
@@ -28544,7 +28544,7 @@ msgstr "تسجيل الدخول للمعلمة (المعلمات) أو كلمة 
 
 #: src/Glpi/Api/API.php:331
 msgid "parameter(s) login, password are missing"
-msgstr ""
+msgstr "المعطى(يات) login و password مفقودة"
 
 #: src/Glpi/Api/API.php:337
 msgid "parameter user_token is missing"
@@ -28832,6 +28832,8 @@ msgid ""
 "Unable to find the target type for the \"%s\" field, it will not be imported"
 " as a dropdown field."
 msgstr ""
+"تعذّر العثور على نوع الهدف لحقل \"%s\"، لذلك لن يتم استيراده كحقل قائمة "
+"منسدلة."
 
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:1502
 #, php-format
@@ -29732,7 +29734,7 @@ msgstr "خطاء غير معروف"
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:51
 msgid "(Re)generate OAuth keys"
-msgstr ""
+msgstr "(إعادة) إنشاء مفاتيح OAuth"
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:52
 msgid ""
@@ -29740,10 +29742,12 @@ msgid ""
 " be invalidated. This only generates missing keys unless the --force option "
 "is used."
 msgstr ""
+"سيقوم هذا الأمر بإعادة إنشاء مفاتيح OAuth. سيتم إبطال جميع رموز الوصول "
+"الحالية. يتم إنشاء المفاتيح المفقودة فقط ما لم يتم استخدام خيار --force."
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:53
 msgid "Force the regeneration of OAuth keys even if they already exist."
-msgstr ""
+msgstr "فرض إعادة إنشاء مفاتيح OAuth حتى إذا كانت موجودة مسبقًا."
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:60
 msgid "OAuth keys already exist. Use --force option to regenerate them."

@@ -36,8 +36,8 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2026
 # Wanderlei Hüttel <wanderlei.huttel@gmail.com>, 2026
 # pedroalves5770, 2026
-# Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2026
 # andsongomes <mitraton@gmail.com>, 2026
+# Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -46,7 +46,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-06-23 14:22+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: andsongomes <mitraton@gmail.com>, 2026\n"
+"Last-Translator: Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2026\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -681,7 +681,7 @@ msgstr "Uma nova versão está disponível: %s."
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Vá para o conteúdo principal"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -698,7 +698,7 @@ msgstr "Home"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "Caminho de navegação (Breadcrumb)"
 
 #: templates/layout/parts/dcbreadcrumbs.html.twig src/PDU_Rack.php:432
 msgid "On left"
@@ -732,15 +732,15 @@ msgstr "Parar de personificar"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "Barra lateral"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Alternar navegação"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Navegação principal"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -2104,7 +2104,7 @@ msgstr "Status"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Especifique um horário"
 
 #: templates/components/form/pictures.html.twig
 #: src/CommonDCModelDropdown.php:465 src/CommonDropdown.php:186
