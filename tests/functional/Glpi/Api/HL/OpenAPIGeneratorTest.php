@@ -196,6 +196,14 @@ class OpenAPIGeneratorTest extends HLAPITestCase
                 continue;
             }
 
+            // If an enum is present in the property, it should be sorted for stable comparison
+            if (isset($snapshot_prop['enum'])) {
+                sort($snapshot_prop['enum']);
+            }
+            if (isset($schema_prop['enum'])) {
+                sort($schema_prop['enum']);
+            }
+
             // Recursively compare nested properties
             if (isset($snapshot_prop['properties'], $schema_prop['properties'])) {
                 $nested_diffs = $this->diffSchemaProperties(

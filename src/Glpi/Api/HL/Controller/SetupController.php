@@ -51,6 +51,9 @@ use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
+use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -68,9 +71,12 @@ use SLA;
 use SlaLevel;
 use SLM;
 use Throwable;
+use Toolbox;
 use User;
 use Webhook;
 use WebhookCategory;
+
+use function Safe\json_decode;
 
 #[Route(path: '/Setup', tags: ['Setup'])]
 final class SetupController extends AbstractController
@@ -967,6 +973,110 @@ EOT,
                     ],
                 ],
             ],
+            'AssetDefinition' => [
+                'x-version-introduced' => '2.4',
+                'x-itemtype' => AssetDefinition::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'system_name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'label' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'icon' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'picture' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-mapped-from' => 'picture',
+                        'x-mapper' => static function ($v) {
+                            $path = Toolbox::getPictureUrl($v, false);
+                            if (!empty($path)) {
+                                return $path;
+                            }
+                            return null;
+                        },
+                        'readOnly' => true,
+                    ],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                    'capacities' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded array of capacities. Each capacity is an object with "name" and "config" properties.',
+                    ],
+                    'profiles' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded object where the keys are profile IDs and the values are the raw numeric right values.',
+                        'readOnly' => true,
+                    ],
+                    'translations' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded object of translations for the asset type label where the keys are the language and the values are objects with properties for "one", "many" and "other".',
+                    ],
+                    'custom_fields' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'AssetDefinitionCustomField',
+                            'x-join' => [
+                                'table' => CustomFieldDefinition::getTable(),
+                                'fkey' => 'id',
+                                'field' => AssetDefinition::getForeignKeyField(),
+                                'primary-property' => 'id',
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                                'system_name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                                'label' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                            ],
+                        ],
+                    ],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'AssetDefinitionCustomField' => [
+                'x-version-introduced' => '2.4',
+                'x-itemtype' => CustomFieldDefinition::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'asset_definition' => self::getDropdownTypeSchema(class: AssetDefinition::class, name_field: 'system_name', full_schema: 'AssetDefinition'),
+                    'system_name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'label' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'type' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'enum' => AssetDefinitionManager::getInstance()->getCustomFieldTypes(),
+                    ],
+                    'field_options' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded object of field options. The available options depend on the field type.',
+                    ],
+                    'itemtype' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                        'description' => 'Used when the field type is a dropdown to specify the itemtype of the dropdown values.',
+                    ],
+                    'default_value' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The default value for the field which is always JSON encoded. The format of the default value depends on the field type.',
+                    ],
+                    'translations' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'JSON encoded object of translations for the field label where the keys are the language and the values are the translated label.',
+                    ],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
         ];
     }
 
@@ -1504,6 +1614,197 @@ EOT,
     {
         return ResourceAccessor::deleteBySchema(
             schema: $this->getKnownSchema('NotImportedEmail', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/AssetDefinition', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\SearchRoute(schema_name: 'AssetDefinition')]
+    public function searchAssetDefinitions(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema(
+            schema: $this->getKnownSchema('AssetDefinition', $this->getAPIVersion($request)),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/AssetDefinition', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\CreateRoute(schema_name: 'AssetDefinition')]
+    public function createAssetDefinition(Request $request): Response
+    {
+        $array_params = ['capacities', 'translations'];
+        foreach ($array_params as $param) {
+            if ($request->hasParameter($param)) {
+                $value = $request->getParameter($param);
+                if (!empty($value) && is_string($value)) {
+                    try {
+                        $request->setParameter($param, json_decode($value, true));
+                    } catch (Throwable) {
+                        // Will be handled when trying to create the AssetDefinition
+                    }
+                }
+            }
+        }
+        return ResourceAccessor::createBySchema(
+            schema: $this->getKnownSchema('AssetDefinition', $this->getAPIVersion($request)),
+            request_params: $request->getParameters(),
+            get_route: [self::class, 'getAssetDefinition'],
+        );
+    }
+
+    #[Route(path: '/AssetDefinition/{id}', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\GetRoute(schema_name: 'AssetDefinition')]
+    public function getAssetDefinition(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema(
+            schema: $this->getKnownSchema('AssetDefinition', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/AssetDefinition/{id}', methods: ['PATCH'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\UpdateRoute(schema_name: 'AssetDefinition')]
+    public function updateAssetDefinition(Request $request): Response
+    {
+        $array_params = ['capacities', 'translations'];
+        foreach ($array_params as $param) {
+            if ($request->hasParameter($param)) {
+                $value = $request->getParameter($param);
+                if (!empty($value) && is_string($value)) {
+                    try {
+                        $request->setParameter($param, json_decode($value, true));
+                    } catch (Throwable) {
+                        // Will be handled when trying to update the AssetDefinition
+                    }
+                }
+            }
+        }
+        return ResourceAccessor::updateBySchema(
+            schema: $this->getKnownSchema('AssetDefinition', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/AssetDefinition/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\DeleteRoute(schema_name: 'AssetDefinition')]
+    public function deleteAssetDefinition(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema(
+            schema: $this->getKnownSchema('AssetDefinition', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/AssetDefinition/{assetdefinition_id}/CustomField', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\SearchRoute(schema_name: 'AssetDefinitionCustomField')]
+    public function searchAssetDefinitionCustomFields(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';asset_definition.id==' . $request->getAttribute('assetdefinition_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema(
+            schema: $this->getKnownSchema('AssetDefinitionCustomField', $this->getAPIVersion($request)),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/AssetDefinition/{assetdefinition_id}/CustomField', methods: ['POST'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\CreateRoute(schema_name: 'AssetDefinitionCustomField')]
+    public function createAssetDefinitionCustomField(Request $request): Response
+    {
+        $json_params = ['translations', 'field_options', 'default_value'];
+        foreach ($json_params as $param) {
+            if ($request->hasParameter($param)) {
+                $value = $request->getParameter($param);
+                if (!empty($value) && is_string($value)) {
+                    try {
+                        $request->setParameter($param, json_decode($value, true));
+                    } catch (Throwable) {
+                        // Will be handled when trying to create the AssetDefinitionCustomField
+                    }
+                }
+            }
+        }
+        $request->setParameter('asset_definition', $request->getAttribute('assetdefinition_id'));
+        return ResourceAccessor::createBySchema(
+            schema: $this->getKnownSchema('AssetDefinitionCustomField', $this->getAPIVersion($request)),
+            request_params: $request->getParameters() + [AssetDefinition::getForeignKeyField() => $request->getAttribute('assetdefinition_id')],
+            get_route: [self::class, 'getAssetDefinitionCustomField'],
+            extra_get_route_params: ['mapped' => ['assetdefinition_id' => $request->getAttribute('assetdefinition_id')]]
+        );
+    }
+
+    #[Route(path: '/AssetDefinition/{assetdefinition_id}/CustomField/{id}', methods: ['GET'], requirements: [
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\GetRoute(schema_name: 'AssetDefinitionCustomField')]
+    public function getAssetDefinitionCustomField(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema(
+            schema: $this->getKnownSchema('AssetDefinitionCustomField', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/AssetDefinition/{assetdefinition_id}/CustomField/{id}', methods: ['PATCH'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\UpdateRoute(schema_name: 'AssetDefinitionCustomField')]
+    public function updateAssetDefinitionCustomField(Request $request): Response
+    {
+        $json_params = ['translations', 'field_options', 'default_value'];
+        foreach ($json_params as $param) {
+            if ($request->hasParameter($param)) {
+                $value = $request->getParameter($param);
+                if (!empty($value) && is_string($value)) {
+                    try {
+                        $request->setParameter($param, json_decode($value, true));
+                    } catch (Throwable) {
+                        // Will be handled when trying to update the AssetDefinitionCustomField
+                    }
+                }
+            }
+        }
+        return ResourceAccessor::updateBySchema(
+            schema: $this->getKnownSchema('AssetDefinitionCustomField', $this->getAPIVersion($request)),
+            request_attrs: $request->getAttributes(),
+            request_params: $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/AssetDefinition/{assetdefinition_id}/CustomField/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.4')]
+    #[Doc\DeleteRoute(schema_name: 'AssetDefinitionCustomField')]
+    public function deleteAssetDefinitionCustomField(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema(
+            schema: $this->getKnownSchema('AssetDefinitionCustomField', $this->getAPIVersion($request)),
             request_attrs: $request->getAttributes(),
             request_params: $request->getParameters()
         );
