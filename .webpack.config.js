@@ -176,7 +176,7 @@ const filesToCopy = [
     },
     {
         package: 'tinymce-i18n',
-        from: 'langs6/*.js',
+        from: 'langs7/*.js',
     },
     // SCSS files
     {
