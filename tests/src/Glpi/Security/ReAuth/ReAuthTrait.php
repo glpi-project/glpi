@@ -35,6 +35,7 @@
 namespace Glpi\Tests\Glpi\Security\ReAuth;
 
 use Glpi\Security\ReAuth\ReAuthManager;
+use Glpi\Security\ReAuth\ReAuthStrategyInterface;
 
 /**
  * Helpers shared by the re-authentication tests: fake a web request context and
@@ -42,9 +43,26 @@ use Glpi\Security\ReAuth\ReAuthManager;
  */
 trait ReAuthTrait
 {
+    private function getReAuthManager(): ReAuthManager
+    {
+        return ReAuthManager::getInstance();
+    }
+
+    /**
+     * Wipe the SingletonTrait instance cache so the next getInstance() returns a fresh manager.
+     */
+    private function resetReAuthManager(): void
+    {
+        $instances = new \ReflectionProperty(ReAuthManager::class, '_instances');
+        $instances->setValue(null, []);
+    }
+
     /**
      * Simulate a web (non-CLI) request context so that re-authentication
      * redirects can be triggered from a test.
+     *
+     * The superglobals populated here are the ones ReAuthManager::redirectToReauth()
+     * reads to record the request that triggered the re-authentication.
      *
      * @param array<string, string> $get
      * @param array<string, string> $post
@@ -103,8 +121,42 @@ trait ReAuthTrait
         }
     }
 
-    private function getReAuthManager(): ReAuthManager
+    /**
+     * Build a throwaway strategy with a controllable label, priority and availability.
+     */
+    private function makeStrategy(string $label, int $priority, bool $available): ReAuthStrategyInterface
     {
-        return ReAuthManager::getInstance();
+        return new readonly class ($label, $priority, $available) implements ReAuthStrategyInterface {
+            public function __construct(
+                private string $label,
+                private int $priority,
+                private bool $available,
+            ) {}
+
+            public function verify(int $users_id, string $user_input): bool
+            {
+                return true;
+            }
+
+            public function isAvailable(int $users_id, int $entities_id = 0): bool
+            {
+                return $this->available;
+            }
+
+            public function getLabel(): string
+            {
+                return $this->label;
+            }
+
+            public function getPromptTemplate(): string
+            {
+                return 'pages/reauth/password_form.html.twig';
+            }
+
+            public function getPriority(): int
+            {
+                return $this->priority;
+            }
+        };
     }
 }

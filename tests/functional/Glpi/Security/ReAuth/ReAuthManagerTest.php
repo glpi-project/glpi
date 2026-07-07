@@ -54,12 +54,14 @@ class ReAuthManagerTest extends DbTestCase
     {
         parent::setUp();
         $this->setCurrentTime('2026-06-22 10:00:00');
+        $this->resetReAuthManager();
     }
 
     public function tearDown(): void
     {
         // Always restore the CLI flag so the reauth branch does not leak to other tests.
         unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
+        $this->resetReAuthManager();
         parent::tearDown();
     }
 
@@ -274,5 +276,30 @@ class ReAuthManagerTest extends DbTestCase
 
         // --- act + assert ---
         $this->assertSame($expected, $this->getReAuthManager()->atLeastOneItemTypesRequiresReauthentication($itemtypes));
+    }
+
+    /** A registered (plugin) strategy is selected when it is available and outranks the native ones. */
+    public function testRegisteredAvailableStrategyWithHighestPriorityIsSelected(): void
+    {
+        // --- arrange : plugin strategy with a higher priority than the native Password (50) ---
+        $this->login();
+        $manager = $this->getReAuthManager();
+        $manager->registerStrategy($this->makeStrategy('Plugin SSO', 100, true));
+        // @todo ensure 100 is higher than native strategies priorities
+
+        // --- act + assert : the plugin strategy wins the resolution ---
+        $this->assertSame('Plugin SSO', $manager->getLabel());
+    }
+
+    /** A registered strategy that is not available for the user is ignored, even with a high priority. */
+    public function testRegisteredUnavailableStrategyIsIgnored(): void
+    {
+        // --- arrange : highest priority but unavailable ---
+        $this->login();
+        $manager = $this->getReAuthManager();
+        $manager->registerStrategy($this->makeStrategy('Plugin SSO', 999, false));
+
+        // --- act + assert : resolution falls back to the native Password strategy ---
+        $this->assertSame('Password', $manager->getLabel());
     }
 }

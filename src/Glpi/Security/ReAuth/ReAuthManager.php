@@ -54,6 +54,11 @@ final class ReAuthManager
     private ?ReAuthStrategyInterface $strategy = null;
 
     /**
+     * @var ReAuthStrategyInterface[]
+     */
+    private array $additional_strategies = [];
+
+    /**
      * @throws RedirectException
      */
     public function checkReAuthenticationOrRedirect(): void
@@ -230,6 +235,14 @@ final class ReAuthManager
     }
 
     /**
+     * Register a new strategy in available strategies
+     */
+    public function registerStrategy(ReAuthStrategyInterface $strategy): void
+    {
+        $this->additional_strategies[get_class($strategy)] = $strategy;
+    }
+
+    /**
      * Record the request that was requires reauthentication (url + POST/GET data)
      */
     private function setRequestedTarget(): void
@@ -294,8 +307,16 @@ final class ReAuthManager
     {
         $strategies = [];
 
+        // native strategies
         foreach (ReAuthStrategyEnum::cases() as $case) {
             $strategy = $case->createStrategy();
+            if ($strategy->isAvailable($users_id)) {
+                $strategies[] = $strategy;
+            }
+        }
+
+        // add registered strategies (from plugins)
+        foreach ($this->additional_strategies as $strategy) {
             if ($strategy->isAvailable($users_id)) {
                 $strategies[] = $strategy;
             }
