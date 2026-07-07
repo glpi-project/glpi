@@ -822,6 +822,9 @@ EOT,
             ],
         ];
 
+        $fonts = array_keys(\GLPIPDF::getFontList());
+        \sort($fonts);
+
         $schemas['UserPreferences'] =  [
             'x-version-introduced' => '2.1.0',
             'x-table' => User::getTable(),
@@ -1027,7 +1030,7 @@ EOD,
                 'pdf_font' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'description' => 'PDF export font',
-                    'enum' => array_keys(\GLPIPDF::getFontList()),
+                    'enum' => $fonts,
                     'x-field' => 'pdffont',
                 ],
                 'keep_devices_when_purging_item' => [

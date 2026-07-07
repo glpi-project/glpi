@@ -14720,11 +14720,15 @@
                 "pdf_font": {
                     "type": "string",
                     "enum": [
+                        "cid0cs",
+                        "cid0ct",
+                        "cid0jp",
+                        "cid0kr",
                         "courier",
                         "dejavumathtexgyre",
                         "dejavusans",
-                        "dejavusansextralight",
                         "dejavusanscondensed",
+                        "dejavusansextralight",
                         "dejavusansmono",
                         "dejavuserif",
                         "dejavuserifcondensed",
@@ -14732,7 +14736,6 @@
                         "freesans",
                         "freeserif",
                         "helvetica",
-                        "zapfdingbats",
                         "pdfacourier",
                         "pdfahelvetica",
                         "pdfasymbol",
@@ -14740,14 +14743,11 @@
                         "pdfazapfdingbats",
                         "symbol",
                         "times",
-                        "unifont_jp",
-                        "unifont_csur",
                         "unifont",
-                        "cid0cs",
-                        "cid0ct",
-                        "cid0jp",
-                        "cid0kr",
-                        "unifont_upper"
+                        "unifont_csur",
+                        "unifont_jp",
+                        "unifont_upper",
+                        "zapfdingbats"
                     ]
                 },
                 "keep_devices_when_purging_item": {
