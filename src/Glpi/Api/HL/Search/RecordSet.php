@@ -449,8 +449,8 @@ final class RecordSet
         }
         //TODO Allow generating cursors for adjacent pages (given a value of 2 for adjacency, generate tokens for 2 pages back and 2 pages forward)
         return [
-            'prev_cursor' => CursorPagination::generateCursorToken('previous', $first_record, $sort),
-            'next_cursor' => CursorPagination::generateCursorToken('next', $last_record, $sort),
+            'prev_cursor' => $first_record ? CursorPagination::generateCursorToken('previous', $first_record, $sort) : null,
+            'next_cursor' => $last_record ? CursorPagination::generateCursorToken('next', $last_record, $sort) : null,
         ];
     }
 }
