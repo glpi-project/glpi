@@ -36,6 +36,12 @@ import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
+declare global {
+    interface Window {
+        __e2e_no_reload_marker?: boolean;
+    }
+}
+
 test('the aside "+" opens an inline input; an empty submit creates nothing', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
@@ -221,8 +227,9 @@ test('typing a title and pressing Enter creates the article and soft-navigates t
 
     // The new article is visible under the category in the aside, and marked current.
     const category_node = kb.getAsideCategory(category_name);
-    const article_row = category_node.getByRole('listitem', { current: 'page' }).filter({ hasText: article_title });
+    const article_row = category_node.getByRole('listitem').filter({ hasText: article_title });
     await expect(article_row).toBeVisible();
+    await expect(article_row).toHaveAttribute('aria-current', 'page');
 });
 
 test('edit mode updates categories via the bar (AJAX)', async ({ page, profile, api }) => {
