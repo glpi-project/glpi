@@ -141,8 +141,9 @@ export class GlpiKnowbaseArticleController
      * @param {HTMLElement} side_panel_container
      * @param {HTMLElement} offcanvas_container
      * @param {string} mode
+     * @param {Object} options
      */
-    constructor(container, side_panel_container, offcanvas_container, mode)
+    constructor(container, side_panel_container, offcanvas_container, mode, options = {})
     {
         this.#container = container;
         if (mode === "edit") {
@@ -163,7 +164,7 @@ export class GlpiKnowbaseArticleController
         this.#initEditor();
         this.#initDiffListeners();
         this.#initIllustrationPicker();
-        this.#initRecursiveToggle();
+        this.#initRecursiveToggle(options.skipPageChrome === true);
 
         if (mode === "edit") {
             this.#default_language = container.dataset.glpiKbDefaultLanguage;
@@ -183,6 +184,9 @@ export class GlpiKnowbaseArticleController
 
         if (mode === 'edit') {
             this.#initCategoryMode();
+            if (options.autoEnterEditMode === true) {
+                this.#enableEditMode();
+            }
         }
 
         // Enable interactions once all listeners are registered
@@ -973,9 +977,9 @@ export class GlpiKnowbaseArticleController
         });
     }
 
-    #initRecursiveToggle()
+    #initRecursiveToggle(skip = false)
     {
-        if (this.#item_id === null) {
+        if (skip || this.#item_id === null) {
             return;
         }
 
