@@ -37,6 +37,7 @@ declare(strict_types=1);
 namespace Glpi\Security\ReAuth;
 
 use Glpi\Exception\RedirectException;
+use Glpi\Kernel\Kernel;
 use InvalidArgumentException;
 use RuntimeException;
 use Safe\DateTime;
@@ -202,18 +203,22 @@ final class ReAuthManager
      */
     private function setRequestedTarget(): void
     {
-        $is_post = $_SERVER['REQUEST_METHOD'] === 'POST';
+        /** @var Kernel $kernel */
+        global $kernel;
+        $request = $kernel->getMainRequest();
+        $is_post = $request->isMethod('POST');
 
         // For POST requests, the GET query string in the action URL is preserved by the
         // browser on replay, so it must be stored. For GET requests, the browser rebuilds
         // the query string from the form fields on submit, so keeping it here would be
         // both useless and misleading.
-        $request_path = $is_post ? $_SERVER['REQUEST_URI'] : explode('?', $_SERVER['REQUEST_URI'])[0];
-        $current_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'] . $request_path; // @todo utiliser requete symfony présente dans main à la base ? &| sanitize url
+        $current_url = $is_post
+            ? $request->getUri()
+            : $request->getSchemeAndHttpHost() . $request->getBaseUrl() . $request->getPathInfo();
 
         $this->setRequestedURL($current_url);
         $this->setRequestedMethod($is_post ? 'POST' : 'GET');
-        $this->setRequestedData($is_post ? $_POST : $_GET);
+        $this->setRequestedData($is_post ? $request->request->all() : $request->query->all());
     }
 
     private function getStrategy(): ReAuthStrategyInterface
