@@ -70,7 +70,7 @@
                 <div class="alert alert-info" role="note">
                     <div>{{ __('Using OAuth Client Credentials requires a registered OAuth client with the "inventory" scope.') }}</div>
                     <div>
-                        {{ __('The generated client ID and secret must then be set in the GLPI Agent configuration using the %1$s and %2$s parameters.')|format('<code>oauth-client-id</code>', '<code>oauth-client-secret</code>')|raw }}
+                        {{ __('The generated client ID and secret must then be set in the GLPI Agent configuration using the %1$s and %2$s parameters.')|e|format('<code>oauth-client-id</code>', '<code>oauth-client-secret</code>')|raw }}
                     </div>
                     <div class="mt-2">
                         <a class="alert-link" href="{{ oauth_client_form_url }}">
