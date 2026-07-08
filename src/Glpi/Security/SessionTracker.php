@@ -310,10 +310,9 @@ final class SessionTracker
     /**
      * @param int $users_id
      * @param SessionFilterCriteria $filters
-     * @param int $start
      * @return array<string, mixed>
      */
-    private function getPHPSessionsCriteria(int $users_id = 0, array $filters = [], int $start = 0): array
+    private function getPHPSessionsCriteria(int $users_id = 0, array $filters = []): array
     {
         global $DB;
 
@@ -411,7 +410,7 @@ final class SessionTracker
      * @param SessionFilterCriteria $filters
      * @return array<string, mixed>
      */
-    private function getOAuthSessionsCriteria(int $users_id = 0, array $filters = [], int $start = 0): array
+    private function getOAuthSessionsCriteria(int $users_id = 0, array $filters = []): array
     {
         global $DB;
 
@@ -521,8 +520,8 @@ final class SessionTracker
         Profiler::getInstance()->start('SessionTracker::getSessions');
 
         $query = new QueryUnion([
-            $this->getPHPSessionsCriteria($users_id, $filters, $start),
-            $this->getOAuthSessionsCriteria($users_id, $filters, $start),
+            $this->getPHPSessionsCriteria($users_id, $filters),
+            $this->getOAuthSessionsCriteria($users_id, $filters),
         ]);
         $it = $DB->request([
             'SELECT' => '*',
