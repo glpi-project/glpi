@@ -1555,7 +1555,6 @@ TWIG, ['msg' => __('Last run list')]);
                 // Delete session file if not delete before
                 try {
                     @unlink($filename);
-                    $base_filename = basename($filename);
                     ++$nb;
                 } catch (FilesystemException $e) {
                     //empty catch

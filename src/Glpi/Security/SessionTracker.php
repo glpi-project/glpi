@@ -550,10 +550,10 @@ final class SessionTracker
             'safari' => 'ti ti-brand-safari',
             'opera' => 'ti ti-brand-opera',
         ];
-        $agent_icon = 'ti ti-help';
 
         Profiler::getInstance()->start('SessionTracker::getSessions - Loop sessions');
         foreach ($it as $data) {
+            $agent_icon = 'ti ti-help';
             if (!isset($user_cache[$data['user_identifier']])) {
                 $user_cache[$data['user_identifier']] = getUserLink($data['user_identifier']);
             }
