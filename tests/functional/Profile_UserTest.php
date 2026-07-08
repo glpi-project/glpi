@@ -36,9 +36,13 @@ namespace tests\units;
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Profile_User;
 use User;
+
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 /**
  * Tests for Profile_User class
@@ -474,5 +478,49 @@ class Profile_UserTest extends DbTestCase
         //Check that the default profile of the user has been set to 0
         $user->getFromDB($user->getId());
         $this->assertEquals(0, $user->fields['profiles_id']);
+    }
+
+    public static function massiveActionTargetsLinkIdProvider(): iterable
+    {
+        yield 'users tab of a profile' => ['show_method' => 'showForProfile', 'target' => 'profile'];
+        yield 'users tab of an entity' => ['show_method' => 'showForEntity', 'target' => 'entity'];
+    }
+
+    #[DataProvider('massiveActionTargetsLinkIdProvider')]
+    public function testMassiveActionTargetsLinkId(string $show_method, string $target): void
+    {
+        // Massive action must target the Profile_User link id, not the user id
+        $this->login();
+
+        $profile = getItemByTypeName(Profile::class, 'Self-Service');
+        $entity  = getItemByTypeName(\Entity::class, '_test_root_entity');
+
+        $user = $this->createItem(User::class, [
+            'name'         => $this->getUniqueString(),
+            '_profiles_id' => $profile->getId(),
+            '_entities_id' => $entity->getId(),
+        ]);
+
+        $links = (new Profile_User())->find([
+            'users_id'    => $user->getId(),
+            'profiles_id' => $profile->getId(),
+            'entities_id' => $entity->getId(),
+        ]);
+        $this->assertCount(1, $links);
+        $link_id = array_key_first($links);
+        $this->assertNotEquals($user->getId(), $link_id);
+
+        ob_start();
+        Profile_User::$show_method($target === 'profile' ? $profile : $entity);
+        $html = ob_get_clean();
+
+        $this->assertStringContainsString(
+            sprintf('name="item[Profile_User][%d]"', $link_id),
+            $html
+        );
+        $this->assertStringNotContainsString(
+            sprintf('name="item[Profile_User][%d]"', $user->getId()),
+            $html
+        );
     }
 }

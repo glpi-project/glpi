@@ -390,7 +390,7 @@ TWIG, $avatar_params) . $username;
 
             $entries[] = [
                 'itemtype' => self::class,
-                'id' => $data['id'],
+                'id' => $data['linkid'],
                 'name' => $username,
                 'profile' => $data['pname'],
             ];
@@ -576,7 +576,7 @@ TWIG, $avatar_params) . $username;
 TWIG, $avatar_params) . $username;
             $entries[] = [
                 'itemtype' => self::class,
-                'id' => $data['id'],
+                'id' => $data['linkid'],
                 'name' => $username,
                 'entity' => $entity_names[$data['entity']],
             ];
