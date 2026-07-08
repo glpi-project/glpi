@@ -64,7 +64,7 @@ final class AsideActionsController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        if (!$item->canViewItem()) {
+        if (!$item->can($id, READ)) {
             throw new AccessDeniedHttpException();
         }
 

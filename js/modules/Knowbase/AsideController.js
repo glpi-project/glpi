@@ -383,7 +383,7 @@ export class GlpiKnowbaseAsideController
             return;
         }
 
-        const selector = `[data-glpi-kb-article-id="${id}"] `
+        const selector = `[data-glpi-kb-article-id="${CSS.escape(id)}"] `
             + `[data-glpi-kb-actions-menu]:not([data-glpi-kb-actions-loaded])`;
         if (this.#aside.querySelector(selector) === null) {
             return; // Nothing left to populate for this id.
