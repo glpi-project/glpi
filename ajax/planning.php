@@ -134,10 +134,6 @@ if ($_REQUEST["action"] == "edit_event_form") {
     Planning::editEventForm($_REQUEST);
 }
 
-if ($_REQUEST["action"] == "get_filters_form") {
-    Planning::showPlanningFilter();
-}
-
 if (($_POST["action"] ?? null) == "toggle_filter") {
     Planning::toggleFilter($_POST);
 }
