@@ -1016,9 +1016,6 @@ HTML,
             $item->getEmpty();
             $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
             $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
-
-            $options = $item->getFormOptionsFromUrl(['knowbaseitemcategories_id' => $cat_id]);
-            $this->assertArrayNotHasKey('knowbaseitemcategories_id', $options);
         } finally {
             if ($previous === null) {
                 unset($_GET['knowbaseitemcategories_id']);

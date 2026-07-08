@@ -362,24 +362,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $out;
     }
 
-    /**
-     * @param array<string, mixed> $query_params
-     * @return array<string, mixed>
-     */
-    public function getFormOptionsFromUrl(array $query_params): array
-    {
-        $options = [];
-        if (isset($query_params['knowbaseitemcategories_id'])) {
-            $category_id = $this->getReadablePrefilledCategoryId(
-                (int) $query_params['knowbaseitemcategories_id']
-            );
-            if ($category_id !== null) {
-                $options['knowbaseitemcategories_id'] = $category_id;
-            }
-        }
-        return $options;
-    }
-
     public function post_addItem()
     {
         // Handle rich-text images and uploaded documents
