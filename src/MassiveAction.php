@@ -35,6 +35,7 @@
 
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\Clonable;
 use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
@@ -80,6 +81,7 @@ class MassiveAction
 
     /**
      * Class used to process current action.
+     * @var class-string
      */
     private string $processor;
 
@@ -565,7 +567,6 @@ class MassiveAction
         return false;
     }
 
-
     /**
      * Get 'add to transfer list' action when needed
      *
@@ -613,6 +614,7 @@ class MassiveAction
             return false;
         }
 
+        /** @var CommonDBTM $item  */
         if (!is_null($checkitem)) {
             $canupdate = $checkitem->canUpdate();
             $candelete = $checkitem->canDelete();
@@ -1068,7 +1070,13 @@ class MassiveAction
                             "infocom"  => UPDATE,
                         ]);
                     } else {
-                        $so_item->checkGlobal(UPDATE);
+                        // display subform if auth is granted or a reauth is needed (means action will be possible after reauthenticated)
+                        // Notice that no redirection can be done here (file called using ajax)
+                        $reauth_needed = null;
+                        $allowed = $so_item->canGlobal(UPDATE, $reauth_needed);
+                        if (!$allowed && !$reauth_needed) {
+                            throw new AccessDeniedHttpException('Missing authorization');
+                        }
                     }
 
                     $itemtype_search_options = SearchOption::getOptionsForItemtype($so_itemtype);

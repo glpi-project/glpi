@@ -80,8 +80,7 @@ class Profile_User extends CommonDBRelation
     public function canCreateItem(): bool
     {
 
-        $user = new User();
-        return $user->can($this->fields['users_id'], READ)
+        return parent::canCreateItem()
              && Profile::currentUserHaveMoreRightThan([$this->fields['profiles_id']
                                                                => $this->fields['profiles_id'],
              ])
@@ -1327,4 +1326,11 @@ TWIG, $avatar_params) . $username;
             );
         }
     }
+
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
+
 }

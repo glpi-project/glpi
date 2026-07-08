@@ -50,6 +50,12 @@ class AuthMail extends CommonDBTM
         return _n('Email server', 'Email servers', $nb);
     }
 
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
     public static function getSectorizedDetails(): array
     {
         return ['config', Auth::class, self::class];

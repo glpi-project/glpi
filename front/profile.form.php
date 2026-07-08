@@ -37,7 +37,8 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
-Session::checkRight("profile", READ);
+$profile = new Profile();
+$profile->checkGlobal(READ);
 
 if (!isset($_GET['id'])) {
     $_GET['id'] = "";
@@ -94,6 +95,8 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
+// display form
+// Right and re-authentication checks are performed inside displayFullPageForItem().
 $menus = ["admin", "profile"];
 Profile::displayFullPageForItem($_GET["id"], $menus, [
     'formoptions'  => " data-track-changes='true'",

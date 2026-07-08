@@ -754,4 +754,11 @@ class Conf extends CommonGLPI
     {
         return "ti ti-adjustments";
     }
+
+    #[\Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
 }

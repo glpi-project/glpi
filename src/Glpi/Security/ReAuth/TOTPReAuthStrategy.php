@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,22 +32,48 @@
  * ---------------------------------------------------------------------
  */
 
-require_once(__DIR__ . '/_check_webserver_config.php');
+declare(strict_types=1);
 
-global $CFG_GLPI;
+namespace Glpi\Security\ReAuth;
 
-$config = new Config();
-$config->checkGlobal(UPDATE);
+use Glpi\Security\TOTPManager;
 
-//Update CAS configuration
-if (isset($_POST["update"])) {
-    $_POST['id'] = Config::getConfigIDForContext('core');
-    $config->update($_POST);
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/auth.others.php");
+final class TOTPReAuthStrategy implements ReAuthStrategyInterface
+{
+    private TOTPManager $totp_manager;
+
+    public function __construct()
+    {
+        $this->totp_manager = new TOTPManager();
+    }
+
+    #[\Override]
+    public function verify(int $users_id, string $user_input): bool
+    {
+        return $this->totp_manager->verifyCodeForUser($user_input, $users_id);
+    }
+
+    #[\Override]
+    public function isAvailable(int $users_id, int $entities_id = 0): bool
+    {
+        return $this->totp_manager->is2FAEnabled($users_id);
+    }
+
+    #[\Override]
+    public function getLabel(): string
+    {
+        return __('Two-factor authentication');
+    }
+
+    #[\Override]
+    public function getPromptTemplate(): string
+    {
+        return 'pages/reauth/totp_form.html.twig';
+    }
+
+    #[\Override]
+    public function getPriority(): int
+    {
+        return 100;
+    }
 }
-
-Html::header(__('External authentication sources'), '', "config", "auth", "others");
-
-Auth::showOtherAuthList();
-
-Html::footer();

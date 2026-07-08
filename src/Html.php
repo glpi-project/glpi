@@ -497,15 +497,20 @@ class Html
 
     /**
      * Return the referer URL.
+     *
+     * Referer is fetched from $_SERVER['HTTP_REFERER']
+     * unless $_POST['_glpi_http_referer'] is defined.
+     *
+     * $_POST['_glpi_http_referer'] can be used to override the referer URL in case of redirection from an intermediate page.
+     *
      * If the referer is invalid, return value will be null.
      *
-     * @since 11.0.0
-     *
      * @return string|null
+     * @since 11.0.0
      */
     public static function getRefererUrl(): ?string
     {
-        $referer = URL::sanitizeURL($_SERVER['HTTP_REFERER'] ?? '');
+        $referer = URL::sanitizeURL($_POST['_glpi_http_referer'] ?? $_SERVER['HTTP_REFERER'] ?? '');
 
         $referer_host = parse_url($referer, PHP_URL_HOST);
         $referer_path = parse_url($referer, PHP_URL_PATH);
