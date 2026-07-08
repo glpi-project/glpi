@@ -117,9 +117,9 @@ export function deleteArticle(id)
  */
 export function syncToggleCheckboxes(id, type, checked, field = null)
 {
-    let selector = `[data-glpi-kb-action="${type}"][data-glpi-kb-action-param-id="${id}"]`;
+    let selector = `[data-glpi-kb-action="${CSS.escape(type)}"][data-glpi-kb-action-param-id="${CSS.escape(id)}"]`;
     if (field !== null) {
-        selector += `[data-glpi-kb-action-param-field="${field}"]`;
+        selector += `[data-glpi-kb-action-param-field="${CSS.escape(field)}"]`;
     }
 
     for (const button of document.querySelectorAll(selector)) {

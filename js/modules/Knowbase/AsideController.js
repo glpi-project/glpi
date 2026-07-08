@@ -525,7 +525,7 @@ export class GlpiKnowbaseAsideController
         // Otherwise remove every entry for this article (tree + favorites) in
         // place. Categories are left as-is: the server renders empty categories
         // too, so a now-empty category should stay visible (as it would on reload).
-        for (const entry of this.#aside.querySelectorAll(`[data-glpi-kb-article-id="${id}"]`)) {
+        for (const entry of this.#aside.querySelectorAll(`[data-glpi-kb-article-id="${CSS.escape(id)}"]`)) {
             entry.remove();
         }
 
@@ -563,10 +563,10 @@ export class GlpiKnowbaseAsideController
         }
 
         if (is_favorited) {
-            const already_listed = list.querySelector(`:scope > [data-glpi-kb-article-id="${id}"]`);
+            const already_listed = list.querySelector(`:scope > [data-glpi-kb-article-id="${CSS.escape(id)}"]`);
             if (!already_listed) {
                 const source = this.#aside.querySelector(
-                    `[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${id}"]`
+                    `[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${CSS.escape(id)}"]`
                 );
                 if (source) {
                     const clone = source.cloneNode(true);
@@ -579,7 +579,7 @@ export class GlpiKnowbaseAsideController
                 }
             }
         } else {
-            for (const entry of list.querySelectorAll(`:scope > [data-glpi-kb-article-id="${id}"]`)) {
+            for (const entry of list.querySelectorAll(`:scope > [data-glpi-kb-article-id="${CSS.escape(id)}"]`)) {
                 if (!entry.hasAttribute('data-glpi-kb-favorite-current')) {
                     entry.remove();
                 }
