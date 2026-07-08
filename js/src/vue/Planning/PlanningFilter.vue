@@ -37,7 +37,7 @@
         .replace(/&quot;/g, '"');
 
     const entities_id = props.active_entity.id ?? null;
-    const is_recursive = props.active_entity.id ?? null;
+    const is_recursive = props.active_entity.is_recursive ?? null;
     const token = props.filter_data.token ?? null;
 
     const ical_export_url = `${CFG_GLPI.root_doc}/front/planning.php?genical=1&uID=${props.filter_data.uID}&gID=${props.filter_data.gID}&entities_id=${entities_id}&is_recursive=${is_recursive}&token=${token}`;
