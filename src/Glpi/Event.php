@@ -653,4 +653,11 @@ class Event extends CommonDBTM
     {
         return [ READ => __('Read')];
     }
+
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
+
 }

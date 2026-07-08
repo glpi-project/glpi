@@ -159,6 +159,12 @@ class AuthLDAP extends CommonDBTM
         return _n('LDAP directory', 'LDAP directories', $nb);
     }
 
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
     public static function getSectorizedDetails(): array
     {
         return ['config', Auth::class, self::class];

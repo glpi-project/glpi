@@ -176,4 +176,12 @@ final class LogViewer extends CommonGLPI
             ]
         );
     }
+
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        // LogViewer and Config share the same reauth requirements in logviewer.php
+        // But LogViewer just have a READ right, so both must be kept in sync to avoid strange behaviors.
+        return \Config::itemTypeRequiresReauthentication();
+    }
+
 }

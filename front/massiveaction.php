@@ -33,6 +33,13 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * Used for massive action processing
+ */
+
+use Glpi\Exception\RedirectException;
+use Glpi\Security\ReAuth\ReAuthManager;
+
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 global $CFG_GLPI;
@@ -42,6 +49,26 @@ Html::header_nocache();
 
 try {
     $ma = new MassiveAction($_POST, $_GET, 'process');
+    $item_types = get_item_types_from_post();
+
+    $reauth_manager = new ReAuthManager();
+    if ($reauth_manager->atLeastOneItemTypesRequiresReauthentication($item_types)) {
+        // First pass (reauth needed): throws RedirectException.
+        $reauth_manager->checkReAuthenticationOrRedirect();
+
+        // Reauth is valid. Whether we are back from the reauth form (the ReAuth
+        // flow injects _glpi_http_referer = calling page) or still within the
+        // active reauth window (real HTTP Referer = calling page), getBackUrl()
+        // returns the calling page.
+        $back_url = Html::getBackUrl();
+        if ($back_url) {
+            $ma->setRedirect($back_url);
+        }
+    }
+}
+// process redirect exceptions
+catch (RedirectException $e) {
+    throw $e;
 } catch (Throwable $e) {
     Html::popHeader(__('Bulk modification error'));
 
@@ -96,4 +123,21 @@ if (isset($results['messages']) && is_array($results['messages']) && count($resu
         Session::addMessageAfterRedirect($message, false, ERROR);
     }
 }
+
 Html::redirect($results['redirect']);
+
+/**
+ * Returns the item types from POST data, for re-authentication checks.
+ *
+ * @return array<class-string<CommonGLPI>>
+ */
+function get_item_types_from_post(): array
+{
+    /** @var array<class-string<CommonGLPI>> $items */
+    $items = isset($_POST['items']) ? array_keys($_POST['items']) : [];
+    // ensure item types are glpi class names - phpstan complains "will always evaluate to true"
+    // but this filtering is required for security -> forbiddynamicinstantiationrule
+    $items = array_filter($items, fn($item) => is_a($item, CommonGLPI::class, true));
+
+    return array_values($items);
+}
