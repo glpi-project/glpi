@@ -2113,4 +2113,10 @@ class Config extends CommonDBTM
         global $CFG_GLPI;
         return (bool) ($CFG_GLPI['enable_hlapi'] ?? 0);
     }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
 }

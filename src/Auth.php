@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\TOTPManager;
 use Glpi\Toolbox\IPUtilities;
 use Safe\Exceptions\LdapException;
@@ -178,6 +179,7 @@ class Auth extends CommonGLPI
     /**
      * Check user existence in DB
      *
+     * @phpstan-impure $this->user_dn can be altered
      * @global DBmysql $DB
      * @param  array   $options conditions : array('name'=>'glpi')
      *                                    or array('email' => 'test at test.com')
@@ -1179,6 +1181,11 @@ class Auth extends CommonGLPI
 
         if ($this->auth_succeded && !empty($this->user->fields['timezone']) && 'null' !== strtolower($this->user->fields['timezone'])) {
             $DB->setTimezone($this->user->fields['timezone']);
+        }
+
+        // initiate ReAuthentication, consider authentication successful as user just logged in.
+        if ($this->auth_succeded) {
+            (new ReAuthManager())->authenticate();
         }
 
         return $this->auth_succeded;

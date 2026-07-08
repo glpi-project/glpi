@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,22 +32,54 @@
  * ---------------------------------------------------------------------
  */
 
-require_once(__DIR__ . '/_check_webserver_config.php');
+declare(strict_types=1);
 
-global $CFG_GLPI;
+namespace Glpi\Security\ReAuth;
 
-$config = new Config();
-$config->checkGlobal(UPDATE);
+use Auth;
+use Override;
+use User;
 
-//Update CAS configuration
-if (isset($_POST["update"])) {
-    $_POST['id'] = Config::getConfigIDForContext('core');
-    $config->update($_POST);
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/auth.others.php");
+final class PasswordReAuthStrategy implements ReAuthStrategyInterface
+{
+    #[Override]
+    public function verify(int $users_id, string $user_input): bool
+    {
+        $user = new User();
+        if (!$user->getFromDB($users_id)) {
+            return false;
+        }
+
+        return Auth::checkPassword($user_input, $user->fields['password']);
+    }
+
+    #[Override]
+    public function isAvailable(int $users_id, int $entities_id = 0): bool
+    {
+        $user = new User();
+        if (!$user->getFromDB($users_id)) {
+            return false;
+        }
+
+        return $user->fields['authtype'] === Auth::DB_GLPI
+            && !empty($user->fields['password']);
+    }
+
+    #[Override]
+    public function getLabel(): string
+    {
+        return __('Password');
+    }
+
+    #[Override]
+    public function getPromptTemplate(): string
+    {
+        return 'pages/reauth/password_form.html.twig';
+    }
+
+    #[Override]
+    public function getPriority(): int
+    {
+        return 50;
+    }
 }
-
-Html::header(__('External authentication sources'), '', "config", "auth", "others");
-
-Auth::showOtherAuthList();
-
-Html::footer();

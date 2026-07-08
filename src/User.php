@@ -3283,6 +3283,7 @@ HTML;
             case 'force_user_ldap_update':
             case 'clean_ldap_fields':
                 foreach ($ids as $id) {
+
                     if ($item->can($id, UPDATE)) {
                         if (
                             $item instanceof User
@@ -7093,6 +7094,12 @@ HTML;
 
         // Success if no error found
         return count($errors) === 0;
+    }
+
+    #[Override]
+    public static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
     }
 
     /**

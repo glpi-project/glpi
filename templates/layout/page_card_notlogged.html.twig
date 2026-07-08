@@ -83,7 +83,9 @@
          <div class="container-tight py-6" {% if style is not null %}style="{{ style }}"{% endif %}>
             <div class="text-center">
                <div class="col-md">
-                  <span class="glpi-logo mb-4" title="GLPI"></span>
+                  {% block logo_block %}
+                     <span class="glpi-logo mb-4" title="GLPI"></span>
+                  {% endblock %}
                </div>
             </div>
             <main>

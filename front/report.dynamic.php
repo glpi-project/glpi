@@ -35,7 +35,6 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Plugin\Hooks;
 
 if (!isset($_GET['item_type']) || !is_string($_GET['item_type']) || !is_a($_GET['item_type'], CommonGLPI::class, true)) {
@@ -48,9 +47,7 @@ $item = getItemForItemtype($itemtype);
 if ($item instanceof AllAssets) {
     Session::checkCentralAccess();
 } else {
-    if (!$item::canView()) {
-        throw new AccessDeniedHttpException();
-    }
+    $item->checkGlobal(READ);
 }
 
 if (isset($_GET["display_type"])) {

@@ -37,8 +37,8 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Cache\CacheManager;
 
-Session::checkRight("config", READ);
-
+$config = new Config();
+$config->checkGlobal(READ);
 if (isset($_GET['check_version'])) {
     Session::checkRight("config", UPDATE);
     Session::addMessageAfterRedirect(
@@ -50,12 +50,12 @@ if (isset($_GET['check_version'])) {
 $config = new Config();
 $_POST['id'] = Config::getConfigIDForContext('core');
 if (!empty($_POST["update_auth"])) {
-    Session::checkRight("config", UPDATE);
+    $config->checkGlobal(UPDATE);
     $config->update($_POST);
     Html::back();
 }
 if (!empty($_POST["update"])) {
-    Session::checkRight("config", UPDATE);
+    $config->checkGlobal(UPDATE);
     $config->update($_POST);
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
@@ -88,6 +88,7 @@ if (!empty($_POST['reset_translation_cache'])) {
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
 
+// Right and re-authentication checks are performed inside displayFullPageForItem().
 Config::displayFullPageForItem($_POST['id'], ["config", "config"], [
     'formoptions'  => "data-track-changes=true",
 ]);
