@@ -35,6 +35,7 @@
 
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Event;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Features\Clonable;
 use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
@@ -1074,8 +1075,7 @@ class MassiveAction
                         $reauth_needed = null;
                         $allowed = $so_item->canGlobal(UPDATE, $reauth_needed);
                         if (!$allowed && !$reauth_needed) {
-                            echo 'Missing right';
-                            throw new RuntimeException('Missing authorization');
+                            throw new AccessDeniedHttpException('Missing authorization');
                         }
                     }
 
