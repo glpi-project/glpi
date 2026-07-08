@@ -283,7 +283,7 @@ final class TOTPManager
     public function verifyCodeForUser(string $code, int $users_id): bool
     {
         $config = $this->get2FAConfigForUser($users_id);
-        if ($config['secret'] === null) {
+        if ($config === null || $config['secret'] === null) {
             return false;
         }
         return $this->getTwoFactorAuth($config['digest'] ?? 'sha1')->verifyCode($config['secret'], $code);

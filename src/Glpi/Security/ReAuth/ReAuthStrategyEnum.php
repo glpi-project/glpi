@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,22 +32,20 @@
  * ---------------------------------------------------------------------
  */
 
-require_once(__DIR__ . '/_check_webserver_config.php');
+declare(strict_types=1);
 
-global $CFG_GLPI;
+namespace Glpi\Security\ReAuth;
 
-$config = new Config();
-$config->checkGlobal(UPDATE);
+enum ReAuthStrategyEnum: string
+{
+    case TOTP = 'totp';
+    case PASSWORD = 'password';
 
-//Update CAS configuration
-if (isset($_POST["update"])) {
-    $_POST['id'] = Config::getConfigIDForContext('core');
-    $config->update($_POST);
-    Html::redirect($CFG_GLPI["root_doc"] . "/front/auth.others.php");
+    public function createStrategy(): ReAuthStrategyInterface
+    {
+        return match ($this) {
+            self::TOTP => new TOTPReAuthStrategy(),
+            self::PASSWORD => new PasswordReAuthStrategy(),
+        };
+    }
 }
-
-Html::header(__('External authentication sources'), '', "config", "auth", "others");
-
-Auth::showOtherAuthList();
-
-Html::footer();

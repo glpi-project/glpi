@@ -153,7 +153,9 @@ final class InventoryController extends AbstractController
     #[Route("/front/inventory.conf.php", name: "glpi_inventory_configuration_legacy", methods: ['GET'])]
     public function configure(Request $request): Response
     {
+        Conf::checkReAuthenticationOrRedirect();
         Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
+
         return $this->render('pages/admin/inventory/conf/index.html.twig', [
             'conf' => new Conf(),
         ]);
@@ -163,7 +165,9 @@ final class InventoryController extends AbstractController
     #[Route("/front/inventory.conf.php", name: "glpi_inventory_store_configuration_legacy", methods: ['POST'])]
     public function storeConfiguration(Request $request): Response
     {
+        Conf::checkReAuthenticationOrRedirect();
         Session::checkRight(Conf::$rightname, Conf::UPDATECONFIG);
+
         $conf = new Conf();
         $post_data = $request->request->all();
 
@@ -183,9 +187,10 @@ final class InventoryController extends AbstractController
     #[Route("/Inventory/ImportFiles", name: "glpi_inventory_report", methods: ['POST'])]
     public function report(Request $request): Response
     {
+        Conf::checkReAuthenticationOrRedirect();
         Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
-        $conf = new Conf();
 
+        $conf = new Conf();
         $to_import = [];
         foreach ($request->files->get('inventory_files') as $file) {
             if ($file instanceof UploadedFile && $file->isValid()) {

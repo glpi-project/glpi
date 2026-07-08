@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use CommonDBConnexity;
 use CommonDBTM;
 use Computer;
 use Document;
@@ -43,15 +44,27 @@ use FieldUnicity;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\RedirectException;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTestTrait;
+use Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 use SoftwareVersion;
+use User;
 
 /* Test for inc/commondbtm.class.php */
 
 class CommonDBTMTest extends DbTestCase
 {
+    use ReAuthTestTrait;
+
+    public function tearDown(): void
+    {
+        $this->restoreWebContext();
+        parent::tearDown();
+    }
+
     public function testgetIndexNameOtherThanID()
     {
         $networkport = new \NetworkPort();
@@ -210,7 +223,7 @@ class CommonDBTMTest extends DbTestCase
             [\Item_Devices::class, ''], // "static protected $notable = true;" case
             [\Config::class, 'glpi_configs'],
             [Computer::class, 'glpi_computers'],
-            [\User::class, 'glpi_users'],
+            [User::class, 'glpi_users'],
         ];
     }
 
@@ -886,7 +899,6 @@ class CommonDBTMTest extends DbTestCase
     {
         $computer = new Computer();
         $ent0 = getItemByTypeName('Entity', '_test_root_entity', true);
-        $bkp_current = $_SESSION['glpi_currenttime'];
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
         //test with date set
@@ -1007,25 +1019,25 @@ class CommonDBTMTest extends DbTestCase
     {
         return [
             [
-                'relation_itemtype' => \Infocom::getType(),
+                'relation_itemtype' => \Infocom::class,
                 'config_name'       => 'infocom_types',
             ],
             [
-                'relation_itemtype' => \ReservationItem::getType(),
+                'relation_itemtype' => \ReservationItem::class,
                 'config_name'       => 'reservation_types',
             ],
             [
-                'relation_itemtype' => \Contract_Item::getType(),
+                'relation_itemtype' => \Contract_Item::class,
                 'config_name'       => 'contract_types',
                 'linked_itemtype'   => \Contract::class,
             ],
             [
-                'relation_itemtype' => Document_Item::getType(),
+                'relation_itemtype' => Document_Item::class,
                 'config_name'       => 'document_types',
                 'linked_itemtype'   => Document::class,
             ],
             [
-                'relation_itemtype' => \KnowbaseItem_Item::getType(),
+                'relation_itemtype' => \KnowbaseItem_Item::class,
                 'config_name'       => 'kb_types',
                 'linked_itemtype'   => \KnowbaseItem::class,
             ],
@@ -1070,7 +1082,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, $computer_1_id);
         $relation_item_1_id = $relation_item->add(
             [
-                'itemtype' => $computer->getType(),
+                'itemtype' => $computer::class,
                 'items_id' => $computer_1_id,
             ] + $linked_item_input
         );
@@ -1087,7 +1099,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, $computer_2_id);
         $relation_item_2_id = $relation_item->add(
             [
-                'itemtype' => $computer->getType(),
+                'itemtype' => $computer::class,
                 'items_id' => $computer_2_id,
             ] + $linked_item_input
         );
@@ -1095,7 +1107,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($relation_item->getFromDB($relation_item_2_id));
 
         $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI[$config_name] = [$computer->getType()];
+        $CFG_GLPI[$config_name] = [$computer::class];
         $computer->delete(['id' => $computer_1_id], true);
         $CFG_GLPI = $cfg_backup;
 
@@ -1523,7 +1535,7 @@ class CommonDBTMTest extends DbTestCase
         // Check the document exists and is linked to the computer
         $document_item = new Document_Item();
         $this->assertTrue(
-            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $document_item->getFromDbByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
         );
         $document = new Document();
         $this->assertTrue(
@@ -1586,7 +1598,7 @@ class CommonDBTMTest extends DbTestCase
         // Check the document is linked to the computer
         $document_item = new Document_Item();
         $this->assertTrue(
-            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $document_item->getFromDbByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
         );
 
         // Check that first document has been updated
@@ -1634,7 +1646,7 @@ class CommonDBTMTest extends DbTestCase
         // No document should be created since tag is not in content
         $document_item = new Document_Item();
         $this->assertFalse(
-            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $document_item->getFromDbByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
         );
     }
 
@@ -1681,7 +1693,7 @@ class CommonDBTMTest extends DbTestCase
         // Document should be created and linked since tag is in content
         $document_item = new Document_Item();
         $this->assertTrue(
-            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $document_item->getFromDbByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
         );
         $document = new Document();
         $this->assertTrue(
@@ -1728,7 +1740,7 @@ class CommonDBTMTest extends DbTestCase
         // because this is a file picker upload, not a pasted image
         $document_item = new Document_Item();
         $this->assertTrue(
-            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $document_item->getFromDbByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
         );
         $document = new Document();
         $this->assertTrue(
@@ -1974,7 +1986,7 @@ class CommonDBTMTest extends DbTestCase
         $this->login();
 
         // Add the user to a test group
-        $group = new \Group();
+        $group = new Group();
         $this->assertGreaterThan(
             0,
             $groups_id = $group->add([
@@ -2074,7 +2086,7 @@ class CommonDBTMTest extends DbTestCase
         $this->login();
 
         // Add the user to a test group
-        $group = new \Group();
+        $group = new Group();
         $this->assertGreaterThan(
             0,
             $groups_id = $group->add([
@@ -2236,6 +2248,172 @@ class CommonDBTMTest extends DbTestCase
         $item->checkGlobal(CREATE);
     }
 
+    // --- Re-authentication ("sudo mode") integration in can()/canGlobal()/check()/checkGlobal() ---
+
+    #[\PHPUnit\Framework\Attributes\Group('reauth')]
+    public function testCanNewItemCreateRequiresReauthWhenNotReAuthenticated(): void
+    {
+        // --- arrange : User is flagged as requiring re-authentication ---
+        $this->login();
+        $this->fakeWebContext();
+        $user = new User();
+
+        // --- act + assert : not re-authenticated → can() returns false and sets reauth_needed ---
+        $this->setReauthenticated(false);
+        $reauth_needed = null;
+        $input = null;
+        $this->assertFalse($user->can(-1, CREATE, $input, $reauth_needed));
+        $this->assertTrue($reauth_needed);
+
+        // --- act + assert : re-authenticated → can() returns true and clears reauth_needed ---
+        $this->setReauthenticated(true);
+        $reauth_needed = null;
+        $input = null;
+        $this->assertTrue($user->can(-1, CREATE, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Group('reauth')]
+    public function testCanExistingItemRequiresReauthForEachRight(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $group_id = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class))->getID();
+        $this->fakeWebContext();
+
+        // --- act + assert : each right requires reauth when not re-authenticated, and allows when re-authenticated ---
+        foreach ([READ, UPDATE, PURGE] as $right) {
+            $this->setReauthenticated(false);
+            $reauth_needed = null;
+            $input = null;
+            $this->assertFalse((new Group())->can($group_id, $right, $input, $reauth_needed), "{$right}: can() should return false when not re-authenticated");
+            $this->assertTrue($reauth_needed, "{$right}: reauth should be required");
+
+            $this->setReauthenticated(true);
+            $reauth_needed = null;
+            $input = null;
+            $this->assertTrue((new Group())->can($group_id, $right, $input, $reauth_needed), "{$right}: can() should return true when re-authenticated");
+            $this->assertFalse($reauth_needed, "{$right}: reauth should not be required");
+        }
+    }
+
+    #[\PHPUnit\Framework\Attributes\Group('reauth')]
+    public function testCanWithoutRightDoesNotRequireReauth(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $group_id = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class))->getID();
+        // post-only has no right on groups : reauth must not be requested.
+        $this->login('post-only', 'postonly');
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+
+        // --- act + assert ---
+        $reauth_needed = null;
+        $input = null;
+        $this->assertFalse((new Group())->can($group_id, READ, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Group('reauth')]
+    public function testCanWithMissingItemDoesNotRequireReauth(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+
+        // --- act + assert ---
+        $reauth_needed = null;
+        $input = null;
+        $this->assertFalse((new Group())->can(999999, READ, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Group('reauth')]
+    public function testCanIsUnaffectedInCommandLineContext(): void
+    {
+        // --- arrange : regression guard — on CLI the can() refactor must behave exactly like before ---
+        $this->login();
+        $group_id = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class))->getID();
+        unset($_SESSION['glpi_reauth_until']);
+        assert(Group::itemTypeRequiresReauthentication(), 'Group should require reauthentication');
+
+        // --- act + assert : no reauth, legacy authorization preserved ---
+        $reauth_needed = null;
+        $input = null;
+        $this->assertTrue((new Group())->can($group_id, READ, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed, 'On CLI, reauth should not be needed even if itemtype requires it');
+    }
+
+    #[\PHPUnit\Framework\Attributes\Group('reauth')]
+    public function testCanGlobalReauthSemantics(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $this->fakeWebContext();
+
+        // --- act + assert : allowed but not re-authenticated ---
+        $this->setReauthenticated(false);
+        $reauth_needed = null;
+        $this->assertFalse((new Group())->canGlobal(READ, $reauth_needed));
+        $this->assertTrue($reauth_needed);
+
+        // --- act + assert : allowed and re-authenticated ---
+        $this->setReauthenticated(true);
+        $reauth_needed = null;
+        $this->assertTrue((new Group())->canGlobal(READ, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+
+        // --- act + assert : not allowed at all (no reauth requested) ---
+        $this->login('post-only', 'postonly');
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+        $reauth_needed = null;
+        $this->assertFalse((new Group())->canGlobal(READ, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Group('reauth')]
+    public function testCheckRedirectsToReauthPromptWhenReauthNeeded(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $group_id = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class))->getID();
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+
+        // --- act + assert : reauth needed — a redirect to the prompt is issued instead of access denied ---
+        $this->expectException(RedirectException::class);
+        (new Group())->check($group_id, READ);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Group('reauth')]
+    public function testCheckThrowsAccessDeniedWhenNotAllowed(): void
+    {
+        // --- arrange ---
+        $this->login('post-only', 'postonly'); // post-only has no right -> AccessDeniedException
+        $group_id = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class))->getID();
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+
+        // --- act + assert : no right — the legacy AccessDeniedHttpException must still be thrown ---
+        $this->expectException(AccessDeniedHttpException::class);
+        (new Group())->check($group_id, READ);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Group('reauth')]
+    public function testCheckGlobalRedirectsToReauthPromptWhenReauthNeeded(): void
+    {
+        // --- arrange ---
+        $this->login(); // test user has Group Read permission -> Redirection to reauth prompt
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+
+        // --- act + assert ---
+        $this->expectException(RedirectException::class);
+        (new Group())->checkGlobal(READ);
+    }
 
     public static function displayFullPageForItemProvider(): iterable
     {
@@ -2266,18 +2444,15 @@ class CommonDBTMTest extends DbTestCase
             'credentials' => ['post-only', 'postonly'],
             'itemtype'    => Computer::class,
             'items_id'    => -1,
-            'exception'   => new AccessDeniedHttpException(
-                'Missing CREATE right. Cannot view the new item form.'
-            ),
+            // Message comes from CommonDBTM::checkGlobal() (dynamic: right name + itemtype), only the class is asserted
+            'exception'   => new AccessDeniedHttpException(),
         ];
 
         yield [
             'credentials' => ['post-only', 'postonly'],
             'itemtype'    => Computer::class,
             'items_id'    => $computer_id,
-            'exception'   => new AccessDeniedHttpException(
-                'Missing READ right. Cannot view the item.'
-            ),
+            'exception'   => new AccessDeniedHttpException(),
         ];
 
         yield [
@@ -2297,7 +2472,11 @@ class CommonDBTMTest extends DbTestCase
         $this->login(...$credentials);
 
         if ($exception !== null) {
-            $this->expectExceptionObject($exception);
+            if ($exception->getMessage() === '') {
+                $this->expectException($exception::class);
+            } else {
+                $this->expectExceptionObject($exception);
+            }
         } else {
             // Tests that something is sent to output
             $this->expectOutputRegex('/.+/');
@@ -2365,7 +2544,7 @@ class CommonDBTMTest extends DbTestCase
         foreach (static::getClasses() as $class) {
             if (
                 is_subclass_of($class, CommonDBTM::class)
-                && !is_subclass_of($class, \CommonDBConnexity::class)
+                && !is_subclass_of($class, CommonDBConnexity::class)
                 && !is_a($class, \Rule::class, true)
                 && $DB->tableExists($class::getTable())
             ) {
@@ -2381,7 +2560,7 @@ class CommonDBTMTest extends DbTestCase
                 ];
                 if (
                     $DB->fieldExists($class::getTable(), 'entities_id')
-                    && $class != \User::class
+                    && $class != User::class
                 ) {
                     $data['expected'] = [\MassiveAction::class . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list'];
                     $data['unexpected'] = [];
