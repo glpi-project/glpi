@@ -56,16 +56,23 @@ trait ReAuthTestTrait
         array $post = [],
         string $referer = 'https://glpi.example.org/front/central.php',
     ): void {
+        // getMainRequest() falls back to Request::createFromGlobals() in the test context, so the
+        // super globals must carry the exact keys Symfony reads: HTTPS (not REQUEST_SCHEME) drives
+        // isSecure(), and QUERY_STRING (not the query part of REQUEST_URI) drives getUri().
+        $query_string = parse_url($request_uri, PHP_URL_QUERY) ?? '';
+        parse_str($query_string, $get_from_uri);
+
         $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
-        $_SERVER['REQUEST_SCHEME'] = 'https';
+        $_SERVER['HTTPS']          = 'on';
         $_SERVER['HTTP_HOST']      = 'glpi.example.org';
         $_SERVER['REQUEST_URI']    = $request_uri;
+        $_SERVER['QUERY_STRING']   = $query_string;
         $_SERVER['REQUEST_METHOD'] = $method;
         $_SERVER['HTTP_REFERER']   = $referer;
         // A real web request always carries a client IP; without it SessionTracker::recordNewSession()
         // would try to insert a NULL ip_address when login() is called under the faked web context.
         $_SERVER['REMOTE_ADDR']    = '127.0.0.1';
-        $_GET  = $get;
+        $_GET  = $get ?: $get_from_uri;
         $_POST = $post;
     }
 
@@ -76,9 +83,10 @@ trait ReAuthTestTrait
     {
         unset(
             $GLOBALS['GLPI_IS_COMMAND_LINE'],
-            $_SERVER['REQUEST_SCHEME'],
+            $_SERVER['HTTPS'],
             $_SERVER['HTTP_HOST'],
             $_SERVER['REQUEST_URI'],
+            $_SERVER['QUERY_STRING'],
             $_SERVER['REQUEST_METHOD'],
             $_SERVER['HTTP_REFERER'],
             $_SERVER['REMOTE_ADDR'],
