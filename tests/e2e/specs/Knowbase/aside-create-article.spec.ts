@@ -87,7 +87,7 @@ test('the aside "+" opens an inline input; an empty submit creates nothing', asy
     await expect(kb.getAsideCategoryCreateInput(category_name)).toBeHidden();
 });
 
-test('clicking the aside add-article link on Uncategorized creates an article without a category', async ({ page, profile }) => {
+test('using the aside inline "+" on Uncategorized creates an article without a category', async ({ page, profile }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
@@ -96,39 +96,31 @@ test('clicking the aside add-article link on Uncategorized creates an article wi
 
     await kb.goto(1);
 
+    // The "+" click is intercepted by AsideController (a dynamically
+    // imported module), instead of being a plain <a href> navigation. Wait
+    // for the controller to finish initializing before clicking it, using
+    // the same readiness signal doSearchAside() relies on, otherwise the
+    // click can race the module load and fall through to the browser's
+    // default navigation.
+    await expect(kb.asideSearchInput).not.toHaveClass(/pe-none/);
+
     const uncategorized = kb.getAsideCategory('Uncategorized');
     const add_link = uncategorized.getByRole('link', {
         name: /Create an article in Uncategorized/i,
     });
-    // Reveal the action button (hidden until the category row is hovered).
     await kb.getAsideCategoryToggle('Uncategorized').hover();
     await expect(add_link).toBeVisible();
     await add_link.click();
 
-    await expect(page).toHaveURL(/knowbaseitem\.form\.php/);
+    // No navigation: the "+" now opens an inline input instead of a full page.
     await expect(page).not.toHaveURL(/knowbaseitemcategories_id=/);
-
-    // With no prefilled category, the meta-line states the article won't be categorized
-    await expect(
-        page.getByRole('group', { name: 'Article category' })
-    ).toContainText("won't be added to a category");
-    const add_button = page.getByRole('button', { name: 'Add article' });
-
-    const title = page.getByTestId('subject');
-    await title.click();
-    await title.fill('');
-    await page.keyboard.type(article_title);
-
-    // eslint-disable-next-line playwright/no-raw-locators -- Tiptap editor has no semantic label
-    const editor = page.locator('#kb-tiptap-editor .ProseMirror');
-    await editor.click();
-    await page.keyboard.type('Body created from uncategorized add-link.');
-
-    await add_button.click();
+    const inline_input = kb.getAsideCategoryCreateInput('Uncategorized');
+    await expect(inline_input).toBeFocused();
+    await inline_input.fill(article_title);
+    await inline_input.press('Enter');
 
     await expect(page.getByTestId('subject')).toHaveText(article_title);
 
-    await kb.goto(1);
     const uncategorized_after = kb.getAsideCategory('Uncategorized');
     await expect(uncategorized_after.getByRole('link', { name: article_title })).toBeVisible();
 });
