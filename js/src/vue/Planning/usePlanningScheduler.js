@@ -448,7 +448,7 @@ export default function usePlanningScheduler(calendar_el, current_view, full_vie
 
         setEndOfDays();
         refresh();
-    }, { deep: true });
+    });
 
     return {
         ...useScheduler(),
