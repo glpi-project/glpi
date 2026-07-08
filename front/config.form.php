@@ -37,6 +37,8 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Cache\CacheManager;
 
+$config = new Config();
+$config->checkGlobal(READ);
 if (isset($_GET['check_version'])) {
     Session::checkRight("config", UPDATE);
     Session::addMessageAfterRedirect(
