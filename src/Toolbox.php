@@ -878,8 +878,8 @@ class Toolbox
             _x('size', 'ZiB'),
             _x('size', 'YiB'),
         ];
-        foreach ($bytes as $val) {
-            if ($size > 1024) {
+        foreach ($bytes as $key => $val) {
+            if ($size > 1024 && isset($bytes[$key + 1])) {
                 $size /= 1024;
             } else {
                 break;
