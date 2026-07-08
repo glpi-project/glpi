@@ -29,7 +29,7 @@
             default: null,
         },
         default_date: {
-            type: String,
+            type: [String, Date],
             default: new Date(),
         },
         current_view: {
