@@ -407,6 +407,11 @@ export class KnowbaseItemPage extends GlpiPage
         });
     }
 
+    public getAsideCategoryCreateInput(category_title: string): Locator
+    {
+        return this.getAsideCategory(category_title).getByPlaceholder('New article...');
+    }
+
     public async doToggleAsideCategory(title: string): Promise<void>
     {
         await this.getAsideCategoryToggle(title).click();

@@ -36,20 +36,17 @@ import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
-test('clicking the aside add-article link creates a new article linked to the category', async ({ page, profile, api }) => {
+test('the aside "+" opens an inline input; an empty submit creates nothing', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
     const unique = randomUUID().slice(0, 8);
     const category_name = `E2E Aside Cat ${unique}`;
-    const article_title = `E2E Aside Article ${unique}`;
 
     const category_id = await api.createItem('KnowbaseItemCategory', {
         name: category_name,
         entities_id: getWorkerEntityId(),
     });
-
-    // Seed an article so the aside renders the category in the tree
     await api.createItem('KnowbaseItem', {
         name: `Seed ${unique}`,
         answer: 'Seed content',
@@ -59,44 +56,35 @@ test('clicking the aside add-article link creates a new article linked to the ca
 
     await kb.goto(1);
 
+    // The "+" click is now intercepted by AsideController (a dynamically
+    // imported module), instead of being a plain <a href> navigation. Wait
+    // for the controller to finish initializing before clicking it, using
+    // the same readiness signal doSearchAside() relies on, otherwise the
+    // click can race the module load and fall through to the browser's
+    // default navigation.
+    await expect(kb.asideSearchInput).not.toHaveClass(/pe-none/);
+
     const add_link = kb.getAsideCategory(category_name).getByRole('link', {
         name: new RegExp(`Create an article in ${category_name}`, 'i'),
     });
-    // Reveal the action button (hidden until the category row is hovered).
     await kb.getAsideCategoryToggle(category_name).hover();
     await expect(add_link).toBeVisible();
     await add_link.click();
 
-    await expect(page).toHaveURL(new RegExp(`knowbaseitemcategories_id=${category_id}`));
-    await expect(page).toHaveURL(/knowbaseitem\.form\.php/);
+    // No navigation: the "+" now opens an inline input instead of a full page.
+    await expect(page).not.toHaveURL(/knowbaseitemcategories_id=/);
+    const inline_input = kb.getAsideCategoryCreateInput(category_name);
+    await expect(inline_input).toBeFocused();
 
-    // The article's category meta-line should mention the prefilled category
-    await expect(
-        page.getByRole('group', { name: 'Article category' })
-    ).toContainText(category_name);
-    const add_button = page.getByRole('button', { name: 'Add article' });
+    // Escape cancels: the input disappears, nothing is created.
+    await inline_input.press('Escape');
+    await expect(inline_input).toBeHidden();
 
-    // Fill in the title
-    const title = page.getByTestId('subject');
-    await title.click();
-    await title.fill('');
-    await page.keyboard.type(article_title);
-
-    // Fill in the content
-    // eslint-disable-next-line playwright/no-raw-locators -- Tiptap editor has no semantic label
-    const editor = page.locator('#kb-tiptap-editor .ProseMirror');
-    await editor.click();
-    await page.keyboard.type('Body created from aside add-link.');
-
-    await add_button.click();
-
-    // After save we land on the new article view
-    await expect(page.getByTestId('subject')).toHaveText(article_title);
-
-    // Verify the article is now displayed under the chosen category in the aside
-    await kb.goto(1);
-    const category_node = kb.getAsideCategory(category_name);
-    await expect(category_node.getByRole('link', { name: article_title })).toBeVisible();
+    // Re-open and blur while empty: same result.
+    await add_link.click();
+    await expect(kb.getAsideCategoryCreateInput(category_name)).toBeFocused();
+    await page.keyboard.press('Tab');
+    await expect(kb.getAsideCategoryCreateInput(category_name)).toBeHidden();
 });
 
 test('clicking the aside add-article link on Uncategorized creates an article without a category', async ({ page, profile }) => {

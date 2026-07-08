@@ -32,7 +32,7 @@
 
 /* global _, glpi_confirm_danger, glpi_toast_error */
 
-import { get } from "/js/modules/Ajax.js";
+import { get, post } from "/js/modules/Ajax.js";
 import {
     EditorActionType,
     extractParamsFromDataset,
@@ -78,6 +78,7 @@ export class GlpiKnowbaseAsideController
         this.#aside = aside;
         this.#initCategoryToggle();
         this.#initSearch();
+        this.#initCreateArticle();
         this.#initActions();
     }
 
@@ -106,6 +107,141 @@ export class GlpiKnowbaseAsideController
                 toggle.setAttribute('aria-expanded', 'false');
             }
         });
+    }
+
+    #initCreateArticle()
+    {
+        // Signal that the controller is ready (used by e2e tests to wait before interacting)
+        for (const add_link of this.#aside.querySelectorAll('[data-glpi-kb-aside-category-add]')) {
+            add_link.classList.remove('pe-none');
+        }
+
+        this.#aside.addEventListener('click', (e) => {
+            const add_link = e.target.closest('[data-glpi-kb-aside-category-add]');
+            if (!add_link) {
+                return;
+            }
+            e.preventDefault();
+            this.#openCreateInput(add_link);
+        });
+    }
+
+    /**
+     * @param {HTMLElement} add_link
+     */
+    #openCreateInput(add_link)
+    {
+        const header = add_link.closest('[data-glpi-kb-aside-category-header]');
+        const node = header.closest('[data-glpi-kb-aside-category]');
+        const list = node.querySelector(':scope > ul');
+        const category_id = Number(new URL(add_link.href).searchParams.get('knowbaseitemcategories_id')) || 0;
+
+        // Only one inline input at a time across the whole tree.
+        const existing = this.#aside.querySelector('[data-glpi-kb-aside-create-row]');
+        if (existing) {
+            existing.remove();
+        }
+
+        const li = document.createElement('li');
+        li.dataset.glpiKbAsideCreateRow = '';
+        li.className = 'article mb-2';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'form-control form-control-sm';
+        input.placeholder = __('New article...');
+        li.appendChild(input);
+        list.prepend(li);
+        input.focus();
+
+        let settled = false;
+        const cleanup = () => {
+            settled = true;
+            li.remove();
+        };
+        const unsettle = () => {
+            settled = false;
+        };
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                cleanup();
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                settled = true;
+                this.#commitCreateInput(input, li, category_id, cleanup, unsettle);
+            }
+        });
+
+        input.addEventListener('blur', () => {
+            if (settled) {
+                return;
+            }
+            if (input.value.trim() === '') {
+                cleanup();
+            } else {
+                settled = true;
+                this.#commitCreateInput(input, li, category_id, cleanup, unsettle);
+            }
+        });
+    }
+
+    /**
+     * @param {HTMLInputElement} input
+     * @param {HTMLElement} li
+     * @param {number} category_id
+     * @param {() => void} cleanup
+     * @param {() => void} unsettle
+     */
+    async #commitCreateInput(input, li, category_id, cleanup, unsettle)
+    {
+        const name = input.value.trim();
+        if (name === '') {
+            cleanup();
+            return;
+        }
+
+        input.disabled = true;
+
+        let data;
+        try {
+            const response = await post('Knowbase/KnowbaseItem/Create', {
+                name,
+                knowbaseitemcategories_id: category_id,
+            });
+            data = await response.json();
+        } catch {
+            unsettle();
+            input.disabled = false;
+            input.focus();
+            return;
+        }
+
+        this.#clearCurrentArticle();
+        li.outerHTML = data.html;
+        await this.#softNavigateTo(data.id, data.url);
+    }
+
+    #clearCurrentArticle()
+    {
+        const current = this.#aside.querySelector('[data-glpi-kb-article-current]');
+        if (current) {
+            current.removeAttribute('data-glpi-kb-article-current');
+            current.removeAttribute('aria-current');
+        }
+    }
+
+    /**
+     * @param {number} id
+     * @param {string} url
+     */
+    async #softNavigateTo(id, url)
+    {
+        // Implemented in Task 7. Placeholder for Task 6: a plain navigation,
+        // which already satisfies "article created and reachable" even before
+        // soft-navigation exists.
+        window.location.href = url;
     }
 
     #initSearch()

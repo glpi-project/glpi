@@ -52,7 +52,7 @@
                 {% set add_title = category.id > 0 ? __('Create an article in this category') : __('Create an uncategorized article') %}
                 <a
                     href="{{ add_href }}"
-                    class="d-flex align-items-center ms-2 p-1 text-secondary"
+                    class="d-flex align-items-center ms-2 p-1 text-secondary pe-none"
                     data-glpi-kb-aside-category-add
                     aria-label="{{ __('Create an article in %s')|format(category.title) }}"
                     title="{{ add_title }}"
