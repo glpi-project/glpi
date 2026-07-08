@@ -542,12 +542,18 @@ JAVASCRIPT;
             $filters = [];
             if (isset($_SESSION['glpi_plannings']['filters'])) {
                 foreach ($_SESSION['glpi_plannings']['filters'] as $key => $filter) {
-                    $filters['filters'][$key] = self::getPlanningFilterInfo($key, $filter);
+                    $info = self::getPlanningFilterInfo($key, $filter);
+                    if ($info !== null) {
+                        $filters['filters'][$key] = $info;
+                    }
                 }
             }
             if (isset($_SESSION['glpi_plannings']['plannings'])) {
                 foreach ($_SESSION['glpi_plannings']['plannings'] as $key => $filter) {
-                    $filters['plannings'][$key] = self::getPlanningFilterInfo($key, $filter);
+                    $info = self::getPlanningFilterInfo($key, $filter);
+                    if ($info !== null) {
+                        $filters['plannings'][$key] = $info;
+                    }
                 }
             }
 
@@ -821,10 +827,13 @@ JAVASCRIPT;
 
                 if ($caldav_item_url !== null) {
                     foreach ($filter_data['users'] as $user_key => $user_data) {
-                        $child_filters[$user_key] = self::getPlanningFilterInfo($user_key, $user_data, [
+                        $info = self::getPlanningFilterInfo($user_key, $user_data, [
                             'show_delete' => false,
                             'filter_color_index' => $params['filter_color_index'],
                         ]);
+                        if ($info !== null) {
+                            $child_filters[$user_key] = $info;
+                        }
                     }
                 }
             }
