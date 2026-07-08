@@ -2347,4 +2347,23 @@ HTML,
             ])
         );
     }
+
+    public function testGetReadablePrefilledCategoryIdIsPubliclyCallable(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name' => 'Public static test cat',
+            'knowbaseitemcategories_id' => 0,
+            'entities_id' => $entity_id,
+            'is_recursive' => 1,
+        ]);
+
+        $this->assertSame(
+            $cat->getID(),
+            KnowbaseItem::getReadablePrefilledCategoryId($cat->getID())
+        );
+        $this->assertNull(KnowbaseItem::getReadablePrefilledCategoryId(0));
+        $this->assertNull(KnowbaseItem::getReadablePrefilledCategoryId(999999));
+    }
 }

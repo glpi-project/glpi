@@ -312,7 +312,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @return int|null Category id when readable, null otherwise.
      */
-    private function getReadablePrefilledCategoryId(int $category_id): ?int
+    public static function getReadablePrefilledCategoryId(int $category_id): ?int
     {
         if ($category_id <= 0) {
             return null;
@@ -1118,7 +1118,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $raw_category_id = (int) ($options['knowbaseitemcategories_id']
                 ?? $_GET['knowbaseitemcategories_id']
                 ?? 0);
-            $prefilled_category_id = $this->getReadablePrefilledCategoryId($raw_category_id);
+            $prefilled_category_id = self::getReadablePrefilledCategoryId($raw_category_id);
             if ($prefilled_category_id !== null) {
                 $params['prefilled_category'] = [
                     'id'   => $prefilled_category_id,
