@@ -62,7 +62,6 @@
         },
         events: {
             url:  `${CFG_GLPI.root_doc}/ajax/reservations.php`,
-            type: 'GET',
             extraParams: {
                 'action': 'get_events',
                 'reservationitems_id': id,
