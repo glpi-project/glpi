@@ -35,6 +35,7 @@
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\CodeQuality\Rector as CodeQuality;
 use Rector\Config\RectorConfig;
+use Rector\Configuration\PhpLevelSetResolver;
 use Rector\DeadCode\Rector as DeadCode;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\ValueObject\PhpVersion;
@@ -43,6 +44,9 @@ use RectorGlpi\Set\GlpiSetList;
 return RectorConfig::configure()
     ->withSets([
         GlpiSetList::GLPI_DEFAULT_SET,
+
+        // apply PHP sets up to PHP 7.4
+        ...PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_74),
     ])
     ->withImportNames(importNames: false, importDocBlockNames: false, importShortClasses: false, removeUnusedImports: true)
     ->withPaths([
@@ -112,5 +116,4 @@ return RectorConfig::configure()
         CodeQuality\Ternary\UnnecessaryTernaryExpressionRector::class,
         DeadCode\Assign\RemoveUnusedVariableAssignRector::class,
     ])
-    ->withPhpSets(php74: true) // apply PHP sets up to PHP 7.4
 ;
