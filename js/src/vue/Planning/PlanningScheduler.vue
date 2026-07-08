@@ -95,6 +95,7 @@
             resourceTimelinePlugin,
             rrulePlugin,
         ],
+        height: props.height,
         weekNumbers: props.full_view,
         dayMaxEvents: true,
         now: props.now,// as we set the calendar as UTC, we need to reprecise the current datetime
