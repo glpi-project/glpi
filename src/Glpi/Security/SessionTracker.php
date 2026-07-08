@@ -223,7 +223,8 @@ final class SessionTracker
     {
         global $DB;
 
-        if ($users_id > 0 && $users_id !== Session::getLoginUserID() && !Session::haveRight('config', UPDATE)) {
+        $is_own_sessions = $users_id > 0 && $users_id === Session::getLoginUserID();
+        if (!$is_own_sessions && !Session::haveRight('config', UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 

@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Security;
 
 use Auth;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Security\SessionTracker;
 use Glpi\Tests\DbTestCase;
 use Log;
@@ -165,6 +166,33 @@ class SessionTrackerTest extends DbTestCase
 
         SessionTracker::revokeAllSessionsExceptCurrent($test_users_id);
         $this->assertEquals(1, countElementsInTable('glpi_users_sessions', ['login_session_uid' => $current_login_session_uid]));
+    }
+
+    public function testRevokeAllForOtherUser(): void
+    {
+        $this->login();
+        SessionTracker::revokeAllSessionsExceptCurrent(99);
+    }
+
+    public function testRevokeAllForOtherUserWithoutPermission(): void
+    {
+        $this->login('tech', 'tech');
+        $this->expectException(AccessDeniedHttpException::class);
+        SessionTracker::revokeAllSessionsExceptCurrent(99);
+    }
+
+    public function testRevokeAllForAllUsersWithoutPermission(): void
+    {
+        $this->login('tech', 'tech');
+        $this->expectException(AccessDeniedHttpException::class);
+        SessionTracker::revokeAllSessionsExceptCurrent(0);
+    }
+
+    public function testRevokeAllForAllUsersWithoutPermissionNegativeID(): void
+    {
+        $this->login('tech', 'tech');
+        $this->expectException(AccessDeniedHttpException::class);
+        SessionTracker::revokeAllSessionsExceptCurrent(-1);
     }
 
     public function testRevokeSessionByAge(): void
