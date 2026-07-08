@@ -104,11 +104,11 @@
             (function () {
                 function toggleAuthInputs() {
                     const value = $('[name="auth_required"]').val();
-                    const isBasic = value === '{{ BASIC_AUTH }}';
+                    const isBasic = value === '{{ BASIC_AUTH|e('js') }}';
                     $('#basic_auth_fields').toggle(isBasic);
                     $('#basic_auth_fields :input').prop('disabled', !isBasic);
-                    $('#oauth_client_hint').toggle(value === '{{ CLIENT_CREDENTIALS }}');
-                    $('#no_auth_warning').toggle(value === '{{ NO_AUTH }}');
+                    $('#oauth_client_hint').toggle(value === '{{ CLIENT_CREDENTIALS|e('js') }}');
+                    $('#no_auth_warning').toggle(value === '{{ NO_AUTH|e('js') }}');
                 }
                 $(function () {
                     $('[name="auth_required"]').on('change', toggleAuthInputs);
@@ -256,7 +256,7 @@
             <script>
                 function changestatus() {
                     const values  = $('[name="stale_agents_action[]"]').val() || [];
-                    const display = Array.isArray(values) && values.includes('{{ STALE_AGENT_ACTION_STATUS }}');
+                    const display = Array.isArray(values) && values.includes('{{ STALE_AGENT_ACTION_STATUS|e('js') }}');
                     $('#bloc_stale_agents_status_condition').toggle(display);
                     $('#bloc_stale_agents_status').toggle(display);
                 }
