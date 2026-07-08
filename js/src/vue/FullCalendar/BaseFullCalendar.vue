@@ -52,7 +52,9 @@
         locale: matching_locales.length > 0 ? matching_locales[0] : 'en',
     };
     const calendar_options = {...default_fullcalendar_options, ...props.calendar_options};
-    const current_view = defineModel('currentView', 'timeGridWeek');
+    const current_view = defineModel('currentView', {
+        default: 'timeGridWeek',
+    });
     const current_view_data = ref(null);
 
     calendar_options.datesSet = (info) => {
