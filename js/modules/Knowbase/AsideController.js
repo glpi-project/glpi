@@ -238,10 +238,52 @@ export class GlpiKnowbaseAsideController
      */
     async #softNavigateTo(id, url)
     {
-        // Implemented in Task 7. Placeholder for Task 6: a plain navigation,
-        // which already satisfies "article created and reachable" even before
-        // soft-navigation exists.
-        window.location.href = url;
+        const pane = document.querySelector('[data-glpi-tab-content]');
+        if (!pane) {
+            window.location.href = url;
+            return;
+        }
+
+        const old_name_el = document.querySelector('[data-glpi-kb-subject]');
+        const old_name = old_name_el ? old_name_el.textContent.trim() : null;
+
+        let html;
+        try {
+            const response = await get(`Knowbase/KnowbaseItem/${id}/Full?mode=edit`);
+            html = await response.text();
+        } catch {
+            window.location.href = url;
+            return;
+        }
+
+        pane.innerHTML = html;
+        history.pushState({ knowbaseitems_id: id }, '', url);
+        window.addEventListener('popstate', () => window.location.reload(), { once: true });
+
+        const new_name_el = pane.querySelector('[data-glpi-kb-subject]');
+        const new_name = new_name_el ? new_name_el.textContent.trim() : null;
+        if (old_name && new_name) {
+            const idx = document.title.indexOf(old_name);
+            if (idx !== -1) {
+                document.title = document.title.slice(0, idx) + new_name + document.title.slice(idx + old_name.length);
+            }
+        }
+
+        const container = pane.querySelector('[data-glpi-knowbase-article]');
+        const side_panel_container = pane.querySelector('[data-glpi-knowbase-side-panel]');
+        const offcanvas_container = pane.querySelector('[data-glpi-knowbase-side-panel-offcanvas]');
+        if (!container) {
+            return;
+        }
+
+        const { GlpiKnowbaseArticleController } = await import('/js/modules/Knowbase/ArticleController.js');
+        new GlpiKnowbaseArticleController(
+            container,
+            side_panel_container,
+            offcanvas_container,
+            'edit',
+            { skipPageChrome: true, autoEnterEditMode: true },
+        );
     }
 
     #initSearch()

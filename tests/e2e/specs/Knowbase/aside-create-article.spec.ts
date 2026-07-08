@@ -174,12 +174,14 @@ test('hovering a sub-category does not reveal the parent category add-article li
     await expect(parent_add).toBeHidden();
 });
 
-test('add mode shows the prefilled category as a static hint, without inline editor', async ({ page, profile, api }) => {
+test('typing a title and pressing Enter creates the article and soft-navigates to it in edit mode', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
     const unique = randomUUID().slice(0, 8);
-    const category_name = `E2E Meta Cat ${unique}`;
+    const category_name = `E2E Inline Create Cat ${unique}`;
+    const article_title = `E2E Inline Create Article ${unique}`;
+
     const category_id = await api.createItem('KnowbaseItemCategory', {
         name: category_name,
         entities_id: getWorkerEntityId(),
@@ -193,18 +195,42 @@ test('add mode shows the prefilled category as a static hint, without inline edi
 
     await kb.goto(1);
 
+    // The "+" click is intercepted by AsideController (a dynamically imported
+    // module) instead of being a plain <a href> navigation. Wait for the
+    // controller to finish initializing before clicking it, using the same
+    // readiness signal doSearchAside() relies on, otherwise the click can
+    // race the module load and fall through to the browser's default
+    // navigation.
+    await expect(kb.asideSearchInput).not.toHaveClass(/pe-none/);
+
     const add_link = kb.getAsideCategory(category_name).getByRole('link', {
         name: new RegExp(`Create an article in ${category_name}`, 'i'),
     });
-    // Reveal the action button (hidden until the category row is hovered).
     await kb.getAsideCategoryToggle(category_name).hover();
     await add_link.click();
 
-    // A plain hint naming the category, with no toggle link nor editor.
-    const category_meta = page.getByRole('group', { name: 'Article category' });
-    await expect(category_meta).toContainText(category_name);
-    await expect(category_meta.getByRole('link')).toHaveCount(0);
-    await expect(page.getByRole('group', { name: 'Category editor' })).toHaveCount(0);
+    const inline_input = kb.getAsideCategoryCreateInput(category_name);
+    await expect(inline_input).toBeFocused();
+
+    // Mark the page's JS realm before submitting: if a full reload happens,
+    // this marker is gone afterwards.
+    await page.evaluate(() => { window.__e2e_no_reload_marker = true; });
+
+    await inline_input.fill(article_title);
+    await inline_input.press('Enter');
+
+    // Lands on the new article, URL updated, in edit mode with the save
+    // button visible (edit mode is active, not just edit-capable markup).
+    await expect(page.getByTestId('subject')).toHaveText(article_title);
+    await expect(page.getByTestId('save-button')).toBeVisible();
+
+    const marker_survived = await page.evaluate(() => window.__e2e_no_reload_marker === true);
+    expect(marker_survived).toBe(true);
+
+    // The new article is visible under the category in the aside, and marked current.
+    const category_node = kb.getAsideCategory(category_name);
+    const article_row = category_node.getByRole('listitem', { current: 'page' }).filter({ hasText: article_title });
+    await expect(article_row).toBeVisible();
 });
 
 test('edit mode updates categories via the bar (AJAX)', async ({ page, profile, api }) => {
