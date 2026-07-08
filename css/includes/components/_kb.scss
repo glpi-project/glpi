@@ -78,13 +78,21 @@
 }
 
 .kb-illustration-preview {
-    padding: 0.25rem;
     border: 1px solid transparent;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
-    &[role="button"]:hover {
-        border-color: var(--tblr-border-color);
-        box-shadow: var(--tblr-box-shadow-input);
+    // Only add spacing in edit mode, where the preview becomes an interactive
+    // button (role="button") that can be hovered to pick an illustration.
+    // Offset the padding with a matching negative margin so surrounding
+    // content keeps its position when switching between view and edit mode.
+    &[role="button"] {
+        padding: 0.25rem;
+        margin: -0.25rem;
+
+        &:hover {
+            border-color: var(--tblr-border-color);
+            box-shadow: var(--tblr-box-shadow-input);
+        }
     }
 }
 
@@ -248,9 +256,21 @@
 
 // KB documents footer tabs navigation
 #kb-documents {
-    .nav-link:hover,
-    .nav-link:focus {
-        background-color: transparent !important;
+    // Draw a continuous light gray line under the whole tab row so it reads as
+    // a standard tab layout; the active/hover tab underline sits on top of it.
+    .nav-underline {
+        border-bottom: 1px solid var(--tblr-border-color);
+    }
+
+    .nav-link {
+        // Overlap the container line so the active/hover underline replaces it
+        // instead of stacking just above it.
+        margin-bottom: -1px;
+
+        &:hover,
+        &:focus {
+            background-color: transparent !important;
+        }
     }
 }
 
