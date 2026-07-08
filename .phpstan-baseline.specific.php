@@ -39,6 +39,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Appliance_Item_Relation.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$options of function setcookie expects array\\{expires\\?\\: int, path\\?\\: string, domain\\?\\: string, secure\\?\\: bool, httponly\\?\\: bool, samesite\\?\\: \'Lax\'\\|\'lax\'\\|\'None\'\\|\'none\'\\|\'Strict\'\\|\'strict\'\\}, array\\{expires\\: \\(float\\|int\\), path\\: string, domain\\: string, secure\\: bool, httponly\\: true, samesite\\: string\\} given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#3 \\$options of function setcookie expects array\\{expires\\?\\: int, path\\?\\: string, domain\\?\\: string, secure\\?\\: bool, httponly\\?\\: bool, samesite\\?\\: \'Lax\'\\|\'lax\'\\|\'None\'\\|\'none\'\\|\'Strict\'\\|\'strict\', partitioned\\?\\: bool\\}, array\\{expires\\: \\(float\\|int\\), path\\: string, domain\\: string, secure\\: bool, httponly\\: true, samesite\\: string\\} given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
 	'identifier' => 'array.invalidKey',
 	'count' => 5,
