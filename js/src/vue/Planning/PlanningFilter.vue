@@ -29,7 +29,6 @@
     const emits = defineEmits(['deleteFilter', 'toggleFilter', 'filterColorChange']);
 
     const event_type = props.filter_data.filter_data.type;
-    const event_name = props.filter_key;
     const expanded = ref(props.filter_data.expanded === true || props.filter_data.expanded === 'expanded');
     const label_title = props.filter_data.title;
     const url_not_allowed_label = __('URL "%s" is not allowed by your administrator.')
