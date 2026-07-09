@@ -1085,91 +1085,14 @@ HTML,
         $this->assertStringContainsString('MyCat', $html);
     }
 
-    public function testShowFullEditModeExposesExistingCategoriesAttribute(): void
-    {
-        $this->login();
-        $entity_id = $this->getTestRootEntity(only_id: true);
-        $cat = $this->createItem(\KnowbaseItemCategory::class, [
-            'name' => 'EditCat', 'knowbaseitemcategories_id' => 0,
-            'entities_id' => $entity_id, 'is_recursive' => 1,
-        ]);
-        $item = $this->createItem(KnowbaseItem::class, [
-            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
-            '__categories_defined' => 1, '_categories' => [$cat->getID()],
-        ]);
-        $html = (string) $item->showFull(['mode' => 'edit', 'display' => false]);
-        $this->assertStringContainsString('data-glpi-kb-existing-categories', $html);
-        $this->assertStringContainsString('EditCat', $html);
-    }
-
     public function testShowFullAddModeRendersCategoryHint(): void
     {
         $this->login();
         $item = new KnowbaseItem();
         $item->getEmpty();
         $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
-        // Add mode shows a plain hint, not the interactive category editor.
-        $this->assertStringNotContainsString('data-glpi-kb-toggle-category-mode', $html);
-        $this->assertStringNotContainsString('data-glpi-kb-category-display', $html);
-        // No prefilled category → static hint
+        // No prefilled category → static hint.
         $this->assertStringContainsString('added to a category', $html);
-    }
-
-    public function testShowFullEditModeRendersCategoryMetaLink(): void
-    {
-        $this->login();
-        $entity_id = $this->getTestRootEntity(only_id: true);
-        $cat = $this->createItem(\KnowbaseItemCategory::class, [
-            'name' => 'MetaTestCat', 'knowbaseitemcategories_id' => 0,
-            'entities_id' => $entity_id, 'is_recursive' => 1,
-        ]);
-        $item = $this->createItem(KnowbaseItem::class, [
-            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
-            '__categories_defined' => 1, '_categories' => [$cat->getID()],
-        ]);
-        $html = (string) $item->showFull(['mode' => 'edit', 'display' => false]);
-        $this->assertStringContainsString('data-glpi-kb-toggle-category-mode', $html);
-        $this->assertStringContainsString('MetaTestCat', $html);
-        // pointer-events-none on the category-toggle anchor (JS enables it)
-        $this->assertMatchesRegularExpression(
-            '/data-glpi-kb-toggle-category-mode[^>]*pointer-events-none|pointer-events-none[^>]*data-glpi-kb-toggle-category-mode/',
-            $html
-        );
-    }
-
-    public function testShowFullRendersCategoryModeBar(): void
-    {
-        $this->login();
-        $item = new KnowbaseItem();
-        $item->getEmpty();
-        // Add mode: no editor bar (the article does not exist yet)
-        $html_add = (string) $item->showFull(['mode' => 'add', 'display' => false]);
-        $this->assertStringNotContainsString('data-glpi-kb-category-alert', $html_add);
-        $this->assertStringNotContainsString('data-glpi-kb-category-select', $html_add);
-
-        // Edit mode: multi-select
-        $entity_id = $this->getTestRootEntity(only_id: true);
-        $cat = $this->createItem(\KnowbaseItemCategory::class, [
-            'name' => 'BarTestCat', 'knowbaseitemcategories_id' => 0,
-            'entities_id' => $entity_id, 'is_recursive' => 1,
-        ]);
-        $existing = $this->createItem(KnowbaseItem::class, [
-            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
-            '__categories_defined' => 1, '_categories' => [$cat->getID()],
-        ]);
-        $html_edit = (string) $existing->showFull(['mode' => 'edit', 'display' => false]);
-        $this->assertStringContainsString('data-glpi-kb-category-alert', $html_edit);
-        $this->assertMatchesRegularExpression(
-            '/data-glpi-kb-category-select[^>]*multiple/',
-            $html_edit
-        );
-
-        // View mode: bar should NOT be rendered
-        $view_item = $this->createItem(KnowbaseItem::class, [
-            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
-        ]);
-        $html_view = (string) $view_item->showFull(['mode' => 'view', 'display' => false]);
-        $this->assertStringNotContainsString('data-glpi-kb-category-alert', $html_view);
     }
 
     public function testGetCategoriesForDisplayReturnsLinkedCategories(): void

@@ -1001,6 +1001,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         NotificationEvent::raiseEvent('delete', $this);
     }
 
+    /**
+     * @param array<string, mixed> $query_params
+     * @return array<string, mixed>
+     */
     public function getFormOptionsFromUrl(array $query_params): array
     {
         $options = [];
@@ -1151,9 +1155,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ];
             }
         }
-
-        $params['existing_categories'] = $this->getCategoriesForDisplay();
-        $params['category_idor_token'] = Session::getNewIDORToken(KnowbaseItemCategory::class);
 
         $out = TemplateRenderer::getInstance()->render(
             'pages/tools/kb/article.html.twig',
