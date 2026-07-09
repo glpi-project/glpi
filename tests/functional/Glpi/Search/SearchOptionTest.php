@@ -306,4 +306,16 @@ class SearchOptionTest extends DbTestCase
             );
         }
     }
+
+    public function testGetActionsForNumericDatatypeIncludesComparisonOperators(): void
+    {
+        $this->login();
+
+        $actions = SearchOption::getActionsFor(\Computer::class, 2);
+
+        $this->assertArrayHasKey('morethan', $actions);
+        $this->assertArrayHasKey('lessthan', $actions);
+        $this->assertSame(__('greater than'), $actions['morethan']);
+        $this->assertSame(__('less than'), $actions['lessthan']);
+    }
 }

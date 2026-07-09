@@ -7239,6 +7239,95 @@ class SearchTest extends DbTestCase
         $this->assertNotContains($computer_low->getID(), $ids_found, 'Computer with 10% free space must NOT match ">= 67"');
     }
 
+    public function testNumericMorethanLessthanSearch(): void
+    {
+        $this->login();
+
+        $unique    = uniqid('numsearch-', true);
+        $entity_id = $this->getTestRootEntity(true);
+
+        $computer_low = $this->createItem(Computer::class, [
+            'name'        => $unique . '-low',
+            'entities_id' => $entity_id,
+        ]);
+        $computer_high = $this->createItem(Computer::class, [
+            'name'        => $unique . '-high',
+            'entities_id' => $entity_id,
+        ]);
+
+        $low_id  = $computer_low->getID();
+        $high_id = $computer_high->getID();
+        $this->assertLessThan($high_id, $low_id);
+
+        $base_criteria = [
+            [
+                'field'      => 1, // name
+                'searchtype' => 'contains',
+                'value'      => $unique,
+            ],
+        ];
+
+        // morethan + 0 must not be treated as an equality search
+        $data = $this->doSearch(Computer::class, [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => array_merge($base_criteria, [[
+                'link'       => 'AND',
+                'field'      => 2, // ID
+                'searchtype' => 'morethan',
+                'value'      => 0,
+            ]]),
+        ]);
+        $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertContains($low_id, $ids_found);
+        $this->assertContains($high_id, $ids_found);
+
+        // lessthan + high_id must exclude the highest matching ID
+        $data = $this->doSearch(Computer::class, [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => array_merge($base_criteria, [[
+                'link'       => 'AND',
+                'field'      => 2,
+                'searchtype' => 'lessthan',
+                'value'      => $high_id,
+            ]]),
+        ]);
+        $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertContains($low_id, $ids_found);
+        $this->assertNotContains($high_id, $ids_found);
+
+        // NOT morethan must invert to <=
+        $data = $this->doSearch(Computer::class, [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => array_merge($base_criteria, [[
+                'link'       => 'AND NOT',
+                'field'      => 2,
+                'searchtype' => 'morethan',
+                'value'      => $low_id,
+            ]]),
+        ]);
+        $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertContains($low_id, $ids_found);
+        $this->assertNotContains($high_id, $ids_found);
+
+        // Regression: contains + >0 syntax must still work
+        $data = $this->doSearch(Computer::class, [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => array_merge($base_criteria, [[
+                'link'       => 'AND',
+                'field'      => 2,
+                'searchtype' => 'contains',
+                'value'      => '>0',
+            ]]),
+        ]);
+        $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertContains($low_id, $ids_found);
+        $this->assertContains($high_id, $ids_found);
+    }
+
     public function testCertificateRawSearchOptionsInheritance(): void
     {
         $item = new \Certificate();

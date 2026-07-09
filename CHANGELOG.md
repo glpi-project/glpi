@@ -7,6 +7,7 @@ The present file will list all changes made to the project; according to the
 ## [12.0.0] unreleased
 
 ### Added
+- `morethan` and `lessthan` search operators for numeric fields (number, integer, decimal, count, mio).
 - Sessions tab for OAuth Clients to display non-expired sessions associated with the client and allow revoking them.
 - Improved client IP detection.
   If your GLPI instance is behind a reverse proxy, you should add its IP(s) the new `GLPI_TRUSTED_REVERSE_PROXIES` constant and modify the new `GLPI_REVERSE_PROXY_HEADERS` constant to include the headers your proxy uses to forward the client IP.

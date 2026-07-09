@@ -574,6 +574,8 @@ final class SearchOption implements ArrayAccess
                             'notcontains' => __('not contains'),
                             'equals'      => __('is'),
                             'notequals'   => __('is not'),
+                            'morethan'    => __('greater than'),
+                            'lessthan'    => __('less than'),
                             'empty'       => __('is empty'),
                             'searchopt'   => $searchopt[$field_num],
                         ];

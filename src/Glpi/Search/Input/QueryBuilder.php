@@ -338,6 +338,7 @@ final class QueryBuilder implements SearchInputInterface
                     }
 
                     // Standard datatype usage
+                    $skip_value_to_select = false;
                     if (isset($searchopt['datatype'])) {
                         switch ($searchopt['datatype']) {
                             case "date":
@@ -345,13 +346,25 @@ final class QueryBuilder implements SearchInputInterface
                             case "datetime":
                                 $options2['relative_dates'] = true;
                                 break;
+
+                            case "count":
+                            case "mio":
+                            case "number":
+                            case "integer":
+                            case "decimal":
+                                if (in_array($request['searchtype'], ['morethan', 'lessthan'], true)) {
+                                    $skip_value_to_select = true;
+                                }
+                                break;
                         }
                     }
 
-                    $out = $item->getValueToSelect($searchopt, $inputname, $request['value'], $options2);
-                    if (strlen($out)) {
-                        echo $out;
-                        $display = true;
+                    if (!$skip_value_to_select) {
+                        $out = $item->getValueToSelect($searchopt, $inputname, $request['value'], $options2);
+                        if (strlen($out)) {
+                            echo $out;
+                            $display = true;
+                        }
                     }
 
                     //Could display be handled by a plugin ?

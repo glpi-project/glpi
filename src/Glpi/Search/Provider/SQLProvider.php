@@ -2055,6 +2055,30 @@ final class SQLProvider implements SearchProviderInterface
                         ];
                     }
 
+                    if (in_array($searchtype, ['morethan', 'lessthan'], true) && is_numeric($val)) {
+                        if ($nott) {
+                            $operator = $searchtype === 'morethan' ? '<=' : '>=';
+                        } else {
+                            $operator = $searchtype === 'morethan' ? '>' : '<';
+                        }
+                        $numeric_val = floatval($val);
+                        $values = $tocompute instanceof QueryExpression ? $tocompute->getParams() : [];
+                        if ($searchopt[$ID]["datatype"] === 'progressbar') {
+                            return [
+                                new QueryExpression(
+                                    sprintf("%s %s %s", $tocompute, $operator, $numeric_val),
+                                    values: $values
+                                ),
+                            ];
+                        }
+                        return [
+                            new QueryExpression(
+                                sprintf("%s %s ?", $tocompute, $operator),
+                                values: array_merge($values, [$numeric_val])
+                            ),
+                        ];
+                    }
+
                     $values = $tocompute instanceof QueryExpression ? $tocompute->getParams() : [];
                     if (is_numeric($val) && !$decimal_contains) {
                         $numeric_val = floatval($val);
@@ -4201,6 +4225,17 @@ final class SQLProvider implements SearchProviderInterface
                         $regs[1] .= $regs[2];
                         return [
                             $NAME => [$regs[1], floatval($regs[3] . $regs[4])],
+                        ];
+                    }
+
+                    if (in_array($searchtype, ['morethan', 'lessthan'], true) && is_numeric($val)) {
+                        if ($NOT) {
+                            $operator = $searchtype === 'morethan' ? '<=' : '>=';
+                        } else {
+                            $operator = $searchtype === 'morethan' ? '>' : '<';
+                        }
+                        return [
+                            $NAME => [$operator, floatval($val)],
                         ];
                     }
 
