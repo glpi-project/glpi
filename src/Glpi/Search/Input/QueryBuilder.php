@@ -816,6 +816,10 @@ final class QueryBuilder implements SearchInputInterface
             && $usesession
         ) {
             foreach ($params as $key => $val) {
+                // 'reset' is one-shot, must not persist in session
+                if ($key === 'reset') {
+                    continue;
+                }
                 $_SESSION['glpisearch'][$itemtype][$key] = $val;
             }
         }
