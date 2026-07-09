@@ -678,11 +678,20 @@ input.form-check-input[type="checkbox"]:disabled {
     opacity: 0.9;
 }
 
-// Tabler's default control border (#e5e7eb) sits at ~1.2:1 on white, well below
-// the 3:1 needed to perceive the field boundary.
+// Tabler's default control border (#e5e7eb) sits at ~1.2:1 on white, below the
+// 3:1 needed to perceive the field boundary. Composite field skins share the
+// same token so every boundary renders identically, matching the dark palette.
 .form-control,
 .form-select,
-.form-check-input {
+.form-check-input,
+.input-group-text,
+.form-file-text,
+.form-selectgroup-label,
+.form-selectgroup-check {
+    border-color: var(--glpi-form-control-border-color);
+}
+
+.form-imagecheck-figure::before {
     border-color: var(--glpi-form-control-border-color);
 }
 
