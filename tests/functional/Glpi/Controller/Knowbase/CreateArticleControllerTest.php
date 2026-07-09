@@ -141,4 +141,16 @@ final class CreateArticleControllerTest extends DbTestCase
         $request = new Request(content: json_encode(['name' => 'Should be denied']));
         (new CreateArticleController())($request);
     }
+
+    public function testResponseHtmlIncludesActionsMenuWhenUserCanManageArticles(): void
+    {
+        $this->login();
+
+        $request = new Request(content: json_encode(['name' => 'Actions menu test']));
+        $response = (new CreateArticleController())($request);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $data = json_decode($response->getContent(), true);
+        $this->assertStringContainsString('data-glpi-kb-actions-menu', $data['html']);
+    }
 }

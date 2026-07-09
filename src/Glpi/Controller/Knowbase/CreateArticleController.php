@@ -40,6 +40,7 @@ use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Knowbase\Aside\Article;
 use KnowbaseItem;
+use KnowbaseItem_Favorite;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,12 +84,16 @@ final class CreateArticleController extends AbstractController
             is_current: true,
         );
 
+        $show_actions = KnowbaseItem_Favorite::canCreate()
+            || KnowbaseItem::canUpdate()
+            || KnowbaseItem::canPurge();
+
         return new JsonResponse([
             'id'   => $article->id,
             'url'  => $article->link,
             'html' => TemplateRenderer::getInstance()->render(
                 'pages/tools/kb/aside_article_row.html.twig',
-                ['article' => $article],
+                ['article' => $article, 'show_actions' => $show_actions],
             ),
         ]);
     }
