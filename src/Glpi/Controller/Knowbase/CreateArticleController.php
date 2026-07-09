@@ -89,9 +89,10 @@ final class CreateArticleController extends AbstractController
             || KnowbaseItem::canPurge();
 
         return new JsonResponse([
-            'id'   => $article->id,
-            'url'  => $article->link,
-            'html' => TemplateRenderer::getInstance()->render(
+            'id'            => $article->id,
+            'url'           => $article->link,
+            'is_recursive'  => (bool) $item->fields['is_recursive'],
+            'html'          => TemplateRenderer::getInstance()->render(
                 'pages/tools/kb/aside_article_row.html.twig',
                 ['article' => $article, 'show_actions' => $show_actions],
             ),

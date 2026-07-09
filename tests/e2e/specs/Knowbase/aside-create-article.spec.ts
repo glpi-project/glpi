@@ -232,6 +232,54 @@ test('typing a title and pressing Enter creates the article and soft-navigates t
     await expect(article_row).toHaveAttribute('aria-current', 'page');
 });
 
+test('soft-navigating to a newly created article rebinds the "Child entities" checkbox to the new article, not the old one', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const category_name = `E2E Recursive Toggle Cat ${unique}`;
+    const article_a_title = `E2E Recursive Toggle Article A ${unique}`;
+    const article_b_title = `E2E Recursive Toggle Article B ${unique}`;
+
+    const category_id = await api.createItem('KnowbaseItemCategory', {
+        name: category_name,
+        entities_id: getWorkerEntityId(),
+    });
+    const article_a_id = await api.createItem('KnowbaseItem', {
+        name: article_a_title,
+        answer: 'Article A content',
+        entities_id: getWorkerEntityId(),
+        _categories: [category_id],
+    });
+
+    await kb.goto(article_a_id);
+
+    await expect(kb.asideSearchInput).not.toHaveClass(/pe-none/);
+
+    const add_link = kb.getAsideCategory(category_name).getByRole('link', {
+        name: new RegExp(`Create an article in ${category_name}`, 'i'),
+    });
+    await kb.getAsideCategoryToggle(category_name).hover();
+    await add_link.click();
+
+    const inline_input = kb.getAsideCategoryCreateInput(category_name);
+    await expect(inline_input).toBeFocused();
+    await inline_input.fill(article_b_title);
+    await inline_input.press('Enter');
+
+    await expect(page.getByTestId('subject')).toHaveText(article_b_title);
+    const article_b_id = await page.getByTestId('kb-article').getAttribute('data-glpi-kb-item-id');
+
+    const toggle_response = page.waitForResponse(
+        response => response.url().includes('/ToggleField') && response.request().method() === 'POST'
+    );
+    await kb.doToggleChildEntities();
+    const response = await toggle_response;
+
+    expect(response.url()).toContain(`/Knowbase/${article_b_id}/ToggleField`);
+    expect(response.url()).not.toContain(`/Knowbase/${article_a_id}/ToggleField`);
+});
+
 test('edit mode updates categories via the bar (AJAX)', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);

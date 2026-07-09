@@ -153,4 +153,16 @@ final class CreateArticleControllerTest extends DbTestCase
         $data = json_decode($response->getContent(), true);
         $this->assertStringContainsString('data-glpi-kb-actions-menu', $data['html']);
     }
+
+    public function testResponseIncludesIsRecursiveField(): void
+    {
+        $this->login();
+
+        $request = new Request(content: json_encode(['name' => 'Is recursive field test']));
+        $response = (new CreateArticleController())($request);
+
+        $data = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('is_recursive', $data);
+        $this->assertFalse($data['is_recursive']);
+    }
 }

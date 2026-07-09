@@ -220,7 +220,7 @@ export class GlpiKnowbaseAsideController
 
         this.#clearCurrentArticle();
         li.outerHTML = data.html;
-        await this.#softNavigateTo(data.id, data.url);
+        await this.#softNavigateTo(data.id, data.url, data.is_recursive);
     }
 
     #clearCurrentArticle()
@@ -235,8 +235,9 @@ export class GlpiKnowbaseAsideController
     /**
      * @param {number} id
      * @param {string} url
+     * @param {boolean} is_recursive
      */
-    async #softNavigateTo(id, url)
+    async #softNavigateTo(id, url, is_recursive)
     {
         const pane = document.querySelector('[data-glpi-tab-content]');
         if (!pane) {
@@ -276,13 +277,20 @@ export class GlpiKnowbaseAsideController
             return;
         }
 
+        const checkbox = document.querySelector('[data-glpi-child-entities-checkbox]');
+        if (checkbox) {
+            const fresh_checkbox = checkbox.cloneNode(true);
+            fresh_checkbox.checked = is_recursive;
+            checkbox.replaceWith(fresh_checkbox);
+        }
+
         const { GlpiKnowbaseArticleController } = await import('/js/modules/Knowbase/ArticleController.js');
         new GlpiKnowbaseArticleController(
             container,
             side_panel_container,
             offcanvas_container,
             'edit',
-            { skipPageChrome: true, autoEnterEditMode: true },
+            { skipPageChrome: false, autoEnterEditMode: true },
         );
     }
 
