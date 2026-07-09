@@ -40,6 +40,7 @@ use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Knowbase\Aside\Article;
 use KnowbaseItem;
+use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
@@ -67,9 +68,11 @@ final class CreateArticleController extends AbstractController
         $category_id = KnowbaseItem::getReadablePrefilledCategoryId($raw_category_id);
 
         $item = $this->add(KnowbaseItem::class, [
-            'name'        => $name,
-            'answer'      => '',
-            '_categories' => $category_id !== null ? [$category_id] : [],
+            'name'         => $name,
+            'answer'       => '',
+            'entities_id'  => Session::getActiveEntity(),
+            'is_recursive' => 0,
+            '_categories'  => $category_id !== null ? [$category_id] : [],
         ]);
 
         $article = new Article(

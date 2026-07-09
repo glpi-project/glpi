@@ -76,6 +76,23 @@ final class CreateArticleControllerTest extends DbTestCase
         $this->assertSame([$cat->getID()], array_column($item->getCategoriesForDisplay(), 'id'));
     }
 
+    public function testCreatedArticleIsScopedToActiveEntity(): void
+    {
+        $this->login();
+        $child_entity_id = getItemByTypeName('Entity', '_test_child_1', true);
+        $this->setEntity($child_entity_id, false);
+
+        $request = new Request(content: json_encode(['name' => 'Entity scoped test']));
+        $response = (new CreateArticleController())($request);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $data = json_decode($response->getContent(), true);
+        $item = new KnowbaseItem();
+        $this->assertTrue($item->getFromDB($data['id']));
+        $this->assertSame($child_entity_id, (int) $item->fields['entities_id']);
+        $this->assertSame(0, (int) $item->fields['is_recursive']);
+    }
+
     public function testCreatesUncategorizedArticleWhenNoCategoryGiven(): void
     {
         $this->login();
