@@ -3130,4 +3130,48 @@ HTML;
             'entity_restrict must not be a JS array (would cause N POST params per entity)'
         );
     }
+
+    public function testSearchByContactField(): void
+    {
+        $this->login();
+
+        $computer = new Computer();
+        $computer_with_contact_id = $computer->add([
+            'name'        => 'PC-ContactSearch-Found',
+            'contact'     => 'Jean Dupont',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertGreaterThan(0, $computer_with_contact_id);
+
+        $other_computer_id = $computer->add([
+            'name'        => 'PC-ContactSearch-Other',
+            'contact'     => 'Marie Martin',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertGreaterThan(0, $other_computer_id);
+
+        $displaywith = Dropdown::getDisplayWith(Computer::class);
+        $this->assertContains('contact', $displaywith);
+
+        $params = [
+            'itemtype'            => Computer::class,
+            'display_emptychoice' => false,
+            'entity_restrict'     => $this->getTestRootEntity(true),
+            'searchText'          => 'Jean',
+            'displaywith'         => $displaywith,
+        ];
+        $params['_idor_token'] = Session::getNewIDORToken(Computer::class, $params);
+
+        $result = Dropdown::getDropdownValue($params, false);
+
+        $ids = [];
+        foreach ($result['results'] as $group) {
+            foreach ($group['children'] ?? [$group] as $item) {
+                $ids[] = $item['id'];
+            }
+        }
+
+        $this->assertContains($computer_with_contact_id, $ids);
+        $this->assertNotContains($other_computer_id, $ids);
+    }
 }

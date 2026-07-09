@@ -5196,6 +5196,9 @@ HTML;
         if (in_array($itemtype, $CFG_GLPI['asset_types'])) {
             $item = getItemForItemtype($itemtype);
             if ($item) {
+                if ($item->isField('contact')) {
+                    $displaywith[] = 'contact';
+                }
                 if ($item->isField('serial')) {
                     $displaywith[] = 'serial';
                 }
