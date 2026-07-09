@@ -121,7 +121,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
         $params = ['items_id' => '__VALUE__',
             'itemtype' => $_POST["idtable"],
         ];
-        if (isset($_POST['entity_restrict'])) {
+        if (isset($entity_restrict)) {
             $params['entity_restrict'] = $entity_restrict;
         }
 
