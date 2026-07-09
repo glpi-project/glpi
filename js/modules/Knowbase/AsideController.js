@@ -220,7 +220,7 @@ export class GlpiKnowbaseAsideController
 
         this.#clearCurrentArticle();
         li.outerHTML = data.html;
-        await this.#softNavigateTo(data.id, data.url, data.is_recursive);
+        await this.#softNavigateTo(data.id, data.url, data.is_recursive, data.can_toggle_recursive);
     }
 
     #clearCurrentArticle()
@@ -236,8 +236,9 @@ export class GlpiKnowbaseAsideController
      * @param {number} id
      * @param {string} url
      * @param {boolean} is_recursive
+     * @param {boolean} can_toggle_recursive
      */
-    async #softNavigateTo(id, url, is_recursive)
+    async #softNavigateTo(id, url, is_recursive, can_toggle_recursive)
     {
         const pane = document.querySelector('[data-glpi-tab-content]');
         if (!pane) {
@@ -281,6 +282,7 @@ export class GlpiKnowbaseAsideController
         if (checkbox) {
             const fresh_checkbox = checkbox.cloneNode(true);
             fresh_checkbox.checked = is_recursive;
+            fresh_checkbox.disabled = !can_toggle_recursive;
             checkbox.replaceWith(fresh_checkbox);
         }
 

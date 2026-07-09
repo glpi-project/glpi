@@ -88,11 +88,16 @@ final class CreateArticleController extends AbstractController
             || KnowbaseItem::canUpdate()
             || KnowbaseItem::canPurge();
 
+        $can_toggle_recursive = $item->canEdit($item->getID())
+            && $item->canRecurs()
+            && $item->canUnrecurs();
+
         return new JsonResponse([
-            'id'            => $article->id,
-            'url'           => $article->link,
-            'is_recursive'  => (bool) $item->fields['is_recursive'],
-            'html'          => TemplateRenderer::getInstance()->render(
+            'id'                    => $article->id,
+            'url'                   => $article->link,
+            'is_recursive'          => (bool) $item->fields['is_recursive'],
+            'can_toggle_recursive'  => $can_toggle_recursive,
+            'html'                  => TemplateRenderer::getInstance()->render(
                 'pages/tools/kb/aside_article_row.html.twig',
                 ['article' => $article, 'show_actions' => $show_actions],
             ),

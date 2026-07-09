@@ -165,4 +165,16 @@ final class CreateArticleControllerTest extends DbTestCase
         $this->assertArrayHasKey('is_recursive', $data);
         $this->assertFalse($data['is_recursive']);
     }
+
+    public function testResponseIncludesCanToggleRecursiveField(): void
+    {
+        $this->login();
+
+        $request = new Request(content: json_encode(['name' => 'Can toggle recursive field test']));
+        $response = (new CreateArticleController())($request);
+
+        $data = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('can_toggle_recursive', $data);
+        $this->assertTrue($data['can_toggle_recursive']);
+    }
 }
