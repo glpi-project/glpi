@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use CommonITILActor;
+use Entity;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
@@ -312,6 +313,59 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                 ['items_id' => $authorized_user->getID()],
                 ['items_id' => $authorized_group->getID()],
                 ['items_id' => $supplier->getID()],
+            ]
+        );
+    }
+
+    public function testSpecificActorsFollowResolvedEntityWhenDifferentFromForm(): void
+    {
+        $this->login();
+
+        // Form lives in the test root entity, but its destination's entity
+        // is resolved from an answered "Entity" question, pointing to a
+        // different, unrelated entity.
+        $builder = new FormBuilder();
+        $builder->setEntitiesId($this->getTestRootEntity(only_id: true));
+        $builder->addQuestion("Entity", QuestionTypeItem::class, 0, json_encode([
+            'itemtype'             => Entity::getType(),
+            'root_items_id'        => 0,
+            'subtree_depth'        => 0,
+            'selectable_tree_root' => false,
+        ]));
+        $builder->addQuestion("Assignee", QuestionTypeAssignee::class, '');
+        $form = $this->createForm($builder);
+
+        $other_entity = $this->createItem(Entity::class, [
+            'name'        => 'testSpecificActorsFollowResolvedEntityWhenDifferentFromForm Entity',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // This user only has assignment rights on that other entity, not on
+        // the form's own entity.
+        $user = $this->createItem(User::class, [
+            'name' => 'testSpecificActorsFollowResolvedEntityWhenDifferentFromForm User',
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id'    => $user->getID(),
+            'profiles_id' => getItemByTypeName(Profile::class, 'Technician', true),
+            'entities_id' => $other_entity->getID(),
+        ]);
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [$this->getQuestionId($form, "Assignee")]
+            ),
+            answers: [
+                "Entity" => [
+                    'itemtype' => Entity::getType(),
+                    'items_id' => $other_entity->getID(),
+                ],
+                "Assignee" => ["users_id-{$user->getID()}"],
+            ],
+            expected_actors: [
+                ['items_id' => $user->getID()],
             ]
         );
     }

@@ -39,10 +39,8 @@ use Exception;
 use Glpi\Form\Question;
 use Group;
 use Override;
-use Profile;
 use Session;
 use Supplier;
-use Ticket;
 use User;
 
 final class QuestionTypeAssignee extends AbstractQuestionTypeActors
@@ -88,34 +86,12 @@ final class QuestionTypeAssignee extends AbstractQuestionTypeActors
     {
         $actors = parent::prepareEndUserAnswer($question, $answer);
         foreach ($actors as $actor) {
-            if ($actor['itemtype'] === User::class) {
-                // The ITIL object's real entity isn't known yet here, so we
-                // accept the actor if they can be assigned either in the
-                // form's entity or in the current active entity.
-                $candidate_entities_ids = array_unique(array_filter([
-                    $question->getForm()->getEntityID(),
-                    Session::isAuthenticated() ? Session::getActiveEntity() : null,
-                ], static fn($entities_id) => $entities_id !== null && $entities_id >= 0));
-
-                $can_be_assigned = false;
-                foreach ($candidate_entities_ids as $entities_id) {
-                    if (
-                        Profile::haveUserRight(
-                            $actor['items_id'],
-                            Ticket::$rightname,
-                            Ticket::OWN,
-                            $entities_id
-                        )
-                    ) {
-                        $can_be_assigned = true;
-                        break;
-                    }
-                }
-
-                if (!$can_be_assigned) {
-                    throw new Exception('Invalid actor: must be able to be assigned');
-                }
-            } elseif ($actor['itemtype'] === Group::class) {
+            // Whether a User actor can actually be assigned depends on the
+            // ITIL object's entity, which is not known yet at this stage
+            // (it can depend on the requester, on another answer, ...).
+            // This is validated later, once that entity is resolved, in
+            // ITILActorField::isActorAllowed().
+            if ($actor['itemtype'] === Group::class) {
                 // Check if the group can be assigned
                 if (Group::getById($actor['items_id'])->fields['is_assign'] !== 1) {
                     throw new Exception('Invalid actor: must be able to be assigned');
