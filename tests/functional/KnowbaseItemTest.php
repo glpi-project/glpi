@@ -1025,6 +1025,12 @@ HTML,
         }
     }
 
+    public function testCanShowAsideActionsReflectsRights(): void
+    {
+        $this->login(); // super-admin: can favorite/update/purge
+        $this->assertTrue(KnowbaseItem::canShowAsideActions());
+    }
+
     public function testShowFullAddModePrefillsCategoryFromOptions(): void
     {
         $this->login();
@@ -2365,5 +2371,15 @@ HTML,
         );
         $this->assertNull(KnowbaseItem::getReadablePrefilledCategoryId(0));
         $this->assertNull(KnowbaseItem::getReadablePrefilledCategoryId(999999));
+    }
+
+    public function testGetFormOptionsFromUrlWhitelistsCategoryOnly(): void
+    {
+        $item = new KnowbaseItem();
+        $this->assertSame(
+            ['knowbaseitemcategories_id' => 5],
+            $item->getFormOptionsFromUrl(['knowbaseitemcategories_id' => 5, 'unrelated' => 'x'])
+        );
+        $this->assertSame([], $item->getFormOptionsFromUrl(['unrelated' => 'x']));
     }
 }

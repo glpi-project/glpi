@@ -40,7 +40,6 @@ use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Knowbase\Aside\Article;
 use KnowbaseItem;
-use KnowbaseItem_Favorite;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,6 +59,10 @@ final class CreateArticleController extends AbstractController
     public function __invoke(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
+        if (!is_array($data)) {
+            throw new BadRequestHttpException();
+        }
+
         $name = trim((string) ($data['name'] ?? ''));
         if ($name === '') {
             throw new BadRequestHttpException();
@@ -84,9 +87,7 @@ final class CreateArticleController extends AbstractController
             is_current: true,
         );
 
-        $show_actions = KnowbaseItem_Favorite::canCreate()
-            || KnowbaseItem::canUpdate()
-            || KnowbaseItem::canPurge();
+        $show_actions = KnowbaseItem::canShowAsideActions();
 
         $can_toggle_recursive = $item->canEdit($item->getID())
             && $item->canRecurs()

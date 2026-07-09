@@ -144,4 +144,30 @@ final class UpdateCategoriesControllerTest extends DbTestCase
         $linked = $item->getCategoriesForDisplay();
         $this->assertSame([$cat->getID()], array_column($linked, 'id'));
     }
+
+    public function testUnreadableCategoryIsDroppedNotLinked(): void
+    {
+        $this->login();
+        $child_id = getItemByTypeName(\Entity::class, '_test_child_2', true);
+        $cat = $this->createItem(KnowbaseItemCategory::class, [
+            'name' => 'ScopedCat', 'knowbaseitemcategories_id' => 0,
+            'entities_id' => $child_id, 'is_recursive' => 0,
+        ]);
+        $item = $this->createItem(KnowbaseItem::class, [
+            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
+            'entities_id' => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+            'is_recursive' => 0,
+        ]);
+
+        // Restrict active entity to root only (non-recursive): _test_child_2 is a
+        // descendant, so it is NOT in the active set -> its category is unreadable.
+        $this->setEntity('_test_root_entity', false);
+
+        $request = new Request(content: json_encode(['categories_ids' => [$cat->getID()]]));
+        $response = (new UpdateCategoriesController())($item->getID(), $request);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $item->getFromDB($item->getID());
+        $this->assertSame([], array_column($item->getCategoriesForDisplay(), 'id'));
+    }
 }

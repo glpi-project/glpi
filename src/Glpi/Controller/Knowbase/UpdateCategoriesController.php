@@ -62,8 +62,11 @@ final class UpdateCategoriesController extends AbstractController
 
         $ids = array_values(array_unique(
             array_filter(
-                array_map('intval', $data['categories_ids']),
-                fn(int $v) => $v > 0
+                array_map(
+                    fn($v) => KnowbaseItem::getReadablePrefilledCategoryId((int) $v),
+                    $data['categories_ids']
+                ),
+                fn($v) => $v !== null
             )
         ));
 

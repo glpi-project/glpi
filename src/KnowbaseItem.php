@@ -43,6 +43,7 @@ use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\Kernel\Kernel;
 use Glpi\Knowbase\Aside\Article;
 use Glpi\Knowbase\Aside\Builder;
 use Glpi\Knowbase\EditorAction;
@@ -330,6 +331,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return null;
         }
         return $category_id;
+    }
+
+    /**
+     * Whether the per-article "actions" (dots) menu should be rendered in the
+     * aside. Cheap session-level check shared by the full-page aside render and
+     * the inline-create fragment render, so both paths stay in sync.
+     */
+    public static function canShowAsideActions(): bool
+    {
+        return KnowbaseItem_Favorite::canCreate()
+            || self::canUpdate()
+            || self::canPurge();
     }
 
     /**
@@ -988,6 +1001,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         NotificationEvent::raiseEvent('delete', $this);
     }
 
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        $options = [];
+        if (isset($query_params['knowbaseitemcategories_id'])) {
+            $options['knowbaseitemcategories_id'] = $query_params['knowbaseitemcategories_id'];
+        }
+        return $options;
+    }
+
     public function showForm($ID, array $options = []): bool
     {
         // show kb item form
@@ -1115,8 +1137,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['can_edit']     = $this->can(-1, CREATE);
             $params['illustration'] = '';
 
+            /** @var Kernel|null $kernel */
+            global $kernel;
+            $request = $kernel?->getMainRequest();
             $raw_category_id = (int) ($options['knowbaseitemcategories_id']
-                ?? $_GET['knowbaseitemcategories_id']
+                ?? $request?->query->get('knowbaseitemcategories_id')
                 ?? 0);
             $prefilled_category_id = self::getReadablePrefilledCategoryId($raw_category_id);
             if ($prefilled_category_id !== null) {
@@ -2944,9 +2969,7 @@ TWIG, $twig_params);
         // session-level check: the menu content itself (and its per-article
         // permission gating) is lazy-loaded on demand, so we never load every
         // tree article here just to know if any action is available.
-        $show_actions = KnowbaseItem_Favorite::canCreate()
-            || self::canUpdate()
-            || self::canPurge();
+        $show_actions = self::canShowAsideActions();
 
         return TemplateRenderer::getInstance()->render(
             'pages/tools/kb/aside.html.twig',

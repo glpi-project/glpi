@@ -116,6 +116,14 @@ final class CreateArticleControllerTest extends DbTestCase
         (new CreateArticleController())($request);
     }
 
+    public function testNonArrayJsonBodyIsRejected(): void
+    {
+        $this->login();
+        $this->expectException(BadRequestHttpException::class);
+        $request = new Request(content: json_encode(42));
+        (new CreateArticleController())($request);
+    }
+
     public function testUnreadableCategoryIsSilentlyDropped(): void
     {
         $this->login();
