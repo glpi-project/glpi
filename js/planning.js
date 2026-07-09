@@ -135,7 +135,7 @@ var GLPIPlanning  = {
                 },
                 resourceWeek: {
                     type: 'resourceTimeline',
-                    buttonText: 'Timeline Week',
+                    buttonText: __('Timeline Week'),
                     duration: { weeks: 1 },
                     //hiddenDays: [6, 0],
                     groupByDateAndResource: true,
