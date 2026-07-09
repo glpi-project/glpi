@@ -219,7 +219,12 @@ export class GlpiKnowbaseAsideController
         }
 
         this.#clearCurrentArticle();
-        li.outerHTML = data.html;
+        // The row may have been detached while the request was in flight; setting
+        // outerHTML on a parent-less node throws. The soft-navigation shows the
+        // article either way.
+        if (li.isConnected) {
+            li.outerHTML = data.html;
+        }
         await this.#softNavigateTo(data.id, data.url, data.is_recursive, data.can_toggle_recursive);
     }
 

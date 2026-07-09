@@ -43,7 +43,6 @@ use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
-use Glpi\Kernel\Kernel;
 use Glpi\Knowbase\Aside\Article;
 use Glpi\Knowbase\Aside\Builder;
 use Glpi\Knowbase\EditorAction;
@@ -346,33 +345,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
-     * Returns categories linked to this article, ordered by name.
-     *
-     * @return list<array{id: int, name: string}>
+     * Whether the "child entities" (is_recursive) toggle should be enabled,
+     * mirroring the generic form header (header_content.html.twig).
      */
-    public function getCategoriesForDisplay(): array
+    public function canToggleRecursive(): bool
     {
-        /** @var DBmysql $DB */
-        global $DB;
-        if ($this->isNewItem()) {
-            return [];
-        }
-        $rows = $DB->request([
-            'SELECT'    => ['cat.id', 'cat.name'],
-            'FROM'      => KnowbaseItem_KnowbaseItemCategory::getTable() . ' AS link',
-            'INNER JOIN' => [
-                KnowbaseItemCategory::getTable() . ' AS cat' => [
-                    'ON' => ['link' => 'knowbaseitemcategories_id', 'cat' => 'id'],
-                ],
-            ],
-            'WHERE'   => ['link.knowbaseitems_id' => $this->getID()],
-            'ORDERBY' => 'cat.name',
-        ]);
-        $out = [];
-        foreach ($rows as $row) {
-            $out[] = ['id' => (int) $row['id'], 'name' => (string) $row['name']];
-        }
-        return $out;
+        return $this->canEdit($this->getID())
+            && $this->canRecurs()
+            && $this->canUnrecurs();
     }
 
     public function post_addItem()
@@ -1141,12 +1121,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['can_edit']     = $this->can(-1, CREATE);
             $params['illustration'] = '';
 
-            /** @var Kernel|null $kernel */
-            global $kernel;
-            $request = $kernel?->getMainRequest();
-            $raw_category_id = (int) ($options['knowbaseitemcategories_id']
-                ?? $request?->query->get('knowbaseitemcategories_id')
-                ?? 0);
+            $raw_category_id = (int) ($options['knowbaseitemcategories_id'] ?? 0);
             $prefilled_category_id = self::getReadablePrefilledCategoryId($raw_category_id);
             if ($prefilled_category_id !== null) {
                 $params['prefilled_category'] = [

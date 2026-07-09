@@ -922,75 +922,32 @@ HTML,
         $this->assertEqualsCanonicalizing([$kb_cat_id1, $kb_cat_id2], $category_ids);
     }
 
-    public function testShowFullAddModePrefillsCategoryFromGet(): void
-    {
-        $this->login();
-
-        $cat = $this->createItem(\KnowbaseItemCategory::class, [
-            'name'                      => __FUNCTION__,
-            'knowbaseitemcategories_id' => 0,
-            'entities_id'               => $this->getTestRootEntity(only_id: true),
-            'is_recursive'              => 1,
-        ]);
-        $cat_id = $cat->getID();
-
-        $previous = $_GET['knowbaseitemcategories_id'] ?? null;
-        try {
-            $_GET['knowbaseitemcategories_id'] = $cat_id;
-            $item = new KnowbaseItem();
-            $item->getEmpty();
-            $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
-            $this->assertStringContainsString(
-                'data-glpi-kb-prefilled-category-id="' . $cat_id . '"',
-                $html
-            );
-        } finally {
-            if ($previous === null) {
-                unset($_GET['knowbaseitemcategories_id']);
-            } else {
-                $_GET['knowbaseitemcategories_id'] = $previous;
-            }
-        }
-    }
-
     public function testShowFullAddModeIgnoresUnknownCategory(): void
     {
         $this->login();
 
-        $previous = $_GET['knowbaseitemcategories_id'] ?? null;
-        try {
-            $_GET['knowbaseitemcategories_id'] = 999999;
-            $item = new KnowbaseItem();
-            $item->getEmpty();
-            $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
-            $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
-        } finally {
-            if ($previous === null) {
-                unset($_GET['knowbaseitemcategories_id']);
-            } else {
-                $_GET['knowbaseitemcategories_id'] = $previous;
-            }
-        }
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                      => 'add',
+            'display'                   => false,
+            'knowbaseitemcategories_id' => 999999,
+        ]);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
     }
 
     public function testShowFullAddModeIgnoresNonNumericCategory(): void
     {
         $this->login();
 
-        $previous = $_GET['knowbaseitemcategories_id'] ?? null;
-        try {
-            $_GET['knowbaseitemcategories_id'] = 'abc';
-            $item = new KnowbaseItem();
-            $item->getEmpty();
-            $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
-            $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
-        } finally {
-            if ($previous === null) {
-                unset($_GET['knowbaseitemcategories_id']);
-            } else {
-                $_GET['knowbaseitemcategories_id'] = $previous;
-            }
-        }
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                      => 'add',
+            'display'                   => false,
+            'knowbaseitemcategories_id' => 'abc',
+        ]);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
     }
 
     public function testShowFullAddModeIgnoresCategoryFromUnreachableEntity(): void
@@ -1009,20 +966,14 @@ HTML,
         // Restrict the active session to a sibling that cannot reach the category
         $this->setEntity('_test_child_2', false);
 
-        $previous = $_GET['knowbaseitemcategories_id'] ?? null;
-        try {
-            $_GET['knowbaseitemcategories_id'] = $cat_id;
-            $item = new KnowbaseItem();
-            $item->getEmpty();
-            $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
-            $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
-        } finally {
-            if ($previous === null) {
-                unset($_GET['knowbaseitemcategories_id']);
-            } else {
-                $_GET['knowbaseitemcategories_id'] = $previous;
-            }
-        }
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                      => 'add',
+            'display'                   => false,
+            'knowbaseitemcategories_id' => $cat_id,
+        ]);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
     }
 
     public function testCanShowAsideActionsReflectsRights(): void
@@ -1043,29 +994,18 @@ HTML,
         ]);
         $cat_id = $cat->getID();
 
-        $previous = $_GET['knowbaseitemcategories_id'] ?? null;
-        try {
-            unset($_GET['knowbaseitemcategories_id']);
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                      => 'add',
+            'display'                   => false,
+            'knowbaseitemcategories_id' => $cat_id,
+        ]);
 
-            $item = new KnowbaseItem();
-            $item->getEmpty();
-            $html = (string) $item->showFull([
-                'mode'                      => 'add',
-                'display'                   => false,
-                'knowbaseitemcategories_id' => $cat_id,
-            ]);
-
-            $this->assertStringContainsString(
-                'data-glpi-kb-prefilled-category-id="' . $cat_id . '"',
-                $html
-            );
-        } finally {
-            if ($previous === null) {
-                unset($_GET['knowbaseitemcategories_id']);
-            } else {
-                $_GET['knowbaseitemcategories_id'] = $previous;
-            }
-        }
+        $this->assertStringContainsString(
+            'data-glpi-kb-prefilled-category-id="' . $cat_id . '"',
+            $html
+        );
     }
 
     public function testShowFullAddModePrefilledCategoryIncludesName(): void
@@ -1093,38 +1033,6 @@ HTML,
         $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
         // No prefilled category → static hint.
         $this->assertStringContainsString('added to a category', $html);
-    }
-
-    public function testGetCategoriesForDisplayReturnsLinkedCategories(): void
-    {
-        $this->login();
-        $entity_id = $this->getTestRootEntity(only_id: true);
-        $cat1 = $this->createItem(\KnowbaseItemCategory::class, [
-            'name' => 'CatA', 'knowbaseitemcategories_id' => 0,
-            'entities_id' => $entity_id, 'is_recursive' => 1,
-        ]);
-        $cat2 = $this->createItem(\KnowbaseItemCategory::class, [
-            'name' => 'CatB', 'knowbaseitemcategories_id' => 0,
-            'entities_id' => $entity_id, 'is_recursive' => 1,
-        ]);
-        $item = $this->createItem(KnowbaseItem::class, [
-            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
-            '__categories_defined' => 1, '_categories' => [$cat1->getID(), $cat2->getID()],
-        ]);
-
-        $result = $item->getCategoriesForDisplay();
-        $this->assertCount(2, $result);
-        $this->assertSame(['CatA', 'CatB'], array_column($result, 'name'));
-        $this->assertSame([$cat1->getID(), $cat2->getID()], array_column($result, 'id'));
-    }
-
-    public function testGetCategoriesForDisplayReturnsEmptyForUncategorized(): void
-    {
-        $this->login();
-        $item = $this->createItem(KnowbaseItem::class, [
-            'name' => 'k', 'answer' => 'a', 'users_id' => Session::getLoginUserID(),
-        ]);
-        $this->assertSame([], $item->getCategoriesForDisplay());
     }
 
     protected function testGetVisibilityCriteriaProvider(): iterable
@@ -2277,7 +2185,7 @@ HTML,
         );
     }
 
-    public function testGetReadablePrefilledCategoryIdIsPubliclyCallable(): void
+    public function testGetReadablePrefilledCategoryIdRejectsZeroOrUnreadableIds(): void
     {
         $this->login();
         $entity_id = $this->getTestRootEntity(only_id: true);

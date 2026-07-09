@@ -266,10 +266,8 @@
                     </div>
                 {% endif %}
 
-                {% endif %}
-
                 {# Category indicator (add mode only: hint shown before creation) #}
-                {% if mode == 'add' %}
+                {% elseif mode == 'add' %}
                     <div
                         class="d-flex align-items-center text-muted"
                         role="group"

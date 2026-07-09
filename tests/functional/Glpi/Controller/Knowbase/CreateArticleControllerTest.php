@@ -73,7 +73,7 @@ final class CreateArticleControllerTest extends DbTestCase
         $this->assertTrue($item->getFromDB($data['id']));
         $this->assertSame('New from inline input', $item->fields['name']);
         $this->assertSame('', $item->fields['answer']);
-        $this->assertSame([$cat->getID()], array_column($item->getCategoriesForDisplay(), 'id'));
+        $this->assertSame([$cat->getID()], array_map('intval', $item->fields['_categories']));
     }
 
     public function testCreatedArticleIsScopedToActiveEntity(): void
@@ -104,7 +104,7 @@ final class CreateArticleControllerTest extends DbTestCase
         $data = json_decode($response->getContent(), true);
         $item = new KnowbaseItem();
         $this->assertTrue($item->getFromDB($data['id']));
-        $this->assertSame([], $item->getCategoriesForDisplay());
+        $this->assertSame([], $item->fields['_categories']);
     }
 
     public function testEmptyNameReturns400(): void
@@ -138,7 +138,7 @@ final class CreateArticleControllerTest extends DbTestCase
         $data = json_decode($response->getContent(), true);
         $item = new KnowbaseItem();
         $this->assertTrue($item->getFromDB($data['id']));
-        $this->assertSame([], $item->getCategoriesForDisplay());
+        $this->assertSame([], $item->fields['_categories']);
     }
 
     public function testUserWithoutCreateRightIsDenied(): void
