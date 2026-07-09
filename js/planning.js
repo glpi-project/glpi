@@ -101,6 +101,7 @@ var GLPIPlanning  = {
             maxTime:     CFG_GLPI.planning_end,
             schedulerLicenseKey: "GPL-My-Project-Is-Open-Source",
             resourceAreaWidth: '15%',
+            resourceLabelText: __('Resources'),
             editable: true, // we can drag / resize items
             droppable: false, // we cant drop external items by default
             nowIndicator: true,
@@ -967,6 +968,7 @@ var GLPIPlanning  = {
     initFCDatePicker: function(currentDate) {
         $('#planning_datepicker').flatpickr({
             defaultDate: currentDate,
+            locale: getFlatPickerLocale(CFG_GLPI.flatpickr_lang || 'en', CFG_GLPI.flatpickr_region || ''),
             onChange: function(selected_date) {
             // convert to UTC to avoid timezone issues
                 var date = new Date(

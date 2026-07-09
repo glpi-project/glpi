@@ -93,6 +93,7 @@ var Reservations = function() {
                 return _newheight;
             },
             resourceAreaWidth: '15%',
+            resourceLabelText: __('Resources'),
             plugins: ['dayGrid', 'interaction', 'list', 'timeGrid', 'resourceTimeline'],
             header: {
                 left:   'prev,next,today',
