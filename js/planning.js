@@ -36,6 +36,7 @@
 /* global FullCalendar, FullCalendarLocales, FullCalendarInteraction */
 /* global glpi_ajax_dialog, glpi_html_dialog */
 /* global _ */
+/* global getFlatPickerLocale */
 
 var GLPIPlanning  = {
     calendar:      null,
