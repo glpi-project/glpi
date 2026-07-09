@@ -89,30 +89,34 @@
 {% for handlers in item.listTranslationsHandlers() %}
     {% set group_entries = [] %}
     {% for handler in handlers %}
-        {% set item_translation = helpdesk_translation.getForItemKeyAndLanguage(
-            handler.getItem(),
-            handler.getKey(),
-            helpdesk_translation.fields['language']
-        ) %}
-        {% if handler.getValue() is not empty or (item_translation is not null and item_translation.getTranslation() is not empty) %}
-            {% set default_value = handler.getValue() %}
-            {% if handler.getValue() is empty %}
-                {% set default_value = '<span class="text-muted fst-italic">' ~ __('No default value') ~ '</span>' %}
-            {% else %}
-                {% set default_value = handler.isRichText() ? '<div class="rich_text_container rich_text_container_translation">' ~ default_value|safe_html ~ '</div>' : default_value|e %}
+        {% set handler_item = handler.getItem() %}
+        {# Only expose translations for items the current user is allowed to see #}
+        {% if handler_item.can(handler_item.getID(), constant('READ')) %}
+            {% set item_translation = helpdesk_translation.getForItemKeyAndLanguage(
+                handler.getItem(),
+                handler.getKey(),
+                helpdesk_translation.fields['language']
+            ) %}
+            {% if handler.getValue() is not empty or (item_translation is not null and item_translation.getTranslation() is not empty) %}
+                {% set default_value = handler.getValue() %}
+                {% if handler.getValue() is empty %}
+                    {% set default_value = '<span class="text-muted fst-italic">' ~ __('No default value') ~ '</span>' %}
+                {% else %}
+                    {% set default_value = handler.isRichText() ? '<div class="rich_text_container rich_text_container_translation">' ~ default_value|safe_html ~ '</div>' : default_value|e %}
+                {% endif %}
+                {% set group_entries = group_entries|merge([{
+                    'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
+                    'default': default_value,
+                    'translation': _self.getTranslationInput(
+                        handler,
+                        item_translation,
+                        helpdesk_translation.getCldrLanguage().getPluralKey(1)
+                    ),
+                    'type_aria_label': __('Translation name'),
+                    'default_aria_label': __('Default value'),
+                    'translation_aria_label': __('Translated value')
+                }]) %}
             {% endif %}
-            {% set group_entries = group_entries|merge([{
-                'type': '<span class="fw-medium">' ~ handler.getName() ~ '</span>',
-                'default': default_value,
-                'translation': _self.getTranslationInput(
-                    handler,
-                    item_translation,
-                    helpdesk_translation.getCldrLanguage().getPluralKey(1)
-                ),
-                'type_aria_label': __('Translation name'),
-                'default_aria_label': __('Default value'),
-                'translation_aria_label': __('Translated value')
-            }]) %}
         {% endif %}
     {% endfor %}
 
