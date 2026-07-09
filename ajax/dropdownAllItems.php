@@ -122,7 +122,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
             'itemtype' => $_POST["idtable"],
         ];
         if (isset($_POST['entity_restrict'])) {
-            $params['entity_restrict'] = $_POST['entity_restrict'];
+            $params['entity_restrict'] = $entity_restrict;
         }
 
         $id = 'showItemSpecificity_' . $_POST['name'] . $rand;

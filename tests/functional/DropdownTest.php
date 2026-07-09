@@ -77,6 +77,11 @@ use Toolbox;
 use User;
 use UserTitle;
 
+use function Safe\json_decode;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+use function Safe\preg_match;
+
 /* Test for inc/dropdown.class.php */
 
 class DropdownTest extends DbTestCase
@@ -3114,6 +3119,42 @@ HTML;
         );
         $this->assertDoesNotMatchRegularExpression(
             '/"entity_restrict"\s*:\s*\[/',
+            $output,
+            'entity_restrict must not be a JS array (would cause N POST params per entity)'
+        );
+    }
+
+    public function testDropdownAllItemsEntityRestrictIsStringInShowItemSpecificity(): void
+    {
+        $this->login();
+
+        // Same array-expansion risk as testDropdownAllItemsEntityRestrictIsStringInJsConfig,
+        // but on the showItemSpecificity ajax call params.
+        $_POST['idtable']             = 'Ticket';
+        $_POST['name']                = 'items_id_2';
+        $_POST['display_emptychoice'] = 1;
+        $_POST['entity_restrict']     = [0, 1, 2];
+        $_POST['showItemSpecificity'] = 'ajax/dummy.php';
+
+        ob_start();
+        include GLPI_ROOT . '/ajax/dropdownAllItems.php';
+        $output = ob_get_clean();
+
+        unset(
+            $_POST['idtable'],
+            $_POST['name'],
+            $_POST['display_emptychoice'],
+            $_POST['entity_restrict'],
+            $_POST['showItemSpecificity']
+        );
+
+        $this->assertMatchesRegularExpression(
+            '/entity_restrict:"[^"]*"/',
+            $output,
+            'entity_restrict must be a JSON string in the showItemSpecificity call, not a JS array'
+        );
+        $this->assertDoesNotMatchRegularExpression(
+            '/entity_restrict:\[/',
             $output,
             'entity_restrict must not be a JS array (would cause N POST params per entity)'
         );
