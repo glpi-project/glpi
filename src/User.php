@@ -131,6 +131,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         unset($input['api_token_date']);
         unset($input['cookie_token']);
         unset($input['cookie_token_date']);
+        unset($input['user_dn_hash']);
         return $input;
     }
 
