@@ -962,11 +962,11 @@ EOD,
                 ],
                 'set_default_tech' => [
                     'type' => Doc\Schema::TYPE_BOOLEAN,
-                    'description' => 'Pre-select me as a technician when creating a ticket',
+                    'description' => 'Pre-select me as a technician for new ITIL items',
                 ],
                 'set_default_requester' => [
                     'type' => Doc\Schema::TYPE_BOOLEAN,
-                    'description' => 'Pre-select me as a requester when creating a ticket',
+                    'description' => 'Pre-select me as a requester for new ITIL items',
                 ],
                 'set_followup_tech' => [
                     'type' => Doc\Schema::TYPE_BOOLEAN,

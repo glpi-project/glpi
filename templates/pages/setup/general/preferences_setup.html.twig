@@ -295,15 +295,17 @@
       ) }}
    {% endif %}
 
+   {% set itil_default_field_options = field_options|merge({helper: __('Applies to Tickets, Changes, and Problems')}) %}
+
    {% if has_profile_right('ticket', constant('Ticket::OWN')) %}
-      {{ fields.dropdownYesNo('set_default_tech', config['set_default_tech'], __('Pre-select me as a technician when creating a ticket'), field_options) }}
+      {{ fields.dropdownYesNo('set_default_tech', config['set_default_tech'], __('Pre-select me as a technician for new ITIL items'), itil_default_field_options) }}
    {% else %}
-      {{ fields.htmlField('', __('No')|e, __('Pre-select me as a technician when creating a ticket'), field_options) }}
+      {{ fields.htmlField('', __('No')|e, __('Pre-select me as a technician for new ITIL items'), itil_default_field_options) }}
    {% endif %}
    {% if has_profile_right('ticket', constant('CREATE')) %}
-      {{ fields.dropdownYesNo('set_default_requester', config['set_default_requester'], __('Pre-select me as a requester when creating a ticket'), field_options) }}
+      {{ fields.dropdownYesNo('set_default_requester', config['set_default_requester'], __('Pre-select me as a requester for new ITIL items'), itil_default_field_options) }}
    {% else %}
-      {{ fields.htmlField('', __('No')|e, __('Pre-select me as a requester when creating a ticket'), field_options) }}
+      {{ fields.htmlField('', __('No')|e, __('Pre-select me as a requester for new ITIL items'), itil_default_field_options) }}
    {% endif %}
    {% if has_profile_right('ticket', constant('Ticket::OWN')) %}
       {{ fields.dropdownYesNo('set_followup_tech', config['set_followup_tech'], __('Add me as a technician when adding a ticket follow-up'), field_options) }}
