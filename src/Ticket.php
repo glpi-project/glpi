@@ -2957,7 +2957,7 @@ JAVASCRIPT;
                     // A problem is compatible with a ticket when:
                     // - both are in the same entity, OR
                     // - the problem is in a parent entity and is recursive
-                    $ancestors      = getAncestorsOf('glpi_entities', $ticket_entity);
+                    $ancestors      = getAncestorsOf('glpi_entities', (string) $ticket_entity);
                     $is_compatible  = ($problem_entity === $ticket_entity)
                         || ($problem_recursive && in_array($problem_entity, $ancestors));
 
