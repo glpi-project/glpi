@@ -61,7 +61,6 @@
                         {{ fields.sliderField('enabled_inventory', config['enabled_inventory'], __('Inventory enabled'), 
                         field_options|merge({
                             id: 'enabled_inventory_header',
-
                         })
                     ) }}
                     </div>
@@ -82,7 +81,6 @@
                     {{ fields.dropdownArrayField('auth_required', config['auth_required'], auth_required_options, __('Authorization header'),
                         field_options|merge({
                             required: true,
-                            full_width: true
                         })
                     ) }}
                 </div>
