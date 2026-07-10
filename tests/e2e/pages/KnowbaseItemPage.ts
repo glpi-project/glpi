@@ -417,6 +417,36 @@ export class KnowbaseItemPage extends GlpiPage
         await this.getAsideCategoryToggle(title).click();
     }
 
+    /**
+     * Toggle a category and wait for its fold state to be persisted server-side.
+     * Persistence is a fire-and-forget POST, so callers that reload right after
+     * toggling must wait for it, otherwise the reload can abort the in-flight
+     * request and the server renders stale state.
+     */
+    public async doToggleAsideCategoryAndWaitForPersist(title: string): Promise<void>
+    {
+        await Promise.all([
+            this.page.waitForResponse(
+                (response) =>
+                    /\/Knowbase\/Aside\/Category\/\d+\/Fold$/.test(response.url())
+                    && response.request().method() === 'POST'
+                    && response.ok()
+            ),
+            this.doToggleAsideCategory(title),
+        ]);
+    }
+
+    /**
+     * Wait until the aside controller has finished initializing. It signals
+     * readiness by removing the `pe-none` class from the search input once all
+     * listeners (search, category toggle, actions) are attached, so interacting
+     * before this can silently no-op.
+     */
+    public async waitForAsideReady(): Promise<void>
+    {
+        await expect(this.asideSearchInput).not.toHaveClass(/pe-none/);
+    }
+
     public get asideSearchInput(): Locator
     {
         return this.page.getByLabel('Search articles');
