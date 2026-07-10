@@ -435,6 +435,73 @@ class MassiveActionTest extends DbTestCase
         $_SESSION['glpiactiveprofile'][Problem::$rightname] = $old_session;
     }
 
+    public static function linkToProblemEntityProvider(): array
+    {
+        return [
+            'same entity — accepted' => [
+                'ticket'              => getItemByTypeName('Ticket', '_ticket01'),
+                'problem_entity_name' => '_test_root_entity',
+                'problem_recursive'   => false,
+                'expected_ok'         => 1,
+                'expected_ko'         => 0,
+            ],
+            'cross-entity non-recursive — rejected' => [
+                // Ticket is in _test_child_1; problem is in _test_child_2 (sibling,
+                // not an ancestor) → incompatible even if is_recursive were set.
+                'ticket'              => getItemByTypeName('Ticket', '_ticket03'),
+                'problem_entity_name' => '_test_child_2',
+                'problem_recursive'   => false,
+                'expected_ok'         => 0,
+                'expected_ko'         => 1,
+            ],
+            'recursive parent problem on child-entity ticket — accepted' => [
+                // Problem is in the parent entity _test_root_entity with
+                // is_recursive = 1 → visible from child entity _test_child_1.
+                'ticket'              => getItemByTypeName('Ticket', '_ticket03'),
+                'problem_entity_name' => '_test_root_entity',
+                'problem_recursive'   => true,
+                'expected_ok'         => 1,
+                'expected_ko'         => 0,
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider linkToProblemEntityProvider
+     */
+    public function testProcessMassiveActionsForOneItemtype_linkToProblem_entityCheck(
+        Ticket $ticket,
+        string $problem_entity_name,
+        bool   $problem_recursive,
+        int    $expected_ok,
+        int    $expected_ko
+    ): void {
+        // Grant Problem update right
+        $old_right = $_SESSION['glpiactiveprofile'][Problem::$rightname] ?? 0;
+        $_SESSION['glpiactiveprofile'][Problem::$rightname] = UPDATE;
+
+        $problem    = new Problem();
+        $problem_id = $problem->add([
+            'name'         => 'entity check problem',
+            'content'      => 'entity check problem',
+            'entities_id'  => getItemByTypeName('Entity', $problem_entity_name, true),
+            'is_recursive' => (int) $problem_recursive,
+        ]);
+        $this->assertGreaterThan(0, $problem_id);
+
+        $this->processMassiveActionsForOneItemtype(
+            'link_to_problem',
+            $ticket,
+            [$ticket->fields['id']],
+            ['problems_id' => $problem_id],
+            $expected_ok,
+            $expected_ko,
+            Ticket::class
+        );
+
+        $_SESSION['glpiactiveprofile'][Problem::$rightname] = $old_right;
+    }
+
     protected function resolveTicketsProvider()
     {
         $ticket = new Ticket();
