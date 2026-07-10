@@ -266,23 +266,6 @@
                     </div>
                 {% endif %}
 
-                {# Category indicator (add mode only: hint shown before creation) #}
-                {% elseif mode == 'add' %}
-                    <div
-                        class="d-flex align-items-center text-muted"
-                        role="group"
-                        aria-label="{{ __('Article category') }}"
-                    >
-                        <i class="ti ti-folder me-1 fs-3" aria-hidden="true"></i>
-                        <span class="fst-italic">
-                            {% if prefilled_category is defined %}
-                                {{ __('This article will be added in the %1$s category')|format(prefilled_category.name) }}
-                            {% else %}
-                                {{ __("This article won't be added to a category") }}
-                            {% endif %}
-                        </span>
-                    </div>
-                {% endif %}
             </div>
 
         {% endif %}
