@@ -157,11 +157,8 @@ export class GlpiPage
         dropdown: Locator,
         value: string,
     ): Promise<void> {
-        // We have no control on select2 selectors
-        // eslint-disable-next-line playwright/no-raw-locators
-        await dropdown.getByText(value)
-            .locator('..')
-            .locator('.select2-selection__choice__remove')
+        await dropdown.getByTitle(value)
+            .getByRole('button', {name: /remove item/i})
             .click()
         ;
     }
