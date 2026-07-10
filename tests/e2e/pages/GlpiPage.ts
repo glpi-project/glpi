@@ -141,12 +141,22 @@ export class GlpiPage
             .getByRole('listbox')
             .getByRole('option', {'name': value, exact: exact})
         ;
+        // Tree dropdowns (e.g. entities) prefix hierarchical options with "»",
+        // which Select2 4.1.0 exposes in the option accessible name.
+        const simple_dropdown_with_prefix = this.page
+            .getByRole('listbox')
+            .getByRole('option', {'name': `»${value}`, exact: exact})
+        ;
         const dropdown_with_groups = this.page
             .getByRole('listbox')
             .getByRole('listitem', {'name': value, exact: exact})
         ;
 
-        await simple_dropdown.or(dropdown_with_groups).click();
+        await simple_dropdown
+            .or(simple_dropdown_with_prefix)
+            .or(dropdown_with_groups)
+            .click()
+        ;
 
         if (check_value) {
             await expect(dropdown).toContainText(value);
