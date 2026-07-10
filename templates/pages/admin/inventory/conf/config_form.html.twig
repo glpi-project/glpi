@@ -6,7 +6,7 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
- # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ # @licence https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -33,237 +33,297 @@
 {% extends "pages/setup/general/base_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
+{% set field_options = {
+    input_class: 'col-xxl-6 d-flex justify-content-end',
+    label_class: 'col-xxl-6 d-flex justify-content-start'
+} %}
+
 {% block config_fields %}
 
-    {# ==================== Inventory activation ==================== #}
-    <fieldset class="col-12">
-        <legend class="visually-hidden">{{ __('Inventory') }}</legend>
-        <div class="row">
-            {{ fields.sliderField('enabled_inventory', config['enabled_inventory'], __('Enable inventory'), {
-                full_width: true
-            }) }}
+    {# ==================== Page header with inventory toggle ==================== #}
+    <div id="inv-conf-header" class="col-8 mx-auto d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex align-items-center gap-3">
+            <i class="ti ti-server-2 fs-1" aria-hidden="true"></i>
+            <h1 class="fw-bold fs-1">{{ __('Inventory agent configuration') }}</h1>
         </div>
-        {% if not config['enabled_inventory'] %}
+        <div class="d-flex align-items-center gap-2">
+            <label class="form-check-label" for="enabled_inventory_header">
+                {{ __('Inventory enabled') }}
+            </label>
+            <div class="form-check form-switch mb-0">
+                <input type="hidden" name="enabled_inventory" value="0">
+                <input class="form-check-input" type="checkbox" role="switch"
+                       id="enabled_inventory_header" name="enabled_inventory" value="1"
+                       {{ config['enabled_inventory'] ? 'checked' : '' }}>
+            </div>
+        </div>
+    </div>
+
+    {% if not config['enabled_inventory'] %}
+        <div class="col-7 mx-auto mb-3">
             <twig:Alert:Info
                 :title="__('The inventory is disabled, remember to activate it if necessary')"
             />
-        {% endif %}
-    </fieldset>
+        </div>
+    {% endif %}
 
     {# ==================== Authentication ==================== #}
-    <fieldset class="col-12">
-        <legend class="visually-hidden">{{ __('Authentication') }}</legend>
-        <div class="hr-text">
-            <i class="ti ti-shield-lock" aria-hidden="true"></i>
-            <span aria-hidden="true">{{ __('Authentication') }}</span>
-        </div>
-
-        <div class="row">
-            {{ fields.dropdownArrayField('auth_required', config['auth_required'], auth_required_options, __('Authorization header'), {
-                required: true,
-                full_width: true
-            }) }}
-        </div>
-
-        <div id="oauth_client_hint" class="row" style="display: none;">
-            <div class="col-12 mb-3">
-                <div class="alert alert-info" role="note">
-                    <div>{{ __('Using OAuth Client Credentials requires a registered OAuth client with the "inventory" scope.') }}</div>
-                    <div>
-                        {{ __('The generated client ID and secret must then be set in the GLPI Agent configuration using the %1$s and %2$s parameters.')|e|format('<code>oauth-client-id</code>', '<code>oauth-client-secret</code>')|raw }}
+    <div class="col-7 mx-auto mb-3">
+        <div class="card">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="{{ call('OAuthClient::getIcon') }}" aria-hidden="true"></i>
+                <h3 class="card-title mb-0 fw-bold fs-1">{{ __('Authentication') }}</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {{ fields.dropdownArrayField('auth_required', config['auth_required'], auth_required_options, __('Authorization header'), 
+                        field_options|merge({
+                            required: true,
+                            full_width: true
+                        })
+                    ) }}
+                </div>
+                <div id="oauth_client_hint" class="row" style="display: none;">
+                    <div class="col-7 mx-auto mb-3">
+                        <div class="alert alert-info" role="note">
+                            <div>{{ __('Using OAuth Client Credentials requires a registered OAuth client with the "inventory" scope.') }}</div>
+                            <div>
+                                {{ __('The generated client ID and secret must then be set in the GLPI Agent configuration using the %1$s and %2$s parameters.')|e|format('<code>oauth-client-id</code>', '<code>oauth-client-secret</code>')|raw }}
+                            </div>
+                            <div class="mt-2">
+                                <a class="alert-link" href="{{ oauth_client_form_url }}">
+                                    <i class="ti ti-external-link" aria-hidden="true"></i>
+                                    {{ __('Add an OAuth client') }}
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mt-2">
-                        <a class="alert-link" href="{{ oauth_client_form_url }}">
-                            <i class="ti ti-external-link" aria-hidden="true"></i>
-                            {{ __('Add an OAuth client') }}
-                        </a>
+                </div>
+                <div id="no_auth_warning" class="row" style="display: none;">
+                    <div class="col-7 mx-auto mb-3">
+                        <div class="alert alert-danger" role="alert">
+                            <i class="ti ti-alert-triangle" aria-hidden="true"></i>
+                            {{ __('Not using any authentication on inventory is not recommended and poses a security risk. Any agent will be able to send inventory data without verification.') }}
+                        </div>
                     </div>
+                </div>
+                <div id="basic_auth_fields" class="row" style="display: none;">
+                    {{ fields.textField('basic_auth_login', config['basic_auth_login'], __('Login'),
+                        field_options|merge({
+                            required: true
+                        })
+                    ) }}
+                    {{ fields.passwordField('basic_auth_password', basic_auth_password, __('Password'), field_options) }}
                 </div>
             </div>
         </div>
-
-        <div id="no_auth_warning" class="row" style="display: none;">
-            <div class="col-12 mb-3">
-                <div class="alert alert-warning" role="alert">
-                    <i class="ti ti-alert-triangle" aria-hidden="true"></i>
-                    {{ __('Not using any authentication on inventory is not recommended and poses a security risk. Any agent will be able to send inventory data without verification.') }}
-                </div>
-            </div>
-        </div>
-
-        <div id="basic_auth_fields" class="row" style="display: none;">
-            {{ fields.textField('basic_auth_login', config['basic_auth_login'], __('Login'), {
-                required: true
-            }) }}
-            {{ fields.passwordField('basic_auth_password', basic_auth_password, __('Password'), {
-                required: true
-            }) }}
-        </div>
-
-        <script>
-            (function () {
-                function toggleAuthInputs() {
-                    const value = $('[name="auth_required"]').val();
-                    const isBasic = value === '{{ BASIC_AUTH|e('js') }}';
-                    $('#basic_auth_fields').toggle(isBasic);
-                    $('#basic_auth_fields :input').prop('disabled', !isBasic);
-                    $('#oauth_client_hint').toggle(value === '{{ CLIENT_CREDENTIALS|e('js') }}');
-                    $('#no_auth_warning').toggle(value === '{{ NO_AUTH|e('js') }}');
-                }
-                $(function () {
-                    $('[name="auth_required"]').on('change', toggleAuthInputs);
-                    $('[name="enabled_inventory"]').on('change', toggleEnabled);
-                    toggleAuthInputs();
-                    toggleEnabled();
-                });
-                function toggleEnabled() {
-                    const enabled = $('[name="enabled_inventory"]').is(':checked');
-                    $('#bloc_enabled').toggle(enabled);
-                }
-            })();
-        </script>
-    </fieldset>
+    </div>
 
     <div id="bloc_enabled">
+
         {# ==================== Import options ==================== #}
-        <fieldset class="col-12">
-            <legend class="visually-hidden">{{ __('Import options') }}</legend>
-            <div class="hr-text">
-                <i class="ti ti-download" aria-hidden="true"></i>
-                <span aria-hidden="true">{{ __('Import options') }}</span>
+        <div class="col-7 mx-auto mb-3">
+            <div class="card">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="ti ti-download" aria-hidden="true"></i>
+                        <h3 class="card-title mb-0 fw-bold fs-1">{{ __('Import options') }}</h3>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary js-toggle-all"
+                                data-target="#import_toggles" data-value="1">{{ __('Enable all') }}</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary js-toggle-all"
+                                data-target="#import_toggles" data-value="0">{{ __('Disable all') }}</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="import_toggles" class="row">
+                        {% for name, label in import_toggles %}
+                            {{ fields.sliderField(name, config[name], label, field_options) }}
+                        {% endfor %}
+                    </div>
+                    <hr class="mb-4">
+                    <div class="row">
+                        {{ fields.dropdownField('State', 'states_id_default', config['states_id_default'], __('Default status'),
+                            field_options|merge({
+                                toadd: {'-1': __('Do not change')}
+                            })
+                        ) }}
+                        {{ fields.dropdownNumberField('inventory_frequency', config['inventory_frequency'], __('Inventory frequency (in hours)'),
+                            field_options|merge({
+                                min: 1, max: 240
+                            })
+                        ) }}
+                        {{ fields.dropdownField('Entity', 'entities_id_default', config['entities_id_default']|default(0), __('Default entity'), field_options) }}
+                        {{ fields.sliderField('import_monitor_on_partial_sn', config['import_monitor_on_partial_sn'], __('Import monitor on serial partial match'), field_options) }}
+                    </div>
+                </div>
             </div>
-
-            <div class="row">
-                {% for name, label in import_toggles %}
-                    {{ fields.sliderField(name, config[name], label) }}
-                {% endfor %}
-            </div>
-
-            <div class="row">
-                {{ fields.dropdownField('State', 'states_id_default', config['states_id_default'], __('Default status'), {
-                    toadd: {'-1': __('Do not change')}
-                }) }}
-                {{ fields.dropdownNumberField('inventory_frequency', config['inventory_frequency'], __('Inventory frequency (in hours)'), {
-                    min: 1,
-                    max: 240
-                }) }}
-                {{ fields.dropdownField('Entity', 'entities_id_default', config['entities_id_default']|default(0), __('Default entity')) }}
-                {{ fields.sliderField('import_monitor_on_partial_sn', config['import_monitor_on_partial_sn'], __('Import monitor on serial partial match')) }}
-            </div>
-        </fieldset>
+        </div>
 
         {# ==================== Related configurations ==================== #}
-        <fieldset class="col-12">
-            <legend class="visually-hidden">{{ __('Related configurations') }}</legend>
-            <div class="hr-text">
-                <i class="ti ti-link" aria-hidden="true"></i>
-                <span aria-hidden="true">{{ __('Related configurations') }}</span>
-            </div>
-            <div class="row">
-                <div class="col-12 center">
-                    <ul class="list-inline mb-0">
+        <div class="col-7 mx-auto mb-3">
+            <div class="card">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <i class="ti ti-link" aria-hidden="true"></i>
+                    <h3 class="card-title mb-0 fw-bold fs-1">{{ __('Related configurations') }}</h3>
+                </div>
+
+                <div class="card-body">
+                    <div class="row g-3 justify-content-center">
                         {% for related in related_configs %}
-                            <li class="list-inline-item me-4">
-                                <a href="{{ related.url }}">
-                                    <i class="{{ related.icon }}" aria-hidden="true"></i>
-                                    {{ related.label }}
+                            <div class="col-auto">
+                                <a href="{{ related.url }}"
+                                class="card text-decoration-none shadow-sm">
+                                    <div class="card-body d-flex flex-row align-items-center gap-2 p-3">
+                                        <i class="{{ related.icon }} fs-2" aria-hidden="true"></i>
+                                        <span class="fw-semibold">{{ related.label }}</span>
+                                    </div>
                                 </a>
-                            </li>
+                            </div>
                         {% endfor %}
-                    </ul>
+                    </div>
                 </div>
             </div>
-        </fieldset>
+        </div>
 
         {# ==================== Virtual machines ==================== #}
-        <fieldset class="col-12">
-            <legend class="visually-hidden">{{ vm_section_title }}</legend>
-            <div class="hr-text">
-                <i class="ti ti-server-2" aria-hidden="true"></i>
-                <span aria-hidden="true">{{ vm_section_title }}</span>
+        <div class="col-7 mx-auto mb-3">
+            <div class="card">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <i class="{{ call('ItemVirtualMachine::getIcon') }}" aria-hidden="true"></i>
+                    <h3 class="card-title mb-0 fw-bold fs-1">{{ vm_section_title }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {{ fields.sliderField('import_vm', config['import_vm'], __('Import virtual machines'), field_options)}}
+                        {{ fields.dropdownField('ComputerType', 'vm_type', config['vm_type'], vm_type_label, field_options) }}
+                        {{ fields.sliderField('vm_as_computer', config['vm_as_computer'], __('Create computer for virtual machines'), field_options) }}
+                        {{ fields.sliderField('vm_components', config['vm_components'], __('Create components for virtual machines'),
+                            field_options|merge({
+                                helper: __('Will attempt to create components from VM information sent from host, do not use if you plan to inventory any VM directly!')
+                            })
+                        )}}
+                    </div>
+                </div>
             </div>
-
-            <div class="row">
-                {{ fields.sliderField('import_vm', config['import_vm'], __('Import virtual machines')) }}
-                {{ fields.dropdownField('ComputerType', 'vm_type', config['vm_type'], vm_type_label) }}
-                {{ fields.sliderField('vm_as_computer', config['vm_as_computer'], __('Create computer for virtual machines')) }}
-                {% set vm_components_warning %}
-                    <twig:Alert:Warning
-                        :title="__('Will attempt to create components from VM information sent from host, do not use if you plan to inventory any VM directly!')"
-                    />
-                {% endset %}
-                {{ fields.sliderField('vm_components', config['vm_components'], __('Create components for virtual machines'), {
-                    'add_field_html': vm_components_warning
-                }) }}
-            </div>
-        </fieldset>
+        </div>
 
         {# ==================== Components ==================== #}
-        <fieldset class="col-12">
-            <legend class="visually-hidden">{{ components_section_title }}</legend>
-            <div class="hr-text">
-                <i class="ti ti-cpu" aria-hidden="true"></i>
-                <span aria-hidden="true">{{ components_section_title }}</span>
+        <div class="col-7 mx-auto mb-3">
+            <div class="card">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <i class="{{ call('CommonDevice::getIcon') }}" aria-hidden="true"></i>
+                    <h3 class="card-title mb-0 fw-bold fs-1">{{ components_section_title }}</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for name, label in component_toggles %}
+                            {{ fields.sliderField(name, config[name], label, field_options) }}
+                        {% endfor %}
+                    </div>
+                </div>
             </div>
-
-            <div class="row">
-                {% for name, label in component_toggles %}
-                    {{ fields.sliderField(name, config[name], label) }}
-                {% endfor %}
-            </div>
-        </fieldset>
+        </div>
 
         {# ==================== Agent cleanup ==================== #}
-        <fieldset class="col-12">
-            <legend class="visually-hidden">{{ __('Agent cleanup') }}</legend>
-            <div class="hr-text">
-                <i class="ti ti-trash" aria-hidden="true"></i>
-                <span aria-hidden="true">{{ __('Agent cleanup') }}</span>
-            </div>
-
-            <div class="row">
-                {{ fields.dropdownNumberField('stale_agents_delay', config['stale_agents_delay']|default(0), __('Update agents who have not contacted the server for (in days)'), {
-                    min: 1,
-                    max: 1000,
-                    toadd: {'0': __('Disabled')}
-                }) }}
-                {{ fields.dropdownArrayField('stale_agents_action', null, stale_agents_actions, _n('Action', 'Actions', 1), {
-                    multiple: true,
-                    values: stale_agents_action_values,
-                    on_change: 'changestatus();'
-                }) }}
-            </div>
-
-            <div class="row">
-                {{ fields.htmlField('stale_agents_status_condition', stale_status_condition_dropdown, __('If the asset status is'), {
-                    wrapper_class: '',
-                    add_field_attribs: {id: 'bloc_stale_agents_status_condition', style: 'display: none;'}
-                }) }}
-                {{ fields.htmlField('stale_agents_status', stale_status_dropdown, __('Status to apply'), {
-                    wrapper_class: '',
-                    add_field_attribs: {id: 'bloc_stale_agents_status', style: 'display: none;'}
-                }) }}
-            </div>
-
-            {% if plugin_fields is not empty %}
-                <div class="row">
-                    {% for plugin_field in plugin_fields %}
-                        {{ fields.htmlField('', plugin_field.html, plugin_field.label, {wrapper_class: ''}) }}
-                    {% endfor %}
+        <div class="col-7 mx-auto mb-3">
+            <div class="card">
+                <div class="card-header d-flex align-items-center gap-2">
+                    <i class="{{ call('Agent::getIcon') }}" aria-hidden="true"></i>
+                    <h3 class="card-title mb-0 fw-bold fs-1">{{ __('Agent cleanup') }}</h3>
                 </div>
-            {% endif %}
+                <div class="card-body">
+                    <div class="row">
+                        {{ fields.dropdownNumberField('stale_agents_delay', config['stale_agents_delay']|default(0), __('Update agents who have not contacted the server for (in days)'),
+                            field_options|merge({
+                                    min: 1, max: 1000, toadd: {'0': __('Disabled')}
+                            }))
+                        }}
+                        {{ fields.dropdownArrayField('stale_agents_action', null, stale_agents_actions, _n('Action', 'Actions', 1),
+                            field_options|merge({
+                                multiple: true,
+                                values: stale_agents_action_values,
+                                on_change: 'changestatus();'
+                            }))
+                        }}
 
-            <script>
-                function changestatus() {
-                    const values  = $('[name="stale_agents_action[]"]').val() || [];
-                    const display = Array.isArray(values) && values.includes('{{ STALE_AGENT_ACTION_STATUS|e('js') }}');
-                    $('#bloc_stale_agents_status_condition').toggle(display);
-                    $('#bloc_stale_agents_status').toggle(display);
-                }
-                $(function () {
-                    changestatus();
-                });
-            </script>
-        </fieldset>
-    </div>
+                    </div>
+                    <div class="row">
+                        {{ fields.htmlField('stale_agents_status_condition', stale_status_condition_dropdown, __('If the asset status is'),
+                            field_options|merge({
+                                add_field_attribs: {id: 'bloc_stale_agents_status_condition', style: 'display: none;'}
+                            }))
+                        }}
+
+                        {{ fields.htmlField('stale_agents_status', stale_status_dropdown, __('Status to apply'),
+                            field_options|merge({
+                                add_field_attribs: {id: 'bloc_stale_agents_status', style: 'display: none;'}
+                            }))
+                        }}
+                    </div>
+                    {% if plugin_fields is not empty %}
+                        <div class="row">
+                            {% for plugin_field in plugin_fields %}
+                                {{ fields.htmlField('', plugin_field.html, plugin_field.label,
+                                    field_options|merge({
+                                        wrapper_class: '',
+                                    }))
+                            }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>{# end #bloc_enabled #}
+
+    <script>
+        (function () {
+            function toggleAuthInputs() {
+                const value = $('[name="auth_required"]').val();
+                const isBasic = value === '{{ BASIC_AUTH|e('js') }}';
+
+                $('#basic_auth_fields').toggle(isBasic);
+                $('#basic_auth_fields :input').prop('disabled', !isBasic);
+                $('#oauth_client_hint').toggle(value === '{{ CLIENT_CREDENTIALS|e('js') }}');
+                $('#no_auth_warning').toggle(value === '{{ NO_AUTH|e('js') }}');
+            }
+
+            function toggleEnabled() {
+                const enabled = $('[name="enabled_inventory"]').is(':checked');
+                $('#bloc_enabled').toggle(enabled);
+            }
+
+            function toggleStaleAgentStatus() {
+                const values = $('[name="stale_agents_action[]"]').val() || [];
+                const display = Array.isArray(values) &&
+                    values.includes('{{ STALE_AGENT_ACTION_STATUS|e('js') }}');
+
+                $('#bloc_stale_agents_status_condition').toggle(display);
+                $('#bloc_stale_agents_status').toggle(display);
+            }
+
+            $(function () {
+                $('[name="auth_required"]').on('change', toggleAuthInputs);
+                $('[name="enabled_inventory"]').on('change', toggleEnabled);
+                $('[name="stale_agents_action[]"]').on('change', toggleStaleAgentStatus);
+
+                toggleAuthInputs();
+                toggleEnabled();
+                toggleStaleAgentStatus();
+            });
+
+            $(document).on('click', '.js-toggle-all', function () {
+                const $target = $($(this).data('target'));
+                const checked = Number($(this).data('value')) === 1;
+
+                $target.find('input[type="checkbox"]')
+                    .prop('checked', checked)
+                    .trigger('change');
+            });
+        })();
+    </script>
+
 {% endblock %}
