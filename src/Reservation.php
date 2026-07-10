@@ -582,16 +582,30 @@ class Reservation extends CommonDBChild
 
         $js = "
             $(function() {
-                var reservation = new Reservations();
-                reservation.init({
-                    id: $ID,
-                    is_all: " . ($ID === 0 ? "true" : "false") . ",
-                    rand: $rand,
-                    can_reserve: " . ($can_reserve ? "true" : "false") . ",
-                    now: '" . jsescape($_SESSION["glpi_currenttime"]) . "',
-                    defaultDate: '" . jsescape($default_date) . "',
-                });
-                reservation.displayPlanning();
+                var reservationInitialized = false;
+                function initReservation() {
+                    if (reservationInitialized) {
+                        return;
+                    }
+                    reservationInitialized = true;
+                    clearInterval(retryTimer);
+                    var reservation = new Reservations();
+                    reservation.init({
+                        id: $ID,
+                        is_all: " . ($ID === 0 ? "true" : "false") . ",
+                        rand: $rand,
+                        can_reserve: " . ($can_reserve ? "true" : "false") . ",
+                        now: '" . jsescape($_SESSION["glpi_currenttime"]) . "',
+                        defaultDate: '" . jsescape($default_date) . "',
+                    });
+                    reservation.displayPlanning();
+                }
+                // Wait until all pending AJAX requests (including i18n locale loading) are done
+                var retryTimer = setInterval(function() {
+                    if (typeof $ === 'undefined' || $.active === 0) {
+                        initReservation();
+                    }
+                }, 100);
           });
         ";
         echo Html::scriptBlock($js);
