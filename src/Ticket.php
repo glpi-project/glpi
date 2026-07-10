@@ -2763,6 +2763,8 @@ class Ticket extends CommonITILObject
                 Problem::dropdown([
                     'name'      => 'problems_id',
                     'condition' => Problem::getOpenCriteria(),
+                    'entity'      => $_SESSION['glpiactive_entity'],
+                    'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
                 ]);
                 echo '<br><br>';
                 echo Html::submit(_x('button', 'Link'), [
