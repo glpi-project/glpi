@@ -412,6 +412,7 @@ class MassiveActionTest extends DbTestCase
             $input['problems_id'] = $problem->add([
                 'name'    => "tmp",
                 'content' => "tmp",
+                'entities_id' => $item->getEntityID(),
             ]);
             $this->assertGreaterThan(0, $input['problems_id']);
 
