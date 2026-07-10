@@ -34,46 +34,92 @@
 
 namespace tests\units\Glpi\Dashboard;
 
+use Change;
 use CommonITILActor;
+use Computer;
 use Glpi\Dashboard\Filters\UserAssignedFilter;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Problem;
+use Ticket;
 
 class UserAssignedFilterTest extends DbTestCase
 {
-    public function testGetCriteria(): void
+    /**
+     * @return iterable<string, array{string, string, string}>
+     */
+    public static function itilProvider(): iterable
+    {
+        yield 'ticket'  => [Ticket::getTable(), 'glpi_tickets_users', 'tickets_id'];
+        yield 'change'  => [Change::getTable(), 'glpi_changes_users', 'changes_id'];
+        yield 'problem' => [Problem::getTable(), 'glpi_problems_users', 'problems_id'];
+    }
+
+    /**
+     * @return iterable<string, array{string}>
+     */
+    public static function itilTableProvider(): iterable
+    {
+        yield 'ticket'  => [Ticket::getTable()];
+        yield 'change'  => [Change::getTable()];
+        yield 'problem' => [Problem::getTable()];
+    }
+
+    #[DataProvider('itilProvider')]
+    public function testGetCriteria(string $table, string $ul_table, string $fk): void
     {
         $this->login();
 
-        $criteria = UserAssignedFilter::getCriteria('glpi_tickets', '42');
+        $criteria = UserAssignedFilter::getCriteria($table, '42');
+        $this->assertSame(
+            [
+                "$ul_table as ul_assigned" => [
+                    'ON' => [
+                        'ul_assigned' => $fk,
+                        $table        => 'id',
+                    ],
+                ],
+            ],
+            $criteria['JOIN']
+        );
         $this->assertSame(CommonITILActor::ASSIGN, $criteria['WHERE']['ul_assigned.type']);
         $this->assertSame(42, $criteria['WHERE']['ul_assigned.users_id']);
 
-        $myself = UserAssignedFilter::getCriteria('glpi_tickets', 'myself');
+        $myself = UserAssignedFilter::getCriteria($table, 'myself');
         $this->assertSame(CommonITILActor::ASSIGN, $myself['WHERE']['ul_assigned.type']);
         $this->assertSame($_SESSION['glpiID'], $myself['WHERE']['ul_assigned.users_id']);
 
-        $this->assertSame([], UserAssignedFilter::getCriteria('glpi_tickets', ''));
-        $this->assertSame([], UserAssignedFilter::getCriteria('glpi_tickets', '0'));
-        $this->assertSame([], UserAssignedFilter::getCriteria('glpi_tickets', 'invalid'));
+        $this->assertSame([], UserAssignedFilter::getCriteria($table, ''));
+        $this->assertSame([], UserAssignedFilter::getCriteria($table, '0'));
+        $this->assertSame([], UserAssignedFilter::getCriteria($table, 'invalid'));
     }
 
-    public function testGetSearchCriteria(): void
+    #[DataProvider('itilTableProvider')]
+    public function testGetSearchCriteria(string $table): void
     {
         $this->login();
 
-        $criteria = UserAssignedFilter::getSearchCriteria('glpi_tickets', '42');
+        $criteria = UserAssignedFilter::getSearchCriteria($table, '42');
         $this->assertCount(1, $criteria);
         $this->assertSame('AND', $criteria[0]['link']);
         $this->assertSame('equals', $criteria[0]['searchtype']);
         $this->assertSame(5, $criteria[0]['field']);
         $this->assertSame(42, $criteria[0]['value']);
 
-        $myself = UserAssignedFilter::getSearchCriteria('glpi_tickets', 'myself');
+        $myself = UserAssignedFilter::getSearchCriteria($table, 'myself');
         $this->assertCount(1, $myself);
         $this->assertSame('myself', $myself[0]['value']);
 
-        $this->assertSame([], UserAssignedFilter::getSearchCriteria('glpi_tickets', ''));
-        $this->assertSame([], UserAssignedFilter::getSearchCriteria('glpi_tickets', '0'));
-        $this->assertSame([], UserAssignedFilter::getSearchCriteria('glpi_tickets', 'invalid'));
+        $this->assertSame([], UserAssignedFilter::getSearchCriteria($table, ''));
+        $this->assertSame([], UserAssignedFilter::getSearchCriteria($table, '0'));
+        $this->assertSame([], UserAssignedFilter::getSearchCriteria($table, 'invalid'));
+    }
+
+    public function testCanBeApplied(): void
+    {
+        $this->assertTrue(UserAssignedFilter::canBeApplied(Ticket::getTable()));
+        $this->assertTrue(UserAssignedFilter::canBeApplied(Change::getTable()));
+        $this->assertTrue(UserAssignedFilter::canBeApplied(Problem::getTable()));
+        $this->assertFalse(UserAssignedFilter::canBeApplied(Computer::getTable()));
     }
 }
