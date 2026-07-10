@@ -36,7 +36,6 @@
 /* global FullCalendar, FullCalendarLocales, FullCalendarInteraction */
 /* global glpi_ajax_dialog, glpi_html_dialog */
 /* global _ */
-/* global getFlatPickerLocale */
 
 var GLPIPlanning  = {
     calendar:      null,
@@ -87,7 +86,7 @@ var GLPIPlanning  = {
         var all_days = [0, 1, 2, 3, 4, 5, 6];
         var enabled_days = CFG_GLPI.planning_work_days;
         var hidden_days = all_days.filter(day => !enabled_days.some(n => n == day));
-        var loadedLocales = Object.keys(FullCalendarLocales);
+        var loadedLocales = typeof FullCalendarLocales !== 'undefined' ? Object.keys(FullCalendarLocales) : [];
         const list_full_year_range = options.full_view ? 5 : 1; // +/- number of years to display in list full view
 
         this.calendar = new FullCalendar.Calendar(document.getElementById(GLPIPlanning.dom_id), {

@@ -269,7 +269,7 @@ var Reservations = function() {
         my.calendar.render();
 
         // load language
-        var loadedLocales = Object.keys(FullCalendarLocales);
+        var loadedLocales = typeof FullCalendarLocales !== 'undefined' ? Object.keys(FullCalendarLocales) : [];
         if (loadedLocales.length === 1) {
             my.calendar.setOption('locale', loadedLocales[0]);
         }
