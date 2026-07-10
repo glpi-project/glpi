@@ -236,7 +236,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
             // requester, on a specific answer, ...). It is already resolved
             // at this point by the EntityField, so it must be used instead
             // of the form's entity to check assignment rights.
-            $entities_id = $input['entities_id'] ?? -1;
+            $entities_id = (int) ($input['entities_id'] ?? -1);
             if ($entities_id < 0) {
                 return false;
             }
