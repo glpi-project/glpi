@@ -2941,7 +2941,37 @@ JAVASCRIPT;
                 }
 
                 $em = new Problem_Ticket();
+                $problem_entity    = $problem->getEntityID();
+                $problem_recursive = (bool) $problem->fields['is_recursive'];
+
                 foreach ($ids as $id) {
+                    $ticket_to_check = new Ticket();
+                    if (!$ticket_to_check->getFromDB($id)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        continue;
+                    }
+
+                    $ticket_entity = $ticket_to_check->getEntityID();
+
+                    // A problem is compatible with a ticket when:
+                    // - both are in the same entity, OR
+                    // - the problem is in a parent entity and is recursive
+                    $ancestors      = getAncestorsOf('glpi_entities', $ticket_entity);
+                    $is_compatible  = ($problem_entity === $ticket_entity)
+                        || ($problem_recursive && in_array($problem_entity, $ancestors));
+
+                    if (!$is_compatible) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage(
+                            sprintf(
+                                __('Ticket %d and the selected problem do not belong to compatible entities.'),
+                                $id
+                            )
+                        );
+                        continue;
+                    }
+
                     // Add new link
                     $res = $em->add([
                         'problems_id' => $input['problems_id'],
