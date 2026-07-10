@@ -35,14 +35,14 @@
 namespace Glpi\Dashboard\Filters;
 
 use Change;
-use CommonITILActor;
 use Problem;
 use Ticket;
-use UnexpectedValueException;
 use User;
 
 class UserAssignedFilter extends AbstractFilter
 {
+    use AssignedITILUserFilterTrait;
+
     public static function getName(): string
     {
         return __("User / Assigned user");
@@ -73,28 +73,7 @@ class UserAssignedFilter extends AbstractFilter
         }
 
         if ($users_id !== null) {
-            $main_item = match ($table) {
-                Ticket::getTable() => new Ticket(),
-                Change::getTable() => new Change(),
-                Problem::getTable() => new Problem(),
-                default => throw new UnexpectedValueException(),
-            };
-            $userlink = $main_item->userlinkclass;
-            $ul_table = $userlink::getTable();
-            $fk       = $main_item->getForeignKeyField();
-
-            $criteria["JOIN"] = [
-                "$ul_table as ul_assigned" => [
-                    'ON' => [
-                        'ul_assigned' => $fk,
-                        $table        => 'id',
-                    ],
-                ],
-            ];
-            $criteria["WHERE"] = [
-                "ul_assigned.type"     => CommonITILActor::ASSIGN,
-                "ul_assigned.users_id" => $users_id,
-            ];
+            $criteria = self::getAssignedITILUserCriteria($table, $users_id);
         }
 
         return $criteria;
@@ -109,12 +88,7 @@ class UserAssignedFilter extends AbstractFilter
 
         if ((int) $value > 0 || $value === 'myself') {
             if (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true)) {
-                $criteria[] = [
-                    'link'       => 'AND',
-                    'field'      => 5,// tech
-                    'searchtype' => 'equals',
-                    'value'      => is_numeric($value) ? (int) $value : $value,
-                ];
+                $criteria[] = self::getAssignedITILUserSearchCriteria($value);
             }
         }
 
