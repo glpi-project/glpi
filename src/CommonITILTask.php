@@ -434,10 +434,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      */
     private function handleTaskDuration(array &$input, int $timestart, int $timeend): void
     {
-        // If a real duration (> 0) is set and different from the current 'actiontime'
-        //it takes precedence and the end date is recomputed from it An empty duration 0,
-        //e.g. the "-----" choice of the duration dropdown, must not override an explicitly entered end date,
-        //otherwise end would collapse onto begin
+        // A non-zero 'actiontime' recomputes 'end'.
+        // A zero value (empty dropdown choice) must not override an explicitly entered end date.
         if (!empty($input['actiontime']) && $this->fields['actiontime'] != $input['actiontime']) {
             // Compute the end date based on 'actiontime'
             $input["end"] = date("Y-m-d H:i:s", $timestart + $input['actiontime']);
