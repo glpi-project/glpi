@@ -949,6 +949,34 @@ class UserTest extends DbTestCase
         }
     }
 
+    public function testCloneDoesNotCopyLdapFields(): void
+    {
+        $this->login();
+
+        $user = new User();
+        $uid = $user->add([
+            'name'       => 'ldap_user_to_clone',
+            'user_dn'    => 'uid=ldap_user_to_clone,ou=people,dc=example,dc=com',
+            'sync_field' => 'ldap_user_to_clone',
+        ]);
+        $this->assertGreaterThan(0, $uid);
+        $this->assertTrue($user->getFromDB($uid));
+
+        $this->assertNotEmpty($user->fields['user_dn']);
+        $this->assertNotEmpty($user->fields['user_dn_hash']);
+        $this->assertNotEmpty($user->fields['sync_field']);
+
+        $cloned_id = $user->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        $cloned_user = new User();
+        $this->assertTrue($cloned_user->getFromDB($cloned_id));
+
+        $this->assertEmpty($cloned_user->fields['user_dn']);
+        $this->assertEmpty($cloned_user->fields['user_dn_hash']);
+        $this->assertEmpty($cloned_user->fields['sync_field']);
+    }
+
     public function testGetFromDBbyDn()
     {
         $user = new User();
