@@ -12,6 +12,8 @@
         "available_searchtypes": [
             "contains",
             "notcontains",
+            "morethan",
+            "lessthan",
             "empty"
         ],
         "uid": "Computer_SoftwareVersion.id"

@@ -82,6 +82,8 @@
         "available_searchtypes": [
             "contains",
             "notcontains",
+            "morethan",
+            "lessthan",
             "empty"
         ],
         "uid": "TicketFollowup.id"
