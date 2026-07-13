@@ -35,7 +35,6 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
-use function Safe\preg_replace;
 use Glpi\Toolbox\FrontEnd;
 use GlpiPlugin\Tester\MyPsr4Class;
 use org\bovigo\vfs\vfsStream;
@@ -46,6 +45,7 @@ use function Safe\file_put_contents;
 use function Safe\mktime;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
+use function Safe\preg_replace;
 use function Safe\realpath;
 use function Safe\touch;
 use function Safe\unlink;
@@ -1031,7 +1031,7 @@ SCSS,
         $compiled_scss = @\Html::compileScss(['file' => '/plugins/tester/css/styles.scss']);
 
         // Strip comments to ease comparison.
-        $compiled_scss = \preg_replace('~/\*.*\*/~s', '', $compiled_scss);
+        $compiled_scss = preg_replace('~/\*.*\*/~s', '', $compiled_scss);
 
         $this->assertEquals(
             <<<CSS
