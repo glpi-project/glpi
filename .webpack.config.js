@@ -121,7 +121,7 @@ const config = {
         new MiniCssExtractPlugin(), // Extract styles into CSS files
         new MonacoWebpackPlugin({
             'languages': ['html', 'javascript', 'typescript', 'json', 'markdown', 'twig', 'css', 'scss', 'shell'],
-            'publicPath': '/lib/'
+            // No hardcoded publicPath: see runtime override in lib/bundles/monaco.js
         }),
         new RtlCssPlugin('[name].rtl.css'), // Generate RTL CSS files
     ],
