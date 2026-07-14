@@ -66,10 +66,10 @@ final class InventoryController extends AbstractController
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'readOnly' => true,
                     ],
-                    'type' => self::getDropdownTypeSchema(class: AgentType::class, full_schema: 'AgentType') + ['readOnly' => true],
+                    'type' => self::getDropdownTypeSchema(class: AgentType::class, full_schema: 'AgentType', params: ['readOnly' => true]),
                     'deviceid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
                     'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
-                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + ['readOnly' => true],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity', params: ['readOnly' => true]),
                     'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'readOnly' => true],
                     'last_contact' => [
                         'type' => Doc\Schema::TYPE_STRING,
