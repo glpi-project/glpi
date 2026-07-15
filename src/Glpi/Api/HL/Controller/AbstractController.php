@@ -303,6 +303,7 @@ abstract class AbstractController
     ): array {
         if (isset($params['join-via'])) {
             $via_class = $params['join-via'];
+            unset($params['join-via']);
             $ref_join_params = self::getJoinParams($parent_class, $via_class);
             $join_params = self::getJoinParams($via_class, $class);
             $join_params['ref-join'] = $ref_join_params;
