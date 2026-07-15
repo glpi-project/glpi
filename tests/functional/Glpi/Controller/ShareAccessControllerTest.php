@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Controller;
 
 use CommonDBTM;
 use Glpi\Controller\ShareAccessController;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
@@ -101,5 +102,32 @@ final class ShareAccessControllerTest extends DbTestCase
         $response = $controller->__invoke($request, $plain);
 
         $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
+    }
+
+    public function testAccessViaSlugPrefixedUrlGrantsAccess(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $token = $this->createToken($kb);
+
+        $plain = (new ShareTokenManager())->decryptToken((string) $token->fields['token']);
+        $share = 'my-article-' . $plain;
+        $request = Request::create('/Share/' . $share, 'GET');
+
+        $controller = new ShareAccessController();
+        $response = $controller->__invoke($request, $share);
+
+        // Authenticated → redirect to the item, proving the token was resolved
+        // despite the cosmetic slug prefix.
+        $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
+        $this->assertSame(302, $response->getStatusCode());
+    }
+
+    public function testSlugWithoutTokenIsRejected(): void
+    {
+        $this->expectException(NotFoundHttpException::class);
+
+        $request = Request::create('/Share/just-a-slug', 'GET');
+        (new ShareAccessController())->__invoke($request, 'just-a-slug');
     }
 }

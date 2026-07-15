@@ -60,33 +60,52 @@
 
     {# Link row (only when published) #}
     {% if is_published and token %}
-        {% set share_url = config('url_base') ~ '/Share/' ~ token.token %}
-        <div class="d-flex align-items-center gap-1 mt-2" data-glpi-share-link-row>
-            <div class="input-icon cursor-pointer flex-grow-1"
-                 data-glpi-clipboard-text="{{ share_url }}"
-                 data-bs-toggle="tooltip"
-                 data-bs-placement="top"
-                 title="{{ __('Click to copy to clipboard') }}">
-                <input type="text"
-                       class="form-control form-control-sm cursor-pointer"
-                       readonly
-                       value="{{ share_url }}"
-                       aria-label="{{ __('Public share link') }}"
-                       data-glpi-share-url>
-                <span class="input-icon-addon">
-                    <i class="ti ti-copy"></i>
-                </span>
-            </div>
-            {% if can_edit %}
+        {% set slug = token.name %}
+        {% set share_prefix = config('url_base') ~ '/Share/' %}
+        {% set share_url = share_prefix ~ (slug ? slug ~ '-' : '') ~ token.token %}
+        <div class="mt-2"
+             data-glpi-share-link-row
+             data-glpi-share-url="{{ share_url }}">
+            <div class="input-group input-group-sm flex-nowrap">
+                <span class="input-group-text text-muted text-truncate">{{ share_prefix }}</span>
+                {% if can_edit %}
+                    <input type="text"
+                           class="form-control"
+                           value="{{ slug }}"
+                           data-glpi-share-slug
+                           aria-label="{{ __('Public link slug') }}"
+                           autocomplete="off"
+                           autocapitalize="off"
+                           spellcheck="false">
+                {% else %}
+                    <input type="text"
+                           class="form-control"
+                           value="{{ slug }}"
+                           readonly
+                           aria-label="{{ __('Public link slug') }}">
+                {% endif %}
                 <button type="button"
-                        class="btn btn-ghost-secondary btn-sm btn-icon"
-                        data-glpi-share-regenerate
-                        title="{{ __('Regenerate link') }}"
-                        aria-label="{{ __('Regenerate link') }}"
+                        class="btn btn-outline-secondary"
+                        data-glpi-clipboard-text="{{ share_url }}"
+                        title="{{ __('Copy link') }}"
+                        aria-label="{{ __('Copy link') }}"
                         data-bs-toggle="tooltip">
-                    <i class="ti ti-refresh"></i>
+                    <i class="ti ti-copy"></i>
                 </button>
-            {% endif %}
+                {% if can_edit %}
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-glpi-share-regenerate
+                            title="{{ __('Regenerate link') }}"
+                            aria-label="{{ __('Regenerate link') }}"
+                            data-bs-toggle="tooltip">
+                        <i class="ti ti-refresh"></i>
+                    </button>
+                {% endif %}
+            </div>
+            <div class="text-danger small mt-1 d-none" data-glpi-share-slug-error>
+                {{ __('Only lowercase letters, digits and dashes allowed') }}
+            </div>
         </div>
     {% endif %}
 </div>

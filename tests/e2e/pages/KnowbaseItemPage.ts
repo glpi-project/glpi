@@ -470,7 +470,39 @@ export class KnowbaseItemPage extends GlpiPage
 
     public shareLink(): Locator
     {
-        return this.page.getByLabel('Public share link');
+        return this.shareSlugInput();
+    }
+
+    public shareSlugInput(): Locator
+    {
+        return this.page.getByLabel('Public link slug');
+    }
+
+    public copyLinkButton(): Locator
+    {
+        return this.page.getByRole('button', { name: 'Copy link' });
+    }
+
+    /**
+     * Read the full share URL (with secret) via the copy button. The field only
+     * shows the slug, so the copy affordance is the semantic way to get the real
+     * link. Requires the clipboard permissions on the browser context.
+     */
+    public async copiedShareUrl(): Promise<string>
+    {
+        // Clear first so we never read a stale value from a previous copy (the
+        // copy handler writes asynchronously, e.g. right after a regenerate).
+        await this.page.evaluate(() => navigator.clipboard.writeText(''));
+        await this.copyLinkButton().click();
+        await expect
+            .poll(() => this.page.evaluate(() => navigator.clipboard.readText()))
+            .toContain('/Share/');
+        return this.page.evaluate(() => navigator.clipboard.readText());
+    }
+
+    public shareSlugError(): Locator
+    {
+        return this.page.getByText('Only lowercase letters, digits and dashes allowed');
     }
 
     public regenerateButton(): Locator

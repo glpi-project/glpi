@@ -45,6 +45,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use function Safe\preg_match;
+
 final class ShareTokenController extends AbstractController
 {
     #[Route(
@@ -188,6 +190,34 @@ final class ShareTokenController extends AbstractController
         $fields['token'] = (new ShareTokenManager())->decryptToken((string) $fields['token']);
 
         return new JsonResponse(['success' => true, 'token' => $fields]);
+    }
+
+    #[Route(
+        "/Share/Token/{token_id}/Rename",
+        name: "glpi_share_token_rename",
+        methods: ["POST"],
+        requirements: ['token_id' => '\d+'],
+    )]
+    public function rename(Request $request, int $token_id): JsonResponse
+    {
+        $token = new ShareToken();
+        if (!$token->getFromDB($token_id)) {
+            throw new NotFoundHttpException();
+        }
+
+        $this->checkRightToUpdateToken($token);
+
+        $slug = \trim($request->getPayload()->getString('slug'), '-');
+        if ($slug !== '' && preg_match('/^[a-z0-9-]+$/', $slug) !== 1) {
+            throw new BadRequestHttpException();
+        }
+
+        $success = $token->update([
+            'id'   => $token_id,
+            'name' => $slug !== '' ? $slug : null,
+        ]);
+
+        return new JsonResponse(['success' => $success, 'slug' => $slug]);
     }
 
     #[Route(

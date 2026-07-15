@@ -35,11 +35,14 @@
 namespace tests\units\Glpi\Controller;
 
 use Glpi\Controller\ShareTokenController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Security\ShareTokenManager;
 use Glpi\ShareToken;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use Log;
+use Symfony\Component\HttpFoundation\Request;
 use User;
 
 final class ShareTokenControllerTest extends DbTestCase
@@ -137,5 +140,97 @@ final class ShareTokenControllerTest extends DbTestCase
             )
         );
         $this->assertCount(0, $spurious);
+    }
+
+    public function testRenameUpdatesSlug(): void
+    {
+        $this->login();
+        $kb    = $this->createKnowbaseItem();
+        $token = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ]);
+
+        $request = Request::create(
+            '/Share/Token/' . $token->getID() . '/Rename',
+            'POST',
+            ['slug' => 'reset-password'],
+        );
+        $response = (new ShareTokenController())->rename($request, $token->getID());
+
+        $this->assertSame(200, $response->getStatusCode());
+        $payload = json_decode((string) $response->getContent(), true);
+        $this->assertSame(['success' => true, 'slug' => 'reset-password'], $payload);
+
+        $reloaded = new ShareToken();
+        $reloaded->getFromDB($token->getID());
+        $this->assertSame('reset-password', $reloaded->fields['name']);
+    }
+
+    public function testRenameEmptySlugClearsName(): void
+    {
+        $this->login();
+        $kb    = $this->createKnowbaseItem();
+        $token = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'name'      => 'to-be-cleared',
+            'is_active' => 1,
+        ]);
+
+        $request = Request::create(
+            '/Share/Token/' . $token->getID() . '/Rename',
+            'POST',
+            ['slug' => ''],
+        );
+        (new ShareTokenController())->rename($request, $token->getID());
+
+        $reloaded = new ShareToken();
+        $reloaded->getFromDB($token->getID());
+        $this->assertNull($reloaded->fields['name']);
+    }
+
+    public function testRenameRejectsInvalidCharset(): void
+    {
+        $this->login();
+        $kb    = $this->createKnowbaseItem();
+        $token = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ]);
+
+        $this->expectException(BadRequestHttpException::class);
+
+        $request = Request::create(
+            '/Share/Token/' . $token->getID() . '/Rename',
+            'POST',
+            ['slug' => 'Invalid Slug?'],
+        );
+        (new ShareTokenController())->rename($request, $token->getID());
+    }
+
+    public function testRenameDeniedWithoutUpdateRight(): void
+    {
+        $this->login();
+        $kb    = $this->createKnowbaseItem();
+        $token = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ]);
+
+        // post-only is a self-service profile with no knowledge base management right.
+        $this->login('post-only', 'postonly');
+
+        $this->expectException(AccessDeniedHttpException::class);
+
+        $request = Request::create(
+            '/Share/Token/' . $token->getID() . '/Rename',
+            'POST',
+            ['slug' => 'nope'],
+        );
+        (new ShareTokenController())->rename($request, $token->getID());
     }
 }

@@ -35,6 +35,9 @@ import { KnowbaseItemPage } from "../../pages/KnowbaseItemPage";
 import { Profiles } from "../../utils/Profiles";
 import { getWorkerEntityId } from "../../utils/WorkerEntities";
 
+// The full share URL (with secret) is read from the clipboard via the copy button.
+test.use({ permissions: ['clipboard-read', 'clipboard-write'] });
+
 test('Publishing reuses the same link across unpublish/republish', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
@@ -51,7 +54,7 @@ test('Publishing reuses the same link across unpublish/republish', async ({ page
 
     await kb.publishSwitch().check();
     await expect(kb.shareLink()).toBeVisible();
-    const url1 = await kb.shareLink().inputValue();
+    const url1 = await kb.copiedShareUrl();
     expect(url1).toContain('/Share/');
 
     await kb.publishSwitch().uncheck();
@@ -59,7 +62,8 @@ test('Publishing reuses the same link across unpublish/republish', async ({ page
 
     await kb.publishSwitch().check();
     await expect(kb.shareLink()).toBeVisible();
-    await expect(kb.shareLink()).toHaveValue(url1);
+    // Republish reuses the same token → same full link.
+    expect(await kb.copiedShareUrl()).toBe(url1);
 });
 
 test('Shared link is accessible by anonymous user', async ({ page, anonymousPage, profile, api }) => {
@@ -80,7 +84,7 @@ test('Shared link is accessible by anonymous user', async ({ page, anonymousPage
 
     await kb.publishSwitch().check();
     await expect(kb.shareLink()).toBeVisible();
-    const share_url = await kb.shareLink().inputValue();
+    const share_url = await kb.copiedShareUrl();
     expect(share_url).toContain('/Share/');
 
     // Use path only so the test is agnostic of the server base URL (host/port vary between local and CI)
@@ -109,15 +113,15 @@ test('Regenerating the link revokes the old one and issues a new one', async ({ 
 
     await kb.publishSwitch().check();
     await expect(kb.shareLink()).toBeVisible();
-    const url1 = await kb.shareLink().inputValue();
+    const url1 = await kb.copiedShareUrl();
     const path1 = new URL(url1, 'http://placeholder').pathname;
 
     await kb.regenerateButton().click();
     await kb.confirmRegenerate();
 
     await expect(kb.shareLink()).toBeVisible();
-    await expect(kb.shareLink()).not.toHaveValue(url1);
-    const url2 = await kb.shareLink().inputValue();
+    const url2 = await kb.copiedShareUrl();
+    expect(url2).not.toBe(url1);
     const path2 = new URL(url2, 'http://placeholder').pathname;
 
     // Old link is revoked: the controller throws NotFoundHttpException for

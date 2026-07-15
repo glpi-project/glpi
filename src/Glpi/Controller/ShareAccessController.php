@@ -44,17 +44,26 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use function Safe\preg_match;
+
 final class ShareAccessController extends AbstractController
 {
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     #[Route(
-        "/Share/{token}",
+        "/Share/{share}",
         name: "glpi_share_access",
         methods: "GET",
-        requirements: ['token' => '[0-9a-f]{64}'],
+        requirements: ['share' => '(?:[a-z0-9-]+-)?[0-9a-f]{64}'],
     )]
-    public function __invoke(Request $request, string $token): Response
+    public function __invoke(Request $request, string $share): Response
     {
+        // The public URL may carry a cosmetic slug prefix (…/Share/{slug}-{token});
+        // only the trailing 64-hex token is the credential used for lookup.
+        if (!preg_match('/([0-9a-f]{64})$/', $share, $matches)) {
+            throw new NotFoundHttpException();
+        }
+        $token = $matches[1];
+
         $token_manager = new ShareTokenManager();
 
         $shared_item = $token_manager->grantSessionAccess($token);
