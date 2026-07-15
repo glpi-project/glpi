@@ -745,9 +745,14 @@ final class AssetController extends AbstractController
                     class: Item_Disk::class,
                     full_schema: 'Volume',
                     graphql_only: true,
-                    params: [
-                        'x-version-introduced' => '2.4.0',
-                    ]
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
+                'virtual_machines' => self::getChildrenTypeSchema(
+                    parent_class: Computer::class,
+                    class: ItemVirtualMachine::class,
+                    full_schema: 'VirtualMachine',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
                 ),
             ],
         ];
@@ -977,6 +982,13 @@ final class AssetController extends AbstractController
                         'join-via' => Item_Line::class,
                     ]
                 ),
+                'volumes' => self::getChildrenTypeSchema(
+                    parent_class: NetworkEquipment::class,
+                    class: Item_Disk::class,
+                    full_schema: 'Volume',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
             ],
         ];
 
@@ -1147,6 +1159,13 @@ final class AssetController extends AbstractController
                         'join-via' => Item_Line::class,
                     ]
                 ),
+                'volumes' => self::getChildrenTypeSchema(
+                    parent_class: Phone::class,
+                    class: Item_Disk::class,
+                    full_schema: 'Volume',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
             ],
         ];
 
@@ -1271,6 +1290,13 @@ final class AssetController extends AbstractController
                         'x-version-introduced' => '2.4.0',
                         'join-via' => Item_Line::class,
                     ]
+                ),
+                'volumes' => self::getChildrenTypeSchema(
+                    parent_class: Printer::class,
+                    class: Item_Disk::class,
+                    full_schema: 'Volume',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
                 ),
             ],
         ];
