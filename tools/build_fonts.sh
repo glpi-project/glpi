@@ -78,8 +78,29 @@ if [ ! -f "$AUTOLOAD_SHIM" ]; then
     CREATED_SHIM=1
 fi
 
+# Pin the font sources ("tecnickcom/tc-font-mirror") to the version declared by
+# the converter. Upstream declares them with a mutable `main` dist reference, so
+# Composer would otherwise download the branch HEAD and the generated font set
+# would change whenever the mirror repository is updated.
+MIRROR_MANIFEST="$FONT_UTIL_DIR/composer.json"
+cp "$MIRROR_MANIFEST" "$MIRROR_MANIFEST.orig"
+# Decoded as objects, so that empty objects are not turned into arrays on re-encoding.
+php -r '
+$file = $argv[1];
+$manifest = json_decode(file_get_contents($file));
+foreach ($manifest->repositories ?? [] as $repository) {
+    if (($repository->package->name ?? null) !== "tecnickcom/tc-font-mirror") {
+        continue;
+    }
+    $repository->package->dist->reference = $repository->package->version;
+}
+file_put_contents($file, json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+' "$MIRROR_MANIFEST"
+
 # Fetch the font sources ("tecnickcom/tc-font-mirror") used by the converter.
 composer install --no-dev --no-interaction --quiet --working-dir="$FONT_UTIL_DIR"
+
+mv "$MIRROR_MANIFEST.orig" "$MIRROR_MANIFEST"
 
 # Convert the sources into tc-lib-pdf-font JSON definitions (into target/fonts).
 # Discard the per-font progress on stdout; errors (stderr) are kept and a
