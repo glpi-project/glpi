@@ -76,7 +76,13 @@ test('Editing the slug updates the link', async ({ page, profile, api }) => {
     await expect(kb.shareLink()).toBeVisible();
 
     await kb.shareSlugInput().fill('reset-password');
+    // Saving on Enter fires an async rename + popover reload; wait for both so the
+    // copy button below reflects the new slug (a real user has time; the test doesn't).
+    const renamed = page.waitForResponse(r => r.url().includes('/Rename'));
+    const reloaded = page.waitForResponse(r => r.url().includes('/SidePanel/sharing'));
     await kb.shareSlugInput().press('Enter');
+    await renamed;
+    await reloaded;
 
     // After reload the slug persists as the input value.
     await expect(kb.shareSlugInput()).toHaveValue('reset-password');
