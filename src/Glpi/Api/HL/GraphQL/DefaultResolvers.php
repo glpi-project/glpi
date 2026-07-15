@@ -37,6 +37,7 @@ namespace Glpi\Api\HL\GraphQL;
 use CommonDBTM;
 use DBConnection;
 use Glpi\Api\HL\APIException;
+use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\RightConditionNotMetException;
 use Glpi\Api\HL\RSQL\RSQLException;
