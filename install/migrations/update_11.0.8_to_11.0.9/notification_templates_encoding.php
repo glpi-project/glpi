@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\SanitizedStringsDecoder;
+
 /**
  * @var DBmysql $DB
  * @var Migration $migration
@@ -42,33 +44,40 @@
 // This instance is only affected if unsanitization-on-read is disabled,
 // i.e. it was installed fresh from GLPI >= 11.0.5 (see #22658). Instances
 // upgraded from an older version keep having their data unsanitized on
-// read, so their (still HTML-encoded) default templates already render
-// correctly and must not be touched here.
+// read, so their (still HTML-encoded) templates already render correctly
+// and do not need to be touched here.
 $must_unsanitize_db_data = $DB->request([
     'FROM'  => 'glpi_configs',
     'WHERE' => ['context' => 'core', 'name' => 'must_unsanitize_db_data'],
 ])->current()['value'] ?? '1';
 
 if ((int) $must_unsanitize_db_data === 0) {
-    $fixes = require __DIR__ . '/notification_templates_encoding.data.php';
+    $decoder = new SanitizedStringsDecoder();
 
-    foreach ($fixes as $fix) {
-        // Exact match only: a template whose content was customized by the
-        // administrator no longer matches the broken default value, and is
-        // left untouched.
-        $migration->addPostQuery(
-            $DB->buildUpdate(
-                'glpi_notificationtemplatetranslations',
-                [
-                    $fix['field'] => $fix['new'],
-                ],
-                [
-                    'notificationtemplates_id' => $fix['notificationtemplates_id'],
-                    'language'                 => $fix['language'],
-                    $fix['field']              => $fix['old'],
-                ]
-            )
-        );
+    $translations_iterator = $DB->request(['FROM' => 'glpi_notificationtemplatetranslations']);
+    foreach ($translations_iterator as $translation) {
+        $updated_fields = [];
+        foreach (['content_html', 'content_text'] as $field) {
+            if (empty($translation[$field])) {
+                continue;
+            }
+            $decoded = $decoder->decodeHtmlSpecialChars($translation[$field]);
+            // `decodeHtmlSpecialChars()` only alters values that look fully
+            // HTML-encoded; a template customized through the rich text
+            // editor (i.e. containing actual HTML markup) is left untouched.
+            if ($decoded !== $translation[$field]) {
+                $updated_fields[$field] = $decoded;
+            }
+        }
+        if ($updated_fields !== []) {
+            $migration->addPostQuery(
+                $DB->buildUpdate(
+                    'glpi_notificationtemplatetranslations',
+                    $updated_fields,
+                    ['id' => $translation['id']]
+                )
+            );
+        }
     }
 }
 /* END: Fix HTML-escaped default notification templates */
