@@ -124,7 +124,7 @@ class Item_Enclosure extends CommonDBRelation
                 || !$item->can($row['items_id'], READ)
             ) {
                 $entries[] = [
-                    'item'     => __('Possibly no access'),
+                    'item'     => __('You are not allowed to view this item''),
                     'position' => $row['position'],
                     'skip_ma'  => true,
                 ];
