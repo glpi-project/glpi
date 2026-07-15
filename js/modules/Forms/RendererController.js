@@ -499,6 +499,15 @@ export class GlpiFormRendererController
             this.#applyVisibilityToItem(submit_button, results.form_visibility);
         }
 
+        // Altcha widget must follow the same visibility as the submit button,
+        // as it has no purpose when the form cannot be submitted.
+        const altcha = container.querySelector(
+            '[data-glpi-form-renderer-altcha]'
+        );
+        if (altcha !== null) {
+            this.#applyVisibilityToItem(altcha, results.form_visibility);
+        }
+
         // Apply sections visibility
         for (const [id, must_be_visible] of Object.entries(
             results.sections_visibility
