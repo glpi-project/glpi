@@ -101,13 +101,8 @@ final class KnowbaseItemController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        $mode = $request->query->getString('mode', 'view');
-        if (!in_array($mode, ['view', 'edit'], true)) {
-            $mode = 'view';
-        }
-
-        return new StreamedResponse(static function () use ($kbitem, $mode) {
-            $kbitem->showFull(['mode' => $mode]);
+        return new StreamedResponse(static function () use ($kbitem) {
+            $kbitem->showFull();
         });
     }
 

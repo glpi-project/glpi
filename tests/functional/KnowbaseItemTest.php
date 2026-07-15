@@ -976,12 +976,6 @@ HTML,
         $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
     }
 
-    public function testCanShowAsideActionsReflectsRights(): void
-    {
-        $this->login(); // super-admin: can favorite/update/purge
-        $this->assertTrue(KnowbaseItem::canShowAsideActions());
-    }
-
     public function testShowFullAddModePrefillsCategoryFromOptions(): void
     {
         $this->login();
@@ -1006,33 +1000,6 @@ HTML,
             'data-glpi-kb-prefilled-category-id="' . $cat_id . '"',
             $html
         );
-    }
-
-    public function testShowFullAddModePrefilledCategoryIncludesName(): void
-    {
-        $this->login();
-        $cat = $this->createItem(\KnowbaseItemCategory::class, [
-            'name' => 'MyCat', 'knowbaseitemcategories_id' => 0,
-            'entities_id' => $this->getTestRootEntity(only_id: true), 'is_recursive' => 1,
-        ]);
-        $item = new KnowbaseItem();
-        $item->getEmpty();
-        $html = (string) $item->showFull([
-            'mode' => 'add', 'display' => false,
-            'knowbaseitemcategories_id' => $cat->getID(),
-        ]);
-        $this->assertStringContainsString('data-glpi-kb-prefilled-category-id="' . $cat->getID() . '"', $html);
-        $this->assertStringContainsString('MyCat', $html);
-    }
-
-    public function testShowFullAddModeRendersCategoryHint(): void
-    {
-        $this->login();
-        $item = new KnowbaseItem();
-        $item->getEmpty();
-        $html = (string) $item->showFull(['mode' => 'add', 'display' => false]);
-        // No prefilled category → static hint.
-        $this->assertStringContainsString('added to a category', $html);
     }
 
     protected function testGetVisibilityCriteriaProvider(): iterable

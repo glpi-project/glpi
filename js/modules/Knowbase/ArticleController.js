@@ -138,9 +138,8 @@ export class GlpiKnowbaseArticleController
      * @param {HTMLElement} side_panel_container
      * @param {HTMLElement} offcanvas_container
      * @param {string} mode
-     * @param {Object} options
      */
-    constructor(container, side_panel_container, offcanvas_container, mode, options = {})
+    constructor(container, side_panel_container, offcanvas_container, mode)
     {
         this.#container = container;
         if (mode === "edit") {
@@ -161,7 +160,7 @@ export class GlpiKnowbaseArticleController
         this.#initEditor();
         this.#initDiffListeners();
         this.#initIllustrationPicker();
-        this.#initRecursiveToggle(options.skipPageChrome === true);
+        this.#initRecursiveToggle();
 
         if (mode === "edit") {
             this.#default_language = container.dataset.glpiKbDefaultLanguage;
@@ -176,12 +175,6 @@ export class GlpiKnowbaseArticleController
             const add_button = this.#container.parentElement?.querySelector('[data-glpi-kb-add-article]');
             if (add_button) {
                 add_button.addEventListener('click', () => this.#addArticle());
-            }
-        }
-
-        if (mode === 'edit') {
-            if (options.autoEnterEditMode === true) {
-                this.#enableEditMode();
             }
         }
 
@@ -973,9 +966,9 @@ export class GlpiKnowbaseArticleController
         });
     }
 
-    #initRecursiveToggle(skip = false)
+    #initRecursiveToggle()
     {
-        if (skip || this.#item_id === null) {
+        if (this.#item_id === null) {
             return;
         }
 

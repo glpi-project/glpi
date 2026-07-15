@@ -150,9 +150,8 @@
             </div>
         </div>
 
-        {% if mode == "view" or mode == "edit" or mode == "add" %}
+        {% if mode == "view" or mode == "edit" %}
             <div class="text-muted d-flex align-items-center gap-3">
-                {% if mode == "view" or mode == "edit" %}
                 {# Last update #}
                 <div class="d-flex align-items-center" data-testid="last-update">
                     <i class="ti ti-clock me-1 fs-3"></i>
@@ -265,7 +264,6 @@
                         </a>
                     </div>
                 {% endif %}
-
             </div>
 
         {% endif %}
@@ -499,10 +497,7 @@
 
 {% if mode == 'add' %}
     <div class="px-4 mb-2 d-flex">
-        <button
-            class="btn btn-primary ms-auto"
-            data-glpi-kb-add-article
-        >
+        <button class="btn btn-primary ms-auto" data-glpi-kb-add-article>
             <i class="ti ti-plus me-2"></i>
             {{ __("Add article") }}
         </button>

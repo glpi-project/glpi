@@ -332,29 +332,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $category_id;
     }
 
-    /**
-     * Whether the per-article "actions" (dots) menu should be rendered in the
-     * aside. Cheap session-level check shared by the full-page aside render and
-     * the inline-create fragment render, so both paths stay in sync.
-     */
-    public static function canShowAsideActions(): bool
-    {
-        return KnowbaseItem_Favorite::canCreate()
-            || self::canUpdate()
-            || self::canPurge();
-    }
-
-    /**
-     * Whether the "child entities" (is_recursive) toggle should be enabled,
-     * mirroring the generic form header (header_content.html.twig).
-     */
-    public function canToggleRecursive(): bool
-    {
-        return $this->canEdit($this->getID())
-            && $this->canRecurs()
-            && $this->canUnrecurs();
-    }
-
     public function post_addItem()
     {
         // Handle rich-text images and uploaded documents
@@ -1125,8 +1102,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $prefilled_category_id = self::getReadablePrefilledCategoryId($raw_category_id);
             if ($prefilled_category_id !== null) {
                 $params['prefilled_category'] = [
-                    'id'   => $prefilled_category_id,
-                    'name' => Dropdown::getDropdownName(KnowbaseItemCategory::getTable(), $prefilled_category_id),
+                    'id' => $prefilled_category_id,
                 ];
             }
         }
@@ -2945,7 +2921,9 @@ TWIG, $twig_params);
         // session-level check: the menu content itself (and its per-article
         // permission gating) is lazy-loaded on demand, so we never load every
         // tree article here just to know if any action is available.
-        $show_actions = self::canShowAsideActions();
+        $show_actions = KnowbaseItem_Favorite::canCreate()
+            || self::canUpdate()
+            || self::canPurge();
 
         return TemplateRenderer::getInstance()->render(
             'pages/tools/kb/aside.html.twig',

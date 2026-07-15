@@ -66,8 +66,6 @@ final class CreateArticleControllerTest extends DbTestCase
         $data = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('id', $data);
         $this->assertArrayHasKey('url', $data);
-        $this->assertArrayHasKey('html', $data);
-        $this->assertStringContainsString('New from inline input', $data['html']);
 
         $item = new KnowbaseItem();
         $this->assertTrue($item->getFromDB($data['id']));
@@ -148,41 +146,5 @@ final class CreateArticleControllerTest extends DbTestCase
         $this->expectException(AccessDeniedHttpException::class);
         $request = new Request(content: json_encode(['name' => 'Should be denied']));
         (new CreateArticleController())($request);
-    }
-
-    public function testResponseHtmlIncludesActionsMenuWhenUserCanManageArticles(): void
-    {
-        $this->login();
-
-        $request = new Request(content: json_encode(['name' => 'Actions menu test']));
-        $response = (new CreateArticleController())($request);
-
-        $this->assertSame(200, $response->getStatusCode());
-        $data = json_decode($response->getContent(), true);
-        $this->assertStringContainsString('data-glpi-kb-actions-menu', $data['html']);
-    }
-
-    public function testResponseIncludesIsRecursiveField(): void
-    {
-        $this->login();
-
-        $request = new Request(content: json_encode(['name' => 'Is recursive field test']));
-        $response = (new CreateArticleController())($request);
-
-        $data = json_decode($response->getContent(), true);
-        $this->assertArrayHasKey('is_recursive', $data);
-        $this->assertFalse($data['is_recursive']);
-    }
-
-    public function testResponseIncludesCanToggleRecursiveField(): void
-    {
-        $this->login();
-
-        $request = new Request(content: json_encode(['name' => 'Can toggle recursive field test']));
-        $response = (new CreateArticleController())($request);
-
-        $data = json_decode($response->getContent(), true);
-        $this->assertArrayHasKey('can_toggle_recursive', $data);
-        $this->assertTrue($data['can_toggle_recursive']);
     }
 }

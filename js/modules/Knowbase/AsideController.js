@@ -111,7 +111,8 @@ export class GlpiKnowbaseAsideController
 
     #initCreateArticle()
     {
-        // Signal that the controller is ready (used by e2e tests to wait before interacting)
+        // The links are rendered with pe-none so a click cannot fall through to
+        // their plain href before the listener below exists.
         for (const add_link of this.#aside.querySelectorAll('[data-glpi-kb-aside-category-add]')) {
             add_link.classList.remove('pe-none');
         }
@@ -170,7 +171,7 @@ export class GlpiKnowbaseAsideController
             } else if (e.key === 'Enter') {
                 e.preventDefault();
                 settled = true;
-                this.#commitCreateInput(input, li, category_id, cleanup, unsettle);
+                this.#commitCreateInput(input, category_id, cleanup, unsettle);
             }
         });
 
@@ -182,19 +183,18 @@ export class GlpiKnowbaseAsideController
                 cleanup();
             } else {
                 settled = true;
-                this.#commitCreateInput(input, li, category_id, cleanup, unsettle);
+                this.#commitCreateInput(input, category_id, cleanup, unsettle);
             }
         });
     }
 
     /**
      * @param {HTMLInputElement} input
-     * @param {HTMLElement} li
      * @param {number} category_id
      * @param {() => void} cleanup
      * @param {() => void} unsettle
      */
-    async #commitCreateInput(input, li, category_id, cleanup, unsettle)
+    async #commitCreateInput(input, category_id, cleanup, unsettle)
     {
         const name = input.value.trim();
         if (name === '') {
@@ -218,87 +218,7 @@ export class GlpiKnowbaseAsideController
             return;
         }
 
-        this.#clearCurrentArticle();
-        // The row may have been detached while the request was in flight; setting
-        // outerHTML on a parent-less node throws. The soft-navigation shows the
-        // article either way.
-        if (li.isConnected) {
-            li.outerHTML = data.html;
-        }
-        await this.#softNavigateTo(data.id, data.url, data.is_recursive, data.can_toggle_recursive);
-    }
-
-    #clearCurrentArticle()
-    {
-        const current = this.#aside.querySelector('[data-glpi-kb-article-current]');
-        if (current) {
-            current.removeAttribute('data-glpi-kb-article-current');
-            current.removeAttribute('aria-current');
-        }
-    }
-
-    /**
-     * @param {number} id
-     * @param {string} url
-     * @param {boolean} is_recursive
-     * @param {boolean} can_toggle_recursive
-     */
-    async #softNavigateTo(id, url, is_recursive, can_toggle_recursive)
-    {
-        const pane = document.querySelector('[data-glpi-tab-content]');
-        if (!pane) {
-            window.location.href = url;
-            return;
-        }
-
-        const old_name_el = document.querySelector('[data-glpi-kb-subject]');
-        const old_name = old_name_el ? old_name_el.textContent.trim() : null;
-
-        let html;
-        try {
-            const response = await get(`Knowbase/KnowbaseItem/${id}/Full?mode=edit`);
-            html = await response.text();
-        } catch {
-            window.location.href = url;
-            return;
-        }
-
-        pane.innerHTML = html;
-        history.pushState({ knowbaseitems_id: id }, '', url);
-        window.addEventListener('popstate', () => window.location.reload(), { once: true });
-
-        const new_name_el = pane.querySelector('[data-glpi-kb-subject]');
-        const new_name = new_name_el ? new_name_el.textContent.trim() : null;
-        if (old_name && new_name) {
-            const idx = document.title.indexOf(old_name);
-            if (idx !== -1) {
-                document.title = document.title.slice(0, idx) + new_name + document.title.slice(idx + old_name.length);
-            }
-        }
-
-        const container = pane.querySelector('[data-glpi-knowbase-article]');
-        const side_panel_container = pane.querySelector('[data-glpi-knowbase-side-panel]');
-        const offcanvas_container = pane.querySelector('[data-glpi-knowbase-side-panel-offcanvas]');
-        if (!container) {
-            return;
-        }
-
-        const checkbox = document.querySelector('[data-glpi-child-entities-checkbox]');
-        if (checkbox) {
-            const fresh_checkbox = checkbox.cloneNode(true);
-            fresh_checkbox.checked = is_recursive;
-            fresh_checkbox.disabled = !can_toggle_recursive;
-            checkbox.replaceWith(fresh_checkbox);
-        }
-
-        const { GlpiKnowbaseArticleController } = await import('/js/modules/Knowbase/ArticleController.js');
-        new GlpiKnowbaseArticleController(
-            container,
-            side_panel_container,
-            offcanvas_container,
-            'edit',
-            { skipPageChrome: false, autoEnterEditMode: true },
-        );
+        window.location.href = data.url;
     }
 
     #initSearch()

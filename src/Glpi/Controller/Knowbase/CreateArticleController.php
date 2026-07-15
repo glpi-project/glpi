@@ -34,11 +34,9 @@
 
 namespace Glpi\Controller\Knowbase;
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Knowbase\Aside\Article;
 use KnowbaseItem;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -79,25 +77,9 @@ final class CreateArticleController extends AbstractController
             '_categories'  => $category_id !== null ? [$category_id] : [],
         ]);
 
-        $article = new Article(
-            id: (int) $item->getID(),
-            title: $item->fields['name'],
-            illustration: $item->fields['illustration'] ?? '',
-            link: KnowbaseItem::getFormURLWithID($item->getID()),
-            is_current: true,
-        );
-
-        $show_actions = KnowbaseItem::canShowAsideActions();
-
         return new JsonResponse([
-            'id'                    => $article->id,
-            'url'                   => $article->link,
-            'is_recursive'          => (bool) $item->fields['is_recursive'],
-            'can_toggle_recursive'  => $item->canToggleRecursive(),
-            'html'                  => TemplateRenderer::getInstance()->render(
-                'pages/tools/kb/aside_article_row.html.twig',
-                ['article' => $article, 'show_actions' => $show_actions],
-            ),
+            'id'  => (int) $item->getID(),
+            'url' => KnowbaseItem::getFormURLWithID($item->getID()),
         ]);
     }
 }
