@@ -7297,6 +7297,36 @@ class SearchTest extends DbTestCase
         $this->assertContains($low_id, $ids_found);
         $this->assertNotContains($high_id, $ids_found);
 
+        // morethanorequal + low_id must include the boundary value
+        $data = $this->doSearch(Computer::class, [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => array_merge($base_criteria, [[
+                'link'       => 'AND',
+                'field'      => 2,
+                'searchtype' => 'morethanorequal',
+                'value'      => $low_id,
+            ]]),
+        ]);
+        $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertContains($low_id, $ids_found);
+        $this->assertContains($high_id, $ids_found);
+
+        // lessthanorequal + high_id must include the boundary value
+        $data = $this->doSearch(Computer::class, [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => array_merge($base_criteria, [[
+                'link'       => 'AND',
+                'field'      => 2,
+                'searchtype' => 'lessthanorequal',
+                'value'      => $high_id,
+            ]]),
+        ]);
+        $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertContains($low_id, $ids_found);
+        $this->assertContains($high_id, $ids_found);
+
         // NOT morethan must invert to <=
         $data = $this->doSearch(Computer::class, [
             'is_deleted' => 0,
@@ -7311,6 +7341,36 @@ class SearchTest extends DbTestCase
         $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
         $this->assertContains($low_id, $ids_found);
         $this->assertNotContains($high_id, $ids_found);
+
+        // NOT morethanorequal must invert to <
+        $data = $this->doSearch(Computer::class, [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => array_merge($base_criteria, [[
+                'link'       => 'AND NOT',
+                'field'      => 2,
+                'searchtype' => 'morethanorequal',
+                'value'      => $low_id,
+            ]]),
+        ]);
+        $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertNotContains($low_id, $ids_found);
+        $this->assertNotContains($high_id, $ids_found);
+
+        // NOT lessthanorequal must invert to >
+        $data = $this->doSearch(Computer::class, [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => array_merge($base_criteria, [[
+                'link'       => 'AND NOT',
+                'field'      => 2,
+                'searchtype' => 'lessthanorequal',
+                'value'      => $low_id,
+            ]]),
+        ]);
+        $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertNotContains($low_id, $ids_found);
+        $this->assertContains($high_id, $ids_found);
 
         // Regression: contains + >0 syntax must still work
         $data = $this->doSearch(Computer::class, [

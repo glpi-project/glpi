@@ -315,7 +315,11 @@ class SearchOptionTest extends DbTestCase
 
         $this->assertArrayHasKey('morethan', $actions);
         $this->assertArrayHasKey('lessthan', $actions);
+        $this->assertArrayHasKey('morethanorequal', $actions);
+        $this->assertArrayHasKey('lessthanorequal', $actions);
         $this->assertSame(__('greater than'), $actions['morethan']);
         $this->assertSame(__('less than'), $actions['lessthan']);
+        $this->assertSame(__('greater than or equal to'), $actions['morethanorequal']);
+        $this->assertSame(__('less than or equal to'), $actions['lessthanorequal']);
     }
 }

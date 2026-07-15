@@ -2055,12 +2055,14 @@ final class SQLProvider implements SearchProviderInterface
                         ];
                     }
 
-                    if (in_array($searchtype, ['morethan', 'lessthan'], true) && is_numeric($val)) {
-                        if ($nott) {
-                            $operator = $searchtype === 'morethan' ? '<=' : '>=';
-                        } else {
-                            $operator = $searchtype === 'morethan' ? '>' : '<';
-                        }
+                    $numeric_operators = [
+                        'morethan'       => $nott ? '<=' : '>',
+                        'lessthan'       => $nott ? '>=' : '<',
+                        'morethanorequal' => $nott ? '<' : '>=',
+                        'lessthanorequal' => $nott ? '>' : '<=',
+                    ];
+                    if (isset($numeric_operators[$searchtype]) && is_numeric($val)) {
+                        $operator = $numeric_operators[$searchtype];
                         $numeric_val = floatval($val);
                         $values = $tocompute instanceof QueryExpression ? $tocompute->getParams() : [];
                         if ($searchopt[$ID]["datatype"] === 'progressbar') {
@@ -4228,12 +4230,14 @@ final class SQLProvider implements SearchProviderInterface
                         ];
                     }
 
-                    if (in_array($searchtype, ['morethan', 'lessthan'], true) && is_numeric($val)) {
-                        if ($NOT) {
-                            $operator = $searchtype === 'morethan' ? '<=' : '>=';
-                        } else {
-                            $operator = $searchtype === 'morethan' ? '>' : '<';
-                        }
+                    $numeric_operators = [
+                        'morethan'       => $NOT ? '<=' : '>',
+                        'lessthan'       => $NOT ? '>=' : '<',
+                        'morethanorequal' => $NOT ? '<' : '>=',
+                        'lessthanorequal' => $NOT ? '>' : '<=',
+                    ];
+                    if (isset($numeric_operators[$searchtype]) && is_numeric($val)) {
+                        $operator = $numeric_operators[$searchtype];
                         return [
                             $NAME => [$operator, floatval($val)],
                         ];

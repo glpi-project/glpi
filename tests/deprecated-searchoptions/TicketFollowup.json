@@ -84,6 +84,8 @@
             "notcontains",
             "morethan",
             "lessthan",
+            "morethanorequal",
+            "lessthanorequal",
             "empty"
         ],
         "uid": "TicketFollowup.id"

@@ -287,6 +287,8 @@ final class QueryBuilder implements SearchInputInterface
             case "notequals":
             case "morethan":
             case "lessthan":
+            case "morethanorequal":
+            case "lessthanorequal":
             case "under":
             case "notunder":
                 if (isset($searchopt['field'])) {
@@ -352,7 +354,13 @@ final class QueryBuilder implements SearchInputInterface
                             case "number":
                             case "integer":
                             case "decimal":
-                                if (in_array($request['searchtype'], ['morethan', 'lessthan'], true)) {
+                                if (
+                                    in_array(
+                                        $request['searchtype'],
+                                        ['morethan', 'lessthan', 'morethanorequal', 'lessthanorequal'],
+                                        true
+                                    )
+                                ) {
                                     $skip_value_to_select = true;
                                 }
                                 break;

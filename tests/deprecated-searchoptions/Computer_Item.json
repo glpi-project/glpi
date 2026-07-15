@@ -14,6 +14,8 @@
             "notcontains",
             "morethan",
             "lessthan",
+            "morethanorequal",
+            "lessthanorequal",
             "empty"
         ],
         "uid": "Computer_Item.id"
