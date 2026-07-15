@@ -55,6 +55,50 @@ final class ShareTokenControllerTest extends DbTestCase
         ]);
     }
 
+    public function testCreateReusesExistingTokenForASingleLinkItemtype(): void
+    {
+        $this->login();
+        $kb       = $this->createKnowbaseItem();
+        $existing = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ]);
+
+        // KnowbaseItem is single-link: a racing publish must not mint a second token.
+        $response = (new ShareTokenController())->create(KnowbaseItem::class, $kb->getID());
+
+        $this->assertSame(200, $response->getStatusCode());
+        $payload = json_decode((string) $response->getContent(), true);
+        $this->assertTrue($payload['success']);
+        $this->assertSame($existing->getID(), (int) $payload['token']['id']);
+
+        $tokens = (new ShareTokenManager())->getTokensForItem(KnowbaseItem::class, $kb->getID());
+        $this->assertCount(1, $tokens);
+    }
+
+    public function testCreateReactivatesADisabledTokenForASingleLinkItemtype(): void
+    {
+        $this->login();
+        $kb       = $this->createKnowbaseItem();
+        $existing = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ]);
+        $this->updateItem(ShareToken::class, $existing->getID(), ['is_active' => 0]);
+
+        $response = (new ShareTokenController())->create(KnowbaseItem::class, $kb->getID());
+
+        $payload = json_decode((string) $response->getContent(), true);
+        $this->assertSame($existing->getID(), (int) $payload['token']['id']);
+        $this->assertSame(1, (int) $payload['token']['is_active']);
+
+        $tokens = (new ShareTokenManager())->getTokensForItem(KnowbaseItem::class, $kb->getID());
+        $this->assertCount(1, $tokens);
+        $this->assertSame(1, (int) $tokens[0]['is_active']);
+    }
+
     public function testRegenerateReplacesTokenWithNewActiveOne(): void
     {
         $this->login();

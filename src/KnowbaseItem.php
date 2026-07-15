@@ -1391,6 +1391,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $this->can($this->getID(), UPDATE);
     }
 
+    public function allowsMultipleShareTokens(): bool
+    {
+        // The article header exposes a single "Publish to web" link.
+        return false;
+    }
+
     public function getShareableViewTemplate(): string
     {
         return 'pages/tools/kb/shared_article.html.twig';

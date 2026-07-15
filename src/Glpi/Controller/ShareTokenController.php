@@ -76,9 +76,22 @@ final class ShareTokenController extends AbstractController
     )]
     public function create(string $itemtype, int $items_id): JsonResponse
     {
-        $this->checkRightToShareItem($itemtype, $items_id);
+        $item = $this->checkRightToShareItem($itemtype, $items_id);
         /** @var class-string<\CommonDBTM> $itemtype */
         $manager = new ShareTokenManager();
+
+        // A second token would stay active but unreachable from a single-link UI.
+        if (!$item->allowsMultipleShareTokens()) {
+            $existing = $manager->getToken($itemtype, $items_id);
+            if ($existing !== null) {
+                if ((int) $existing['is_active'] !== 1) {
+                    (new ShareToken())->update(['id' => (int) $existing['id'], 'is_active' => 1]);
+                    $existing['is_active'] = 1;
+                }
+
+                return new JsonResponse(['success' => true, 'token' => $existing]);
+            }
+        }
 
         $input = [
             'itemtype'  => $itemtype,
@@ -208,8 +221,10 @@ final class ShareTokenController extends AbstractController
 
     /**
      * Validate that the itemtype implements ShareableInterface and the user can manage sharing.
+     *
+     * @return \CommonDBTM&ShareableInterface The loaded item.
      */
-    private function checkRightToShareItem(string $itemtype, int $items_id): void
+    private function checkRightToShareItem(string $itemtype, int $items_id): \CommonDBTM&ShareableInterface
     {
         $item = getItemForItemtype($itemtype);
         if (!($item instanceof \CommonDBTM) || !($item instanceof ShareableInterface)) {
@@ -223,6 +238,8 @@ final class ShareTokenController extends AbstractController
         if (!$item->canManageSharing()) {
             throw new AccessDeniedHttpException();
         }
+
+        return $item;
     }
 
     /**
