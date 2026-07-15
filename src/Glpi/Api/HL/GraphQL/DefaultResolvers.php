@@ -336,8 +336,6 @@ class DefaultResolvers
         ];
 
         $schema = ResourceAccessor::applyFieldReadRestrictions($schema, true);
-        $search = new Search($schema, $request_params);
-
         if (!in_array('id', $field_selection, true)) {
             // Always select ID to uniquely identify records
             $field_selection[] = 'id';
@@ -345,6 +343,14 @@ class DefaultResolvers
 
         // remove all fields not in the schema (maybe they requested a field from the full schema which they cannot see) and write-only fields from selection
         $field_selection = array_filter($field_selection, static fn($field_name) => array_key_exists($field_name, $schema['properties']) && !($schema['properties'][$field_name]['writeOnly'] ?? false));
+
+        // mark properties as skipped in the schema that are not in the selection, but we keep them in the schema in case we need them later (like if they are used in RSQL)
+        foreach ($schema['properties'] as $field_name => &$field_schema) {
+            if (!in_array($field_name, $field_selection, true)) {
+                $field_schema['x-skipped'] = true;
+            }
+        }
+        unset($field_schema);
 
         // if any selected fields are mapped, ensure their source fields are also selected
         foreach ($field_selection as $field_name) {
@@ -355,6 +361,8 @@ class DefaultResolvers
                 }
             }
         }
+
+        $search = new Search($schema, $request_params);
 
         foreach ($field_selection as $field_name) {
             // skip mapped fields unless mapped from themselves
@@ -445,15 +453,24 @@ class DefaultResolvers
             }
             $parent_path = substr($property, 0, (int) strrpos($property, '.'));
             $join_name = $context->getJoinNameForProperty($parent_path);
+            $parent_property = str_replace($join_name . '.', '', $parent_path);
             if (array_key_exists($join_name, $joins)) {
                 $join_schema_name = $joins[$join_name]['x-full-schema'] ?? null;
+                $new_schema['properties'][$join_name]['x-skipped'] = false;
                 if ($join_schema_name !== null) {
                     $join_schema = $this->getSchemaForObjectName($join_schema_name);
                     if (($join_schema !== null)) {
-                        if (array_key_exists('items', $new_schema['properties'][$join_name])) {
-                            $new_schema['properties'][$join_name]['items']['properties'] = $join_schema['properties'];
-                        } else {
-                            $new_schema['properties'][$join_name]['properties'] = $join_schema['properties'];
+                        if (!($new_schema['properties'][$join_name]['x-expanded'] ?? false)) {
+                            $j_props = $join_schema['properties'];
+                            foreach ($j_props as $j_prop_name => &$j_prop_schema) {
+                                $j_prop_schema['x-skipped'] = $j_prop_name !== $parent_property;
+                            }
+                            if (array_key_exists('items', $new_schema['properties'][$join_name])) {
+                                $new_schema['properties'][$join_name]['items']['properties'] = $j_props;
+                            } else {
+                                $new_schema['properties'][$join_name]['properties'] = $j_props;
+                            }
+                            $new_schema['properties'][$join_name]['x-expanded'] = true;
                         }
                     }
                 }
