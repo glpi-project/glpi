@@ -33,7 +33,7 @@
 <div data-glpi-share-popover
      data-glpi-itemtype="{{ itemtype }}"
      data-glpi-items-id="{{ id }}"
-     {{ token ? 'data-glpi-token-id=' ~ token.id : '' }}
+     {% if token %}data-glpi-token-id="{{ token.id }}"{% endif %}
 >
     {# "Publish to web" toggle row #}
     <div class="d-flex align-items-start gap-2">

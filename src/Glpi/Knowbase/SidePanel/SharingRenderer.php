@@ -40,10 +40,11 @@ use Override;
 
 final class SharingRenderer implements RendererInterface
 {
+    // The token is a credential: exposing it needs UPDATE, not canEdit()'s CREATE||PURGE.
     #[Override]
     public function canView(KnowbaseItem $item): bool
     {
-        return $item->canEdit($item->getID());
+        return $item->canManageSharing();
     }
 
     #[Override]
@@ -64,7 +65,7 @@ final class SharingRenderer implements RendererInterface
             'itemtype'     => KnowbaseItem::class,
             'is_published' => $token !== null && (int) $token['is_active'] === 1,
             'token'        => $token,
-            'can_edit'     => $item->canEdit($id),
+            'can_edit'     => $item->canManageSharing(),
         ];
     }
 }

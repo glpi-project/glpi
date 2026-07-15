@@ -52,16 +52,20 @@ final class SharingRendererTest extends DbTestCase
         ]);
     }
 
-    public function testDisabledTokenIsStillExposedForReuse(): void
+    private function createActiveToken(KnowbaseItem $kb): ShareToken
     {
-        $this->login();
-        $kb = $this->createKnowbaseItem();
-
-        $token = $this->createItem(ShareToken::class, [
+        return $this->createItem(ShareToken::class, [
             'itemtype'  => KnowbaseItem::class,
             'items_id'  => $kb->getID(),
             'is_active' => 1,
         ]);
+    }
+
+    public function testDisabledTokenIsStillExposedForReuse(): void
+    {
+        $this->login();
+        $kb    = $this->createKnowbaseItem();
+        $token = $this->createActiveToken($kb);
 
         $this->updateItem(ShareToken::class, $token->getID(), ['is_active' => 0]);
 
@@ -70,5 +74,55 @@ final class SharingRendererTest extends DbTestCase
         $this->assertFalse($params['is_published']);
         $this->assertNotNull($params['token']);
         $this->assertSame($token->getID(), (int) $params['token']['id']);
+    }
+
+    public function testActiveTokenIsPublished(): void
+    {
+        $this->login();
+        $kb    = $this->createKnowbaseItem();
+        $token = $this->createActiveToken($kb);
+
+        $params = (new SharingRenderer())->getParams($kb);
+
+        $this->assertTrue($params['is_published']);
+        $this->assertNotNull($params['token']);
+        $this->assertSame($token->getID(), (int) $params['token']['id']);
+        $this->assertTrue($params['can_edit']);
+    }
+
+    public function testNoTokenIsNotPublished(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+
+        $params = (new SharingRenderer())->getParams($kb);
+
+        $this->assertFalse($params['is_published']);
+        $this->assertNull($params['token']);
+    }
+
+    public function testCreateRightAloneCannotViewSharing(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $this->createActiveToken($kb);
+
+        // CREATE alone satisfies canEdit(), but must not expose the token.
+        $_SESSION['glpiactiveprofile'][KnowbaseItem::$rightname] = CREATE;
+
+        $this->assertFalse((new SharingRenderer())->canView($kb));
+    }
+
+    public function testCreateRightAloneIsNotAllowedToEditSharing(): void
+    {
+        $this->login();
+        $kb = $this->createKnowbaseItem();
+        $this->createActiveToken($kb);
+
+        $_SESSION['glpiactiveprofile'][KnowbaseItem::$rightname] = CREATE;
+
+        $params = (new SharingRenderer())->getParams($kb);
+
+        $this->assertFalse($params['can_edit']);
     }
 }
