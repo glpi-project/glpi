@@ -78,12 +78,15 @@ use Group_Item;
 use GuzzleHttp\Psr7\Utils;
 use Infocom;
 use Item_DeviceNetworkCard;
+use Item_Disk;
+use Item_Line;
 use Item_OperatingSystem;
 use Item_Rack;
 use Item_RemoteManagement;
 use Item_SoftwareVersion;
 use ItemAntivirus;
 use ItemVirtualMachine;
+use Line;
 use Location;
 use Manufacturer;
 use Monitor;
@@ -705,6 +708,45 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'readOnly' => true,
                 ],
+                'network_ports' => self::getChildrenTypeSchema(
+                    parent_class: Computer::class,
+                    class: NetworkPort::class,
+                    full_schema: 'NetworkPort',
+                    graphql_only: true,
+                ),
+                'os_installs' => self::getChildrenTypeSchema(
+                    parent_class: Computer::class,
+                    class: Item_OperatingSystem::class,
+                    full_schema: 'OSInstallation',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
+                'software_installs' => self::getChildrenTypeSchema(
+                    parent_class: Computer::class,
+                    class: Item_SoftwareVersion::class,
+                    full_schema: 'SoftwareInstallation',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
+                'lines' => self::getChildrenTypeSchema(
+                    parent_class: Computer::class,
+                    class: Line::class,
+                    full_schema: 'Line',
+                    graphql_only: true,
+                    params: [
+                        'x-version-introduced' => '2.4.0',
+                        'join-via' => Item_Line::class,
+                    ]
+                ),
+                'volumes' => self::getChildrenTypeSchema(
+                    parent_class: Computer::class,
+                    class: Item_Disk::class,
+                    full_schema: 'Volume',
+                    graphql_only: true,
+                    params: [
+                        'x-version-introduced' => '2.4.0',
+                    ]
+                ),
             ],
         ];
 
@@ -810,6 +852,26 @@ final class AssetController extends AbstractController
                     'minimum' => 0,
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'network_ports' => self::getChildrenTypeSchema(
+                    parent_class: Monitor::class,
+                    class: NetworkPort::class,
+                    full_schema: 'NetworkPort',
+                    graphql_only: true,
+                ),
+                'os_installs' => self::getChildrenTypeSchema(
+                    parent_class: Monitor::class,
+                    class: Item_OperatingSystem::class,
+                    full_schema: 'OSInstallation',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
+                'software_installs' => self::getChildrenTypeSchema(
+                    parent_class: Monitor::class,
+                    class: Item_SoftwareVersion::class,
+                    full_schema: 'SoftwareInstallation',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
             ],
         ];
 
@@ -876,6 +938,36 @@ final class AssetController extends AbstractController
                     'readOnly' => true,
                 ],
                 'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential', params: ['x-version-introduced' => '2.3.0']),
+                'network_ports' => self::getChildrenTypeSchema(
+                    parent_class: NetworkEquipment::class,
+                    class: NetworkPort::class,
+                    full_schema: 'NetworkPort',
+                    graphql_only: true,
+                ),
+                'os_installs' => self::getChildrenTypeSchema(
+                    parent_class: NetworkEquipment::class,
+                    class: Item_OperatingSystem::class,
+                    full_schema: 'OSInstallation',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
+                'software_installs' => self::getChildrenTypeSchema(
+                    parent_class: NetworkEquipment::class,
+                    class: Item_SoftwareVersion::class,
+                    full_schema: 'SoftwareInstallation',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
+                'lines' => self::getChildrenTypeSchema(
+                    parent_class: NetworkEquipment::class,
+                    class: Line::class,
+                    full_schema: 'Line',
+                    graphql_only: true,
+                    params: [
+                        'x-version-introduced' => '2.4.0',
+                        'join-via' => Item_Line::class,
+                    ]
+                ),
             ],
         ];
 
@@ -933,6 +1025,36 @@ final class AssetController extends AbstractController
                     'minimum' => 0,
                 ],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
+                'network_ports' => self::getChildrenTypeSchema(
+                    parent_class: Peripheral::class,
+                    class: NetworkPort::class,
+                    full_schema: 'NetworkPort',
+                    graphql_only: true,
+                ),
+                'os_installs' => self::getChildrenTypeSchema(
+                    parent_class: Peripheral::class,
+                    class: Item_OperatingSystem::class,
+                    full_schema: 'OSInstallation',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
+                'software_installs' => self::getChildrenTypeSchema(
+                    parent_class: Peripheral::class,
+                    class: Item_SoftwareVersion::class,
+                    full_schema: 'SoftwareInstallation',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
+                'lines' => self::getChildrenTypeSchema(
+                    parent_class: Peripheral::class,
+                    class: Line::class,
+                    full_schema: 'Line',
+                    graphql_only: true,
+                    params: [
+                        'x-version-introduced' => '2.4.0',
+                        'join-via' => Item_Line::class,
+                    ]
+                ),
             ],
         ];
 
@@ -986,6 +1108,36 @@ final class AssetController extends AbstractController
                 'ticket_tco' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'x-version-introduced' => '2.3.0'],
                 'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'last_inventory_update' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3.0'],
+                'network_ports' => self::getChildrenTypeSchema(
+                    parent_class: Phone::class,
+                    class: NetworkPort::class,
+                    full_schema: 'NetworkPort',
+                    graphql_only: true,
+                ),
+                'os_installs' => self::getChildrenTypeSchema(
+                    parent_class: Phone::class,
+                    class: Item_OperatingSystem::class,
+                    full_schema: 'OSInstallation',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
+                'software_installs' => self::getChildrenTypeSchema(
+                    parent_class: Phone::class,
+                    class: Item_SoftwareVersion::class,
+                    full_schema: 'SoftwareInstallation',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
+                'lines' => self::getChildrenTypeSchema(
+                    parent_class: Phone::class,
+                    class: Line::class,
+                    full_schema: 'Line',
+                    graphql_only: true,
+                    params: [
+                        'x-version-introduced' => '2.4.0',
+                        'join-via' => Item_Line::class,
+                    ]
+                ),
             ],
         ];
 
@@ -1081,6 +1233,36 @@ final class AssetController extends AbstractController
                     'readOnly' => true,
                 ],
                 'snmp_credential' => self::getDropdownTypeSchema(class: SNMPCredential::class, full_schema: 'SNMPCredential', params: ['x-version-introduced' => '2.3.0']),
+                'network_ports' => self::getChildrenTypeSchema(
+                    parent_class: Printer::class,
+                    class: NetworkPort::class,
+                    full_schema: 'NetworkPort',
+                    graphql_only: true,
+                ),
+                'os_installs' => self::getChildrenTypeSchema(
+                    parent_class: Printer::class,
+                    class: Item_OperatingSystem::class,
+                    full_schema: 'OSInstallation',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
+                'software_installs' => self::getChildrenTypeSchema(
+                    parent_class: Printer::class,
+                    class: Item_SoftwareVersion::class,
+                    full_schema: 'SoftwareInstallation',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
+                'lines' => self::getChildrenTypeSchema(
+                    parent_class: Printer::class,
+                    class: Line::class,
+                    full_schema: 'Line',
+                    graphql_only: true,
+                    params: [
+                        'x-version-introduced' => '2.4.0',
+                        'join-via' => Item_Line::class,
+                    ]
+                ),
             ],
         ];
 
@@ -1255,6 +1437,12 @@ final class AssetController extends AbstractController
                     'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                     'readOnly' => true,
                 ],
+                'network_ports' => self::getChildrenTypeSchema(
+                    parent_class: Unmanaged::class,
+                    class: NetworkPort::class,
+                    full_schema: 'NetworkPort',
+                    graphql_only: true,
+                ),
             ],
         ];
 
@@ -1570,6 +1758,13 @@ final class AssetController extends AbstractController
                     'minimum' => 0,
                     'x-version-introduced' => '2.3.0',
                 ],
+                'versions' => self::getChildrenTypeSchema(
+                    parent_class: Software::class,
+                    class: SoftwareVersion::class,
+                    full_schema: 'SoftwareVersion',
+                    graphql_only: true,
+                    params: ['x-version-introduced' => '2.4.0']
+                ),
             ],
         ];
 
@@ -1894,6 +2089,12 @@ final class AssetController extends AbstractController
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'network_ports' => self::getChildrenTypeSchema(
+                    parent_class: Enclosure::class,
+                    class: NetworkPort::class,
+                    full_schema: 'NetworkPort',
+                    graphql_only: true,
+                ),
             ],
         ];
 
@@ -1984,6 +2185,12 @@ final class AssetController extends AbstractController
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'is_template' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3.0'],
                 'template_name' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.3.0'],
+                'network_ports' => self::getChildrenTypeSchema(
+                    parent_class: PDU::class,
+                    class: NetworkPort::class,
+                    full_schema: 'NetworkPort',
+                    graphql_only: true,
+                ),
             ],
         ];
 
