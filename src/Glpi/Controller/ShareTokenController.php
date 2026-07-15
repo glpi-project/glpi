@@ -41,11 +41,8 @@ use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
-use function Safe\preg_match;
 
 final class ShareTokenController extends AbstractController
 {
@@ -77,17 +74,15 @@ final class ShareTokenController extends AbstractController
         methods: ["POST"],
         requirements: ['items_id' => '\d+'],
     )]
-    public function create(Request $request, string $itemtype, int $items_id): JsonResponse
+    public function create(string $itemtype, int $items_id): JsonResponse
     {
         $this->checkRightToShareItem($itemtype, $items_id);
         /** @var class-string<\CommonDBTM> $itemtype */
         $manager = new ShareTokenManager();
-        $name = $request->getPayload()->getString('name') ?: null;
 
         $input = [
             'itemtype'  => $itemtype,
             'items_id'  => $items_id,
-            'name'      => $name,
             'is_active' => 1,
         ];
 
@@ -152,7 +147,6 @@ final class ShareTokenController extends AbstractController
 
         $itemtype = (string) $token->fields['itemtype'];
         $items_id = (int) $token->fields['items_id'];
-        $name     = $token->fields['name'];
 
         $error_response = new JsonResponse(
             ['success' => false, 'message' => __('Failed to regenerate share link')],
@@ -174,7 +168,6 @@ final class ShareTokenController extends AbstractController
         if ($new_token->add([
             'itemtype'     => $itemtype,
             'items_id'     => $items_id,
-            'name'         => $name,
             'is_active'    => 1,
             '_no_history'  => true,
         ]) === false) {
@@ -190,34 +183,6 @@ final class ShareTokenController extends AbstractController
         $fields['token'] = (new ShareTokenManager())->decryptToken((string) $fields['token']);
 
         return new JsonResponse(['success' => true, 'token' => $fields]);
-    }
-
-    #[Route(
-        "/Share/Token/{token_id}/Rename",
-        name: "glpi_share_token_rename",
-        methods: ["POST"],
-        requirements: ['token_id' => '\d+'],
-    )]
-    public function rename(Request $request, int $token_id): JsonResponse
-    {
-        $token = new ShareToken();
-        if (!$token->getFromDB($token_id)) {
-            throw new NotFoundHttpException();
-        }
-
-        $this->checkRightToUpdateToken($token);
-
-        $slug = \trim($request->getPayload()->getString('slug'), '-');
-        if ($slug !== '' && preg_match('/^[a-z0-9-]+$/', $slug) !== 1) {
-            throw new BadRequestHttpException();
-        }
-
-        $success = $token->update([
-            'id'   => $token_id,
-            'name' => $slug !== '' ? $slug : null,
-        ]);
-
-        return new JsonResponse(['success' => $success, 'slug' => $slug]);
     }
 
     #[Route(

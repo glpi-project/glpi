@@ -46,8 +46,6 @@ export class GlpiKnowbaseSharePopoverController
     #itemsId;
     /** @type {Promise<void>|null} */
     #initialLoad = null;
-    /** @type {string} */
-    #slugBeforeEdit = '';
 
     /**
      * @param {HTMLElement} root - the `.dropdown` wrapping the Share button + menu
@@ -144,44 +142,6 @@ export class GlpiKnowbaseSharePopoverController
             // freshly generated link stays visible for the user to copy.
             bootstrap.Dropdown.getOrCreateInstance(this.#button).show();
         });
-
-        // Capture the slug value when editing begins (for Escape revert / no-op skip).
-        this.#menu.addEventListener('focusin', (e) => {
-            if (e.target.matches('[data-glpi-share-slug]')) {
-                this.#slugBeforeEdit = e.target.value;
-            }
-        });
-
-        // Live-validate the slug charset as the user types.
-        this.#menu.addEventListener('input', (e) => {
-            if (!e.target.matches('[data-glpi-share-slug]')) {
-                return;
-            }
-            this.#validateSlug(e.target);
-        });
-
-        // Enter saves (via blur); Escape reverts.
-        this.#menu.addEventListener('keydown', (e) => {
-            if (!e.target.matches('[data-glpi-share-slug]')) {
-                return;
-            }
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                e.target.blur();
-            } else if (e.key === 'Escape') {
-                e.preventDefault();
-                e.target.value = this.#slugBeforeEdit;
-                this.#validateSlug(e.target);
-                e.target.blur();
-            }
-        });
-
-        // Persist on blur when the slug changed and is valid.
-        this.#menu.addEventListener('focusout', async (e) => {
-            if (e.target.matches('[data-glpi-share-slug]')) {
-                await this.#saveSlug(e.target);
-            }
-        });
     }
 
     #currentTokenId()
@@ -206,7 +166,7 @@ export class GlpiKnowbaseSharePopoverController
             return;
         }
         const itemtype = this.#button.dataset.glpiItemtype;
-        await post(`Share/Token/${itemtype}/${this.#itemsId}`, { name: null });
+        await post(`Share/Token/${itemtype}/${this.#itemsId}`);
     }
 
     async #unpublish()
@@ -238,44 +198,6 @@ export class GlpiKnowbaseSharePopoverController
             icon?.classList.remove('ti-world');
             icon?.classList.add('ti-share');
         }
-    }
-
-    /**
-     * @param {HTMLInputElement} input
-     * @returns {boolean} whether the current value is a valid slug
-     */
-    #validateSlug(input)
-    {
-        const valid = /^[a-z0-9-]*$/.test(input.value);
-        const error = this.#menu.querySelector('[data-glpi-share-slug-error]');
-        input.classList.toggle('is-invalid', !valid);
-        error?.classList.toggle('d-none', valid);
-        return valid;
-    }
-
-    /**
-     * Persist the slug when it changed and is valid, then reload the popover so
-     * the displayed prefix and the full copy URL reflect the new slug.
-     *
-     * @param {HTMLInputElement} input
-     */
-    async #saveSlug(input)
-    {
-        const slug = input.value.trim();
-        // Canonicalize the field so display, validation and the payload agree.
-        input.value = slug;
-        if (slug === this.#slugBeforeEdit) {
-            return;
-        }
-        if (!this.#validateSlug(input)) {
-            return;
-        }
-        const token_id = this.#currentTokenId();
-        if (token_id === null) {
-            return;
-        }
-        await post(`Share/Token/${token_id}/Rename`, { slug });
-        await this.#reload();
     }
 
     /**

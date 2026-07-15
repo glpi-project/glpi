@@ -60,30 +60,16 @@
 
     {# Link row (only when published) #}
     {% if is_published and token %}
-        {% set slug = token.name %}
-        {% set share_prefix = config('url_base') ~ '/Share/' %}
-        {% set share_url = share_prefix ~ (slug ? slug ~ '-' : '') ~ token.token %}
+        {% set share_url = config('url_base') ~ '/Share/' ~ token.token %}
         <div class="mt-2"
              data-glpi-share-link-row
              data-glpi-share-url="{{ share_url }}">
             <div class="input-group input-group-sm flex-nowrap">
-                <span class="input-group-text text-muted text-truncate">{{ share_prefix }}</span>
-                {% if can_edit %}
-                    <input type="text"
-                           class="form-control"
-                           value="{{ slug }}"
-                           data-glpi-share-slug
-                           aria-label="{{ __('Public link slug') }}"
-                           autocomplete="off"
-                           autocapitalize="off"
-                           spellcheck="false">
-                {% else %}
-                    <input type="text"
-                           class="form-control"
-                           value="{{ slug }}"
-                           readonly
-                           aria-label="{{ __('Public link slug') }}">
-                {% endif %}
+                <input type="text"
+                       class="form-control text-secondary"
+                       value="{{ share_url }}"
+                       readonly
+                       aria-label="{{ __('Public link') }}">
                 <button type="button"
                         class="btn btn-outline-secondary"
                         data-glpi-clipboard-text="{{ share_url }}"
@@ -102,9 +88,6 @@
                         <i class="ti ti-refresh"></i>
                     </button>
                 {% endif %}
-            </div>
-            <div class="text-danger small mt-1 d-none" data-glpi-share-slug-error>
-                {{ __('Only lowercase letters, digits and dashes allowed') }}
             </div>
         </div>
     {% endif %}

@@ -470,12 +470,7 @@ export class KnowbaseItemPage extends GlpiPage
 
     public shareLink(): Locator
     {
-        return this.shareSlugInput();
-    }
-
-    public shareSlugInput(): Locator
-    {
-        return this.page.getByLabel('Public link slug');
+        return this.page.getByLabel('Public link');
     }
 
     public copyLinkButton(): Locator
@@ -484,9 +479,9 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * Read the full share URL (with secret) via the copy button. The field only
-     * shows the slug, so the copy affordance is the semantic way to get the real
-     * link. Requires the clipboard permissions on the browser context.
+     * Read the full share URL (with secret) via the copy button. The field can be
+     * visually truncated, so the copy affordance is the reliable way to get the
+     * whole link. Requires the clipboard permissions on the browser context.
      */
     public async copiedShareUrl(): Promise<string>
     {
@@ -498,11 +493,6 @@ export class KnowbaseItemPage extends GlpiPage
             .poll(() => this.page.evaluate(() => navigator.clipboard.readText()))
             .toContain('/Share/');
         return this.page.evaluate(() => navigator.clipboard.readText());
-    }
-
-    public shareSlugError(): Locator
-    {
-        return this.page.getByText('Only lowercase letters, digits and dashes allowed');
     }
 
     public regenerateButton(): Locator
