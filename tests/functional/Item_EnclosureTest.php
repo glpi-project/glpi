@@ -55,7 +55,7 @@ class Item_EnclosureTest extends DbTestCase
         $this->assertTrue(Item_Enclosure::showItems($enclosure));
         $html = ob_get_clean();
 
-        $this->assertStringContainsString('Possibly no access', $html);
+        $this->assertStringContainsString('You are not allowed to view this item', $html);
         $this->assertStringNotContainsString($computer->fields['name'], $html);
 
         $_SESSION['glpiactiveprofile'][Computer::$rightname] = READ;
@@ -65,7 +65,7 @@ class Item_EnclosureTest extends DbTestCase
         $html = ob_get_clean();
 
         $this->assertStringContainsString($computer->fields['name'], $html);
-        $this->assertStringNotContainsString('Possibly no access', $html);
+        $this->assertStringNotContainsString('You are not allowed to view this item', $html);
     }
 
     public function testUpdatingRelationRequiresRightsOnBothItems(): void
