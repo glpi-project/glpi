@@ -4236,19 +4236,6 @@ CREATE TABLE `glpi_knowbaseitems` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
-### Dump table glpi_knowbaseitems_knowbaseitemcategories
-
-DROP TABLE IF EXISTS `glpi_knowbaseitems_knowbaseitemcategories`;
-CREATE TABLE `glpi_knowbaseitems_knowbaseitemcategories` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `knowbaseitems_id` (`knowbaseitems_id`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-
 ### Dump table glpi_knowbaseitems_knowbaseitems
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems_knowbaseitems`;

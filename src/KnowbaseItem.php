@@ -39,8 +39,6 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\Features\Clonable;
-use Glpi\Features\TreeBrowse;
-use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\Knowbase\Aside\Article;
@@ -66,13 +64,10 @@ use function Safe\preg_replace_callback;
 /**
  * KnowbaseItem Class
  **/
-class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface, TreeBrowseInterface, ShareableInterface
+class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, ServiceCatalogLeafInterface, ShareableInterface
 {
     /** @use Clonable<static> */
     use Clonable;
-    use TreeBrowse;
-
-    public static bool $browse_default = true;
 
     // From CommonDBTM
     public bool $dohistory    = true;
@@ -83,6 +78,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public const READFAQ       = 2048;
     public const PUBLISHFAQ    = 4096;
     public const COMMENTS      = 8192;
+
+    // Special value meaning "no parent filter applied" (see `getListRequest()`/`showList()`).
+    public const int SEEALL = -1;
 
     public static string $rightname   = 'knowbase';
 
@@ -308,29 +306,21 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
-     * Validate that the given category id can be used as a prefill for the
-     * current session: it must exist and belong to a reachable entity.
+     * Validate that the given article id can be used as a parent prefill for
+     * the current session: it must exist and be viewable by the current user.
      *
-     * @return int|null Category id when readable, null otherwise.
+     * @return int|null Parent article id when readable, null otherwise.
      */
-    public static function getReadablePrefilledCategoryId(int $category_id): ?int
+    public static function getReadablePrefilledParentId(int $parent_id): ?int
     {
-        if ($category_id <= 0) {
+        if ($parent_id <= 0) {
             return null;
         }
-        $category = new KnowbaseItemCategory();
-        if (!$category->getFromDB($category_id)) {
+        $parent = new self();
+        if (!$parent->getFromDB($parent_id) || !$parent->can($parent_id, READ)) {
             return null;
         }
-        if (
-            !Session::haveAccessToEntity(
-                (int) $category->fields['entities_id'],
-                (bool) $category->fields['is_recursive']
-            )
-        ) {
-            return null;
-        }
-        return $category_id;
+        return $parent_id;
     }
 
     public function post_addItem()
@@ -414,8 +404,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $kb_item_item->add($params);
         }
 
-        // Handle categories
-        $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, "_categories");
+        // Handle parent articles
+        $this->update1NTableData(KnowbaseItem_KnowbaseItem::class, "_parents");
 
         NotificationEvent::raiseEvent('new', $this);
     }
@@ -557,8 +547,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // Profile / entities
         $this->profiles = KnowbaseItem_Profile::getProfiles($this->fields['id']);
 
-        // Load categories
-        $this->load1NTableData(KnowbaseItem_KnowbaseItemCategory::class, '_categories');
+        // Load parent articles
+        $this->load1NTableData(KnowbaseItem_KnowbaseItem::class, '_parents');
     }
 
     public function cleanDBonPurge()
@@ -568,13 +558,19 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 Entity_KnowbaseItem::class,
                 Group_KnowbaseItem::class,
                 KnowbaseItem_Favorite::class,
-                KnowbaseItem_KnowbaseItemCategory::class,
+                KnowbaseItem_KnowbaseItem::class,
                 KnowbaseItem_Item::class,
                 KnowbaseItem_Profile::class,
                 KnowbaseItem_User::class,
                 KnowbaseItemTranslation::class,
                 ShareToken::class,
             ]
+        );
+
+        // Remove links where this article is the parent since
+        // deleteChildrenAndRelationsFromDb will not handle this part.
+        (new KnowbaseItem_KnowbaseItem())->deleteByCriteria(
+            ['knowbaseitems_id_parent' => $this->fields['id']]
         );
 
         // KnowbaseItem_Comment does not extends CommonDBConnexity
@@ -949,8 +945,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             ]
         );
 
-        // Update categories
-        $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, '_categories');
+        // Update parent articles
+        $this->update1NTableData(KnowbaseItem_KnowbaseItem::class, '_parents');
         NotificationEvent::raiseEvent('update', $this);
     }
 
@@ -966,8 +962,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public function getFormOptionsFromUrl(array $query_params): array
     {
         $options = [];
-        if (isset($query_params['knowbaseitemcategories_id'])) {
-            $options['knowbaseitemcategories_id'] = $query_params['knowbaseitemcategories_id'];
+        if (isset($query_params['knowbaseitems_id_parent'])) {
+            $options['knowbaseitems_id_parent'] = $query_params['knowbaseitems_id_parent'];
         }
         return $options;
     }
@@ -1103,11 +1099,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['can_edit']     = $this->can(-1, CREATE);
             $params['illustration'] = '';
 
-            $raw_category_id = (int) ($options['knowbaseitemcategories_id'] ?? 0);
-            $prefilled_category_id = self::getReadablePrefilledCategoryId($raw_category_id);
-            if ($prefilled_category_id !== null) {
-                $params['prefilled_category'] = [
-                    'id' => $prefilled_category_id,
+            $raw_parent_id = (int) ($options['knowbaseitems_id_parent'] ?? 0);
+            $prefilled_parent_id = self::getReadablePrefilledParentId($raw_parent_id);
+            if ($prefilled_parent_id !== null) {
+                $params['prefilled_parent'] = [
+                    'id' => $prefilled_parent_id,
                 ];
             }
 
@@ -1552,7 +1548,7 @@ TWIG, $twig_params);
      *
      * @since 0.83
      *
-     * @param array $params (contains, knowbaseitemcategories_id, faq)
+     * @param array $params (contains, knowbaseitems_id_parent, faq)
      * @param string $type search type : browse / search (default search)
      *
      * @return array : SQL request
@@ -1563,7 +1559,7 @@ TWIG, $twig_params);
 
         $params = array_replace([
             'contains' => '',
-            'knowbaseitemcategories_id' => KnowbaseItemCategory::SEEALL,
+            'knowbaseitems_id_parent' => self::SEEALL,
             'faq' => false,
         ], $params);
 
@@ -1627,17 +1623,17 @@ TWIG, $twig_params);
             ];
         }
 
-        if ($params['knowbaseitemcategories_id'] !== KnowbaseItemCategory::SEEALL) {
-            $criteria['LEFT JOIN'][KnowbaseItem_KnowbaseItemCategory::getTable()] = [
+        if ($params['knowbaseitems_id_parent'] !== self::SEEALL) {
+            $criteria['LEFT JOIN'][KnowbaseItem_KnowbaseItem::getTable()] = [
                 'FKEY' => [
-                    KnowbaseItem_KnowbaseItemCategory::getTable() => KnowbaseItem::getForeignKeyField(),
-                    KnowbaseItem::getTable() => 'id',
+                    KnowbaseItem_KnowbaseItem::getTable() => 'knowbaseitems_id',
+                    KnowbaseItem::getTable()              => 'id',
                 ],
             ];
-            if ($params['knowbaseitemcategories_id'] > 0) {
-                $criteria['WHERE'][KnowbaseItem_KnowbaseItemCategory::getTableField('knowbaseitemcategories_id')] = $params['knowbaseitemcategories_id'];
-            } elseif ($params['knowbaseitemcategories_id'] === 0) {
-                $criteria['WHERE'][KnowbaseItem_KnowbaseItemCategory::getTableField('knowbaseitemcategories_id')] = null;
+            if ($params['knowbaseitems_id_parent'] > 0) {
+                $criteria['WHERE'][KnowbaseItem_KnowbaseItem::getTableField('knowbaseitems_id_parent')] = $params['knowbaseitems_id_parent'];
+            } elseif ($params['knowbaseitems_id_parent'] === 0) {
+                $criteria['WHERE'][KnowbaseItem_KnowbaseItem::getTableField('knowbaseitems_id_parent')] = null;
             }
         }
 
@@ -1905,14 +1901,13 @@ TWIG, $twig_params);
         $params = [
             'faq' => !Session::haveRight(self::$rightname, READ),
             'start' => 0,
-            'knowbaseitemcategories_id' => null,
+            'knowbaseitems_id_parent' => null,
             'contains' => '',
         ];
 
         if (is_array($options)) {
             $params = array_replace($params, $options);
         }
-        $ki = new self();
         switch ($type) {
             case 'myunpublished':
                 if (!Session::haveRightsOr(self::$rightname, [UPDATE, self::PUBLISHFAQ])) {
@@ -1942,12 +1937,11 @@ TWIG, $twig_params);
 
         if ($type !== 'solution') {
             // Get it from database
-            $KbCategory = new KnowbaseItemCategory();
-            $title      = "";
-            if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
-                $title = (empty($KbCategory->fields['name']) ? "(" . $params['knowbaseitemcategories_id'] . ")"
-                    : $KbCategory->fields['name']);
-                $title = sprintf(__('%1$s: %2$s'), _n('Category', 'Categories', 1), $title);
+            $parent = new self();
+            $title  = "";
+            if ($parent->getFromDB($params["knowbaseitems_id_parent"])) {
+                $title = $parent->fields['name'] ?: "(" . $params['knowbaseitems_id_parent'] . ")";
+                $title = sprintf(__('%1$s: %2$s'), self::getTypeName(1), $title);
             }
 
             Session::initNavigateListItems('KnowbaseItem', $title);
@@ -1976,7 +1970,7 @@ TWIG, $twig_params);
             // Pager
             $parameters = [
                 'start' => $params["start"],
-                'knowbaseitemcategories_id' => $params['knowbaseitemcategories_id'],
+                'knowbaseitems_id_parent' => $params['knowbaseitems_id_parent'],
                 'contains' => $params["contains"],
                 'is_faq' => $params['faq'],
                 'type' => $type,
@@ -2012,7 +2006,7 @@ TWIG, $twig_params);
             if ($showwriter) {
                 echo $output::showHeaderItem(__s('Writer'), $header_num);
             }
-            echo $output::showHeaderItem(_sn('Category', 'Categories', 1), $header_num);
+            echo $output::showHeaderItem(__s('Parent articles'), $header_num);
 
             echo $output::showHeaderItem(_sn('Associated element', 'Associated elements', Session::getPluralNumber()), $header_num);
 
@@ -2086,23 +2080,21 @@ TWIG, $twig_params);
                     );
                 }
 
-                $categories_names = [];
-                $ki->getFromDB($data["id"]);
-                $categories = KnowbaseItem_KnowbaseItemCategory::getItems($ki);
-                foreach ($categories as $category) {
-                    $knowbaseitemcategories_id = $category['knowbaseitemcategories_id'];
-                    $fullcategoryname          = getTreeValueCompleteName(
-                        "glpi_knowbaseitemcategories",
-                        $knowbaseitemcategories_id
-                    );
-                    $cathref = self::getSearchURL() . "?knowbaseitemcategories_id="
-                        . $knowbaseitemcategories_id . '&amp;forcetab=Knowbase$2';
-                    $categories_names[] = "<a class='kb-category'"
-                        . " href='" . htmlescape($cathref) . "'"
-                        . " data-category-id='" . htmlescape($knowbaseitemcategories_id) . "'"
-                        . ">" . htmlescape($fullcategoryname) . '</a>';
+                $parents_names = [];
+                // Fetch this article's parent links directly (child = this article).
+                $parent_rows = (new KnowbaseItem_KnowbaseItem())->find(['knowbaseitems_id' => $data['id']]);
+                foreach ($parent_rows as $row) {
+                    $parent_id = (int) $row['knowbaseitems_id_parent'];
+                    $parent = new self();
+                    if (!$parent->getFromDB($parent_id)) {
+                        continue;
+                    }
+                    $href = self::getSearchURL() . "?knowbaseitems_id_parent=" . $parent_id . '&amp;forcetab=Knowbase$2';
+                    $parents_names[] = "<a class='kb-parent' href='" . htmlescape($href) . "'"
+                        . " data-parent-id='" . htmlescape($parent_id) . "'>"
+                        . htmlescape($parent->fields['name']) . '</a>';
                 }
-                echo $output::showItem(implode(', ', $categories_names), $item_num, $row_num);
+                echo $output::showItem(implode(', ', $parents_names), $item_num, $row_num);
 
                 echo "<td class='center'>";
                 $j = 0;
@@ -2381,17 +2373,24 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => '79',
-            'table'              => 'glpi_knowbaseitemcategories',
-            'field'              => 'completename',
-            'name'               => _n('Category', 'Categories', 1),
-            'datatype'           => 'dropdown',
+            // Joined directly on the self-relation link table (rather than on
+            // KnowbaseItem's own table+`name`) to avoid colliding with the
+            // itemtype-specific "glpi_knowbaseitems.name" rendering case
+            // (used by option 1/Subject), which assumes a single, non-joined
+            // row and is incompatible with this option's forcegroupby shape.
+            // See `getSpecificValueToDisplay()` for the actual rendering.
+            'table'              => KnowbaseItem_KnowbaseItem::getTable(),
+            'field'              => 'knowbaseitems_id_parent',
+            'name'               => __('Parent article'),
+            'datatype'           => 'specific',
+            'itemtype'           => KnowbaseItem::class,
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'nosearch'           => true,
             'joinparams'         => [
-                'beforejoin'         => [
-                    'table'              => KnowbaseItem_KnowbaseItemCategory::getTable(),
-                    'joinparams'         => [
-                        'jointype'           => 'child',
-                    ],
-                ],
+                // Join from the current article (child) to its parent links
+                'jointype'  => 'child',
+                'linkfield' => 'knowbaseitems_id',
             ],
         ];
 
@@ -2565,6 +2564,43 @@ TWIG, $twig_params);
         return $tab;
     }
 
+    #[Override]
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+        if ($field === 'knowbaseitems_id_parent') {
+            $value = is_array($values) ? ($values[$field] ?? '') : $values;
+            return (string) self::dropdown([
+                'name'    => $name,
+                'value'   => $value,
+                'display' => false,
+                'width'   => $options['width'] ?? '100%',
+            ]);
+        }
+
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if ($field === 'knowbaseitems_id_parent') {
+            $parent_id = (int) (is_array($values) ? ($values[$field] ?? 0) : $values);
+            if ($parent_id <= 0) {
+                return '';
+            }
+            $parent = new self();
+            if (!$parent->getFromDB($parent_id)) {
+                return '';
+            }
+            $name = $parent->fields['name'];
+            if ($options['html'] ?? false) {
+                return "<a href='" . htmlescape(self::getFormURLWithID($parent_id)) . "'>" . htmlescape($name) . '</a>';
+            }
+            return $name;
+        }
+
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
     public function getRights($interface = 'central')
     {
         if ($interface === 'central') {
@@ -2674,14 +2710,14 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get ids of KBI in given category
+     * Get ids of the viewable child articles of a given parent article
      *
-     * @param int           $category_id   id of the parent category
-     * @param KnowbaseItem  $kbi           used only for unit tests
+     * @param int           $parent_id   id of the parent article
+     * @param KnowbaseItem  $kbi         used only for unit tests
      *
      * @return array        Array of ids
      */
-    public static function getForCategory($category_id, $kbi = null)
+    public static function getChildrenArticles($parent_id, $kbi = null)
     {
         global $DB;
 
@@ -2694,14 +2730,14 @@ TWIG, $twig_params);
 
             'FROM'   => self::getTable(),
             'LEFT JOIN' => [
-                'glpi_knowbaseitems_knowbaseitemcategories' => [
-                    'ON'  => [
-                        'glpi_knowbaseitems_knowbaseitemcategories'  => 'knowbaseitems_id',
-                        'glpi_knowbaseitems'             => 'id',
+                'glpi_knowbaseitems_knowbaseitems' => [
+                    'ON' => [
+                        'glpi_knowbaseitems_knowbaseitems' => 'knowbaseitems_id',
+                        'glpi_knowbaseitems'               => 'id',
                     ],
                 ],
             ],
-            'WHERE'  => ['glpi_knowbaseitems_knowbaseitemcategories.knowbaseitemcategories_id' => $category_id],
+            'WHERE' => ['glpi_knowbaseitems_knowbaseitems.knowbaseitems_id_parent' => $parent_id],
         ]);
 
         // Get array of ids
@@ -2859,15 +2895,7 @@ TWIG, $twig_params);
 
     public static function getAdditionalMenuLinks(): array
     {
-        $links = [];
-
-        $links['all_articles'] = self::getSearchURL(false);
-
-        if (KnowbaseItemCategory::canView()) {
-            $links['view_kb_categories'] = KnowbaseItemCategory::getSearchURL(false);
-        }
-
-        return $links;
+        return ['all_articles' => self::getSearchURL(false)];
     }
 
     /** @return Article[] */
@@ -2930,9 +2958,11 @@ TWIG, $twig_params);
         $current_is_favorite = KnowbaseItem_Favorite::isFavoriteForCurrentUser($current_id);
         $has_other_favorites = array_filter($favorites, fn(Article $a) => !$a->is_current) !== [];
 
-        // Don't render the aside if we don't have any categories or article
+        // Don't render the aside if we don't have any article.
+        // TODO(Task 3): the aside Tree API is being finalized; revisit this
+        // guard once the tree only exposes a single children collection.
         $tree = (new Builder($current_id))->buildTree();
-        if ($tree->getArticles() === [] && $tree->getCategories() === []) {
+        if ($tree->getArticles() === []) {
             return null;
         }
 
