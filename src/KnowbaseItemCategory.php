@@ -35,6 +35,9 @@
 
 use Glpi\UI\IllustrationManager;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 /// Class KnowbaseItemCategory
 class KnowbaseItemCategory extends CommonTreeDropdown
 {
@@ -147,9 +150,9 @@ class KnowbaseItemCategory extends CommonTreeDropdown
             return [];
         }
 
-        $ids = importArrayFromDB($user->fields['folded_knowbaseitems'] ?? null);
+        $ids = json_decode($user->fields['folded_knowbaseitems'] ?? '[]', true);
 
-        return array_values(array_map('intval', is_array($ids) ? $ids : []));
+        return array_values(is_array($ids) ? $ids : []);
     }
 
     /**
@@ -174,7 +177,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown
 
         (new User())->update([
             'id'                   => $user_id,
-            'folded_knowbaseitems' => exportArrayToDB($ids),
+            'folded_knowbaseitems' => json_encode($ids),
         ]);
     }
 }
