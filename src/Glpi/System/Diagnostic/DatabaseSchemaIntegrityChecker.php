@@ -538,6 +538,8 @@ class DatabaseSchemaIntegrityChecker
             // for example, the create query might return "UNIQUE KEY `unicity` USING HASH (`users_id`)" one side
             // and "UNIQUE KEY `unicity` (`users_id`)" on the other side, despite being the same index.
             '/(UNIQUE KEY|FULLTEXT KEY|KEY) (.*) USING (\w+)/i' => '$1 $2',
+            // Ignore ASC order in indexes fields
+            '/(`\w+`)\s* ASC/' => '$1',
         ];
         $indexes = preg_replace(array_keys($indexes_replacements), array_values($indexes_replacements), $indexes);
         if (!$this->strict) {
@@ -659,7 +661,7 @@ class DatabaseSchemaIntegrityChecker
                         $sql = substr($sql, 0, $i) . ' ' . substr($sql, $i);
                         $i++;
                     } elseif ($is_protected && preg_match('/\s/', $sql[$i + 1]) !== 1) {
-                        // Closing backtick, ensure there is a space before
+                        // Closing backtick, ensure there is a space after
                         $sql = substr($sql, 0, $i + 1) . ' ' . substr($sql, $i + 1);
                         $i++;
                     }
@@ -690,6 +692,22 @@ class DatabaseSchemaIntegrityChecker
                 $sql[$i] = ' ';
             }
 
+            // Remove duplicated whitespaces
+            if ($sql[$i] === ' ') {
+                $extraspaces = 0;
+                for ($j = $i + 1; $j < strlen($sql); $j++) {
+                    if ($sql[$j] === ' ') {
+                        $extraspaces++;
+                    } else {
+                        break;
+                    }
+                }
+                if ($extraspaces > 0) {
+                    $sql = substr($sql, 0, $i) . substr($sql, $i + $extraspaces);
+                    $i--;
+                }
+            }
+
             // Ensure there is a new line:
             // - after columns/indexes definition opening parenthesis
             // - before columns/indexes definition opening parenthesis
@@ -705,21 +723,22 @@ class DatabaseSchemaIntegrityChecker
                 $i++;
             }
 
-            if (preg_match('/\s/', $sql[$i])) {
-                if ($parenthesis_level === 2) {
-                    // Remove whitespaces between tokens in index fields list, datatype length, ...
+            if ($parenthesis_level === 2) {
+                // Normalize whitespaces between tokens in index fields list, datatype length, ...
+
+                // Remove extra whitespaces
+                if (
+                    preg_match('/\s/', $sql[$i])
+                    && (
+                        $sql[$i - 1] === ',' // whitespace after coma
+                        || $sql[$i - 1] === '(' // whitespace after parenthesis opening
+                        || $sql[$i + 1] === ')' // whitespace before parenthesis closing
+                        || $sql[$i + 1] === ',' // whitespace before coma
+                        || $sql[$i + 1] === ' ' // duplicated whitespace
+                    )
+                ) {
                     $sql = substr($sql, 0, $i) . substr($sql, $i + 1);
                     $i--;
-                } else {
-                    // Remove following whitespace chars if current char is a whitespace
-                    $extraspaces = 0;
-                    $max         = strlen($sql) - $i - 1;
-                    while ($extraspaces < $max && preg_match('/\s/', $sql[$i + 1 + $extraspaces])) {
-                        $extraspaces++;
-                    }
-                    if ($extraspaces > 0) {
-                        $sql = substr($sql, 0, $i + 1) . substr($sql, $i + 1 + $extraspaces);
-                    }
                 }
             }
         }

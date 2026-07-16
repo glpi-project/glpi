@@ -2278,4 +2278,45 @@ SQL,
             $normalized_sql
         );
     }
+
+    public function testIndexFieldOrderAreSupported(): void
+    {
+        // Arrange: get the SQL of a table that uses index with fields order
+        $sql = <<<SQL
+CREATE TABLE `glpi_objects` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `objects_id` int unsigned NOT NULL,
+  `level` int unsigned NOT NULL,
+  `valid_until` timestamp NOT NULL,
+  KEY `level` (`level` ASC),
+  KEY `validity` (`objects_id`, `valid_until`  DESC )
+) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL;
+
+        // Act: normalize the SQL
+        $db = $this->getDbMock();
+        $integrity_checker = new DatabaseSchemaIntegrityChecker(
+            $db,
+        );
+        $normalized_sql = $this->callPrivateMethod(
+            $integrity_checker,
+            'getNormalizedSql',
+            $sql
+        );
+
+        // Assert: the index fields order are normalized
+        $this->assertEquals(
+            <<<SQL
+CREATE TABLE `glpi_objects` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `objects_id` int unsigned NOT NULL,
+  `level` int unsigned NOT NULL,
+  `valid_until` timestamp NOT NULL,
+  KEY `level` (`level`),
+  KEY `validity` (`objects_id`,`valid_until` DESC)
+) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB ROW_FORMAT=DYNAMIC
+SQL,
+            $normalized_sql
+        );
+    }
 }
