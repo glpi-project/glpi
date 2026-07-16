@@ -51,6 +51,7 @@ use Log;
 use RuntimeException;
 use Safe\Exceptions\NetworkException;
 use Session;
+use Throwable;
 use User;
 
 use function Safe\ini_get;
@@ -205,6 +206,14 @@ final class SessionTracker
             $session_file_path = session_save_path() . DIRECTORY_SEPARATOR . $session['session_file'];
             if (file_exists($session_file_path)) {
                 @unlink($session_file_path);
+            }
+        } elseif (ini_get('session.save_handler') === 'redis' && $session) {
+            try {
+                $redis = new \Redis();
+                $redis->connect(parse_url(ini_get('session.save_path'), PHP_URL_HOST), parse_url(ini_get('session.save_path'), PHP_URL_PORT));
+                $redis->del('PHPREDIS_SESSION:' . str_replace('sess_', '', $session['session_file']));
+            } catch (Throwable $e) {
+                ErrorHandler::logCaughtException($e);
             }
         }
 
