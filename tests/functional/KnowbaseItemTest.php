@@ -2237,4 +2237,100 @@ HTML,
 
         $this->assertEquals('Short answer', $kb->getServiceCatalogItemDescription());
     }
+
+    public function testVisibilityInheritsFromAncestor(): void
+    {
+        // Non-admin central user
+        $this->login('normal', 'normal');
+        $entity = (int) $_SESSION['glpiactiveentities'][0];
+
+        // Author the articles as *another* user (glpi): otherwise the author
+        // bypass (`users_id => current user`) would make them directly visible
+        // to `normal` and inheritance would never be exercised.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+
+        $parent = new KnowbaseItem();
+        $parent_id = (int) $parent->add(['name' => 'Section', 'answer' => '', 'users_id' => $glpi_user]);
+        // grant the parent to the user's active entity
+        (new \Entity_KnowbaseItem())->add([
+            'knowbaseitems_id' => $parent_id, 'entities_id' => $entity, 'is_recursive' => 1,
+        ]);
+
+        // child has NO direct visibility, linked under the parent
+        $child = new KnowbaseItem();
+        $child_id = (int) $child->add(['name' => 'Nested', 'answer' => '', 'users_id' => $glpi_user, '_parents' => [$parent_id]]);
+
+        // browse list applies visibility criteria
+        $visible_ids = $this->listBrowseIds();
+        $this->assertContains($child_id, $visible_ids, 'child visible via ancestor');
+
+        // remove the parent grant -> child no longer visible
+        $ekb = new \Entity_KnowbaseItem();
+        $ekb->getFromDBByCrit(['knowbaseitems_id' => $parent_id]);
+        $ekb->delete(['id' => $ekb->getID()], true);
+
+        $visible_ids = $this->listBrowseIds();
+        $this->assertNotContains($child_id, $visible_ids, 'child hidden once ancestor grant removed');
+    }
+
+    /** @return int[] ids returned by a visibility-filtered browse list */
+    private function listBrowseIds(): array
+    {
+        global $DB;
+        $ids = [];
+        foreach ($DB->request(KnowbaseItem::getListRequest([], 'browse')) as $row) {
+            $ids[] = (int) $row['id'];
+        }
+        return $ids;
+    }
+
+    public function testShowListDoesNotLeakUnviewableParent(): void
+    {
+        // Parent + child authored by glpi, with no visibility grants.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Secret parent ' . __FUNCTION__,
+            'answer'   => '',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+        $parent_id = $parent->getID();
+
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Leaf child ' . __FUNCTION__,
+            'answer'   => '',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+            '_parents' => [$parent_id],
+        ]);
+        $child_id = $child->getID();
+
+        // Non-admin central user, unrelated to the articles.
+        $this->login('normal', 'normal');
+
+        // Grant the child directly to this user (so the child shows in the list),
+        // while the parent remains non-viewable.
+        (new KnowbaseItem_User())->add([
+            'knowbaseitems_id' => $child_id,
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        $child_obj = new KnowbaseItem();
+        $this->assertTrue($child_obj->getFromDB($child_id));
+        $this->assertTrue($child_obj->canViewItem(), 'child must be viewable for this test');
+        $parent_obj = new KnowbaseItem();
+        $this->assertTrue($parent_obj->getFromDB($parent_id));
+        $this->assertFalse($parent_obj->canViewItem(), 'parent must NOT be viewable for this test');
+
+        \ob_start();
+        KnowbaseItem::showList(['start' => 0], 'browse');
+        $output = (string) \ob_get_clean();
+
+        // The child (visible) is listed, but the unviewable parent must not leak.
+        $this->assertStringContainsString('Leaf child ' . __FUNCTION__, $output);
+        $this->assertStringNotContainsString('Secret parent ' . __FUNCTION__, $output);
+        $this->assertStringNotContainsString('kb-parent', $output);
+    }
 }

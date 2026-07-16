@@ -761,32 +761,77 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return [new QueryExpression('1')];
         }
 
-        // Prepare criteria, which will use an OR statement (the user can read
-        // the article if any of the user/group/profile/entity criteria are
-        // validated)
-        $where = ['OR' => []];
+        // Prepare the direct-visibility criteria, which will use an OR statement
+        // (the user can read the article if any of the author/user/group/profile/
+        // entity criteria are validated).
+        $direct_or = [];
 
         // Special case: the user may be the article's author
-        $user = Session::getLoginUserID();
-        $author_check = [self::getTableField('users_id') => $user];
-        $where['OR'][] = $author_check;
+        $direct_or[] = [self::getTableField('users_id') => Session::getLoginUserID()];
 
         // Filter on users
-        $where['OR'][] = self::getVisibilityCriteriaKB_User();
+        $direct_or[] = self::getVisibilityCriteriaKB_User();
 
         // Filter on groups (if the current user have any)
-        $groups = $_SESSION["glpigroups"] ?? [];
-        if (count($groups)) {
-            $where['OR'][] = self::getVisibilityCriteriaKB_Group();
+        if (count($_SESSION["glpigroups"] ?? [])) {
+            $direct_or[] = self::getVisibilityCriteriaKB_Group();
         }
 
         // Filter on profiles
-        $where['OR'][] = self::getVisibilityCriteriaKB_Profile();
+        $direct_or[] = self::getVisibilityCriteriaKB_Profile();
 
         // Filter on entities
-        $where['OR'][] = self::getVisibilityCriteriaKB_Entity();
+        $direct_or[] = self::getVisibilityCriteriaKB_Entity();
 
-        return $where;
+        // Inherited visibility: an article is also visible if any of its
+        // ancestors is directly visible. Build the inherited term from the
+        // direct terms BEFORE appending it (it must not contain itself).
+        $inherited = self::getInheritedVisibilityCondition($direct_or);
+
+        return ['OR' => array_merge($direct_or, [$inherited])];
+    }
+
+    /**
+     * Build an `id IN (WITH RECURSIVE ...)` condition that matches any article
+     * whose set of ancestors (via glpi_knowbaseitems_knowbaseitems) includes a
+     * directly-visible article. $direct_or is the set of direct-visibility OR
+     * terms (must NOT already contain the inherited term).
+     *
+     * @param array<int, mixed> $direct_or Direct-visibility OR terms
+     *
+     * @return QueryExpression
+     */
+    private static function getInheritedVisibilityCondition(array $direct_or): QueryExpression
+    {
+        global $DB;
+
+        // Seed: ids of directly-visible articles (self-contained subquery).
+        $seed = new QuerySubQuery([
+            'SELECT'    => self::getTableField('id'),
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => self::getVisibilityCriteriaCommonJoin(true),
+            'WHERE'     => ['OR' => $direct_or],
+        ]);
+
+        // GLPI's iterator emits `?` placeholders and keeps the bound values
+        // aside; carry those params over to the QueryExpression so they are
+        // bound in order when this raw term is embedded in the outer query.
+        $seed_sql    = $seed->getQuery();
+        $seed_params = $seed->getParams();
+
+        $link = KnowbaseItem_KnowbaseItem::getTable();
+        $sql
+            = $DB::quoteName(self::getTableField('id')) . ' IN ('
+            . 'WITH RECURSIVE kb_visible (id) AS ('
+            . 'SELECT id FROM ' . $seed_sql . ' AS kb_seed'
+            . ' UNION '
+            . 'SELECT ' . $DB::quoteName($link . '.knowbaseitems_id')
+            . ' FROM ' . $DB::quoteName($link)
+            . ' INNER JOIN kb_visible ON '
+            . $DB::quoteName($link . '.knowbaseitems_id_parent') . ' = kb_visible.id'
+            . ') SELECT id FROM kb_visible)';
+
+        return new QueryExpression($sql, null, $seed_params);
     }
 
     /**
@@ -2086,7 +2131,8 @@ TWIG, $twig_params);
                 foreach ($parent_rows as $row) {
                     $parent_id = (int) $row['knowbaseitems_id_parent'];
                     $parent = new self();
-                    if (!$parent->getFromDB($parent_id)) {
+                    // Only expose parents the current user is allowed to view.
+                    if (!$parent->getFromDB($parent_id) || !$parent->can($parent_id, READ)) {
                         continue;
                     }
                     $href = self::getSearchURL() . "?knowbaseitems_id_parent=" . $parent_id . '&amp;forcetab=Knowbase$2';
@@ -2588,7 +2634,8 @@ TWIG, $twig_params);
                 return '';
             }
             $parent = new self();
-            if (!$parent->getFromDB($parent_id)) {
+            // Only expose parents the current user is allowed to view.
+            if (!$parent->getFromDB($parent_id) || !$parent->can($parent_id, READ)) {
                 return '';
             }
             $name = $parent->fields['name'];
