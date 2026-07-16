@@ -41,8 +41,8 @@ interface ReAuthStrategyInterface
     /**
      * Verify the user input against this re-authentication strategy.
      *
-     * @param  int    $users_id   The user ID
-     * @param  string $user_input The user input (password, TOTP code, etc.)
+     * @param int    $users_id   The user ID
+     * @param string $user_input The user input (password, TOTP code, etc.)
      * @return bool  Successful verification
      */
     public function verify(int $users_id, string $user_input): bool;

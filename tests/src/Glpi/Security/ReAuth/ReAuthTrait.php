@@ -36,6 +36,7 @@ namespace Glpi\Tests\Glpi\Security\ReAuth;
 
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\ReAuth\ReAuthStrategyInterface;
+use Glpi\Security\ReAuth\RedirectReAuthStrategyInterface;
 
 /**
  * Helpers shared by the re-authentication tests: fake a web request context and
@@ -156,6 +157,56 @@ trait ReAuthTrait
             public function getPriority(): int
             {
                 return $this->priority;
+            }
+        };
+    }
+
+    /**
+     * Build a throwaway redirect-based strategy (verified out-of-band), with a
+     * controllable label, priority, availability and re-authentication URL.
+     */
+    private function makeRedirectStrategy(
+        string $label,
+        int $priority,
+        bool $available,
+        string $reauth_url = '/plugins/example/front/reauth.php',
+    ): RedirectReAuthStrategyInterface {
+        return new readonly class ($label, $priority, $available, $reauth_url) implements RedirectReAuthStrategyInterface {
+            public function __construct(
+                private string $label,
+                private int $priority,
+                private bool $available,
+                private string $reauth_url,
+            ) {}
+
+            public function verify(int $users_id, string $user_input): bool
+            {
+                throw new \LogicException('Redirect strategies are verified out-of-band.');
+            }
+
+            public function isAvailable(int $users_id, int $entities_id = 0): bool
+            {
+                return $this->available;
+            }
+
+            public function getLabel(): string
+            {
+                return $this->label;
+            }
+
+            public function getPromptTemplate(): string
+            {
+                return 'pages/reauth/password_form.html.twig';
+            }
+
+            public function getPriority(): int
+            {
+                return $this->priority;
+            }
+
+            public function getReauthUrl(int $users_id): string
+            {
+                return $this->reauth_url;
             }
         };
     }

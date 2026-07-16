@@ -302,4 +302,37 @@ class ReAuthManagerTest extends DbTestCase
         // --- act + assert : resolution falls back to the native Password strategy ---
         $this->assertSame('Password', $manager->getLabel());
     }
+
+    /** When the selected strategy is redirect-based, the manager exposes it and its redirect URL. */
+    public function testRedirectStrategyIsDetectedAndExposesUrl(): void
+    {
+        // --- arrange : a redirect strategy outranking the native ones ---
+        $this->login();
+        $manager = $this->getReAuthManager();
+        $manager->registerStrategy(
+            $this->makeRedirectStrategy('Plugin SSO', 100, true, '/plugins/oauthsso/front/reauth.php'),
+        );
+
+        // --- act + assert ---
+        $this->assertTrue($manager->isRedirectStrategy());
+        $this->assertSame('/plugins/oauthsso/front/reauth.php', $manager->getReauthUrl());
+    }
+
+    /** A native (synchronous) strategy is not reported as redirect-based. */
+    public function testNativeStrategyIsNotRedirect(): void
+    {
+        $this->login();
+        $this->assertFalse($this->getReAuthManager()->isRedirectStrategy());
+    }
+
+    /** getReauthUrl() must not be called for a non-redirect strategy. */
+    public function testGetReauthUrlThrowsForNonRedirectStrategy(): void
+    {
+        // --- arrange : native Password strategy selected ---
+        $this->login();
+
+        // --- act + assert ---
+        $this->expectException(\LogicException::class);
+        $this->getReAuthManager()->getReauthUrl();
+    }
 }
