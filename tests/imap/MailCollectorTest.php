@@ -915,6 +915,7 @@ class MailCollectorTest extends DbTestCase
                     '44 - Hebrew encoding issue',
                     '47 - Missing charset parameter',
                     '49 - Message with invalid CC email address',
+                    '53 - Large HTML Email Test',
                     $long_subject_expected,
                 ],
             ],
@@ -1171,7 +1172,8 @@ PLAINTEXT,
                 'content'  => '<p dir="ltr">Reply from Proton Android client</p>' . "\n"
                     . '<p dir="ltr">Sent from Proton Mail for Android</p>' . "\n"
                     . '<div class="protonmail_quote"><br><br>-------- Original message --------<br> 08/09/2025 16:42, TECH <tech@glpi-project.org> has written :<br><blockquote class="protonmail_quote">' . "\r\n"
-                    . '<br><br></blockquote></div>',
+                    . '<br><br>' . "\n"
+                    . '</blockquote></div>',
             ],
             [
                 // 29.1-ticket-followup-above-header-and-under-footer-lines.eml
