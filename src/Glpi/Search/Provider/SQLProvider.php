@@ -6064,6 +6064,13 @@ final class SQLProvider implements SearchProviderInterface
                         if ($item->isField($slaField) && $item->fields[$slaField] != 0) { // Have SLA
                             $sla = new $sla_class();
                             $sla->getFromDB($item->fields[$slaField]);
+                            // "Use ticket calendar" is stored as calendars_id=0, must be resolved like in Ticket::getDatasToAddSLA()
+                            $sla->setTicketCalendar(Entity::getUsedConfig(
+                                'calendars_strategy',
+                                $item->fields['entities_id'],
+                                'calendars_id',
+                                0
+                            ));
                             $currenttime = $sla->getActiveTimeBetween(
                                 $item->fields['date'],
                                 date('Y-m-d H:i:s')

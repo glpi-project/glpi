@@ -12448,7 +12448,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 11,
+	'count' => 12,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
