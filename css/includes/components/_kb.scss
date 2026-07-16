@@ -983,13 +983,3 @@
         }
     }
 }
-
-// Share popover
-[data-glpi-share-link-row] {
-    // The default form-control border sits around 1.3:1 against the popover
-    // background, below the 3:1 required by WCAG 1.4.11, and clashes with the
-    // adjacent outline buttons. Align both on the button border color.
-    .form-control {
-        border-color: var(--tblr-secondary);
-    }
-}

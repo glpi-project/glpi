@@ -119,7 +119,7 @@
                 {% if can_edit and mode != 'add' %}
                     <div class="dropdown" data-glpi-share-dropdown>
                         <button type="button"
-                                class="btn btn-outline-secondary {{ is_published ? 'active' : '' }}"
+                                class="btn btn-outline-secondary"
                                 data-bs-toggle="dropdown"
                                 data-bs-auto-close="outside"
                                 aria-expanded="false"
@@ -127,7 +127,7 @@
                                 data-glpi-share-button
                                 data-glpi-itemtype="KnowbaseItem"
                                 data-glpi-items-id="{{ item_id }}">
-                            <i class="ti {{ is_published ? 'ti-world' : 'ti-share' }} me-1"></i>{{ __('Share') }}
+                            <i class="ti ti-share me-1"></i>{{ __('Share') }}
                         </button>
                         <div class="dropdown-menu dropdown-menu-end p-3"
                              style="min-width: 360px;"

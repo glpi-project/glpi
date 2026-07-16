@@ -71,7 +71,7 @@
                        readonly
                        aria-label="{{ __('Public link') }}">
                 <button type="button"
-                        class="btn btn-outline-secondary"
+                        class="btn"
                         data-glpi-clipboard-text="{{ share_url }}"
                         title="{{ __('Copy link') }}"
                         aria-label="{{ __('Copy link') }}"
@@ -80,7 +80,7 @@
                 </button>
                 {% if can_edit %}
                     <button type="button"
-                            class="btn btn-outline-secondary"
+                            class="btn"
                             data-glpi-share-regenerate
                             title="{{ __('Regenerate link') }}"
                             aria-label="{{ __('Regenerate link') }}"

@@ -106,7 +106,6 @@ export class GlpiKnowbaseSharePopoverController
                     await this.#unpublish();
                 }
                 await this.#reload();
-                this.#reflectState(wants_published);
             } catch (err) {
                 e.target.checked = !wants_published;
                 throw err;
@@ -183,21 +182,6 @@ export class GlpiKnowbaseSharePopoverController
         this.#disposeTooltips();
         this.#menu.innerHTML = await response.text();
         window.initTooltips(this.#menu);
-    }
-
-    /** @param {boolean} is_published */
-    #reflectState(is_published)
-    {
-        const icon = this.#button.querySelector('i');
-        if (is_published) {
-            this.#button.classList.add('active');
-            icon?.classList.remove('ti-share');
-            icon?.classList.add('ti-world');
-        } else {
-            this.#button.classList.remove('active');
-            icon?.classList.remove('ti-world');
-            icon?.classList.add('ti-share');
-        }
     }
 
     /**
