@@ -40,6 +40,6 @@
 $migration->addField(
     'glpi_users',
     'folded_knowbaseitems',
-    'json',
+    'json DEFAULT NULL',
     ['after' => 'itil_layout']
 );
