@@ -227,13 +227,13 @@ abstract class AbstractController
             $itemtype_2 = $source_class::$itemtype_2;
             if ($itemtype_1 === $target_class::getType()) {
                 $join_params['fkey'] = $source_class::$items_id_1;
-            } elseif ($itemtype_2 === $target_class::getType()) {
-                $join_params['fkey'] = $source_class::$items_id_2;
             } elseif ($itemtype_1 === 'itemtype') {
                 $join_params['fkey'] = $source_class::$items_id_1;
                 $join_params['condition'][] = [
                     $source_class::$itemtype_1 => $target_class::getType(),
                 ];
+            } elseif ($itemtype_2 === $target_class::getType()) {
+                $join_params['fkey'] = $source_class::$items_id_2;
             } elseif ($itemtype_2 === 'itemtype') {
                 $join_params['fkey'] = $source_class::$items_id_2;
                 $join_params['condition'][] = [
@@ -262,13 +262,13 @@ abstract class AbstractController
 
             if ($itemtype_1 === $source_class::getType()) {
                 $join_params['field'] = $target_class::$items_id_1;
-            } elseif ($itemtype_2 === $source_class::getType()) {
-                $join_params['field'] = $target_class::$items_id_2;
             } elseif ($itemtype_1 === 'itemtype') {
                 $join_params['field'] = $target_class::$items_id_1;
                 $join_params['condition'][] = [
                     $target_class::$itemtype_1 => $source_class::getType(),
                 ];
+            } elseif ($itemtype_2 === $source_class::getType()) {
+                $join_params['field'] = $target_class::$items_id_2;
             } elseif ($itemtype_2 === 'itemtype') {
                 $join_params['field'] = $target_class::$items_id_2;
                 $join_params['condition'][] = [
