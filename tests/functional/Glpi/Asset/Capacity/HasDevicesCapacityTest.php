@@ -91,7 +91,7 @@ class HasDevicesCapacityTest extends DbTestCase
                 $this->assertNotContains($classname, $CFG_GLPI['itemdevices_types']);
                 $this->assertNotContains($classname, $CFG_GLPI['itemdevices_itemaffinity']);
             }
-            foreach (array_keys($CFG_GLPI) as $config_key) {
+            foreach (array_keys($CFG_GLPI->getArrayCopy()) as $config_key) {
                 if (preg_match('/^itemdevice[a-z+]_types$/', $config_key)) {
                     if ($has_capacity) {
                         $this->assertContains($classname, $CFG_GLPI[$config_key]);

@@ -35,10 +35,10 @@
 
 namespace Glpi\Application\View\Extension;
 
-use Config;
 use DBmysql;
 use Entity;
 use Glpi\Application\ImportMapGenerator;
+use Glpi\Config\ConfigContainer;
 use Glpi\Locale\LanguageRegistry;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\UI\Theme;
@@ -321,6 +321,7 @@ class FrontEndAssetsExtension extends AbstractExtension
      */
     public function configJs(): string
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
 
         $cfg_glpi = [
@@ -329,7 +330,7 @@ class FrontEndAssetsExtension extends AbstractExtension
         ];
         if (Session::getLoginUserID(true) !== false) {
             // expose full config only for connected users
-            $cfg_glpi += Config::getSafeConfig(true);
+            $cfg_glpi += $CFG_GLPI->getSafeConfig(true);
         }
 
         $plugins_path = \array_combine(

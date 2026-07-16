@@ -611,7 +611,7 @@ TWIG, $twig_params);
 
         // Restore user preference defaults wiped by session_start() (mirrors PostBootListener).
         foreach ($CFG_GLPI['user_pref_field'] as $field) {
-            if (array_key_exists($field, $CFG_GLPI)) {
+            if (isset($CFG_GLPI[$field])) {
                 $_SESSION["glpi$field"] = $CFG_GLPI[$field];
             }
         }
