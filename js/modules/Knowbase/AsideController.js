@@ -284,7 +284,7 @@ export class GlpiKnowbaseAsideController
         const header = add_link.closest('[data-glpi-kb-aside-category-header]');
         const node = header.closest('[data-glpi-kb-aside-category]');
         const list = node.querySelector(':scope > ul');
-        const category_id = Number(new URL(add_link.href).searchParams.get('knowbaseitemcategories_id')) || 0;
+        const parent_id = Number(new URL(add_link.href).searchParams.get('knowbaseitems_id_parent')) || 0;
 
         // Only one inline input at a time across the whole tree.
         const existing = this.#aside.querySelector('[data-glpi-kb-aside-create-row]');
@@ -320,7 +320,7 @@ export class GlpiKnowbaseAsideController
             } else if (e.key === 'Enter') {
                 e.preventDefault();
                 settled = true;
-                this.#commitCreateInput(input, category_id, cleanup, unsettle);
+                this.#commitCreateInput(input, parent_id, cleanup, unsettle);
             }
         });
 
@@ -332,18 +332,18 @@ export class GlpiKnowbaseAsideController
                 cleanup();
             } else {
                 settled = true;
-                this.#commitCreateInput(input, category_id, cleanup, unsettle);
+                this.#commitCreateInput(input, parent_id, cleanup, unsettle);
             }
         });
     }
 
     /**
      * @param {HTMLInputElement} input
-     * @param {number} category_id
+     * @param {number} parent_id
      * @param {() => void} cleanup
      * @param {() => void} unsettle
      */
-    async #commitCreateInput(input, category_id, cleanup, unsettle)
+    async #commitCreateInput(input, parent_id, cleanup, unsettle)
     {
         const name = input.value.trim();
         if (name === '') {
@@ -357,7 +357,7 @@ export class GlpiKnowbaseAsideController
         try {
             const response = await post('Knowbase/KnowbaseItem/Create', {
                 name,
-                knowbaseitemcategories_id: category_id,
+                knowbaseitems_id_parent: parent_id,
             });
             data = await response.json();
         } catch {
@@ -529,7 +529,8 @@ export class GlpiKnowbaseAsideController
 
     /**
      * Filter the tree to only show articles whose IDs are in matching_ids.
-     * Categories with no visible children are hidden recursively.
+     * Articles (leaf or with children) with no visible descendant are hidden
+     * recursively.
      *
      * @param {HTMLElement} tree
      * @param {Set<number>} matching_ids
@@ -538,13 +539,9 @@ export class GlpiKnowbaseAsideController
     {
         let any_visible = false;
 
-        for (const category of tree.querySelectorAll(':scope > ul > [data-glpi-kb-aside-category]')) {
-            const visible = this.#filterCategory(category, matching_ids);
-            if (visible) {
-                category.removeAttribute('data-glpi-kb-search-hidden');
+        for (const article of tree.querySelectorAll(':scope > ul > [data-glpi-kb-article-id]')) {
+            if (this.#filterArticle(article, matching_ids)) {
                 any_visible = true;
-            } else {
-                category.setAttribute('data-glpi-kb-search-hidden', '');
             }
         }
 
@@ -554,40 +551,36 @@ export class GlpiKnowbaseAsideController
     }
 
     /**
-     * @param {HTMLElement} category_el
+     * Recursively determines whether an article row (leaf or with children)
+     * should stay visible — either its own title/id matched the search, or
+     * one of its descendants did — and hides/shows it (and recurses into its
+     * children, if any) in place.
+     *
+     * @param {HTMLElement} article_el
      * @param {Set<number>} matching_ids
-     * @returns {boolean} Whether the category has any visible children.
+     * @returns {boolean} Whether this article or any of its descendants match.
      */
-    #filterCategory(category_el, matching_ids)
+    #filterArticle(article_el, matching_ids)
     {
-        const ul = category_el.querySelector(':scope > ul');
-        if (!ul) {
-            return false;
-        }
+        const id = parseInt(article_el.dataset.glpiKbArticleId);
+        let visible = matching_ids.has(id);
 
-        let has_visible = false;
-
-        for (const article of ul.querySelectorAll(':scope > [data-glpi-kb-article-id]')) {
-            const id = parseInt(article.dataset.glpiKbArticleId);
-            if (matching_ids.has(id)) {
-                article.removeAttribute('data-glpi-kb-search-hidden');
-                has_visible = true;
-            } else {
-                article.setAttribute('data-glpi-kb-search-hidden', '');
+        const ul = article_el.querySelector(':scope > ul');
+        if (ul) {
+            for (const child of ul.querySelectorAll(':scope > [data-glpi-kb-article-id]')) {
+                if (this.#filterArticle(child, matching_ids)) {
+                    visible = true;
+                }
             }
         }
 
-        for (const subcategory of ul.querySelectorAll(':scope > [data-glpi-kb-aside-category]')) {
-            const visible = this.#filterCategory(subcategory, matching_ids);
-            if (visible) {
-                subcategory.removeAttribute('data-glpi-kb-search-hidden');
-                has_visible = true;
-            } else {
-                subcategory.setAttribute('data-glpi-kb-search-hidden', '');
-            }
+        if (visible) {
+            article_el.removeAttribute('data-glpi-kb-search-hidden');
+        } else {
+            article_el.setAttribute('data-glpi-kb-search-hidden', '');
         }
 
-        return has_visible;
+        return visible;
     }
 
     /**
@@ -801,9 +794,31 @@ export class GlpiKnowbaseAsideController
         }
 
         // Otherwise remove every entry for this article (tree + favorites) in
-        // place. Categories are left as-is: the server renders empty categories
-        // too, so a now-empty category should stay visible (as it would on reload).
+        // place. A tree entry may nest child articles inside its own <li>
+        // (recursive tree), and those children are NOT deleted server-side:
+        // on reload the Builder promotes any article left without a visible
+        // parent up to the root. Mirror that here so children don't vanish
+        // until reload — reparent them to the root <ul> before removing the
+        // deleted node, unless they remain reachable under another parent.
+        const tree = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
+        const root_list = tree ? tree.querySelector(':scope > ul') : null;
+
         for (const entry of this.#aside.querySelectorAll(`[data-glpi-kb-article-id="${CSS.escape(id)}"]`)) {
+            const child_list = entry.querySelector(':scope > ul');
+            if (child_list && root_list) {
+                for (const child of [...child_list.querySelectorAll(':scope > [data-glpi-kb-article-id]')]) {
+                    const child_id = child.dataset.glpiKbArticleId;
+                    // Still reachable under another (non-deleted) parent
+                    // elsewhere in the tree? Then it stays there; promoting it
+                    // would duplicate it, and on reload it would not be a root.
+                    const still_reachable = [...this.#aside.querySelectorAll(
+                        `[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${CSS.escape(child_id)}"]`
+                    )].some(el => !entry.contains(el));
+                    if (!still_reachable) {
+                        root_list.appendChild(child);
+                    }
+                }
+            }
             entry.remove();
         }
 

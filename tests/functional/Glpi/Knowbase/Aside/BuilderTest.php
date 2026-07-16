@@ -37,12 +37,14 @@ namespace tests\unit\Glpi\Knowbase\Aside;
 use Glpi\Knowbase\Aside\Builder;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
-use KnowbaseItemCategory;
+use KnowbaseItem_User;
+use Session;
 
 final class BuilderTest extends DbTestCase
 {
     /**
-     * Builds a complex tree and asserts its structure:
+     * Builds a multi-level tree via `_parents` and asserts its recursive
+     * structure:
      *
      *  Root articles : _knowbaseitem01, _knowbaseitem02 (fixtures), "Root article"
      *  Animals       : "Cat article", "Dog article"
@@ -51,12 +53,11 @@ final class BuilderTest extends DbTestCase
      */
     public function testBuildTreeReturnsCompleteHierarchy(): void
     {
-        // Arrange: create articles and categories
         $this->login();
 
-        $animals = $this->makeCategory('Animals');
-        $birds   = $this->makeCategory('Birds', $animals->getID());
-        $plants  = $this->makeCategory('Plants');
+        $animals = $this->makeArticle('Animals');
+        $birds   = $this->makeArticle('Birds', $animals->getID());
+        $plants  = $this->makeArticle('Plants');
 
         $this->makeArticle('Root article');
         $this->makeArticle('Cat article', $animals->getID());
@@ -64,60 +65,51 @@ final class BuilderTest extends DbTestCase
         $this->makeArticle('Eagle article', $birds->getID());
         $this->makeArticle('Rose article', $plants->getID());
 
-        // Act: build the tree
         $tree = (new Builder())->buildTree();
 
-        // Assert: root level
+        // Root level: the two fixture articles, "Animals", "Plants" and "Root article"
+        // (order follows insertion/id order, not the order they were requested above).
         $this->assertEquals(
-            ['_knowbaseitem01', '_knowbaseitem02', 'Root article'],
+            ['_knowbaseitem01', '_knowbaseitem02', 'Animals', 'Plants', 'Root article'],
             array_column($tree->getArticles(), 'title'),
         );
-        $this->assertEquals(
-            ['Animals', 'Plants'],
-            array_column($tree->getCategories(), 'title'),
-        );
-        $this->assertCount(2, $tree->getCategories());
 
-        // Assert: animals category
-        $animals_node = $tree->getCategories()[0];
-        $this->assertEquals('Animals', $animals_node->title);
-        $this->assertEquals(
-            ['Cat article', 'Dog article'],
-            array_column($animals_node->getArticles(), 'title'),
-        );
-        $this->assertCount(1, $animals_node->getCategories());
+        $by_title = array_column($tree->getArticles(), null, 'title');
 
-        // Assert: birds sub-category
-        $birds_node = $animals_node->getCategories()[0];
-        $this->assertEquals('Birds', $birds_node->title);
-        $this->assertEquals(
-            ['Eagle article'],
-            array_column($birds_node->getArticles(), 'title'),
+        // Animals has three direct children: Birds (a nested article), Cat, Dog.
+        $animals_node = $by_title['Animals'];
+        $this->assertTrue($animals_node->hasChildren());
+        $this->assertEqualsCanonicalizing(
+            ['Cat article', 'Dog article', 'Birds'],
+            array_column($animals_node->getChildren(), 'title'),
         );
-        $this->assertEmpty($birds_node->getCategories());
 
-        // Assert:  Plants category
-        $plants_node = $tree->getCategories()[1];
-        $this->assertEquals('Plants', $plants_node->title);
-        $this->assertEquals(
-            ['Rose article'],
-            array_column($plants_node->getArticles(), 'title'),
-        );
-        $this->assertEmpty($plants_node->getCategories());
+        // Birds has one child: Eagle.
+        $animals_children = array_column($animals_node->getChildren(), null, 'title');
+        $birds_node = $animals_children['Birds'];
+        $this->assertTrue($birds_node->hasChildren());
+        $this->assertEquals(['Eagle article'], array_column($birds_node->getChildren(), 'title'));
+
+        // Plants has one child: Rose.
+        $plants_node = $by_title['Plants'];
+        $this->assertTrue($plants_node->hasChildren());
+        $this->assertEquals(['Rose article'], array_column($plants_node->getChildren(), 'title'));
+
+        // Leaves have no children.
+        $this->assertFalse($by_title['Root article']->hasChildren());
+        $cat_node = array_column($animals_node->getChildren(), null, 'title')['Cat article'];
+        $this->assertFalse($cat_node->hasChildren());
     }
 
     public function testWithoutCurrentId(): void
     {
         $this->login();
 
-        // Arrange: create articles
         $this->makeArticle('Article A');
         $this->makeArticle('Article B');
 
-        // Act: build the tree
         $tree = (new Builder())->buildTree();
 
-        // Assert: No article was marked as the current article
         foreach ($tree->getArticles() as $article) {
             $this->assertFalse($article->is_current);
         }
@@ -127,14 +119,11 @@ final class BuilderTest extends DbTestCase
     {
         $this->login();
 
-        // Arrange: create articles
         $this->makeArticle('Other article');
         $target = $this->makeArticle('Target article');
 
-        // Act: build the tree
         $tree = (new Builder($target->getID()))->buildTree();
 
-        // Assert: Root article was marked correctly
         $by_title = array_column($tree->getArticles(), null, 'title');
         $this->assertFalse($by_title['Other article']->is_current);
         $this->assertTrue($by_title['Target article']->is_current);
@@ -144,53 +133,18 @@ final class BuilderTest extends DbTestCase
     {
         $this->login();
 
-        // Arrange: create articles and categories
-        $category = $this->makeCategory('Animals');
+        $parent = $this->makeArticle('Animals');
         $this->makeArticle('Root article');
-        $nested = $this->makeArticle('Nested article', $category->getID());
+        $nested = $this->makeArticle('Nested article', $parent->getID());
 
-        // Act: build the tree
         $tree = (new Builder($nested->getID()))->buildTree();
 
         $by_title = array_column($tree->getArticles(), null, 'title');
         $this->assertFalse($by_title['Root article']->is_current);
 
-        $animals_node = null;
-        foreach ($tree->getCategories() as $node) {
-            if ($node->title === 'Animals') {
-                $animals_node = $node;
-                break;
-            }
-        }
-        $this->assertNotNull($animals_node);
-
-        // Assert: Nested article was marked correctly
-        $nested_by_title = array_column($animals_node->getArticles(), null, 'title');
+        $animals_node = $by_title['Animals'];
+        $nested_by_title = array_column($animals_node->getChildren(), null, 'title');
         $this->assertTrue($nested_by_title['Nested article']->is_current);
-    }
-
-    public function testCategoryIllustrationIsPropagatedFromDb(): void
-    {
-        $this->login();
-
-        $this->createItem(KnowbaseItemCategory::class, [
-            'name'                      => 'Custom illustrated',
-            'knowbaseitemcategories_id' => 0,
-            'entities_id'               => $this->getTestRootEntity(only_id: true),
-            'is_recursive'              => 1,
-            'illustration'              => 'kb-faq',
-        ]);
-        $this->makeCategory('Default illustrated');
-
-        $tree = (new Builder())->buildTree();
-
-        $by_title = [];
-        foreach ($tree->getCategories() as $node) {
-            $by_title[$node->title] = $node;
-        }
-
-        $this->assertSame('kb-faq', $by_title['Custom illustrated']->illustration);
-        $this->assertSame('', $by_title['Default illustrated']->illustration);
     }
 
     public function testArticleIllustrationIsPropagatedFromDb(): void
@@ -211,42 +165,83 @@ final class BuilderTest extends DbTestCase
         $this->assertSame('', $by_title['Without illustration']->illustration);
     }
 
-    public function testBuildTreeIncludesCategoryId(): void
+    /**
+     * An article whose parents are all invisible to the current user must
+     * still be reachable, promoted to the root level (see Builder's
+     * promote-to-root algorithm) — not silently dropped from the tree.
+     */
+    public function testArticleWithoutVisibleParentIsPromotedToRoot(): void
     {
+        // Author both articles as another user so the "author" visibility
+        // bypass never makes them directly visible to the restricted user below.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
         $this->login();
 
-        $cat = $this->makeCategory('IdCheck');
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Invisible parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Promoted child ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$parent->getID()],
+        ]);
+
+        // Restricted, non-admin user: no visibility on the parent, but
+        // directly granted visibility on the child.
+        $this->login('normal', 'normal');
+        (new KnowbaseItem_User())->add([
+            'knowbaseitems_id' => $child->getID(),
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        $parent_obj = new KnowbaseItem();
+        $this->assertTrue($parent_obj->getFromDB($parent->getID()));
+        $this->assertFalse($parent_obj->canViewItem(), 'parent must NOT be viewable for this test');
 
         $tree = (new Builder())->buildTree();
 
-        $found = null;
-        foreach ($tree->getCategories() as $node) {
-            if ($node->title === 'IdCheck') {
-                $found = $node;
-                break;
-            }
-        }
-
-        $this->assertNotNull($found);
-        $this->assertSame($cat->getID(), $found->id);
+        $titles = array_column($tree->getArticles(), 'title');
+        $this->assertContains('Promoted child ' . __FUNCTION__, $titles, 'child promoted to root');
+        $this->assertNotContains('Invisible parent ' . __FUNCTION__, $titles, 'invisible parent absent');
     }
 
-    private function makeCategory(string $name, int $parent_id = 0): KnowbaseItemCategory
+    /**
+     * An article with two visible parents must appear under each of them.
+     */
+    public function testArticleWithMultipleVisibleParentsAppearsUnderEach(): void
     {
-        return $this->createItem(KnowbaseItemCategory::class, [
-            'name'                      => $name,
-            'knowbaseitemcategories_id' => $parent_id,
-            'entities_id'               => $this->getTestRootEntity(only_id: true),
-            'is_recursive'              => 1,
-        ]);
+        $this->login();
+
+        $parent1 = $this->makeArticle('Parent one ' . __FUNCTION__);
+        $parent2 = $this->makeArticle('Parent two ' . __FUNCTION__);
+        $this->makeArticle('Shared child ' . __FUNCTION__, [$parent1->getID(), $parent2->getID()]);
+
+        $tree = (new Builder())->buildTree();
+        $by_title = array_column($tree->getArticles(), null, 'title');
+
+        $this->assertEquals(
+            ['Shared child ' . __FUNCTION__],
+            array_column($by_title['Parent one ' . __FUNCTION__]->getChildren(), 'title'),
+        );
+        $this->assertEquals(
+            ['Shared child ' . __FUNCTION__],
+            array_column($by_title['Parent two ' . __FUNCTION__]->getChildren(), 'title'),
+        );
     }
 
-    private function makeArticle(string $name, int $category_id = 0): KnowbaseItem
+    /**
+     * @param int|int[] $parent_id
+     */
+    private function makeArticle(string $name, int|array $parent_id = 0): KnowbaseItem
     {
+        $parents = is_array($parent_id) ? $parent_id : ($parent_id > 0 ? [$parent_id] : []);
         return $this->createItem(KnowbaseItem::class, [
-            'name'        => $name,
-            'answer'      => '<p>Content</p>',
-            '_categories' => $category_id > 0 ? [$category_id] : [],
+            'name'     => $name,
+            'answer'   => '<p>Content</p>',
+            '_parents' => $parents,
         ]);
     }
 }
