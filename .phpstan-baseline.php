@@ -4208,12 +4208,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$subject of function Safe\\\\preg_replace expects array\\<string\\>\\|string, string\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysqlIterator.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ong of method CommonGLPI\\:\\:addDefaultFormTab\\(\\) expects array\\<string, string\\>, array\\<string, bool\\|string\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

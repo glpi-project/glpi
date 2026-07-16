@@ -37,7 +37,6 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 
-use function Safe\preg_replace;
 use function Safe\preg_split;
 
 /**
@@ -491,7 +490,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     public function getSql()
     {
-        return preg_replace('/ +/', ' ', $this->sql);
+        return $this->sql ?? '';
     }
 
     /**

@@ -446,6 +446,7 @@ class SearchTest extends DbTestCase
         ];
 
         $data = $this->doSearch('Computer', $search_params);
+        $sql  = $this->cleanSQL($data['sql']['search']);
 
         $regexps = [
             // join parts
@@ -463,7 +464,7 @@ class SearchTest extends DbTestCase
         foreach ($regexps as $regexp) {
             $this->assertMatchesRegularExpression(
                 $regexp,
-                $data['sql']['search']
+                $sql
             );
         }
 
@@ -484,7 +485,7 @@ class SearchTest extends DbTestCase
         foreach ($contains as $contain) {
             $this->assertStringContainsString(
                 $contain,
-                $data['sql']['search']
+                $sql
             );
         }
     }
@@ -510,6 +511,7 @@ class SearchTest extends DbTestCase
                 ],
             ],
         ]);
+        $sql = $this->cleanSQL($data['sql']['search']);
 
         $default_charset = DBConnection::getDefaultCharset();
 
@@ -523,7 +525,7 @@ class SearchTest extends DbTestCase
         foreach ($contains as $contain) {
             $this->assertStringContainsString(
                 $contain,
-                $data['sql']['search']
+                $sql
             );
         }
 
@@ -541,13 +543,13 @@ class SearchTest extends DbTestCase
         foreach ($regexps as $regexp) {
             $this->assertMatchesRegularExpression(
                 $regexp,
-                $data['sql']['search']
+                $sql
             );
         }
 
         $this->assertDoesNotMatchRegularExpression(
             "/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/",
-            $data['sql']['search']
+            $sql
         );
     }
 
@@ -2352,20 +2354,6 @@ class SearchTest extends DbTestCase
         }
     }
 
-    private function cleanSQL($sql)
-    {
-        // Clean whitespaces
-        $sql = preg_replace('/\s+/', ' ', $sql);
-
-        // Remove whitespaces around parenthesis
-        $sql = preg_replace('/\(\s+/', '(', $sql);
-        $sql = preg_replace('/\s+\)/', ')', $sql);
-
-        $sql = trim($sql);
-
-        return $sql;
-    }
-
     public function testAllAssetsFields()
     {
         global $CFG_GLPI, $DB;
@@ -2957,14 +2945,15 @@ class SearchTest extends DbTestCase
             ],
         ];
         $data = $this->doSearch('AllAssets', $search_params);
+        $sql = $this->cleanSQL($data['sql']['search']);
 
         $this->assertMatchesRegularExpression(
             "/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/",
-            $data['sql']['search']
+            $sql
         );
         $this->assertMatchesRegularExpression(
             "/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/",
-            $data['sql']['search']
+            $sql
         );
 
         $types = [
@@ -2979,23 +2968,23 @@ class SearchTest extends DbTestCase
         foreach ($types as $type) {
             $this->assertStringContainsString(
                 "`$type`.`is_deleted` = 0",
-                $data['sql']['search']
+                $sql
             );
             $this->assertStringContainsString(
                 "AND `$type`.`is_template` = 0",
-                $data['sql']['search']
+                $sql
             );
             $this->assertStringContainsString(
                 "`$type`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')",
-                $data['sql']['search']
+                $sql
             );
             $this->assertStringContainsString(
                 "OR (`$type`.`is_recursive`='1' AND `$type`.`entities_id` IN (0))",
-                $data['sql']['search']
+                $sql
             );
             $this->assertMatchesRegularExpression(
                 "/`$type`\.`name` LIKE '%test%'/m",
-                $data['sql']['search']
+                $sql
             );
         }
 

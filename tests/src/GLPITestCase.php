@@ -698,4 +698,23 @@ class GLPITestCase extends TestCase
             );
         }
     }
+
+    /**
+     * Clean a SQL query string by removing extra whitespaces to make it easier to compare with another SQL query string.
+     * @param $sql
+     * @return string
+     */
+    protected function cleanSQL($sql)
+    {
+        // Clean whitespaces
+        $sql = preg_replace('/\s+/', ' ', $sql);
+
+        // Remove whitespaces around parenthesis
+        $sql = preg_replace('/\(\s+/', '(', $sql);
+        $sql = preg_replace('/\s+\)/', ')', $sql);
+
+        $sql = trim($sql);
+
+        return $sql;
+    }
 }
