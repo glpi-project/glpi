@@ -10555,7 +10555,7 @@ CREATE TABLE `glpi_users_sessions` (
     `user_agent` varchar(512) NOT NULL,
     `auth_type` tinyint NOT NULL,
     `created_at` timestamp NOT NULL,
-    `last_activity_at` timestamp NOT NULL,
+    `last_activity_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE KEY `login_session_uid` (`login_session_uid`),
     KEY `users_id` (`users_id`),
