@@ -396,6 +396,22 @@ class ConfigTest extends DbTestCase
             ], [
                 'raw'       => '10.6.7-MariaDB-1:10.6.7-2ubuntu1.1',
                 'version'   => '10.6.7',
+                'compat'    => false,
+            ], [
+                'raw'       => '10.11.18-MariaDB',
+                'version'   => '10.11.18',
+                'compat'    => true,
+            ], [
+                'raw'       => '11.4.12-MariaDB',
+                'version'   => '11.4.12',
+                'compat'    => true,
+            ], [
+                'raw'       => '11.8.8-MariaDB',
+                'version'   => '11.8.8',
+                'compat'    => true,
+            ], [
+                'raw'       => '12.3.2-MariaDB',
+                'version'   => '12.3.2',
                 'compat'    => true,
             ], [
                 'raw'       => '5.6.38-log',
@@ -408,6 +424,14 @@ class ConfigTest extends DbTestCase
             ], [
                 'raw'       => '8.0.23-standard',
                 'version'   => '8.0.23',
+                'compat'    => true,
+            ], [
+                'raw'       => '8.4.10',
+                'version'   => '8.4.10',
+                'compat'    => true,
+            ], [
+                'raw'       => '9.7.1',
+                'version'   => '9.7.1',
                 'compat'    => true,
             ],
         ];

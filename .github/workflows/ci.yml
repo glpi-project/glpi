@@ -131,7 +131,7 @@ jobs:
               {
                 "include": [
                   {"php-version": "8.5", "db-image": "mariadb:12.3", "run-js-tests": true},
-                  {"php-version": "8.3", "db-image": "mariadb:10.6", "run-js-tests": false},
+                  {"php-version": "8.3", "db-image": "mariadb:10.11", "run-js-tests": false},
                   {"php-version": "8.5", "db-image": "mysql:9.7", "run-js-tests": false},
                   {"php-version": "8.5", "db-image": "mysql:8.0", "run-js-tests": false}
                 ]
