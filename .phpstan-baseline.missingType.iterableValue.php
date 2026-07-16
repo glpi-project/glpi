@@ -20444,24 +20444,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/KnowbaseItem_Item.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem_KnowbaseItemCategory\\:\\:getForbiddenStandardMassiveAction\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem_KnowbaseItemCategory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem_KnowbaseItemCategory\\:\\:getItems\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem_KnowbaseItemCategory.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method KnowbaseItem_KnowbaseItemCategory\\:\\:getMassiveActionsForItemtype\\(\\) has parameter \\$actions with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem_KnowbaseItemCategory.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method KnowbaseItem_Profile\\:\\:getProfiles\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
