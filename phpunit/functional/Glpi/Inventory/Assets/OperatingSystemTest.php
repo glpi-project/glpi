@@ -1191,6 +1191,95 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $this->assertEmpty($theos['owner']);
     }
 
+    public function testLockedOsFieldKeptOnOsChange()
+    {
+        $cos = new \Item_OperatingSystem();
+
+        //first inventory: a Windows host reporting a service pack and an owner
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <OPERATINGSYSTEM>
+      <ARCH>x86_64</ARCH>
+      <FULL_NAME>Microsoft Windows Server 2019 Datacenter</FULL_NAME>
+      <KERNEL_NAME>MSWin32</KERNEL_NAME>
+      <KERNEL_VERSION>10.0.17763</KERNEL_VERSION>
+      <NAME>Windows</NAME>
+      <SERVICE_PACK>17763.8755</SERVICE_PACK>
+      <VERSION>1809</VERSION>
+    </OPERATINGSYSTEM>
+    <HARDWARE>
+      <NAME>pc-splocked</NAME>
+      <WINOWNER>Windows User</WINOWNER>
+    </HARDWARE>
+    <BIOS>
+      <SSN>sp-locked-01</SSN>
+    </BIOS>
+    <VERSIONCLIENT>GLPI-Agent_v1.16</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc-splocked</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $computer = new \Computer();
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'pc-splocked']));
+        $computers_id = $computer->getID();
+
+        $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->assertCount(1, $list);
+        $theos = current($list);
+        $servicepacks_id = $theos['operatingsystemservicepacks_id'];
+        $this->assertGreaterThan(0, $servicepacks_id);
+        $this->assertSame('Windows User', $theos['owner']);
+
+        //lock the service pack field so it must be preserved by the inventory
+        $lockedfield = new \Lockedfield();
+        $this->assertGreaterThan(
+            0,
+            $lockedfield->add([
+                'itemtype' => 'Item_OperatingSystem',
+                'items_id' => $theos['id'],
+                'field'    => 'operatingsystemservicepacks_id',
+            ])
+        );
+
+        //second inventory: same device reinstalled under Linux, no service pack/owner
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+    <OPERATINGSYSTEM>
+      <ARCH>x86_64</ARCH>
+      <FULL_NAME>Ubuntu 24.04.4 LTS</FULL_NAME>
+      <KERNEL_NAME>linux</KERNEL_NAME>
+      <KERNEL_VERSION>6.8.0-40-generic</KERNEL_VERSION>
+      <NAME>Ubuntu</NAME>
+      <VERSION>24.04.4 LTS (Noble Numbat)</VERSION>
+    </OPERATINGSYSTEM>
+    <HARDWARE>
+      <NAME>pc-splocked</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>sp-locked-01</SSN>
+    </BIOS>
+    <VERSIONCLIENT>GLPI-Agent_v1.16</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc-splocked</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $this->doInventory($xml_source, true);
+
+        $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
+        $this->assertCount(1, $list);
+        $theos = current($list);
+        //the locked service pack must have been preserved..
+        $this->assertSame($servicepacks_id, $theos['operatingsystemservicepacks_id']);
+        //..while the unlocked owner field has been cleared
+        $this->assertEmpty($theos['owner']);
+    }
+
     public function testReplayRuleOnOS()
     {
         $os = new \OperatingSystem();
