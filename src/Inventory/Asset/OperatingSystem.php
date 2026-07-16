@@ -165,6 +165,28 @@ class OperatingSystem extends InventoryAsset
 
         if (!$ios->isNewItem()) {
             //OS exists, check for updates
+
+            // Reset OS specific fields that are no longer reported by the inventory
+            $lockeds = new \Lockedfield();
+            $locks = $lockeds->getLockedNames($ios->getType(), $ios->getID());
+            $reset_fields = [
+                //dropdown foreign keys
+                'operatingsystemversions_id'        => 0,
+                'operatingsystemservicepacks_id'    => 0,
+                'operatingsystemarchitectures_id'   => 0,
+                'operatingsystemkernelversions_id'  => 0,
+                'operatingsystemeditions_id'        => 0,
+                'licenseid'                         => '',
+                'license_number'                    => '',
+                'company'                           => '',
+                'owner'                             => '',
+            ];
+            foreach ($reset_fields as $os_field => $empty_value) {
+                if (!array_key_exists($os_field, $input_os) && !in_array($os_field, $locks, true)) {
+                    $input_os[$os_field] = $empty_value;
+                }
+            }
+
             $same = true;
             foreach ($input_os as $key => $value) {
                 if (array_key_exists($key, $ios->fields) && $ios->fields[$key] != $value) {
