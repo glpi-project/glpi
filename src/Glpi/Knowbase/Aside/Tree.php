@@ -39,28 +39,14 @@ final class Tree implements Node
     /** @var Article[] */
     protected array $articles = [];
 
-    /** @var Category[] */
-    protected array $categories = [];
-
     public function addArticle(Article $article): void
     {
         $this->articles[] = $article;
-    }
-
-    public function addCategory(Category $category): void
-    {
-        $this->categories[] = $category;
     }
 
     /** @return Article[] */
     public function getArticles(): array
     {
         return $this->articles;
-    }
-
-    /** @return Category[] */
-    public function getCategories(): array
-    {
-        return $this->categories;
     }
 }

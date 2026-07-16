@@ -1181,8 +1181,13 @@
             }
         }
 
-        &:hover .dropdown,
-        &:focus-within .dropdown,
+        // Scoped to `.article-line` (the row itself, not `&` = `.article`):
+        // an article can now nest child articles inside its own `<li>`
+        // (recursive tree), and `.article-line` never contains that nested
+        // `<ul>`, so this cannot bleed hover/focus into a descendant row's
+        // kebab menu.
+        .article-line:hover .dropdown,
+        .article-line:focus-within .dropdown,
         .dropdown:has([aria-expanded="true"]) {
             opacity: 1;
         }
