@@ -38,11 +38,6 @@ interface Node
 {
     public function addArticle(Article $article): void;
 
-    public function addCategory(Category $category): void;
-
     /** @return Article[] */
     public function getArticles(): array;
-
-    /** @return Category[] */
-    public function getCategories(): array;
 }

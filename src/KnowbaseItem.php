@@ -3006,8 +3006,6 @@ TWIG, $twig_params);
         $has_other_favorites = array_filter($favorites, fn(Article $a) => !$a->is_current) !== [];
 
         // Don't render the aside if we don't have any article.
-        // TODO(Task 3): the aside Tree API is being finalized; revisit this
-        // guard once the tree only exposes a single children collection.
         $tree = (new Builder($current_id))->buildTree();
         if ($tree->getArticles() === []) {
             return null;
