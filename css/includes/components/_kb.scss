@@ -32,6 +32,13 @@
 
 .article-container {
     max-width: 1320px !important;
+
+    hr {
+        border: none;
+        border-top: 1px solid var(--tblr-border-color);
+        margin: 1.5rem 0;
+        opacity: 1;
+    }
 }
 
 .kb-sidepanel {
@@ -397,12 +404,6 @@
                 background: none;
                 padding: 0;
             }
-        }
-
-        hr {
-            border: none;
-            border-top: 1px solid var(--tblr-border-color);
-            margin: 1.5rem 0;
         }
 
         // Tables
