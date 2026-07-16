@@ -210,7 +210,10 @@ final class SessionTracker
         } elseif (ini_get('session.save_handler') === 'redis' && $session) {
             try {
                 $redis = new \Redis();
-                $redis->connect(parse_url(ini_get('session.save_path'), PHP_URL_HOST), parse_url(ini_get('session.save_path'), PHP_URL_PORT));
+                //Manually telling PHPStan the type because the "safe" function ruins the type information of the underlying parse_url function.
+                /** @phpstan-var array{host: string, port?: int, path?: string, query?: string, fragment?: string} $redis_url */
+                $redis_url = parse_url(ini_get('session.save_path'));
+                $redis->connect((string) $redis_url['host'], $redis_url['port'] ?? 6379);
                 $redis->del('PHPREDIS_SESSION:' . str_replace('sess_', '', $session['session_file']));
             } catch (Throwable $e) {
                 ErrorHandler::logCaughtException($e);
