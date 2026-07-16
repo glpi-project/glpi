@@ -6532,7 +6532,7 @@ final class SQLProvider implements SearchProviderInterface
                             break;
                         }
                         return "<div class='badge_block' style='border-color: " . \htmlescape($color) . "'>
-                        <span style='background: " . \htmlescape($color) . "'></span>&nbsp;" . \htmlescape($date) . "
+                        <span style='background: " . \htmlescape($color) . "'></span>&nbsp;" . \htmlescape(Html::convDate($date)) . "
                        </div>";
                     }
                     break;
@@ -6541,7 +6541,7 @@ final class SQLProvider implements SearchProviderInterface
                         && ($data[$ID][0]['name'] < $_SESSION['glpi_currenttime'])
                     ) {
                         return "<div class='badge_block' style='border-color: #cf9b9b'>
-                        <span style='background: #cf9b9b'></span>&nbsp;" . \htmlescape($data[$ID][0]['name']) . "
+                        <span style='background: #cf9b9b'></span>&nbsp;" . \htmlescape(Html::convDate($data[$ID][0]['name'])) . "
                        </div>";
                     }
 
