@@ -2203,7 +2203,7 @@ TWIG,
         $calendar_btn = $p['calendar_btn']
          ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle>
                 <i class='ti ti-calendar'></i>
-                <span class='sr-only'>" . $calendar_tooltip . "</span>
+                <span class='visually-hidden'>" . $calendar_tooltip . "</span>
             </button>"
          : "";
         $clear_btn = $p['clear_btn'] && $p['maybeempty'] && $p['canedit']
@@ -3916,9 +3916,9 @@ JAVASCRIPT
             $link .= $btlabel;
         } else {
             if (str_starts_with($btimage, 'fa-')) {
-                $link .= "<span class='fas $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
+                $link .= "<span class='fas $btimage' title='$btlabel'><span class='visually-hidden'>$btlabel</span>";
             } elseif (str_starts_with($btimage, 'ti-')) {
-                $link .= "<span class='ti $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
+                $link .= "<span class='ti $btimage' title='$btlabel'><span class='visually-hidden'>$btlabel</span>";
             } else {
                 $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel' class='pointer'>";
             }

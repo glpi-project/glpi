@@ -1114,7 +1114,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                title="{{ edit_button_label }}"
                                onclick="glpi_ajax_dialog({{ edit_dialog_params|json_encode }});"
                             >
-                                <span class="sr-only">{{ edit_button_label }}</span>
+                                <span class="visually-hidden">{{ edit_button_label }}</span>
                             </span>
                         </div>
                     </div>

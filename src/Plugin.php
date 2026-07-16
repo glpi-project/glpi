@@ -2842,7 +2842,7 @@ class Plugin extends CommonDBTM
                     $config_url = htmlescape("{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}");
                     $output .= '<a href="' . $config_url . '" title="' . __s('Configure') . '">'
                     . '<i class="ti ti-tool fs-2x"></i>'
-                    . '<span class="sr-only">' . __s('Configure') . '</span>'
+                    . '<span class="visually-hidden">' . __s('Configure') . '</span>'
                     . '</a>'
                     . '&nbsp;';
                 }
@@ -2916,7 +2916,7 @@ class Plugin extends CommonDBTM
                                                           data-bs-toggle="modal"
                                                           data-bs-target="#updateModal' . htmlescape($plugin->getField('directory')) . '"
                                                           title="' . __s("Update") . '">
-                                                          <span class="sr-only">' . __s("Update") . '</span>
+                                                          <span class="visually-hidden">' . __s("Update") . '</span>
                                                       </span></a>',
                                 'update_btn' => Html::getSimpleForm(
                                     static::getFormURL(),
@@ -2957,7 +2957,7 @@ class Plugin extends CommonDBTM
                                 data-bs-toggle="modal"
                                 data-bs-target="#uninstallModal' . htmlescape($plugin->getField('directory')) . '"
                                 title="' . $uninstall_label . '">
-                                <span class="sr-only">' . $uninstall_label . '</span>
+                                <span class="visually-hidden">' . $uninstall_label . '</span>
                             </span></a>
                         ';
 
@@ -3004,7 +3004,7 @@ class Plugin extends CommonDBTM
                 if (!empty($value)) {
                     $value = htmlescape($value);
                     return "<a href=\"" . $value . "\" target='_blank'>
-                     <i class='ti ti-external-link-alt fs-2x'></i><span class='sr-only'>$value</span>
+                     <i class='ti ti-external-link-alt fs-2x'></i><span class='visually-hidden'>$value</span>
                   </a>";
                 }
                 return "&nbsp;";

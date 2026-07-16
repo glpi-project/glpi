@@ -336,7 +336,7 @@ class Dropdown
             $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
             $add_item_icon .= "<span data-bs-toggle='tooltip'>
               <i class='ti ti-plus'></i>
-              <span class='sr-only'>" . __s('Add') . "</span>
+              <span class='visually-hidden'>" . __s('Add') . "</span>
                 </span>";
             $add_item_icon .= '</div>';
         }
@@ -2666,7 +2666,7 @@ HTML;
 
                 echo "<span class='fa fa-info pointer'"
                  . " title=\"" . __s('Duplicate the element as many times as there are connections')
-                 . "\"><span class='sr-only'>" . __s('Duplicate the element as many times as there are connections') . "</span></span>";
+                 . "\"><span class='visually-hidden'>" . __s('Duplicate the element as many times as there are connections') . "</span></span>";
             }
         } else {
             if ($params['management_restrict'] == 2) {
@@ -2810,7 +2810,7 @@ HTML;
         Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
         echo "<button type='submit' name='export' class='btn' "
              . " title=\"" . _sx('button', 'Export') . "\">"
-             . "<i class='ti ti-device-floppy'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
+             . "<i class='ti ti-device-floppy'></i><span class='visually-hidden'>" . _sx('button', 'Export') . "<span>";
     }
 
 

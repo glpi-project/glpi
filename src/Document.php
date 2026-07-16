@@ -1342,7 +1342,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
             if (Session::haveRight('dropdown', READ)) {
                 $message .= " <a target='_blank' href='" . htmlescape(DocumentType::getSearchURL()) . "' class='pointer'>
-                         <i class='fa fa-info'</i><span class='sr-only'>" . __s('Manage document types') . "</span></a>";
+                         <i class='fa fa-info'</i><span class='visually-hidden'>" . __s('Manage document types') . "</span></a>";
             }
             Session::addMessageAfterRedirect($message, false, ERROR);
             return '';

@@ -1175,13 +1175,13 @@ HTML;
                 $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&month=$mois&year=$annee";
                 $entry['planning'] = "<a href='$href' title='" . __s('See planning') . "'>";
                 $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
-                $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
+                $entry['planning'] .= "<span class='visually-hidden'>" . __s('See planning') . "</span>";
                 $entry['planning'] .= "</a>";
             } elseif ($item instanceof CommonDBTM) {
                 $href = htmlescape($item::getFormURLWithID($item->getID()) . "&forcetab=Reservation$1&tab_params[defaultDate]={$data['start_date']}");
                 $entry['planning'] = "<a href='$href' title=\"" . __s('See planning') . "\">";
                 $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
-                $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
+                $entry['planning'] .= "<span class='visually-hidden'>" . __s('See planning') . "</span>";
             }
             return $entry;
         };

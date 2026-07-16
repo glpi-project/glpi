@@ -898,7 +898,7 @@ abstract class CommonDBChild extends CommonDBConnexity
                 . " onClick=\"var row = $('#" . $div_id . "');
                              row.append('" . static::getJSCodeToAddForItemChild($field_name, $child_count_js_var) . "');
                             $child_count_js_var++;\""
-               . "><span class='sr-only'>" . __s('Add') . "</span></button>";
+               . "><span class='visually-hidden'>" . __s('Add') . "</span></button>";
         }
         if ($display) {
             echo $result;

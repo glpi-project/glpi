@@ -4698,7 +4698,7 @@ HTML;
             $icons .= "<span title=\"" . __s('Import a user') . "\""
             . " data-bs-toggle='modal' data-bs-target='#userimport{$rand}'>
             <i class='ti ti-plus'></i>
-            <span class='sr-only'>" . __s('Import a user') . "</span>
+            <span class='visually-hidden'>" . __s('Import a user') . "</span>
          </span>";
             $icons .= '</div>';
         }

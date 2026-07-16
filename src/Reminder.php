@@ -773,7 +773,7 @@ class Reminder extends CommonDBVisible implements
                         Html::convDateTime($data["end"])
                     );
                     $row['values'][] = sprintf(
-                        '<a href="%s" class="pointer float-end" title="%s"><i class="ti ti-bell"></i><span class="sr-only">%s</span></a>',
+                        '<a href="%s" class="pointer float-end" title="%s"><i class="ti ti-bell"></i><span class="visually-hidden">%s</span></a>',
                         htmlescape(sprintf('%s/front/planning.php?date=%s&type=day', $CFG_GLPI['root_doc'], $date_url)),
                         htmlescape($planning_text),
                         __s('Planning')

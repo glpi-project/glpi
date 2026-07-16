@@ -188,7 +188,7 @@ abstract class CommonDevice extends CommonDropdown
                             );
 
                             $listLabel = '<i class="ti ti-list pointer" title="' . htmlescape($itemTypeName) . '"></i>'
-                            . '<span class="sr-only">' . htmlescape($itemTypeName) . '</span>';
+                            . '<span class="visually-hidden">' . htmlescape($itemTypeName) . '</span>';
                             $menu['options'][$key]['links'][$listLabel] = $itemClass::getSearchURL(false);
 
                             // item device self links
@@ -475,7 +475,7 @@ abstract class CommonDevice extends CommonDropdown
             $field_name  = 'quantity_' . static::class . '_' . $this->getID();
             $content .= "&nbsp;<span class='ti ti-plus cursor-pointer' title='" . __s('Add') . "'
                       onClick=\"$('#" . htmlescape(jsescape($field_name)) . "').show();\"
-                      ><span class='sr-only'>" . __s('Add') . "</span></span>";
+                      ><span class='visually-hidden'>" . __s('Add') . "</span></span>";
             $content .= "<span id='" . htmlescape($field_name) . "' style='display:none'><br>";
             $content .= __s('Add') . "&nbsp;";
 

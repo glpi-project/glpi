@@ -145,7 +145,7 @@ class Planning extends CommonGLPI
         if (self::canView()) {
             $title     = htmlescape(self::getTypeName(Session::getPluralNumber()));
             $planning  = "<i class='ti ti-calendar pointer' title='$title'>
-                        <span class='sr-only'>$title</span>
+                        <span class='visually-hidden'>$title</span>
                        </i>";
 
             $links[$planning] = self::getSearchURL(false);
@@ -154,7 +154,7 @@ class Planning extends CommonGLPI
         if (PlanningExternalEvent::canView()) {
             $ext_title = htmlescape(PlanningExternalEvent::getTypeName(Session::getPluralNumber()));
             $external  = "<i class='ti ti-calendar-week pointer' title='$ext_title'>
-                        <span class='sr-only'>$ext_title</span>
+                        <span class='visually-hidden'>$ext_title</span>
                        </i>";
 
             $links[$external] = PlanningExternalEvent::getSearchURL(false);
@@ -163,7 +163,7 @@ class Planning extends CommonGLPI
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
             $caldav_title = __s('CalDAV browser interface');
             $caldav  = "<i class='ti ti-refresh pointer' title='$caldav_title'>
-                        <span class='sr-only'>$caldav_title</span>
+                        <span class='visually-hidden'>$caldav_title</span>
                        </i>";
 
             $links[$caldav] = '/caldav.php';
@@ -1451,7 +1451,7 @@ TWIG, $twig_params);
             $rand = mt_rand();
             echo "<a href='#' title=\"" . __s('Availability') . "\" data-bs-toggle='modal' data-bs-target='#planningcheck$rand'>";
             echo "<i class='ti ti-calendar'></i>";
-            echo "<span class='sr-only'>" . __s('Availability') . "</span>";
+            echo "<span class='visually-hidden'>" . __s('Availability') . "</span>";
             echo "</a>";
             Ajax::createIframeModalWindow(
                 'planningcheck' . $rand,
