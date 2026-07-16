@@ -1172,7 +1172,7 @@ class Auth extends CommonGLPI
         if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me) {
             self::setRememberMeCookie(
                 users_id: $this->user->getID(),
-                token_uid: bin2hex(random_bytes(8)),
+                token_uid: Session::getLoginSessionUID(),
                 token: bin2hex(random_bytes(16)),
             );
         }
