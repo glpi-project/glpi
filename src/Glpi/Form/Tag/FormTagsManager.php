@@ -139,6 +139,7 @@ final class FormTagsManager
             new AnswerTagProvider(),
             new CommentTitleTagProvider(),
             new CommentDescriptionTagProvider(),
+            new FullFormTagProvider(),
         ]);
     }
 
