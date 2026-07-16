@@ -38,6 +38,7 @@ use Calendar;
 use CalendarSegment;
 use Entity;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\SLMTrait;
 use SLA;
 use SLM;
 use Ticket;
@@ -48,6 +49,8 @@ use function Safe\strtotime;
 
 class SlaProgressBarTest extends DbTestCase
 {
+    use SLMTrait;
+
     /**
      * "Time to resolve + Progress" must use the entity's calendar, not a naive 24/7 diff,
      * when the SLA uses the "Calendar of the ticket" strategy.
@@ -69,12 +72,10 @@ class SlaProgressBarTest extends DbTestCase
         ]);
 
         // Assign this calendar explicitly to the test entity.
-        $entity = new Entity();
-        $this->assertTrue($entity->update([
-            'id'                 => $entities_id,
+        $this->updateItem(Entity::class, $entities_id, [
             'calendars_strategy' => 0,
             'calendars_id'       => $calendar->getID(),
-        ]));
+        ]);
 
         // "Calendar of the ticket" strategy; raw add() since createItem() would reject the -1 -> 0 storage conversion.
         $slm = new SLM();
@@ -89,24 +90,18 @@ class SlaProgressBarTest extends DbTestCase
 
         // SLA2's 70h duration sits 20h above the 50 business hours elapsed over the 7-day window below,
         // keeping the calendar-aware vs naive gap safely above the assertion's tolerance.
-        $sla1 = $this->createItem(SLA::class, [
+        $sla1 = $this->createSLA([
             'name'            => 'SlaProgressBarTest SLA1',
             'entities_id'     => $entities_id,
-            'is_recursive'    => 1,
-            'type'            => SLM::TTR,
             'number_time'     => 15,
             'definition_time' => 'minute',
-            'slms_id'         => $slms_id,
-        ]);
-        $sla2 = $this->createItem(SLA::class, [
+        ], SLM::TTR, $slm)['sla'];
+        $sla2 = $this->createSLA([
             'name'            => 'SlaProgressBarTest SLA2',
             'entities_id'     => $entities_id,
-            'is_recursive'    => 1,
-            'type'            => SLM::TTR,
             'number_time'     => 70,
             'definition_time' => 'hour',
-            'slms_id'         => $slms_id,
-        ]);
+        ], SLM::TTR, $slm)['sla'];
 
         // Exactly 7 days ago: always one of each weekday, so elapsed time is deterministic
         // (50 business hours calendar-aware vs 168h naive), whatever day the test runs on.
@@ -121,11 +116,9 @@ class SlaProgressBarTest extends DbTestCase
         ]);
 
         // Escalate: reassign the SLA, as a SLA level action would during a real escalation.
-        $this->assertTrue($ticket->update([
-            'id'          => $ticket->getID(),
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), [
             'slas_id_ttr' => $sla2->getID(),
-        ]));
-        $this->assertTrue($ticket->getFromDB($ticket->getID()));
+        ]);
 
         $expected_percentage = $this->computeExpectedProgress($ticket, $calendar);
         $naive_percentage    = $this->computeNaive24_7Progress($ticket);
