@@ -2347,9 +2347,13 @@ TWIG, $twig_params);
     #[Override]
     public function getServiceCatalogItemDescription(): string
     {
-        // Fallback to answer when using the home page search results as the
-        // service catalog data may not be specified in this case.
-        return $this->fields['description'] ?? $this->fields['answer'] ?? "";
+        if (!empty($this->fields['description'])) {
+            return $this->fields['description'];
+        }
+
+        // No description: fall back to a plain-text excerpt of the answer, not the raw HTML.
+        $answer = RichText::getTextFromHtml($this->fields['answer'] ?? '', false, true);
+        return Html::resume_text($answer, 200);
     }
 
     #[Override]
