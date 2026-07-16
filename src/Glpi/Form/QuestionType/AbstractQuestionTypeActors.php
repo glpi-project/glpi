@@ -36,6 +36,7 @@
 namespace Glpi\Form\QuestionType;
 
 use CommonDBTM;
+use Dropdown;
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
@@ -384,6 +385,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
                 'mb'              : '',
                 'right_for_users' : right_for_users,
                 'group_conditions': group_conditions,
+                'placeholder'     : placeholder,
             }
         ]) %}
 
@@ -416,6 +418,8 @@ TWIG;
             'aria_label'         => $question->fields['name'],
             'right_for_users'    => $this->getRightForUsers(),
             'group_conditions'   => $this->getGroupConditions(),
+            // Non-empty placeholder enables the select2 clear button in Html::jsAjaxDropdown()
+            'placeholder'        => $is_multiple_actors ? '' : Dropdown::EMPTY_VALUE,
         ]);
     }
 

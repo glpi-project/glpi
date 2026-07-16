@@ -165,6 +165,13 @@ export class GlpiPage
         ;
     }
 
+    public async assertDropdownIsClearable(dropdown: Locator): Promise<void>
+    {
+        // We have no control on select2 selectors
+        // eslint-disable-next-line playwright/no-raw-locators
+        await expect(dropdown.locator('.select2-selection__clear')).toBeVisible();
+    }
+
     public async doLogout(): Promise<void>
     {
         await this.user_menu.click();
