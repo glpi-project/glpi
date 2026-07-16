@@ -45,6 +45,7 @@ jobs:
             '^claude([-_ ]|$)'
             '^chatgpt([-_ ]|$)'
             '^gpt-'
+            'cursoragent'
           )
           FAIL=0
           while IFS=$'\t' read -r sha name email message; do
