@@ -1179,6 +1179,11 @@ final class SQLProvider implements SearchProviderInterface
             $complexjoin = Search::computeComplexJoinID($opt['joinparams']);
 
             if (!empty($complexjoin)) {
+                if ($opt['linkfield'] === 'custom_fields') {
+                  if (strpos($table, '_custom_field_') === false) {
+                     $table .= "_custom_fields";
+                  }
+                }
                 $table .= "_" . $complexjoin;
             }
         }
