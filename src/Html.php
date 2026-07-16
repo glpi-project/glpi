@@ -38,6 +38,7 @@ use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Config\ConfigContainer;
 use Glpi\Console\Application;
 use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profile as DebugProfile;
@@ -5700,6 +5701,7 @@ JS);
      */
     public static function getCoreVariablesForJavascript(bool $full = false)
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
 
         // prevent leak of data for non logged sessions
@@ -5711,7 +5713,7 @@ JS);
         };";
 
         if ($full) {
-            $cfg_glpi = "var CFG_GLPI  = " . json_encode(Config::getSafeConfig(true), JSON_PRETTY_PRINT) . ";";
+            $cfg_glpi = "var CFG_GLPI  = " . json_encode($CFG_GLPI->getSafeConfig(true), JSON_PRETTY_PRINT) . ";";
         }
 
         $plugins_path = [];

@@ -50,6 +50,7 @@ use Generator;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\Clonable;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Socket;
 use Glpi\Tests\DbTestCase;
 use Group;
@@ -2635,9 +2636,7 @@ HTML;
 
     public function testGetLanguages()
     {
-        global $CFG_GLPI;
-
-        $this->assertCount(count($CFG_GLPI['languages']), Dropdown::getLanguages());
+        $this->assertCount(count(LanguageRegistry::all()), Dropdown::getLanguages());
     }
 
     public function testGetDropdownMyDevices()

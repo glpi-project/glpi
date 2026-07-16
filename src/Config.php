@@ -37,6 +37,7 @@ use Glpi\Api\HL\Router;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
+use Glpi\Config\ConfigContainer;
 use Glpi\Config\ProxyExclusion;
 use Glpi\Config\ProxyExclusions;
 use Glpi\Dashboard\Grid;
@@ -100,9 +101,6 @@ class Config extends CommonDBTM
         'glpinetwork_registration_key',
         'ldap_pass', // this one should not exist anymore, but may be present when admin restored config dump after migration
     ];
-
-    /** @var string[] */
-    public static array $saferUndisclosedFields = ['admin_email', 'replyto_email'];
 
     /**
      * Indicates whether the GLPI configuration has been loaded.
@@ -1057,6 +1055,7 @@ class Config extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($item instanceof Preference) {
@@ -1077,7 +1076,9 @@ class Config extends CommonDBTM
                     break;
 
                 case 2:
-                    $item->showFormUserPrefs($CFG_GLPI);
+                    // Pass a plain-array copy: showFormUserPrefs() runs native
+                    // array functions on its argument (e.g. array_key_exists()).
+                    $item->showFormUserPrefs($CFG_GLPI->getArrayCopy());
                     break;
 
                 case 3:
@@ -1412,7 +1413,10 @@ class Config extends CommonDBTM
             $values[$row['name']] = $row['value'];
         }
 
-        $CFG_GLPI = array_merge($CFG_GLPI, $values);
+        // Merge per key to preserve the ConfigContainer object backing $CFG_GLPI.
+        foreach ($values as $name => $value) {
+            $CFG_GLPI[$name] = $value;
+        }
 
         if (isset($CFG_GLPI['priority_matrix'])) {
             $CFG_GLPI['priority_matrix'] = importArrayFromDB($CFG_GLPI['priority_matrix']);
@@ -1841,22 +1845,12 @@ class Config extends CommonDBTM
      */
     public static function getSafeConfig($safer = false)
     {
+        Toolbox::deprecated('Use $CFG_GLPI->getSafeConfig() instead.', true, '11.0');
+
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
 
-        $excludedKeys = array_flip(self::$undisclosedFields);
-        $safe_config  = array_diff_key($CFG_GLPI, $excludedKeys);
-
-        if ($safer) {
-            $excludedKeys = array_flip(self::$saferUndisclosedFields);
-            $safe_config = array_diff_key($safe_config, $excludedKeys);
-        }
-
-        // override with session values
-        foreach ($safe_config as $key => &$value) {
-            $value = $_SESSION['glpi' . $key] ?? $value;
-        }
-
-        return $safe_config;
+        return $CFG_GLPI->getSafeConfig((bool) $safer);
     }
 
 

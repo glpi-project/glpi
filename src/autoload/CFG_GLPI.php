@@ -34,6 +34,7 @@
  */
 
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Config\ConfigContainer;
 use Glpi\Config\ProxyExclusions;
 use Glpi\Locale\LanguageRegistry;
 use Glpi\Marketplace\Controller;
@@ -599,3 +600,19 @@ $CFG_GLPI['environment_types'] = [Computer::class];
 
 
 $CFG_GLPI['possible_proxy_exclusions'] = new ProxyExclusions();
+
+// Wrap the config into a container so specific keys can be deprecated while
+// staying backward compatible (see Glpi\Config\ConfigContainer). Declarations
+// above still operate on a plain array; the wrapping happens once, here.
+$CFG_GLPI = new ConfigContainer($CFG_GLPI);
+
+$CFG_GLPI->deprecateKey(
+    'languages',
+    "Accessing `\$CFG_GLPI['languages']` is deprecated, use `Glpi\\Locale\\LanguageRegistry` instead.",
+    '11.0'
+);
+$CFG_GLPI->deprecateKey(
+    'main_languages',
+    "Accessing `\$CFG_GLPI['main_languages']` is deprecated, use `Glpi\\Locale\\LanguageRegistry::getMainLanguages()` instead.",
+    '11.0'
+);

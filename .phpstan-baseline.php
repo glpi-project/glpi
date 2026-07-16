@@ -3008,12 +3008,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'lock_use_lock_item\' might not exist on array\\{typedoc_icon_dir\\: mixed, root_doc\\: mixed, proxy_exclusions\\: mixed, lock_lockprofile_id\\: mixed, \\.\\.\\.\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, int\\|string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

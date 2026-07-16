@@ -46,7 +46,6 @@ use Change;
 use CommonDBTM;
 use CommonDevice;
 use CommonITILObject;
-use Config;
 use Contract;
 use Document;
 use Dropdown;
@@ -55,6 +54,7 @@ use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Api\HL\Router;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Config\ConfigContainer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Exception\ForgetPasswordException;
@@ -600,7 +600,10 @@ abstract class API
      */
     protected function getGlpiConfig()
     {
-        return ['cfg_glpi' => Config::getSafeConfig()];
+        /** @var ConfigContainer $CFG_GLPI */
+        global $CFG_GLPI;
+
+        return ['cfg_glpi' => $CFG_GLPI->getSafeConfig()];
     }
 
 

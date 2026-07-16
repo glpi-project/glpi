@@ -39,6 +39,7 @@
 use Composer\Autoload\ClassLoader;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
+use Glpi\Config\ConfigContainer;
 use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profiler;
 use Glpi\Event;
@@ -1677,6 +1678,7 @@ class Plugin extends CommonDBTM
      **/
     public static function registerClass($itemtype, $attrib = [])
     {
+        /** @var ConfigContainer $CFG_GLPI */
         global $CFG_GLPI;
 
         $plug = isPluginItemType($itemtype);
@@ -1697,7 +1699,7 @@ class Plugin extends CommonDBTM
             $attrib['assignable_types'] = true;
         }
 
-        $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI));
+        $all_types = preg_grep('/.+_types/', array_keys($CFG_GLPI->getArrayCopy()));
         $all_types[] = 'networkport_instantiations';
 
         $blacklist = ['device_types'];
@@ -1741,7 +1743,7 @@ class Plugin extends CommonDBTM
         foreach ($attrib as $key => $value) {
             if (preg_match('/^plugin[a-z]+_types$/', $key)) {
                 if ($value) {
-                    if (!array_key_exists($key, $CFG_GLPI)) {
+                    if (!isset($CFG_GLPI[$key])) {
                         $CFG_GLPI[$key] = [];
                     }
                     $CFG_GLPI[$key][] = $itemtype;
