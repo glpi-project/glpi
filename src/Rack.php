@@ -461,6 +461,28 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
         $grid_w   = $cell_w * $cols;
         $grid_h   = $cell_h * $rows;
 
+        $custom_column_labels = $room->getAxisLabels(DCRoom::AXIS_COLUMN);
+        $custom_row_labels = $room->getAxisLabels(DCRoom::AXIS_ROW);
+        $column_axis_labels = [];
+        for ($position = 1; $position <= $cols; ++$position) {
+            $coordinate = Toolbox::getBijectiveIndex($position);
+            $column_axis_labels[] = [
+                'position' => $position,
+                'coordinate' => $coordinate,
+                'label' => $custom_column_labels[$position] ?? $coordinate,
+                'custom_label' => $custom_column_labels[$position] ?? '',
+            ];
+        }
+        $row_axis_labels = [];
+        for ($position = 1; $position <= $rows; ++$position) {
+            $row_axis_labels[] = [
+                'position' => $position,
+                'coordinate' => (string) $position,
+                'label' => $custom_row_labels[$position] ?? (string) $position,
+                'custom_label' => $custom_row_labels[$position] ?? '',
+            ];
+        }
+
         //fill rows
         $cells    = [];
         $outbound = [];
@@ -523,6 +545,9 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
             'cells' => $cells,
             'outbound' => $outbound,
             'blueprint_url' => $blueprint_url,
+            'column_axis_labels' => $column_axis_labels,
+            'row_axis_labels' => $row_axis_labels,
+            'can_edit_axis_labels' => $canedit,
         ]);
 
         return true;

@@ -161,7 +161,6 @@ ul.indexes {
     box-sizing: content-box;
     margin: 10px 0 10px 10px;
     float: left;
-    padding: 15px 0 0 15px;
     position: relative;
 
     *,
@@ -171,8 +170,11 @@ ul.indexes {
     }
 
     .blueprint {
-        margin-left: 15px;
-        width: calc(100% - 16px);
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        z-index: 1;
+        pointer-events: none;
     }
 
     .racks_add {
@@ -190,7 +192,9 @@ ul.indexes {
                 var(--tblr-border-color) 1px,
                 transparent 1px
             );
-        margin-left: 15px;
+        position: absolute;
+        inset: 0;
+        z-index: 2;
 
         .cell_add {
             height: var(--dcroom-grid-cellh);
@@ -205,7 +209,8 @@ ul.indexes {
     }
 
     .grid-stack {
-        float: left;
+        position: absolute;
+        inset: 0;
     }
 
     .grid-stack-item {
@@ -269,24 +274,97 @@ ul.indexes {
         float: left;
 
         &.indexes-x {
-            width: 100%;
+            grid-column: 2;
+            grid-row: 1;
             float: none;
             height: 15px;
-            padding-left: 15px;
 
             li {
                 float: left;
                 width: var(--dcroom-grid-cellw);
+                height: 15px;
             }
         }
 
         &.indexes-y {
-            width: 15px;
+            grid-column: 1;
+            grid-row: 2;
+            width: auto;
 
             li {
                 height: var(--dcroom-grid-cellh);
-                line-height: calc(var(--dcroom-grid-cellh) + 1px);
+                min-width: 15px;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
             }
+        }
+    }
+
+    .dcroom-grid-layout {
+        display: grid;
+        grid-template-columns: max-content max-content;
+        grid-template-rows: 15px max-content;
+    }
+
+    .dcroom-grid-canvas {
+        grid-column: 2;
+        grid-row: 2;
+        position: relative;
+    }
+
+    .dcroom-axis-label-button,
+    .dcroom-axis-label-input {
+        box-sizing: border-box;
+        height: 100%;
+        min-width: 0;
+        border: 0;
+        border-radius: 2px;
+        padding: 0 3px;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        line-height: normal;
+    }
+
+    .dcroom-axis-label-button {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        cursor: text;
+
+        &:hover,
+        &:focus-visible {
+            background-color: var(--tblr-secondary-bg);
+            outline: 1px solid var(--tblr-border-color);
+        }
+    }
+
+    .dcroom-axis-label > span {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .indexes-x {
+        .dcroom-axis-label-button,
+        .dcroom-axis-label-input,
+        .dcroom-axis-label > span {
+            width: var(--dcroom-grid-cellw);
+        }
+    }
+
+    .indexes-y {
+        .dcroom-axis-label-button,
+        .dcroom-axis-label > span {
+            max-width: 240px;
+        }
+
+        .dcroom-axis-label-input {
+            width: 160px;
+            max-width: 240px;
         }
     }
 }

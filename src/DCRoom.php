@@ -46,6 +46,10 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
 {
     use DCBreadcrumb;
 
+    public const AXIS_COLUMN = 'column';
+    public const AXIS_ROW = 'row';
+    public const AXIS_LABEL_MAX_LENGTH = 100;
+
     // From CommonDBTM
     public bool $dohistory                   = true;
     protected bool $usenotepad               = true;
@@ -446,16 +450,112 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
     public function getAllPositions()
     {
         $positions = [];
+        $column_labels = $this->getAxisLabels(self::AXIS_COLUMN);
+        $row_labels = $this->getAxisLabels(self::AXIS_ROW);
         for ($x = 1; $x < (int) $this->fields['vis_cols'] + 1; ++$x) {
             for ($y = 1; $y < (int) $this->fields['vis_rows'] + 1; ++$y) {
                 $positions["$x,$y"] = sprintf(
                     __('col: %1$s, row: %2$s'),
-                    Toolbox::getBijectiveIndex($x),
-                    $y
+                    $column_labels[$x] ?? $this->getDefaultAxisLabel(self::AXIS_COLUMN, $x),
+                    $row_labels[$y] ?? $this->getDefaultAxisLabel(self::AXIS_ROW, $y)
                 );
             }
         }
         return $positions;
+    }
+
+    /**
+     * Get custom labels for an axis, indexed by their 1-based position.
+     *
+     * @return array<int, string>
+     */
+    public function getAxisLabels(string $axis): array
+    {
+        $field = $this->getAxisLabelsField($axis);
+        $decoded = json_decode($this->fields[$field] ?? '', true);
+        if (!is_array($decoded)) {
+            return [];
+        }
+
+        $labels = [];
+        foreach ($decoded as $position => $label) {
+            if (
+                (!is_int($position) && !ctype_digit($position))
+                || (int) $position < 1
+                || !is_string($label)
+                || trim($label) === ''
+            ) {
+                continue;
+            }
+            $labels[(int) $position] = $label;
+        }
+
+        return $labels;
+    }
+
+    /**
+     * Get the effective label for an axis position.
+     */
+    public function getAxisLabel(string $axis, int $position): string
+    {
+        $labels = $this->getAxisLabels($axis);
+        return $labels[$position] ?? $this->getDefaultAxisLabel($axis, $position);
+    }
+
+    /**
+     * Save or remove a custom label for an axis position.
+     */
+    public function updateAxisLabel(string $axis, int $position, string $label): bool
+    {
+        $dimension_field = match ($axis) {
+            self::AXIS_COLUMN => 'vis_cols',
+            self::AXIS_ROW => 'vis_rows',
+            default => throw new InvalidArgumentException('Invalid room axis.'),
+        };
+        if ($position < 1 || $position > (int) $this->fields[$dimension_field]) {
+            throw new InvalidArgumentException('Axis position is outside the room bounds.');
+        }
+
+        $label = trim($label);
+        if (mb_strlen($label, 'UTF-8') > self::AXIS_LABEL_MAX_LENGTH) {
+            throw new InvalidArgumentException('Axis label is too long.');
+        }
+
+        $labels = $this->getAxisLabels($axis);
+        if ($label === '') {
+            unset($labels[$position]);
+        } else {
+            $labels[$position] = $label;
+        }
+        ksort($labels, SORT_NUMERIC);
+
+        return $this->update([
+            'id' => $this->getID(),
+            $this->getAxisLabelsField($axis) => $labels === []
+                ? null
+                : json_encode(
+                    $labels,
+                    JSON_FORCE_OBJECT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR
+                ),
+        ]);
+    }
+
+    private function getAxisLabelsField(string $axis): string
+    {
+        return match ($axis) {
+            self::AXIS_COLUMN => 'column_labels',
+            self::AXIS_ROW => 'row_labels',
+            default => throw new InvalidArgumentException('Invalid room axis.'),
+        };
+    }
+
+    private function getDefaultAxisLabel(string $axis, int $position): string
+    {
+        return match ($axis) {
+            self::AXIS_COLUMN => Toolbox::getBijectiveIndex($position),
+            self::AXIS_ROW => (string) $position,
+            default => throw new InvalidArgumentException('Invalid room axis.'),
+        };
     }
 
     public static function getIcon()
