@@ -34,8 +34,12 @@
 
 namespace tests\units\Glpi\Search\Provider;
 
+use Certificate;
+use Domain;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Tests\DbTestCase;
+use Html;
+use Search;
 
 class SQLProviderTest extends DbTestCase
 {
@@ -76,5 +80,89 @@ class SQLProviderTest extends DbTestCase
             ' LEFT JOIN `glpi_tickets` ON (`glpi_tickets`.`id` = `glpi_tickets_tickets`.`tickets_id_1` OR `glpi_tickets`.`id` = `glpi_tickets_tickets`.`tickets_id_2`)',
             $it->analyseJoins($item_item_revert_join)
         );
+    }
+
+    /**
+     * Regression test to validate that the expiration date badge shown for
+     * Certificate items in search results respects the user's configured
+     * date format instead of always displaying the raw database value.
+     *
+     * @see https://github.com/glpi-project/glpi/pull/24866
+     */
+    public function testCertificateExpirationDateBadgeRespectsDateFormat()
+    {
+        $this->login();
+
+        $expiration_date = date('Y-m-d', strtotime('-10 days'));
+
+        $this->createItem(Certificate::class, [
+            'name'            => __FUNCTION__,
+            'entities_id'     => $this->getTestRootEntity(true),
+            'date_expiration' => $expiration_date,
+        ]);
+
+        $_SESSION['glpidate_format'] = 1; // d-m-Y
+
+        $result = Search::getDatas(
+            Certificate::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => __FUNCTION__,
+                    ],
+                ],
+            ],
+            [10] // date_expiration
+        );
+
+        $this->assertTrue(isset($result['data']['rows'][0]['Certificate_10']['displayname']));
+        $displayname = $result['data']['rows'][0]['Certificate_10']['displayname'];
+
+        $this->assertStringContainsString(Html::convDate($expiration_date), $displayname);
+        $this->assertStringNotContainsString($expiration_date, $displayname);
+    }
+
+    /**
+     * Regression test to validate that the expiration date badge shown for
+     * Domain items in search results respects the user's configured date
+     * format instead of always displaying the raw database value.
+     *
+     * @see https://github.com/glpi-project/glpi/pull/24866
+     */
+    public function testDomainExpirationDateBadgeRespectsDateFormat()
+    {
+        $this->login();
+
+        $expiration_date = date('Y-m-d H:i:s', strtotime('-10 days'));
+
+        $this->createItem(Domain::class, [
+            'name'            => __FUNCTION__,
+            'entities_id'     => $this->getTestRootEntity(true),
+            'date_expiration' => $expiration_date,
+        ]);
+
+        $_SESSION['glpidate_format'] = 1; // d-m-Y
+
+        $result = Search::getDatas(
+            Domain::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => '1',
+                        'searchtype' => 'contains',
+                        'value'      => __FUNCTION__,
+                    ],
+                ],
+            ],
+            [6] // date_expiration
+        );
+
+        $this->assertTrue(isset($result['data']['rows'][0]['Domain_6']['displayname']));
+        $displayname = $result['data']['rows'][0]['Domain_6']['displayname'];
+
+        $this->assertStringContainsString(Html::convDate($expiration_date), $displayname);
+        $this->assertStringNotContainsString($expiration_date, $displayname);
     }
 }
