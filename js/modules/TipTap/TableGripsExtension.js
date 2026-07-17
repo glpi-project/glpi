@@ -105,13 +105,11 @@ const TableGrips = Extension.create({
                         'table-col-add first', { insertCol: 0 }, __('Insert column'),
                     ), `col-add-0`);
                 }
-                // `+` inserts after this column; `−` deletes this column.
+                // `+` at this column's trailing boundary (inserts after it).
+                // Deletion is intentionally not surfaced yet (Outline-style, TBD).
                 widget(pos + 1, () => makeControl(
                     'table-col-add', { insertCol: index + 1 }, __('Insert column'),
                 ), `col-add-${index + 1}`);
-                widget(pos + 1, () => makeControl(
-                    'table-col-del', { col: index }, __('Delete column'),
-                ), `col-del-${index}`);
             });
 
             // Row controls — hosted in the first-column cell of each row.
@@ -125,9 +123,6 @@ const TableGrips = Extension.create({
                         'table-grip', {}, __('Select table'), tableSel,
                     ), `grip-table-${tableSel}`);
                     widget(pos + 1, () => makeControl(
-                        'table-del', {}, __('Delete table'),
-                    ), 'table-del');
-                    widget(pos + 1, () => makeControl(
                         'table-row-add first', { insertRow: 0 }, __('Insert row'),
                     ), 'row-add-0');
                 }
@@ -135,12 +130,10 @@ const TableGrips = Extension.create({
                     'table-grip-row', { row: index },
                     __('Select row %s').replace('%s', String(index + 1)), selected,
                 ), `grip-row-${index}-${selected}`);
+                // `+` at this row's trailing boundary (inserts below it).
                 widget(pos + 1, () => makeControl(
                     'table-row-add', { insertRow: index + 1 }, __('Insert row'),
                 ), `row-add-${index + 1}`);
-                widget(pos + 1, () => makeControl(
-                    'table-row-del', { row: index }, __('Delete row'),
-                ), `row-del-${index}`);
             });
 
             return DecorationSet.create(state.doc, decorations);

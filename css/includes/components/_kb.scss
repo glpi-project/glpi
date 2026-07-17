@@ -442,10 +442,7 @@
         .table-grip-row,
         .table-grip,
         .table-col-add,
-        .table-col-del,
-        .table-row-add,
-        .table-row-del,
-        .table-del {
+        .table-row-add {
             position: absolute;
             z-index: 15;
 
@@ -461,8 +458,7 @@
         // cancels the cell padding offset) so an ::after sized in % maps to the
         // cell's width (column controls) or height (row controls).
         .table-grip-column,
-        .table-col-add,
-        .table-col-del {
+        .table-col-add {
             top: 0;
             left: 0;
             width: 100%;
@@ -470,16 +466,14 @@
         }
 
         .table-grip-row,
-        .table-row-add,
-        .table-row-del {
+        .table-row-add {
             top: 0;
             left: 0;
             width: 0;
             height: 100%;
         }
 
-        .table-grip,
-        .table-del {
+        .table-grip {
             top: 0;
             left: 0;
         }
@@ -496,7 +490,7 @@
             }
 
             &.selected::after {
-                background: var(--tblr-primary);
+                background: var(--tblr-blue);
             }
         }
 
@@ -526,86 +520,74 @@
             background: var(--tblr-border-color);
         }
         .table-grip:hover::after { background: var(--tblr-secondary); }
-        .table-grip.selected::after { background: var(--tblr-primary); }
+        .table-grip.selected::after { background: var(--tblr-blue); }
 
-        // +/- buttons: small circular glyphs revealed on host-cell hover.
+        // Insertion controls: a small grey dot at a column/row boundary that
+        // grows into a blue "+" on hover. The dot is always present (so it can be
+        // hovered); only the hovered boundary shows its "+", so the gutter stays
+        // calm. (A full-length blue guide line is added in a follow-up step.)
         .table-col-add,
-        .table-col-del,
-        .table-row-add,
-        .table-row-del,
-        .table-del {
+        .table-row-add {
             &::after {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 16px;
-                height: 16px;
+                width: 9px;
+                height: 9px;
                 border-radius: 50%;
-                font-size: 13px;
-                line-height: 1;
-                color: var(--tblr-white);
-                background: var(--tblr-primary);
-                opacity: 0;
-                transition: opacity 0.1s ease-in-out;
+                background: var(--tblr-border-color);
+                transition: width 0.1s, height 0.1s, background-color 0.1s;
             }
-            &:hover::after { opacity: 1; }
-        }
 
-        // Reveal a cell's buttons when hovering that cell.
-        td:hover, th:hover {
-            .table-col-add::after,
-            .table-col-del::after,
-            .table-row-add::after,
-            .table-row-del::after,
-            .table-del::after {
-                opacity: 1;
+            // Blue "+" drawn as two white bars (pixel-centred, font-independent).
+            &:hover::after {
+                width: 18px;
+                height: 18px;
+                background-color: var(--tblr-blue);
+                background-image:
+                    linear-gradient(#fff, #fff),
+                    linear-gradient(#fff, #fff);
+                background-size: 9px 2px, 2px 9px;
+                background-position: center;
+                background-repeat: no-repeat;
             }
         }
 
-        .table-col-add::after,
-        .table-row-add::after { content: "+"; }
-
-        .table-col-del::after,
-        .table-row-del::after,
-        .table-del::after {
-            content: "\2212"; // minus sign
-            background: var(--tblr-danger);
-        }
-
-        // Column buttons sit above the column; row buttons to the left.
+        // Column insertion: dot above the grip bar at the column's trailing
+        // boundary (left edge for the leading control).
         .table-col-add::after {
-            top: -34px;
-            left: calc(50% - 20px);
+            top: -28px;
+            left: calc(100% - 4px);
+        }
+
+        .table-col-add:hover::after {
+            top: -32px;
+            left: calc(100% - 9px);
         }
 
         .table-col-add.first::after {
-            top: -34px;
-            left: -8px;
+            left: -4px;
         }
 
-        .table-col-del::after {
-            top: -34px;
-            left: calc(50% + 4px);
+        .table-col-add.first:hover::after {
+            left: -9px;
         }
 
+        // Row insertion: dot left of the grip bar at the row's trailing boundary
+        // (top edge for the leading control).
         .table-row-add::after {
-            left: -34px;
-            top: calc(50% - 20px);
+            left: -28px;
+            top: calc(100% - 4px);
+        }
+
+        .table-row-add:hover::after {
+            left: -32px;
+            top: calc(100% - 9px);
         }
 
         .table-row-add.first::after {
-            left: -34px;
-            top: -8px;
+            top: -4px;
         }
 
-        .table-row-del::after {
-            left: -34px;
-            top: calc(50% + 4px);
-        }
-
-        .table-del::after {
-            top: -18px;
-            left: 4px;
+        .table-row-add.first:hover::after {
+            top: -9px;
         }
 
         // prosemirror-tables: highlight cells in a multi-cell selection.
@@ -613,7 +595,10 @@
         // opaque background so cell text stays visible; background-clip works
         // around a Firefox border-paint bug.
         .selectedCell {
-            box-shadow: inset 0 0 0 9999px rgb(var(--tblr-primary-rgb), 0.12);
+            // Light-blue fill; a solid (semi-transparent) background overrides the
+            // header cell's own colour so the whole selected column/row reads as
+            // one consistent light blue instead of muddying over the header.
+            background-color: rgb(var(--tblr-blue-rgb), 0.15);
             background-clip: padding-box;
         }
 
@@ -626,7 +611,7 @@
             width: 2px;
             z-index: 20;
             pointer-events: none;
-            background: var(--tblr-primary);
+            background: var(--tblr-blue);
         }
 
         &.resize-cursor {
