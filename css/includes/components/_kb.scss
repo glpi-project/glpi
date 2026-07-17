@@ -410,9 +410,11 @@
         table {
             border-collapse: collapse;
             margin-bottom: 0.75rem;
+            table-layout: fixed;
             width: 100%;
 
             td, th {
+                position: relative; // positioning context for grips + the column resize handle
                 border: 1px solid var(--tblr-border-color);
                 padding: 0.5rem;
                 min-width: 100px;
@@ -422,6 +424,213 @@
                 background: var(--tblr-bg-surface-secondary);
                 font-weight: 600;
             }
+        }
+
+        // prosemirror-tables: horizontal scroll for wide tables
+        .tableWrapper {
+            overflow-x: auto;
+
+            // Room for the grip bars (~14px) AND the +/- buttons above/left of
+            // them (~34px). overflow-x:auto makes overflow-y compute to auto too,
+            // so anything beyond this padding box is clipped — keep >= 40px.
+            padding: 40px 0 0 40px;
+        }
+
+        // --- Table grips (Outline model) -------------------------------------
+        // Inert <a> hosts; the visible clickable shape is drawn by ::after.
+        .table-grip-column,
+        .table-grip-row,
+        .table-grip,
+        .table-col-add,
+        .table-col-del,
+        .table-row-add,
+        .table-row-del,
+        .table-del {
+            position: absolute;
+            z-index: 15;
+
+            &::after {
+                content: "";
+                position: absolute;
+                cursor: pointer;
+            }
+        }
+
+        // Host geometry: each widget host is a zero-area <a> anchored at the
+        // start of its cell. Stretch it along the relevant cell edge (top:0/left:0
+        // cancels the cell padding offset) so an ::after sized in % maps to the
+        // cell's width (column controls) or height (row controls).
+        .table-grip-column,
+        .table-col-add,
+        .table-col-del {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+        }
+
+        .table-grip-row,
+        .table-row-add,
+        .table-row-del {
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+        }
+
+        .table-grip,
+        .table-del {
+            top: 0;
+            left: 0;
+        }
+
+        // Selection grips: thin bars (column = top edge, row = left edge).
+        .table-grip-column,
+        .table-grip-row {
+            &::after {
+                background: var(--tblr-border-color);
+            }
+
+            &:hover::after {
+                background: var(--tblr-secondary);
+            }
+
+            &.selected::after {
+                background: var(--tblr-primary);
+            }
+        }
+
+        .table-grip-column::after {
+            top: -14px;
+            left: 0;
+            width: 100%;
+            height: 7px;
+            border-radius: 3px;
+        }
+
+        .table-grip-row::after {
+            left: -14px;
+            top: 0;
+            width: 7px;
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        // Corner grip: round dot that selects the whole table.
+        .table-grip::after {
+            top: -18px;
+            left: -18px;
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            background: var(--tblr-border-color);
+        }
+        .table-grip:hover::after { background: var(--tblr-secondary); }
+        .table-grip.selected::after { background: var(--tblr-primary); }
+
+        // +/- buttons: small circular glyphs revealed on host-cell hover.
+        .table-col-add,
+        .table-col-del,
+        .table-row-add,
+        .table-row-del,
+        .table-del {
+            &::after {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                font-size: 13px;
+                line-height: 1;
+                color: var(--tblr-white);
+                background: var(--tblr-primary);
+                opacity: 0;
+                transition: opacity 0.1s ease-in-out;
+            }
+            &:hover::after { opacity: 1; }
+        }
+
+        // Reveal a cell's buttons when hovering that cell.
+        td:hover, th:hover {
+            .table-col-add::after,
+            .table-col-del::after,
+            .table-row-add::after,
+            .table-row-del::after,
+            .table-del::after {
+                opacity: 1;
+            }
+        }
+
+        .table-col-add::after,
+        .table-row-add::after { content: "+"; }
+
+        .table-col-del::after,
+        .table-row-del::after,
+        .table-del::after {
+            content: "\2212"; // minus sign
+            background: var(--tblr-danger);
+        }
+
+        // Column buttons sit above the column; row buttons to the left.
+        .table-col-add::after {
+            top: -34px;
+            left: calc(50% - 20px);
+        }
+
+        .table-col-add.first::after {
+            top: -34px;
+            left: -8px;
+        }
+
+        .table-col-del::after {
+            top: -34px;
+            left: calc(50% + 4px);
+        }
+
+        .table-row-add::after {
+            left: -34px;
+            top: calc(50% - 20px);
+        }
+
+        .table-row-add.first::after {
+            left: -34px;
+            top: -8px;
+        }
+
+        .table-row-del::after {
+            left: -34px;
+            top: calc(50% + 4px);
+        }
+
+        .table-del::after {
+            top: -18px;
+            left: 4px;
+        }
+
+        // prosemirror-tables: highlight cells in a multi-cell selection.
+        // Inset box-shadow composites over any cell background instead of an
+        // opaque background so cell text stays visible; background-clip works
+        // around a Firefox border-paint bug.
+        .selectedCell {
+            box-shadow: inset 0 0 0 9999px rgb(var(--tblr-primary-rgb), 0.12);
+            background-clip: padding-box;
+        }
+
+        // prosemirror-tables: visible column resize handle on the cell's right edge
+        .column-resize-handle {
+            position: absolute;
+            right: -1px;
+            top: 0;
+            bottom: -1px;
+            width: 2px;
+            z-index: 20;
+            pointer-events: none;
+            background: var(--tblr-primary);
+        }
+
+        &.resize-cursor {
+            cursor: col-resize;
         }
 
         // Images

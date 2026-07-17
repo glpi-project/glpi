@@ -31,12 +31,13 @@
  */
 
 /* global TiptapCore, TiptapStarterKit, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
-/* global TableKit */
+/* global TableKit, TiptapPMTables */
 /* global TiptapFileHandler, glpi_toast_error */
 
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
 import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
+import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
 
@@ -126,7 +127,10 @@ class KnowbaseEditor {
             TiptapBubbleMenu.configure({
                 element: this.#bubbleMenuElement,
                 appendTo: () => this.#element.closest('.kb-article') ?? document.body,
-                shouldShow: ({ editor, state }) => editor.isEditable && !state.selection.empty && !editor.isActive('image'),
+                shouldShow: ({ editor, state }) => editor.isEditable
+                    && !state.selection.empty
+                    && !editor.isActive('image')
+                    && !(state.selection instanceof TiptapPMTables.CellSelection),
                 options: {
                     placement: 'top',
                     offset: 8,
@@ -137,6 +141,7 @@ class KnowbaseEditor {
                     resizable: true,
                 }
             }),
+            TableGrips,
             VideoEmbed,
         ];
 
