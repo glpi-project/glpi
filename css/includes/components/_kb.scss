@@ -39,6 +39,12 @@
         margin: 1.5rem 0;
         opacity: 1;
     }
+
+    // Read view: full-width table like the editor (which is width:100%).
+    table {
+        width: 100%;
+        table-layout: fixed;
+    }
 }
 
 .kb-sidepanel {
@@ -429,11 +435,7 @@
         // prosemirror-tables: horizontal scroll for wide tables
         .tableWrapper {
             overflow-x: auto;
-
-            // Room for the grip bars (~14px) AND the +/- buttons above/left of
-            // them (~34px). overflow-x:auto makes overflow-y compute to auto too,
-            // so anything beyond this padding box is clipped — keep >= 40px.
-            padding: 40px 0 0 40px;
+            padding: 40px 16px 16px 40px; // grip gutters (top/left larger for the bars + insertion dots)
         }
 
         // --- Table grips (Outline model) -------------------------------------
@@ -522,10 +524,7 @@
         .table-grip:hover::after { background: var(--tblr-secondary); }
         .table-grip.selected::after { background: var(--tblr-blue); }
 
-        // Insertion controls: a small grey dot at a column/row boundary that
-        // grows into a blue "+" on hover. The dot is always present (so it can be
-        // hovered); only the hovered boundary shows its "+", so the gutter stays
-        // calm. (A full-length blue guide line is added in a follow-up step.)
+        // Grey boundary dot that grows into a blue "+" on hover (one at a time).
         .table-col-add,
         .table-row-add {
             &::after {
@@ -590,11 +589,8 @@
             top: -9px;
         }
 
-        // Insertion guide line: a thin blue line spanning the whole column/row,
-        // revealed with the "+" on hover to show where the new column/row lands.
-        // Its length comes from --kb-table-h / --kb-table-w, published per table
-        // by the TableGrips plugin, so it maps to the real table size without an
-        // over-long element that would add a stray scrollbar.
+        // Full-length blue insertion guide, shown with the "+" on hover. Length
+        // from --kb-table-h/-w (published by the plugin) to avoid a stray scrollbar.
         .table-col-add::before,
         .table-row-add::before {
             content: "";
@@ -609,11 +605,8 @@
             opacity: 1;
         }
 
-        // The line spans exactly the table (from its edge), so it never runs
-        // through the grip gutters and overlaps the grip bars there. It sits at
-        // the cell BORDER-box edge (100%, the host being padding-box) and is 3px
-        // to fully cover the 1px collapsed table border — otherwise the dark
-        // border peeks past the line and reads as a doubled line.
+        // At the border-box edge (100%, host is padding-box), 3px to cover the
+        // collapsed table border so it doesn't peek past as a doubled line.
         .table-col-add::before {
             top: 0;
             left: 100%;
@@ -641,9 +634,7 @@
         // opaque background so cell text stays visible; background-clip works
         // around a Firefox border-paint bug.
         .selectedCell {
-            // Light-blue fill; a solid (semi-transparent) background overrides the
-            // header cell's own colour so the whole selected column/row reads as
-            // one consistent light blue instead of muddying over the header.
+            // Solid tint (not a shadow) so it overrides the header cell's colour too.
             background-color: rgb(var(--tblr-blue-rgb), 0.15);
             background-clip: padding-box;
         }
