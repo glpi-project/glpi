@@ -6,7 +6,7 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2026 Teclib' and contributors.
- # @licence https://www.gnu.org/licenses/gpl-3.0.html
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
  #
@@ -35,25 +35,26 @@
 
 {% set field_options = {
     input_class: 'col-xxl-6 d-flex justify-content-end',
-    label_class: 'col-xxl-6 d-flex justify-content-start'
+    label_class: 'col-xxl-6 d-flex justify-content-start',
+    label_align: 'start',
 } %}
 
 {% block config_fields %}
 
     {# ==================== Page header with inventory toggle ==================== #}
     {% if not config['enabled_inventory'] %}
-        <div class="col-7 mx-auto mb-3">
+        <div class="col-8 mx-auto mb-3">
             <twig:Alert:Info
                 :title="__('The inventory is disabled, remember to activate it if necessary')"
             />
         </div>
     {% endif %}
 
-    <div class="col-7 mx-auto mb-3">
+    <div class="col-8 mx-auto mb-3">
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
                 <i class="{{ call('ItemVirtualMachine::getIcon') }}" aria-hidden="true"></i>
-                <h3 class="card-title mb-0 fw-bold fs-1">{{ __('Inventory agent configuration') }}</h3>
+                <h3 class="card-title mb-0 fw-bold fs-1">{{ __('Inventory configuration') }}</h3>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -70,7 +71,7 @@
     </div>
 
     {# ==================== Authentication ==================== #}
-    <div class="col-7 mx-auto mb-3">
+    <div class="col-8 mx-auto mb-3">
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
                 <i class="{{ call('OAuthClient::getIcon') }}" aria-hidden="true"></i>
@@ -85,13 +86,17 @@
                     ) }}
                 </div>
                 <div id="oauth_client_hint" class="row" style="display: none;">
-                    <div class="col-7 mx-auto mb-3">
-                        <div class="alert alert-info" role="note">
-                            <div>{{ __('Using OAuth Client Credentials requires a registered OAuth client with the "inventory" scope.') }}</div>
-                            <div>
+                    <div class="col-11 mx-auto mb-3">
+                        <div class="alert alert-info d-block" role="note">
+                            <div class="d-block">
+                                {{ __('Using OAuth Client Credentials requires a registered OAuth client with the %1$s scope.')|e|format('<code>inventory</code>')|raw }}
+                            </div>
+
+                            <div class="d-block">
                                 {{ __('The generated client ID and secret must then be set in the GLPI Agent configuration using the %1$s and %2$s parameters.')|e|format('<code>oauth-client-id</code>', '<code>oauth-client-secret</code>')|raw }}
                             </div>
-                            <div class="mt-2">
+
+                            <div class="d-block mt-2">
                                 <a class="alert-link" href="{{ oauth_client_form_url }}">
                                     <i class="ti ti-external-link" aria-hidden="true"></i>
                                     {{ __('Add an OAuth client') }}
@@ -101,7 +106,7 @@
                     </div>
                 </div>
                 <div id="no_auth_warning" class="row" style="display: none;">
-                    <div class="col-7 mx-auto mb-3">
+                    <div class="col-11 mx-auto mb-3">
                         <div class="alert alert-danger" role="alert">
                             <i class="ti ti-alert-triangle" aria-hidden="true"></i>
                             {{ __('Not using any authentication on inventory is not recommended and poses a security risk. Any agent will be able to send inventory data without verification.') }}
@@ -123,7 +128,7 @@
     <div id="bloc_enabled">
 
         {# ==================== Import options ==================== #}
-        <div class="col-7 mx-auto mb-3">
+        <div class="col-8 mx-auto mb-3">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <div class="d-flex align-items-center gap-2">
@@ -163,7 +168,7 @@
         </div>
 
         {# ==================== Related configurations ==================== #}
-        <div class="col-7 mx-auto mb-3">
+        <div class="col-8 mx-auto mb-3">
             <div class="card">
                 <div class="card-header d-flex align-items-center gap-2">
                     <i class="ti ti-link" aria-hidden="true"></i>
@@ -189,7 +194,7 @@
         </div>
 
         {# ==================== Virtual machines ==================== #}
-        <div class="col-7 mx-auto mb-3">
+        <div class="col-8 mx-auto mb-3">
             <div class="card">
                 <div class="card-header d-flex align-items-center gap-2">
                     <i class="{{ call('ItemVirtualMachine::getIcon') }}" aria-hidden="true"></i>
@@ -211,7 +216,7 @@
         </div>
 
         {# ==================== Components ==================== #}
-        <div class="col-7 mx-auto mb-3">
+        <div class="col-8 mx-auto mb-3">
             <div class="card">
                 <div class="card-header d-flex align-items-center gap-2">
                     <i class="{{ call('CommonDevice::getIcon') }}" aria-hidden="true"></i>
@@ -228,7 +233,7 @@
         </div>
 
         {# ==================== Agent cleanup ==================== #}
-        <div class="col-7 mx-auto mb-3">
+        <div class="col-8 mx-auto mb-3">
             <div class="card">
                 <div class="card-header d-flex align-items-center gap-2">
                     <i class="{{ call('Agent::getIcon') }}" aria-hidden="true"></i>

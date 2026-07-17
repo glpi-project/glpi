@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory;
 
+use Blacklist;
 use CommonDevice;
 use CommonGLPI;
 use ComputerType;
@@ -452,6 +453,7 @@ class Conf extends CommonGLPI
             'toadd'     => [-1 => __('No change')],
             'condition' => $condition,
             'display'   => false,
+            'class'     => 'form-control',
         ]);
 
         // Fields provided by plugins through the stale agent config hook
@@ -494,6 +496,11 @@ class Conf extends CommonGLPI
                 'label' => NetworkPortType::getTypeName($plural),
                 'icon'  => NetworkPort::getIcon(),
             ],
+            [
+                'url'   => Blacklist::getSearchURL(),
+                'label' => Blacklist::getTypeName($plural),
+                'icon'  => Blacklist::getIcon(),
+            ]
         ];
 
         TemplateRenderer::getInstance()->display('pages/admin/inventory/conf/config_form.html.twig', [
