@@ -39,6 +39,7 @@ import {
     isRowSelected,
     isTableSelected,
 } from '/js/modules/TipTap/tableQueries.js';
+import { openTableContextMenu } from '/js/modules/TipTap/TableContextMenu.js';
 
 const { Extension } = TiptapCore;
 const { Plugin, PluginKey } = TiptapPMState;
@@ -197,46 +198,33 @@ const TableGrips = Extension.create({
                                 editor.commands.insertColumnAt(Number(colAdd.dataset.insertCol));
                                 return true;
                             }
-                            const colDel = target.closest('.table-col-del');
-                            if (colDel) {
-                                event.preventDefault(); event.stopImmediatePropagation();
-                                editor.commands.deleteColumnAt(Number(colDel.dataset.col));
-                                return true;
-                            }
                             const rowAdd = target.closest('.table-row-add');
                             if (rowAdd) {
                                 event.preventDefault(); event.stopImmediatePropagation();
                                 editor.commands.insertRowAt(Number(rowAdd.dataset.insertRow));
                                 return true;
                             }
-                            const rowDel = target.closest('.table-row-del');
-                            if (rowDel) {
-                                event.preventDefault(); event.stopImmediatePropagation();
-                                editor.commands.deleteRowAt(Number(rowDel.dataset.row));
-                                return true;
-                            }
-                            const tableDel = target.closest('.table-del');
-                            if (tableDel) {
-                                event.preventDefault(); event.stopImmediatePropagation();
-                                editor.commands.deleteTable();
-                                return true;
-                            }
                             const colGrip = target.closest('.table-grip-column');
                             if (colGrip) {
                                 event.preventDefault(); event.stopImmediatePropagation();
-                                editor.commands.selectColumn(Number(colGrip.dataset.col));
+                                const index = Number(colGrip.dataset.col);
+                                editor.commands.selectColumn(index);
+                                openTableContextMenu({ x: event.clientX, y: event.clientY, kind: 'column', index, editor });
                                 return true;
                             }
                             const rowGrip = target.closest('.table-grip-row');
                             if (rowGrip) {
                                 event.preventDefault(); event.stopImmediatePropagation();
-                                editor.commands.selectRow(Number(rowGrip.dataset.row));
+                                const index = Number(rowGrip.dataset.row);
+                                editor.commands.selectRow(index);
+                                openTableContextMenu({ x: event.clientX, y: event.clientY, kind: 'row', index, editor });
                                 return true;
                             }
                             const tableGrip = target.closest('.table-grip');
                             if (tableGrip) {
                                 event.preventDefault(); event.stopImmediatePropagation();
                                 editor.commands.selectTable();
+                                openTableContextMenu({ x: event.clientX, y: event.clientY, kind: 'table', index: 0, editor });
                                 return true;
                             }
                             return false;
