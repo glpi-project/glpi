@@ -315,8 +315,12 @@ final class Search
                     foreach ($condition as $key => $value) {
                         if (is_array($value)) {
                             $value = $fn_update_keys($value);
+                            foreach ($value as $sub_key => $sub_value) {
+                                $new_condition[$sub_key] = $sub_value;
+                            }
+                        } else {
+                            $new_condition["{$join_alias}.{$key}"] = $value;
                         }
-                        $new_condition["{$join_alias}.{$key}"] = $value;
                     }
                     return $new_condition;
                 };
@@ -388,6 +392,9 @@ final class Search
     public function addJoinsCriteria(array &$criteria): void
     {
         foreach ($this->context->getJoins() as $join_alias => $join_definition) {
+            if ($join_definition['x-skipped'] ?? false) {
+                continue;
+            }
             $join_clauses = $this->getJoins($join_alias, $join_definition);
             foreach ($join_clauses as $join_type => $join_tables) {
                 if (!isset($criteria[$join_type])) {

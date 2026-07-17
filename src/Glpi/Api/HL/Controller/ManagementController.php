@@ -80,6 +80,7 @@ use LineOperator;
 use LineType;
 use Location;
 use Manufacturer;
+use NetworkPort;
 use SoftwareLicense;
 use SoftwareLicenseType;
 use State;
@@ -335,6 +336,12 @@ final class ManagementController extends AbstractController
                     ],
                     'autoupdatesystem' => self::getDropdownTypeSchema(class: AutoUpdateSystem::class, full_schema: 'AutoUpdateSystem'),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'network_ports' => self::getChildrenTypeSchema(
+                        parent_class: Cluster::class,
+                        class: NetworkPort::class,
+                        full_schema: 'NetworkPort',
+                        graphql_only: true,
+                    ),
                 ],
             ],
             'Contact' => [
@@ -374,34 +381,20 @@ final class ManagementController extends AbstractController
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'type' => self::getDropdownTypeSchema(class: ContractType::class, full_schema: 'ContractType'),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                    'costs' => [
-                        'x-version-introduced' => '2.3.0',
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'ContractCost',
-                            'x-join' => [
-                                'table' => ContractCost::getTable(),
-                                'fkey' => 'id',
-                                'field' => Contract::getForeignKeyField(),
-                                'primary-property' => 'id',
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                    'readOnly' => true,
-                                ],
-                            ],
-                        ],
-                    ],
+                    'costs' => self::getChildrenTypeSchema(
+                        parent_class: Contract::class,
+                        class: ContractCost::class,
+                        name_field: null,
+                        full_schema: 'ContractCost',
+                        params: ['x-version-introduced' => '2.3.0']
+                    ),
                     'number' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'maxLength' => 255,
                         'x-version-introduced' => '2.3.0',
                         'x-field' => 'num',
                     ],
-                    'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location') + ['x-version-introduced' => '2.3.0'],
+                    'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location', params: ['x-version-introduced' => '2.3.0']),
                     'date_begin' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_DATE,
@@ -551,9 +544,11 @@ EOT,
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                    'instance' => self::getDropdownTypeSchema(class: DatabaseInstance::class, full_schema: 'DatabaseInstance') + [
-                        'x-version-introduced' => '2.2',
-                    ],
+                    'instance' => self::getDropdownTypeSchema(
+                        class: DatabaseInstance::class,
+                        full_schema: 'DatabaseInstance',
+                        params: ['x-version-introduced' => '2.2'],
+                    ),
                 ],
             ],
             'DatabaseInstance' => [
@@ -593,27 +588,11 @@ EOT,
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_lastboot' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_lastbackup' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                    'database' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'Database',
-                            'x-join' => [
-                                'table' => Database::getTable(), // The table with the desired data
-                                'fkey' => 'id',
-                                'field' => DatabaseInstance::getForeignKeyField(),
-                                'primary-property' => 'id',
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                    'readOnly' => true,
-                                ],
-                                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                            ],
-                        ],
-                    ],
+                    'database' => self::getChildrenTypeSchema(
+                        parent_class: DatabaseInstance::class,
+                        class: Database::class,
+                        full_schema: 'Database',
+                    ),
                 ],
             ],
             'DataCenter' => [
@@ -666,9 +645,13 @@ EOT,
                     ],
                     'mime' => ['type' => Doc\Schema::TYPE_STRING],
                     'sha1sum' => ['type' => Doc\Schema::TYPE_STRING],
-                    'category' => self::getDropdownTypeSchema(class: DocumentCategory::class, full_schema: 'DocumentCategory') + ['x-version-introduced' => '2.3.0'],
+                    'category' => self::getDropdownTypeSchema(
+                        class: DocumentCategory::class,
+                        full_schema: 'DocumentCategory',
+                        params: ['x-version-introduced' => '2.3.0']
+                    ),
                     'link' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.3.0'],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User') + ['x-version-introduced' => '2.3.0'],
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User', params: ['x-version-introduced' => '2.3.0']),
                     'checksum_sha1' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'maxLength' => 40,
@@ -820,7 +803,11 @@ EOT,
                         'type' => Doc\Schema::TYPE_STRING,
                         'maxLength' => 255,
                     ],
-                    'operator' => self::getDropdownTypeSchema(class: LineOperator::class, full_schema: 'LineOperator') + ['x-version-introduced' => '2.3.0'],
+                    'operator' => self::getDropdownTypeSchema(
+                        class: LineOperator::class,
+                        full_schema: 'LineOperator',
+                        params: ['x-version-introduced' => '2.3.0']
+                    ),
                 ],
             ],
             'Supplier' => [
@@ -868,7 +855,7 @@ EOT,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                     'readOnly' => true,
                 ],
-                'document' => self::getDropdownTypeSchema(class: Document::class, full_schema: 'Document') + ['x-version-introduced' => '2.3.0'],
+                'document' => self::getDropdownTypeSchema(class: Document::class, full_schema: 'Document', params: ['x-version-introduced' => '2.3.0']),
                 'filepath' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'documents_id',

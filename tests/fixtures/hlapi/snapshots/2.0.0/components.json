@@ -1174,7 +1174,7 @@
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "x-full-schema": "Cartridge",
+                        "x-itemtype": "Cartridge",
                         "properties": {
                             "id": {
                                 "type": "integer",
@@ -1205,7 +1205,8 @@
                                 "type": "string",
                                 "format": "date-time"
                             }
-                        }
+                        },
+                        "x-full-schema": "Cartridge"
                     }
                 }
             }
@@ -2666,7 +2667,7 @@
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "x-full-schema": "Consumable",
+                        "x-itemtype": "Consumable",
                         "properties": {
                             "id": {
                                 "type": "integer",
@@ -2696,7 +2697,8 @@
                                 "type": "integer",
                                 "format": "int64"
                             }
-                        }
+                        },
+                        "x-full-schema": "Consumable"
                     }
                 }
             }
@@ -5688,18 +5690,18 @@
                 "parent": {
                     "type": "object",
                     "x-itemtype": "Entity",
-                    "x-full-schema": "Entity",
                     "properties": {
                         "id": {
                             "type": "integer",
                             "format": "int64",
-                            "description": "ID"
+                            "readOnly": true
                         },
                         "name": {
                             "type": "string",
-                            "description": "Name"
+                            "readOnly": true
                         }
-                    }
+                    },
+                    "x-full-schema": "Entity"
                 },
                 "level": {
                     "type": "integer",
@@ -7117,18 +7119,17 @@
                 "parent": {
                     "type": "object",
                     "x-itemtype": "Group",
-                    "x-full-schema": "Group",
                     "properties": {
                         "id": {
                             "type": "integer",
-                            "format": "int64",
-                            "description": "ID"
+                            "format": "int64"
                         },
                         "name": {
                             "type": "string",
-                            "description": "Name"
+                            "readOnly": true
                         }
-                    }
+                    },
+                    "x-full-schema": "Group"
                 },
                 "level": {
                     "type": "integer",
@@ -11422,7 +11423,7 @@
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "x-full-schema": "ProjectTask",
+                        "x-itemtype": "ProjectTask",
                         "properties": {
                             "id": {
                                 "type": "integer",
@@ -11430,15 +11431,18 @@
                                 "readOnly": true
                             },
                             "name": {
-                                "type": "string"
+                                "type": "string",
+                                "readOnly": true
                             },
                             "comment": {
                                 "type": "string"
                             },
                             "content": {
-                                "type": "string"
+                                "type": "string",
+                                "format": "html"
                             }
-                        }
+                        },
+                        "x-full-schema": "ProjectTask"
                     }
                 }
             }
@@ -11734,7 +11738,7 @@
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "x-full-schema": "RackItem",
+                        "x-itemtype": "Item_Rack",
                         "properties": {
                             "id": {
                                 "type": "integer",
@@ -11748,7 +11752,8 @@
                                 "type": "integer",
                                 "format": "int64"
                             }
-                        }
+                        },
+                        "x-full-schema": "RackItem"
                     }
                 },
                 "date_creation": {
@@ -12178,10 +12183,9 @@
                 },
                 "criteria": {
                     "type": "array",
-                    "readOnly": true,
                     "items": {
                         "type": "object",
-                        "x-full-schema": "RuleCriteria",
+                        "x-itemtype": "RuleCriteria",
                         "properties": {
                             "id": {
                                 "type": "integer",
@@ -12200,15 +12204,15 @@
                                 "type": "string",
                                 "description": "The value/pattern to match against. If the condition relates to regular expressions, this value needs to be a valid regular expression including the delimiters."
                             }
-                        }
+                        },
+                        "x-full-schema": "RuleCriteria"
                     }
                 },
                 "actions": {
                     "type": "array",
-                    "readOnly": true,
                     "items": {
                         "type": "object",
-                        "x-full-schema": "RuleAction",
+                        "x-itemtype": "RuleAction",
                         "properties": {
                             "id": {
                                 "type": "integer",
@@ -12227,7 +12231,8 @@
                                 "type": "string",
                                 "description": "The value to set. If the field relates to regular expressions, this can include a # followed by 0 through 9 to indicate a captured value from the criteria regular expression."
                             }
-                        }
+                        },
+                        "x-full-schema": "RuleAction"
                     }
                 },
                 "date_creation": {
@@ -14926,16 +14931,16 @@
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "x-full-schema": "EmailAddress",
+                        "x-itemtype": "UserEmail",
                         "properties": {
                             "id": {
                                 "type": "integer",
                                 "format": "int64",
-                                "description": "ID"
+                                "readOnly": true
                             },
                             "email": {
                                 "type": "string",
-                                "description": "Email address"
+                                "readOnly": true
                             },
                             "is_default": {
                                 "type": "boolean",
@@ -14945,7 +14950,8 @@
                                 "type": "boolean",
                                 "description": "Is dynamic"
                             }
-                        }
+                        },
+                        "x-full-schema": "EmailAddress"
                     }
                 },
                 "comment": {
