@@ -256,14 +256,20 @@
 
                     </div>
                     <div class="row">
-                        {{ fields.htmlField('stale_agents_status_condition', stale_status_condition_dropdown, __('If the asset status is'),
+                        {{ fields.dropdownField('State', 'stale_agents_status_condition', stale_agents_status_condition_value, __('If the asset status is'),
                             field_options|merge({
+                                multiple: true,
+                                toadd: {'all': __('All')},
+                                condition: stale_state_condition,
                                 add_field_attribs: {id: 'bloc_stale_agents_status_condition', style: 'display: none;'}
                             }))
                         }}
 
-                        {{ fields.htmlField('stale_agents_status', stale_status_dropdown, __('Status to apply'),
+                        {{ fields.dropdownField('State', 'stale_agents_status', stale_agents_status_value, __('Status to apply'),
                             field_options|merge({
+                                toadd: {'-1': __('No change')},
+                                condition: stale_state_condition,
+                                entity: session('glpiactive_entity'),
                                 add_field_attribs: {id: 'bloc_stale_agents_status', style: 'display: none;'}
                             }))
                         }}
