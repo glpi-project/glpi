@@ -38,40 +38,45 @@
 {% block content_title %}{{ __('Inventory') }}{% endblock %}
 
 {% block content_body %}
-<div class="container-fluid">
+<div class="container-fluid glpi-import-results">
     <div class="search_page">
-        <div class="search-container">
-            <div class="card card-sm search-card">
-                <div class="card-header search-header pe-0">
+        <div class="search-container mt-3">
+            <div class="card card-sm search-card border rounded-3 overflow-hidden">
+                <div class="search-header m-2 d-flex align-items-center justify-content-between">
                     <div class='btn-group flex-wrap'>
-                        <span class="btn bg-blue-lt pe-none" aria-disabled="true">
-                            <i class='ti ti-check fs-2 me-2' aria-hidden='true'></i>
+                        <span class="btn bg-success-lt text-success d-inline-flex align-items-center gap-2 pe-none" aria-disabled="true">
+                            <i class='ti ti-check' aria-hidden="true"></i>
                             {{ __('Import process is complete.') }}
                         </span>
                     </div>
                     <div class='btn-group flex-wrap ms-2'>
                         <a href="javascript:history.back();" class="btn btn-primary">
-                        <i class='ti ti-player-track-prev-filled fs-2 me-2' aria-hidden='true'></i>
+                            <i class='ti ti-arrow-left me-1' aria-hidden="true"></i>
                             {{ __('Back') }}
                         </a>
                     </div>
                 </div>
-                <div class="table-responsive-md">
-                    <table class="search-results table table-hover table-card">
+                <div class="table-responsive-md m-2 border rounded-2 overflow-hidden">
+                    <table class="search-results table table-hover table-card align-middle mb-0">
                         <caption class="visually-hidden">{{ __('Inventory files import results') }}</caption>
-                        <thead>
+                        <thead class="table-light">
                             <tr>
-                                <th scope="col">{{ __('Filename') }}</th>
-                                <th scope="col">{{ __('Result') }}</th>
-                                <th scope="col">{{ _n('Item', 'Items', get_plural_number()) }}</th>
+                                <th scope="col" class="text-uppercase text-secondary small fw-medium">{{ __('Filename') }}</th>
+                                <th scope="col" class="text-uppercase text-secondary small fw-medium">{{ __('Result') }}</th>
+                                <th scope="col" class="text-uppercase text-secondary small fw-medium">{{ _n('Item', 'Items', get_plural_number()) }}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for filename, result in imported_files %}
                             <tr>
-                                <td>{{ filename }}</td>
                                 <td>
-                                    <span class="{{ result.isSuccess() ? 'text-success' : 'text-danger' }}">
+                                    <span class="d-inline-flex align-items-center gap-2">
+                                        <i class="ti ti-file text-secondary" aria-hidden="true"></i>
+                                        {{ filename }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="{{ result.isSuccess() ? 'text-success' : 'text-danger' }} d-inline-flex align-items-center gap-1">
                                         <i class="ti {{ result.isSuccess() ? 'ti-check' : 'ti-alert-triangle' }}" aria-hidden="true"></i>
                                         <span class="visually-hidden">{{ result.isSuccess() ? __('Success') : _n('Error', 'Errors', 1) }}</span>
                                         {{ result.getMessage() }}
