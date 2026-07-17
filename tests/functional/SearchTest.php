@@ -65,7 +65,6 @@ use User;
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
 use function Safe\preg_match;
-use function Safe\preg_replace;
 use function Safe\strtotime;
 
 class SearchTest extends DbTestCase
