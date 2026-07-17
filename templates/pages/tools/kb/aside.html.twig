@@ -82,9 +82,11 @@
     >
         <div class="article-line d-flex align-items-center">
             <a class="text-dark text-hover-link text-truncate flex-grow-1" href="{{ article.link }}">
-                {% if article.illustration %}
-                    {{ render_illustration(article.illustration, 20) }}
-                {% endif %}
+                <span data-glpi-kb-article-illustration data-testid="kb-illustration">
+                    {% if article.illustration %}
+                        {{ render_illustration(article.illustration, 20) }}
+                    {% endif %}
+                </span>
                 <span data-glpi-kb-article-title>{{ article.title }}</span>
             </a>
             {% if show_actions %}

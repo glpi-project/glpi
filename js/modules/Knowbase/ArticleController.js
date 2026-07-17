@@ -543,6 +543,52 @@ export class GlpiKnowbaseArticleController
     }
 
     /**
+     * Update the article illustration displayed in the knowledge base aside
+     * tree.
+     */
+    #updateAsideIllustration()
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+
+        const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
+        const containers = aside.querySelectorAll(
+            `[data-glpi-kb-article-id="${CSS.escape(String(this.#item_id))}"] [data-glpi-kb-article-illustration]`
+        );
+
+        // The illustration picker preview already holds a freshly rendered node
+        // for the selected illustration. We clone it with a different size.
+        const source = this.#getIllustrationPreviewNode();
+        for (const container of containers) {
+            if (source === null) {
+                container.replaceChildren();
+            } else {
+                const icon = source.cloneNode(true);
+                // The aside renders illustrations at size 20 (see aside.html.twig).
+                icon.setAttribute('width', '20');
+                icon.setAttribute('height', '20');
+                container.replaceChildren(icon);
+            }
+        }
+    }
+
+    /**
+     * @return {?(SVGElement|HTMLImageElement)} The rendered illustration node
+     * from the picker preview, or null when no illustration is selected.
+     */
+    #getIllustrationPreviewNode()
+    {
+        const preview = this.#container.querySelector(
+            '[data-glpi-kb-illustration-container] [data-glpi-icon-picker-value-preview]'
+        );
+        return preview?.querySelector(
+            '[data-glpi-icon-picker-value-preview-native]:not(.d-none) svg,'
+            + ' [data-glpi-icon-picker-value-preview-custom]:not(.d-none) img'
+        ) ?? null;
+    }
+
+    /**
      * @param {number} id
      * @param {HTMLInputElement} toggle
      */
@@ -1124,7 +1170,10 @@ export class GlpiKnowbaseArticleController
 
             this.#base_content = this.#original_content;
             this.#base_title = this.#original_title;
-            picker?.commit();
+            if (picker !== null) {
+                picker.commit();
+                this.#updateAsideIllustration();
+            }
 
             edit_button.classList.remove('d-none');
             save_button.classList.add('d-none');

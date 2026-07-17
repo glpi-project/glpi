@@ -249,4 +249,41 @@ test.describe('Knowledge Base Editor - Core', () => {
         await expect(kb.getFavoriteArticle(renamed_name)).toBeVisible();
         await expect(kb.getFavoriteArticle(original_name)).toBeHidden();
     });
+
+    test('Changing an article illustration updates it in the aside tree', async ({
+        page,
+        profile,
+        api,
+    }) => {
+        // Arrange: create an article and set is as a favorite
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+        const kb_api = new KnowbaseApi(api);
+
+        const article_id = await kb_api.createArticle({
+            name: getUniqueName(`Illustrated favorite`),
+        });
+        await kb_api.addFavorite(article_id);
+
+        await kb.goto(article_id);
+
+        // The article has no illustration yet, so the aside slots are empty.
+        await expect(kb.getAsideTreeArticleIllustration(article_id)).toBeHidden();
+        await expect(kb.getFavoriteArticleIllustration(article_id)).toBeHidden();
+
+        // Act: pick a native illustration and save.
+        await kb.editor.enterEditMode();
+        await page.getByRole('button', { name: 'Select an illustration' }).click();
+        const modal = page.getByTestId('illustration-picker-modal');
+        await expect(modal).toBeVisible();
+        await modal.getByRole('img', { name: 'Antivirus', exact: true }).click();
+        await expect(modal).toBeHidden();
+        await kb.editor.save();
+
+        // Assert: the aside is updated with the illustration.
+        await expect(kb.getFavoriteArticleIllustration(article_id))
+            .toHaveAttribute('xlink:href', /#antivirus$/);
+        await expect(kb.getAsideTreeArticleIllustration(article_id))
+            .toHaveAttribute('xlink:href', /#antivirus$/);
+    });
 });

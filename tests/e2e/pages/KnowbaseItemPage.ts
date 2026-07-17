@@ -168,6 +168,35 @@ export class KnowbaseItemPage extends GlpiPage
         return this.aside.locator(`[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${id}"]`);
     }
 
+    public getFavoriteArticleRow(id: number): Locator
+    {
+        return this.favoritesSection.locator(`[data-glpi-kb-article-id="${id}"]`);
+    }
+
+    /**
+     * The illustration slot (`<use>` element for a native icon) of an article
+     * row in the aside tree.
+     */
+    public getAsideTreeArticleIllustration(id: number): Locator
+    {
+        return this.getAsideTreeArticleRow(id)
+            .getByTestId('kb-illustration')
+            .getByTestId('illustration-use')
+        ;
+    }
+
+    /**
+     * The illustration slot (`<use>` element for a native icon) of an article
+     * row in the aside favorites section.
+     */
+    public getFavoriteArticleIllustration(id: number): Locator
+    {
+        return this.getFavoriteArticleRow(id)
+            .getByTestId('kb-illustration')
+            .getByTestId('illustration-use')
+        ;
+    }
+
     /**
      * The dots menu trigger button of an article in the aside tree.
      */
