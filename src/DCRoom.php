@@ -473,7 +473,12 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
     public function getAxisLabels(string $axis): array
     {
         $field = $this->getAxisLabelsField($axis);
-        $decoded = json_decode($this->fields[$field] ?? '', true);
+        $value = $this->fields[$field] ?? null;
+        if (!is_string($value) || trim($value) === '') {
+            return [];
+        }
+
+        $decoded = json_decode($value, true);
         if (!is_array($decoded)) {
             return [];
         }
