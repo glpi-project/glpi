@@ -157,7 +157,8 @@
         "ext-ldap": "Used to provide LDAP authentication and synchronization",
         "ext-sodium": "Used to provide strong encryption for sensitive data in database",
         "ext-posix": "Used to detect scripts running as root",
-        "ext-exif": "Recommended for security"
+        "ext-exif": "Recommended for security",
+        "ext-redis": "Recommended for cache and session performance"
     },
     "config": {
         "optimize-autoloader": true,
