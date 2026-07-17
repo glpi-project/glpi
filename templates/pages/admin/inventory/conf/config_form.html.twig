@@ -243,16 +243,14 @@
                     <div class="row">
                         {{ fields.dropdownNumberField('stale_agents_delay', config['stale_agents_delay']|default(0), __('Update agents who have not contacted the server for (in days)'),
                             field_options|merge({
-                                    min: 1, max: 1000, toadd: {'0': __('Disabled')}
-                            }))
-                        }}
+                                min: 1, max: 1000, toadd: {'0': __('Disabled')}
+                            })) }}
                         {{ fields.dropdownArrayField('stale_agents_action', null, stale_agents_actions, _n('Action', 'Actions', 1),
                             field_options|merge({
                                 multiple: true,
                                 values: stale_agents_action_values,
                                 on_change: 'changestatus();'
-                            }))
-                        }}
+                            })) }}
 
                     </div>
                     <div class="row">
@@ -262,8 +260,7 @@
                                 toadd: {'all': __('All')},
                                 condition: stale_state_condition,
                                 add_field_attribs: {id: 'bloc_stale_agents_status_condition', style: 'display: none;'}
-                            }))
-                        }}
+                            })) }}
 
                         {{ fields.dropdownField('State', 'stale_agents_status', stale_agents_status_value, __('Status to apply'),
                             field_options|merge({
@@ -271,8 +268,7 @@
                                 condition: stale_state_condition,
                                 entity: session('glpiactive_entity'),
                                 add_field_attribs: {id: 'bloc_stale_agents_status', style: 'display: none;'}
-                            }))
-                        }}
+                            })) }}
                     </div>
                     {% if plugin_fields is not empty %}
                         <div class="row">
@@ -280,8 +276,7 @@
                                 {{ fields.htmlField('', plugin_field.html, plugin_field.label,
                                     field_options|merge({
                                         wrapper_class: '',
-                                    }))
-                            }}
+                                    })) }}
                             {% endfor %}
                         </div>
                     {% endif %}
