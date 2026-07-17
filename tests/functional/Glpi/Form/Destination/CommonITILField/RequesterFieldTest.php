@@ -60,12 +60,21 @@ use TicketTemplate;
 use TicketTemplatePredefinedField;
 use User;
 
+use function Safe\json_encode;
+
 final class RequesterFieldTest extends AbstractActorFieldTest
 {
     #[Override]
     public function getFieldClass(): string
     {
         return RequesterField::class;
+    }
+
+    #[Override]
+    protected function getExpectedNoMatchActors(): array
+    {
+        // Fallback: the form filler.
+        return [['itemtype' => User::class, 'items_id' => getItemByTypeName(User::class, TU_USER, true)]];
     }
 
     public function testRequesterFromTemplate(): void
@@ -445,6 +454,24 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 ['items_id' => $user1->getID()],
                 ['items_id' => $user2->getID()],
             ]
+        );
+    }
+
+    public function testFallbackToFormFillerWhenSpecificAnswerQuestionIsUnanswered(): void
+    {
+        // Sub-question never answered, must fall back to the form filler.
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+
+        $auth = $this->login();
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [$this->getQuestionId($form, "Requester 1")]
+            ),
+            answers: [],
+            expected_actors: [['items_id' => $auth->getUser()->getID()]]
         );
     }
 
@@ -894,6 +921,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
 
         // Check actors
         $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $this->assertCount(count($expected_actors), $actors);
         foreach ($expected_actors as $expected_actor) {
             $actor = array_shift($actors);
             $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(

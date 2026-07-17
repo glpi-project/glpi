@@ -378,6 +378,12 @@ enum ITILActorFieldStrategy: string
             $actors_ids = [$actors_ids];
         }
 
+        // 0 means unset, not an actor with id 0.
+        $actors_ids = array_filter($actors_ids, fn($actor_id) => (int) $actor_id > 0);
+        if ($actors_ids === []) {
+            return null;
+        }
+
         $itemtype = getItemtypeForForeignKeyField(str_replace('_tech', '', $fk_field));
         return array_map(fn($actor_id) => [
             'itemtype' => $itemtype,

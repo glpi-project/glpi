@@ -46,6 +46,8 @@ use Group;
 use Profile;
 use User;
 
+use function Safe\json_encode;
+
 abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
 {
     use FormTesterTrait;
@@ -58,6 +60,16 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
     );
 
     abstract public function getFieldClass(): string;
+
+    /**
+     * Expected actors when no strategy matches; overridden by fields with a fallback.
+     *
+     * @return array<array{itemtype?: class-string<\CommonDBTM>, items_id: int}>
+     */
+    protected function getExpectedNoMatchActors(): array
+    {
+        return [];
+    }
 
     public function testUserActorsFromSpecificItemQuestions(): void
     {
@@ -98,7 +110,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first computer
@@ -111,7 +123,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[0]->getID(),
                 ],
             ],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with second computer
@@ -167,7 +179,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first computer
@@ -193,7 +205,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
     }
 
@@ -232,7 +244,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first computer
@@ -258,7 +270,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
     }
 
@@ -297,7 +309,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first computer
@@ -310,7 +322,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[0]->getID(),
                 ],
             ],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with second computer
@@ -383,7 +395,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first custom asset
@@ -465,7 +477,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first custom asset

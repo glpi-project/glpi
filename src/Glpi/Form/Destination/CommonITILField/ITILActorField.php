@@ -155,6 +155,8 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        $has_actors = false;
+
         // Apply each configured strategy to get ITIL actors
         foreach ($config->getStrategies() as $strategy) {
             $itilactors = $strategy->getITILActors($this, $config, $answers_set);
@@ -169,10 +171,31 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                     continue;
                 }
                 $this->addActorToInput($input, $itilactor);
+                $has_actors = true;
+            }
+        }
+
+        // No strategy resolved an actor: apply the field's fallback, if any.
+        if (!$has_actors) {
+            foreach ($this->getFallbackActors($config, $answers_set) as $itilactor) {
+                if (!$this->isActorAllowed($itilactor, $input)) {
+                    continue;
+                }
+                $this->addActorToInput($input, $itilactor);
             }
         }
 
         return $input;
+    }
+
+    /**
+     * Actors to use when no configured strategy resolved any actor.
+     *
+     * @return array<array{itemtype: class-string<\CommonDBTM>, items_id: int, use_notification?: int|string, alternative_email?: string}>
+     */
+    protected function getFallbackActors(ITILActorFieldConfig $config, AnswersSet $answers_set): array
+    {
+        return [];
     }
 
     /**
