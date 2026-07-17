@@ -147,6 +147,39 @@ const TableGrips = Extension.create({
                     apply: (tr, old, _oldState, newState) =>
                         (tr.docChanged || tr.selectionSet) ? build(newState) : old,
                 },
+                // Publish each table's pixel size as CSS vars so the insertion
+                // guide line (a ::before on the "+") can span the whole table.
+                // A ResizeObserver keeps them accurate after the initial layout
+                // and on any later size change (content, column resize, window),
+                // without measuring on every transaction.
+                view: (editorView) => {
+                    const publish = (table) => {
+                        const h = `${table.offsetHeight}px`;
+                        const w = `${table.offsetWidth}px`;
+                        if (table.style.getPropertyValue('--kb-table-h') !== h) {
+                            table.style.setProperty('--kb-table-h', h);
+                        }
+                        if (table.style.getPropertyValue('--kb-table-w') !== w) {
+                            table.style.setProperty('--kb-table-w', w);
+                        }
+                    };
+                    const observer = new ResizeObserver((entries) => {
+                        entries.forEach((entry) => publish(entry.target));
+                    });
+                    const observeTables = () => {
+                        editorView.dom.querySelectorAll('table').forEach((table) => observer.observe(table));
+                    };
+                    observeTables();
+                    return {
+                        update: (view, prevState) => {
+                            // Newly inserted tables need observing (observe() is idempotent).
+                            if (!view.state.doc.eq(prevState.doc)) {
+                                observeTables();
+                            }
+                        },
+                        destroy: () => observer.disconnect(),
+                    };
+                },
                 props: {
                     decorations(state) {
                         return this.getState(state);

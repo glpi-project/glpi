@@ -590,6 +590,52 @@
             top: -9px;
         }
 
+        // Insertion guide line: a thin blue line spanning the whole column/row,
+        // revealed with the "+" on hover to show where the new column/row lands.
+        // Its length comes from --kb-table-h / --kb-table-w, published per table
+        // by the TableGrips plugin, so it maps to the real table size without an
+        // over-long element that would add a stray scrollbar.
+        .table-col-add::before,
+        .table-row-add::before {
+            content: "";
+            position: absolute;
+            background: var(--tblr-blue);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .table-col-add:hover::before,
+        .table-row-add:hover::before {
+            opacity: 1;
+        }
+
+        // The line spans exactly the table (from its edge), so it never runs
+        // through the grip gutters and overlaps the grip bars there. It sits at
+        // the cell BORDER-box edge (100%, the host being padding-box) and is 3px
+        // to fully cover the 1px collapsed table border — otherwise the dark
+        // border peeks past the line and reads as a doubled line.
+        .table-col-add::before {
+            top: 0;
+            left: 100%;
+            width: 3px;
+            height: var(--kb-table-h, 0);
+        }
+
+        .table-col-add.first::before {
+            left: -2px;
+        }
+
+        .table-row-add::before {
+            top: 100%;
+            left: 0;
+            width: var(--kb-table-w, 0);
+            height: 3px;
+        }
+
+        .table-row-add.first::before {
+            top: -2px;
+        }
+
         // prosemirror-tables: highlight cells in a multi-cell selection.
         // Inset box-shadow composites over any cell background instead of an
         // opaque background so cell text stays visible; background-clip works
