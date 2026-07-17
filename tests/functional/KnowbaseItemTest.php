@@ -39,7 +39,6 @@ use Glpi\Tests\DbTestCase;
 use KnowbaseItem_User;
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function Safe\copy;
 use function Safe\file_get_contents;
 use function Safe\file_put_contents;
 use function Safe\ob_end_clean;
