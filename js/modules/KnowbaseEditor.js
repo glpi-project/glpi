@@ -182,6 +182,26 @@ class KnowbaseEditor {
             extensions,
             content: this.#options.content,
             editable: this.#isEditable,
+            editorProps: {
+                // Chromium/Brave mis-place the caret when clicking inside a
+                // ProseMirror table cell (the caret drops into the block above
+                // the table). posAtCoords is correct, but native contenteditable
+                // placement ignores it; ProseMirror follows the wrong native
+                // position on a plain click. Force the selection to the
+                // PM-computed pos so the click lands in the clicked cell.
+                // Firefox already places it correctly, so this is idempotent there.
+                handleClick: (view, pos) => {
+                    const $pos = view.state.doc.resolve(pos);
+                    for (let depth = $pos.depth; depth > 0; depth--) {
+                        const name = $pos.node(depth).type.name;
+                        if (name === 'tableCell' || name === 'tableHeader') {
+                            this.#editor?.commands.setTextSelection(pos);
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+            },
             onUpdate: ({ editor }) => {
                 if (typeof this.#options.onUpdate === 'function') {
                     this.#options.onUpdate(editor.getHTML());
