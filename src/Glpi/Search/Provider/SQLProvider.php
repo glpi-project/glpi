@@ -1180,9 +1180,9 @@ final class SQLProvider implements SearchProviderInterface
 
             if (!empty($complexjoin)) {
                 if ($opt['linkfield'] === 'custom_fields') {
-                  if (strpos($table, '_custom_field_') === false) {
-                     $table .= "_custom_fields";
-                  }
+                    if (!str_contains($table, '_custom_field_')) {
+                        $table .= "_custom_fields";
+                    }
                 }
                 $table .= "_" . $complexjoin;
             }
