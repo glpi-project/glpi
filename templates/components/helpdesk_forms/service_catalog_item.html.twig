@@ -51,7 +51,8 @@
             <div class="d-flex">
                 {{ render_illustration(
                     item.getServiceCatalogItemIllustration() ?? 'report-issue.svg',
-                    100
+                    100,
+                    true
                 ) }}
                 <div class="ms-4">
                     <div class="d-flex mb-2 align-items-center">
@@ -62,7 +63,7 @@
                             {{ item.getServiceCatalogItemTitle() }}
                         </h2>
                         {% if is_pinned %}
-                            <i class="ti ti-pin ms-auto"></i>
+                            <i class="ti ti-pin ms-auto" aria-hidden="true"></i>
                         {% endif %}
                     </div>
                     <div

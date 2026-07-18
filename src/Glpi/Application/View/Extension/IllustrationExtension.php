@@ -70,9 +70,9 @@ class IllustrationExtension extends AbstractExtension
         ];
     }
 
-    public function renderIllustration(string $filename, ?int $size = null): string
+    public function renderIllustration(string $filename, ?int $size = null, bool $decorative = false): string
     {
-        return $this->illustration_manager->renderIcon($filename, $size);
+        return $this->illustration_manager->renderIcon($filename, $size, $decorative);
     }
 
     public function renderScene(

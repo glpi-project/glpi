@@ -34,6 +34,7 @@
     {% if url and url|length %}
         src="{{ path(url) }}"
     {% endif %}
+    {% if decorative ?? false %}alt=""{% endif %}
     width="{{ width }}"
     height="{{ height }}"
     class="align-self-start max-width-unset"

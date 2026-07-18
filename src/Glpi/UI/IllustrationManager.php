@@ -106,8 +106,10 @@ final class IllustrationManager
 
     /**
      * @param int|null $size Height and width (px). Will be set to 100% if null.
+     * @param bool $decorative Hide the icon from assistive technologies when it
+     *                         only duplicates an adjacent text label.
      */
-    public function renderIcon(string $icon_id, ?int $size = null): string
+    public function renderIcon(string $icon_id, ?int $size = null, bool $decorative = false): string
     {
         if ($icon_id === '') {
             return '';
@@ -117,10 +119,11 @@ final class IllustrationManager
         if (str_starts_with($icon_id, $custom_icon_prefix)) {
             return $this->renderCustomIcon(
                 $this->getCustomIconIdFromPrefixedString($icon_id),
-                $size
+                $size,
+                $decorative
             );
         } else {
-            return $this->renderNativeIcon($icon_id, $size);
+            return $this->renderNativeIcon($icon_id, $size, $decorative);
         }
     }
 
@@ -320,7 +323,7 @@ final class IllustrationManager
         }
     }
 
-    private function renderNativeIcon(string $icon_id, ?int $size = null): string
+    private function renderNativeIcon(string $icon_id, ?int $size = null, bool $decorative = false): string
     {
         global $TRANSLATE;
 
@@ -339,23 +342,25 @@ final class IllustrationManager
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [
-            'file_path' => $this->icons_sprites_path,
-            'icon_id'   => $icon_id,
-            'width'     => $size,
-            'height'    => $size,
-            'title'     => $title,
+            'file_path'  => $this->icons_sprites_path,
+            'icon_id'    => $icon_id,
+            'width'      => $size,
+            'height'     => $size,
+            'title'      => $title,
+            'decorative' => $decorative,
         ]);
     }
 
-    private function renderCustomIcon(string $icon_id, ?int $size = null): string
+    private function renderCustomIcon(string $icon_id, ?int $size = null, bool $decorative = false): string
     {
         $twig = TemplateRenderer::getInstance();
         $size = $this->computeSize($size);
         $url = !empty($icon_id) ? "/UI/Illustration/CustomIllustration/$icon_id" : null;
         return $twig->render('components/illustration/custom_icon.html.twig', [
-            'url'    => $url,
-            'height' => $size,
-            'width'  => $size,
+            'url'        => $url,
+            'height'     => $size,
+            'width'      => $size,
+            'decorative' => $decorative,
         ]);
     }
 
@@ -366,10 +371,12 @@ final class IllustrationManager
     ): string {
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [
-            'file_path' => $this->scenes_gradient_sprites_path,
-            'icon_id'   => $icon_id,
-            'height'    => $this->computeSize($height),
-            'width'     => $this->computeSize($width),
+            'file_path'  => $this->scenes_gradient_sprites_path,
+            'icon_id'    => $icon_id,
+            'height'     => $this->computeSize($height),
+            'width'      => $this->computeSize($width),
+            // Scenes are background illustrations with no accessible name of their own.
+            'decorative' => true,
         ]);
     }
 
@@ -381,9 +388,10 @@ final class IllustrationManager
         $twig = TemplateRenderer::getInstance();
         $url = !empty($icon_id) ? "/UI/Illustration/CustomScene/$icon_id" : null;
         return $twig->render('components/illustration/custom_icon.html.twig', [
-            'url'    => $url,
-            'height' => $this->computeSize($height),
-            'width'  => $this->computeSize($width),
+            'url'        => $url,
+            'height'     => $this->computeSize($height),
+            'width'      => $this->computeSize($width),
+            'decorative' => true,
         ]);
     }
 

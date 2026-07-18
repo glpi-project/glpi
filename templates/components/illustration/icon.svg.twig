@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-<svg role="img" width="{{ width }}" height="{{ height }}" class="flex-shrink-0">
-    <title>{{ title ?? '' }}</title>
+<svg {% if decorative ?? false %}aria-hidden="true"{% else %}role="img"{% endif %} width="{{ width }}" height="{{ height }}" class="flex-shrink-0">
+    {% if not (decorative ?? false) %}<title>{{ title ?? '' }}</title>{% endif %}
     <use xlink:href="{{ path(file_path) }}#{{ icon_id }}"/>
 </svg>
