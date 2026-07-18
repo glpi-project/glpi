@@ -327,6 +327,16 @@ EOT;
         return self::$instance;
     }
 
+    public function getRegisteredController(string $controller_class): ?AbstractController
+    {
+        foreach ($this->controllers as $controller) {
+            if ($controller::class === $controller_class) {
+                return $controller;
+            }
+        }
+        return null;
+    }
+
     /**
      * @return Request|null
      * @internal Only intended to be used by tests
