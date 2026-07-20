@@ -1180,7 +1180,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 ]),
                                 $fn_get_rights(Location::class, 'central'),
                                 $fn_get_rights(ITILCategory::class, 'central'),
-                                $fn_get_rights(KnowbaseItemCategory::class, 'central'),
                                 $fn_get_rights(TaskCategory::class, 'central'),
                                 $fn_get_rights(State::class, 'central'),
                                 $fn_get_rights(ITILFollowupTemplate::class, 'central'),
@@ -2306,20 +2305,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => ITILCategory::$rightname],
-            ],
-        ];
-
-        $tab[] = [
-            'id'                 => '165',
-            'table'              => 'glpi_profilerights',
-            'field'              => 'rights',
-            'name'               => KnowbaseItemCategory::getTypeName(Session::getPluralNumber()),
-            'datatype'           => 'right',
-            'rightclass'         => KnowbaseItemCategory::class,
-            'rightname'          => KnowbaseItemCategory::$rightname,
-            'joinparams'         => [
-                'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => KnowbaseItemCategory::$rightname],
             ],
         ];
 
