@@ -558,7 +558,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    protected function initEmbedSession(array $params = [])
+    public function initEmbedSession(array $params = [])
     {
         global $CFG_GLPI;
 

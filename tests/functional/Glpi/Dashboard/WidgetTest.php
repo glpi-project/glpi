@@ -59,16 +59,8 @@ class WidgetTest extends DbTestCase
      */
     private function initEmbedSessionAs(array $params): void
     {
-        // Use an anonymous subclass to call the protected initEmbedSession directly,
-        // so the test stays in sync with the real implementation automatically.
-        $grid = new class ('') extends Grid {
-            public function initEmbedSessionForTest(array $params): void
-            {
-                Grid::$embed = true;
-                $this->initEmbedSession($params);
-            }
-        };
-        $grid->initEmbedSessionForTest($params);
+        Grid::$embed = true;
+        (new Grid(''))->initEmbedSession($params);
     }
 
     public function testSearchShowListInEmbedModeReturnsResults(): void
