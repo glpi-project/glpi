@@ -55,6 +55,7 @@ use Glpi\Form\Destination\CommonITILField\LocationField;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
 use Glpi\Form\Destination\CommonITILField\RequesterField;
 use Glpi\Form\Destination\CommonITILField\RequestSourceField;
+use Glpi\Form\Destination\CommonITILField\RequestTypeField;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
@@ -176,6 +177,19 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             $answers_set
         );
         $already_applied_fields[] = ITILCategoryField::class;
+
+        // Applied early for template resolution, then re-applied in the loop below so the form answer still prevails over a predefined type
+        $request_type_field = current(array_filter(
+            $fields_to_apply,
+            fn($field) => $field instanceof RequestTypeField
+        ));
+        if ($request_type_field !== false) {
+            $input = $request_type_field->applyConfiguratedValueToInputUsingAnswers(
+                $request_type_field->getConfig($form, $config, $answers_set),
+                $input,
+                $answers_set
+            );
+        }
 
         // Compute and apply template predefined template fields
         $input = $this->applyPredefinedTemplateFields($input);
