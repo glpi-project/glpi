@@ -597,7 +597,7 @@ final class SessionTracker
 
             if ($data['_type'] === 'api') {
                 $session['details'] = '<span class="fw-bold">' . htmlescape($data['client_name']) . '</span>&nbsp;&middot;&nbsp;';
-                $session['details'] .= '<span class="text-muted">' . implode(', ', json_decode($data['scopes'], true)) . '</span>';
+                $session['details'] .= '<span class="text-muted">' . htmlescape(implode(', ', json_decode($data['scopes'], true))) . '</span>';
             } else {
                 $dd->setUserAgent($data['user_agent']);
                 $dd->parse();
@@ -612,7 +612,7 @@ final class SessionTracker
                         $agent_description = $client['name'] . ' ' . $client['version'];
                     }
 
-                    $session['details'] = '<i class="' . $agent_icon . ' me-1" aria-hidden="true"></i>' . htmlescape($agent_description);
+                    $session['details'] = '<i class="' . htmlescape($agent_icon) . ' me-1" aria-hidden="true"></i>' . htmlescape($agent_description);
                     if ($is_current_session) {
                         $session['details'] .= ' <span class="badge badge-outline bg-transparent text-info">' . __s('Current session') . '</span>';
                     }
@@ -622,9 +622,9 @@ final class SessionTracker
 
             if ($data['_type'] === 'web' && $data['logout_reason']) {
                 $reason_label = match ($data['logout_reason']) {
-                    self::REVOKE_REASON_USER => _sx('logout_reason', 'User logout'),
-                    self::REVOKE_REASON_ADMIN => _sx('logout_reason', 'Admin revoked'),
-                    self::REVOKE_REASON_EXPIRED => _sx('logout_reason', 'Session expired'),
+                    self::REVOKE_REASON_USER => _x('logout_reason', 'User logout'),
+                    self::REVOKE_REASON_ADMIN => _x('logout_reason', 'Admin revoked'),
+                    self::REVOKE_REASON_EXPIRED => _x('logout_reason', 'Session expired'),
                     default => $data['logout_reason'],
                 };
                 $reason_class = match ($data['logout_reason']) {
@@ -632,20 +632,20 @@ final class SessionTracker
                     self::REVOKE_REASON_ADMIN => 'badge badge-outline bg-transparent text-danger',
                     default => 'badge badge-outline bg-transparent text-info',
                 };
-                $session['status'] = '<span class="' . $reason_class . '">' . $reason_label . '</span>';
+                $session['status'] = '<span class="' . htmlescape($reason_class) . '">' . htmlescape($reason_label) . '</span>';
             } else {
                 $session['status'] = '<span class="badge badge-outline bg-transparent text-success">' . __s('Active') . '</span>';
                 if ($data['_type'] === 'api') {
-                    $session['status'] .= '<br><span class="text-muted fs-5">' . sprintf(__s('Expires at %s'), $data['date_expiration']) . '</span>';
+                    $session['status'] .= '<br><span class="text-muted fs-5">' . htmlescape(sprintf(__('Expires at %s'), $data['date_expiration'])) . '</span>';
                 }
             }
 
             $session['actions'] = '';
             if ($data['_type'] === 'web' && !$data['logged_out_at'] && !$is_current_session) {
-                $session['actions'] .= '<button class="btn btn-outline-danger btn-sm gap-1 revoke-session" data-type="web" data-identifier="' . $data['login_session_uid'] . '">';
+                $session['actions'] .= '<button class="btn btn-outline-danger btn-sm gap-1 revoke-session" data-type="web" data-identifier="' . htmlescape($data['login_session_uid']) . '">';
                 $session['actions'] .= '<i class="ti ti-logout" aria-hidden="true"></i>' . __s('Revoke') . '</button>';
             } elseif ($data['_type'] === 'api') {
-                $session['actions'] .= '<button class="btn btn-outline-danger btn-sm gap-1 revoke-session" data-type="api" data-identifier="' . $data['id'] . '">';
+                $session['actions'] .= '<button class="btn btn-outline-danger btn-sm gap-1 revoke-session" data-type="api" data-identifier="' . htmlescape($data['id']) . '">';
                 $session['actions'] .= '<i class="ti ti-logout" aria-hidden="true"></i>' . __s('Revoke') . '</button>';
             }
 
@@ -691,7 +691,7 @@ final class SessionTracker
         $start = (int) ($_GET['start'] ?? 0);
 
         if ($users_id !== Session::getLoginUserID() && !Session::haveRight('config', UPDATE)) {
-            throw new \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException();
+            throw new AccessDeniedHttpException();
         }
         if ($users_id > 0) {
             unset($filters['user']);

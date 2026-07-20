@@ -34,7 +34,9 @@
 
 namespace Glpi\Controller\Security;
 
+use Config;
 use Glpi\Controller\AbstractController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\Firewall;
 use Glpi\OAuth\AccessTokenRepository;
 use Glpi\OAuth\RefreshTokenRepository;
@@ -43,7 +45,6 @@ use Glpi\Security\SessionTracker;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class SessionTrackerController extends AbstractController
@@ -68,11 +69,12 @@ final class SessionTrackerController extends AbstractController
         $session = $it->current();
         $users_id = $session['users_id'] ?? null;
 
-        if ($users_id !== Session::getLoginUserID() && !Session::haveRight('config', UPDATE)) {
-            throw new \Glpi\Exception\Http\AccessDeniedHttpException();
+        if ($users_id !== Session::getLoginUserID() && !Config::canUpdate()) {
+            throw new AccessDeniedHttpException();
         }
         SessionTracker::revokeSession($login_session_uid, SessionTracker::REVOKE_REASON_ADMIN);
-        return new Response();
+
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 
     #[Route(
@@ -89,6 +91,7 @@ final class SessionTrackerController extends AbstractController
         } else {
             $repo->revokeAccessTokenByUUID($request->attributes->getString('uuid'));
         }
+
         return new Response('', Response::HTTP_NO_CONTENT);
     }
 
@@ -117,6 +120,6 @@ final class SessionTrackerController extends AbstractController
             $access_repo->revokeAllForUser($users_id);
         }
 
-        return new Response();
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 }
