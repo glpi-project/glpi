@@ -154,14 +154,12 @@
     }
 }
 
-@include media-breakpoint-down(xxl) {
+@include media-breakpoint-up(sm) {
     .documentation-large {
-        margin-left: 240px;
-    }
-}
-
-@include media-breakpoint-down(sm) {
-    .documentation-large {
-        margin-left: 0;
+        // Always reserve at least the width of the fixed table-of-contents (15rem/240px),
+        // then let the content re-center itself once the viewport is wide enough.
+        // A hard breakpoint switch here previously caused the sidebar to overlap the
+        // content in a range of viewport widths just above the xxl breakpoint.
+        margin-left: max(240px, calc((100% - 1000px) / 2));
     }
 }
