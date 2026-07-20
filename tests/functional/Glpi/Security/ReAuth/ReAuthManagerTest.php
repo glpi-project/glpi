@@ -233,6 +233,26 @@ class ReAuthManagerTest extends DbTestCase
         $this->assertSame([], $manager->getRequestedPostData());
     }
 
+    /**
+     * When the user has no stronger strategy available (no local password, no TOTP), the
+     * always-available fallback strategy is selected and its confirmation prompt is used.
+     */
+    public function testFallbackStrategyIsSelectedWhenNoStrongStrategyAvailable(): void
+    {
+        global $DB;
+
+        // --- arrange : logged-in user stripped of every strong strategy ---
+        $this->login();
+        $users_id = (int) $_SESSION['glpiID'];
+        // Direct DB update to bypass the business layer, which would not let us clear the password/2FA fields.
+        $DB->update('glpi_users', ['password' => '', '2fa' => null], ['id' => $users_id]);
+        $manager = new ReAuthManager();
+
+        // --- act + assert : the fallback prompt is used and any input is accepted ---
+        $this->assertSame('pages/reauth/fallback_form.html.twig', $manager->getPromptTemplate());
+        $this->assertTrue($manager->verify('no-check-is-done'));
+    }
+
     /** Throws InvalidArgumentException when a non-CommonGLPI class is passed. */
     public function testAtLeastOneItemTypeRequiresReauthenticationThrowsOnInvalidType(): void
     {
