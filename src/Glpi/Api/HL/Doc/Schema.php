@@ -264,6 +264,7 @@ class Schema implements ArrayAccess
                 $new_join = $prop['x-join'] + [
                     'parent_type' => self::TYPE_OBJECT,
                     'x-full-schema' => $prop['x-full-schema'] ?? null,
+                    'x-skipped' => $prop['x-skipped'] ?? false,
                 ];
                 $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
                 $joins += self::getJoins($prop['properties'], $prefix . $name . '.', $new_join);
@@ -271,6 +272,7 @@ class Schema implements ArrayAccess
                 $new_join = $prop['items']['x-join'] + [
                     'parent_type' => self::TYPE_ARRAY,
                     'x-full-schema' => $prop['items']['x-full-schema'] ?? null,
+                    'x-skipped' => $prop['x-skipped'] ?? false,
                 ];
                 $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
                 if (array_key_exists('properties', $prop['items'])) {
