@@ -51,11 +51,10 @@ use Glpi\ShareToken;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Item;
-use KnowbaseItem_KnowbaseItemCategory;
 use KnowbaseItem_Revision;
 use KnowbaseItem_User;
-use KnowbaseItemCategory;
 use KnowbaseItemTranslation;
+use Log;
 use Session;
 use Ticket;
 use User;
@@ -1296,16 +1295,22 @@ final class HistoryBuilderTest extends DbTestCase
         ]);
 
         $this->setCurrentTime("2026-01-15 11:00:00");
-        $category = $this->createItem(KnowbaseItemCategory::class, [
-            'name' => 'How-to',
-            'entities_id' => $this->getTestRootEntity(only_id: true),
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
-        ]);
 
-        $this->createItem(KnowbaseItem_KnowbaseItemCategory::class, [
-            'knowbaseitems_id' => $kb->getID(),
-            'knowbaseitemcategories_id' => $category->getID(),
+        // `KnowbaseItemCategory` no longer exists (KB categories were replaced
+        // by the article hierarchy). Simulate the legacy `glpi_logs` row it
+        // used to produce when a KB item was added to a category, since
+        // HistoryBuilder::addCategoryChangesToHistory() still reads those
+        // rows by string literal to keep old history entries visible.
+        global $DB;
+        $DB->insert(Log::getTable(), [
+            'itemtype'      => KnowbaseItem::class,
+            'items_id'      => $kb->getID(),
+            'itemtype_link' => 'KnowbaseItemCategory',
+            'linked_action' => Log::HISTORY_ADD_RELATION,
+            'user_name'     => $this->loggedInUserName(),
+            'date_mod'      => '2026-01-15 11:00:00',
+            'old_value'     => '',
+            'new_value'     => 'How-to',
         ]);
 
         $kb->getFromDB($kb->getID());
@@ -1334,20 +1339,36 @@ final class HistoryBuilderTest extends DbTestCase
         ]);
 
         $this->setCurrentTime("2026-01-15 11:00:00");
-        $category = $this->createItem(KnowbaseItemCategory::class, [
-            'name' => 'Obsolete',
-            'entities_id' => $this->getTestRootEntity(only_id: true),
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
-        ]);
 
-        $relation = $this->createItem(KnowbaseItem_KnowbaseItemCategory::class, [
-            'knowbaseitems_id' => $kb->getID(),
-            'knowbaseitemcategories_id' => $category->getID(),
+        // `KnowbaseItemCategory` no longer exists (KB categories were replaced
+        // by the article hierarchy). Simulate the legacy `glpi_logs` rows it
+        // used to produce when a KB item was added to, then removed from, a
+        // category, since HistoryBuilder::addCategoryChangesToHistory() still
+        // reads those rows by string literal to keep old history entries
+        // visible.
+        global $DB;
+        $DB->insert(Log::getTable(), [
+            'itemtype'      => KnowbaseItem::class,
+            'items_id'      => $kb->getID(),
+            'itemtype_link' => 'KnowbaseItemCategory',
+            'linked_action' => Log::HISTORY_ADD_RELATION,
+            'user_name'     => $this->loggedInUserName(),
+            'date_mod'      => '2026-01-15 11:00:00',
+            'old_value'     => '',
+            'new_value'     => 'Obsolete',
         ]);
 
         $this->setCurrentTime("2026-01-15 12:00:00");
-        $this->deleteItem(KnowbaseItem_KnowbaseItemCategory::class, $relation->getID(), purge: true);
+        $DB->insert(Log::getTable(), [
+            'itemtype'      => KnowbaseItem::class,
+            'items_id'      => $kb->getID(),
+            'itemtype_link' => 'KnowbaseItemCategory',
+            'linked_action' => Log::HISTORY_DEL_RELATION,
+            'user_name'     => $this->loggedInUserName(),
+            'date_mod'      => '2026-01-15 12:00:00',
+            'old_value'     => 'Obsolete',
+            'new_value'     => '',
+        ]);
 
         $kb->getFromDB($kb->getID());
         $history = (new HistoryBuilder($kb))->buildHistory();
