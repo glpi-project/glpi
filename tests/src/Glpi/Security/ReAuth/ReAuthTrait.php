@@ -35,6 +35,7 @@
 namespace Glpi\Tests\Glpi\Security\ReAuth;
 
 use Glpi\Security\ReAuth\ReAuthManager;
+use Glpi\Security\ReAuth\ReAuthStrategyEnum;
 use Glpi\Security\ReAuth\ReAuthStrategyInterface;
 use Glpi\Security\ReAuth\RedirectReAuthStrategyInterface;
 
@@ -120,6 +121,27 @@ trait ReAuthTrait
         } else {
             unset($_SESSION['glpi_reauth_until']);
         }
+    }
+
+    /**
+     * Highest priority among the native strategies currently available to the user.
+     *
+     * Mirrors the native branch of ReAuthManager::getAvailableStrategies() so tests
+     * registering a plugin strategy can assert it strictly outranks everything the
+     * user already has (a tie would let a native strategy win, since native ones are
+     * resolved first and usort() is stable).
+     */
+    private function getHighestAvailableStrategyPriority(int $users_id): int
+    {
+        $priorities = [];
+        foreach (ReAuthStrategyEnum::cases() as $case) {
+            $strategy = $case->createStrategy();
+            if ($strategy->isAvailable($users_id)) {
+                $priorities[] = $strategy->getPriority();
+            }
+        }
+
+        return $priorities === [] ? 0 : max($priorities);
     }
 
     /**

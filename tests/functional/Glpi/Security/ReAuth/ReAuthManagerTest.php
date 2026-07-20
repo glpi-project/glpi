@@ -281,11 +281,22 @@ class ReAuthManagerTest extends DbTestCase
     /** A registered (plugin) strategy is selected when it is available and outranks the native ones. */
     public function testRegisteredAvailableStrategyWithHighestPriorityIsSelected(): void
     {
-        // --- arrange : plugin strategy with a higher priority than the native Password (50) ---
+        // --- arrange ---
         $this->login();
+        $users_id = (int) $_SESSION['glpiID'];
         $manager = $this->getReAuthManager();
-        $manager->registerStrategy($this->makeStrategy('Plugin SSO', 100, true));
-        // @todo ensure 100 is higher than native strategies priorities
+
+        // Precondition: the plugin strategy only wins if it strictly outranks every strategy
+        // already available to the user. A native strategy with an equal or higher priority
+        // would win the tie (native strategies are resolved first and usort() is stable),
+        // silently invalidating the assertion below. Guard against that here.
+        $plugin_priority = 101;
+        assert(
+            $this->getHighestAvailableStrategyPriority($users_id) < $plugin_priority,
+            'Test precondition failed : A strategy already available to the user outranks the tested plugin strategy.',
+        );
+
+        $manager->registerStrategy($this->makeStrategy('Plugin SSO', $plugin_priority, true));
 
         // --- act + assert : the plugin strategy wins the resolution ---
         $this->assertSame('Plugin SSO', $manager->getLabel());
