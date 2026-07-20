@@ -42,6 +42,7 @@ import { Api } from '../utils/Api';
 import { EntitySwitcher } from '../utils/EntitySwitcher';
 import { FormImporter } from '../utils/FormImporter';
 import { DebugModeSwitcher } from '../utils/DebugModeSwitcher';
+import { ReAuthenticator } from '../utils/ReAuthenticator';
 
 export * from '@playwright/test';
 export const test = baseTest.extend<{
@@ -52,6 +53,8 @@ export const test = baseTest.extend<{
     formImporter: FormImporter,
     api: Api,
     debug: DebugModeSwitcher,
+    reauth: ReAuthenticator,
+    ensureReauthenticated: void,
     retryTimeout: void,
 }, {
     // Worker scoped fixtures, these objects will be created once per thread.
@@ -156,6 +159,11 @@ export const test = baseTest.extend<{
         await use(new DebugModeSwitcher(request));
     }, { scope: 'test' }],
 
+    // Service used to grant/revoke reauth (sudo mode) on the current session.
+    reauth: [async ({ request }, use) => {
+        await use(new ReAuthenticator(request));
+    }, { scope: 'test' }],
+
     // Store the state of the current session.
     // This avoid trying to set a profile that is already the one being used.
     // Worker scoped so we will get one object per thread (= per session since
@@ -176,6 +184,16 @@ export const test = baseTest.extend<{
         await use(await context.newPage());
         await context.close();
     },
+
+    // Grant reauth (sudo mode) before each test so pages requiring reauth do
+    // not redirect to the prompt. The worker only logs in once, and reauth
+    // expires after ReAuthManager::REAUTH_DELAY_SECONDS, so it is re-granted
+    // per test rather than once per worker. Tests covering the reauth flow can
+    // opt out by calling `await reauth.revoke()` at the start of the test.
+    ensureReauthenticated: [async ({ reauth }, use) => {
+        await reauth.grant();
+        await use();
+    }, { auto: true, scope: 'test' }],
 
     // Increase the timeout when retrying a test.
     // This is needed because the first retry on the CI enable trace mode to

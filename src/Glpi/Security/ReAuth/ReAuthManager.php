@@ -36,6 +36,7 @@ declare(strict_types=1);
 
 namespace Glpi\Security\ReAuth;
 
+use Glpi\Application\Environment;
 use Glpi\Exception\RedirectException;
 use Glpi\Kernel\Kernel;
 use InvalidArgumentException;
@@ -118,6 +119,28 @@ final class ReAuthManager
         $_SESSION['glpi_reauth_until'] = (new DateTime($_SESSION['glpi_currenttime']))
             ->modify('+' . self::REAUTH_DELAY_SECONDS . ' seconds')
             ->getTimestamp();
+    }
+
+    /**
+     * Drop the current reauth session validity.
+     *
+     * After this call, the user is no longer considered reauthenticated and any
+     * action requiring reauth will redirect to the prompt again.
+     *
+     * This is only meant to set up the "not reauthenticated" state in e2e tests
+     * (Cypress/Playwright), so it is restricted to test environments and throws
+     * anywhere else.
+     */
+    public function revoke(): void
+    {
+        $environment = Environment::get();
+        if ($environment !== Environment::TESTING && $environment !== Environment::E2E) {
+            throw new RuntimeException(
+                'ReAuthManager::revoke() must not be called outside of the "testing" and "e2e_testing" environments.'
+            );
+        }
+
+        unset($_SESSION['glpi_reauth_until']);
     }
 
     public function getLabel(): string
