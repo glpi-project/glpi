@@ -139,4 +139,30 @@ class SlaFilterTest extends DbTestCase
         $this->assertNotContains($ticket->getID(), array_column($rows, 'tickets_id'));
     }
 
+    public function testGetSearchCriteria(): void
+    {
+        $criteria = SlaFilter::getSearchCriteria('glpi_tickets', 5);
+
+        // Both slas_id_ttr and slas_id_tto exist on glpi_tickets
+        $this->assertCount(2, $criteria);
+
+        // First field is joined with and, the second with OR
+        $this->assertSame('AND', $criteria[0]['link']);
+        $this->assertSame('OR', $criteria[1]['link']);
+
+        foreach ($criteria as $criterion) {
+            $this->assertIsInt($criterion['field']);
+            $this->assertGreaterThan(0, $criterion['field']);
+            $this->assertSame('equals', $criterion['searchtype']);
+            $this->assertSame(5, $criterion['value']);
+        }
+
+        // The two fields must be the distinct TTR / TTO search options
+        $this->assertNotSame($criteria[0]['field'], $criteria[1]['field']);
+    }
+
+    public function testGetSearchCriteriaWithoutValueIsEmpty(): void
+    {
+        $this->assertSame([], SlaFilter::getSearchCriteria('glpi_tickets', 0));
+    }
 }
