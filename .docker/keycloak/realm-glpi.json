@@ -17,10 +17,10 @@
       "serviceAccountsEnabled": false,
       "fullScopeAllowed": true,
       "redirectUris": [
-        "http://localhost:8081/plugins/oauthsso/front/authorization.callback.php"
+        "http://localhost:8080/plugins/oauthsso/front/authorization.callback.php"
       ],
       "webOrigins": [
-        "http://localhost:8081"
+        "http://localhost:8080"
       ],
       "attributes": {
         "post.logout.redirect.uris": "+"
