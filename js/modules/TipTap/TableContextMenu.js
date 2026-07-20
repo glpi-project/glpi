@@ -112,7 +112,6 @@ function openTableContextMenu({ anchorRect, kind, tablePos, index, editor }) {
 
     const menu = document.createElement('div');
     menu.className = 'kb-table-menu';
-    menu.setAttribute('role', 'menu');
     menu.style.position = 'fixed';
     menu.style.zIndex = '1080';
 
@@ -121,7 +120,6 @@ function openTableContextMenu({ anchorRect, kind, tablePos, index, editor }) {
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'kb-table-delete';
-    button.setAttribute('role', 'menuitem');
     button.setAttribute('aria-label', item.label);
     button.setAttribute('title', item.label);
     button.addEventListener('click', () => {

@@ -34,8 +34,8 @@
 
 import {
     TableMap,
-    getColumnCells,
-    getRowCells,
+    getColumnCellPositions,
+    getRowCellPositions,
     cellSelectionInfo,
 } from '/js/modules/TipTap/tableQueries.js';
 import { openTableContextMenu } from '/js/modules/TipTap/TableContextMenu.js';
@@ -174,7 +174,7 @@ const TableGrips = Extension.create({
                 push(Decoration.widget(pos, factory, { key }));
 
             // Column controls — hosted in the first-row cell of each column.
-            getColumnCells(map, tableStart).forEach((pos, index) => {
+            getColumnCellPositions(map, tableStart).forEach((pos, index) => {
                 const selected = tableSel
                     || !!(selHere && selHere.isCol && selHere.left <= index && index < selHere.right);
                 widget(pos + 1, () => makeControl(
@@ -197,7 +197,7 @@ const TableGrips = Extension.create({
 
             // Row controls — hosted in the first-column cell of each row.
             // Row 0 additionally hosts the whole-table corner grip.
-            getRowCells(map, tableStart).forEach((pos, index) => {
+            getRowCellPositions(map, tableStart).forEach((pos, index) => {
                 const selected = tableSel
                     || !!(selHere && selHere.isRow && selHere.top <= index && index < selHere.bottom);
                 if (index === 0) {

@@ -66,7 +66,7 @@ export class TableEditorHelper {
 
     deleteControl(kind: DeleteKind): Locator {
         const label = { column: 'Delete column', row: 'Delete row', table: 'Delete table' }[kind];
-        return this.page.getByRole('menuitem', { name: label });
+        return this.page.getByRole('button', { name: label, exact: true });
     }
 
     // Grips are inert zero-opacity widgets; the extension acts on mousedown and

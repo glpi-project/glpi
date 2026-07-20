@@ -46,7 +46,7 @@ const { TableMap, CellSelection, selectedRect } = TiptapPMTables;
  * @param {number} tableStart - position of the table's first child
  * @returns {number[]}
  */
-function getColumnCells(map, tableStart) {
+function getColumnCellPositions(map, tableStart) {
     const cells = [];
     for (let col = 0; col < map.width; col++) {
         cells.push(tableStart + map.map[col]);
@@ -60,7 +60,7 @@ function getColumnCells(map, tableStart) {
  * @param {number} tableStart
  * @returns {number[]}
  */
-function getRowCells(map, tableStart) {
+function getRowCellPositions(map, tableStart) {
     const cells = [];
     for (let row = 0; row < map.height; row++) {
         cells.push(tableStart + map.map[row * map.width]);
@@ -93,7 +93,7 @@ function cellSelectionInfo(state) {
 
 export {
     TableMap,
-    getColumnCells,
-    getRowCells,
+    getColumnCellPositions,
+    getRowCellPositions,
     cellSelectionInfo,
 };
