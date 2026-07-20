@@ -208,23 +208,28 @@ const TableGrips = Extension.create({
                             if (colGrip) {
                                 event.preventDefault(); event.stopImmediatePropagation();
                                 const index = Number(colGrip.dataset.col);
+                                // Measure before selecting: selecting re-renders the
+                                // grip decoration, detaching this element.
+                                const anchorRect = colGrip.getBoundingClientRect();
                                 editor.commands.selectColumn(index);
-                                openTableContextMenu({ x: event.clientX, y: event.clientY, kind: 'column', index, editor });
+                                openTableContextMenu({ anchorRect, kind: 'column', index, editor });
                                 return true;
                             }
                             const rowGrip = target.closest('.table-grip-row');
                             if (rowGrip) {
                                 event.preventDefault(); event.stopImmediatePropagation();
                                 const index = Number(rowGrip.dataset.row);
+                                const anchorRect = rowGrip.getBoundingClientRect();
                                 editor.commands.selectRow(index);
-                                openTableContextMenu({ x: event.clientX, y: event.clientY, kind: 'row', index, editor });
+                                openTableContextMenu({ anchorRect, kind: 'row', index, editor });
                                 return true;
                             }
                             const tableGrip = target.closest('.table-grip');
                             if (tableGrip) {
                                 event.preventDefault(); event.stopImmediatePropagation();
+                                const anchorRect = tableGrip.getBoundingClientRect();
                                 editor.commands.selectTable();
-                                openTableContextMenu({ x: event.clientX, y: event.clientY, kind: 'table', index: 0, editor });
+                                openTableContextMenu({ anchorRect, kind: 'table', index: 0, editor });
                                 return true;
                             }
                             return false;

@@ -92,7 +92,9 @@
 
 .kb-illustration-preview {
     border: 1px solid transparent;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 
     // Only add spacing in edit mode, where the preview becomes an interactive
     // button (role="button") that can be hovered to pick an illustration.
@@ -190,14 +192,20 @@
 .kb-sidepanel [data-glpi-translation-revision-id],
 .kb-sidepanel [data-glpi-current-translation-language] {
     cursor: pointer;
-    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+    transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease;
 
     &:hover {
         background-color: var(--tblr-bg-surface-secondary);
     }
 
     &.kb-revision--selected {
-        background-color: color-mix(in srgb, var(--tblr-primary), transparent 90%);
+        background-color: color-mix(
+            in srgb,
+            var(--tblr-primary),
+            transparent 90%
+        );
         box-shadow: inset -3px 0 0 var(--tblr-primary);
     }
 }
@@ -214,7 +222,8 @@
         background-color: var(--tblr-primary) !important;
         color: var(--tblr-bg-surface) !important;
         border-color: var(--tblr-primary);
-        box-shadow: 0 2px 4px color-mix(in srgb, var(--tblr-primary), transparent 80%);
+        box-shadow: 0 2px 4px
+            color-mix(in srgb, var(--tblr-primary), transparent 80%);
 
         i {
             color: var(--tblr-bg-surface) !important;
@@ -225,10 +234,12 @@
 // KB permission owner footer (full-width, differentiated background)
 .kb-permission-owner {
     background-color: var(--tblr-body-bg);
-    margin: 0 calc(-1 * var(--tblr-modal-padding)) calc(-1 * var(--tblr-modal-padding));
+    margin: 0 calc(-1 * var(--tblr-modal-padding))
+        calc(-1 * var(--tblr-modal-padding));
     padding: var(--tblr-modal-padding);
     border-top: 1px solid var(--tblr-border-color);
-    border-radius: 0 0 var(--tblr-modal-inner-border-radius) var(--tblr-modal-inner-border-radius);
+    border-radius: 0 0 var(--tblr-modal-inner-border-radius)
+        var(--tblr-modal-inner-border-radius);
 }
 
 // KB permission visibility fields (AJAX-loaded from visibility.php)
@@ -367,7 +378,12 @@
         }
 
         // Typography
-        h1, h2, h3, h4, h5, h6 {
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
             margin-block: 1.5rem 0.75rem;
 
             &:first-child {
@@ -379,7 +395,8 @@
             margin-block-end: 0.75rem;
         }
 
-        ul, ol {
+        ul,
+        ol {
             padding-inline-start: 1.5rem;
             margin-block-end: 0.75rem;
         }
@@ -419,7 +436,8 @@
             table-layout: fixed;
             width: 100%;
 
-            td, th {
+            td,
+            th {
                 position: relative; // positioning context for grips + the column resize handle
                 border: 1px solid var(--tblr-border-color);
                 padding: 0.5rem;
@@ -533,8 +551,14 @@
             border-radius: 50%;
             background: var(--tblr-border-color);
         }
-        .table-grip:hover::after { background: var(--tblr-secondary); }
-        .table-grip.selected::after { background: var(--tblr-blue); }
+
+        .table-grip:hover::after {
+            background: var(--tblr-secondary);
+        }
+
+        .table-grip.selected::after {
+            background: var(--tblr-blue);
+        }
 
         // Small grey dot centred in a larger transparent hit area (easier to aim);
         // becomes a blue "+" on hover. Fixed 22px box, no size change on hover.
@@ -544,15 +568,25 @@
                 width: 22px;
                 height: 22px;
                 border-radius: 50%;
-                background: radial-gradient(circle, var(--tblr-border-color) 4px, transparent 4.5px);
+                background: radial-gradient(
+                    circle,
+                    var(--tblr-border-color) 4px,
+                    transparent 4.5px
+                );
             }
 
             &:hover::after {
                 background:
-                    linear-gradient(#fff, #fff),
-                    linear-gradient(#fff, #fff),
-                    radial-gradient(circle, var(--tblr-blue) 9px, transparent 9.5px);
-                background-size: 9px 2px, 2px 9px, 100% 100%;
+                    linear-gradient(#fff, #fff), linear-gradient(#fff, #fff),
+                    radial-gradient(
+                        circle,
+                        var(--tblr-blue) 9px,
+                        transparent 9.5px
+                    );
+                background-size:
+                    9px 2px,
+                    2px 9px,
+                    100% 100%;
                 background-position: center;
                 background-repeat: no-repeat;
             }
@@ -759,6 +793,36 @@
     }
 }
 
+// Grip-triggered table delete control
+.kb-table-menu {
+    .kb-table-delete {
+        display: block;
+        width: 22px;
+        height: 22px;
+        padding: 0;
+        border: none;
+        cursor: pointer;
+        border-radius: 50%;
+        background:
+            linear-gradient(#fff, #fff),
+            radial-gradient(circle, var(--tblr-red) 9px, transparent 9.5px);
+        background-size:
+            9px 2px,
+            100% 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+
+        &:hover {
+            filter: brightness(0.92);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--tblr-red);
+            outline-offset: 2px;
+        }
+    }
+}
+
 // KB link item modal form
 .kb-link-item-form {
     .kb-link-item-dropdowns {
@@ -787,7 +851,8 @@
     .kb-link-item-footer {
         display: flex;
         justify-content: flex-end;
-        margin: var(--tblr-modal-padding) calc(-1 * var(--tblr-modal-padding)) calc(-1 * var(--tblr-modal-padding));
+        margin: var(--tblr-modal-padding) calc(-1 * var(--tblr-modal-padding))
+            calc(-1 * var(--tblr-modal-padding));
         padding: 0.75rem var(--tblr-modal-padding);
         border-top: var(--tblr-border-width) solid var(--tblr-border-color);
     }
@@ -1046,13 +1111,13 @@
     }
 }
 
-.visibility-type-col .select2-selection  {
+.visibility-type-col .select2-selection {
     // Merge borders with dropdown to its right
     border-start-end-radius: 0 !important;
     border-end-end-radius: 0 !important;
 }
 
-.visibility-item-col .select2-selection  {
+.visibility-item-col .select2-selection {
     // Merge borders with dropdown to its left
     border-start-start-radius: 0 !important;
     border-end-start-radius: 0 !important;
@@ -1062,7 +1127,8 @@
     max-width: 300px;
     background-color: #fff;
 
-    .node, .article {
+    .node,
+    .article {
         list-style: none;
     }
 
@@ -1146,8 +1212,10 @@
         visibility: hidden;
     }
 
-    [data-glpi-kb-aside-category-header]:hover [data-glpi-kb-aside-category-add],
-    [data-glpi-kb-aside-category-header]:focus-within [data-glpi-kb-aside-category-add] {
+    [data-glpi-kb-aside-category-header]:hover
+        [data-glpi-kb-aside-category-add],
+    [data-glpi-kb-aside-category-header]:focus-within
+        [data-glpi-kb-aside-category-add] {
         visibility: visible;
     }
 
@@ -1182,18 +1250,21 @@
                 &::before {
                     $gap: 0.25rem;
 
-                    content: '';
+                    content: "";
                     position: absolute;
                     left: -1rem;
                     top: 0;
-                    width: calc(1rem - #{$gap}); // leave a small gap before the content
+                    width: calc(
+                        1rem - #{$gap}
+                    ); // leave a small gap before the content
+
                     height: 0.625rem; // half of the 20px illustration = 10px
                     border-left: 1px solid var(--tblr-border-color);
                     border-bottom: 1px solid var(--tblr-border-color);
                 }
 
                 &:not(:last-child)::after {
-                    content: '';
+                    content: "";
                     position: absolute;
                     left: -1rem;
                     top: 0.625rem;

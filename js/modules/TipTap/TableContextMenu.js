@@ -31,9 +31,10 @@
  */
 
 /**
- * Grip-triggered table menu: a small dropdown anchored at the click offering the
- * delete action for the selected column/row/table (insertion stays on the hover
- * "+"). Uses Tabler dropdown classes for native GLPI styling.
+ * Grip-triggered delete control: a single round red "−" button (the red
+ * counterpart of the hover "+" insert control) offering the delete action for
+ * the selected column/row/table. Anchored to the clicked grip's rect (measured
+ * before the selection re-render) so its position is stable.
  */
 
 let activeMenu = null;
@@ -62,33 +63,61 @@ function buildDeleteItem(kind, index, editor) {
 }
 
 /**
- * Open the table menu at the pointer.
+ * Position the button relative to the clicked grip so it always lands in the
+ * same spot for a given column/row (columns → centred below the grip bar; rows
+ * → left of the grip, centred on the row). Clamped to the viewport.
+ * @param {HTMLElement} menu
+ * @param {DOMRect} anchor - the grip host's bounding rect (measured pre-select)
+ * @param {'column'|'row'|'table'} kind
+ */
+function positionTableMenu(menu, anchor, kind) {
+    const gap = 6;
+    const mw = menu.offsetWidth;
+    const mh = menu.offsetHeight;
+    let left;
+    let top;
+    if (kind === 'row') {
+        // Left of the grip, in the gutter, centred on the row.
+        left = anchor.left - mw - gap;
+        top = anchor.top + (anchor.height / 2) - (mh / 2);
+    } else {
+        // column & table: above the grip, in the top gutter, centred on the column.
+        left = anchor.left + (anchor.width / 2) - (mw / 2);
+        top = anchor.top - mh - gap;
+    }
+    left = Math.min(Math.max(8, left), window.innerWidth - mw - 8);
+    top = Math.min(Math.max(8, top), window.innerHeight - mh - 8);
+    menu.style.left = `${left}px`;
+    menu.style.top = `${top}px`;
+}
+
+/**
+ * Open the delete control anchored to the clicked grip.
  * @param {object} opts
- * @param {number} opts.x - viewport clientX
- * @param {number} opts.y - viewport clientY
+ * @param {DOMRect} opts.anchorRect - the clicked grip host's bounding rect
  * @param {'column'|'row'|'table'} opts.kind
  * @param {number} opts.index - column/row index (ignored for 'table')
  * @param {object} opts.editor - Tiptap editor
  */
-function openTableContextMenu({ x, y, kind, index, editor }) {
+function openTableContextMenu({ anchorRect, kind, index, editor }) {
     closeTableContextMenu();
 
     const item = buildDeleteItem(kind, index, editor);
 
     const menu = document.createElement('div');
-    menu.className = 'dropdown-menu show kb-table-menu';
+    menu.className = 'kb-table-menu';
     menu.setAttribute('role', 'menu');
     menu.style.position = 'fixed';
     menu.style.zIndex = '1080';
 
+    // Round red "−" button (mirror of the blue "+" insert control). The visible
+    // shape is drawn in CSS; the action label lives on aria-label + title.
     const button = document.createElement('button');
     button.type = 'button';
-    button.className = 'dropdown-item text-danger';
+    button.className = 'kb-table-delete';
     button.setAttribute('role', 'menuitem');
-    const icon = document.createElement('i');
-    icon.className = 'ti ti-trash me-2';
-    button.appendChild(icon);
-    button.appendChild(document.createTextNode(item.label));
+    button.setAttribute('aria-label', item.label);
+    button.setAttribute('title', item.label);
     button.addEventListener('click', () => {
         item.run();
         closeTableContextMenu();
@@ -98,16 +127,7 @@ function openTableContextMenu({ x, y, kind, index, editor }) {
 
     document.body.appendChild(menu);
 
-    // Position at the pointer, clamped to the viewport.
-    menu.style.left = `${x}px`;
-    menu.style.top = `${y}px`;
-    const rect = menu.getBoundingClientRect();
-    if (rect.right > window.innerWidth - 8) {
-        menu.style.left = `${Math.max(8, window.innerWidth - rect.width - 8)}px`;
-    }
-    if (rect.bottom > window.innerHeight - 8) {
-        menu.style.top = `${Math.max(8, y - rect.height)}px`;
-    }
+    positionTableMenu(menu, anchorRect, kind);
 
     button.focus();
 
