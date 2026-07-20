@@ -837,42 +837,6 @@ HTML,
         $this->assertStringContainsString('<a href="#title-1c">', $answer);
     }
 
-    /**
-     * To be deleted after 11.0 release
-     */
-    /*public function testCreateWithCategoriesDeprecated()
-    {
-        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
-
-        // Create a KB category
-        $category = $this->createItem(\KnowbaseItemCategory::class, [
-            'name' => __FUNCTION__ . '_1',
-            'comment' => __FUNCTION__ . '_1',
-            'entities_id' => $root_entity,
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
-        ]);
-
-        // Create KB item with category
-        $kb_item = @$this->createItem(\KnowbaseItem::class, [
-            'name' => __FUNCTION__ . '_1',
-            'answer' => __FUNCTION__ . '_1',
-            'knowbaseitemcategories_id' => $category->getID(),
-        ], ['knowbaseitemcategories_id']);
-
-        // Get categories linked to our kb_item
-        $linked_categories = (new \KnowbaseItem_KnowbaseItemCategory())->find([
-            'knowbaseitems_id' => $kb_item->getID(),
-        ]);
-
-        // We expect one category
-        $this->assertCount(1, $linked_categories);
-
-        // Check category id
-        $data = array_pop($linked_categories);
-        $this->assertEquals($category->getID(), $data['knowbaseitemcategories_id']);
-    }*/
-
     public function testCreateWithParents()
     {
         global $DB;
@@ -929,6 +893,58 @@ HTML,
             $parent_ids[] = $row['knowbaseitems_id_parent'];
         }
         $this->assertEqualsCanonicalizing([$parent1->getID(), $parent2->getID()], $parent_ids);
+    }
+
+    public function testSearchByParent(): void
+    {
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_parent',
+            'answer'      => __FUNCTION__ . '_parent',
+            'entities_id' => $entity,
+        ]);
+
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_child',
+            'answer'      => __FUNCTION__ . '_child',
+            'entities_id' => $entity,
+            '_parents'    => [$parent->getID()],
+        ]);
+
+        // Not a child of $parent, must never appear in the results below.
+        $unrelated = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_unrelated',
+            'answer'      => __FUNCTION__ . '_unrelated',
+            'entities_id' => $entity,
+        ]);
+
+        $data = \Search::getDatas(KnowbaseItem::class, [
+            'criteria' => [
+                [
+                    'field'      => 79,
+                    'searchtype' => 'equals',
+                    'value'      => $parent->getID(),
+                ],
+            ],
+            // These test articles have no visibility grants (closed by
+            // default). Ask the search to include unpublished articles too,
+            // same as testGetVisibilityCriteria() does, so this test is only
+            // exercising the option-79 filter itself.
+            'unpublished' => 1,
+        ]);
+
+        $names = [];
+        foreach ($data['data']['rows'] as $row) {
+            // Some names may be force-grouped so the actual name is in the first part before the SHORTSEP
+            $n = $row['raw']['ITEM_' . KnowbaseItem::class . '_1'];
+            $names[] = explode('$#$', $n)[0];
+        }
+
+        $this->assertContains($child->fields['name'], $names);
+        $this->assertNotContains($unrelated->fields['name'], $names);
+        $this->assertNotContains($parent->fields['name'], $names);
     }
 
     public function testShowFullAddModeIgnoresUnknownParent(): void
