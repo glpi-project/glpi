@@ -1270,6 +1270,7 @@ HTML;
             $options['legend'] = [
                 'show'      => true,
                 'left'      => 'left',
+                'top'       => 'top',
                 'textStyle' => [
                     'color' => $fg_color,
                 ],
@@ -1610,6 +1611,7 @@ HTML;
             $options['legend'] = [
                 'show'      => true,
                 'left'      => 'left',
+                'top'       => 'top',
                 'textStyle' => [
                     'color' => $fg_color,
                 ],
