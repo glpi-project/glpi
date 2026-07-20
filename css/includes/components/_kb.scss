@@ -467,6 +467,8 @@
 
         // --- Table grips (Outline model) -------------------------------------
         // Inert <a> hosts; the visible clickable shape is drawn by ::after.
+        // Rendered for every table regardless of selection, revealed on table
+        // hover (a selected grip stays lit) — never vanish mid-edit.
         .table-grip-column,
         .table-grip-row,
         .table-grip,
@@ -474,11 +476,39 @@
         .table-row-add {
             position: absolute;
             z-index: 15;
+            opacity: 0;
+            transition: opacity 0.12s ease;
 
             &::after {
                 content: "";
                 position: absolute;
                 cursor: pointer;
+            }
+        }
+
+        .tableWrapper:hover {
+            .table-grip-column,
+            .table-grip-row,
+            .table-grip,
+            .table-col-add,
+            .table-row-add {
+                opacity: 1;
+            }
+        }
+
+        .table-grip-column.selected,
+        .table-grip-row.selected,
+        .table-grip.selected {
+            opacity: 1;
+        }
+
+        // While the delete menu is open, hide the "+" inserts so they don't
+        // crowd the "−".
+        &.kb-table-menu-open {
+            .table-col-add,
+            .table-row-add {
+                opacity: 0 !important;
+                pointer-events: none;
             }
         }
 
@@ -511,11 +541,11 @@
         .table-grip-column,
         .table-grip-row {
             &::after {
-                background: var(--tblr-border-color);
+                background: var(--tblr-gray-400);
             }
 
-            &:hover::after {
-                background: var(--tblr-secondary);
+            &.is-hovered::after {
+                background: var(--tblr-blue);
             }
 
             &.selected::after {
@@ -558,11 +588,11 @@
             width: 11px;
             height: 11px;
             border-radius: 50%;
-            background: var(--tblr-border-color);
+            background: var(--tblr-gray-400);
         }
 
-        .table-grip:hover::after {
-            background: var(--tblr-secondary);
+        .table-grip.is-hovered::after {
+            background: var(--tblr-blue);
         }
 
         .table-grip.selected::after {
@@ -573,18 +603,19 @@
         // becomes a blue "+" on hover. Fixed 22px box, no size change on hover.
         .table-col-add,
         .table-row-add {
+            // Resting: a discreet dot; becomes a blue "+" on hover.
             &::after {
                 width: 22px;
                 height: 22px;
                 border-radius: 50%;
                 background: radial-gradient(
                     circle,
-                    var(--tblr-border-color) 4px,
+                    var(--tblr-gray-400) 4px,
                     transparent 4.5px
                 );
             }
 
-            &:hover::after {
+            &.is-hovered::after {
                 background:
                     linear-gradient(#fff, #fff), linear-gradient(#fff, #fff),
                     radial-gradient(
@@ -633,8 +664,8 @@
             pointer-events: none;
         }
 
-        .table-col-add:hover::before,
-        .table-row-add:hover::before {
+        .table-col-add.is-hovered::before,
+        .table-row-add.is-hovered::before {
             opacity: 1;
         }
 
@@ -841,9 +872,8 @@
             filter: brightness(0.92);
         }
 
-        &:focus-visible {
-            outline: 2px solid var(--tblr-red);
-            outline-offset: 2px;
+        &:focus {
+            outline: none;
         }
     }
 }

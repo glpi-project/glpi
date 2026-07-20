@@ -33,11 +33,10 @@
 /* global TiptapCore, TiptapPMState, TiptapPMView, TiptapPMTables */
 
 import {
+    TableMap,
     getColumnCells,
     getRowCells,
-    isColumnSelected,
-    isRowSelected,
-    isTableSelected,
+    cellSelectionInfo,
 } from '/js/modules/TipTap/tableQueries.js';
 import { openTableContextMenu } from '/js/modules/TipTap/TableContextMenu.js';
 
@@ -46,8 +45,6 @@ const { Plugin, PluginKey } = TiptapPMState;
 const { Decoration, DecorationSet } = TiptapPMView;
 const {
     CellSelection,
-    selectedRect,
-    isInTable,
     addColumn,
     removeColumn,
     addRow,
@@ -73,6 +70,88 @@ function makeControl(className, dataset, label, selected = false) {
     return el;
 }
 
+const CONTROL_SELECTOR = '.table-col-add, .table-row-add, .table-grip-column, .table-grip-row, .table-grip';
+
+function controlFromPoint(x, y) {
+    for (const node of document.elementsFromPoint(x, y)) {
+        const match = node instanceof HTMLElement ? node.closest(CONTROL_SELECTOR) : null;
+        if (match) {
+            return match;
+        }
+    }
+    return null;
+}
+
+// event.target can be the cell behind the gutter widget; fall back to coordinates.
+function controlFromEvent(event) {
+    const { target } = event;
+    const direct = target instanceof HTMLElement ? target.closest(CONTROL_SELECTOR) : null;
+    return direct || controlFromPoint(event.clientX, event.clientY);
+}
+
+// Resolve the hovered control from table geometry (cell rects), which stays
+// reliable during pointer events unlike hit-testing the gutter widgets.
+function controlAtPoint(dom, x, y) {
+    const GUTTER = 40;
+    const EDGE = 18; // split between the "+" (outer) and grip-bar (inner) zones
+    const NEAR = 14; // distance to a boundary that counts as an insert "+"
+    for (const table of dom.querySelectorAll('table')) {
+        const t = table.getBoundingClientRect();
+        if (x < t.left - GUTTER || x > t.right || y < t.top - GUTTER || y > t.bottom) {
+            continue;
+        }
+        const rows = [...table.rows];
+        if (!rows.length) {
+            continue;
+        }
+        const cells = [...rows[0].cells];
+        const colX = cells.map((c) => c.getBoundingClientRect().left);
+        colX.push(cells[cells.length - 1].getBoundingClientRect().right);
+        const rowY = rows.map((r) => r.getBoundingClientRect().top);
+        rowY.push(rows[rows.length - 1].getBoundingClientRect().bottom);
+
+        const nearest = (vals, v) => {
+            let idx = 0;
+            let best = Infinity;
+            vals.forEach((val, i) => {
+                const d = Math.abs(v - val);
+                if (d < best) { best = d; idx = i; }
+            });
+            return { idx, dist: best };
+        };
+        const span = (bounds, v) => {
+            for (let i = 0; i < bounds.length - 1; i++) {
+                if (v >= bounds[i] && v < bounds[i + 1]) { return i; }
+            }
+            return -1;
+        };
+        const pick = (sel) => table.querySelector(sel);
+
+        const inTop = y < t.top;
+        const inLeft = x < t.left;
+        if (inTop && inLeft) {
+            return pick('.table-grip');
+        }
+        if (inTop && x >= t.left && x <= t.right) {
+            const b = nearest(colX, x);
+            if (y < t.top - EDGE && b.dist < NEAR) {
+                return pick(`.table-col-add[data-insert-col="${b.idx}"]`);
+            }
+            const col = span(colX, x);
+            return col < 0 ? null : pick(`.table-grip-column[data-col="${col}"]`);
+        }
+        if (inLeft && y >= t.top && y <= t.bottom) {
+            const b = nearest(rowY, y);
+            if (x < t.left - EDGE && b.dist < NEAR) {
+                return pick(`.table-row-add[data-insert-row="${b.idx}"]`);
+            }
+            const row = span(rowY, y);
+            return row < 0 ? null : pick(`.table-grip-row[data-row="${row}"]`);
+        }
+    }
+    return null;
+}
+
 /**
  * Outline-style table grips: click a column/row/corner grip to select it,
  * hover it for a `+` (insert) and `−` (delete) button. Rendered as widget
@@ -84,59 +163,74 @@ const TableGrips = Extension.create({
     addProseMirrorPlugins() {
         const editor = this.editor;
 
-        const build = (state) => {
-            if (!editor.isEditable || !isInTable(state)) {
-                return DecorationSet.empty;
-            }
-            const decorations = [];
+        // Render grips for one table (found at `tablePos`), independent of the
+        // selection. `selInfo` (or null) drives the "selected" highlight.
+        const buildTable = (node, tablePos, selInfo, push) => {
+            const map = TableMap.get(node);
+            const tableStart = tablePos + 1;
+            const selHere = selInfo && selInfo.tableStart === tableStart ? selInfo : null;
+            const tableSel = !!(selHere && selHere.isCol && selHere.isRow);
             const widget = (pos, factory, key) =>
-                decorations.push(Decoration.widget(pos, factory, { key }));
+                push(Decoration.widget(pos, factory, { key }));
 
             // Column controls — hosted in the first-row cell of each column.
-            const columns = getColumnCells(state);
-            columns.forEach((pos, index) => {
-                const selected = isColumnSelected(index)(state) || isTableSelected(state);
+            getColumnCells(map, tableStart).forEach((pos, index) => {
+                const selected = tableSel
+                    || !!(selHere && selHere.isCol && selHere.left <= index && index < selHere.right);
                 widget(pos + 1, () => makeControl(
-                    'table-grip-column', { col: index },
+                    'table-grip-column', { table: tablePos, col: index },
                     __('Select column %s').replace('%s', String(index + 1)), selected,
-                ), `grip-col-${index}-${selected}`);
+                ), `grip-col-${tablePos}-${index}-${selected}`);
                 // Leading `+` before the very first column.
                 if (index === 0) {
                     widget(pos + 1, () => makeControl(
-                        'table-col-add first', { insertCol: 0 }, __('Insert column'),
-                    ), `col-add-0`);
+                        'table-col-add first', { table: tablePos, insertCol: 0 }, __('Insert column'),
+                    ), `col-add-${tablePos}-0`);
                 }
                 // `+` at this column's trailing boundary (inserts after it).
-                // Deletion is intentionally not surfaced yet (Outline-style, TBD).
                 widget(pos + 1, () => makeControl(
-                    'table-col-add', { insertCol: index + 1 }, __('Insert column'),
-                ), `col-add-${index + 1}`);
+                    'table-col-add', { table: tablePos, insertCol: index + 1 }, __('Insert column'),
+                ), `col-add-${tablePos}-${index + 1}`);
             });
 
             // Row controls — hosted in the first-column cell of each row.
-            // Row 0 additionally hosts the whole-table corner grip + its `−`.
-            const rows = getRowCells(state);
-            rows.forEach((pos, index) => {
-                const selected = isRowSelected(index)(state) || isTableSelected(state);
+            // Row 0 additionally hosts the whole-table corner grip.
+            getRowCells(map, tableStart).forEach((pos, index) => {
+                const selected = tableSel
+                    || !!(selHere && selHere.isRow && selHere.top <= index && index < selHere.bottom);
                 if (index === 0) {
-                    const tableSel = isTableSelected(state);
                     widget(pos + 1, () => makeControl(
-                        'table-grip', {}, __('Select table'), tableSel,
-                    ), `grip-table-${tableSel}`);
+                        'table-grip', { table: tablePos }, __('Select table'), tableSel,
+                    ), `grip-table-${tablePos}-${tableSel}`);
                     widget(pos + 1, () => makeControl(
-                        'table-row-add first', { insertRow: 0 }, __('Insert row'),
-                    ), 'row-add-0');
+                        'table-row-add first', { table: tablePos, insertRow: 0 }, __('Insert row'),
+                    ), `row-add-${tablePos}-0`);
                 }
                 widget(pos + 1, () => makeControl(
-                    'table-grip-row', { row: index },
+                    'table-grip-row', { table: tablePos, row: index },
                     __('Select row %s').replace('%s', String(index + 1)), selected,
-                ), `grip-row-${index}-${selected}`);
+                ), `grip-row-${tablePos}-${index}-${selected}`);
                 // `+` at this row's trailing boundary (inserts below it).
                 widget(pos + 1, () => makeControl(
-                    'table-row-add', { insertRow: index + 1 }, __('Insert row'),
-                ), `row-add-${index + 1}`);
+                    'table-row-add', { table: tablePos, insertRow: index + 1 }, __('Insert row'),
+                ), `row-add-${tablePos}-${index + 1}`);
             });
+        };
 
+        const build = (state) => {
+            if (!editor.isEditable) {
+                return DecorationSet.empty;
+            }
+            const decorations = [];
+            const push = (deco) => decorations.push(deco);
+            const selInfo = cellSelectionInfo(state);
+            state.doc.descendants((node, pos) => {
+                if (node.type.name === 'table') {
+                    buildTable(node, pos, selInfo, push);
+                    return false; // no nested tables; don't descend into cells
+                }
+                return !node.isTextblock; // skip inline content, recurse into containers
+            });
             return DecorationSet.create(state.doc, decorations);
         };
 
@@ -148,11 +242,8 @@ const TableGrips = Extension.create({
                     apply: (tr, old, _oldState, newState) =>
                         (tr.docChanged || tr.selectionSet) ? build(newState) : old,
                 },
-                // Publish each table's pixel size as CSS vars so the insertion
-                // guide line (a ::before on the "+") can span the whole table.
-                // A ResizeObserver keeps them accurate after the initial layout
-                // and on any later size change (content, column resize, window),
-                // without measuring on every transaction.
+                // Publish each table's pixel size as CSS vars so the "+" guide
+                // line can span the whole table; a ResizeObserver keeps them current.
                 view: (editorView) => {
                     const publish = (table) => {
                         const h = `${table.offsetHeight}px`;
@@ -171,6 +262,41 @@ const TableGrips = Extension.create({
                         editorView.dom.querySelectorAll('table').forEach((table) => observer.observe(table));
                     };
                     observeTables();
+
+                    // CSS `:hover` never fires on the gutter widgets (Chromium
+                    // resolves the pointer to the cell behind them), so track it
+                    // from geometry (rAF-throttled) and mirror it with `is-hovered`.
+                    let hovered = null;
+                    let frame = 0;
+                    let lastX = 0;
+                    let lastY = 0;
+                    const setHovered = (control) => {
+                        if (control === hovered) {
+                            return;
+                        }
+                        hovered?.classList.remove('is-hovered');
+                        control?.classList.add('is-hovered');
+                        hovered = control;
+                    };
+                    const flush = () => {
+                        frame = 0;
+                        setHovered(controlAtPoint(editorView.dom, lastX, lastY));
+                    };
+                    const onMove = (event) => {
+                        lastX = event.clientX;
+                        lastY = event.clientY;
+                        frame = frame || requestAnimationFrame(flush);
+                    };
+                    const onLeave = () => {
+                        if (frame) {
+                            cancelAnimationFrame(frame);
+                            frame = 0;
+                        }
+                        setHovered(null);
+                    };
+                    editorView.dom.addEventListener('mousemove', onMove);
+                    editorView.dom.addEventListener('mouseleave', onLeave);
+
                     return {
                         update: (view, prevState) => {
                             // Newly inserted tables need observing (observe() is idempotent).
@@ -178,7 +304,14 @@ const TableGrips = Extension.create({
                                 observeTables();
                             }
                         },
-                        destroy: () => observer.disconnect(),
+                        destroy: () => {
+                            observer.disconnect();
+                            if (frame) {
+                                cancelAnimationFrame(frame);
+                            }
+                            editorView.dom.removeEventListener('mousemove', onMove);
+                            editorView.dom.removeEventListener('mouseleave', onLeave);
+                        },
                     };
                 },
                 props: {
@@ -187,52 +320,37 @@ const TableGrips = Extension.create({
                     },
                     handleDOMEvents: {
                         mousedown: (view, event) => {
-                            const target = event.target;
-                            if (!(target instanceof HTMLElement)) {
+                            const control = controlAtPoint(view.dom, event.clientX, event.clientY)
+                                || controlFromEvent(event);
+                            if (!control) {
                                 return false;
                             }
-                            // Order: buttons (more specific) before grips.
-                            const colAdd = target.closest('.table-col-add');
-                            if (colAdd) {
-                                event.preventDefault(); event.stopImmediatePropagation();
-                                editor.commands.insertColumnAt(Number(colAdd.dataset.insertCol));
-                                return true;
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                            const tablePos = Number(control.dataset.table);
+                            const { classList } = control;
+                            if (classList.contains('table-col-add')) {
+                                editor.commands.insertColumnAt(tablePos, Number(control.dataset.insertCol));
+                            } else if (classList.contains('table-row-add')) {
+                                editor.commands.insertRowAt(tablePos, Number(control.dataset.insertRow));
+                            } else if (classList.contains('table-grip-column')) {
+                                const index = Number(control.dataset.col);
+                                // Measure before selecting: selecting re-renders
+                                // the grip decoration, detaching this element.
+                                const anchorRect = control.getBoundingClientRect();
+                                editor.commands.selectColumnAt(tablePos, index);
+                                openTableContextMenu({ anchorRect, kind: 'column', tablePos, index, editor });
+                            } else if (classList.contains('table-grip-row')) {
+                                const index = Number(control.dataset.row);
+                                const anchorRect = control.getBoundingClientRect();
+                                editor.commands.selectRowAt(tablePos, index);
+                                openTableContextMenu({ anchorRect, kind: 'row', tablePos, index, editor });
+                            } else {
+                                const anchorRect = control.getBoundingClientRect();
+                                editor.commands.selectTableAt(tablePos);
+                                openTableContextMenu({ anchorRect, kind: 'table', tablePos, index: 0, editor });
                             }
-                            const rowAdd = target.closest('.table-row-add');
-                            if (rowAdd) {
-                                event.preventDefault(); event.stopImmediatePropagation();
-                                editor.commands.insertRowAt(Number(rowAdd.dataset.insertRow));
-                                return true;
-                            }
-                            const colGrip = target.closest('.table-grip-column');
-                            if (colGrip) {
-                                event.preventDefault(); event.stopImmediatePropagation();
-                                const index = Number(colGrip.dataset.col);
-                                // Measure before selecting: selecting re-renders the
-                                // grip decoration, detaching this element.
-                                const anchorRect = colGrip.getBoundingClientRect();
-                                editor.commands.selectColumn(index);
-                                openTableContextMenu({ anchorRect, kind: 'column', index, editor });
-                                return true;
-                            }
-                            const rowGrip = target.closest('.table-grip-row');
-                            if (rowGrip) {
-                                event.preventDefault(); event.stopImmediatePropagation();
-                                const index = Number(rowGrip.dataset.row);
-                                const anchorRect = rowGrip.getBoundingClientRect();
-                                editor.commands.selectRow(index);
-                                openTableContextMenu({ anchorRect, kind: 'row', index, editor });
-                                return true;
-                            }
-                            const tableGrip = target.closest('.table-grip');
-                            if (tableGrip) {
-                                event.preventDefault(); event.stopImmediatePropagation();
-                                const anchorRect = tableGrip.getBoundingClientRect();
-                                editor.commands.selectTable();
-                                openTableContextMenu({ anchorRect, kind: 'table', index: 0, editor });
-                                return true;
-                            }
-                            return false;
+                            return true;
                         },
                     },
                 },
@@ -241,86 +359,99 @@ const TableGrips = Extension.create({
     },
 
     addCommands() {
+        // Run `fn` against the table at `tablePos` (its own map/start), so a
+        // command acts on the grip's table regardless of the live selection.
+        const withTable = (tablePos, fn) => ({ state, dispatch }) => {
+            const table = state.doc.nodeAt(tablePos);
+            if (!table || table.type.name !== 'table') {
+                return false;
+            }
+            return fn({
+                state,
+                dispatch,
+                table,
+                map: TableMap.get(table),
+                tableStart: tablePos + 1,
+            });
+        };
+
         return {
-            selectColumn: (index) => ({ state, dispatch }) => {
-                if (!isInTable(state)) {
+            selectColumnAt: (tablePos, index) => withTable(tablePos, ({ state, dispatch, map, tableStart }) => {
+                if (index < 0 || index >= map.width) {
                     return false;
                 }
-                const rect = selectedRect(state);
-                const $cell = state.doc.resolve(rect.tableStart + rect.map.map[index]);
                 if (dispatch) {
+                    const $cell = state.doc.resolve(tableStart + map.map[index]);
                     dispatch(state.tr.setSelection(CellSelection.colSelection($cell)));
                 }
                 return true;
-            },
-            selectRow: (index) => ({ state, dispatch }) => {
-                if (!isInTable(state)) {
+            }),
+            selectRowAt: (tablePos, index) => withTable(tablePos, ({ state, dispatch, map, tableStart }) => {
+                if (index < 0 || index >= map.height) {
                     return false;
                 }
-                const rect = selectedRect(state);
-                const $cell = state.doc.resolve(rect.tableStart + rect.map.map[index * rect.map.width]);
                 if (dispatch) {
+                    const $cell = state.doc.resolve(tableStart + map.map[index * map.width]);
                     dispatch(state.tr.setSelection(CellSelection.rowSelection($cell)));
                 }
                 return true;
-            },
-            selectTable: () => ({ state, dispatch }) => {
-                if (!isInTable(state)) {
-                    return false;
-                }
-                const rect = selectedRect(state);
-                const map = rect.map.map;
-                const $first = state.doc.resolve(rect.tableStart + map[0]);
-                const $last = state.doc.resolve(rect.tableStart + map[map.length - 1]);
+            }),
+            selectTableAt: (tablePos) => withTable(tablePos, ({ state, dispatch, map, tableStart }) => {
                 if (dispatch) {
+                    const $first = state.doc.resolve(tableStart + map.map[0]);
+                    const $last = state.doc.resolve(tableStart + map.map[map.map.length - 1]);
                     dispatch(state.tr.setSelection(new CellSelection($first, $last)));
                 }
                 return true;
-            },
-            insertColumnAt: (col) => ({ state, dispatch }) => {
-                if (!isInTable(state)) {
-                    return false;
-                }
+            }),
+            insertColumnAt: (tablePos, col) => withTable(tablePos, ({ state, dispatch, table, map, tableStart }) => {
                 if (dispatch) {
                     const tr = state.tr;
-                    addColumn(tr, selectedRect(state), col);
+                    addColumn(tr, { map, tableStart, table }, col);
                     dispatch(tr);
                 }
                 return true;
-            },
-            deleteColumnAt: (col) => ({ state, dispatch }) => {
-                if (!isInTable(state)) {
-                    return false;
-                }
+            }),
+            deleteColumnAt: (tablePos, col) => withTable(tablePos, ({ state, dispatch, table, map, tableStart }) => {
                 if (dispatch) {
                     const tr = state.tr;
-                    removeColumn(tr, selectedRect(state), col);
+                    // Removing the only column would leave an empty table: drop it.
+                    if (map.width <= 1) {
+                        tr.delete(tablePos, tablePos + table.nodeSize);
+                    } else {
+                        removeColumn(tr, { map, tableStart, table }, col);
+                    }
                     dispatch(tr);
                 }
                 return true;
-            },
-            insertRowAt: (row) => ({ state, dispatch }) => {
-                if (!isInTable(state)) {
-                    return false;
-                }
+            }),
+            insertRowAt: (tablePos, row) => withTable(tablePos, ({ state, dispatch, table, map, tableStart }) => {
                 if (dispatch) {
                     const tr = state.tr;
-                    addRow(tr, selectedRect(state), row);
+                    addRow(tr, { map, tableStart, table }, row);
                     dispatch(tr);
                 }
                 return true;
-            },
-            deleteRowAt: (row) => ({ state, dispatch }) => {
-                if (!isInTable(state)) {
-                    return false;
-                }
+            }),
+            deleteRowAt: (tablePos, row) => withTable(tablePos, ({ state, dispatch, table, map, tableStart }) => {
                 if (dispatch) {
                     const tr = state.tr;
-                    removeRow(tr, selectedRect(state), row);
+                    // Removing the only row would leave an empty table: drop it.
+                    if (map.height <= 1) {
+                        tr.delete(tablePos, tablePos + table.nodeSize);
+                    } else {
+                        removeRow(tr, { map, tableStart, table }, row);
+                    }
                     dispatch(tr);
                 }
                 return true;
-            },
+            }),
+            deleteTableAt: (tablePos) => withTable(tablePos, ({ state, dispatch, table }) => {
+                if (dispatch) {
+                    dispatch(state.tr.delete(tablePos, tablePos + table.nodeSize));
+                }
+                return true;
+            }),
         };
     },
 });

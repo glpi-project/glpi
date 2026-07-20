@@ -33,85 +33,67 @@
 /* global TiptapPMTables */
 
 /**
- * Pure query helpers over the active table's map, built on prosemirror-tables
- * primitives. All functions assume the selection is inside a table; callers
- * guard with `isInTable(state)` first.
+ * Pure query helpers over a table's TableMap. Everything is keyed by an explicit
+ * table position (not the live selection) so grips render and act on any table
+ * in the document, independent of where the caret currently is.
  */
 
-const { selectedRect, CellSelection, isInTable } = TiptapPMTables;
+const { TableMap, CellSelection, selectedRect } = TiptapPMTables;
 
 /**
- * Position of the first-row cell of every column (index === column index).
+ * Document position of the first-row cell of every column (index === column).
+ * @param {object} map - TableMap
+ * @param {number} tableStart - position of the table's first child
+ * @returns {number[]}
+ */
+function getColumnCells(map, tableStart) {
+    const cells = [];
+    for (let col = 0; col < map.width; col++) {
+        cells.push(tableStart + map.map[col]);
+    }
+    return cells;
+}
+
+/**
+ * Document position of the first-column cell of every row (index === row).
+ * @param {object} map - TableMap
+ * @param {number} tableStart
+ * @returns {number[]}
+ */
+function getRowCells(map, tableStart) {
+    const cells = [];
+    for (let row = 0; row < map.height; row++) {
+        cells.push(tableStart + map.map[row * map.width]);
+    }
+    return cells;
+}
+
+/**
+ * Highlight info for the current selection, or null when it is not a cell
+ * selection. `tableStart` lets callers match it against a specific table.
  * @param {object} state - ProseMirror EditorState
- * @returns {number[]}
+ * @returns {?{tableStart:number,left:number,right:number,top:number,bottom:number,isCol:boolean,isRow:boolean}}
  */
-function getColumnCells(state) {
-    const rect = selectedRect(state);
-    const cells = [];
-    for (let col = 0; col < rect.map.width; col++) {
-        cells.push(rect.tableStart + rect.map.map[col]);
-    }
-    return cells;
-}
-
-/**
- * Position of the first-column cell of every row (index === row index).
- * @param {object} state
- * @returns {number[]}
- */
-function getRowCells(state) {
-    const rect = selectedRect(state);
-    const cells = [];
-    for (let row = 0; row < rect.map.height; row++) {
-        cells.push(rect.tableStart + rect.map.map[row * rect.map.width]);
-    }
-    return cells;
-}
-
-/**
- * @param {number} index
- * @returns {function(object): boolean} true when the column selection covers `index`
- */
-function isColumnSelected(index) {
-    return (state) => {
-        const sel = state.selection;
-        if (!(sel instanceof CellSelection) || !sel.isColSelection()) {
-            return false;
-        }
-        const rect = selectedRect(state);
-        return rect.left <= index && index < rect.right;
-    };
-}
-
-/**
- * @param {number} index
- * @returns {function(object): boolean} true when the row selection covers `index`
- */
-function isRowSelected(index) {
-    return (state) => {
-        const sel = state.selection;
-        if (!(sel instanceof CellSelection) || !sel.isRowSelection()) {
-            return false;
-        }
-        const rect = selectedRect(state);
-        return rect.top <= index && index < rect.bottom;
-    };
-}
-
-/**
- * @param {object} state
- * @returns {boolean} true when the selection spans the whole table
- */
-function isTableSelected(state) {
+function cellSelectionInfo(state) {
     const sel = state.selection;
-    return sel instanceof CellSelection && sel.isColSelection() && sel.isRowSelection();
+    if (!(sel instanceof CellSelection)) {
+        return null;
+    }
+    const rect = selectedRect(state);
+    return {
+        tableStart: rect.tableStart,
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom,
+        isCol: sel.isColSelection(),
+        isRow: sel.isRowSelection(),
+    };
 }
 
 export {
+    TableMap,
     getColumnCells,
     getRowCells,
-    isColumnSelected,
-    isRowSelected,
-    isTableSelected,
-    isInTable,
+    cellSelectionInfo,
 };

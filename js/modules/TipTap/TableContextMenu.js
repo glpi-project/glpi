@@ -48,18 +48,19 @@ function closeTableContextMenu() {
 
 /**
  * @param {'column'|'row'|'table'} kind
+ * @param {number} tablePos - document position of the target table node
  * @param {number} index
  * @param {object} editor - Tiptap editor
  * @returns {{label: string, run: function}}
  */
-function buildDeleteItem(kind, index, editor) {
+function buildDeleteItem(kind, tablePos, index, editor) {
     if (kind === 'column') {
-        return { label: __('Delete column'), run: () => editor.commands.deleteColumnAt(index) };
+        return { label: __('Delete column'), run: () => editor.commands.deleteColumnAt(tablePos, index) };
     }
     if (kind === 'row') {
-        return { label: __('Delete row'), run: () => editor.commands.deleteRowAt(index) };
+        return { label: __('Delete row'), run: () => editor.commands.deleteRowAt(tablePos, index) };
     }
-    return { label: __('Delete table'), run: () => editor.commands.deleteTable() };
+    return { label: __('Delete table'), run: () => editor.commands.deleteTableAt(tablePos) };
 }
 
 /**
@@ -80,8 +81,12 @@ function positionTableMenu(menu, anchor, kind) {
         // Left of the grip, in the gutter, centred on the row.
         left = anchor.left - mw - gap;
         top = anchor.top + (anchor.height / 2) - (mh / 2);
+    } else if (kind === 'table') {
+        // Up-left of the corner grip, clear of the row/column controls.
+        left = anchor.left - mw - 16;
+        top = anchor.top - mh - 16;
     } else {
-        // column & table: above the grip, in the top gutter, centred on the column.
+        // column: above the grip, in the top gutter, centred on the column.
         left = anchor.left + (anchor.width / 2) - (mw / 2);
         top = anchor.top - mh - gap;
     }
@@ -96,13 +101,14 @@ function positionTableMenu(menu, anchor, kind) {
  * @param {object} opts
  * @param {DOMRect} opts.anchorRect - the clicked grip host's bounding rect
  * @param {'column'|'row'|'table'} opts.kind
+ * @param {number} opts.tablePos - document position of the target table node
  * @param {number} opts.index - column/row index (ignored for 'table')
  * @param {object} opts.editor - Tiptap editor
  */
-function openTableContextMenu({ anchorRect, kind, index, editor }) {
+function openTableContextMenu({ anchorRect, kind, tablePos, index, editor }) {
     closeTableContextMenu();
 
-    const item = buildDeleteItem(kind, index, editor);
+    const item = buildDeleteItem(kind, tablePos, index, editor);
 
     const menu = document.createElement('div');
     menu.className = 'kb-table-menu';
@@ -126,6 +132,10 @@ function openTableContextMenu({ anchorRect, kind, index, editor }) {
     menu.appendChild(button);
 
     document.body.appendChild(menu);
+
+    // Hide the insert "+" controls while deleting so they don't crowd the "−".
+    const pmDom = editor.view?.dom;
+    pmDom?.classList.add('kb-table-menu-open');
 
     positionTableMenu(menu, anchorRect, kind);
 
@@ -156,6 +166,7 @@ function openTableContextMenu({ anchorRect, kind, index, editor }) {
             document.removeEventListener('mousedown', onPointerDown, true);
             document.removeEventListener('keydown', onKeyDown, true);
             window.removeEventListener('scroll', onScroll, true);
+            pmDom?.classList.remove('kb-table-menu-open');
             menu.remove();
         },
     };
