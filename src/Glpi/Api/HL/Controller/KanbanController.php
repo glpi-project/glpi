@@ -68,7 +68,7 @@ class KanbanController extends AbstractController
             'KanbanView' => [
                 'x-version-introduced' => '2.4.0',
                 'type' => Doc\Schema::TYPE_ARRAY,
-                'x-graphql-resolver' => self::graphQLResolverKanbanView(...),
+                'x-graphql-resolver' => [self::class, 'graphQLResolverKanbanView'],
                 'x-graphql-query-args' => [
                     'itemtype' => ['type' => Type::string()],
                     'items_id' => ['type' => Type::int()],
@@ -254,7 +254,7 @@ class KanbanController extends AbstractController
      * @param ResolveInfo $info
      * @return KanbanViewState|null
      */
-    private static function graphQLResolverKanbanView(mixed $source, array $args, stdClass $context, ResolveInfo $info): mixed
+    public static function graphQLResolverKanbanView(mixed $source, array $args, stdClass $context, ResolveInfo $info): mixed
     {
         if ($context->fullyResolved ?? false) {
             return $source[$info->fieldName];
