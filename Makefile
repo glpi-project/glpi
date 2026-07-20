@@ -32,6 +32,7 @@ PLAYWRIGHT = docker run \
 # Helper variables
 _TITLE := "\033[32m[%s]\033[0m %s\n" # Green text
 _ERROR := "\033[31m[%s]\033[0m %s\n" # Red text
+_WARNING := "\033[33m[%s]\033[0m %s\n" # Yellow text
 
 ##
 ## This Makefile is used for *local development* only.
@@ -155,7 +156,7 @@ db-restore: ## Drop the database and restores it from a dump file, i.e: make db-
 .PHONY: db-restore
 
 
-test-db-install: ## Install testing's database
+test-db-install: ## Install testing's database (used by phpunit and Cypress; see cypress-db)
 	$(CONSOLE) database:install \
 		-r -f \
 		--db-host=db \
@@ -189,26 +190,14 @@ test-db-clone: ## Set up DBs for parallel test execution, example: make test-db-
 	'
 .PHONY: test-db-clone
 
-e2e-db-install: ## Install e2e testing's database
-	$(CONSOLE) database:install \
-		-r -f \
-		--db-host=db \
-		--db-port=3306 \
-		--db-name=glpi_e2e \
-		--db-user=root \
-		--db-password=glpi \
-		--no-interaction \
-		--no-telemetry \
-		--env=e2e_testing
+e2e-db-install: ## [DEPRECATED] renamed to playwright-db
+	@printf $(_WARNING) "DEPRECATED" "'make e2e-db-install' is deprecated, use 'make playwright-db' instead."
+	@$(MAKE) --no-print-directory playwright-db
 .PHONY: e2e-db-install
 
-e2e-db-update: ## Update e2e testing's database
-	$(CONSOLE) database:update \
-		-n \
-		--allow-unstable \
-		--force \
-		--skip-db-checks  \
-		--env=e2e_testing
+e2e-db-update: ## [DEPRECATED] renamed to playwright-db-update
+	@printf $(_WARNING) "DEPRECATED" "'make e2e-db-update' is deprecated, use 'make playwright-db-update' instead."
+	@$(MAKE) --no-print-directory playwright-db-update
 .PHONY: e2e-db-update
 
 ## —— Dependencies —————————————————————————————————————————————————————————————
@@ -270,24 +259,62 @@ rector: ## Run rector
 	$(PHP) php vendor/bin/rector $(c)
 .PHONY: rector
 
-cypress: ## Run cypress tests
+## —— E2E tests · Cypress ————————————————————————————————————————————————————————
+## Cypress runs in the "testing" environment on the "glpi_test" database.
+## If a run fails on a fresh checkout, (re)build the database first with `make cypress-db`.
+cypress-db: test-db-install ## Setup the Cypress database (alias of test-db-install: glpi_test, env=testing)
+.PHONY: cypress-db
+
+cypress-db-update: test-db-update ## Update the Cypress database schema (alias of test-db-update)
+.PHONY: cypress-db-update
+
+cypress: ## Run cypress tests — DB setup: make cypress-db
 	@$(eval c ?=)
-	$(CONSOLE) config:set url_base http://localhost:8080 --env=testing
-	$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
-	$(PHP) node_modules/.bin/cypress run --project tests $(c)
+	@{ \
+		$(CONSOLE) config:set url_base http://localhost:8080 --env=testing && \
+		$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install' && \
+		$(PHP) node_modules/.bin/cypress run --project tests $(c) ; \
+	} || { printf $(_WARNING) "cypress" "Failed. Database not ready? Run: make cypress-db"; exit 1; }
 .PHONY: cypress
 
-cypress-open: ## Open cypress UI
+cypress-open: ## Open cypress UI — DB setup: make cypress-db
 	@$(eval c ?=)
 	$(CONSOLE) config:set url_base http://localhost:8080 --env=testing
 	$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
 	$(PHP) node_modules/.bin/cypress open --e2e --browser electron --project tests $(c)
 .PHONY: cypress-open
 
-playwright: ## Run playwright tests
+## —— E2E tests · Playwright —————————————————————————————————————————————————————
+## Playwright runs in the "e2e_testing" environment on the "glpi_e2e" database.
+## If a run fails on a fresh checkout, (re)build the database first with `make playwright-db`.
+playwright-db: ## Setup the Playwright database (glpi_e2e, env=e2e_testing)
+	$(CONSOLE) database:install \
+		-r -f \
+		--db-host=db \
+		--db-port=3306 \
+		--db-name=glpi_e2e \
+		--db-user=root \
+		--db-password=glpi \
+		--no-interaction \
+		--no-telemetry \
+		--env=e2e_testing
+.PHONY: playwright-db
+
+playwright-db-update: ## Update the Playwright database schema (glpi_e2e, env=e2e_testing)
+	$(CONSOLE) database:update \
+		-n \
+		--allow-unstable \
+		--force \
+		--skip-db-checks  \
+		--env=e2e_testing
+.PHONY: playwright-db-update
+
+playwright: ## Run playwright tests — DB setup: make playwright-db
 	@$(eval c ?=)
-	$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
-	$(PLAYWRIGHT) test $(c)
+	@{ \
+		$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing && \
+		$(PLAYWRIGHT) test $(c) ; \
+	} || { printf $(_WARNING) "playwright" "Failed. Database not ready? Run: make playwright-db"; exit 1; }
 .PHONY: playwright
 
 playwright-report: ## View playwright reports
@@ -296,7 +323,7 @@ playwright-report: ## View playwright reports
 	$(PLAYWRIGHT) show-report tests/e2e/results --host=0.0.0.0 $(c)
 .PHONY: playwright-report
 
-playwright-ui: ## Open playwright's UI mode
+playwright-ui: ## Open playwright's UI mode — DB setup: make playwright-db
 	@$(eval c ?=)
 	$(PLAYWRIGHT) test --ui-host=0.0.0.0 --ui-port=9323 $(c)
 .PHONY: playwright-ui
