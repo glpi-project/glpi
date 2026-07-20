@@ -38,6 +38,7 @@ use CommonDBTM;
 use DBConnection;
 use Glpi\Api\HL\APIException;
 use Glpi\Api\HL\OpenAPIGenerator;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\RightConditionNotMetException;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search;
@@ -334,6 +335,7 @@ class DefaultResolvers
             'WHERE' => [],
         ];
 
+        $schema = ResourceAccessor::applyFieldReadRestrictions($schema, true);
         $search = new Search($schema, $request_params);
 
         if (!in_array('id', $field_selection, true)) {

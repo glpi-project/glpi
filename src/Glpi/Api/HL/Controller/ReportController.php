@@ -257,9 +257,9 @@ class ReportController extends AbstractController
                             'name' => [
                                 'type' => Doc\Schema::TYPE_STRING,
                             ],
-                            'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + [
+                            'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity', params: [
                                 'description' => 'The entity the item belongs to',
-                            ],
+                            ]),
                             'is_deleted' => [
                                 'type' => Doc\Schema::TYPE_BOOLEAN,
                                 'description' => 'Whether the item is deleted or not',

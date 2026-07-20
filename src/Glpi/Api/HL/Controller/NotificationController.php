@@ -112,26 +112,13 @@ class NotificationController extends AbstractController
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                         'readOnly' => true,
                     ],
-                    'recipients' => [
-                        'x-version-introduced' => '2.3.0',
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'NotificationRecipient',
-                            'x-join' => [
-                                'table' => NotificationTarget::getTable(),
-                                'fkey' => 'id',
-                                'field' => 'notifications_id',
-                                'primary-property' => 'id',
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'readOnly' => true,
-                                ],
-                            ],
-                        ],
-                    ],
+                    'recipients' => self::getChildrenTypeSchema(
+                        parent_class: Notification::class,
+                        class: NotificationTarget::class,
+                        name_field: null,
+                        full_schema: 'NotificationRecipient',
+                        params: ['x-version-introduced' => '2.3.0']
+                    ),
                 ],
             ],
             'NotificationRecipient' => [
@@ -242,26 +229,13 @@ EOT,
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                         'readOnly' => true,
                     ],
-                    'translations' => [
-                        'x-version-introduced' => '2.3.0',
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'NotificationTemplateTranslation',
-                            'x-join' => [
-                                'table' => NotificationTemplateTranslation::getTable(),
-                                'fkey' => 'id',
-                                'field' => 'notificationtemplates_id',
-                                'primary-property' => 'id',
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'readOnly' => true,
-                                ],
-                            ],
-                        ],
-                    ],
+                    'translations' => self::getChildrenTypeSchema(
+                        parent_class: NotificationTemplate::class,
+                        class: NotificationTemplateTranslation::class,
+                        name_field: null,
+                        full_schema: 'NotificationTemplateTranslation',
+                        params: ['x-version-introduced' => '2.3.0']
+                    ),
                 ],
             ],
             'NotificationTemplateTranslation' => [
