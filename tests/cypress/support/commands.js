@@ -61,6 +61,40 @@ Cypress.Commands.add('login', (username = 'e2e_tests', password = 'glpi') => {
             }
         });
     });
+
+    // Since the "no reauth granted on login" change, a freshly logged-in user
+    // is not reauthenticated, so any page requiring reauth would redirect to
+    // the reauth prompt. Grant reauth right after login so tests behave as
+    // before. Tests that specifically cover the reauth flow can opt out with
+    // cy.revokeReauth().
+    cy.grantReauth();
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method grantReauth
+ * @description Mark the current session as reauthenticated (sudo mode), using a
+ *              test-only endpoint. Available in the `testing` environment only.
+ */
+Cypress.Commands.add('grantReauth', () => {
+    cy.request({
+        method: 'POST',
+        url: '/test/reauth/grant',
+    });
+});
+
+/**
+ * @memberof Cypress.Chainable.prototype
+ * @method revokeReauth
+ * @description Drop the reauth (sudo mode) validity of the current session, so
+ *              the next action requiring reauth redirects to the prompt. Useful
+ *              for tests that cover the reauth flow itself.
+ */
+Cypress.Commands.add('revokeReauth', () => {
+    cy.request({
+        method: 'POST',
+        url: '/test/reauth/revoke',
+    });
 });
 
 /**
