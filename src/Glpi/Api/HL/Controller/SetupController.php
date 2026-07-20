@@ -457,9 +457,11 @@ EOT,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'readOnly' => true,
                     ],
-                    'automatic_action' => self::getDropdownTypeSchema(class: CronTask::class, full_schema: 'AutomaticAction') + [
-                        'readOnly' => true,
-                    ],
+                    'automatic_action' => self::getDropdownTypeSchema(
+                        class: CronTask::class,
+                        full_schema: 'AutomaticAction',
+                        params: ['readOnly' => true]
+                    ),
                     'previous' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
                         'description' => 'The previous log entry for the same automatic action execution, if any. Typically points to the start log entry.',
@@ -841,9 +843,7 @@ EOT,
                         'description' => 'The number of times this webhook has been tried to be sent.',
                         'readOnly' => true,
                     ],
-                    'webhook' => self::getDropdownTypeSchema(class: Webhook::class, full_schema: 'Webhook') + [
-                        'readOnly' => true,
-                    ],
+                    'webhook' => self::getDropdownTypeSchema(class: Webhook::class, full_schema: 'Webhook', params: ['readOnly' => true]),
                     'url' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'The resolved URL the webhook will be sent to.',
@@ -908,7 +908,11 @@ EOT,
                     ],
                     'from' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
                     'to' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
-                    'mail_collector' => self::getDropdownTypeSchema(class: MailCollector::class, full_schema: 'EmailCollector') + ['readOnly' => true],
+                    'mail_collector' => self::getDropdownTypeSchema(
+                        class: MailCollector::class,
+                        full_schema: 'EmailCollector',
+                        params: ['readOnly' => true]
+                    ),
                     'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'readOnly' => true],
                     'subject' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
                     'messageid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'readOnly' => true],
@@ -928,7 +932,7 @@ EOT,
 EOT,
                         'readOnly' => true,
                     ],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User') + ['readOnly' => true],
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User', params: ['readOnly' => true]),
                 ],
             ],
             'OAuthClient' => [
@@ -1013,28 +1017,17 @@ EOT,
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'JSON encoded object of translations for the asset type label where the keys are the language and the values are objects with properties for "one", "many" and "other".',
                     ],
-                    'custom_fields' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'AssetDefinitionCustomField',
-                            'x-join' => [
-                                'table' => CustomFieldDefinition::getTable(),
-                                'fkey' => 'id',
-                                'field' => AssetDefinition::getForeignKeyField(),
-                                'primary-property' => 'id',
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                    'readOnly' => true,
-                                ],
+                    'custom_fields' => self::getChildrenTypeSchema(
+                        parent_class: AssetDefinition::class,
+                        class: CustomFieldDefinition::class,
+                        name_field: 'label',
+                        full_schema: 'AssetDefinitionCustomField',
+                        params: [
+                            'additional_properties' => [
                                 'system_name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
-                                'label' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
                             ],
-                        ],
-                    ],
+                        ]
+                    ),
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
