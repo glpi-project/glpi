@@ -84,9 +84,6 @@ final class ListenersPriority
         // Keep it in top priority as is required during handling of errors that may be triggered by any other listener.
         ErrorHandlerRequestListener::class => 1000,
 
-        // Update session activity date
-        SessionActivityListener::class       => 550,
-
         // Static assets must be served without executing anything else.
         // Keep the listener on top priority.
         FrontEndAssetsListener::class      => 500,
@@ -112,6 +109,9 @@ final class ListenersPriority
 
         // This listener will forward to the inventory controller any inventory agent requests made on the index endpoint.
         CatchInventoryAgentRequestListener::class => 420,
+
+        // Update session activity date
+        SessionActivityListener::class     => 410,
 
         // Executes the legacy controller scripts (`/ajax/*.php` or `/front/*.php` scripts) whenever the
         // requested URI matches an existing file.
