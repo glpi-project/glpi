@@ -147,59 +147,33 @@ final class ProjectController extends AbstractController
                             EOT,
                     ],
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                    'tasks' => [
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'ProjectTask',
-                            'x-join' => [
-                                'table' => 'glpi_projecttasks',
-                                'fkey' => 'id',
-                                'field' => 'projects_id',
-                                'primary-property' => 'id',
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                    'readOnly' => true,
-                                ],
-                                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'tasks' => self::getChildrenTypeSchema(
+                        parent_class: Project::class,
+                        class: ProjectTask::class,
+                        full_schema: 'ProjectTask',
+                        params: [
+                            'additional_properties' => [
                                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                                'content' => ['type' => Doc\Schema::TYPE_STRING],
+                                'content' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
                             ],
-                        ],
-                    ],
-                    'costs' => [
-                        'x-version-introduced' => '2.3.0',
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'ProjectCost',
-                            'x-join' => [
-                                'table' => ProjectCost::getTable(),
-                                'fkey' => 'id',
-                                'field' => Project::getForeignKeyField(),
-                                'primary-property' => 'id',
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                    'readOnly' => true,
-                                ],
-                            ],
-                        ],
-                    ],
-                    'status' => self::getDropdownTypeSchema(class: ProjectState::class, full_schema: 'ProjectState') + ['x-version-introduced' => '2.3'],
+                        ]
+                    ),
+                    'costs' => self::getChildrenTypeSchema(
+                        parent_class: Project::class,
+                        class: ProjectCost::class,
+                        name_field: null,
+                        full_schema: 'ProjectCost',
+                        params: ['x-version-introduced' => '2.3.0']
+                    ),
+                    'status' => self::getDropdownTypeSchema(class: ProjectState::class, full_schema: 'ProjectState', params: ['x-version-introduced' => '2.3']),
                     'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
-                    'parent' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project') + ['x-version-introduced' => '2.3'],
-                    'type' => self::getDropdownTypeSchema(class: ProjectType::class, full_schema: 'ProjectType') + ['x-version-introduced' => '2.3'],
+                    'parent' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project', params: ['x-version-introduced' => '2.3']),
+                    'type' => self::getDropdownTypeSchema(class: ProjectType::class, full_schema: 'ProjectType', params: ['x-version-introduced' => '2.3']),
                     'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
-                    'user' => self::getDropdownTypeSchema(class: 'User', full_schema: 'User') + ['x-version-introduced' => '2.3'],
-                    'group' => self::getDropdownTypeSchema(class: 'Group', full_schema: 'Group') + ['x-version-introduced' => '2.3'],
+                    'user' => self::getDropdownTypeSchema(class: 'User', full_schema: 'User', params: ['x-version-introduced' => '2.3']),
+                    'group' => self::getDropdownTypeSchema(class: 'Group', full_schema: 'Group', params: ['x-version-introduced' => '2.3']),
                     'plan_start_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
                     'plan_end_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
                     'real_start_date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
@@ -302,24 +276,14 @@ final class ProjectController extends AbstractController
                             ],
                         ],
                     ],
-                    'team' => [
-                        'x-version-introduced' => '2.3',
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'ProjectTeamMember',
-                            'x-join' => [
-                                'table' => ProjectTeam::getTable(),
-                                'fkey' => 'id',
-                                'field' => 'projects_id',
-                                'primary-property' => 'id',
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                    'readOnly' => true,
-                                ],
+                    'team' => self::getChildrenTypeSchema(
+                        parent_class: Project::class,
+                        class: ProjectTeam::class,
+                        name_field: null,
+                        full_schema: 'ProjectTeamMember',
+                        params: [
+                            'x-version-introduced' => '2.3',
+                            'additional_properties' => [
                                 'itemtype' => [
                                     'type' => Doc\Schema::TYPE_STRING,
                                     'enum' => [User::class, Group::class, Supplier::class, Contact::class],
@@ -331,8 +295,8 @@ final class ProjectController extends AbstractController
                                     'readOnly' => true,
                                 ],
                             ],
-                        ],
-                    ],
+                        ]
+                    ),
                 ],
             ],
             'ProjectTask' => [
@@ -416,8 +380,8 @@ final class ProjectController extends AbstractController
                     'content' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
                     'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
                     'parent_task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'ProjectTask'),
-                    'status' => self::getDropdownTypeSchema(class: ProjectState::class, full_schema: 'ProjectState') + ['x-version-introduced' => '2.3'],
-                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + ['x-version-introduced' => '2.3'],
+                    'status' => self::getDropdownTypeSchema(class: ProjectState::class, full_schema: 'ProjectState', params: ['x-version-introduced' => '2.3']),
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity', params: ['x-version-introduced' => '2.3']),
                     'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.3'],
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3'],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.3'],
@@ -446,8 +410,8 @@ final class ProjectController extends AbstractController
                         'x-field' => 'auto_projectstates',
                         'description' => 'If true, the status of the task will be automatically updated based on the percent done and the global configuration for project task states',
                     ],
-                    'type' => self::getDropdownTypeSchema(class: ProjectTaskType::class, full_schema: 'ProjectTaskType') + ['x-version-introduced' => '2.3'],
-                    'user' => self::getDropdownTypeSchema(class: 'User', full_schema: 'User') + ['x-version-introduced' => '2.3'],
+                    'type' => self::getDropdownTypeSchema(class: ProjectTaskType::class, full_schema: 'ProjectTaskType', params: ['x-version-introduced' => '2.3']),
+                    'user' => self::getDropdownTypeSchema(class: 'User', full_schema: 'User', params: ['x-version-introduced' => '2.3']),
                     'percent_done' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'x-version-introduced' => '2.3',
@@ -456,24 +420,14 @@ final class ProjectController extends AbstractController
                     ],
                     'auto_percent_done' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3'],
                     'is_milestone' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false, 'x-version-introduced' => '2.3'],
-                    'team' => [
-                        'x-version-introduced' => '2.3',
-                        'type' => Doc\Schema::TYPE_ARRAY,
-                        'items' => [
-                            'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'ProjectTaskTeamMember',
-                            'x-join' => [
-                                'table' => ProjectTaskTeam::getTable(),
-                                'fkey' => 'id',
-                                'field' => 'projecttasks_id',
-                                'primary-property' => 'id',
-                            ],
-                            'properties' => [
-                                'id' => [
-                                    'type' => Doc\Schema::TYPE_INTEGER,
-                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                    'readOnly' => true,
-                                ],
+                    'team' => self::getChildrenTypeSchema(
+                        parent_class: ProjectTask::class,
+                        class: ProjectTaskTeam::class,
+                        name_field: null,
+                        full_schema: 'ProjectTaskTeamMember',
+                        params: [
+                            'x-version-introduced' => '2.3',
+                            'additional_properties' => [
                                 'itemtype' => [
                                     'type' => Doc\Schema::TYPE_STRING,
                                     'enum' => [User::class, Group::class, Supplier::class, Contact::class],
@@ -485,8 +439,8 @@ final class ProjectController extends AbstractController
                                     'readOnly' => true,
                                 ],
                             ],
-                        ],
-                    ],
+                        ]
+                    ),
                 ],
             ],
             'ProjectCost' => [
@@ -565,7 +519,7 @@ final class ProjectController extends AbstractController
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'readOnly' => true,
                     ],
-                    'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project') + ['required' => true],
+                    'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project', params: ['required' => true]),
                     'itemtype' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'enum' => [User::class, Group::class, Supplier::class, Contact::class],
@@ -588,7 +542,7 @@ final class ProjectController extends AbstractController
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'readOnly' => true,
                     ],
-                    'task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'ProjectTask') + ['required' => true],
+                    'task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'ProjectTask', params: ['required' => true]),
                     'itemtype' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'enum' => [User::class, Group::class, Supplier::class, Contact::class],
