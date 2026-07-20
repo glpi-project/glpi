@@ -603,7 +603,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-family: "tabler-icons" !important;
+                font-family: tabler-icons !important;
                 font-size: 18px;
                 line-height: 1;
                 color: var(--tblr-gray-400);
@@ -839,7 +839,7 @@
 
         &::before {
             content: "\ea68";
-            font-family: "tabler-icons" !important;
+            font-family: tabler-icons !important;
             font-size: 18px;
             line-height: 1;
         }
