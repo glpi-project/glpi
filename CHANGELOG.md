@@ -18,11 +18,14 @@ The present file will list all changes made to the project; according to the
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
 - Password policy and 2FA settings moved from `Setup > General` to `Setup > Security`.
 - CLI command `system:status` now gives information about database version.
+- Knowledge base article visibility now inherits down the tree: a user who can access an article, or any of its ancestors, can view it. **On upgrade, existing categories become invisible until access is granted to them** (which then cascades to their contents).
 
 ### Deprecated
 
 ### Removed
 - CSRF protection is now handled via browser-native `Sec-Fetch-Site`/`Origin` header validation instead of per-request tokens. All `_glpi_csrf_token` hidden form fields and `X-Glpi-Csrf-Token` AJAX headers must be removed from plugins. See API changes below for the full list of removed methods and helpers.
+- The `KnowbaseItemCategory` itemtype and the `knowbasecategory` right have been removed. Knowledge base categories are now regular articles; hierarchy is expressed by linking child articles to parent articles.
+- Generic tree-browse (`TreeBrowse`) support for the knowledge base. The KB aside provides browsing.
 
 ### API changes
 - Type declarations for some `CronTask` methods have been added.
@@ -36,7 +39,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItem_Revision` is now final
 - Use of the `users_id_validate` field for `CommonITILValidation` is no longer supported. Use `items_id_target` and `itemtype_target` instead.
 - Passing additional URL parameters in `Document::getDownloadLink()` is no longer supported.
-- Use of the `knowbaseitemcategories_id` field in `KnowbaseItem` is no longer supported. Use `_categories` array instead.
+- Use of the `knowbaseitemcategories_id` field in `KnowbaseItem` is no longer supported. Use the `_parents` array instead (parent articles, stored in `glpi_knowbaseitems_knowbaseitems.knowbaseitems_id_parent`).
 - Use of the `certificates` and `entities_id` options in `NotificationTargetCertificate` is no longer supported. These values are automatically computed based on the linked certificate.
 - Use of the `domains` and `entities_id` options in `NotificationTargetDomain` is no longer supported. These values are automatically computed based on the linked domain.
 - Use of the `bypass_rights`, `expose_private` and `is_self_service` parameters in `CommonITILObject::getTimelineItems()` is no longer supported.
@@ -49,6 +52,9 @@ The present file will list all changes made to the project; according to the
 - `User::getAuthToken()` cannot be used for `cookie_token` anymore.
 - Remember me cookie token no longer stored in the `glpi_users` table. It is now stored in the `glpi_user_tokens` table.
 - `Auth::setRememberMeCookie()` signature changed. It no longer accepts an empty value to trigger the removal of the cookie.
+- `KnowbaseItem_KnowbaseItemCategory` renamed to `KnowbaseItem_KnowbaseItem`; table `glpi_knowbaseitems_knowbaseitemcategories` renamed to `glpi_knowbaseitems_knowbaseitems` with columns `knowbaseitems_id` (child) and `knowbaseitems_id_parent` (parent).
+- The `knowbaseitemcategories_id` column of `ITILCategory` and `TaskCategory` is renamed to `knowbaseitems_id` and now references a knowledge base article.
+- `KnowbaseItem::getForCategory()` renamed to `KnowbaseItem::getChildrenArticles()`; the HL API `/Knowledge base/Category` endpoints and the `KBCategory` schema are removed.
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.
