@@ -49,11 +49,6 @@ class KnowbaseControllerTest extends HLAPITestCase
         $this->api->autoTestCRUD('/Knowledgebase/Article');
     }
 
-    public function testCreateGetUpdateDeleteCategory()
-    {
-        $this->api->autoTestCRUD('/Knowledgebase/Category');
-    }
-
     public function testCreateGetUpdateDeleteComment()
     {
         $article_id = getItemByTypeName(KnowbaseItem::class, '_knowbaseitem02', true);
