@@ -513,23 +513,23 @@
         // Zero-area host stretched along the cell edge so a %-sized ::after fits it.
         .table-grip-column,
         .table-col-add {
-            top: 0;
-            left: 0;
+            inset-block-start: 0;
+            inset-inline-start: 0;
             width: 100%;
             height: 0;
         }
 
         .table-grip-row,
         .table-row-add {
-            top: 0;
-            left: 0;
+            inset-block-start: 0;
+            inset-inline-start: 0;
             width: 0;
             height: 100%;
         }
 
         .table-grip {
-            top: 0;
-            left: 0;
+            inset-block-start: 0;
+            inset-inline-start: 0;
         }
 
         // Selection grips: thin bars (column = top edge, row = left edge).
@@ -549,16 +549,16 @@
         }
 
         .table-grip-column::after {
-            top: 2px;
-            left: 0;
+            inset-block-start: 2px;
+            inset-inline-start: 0;
             width: 100%;
             height: 7px;
             border-radius: 3px;
         }
 
         .table-grip-row::after {
-            left: 2px;
-            top: 0;
+            inset-inline-start: 2px;
+            inset-block-start: 0;
             width: 7px;
             height: 100%;
             border-radius: 3px;
@@ -566,19 +566,19 @@
 
         // Real 16px hit box in the gutter (shared geometry above makes it 0-thick).
         .table-grip-column {
-            top: -16px;
+            inset-block-start: -16px;
             height: 16px;
         }
 
         .table-grip-row {
-            left: -16px;
+            inset-inline-start: -16px;
             width: 16px;
         }
 
         // Corner grip: round dot that selects the whole table.
         .table-grip::after {
-            top: -18px;
-            left: -18px;
+            inset-block-start: -18px;
+            inset-inline-start: -18px;
             width: 11px;
             height: 11px;
             border-radius: 50%;
@@ -593,55 +593,45 @@
             background: var(--tblr-blue);
         }
 
-        // Grey dot in a larger transparent hit area; becomes a blue "+" on hover.
+        // ti-circle-plus glyph in a larger transparent hit area; blue on hover.
         .table-col-add,
         .table-row-add {
             &::after {
+                content: "\ea69";
                 width: 22px;
                 height: 22px;
-                border-radius: 50%;
-                background: radial-gradient(
-                    circle,
-                    var(--tblr-gray-400) 4px,
-                    transparent 4.5px
-                );
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: "tabler-icons" !important;
+                font-size: 18px;
+                line-height: 1;
+                color: var(--tblr-gray-400);
             }
 
             &.is-hovered::after {
-                background:
-                    linear-gradient(#fff, #fff), linear-gradient(#fff, #fff),
-                    radial-gradient(
-                        circle,
-                        var(--tblr-blue) 9px,
-                        transparent 9.5px
-                    );
-                background-size:
-                    9px 2px,
-                    2px 9px,
-                    100% 100%;
-                background-position: center;
-                background-repeat: no-repeat;
+                color: var(--tblr-blue);
             }
         }
 
         // 38px out so the 22px hit area clears the grip bar's hover zone.
         .table-col-add::after {
-            top: -38px;
-            left: calc(100% - 11px);
+            inset-block-start: -38px;
+            inset-inline-start: calc(100% - 11px);
         }
 
         .table-col-add.first::after {
-            left: -11px;
+            inset-inline-start: -11px;
         }
 
         // Row insertion: on the row's trailing boundary (top edge first).
         .table-row-add::after {
-            left: -38px;
-            top: calc(100% - 11px);
+            inset-inline-start: -38px;
+            inset-block-start: calc(100% - 11px);
         }
 
         .table-row-add.first::after {
-            top: -11px;
+            inset-block-start: -11px;
         }
 
         // Insertion guide; length from --kb-table-h/-w to avoid a stray scrollbar.
@@ -661,25 +651,25 @@
 
         // 3px to cover the collapsed table border so it doesn't peek past.
         .table-col-add::before {
-            top: 0;
-            left: 100%;
+            inset-block-start: 0;
+            inset-inline-start: 100%;
             width: 3px;
             height: var(--kb-table-h, 0);
         }
 
         .table-col-add.first::before {
-            left: -2px;
+            inset-inline-start: -2px;
         }
 
         .table-row-add::before {
-            top: 100%;
-            left: 0;
+            inset-block-start: 100%;
+            inset-inline-start: 0;
             width: var(--kb-table-w, 0);
             height: 3px;
         }
 
         .table-row-add.first::before {
-            top: -2px;
+            inset-block-start: -2px;
         }
 
         // prosemirror-tables selection highlight; background-clip works around a Firefox border-paint bug.
@@ -688,12 +678,12 @@
             background-clip: padding-box;
         }
 
-        // prosemirror-tables: visible column resize handle on the cell's right edge
+        // prosemirror-tables: visible column resize handle on the cell's trailing edge
         .column-resize-handle {
             position: absolute;
-            right: -1px;
-            top: 0;
-            bottom: -1px;
+            inset-inline-end: -1px;
+            inset-block-start: 0;
+            inset-block-end: -1px;
             width: 2px;
             z-index: 20;
             pointer-events: none;
@@ -836,31 +826,26 @@
 // Grip-triggered table delete control
 .kb-table-menu {
     .kb-table-delete {
-        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         width: 22px;
         height: 22px;
         padding: 0;
         border: none;
+        background: none;
         cursor: pointer;
-        border-radius: 50%;
-        background:
-            linear-gradient(#fff, #fff),
-            radial-gradient(circle, var(--tblr-gray-400) 9px, transparent 9.5px);
-        background-size:
-            9px 2px,
-            100% 100%;
-        background-position: center;
-        background-repeat: no-repeat;
+        color: var(--tblr-gray-400);
+
+        &::before {
+            content: "\ea68";
+            font-family: "tabler-icons" !important;
+            font-size: 18px;
+            line-height: 1;
+        }
 
         &:hover {
-            background:
-                linear-gradient(#fff, #fff),
-                radial-gradient(circle, var(--tblr-red) 9px, transparent 9.5px);
-            background-size:
-                9px 2px,
-                100% 100%;
-            background-position: center;
-            background-repeat: no-repeat;
+            color: var(--tblr-red);
         }
 
         &:focus {
