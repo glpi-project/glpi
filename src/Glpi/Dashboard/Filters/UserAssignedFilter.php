@@ -36,6 +36,7 @@ namespace Glpi\Dashboard\Filters;
 
 use Change;
 use Problem;
+use Session;
 use Ticket;
 use User;
 
@@ -55,7 +56,10 @@ class UserAssignedFilter extends AbstractFilter
 
     public static function canBeApplied(string $table): bool
     {
-        return in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true);
+        global $DB;
+
+        return $DB->fieldExists($table, 'users_id')
+            || in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true);
     }
 
     /**
@@ -63,6 +67,8 @@ class UserAssignedFilter extends AbstractFilter
      */
     public static function getCriteria(string $table, $value): array
     {
+        global $DB;
+
         $criteria = [];
 
         $users_id = null;
@@ -73,7 +79,13 @@ class UserAssignedFilter extends AbstractFilter
         }
 
         if ($users_id !== null) {
-            $criteria = self::getAssignedITILUserCriteria($table, $users_id);
+            if ($DB->fieldExists($table, 'users_id')) {
+                $criteria["WHERE"] = [
+                    "$table.users_id" => $users_id,
+                ];
+            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true)) {
+                $criteria = self::getAssignedITILUserCriteria($table, $users_id);
+            }
         }
 
         return $criteria;
@@ -84,10 +96,19 @@ class UserAssignedFilter extends AbstractFilter
      */
     public static function getSearchCriteria(string $table, $value): array
     {
+        global $DB;
+
         $criteria = [];
 
         if ((int) $value > 0 || $value === 'myself') {
-            if (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true)) {
+            if ($DB->fieldExists($table, 'users_id')) {
+                $criteria[] = [
+                    'link'       => 'AND',
+                    'field'      => self::getSearchOptionID($table, 'users_id', 'glpi_users'),
+                    'searchtype' => 'equals',
+                    'value'      => $value === 'myself' ? (int) Session::getLoginUserID() : (int) $value,
+                ];
+            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()], true)) {
                 $criteria[] = self::getAssignedITILUserSearchCriteria($value);
             }
         }

@@ -39,6 +39,7 @@ use CommonITILActor;
 use Computer;
 use Glpi\Dashboard\Filters\UserAssignedFilter;
 use Glpi\Tests\DbTestCase;
+use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Ticket;
@@ -117,9 +118,45 @@ class UserAssignedFilterTest extends DbTestCase
 
     public function testCanBeApplied(): void
     {
+        // ITIL items (assigned technician actor)
         $this->assertTrue(UserAssignedFilter::canBeApplied(Ticket::getTable()));
         $this->assertTrue(UserAssignedFilter::canBeApplied(Change::getTable()));
         $this->assertTrue(UserAssignedFilter::canBeApplied(Problem::getTable()));
-        $this->assertFalse(UserAssignedFilter::canBeApplied(Computer::getTable()));
+
+        // Assets holding a users_id column (assigned user)
+        $this->assertTrue(UserAssignedFilter::canBeApplied(Computer::getTable()));
+
+        // Tables without users_id are not supported
+        $this->assertFalse(UserAssignedFilter::canBeApplied(Location::getTable()));
+    }
+
+    public function testGetCriteriaOnAsset(): void
+    {
+        $this->login();
+
+        $criteria = UserAssignedFilter::getCriteria(Computer::getTable(), '42');
+        $this->assertSame(['WHERE' => ['glpi_computers.users_id' => 42]], $criteria);
+
+        $myself = UserAssignedFilter::getCriteria(Computer::getTable(), 'myself');
+        $this->assertSame(['WHERE' => ['glpi_computers.users_id' => $_SESSION['glpiID']]], $myself);
+
+        $this->assertSame([], UserAssignedFilter::getCriteria(Computer::getTable(), ''));
+        $this->assertSame([], UserAssignedFilter::getCriteria(Computer::getTable(), '0'));
+        $this->assertSame([], UserAssignedFilter::getCriteria(Computer::getTable(), 'invalid'));
+    }
+
+    public function testGetSearchCriteriaOnAsset(): void
+    {
+        $this->login();
+
+        $criteria = UserAssignedFilter::getSearchCriteria(Computer::getTable(), '42');
+        $this->assertCount(1, $criteria);
+        $this->assertSame('AND', $criteria[0]['link']);
+        $this->assertSame('equals', $criteria[0]['searchtype']);
+        $this->assertSame(42, $criteria[0]['value']);
+
+        $this->assertSame([], UserAssignedFilter::getSearchCriteria(Computer::getTable(), ''));
+        $this->assertSame([], UserAssignedFilter::getSearchCriteria(Computer::getTable(), '0'));
+        $this->assertSame([], UserAssignedFilter::getSearchCriteria(Computer::getTable(), 'invalid'));
     }
 }
