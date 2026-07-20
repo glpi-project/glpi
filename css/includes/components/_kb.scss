@@ -49,9 +49,13 @@
     width: 100%;
     margin-bottom: 0.75rem;
 
+    // Without its own border, the table-collapse perimeter falls back to
+    // currentColor instead of the translucent cell border color below.
+    border: 1px solid var(--tblr-border-color-translucent);
+
     td,
     th {
-        border: 1px solid var(--tblr-border-color);
+        border: 1px solid var(--tblr-border-color-translucent);
         padding: 0.5rem;
         min-width: 100px;
 
@@ -841,7 +845,7 @@
         border-radius: 50%;
         background:
             linear-gradient(#fff, #fff),
-            radial-gradient(circle, var(--tblr-red) 9px, transparent 9.5px);
+            radial-gradient(circle, var(--tblr-gray-400) 9px, transparent 9.5px);
         background-size:
             9px 2px,
             100% 100%;
@@ -849,7 +853,14 @@
         background-repeat: no-repeat;
 
         &:hover {
-            filter: brightness(0.92);
+            background:
+                linear-gradient(#fff, #fff),
+                radial-gradient(circle, var(--tblr-red) 9px, transparent 9.5px);
+            background-size:
+                9px 2px,
+                100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         &:focus {

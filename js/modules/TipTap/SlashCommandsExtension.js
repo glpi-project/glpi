@@ -353,6 +353,16 @@ const SlashCommands = Extension.create({
                 char: '/',
                 allowSpaces: false,
                 startOfLine: false,
+                // Block the menu inside table cells to avoid nested tables/blocks.
+                allow: ({ state, range }) => {
+                    const $from = state.doc.resolve(range.from);
+                    for (let depth = $from.depth; depth > 0; depth--) {
+                        if ($from.node(depth).type.name === 'table') {
+                            return false;
+                        }
+                    }
+                    return true;
+                },
                 items: ({ query }) => {
                     const lowerQuery = query.toLowerCase();
                     return SLASH_COMMANDS.filter((item) =>
