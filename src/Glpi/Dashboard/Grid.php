@@ -708,7 +708,7 @@ TWIG, $twig_params);
         int $profiles_id = 0,
         int $users_id = 0
     ): string {
-        $seed         = $dasboard . $entities_id . $is_recursive . $profiles_id . $users_id . Telemetry::getInstanceUuid();
+        $seed         = implode('|', [$dasboard, $entities_id, $is_recursive, $profiles_id, $users_id, Telemetry::getInstanceUuid()]);
         $uuid         = Uuid::uuid5(Uuid::NAMESPACE_OID, $seed);
         $token        = $uuid->toString();
 

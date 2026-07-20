@@ -58,6 +58,15 @@ $is_embed_request = in_array($_REQUEST['action'], ['get_dashboard_items', 'get_c
     && array_key_exists('embed', $request_data)
     && (bool) $request_data['embed'];
 
+if ($is_embed_request) {
+    // Right checks must be enforced at the controller/front file level, not only relied on
+    // through `Grid::initEmbed()`, so that this remains true even if the usage of `initEmbed()`
+    // is removed/changed in the future.
+    if (Grid::checkToken($request_data) === false) {
+        throw new AccessDeniedHttpException();
+    }
+}
+
 $dashboard = new Dashboard($_REQUEST['dashboard'] ?? "");
 
 switch ($_POST['action'] ?? null) {
