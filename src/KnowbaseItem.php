@@ -2432,7 +2432,12 @@ TWIG, $twig_params);
             'itemtype'           => KnowbaseItem::class,
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'nosearch'           => true,
+            // Without this, SQLProvider's default "equals" handling filters
+            // on "$table.id" (the link row's own id) instead of the field we
+            // actually declared above, since $table here is a joined table
+            // distinct from KnowbaseItem's own table.
+            'searchequalsonfield' => true,
+            'searchtype'         => ['equals', 'notequals'],
             'joinparams'         => [
                 // Join from the current article (child) to its parent links
                 'jointype'  => 'child',

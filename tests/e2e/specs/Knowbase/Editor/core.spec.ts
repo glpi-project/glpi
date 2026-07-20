@@ -184,25 +184,26 @@ test.describe('Knowledge Base Editor - Core', () => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);
 
-        const category_name = getUniqueName(`E2E Category`);
+        const parent_name   = getUniqueName(`E2E Parent`);
         const original_name = getUniqueName(`Original article`);
         const renamed_name  = getUniqueName(`Renamed article`);
 
-        const category_id = await api.createItem('KnowbaseItemCategory', {
-            name: category_name,
+        const parent_id = await api.createItem('KnowbaseItem', {
+            name: parent_name,
+            answer: '<p>Parent content</p>',
             entities_id: getWorkerEntityId(),
         });
         const article_id = await api.createItem('KnowbaseItem', {
             name: original_name,
             answer: '<p>Some content</p>',
             entities_id: getWorkerEntityId(),
-            _categories: [category_id],
+            _parents: [parent_id],
         });
 
         await kb.goto(article_id);
 
         // The aside tree shows the original name.
-        await expect(kb.getAsideCategoryArticle(category_name, original_name)).toBeVisible();
+        await expect(kb.getAsideCategoryArticle(parent_name, original_name)).toBeVisible();
 
         // Rename the article inline.
         await kb.editor.enterEditMode();
@@ -214,8 +215,8 @@ test.describe('Knowledge Base Editor - Core', () => {
         await expect(kb.subject).toHaveText(renamed_name);
 
         // The aside tree reflects the new name without a page reload.
-        await expect(kb.getAsideCategoryArticle(category_name, renamed_name)).toBeVisible();
-        await expect(kb.getAsideCategoryArticle(category_name, original_name)).toBeHidden();
+        await expect(kb.getAsideCategoryArticle(parent_name, renamed_name)).toBeVisible();
+        await expect(kb.getAsideCategoryArticle(parent_name, original_name)).toBeHidden();
     });
 
     test('Renaming a favorited article updates its name in the favorites section', async ({
