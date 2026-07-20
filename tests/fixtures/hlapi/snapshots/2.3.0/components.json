@@ -9737,9 +9737,9 @@
                 "is_problem_visible": {
                     "type": "boolean"
                 },
-                "knowbase_category": {
+                "knowbase_article": {
                     "type": "object",
-                    "x-itemtype": "KnowbaseItemCategory",
+                    "x-itemtype": "KnowbaseItem",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -9750,7 +9750,7 @@
                             "readOnly": true
                         }
                     },
-                    "x-full-schema": "KBCategory"
+                    "x-full-schema": "KBArticle"
                 },
                 "date_creation": {
                     "type": "string",
@@ -10167,11 +10167,11 @@
                     "type": "string",
                     "format": "html"
                 },
-                "categories": {
+                "parents": {
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "x-full-schema": "KBCategory",
+                        "x-full-schema": "KBArticle",
                         "properties": {
                             "id": {
                                 "type": "integer",
@@ -10914,75 +10914,6 @@
                         }
                     },
                     "x-full-schema": "User"
-                }
-            }
-        },
-        "KBCategory": {
-            "x-itemtype": "KnowbaseItemCategory",
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer",
-                    "format": "int64",
-                    "readOnly": true
-                },
-                "name": {
-                    "type": "string",
-                    "maxLength": 255
-                },
-                "completename": {
-                    "type": "string",
-                    "readOnly": true
-                },
-                "comment": {
-                    "type": "string"
-                },
-                "entity": {
-                    "type": "object",
-                    "x-itemtype": "Entity",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64",
-                            "readOnly": true
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        }
-                    },
-                    "x-full-schema": "Entity"
-                },
-                "is_recursive": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "parent": {
-                    "type": "object",
-                    "x-itemtype": "KnowbaseItemCategory",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        }
-                    },
-                    "x-full-schema": "KBCategory"
-                },
-                "level": {
-                    "type": "integer",
-                    "readOnly": true
-                },
-                "date_creation": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "date_mod": {
-                    "type": "string",
-                    "format": "date-time"
                 }
             }
         },
