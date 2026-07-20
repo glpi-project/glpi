@@ -36,18 +36,48 @@ declare(strict_types=1);
 
 namespace Glpi\Security\ReAuth;
 
-enum ReAuthStrategyEnum: string
-{
-    case TOTP = 'totp';
-    case PASSWORD = 'password';
-    case FALLBACK = 'fallback';
+use Override;
 
-    public function createStrategy(): ReAuthStrategyInterface
+/**
+ * Fallback re-authentication strategy.
+ *
+ * Always available and always succeeds: it only displays a confirmation
+ * message in the prompt. It exists so that a user who has no other strategy
+ * available (e.g. no local password and no TOTP) is never left without a way
+ * to pass the re-authentication step.
+ *
+ * As it provides no real identity check, it has the lowest priority and is
+ * only selected when no stronger strategy is available.
+ */
+final class FallbackReAuthStrategy implements ReAuthStrategyInterface
+{
+    #[Override]
+    public function verify(int $users_id, string $user_input): bool
     {
-        return match ($this) {
-            self::TOTP => new TOTPReAuthStrategy(),
-            self::PASSWORD => new PasswordReAuthStrategy(),
-            self::FALLBACK => new FallbackReAuthStrategy(),
-        };
+        return true;
+    }
+
+    #[Override]
+    public function isAvailable(int $users_id, int $entities_id = 0): bool
+    {
+        return true;
+    }
+
+    #[Override]
+    public function getLabel(): string
+    {
+        return __('Confirmation');
+    }
+
+    #[Override]
+    public function getPromptTemplate(): string
+    {
+        return 'pages/reauth/fallback_form.html.twig';
+    }
+
+    #[Override]
+    public function getPriority(): int
+    {
+        return 0;
     }
 }
