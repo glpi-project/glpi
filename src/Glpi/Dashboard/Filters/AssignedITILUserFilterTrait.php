@@ -51,11 +51,11 @@ trait AssignedITILUserFilterTrait
      *
      * @return array<string, array<string, mixed>>
      */
-    protected static function getAssignedITILUserCriteria(string $table, int $users_id): array
+    protected static function getAssignedITILUserCriteria(string $table, int $users_id, string $alias = 'ul_assigned'): array
     {
         $main_item = match ($table) {
-            Ticket::getTable() => new Ticket(),
-            Change::getTable() => new Change(),
+            Ticket::getTable()  => new Ticket(),
+            Change::getTable()  => new Change(),
             Problem::getTable() => new Problem(),
             default => throw new UnexpectedValueException("Table $table is not a supported ITIL table"),
         };
@@ -65,16 +65,16 @@ trait AssignedITILUserFilterTrait
 
         return [
             'JOIN' => [
-                "$ul_table as ul_assigned" => [
+                "$ul_table as $alias" => [
                     'ON' => [
-                        'ul_assigned' => $fk,
-                        $table        => 'id',
+                        $alias  => $fk,
+                        $table  => 'id',
                     ],
                 ],
             ],
             'WHERE' => [
-                'ul_assigned.type'     => CommonITILActor::ASSIGN,
-                'ul_assigned.users_id' => $users_id,
+                "$alias.type"     => CommonITILActor::ASSIGN,
+                "$alias.users_id" => $users_id,
             ],
         ];
     }
