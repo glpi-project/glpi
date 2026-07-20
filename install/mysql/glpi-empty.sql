@@ -4173,34 +4173,6 @@ CREATE TABLE `glpi_itils_projects` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
-### Dump table glpi_knowbaseitemcategories
-
-DROP TABLE IF EXISTS `glpi_knowbaseitemcategories`;
-CREATE TABLE `glpi_knowbaseitemcategories` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `entities_id` int unsigned NOT NULL DEFAULT '0',
-  `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
-  `name` varchar(255) DEFAULT NULL,
-  `completename` text,
-  `comment` text,
-  `illustration` varchar(255) DEFAULT NULL,
-  `level` int NOT NULL DEFAULT '0',
-  `sons_cache` longtext,
-  `ancestors_cache` longtext,
-  `date_mod` timestamp NULL DEFAULT NULL,
-  `date_creation` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`entities_id`,`knowbaseitemcategories_id`,`name`),
-  KEY `name` (`name`),
-  KEY `is_recursive` (`is_recursive`),
-  KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
-  KEY `level` (`level`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-
 ### Dump table glpi_knowbaseitems
 
 DROP TABLE IF EXISTS `glpi_knowbaseitems`;

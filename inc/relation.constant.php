@@ -629,7 +629,6 @@ $RELATION = [
         'glpi_itilcategories'              => 'entities_id',
         'glpi_itilfollowuptemplates'       => 'entities_id',
         'glpi_itilvalidationtemplates'     => 'entities_id',
-        'glpi_knowbaseitemcategories'      => 'entities_id',
         'glpi_knowbaseitems'               => 'entities_id',
         'glpi_knowbaseitems_profiles'      => 'entities_id',
         'glpi_lineoperators'               => 'entities_id',
@@ -824,13 +823,6 @@ $RELATION = [
     'glpi_itils_validationsteps' => [
         'glpi_ticketvalidations' => 'itils_validationsteps_id',
         'glpi_changevalidations' => 'itils_validationsteps_id',
-    ],
-
-    'glpi_knowbaseitemcategories' => [
-        'glpi_itilcategories'            => 'knowbaseitemcategories_id',
-        'glpi_knowbaseitemcategories'    => 'knowbaseitemcategories_id',
-        '_glpi_knowbaseitems_knowbaseitemcategories' => 'knowbaseitemcategories_id',
-        'glpi_taskcategories'            => 'knowbaseitemcategories_id',
     ],
 
     'glpi_knowbaseitems' => [
