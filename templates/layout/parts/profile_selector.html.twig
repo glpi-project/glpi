@@ -284,23 +284,12 @@
             searchTree();
         });
 
-        // Focusing an entity button triggers Fancytree's own "focusin" handler, which
-        // (via autoScroll) synchronously redraws the viewport extension's rows. That
-        // redraw happens between mousedown and click, so by the time "click" fires the
-        // button has already been rebuilt/detached and its external form submission
-        // (form="ch_ent_o_*"/"ch_ent_r_*") is silently cancelled by the browser.
-        // We intercept on "mousedown" (capture phase, before Fancytree's own handlers)
-        // to both read the button while the DOM is still untouched and to preventDefault
-        // the native focus shift that would trigger the redraw in the first place, then
-        // submit the form ourselves. The paired "click" listener only exists to swallow
-        // the click that still follows, so Fancytree's own click handling and the
-        // button's native default action never run (which would otherwise double-submit).
-        //
-        // The forms carry a single-use CSRF token rendered once at page load, so we also
-        // guard against firing more than one submission: without this, several rapid
-        // clicks before the resulting page navigation happens would fire multiple
-        // requests reusing the same token, and every one after the first would be
-        // rejected (the token gets consumed on first use).
+        // Fancytree redraws the row on focus, detaching the clicked button before
+        // "click" fires and silently cancelling its form submission. Intercepting
+        // "mousedown" instead lets us submit before that redraw happens; the "click"
+        // listener just swallows the click that follows (or handles keyboard
+        // activation). "submitted" prevents rapid clicks from reusing the same
+        // single-use CSRF token across several requests.
         (function() {
             const container = document.getElementById('tree_entity{{ rand }}');
             let pendingButton = null;
