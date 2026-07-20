@@ -37,10 +37,10 @@ namespace Glpi\Api\HL\GraphQL;
 use CommonDBTM;
 use DBConnection;
 use Glpi\Api\HL\APIException;
-use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\RightConditionNotMetException;
 use Glpi\Api\HL\RSQL\RSQLException;
+use Glpi\Api\HL\Schemas;
 use Glpi\Api\HL\Search;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\DBAL\QueryFunction;
@@ -76,7 +76,7 @@ class DefaultResolvers
      */
     private function getSchemaForObjectName(string $name): ?array
     {
-        return OpenAPIGenerator::getComponentSchemas($this->api_version)[$name] ?? null;
+        return Schemas::getInstance($this->api_version)->getSchema($name);
     }
 
     /**

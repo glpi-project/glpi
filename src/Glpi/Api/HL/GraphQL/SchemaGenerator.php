@@ -34,11 +34,13 @@
 
 namespace Glpi\Api\HL\GraphQL;
 
-use Glpi\Api\HL\OpenAPIGenerator;
+use Glpi\Api\HL\Schemas;
 use Glpi\Debug\Profiler;
+use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
+use LogicException;
 
 final readonly class SchemaGenerator
 {
@@ -48,32 +50,65 @@ final readonly class SchemaGenerator
 
     public function getSchema(): Schema
     {
+        global $GLPI_CACHE;
+
         $query_type_config = [
             'name' => 'Query',
             'fields' => [],
         ];
-        Profiler::getInstance()->start('OpenAPI Component Schemas Retrieval', Profiler::CATEGORY_HLAPI);
-        $component_schemas = OpenAPIGenerator::getComponentSchemas($this->api_version);
-        Profiler::getInstance()->stop('OpenAPI Component Schemas Retrieval');
-        foreach ($component_schemas as $schema_name => $schema_info) {
-            $has_custom_resolver = array_key_exists('x-graphql-resolver', $schema_info);
-            $should_have_query = (
-                !str_starts_with($schema_name, '_')
-                && (
-                    (isset($schema_info['x-itemtype']) && !$has_custom_resolver)
-                    || ($has_custom_resolver && $schema_info['x-graphql-resolver'] !== null)
-                )
-            );
-            if (!$should_have_query) {
-                continue;
+
+        $query_schema_info = $GLPI_CACHE->get('graphql_query_schema_info_' . $this->api_version);
+
+        if ($query_schema_info === null) {
+            $query_schema_info = [];
+            Profiler::getInstance()->start('OpenAPI Component Schemas Retrieval', Profiler::CATEGORY_HLAPI);
+            $component_schemas = Schemas::getInstance($this->api_version)->getAllSchemas();
+            Profiler::getInstance()->stop('OpenAPI Component Schemas Retrieval');
+            foreach ($component_schemas as $schema_name => $schema_info) {
+                $has_custom_resolver = array_key_exists('x-graphql-resolver', $schema_info);
+                $should_have_query = (
+                    !str_starts_with($schema_name, '_')
+                    && (
+                        (isset($schema_info['x-itemtype']) && !$has_custom_resolver)
+                        || ($has_custom_resolver && $schema_info['x-graphql-resolver'] !== null)
+                    )
+                );
+                if (!$should_have_query) {
+                    continue;
+                }
+                $query_args = [];
+                foreach ($schema_info['x-graphql-query-args'] ?? [] as $arg_name => $arg_type) {
+                    if (count(array_keys($arg_type)) !== 1 || !isset($arg_type['type'])) {
+                        throw new LogicException("Types in 'x-graphql-query-args' must be an array with a single key 'type'.");
+                    }
+                    if (!($arg_type['type'] instanceof NamedType) || !in_array($arg_type['type']->name(), Type::BUILT_IN_SCALAR_NAMES, true)) {
+                        throw new LogicException("Types in 'x-graphql-query-args' can only be instances of built-in scalar types to allow proper serialization.");
+                    }
+                    $query_args[$arg_name] = $arg_type['type']->name();
+                }
+                $query_schema_info[$schema_name] = [
+                    'has_custom_resolver' => $has_custom_resolver,
+                    'is_singleton' => $schema_info['x-singleton'] ?? false,
+                    'query_args' => $query_args,
+                    'resolver' => $has_custom_resolver ? $schema_info['x-graphql-resolver'] : null,
+                ];
             }
-            if ($schema_info['x-singleton'] ?? false) {
+            $GLPI_CACHE->set('graphql_query_schema_info_' . $this->api_version, $query_schema_info);
+        }
+
+        foreach ($query_schema_info as $schema_name => $schema_info) {
+            if ($schema_info['is_singleton'] ?? false) {
+                // load type from name
+                $query_args = array_map(
+                    static fn($arg_type) => ['type' => Type::builtInScalars()[$arg_type]],
+                    $schema_info['query_args'] ?? []
+                );
                 $query_type_config['fields'][$schema_name] = [
                     'type' => fn(): Type => Types::load($schema_name, $this->api_version),
-                    'args' => $schema_info['x-graphql-query-args'] ?? [],
+                    'args' => $query_args,
                 ];
-                if ($has_custom_resolver) {
-                    $query_type_config['fields'][$schema_name]['resolve'] = $schema_info['x-graphql-resolver'];
+                if (isset($schema_info['resolver'])) {
+                    $query_type_config['fields'][$schema_name]['resolve'] = ($schema_info['resolver'])(...);
                 }
             } else {
                 $query_type_config['fields'][$schema_name] = [
@@ -89,8 +124,10 @@ final readonly class SchemaGenerator
                 ];
             }
         }
+        /** @phpstan-ignore-next-line */
         return new Schema([
             'query' => new ObjectType($query_type_config),
+            'typeLoader' => fn(string $sn): Type => Types::load($sn, $this->api_version),
         ]);
     }
 }
