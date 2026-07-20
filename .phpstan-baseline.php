@@ -14036,12 +14036,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetKnowbaseItem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$fields on KnowbaseItemCategory\\|false\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetKnowbaseItem.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on KnowbaseItem\\|null\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 5,
