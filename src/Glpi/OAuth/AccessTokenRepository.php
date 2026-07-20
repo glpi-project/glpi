@@ -35,6 +35,7 @@
 
 namespace Glpi\OAuth;
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Toolbox\IPUtilities;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
@@ -145,7 +146,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     public function revokeAll(): void
     {
         global $DB;
-        $DB->doQuery('TRUNCATE TABLE ' . $DB::quoteName('glpi_oauth_access_tokens'));
+        $DB->delete('glpi_oauth_access_tokens', [new QueryExpression('true')]);
     }
 
     /**

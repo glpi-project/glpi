@@ -35,6 +35,7 @@
 
 namespace Glpi\OAuth;
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Toolbox\IPUtilities;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
@@ -109,7 +110,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     public function revokeAll(): void
     {
         global $DB;
-        $DB->doQuery('TRUNCATE TABLE ' . $DB::quoteName('glpi_oauth_refresh_tokens'));
+        $DB->delete('glpi_oauth_refresh_tokens', [new QueryExpression('true')]);
     }
 
     /**

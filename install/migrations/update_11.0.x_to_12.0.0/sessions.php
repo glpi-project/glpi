@@ -100,7 +100,7 @@ $migration->dropField('glpi_users', 'cookie_token');
 $migration->dropField('glpi_users', 'cookie_token_date');
 
 if (!$DB->fieldExists('glpi_oauth_access_tokens', 'uuid')) {
-    $DB->doQuery("TRUNCATE `glpi_oauth_access_tokens`");
+    $DB->doQuery("DELETE FROM `glpi_oauth_access_tokens` WHERE true");
     $migration->addField('glpi_oauth_access_tokens', 'uuid', 'varchar(255) NOT NULL', ['after' => 'identifier']);
     $migration->addKey('glpi_oauth_access_tokens', 'uuid', 'uuid', 'UNIQUE');
 }
