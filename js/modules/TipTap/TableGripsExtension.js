@@ -184,12 +184,14 @@ const TableGrips = Extension.create({
                 // Leading `+` before the very first column.
                 if (index === 0) {
                     widget(pos + 1, () => makeControl(
-                        'table-col-add first', { table: tablePos, insertCol: 0 }, __('Insert column'),
+                        'table-col-add first', { table: tablePos, insertCol: 0 },
+                        __('Insert column at position %s').replace('%s', '1'),
                     ), `col-add-${tablePos}-0`);
                 }
                 // `+` at this column's trailing boundary (inserts after it).
                 widget(pos + 1, () => makeControl(
-                    'table-col-add', { table: tablePos, insertCol: index + 1 }, __('Insert column'),
+                    'table-col-add', { table: tablePos, insertCol: index + 1 },
+                    __('Insert column at position %s').replace('%s', String(index + 2)),
                 ), `col-add-${tablePos}-${index + 1}`);
             });
 
@@ -203,7 +205,8 @@ const TableGrips = Extension.create({
                         'table-grip', { table: tablePos }, __('Select table'), tableSel,
                     ), `grip-table-${tablePos}-${tableSel}`);
                     widget(pos + 1, () => makeControl(
-                        'table-row-add first', { table: tablePos, insertRow: 0 }, __('Insert row'),
+                        'table-row-add first', { table: tablePos, insertRow: 0 },
+                        __('Insert row at position %s').replace('%s', '1'),
                     ), `row-add-${tablePos}-0`);
                 }
                 widget(pos + 1, () => makeControl(
@@ -212,7 +215,8 @@ const TableGrips = Extension.create({
                 ), `grip-row-${tablePos}-${index}-${selected}`);
                 // `+` at this row's trailing boundary (inserts below it).
                 widget(pos + 1, () => makeControl(
-                    'table-row-add', { table: tablePos, insertRow: index + 1 }, __('Insert row'),
+                    'table-row-add', { table: tablePos, insertRow: index + 1 },
+                    __('Insert row at position %s').replace('%s', String(index + 2)),
                 ), `row-add-${tablePos}-${index + 1}`);
             });
         };

@@ -36,12 +36,14 @@ import { GlpiPage } from "./GlpiPage";
 import { TipTapEditorHelper } from "../utils/TipTapEditorHelper";
 import { SlashMenuHelper } from "../utils/SlashMenuHelper";
 import { BubbleMenuHelper } from "../utils/BubbleMenuHelper";
+import { TableEditorHelper } from "../utils/TableEditorHelper";
 
 export class KnowbaseItemPage extends GlpiPage
 {
     private _editorHelper: TipTapEditorHelper | null = null;
     private _slashMenuHelper: SlashMenuHelper | null = null;
     private _bubbleMenuHelper: BubbleMenuHelper | null = null;
+    private _tableEditorHelper: TableEditorHelper | null = null;
 
     public constructor(page: Page)
     {
@@ -70,6 +72,14 @@ export class KnowbaseItemPage extends GlpiPage
             this._bubbleMenuHelper = new BubbleMenuHelper(this.page, this.editor);
         }
         return this._bubbleMenuHelper;
+    }
+
+    public get tableEditor(): TableEditorHelper
+    {
+        if (!this._tableEditorHelper) {
+            this._tableEditorHelper = new TableEditorHelper(this.page, this.editor);
+        }
+        return this._tableEditorHelper;
     }
 
     public get imageDialog(): Locator
