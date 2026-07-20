@@ -188,8 +188,8 @@ final class ITILController extends AbstractController
                     'format' => Doc\Schema::FORMAT_STRING_HTML,
                     'x-supports-mentions' => true,
                 ],
-                'user_recipient' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_recipient', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
-                'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_lastupdater', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
+                'user_recipient' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_recipient', full_schema: 'User', params: ['x-version-introduced' => '2.1.0']),
+                'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_lastupdater', full_schema: 'User', params: ['x-version-introduced' => '2.1.0']),
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'category' => self::getDropdownTypeSchema(class: ITILCategory::class, full_schema: 'ITILCategory'),
                 'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
@@ -445,12 +445,12 @@ final class ITILController extends AbstractController
                     'description' => 'Total take into account duration in seconds',
                     'x-field' => 'takeintoaccount_delay_stat',
                 ];
-                $schemas[$itil_type]['properties']['sla_ttr'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_ttr', full_schema: 'SLA') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['sla_tto'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_tto', full_schema: 'SLA') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['ola_ttr'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_ttr', full_schema: 'OLA') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['ola_tto'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_tto', full_schema: 'OLA') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['sla_level_ttr'] = self::getDropdownTypeSchema(class: SlaLevel::class, field: 'slalevels_id_ttr', full_schema: 'SLALevel') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['ola_level_ttr'] = self::getDropdownTypeSchema(class: OlaLevel::class, field: 'olalevels_id_ttr', full_schema: 'OLALevel') + ['x-version-introduced' => '2.1.0'];
+                $schemas[$itil_type]['properties']['sla_ttr'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_ttr', full_schema: 'SLA', params: ['x-version-introduced' => '2.1.0']);
+                $schemas[$itil_type]['properties']['sla_tto'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_tto', full_schema: 'SLA', params: ['x-version-introduced' => '2.1.0']);
+                $schemas[$itil_type]['properties']['ola_ttr'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_ttr', full_schema: 'OLA', params: ['x-version-introduced' => '2.1.0']);
+                $schemas[$itil_type]['properties']['ola_tto'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_tto', full_schema: 'OLA', params: ['x-version-introduced' => '2.1.0']);
+                $schemas[$itil_type]['properties']['sla_level_ttr'] = self::getDropdownTypeSchema(class: SlaLevel::class, field: 'slalevels_id_ttr', full_schema: 'SLALevel', params: ['x-version-introduced' => '2.1.0']);
+                $schemas[$itil_type]['properties']['ola_level_ttr'] = self::getDropdownTypeSchema(class: OlaLevel::class, field: 'olalevels_id_ttr', full_schema: 'OLALevel', params: ['x-version-introduced' => '2.1.0']);
                 $schemas[$itil_type]['properties']['sla_waiting_duration'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -558,27 +558,13 @@ final class ITILController extends AbstractController
                 Change::class => ChangeCost::class,
                 Problem::class => ProblemCost::class,
             };
-            $schemas[$itil_type]['properties']['costs'] = [
-                'x-version-introduced' => '2.3.0',
-                'type' => Doc\Schema::TYPE_ARRAY,
-                'items' => [
-                    'type' => Doc\Schema::TYPE_OBJECT,
-                    'x-full-schema' => $cost_type,
-                    'x-join' => [
-                        'table' => $cost_type::getTable(),
-                        'fkey' => 'id',
-                        'field' => $itil_type::getForeignKeyField(),
-                        'primary-property' => 'id',
-                    ],
-                    'properties' => [
-                        'id' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
-                            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                            'readOnly' => true,
-                        ],
-                    ],
-                ],
-            ];
+            $schemas[$itil_type]['properties']['costs'] = self::getChildrenTypeSchema(
+                parent_class: $itil_type,
+                class: $cost_type,
+                name_field: null,
+                full_schema: $cost_type,
+                params: ['x-version-introduced' => '2.3.0']
+            );
         }
 
         $timeline_position_enum = [
@@ -636,8 +622,8 @@ final class ITILController extends AbstractController
                 'is_private' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', full_schema: 'User'),
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
-                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group') + ['x-version-introduced' => '2.1.0'],
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User', params: ['x-version-introduced' => '2.1.0']),
+                'group_tech' => self::getDropdownTypeSchema(class: Group::class, field: 'groups_id_tech', full_schema: 'Group', params: ['x-version-introduced' => '2.1.0']),
                 'date' => [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
@@ -793,7 +779,7 @@ final class ITILController extends AbstractController
                 ],
                 'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                 'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
-                'type' => self::getDropdownTypeSchema(class: SolutionType::class, full_schema: 'SolutionType') + ['x-version-introduced' => '2.2.0'],
+                'type' => self::getDropdownTypeSchema(class: SolutionType::class, full_schema: 'SolutionType', params: ['x-version-introduced' => '2.2.0']),
                 'content' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_HTML,
@@ -801,7 +787,7 @@ final class ITILController extends AbstractController
                 ],
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                 'user_editor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_editor', full_schema: 'User'),
-                'approver' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_approval', full_schema: 'User') + ['x-version-introduced' => '2.1.0'],
+                'approver' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_approval', full_schema: 'User', params: ['x-version-introduced' => '2.1.0']),
                 'status' => [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -819,25 +805,12 @@ final class ITILController extends AbstractController
                         - 4: Refused
                         EOT,
                 ],
-                'approval_followup' => [
-                    'x-version-introduced' => '2.1.0',
-                    'type' => Doc\Schema::TYPE_OBJECT,
-                    'x-full-schema' => 'Followup',
-                    'x-field' => ITILFollowup::getForeignKeyField(),
-                    'x-itemtype' => ITILFollowup::class,
-                    'x-join' => [
-                        'table' => ITILFollowup::getTable(),
-                        'fkey' => ITILFollowup::getForeignKeyField(),
-                        'field' => 'id',
-                    ],
-                    'properties' => [
-                        'id' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
-                            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                            'readOnly' => true,
-                        ],
-                    ],
-                ],
+                'approval_followup' => self::getDropdownTypeSchema(
+                    class: ITILFollowup::class,
+                    name_field: null,
+                    full_schema: 'Followup',
+                    params: ['x-version-introduced' => '2.1.0']
+                ),
                 'date_creation' => [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,

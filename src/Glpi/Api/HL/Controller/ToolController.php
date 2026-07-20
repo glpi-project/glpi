@@ -192,32 +192,24 @@ final class ToolController extends AbstractController
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'readOnly' => true,
                     ],
-                    'reservable_item' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-field' => 'reservationitems_id',
-                        'x-itemtype' => ReservationItem::class,
-                        'x-join' => [
-                            'table' => ReservationItem::getTable(),
-                            'fkey' => 'reservationitems_id',
-                            'field' => 'id',
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'readOnly' => true,
-                            ],
-                            'itemtype' => [
-                                'type' => Doc\Schema::TYPE_STRING,
-                                'description' => 'The itemtype of the reservable item',
-                            ],
-                            'items_id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'description' => 'The ID of the reservable item',
+                    'reservable_item' => self::getDropdownTypeSchema(
+                        class: ReservationItem::class,
+                        name_field: null,
+                        full_schema: 'ReservableItem',
+                        params: [
+                            'additional_properties' => [
+                                'itemtype' => [
+                                    'type' => Doc\Schema::TYPE_STRING,
+                                    'description' => 'The itemtype of the reservable item',
+                                ],
+                                'items_id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'description' => 'The ID of the reservable item',
+                                ],
                             ],
                         ],
-                    ],
+                    ),
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
                     'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                     'group' => [

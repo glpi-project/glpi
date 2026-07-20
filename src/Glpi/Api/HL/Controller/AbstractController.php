@@ -35,6 +35,8 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use CommonDBChild;
+use CommonDBRelation;
 use CommonDBTM;
 use Document;
 use Entity;
@@ -46,6 +48,7 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\Plugin\Hooks;
+use LogicException;
 use Plugin;
 use RuntimeException;
 use Session;
@@ -140,14 +143,24 @@ abstract class AbstractController
     }
 
     /**
+     * Utility function to generate a property schema for a dropdown type (foreign key) field.
+     *
      * @param class-string<CommonDBTM> $class The class this schema represents. Used in the SQL join.
      * @param string|null $field The SQL field to use as a reference in the SQL join.
-     * @param string $name_field The field that contains the name
+     * @param string|null $name_field The field that contains the name
      * @param string|null $full_schema The name of the schema that represents the full object
-     * @return array The schema
+     * @param bool $graphql_only Whether this schema is only used for GraphQL
+     * @param array<string, mixed>|null $params Additional parameters for the property
+     * @return array<string, mixed> The schema
      */
-    public static function getDropdownTypeSchema(string $class, ?string $field = null, string $name_field = 'name', ?string $full_schema = null): array
-    {
+    public static function getDropdownTypeSchema(
+        string $class,
+        ?string $field = null,
+        ?string $name_field = 'name',
+        ?string $full_schema = null,
+        bool $graphql_only = false,
+        ?array $params = null
+    ): array {
         if ($field === null) {
             $field = $class::getForeignKeyField();
         }
@@ -165,17 +178,133 @@ abstract class AbstractController
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                 ],
-                $name_field => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'readOnly' => true,
-                ],
             ],
         ];
+
+        if ($name_field !== null) {
+            $schema['properties'][$name_field] = [
+                'type' => Doc\Schema::TYPE_STRING,
+                'readOnly' => true,
+            ];
+        }
+
         if ($full_schema !== null) {
             $schema['x-full-schema'] = $full_schema;
         }
         if ($class === Entity::class) {
             $schema['properties']['id']['readOnly'] = true;
+        }
+        if ($graphql_only) {
+            $schema['x-graphql-only'] = true;
+        }
+        if ($params !== null) {
+            if (isset($params['additional_properties'])) {
+                $schema['properties'] = array_merge($schema['properties'], $params['additional_properties']);
+                unset($params['additional_properties']);
+            }
+            $schema = array_merge($schema, $params);
+        }
+        return $schema;
+    }
+
+    /**
+     * Utility function to generate a property schema for an array of children of a given class/schema.
+     *
+     * @param class-string<CommonDBTM> $parent_class The class of the parent object
+     * @param class-string<CommonDBTM> $class The class this schema represents
+     * @param string|null $name_field The field that contains the name
+     * @param string|null $full_schema The name of the schema that represents the full object
+     * @param bool $graphql_only Whether this schema is only used for GraphQL
+     * @param array<string, mixed>|null $params Additional parameters for the property
+     * @return array<string, mixed> The schema
+     */
+    protected static function getChildrenTypeSchema(
+        string $parent_class,
+        string $class,
+        ?string $name_field = 'name',
+        ?string $full_schema = null,
+        bool $graphql_only = false,
+        ?array $params = null
+    ): array {
+        $join_params = [
+            'table' => $class::getTable(), // The table to join
+            'fkey' => 'id', // The field in the main table to use as a reference
+            'primary-property' => 'id',
+        ];
+
+        if (is_subclass_of($class, CommonDBChild::class)) {
+            $join_params['field'] = $class::$items_id;
+            if ($class::$itemtype === 'itemtype') {
+                $join_params['condition'] = [
+                    'itemtype' => $parent_class::getType(),
+                ];
+            }
+        } elseif (is_subclass_of($class, CommonDBRelation::class)) {
+            // There are two sides to these relations, so we need to determine which side is the parent and which is the child
+            // For example Item_OperatingSystem (represented as OSInstallation schema) has a side for the OS and a side for the Item.
+            $itemtype_1 = $class::$itemtype_1;
+            $itemtype_2 = $class::$itemtype_2;
+
+            // If one of the itemtypes matches the parent class, we can determine which side is the child. Otherwise, it is the side with the generic "itemtype" field.
+            // If both side have generic "itemtype*" fields, we cannot determine which side to use.
+
+            if ($itemtype_1 === $parent_class::getType()) {
+                $join_params['field'] = $class::$items_id_1;
+            } elseif ($itemtype_2 === $parent_class::getType()) {
+                $join_params['field'] = $class::$items_id_2;
+            } elseif ($itemtype_1 === 'itemtype') {
+                $join_params['field'] = $class::$items_id_1;
+                $join_params['condition'] = [
+                    $class::$itemtype_1 => $parent_class::getType(),
+                ];
+            } elseif ($itemtype_2 === 'itemtype') {
+                $join_params['field'] = $class::$items_id_2;
+                $join_params['condition'] = [
+                    $class::$itemtype_2 => $parent_class::getType(),
+                ];
+            } else {
+                throw new LogicException("Cannot determine which side of the relation to use for {$class} and {$parent_class}");
+            }
+        }
+
+        $schema = [
+            'type' => Doc\Schema::TYPE_ARRAY,
+            'items' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => $class,
+                'x-join' => $join_params,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                ],
+            ],
+        ];
+
+        if (!$graphql_only && $name_field !== null) {
+            $schema['items']['properties'][$name_field] = [
+                'type' => Doc\Schema::TYPE_STRING,
+                'readOnly' => true,
+            ];
+        } else {
+            $schema['x-graphql-only'] = true;
+        }
+
+        if ($params !== null) {
+            if (isset($params['additional_properties'])) {
+                $schema['items']['properties'] = array_merge($schema['items']['properties'], $params['additional_properties']);
+                unset($params['additional_properties']);
+            }
+            $schema = array_merge($schema, $params);
+        }
+
+        if ($full_schema !== null) {
+            $schema['items']['x-full-schema'] = $full_schema;
+        }
+        if ($class === Entity::class) {
+            $schema['items']['properties']['id']['readOnly'] = true;
         }
         return $schema;
     }
