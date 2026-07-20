@@ -34,6 +34,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Glpi\Application\Environment;
 use Glpi\DependencyInjection\PublicService;
 use Glpi\Error\ErrorHandler;
 use Glpi\Security\ReAuth\ReAuthManager;
@@ -85,6 +86,14 @@ return static function (ContainerConfigurator $container): void {
     );
     $services->set(ReAuthManager::class)
         ->factory([ReAuthManager::class, 'getInstance']);
+
+    // Test-only controllers (e2e/Playwright/Cypress helper endpoints), routed via
+    // routes/testing.php and routes/e2e_testing.php. Registered as services only in
+    // test environments so they can be autowired (e.g. ReAuthManager injection);
+    // they are never routable elsewhere.
+    if (in_array(Environment::get(), [Environment::TESTING, Environment::E2E], true)) {
+        $services->load('Glpi\Tests\Controller\\', $projectDir . '/tests/src/Controller');
+    }
 
     // Prevent Symfony to register its own default logger.
     // @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass
