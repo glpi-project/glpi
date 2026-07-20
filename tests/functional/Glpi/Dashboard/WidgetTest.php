@@ -73,21 +73,25 @@ class WidgetTest extends DbTestCase
 
     public function testSearchShowListInEmbedModeReturnsResults(): void
     {
-        // Create a ticket while logged in as a user with full ticket rights,
-        // so it exists in the DB.
+        // Log in as a user with full ticket rights, and capture the exact context
+        // (profile/user/entity) that would have been recorded when they shared
+        // the dashboard.
         $this->login();
-        $this->createItem(Ticket::class, [
-            'name'    => 'Embed dashboard test ticket',
-            'content' => 'Test',
-            'status'  => Ticket::INCOMING,
-        ]);
-
-        // Capture the exact context (profile/user/entity) that would have been
-        // recorded when this user shared the dashboard.
         $profiles_id  = $_SESSION['glpiactiveprofile']['id'];
         $users_id     = Session::getLoginUserID();
         $entities_id  = $_SESSION['glpiactive_entity'];
         $is_recursive = $_SESSION['glpiactive_entity_recursive'];
+
+        // Create the ticket explicitly in that same entity: the logged in user's
+        // active entity is not necessarily the root entity (e.g. TU_USER defaults
+        // to a sub-entity), and the embed session only sees entities_id and its
+        // children, not its ancestors, so the ticket must land within that scope.
+        $this->createItem(Ticket::class, [
+            'name'        => 'Embed dashboard test ticket',
+            'content'     => 'Test',
+            'status'      => Ticket::INCOMING,
+            'entities_id' => $entities_id,
+        ]);
 
         $this->initEmbedSessionAs([
             'entities_id'  => $entities_id,
@@ -98,7 +102,12 @@ class WidgetTest extends DbTestCase
 
         $html = Widget::searchShowList([
             'itemtype'   => Ticket::class,
-            's_criteria' => [],
+            // Filter on the ticket name so this assertion does not depend on how many
+            // other tickets exist in the DB / where this one lands in the default sort
+            // + pagination when the full test suite runs.
+            's_criteria' => [
+                ['field' => 1, 'searchtype' => 'contains', 'value' => 'Embed dashboard test ticket'],
+            ],
             'limit'      => 20,
             'color'      => '#CCCCCC',
         ]);
