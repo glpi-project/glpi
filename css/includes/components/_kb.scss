@@ -39,11 +39,32 @@
         margin: 1.5rem 0;
         opacity: 1;
     }
+}
 
-    // Read view: full-width table like the editor (which is width:100%).
-    table {
-        width: 100%;
-        table-layout: fixed;
+// Table styling shared by the editor and the read view so a saved article
+// renders as edited. Grips/gutter are editor-only.
+.kb-editor-wrapper .ProseMirror table,
+.article-container table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    margin-bottom: 0.75rem;
+
+    td,
+    th {
+        border: 1px solid var(--tblr-border-color);
+        padding: 0.5rem;
+        min-width: 100px;
+
+        // Keep read-view cell height in sync with the editor's `p` spacing.
+        p {
+            margin-block-end: 0.75rem;
+        }
+    }
+
+    th {
+        background: var(--tblr-bg-surface-secondary);
+        font-weight: 600;
     }
 }
 
@@ -429,24 +450,12 @@
             }
         }
 
-        // Tables
+        // Visual styling is shared with the read view (see above). Editor-only:
+        // cells are the positioning context for grips + the resize handle.
         table {
-            border-collapse: collapse;
-            margin-bottom: 0.75rem;
-            table-layout: fixed;
-            width: 100%;
-
             td,
             th {
-                position: relative; // positioning context for grips + the column resize handle
-                border: 1px solid var(--tblr-border-color);
-                padding: 0.5rem;
-                min-width: 100px;
-            }
-
-            th {
-                background: var(--tblr-bg-surface-secondary);
-                font-weight: 600;
+                position: relative;
             }
         }
 
@@ -699,6 +708,22 @@
                 text-decoration: none;
             }
         }
+    }
+}
+
+// After Save the editor stays mounted read-only (no `is-editing`): drop the
+// gutter and grips so the table matches the read view without a reload.
+.kb-editor-wrapper:not(.is-editing) .ProseMirror {
+    .tableWrapper {
+        padding: 0;
+    }
+
+    .table-grip-column,
+    .table-grip-row,
+    .table-grip,
+    .table-col-add,
+    .table-row-add {
+        display: none;
     }
 }
 
