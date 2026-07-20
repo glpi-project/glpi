@@ -163,8 +163,7 @@ const TableGrips = Extension.create({
     addProseMirrorPlugins() {
         const editor = this.editor;
 
-        // Render grips for one table (found at `tablePos`), independent of the
-        // selection. `selInfo` (or null) drives the "selected" highlight.
+        // `selInfo` (or null) drives the "selected" highlight for this table.
         const buildTable = (node, tablePos, selInfo, push) => {
             const map = TableMap.get(node);
             const tableStart = tablePos + 1;
@@ -246,8 +245,7 @@ const TableGrips = Extension.create({
                     apply: (tr, old, _oldState, newState) =>
                         (tr.docChanged || tr.selectionSet) ? build(newState) : old,
                 },
-                // Publish each table's pixel size as CSS vars so the "+" guide
-                // line can span the whole table; a ResizeObserver keeps them current.
+                // Publish each table's pixel size as CSS vars so the "+" guide line can span it.
                 view: (editorView) => {
                     const publish = (table) => {
                         const h = `${table.offsetHeight}px`;
@@ -267,9 +265,7 @@ const TableGrips = Extension.create({
                     };
                     observeTables();
 
-                    // CSS `:hover` never fires on the gutter widgets (Chromium
-                    // resolves the pointer to the cell behind them), so track it
-                    // from geometry (rAF-throttled) and mirror it with `is-hovered`.
+                    // CSS `:hover` never fires on the gutter widgets, so track it from geometry.
                     let hovered = null;
                     let frame = 0;
                     let lastX = 0;

@@ -31,10 +31,8 @@
  */
 
 /**
- * Grip-triggered delete control: a single round red "−" button (the red
- * counterpart of the hover "+" insert control) offering the delete action for
- * the selected column/row/table. Anchored to the clicked grip's rect (measured
- * before the selection re-render) so its position is stable.
+ * Grip-triggered delete control: a round red "−" button for the selected
+ * column/row/table, anchored to the clicked grip's rect.
  */
 
 let activeMenu = null;
