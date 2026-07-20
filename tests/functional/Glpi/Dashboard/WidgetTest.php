@@ -52,16 +52,13 @@ class WidgetTest extends DbTestCase
         parent::tearDown();
     }
 
-    public function testSearchShowListInEmbedModeReturnsResults(): void
+    /**
+     * Build an embed session using the exact profile/user the dashboard
+     * was "shared" as, mirroring what Grid::initEmbed() does once the token
+     * has been validated.
+     */
+    private function initEmbedSessionAs(array $params): void
     {
-        // Create a ticket while logged in so it exists in the DB
-        $this->login();
-        $this->createItem(Ticket::class, [
-            'name'    => 'Embed dashboard test ticket',
-            'content' => 'Test',
-            'status'  => Ticket::INCOMING,
-        ]);
-
         // Use an anonymous subclass to call the protected initEmbedSession directly,
         // so the test stays in sync with the real implementation automatically.
         $grid = new class ('') extends Grid {
@@ -71,7 +68,33 @@ class WidgetTest extends DbTestCase
                 $this->initEmbedSession($params);
             }
         };
-        $grid->initEmbedSessionForTest(['entities_id' => 0, 'is_recursive' => 1]);
+        $grid->initEmbedSessionForTest($params);
+    }
+
+    public function testSearchShowListInEmbedModeReturnsResults(): void
+    {
+        // Create a ticket while logged in as a user with full ticket rights,
+        // so it exists in the DB.
+        $this->login();
+        $this->createItem(Ticket::class, [
+            'name'    => 'Embed dashboard test ticket',
+            'content' => 'Test',
+            'status'  => Ticket::INCOMING,
+        ]);
+
+        // Capture the exact context (profile/user/entity) that would have been
+        // recorded when this user shared the dashboard.
+        $profiles_id  = $_SESSION['glpiactiveprofile']['id'];
+        $users_id     = Session::getLoginUserID();
+        $entities_id  = $_SESSION['glpiactive_entity'];
+        $is_recursive = $_SESSION['glpiactive_entity_recursive'];
+
+        $this->initEmbedSessionAs([
+            'entities_id'  => $entities_id,
+            'is_recursive' => $is_recursive,
+            'profiles_id'  => $profiles_id,
+            'users_id'     => $users_id,
+        ]);
 
         $html = Widget::searchShowList([
             'itemtype'   => Ticket::class,
@@ -114,6 +137,43 @@ class WidgetTest extends DbTestCase
         $this->assertStringNotContainsString('Embed dashboard test ticket', $html);
     }
 
+    public function testSearchShowListInEmbedModeIsRestrictedToSharerRights(): void
+    {
+        // A ticket created by a full-rights user...
+        $this->login();
+        $this->createItem(Ticket::class, [
+            'name'    => 'Embed dashboard restricted ticket',
+            'content' => 'Test',
+            'status'  => Ticket::INCOMING,
+        ]);
+
+        // ...must NOT be visible through an embed session that restores the
+        // context of a low-privilege user (self-service, sees only their own
+        // tickets). This is the actual regression test for the security issue:
+        // the embed session must never grant more than the sharer could see,
+        // unlike the previous implementation which bypassed all right checks.
+        $this->login('post-only', 'postonly');
+        $profiles_id  = $_SESSION['glpiactiveprofile']['id'];
+        $users_id     = Session::getLoginUserID();
+        $entities_id  = $_SESSION['glpiactive_entity'];
+        $is_recursive = $_SESSION['glpiactive_entity_recursive'];
+
+        $this->initEmbedSessionAs([
+            'entities_id'  => $entities_id,
+            'is_recursive' => $is_recursive,
+            'profiles_id'  => $profiles_id,
+            'users_id'     => $users_id,
+        ]);
+
+        $html = Widget::searchShowList([
+            'itemtype'   => Ticket::class,
+            's_criteria' => [],
+            'limit'      => 20,
+            'color'      => '#CCCCCC',
+        ]);
+
+        $this->assertStringNotContainsString('Embed dashboard restricted ticket', $html);
+    }
 
     public function testInitEmbedThrowsOnInvalidToken(): void
     {
@@ -124,7 +184,35 @@ class WidgetTest extends DbTestCase
             'dashboard'    => 'test_dashboard',
             'entities_id'  => 0,
             'is_recursive' => 1,
+            'profiles_id'  => 0,
+            'users_id'     => 0,
             'token'        => 'invalid-token',
+        ]);
+    }
+
+    public function testInitEmbedThrowsWhenUserNoLongerHasProfileOnEntity(): void
+    {
+        $this->expectException(AccessDeniedHttpException::class);
+
+        $this->login();
+        $entities_id  = $_SESSION['glpiactive_entity'];
+        $is_recursive = $_SESSION['glpiactive_entity_recursive'];
+        $users_id     = (int) Session::getLoginUserID();
+        // This profile is never assigned to the logged in user, so even
+        // though the token is valid for this exact combination, the
+        // DB-backed assignment check must reject it.
+        $profiles_id = 999999;
+
+        $token = Grid::getToken('test_dashboard', $entities_id, $is_recursive, $profiles_id, $users_id);
+
+        $grid = new Grid('test_dashboard');
+        $grid->initEmbed([
+            'dashboard'    => 'test_dashboard',
+            'entities_id'  => $entities_id,
+            'is_recursive' => $is_recursive,
+            'profiles_id'  => $profiles_id,
+            'users_id'     => $users_id,
+            'token'        => $token,
         ]);
     }
 

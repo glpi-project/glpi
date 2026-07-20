@@ -70,6 +70,8 @@ window.GLPI.Dashboard = {
  * @property {string|null} [token] Token
  * @property {number|null} [entities_id] Entities ID
  * @property {number|boolean|null} [is_recursive] Recursive
+ * @property {number|null} [profiles_id] Profile ID of the user who shared the dashboard
+ * @property {number|null} [users_id] User ID of the user who shared the dashboard
  * @property {{}[]} [all_cards] All cards
  * @property {string} [context] Dashboard context
  * @property {string} [current] Current dashboard
@@ -121,6 +123,8 @@ class GLPIDashboard {
             token:       null,
             entities_id: null,
             is_recursive:null,
+            profiles_id: null,
+            users_id:    null,
             ajax_cards:  true,
             all_cards:   [],
             context:     "core"
@@ -136,6 +140,8 @@ class GLPIDashboard {
         this.token        = options.token;
         this.entities_id  = options.entities_id;
         this.is_recursive = options.is_recursive;
+        this.profiles_id  = options.profiles_id;
+        this.users_id     = options.users_id;
         this.ajax_cards   = options.ajax_cards;
         this.all_cards    = options.all_cards;
         this.all_widgets  = options.all_widgets;
@@ -734,6 +740,8 @@ class GLPIDashboard {
             data.token        = this.token;
             data.entities_id  = this.entities_id;
             data.is_recursive = this.is_recursive;
+            data.profiles_id  = this.profiles_id;
+            data.users_id     = this.users_id;
         }
 
         $.get({
@@ -1188,6 +1196,8 @@ class GLPIDashboard {
                     data.token        = this.token;
                     data.entities_id  = this.entities_id;
                     data.is_recursive = this.is_recursive;
+                    data.profiles_id  = this.profiles_id;
+                    data.users_id     = this.users_id;
                 }
 
                 promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", data).then((html) => {
@@ -1215,6 +1225,8 @@ class GLPIDashboard {
                 data.token        = this.token;
                 data.entities_id  = this.entities_id;
                 data.is_recursive = this.is_recursive;
+                data.profiles_id  = this.profiles_id;
+                data.users_id     = this.users_id;
             }
 
             return $.ajax({

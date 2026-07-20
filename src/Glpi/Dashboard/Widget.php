@@ -45,7 +45,6 @@ use Line;
 use Mexitek\PHPColors\Color;
 use Plugin;
 use Search;
-use Session;
 use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
 
@@ -1791,13 +1790,10 @@ HTML;
             'no_sort'            => true,
             'list_limit'         => $p['limit'],
         ]);
-        // In embed mode, bypass all right checks so items in the active entity are
-        // visible (entity scoping is still enforced via glpiactiveentities in the session).
-        if (Grid::$embed) {
-            Session::callAsSystem(fn() => Search::showList($p['itemtype'], $params));
-        } else {
-            Search::showList($p['itemtype'], $params);
-        }
+        // Embed sessions are initialized with the exact profile/groups of the user who
+        // shared the dashboard (see Grid::initEmbedSession()), so the normal right checks
+        // performed by Search::showList() already scope the results correctly.
+        Search::showList($p['itemtype'], $params);
 
         $crawler = new Crawler(ob_get_clean());
         $search_result = $crawler->filter('.search-results')->outerHtml();
