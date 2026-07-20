@@ -36,11 +36,12 @@ namespace Glpi\Api\HL\GraphQL;
 
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\GraphQL\Type\DateTimeType;
-use Glpi\Api\HL\OpenAPIGenerator;
+use Glpi\Api\HL\Schemas;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\UnionType;
+use LogicException;
 
 class Types
 {
@@ -50,8 +51,11 @@ class Types
     public static function load(string $type_name, string $api_version): Type
     {
         if (!isset(self::$types[$type_name])) {
-            $schemas = OpenAPIGenerator::getComponentSchemas($api_version);
-            self::$types[$type_name] = self::convertRESTSchemaToGraphQLSchema($type_name, $schemas[$type_name], $api_version);
+            $schema = Schemas::getInstance($api_version)->getSchema($type_name);
+            if ($schema === null) {
+                throw new LogicException("Schema for type {$type_name} not found");
+            }
+            self::$types[$type_name] = self::convertRESTSchemaToGraphQLSchema($type_name, $schema, $api_version);
         }
         return self::$types[$type_name];
     }

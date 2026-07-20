@@ -134,7 +134,7 @@ final class ServiceCatalogController extends AbstractController
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-version-introduced' => '2.4.0',
                 'readOnly' => true,
-                'x-graphql-resolver' => self::graphQLResolveServiceCatalogInfo(...),
+                'x-graphql-resolver' => [self::class, 'graphQLResolveServiceCatalogInfo'],
                 'x-singleton' => true,
                 'properties' => [
                     'helpdesk_home_title' => ['type' => Doc\Schema::TYPE_STRING],
@@ -226,7 +226,7 @@ final class ServiceCatalogController extends AbstractController
      * @param ResolveInfo $info
      * @return mixed
      */
-    private static function graphQLResolveServiceCatalogInfo(mixed $source, array $args, stdClass $context, ResolveInfo $info): mixed
+    public static function graphQLResolveServiceCatalogInfo(mixed $source, array $args, stdClass $context, ResolveInfo $info): mixed
     {
         if ($context->fullyResolved ?? false) {
             return $source[$info->fieldName];
