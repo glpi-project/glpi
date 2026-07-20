@@ -1769,6 +1769,7 @@ class MailCollector extends CommonDBTM
                 if (
                     preg_match('/(<body[^>]*>)/uis', $raw_content, $body_opening_matches, PREG_OFFSET_CAPTURE) === 1
                     && preg_match('/(<\/body>)/uis', $raw_content, $body_closing_matches, PREG_OFFSET_CAPTURE) === 1
+                    && ($body_closing_matches[1][1] ?? 0) > ($body_opening_matches[1][1] ?? 0)
                 ) {
                     // Regex offset is in bytes, not in chars, and must be converted for unicode support
                     $body_opening_pos = mb_strlen(substr($raw_content, 0, $body_opening_matches[1][1] ?? 0));
