@@ -1498,6 +1498,35 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
     /**
+     * Rebuild a LDAP connection from the user's recorded auths_id/user_dn, so RuleRight
+     * LDAP-attribute criteria can be evaluated outside of an actual LDAP authentication.
+     *
+     * @return array<string, mixed> Empty if no LDAP connection could be established.
+     */
+    private function getLdapConnectionForRules(): array
+    {
+        if (empty($this->fields['auths_id']) || empty($this->fields['user_dn'])) {
+            return [];
+        }
+
+        $config_ldap = new AuthLDAP();
+        if (!$config_ldap->getFromDB($this->fields['auths_id'])) {
+            return [];
+        }
+
+        $connection = $config_ldap->connect();
+        if (!$connection) {
+            return [];
+        }
+
+        return [
+            'connection'  => $connection,
+            'userdn'      => $this->fields['user_dn'],
+            'ldap_server' => $this->fields['auths_id'],
+        ];
+    }
+
+    /**
      * Force authorization assignment rules to be processed for this user
      * @return void
      */
@@ -1510,11 +1539,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
         $result = $rules->processAllRules(
             $groups_id,
             $this->fields,
-            [
-                'type' => $this->fields['authtype'],
-                'login' => $this->fields['name'],
-                'email' => UserEmail::getDefaultForUser($this->getID()),
-            ]
+            array_merge(
+                [
+                    'type' => $this->fields['authtype'],
+                    'login' => $this->fields['name'],
+                    'email' => UserEmail::getDefaultForUser($this->getID()),
+                ],
+                $this->getLdapConnectionForRules()
+            )
         );
 
         $this->input = $result;
@@ -2855,11 +2887,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $groups_id = array_column($groups, 'id');
             }
 
-            $this->fields = $rule->processAllRules($groups_id, $this->fields, [
-                'type'   => Auth::EXTERNAL,
-                'email'  => $this->fields["_emails"] ?? [],
-                'login'  => $this->fields["name"],
-            ]);
+            $this->fields = $rule->processAllRules($groups_id, $this->fields, array_merge(
+                [
+                    'type'   => Auth::EXTERNAL,
+                    'email'  => $this->fields["_emails"] ?? [],
+                    'login'  => $this->fields["name"],
+                ],
+                $this->getLdapConnectionForRules()
+            ));
 
             $this->willProcessRuleRight();
 

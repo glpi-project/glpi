@@ -120,8 +120,8 @@ class RuleRightCollection extends RuleCollection
             $rule_parameters["MAIL_SERVER"] = $params_lower["mail_server"] ?? "";
         }
 
-        //LDAP type method
-        if ($params_lower["type"] == Auth::LDAP) {
+        //LDAP type, or any auth type given a LDAP connection (e.g. SSO with a linked LDAP source)
+        if ($params_lower["type"] == Auth::LDAP || !empty($params_lower["connection"])) {
             //Get all the field to retrieve to be able to process rule matching
             $rule_fields = $this->getFieldsToLookFor();
 
