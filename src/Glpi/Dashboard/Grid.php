@@ -564,11 +564,18 @@ TWIG, $twig_params);
 
         $entities_id  = (int) $params['entities_id'];
         $is_recursive = (bool) $params['is_recursive'];
-        $profiles_id  = (int) $params['profiles_id'];
-        $users_id     = (int) $params['users_id'];
+        $profiles_id  = (int) ($params['profiles_id'] ?? 0);
+        $users_id     = (int) ($params['users_id'] ?? 0);
 
-        // load minimal session
         Session::start();
+
+        // Links shared before GLPI 11.0.9 carry no profiles_id/users_id; keep them working
+        // with their original (pre-11.0.9) session init instead of denying access.
+        if ($profiles_id === 0 || $users_id === 0) {
+            $this->initLegacyEmbedSession($entities_id, $is_recursive);
+            return;
+        }
+
         $_SESSION['glpiID']            = $users_id;
         $_SESSION['glpiname']          = 'embed_dashboard';
         $_SESSION['glpi_currenttime']  = date('Y-m-d H:i:s');
@@ -617,6 +624,20 @@ TWIG, $twig_params);
                 $_SESSION["glpi$field"] = $CFG_GLPI[$field];
             }
         }
+    }
+
+    private function initLegacyEmbedSession(int $entities_id, bool $is_recursive): void
+    {
+        $_SESSION['glpiactive_entity']           = $entities_id;
+        $_SESSION['glpiactive_entity_recursive'] = $is_recursive;
+        $_SESSION['glpiname']                    = 'embed_dashboard';
+        $_SESSION['glpigroups']                  = [];
+
+        $entities = $is_recursive ? getSonsOf('glpi_entities', $entities_id) : [$entities_id];
+        $_SESSION['glpiactiveentities']        = $entities;
+        $_SESSION['glpiactiveentities_string'] = "'" . implode("', '", $entities) . "'";
+
+        $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
     }
 
     /**
@@ -716,6 +737,20 @@ TWIG, $twig_params);
     }
 
     /**
+     * Token format used before GLPI 11.0.9, kept to avoid breaking links shared prior to that version.
+     */
+    public static function getLegacyToken(
+        string $dasboard = "",
+        int $entities_id = 0,
+        int $is_recursive = 0
+    ): string {
+        $seed = $dasboard . $entities_id . $is_recursive . Telemetry::getInstanceUuid();
+        $uuid = Uuid::uuid5(Uuid::NAMESPACE_OID, $seed);
+
+        return $uuid->toString();
+    }
+
+    /**
      * Check token variables (compare it to `dashboard`, `entities_id`, `is_recursive`,
      * `profiles_id` and `users_id` parameters)
      *
@@ -748,8 +783,17 @@ TWIG, $twig_params);
             $params['profiles_id'],
             $params['users_id']
         );
+        if (hash_equals($token, (string) $params['token'])) {
+            return true;
+        }
 
-        return hash_equals($token, (string) $params['token']);
+        $legacy_token = self::getLegacyToken(
+            $params['dashboard'],
+            $params['entities_id'],
+            $params['is_recursive']
+        );
+
+        return hash_equals($legacy_token, (string) $params['token']);
     }
 
 

@@ -1790,9 +1790,6 @@ HTML;
             'no_sort'            => true,
             'list_limit'         => $p['limit'],
         ]);
-        // Embed sessions are initialized with the exact profile/groups of the user who
-        // shared the dashboard (see Grid::initEmbedSession()), so the normal right checks
-        // performed by Search::showList() already scope the results correctly.
         Search::showList($p['itemtype'], $params);
 
         $crawler = new Crawler(ob_get_clean());
