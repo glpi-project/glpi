@@ -941,21 +941,9 @@ class AuthLdapTest extends DbTestCase
 
         $this->assertCount(1, $results);
 
-        if ($results[0] === \MassiveAction::ACTION_OK) {
-            // LDAP directory reachable: the user must have been imported using the LDAP
-            // server from the massive action input, not the authldaps_id=0 polluting $_REQUEST.
-            $user = new \User();
-            $this->assertTrue($user->getFromDBbyName('ecuador0'));
-            $this->assertSame($ldap->getID(), $user->fields['auths_id']);
-        } else {
-            // LDAP directory unreachable in this environment: at least confirm that a
-            // connection to the CORRECT server was attempted. authldaps_id=0, coming from
-            // the polluted $_REQUEST, would fail instantly with no connection attempt at all.
-            $this->hasPhpLogRecordThatContains(
-                sprintf('Unable to bind to LDAP server `%s:%s`', $ldap->fields['host'], $ldap->fields['port']),
-                LogLevel::WARNING
-            );
-        }
+        $user = new \User();
+        $this->assertTrue($user->getFromDBbyName('ecuador0'));
+        $this->assertSame($ldap->getID(), $user->fields['auths_id']);
     }
 
     /**
