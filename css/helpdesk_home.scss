@@ -131,6 +131,7 @@ header {
         svg {
             width: 100%;
             height: auto;
+
             // keep that ratio so the illustration scales with the scene width without distortion.
             aspect-ratio: 842 / 596;
         }
