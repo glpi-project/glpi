@@ -1280,7 +1280,7 @@ TWIG, $twig_params);
                         }
                         const criteria_id = $(e.currentTarget).data('id');
                         if (criteria_id) {
-                            $('#viewcriteria{$rules_id}{$rand}').load('/ajax/viewsubitem.php',{
+                            $('#viewcriteria{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->rulecriteriaclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
                                 rules_id: $rules_id,

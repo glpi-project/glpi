@@ -43,6 +43,9 @@ use RuleTicket;
 use RuleTicketCollection;
 use Symfony\Component\DomCrawler\Crawler;
 
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+
 /* Test for inc/rule.class.php */
 
 class RuleTest extends DbTestCase
@@ -1018,6 +1021,60 @@ class RuleTest extends DbTestCase
 
         $this->assertTrue($rules->getFromDBByCrit(['uuid' => 'glpi_rule_import_asset_no_creation_on_partial_import']));
         $this->assertNotSame($rules->fields['name'], 'Changed for tests');
+    }
+
+    public function testShowActionsAndCriteriasListRendering(): void
+    {
+        $this->login('glpi', 'glpi');
+
+        $rule     = new RuleTicket();
+        $criteria = new \RuleCriteria();
+        $action   = new \RuleAction();
+
+        $rules_id = $rule->add([
+            'name'        => 'Test actions/criterias list rendering',
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => 'RuleTicket',
+            'match'       => Rule::OR_MATCHING,
+            'condition'   => 0,
+            'description' => '',
+        ]);
+        $this->assertGreaterThan(0, (int) $rules_id);
+
+        $this->assertGreaterThan(
+            0,
+            (int) $criteria->add([
+                'rules_id'  => $rules_id,
+                'criteria'  => 'name',
+                'condition' => Rule::PATTERN_IS,
+                'pattern'   => 'Test criteria',
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            (int) $action->add([
+                'rules_id'    => $rules_id,
+                'action_type' => 'assign',
+                'field'       => '_ignore_import',
+                'value'       => '1',
+            ])
+        );
+
+        $this->assertTrue($rule->getRuleWithCriteriasAndActions($rules_id, 1, 1));
+
+        ob_start();
+        $rule->showActionsList($rules_id);
+        $actions_output = ob_get_clean();
+
+        ob_start();
+        $rule->showCriteriasList($rules_id);
+        $criterias_output = ob_get_clean();
+
+        // ajax URL correctness is covered by AjaxUrlRootDocTest
+        $this->assertStringContainsString("id=\"viewaction{$rules_id}", $actions_output);
+        $this->assertStringContainsString("id=\"viewcriteria{$rules_id}", $criterias_output);
     }
 
     public function testDisplayImpactCriteria(): void

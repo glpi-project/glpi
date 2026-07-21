@@ -489,7 +489,7 @@ class QueuedWebhook extends CommonDBChild
             $("#{$btn_id}").click(function() {
                 var id = $(this).data('id');
                 $.ajax({
-                    url: '/ajax/webhook.php',
+                    url: CFG_GLPI.root_doc + '/ajax/webhook.php',
                     type: 'POST',
                     data: {
                         'action': 'resend',
