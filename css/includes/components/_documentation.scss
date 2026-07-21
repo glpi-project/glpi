@@ -156,10 +156,7 @@
 
 @include media-breakpoint-up(sm) {
     .documentation-large {
-        // Always reserve at least the width of the fixed table-of-contents (15rem/240px),
-        // then let the content re-center itself once the viewport is wide enough.
-        // A hard breakpoint switch here previously caused the sidebar to overlap the
-        // content in a range of viewport widths just above the xxl breakpoint.
+        // Never smaller than the fixed sidebar width, to avoid overlap.
         margin-left: max(240px, calc((100% - 1000px) / 2));
     }
 }
