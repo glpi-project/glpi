@@ -442,7 +442,7 @@ class AuthLDAP extends CommonDBTM
                         }
 
                         $options      = [
-                            'authldaps_id' => (int) $_REQUEST['authldaps_id'],
+                            'authldaps_id' => (int) $input['authldaps_id'],
                             'entities_id'  => $entity,
                             'is_recursive' => $is_recursive,
                             'type'         => $input['ldap_import_type'][$id],
@@ -466,14 +466,16 @@ class AuthLDAP extends CommonDBTM
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
+                $mode         = (int) ($input['mode'] ?? self::ACTION_IMPORT);
+                $authldaps_id = (int) ($input['authldaps_id'] ?? 0);
                 foreach ($ids as $id) {
                     if (
                         self::ldapImportUserByServerId(
                             ['method' => self::IDENTIFIER_LOGIN,
                                 'value'  => $id,
                             ],
-                            (int) $_REQUEST['mode'],
-                            (int) $_REQUEST['authldaps_id'],
+                            $mode,
+                            $authldaps_id,
                             true
                         )
                     ) {
