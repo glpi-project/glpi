@@ -539,7 +539,7 @@ var switchFoldMenu = function() {
 
 $(function() {
     //TODO Remove. Only applies to legacy tables using .tab_cadre_fixehov class
-    $("body").delegate('td','mouseover mouseleave', function(e) {
+    $("body").delegate('.tab_cadre_fixehov td','mouseover mouseleave', function(e) {
         var col = $(this).closest('tr').children().index($(this));
         var tr = $(this).closest('tr');
         if (!$(this).closest('tr').hasClass('noHover')) {
