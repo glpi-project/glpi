@@ -58,6 +58,12 @@ export class TableEditorHelper {
         return this.rows.first().getByRole('cell');
     }
 
+    // The cell containing `text`, resolved by role. Grips add no text content,
+    // so cell text stays unique to the authored content.
+    cell(text: string): Locator {
+        return this.table.getByRole('cell').filter({ hasText: text });
+    }
+
     get grips(): Locator {
         return this.table.getByRole('button', {
             name: /^(Select (column|row|table)|Insert (column|row) at position)/,

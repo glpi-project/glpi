@@ -99,6 +99,22 @@ test.describe('Knowledge Base Editor - Table controls', () => {
         await expect(kb.editor.contentContainer.getByText('C1', { exact: true })).toBeVisible();
     });
 
+    test('Selecting a column highlights only that column\'s cells', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await createArticleWithTable(api, 'Table select column', TABLE_3x2);
+
+        await kb.goto(id);
+        await kb.editor.enterEditMode();
+
+        await kb.tableEditor.selectColumn(1);
+
+        await expect(kb.tableEditor.cell('A1')).toHaveClass(/selectedCell/);
+        await expect(kb.tableEditor.cell('A2')).toHaveClass(/selectedCell/);
+        await expect(kb.tableEditor.cell('B1')).not.toHaveClass(/selectedCell/);
+    });
+
     test('Inserting a column adds a column', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);
