@@ -4850,6 +4850,9 @@ final class SQLProvider implements SearchProviderInterface
                             $sql .= "$LINK ($sub_sql)";
                         }
                     }
+                } elseif (!isset($criterion['field'])) {
+                    // No field to filter on
+                    continue;
                 } elseif (
                     isset($meta_searchopt[$criterion['field']]["usehaving"])
                     || ($meta && "AND NOT" === $criterion['link'])

@@ -9,6 +9,7 @@ The present file will list all changes made to the project; according to the
 
 ### Changed
 - Fixed searching values with multiple concurrent spaces.
+- Fixed a PHP warning when a search filter criterion has no target field.
 
 ### Deprecated
 

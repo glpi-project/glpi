@@ -41,6 +41,8 @@ use Glpi\Tests\DbTestCase;
 use Html;
 use Search;
 
+use function Safe\strtotime;
+
 class SQLProviderTest extends DbTestCase
 {
     public function testGetLeftJoinCriteria()
@@ -80,6 +82,23 @@ class SQLProviderTest extends DbTestCase
             ' LEFT JOIN `glpi_tickets` ON (`glpi_tickets`.`id` = `glpi_tickets_tickets`.`tickets_id_1` OR `glpi_tickets`.`id` = `glpi_tickets_tickets`.`tickets_id_2`)',
             $it->analyseJoins($item_item_revert_join)
         );
+    }
+
+    /**
+     * A criterion without 'field' or 'criteria' must be skipped, not throw a warning.
+     */
+    public function testConstructCriteriaSQLIgnoresCriterionWithoutField()
+    {
+        $criteria = [
+            [
+                'link'  => 'AND',
+                'value' => 'foo',
+            ],
+        ];
+
+        $sql = SQLProvider::constructCriteriaSQL($criteria, ['itemtype' => 'Ticket'], []);
+
+        $this->assertSame('', $sql);
     }
 
     /**
