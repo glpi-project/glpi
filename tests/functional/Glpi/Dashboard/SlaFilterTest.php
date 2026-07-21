@@ -165,4 +165,57 @@ class SlaFilterTest extends DbTestCase
     {
         $this->assertSame([], SlaFilter::getSearchCriteria('glpi_tickets', 0));
     }
+
+    public function testGetCriteriaWithoutValueIsEmpty(): void
+    {
+        $this->assertSame([], SlaFilter::getCriteria('glpi_tickets', 0));
+        $this->assertSame([], SlaFilter::getCriteria('glpi_tickets', ''));
+    }
+
+    public function testSlaFilterDoesNotCrossMatchColumns(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $slm     = $this->createSlm();
+        // Ticket has only a TTO SLA assigned, slas_id_ttr stays 0
+        $sla_tto = $this->createSla($slm, SLM::TTO);
+        // An unrelated TTR SLA that is not assigned to the ticket
+        $sla_ttr = $this->createSla($slm, SLM::TTR);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'         => __FUNCTION__,
+            'content'      => __FUNCTION__,
+            'entities_id'  => $this->getTestRootEntity(true),
+            'slas_id_tto'  => $sla_tto->getID(),
+        ]);
+
+        $tickets_id = array_column(
+            iterator_to_array(
+                $DB->request([
+                    'SELECT' => ['glpi_tickets.id AS tickets_id'],
+                    'FROM'   => Ticket::getTable(),
+                ] + SlaFilter::getCriteria('glpi_tickets', $sla_ttr->getID()))
+            ),
+            'tickets_id'
+        );
+
+        // Filtering by an unrelated TTR SLA must not match a ticket that only
+        // carries a different TTO SLA: the OR across slas_id_ttr/slas_id_tto
+        // must not produce a false positive across column types
+        $this->assertNotContains($ticket->getID(), $tickets_id);
+
+        // check: filtering by the tickets own TTO SLA does match it
+        $tickets_id = array_column(
+            iterator_to_array(
+                $DB->request([
+                    'SELECT' => ['glpi_tickets.id AS tickets_id'],
+                    'FROM'   => Ticket::getTable(),
+                ] + SlaFilter::getCriteria('glpi_tickets', $sla_tto->getID()))
+            ),
+            'tickets_id'
+        );
+        $this->assertContains($ticket->getID(), $tickets_id);
+    }
+
 }
