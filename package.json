@@ -143,7 +143,7 @@
         "vue3-gettext": "^4.0.1",
         "webpack": "^5.105.4",
         "webpack-cli": "^6.0.1",
-        "webpack-dev-server": "^5.2.5"
+        "webpack-dev-server": "^5.2.6"
     },
     "overrides": {
         "monaco-editor": {
