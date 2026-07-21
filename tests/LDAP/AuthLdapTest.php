@@ -35,12 +35,6 @@
 namespace tests\units;
 
 use AuthLDAP;
-use function Safe\ldap_add;
-use function Safe\ldap_delete;
-use function Safe\ldap_mod_add;
-use function Safe\ldap_mod_del;
-use function Safe\ldap_mod_replace;
-use function Safe\ldap_rename;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\RuleBuilder;
@@ -54,6 +48,13 @@ use Profile_User;
 use Psr\Log\LogLevel;
 use RuleRight;
 use UserTitle;
+
+use function Safe\ldap_add;
+use function Safe\ldap_delete;
+use function Safe\ldap_mod_add;
+use function Safe\ldap_mod_del;
+use function Safe\ldap_mod_replace;
+use function Safe\ldap_rename;
 
 /* Test for inc/authldap.class.php */
 
