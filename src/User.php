@@ -3851,8 +3851,6 @@ HTML;
             'field'             => 'notification_to_myself',
             'name'              => __('Notifications to myself'),
             'datatype'          => 'bool',
-            'nosearch'          => true,
-            'nosort'            => true,
         ];
 
         // add objectlock search options
