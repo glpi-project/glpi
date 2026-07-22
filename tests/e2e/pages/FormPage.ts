@@ -123,29 +123,12 @@ export class FormPage extends GlpiPage
 
     public async setItemTypeForItemQuestion(question: Locator, item_type: string): Promise<void>
     {
-        // Changing the itemtype triggers an asynchronous reload of the
-        // default-value dropdown, which replaces the current dropdown in the
-        // DOM. Grab it beforehand so we can wait for it to be detached and
-        // avoid interacting with the stale, previous-itemtype dropdown.
-        const previous_item_dropdown = await this
-            .getDropdownByLabel('Select an item', question)
-            .filter({visible : true})
-            .first()
-            .elementHandle();
-
         await this.doSetDropdownValue(
             this.getDropdownByLabel('Select an itemtype', question)
                 .filter({visible : true}),
             item_type,
             false
         );
-
-        if (previous_item_dropdown !== null) {
-            await this.page.waitForFunction(
-                (element) => !element.isConnected,
-                previous_item_dropdown
-            );
-        }
     }
 
     public async addComment(name: string): Promise<Locator>

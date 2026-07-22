@@ -208,7 +208,7 @@ export class GlpiFormRendererController
 
                 // Find the input field within the question
                 let has_input_field = true;
-                const inputFields = question.find('input:not([type=hidden]):not([data-uploader-name]):not(.select2-search__field), select, textarea');
+                const inputFields = question.find('input:not([type=hidden]):not([data-uploader-name]):not(.select2-search__field), select, textarea:not(.select2-search__field)');
                 if (!inputFields.length) {
                     has_input_field = false;
                 }

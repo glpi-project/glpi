@@ -135,11 +135,19 @@
                     white-space: normal;
 
                     .select2-selection__choice__remove {
+                        // Flatten Select2 4.1.0's boxed remove button into a compact centred cross
+                        display: flex;
+                        align-items: center;
+                        top: 0;
+                        bottom: 0;
+                        border: 0;
+                        border-radius: 0;
+                        padding: 0 4px;
                         color: var(--tblr-dark);
                         font-weight: bold;
-                        border-right-color: var(--tblr-border-color);
 
                         &:hover {
+                            background-color: transparent;
                             color: var(--tblr-black);
                         }
                     }

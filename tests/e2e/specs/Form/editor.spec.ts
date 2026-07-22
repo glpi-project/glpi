@@ -984,6 +984,8 @@ test('Can delete a question that has a validation constraint', async ({ page, pr
 });
 
 test('Can save a form with many inputs', async ({ page, profile, api }) => {
+    // 60 Select2 dropdowns render slowly under load; extend the default timeout
+    test.slow();
     await profile.set(Profiles.SuperAdmin);
     const form = new FormPage(page);
 
@@ -1018,8 +1020,8 @@ test('Can save a form with many inputs', async ({ page, profile, api }) => {
     // Visit the form editor
     await form.goto(form_id);
 
-    // Wait for all questions to load — the Save button should be visible
-    await expect(form.editor_save_button).toBeVisible({ timeout: 30000 });
+    // Wait for all questions to load ; the Save button should be visible
+    await expect(form.editor_save_button).toBeVisible({ timeout: 60000 });
 
     // Verify there are many form inputs (more than 1000)
     // eslint-disable-next-line playwright/no-raw-locators

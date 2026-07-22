@@ -1548,14 +1548,19 @@ export class GlpiFormEditorController
         // Keep track of select2 values to restore
         const select2_values_to_restore = [];
 
-        // Look for tiynmce editor to init
-        copy.find("textarea").each(function() {
+        // Look for tiynmce editor to init (skip Select2 4.1.0 search textareas)
+        copy.find("textarea:not(.select2-search__field)").each(function() {
             // Get editor config for this field
             let id = $(this).attr("id");
 
             // JS object are passed by reference, we need to clone the config
             // to avoid breaking previous instances
             const config = _.cloneDeep(window.tinymce_editor_configs[id]);
+
+            // Not a rich-text editor
+            if (config === undefined) {
+                return;
+            }
 
             // Rename id to ensure it is unique
             const uid = getUUID();
