@@ -75,9 +75,11 @@ callback URL still matches.
 
 ## Notes for automated tests (later)
 
-- The `testing` / `e2e_testing` environments have a stricter `GLPI_SERVERSIDE_URL_ALLOWLIST`
-  than dev (which is `['/.*/']`). To let GLPI fetch the discovery URL there, the allowlist
-  must permit `http://keycloak.glpi.local:9090/...`.
+- The non-production environments (`development`, `testing`, `e2e_testing`) whitelist
+  `http://keycloak.glpi.local:9090/...` in their `GLPI_SERVERSIDE_URL_ALLOWLIST` so GLPI can
+  fetch the discovery URL server-side (see `Glpi\Application\Environment`). The generic URL
+  pattern rejects explicit ports, hence the dedicated entry. `production` / `staging` are left
+  untouched and do not allow it.
 - Recreating the container regenerates the realm signing keys **and** the users' `sub`
   (dev = in-memory H2). After a recreate: clear the GLPI cache (JWKS/well-known are cached for
   a day) and **log in again** (the session `sub` changes).
