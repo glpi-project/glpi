@@ -92,6 +92,20 @@ class DatesModFilter extends AbstractFilter
 
         $rand  = mt_rand();
         $label = self::getName();
+
+        $presets_json = json_encode([
+            'P1D' => __('Last day'),
+            'P1W' => sprintf(__('Last %s days'), 7),
+            'P1M' => sprintf(__('Last %s days'), 30),
+            'P3M' => __('Last quarter'),
+            'P1Y' => __('Last year'),
+        ]);
+
+        // Initial key used to detect no-op onChange calls on page load with existing filter.
+        $initial_dates_key = count($values) === 2
+            ? json_encode($values[0] . ',' . $values[1])
+            : 'null';
+
         $field = Html::showDateField('filter-dates', [
             'value'        => $values,
             'rand'         => $rand,
@@ -103,15 +117,96 @@ class DatesModFilter extends AbstractFilter
         ]);
 
         $js = <<<JAVASCRIPT
-            var on_change_{$rand} = function(selectedDates, dateStr, instance) {
-                // we are waiting for empty value or a range of dates,
-                // don't trigger when only the first date is selected
-                var nb_dates = selectedDates.length;
-                if (nb_dates == 0 || nb_dates == 2) {
-                    GLPI.Dashboard.getActiveDashboard().saveFilter('dates_mod', selectedDates);
-                    $(instance.input).closest("fieldset").addClass("filled");
-                }
+            // Format a Date as a local YYYY-MM-DD string (avoids UTC conversion from toISOString()
+            // which would shift the date for UTC+ timezones and cause wrong DB comparisons).
+            var toLocalDateStr_{$rand} = function(d) {
+                return d.getFullYear()
+                    + '-' + String(d.getMonth() + 1).padStart(2, '0')
+                    + '-' + String(d.getDate()).padStart(2, '0');
             };
+
+            // Tracks the last saved value as a 'start,end' key.
+            // flatpickr fires onChange once when the user picks dates, then again via
+            // onClose → setDate(..., true). We skip the second call if the value is unchanged.
+            var last_saved_dates_{$rand} = {$initial_dates_key};
+
+            var on_change_{$rand} = function(selectedDates, dateStr, instance) {
+                var nb_dates = selectedDates.length;
+
+                // nb_dates == 1 while calendar is still open = first click of range selection,
+                // not yet a complete range — skip. When the calendar closes with only one date
+                // selected (instance.isOpen == false at that point), treat it as a single-day filter.
+                if (nb_dates == 1 && instance.isOpen) return;
+
+                var dates_str;
+                if (nb_dates == 0) {
+                    dates_str = [];
+                } else if (nb_dates == 1) {
+                    // Single-day selection: use the same date for start and end.
+                    var d = toLocalDateStr_{$rand}(selectedDates[0]);
+                    dates_str = [d, d];
+                } else {
+                    dates_str = selectedDates.map(toLocalDateStr_{$rand});
+                }
+
+                var key = dates_str.join(',');
+                if (key === last_saved_dates_{$rand}) return;
+                last_saved_dates_{$rand} = key;
+
+                GLPI.Dashboard.getActiveDashboard().saveFilter('dates_mod', dates_str);
+                $(instance.input).closest("fieldset").addClass("filled");
+            };
+
+            $(function() {
+                var fp_elem = document.getElementById('showdate{$rand}');
+                if (!fp_elem || !fp_elem._flatpickr) return;
+                var fp = fp_elem._flatpickr;
+                var presets = {$presets_json};
+                var presets_added = false;
+
+                fp.config.onOpen.push(function() {
+                    if (presets_added) return;
+                    presets_added = true;
+
+                    var container = document.createElement('div');
+                    container.className = 'd-flex flex-wrap gap-1 p-2';
+                    container.style.borderTop = '1px solid var(--tblr-border-color)';
+
+                    Object.entries(presets).forEach(function([interval, preset_label]) {
+                        var btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'btn btn-sm btn-outline-secondary';
+                        btn.textContent = preset_label;
+                        btn.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            var end = new Date();
+                            var start = new Date();
+                            switch (interval) {
+                                case 'P1D': start.setDate(start.getDate() - 1); break;
+                                case 'P1W': start.setDate(start.getDate() - 7); break;
+                                case 'P1M': start.setDate(start.getDate() - 30); break;
+                                case 'P3M': start.setMonth(start.getMonth() - 3); break;
+                                case 'P1Y': start.setFullYear(start.getFullYear() - 1); break;
+                            }
+
+                            var start_str = toLocalDateStr_{$rand}(start);
+                            var end_str   = toLocalDateStr_{$rand}(end);
+
+                            // Update last_saved so the onClose → onChange chain is deduped.
+                            last_saved_dates_{$rand} = start_str + ',' + end_str;
+                            GLPI.Dashboard.getActiveDashboard().saveFilter('dates_mod', [start_str, end_str]);
+                            fp.setDate([start, end], false);
+                            fp.close();
+                            $(fp_elem).closest("fieldset").addClass("filled");
+                        });
+                        container.appendChild(btn);
+                    });
+
+                    fp.calendarContainer.appendChild(container);
+                });
+            });
 JAVASCRIPT;
         $field .= Html::scriptBlock($js);
 
