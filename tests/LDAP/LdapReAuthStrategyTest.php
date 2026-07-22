@@ -60,14 +60,10 @@ class LdapReAuthStrategyTest extends DbTestCase
 
         $this->ldap = getItemByTypeName('AuthLDAP', '_local_ldap');
 
-        // Remove the `_e2e_ldap` server so `_local_ldap` is the only directory in play.
-        $this->deleteItem(AuthLDAP::class, getItemByTypeName(AuthLDAP::class, '_e2e_ldap', true));
-
         $this->assertTrue(
             $this->ldap->update([
                 'id'         => $this->ldap->getID(),
                 'is_active'  => 1,
-                'is_default' => 1,
             ])
         );
     }
