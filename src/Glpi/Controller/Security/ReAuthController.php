@@ -105,16 +105,13 @@ class ReAuthController extends AbstractController
     }
 
     /**
-     * @return array{redirect: string, cancel_url: string, action: string, label: string, template: string, is_redirect: bool, reauth_url: ?string}
+     * @return array{cancel_url: string, action: string, label: string, template: string, is_redirect: bool, reauth_url: ?string}
      */
     private function buildTemplateContext(): array
     {
         $is_redirect = $this->reAuthManager->isRedirectStrategy();
 
         return [
-            // `redirect` is the page the user was heading to (replayed after success);
-            // `reauth_url` is where we send them to re-authenticate. Do not confuse them.
-            'redirect'      => $this->reAuthManager->getRequestedURL(),
             'cancel_url'    => $this->reAuthManager->getOriginURL(),
             'action'        => $this->router->generate('reauth_verify'),
             'label'         => $this->reAuthManager->getLabel(),
