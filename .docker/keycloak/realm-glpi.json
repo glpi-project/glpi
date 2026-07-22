@@ -5,13 +5,13 @@
   "loginTheme": "keycloak",
   "clients": [
     {
-      "clientId": "glpi-oauthsso",
-      "name": "GLPI oauthsso",
+      "clientId": "glpi",
+      "name": "GLPI",
       "enabled": true,
       "protocol": "openid-connect",
       "publicClient": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "glpi-oauthsso-secret",
+      "secret": "glpi-secret",
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": false,
       "serviceAccountsEnabled": false,

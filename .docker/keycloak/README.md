@@ -43,8 +43,8 @@ click **+** to add an Application, and fill in:
 | Name | `Keycloak` |
 | Active | `Yes` |
 | Oauth provider | `OpenID Connect` |
-| Client ID | `glpi-oauthsso` |
-| Client secret | `glpi-oauthsso-secret` |
+| Client ID | `glpi` |
+| Client secret | `glpi-secret` |
 | OpenID Connect Discovery URL | `http://keycloak.glpi.local:9090/realms/glpi/.well-known/openid-configuration` |
 | Field used as login | `Preferred username (preferred_username)` |
 | OIDC claim for roles | *(leave empty)* |
@@ -68,8 +68,8 @@ callback URL still matches.
 | Item | Value |
 |------|-------|
 | Realm | `glpi` |
-| Client id | `glpi-oauthsso` |
-| Client secret | `glpi-oauthsso-secret` |
+| Client id | `glpi` |
+| Client secret | `glpi-secret` |
 | Test user | `alice` / `alice` |
 | Discovery URL (server-side) | `http://keycloak.glpi.local:9090/realms/glpi/.well-known/openid-configuration` |
 
