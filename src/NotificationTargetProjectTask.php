@@ -394,7 +394,7 @@ class NotificationTargetProjectTask extends NotificationTarget
                 );
             }
 
-            if(isset($project->fields['priority'])){
+            if (isset($project->fields['priority'])) {
                 $this->data["##project.priority##"] = CommonITILObject::getPriorityName($project->fields['priority']);
             }
         }
