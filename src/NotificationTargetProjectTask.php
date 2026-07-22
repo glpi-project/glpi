@@ -366,32 +366,36 @@ class NotificationTargetProjectTask extends NotificationTarget
         $this->data["##project.realenddate##"]   = '';
 
         $project = new Project();
-        if ($project->getFromDB($item->fields['projects_id'])) {
-            $this->data["##project.name##"]        = $project->getField('name');
-            $this->data["##project.code##"]        = $project->getField('code');
+        $projects_id = $item->fields['projects_id'];
+        if ($project->getFromDB($projects_id)) {
+            $this->data["##project.name##"]        = $project->getName();
+            $this->data["##project.code##"]        = (string) ($project->fields['code'] ?? '');
             $this->data["##project.url##"]         = $this->formatURL(
                 $options['additionnaloption']['usertype'],
                 "Project_" . $project->getID()
             );
-            $this->data["##project.description##"] = $project->getField('content');
-            $this->data["##project.comments##"]    = $project->getField('comment');
-            $this->data["##project.priority##"]    = CommonITILObject::getPriorityName($project->fields['priority']);
-            $this->data["##project.planstartdate##"] = Html::convDateTime($project->fields['plan_start_date']);
-            $this->data["##project.planenddate##"]   = Html::convDateTime($project->fields['plan_end_date']);
-            $this->data["##project.realstartdate##"] = Html::convDateTime($project->fields['real_start_date']);
-            $this->data["##project.realenddate##"]   = Html::convDateTime($project->fields['real_end_date']);
+            $this->data["##project.description##"] = (string) ($project->fields['content'] ?? '');
+            $this->data["##project.comments##"]    = (string) ($project->fields['comment'] ?? '');
+            $this->data["##project.planstartdate##"] = Html::convDateTime($project->fields['plan_start_date'] ?? '') ?? '';
+            $this->data["##project.planenddate##"]   = Html::convDateTime($project->fields['plan_end_date'] ?? '') ?? '';
+            $this->data["##project.realstartdate##"] = Html::convDateTime($project->fields['real_start_date'] ?? '') ?? '';
+            $this->data["##project.realenddate##"]   = Html::convDateTime($project->fields['real_end_date'] ?? '') ?? '';
 
-            if ($project->fields['projectstates_id']) {
+            if (isset($project->fields['projectstates_id'])) {
                 $this->data["##project.state##"] = Dropdown::getDropdownName(
                     'glpi_projectstates',
                     $project->fields['projectstates_id']
                 );
             }
-            if ($project->fields['projecttypes_id']) {
+            if (isset($project->fields['projecttypes_id'])) {
                 $this->data["##project.type##"] = Dropdown::getDropdownName(
                     'glpi_projecttypes',
                     $project->fields['projecttypes_id']
                 );
+            }
+
+            if(isset($project->fields['priority'])){
+                $this->data["##project.priority##"] = CommonITILObject::getPriorityName($project->fields['priority']);
             }
         }
 
