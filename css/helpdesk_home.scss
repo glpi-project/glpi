@@ -142,14 +142,26 @@ header {
             object-fit: contain;
         }
 
-        // Scale the illustrations down on narrower screens so they stay visible
+        // Hide for screens smaller than 1600px
         @media (max-width: 1600px) {
-            width: 300px;
-        }
-
-        // Hide for screens smaller than 992px
-        @media (max-width: 992px) {
             display: none;
+        }
+    }
+
+    // If the search bar is not present
+    &:has(.search-bar-container-placeholder){
+        .scene {
+            // Keep the illustrations visible below 1600px (they are hidden by
+            // default), scaling them down so they still fit.
+            @media (max-width: 1600px) {
+                display: flex;
+                width: 300px;
+            }
+
+            // Hide for screens smaller than 992px
+            @media (max-width: 992px) {
+                display: none;
+            }
         }
     }
 
