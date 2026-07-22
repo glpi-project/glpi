@@ -39,8 +39,6 @@ use Glpi\OAuth\AccessTokenRepository;
 use Glpi\OAuth\RefreshTokenRepository;
 use Glpi\Security\SessionTracker;
 use Ramsey\Uuid\Rfc4122\UuidV4;
-use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
