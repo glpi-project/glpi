@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -112,6 +111,23 @@ abstract class AbstractFilter
             }
         }
         return array_search($name . "-" . $tableToSearch, $sort);
+    }
+
+    /**
+     * @return list<int>
+     */
+    protected static function normalizeIntValues(mixed $value): array
+    {
+        $values = is_array($value) ? $value : [$value];
+
+        $ids = [];
+        foreach ($values as $v) {
+            if ((int) $v > 0) {
+                $ids[] = (int) $v;
+            }
+        }
+
+        return array_values(array_unique($ids));
     }
 
     /**

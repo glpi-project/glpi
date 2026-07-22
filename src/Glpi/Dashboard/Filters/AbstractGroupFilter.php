@@ -74,27 +74,25 @@ abstract class AbstractGroupFilter extends AbstractFilter
     }
 
     /**
-     * Resolve a raw filter value (scalar or array) into a flat list of group IDs.
-     *
      * @param mixed $value
      * @return int[]
      */
     private static function resolveGroupIds($value): array
     {
         $values = is_array($value) ? $value : [$value];
-
-        $groups_ids = [];
+        // Expand "mygroups" to the current user's groups and normalize to unique positive IDs
+        $expanded = [];
         foreach ($values as $v) {
             if ($v === 'mygroups') {
                 foreach ($_SESSION['glpigroups'] as $g) {
-                    $groups_ids[] = (int) $g;
+                    $expanded[] = (int) $g;
                 }
-            } elseif ((int) $v > 0) {
-                $groups_ids[] = (int) $v;
+            } else {
+                $expanded[] = $v;
             }
         }
 
-        return array_values(array_unique($groups_ids));
+        return self::normalizeIntValues($expanded);
     }
 
     public static function getCriteria(string $table, $value): array

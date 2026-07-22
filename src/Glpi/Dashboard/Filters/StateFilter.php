@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -60,7 +59,7 @@ class StateFilter extends AbstractFilter
     public static function getCriteria(string $table, $value): array
     {
         $criteria = [];
-        $states_ids = self::resolveValues($value);
+        $states_ids = self::normalizeIntValues($value);
 
         if (count($states_ids) === 0) {
             return $criteria;
@@ -76,7 +75,7 @@ class StateFilter extends AbstractFilter
     public static function getSearchCriteria(string $table, $value): array
     {
         $criteria = [];
-        $states_ids = self::resolveValues($value);
+        $states_ids = self::normalizeIntValues($value);
 
         if (count($states_ids) === 0) {
             return $criteria;
@@ -114,27 +113,9 @@ class StateFilter extends AbstractFilter
     {
         return self::displayMultipleList(
             self::getName(),
-            self::resolveValues($value),
+            self::normalizeIntValues($value),
             self::getId(),
             State::class
         );
-    }
-
-    /**
-     * Normalize the filter value into a list of unique positive state ids
-     *
-     * @return list<int>
-     */
-    private static function resolveValues(mixed $value): array
-    {
-        $values   = is_array($value) ? $value : ($value !== null && $value !== '' ? [$value] : []);
-        $resolved = [];
-        foreach ($values as $v) {
-            if ((int) $v > 0) {
-                $resolved[] = (int) $v;
-            }
-        }
-
-        return array_values(array_unique($resolved));
     }
 }
