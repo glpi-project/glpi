@@ -44,6 +44,44 @@ export const EditorActionType = Object.freeze({
     OPEN_MODAL:      'OPEN_MODAL',
 });
 
+// In-flight toggle requests keyed `${type}:${id}`, to prevent overlapping add/remove races.
+const pending_toggles = new Set();
+
+function toggleKey(type, id)
+{
+    return `${type}:${id}`;
+}
+
+/**
+ * @param {string} type
+ * @param {number|string} id
+ * @returns {boolean}
+ */
+export function isTogglePending(type, id)
+{
+    return pending_toggles.has(toggleKey(type, id));
+}
+
+/**
+ * Run a toggle request while marking (type, id) in-flight; always cleared afterwards.
+ *
+ * @param {string} type
+ * @param {number|string} id
+ * @param {() => Promise<T>} request
+ * @returns {Promise<T>}
+ * @template T
+ */
+export async function runToggle(type, id, request)
+{
+    const key = toggleKey(type, id);
+    pending_toggles.add(key);
+    try {
+        return await request();
+    } finally {
+        pending_toggles.delete(key);
+    }
+}
+
 /**
  * Extract `data-glpi-kb-action-param-*` values from a dataset into a plain
  * object keyed by the (lower-cased) param name.
@@ -71,11 +109,12 @@ export function extractParamsFromDataset(dataset)
  *
  * @param {number} id
  * @param {boolean} value
- * @returns {Promise<Response>}
+ * @returns {Promise<{favorite: boolean}>} The authoritative state after the call.
  */
-export function toggleFavorite(id, value)
+export async function toggleFavorite(id, value)
 {
-    return post(`Knowbase/${id}/ToggleFavorite`, { value: value });
+    const response = await post(`Knowbase/${id}/ToggleFavorite`, { value: value });
+    return response.json();
 }
 
 /**

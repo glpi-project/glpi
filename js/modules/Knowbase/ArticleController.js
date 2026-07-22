@@ -40,6 +40,8 @@ import { GlpiKnowbaseServiceCatalogPanelController } from "/js/modules/Knowbase/
 import {
     EditorActionType,
     extractParamsFromDataset,
+    isTogglePending,
+    runToggle,
     syncToggleCheckboxes,
     toggleFavorite,
     toggleField,
@@ -187,7 +189,10 @@ export class GlpiKnowbaseArticleController
         const actions = this.#container.querySelectorAll("[data-glpi-kb-action]");
         for (const action of actions) {
             action.addEventListener("click", (e) => {
-                e.preventDefault();
+                // Keep the checkbox's native toggle on direct clicks; cancelling it desyncs the UI.
+                if (!e.target.matches('input[type="checkbox"]')) {
+                    e.preventDefault();
+                }
                 try {
                     this.#executeAction(e);
                 } catch (e) {
@@ -468,14 +473,21 @@ export class GlpiKnowbaseArticleController
             case EditorActionType.TOGGLE_FAVORITE: {
                 event.stopPropagation();
                 const toggle = element.querySelector('input[type="checkbox"]');
-                if (toggle) {
-                    const clicked_on_toggle = target === toggle;
-                    if (!clicked_on_toggle) {
+                if (!toggle) {
+                    break;
+                }
+                const clicked_on_toggle = target === toggle;
+                if (isTogglePending(EditorActionType.TOGGLE_FAVORITE, params.id)) {
+                    // Ignore clicks while a request is in flight; undo any native flip.
+                    if (clicked_on_toggle) {
                         toggle.checked = !toggle.checked;
                     }
-                    this.#updateFavoritesAside(toggle.checked);
-                    this.#toggleFavorite(params.id, toggle);
+                    break;
                 }
+                if (!clicked_on_toggle) {
+                    toggle.checked = !toggle.checked;
+                }
+                this.#toggleFavorite(params.id, toggle);
                 break;
             }
             case EditorActionType.DELETE_ARTICLE:
@@ -595,12 +607,20 @@ export class GlpiKnowbaseArticleController
     async #toggleFavorite(id, toggle)
     {
         const value = toggle.checked;
-        // Reflect the change on every menu for this article, aside included.
+        this.#updateFavoritesAside(value);
         syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, value);
         try {
-            await toggleFavorite(id, value);
+            const { favorite } = await runToggle(
+                EditorActionType.TOGGLE_FAVORITE,
+                id,
+                () => toggleFavorite(id, value),
+            );
+            // Reconcile from the server's authoritative state.
+            syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, favorite);
+            this.#updateFavoritesAside(favorite);
         } catch (e) {
             syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, !value);
+            this.#updateFavoritesAside(!value);
             throw e;
         }
     }

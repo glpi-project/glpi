@@ -36,6 +36,8 @@ import { get, post } from "/js/modules/Ajax.js";
 import {
     EditorActionType,
     extractParamsFromDataset,
+    isTogglePending,
+    runToggle,
     syncToggleCheckboxes,
     toggleFavorite,
     toggleField,
@@ -454,7 +456,10 @@ export class GlpiKnowbaseAsideController
                 return;
             }
 
-            e.preventDefault();
+            // Keep the checkbox's native toggle on direct clicks; cancelling it desyncs the UI.
+            if (!e.target.matches('input[type="checkbox"]')) {
+                e.preventDefault();
+            }
             try {
                 this.#executeAction(e, button);
             } catch (error) {
@@ -550,7 +555,15 @@ export class GlpiKnowbaseAsideController
                 if (!toggle) {
                     break;
                 }
-                if (e.target !== toggle) {
+                const clicked_on_toggle = e.target === toggle;
+                if (isTogglePending(EditorActionType.TOGGLE_FAVORITE, id)) {
+                    // Ignore clicks while a request is in flight; undo any native flip.
+                    if (clicked_on_toggle) {
+                        toggle.checked = !toggle.checked;
+                    }
+                    break;
+                }
+                if (!clicked_on_toggle) {
                     toggle.checked = !toggle.checked;
                 }
                 this.#onToggleFavorite(id, toggle.checked);
@@ -582,12 +595,17 @@ export class GlpiKnowbaseAsideController
     async #onToggleFavorite(id, value)
     {
         this.#updateFavoritesSection(id, value);
-        // Sync every menu for this article, page-wide (aside + article header).
         syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, value);
         try {
-            await toggleFavorite(id, value);
+            const { favorite } = await runToggle(
+                EditorActionType.TOGGLE_FAVORITE,
+                id,
+                () => toggleFavorite(id, value),
+            );
+            // Reconcile from the server's authoritative state.
+            this.#updateFavoritesSection(id, favorite);
+            syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, favorite);
         } catch (error) {
-            // Revert the optimistic UI changes.
             this.#updateFavoritesSection(id, !value);
             syncToggleCheckboxes(id, EditorActionType.TOGGLE_FAVORITE, !value);
             throw error;

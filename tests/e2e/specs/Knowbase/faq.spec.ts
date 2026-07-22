@@ -88,3 +88,32 @@ test('Can toggle FAQ from true to false', async ({ page, profile, api }) => {
     const faq_toggle_after_reload = kb.getButton('Add to FAQ');
     await expect(faq_toggle_after_reload.getByRole('checkbox')).not.toBeChecked();
 });
+
+test('Can toggle FAQ by clicking the switch itself, not only the label', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'My kb entry for FAQ switch-click test',
+        entities_id: getWorkerEntityId(),
+        answer: "My answer",
+        is_faq: 0,
+    });
+
+    await kb.goto(id);
+    await kb.articleActionsMenu.click();
+
+    const faq_checkbox = kb.getButton('Add to FAQ').getByRole('checkbox');
+    await expect(faq_checkbox).not.toBeChecked();
+
+    // Clicking the switch directly must toggle and persist; previously the native
+    // toggle was cancelled and the checkbox snapped back out of sync.
+    const response = page.waitForResponse(r => r.url().includes('/ToggleField'));
+    await faq_checkbox.click();
+    await response;
+    await expect(faq_checkbox).toBeChecked();
+
+    await page.reload();
+    await kb.articleActionsMenu.click();
+    await expect(kb.getButton('Add to FAQ').getByRole('checkbox')).toBeChecked();
+});
