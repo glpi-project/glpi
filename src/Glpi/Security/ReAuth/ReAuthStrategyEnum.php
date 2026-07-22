@@ -40,6 +40,7 @@ enum ReAuthStrategyEnum: string
 {
     case TOTP = 'totp';
     case PASSWORD = 'password';
+    case LDAP = 'ldap';
     case FALLBACK = 'fallback';
 
     public function createStrategy(): ReAuthStrategyInterface
@@ -47,6 +48,7 @@ enum ReAuthStrategyEnum: string
         return match ($this) {
             self::TOTP => new TOTPReAuthStrategy(),
             self::PASSWORD => new PasswordReAuthStrategy(),
+            self::LDAP => new LdapReAuthStrategy(),
             self::FALLBACK => new FallbackReAuthStrategy(),
         };
     }
