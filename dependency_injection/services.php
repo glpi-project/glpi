@@ -91,7 +91,7 @@ return static function (ContainerConfigurator $container): void {
     // routes/testing.php and routes/e2e_testing.php. Registered as services only in
     // test environments so they can be autowired (e.g. ReAuthManager injection);
     // they are never routable elsewhere.
-    if (in_array(Environment::get(), [Environment::TESTING, Environment::E2E], true)) {
+    if (Environment::get()->shouldEnableTestResources()) {
         $services->load('Glpi\Tests\Controller\\', $projectDir . '/tests/src/Controller');
     }
 
