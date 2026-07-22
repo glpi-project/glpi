@@ -1276,9 +1276,7 @@
 
             > li {
                 position: relative;
-
-                // Use padding (not margin) so the ::after connector covers the gap
-                padding-bottom: 0.5rem;
+                padding-bottom: 0;
                 margin-bottom: 0;
 
                 // L-shaped connector: starts $gap below the top edge so the
@@ -1294,7 +1292,7 @@
                         1rem - #{$gap}
                     ); // leave a small gap before the content
 
-                    height: 0.625rem; // half of the 20px illustration = 10px
+                    height: 0.825rem; // half of the 20px illustration = 10px
                     border-left: 1px solid var(--tblr-border-color);
                     border-bottom: 1px solid var(--tblr-border-color);
                 }
@@ -1303,9 +1301,10 @@
                     content: "";
                     position: absolute;
                     left: -1rem;
-                    top: 0.625rem;
+                    top: 0.825rem;
                     bottom: 0;
                     width: 1px;
+                    height: 20px;
                     background-color: var(--tblr-border-color);
                 }
             }
