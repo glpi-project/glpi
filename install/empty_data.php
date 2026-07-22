@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\Environment;
+use Glpi\Config\DataAndPrivacyConfig;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Event;
 use Glpi\Form\AnswersSet;
@@ -417,6 +418,7 @@ $empty_data_builder = new class {
             'glpi_11_form_migration' => 0,
             'glpi_11_assets_migration' => 0,
             'must_unsanitize_db_data' => 0,
+            'login_history_retention_days' => 90,
         ];
 
         $tables['glpi_configs'] = [];
@@ -1021,6 +1023,18 @@ $empty_data_builder = new class {
                 'param' => 3,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ], [
+                'id' => 52,
+                'itemtype' => DataAndPrivacyConfig::class,
+                'name' => 'purgesessionhistory',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,

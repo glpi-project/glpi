@@ -360,6 +360,7 @@ class HtmlTest extends DbTestCase
             'SLM',
             'Config',
             'Glpi\Security\SecurityConfig',
+            'Glpi\Config\DataAndPrivacyConfig',
             'FieldUnicity',
             'CronTask',
             'Auth',
