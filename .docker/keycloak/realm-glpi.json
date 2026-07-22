@@ -17,7 +17,7 @@
       "serviceAccountsEnabled": false,
       "fullScopeAllowed": true,
       "redirectUris": [
-        "http://localhost:8080/plugins/oauthsso/front/authorization.callback.php"
+        "http://localhost:8080/*"
       ],
       "webOrigins": [
         "http://localhost:8080"

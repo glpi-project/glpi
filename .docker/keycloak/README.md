@@ -5,7 +5,7 @@ Reproducible OpenID Connect (OIDC) provider that can be used for manual and (lat
 ## What it provides
 
 - A realm `glpi` (imported from [`realm-glpi.json`](./realm-glpi.json)) with:
-  - a confidential client `glpi-oauthsso` (secret `glpi-oauthsso-secret`);
+  - a confidential client `glpi` (secret `glpi-secret`);
   - a test user **`alice` / `alice`** (`alice@glpi.test`).
 
 ## Networking note (important)
