@@ -37,6 +37,8 @@ namespace Glpi\Dashboard\Filters;
 
 use Html;
 
+use function Safe\json_encode;
+
 class DatesModFilter extends AbstractFilter
 {
     public static function getName(): string

@@ -40,6 +40,8 @@ use Html;
 use Problem;
 use Ticket;
 
+use function Safe\json_encode;
+
 class DatesFilter extends AbstractFilter
 {
     public static function getName(): string
