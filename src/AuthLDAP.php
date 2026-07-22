@@ -442,7 +442,7 @@ class AuthLDAP extends CommonDBTM
                         }
 
                         $options      = [
-                            'authldaps_id' => (int) $input['authldaps_id'],
+                            'authldaps_id' => (int) ($input['authldaps_id'] ?? 0),
                             'entities_id'  => $entity,
                             'is_recursive' => $is_recursive,
                             'type'         => $input['ldap_import_type'][$id],
