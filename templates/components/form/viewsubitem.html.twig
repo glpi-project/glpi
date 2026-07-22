@@ -67,7 +67,7 @@
                 event.target.removeAttribute('data-cy-ready');
             });
         }
-        $('#{{ subitem_container_id }}').load('{{ path('/ajax/viewsubitem.php')|e('js') }}',{
+        $('#{{ subitem_container_id }}').load('{{ (config('root_doc') ~ '/ajax/viewsubitem.php')|e('js') }}',{
             type: "{{ type|e('js') }}",
             parenttype: "{{ parenttype|e('js') }}",
             '{{ items_id|e('js') }}': {{ id|json_encode|raw }},
