@@ -43,14 +43,11 @@ use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ReAuthController extends AbstractController
 {
     public function __construct(
-        private readonly UrlGeneratorInterface $router,
         private readonly ReAuthManager $reAuthManager,
     ) {}
 
@@ -81,12 +78,6 @@ class ReAuthController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function verify(Request $request): Response
     {
-        // Redirect-based strategies (e.g. OAuth) are verified out-of-band by their
-        // own endpoint, not through this synchronous form post.
-        if ($this->reAuthManager->isRedirectStrategy()) {
-            throw new BadRequestHttpException();
-        }
-
         $user_input = $request->request->get('user_input');
 
         if ($this->reAuthManager->verify((string) $user_input)) {
@@ -105,21 +96,16 @@ class ReAuthController extends AbstractController
     }
 
     /**
-     * @return array{cancel_url: string, action: string, label: string, template: string, is_redirect: bool, reauth_url: ?string}
+     * @return array{cancel_url: string, label: string, template: string, verify_url: string, verify_http_method: string}
      */
     private function buildTemplateContext(): array
     {
-        $is_redirect = $this->reAuthManager->isRedirectStrategy();
-
         return [
-            'cancel_url'    => $this->reAuthManager->getOriginURL(),
-            'action'        => $this->router->generate('reauth_verify'),
-            'label'         => $this->reAuthManager->getLabel(),
-            'template'      => $this->reAuthManager->getPromptTemplate(),
-            // Redirect-based strategies (e.g. OAuth) are verified out-of-band:
-            // the prompt shows a link to `reauth_url` instead of an input form.
-            'is_redirect'   => $is_redirect,
-            'reauth_url'    => $is_redirect ? $this->reAuthManager->getReauthUrl() : null,
+            'cancel_url'         => $this->reAuthManager->getOriginURL(),
+            'label'              => $this->reAuthManager->getLabel(),
+            'template'           => $this->reAuthManager->getPromptTemplate(),
+            'verify_url'         => $this->reAuthManager->getVerifyUrl(),
+            'verify_http_method' => $this->reAuthManager->getVerifyHttpMethod(),
         ];
     }
 }

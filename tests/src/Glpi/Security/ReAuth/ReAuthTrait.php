@@ -34,10 +34,10 @@
 
 namespace Glpi\Tests\Glpi\Security\ReAuth;
 
+use Glpi\Security\ReAuth\AbstractReAuthStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\ReAuth\ReAuthStrategyEnum;
 use Glpi\Security\ReAuth\ReAuthStrategyInterface;
-use Glpi\Security\ReAuth\RedirectReAuthStrategyInterface;
 
 /**
  * Helpers shared by the re-authentication tests: fake a web request context and
@@ -146,14 +146,27 @@ trait ReAuthTrait
 
     /**
      * Build a throwaway strategy with a controllable label, priority and availability.
+     *
+     * By default, it behaves like a native strategy (verified in-process through the core
+     * {@see \Glpi\Controller\Security\ReAuthController::verify()} endpoint, inheriting the
+     * defaults from {@see AbstractReAuthStrategy}). Passing $verify_url and/or
+     * $verify_http_method models an out-of-band strategy (e.g. OAuth) whose prompt form
+     * submits to an external endpoint instead, bypassing the core verify().
      */
-    private function makeStrategy(string $label, int $priority, bool $available): ReAuthStrategyInterface
-    {
-        return new readonly class ($label, $priority, $available) implements ReAuthStrategyInterface {
+    private function makeStrategy(
+        string $label,
+        int $priority,
+        bool $available,
+        ?string $verify_url = null,
+        string $verify_http_method = 'POST',
+    ): ReAuthStrategyInterface {
+        return new class ($label, $priority, $available, $verify_url, $verify_http_method) extends AbstractReAuthStrategy {
             public function __construct(
                 private string $label,
                 private int $priority,
                 private bool $available,
+                private ?string $verify_url,
+                private string $verify_http_method,
             ) {}
 
             public function verify(int $users_id, string $user_input): bool
@@ -180,55 +193,17 @@ trait ReAuthTrait
             {
                 return $this->priority;
             }
-        };
-    }
 
-    /**
-     * Build a throwaway redirect-based strategy (verified out-of-band), with a
-     * controllable label, priority, availability and re-authentication URL.
-     */
-    private function makeRedirectStrategy(
-        string $label,
-        int $priority,
-        bool $available,
-        string $reauth_url = '/plugins/example/front/reauth.php',
-    ): RedirectReAuthStrategyInterface {
-        return new readonly class ($label, $priority, $available, $reauth_url) implements RedirectReAuthStrategyInterface {
-            public function __construct(
-                private string $label,
-                private int $priority,
-                private bool $available,
-                private string $reauth_url,
-            ) {}
-
-            public function verify(int $users_id, string $user_input): bool
+            #[\Override]
+            public function getVerifyUrl(): string
             {
-                throw new \LogicException('Redirect strategies are verified out-of-band.');
+                return $this->verify_url ?? parent::getVerifyUrl();
             }
 
-            public function isAvailable(int $users_id, int $entities_id = 0): bool
+            #[\Override]
+            public function getVerifyHttpMethod(): string
             {
-                return $this->available;
-            }
-
-            public function getLabel(): string
-            {
-                return $this->label;
-            }
-
-            public function getPromptTemplate(): string
-            {
-                return 'pages/reauth/password_form.html.twig';
-            }
-
-            public function getPriority(): int
-            {
-                return $this->priority;
-            }
-
-            public function getReauthUrl(int $users_id): string
-            {
-                return $this->reauth_url;
+                return $this->verify_http_method;
             }
         };
     }

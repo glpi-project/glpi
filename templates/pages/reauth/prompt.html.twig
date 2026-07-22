@@ -47,39 +47,22 @@
        <twig:Alert:Danger :title="__('Authentication failure')" />
    {% endif %}
 
-   {% if is_redirect ?? false %}
+  <form method="{{ verify_http_method }}" action="{{ verify_url }}" data-submit-once autocomplete="off">
+     <div class="mb-3">
+        <label class="form-label">{{ label }}</label>
+        {% include template %}
+     </div>
 
-      {# Redirect-based strategy (e.g. OAuth): verification happens out-of-band. #}
-      {# The included fragment renders its own link to `reauth_url`; there is no #}
-      {# secret to type and thus no form posted to the verify endpoint. #}
-      <div class="mb-3">
-         <label class="form-label">{{ label }}</label>
-         {% include template %}
-      </div>
+     <div class="d-flex justify-content-end gap-2">
 
-      <div class="d-flex justify-content-end gap-2">
-         <a href="{{ cancel_url }}" class="btn btn-outline-secondary">{{ __('Cancel') }}</a>
-      </div>
+         {# cancel button #}
+        <a href="{{ cancel_url }}" class="btn btn-outline-secondary">{{ __('Cancel') }}</a>
 
-   {% else %}
+         {# submit/verify button #}
+        <button type="submit" class="btn btn-primary">{{ __('Verify') }}</button>
 
-      <form method="post" action="{{ action }}" data-submit-once autocomplete="off">
-         <div class="mb-3">
-            <label class="form-label">{{ label }}</label>
-            {% include template %}
-         </div>
+     </div>
+  </form>
 
-         <div class="d-flex justify-content-end gap-2">
-
-             {# cancel button #}
-            <a href="{{ cancel_url }}" class="btn btn-outline-secondary">{{ __('Cancel') }}</a>
-
-             {# submit/verify button #}
-            <button type="submit" class="btn btn-primary">{{ __('Verify') }}</button>
-
-         </div>
-      </form>
-
-   {% endif %}
 {% endblock %}
 

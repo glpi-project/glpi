@@ -160,37 +160,6 @@ final class ReAuthManager
         return $this->getStrategy()->getPromptTemplate();
     }
 
-    /**
-     * Whether the selected strategy verifies the user through an out-of-band
-     * redirect round-trip rather than a synchronous input.
-     *
-     * @see RedirectReAuthStrategyInterface
-     */
-    public function isRedirectStrategy(): bool
-    {
-        return $this->getStrategy() instanceof RedirectReAuthStrategyInterface;
-    }
-
-    /**
-     * URL that starts the interactive re-authentication round-trip.
-     *
-     * This is NOT the URL the user was heading to before re-authentication was
-     * required (@see getRequestedURL()): it is the entry point that sends the
-     * user off to re-authenticate (e.g. redirect to the OAuth provider).
-     *
-     * Only meaningful when {@see self::isRedirectStrategy()} is true.
-     */
-    public function getReauthUrl(): string
-    {
-        $strategy = $this->getStrategy();
-
-        if (!$strategy instanceof RedirectReAuthStrategyInterface) {
-            throw new \LogicException('The selected re-authentication strategy is not redirect-based.');
-        }
-
-        return $strategy->getReauthUrl($_SESSION['glpiID']);
-    }
-
     public function getRequestedURL(): string
     {
         return $_SESSION['glpi_reauth_requested_url'] ?? '/';
@@ -198,9 +167,6 @@ final class ReAuthManager
 
     /**
      * URL of the page the user was on when the reauth-requiring action was triggered.
-     *
-     * Used both as the "Cancel" target on the reauth prompt and as the referer
-     * of the replayed request (@see getRedirectData()).
      */
     public function getOriginURL(): string
     {
@@ -243,6 +209,16 @@ final class ReAuthManager
     public function getRequestedMethod(): string
     {
         return $_SESSION['glpi_reauth_requested_httpmethod'] ?? 'GET';
+    }
+
+    public function getVerifyUrl() : string
+    {
+        return $this->getStrategy()->getVerifyUrl();
+    }
+
+    public function getVerifyHttpMethod() : string
+    {
+        return $this->getStrategy()->getVerifyHttpMethod();
     }
 
     /**

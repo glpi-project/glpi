@@ -48,6 +48,18 @@ interface ReAuthStrategyInterface
     public function verify(int $users_id, string $user_input): bool;
 
     /**
+     * Prompt form submission's url
+     */
+    public function getVerifyUrl(): string;
+
+    /**
+     * Prompt form's method
+     *
+     * @return 'POST'|'GET'
+     */
+    public function getVerifyHttpMethod(): string;
+
+    /**
      * Check if this strategy is available for the given user.
      *
      * @param int $users_id The user ID
