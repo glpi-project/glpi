@@ -11,17 +11,17 @@ Reproducible OpenID Connect (OIDC) provider that can be used for manual and (lat
 ## Networking note (important)
 
 Keycloak listens on **the same port 9090 inside the container and on the host**, under
-the hostname **`keycloak`**. This makes the OIDC `issuer` identical whether Keycloak is
-reached from the app container (compose DNS `keycloak:9090`) or from your browser — which
+the hostname **`keycloak.glpi.local`**. This makes the OIDC `issuer` identical whether Keycloak is
+reached from the app container (compose DNS alias `keycloak.glpi.local:9090`) or from your browser — which
 avoids the classic "issuer mismatch" failure.
 
 For the browser to resolve it, add once to your host `/etc/hosts`:
 
 ```
-127.0.0.1 keycloak
+127.0.0.1 keycloak.glpi.local
 ```
 
-`sudo sh -c 'echo "127.0.0.1 keycloak" >> /etc/hosts'`
+`sudo sh -c 'echo "127.0.0.1 keycloak.glpi.local" >> /etc/hosts'`
 
 ## Bring it up
 
@@ -30,8 +30,8 @@ For the browser to resolve it, add once to your host `/etc/hosts`:
 docker compose --profile keycloak up -d keycloak
 ```
 
-Admin console: <http://keycloak:9090/> (admin / admin).
-Discovery: <http://keycloak:9090/realms/glpi/.well-known/openid-configuration>.
+Admin console: <http://keycloak.glpi.local:9090/> (admin / admin).
+Discovery: <http://keycloak.glpi.local:9090/realms/glpi/.well-known/openid-configuration>.
 
 ## Configure the GLPI OAuth Application manually
 
@@ -45,7 +45,7 @@ click **+** to add an Application, and fill in:
 | Oauth provider | `OpenID Connect` |
 | Client ID | `glpi-oauthsso` |
 | Client secret | `glpi-oauthsso-secret` |
-| OpenID Connect Discovery URL | `http://keycloak:9090/realms/glpi/.well-known/openid-configuration` |
+| OpenID Connect Discovery URL | `http://keycloak.glpi.local:9090/realms/glpi/.well-known/openid-configuration` |
 | Field used as login | `Preferred username (preferred_username)` |
 | OIDC claim for roles | *(leave empty)* |
 | Fetch information from user profile | `No` |
@@ -71,13 +71,13 @@ callback URL still matches.
 | Client id | `glpi-oauthsso` |
 | Client secret | `glpi-oauthsso-secret` |
 | Test user | `alice` / `alice` |
-| Discovery URL (server-side) | `http://keycloak:9090/realms/glpi/.well-known/openid-configuration` |
+| Discovery URL (server-side) | `http://keycloak.glpi.local:9090/realms/glpi/.well-known/openid-configuration` |
 
 ## Notes for automated tests (later)
 
 - The `testing` / `e2e_testing` environments have a stricter `GLPI_SERVERSIDE_URL_ALLOWLIST`
   than dev (which is `['/.*/']`). To let GLPI fetch the discovery URL there, the allowlist
-  must permit `http://keycloak:9090/...`.
+  must permit `http://keycloak.glpi.local:9090/...`.
 - Recreating the container regenerates the realm signing keys **and** the users' `sub`
   (dev = in-memory H2). After a recreate: clear the GLPI cache (JWKS/well-known are cached for
   a day) and **log in again** (the session `sub` changes).
