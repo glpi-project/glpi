@@ -873,6 +873,27 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $duration_dropdown_to_add[$i * DAY_TIMESTAMP] = sprintf(_n('%s day', '%s days', $i), $i);
         }
 
+        $recall_values = [
+            ''                  => __('None'),
+            0                   => sprintf(_n('%d minute', '%d minutes', 0), 0),
+        ];
+        foreach ([15, 30, 45] as $minutes) {
+            $recall_values[$minutes * MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', $minutes), $minutes);
+        }
+        foreach ([1, 2, 3, 4, 12] as $hours) {
+            $recall_values[$hours * HOUR_TIMESTAMP] = sprintf(_n('%d hour', '%d hours', $hours), $hours);
+        }
+        for ($i = 1; $i <= 6; $i++) {
+            $recall_values[$i * DAY_TIMESTAMP] = sprintf(_n('%d day', '%d days', $i), $i);
+        }
+        for ($i = 1; $i <= 3; $i++) {
+            $recall_values[$i * WEEK_TIMESTAMP] = sprintf(_n('%d week', '%d weeks', $i), $i);
+        }
+        for ($i = 1; $i <= 11; $i++) {
+            $recall_values[$i * MONTH_TIMESTAMP] = sprintf(_n('%d month', '%d months', $i), $i);
+        }
+        $recall_values[12 * MONTH_TIMESTAMP] = sprintf(_n('%d year', '%d years', 1), 1);
+
         $this->initForm($ID, $options);
 
         TemplateRenderer::getInstance()->display('pages/tools/project_task.html.twig', [
@@ -884,6 +905,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'projecttasks_id'          => $projecttasks_id,
             'recursive'                => $recursive,
             'duration_dropdown_to_add' => $duration_dropdown_to_add,
+            'recall_values'            => $recall_values,
             'duration'                 => $duration,
             'rand'                     => mt_rand(),
         ]);
