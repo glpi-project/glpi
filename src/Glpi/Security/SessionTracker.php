@@ -636,7 +636,7 @@ final class SessionTracker
             } else {
                 $session['status'] = '<span class="badge badge-outline bg-transparent text-success">' . __s('Active') . '</span>';
                 if ($data['_type'] === 'api') {
-                    $session['status'] .= '<br><span class="text-muted fs-5">' . htmlescape(sprintf(__('Expires at %s'), $data['date_expiration'])) . '</span>';
+                    $session['status'] .= '<br><span class="text-muted fs-5">' . sprintf(__s('Expires at %s'), htmlescape($data['date_expiration'])) . '</span>';
                 }
             }
 
