@@ -180,6 +180,7 @@ class OperatingSystem extends InventoryAsset
                 'license_number'                    => '',
                 'company'                           => '',
                 'owner'                             => '',
+                'hostid'                            => '',
             ];
             foreach ($reset_fields as $os_field => $empty_value) {
                 if (!array_key_exists($os_field, $input_os) && !in_array($os_field, $locks, true)) {
