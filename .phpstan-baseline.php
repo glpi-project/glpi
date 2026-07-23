@@ -15238,7 +15238,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on ProjectTask\\|null\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 27,
+	'count' => 24,
 	'path' => __DIR__ . '/src/NotificationTargetProjectTask.php',
 ];
 $ignoreErrors[] = [

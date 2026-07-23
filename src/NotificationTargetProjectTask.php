@@ -269,13 +269,47 @@ class NotificationTargetProjectTask extends NotificationTarget
                   );
         $this->data["##projecttask.name##"]
                   = $item->getField('name');
-        $this->data["##projecttask.project##"]
-                  = Dropdown::getDropdownName('glpi_projects', $item->fields['projects_id']);
-        $this->data["##projecttask.projecturl##"]
+
+        // Project (parent) infos
+        $project = new Project();
+        $projects_id = $item->fields['projects_id'] ?? 0;
+
+        if ($project->getFromDB($projects_id)) {
+            $this->data["##projecttask.project##"]
+                  = Dropdown::getDropdownName('glpi_projects', $projects_id);
+
+            $this->data["##projecttask.projecturl##"]
                   = $this->formatURL(
                       $options['additionnaloption']['usertype'],
-                      "Project_" . $item->fields["projects_id"]
+                      "Project_" . $projects_id
                   );
+
+            $this->data["##projecttask.projectcode##"]        = (string) ($project->fields['code'] ?? '');
+            $this->data["##projecttask.projectdescription##"] = (string) ($project->fields['content'] ?? '');
+            $this->data["##projecttask.projectcomments##"]    = (string) ($project->fields['comment'] ?? '');
+            $this->data["##projecttask.projectplanstartdate##"] = Html::convDateTime($project->fields['plan_start_date'] ?? '') ?? '';
+            $this->data["##projecttask.projectplanenddate##"]   = Html::convDateTime($project->fields['plan_end_date'] ?? '') ?? '';
+            $this->data["##projecttask.projectrealstartdate##"] = Html::convDateTime($project->fields['real_start_date'] ?? '') ?? '';
+            $this->data["##projecttask.projectrealenddate##"]   = Html::convDateTime($project->fields['real_end_date'] ?? '') ?? '';
+
+            if (isset($project->fields['projectstates_id'])) {
+                $this->data["##projecttask.projectstate##"] = Dropdown::getDropdownName(
+                    'glpi_projectstates',
+                    $project->fields['projectstates_id']
+                );
+            }
+            if (isset($project->fields['projecttypes_id'])) {
+                $this->data["##projecttask.projecttype##"] = Dropdown::getDropdownName(
+                    'glpi_projecttypes',
+                    $project->fields['projecttypes_id']
+                );
+            }
+
+            if (isset($project->fields['priority'])) {
+                $this->data["##projecttask.projectpriority##"] = CommonITILObject::getPriorityName($project->fields['priority']);
+            }
+        }
+
         $this->data["##projecttask.description##"]
                   = $item->getField('content');
         $this->data["##projecttask.comments##"]
@@ -349,54 +383,6 @@ class NotificationTargetProjectTask extends NotificationTarget
             $user_tmp = new User();
             $user_tmp->getFromDB($item->fields['users_id']);
             $this->data["##projecttask.createbyuser##"] = $user_tmp->getName();
-        }
-
-        // Project (parent) infos
-        $this->data["##project.name##"]          = '';
-        $this->data["##project.code##"]          = '';
-        $this->data["##project.url##"]           = '';
-        $this->data["##project.description##"]   = '';
-        $this->data["##project.comments##"]      = '';
-        $this->data["##project.priority##"]      = '';
-        $this->data["##project.state##"]         = '';
-        $this->data["##project.type##"]          = '';
-        $this->data["##project.planstartdate##"] = '';
-        $this->data["##project.planenddate##"]   = '';
-        $this->data["##project.realstartdate##"] = '';
-        $this->data["##project.realenddate##"]   = '';
-
-        $project = new Project();
-        $projects_id = $item->fields['projects_id'];
-        if ($project->getFromDB($projects_id)) {
-            $this->data["##project.name##"]        = $project->getName();
-            $this->data["##project.code##"]        = (string) ($project->fields['code'] ?? '');
-            $this->data["##project.url##"]         = $this->formatURL(
-                $options['additionnaloption']['usertype'],
-                "Project_" . $project->getID()
-            );
-            $this->data["##project.description##"] = (string) ($project->fields['content'] ?? '');
-            $this->data["##project.comments##"]    = (string) ($project->fields['comment'] ?? '');
-            $this->data["##project.planstartdate##"] = Html::convDateTime($project->fields['plan_start_date'] ?? '') ?? '';
-            $this->data["##project.planenddate##"]   = Html::convDateTime($project->fields['plan_end_date'] ?? '') ?? '';
-            $this->data["##project.realstartdate##"] = Html::convDateTime($project->fields['real_start_date'] ?? '') ?? '';
-            $this->data["##project.realenddate##"]   = Html::convDateTime($project->fields['real_end_date'] ?? '') ?? '';
-
-            if (isset($project->fields['projectstates_id'])) {
-                $this->data["##project.state##"] = Dropdown::getDropdownName(
-                    'glpi_projectstates',
-                    $project->fields['projectstates_id']
-                );
-            }
-            if (isset($project->fields['projecttypes_id'])) {
-                $this->data["##project.type##"] = Dropdown::getDropdownName(
-                    'glpi_projecttypes',
-                    $project->fields['projecttypes_id']
-                );
-            }
-
-            if (isset($project->fields['priority'])) {
-                $this->data["##project.priority##"] = CommonITILObject::getPriorityName($project->fields['priority']);
-            }
         }
 
         // Team infos
@@ -669,19 +655,16 @@ class NotificationTargetProjectTask extends NotificationTarget
                 __('Description')
             ),
             'projecttask.projecturl'  => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('URL')),
-
-            'project.url'             => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('URL')),
-            'project.name'            => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Name')),
-            'project.code'            => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Code')),
-            'project.description'     => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Description')),
-            'project.comments'        => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), _n('Comment', 'Comments', Session::getPluralNumber())),
-            'project.priority'        => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Priority')),
-            'project.state'           => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), _x('item', 'State')),
-            'project.type'            => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), _n('Type', 'Types', 1)),
-            'project.planstartdate'   => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Planned start date')),
-            'project.planenddate'     => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Planned end date')),
-            'project.realstartdate'   => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Real start date')),
-            'project.realenddate'     => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Real end date')),
+            'projecttask.projectcode'            => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Code')),
+            'projecttask.projectdescription'     => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Description')),
+            'projecttask.projectcomments'        => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), _n('Comment', 'Comments', Session::getPluralNumber())),
+            'projecttask.projectpriority'        => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Priority')),
+            'projecttask.projectstate'           => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), _x('item', 'State')),
+            'projecttask.projecttype'            => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), _n('Type', 'Types', 1)),
+            'projecttask.projectplanstartdate'   => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Planned start date')),
+            'projecttask.projectplanenddate'     => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Planned end date')),
+            'projecttask.projectrealstartdate'   => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Real start date')),
+            'projecttask.projectrealenddate'     => sprintf(__('%1$s: %2$s'), Project::getTypeName(1), __('Real end date')),
 
             'document.url'            => sprintf(
                 __('%1$s: %2$s'),
