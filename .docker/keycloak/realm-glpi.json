@@ -17,10 +17,10 @@
       "serviceAccountsEnabled": false,
       "fullScopeAllowed": true,
       "redirectUris": [
-        "http://localhost:8080/*"
+        "http://localhost:*"
       ],
       "webOrigins": [
-        "http://localhost:8080"
+        "+"
       ],
       "attributes": {
         "post.logout.redirect.uris": "+"
