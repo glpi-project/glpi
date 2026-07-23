@@ -211,12 +211,12 @@ final class ReAuthManager
         return $_SESSION['glpi_reauth_requested_httpmethod'] ?? 'GET';
     }
 
-    public function getVerifyUrl() : string
+    public function getVerifyUrl(): string
     {
         return $this->getStrategy()->getVerifyUrl();
     }
 
-    public function getVerifyHttpMethod() : string
+    public function getVerifyHttpMethod(): string
     {
         return $this->getStrategy()->getVerifyHttpMethod();
     }
@@ -246,7 +246,7 @@ final class ReAuthManager
      */
     public function registerStrategy(ReAuthStrategyInterface $strategy): void
     {
-        $this->additional_strategies[get_class($strategy)] = $strategy;
+        $this->additional_strategies[$strategy::class] = $strategy;
     }
 
     /**

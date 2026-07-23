@@ -296,10 +296,10 @@ class ReAuthManagerTest extends DbTestCase
             'Test precondition failed : A strategy already available to the user outranks the tested plugin strategy.',
         );
 
-        $manager->registerStrategy($this->makeStrategy('Plugin SSO', $plugin_priority, true));
+        $manager->registerStrategy($this->makeStrategy('My plugin', $plugin_priority, true));
 
         // --- act + assert : the plugin strategy wins the resolution ---
-        $this->assertSame('Plugin SSO', $manager->getLabel());
+        $this->assertSame('My plugin', $manager->getLabel());
     }
 
     /** A registered strategy that is not available for the user is ignored, even with a high priority. */
@@ -308,7 +308,7 @@ class ReAuthManagerTest extends DbTestCase
         // --- arrange : highest priority but unavailable ---
         $this->login();
         $manager = $this->getReAuthManager();
-        $manager->registerStrategy($this->makeStrategy('Plugin SSO', 999, false));
+        $manager->registerStrategy($this->makeStrategy('My plugin', 999, false));
 
         // --- act + assert : resolution falls back to the native Password strategy ---
         $this->assertSame('Password', $manager->getLabel());
@@ -331,7 +331,7 @@ class ReAuthManagerTest extends DbTestCase
     }
 
     /**
-     * An out-of-band strategy (e.g. OAuth) overrides its verify URL/method so the prompt
+     * An out-of-band strategy overrides its verify URL/method so the prompt
      * form submits to an external endpoint instead of the core verify(). The manager must
      * delegate both to the selected strategy.
      */
@@ -342,16 +342,16 @@ class ReAuthManagerTest extends DbTestCase
         $manager = $this->getReAuthManager();
         $manager->registerStrategy(
             $this->makeStrategy(
-                'Plugin SSO',
+                'My plugin',
                 101,
                 true,
-                verify_url: '/plugins/oauthsso/front/reauth.php',
+                verify_url: '/plugins/myplugin/front/reauth.php',
                 verify_http_method: 'GET',
             ),
         );
 
         // --- act + assert ---
-        $this->assertSame('/plugins/oauthsso/front/reauth.php', $manager->getVerifyUrl());
+        $this->assertSame('/plugins/myplugin/front/reauth.php', $manager->getVerifyUrl());
         $this->assertSame('GET', $manager->getVerifyHttpMethod());
     }
 }

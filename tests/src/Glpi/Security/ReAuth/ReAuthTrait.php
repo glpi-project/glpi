@@ -34,6 +34,7 @@
 
 namespace Glpi\Tests\Glpi\Security\ReAuth;
 
+use Glpi\Controller\Security\ReAuthController;
 use Glpi\Security\ReAuth\AbstractReAuthStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\ReAuth\ReAuthStrategyEnum;
@@ -148,7 +149,7 @@ trait ReAuthTrait
      * Build a throwaway strategy with a controllable label, priority and availability.
      *
      * By default, it behaves like a native strategy (verified in-process through the core
-     * {@see \Glpi\Controller\Security\ReAuthController::verify()} endpoint, inheriting the
+     * {@see ReAuthController::verify()} endpoint, inheriting the
      * defaults from {@see AbstractReAuthStrategy}). Passing $verify_url and/or
      * $verify_http_method models an out-of-band strategy (e.g. OAuth) whose prompt form
      * submits to an external endpoint instead, bypassing the core verify().

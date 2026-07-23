@@ -89,8 +89,7 @@ return static function (ContainerConfigurator $container): void {
 
     // Test-only controllers (e2e/Playwright/Cypress helper endpoints), routed via
     // routes/testing.php and routes/e2e_testing.php. Registered as services only in
-    // test environments so they can be autowired (e.g. ReAuthManager injection);
-    // they are never routable elsewhere.
+    // test environments so they can be autowired; they are never routable elsewhere.
     if (Environment::get()->shouldEnableTestResources()) {
         $services->load('Glpi\Tests\Controller\\', $projectDir . '/tests/src/Controller');
     }
