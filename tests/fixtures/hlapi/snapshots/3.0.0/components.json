@@ -344,7 +344,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -359,7 +359,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -686,7 +686,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -701,7 +701,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -1452,7 +1452,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -1484,7 +1484,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -2163,7 +2163,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -2178,7 +2178,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -2574,7 +2574,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -2589,7 +2589,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -2824,7 +2824,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -2839,7 +2839,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -3015,23 +3015,83 @@
                     "type": "array",
                     "items": {
                         "type": "object",
+                        "oneOf": [
+                            "UserTeamMember",
+                            "GroupTeamMember",
+                            "SupplierTeamMember"
+                        ],
+                        "discriminator": {
+                            "propertyName": "_type",
+                            "mapping": {
+                                "UserTeamMember": "UserTeamMember",
+                                "GroupTeamMember": "GroupTeamMember",
+                                "SupplierTeamMember": "SupplierTeamMember"
+                            }
+                        },
                         "properties": {
+                            "_type": {
+                                "type": "string"
+                            },
                             "id": {
                                 "type": "integer",
                                 "format": "int64",
                                 "readOnly": true
                             },
-                            "name": {
-                                "type": "string"
-                            },
-                            "type": {
-                                "type": "string"
-                            },
                             "role": {
-                                "type": "string"
+                                "type": "string",
+                                "enum": [
+                                    "requester",
+                                    "assigned",
+                                    "observer",
+                                    null
+                                ]
+                            },
+                            "user": {
+                                "type": "object",
+                                "x-itemtype": "User",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "readOnly": true
+                                    }
+                                },
+                                "x-full-schema": "User"
+                            },
+                            "group": {
+                                "type": "object",
+                                "x-itemtype": "Group",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "readOnly": true
+                                    }
+                                },
+                                "x-full-schema": "Group"
+                            },
+                            "supplier": {
+                                "type": "object",
+                                "x-itemtype": "Supplier",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "readOnly": true
+                                    }
+                                },
+                                "x-full-schema": "Supplier"
                             }
-                        },
-                        "x-full-schema": "TeamMember"
+                        }
                     }
                 },
                 "costs": {
@@ -3224,7 +3284,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -3239,7 +3299,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -3254,7 +3314,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -3392,7 +3452,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -3407,7 +3467,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -3789,7 +3849,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -3821,7 +3881,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -3990,7 +4050,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -4005,7 +4065,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -4146,7 +4206,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -4161,7 +4221,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -4558,7 +4618,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -4573,7 +4633,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -5382,7 +5442,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -5427,28 +5487,28 @@
                     "type": "array",
                     "items": {
                         "type": "string",
-                        "enum": {
-                            "0": "bigNumber",
-                            "58": "summaryNumbers",
-                            "59": "multipleNumber",
-                            "60": "pie",
-                            "61": "donut",
-                            "62": "halfpie",
-                            "63": "halfdonut",
-                            "64": "bar",
-                            "65": "hbar",
-                            "710": "searchShowList",
-                            "727": "line",
-                            "728": "area",
-                            "730": "lines",
-                            "731": "areas",
-                            "732": "bars",
-                            "733": "stackedbars",
-                            "746": "hBars",
-                            "747": "stackedHBars",
-                            "830": "articleList",
-                            "831": "markdown"
-                        }
+                        "enum": [
+                            "bigNumber",
+                            "summaryNumbers",
+                            "multipleNumber",
+                            "pie",
+                            "donut",
+                            "halfpie",
+                            "halfdonut",
+                            "bar",
+                            "hbar",
+                            "searchShowList",
+                            "line",
+                            "area",
+                            "lines",
+                            "areas",
+                            "bars",
+                            "stackedbars",
+                            "hBars",
+                            "stackedHBars",
+                            "articleList",
+                            "markdown"
+                        ]
                     }
                 },
                 "group": {
@@ -5515,7 +5575,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -5837,7 +5897,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -5852,7 +5912,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -6130,7 +6190,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -6363,7 +6423,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -6395,7 +6455,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -6529,7 +6589,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -6544,7 +6604,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -7209,7 +7269,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -7241,7 +7301,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -8025,7 +8085,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -8561,7 +8621,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -8576,7 +8636,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -9334,6 +9394,43 @@
                 }
             }
         },
+        "GroupTeamMember": {
+            "type": "object",
+            "properties": {
+                "_type": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "role": {
+                    "type": "string",
+                    "enum": [
+                        "requester",
+                        "assigned",
+                        "observer",
+                        null
+                    ]
+                },
+                "group": {
+                    "type": "object",
+                    "x-itemtype": "Group",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Group"
+                }
+            }
+        },
         "HardDrive": {
             "x-itemtype": "DeviceHardDrive",
             "type": "object",
@@ -9637,7 +9734,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -10217,7 +10314,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -10514,7 +10611,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -10594,7 +10691,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -10649,7 +10746,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -10908,7 +11005,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -11197,7 +11294,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -11229,7 +11326,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -11439,7 +11536,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -11471,7 +11568,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -12133,7 +12230,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -12148,7 +12245,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -12742,7 +12839,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -12757,7 +12854,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -13721,7 +13818,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -13755,7 +13852,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -13770,7 +13867,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -14118,6 +14215,21 @@
             "x-itemtype": "OLA",
             "type": "object",
             "properties": {
+                "group": {
+                    "type": "object",
+                    "x-itemtype": "Group",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Group"
+                },
                 "id": {
                     "type": "integer",
                     "format": "int64",
@@ -15001,7 +15113,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -15033,7 +15145,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -15294,7 +15406,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -15326,7 +15438,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -15649,7 +15761,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -15664,7 +15776,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -16029,7 +16141,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -16044,7 +16156,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -16353,7 +16465,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -16689,7 +16801,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -16704,7 +16816,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -17006,7 +17118,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -17021,7 +17133,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -17184,23 +17296,83 @@
                     "type": "array",
                     "items": {
                         "type": "object",
+                        "oneOf": [
+                            "UserTeamMember",
+                            "GroupTeamMember",
+                            "SupplierTeamMember"
+                        ],
+                        "discriminator": {
+                            "propertyName": "_type",
+                            "mapping": {
+                                "UserTeamMember": "UserTeamMember",
+                                "GroupTeamMember": "GroupTeamMember",
+                                "SupplierTeamMember": "SupplierTeamMember"
+                            }
+                        },
                         "properties": {
+                            "_type": {
+                                "type": "string"
+                            },
                             "id": {
                                 "type": "integer",
                                 "format": "int64",
                                 "readOnly": true
                             },
-                            "name": {
-                                "type": "string"
-                            },
-                            "type": {
-                                "type": "string"
-                            },
                             "role": {
-                                "type": "string"
+                                "type": "string",
+                                "enum": [
+                                    "requester",
+                                    "assigned",
+                                    "observer",
+                                    null
+                                ]
+                            },
+                            "user": {
+                                "type": "object",
+                                "x-itemtype": "User",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "readOnly": true
+                                    }
+                                },
+                                "x-full-schema": "User"
+                            },
+                            "group": {
+                                "type": "object",
+                                "x-itemtype": "Group",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "readOnly": true
+                                    }
+                                },
+                                "x-full-schema": "Group"
+                            },
+                            "supplier": {
+                                "type": "object",
+                                "x-itemtype": "Supplier",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "readOnly": true
+                                    }
+                                },
+                                "x-full-schema": "Supplier"
                             }
-                        },
-                        "x-full-schema": "TeamMember"
+                        }
                     }
                 },
                 "costs": {
@@ -17340,7 +17512,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -17355,7 +17527,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -17370,7 +17542,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -18033,7 +18205,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -18424,7 +18596,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -18902,7 +19074,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -19045,7 +19217,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -19077,7 +19249,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -19528,7 +19700,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -19741,7 +19913,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -20241,7 +20413,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -20256,7 +20428,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -20264,19 +20436,21 @@
                     "x-full-schema": "User"
                 },
                 "group": {
-                    "type": "object",
-                    "x-itemtype": "Group",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-full-schema": "Group",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "description": "ID"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
                         }
-                    },
-                    "x-full-schema": "Group"
+                    }
                 }
             }
         },
@@ -21185,6 +21359,18 @@
                                     "x-label": "Data centers",
                                     "x-right-scope": "entity"
                                 },
+                                "defaultfilter": {
+                                    "type": "integer",
+                                    "description": "Default filters rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "enum": [
+                                        1,
+                                        2,
+                                        4,
+                                        16
+                                    ],
+                                    "x-label": "Default filters",
+                                    "x-right-scope": "entity"
+                                },
                                 "device": {
                                     "type": "integer",
                                     "description": "Components rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
@@ -21246,6 +21432,23 @@
                                     ],
                                     "x-label": "Global dropdowns",
                                     "x-right-scope": "global"
+                                },
+                                "enclosure": {
+                                    "type": "integer",
+                                    "description": "Enclosures rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "enum": [
+                                        1,
+                                        2,
+                                        4,
+                                        8,
+                                        16,
+                                        256,
+                                        512,
+                                        1024,
+                                        2048
+                                    ],
+                                    "x-label": "Enclosures",
+                                    "x-right-scope": "entity"
                                 },
                                 "entity": {
                                     "type": "integer",
@@ -22075,6 +22278,9 @@
                                     "x-label": "System logs",
                                     "x-right-scope": "global"
                                 },
+                                "tag": {
+                                    "type": "integer"
+                                },
                                 "task": {
                                     "type": "integer",
                                     "description": "Ticket tasks rights. Possible values:\n- 1: See public ones\n- 2: Update (author)\n- 4: Add (requester)\n- 16: Purge\n- 1024: Update all\n- 2048: Add (associated groups)\n- 4096: Add to all items\n- 8192: See private ones\n- 16384: Add (observer)\n- 32768: Add (technician)\n- 65536: See private of my groups",
@@ -22501,7 +22707,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -22533,7 +22739,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -22685,200 +22891,6 @@
                 }
             }
         },
-        "SoftwareLicense": {
-            "type": "object",
-            "x-itemtype": "SoftwareLicense",
-            "properties": {
-                "id": {
-                    "type": "integer",
-                    "format": "int64",
-                    "readOnly": true
-                },
-                "name": {
-                    "type": "string"
-                },
-                "comment": {
-                    "type": "string"
-                },
-                "status": {
-                    "type": "object",
-                    "x-itemtype": "State",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        }
-                    },
-                    "x-full-schema": "State"
-                },
-                "entity": {
-                    "type": "object",
-                    "x-itemtype": "Entity",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64",
-                            "readOnly": true
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        },
-                        "completename": {
-                            "type": "string"
-                        }
-                    },
-                    "x-full-schema": "Entity"
-                },
-                "is_recursive": {
-                    "type": "boolean"
-                },
-                "manufacturer": {
-                    "type": "object",
-                    "x-itemtype": "Manufacturer",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        }
-                    },
-                    "x-full-schema": "Manufacturer"
-                },
-                "user": {
-                    "type": "object",
-                    "x-itemtype": "User",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        }
-                    },
-                    "x-full-schema": "User"
-                },
-                "user_tech": {
-                    "type": "object",
-                    "x-itemtype": "User",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        }
-                    },
-                    "x-full-schema": "User"
-                },
-                "contact": {
-                    "type": "string"
-                },
-                "contact_num": {
-                    "type": "string"
-                },
-                "serial": {
-                    "type": "string"
-                },
-                "otherserial": {
-                    "type": "string"
-                },
-                "is_deleted": {
-                    "type": "boolean"
-                },
-                "date_creation": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "date_mod": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "location": {
-                    "type": "object",
-                    "x-itemtype": "Location",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        }
-                    },
-                    "x-full-schema": "Location"
-                },
-                "type": {
-                    "type": "object",
-                    "x-itemtype": "SoftwareLicenseType",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        }
-                    },
-                    "x-full-schema": "LicenseType"
-                },
-                "group": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "x-full-schema": "Group",
-                        "properties": {
-                            "id": {
-                                "type": "integer",
-                                "format": "int64",
-                                "description": "ID"
-                            },
-                            "name": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "group_tech": {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "x-full-schema": "Group",
-                        "properties": {
-                            "id": {
-                                "type": "integer",
-                                "format": "int64",
-                                "description": "ID"
-                            },
-                            "name": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                },
-                "completename": {
-                    "type": "string",
-                    "readOnly": true
-                },
-                "level": {
-                    "type": "integer",
-                    "readOnly": true
-                }
-            }
-        },
         "SoftwareVersion": {
             "x-itemtype": "SoftwareVersion",
             "type": "object",
@@ -23015,7 +23027,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -23030,7 +23042,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -23045,7 +23057,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -23725,6 +23737,41 @@
                 }
             }
         },
+        "SupplierTeamMember": {
+            "type": "object",
+            "properties": {
+                "_type": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "role": {
+                    "type": "string",
+                    "enum": [
+                        "assigned",
+                        null
+                    ]
+                },
+                "supplier": {
+                    "type": "object",
+                    "x-itemtype": "Supplier",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Supplier"
+                }
+            }
+        },
         "SupplierType": {
             "x-itemtype": "SupplierType",
             "type": "object",
@@ -24090,7 +24137,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -24126,25 +24173,6 @@
                 }
             }
         },
-        "TeamMember": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer",
-                    "format": "int64",
-                    "readOnly": true
-                },
-                "name": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                }
-            }
-        },
         "Ticket": {
             "type": "object",
             "properties": {
@@ -24169,7 +24197,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -24184,7 +24212,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -24445,11 +24473,13 @@
                 },
                 "internal_resolution_date": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date-time",
+                    "readOnly": true
                 },
                 "internal_take_into_account_date": {
                     "type": "string",
-                    "format": "date-time"
+                    "format": "date-time",
+                    "readOnly": true
                 },
                 "global_validation": {
                     "type": "integer",
@@ -24507,23 +24537,83 @@
                     "type": "array",
                     "items": {
                         "type": "object",
+                        "oneOf": [
+                            "UserTeamMember",
+                            "GroupTeamMember",
+                            "SupplierTeamMember"
+                        ],
+                        "discriminator": {
+                            "propertyName": "_type",
+                            "mapping": {
+                                "UserTeamMember": "UserTeamMember",
+                                "GroupTeamMember": "GroupTeamMember",
+                                "SupplierTeamMember": "SupplierTeamMember"
+                            }
+                        },
                         "properties": {
+                            "_type": {
+                                "type": "string"
+                            },
                             "id": {
                                 "type": "integer",
                                 "format": "int64",
                                 "readOnly": true
                             },
-                            "name": {
-                                "type": "string"
-                            },
-                            "type": {
-                                "type": "string"
-                            },
                             "role": {
-                                "type": "string"
+                                "type": "string",
+                                "enum": [
+                                    "requester",
+                                    "assigned",
+                                    "observer",
+                                    null
+                                ]
+                            },
+                            "user": {
+                                "type": "object",
+                                "x-itemtype": "User",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "readOnly": true
+                                    }
+                                },
+                                "x-full-schema": "User"
+                            },
+                            "group": {
+                                "type": "object",
+                                "x-itemtype": "Group",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "readOnly": true
+                                    }
+                                },
+                                "x-full-schema": "Group"
+                            },
+                            "supplier": {
+                                "type": "object",
+                                "x-itemtype": "Supplier",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "format": "int64"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "readOnly": true
+                                    }
+                                },
+                                "x-full-schema": "Supplier"
                             }
-                        },
-                        "x-full-schema": "TeamMember"
+                        }
                     }
                 },
                 "costs": {
@@ -24716,7 +24806,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -24731,7 +24821,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -24746,7 +24836,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -24892,7 +24982,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -24907,7 +24997,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -25178,7 +25268,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -25193,7 +25283,7 @@
                             "type": "integer",
                             "format": "int64"
                         },
-                        "name": {
+                        "username": {
                             "type": "string",
                             "readOnly": true
                         }
@@ -25784,7 +25874,6 @@
                         "unifont",
                         "unifont_csur",
                         "unifont_jp",
-                        "unifont_t",
                         "unifont_upper",
                         "zapfdingbats"
                     ]
@@ -25909,6 +25998,43 @@
                 "timezone": {
                     "type": "string",
                     "maxLength": 50
+                }
+            }
+        },
+        "UserTeamMember": {
+            "type": "object",
+            "properties": {
+                "_type": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "role": {
+                    "type": "string",
+                    "enum": [
+                        "requester",
+                        "assigned",
+                        "observer",
+                        null
+                    ]
+                },
+                "user": {
+                    "type": "object",
+                    "x-itemtype": "User",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "username": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "User"
                 }
             }
         },

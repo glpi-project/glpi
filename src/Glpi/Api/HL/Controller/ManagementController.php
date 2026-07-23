@@ -74,6 +74,8 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Group_Item;
+use GuzzleHttp\Psr7\Utils;
+use Infocom;
 use Item_Line;
 use Line;
 use LineOperator;
@@ -87,6 +89,9 @@ use State;
 use Supplier;
 use SupplierType;
 use User;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 #[Route(path: '/Management', tags: ['Management'])]
 final class ManagementController extends AbstractController
@@ -197,7 +202,15 @@ final class ManagementController extends AbstractController
         ];
     }
 
-    protected static function getRawKnownSchemas(): array
+    /**
+     * @return string[]
+     */
+    public static function getManagementInfocomTypes30(): array
+    {
+        return ['DatabaseInstance', 'Domain', 'License', 'Line'];
+    }
+
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         global $CFG_GLPI;
 
@@ -325,9 +338,9 @@ final class ManagementController extends AbstractController
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'type' => self::getDropdownTypeSchema(class: ClusterType::class, full_schema: 'ClusterType'),
-                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                     'group_tech' => $fn_get_group_tech_property(Cluster::class),
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'group' => $fn_get_group_property(Cluster::class),
                     'uuid' => [
                         'type' => Doc\Schema::TYPE_STRING,
@@ -581,8 +594,8 @@ EOT,
                     'category' => self::getDropdownTypeSchema(class: DatabaseInstanceCategory::class, full_schema: 'DatabaseInstanceCategory'),
                     'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
                     'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                     'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
                     'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                     'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
@@ -669,7 +682,7 @@ EOT,
                     'sha1sum' => ['type' => Doc\Schema::TYPE_STRING],
                     'category' => self::getDropdownTypeSchema(class: DocumentCategory::class, full_schema: 'DocumentCategory') + ['x-version-introduced' => '2.3.0'],
                     'link' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255, 'x-version-introduced' => '2.3.0'],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User') + ['x-version-introduced' => '2.3.0'],
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User') + ['x-version-introduced' => '2.3.0'],
                     'checksum_sha1' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'maxLength' => 40,
@@ -707,9 +720,9 @@ EOT,
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'type' => self::getDropdownTypeSchema(class: DomainType::class, full_schema: 'DomainType'),
-                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                     'group_tech' => $fn_get_group_tech_property(Domain::class),
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'group' => $fn_get_group_property(Domain::class),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                     'date_domain_creation' => [
@@ -764,9 +777,9 @@ EOT,
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'type' => self::getDropdownTypeSchema(class: SoftwareLicenseType::class, full_schema: 'LicenseType'),
                     'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
-                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                     'group_tech' => $fn_get_group_tech_property(SoftwareLicense::class),
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'group' => $fn_get_group_property(SoftwareLicense::class),
                     'contact' => ['type' => Doc\Schema::TYPE_STRING],
                     'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
@@ -806,9 +819,9 @@ EOT,
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'type' => self::getDropdownTypeSchema(class: LineType::class, full_schema: 'LineType'),
-                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                     'group_tech' => $fn_get_group_tech_property(Line::class),
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'group' => $fn_get_group_property(Line::class),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                     'caller_num' => [
@@ -1108,8 +1121,8 @@ EOT,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT32,
                     'description' => 'Time to live in seconds',
                 ],
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -1861,5 +1874,123 @@ EOT,
     public function deleteContractItemLink(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getManagementInfocomTypes30'],
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '3.0')]
+    #[Doc\GetRoute(schema_name: 'Infocom')]
+    public function getItemInfocom(Request $request): Response
+    {
+        if (!Infocom::canView()) {
+            return self::getAccessDeniedErrorResponse();
+        }
+        $params = $request->getParameters();
+        $itemtype = $request->getAttribute('itemtype');
+        $items_id = $request->getAttribute('id');
+        $filter = 'itemtype==' . $itemtype . ';items_id==' . $items_id;
+        $params['filter'] = $filter;
+        $result = ResourceAccessor::searchBySchema($this->getKnownSchema('Infocom', $this->getAPIVersion($request)), $params);
+        if ($result->getStatusCode() !== 200) {
+            return $result;
+        }
+        $results = json_decode((string) $result->getBody(), true);
+        if (empty($results)) {
+            return self::getNotFoundErrorResponse();
+        }
+        $results = reset($results);
+        return $result->withBody(Utils::streamFor(json_encode($results)));
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['POST'], requirements: [
+        'itemtype' => [self::class, 'getManagementInfocomTypes30'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '3.0')]
+    #[Doc\CreateRoute(schema_name: 'Infocom')]
+    public function createItemInfocom(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('id'));
+        $infocom_schema = $this->getKnownSchema('Infocom', $this->getAPIVersion($request));
+        unset($infocom_schema['properties']['itemtype']['readOnly']);
+        unset($infocom_schema['properties']['items_id']['readOnly']);
+        return ResourceAccessor::createBySchema(
+            $infocom_schema,
+            $request->getParameters(),
+            [self::class, 'getItemInfocom'],
+            [
+                'mapped' => [
+                    'itemtype' => $request->getAttribute('itemtype'),
+                    'id' => $request->getAttribute('id'),
+                ],
+                'id' => 'noop',
+            ]
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['PATCH'], requirements: [
+        'itemtype' => [self::class, 'getManagementInfocomTypes30'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '3.0')]
+    #[Doc\UpdateRoute(schema_name: 'Infocom')]
+    public function updateItemInfocom(Request $request): Response
+    {
+        global $DB;
+
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('id'));
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => 'glpi_infocoms',
+            'WHERE'  => [
+                'itemtype' => $request->getAttribute('itemtype'),
+                'items_id' => $request->getAttribute('id'),
+            ],
+        ]);
+        if (!count($it)) {
+            return self::getNotFoundErrorResponse();
+        }
+        $infocom_id = $it->current()['id'];
+        $request->setAttribute('id', $infocom_id);
+        return ResourceAccessor::updateBySchema(
+            $this->getKnownSchema('Infocom', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['DELETE'], requirements: [
+        'itemtype' => [self::class, 'getManagementInfocomTypes30'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '3.0')]
+    #[Doc\DeleteRoute(schema_name: 'Infocom')]
+    public function deleteItemInfocom(Request $request): Response
+    {
+        global $DB;
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('id'));
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => 'glpi_infocoms',
+            'WHERE'  => [
+                'itemtype' => $request->getAttribute('itemtype'),
+                'items_id' => $request->getAttribute('id'),
+            ],
+        ]);
+        if (!count($it)) {
+            return self::getNotFoundErrorResponse();
+        }
+        $infocom_id = $it->current()['id'];
+        $request->setAttribute('id', $infocom_id);
+        return ResourceAccessor::deleteBySchema(
+            $this->getKnownSchema('Infocom', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters()
+        );
     }
 }

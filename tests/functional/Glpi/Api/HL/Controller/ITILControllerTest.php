@@ -638,9 +638,26 @@ class ITILControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) use ($members) {
                     $this->assertCount(count($members), $content);
-                    $member_ids = array_column($members, 'id');
-                    foreach ($content as $member) {
-                        $this->assertContains($member['id'], $member_ids);
+                    foreach ($members as $m) {
+                        $found = false;
+                        foreach ($content as $member_data) {
+                            $type = match ($member_data['_type']) {
+                                'UserTeamMember' => 'User',
+                                'GroupTeamMember' => 'Group',
+                                'SupplierTeamMember' => 'Supplier'
+                            };
+                            if ($type === 'User' && $member_data['user']['id'] === $m['id'] && $member_data['role'] === $m['role']) {
+                                $found = true;
+                                break;
+                            } elseif ($type === 'Group'  && $member_data[$type]['id']  !==  $m['id']) {
+                                $found = true;
+                                break;
+                            } elseif ($type === 'Supplier'  && $member_data[$type]['id']  !==  $m['id']) {
+                                $found = true;
+                                break;
+                            }
+                        }
+                        $this->assertTrue($found);
                     }
                 });
         });
@@ -663,7 +680,7 @@ class ITILControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content);
-                    $this->assertEquals(3, array_values($content)[0]['id']);
+                    $this->assertEquals(3, array_values($content)[0]['user']['id']);
                 });
         });
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/observer"), function ($call) {
@@ -671,7 +688,7 @@ class ITILControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content);
-                    $this->assertEquals(2, array_values($content)[0]['id']);
+                    $this->assertEquals(2, array_values($content)[0]['user']['id']);
                 });
         });
         $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket->getID()}/TeamMember/assigned"), function ($call) {
@@ -679,7 +696,7 @@ class ITILControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content);
-                    $this->assertEquals(4, array_values($content)[0]['id']);
+                    $this->assertEquals(4, array_values($content)[0]['user']['id']);
                 });
         });
 

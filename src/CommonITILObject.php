@@ -10533,10 +10533,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             $select = [];
             if ($itemtype === User::class) {
-                $select = [$link_class::getTable() . '.' . $itemtype::getForeignKeyField(), 'type', 'name', 'realname', 'firstname'];
+                $select = [
+                    $link_class::getTable() . '.' . $itemtype::getForeignKeyField(),
+                    $link_class::getTable() . '.id AS linkid',
+                    'type', 'name', 'realname', 'firstname'];
             } else {
                 $select = [
-                    $link_class::getTable() . '.' . $itemtype::getForeignKeyField(), 'type', 'name',
+                    $link_class::getTable() . '.' . $itemtype::getForeignKeyField(),
+                    $link_class::getTable() . '.id AS linkid',
+                    'type', 'name',
                     new QueryExpression('NULL as realname'),
                     new QueryExpression('NULL as firstname'),
                 ];
@@ -10558,6 +10563,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             foreach ($it as $data) {
                 $items_id = $data[$itemtype::getForeignKeyField()];
                 $member = [
+                    'linkid'       => $data['linkid'],
                     'itemtype'     => $itemtype,
                     'items_id'     => $items_id,
                     'role'         => $data['type'],
