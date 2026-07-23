@@ -179,7 +179,7 @@ TWIG, $twig_params);
                     $(() => {
                         function addTranslation{{ item.getID() ~ rand }}() {
                             $('#viewtranslation{{ item.getID() ~ rand }}').load(
-                                '{{ path('ajax/viewsubitem.php')|e('js') }}',
+                                '{{ path('/ajax/viewsubitem.php')|e('js') }}',
                                 {
                                     type: 'KnowbaseItemTranslation',
                                     parenttype: '{{ get_class(item)|e('js') }}',
