@@ -35,7 +35,7 @@
 namespace Glpi\Tests\Glpi\Security\ReAuth;
 
 use Glpi\Controller\Security\ReAuthController;
-use Glpi\Security\ReAuth\AbstractReAuthStrategy;
+use Glpi\Security\ReAuth\InPlaceReAuthStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\ReAuth\ReAuthStrategyEnum;
 use Glpi\Security\ReAuth\ReAuthStrategyInterface;
@@ -150,7 +150,7 @@ trait ReAuthTrait
      *
      * By default, it behaves like a native strategy (verified in-process through the core
      * {@see ReAuthController::verify()} endpoint, inheriting the
-     * defaults from {@see AbstractReAuthStrategy}). Passing $verify_url and/or
+     * defaults from {@see InPlaceReAuthStrategy}). Passing $verify_url and/or
      * $verify_http_method models an out-of-band strategy (e.g. OAuth) whose prompt form
      * submits to an external endpoint instead, bypassing the core verify().
      */
@@ -161,7 +161,7 @@ trait ReAuthTrait
         ?string $verify_url = null,
         string $verify_http_method = 'POST',
     ): ReAuthStrategyInterface {
-        return new class ($label, $priority, $available, $verify_url, $verify_http_method) extends AbstractReAuthStrategy {
+        return new class ($label, $priority, $available, $verify_url, $verify_http_method) extends InPlaceReAuthStrategy {
             public function __construct(
                 private string $label,
                 private int $priority,

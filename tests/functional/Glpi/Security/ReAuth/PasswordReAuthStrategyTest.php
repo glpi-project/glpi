@@ -136,7 +136,7 @@ class PasswordReAuthStrategyTest extends DbTestCase
     }
 
     /**
-     * A native strategy is verified in-process: it inherits the AbstractReAuthStrategy
+     * A native strategy is verified in-process: it inherits the InPlaceReAuthStrategy
      * defaults pointing the prompt form to the core ReAuth verify endpoint via POST.
      * All native strategies share these defaults; Password is tested here as representative.
      */
