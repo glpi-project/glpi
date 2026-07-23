@@ -7461,6 +7461,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'template'      => 'components/itilobject/timeline/form_followup.html.twig',
             'item'          => $fup,
             'hide_in_menu'  => !$canadd_fup,
+            'lazy_load'     => true,
         ];
         $itemtypes['task'] = [
             'type'          => 'ITILTask',
@@ -7471,6 +7472,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'template'      => 'components/itilobject/timeline/form_task.html.twig',
             'item'          => $task,
             'hide_in_menu'  => !$canadd_task,
+            'lazy_load'     => true,
         ];
         $itemtypes['solution'] = [
             'type'          => 'ITILSolution',
@@ -7481,6 +7483,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'template'      => 'components/itilobject/timeline/form_solution.html.twig',
             'item'          => new ITILSolution(),
             'hide_in_menu'  => !$canadd_solution,
+            'lazy_load'     => true,
         ];
         $itemtypes['document'] = [
             'type'          => 'Document_Item',
@@ -7502,6 +7505,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 'template'      => 'components/itilobject/timeline/form_validation.html.twig',
                 'item'          => $validation,
                 'hide_in_menu'  => !$canadd_validation,
+                'lazy_load'     => true,
             ];
         }
 

@@ -53,7 +53,10 @@
                         </button>
                      </div>
                      <div>
-                        {% if timeline_itemtype.template is defined %}
+                        {% if timeline_itemtype.lazy_load|default(false) %}
+                           {# Fetched on first open to keep the initial page load fast (see footer.html.twig). #}
+                           <div class="new-itil-answer-form" data-subitem-type="{{ timeline_itemtype.class }}" data-answer-loaded="false"></div>
+                        {% elseif timeline_itemtype.template is defined %}
                            {{ include(timeline_itemtype.template, {
                               'item': item,
                               'subitem': timeline_itemtype.item,
