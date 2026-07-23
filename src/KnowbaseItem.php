@@ -2861,6 +2861,8 @@ TWIG, $twig_params);
     {
         $links = [];
 
+        $links['all_articles'] = self::getSearchURL(false);
+
         if (KnowbaseItemCategory::canView()) {
             $links['view_kb_categories'] = KnowbaseItemCategory::getSearchURL(false);
         }
