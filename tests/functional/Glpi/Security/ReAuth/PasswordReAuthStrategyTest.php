@@ -134,4 +134,21 @@ class PasswordReAuthStrategyTest extends DbTestCase
         $this->assertSame(50, $strategy->getPriority());
         $this->assertNotEmpty($strategy->getLabel());
     }
+
+    /**
+     * A native strategy is verified in-process: it inherits the AbstractReAuthStrategy
+     * defaults pointing the prompt form to the core ReAuth verify endpoint via POST.
+     * All native strategies share these defaults; Password is tested here as representative.
+     */
+    public function testInheritsDefaultVerifyUrlAndMethod(): void
+    {
+        global $CFG_GLPI;
+
+        // --- arrange ---
+        $strategy = new PasswordReAuthStrategy();
+
+        // --- act + assert ---
+        $this->assertSame($CFG_GLPI['root_doc'] . '/ReAuth/Verify', $strategy->getVerifyUrl());
+        $this->assertSame('POST', $strategy->getVerifyHttpMethod());
+    }
 }

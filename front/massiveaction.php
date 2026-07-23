@@ -51,7 +51,7 @@ try {
     $ma = new MassiveAction($_POST, $_GET, 'process');
     $item_types = get_item_types_from_post();
 
-    $reauth_manager = new ReAuthManager();
+    $reauth_manager = ReAuthManager::getInstance();
     if ($reauth_manager->atLeastOneItemTypesRequiresReauthentication($item_types)) {
         // First pass (reauth needed): throws RedirectException.
         $reauth_manager->checkReAuthenticationOrRedirect();

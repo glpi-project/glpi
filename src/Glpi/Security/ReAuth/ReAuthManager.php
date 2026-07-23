@@ -39,6 +39,7 @@ namespace Glpi\Security\ReAuth;
 use Glpi\Application\Environment;
 use Glpi\Exception\RedirectException;
 use Glpi\Kernel\Kernel;
+use Glpi\Toolbox\SingletonTrait;
 use InvalidArgumentException;
 use RuntimeException;
 use Safe\DateTime;
@@ -47,9 +48,15 @@ use function Safe\parse_url;
 
 final class ReAuthManager
 {
+    use SingletonTrait;
     public const int REAUTH_DELAY_SECONDS = 15 * MINUTE_TIMESTAMP;
 
     private ?ReAuthStrategyInterface $strategy = null;
+
+    /**
+     * @var ReAuthStrategyInterface[]
+     */
+    private array $additional_strategies = [];
 
     /**
      * @throws RedirectException
@@ -160,9 +167,6 @@ final class ReAuthManager
 
     /**
      * URL of the page the user was on when the reauth-requiring action was triggered.
-     *
-     * Used both as the "Cancel" target on the reauth prompt and as the referer
-     * of the replayed request (@see getRedirectData()).
      */
     public function getOriginURL(): string
     {
@@ -207,6 +211,16 @@ final class ReAuthManager
         return $_SESSION['glpi_reauth_requested_httpmethod'] ?? 'GET';
     }
 
+    public function getVerifyUrl(): string
+    {
+        return $this->getStrategy()->getVerifyUrl();
+    }
+
+    public function getVerifyHttpMethod(): string
+    {
+        return $this->getStrategy()->getVerifyHttpMethod();
+    }
+
     /**
      * returns true if at least one of the item_types require reauth
      *
@@ -225,6 +239,14 @@ final class ReAuthManager
             fn($carry, string $item_type) => $carry || $item_type::isUserReauthenticationNeeded(),
             false
         );
+    }
+
+    /**
+     * Register a new strategy in available strategies
+     */
+    public function registerStrategy(ReAuthStrategyInterface $strategy): void
+    {
+        $this->additional_strategies[$strategy::class] = $strategy;
     }
 
     /**
@@ -292,8 +314,16 @@ final class ReAuthManager
     {
         $strategies = [];
 
+        // native strategies
         foreach (ReAuthStrategyEnum::cases() as $case) {
             $strategy = $case->createStrategy();
+            if ($strategy->isAvailable($users_id)) {
+                $strategies[] = $strategy;
+            }
+        }
+
+        // add registered strategies (from plugins)
+        foreach ($this->additional_strategies as $strategy) {
             if ($strategy->isAvailable($users_id)) {
                 $strategies[] = $strategy;
             }

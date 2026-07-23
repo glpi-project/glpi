@@ -41,6 +41,9 @@ trait SingletonTrait
      */
     private static array $_instances = [];
 
+    /**
+     * Private method : no `new` instantiation is possible
+     */
     private function __construct() {}
 
     public static function getInstance(): static

@@ -43,9 +43,21 @@ interface ReAuthStrategyInterface
      *
      * @param int    $users_id   The user ID
      * @param string $user_input The user input (password, TOTP code, etc.)
-     * @return bool True if verification succeeds, false otherwise
+     * @return bool  Successful verification
      */
     public function verify(int $users_id, string $user_input): bool;
+
+    /**
+     * Prompt form submission's url
+     */
+    public function getVerifyUrl(): string;
+
+    /**
+     * Prompt form's method
+     *
+     * @return 'POST'|'GET'
+     */
+    public function getVerifyHttpMethod(): string;
 
     /**
      * Check if this strategy is available for the given user.
@@ -57,13 +69,13 @@ interface ReAuthStrategyInterface
 
     /**
      * Get a human-readable label for this strategy (used in UI).
-     *
      */
     public function getLabel(): string;
 
     /**
-     * Get the template name for the prompt/form (pages/reauth/xxx.html.twig).
+     * uri of a template displaying a reauth form
      *
+     * e.g. '@myplugin/reauth/prompt.html.twig';
      */
     public function getPromptTemplate(): string;
 
@@ -71,7 +83,6 @@ interface ReAuthStrategyInterface
      * Get the priority of this strategy.
      *
      * When multiple strategies are available for a user, the one with the HIGHEST priority is selected.
-     * Example: TOTP (priority 100) is preferred over Password (priority 50).
      *
      * @return int A positive integer. Higher values = higher priority
      */

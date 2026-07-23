@@ -58,7 +58,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ReAuthTestController extends AbstractController
 {
     public function __construct(
-        private readonly ReAuthManager $reAuthManager = new ReAuthManager(),
+        private readonly ReAuthManager $reAuthManager,
     ) {}
 
     #[Route(

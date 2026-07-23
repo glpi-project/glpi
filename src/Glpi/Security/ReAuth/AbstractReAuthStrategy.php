@@ -36,44 +36,30 @@ declare(strict_types=1);
 
 namespace Glpi\Security\ReAuth;
 
-use Glpi\Security\TOTPManager;
-
-final class TOTPReAuthStrategy extends AbstractReAuthStrategy
+abstract class AbstractReAuthStrategy implements ReAuthStrategyInterface
 {
-    private TOTPManager $totp_manager;
-
-    public function __construct()
+    /**
+     * Verify url points to \Glpi\Controller\Security\ReAuthController::verify
+     *
+     * Providing another value allows prompt form validation to bypass the ReauthStrategy verify().
+     * A use case is when verification is done by an external authentication service.
+     * Before overriding it, ensure you really need it because it will bypass ReAuthStrategyInterface::verify().
+     *
+     * @see ReAuthStrategyInterface::getVerifyUrl()
+     * @see ReAuthStrategyInterface::verify()
+     */
+    public function getVerifyUrl(): string
     {
-        $this->totp_manager = new TOTPManager();
+        global $CFG_GLPI;
+
+        return $CFG_GLPI['root_doc'] . '/ReAuth/Verify';
     }
 
-    #[\Override]
-    public function verify(int $users_id, string $user_input): bool
+    /**
+     * @see ReAuthStrategyInterface::getVerifyHttpMethod()
+     */
+    public function getVerifyHttpMethod(): string
     {
-        return $this->totp_manager->verifyCodeForUser($user_input, $users_id);
-    }
-
-    #[\Override]
-    public function isAvailable(int $users_id, int $entities_id = 0): bool
-    {
-        return $this->totp_manager->is2FAEnabled($users_id);
-    }
-
-    #[\Override]
-    public function getLabel(): string
-    {
-        return __('Two-factor authentication');
-    }
-
-    #[\Override]
-    public function getPromptTemplate(): string
-    {
-        return 'pages/reauth/totp_form.html.twig';
-    }
-
-    #[\Override]
-    public function getPriority(): int
-    {
-        return 100;
+        return 'POST';
     }
 }

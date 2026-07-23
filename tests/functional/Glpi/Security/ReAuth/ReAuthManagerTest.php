@@ -38,7 +38,7 @@ use Computer;
 use Glpi\Exception\RedirectException;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
-use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTestTrait;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -48,18 +48,20 @@ use User;
 #[Group('reauth')]
 class ReAuthManagerTest extends DbTestCase
 {
-    use ReAuthTestTrait;
+    use ReAuthTrait;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->setCurrentTime('2026-06-22 10:00:00');
+        $this->resetReAuthManager();
     }
 
     public function tearDown(): void
     {
         // Always restore the CLI flag so the reauth branch does not leak to other tests.
         unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
+        $this->resetReAuthManager();
         parent::tearDown();
     }
 
@@ -76,7 +78,6 @@ class ReAuthManagerTest extends DbTestCase
     public function testIsReAuthenticated(?int $offset, bool $expected): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
         if ($offset === null) {
             unset($_SESSION['glpi_reauth_until']);
         } else {
@@ -84,57 +85,53 @@ class ReAuthManagerTest extends DbTestCase
         }
 
         // --- act + assert ---
-        $this->assertSame($expected, $manager->isReAuthenticated());
+        $this->assertSame($expected, $this->getReAuthManager()->isReAuthenticated());
     }
 
     /** authenticate() sets glpi_reauth_until to currenttime + REAUTH_DELAY_SECONDS. */
     public function testAuthenticateSetsValidityToNowPlusDelay(): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
         unset($_SESSION['glpi_reauth_until']);
 
         // --- act ---
-        $manager->authenticate();
+        $this->getReAuthManager()->authenticate();
 
         // --- assert ---
         $expected = (new DateTime($_SESSION['glpi_currenttime']))->getTimestamp() + ReAuthManager::REAUTH_DELAY_SECONDS;
         $this->assertSame($expected, $_SESSION['glpi_reauth_until']);
-        $this->assertTrue($manager->isReAuthenticated());
+        $this->assertTrue($this->getReAuthManager()->isReAuthenticated());
     }
 
     /** No exception is thrown when the session is already re-authenticated. */
     public function testCheckReAuthenticationOrRedirectDoesNothingWhenReAuthenticated(): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
-        $manager->authenticate();
+        $this->getReAuthManager()->authenticate();
 
         // --- act ---
-        $manager->checkReAuthenticationOrRedirect();
+        $this->getReAuthManager()->checkReAuthenticationOrRedirect();
 
         // --- assert : no exception thrown, the session is still valid ---
-        $this->assertTrue($manager->isReAuthenticated());
+        $this->assertTrue($this->getReAuthManager()->isReAuthenticated());
     }
 
     /** Throws RedirectException when there is no valid re-authentication token in session. */
     public function testCheckReAuthenticationOrRedirectThrowsWhenNotReAuthenticated(): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
         unset($_SESSION['glpi_reauth_until']);
         $this->fakeWebContext(request_uri: '/front/user.form.php?id=2');
 
         // --- act + assert ---
         $this->expectException(RedirectException::class);
-        $manager->checkReAuthenticationOrRedirect();
+        $this->getReAuthManager()->checkReAuthenticationOrRedirect();
     }
 
-    /** POST body and method are persisted in session before the RedirectException is thrown. */
+    /** GET request URL and data are stored in session before the RedirectException is thrown. */
     public function testRedirectToReauthStoresPostRequestData(): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
         $this->fakeWebContext(
             request_uri: '/front/user.form.php?id=2',
             method: 'POST',
@@ -144,44 +141,43 @@ class ReAuthManagerTest extends DbTestCase
 
         // --- act ---
         // try/catch because $this->expectException() stop the test at the point exception is thrown
-        // so testing $manager->xxx() would be impossible.
+        // so testing $this->getReAuthManager()->xxx() would be impossible.
         try {
-            $manager->redirectToReauth();
+            $this->getReAuthManager()->redirectToReauth();
             $this->fail('A RedirectException should have been thrown.');
         } catch (RedirectException) {
         }
 
         // --- assert ---
-        $this->assertSame('POST', $manager->getRequestedMethod());
-        $this->assertSame('value', $manager->getRequestedPostData()['name']);
+        $this->assertSame('POST', $this->getReAuthManager()->getRequestedMethod());
+        $this->assertSame('value', $this->getReAuthManager()->getRequestedPostData()['name']);
         // The GET query string of a POST request is preserved: browsers keep the action
         // URL's query string untouched on replay since the form data goes in the body.
-        $this->assertSame('https://glpi.example.org/front/user.form.php?id=2', $manager->getRequestedURL());
+        $this->assertSame('https://glpi.example.org/front/user.form.php?id=2', $this->getReAuthManager()->getRequestedURL());
         // _glpi_http_referer is only meaningful for POST replays: Html::getRefererUrl()
         // reads it from $_POST, so it must be present here.
-        $this->assertArrayHasKey('_glpi_http_referer', $manager->getRequestedPostData());
+        $this->assertArrayHasKey('_glpi_http_referer', $this->getReAuthManager()->getRequestedPostData());
     }
 
     /** The requested URL drops its GET query string: browsers rebuild it from the form fields on replay. */
     public function testRedirectToReauthStoresUrlWithoutGetParams(): void
     {
         // --- arrange ---
-        $manager = new ReAuthManager();
         $requested_url = '/front/user.form.php?id=2&another_param=value';
         $this->fakeWebContext(request_uri: $requested_url);
 
         // --- act ---
         try {
-            $manager->redirectToReauth();
+            $this->getReAuthManager()->redirectToReauth();
             $this->fail('A RedirectException should have been thrown.');
         } catch (RedirectException) {
         }
 
         // --- assert ---
-        $this->assertSame('https://glpi.example.org/front/user.form.php', $manager->getRequestedURL());
+        $this->assertSame('https://glpi.example.org/front/user.form.php', $this->getReAuthManager()->getRequestedURL());
         // _glpi_http_referer would only ever land in $_GET on replay, which
         // Html::getRefererUrl() never reads, so it must not be injected here.
-        $this->assertArrayNotHasKey('_glpi_http_referer', $manager->getRequestedPostData());
+        $this->assertArrayNotHasKey('_glpi_http_referer', $this->getReAuthManager()->getRequestedPostData());
     }
 
     /**
@@ -194,21 +190,22 @@ class ReAuthManagerTest extends DbTestCase
         global $CFG_GLPI;
 
         // --- arrange ---
-        $manager = new ReAuthManager();
         $this->fakeWebContext(
             request_uri: '/front/user.form.php?id=2',
             referer: 'https://glpi.example.org/ReAuth/Prompt',
         );
 
         // --- act ---
+        // try/catch because $this->expectException() stop the test at the point exception is thrown
+        // so testing $this->getReAuthManager()->xxx() would be impossible.
         try {
-            $manager->redirectToReauth();
+            $this->getReAuthManager()->redirectToReauth();
             $this->fail('A RedirectException should have been thrown.');
         } catch (RedirectException) {
         }
 
         // --- assert ---
-        $this->assertSame($CFG_GLPI['root_doc'], $manager->getOriginURL());
+        $this->assertSame($CFG_GLPI['root_doc'], $this->getReAuthManager()->getOriginURL());
     }
 
     /** All getters return safe defaults when the re-auth session keys are absent. */
@@ -217,7 +214,6 @@ class ReAuthManagerTest extends DbTestCase
         global $CFG_GLPI;
 
         // --- arrange ---
-        $manager = new ReAuthManager();
         unset(
             $_SESSION['glpi_reauth_requested_url'],
             $_SESSION['glpi_reauth_origin_url'],
@@ -226,11 +222,11 @@ class ReAuthManagerTest extends DbTestCase
         );
 
         // --- assert ---
-        $this->assertSame('/', $manager->getRequestedURL());
-        $this->assertSame('GET', $manager->getRequestedMethod());
-        $this->assertSame($CFG_GLPI['root_doc'], $manager->getOriginURL());
+        $this->assertSame('/', $this->getReAuthManager()->getRequestedURL());
+        $this->assertSame('GET', $this->getReAuthManager()->getRequestedMethod());
+        $this->assertSame($CFG_GLPI['root_doc'], $this->getReAuthManager()->getOriginURL());
         // Default method is GET: no _glpi_http_referer is injected (see testRedirectToReauthStoresPostRequestData).
-        $this->assertSame([], $manager->getRequestedPostData());
+        $this->assertSame([], $this->getReAuthManager()->getRequestedPostData());
     }
 
     /**
@@ -246,7 +242,7 @@ class ReAuthManagerTest extends DbTestCase
         $users_id = (int) $_SESSION['glpiID'];
         // Direct DB update to bypass the business layer, which would not let us clear the password/2FA fields.
         $DB->update('glpi_users', ['password' => '', '2fa' => null], ['id' => $users_id]);
-        $manager = new ReAuthManager();
+        $manager = ReAuthManager::getInstance();
 
         // --- act + assert : the fallback prompt is used and any input is accepted ---
         $this->assertSame('pages/reauth/fallback_form.html.twig', $manager->getPromptTemplate());
@@ -256,12 +252,9 @@ class ReAuthManagerTest extends DbTestCase
     /** Throws InvalidArgumentException when a non-CommonGLPI class is passed. */
     public function testAtLeastOneItemTypeRequiresReauthenticationThrowsOnInvalidType(): void
     {
-        // --- arrange ---
-        $manager = new ReAuthManager();
-
         // --- act + assert ---
         $this->expectException(InvalidArgumentException::class);
-        $manager->atLeastOneItemTypesRequiresReauthentication([\stdClass::class]);
+        $this->getReAuthManager()->atLeastOneItemTypesRequiresReauthentication([\stdClass::class]);
     }
 
     public static function atLeastOneItemTypeRequiresReauthenticationProvider(): iterable
@@ -278,11 +271,87 @@ class ReAuthManagerTest extends DbTestCase
     public function testAtLeastOneItemTypeRequiresReauthentication(array $itemtypes, bool $expected): void
     {
         // --- arrange : web context, not yet re-authenticated ---
-        $manager = new ReAuthManager();
         $GLOBALS['GLPI_IS_COMMAND_LINE'] = false;
         unset($_SESSION['glpi_reauth_until']);
 
         // --- act + assert ---
-        $this->assertSame($expected, $manager->atLeastOneItemTypesRequiresReauthentication($itemtypes));
+        $this->assertSame($expected, $this->getReAuthManager()->atLeastOneItemTypesRequiresReauthentication($itemtypes));
+    }
+
+    /** A registered (plugin) strategy is selected when it is available and outranks the native ones. */
+    public function testRegisteredAvailableStrategyWithHighestPriorityIsSelected(): void
+    {
+        // --- arrange ---
+        $this->login();
+        $users_id = (int) $_SESSION['glpiID'];
+        $manager = $this->getReAuthManager();
+
+        // Precondition: the plugin strategy only wins if it strictly outranks every strategy
+        // already available to the user. A native strategy with an equal or higher priority
+        // would win the tie (native strategies are resolved first and usort() is stable),
+        // silently invalidating the assertion below. Guard against that here.
+        $plugin_priority = 101;
+        assert(
+            $this->getHighestAvailableStrategyPriority($users_id) < $plugin_priority,
+            'Test precondition failed : A strategy already available to the user outranks the tested plugin strategy.',
+        );
+
+        $manager->registerStrategy($this->makeStrategy('My plugin', $plugin_priority, true));
+
+        // --- act + assert : the plugin strategy wins the resolution ---
+        $this->assertSame('My plugin', $manager->getLabel());
+    }
+
+    /** A registered strategy that is not available for the user is ignored, even with a high priority. */
+    public function testRegisteredUnavailableStrategyIsIgnored(): void
+    {
+        // --- arrange : highest priority but unavailable ---
+        $this->login();
+        $manager = $this->getReAuthManager();
+        $manager->registerStrategy($this->makeStrategy('My plugin', 999, false));
+
+        // --- act + assert : resolution falls back to the native Password strategy ---
+        $this->assertSame('Password', $manager->getLabel());
+    }
+
+    /**
+     * A native (in-process) strategy is verified through the core ReAuth controller:
+     * the manager exposes the default verify URL and the POST method.
+     */
+    public function testNativeStrategyExposesDefaultVerifyUrlAndMethod(): void
+    {
+        global $CFG_GLPI;
+
+        // --- arrange : native Password strategy selected ---
+        $this->login();
+
+        // --- act + assert : getVerifyUrl() also proves the strategy is lazily resolved ---
+        $this->assertSame($CFG_GLPI['root_doc'] . '/ReAuth/Verify', $this->getReAuthManager()->getVerifyUrl());
+        $this->assertSame('POST', $this->getReAuthManager()->getVerifyHttpMethod());
+    }
+
+    /**
+     * An out-of-band strategy overrides its verify URL/method so the prompt
+     * form submits to an external endpoint instead of the core verify(). The manager must
+     * delegate both to the selected strategy.
+     */
+    public function testManagerDelegatesVerifyUrlAndMethodToSelectedStrategy(): void
+    {
+        // --- arrange : an out-of-band strategy outranking the native ones ---
+        $this->login();
+        $manager = $this->getReAuthManager();
+        $manager->registerStrategy(
+            $this->makeStrategy(
+                'My plugin',
+                101,
+                true,
+                verify_url: '/plugins/myplugin/front/reauth.php',
+                verify_http_method: 'GET',
+            ),
+        );
+
+        // --- act + assert ---
+        $this->assertSame('/plugins/myplugin/front/reauth.php', $manager->getVerifyUrl());
+        $this->assertSame('GET', $manager->getVerifyHttpMethod());
     }
 }
