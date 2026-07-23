@@ -59,6 +59,10 @@
    }
 }
 
+#page:focus {
+   outline: none;
+}
+
 /* Apply legacy styles to main content (#page) and elements that are inserted directly in body (modals, tooltips, ...) */
 #page, .qtip, .modal .modal-body {
    img {
