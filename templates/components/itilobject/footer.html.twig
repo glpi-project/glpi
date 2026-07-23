@@ -247,10 +247,10 @@
       setHasUnsavedChanges(true);
 
       // Load the answer form on first open, then keep it (preserves input when toggling).
-      var $placeholder = $(this).find('.new-itil-answer-form[data-answer-loaded="false"]').first();
+      const $placeholder = $(this).find('.new-itil-answer-form[data-answer-loaded="false"]').first();
       if ($placeholder.length) {
          {# Forward `_openfollowup` so the reopen flow keeps its behaviour. #}
-         var ajax_url = "{{ path('/ajax/timeline.php') }}"{% if openfollowup %} + "?_openfollowup=1"{% endif %};
+         const ajax_url = "{{ path('/ajax/timeline.php') }}"{% if openfollowup %} + "?_openfollowup=1"{% endif %};
          $placeholder
             .attr('data-answer-loaded', 'true')
             .html('<div class="d-flex justify-content-center p-3"><span class="spinner-border" role="status" aria-hidden="true"></span></div>')
