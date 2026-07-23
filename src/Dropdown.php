@@ -175,7 +175,11 @@ class Dropdown
 
         if ($params['multiple']) {
             $params['display_emptychoice'] = false;
-            $params['values'] = $params['value'] ?? [];
+            // Only fall back to 'value' when 'values' was not provided as an array.
+            // Otherwise the pre-selection is lost
+            if (!isset($params['values']) || !is_array($params['values'])) {
+                $params['values'] = $params['value'] ?? [];
+            }
             $params['comments'] = false;
             unset($params['value']);
         }
