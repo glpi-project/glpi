@@ -383,6 +383,12 @@
 #new-itilobject-form {
     width: 100%;
 
+    // Open the answer forms instantly, like the inline edit action: the collapse height animation
+    // otherwise stutters while the (heavy) TinyMCE editor initializes in the freshly loaded form.
+    > .collapsing {
+        transition: none;
+    }
+
     .timeline-item {
         &.ITILSolution {
             .timeline-content {
