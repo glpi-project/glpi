@@ -36,6 +36,9 @@ namespace Glpi\Toolbox;
 
 trait SingletonTrait
 {
+    /**
+     * @var array<class-string, static>
+     */
     private static array $_instances = [];
 
     private function __construct() {}
