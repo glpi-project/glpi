@@ -43,9 +43,6 @@ use RuleTicket;
 use RuleTicketCollection;
 use Symfony\Component\DomCrawler\Crawler;
 
-use function Safe\ob_get_clean;
-use function Safe\ob_start;
-
 /* Test for inc/rule.class.php */
 
 class RuleTest extends DbTestCase
