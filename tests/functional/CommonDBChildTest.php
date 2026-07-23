@@ -37,12 +37,12 @@ namespace tests\units;
 use CommonDBChild;
 use Computer;
 use Glpi\Tests\DbTestCase;
-use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTestTrait;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use PHPUnit\Framework\Attributes\Group;
 
 class CommonDBChildTest extends DbTestCase
 {
-    use ReAuthTestTrait;
+    use ReAuthTrait;
 
     public function tearDown(): void
     {

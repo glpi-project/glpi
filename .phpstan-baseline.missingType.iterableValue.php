@@ -17684,6 +17684,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Security/PermissionManager.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Property Glpi\\\\Security\\\\ReAuth\\\\ReAuthManager\\:\\:\\$_instances type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Security/ReAuth/ReAuthManager.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Constant Glpi\\\\Security\\\\TOTPManager\\:\\:CODE_ALGORITHM type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,

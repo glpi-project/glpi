@@ -175,7 +175,7 @@ class CommonGLPI implements CommonGLPIInterface
      */
     final public static function redirectToReauthPrompt(): never
     {
-        (new ReAuthManager())->redirectToReauth();
+        (ReAuthManager::getInstance())->redirectToReauth();
     }
 
     /**
@@ -192,7 +192,7 @@ class CommonGLPI implements CommonGLPIInterface
      * Depends on
      * - context : always false on api & cli contexts
      * - itemtype : may require it ( static::itemTypeRequiresReauthentication() )
-     * - user has a valid reauthentication (new ReAuthManager())->isReAuthenticated()
+     * - user has a valid reauthentication (ReAuthManager::getInstance())->isReAuthenticated()
      */
     final public static function isUserReauthenticationNeeded(): bool
     {
@@ -207,7 +207,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         // Check that user is re-authenticated if it's required for this itemtype @see \CommonGLPI::isReautenticationNeeded()
-        return !(new ReAuthManager())->isReAuthenticated();
+        return !(ReAuthManager::getInstance())->isReAuthenticated();
     }
 
     /**
@@ -218,7 +218,7 @@ class CommonGLPI implements CommonGLPIInterface
     final public static function checkReAuthenticationOrRedirect(): true
     {
         if (static::itemTypeRequiresReauthentication()) {
-            (new ReAuthManager())->checkReAuthenticationOrRedirect();
+            (ReAuthManager::getInstance())->checkReAuthenticationOrRedirect();
         }
 
         return true;

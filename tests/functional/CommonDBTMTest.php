@@ -46,7 +46,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Exception\RedirectException;
 use Glpi\Tests\DbTestCase;
-use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTestTrait;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -57,7 +57,7 @@ use User;
 
 class CommonDBTMTest extends DbTestCase
 {
-    use ReAuthTestTrait;
+    use ReAuthTrait;
 
     public function tearDown(): void
     {

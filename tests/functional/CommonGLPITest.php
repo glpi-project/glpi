@@ -39,7 +39,7 @@ use Computer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Tests\DbTestCase;
-use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTestTrait;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use KnowbaseItem;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -47,7 +47,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class CommonGLPITest extends DbTestCase
 {
-    use ReAuthTestTrait;
+    use ReAuthTrait;
 
     public function tearDown(): void
     {

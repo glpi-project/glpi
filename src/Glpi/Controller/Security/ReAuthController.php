@@ -44,13 +44,11 @@ use Glpi\Security\ReAuth\ReAuthManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ReAuthController extends AbstractController
 {
     public function __construct(
-        private readonly UrlGeneratorInterface $router,
-        private readonly ReAuthManager $reAuthManager = new ReAuthManager(),
+        private readonly ReAuthManager $reAuthManager,
     ) {}
 
     #[Route(
@@ -63,7 +61,7 @@ class ReAuthController extends AbstractController
     {
         return new Response(
             TemplateRenderer::getInstance()->render(
-                'pages/reauth/prompt.html.twig',
+                'pages/reauth/prompt.html.twig', // includes the template defined in $this->buildTemplateContext() ('template' key).
                 [
                     ...$this->buildTemplateContext(),
                     'failed' => $failed,
@@ -98,16 +96,16 @@ class ReAuthController extends AbstractController
     }
 
     /**
-     * @return array{redirect: string, action: string, label: string, template: string}
+     * @return array{cancel_url: string, label: string, template: string, verify_url: string, verify_http_method: string}
      */
     private function buildTemplateContext(): array
     {
         return [
-            'redirect'      => $this->reAuthManager->getRequestedURL(),
-            'cancel_url'    => $this->reAuthManager->getOriginURL(),
-            'action'        => $this->router->generate('reauth_verify'),
-            'label'         => $this->reAuthManager->getLabel(),
-            'template'      => $this->reAuthManager->getPromptTemplate(),
+            'cancel_url'         => $this->reAuthManager->getOriginURL(),
+            'label'              => $this->reAuthManager->getLabel(),
+            'template'           => $this->reAuthManager->getPromptTemplate(),
+            'verify_url'         => $this->reAuthManager->getVerifyUrl(),
+            'verify_http_method' => $this->reAuthManager->getVerifyHttpMethod(),
         ];
     }
 }

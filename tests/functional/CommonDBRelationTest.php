@@ -39,14 +39,14 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\ItemLinkException;
 use Glpi\Exception\RedirectException;
 use Glpi\Tests\DbTestCase;
-use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTestTrait;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use Group;
 use Group_User;
 use User;
 
 class CommonDBRelationTest extends DbTestCase
 {
-    use ReAuthTestTrait;
+    use ReAuthTrait;
 
     public function tearDown(): void
     {

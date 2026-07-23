@@ -40,7 +40,7 @@ use Auth;
 use Override;
 use User;
 
-final class PasswordReAuthStrategy implements ReAuthStrategyInterface
+final class PasswordReAuthStrategy extends AbstractReAuthStrategy
 {
     #[Override]
     public function verify(int $users_id, string $user_input): bool
