@@ -986,9 +986,9 @@
 }
 
 [data-main-page-aside="knowbaseitem"] {
-    // Animate only after JS marks it ready, so the on-load collapsed state snaps.
+    // Animate max-width so open and close both glide; JS gate skips the on-load snap.
     &.kb-aside-animated {
-        transition: width 0.3s ease;
+        transition: max-width 0.35s ease-in-out;
     }
 
     // Layout in CSS, not `.d-flex`: its `!important` would beat the collapsed `display: none`.
@@ -1004,8 +1004,7 @@
         flex-direction: column;
     }
 
-    // Both toggle buttons: bare icons, no hover fill (only a darker icon);
-    // keyboard focus still gets a ring.
+    // Both toggle buttons: bare icons, no hover fill; keyboard focus keeps a ring.
     [data-glpi-kb-aside-collapse],
     [data-glpi-kb-aside-expand] {
         width: 1.75rem;
@@ -1036,11 +1035,10 @@
         justify-content: flex-end;
     }
 
-    // Desktop only: below the breakpoint the overlay rules govern instead.
+    // Desktop collapse via max-width + overflow:hidden (zeroes the flex min so the column shrinks to the rail).
     @media (min-width: 992px) {
         &[data-glpi-kb-aside-collapsed] {
-            flex: 0 0 auto;
-            width: 2.75rem;
+            max-width: 2.75rem;
             overflow: hidden;
 
             [data-glpi-kb-aside-body] {
