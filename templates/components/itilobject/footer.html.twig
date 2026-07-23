@@ -250,15 +250,15 @@
       const $placeholder = $(this).find('.new-itil-answer-form[data-answer-loaded="false"]').first();
       if ($placeholder.length) {
          {# Forward `_openfollowup` so the reopen flow keeps its behaviour. #}
-         const ajax_url = "{{ path('/ajax/timeline.php') }}"{% if openfollowup %} + "?_openfollowup=1"{% endif %};
+         const ajax_url = "{{ path('/ajax/timeline.php')|e('js') }}"{% if openfollowup %} + "?_openfollowup=1"{% endif %};
          $placeholder
             .attr('data-answer-loaded', 'true')
             .html('<div class="d-flex justify-content-center p-3"><span class="spinner-border" role="status" aria-hidden="true"></span></div>')
             .load(ajax_url, {
                'action'     : 'viewsubitem',
                'type'       : $placeholder.data('subitem-type'),
-               'parenttype' : '{{ item.getType() }}',
-               '{{ item.getForeignKeyField() }}': {{ item.fields['id'] }},
+               'parenttype' : '{{ item.getType()|e('js') }}',
+               '{{ item.getForeignKeyField()|e('js') }}': {{ item.getID() }},
                'id'         : 0
             });
       }
