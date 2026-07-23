@@ -37,9 +37,9 @@ namespace Glpi\Api\HL\GraphQL;
 use CommonDBTM;
 use DBConnection;
 use Glpi\Api\HL\APIException;
-use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\RightConditionNotMetException;
 use Glpi\Api\HL\RSQL\RSQLException;
+use Glpi\Api\HL\Schemas;
 use Glpi\Api\HL\Search;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\DBAL\QueryFunction;
@@ -47,6 +47,7 @@ use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use GraphQL\Deferred;
 use GraphQL\Error\Error;
+use GraphQL\Type\Definition\NamedType;
 use GraphQL\Type\Definition\ResolveInfo;
 use stdClass;
 
@@ -75,7 +76,7 @@ class DefaultResolvers
      */
     private function getSchemaForObjectName(string $name): ?array
     {
-        return OpenAPIGenerator::getComponentSchemas($this->api_version)[$name] ?? null;
+        return Schemas::getInstance($this->api_version)->getSchema($name);
     }
 
     /**
@@ -125,16 +126,22 @@ class DefaultResolvers
     {
         $fields_requested = array_keys($info->getFieldSelection(1));
         $field_name = $info->fieldName;
-        $id = $source[$field_name . chr(0x1F) . 'id'] ?? null;
+        if ($info->returnType instanceof NamedType) {
+            $return_schema = $this->getSchemaForObjectName($info->returnType->name());
+            if ($return_schema === null) {
+                $return_schema = $this->getSchemaForObjectName($info->parentType->name);
+            }
+        } else {
+            $return_schema = $this->getSchemaForObjectName($info->parentType->name);
+        }
+
+        $id = $source[$field_name . chr(0x1F) . 'id'] ?? $source[$field_name]['id'] ?? null;
+
         if (!is_numeric($id)) {
             //See State Visibilities for example why this can happen
-            $parent_schema = $this->getSchemaForObjectName($info->parentType->name);
-            if ($parent_schema === null) {
-                // no parent schema, return as is and let GraphQL handle it
-                return $source[$field_name] ?? null;
-            }
+            $return_schema = $this->getSchemaForObjectName($info->parentType->name);
             $joined_values = [];
-            if (!array_key_exists('x-itemtype', $parent_schema['properties'][$field_name])) {
+            if (!isset($return_schema['properties'][$field_name]['x-itemtype'])) {
                 foreach ($source as $source_field_name => $source_field_value) {
                     if (str_contains($source_field_name, $field_name . chr(0x1F))) {
                         $leaf = explode(chr(0x1F), $source_field_name)[1];
@@ -144,6 +151,15 @@ class DefaultResolvers
             }
             return $joined_values ?: null;
         }
+
+        if ($return_schema !== null) {
+            $field_schema = $return_schema['properties'][$field_name] ?? null;
+
+            if ($field_schema !== null && !$this->isResourceBackedSchema($field_schema)) {
+                return $this->resolveEmbeddedObjectField($source, $field_name, $field_schema);
+            }
+        }
+
         $id = (int) $id;
 
         [$schema_name, $schema] = $this->getSchemaNameAndSchemaForField($field_name, $info);
@@ -359,6 +375,10 @@ class DefaultResolvers
             if (isset($schema['properties'][$field_name]['x-mapper']) && $schema['properties'][$field_name]['x-mapped-from'] !== $field_name) {
                 continue;
             }
+            // skip fields that have their own resolver
+            if (isset($schema['properties'][$field_name]['x-graphql-resolver'])) {
+                continue;
+            }
 
             if ($schema['properties'][$field_name]['type'] === 'object') {
                 if (array_key_exists('id', $schema['properties'][$field_name]['properties'])) {
@@ -458,5 +478,44 @@ class DefaultResolvers
             }
         }
         $context->updateSchema($new_schema);
+    }
+
+    /**
+     * Returns true if the provided property is backed by its own resource instead of being derived from the parent schema.
+     * @param array<string, mixed> $property_schema
+     * @return bool
+     */
+    private function isResourceBackedSchema(array $property_schema): bool
+    {
+        return isset($property_schema['x-itemtype']) || isset($property_schema['x-table']) || isset($property_schema['x-join']);
+    }
+
+    /**
+     * @param array<string, mixed> $source
+     * @param string $field_name
+     * @param array<string, mixed> $field_schema
+     * @return array<string, mixed>
+     */
+    private function resolveEmbeddedObjectField(array $source, string $field_name, array $field_schema): array
+    {
+        $result = [];
+        foreach ($field_schema['properties'] as $property_name => $property_schema) {
+            $prop_field = $property_schema['x-field'] ?? $property_name;
+            $is_mapped = $property_schema['x-mapper'] ?? false;
+            if (!$is_mapped) {
+                if (isset($source[$prop_field . chr(0x1F) . 'id'])) {
+                    $result[$property_name] = $source[$prop_field . chr(0x1F) . 'id'];
+                } elseif (isset($source[$prop_field])) {
+                    $result[$property_name] = $source[$prop_field];
+                } else {
+                    $result[$property_name] = null;
+                }
+            } else {
+                $mapped_from = str_replace('.', chr(0x1F), $property_schema['x-mapped-from']);
+                $result[$property_name] = $property_schema['x-mapper']($source[$mapped_from] ?? null);
+            }
+        }
+
+        return $result;
     }
 }

@@ -18,6 +18,7 @@ The present file will list all changes made to the project; according to the
 - A root article, base of the knowledge base tree, is now created on installation and on upgrade. Its id is stored in the `root_knowbaseitems_id` configuration. It can be edited like any other article but it cannot be deleted. **On upgrade, articles that have no parent (including the ones created from the former categories) become children of it.**
 - Knowledge base articles can be moved in the aside tree by dragging them: onto an article to become its child, or onto the top or bottom edge of an article to become its sibling. Dragging is mouse-only for now, and reorders nothing: only the parent changes.
 - Knowledge base articles can also be moved from the "Move" entry of an article's menu in the aside tree, which opens a searchable list of parent articles.
+- High-Level API version 3.0.0.
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
@@ -67,9 +68,13 @@ The present file will list all changes made to the project; according to the
 - `User::getAuthToken()` cannot be used for `cookie_token` anymore.
 - Remember me cookie token no longer stored in the `glpi_users` table. It is now stored in the `glpi_user_tokens` table.
 - `Auth::setRememberMeCookie()` signature changed. It no longer accepts an empty value to trigger the removal of the cookie.
+<<<<<<< HEAD
 - `KnowbaseItem_KnowbaseItemCategory` renamed to `KnowbaseItem_KnowbaseItem`; table `glpi_knowbaseitems_knowbaseitemcategories` renamed to `glpi_knowbaseitems_knowbaseitems` with columns `knowbaseitems_id` (child) and `knowbaseitems_id_parent` (parent).
 - The `knowbaseitemcategories_id` column of `ITILCategory` and `TaskCategory` is renamed to `knowbaseitems_id` and now references a knowledge base article.
 - `KnowbaseItem::getForCategory()` renamed to `KnowbaseItem::getChildrenArticles()`; the HL API `/Knowledge base/Category` endpoints and the `KBCategory` schema are removed.
+=======
+- `Glpi\Api\HL\Controller\AbstractController::getRawKnownSchemas()` now has an optional `$api_version` parameter to accommodate complex schema differences between API versions.
+>>>>>>> 1273f007b9 (initialize hlapi v3)
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.

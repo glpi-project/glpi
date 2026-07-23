@@ -72,14 +72,18 @@ class RouterTest extends GLPITestCase
         $controllers = $router->getControllers();
 
         $schemas_missing_versions = [];
-        foreach ($controllers as $controller) {
-            $schemas = $controller::getKnownSchemas(null);
-            foreach ($schemas as $schema_name => $schema) {
-                if (str_starts_with($schema_name, '_')) {
-                    continue;
-                }
-                if (!isset($schema['x-version-introduced'])) {
-                    $schemas_missing_versions[] = $schema_name . ' in ' . $controller::class;
+
+        $api_versions = array_column($router::getAPIVersions(), 'version');
+        foreach ($api_versions as $version) {
+            foreach ($controllers as $controller) {
+                $schemas = $controller::getKnownSchemas($version);
+                foreach ($schemas as $schema_name => $schema) {
+                    if (str_starts_with($schema_name, '_')) {
+                        continue;
+                    }
+                    if (!isset($schema['x-version-introduced'])) {
+                        $schemas_missing_versions[] = $schema_name . ' in ' . $controller::class;
+                    }
                 }
             }
         }
@@ -98,18 +102,22 @@ class RouterTest extends GLPITestCase
 
         $schemas_errors = [];
         $required_readonly_props = ['completename', 'level'];
-        foreach ($controllers as $controller) {
-            $schemas = $controller::getKnownSchemas(null);
-            foreach ($schemas as $schema_name => $schema) {
-                if (!isset($schema['x-itemtype']) || !is_subclass_of($schema['x-itemtype'], \CommonTreeDropdown::class)) {
-                    continue;
-                }
-                foreach ($required_readonly_props as $prop) {
-                    if (!isset($schema['properties'][$prop])) {
-                        $schemas_errors[] = "Schema $schema_name in " . $controller::class . " is missing property '$prop'";
-                    } else {
-                        if (!isset($schema['properties'][$prop]['readOnly']) || $schema['properties'][$prop]['readOnly'] !== true) {
-                            $schemas_errors[] = "Property '$prop' in schema $schema_name in " . $controller::class . " is not marked as readOnly";
+
+        $api_versions = array_column($router::getAPIVersions(), 'version');
+        foreach ($api_versions as $version) {
+            foreach ($controllers as $controller) {
+                $schemas = $controller::getKnownSchemas($version);
+                foreach ($schemas as $schema_name => $schema) {
+                    if (!isset($schema['x-itemtype']) || !is_subclass_of($schema['x-itemtype'], \CommonTreeDropdown::class)) {
+                        continue;
+                    }
+                    foreach ($required_readonly_props as $prop) {
+                        if (!isset($schema['properties'][$prop])) {
+                            $schemas_errors[] = "Schema $schema_name in " . $controller::class . " is missing property '$prop'";
+                        } else {
+                            if (!isset($schema['properties'][$prop]['readOnly']) || $schema['properties'][$prop]['readOnly'] !== true) {
+                                $schemas_errors[] = "Property '$prop' in schema $schema_name in " . $controller::class . " is not marked as readOnly";
+                            }
                         }
                     }
                 }
@@ -156,17 +164,16 @@ class RouterTest extends GLPITestCase
             }
         };
 
-        foreach ($controllers as $controller) {
-            // Use the unfiltered (all-versions) schemas so every property is covered regardless
-            // of the version it belongs to. Version-gated attributes like x-version-readonly are
-            // resolved against Router::API_VERSION directly in the check below, since the per-version
-            // filter would strip that marker from its output.
-            $schemas = $controller::getKnownSchemas(null);
-            foreach ($schemas as $schema_name => $schema) {
-                if (!isset($schema['properties']) || !is_array($schema['properties'])) {
-                    continue;
+        $api_versions = array_column($router::getAPIVersions(), 'version');
+        foreach ($api_versions as $version) {
+            foreach ($controllers as $controller) {
+                $schemas = $controller::getKnownSchemas($version);
+                foreach ($schemas as $schema_name => $schema) {
+                    if (!isset($schema['properties']) || !is_array($schema['properties'])) {
+                        continue;
+                    }
+                    $fn_check_properties('', $schema['properties'], $schema_name, $controller);
                 }
-                $fn_check_properties('', $schema['properties'], $schema_name, $controller);
             }
         }
 
@@ -175,7 +182,7 @@ class RouterTest extends GLPITestCase
 
     /**
      * Ensure there are not multiple schemas for the same itemtype (identified by x-itemtype).
-     * In some cases, like user preferences, we may have multiple schemas for the same itemtype, but those extra schemas
+     * In some cases, like user preferences, we may hav e multiple schemas for the same itemtype, but those extra schemas
      * should use x-table instead to point to the table directly.
      * @return void
      */
@@ -184,39 +191,32 @@ class RouterTest extends GLPITestCase
         $router = Router::getInstance();
         $controllers = $router->getControllers();
 
-        $seen_itemtypes = [];
-        $duplicate_schemas = [];
-        $all_schemas = [];
-        foreach ($controllers as $controller) {
-            /** @noinspection SlowArrayOperationsInLoopInspection */
-            $all_schemas = array_merge($all_schemas, $controller::getKnownSchemas(null));
-        }
-        foreach ($all_schemas as $schema_name => $schema) {
-            // Ignore known duplicate. Cannot fix until v3
-            if ($schema_name === 'SoftwareLicense') {
-                continue;
+        $api_versions = array_column($router::getAPIVersions(), 'version');
+        foreach ($api_versions as $version) {
+            $seen_itemtypes = [];
+            $duplicate_schemas = [];
+            $all_schemas = [];
+            foreach ($controllers as $controller) {
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $all_schemas = array_merge($all_schemas, $controller::getKnownSchemas($version));
             }
-            if (isset($schema['x-itemtype'])) {
-                $itemtype = $schema['x-itemtype'];
-                if (isset($seen_itemtypes[$itemtype])) {
-                    $duplicate_schemas[] = "Itemtype $itemtype has multiple schemas: " . $seen_itemtypes[$itemtype] . " and $schema_name";
-                } else {
-                    $seen_itemtypes[$itemtype] = $schema_name;
+            foreach ($all_schemas as $schema_name => $schema) {
+                //TODO remove SoftwareLicense check after HLAPI v2 removed
+                if ($schema_name === 'SoftwareLicense') {
+                    continue;
+                }
+                if (isset($schema['x-itemtype'])) {
+                    $itemtype = $schema['x-itemtype'];
+                    if (isset($seen_itemtypes[$itemtype])) {
+                        $duplicate_schemas[] = "Itemtype $itemtype has multiple schemas: " . $seen_itemtypes[$itemtype] . " and $schema_name";
+                    } else {
+                        $seen_itemtypes[$itemtype] = $schema_name;
+                    }
                 }
             }
+
+            $this->assertEmpty($duplicate_schemas, "Duplicate itemtype schemas found: \n" . implode("\n", $duplicate_schemas));
         }
-        ksort($all_schemas['SoftwareLicense']['properties']);
-        ksort($all_schemas['License']['properties']);
-        $this->assertEquals(
-            array_keys($all_schemas['SoftwareLicense']['properties']),
-            array_keys($all_schemas['License']['properties']),
-            'Schemas SoftwareLicense and License should have the same properties',
-        );
-        // Ensure the duplication gets removed in v3
-        if (version_compare(Router::API_VERSION, '3.0.0', '>=')) {
-            $this->assertNotContains('SoftwareLicense', $seen_itemtypes, 'Schema SoftwareLicense should be removed in v3');
-        }
-        $this->assertEmpty($duplicate_schemas, "Duplicate itemtype schemas found: \n" . implode("\n", $duplicate_schemas));
     }
 
     public function testHLAPIDisabled()
@@ -307,29 +307,6 @@ class RouterTest extends GLPITestCase
         $this->assertEquals('/{req}', $router->match(new Request('GET', '/version510', ['GLPI-API-Version' => '50']))->getRoutePath());
     }
 
-    public function testSchemaByVersion()
-    {
-        // Note that schema version matching is always done against the "Router" class so it cannot be mocked with the TestRouter versions
-        $this->assertEquals(['Schema200', 'Schema200_2', 'Schema210'], array_keys(TestController::getKnownSchemas('2')));
-        $this->assertEquals(['Schema200', 'Schema200_2'], array_keys(TestController::getKnownSchemas('2.0')));
-        $this->assertEquals(['Schema200', 'Schema200_2'], array_keys(TestController::getKnownSchemas('2.0.0')));
-        $this->assertEquals(['Schema200', 'Schema200_2', 'Schema210'], array_keys(TestController::getKnownSchemas('2.1')));
-        $this->assertEquals(['Schema200', 'Schema200_2', 'Schema210'], array_keys(TestController::getKnownSchemas('2.1.0')));
-
-        // Test the filtering of fields inside schemas
-        $schema = TestController::getKnownSchemas('2')['Schema200'];
-        $this->assertArrayHasKey('field1', $schema['properties']);
-        $this->assertArrayHasKey('field2', $schema['properties']);
-
-        $schema = TestController::getKnownSchemas('2.0')['Schema200'];
-        $this->assertArrayHasKey('field1', $schema['properties']);
-        $this->assertArrayNotHasKey('field2', $schema['properties']);
-
-        $schema = TestController::getKnownSchemas('2.1')['Schema200'];
-        $this->assertArrayHasKey('field1', $schema['properties']);
-        $this->assertArrayHasKey('field2', $schema['properties']);
-    }
-
     public function testContentTypeWithCharset()
     {
         $router = TestRouter::getInstance();
@@ -401,7 +378,7 @@ class TestController extends AbstractController
 {
     // @codingStandardsIgnoreEnd
 
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(?string $api_version = null): array
     {
         return [
             'Schema200' => [

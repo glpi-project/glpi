@@ -600,8 +600,7 @@ class Config extends CommonDBTM
         $api_versions = Router::getAPIVersions();
         $legacy_version = array_filter($api_versions, static fn($version) => $version['api_version'] === '1');
         $legacy_version = reset($legacy_version);
-        $current_version = array_filter($api_versions, static fn($version) => $version['version'] === Router::API_VERSION);
-        $current_version = reset($current_version);
+        $current_version = array_filter($api_versions, static fn($version) => $version['version'] === Router::API_VERSION)[0];
         $getting_started_doc = $current_version['endpoint'] . '/getting-started';
         $endpoint_doc = $current_version['endpoint'] . '/doc';
 

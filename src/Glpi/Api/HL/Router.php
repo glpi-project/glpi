@@ -95,7 +95,7 @@ use function Safe\preg_match;
 class Router
 {
     /** @var string */
-    public const API_VERSION = '2.4.0';
+    public const API_VERSION = '3.0.0';
 
     /**
      * @var AbstractController[]
@@ -144,7 +144,7 @@ class Router
 
     /**
      * Get information about all API versions available.
-     * @return array{api_version: string, version: string, description?: string, endpoint: string}[]
+     * @return non-empty-array{api_version: string, version: string, description?: string, endpoint: string}[]
      */
     public static function getAPIVersions(): array
     {
@@ -164,31 +164,13 @@ EOT;
             ],
             [
                 'api_version' => '2',
-                'version' => '2.0.0',
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.0',
-                'deprecated' => true,
-            ],
-            [
-                'api_version' => '2',
-                'version' => '2.1.0',
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.1',
-                'deprecated' => true,
-            ],
-            [
-                'api_version' => '2',
-                'version' => '2.2.0',
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.2',
-                'deprecated' => true,
-            ],
-            [
-                'api_version' => '2',
-                'version' => '2.3.0',
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.3',
-            ],
-            [
-                'api_version' => '2',
                 'version' => '2.4.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.4',
+            ],
+            [
+                'api_version' => '3',
+                'version' => '3.0.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v3.0',
             ],
         ];
     }
@@ -340,6 +322,22 @@ EOT;
             }
         }
         return self::$instance;
+    }
+
+    /**
+     * @template T of AbstractController
+     * @param class-string<T> $controller_class
+     * @return T|null
+     */
+    public function getRegisteredController(string $controller_class): ?AbstractController
+    {
+        foreach ($this->controllers as $controller) {
+            if ($controller::class === $controller_class) {
+                /** @var T $controller */
+                return $controller;
+            }
+        }
+        return null;
     }
 
     /**

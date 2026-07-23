@@ -35,12 +35,14 @@
 
 namespace Glpi\Api\HL;
 
-use CommonGLPI;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
-use Glpi\Debug\Profiler;
+use Glpi\Asset\Asset;
+use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\AssetModel;
+use Glpi\Asset\AssetType;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\OAuth\Server;
-use ReflectionClass;
 use Session;
 
 use function Safe\preg_match;
@@ -93,19 +95,9 @@ final class OpenAPIGenerator
     private string $api_version;
 
     /**
-     * @var array<string, array<string, mixed>>
-     */
-    private static array $component_schemas_cache = [];
-
-    /**
      * @var OpenAPISchema
      */
     private array $schema;
-
-    public static function clearComponentSchemasCache(): void
-    {
-        self::$component_schemas_cache = [];
-    }
 
     public function __construct(Router $router, string $api_version)
     {
@@ -187,84 +179,9 @@ EOT;
         ];
     }
 
-    /**
-     * @param string $api_version
-     * @return array<string, mixed>
-     * @throws \ReflectionException
-     */
-    public static function getComponentSchemas(string $api_version): array
-    {
-        if (isset(self::$component_schemas_cache[$api_version])) {
-            return self::$component_schemas_cache[$api_version];
-        }
-
-        $schemas = [];
-
-        $controllers = Router::getInstance()->getControllers();
-        foreach ($controllers as $controller) {
-            Profiler::getInstance()->start('OpenAPI Component Schemas Retrieval for ' . $controller::class, Profiler::CATEGORY_HLAPI);
-            $known_schemas = $controller::getKnownSchemas($api_version);
-            $short_name = (new ReflectionClass($controller))->getShortName();
-            $controller_name = str_replace('Controller', '', $short_name);
-            foreach ($known_schemas as $schema_name => $known_schema) {
-                // Ignore schemas starting with an underscore. They are only used internally.
-                if (str_starts_with($schema_name, '_')) {
-                    continue;
-                }
-                $calculated_name = $schema_name;
-                if (isset($schemas[$schema_name])) {
-                    // For now, set the new calculated name to the short name of the controller + the schema name
-                    $calculated_name = $controller_name . ' - ' . $schema_name;
-                    // Change the existing schema name to its own calculated name
-                    $other_short_name = (new ReflectionClass($schemas[$schema_name]['x-controller']))->getShortName();
-                    $other_calculated_name = str_replace('Controller', '', $other_short_name) . ' - ' . $schema_name;
-                    $schemas[$other_calculated_name] = $schemas[$schema_name];
-                    unset($schemas[$schema_name]);
-                }
-                if (!isset($known_schema['description']) && isset($known_schema['x-itemtype'])) {
-                    /** @var class-string<CommonGLPI> $itemtype */
-                    $itemtype = $known_schema['x-itemtype'];
-                    $known_schema['description'] = $itemtype::getTypeName(1);
-                }
-
-                // Add properties that have 'required' flags to a 'required' array on the nearest parent object
-                // We add the 'required' on individual properties so that it works well with the API version filtering
-                $fn_hoist_required_flags = static function (&$schema_part) use (&$fn_hoist_required_flags) {
-                    if (is_array($schema_part)) {
-                        if (isset($schema_part['properties']) && is_array($schema_part['properties'])) {
-                            $required_fields = [];
-                            foreach ($schema_part['properties'] as $prop_name => &$prop_value) {
-                                if (is_array($prop_value)) {
-                                    if (isset($prop_value['required']) && $prop_value['required'] === true) {
-                                        $required_fields[] = $prop_name;
-                                        unset($prop_value['required']);
-                                    }
-                                    // Recurse into the property value
-                                    $fn_hoist_required_flags($prop_value);
-                                }
-                            }
-                            unset($prop_value);
-                            if (count($required_fields) > 0) {
-                                $schema_part['required'] = $required_fields;
-                            }
-                        }
-                    }
-                };
-                $fn_hoist_required_flags($known_schema);
-
-                $schemas[$calculated_name] = $known_schema;
-                $schemas[$calculated_name]['x-controller'] = $controller::class;
-                $schemas[$calculated_name]['x-schemaname'] = $schema_name;
-            }
-            Profiler::getInstance()->stop('OpenAPI Component Schemas Retrieval for ' . $controller::class);
-        }
-
-        return self::$component_schemas_cache[$api_version] = $schemas;
-    }
-
     private function getComponentReference(string $name, string $controller): ?array
     {
-        $components = self::getComponentSchemas($this->api_version);
+        $components = Schemas::getInstance($this->api_version)->getAllSchemas();
         // Try matching by name and controller first
         $match = null;
         $is_ref_array = str_ends_with($name, '[]');
@@ -366,7 +283,7 @@ EOT;
             return $this->schema;
         }
 
-        $component_schemas = self::getComponentSchemas($this->api_version);
+        $component_schemas = Schemas::getInstance($this->api_version)->getAllSchemas();
         ksort($component_schemas);
         /** @phpstan-var OpenAPISchema $schema */
         $schema = [
@@ -1116,12 +1033,36 @@ EOT;
         $schema = $this->getSchema();
 
         $schema_components = [];
+        $custom_assets_types = [];
+        $custom_dropdown_types = DropdownDefinitionManager::getInstance()->getCustomObjectClassNames(false);
+
         foreach ($schema['components']['schemas'] as $name => &$component_schema) {
+            /** @var string|null $component_itemtype */
+            $component_itemtype = $component_schema['x-itemtype'] ?? null;
+            if ($component_itemtype !== null) {
+                if (is_subclass_of($component_itemtype, Asset::class) || is_subclass_of($component_itemtype, AssetType::class) || is_subclass_of($component_itemtype, AssetModel::class)) {
+                    // ignore custom assets
+                    $custom_assets_types[] = str_replace(AssetDefinition::getCustomObjectNamespace() . '\\', '', $component_itemtype);
+                    unset($schema['components']['schemas'][$name]);
+                    continue;
+                }
+                //TODO also ignore custom dropdowns once the API supports them.
+            }
             unset($component_schema['description']);
             foreach (array_keys($component_schema['properties'] ?? []) as $property_name) {
                 unset($component_schema['properties'][$property_name]['description']);
             }
             $schema_components[$name] = $component_schema;
+        }
+
+        foreach ($custom_assets_types as $custom_asset_type) {
+            $rightname = 'asset_' . preg_replace('/asset$/', '', strtolower($custom_asset_type));
+            unset($schema_components['Session']['properties']['active_profile']['properties']['rights']['properties'][$rightname]);
+        }
+
+        foreach ($custom_dropdown_types as $custom_dropdown_type) {
+            $rightname = 'dropdown_' . preg_replace('/dropdown$/', '', strtolower($custom_dropdown_type));
+            unset($schema_components['Session']['properties']['active_profile']['properties']['rights']['properties'][$rightname]);
         }
 
         return $schema_components;

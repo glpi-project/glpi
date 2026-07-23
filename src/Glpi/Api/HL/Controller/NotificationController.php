@@ -57,7 +57,7 @@ use QueuedNotification;
 ], tags: ['Notifications'])]
 class NotificationController extends AbstractController
 {
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         return [
             'Notification' => [
