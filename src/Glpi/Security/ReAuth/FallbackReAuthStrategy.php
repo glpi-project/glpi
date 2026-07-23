@@ -49,7 +49,7 @@ use Override;
  * As it provides no real identity check, it has the lowest priority and is
  * only selected when no stronger strategy is available.
  */
-final class FallbackReAuthStrategy extends AbstractReAuthStrategy
+final class FallbackReAuthStrategy extends InPlaceReAuthStrategy
 {
     #[Override]
     public function verify(int $users_id, string $user_input): bool
