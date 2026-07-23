@@ -36,7 +36,7 @@ declare(strict_types=1);
 
 namespace Glpi\Security\ReAuth;
 
-abstract class AbstractReAuthStrategy implements ReAuthStrategyInterface
+abstract class InPlaceReAuthStrategy implements ReAuthStrategyInterface
 {
     /**
      * Verify url points to \Glpi\Controller\Security\ReAuthController::verify

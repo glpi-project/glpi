@@ -50,7 +50,7 @@ use User;
  * It fails closed: if the directory is unreachable, the verification fails
  * and no bypass is granted, so the sensitive action stays protected.
  */
-final class LdapReAuthStrategy extends AbstractReAuthStrategy
+final class LdapReAuthStrategy extends InPlaceReAuthStrategy
 {
     #[Override]
     public function verify(int $users_id, string $user_input): bool

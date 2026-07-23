@@ -38,7 +38,7 @@ namespace Glpi\Security\ReAuth;
 
 use Glpi\Security\TOTPManager;
 
-final class TOTPReAuthStrategy extends AbstractReAuthStrategy
+final class TOTPReAuthStrategy extends InPlaceReAuthStrategy
 {
     private TOTPManager $totp_manager;
 
