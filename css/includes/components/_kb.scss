@@ -1291,6 +1291,7 @@
                     width: calc(
                         1rem - #{$gap}
                     ); // leave a small gap before the content
+
                     height: 0.825rem; // half of the 20px illustration = 10px
                     border-left: 1px solid var(--tblr-border-color);
                     border-bottom: 1px solid var(--tblr-border-color);
