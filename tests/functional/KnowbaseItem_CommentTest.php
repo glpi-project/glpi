@@ -215,4 +215,113 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), PURGE));
         $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), PURGE));
     }
+
+    public function testAnchoredCommentPersistsAnchorFields(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id'  => $kb1->getID(),
+            'comment'           => 'Anchored comment',
+            'anchor_prefix'     => 'before ',
+            'anchor_exact'      => 'the quoted text',
+            'anchor_suffix'     => ' after',
+            'anchor_occurrence' => 0,
+        ]);
+        $this->assertGreaterThan(0, $id);
+
+        $comment->getFromDB($id);
+        $this->assertTrue($comment->hasAnchor());
+        $this->assertSame('before ', $comment->fields['anchor_prefix']);
+        $this->assertSame('the quoted text', $comment->fields['anchor_exact']);
+        $this->assertSame(' after', $comment->fields['anchor_suffix']);
+        $this->assertSame(0, (int) $comment->fields['anchor_occurrence']);
+    }
+
+    public function testCommentWithoutAnchorHasNoAnchor(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id' => $kb1->getID(),
+            'comment'          => 'Plain comment',
+        ]);
+        $comment->getFromDB($id);
+
+        $this->assertFalse($comment->hasAnchor());
+    }
+
+    public function testReplyDoesNotPersistAnchorFields(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $root = new KnowbaseItem_Comment();
+        $root_id = $root->add([
+            'knowbaseitems_id'  => $kb1->getID(),
+            'comment'           => 'Root comment',
+            'anchor_prefix'     => 'before ',
+            'anchor_exact'      => 'quoted',
+            'anchor_suffix'     => ' after',
+            'anchor_occurrence' => 0,
+        ]);
+
+        $reply = new KnowbaseItem_Comment();
+        $reply_id = $reply->add([
+            'knowbaseitems_id'  => $kb1->getID(),
+            'comment'           => 'Reply comment',
+            'parent_comment_id' => $root_id,
+            // A client bug (or a malicious request) might still send anchor
+            // fields on a reply; they must never be persisted.
+            'anchor_prefix'     => 'should ',
+            'anchor_exact'      => 'not be stored',
+            'anchor_suffix'     => ' at all',
+            'anchor_occurrence' => 0,
+        ]);
+        $reply->getFromDB($reply_id);
+
+        $this->assertFalse($reply->hasAnchor());
+        $this->assertNull($reply->fields['anchor_exact']);
+    }
+
+    public function testGetAnchorsForItem(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $anchored = new KnowbaseItem_Comment();
+        $anchored_id = $anchored->add([
+            'knowbaseitems_id'  => $kb1->getID(),
+            'comment'           => 'Anchored',
+            'anchor_prefix'     => 'a',
+            'anchor_exact'      => 'b',
+            'anchor_suffix'     => 'c',
+            'anchor_occurrence' => 2,
+        ]);
+
+        $plain = new KnowbaseItem_Comment();
+        $plain->add([
+            'knowbaseitems_id' => $kb1->getID(),
+            'comment'          => 'Plain, no anchor',
+        ]);
+
+        $anchors = KnowbaseItem_Comment::getAnchorsForItem($kb1);
+        $matching = array_values(array_filter(
+            $anchors,
+            fn($anchor) => $anchor['id'] === $anchored_id,
+        ));
+
+        $this->assertCount(1, $matching);
+        $this->assertEquals([
+            'id'         => $anchored_id,
+            'prefix'     => 'a',
+            'exact'      => 'b',
+            'suffix'     => 'c',
+            'occurrence' => 2,
+        ], $matching[0]);
+    }
 }

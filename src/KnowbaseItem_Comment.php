@@ -140,7 +140,49 @@ final class KnowbaseItem_Comment extends CommonDBTM
             }
         }
 
+        // A reply belongs to its thread's anchor; it never carries its own.
+        if (!empty($input['parent_comment_id'])) {
+            unset(
+                $input['anchor_prefix'],
+                $input['anchor_exact'],
+                $input['anchor_suffix'],
+                $input['anchor_occurrence'],
+            );
+        }
+
         return $input;
+    }
+
+    public function hasAnchor(): bool
+    {
+        return !empty($this->fields['anchor_exact'] ?? null);
+    }
+
+    /**
+     * @return list<array{id: int, prefix: string, exact: string, suffix: string, occurrence: int}>
+     */
+    public static function getAnchorsForItem(KnowbaseItem $article): array
+    {
+        $comments = self::getSeveralFromDBByCrit([
+            'knowbaseitems_id'  => $article->getID(),
+            'parent_comment_id' => null,
+        ]);
+
+        $anchors = [];
+        foreach ($comments as $comment) {
+            if (!$comment->hasAnchor()) {
+                continue;
+            }
+            $anchors[] = [
+                'id'         => (int) $comment->fields['id'],
+                'prefix'     => (string) $comment->fields['anchor_prefix'],
+                'exact'      => (string) $comment->fields['anchor_exact'],
+                'suffix'     => (string) $comment->fields['anchor_suffix'],
+                'occurrence' => (int) $comment->fields['anchor_occurrence'],
+            ];
+        }
+
+        return $anchors;
     }
 
     /** @return CommentsThread[] */
