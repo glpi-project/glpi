@@ -32,20 +32,14 @@
 
 {% macro render_category(category, can_create = false, show_actions = false) %}
     {% import _self as macros %}
-    <li
-        class="node"
-        data-glpi-kb-aside-category="{{ category.id }}"
-        {{ category.collapsed ? 'data-glpi-kb-aside-category-collapsed' : '' }}
-        role="group"
-        aria-label="{{ category.title }}"
-    >
+    <li class="node" data-glpi-kb-aside-category role="group" aria-label="{{ category.title }}">
         <div class="d-flex align-items-center mb-2" data-glpi-kb-aside-category-header>
             <button
                 type="button"
                 class="d-flex align-items-center p-0 flex-grow-1 text-start border-0 bg-transparent"
                 data-glpi-kb-aside-category-toggle
                 aria-label="{{ category.title }}"
-                aria-expanded="{{ category.collapsed ? 'false' : 'true' }}"
+                aria-expanded="true"
             >
                 <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
                 {% if category.illustration %}
@@ -217,7 +211,6 @@
                 id: 0,
                 title: __("Uncategorized"),
                 illustration: "",
-                collapsed: tree.uncategorized_collapsed,
                 articles: tree.articles,
                 categories: [],
             }, can_create, show_actions) }}

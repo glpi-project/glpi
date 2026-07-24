@@ -35,9 +35,6 @@
 
 use Glpi\UI\IllustrationManager;
 
-use function Safe\json_decode;
-use function Safe\json_encode;
-
 /// Class KnowbaseItemCategory
 class KnowbaseItemCategory extends CommonTreeDropdown
 {
@@ -132,52 +129,5 @@ class KnowbaseItemCategory extends CommonTreeDropdown
                 KnowbaseItem_KnowbaseItemCategory::class,
             ]
         );
-    }
-
-    /**
-     * Ids of the KB aside categories the current user has collapsed.
-     * @return int[]
-     */
-    public static function getFoldedCategoryIdsForCurrentUser(): array
-    {
-        $user_id = Session::getLoginUserID();
-        if ($user_id === false) {
-            return [];
-        }
-
-        $user = new User();
-        if (!$user->getFromDB($user_id)) {
-            return [];
-        }
-
-        $ids = json_decode($user->fields['folded_knowbaseitems'] ?? '[]', true);
-
-        return array_values(is_array($ids) ? $ids : []);
-    }
-
-    /**
-     * Persist whether a category is collapsed for the current user.
-     */
-    public static function setCategoryFoldedForCurrentUser(
-        int $category_id,
-        bool $folded
-    ): void {
-        $user_id = Session::getLoginUserID();
-        if ($user_id === false) {
-            return;
-        }
-
-        $ids = array_values(array_filter(
-            self::getFoldedCategoryIdsForCurrentUser(),
-            static fn(int $id): bool => $id !== $category_id,
-        ));
-        if ($folded) {
-            $ids[] = $category_id;
-        }
-
-        (new User())->update([
-            'id'                   => $user_id,
-            'folded_knowbaseitems' => json_encode($ids),
-        ]);
     }
 }
