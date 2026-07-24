@@ -66,9 +66,12 @@ export function highlightComments(container, anchors) {
         return;
     }
 
-    const index = buildDomTextIndex(container);
-
+    // Rebuilt fresh for every anchor: wrapOffsetsInMarks() mutates the DOM
+    // (splits text nodes via Range.surroundContents), which would invalidate
+    // a shared index's node references/offsets for any anchor processed
+    // after the first.
     for (const anchor of anchors) {
+        const index = buildDomTextIndex(container);
         const located = locateAnchor(index.text, anchor);
         if (!located) {
             continue;

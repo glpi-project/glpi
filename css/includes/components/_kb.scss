@@ -41,15 +41,20 @@
     }
 }
 
-// Comment anchor highlight, shared by editor (ProseMirror decoration) and
-// read view (<mark> wrapping) so both render identically.
+// Comment anchor highlight, shared by editor (ProseMirror decoration, a bare
+// <span>) and read view (native <mark> wrapping). background-color must be
+// set explicitly (even to transparent) to override <mark>'s default UA
+// yellow background, otherwise the two modes render inconsistently.
 .kb-comment-highlight {
-    background-color: rgb(var(--tblr-warning-rgb) / 25%);
+    background-color: transparent;
+    text-decoration: underline;
+    text-decoration-color: var(--tblr-warning);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
     cursor: pointer;
-    border-radius: 2px;
 
     &:hover {
-        background-color: rgb(var(--tblr-warning-rgb) / 40%);
+        text-decoration-thickness: 3px;
     }
 }
 
