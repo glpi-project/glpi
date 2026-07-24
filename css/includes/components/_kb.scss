@@ -41,6 +41,18 @@
     }
 }
 
+// Comment anchor highlight, shared by editor (ProseMirror decoration) and
+// read view (<mark> wrapping) so both render identically.
+.kb-comment-highlight {
+    background-color: rgba(var(--tblr-warning-rgb), 0.25);
+    cursor: pointer;
+    border-radius: 2px;
+
+    &:hover {
+        background-color: rgba(var(--tblr-warning-rgb), 0.4);
+    }
+}
+
 // Shared by editor and read view so a saved article renders as edited.
 .kb-editor-wrapper .ProseMirror table,
 .article-container table {
@@ -331,6 +343,15 @@
     &:hover .kb-reply-trigger {
         opacity: 1 !important;
     }
+}
+
+// Briefly outline the thread scrolled to from a clicked highlight or a
+// just-submitted anchored comment.
+.kb-comment-thread--focused {
+    outline: 2px solid var(--tblr-primary);
+    outline-offset: 2px;
+    border-radius: var(--tblr-border-radius);
+    transition: outline-color 0.2s ease-in-out;
 }
 
 // KB visibility dates

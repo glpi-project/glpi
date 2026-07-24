@@ -37,6 +37,8 @@ import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkControl
 import { LinkItemFormController } from "/js/modules/Knowbase/LinkItemFormController.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
 import { GlpiKnowbaseServiceCatalogPanelController } from "/js/modules/Knowbase/ServiceCatalogPanelController.js";
+import { highlightComments } from "/js/modules/Knowbase/CommentHighlighter.js";
+import { ReadModeSelectionBubble } from "/js/modules/Knowbase/ReadModeSelectionBubble.js";
 import {
     EditorActionType,
     extractParamsFromDataset,
@@ -105,6 +107,12 @@ export class GlpiKnowbaseArticleController
     /** @type {DocumentLinkController|null} */
     #document_link_controller = null;
 
+    /** @type {Array<{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}>} */
+    #comment_anchors = [];
+
+    /** @type {ReadModeSelectionBubble|null} */
+    #read_mode_selection_bubble = null;
+
     #handleTitleKeydown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -144,7 +152,9 @@ export class GlpiKnowbaseArticleController
     constructor(container, side_panel_container, offcanvas_container, mode)
     {
         this.#container = container;
-        if (mode === "edit") {
+        // The side panel (comments, related items, service catalog, revisions...)
+        // is only meaningless in "add" mode, where the article doesn't exist yet.
+        if (mode !== "add") {
             this.#side_panel = new GlpiKnowbaseArticleSidePanelController(
                 side_panel_container,
                 offcanvas_container,
@@ -163,6 +173,7 @@ export class GlpiKnowbaseArticleController
         this.#initDiffListeners();
         this.#initIllustrationPicker();
         this.#initRecursiveToggle();
+        this.#initCommentAnchors();
 
         if (mode === "edit") {
             this.#default_language = container.dataset.glpiKbDefaultLanguage;
@@ -995,6 +1006,84 @@ export class GlpiKnowbaseArticleController
         return picker?.glpiIllustrationPicker ?? null;
     }
 
+    #initCommentAnchors()
+    {
+        const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+        if (!content_el) {
+            return;
+        }
+
+        try {
+            this.#comment_anchors = JSON.parse(content_el.dataset.glpiCommentAnchors || '[]');
+        } catch {
+            this.#comment_anchors = [];
+        }
+
+        highlightComments(content_el, this.#comment_anchors);
+        this.#read_mode_selection_bubble = new ReadModeSelectionBubble(content_el);
+
+        content_el.addEventListener('glpi:kb:comment-selection', (e) => {
+            this.#onCommentSelection(e.detail.anchor);
+        });
+
+        // Listened for on `document`, not `this.#container`: the comment that
+        // was just added may have gone through the mobile offcanvas panel's
+        // CommentsPanelController instance, whose container sits outside the
+        // main article container in the DOM (see article.html.twig).
+        document.addEventListener('glpi:kb:comment-anchored', (e) => {
+            this.#onCommentAnchored(e.detail.anchor);
+        });
+
+        content_el.addEventListener('click', (e) => {
+            const mark = e.target.closest('.kb-comment-highlight');
+            if (!mark) {
+                return;
+            }
+            this.#onHighlightClick(mark.dataset.commentId);
+        });
+    }
+
+    /**
+     * @param {{prefix: string, exact: string, suffix: string, occurrence: number}} anchor
+     */
+    async #onCommentSelection(anchor)
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+        await this.#side_panel.load(this.#item_id, 'comments');
+        this.#side_panel.setPendingCommentAnchor(anchor);
+    }
+
+    /**
+     * @param {{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}} anchor
+     */
+    #onCommentAnchored(anchor)
+    {
+        this.#comment_anchors = [...this.#comment_anchors, anchor];
+
+        if (this.#editor) {
+            this.#editor.refreshCommentAnchors(this.#comment_anchors);
+        } else {
+            const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+            if (content_el) {
+                highlightComments(content_el, this.#comment_anchors);
+            }
+        }
+    }
+
+    /**
+     * @param {string} comment_id
+     */
+    async #onHighlightClick(comment_id)
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+        await this.#side_panel.load(this.#item_id, 'comments');
+        this.#side_panel.scrollToComment(comment_id);
+    }
+
     #initScheduleVisibilityDialog(modal)
     {
         const begin_input = modal.querySelector('[data-glpi-kb-begin-date]');
@@ -1082,6 +1171,7 @@ export class GlpiKnowbaseArticleController
                     return __("Type / to insert...");
                 },
                 item_id: this.#item_id,
+                comment_anchors: this.#comment_anchors,
                 onUpdate: () => {
                     setHasUnsavedChanges(true);
                 },

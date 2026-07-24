@@ -162,4 +162,39 @@ export class GlpiKnowbaseArticleSidePanelController
             selector: "[data-bs-toggle='tooltip']"
         });
     }
+
+    /**
+     * Forward a pending comment anchor to the (already loaded) Comments panel
+     * controller in whichever container is currently active, so it can show
+     * the quote preview and focus its composer.
+     * @param {{prefix: string, exact: string, suffix: string, occurrence: number}} anchor
+     */
+    setPendingCommentAnchor(anchor)
+    {
+        for (const container of [this.#sidepanel_container, this.#offcanvas_container]) {
+            container.dispatchEvent(new CustomEvent('glpi:kb:set-pending-comment-anchor', {
+                detail: { anchor },
+            }));
+        }
+    }
+
+    /**
+     * Scroll the currently visible panel to the thread matching `comment_id`
+     * (its root comment's id) and briefly highlight it.
+     * @param {number|string} comment_id
+     */
+    scrollToComment(comment_id)
+    {
+        const target = this.#isSmallScreen()
+            ? this.#offcanvas_container.querySelector('.offcanvas-body')
+            : this.#sidepanel_container;
+        const thread = target?.querySelector(`[data-glpi-comment-thread="${CSS.escape(String(comment_id))}"]`);
+        if (!thread) {
+            return;
+        }
+
+        thread.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        thread.classList.add('kb-comment-thread--focused');
+        setTimeout(() => thread.classList.remove('kb-comment-thread--focused'), 2000);
+    }
 }
