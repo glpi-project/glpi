@@ -50,12 +50,8 @@ function clearHighlights(container) {
 }
 
 /**
- * Highlight, inside `container`'s rendered (read-only) HTML, every anchored
- * comment's quoted text that can still be located. Anchors that can no longer
- * be found (their quote no longer exists in the current content) are silently
- * skipped — the comment itself is unaffected, it just has no highlight.
- * Safe to call repeatedly (e.g. after a new comment is added) — always clears
- * previous highlights first.
+ * Highlight every anchored comment's quoted text still locatable in `container`'s
+ * rendered HTML. Unresolvable anchors are silently skipped. Safe to call repeatedly.
  * @param {Element} container
  * @param {Array<{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}>} anchors
  */
@@ -66,10 +62,8 @@ export function highlightComments(container, anchors) {
         return;
     }
 
-    // Rebuilt fresh for every anchor: wrapOffsetsInMarks() mutates the DOM
-    // (splits text nodes via Range.surroundContents), which would invalidate
-    // a shared index's node references/offsets for any anchor processed
-    // after the first.
+    // Rebuilt per anchor: wrapOffsetsInMarks() mutates the DOM (splits text
+    // nodes), invalidating a shared index for later anchors.
     for (const anchor of anchors) {
         const index = buildDomTextIndex(container);
         const located = locateAnchor(index.text, anchor);

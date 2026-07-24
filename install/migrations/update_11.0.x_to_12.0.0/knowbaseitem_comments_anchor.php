@@ -37,9 +37,8 @@
  * @var Migration $migration
  */
 
-// Add an optional text-quote anchor (W3C TextQuoteSelector-style) to comments,
-// so a comment can be attached to a specific selected passage of the article
-// instead of the whole article. Only populated on root (non-reply) comments.
+// Optional text-quote anchor (W3C TextQuoteSelector-style) attaching a comment
+// to a selected passage instead of the whole article. Root comments only.
 $table = 'glpi_knowbaseitems_comments';
 
 $migration->addField($table, 'anchor_prefix', 'string', [

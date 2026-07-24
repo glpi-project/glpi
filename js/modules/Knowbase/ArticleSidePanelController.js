@@ -164,9 +164,7 @@ export class GlpiKnowbaseArticleSidePanelController
     }
 
     /**
-     * Forward a pending comment anchor to the (already loaded) Comments panel
-     * controller in whichever container is currently active, so it can show
-     * the quote preview and focus its composer.
+     * Forward a pending comment anchor to the active Comments panel controller.
      * @param {{prefix: string, exact: string, suffix: string, occurrence: number}} anchor
      */
     setPendingCommentAnchor(anchor)

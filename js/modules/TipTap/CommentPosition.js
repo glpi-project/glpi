@@ -31,10 +31,8 @@
  */
 
 /**
- * Build a plain-text index of a ProseMirror doc's leaf text nodes,
- * concatenated with no separator between blocks — matching how
- * DomTextIndex.js concatenates the equivalent rendered DOM text nodes, so an
- * anchor extracted in one mode can be located in the other.
+ * Build a plain-text index of a ProseMirror doc's leaf text nodes, concatenated
+ * with no separator — matches DomTextIndex.js so anchors work across both modes.
  * @param {import('prosemirror-model').Node} doc
  * @returns {{text: string, segments: Array<{pos: number, start: number, end: number}>}}
  */
@@ -53,10 +51,8 @@ export function buildPmTextIndex(doc) {
 }
 
 /**
- * Convert a ProseMirror document position into a plain-text offset, using an
- * index built by buildPmTextIndex(). Falls back to the nearest text boundary
- * if `pos` doesn't fall inside any text segment (e.g. it's exactly on a block
- * boundary).
+ * Convert a ProseMirror document position into a plain-text offset from an
+ * index built by buildPmTextIndex(). Falls back to the nearest text boundary.
  * @param {Array<{pos: number, start: number, end: number}>} segments
  * @param {number} pos
  * @returns {number}
@@ -65,11 +61,8 @@ export function pmPositionToOffset(segments, pos) {
     if (segments.length === 0) {
         return 0;
     }
-    // Segments are in document order and, since buildPmTextIndex() concatenates
-    // text with no separator, segment[i].end always equals segment[i + 1].start
-    // — so a `pos` that falls in the gap between two segments (a block
-    // boundary) maps unambiguously to that shared boundary offset, not to the
-    // start/end of the whole index.
+    // segment[i].end == segment[i+1].start (no separator), so a `pos` in the
+    // gap between segments maps unambiguously to that shared boundary offset.
     for (const segment of segments) {
         const pm_end = segment.pos + (segment.end - segment.start);
         if (pos < segment.pos) {

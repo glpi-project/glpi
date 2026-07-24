@@ -40,13 +40,8 @@ const { Plugin, PluginKey } = TiptapPMState;
 const { Decoration, DecorationSet } = TiptapPMView;
 
 /**
- * Highlights anchored comments' quoted text inside the Tiptap editor using
- * decorations (not real marks), so the saved article HTML and revision
- * history are never touched by comment anchors. Decorations are computed
- * once per doc snapshot (on init and whenever the doc changes), not on every
- * selection change — an anchor whose quote gets edited away simply stops
- * being highlighted until refreshCommentHighlights() is called again with an
- * updated anchor list (e.g. after a new comment is added).
+ * Highlights anchored comments' quoted text using decorations (not real marks),
+ * so saved article HTML and revision history stay untouched by anchors.
  */
 const CommentHighlight = Extension.create({
     name: 'commentHighlight',

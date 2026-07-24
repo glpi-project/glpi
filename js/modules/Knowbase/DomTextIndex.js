@@ -33,10 +33,8 @@
 import { overlaps } from '/js/modules/Knowbase/CommentAnchor.js';
 
 /**
- * Build a plain-text index of `root`'s text nodes: the concatenation of all
- * their content (no separator inserted at block boundaries, so this lines up
- * with the ProseMirror-side index built by CommentPosition.js) plus a list of
- * `{node, start, end}` segments mapping text offsets back to DOM text nodes.
+ * Build a plain-text index of `root`'s text nodes (concatenated, no separator
+ * at block boundaries — matches CommentPosition.js's ProseMirror-side index).
  * @param {Element} root
  * @returns {{text: string, segments: Array<{node: Text, start: number, end: number}>}}
  */
@@ -55,10 +53,8 @@ export function buildDomTextIndex(root) {
 }
 
 /**
- * Convert a DOM Range into plain-text offsets using a previously built index.
- * Only handles the common case where the range's start/end containers are
- * themselves text nodes present in the index (true for ordinary click-drag
- * text selections); returns null otherwise.
+ * Convert a DOM Range into plain-text offsets. Only handles start/end
+ * containers that are indexed text nodes; returns null otherwise.
  * @param {{segments: Array<{node: Text, start: number, end: number}>}} index
  * @param {Range} range
  * @returns {[number, number]|null}
@@ -76,10 +72,8 @@ export function domRangeToOffsets(index, range) {
 }
 
 /**
- * Wrap the text between plain-text offsets [start, end) in `<mark
- * class="kb-comment-highlight" data-comment-id>` elements. Wraps each
- * underlying text node separately (rather than a single Range.surroundContents
- * call) so a selection crossing block boundaries doesn't throw.
+ * Wrap [start, end) in `<mark class="kb-comment-highlight">` elements, one per
+ * underlying text node so a selection crossing block boundaries doesn't throw.
  * @param {{segments: Array<{node: Text, start: number, end: number}>}} index
  * @param {number} start
  * @param {number} end
