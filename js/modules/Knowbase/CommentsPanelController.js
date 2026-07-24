@@ -53,6 +53,9 @@ const reply_textarea_selector = "[data-glpi-reply-textarea]";
 const reply_cancel_selector = "[data-glpi-reply-cancel]";
 const reply_submit_selector = "[data-glpi-reply-submit]";
 const comment_thread_selector = "[data-glpi-comment-thread]";
+const pending_anchor_preview_selector = "[data-glpi-pending-anchor-preview]";
+const pending_anchor_quote_selector   = "[data-glpi-pending-anchor-quote]";
+const pending_anchor_cancel_selector  = "[data-glpi-pending-anchor-cancel]";
 
 export class GlpiKnowbaseCommentsPanelController
 {
@@ -61,10 +64,19 @@ export class GlpiKnowbaseCommentsPanelController
      */
     #container;
 
+    /**
+     * @type {{prefix: string, exact: string, suffix: string, occurrence: number}|null}
+     */
+    #pending_anchor = null;
+
     constructor(container)
     {
         this.#container = container;
         this.#initEventListeners();
+
+        this.#container.addEventListener('glpi:kb:set-pending-comment-anchor', (e) => {
+            this.#setPendingAnchor(e.detail.anchor);
+        });
     }
 
     #initEventListeners()
@@ -116,6 +128,12 @@ export class GlpiKnowbaseCommentsPanelController
             const reply_submit_btn = e.target.closest(reply_submit_selector);
             if (reply_submit_btn) {
                 this.#submitReply(reply_submit_btn);
+            }
+
+            // Cancel commenting on the current selection
+            const pending_cancel_btn = e.target.closest(pending_anchor_cancel_selector);
+            if (pending_cancel_btn) {
+                this.#clearPendingAnchor();
             }
         });
 
@@ -248,9 +266,23 @@ export class GlpiKnowbaseCommentsPanelController
             .add('d-none')
         ;
 
-        const response = await post(`Knowbase/${this.#getKbId()}/AddComment`, {
-            'content': this.#getContentTextarea().value,
-        });
+        const pending_anchor = this.#pending_anchor;
+        const body = { 'content': this.#getContentTextarea().value };
+        if (pending_anchor) {
+            body.anchor_prefix     = pending_anchor.prefix;
+            body.anchor_exact      = pending_anchor.exact;
+            body.anchor_suffix     = pending_anchor.suffix;
+            body.anchor_occurrence = pending_anchor.occurrence;
+        }
+
+        let response;
+        try {
+            response = await post(`Knowbase/${this.#getKbId()}/AddComment`, body);
+        } finally {
+            // Always clear the pending anchor, even if the POST fails, so a
+            // stale anchor can never leak into a later, unrelated submission.
+            this.#clearPendingAnchor();
+        }
 
         // Clear input/UI
         this.#getContentTextarea().value = "";
@@ -272,11 +304,53 @@ export class GlpiKnowbaseCommentsPanelController
         this.#updateCounter(1);
         this.#hideEmptyState();
         this.#getCommentsDiv().lastElementChild.scrollIntoView();
+
+        if (pending_anchor) {
+            const inserted = this.#getCommentsDiv().lastElementChild;
+            const raw = inserted?.dataset.glpiCommentAnchor;
+            if (raw) {
+                // Dispatched on `document`, not `this.#container`: this
+                // controller instance can be the one owning the mobile
+                // offcanvas panel, which sits outside the main article
+                // container in the DOM (see article.html.twig), so bubbling
+                // to it would not reach ArticleController's listener.
+                document.dispatchEvent(new CustomEvent('glpi:kb:comment-anchored', {
+                    detail: { anchor: JSON.parse(raw) },
+                }));
+            }
+        }
     }
 
     #getContentTextarea()
     {
         return this.#container.querySelector(content_selector);
+    }
+
+    /**
+     * @param {{prefix: string, exact: string, suffix: string, occurrence: number}} anchor
+     */
+    #setPendingAnchor(anchor)
+    {
+        this.#pending_anchor = anchor;
+
+        const preview = this.#container.querySelector(pending_anchor_preview_selector);
+        const quote   = this.#container.querySelector(pending_anchor_quote_selector);
+        if (preview && quote) {
+            quote.textContent = anchor.exact;
+            preview.classList.remove('d-none');
+        }
+
+        this.#getContentTextarea().focus();
+    }
+
+    #clearPendingAnchor()
+    {
+        this.#pending_anchor = null;
+
+        const preview = this.#container.querySelector(pending_anchor_preview_selector);
+        if (preview) {
+            preview.classList.add('d-none');
+        }
     }
 
     #getSubmitButton()
