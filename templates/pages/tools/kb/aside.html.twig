@@ -47,6 +47,7 @@
         data-glpi-kb-article-id="{{ article.id }}"
         {% if is_node %}
             data-glpi-kb-aside-category
+            {{ article.collapsed ? 'data-glpi-kb-aside-category-collapsed' : '' }}
             role="group"
             aria-label="{{ article.title }}"
         {% endif %}
@@ -66,7 +67,7 @@
                     class="d-flex align-items-center p-0 border-0 bg-transparent"
                     data-glpi-kb-aside-category-toggle
                     aria-label="{{ article.title }}"
-                    aria-expanded="true"
+                    aria-expanded="{{ article.collapsed ? 'false' : 'true' }}"
                 >
                     <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
                 </button>
