@@ -139,13 +139,17 @@ export class KnowbaseItemPage extends GlpiPage
     /**
      * The article header's dots menu trigger. Scoped to the article content so
      * it is not confused with the per-row "More actions" menus that the aside
-     * tree renders on every article.
+     * tree renders on every article. `.first()` further disambiguates from
+     * per-comment "More actions" menus (comments_thread.html.twig), which
+     * share the same accessible name and live inside the same `kb-article`
+     * container, but always render after the header in DOM order.
      */
     public get articleActionsMenu(): Locator
     {
         return this.page
             .getByTestId('kb-article')
-            .getByRole('button', { name: 'More actions' });
+            .getByRole('button', { name: 'More actions' })
+            .first();
     }
 
     public async doToggleFaqStatus(): Promise<void>
@@ -332,6 +336,22 @@ export class KnowbaseItemPage extends GlpiPage
         await this.getButton('Comments').click();
     }
 
+    /**
+     * Wait until ArticleController has finished initializing after a fresh
+     * page load (or reload) — same `pe-none` readiness signal as
+     * `doToggleChildEntities`/`selectTextInReadMode`/`waitForAsideReady`.
+     * In particular, this guarantees `#initCommentAnchors()` has already run
+     * and applied any `.kb-comment-highlight` marks: it executes
+     * synchronously earlier in the constructor, before `pe-none` is removed
+     * (see ArticleController.js), so this is a sufficient readiness signal
+     * for asserting on highlights right after a reload.
+     */
+    public async waitForArticleReady(): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- no semantic alternative for article container
+        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
+    }
+
     public getCommentByContent(content: string): Locator
     {
         return this.page.getByText(content).filter({
@@ -359,12 +379,43 @@ export class KnowbaseItemPage extends GlpiPage
     /**
      * Select the given text in the (read-only) article content, outside of
      * edit mode — triggers the ReadModeSelectionBubble.
+     *
+     * Uses a scripted Range/Selection rather than a triple-click: a
+     * triple-click's selection boundaries aren't reliably confined to the
+     * clicked paragraph (it can extend into following siblings, e.g. the
+     * documents/related-items tab bar rendered after the article content),
+     * so it can neither target an arbitrary substring nor reliably stay
+     * inside `[data-glpi-kb-content]`.
+     *
+     * Also waits for ArticleController's readiness signal (same `pe-none`
+     * pattern as `doToggleChildEntities`/`waitForAsideReady`): the article
+     * content markup can be present in the DOM before ArticleController has
+     * finished running and attached ReadModeSelectionBubble's
+     * `selectionchange` listener, so selecting immediately can silently miss it.
      */
     public async selectTextInReadMode(text: string): Promise<void>
     {
         // eslint-disable-next-line playwright/no-raw-locators -- same container TipTapEditorHelper uses
-        const content = this.page.locator('[data-glpi-kb-content]');
-        await content.getByText(text).first().click({ clickCount: 3 });
+        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
+        await this.page.evaluate((needle) => {
+            const container = document.querySelector('[data-glpi-kb-content]');
+            const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+            let node = walker.nextNode();
+            while (node) {
+                const idx = node.nodeValue.indexOf(needle);
+                if (idx !== -1) {
+                    const range = document.createRange();
+                    range.setStart(node, idx);
+                    range.setEnd(node, idx + needle.length);
+                    const selection = window.getSelection();
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    document.dispatchEvent(new Event('selectionchange'));
+                    return;
+                }
+                node = walker.nextNode();
+            }
+        }, text);
     }
 
     public getHighlightedComment(comment_id: number): Locator
