@@ -55,6 +55,8 @@ use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Glpi\UI\IllustrationManager;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
 use function Safe\parse_url;
 use function Safe\preg_match;
 use function Safe\preg_match_all;
@@ -3001,6 +3003,52 @@ TWIG, $twig_params);
         return $articles;
     }
 
+    /**
+     * Ids of the KB aside articles the current user has collapsed (folded).
+     *
+     * @return int[]
+     */
+    public static function getFoldedIdsForCurrentUser(): array
+    {
+        $user_id = Session::getLoginUserID();
+        if ($user_id === false) {
+            return [];
+        }
+
+        $user = new User();
+        if (!$user->getFromDB($user_id)) {
+            return [];
+        }
+
+        $ids = json_decode($user->fields['folded_knowbaseitems'] ?? '[]', true);
+
+        return array_map('intval', array_values(is_array($ids) ? $ids : []));
+    }
+
+    /**
+     * Persist whether an aside article is collapsed (folded) for the current user.
+     */
+    public static function setFoldedForCurrentUser(int $id, bool $folded): void
+    {
+        $user_id = Session::getLoginUserID();
+        if ($user_id === false) {
+            return;
+        }
+
+        $ids = array_values(array_filter(
+            self::getFoldedIdsForCurrentUser(),
+            static fn(int $existing): bool => $existing !== $id,
+        ));
+        if ($folded) {
+            $ids[] = $id;
+        }
+
+        (new User())->update([
+            'id'                   => $user_id,
+            'folded_knowbaseitems' => json_encode($ids),
+        ]);
+    }
+
     #[Override]
     protected function getLeftSideContent(): ?string
     {
@@ -3027,7 +3075,7 @@ TWIG, $twig_params);
         return TemplateRenderer::getInstance()->render(
             'pages/tools/kb/aside.html.twig',
             [
-                'tree'                => (new Builder($current_id))->buildTree(),
+                'tree'                => $tree,
                 'favorites'           => $favorites,
                 'current_is_favorite' => $current_is_favorite,
                 'has_other_favorites' => $has_other_favorites,

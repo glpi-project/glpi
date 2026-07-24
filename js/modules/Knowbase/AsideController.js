@@ -126,13 +126,16 @@ export class GlpiKnowbaseAsideController
 
             // Toggle collasped state
             const is_collapsed = node.hasAttribute('data-glpi-kb-aside-category-collapsed');
-            if (is_collapsed) {
-                node.removeAttribute('data-glpi-kb-aside-category-collapsed');
-                toggle.setAttribute('aria-expanded', 'true');
-            } else {
+            const new_collapsed_state = !is_collapsed;
+            if (new_collapsed_state) {
                 node.setAttribute('data-glpi-kb-aside-category-collapsed', '');
                 toggle.setAttribute('aria-expanded', 'false');
+            } else {
+                node.removeAttribute('data-glpi-kb-aside-category-collapsed');
+                toggle.setAttribute('aria-expanded', 'true');
             }
+
+            this.#persistArticleFold(node.dataset.glpiKbArticleId, new_collapsed_state);
         });
     }
 
@@ -256,6 +259,21 @@ export class GlpiKnowbaseAsideController
             this.#backdrop.remove();
             this.#backdrop = null;
         }
+    }
+
+    /**
+     * @param {string|undefined} id
+     * @param {boolean} collapsed
+     */
+    #persistArticleFold(id, collapsed)
+    {
+        if (!id) {
+            return;
+        }
+
+        // Persist to server. We don't care about the response as the UI was
+        // already updated.
+        post(`Knowbase/Aside/Article/${encodeURIComponent(id)}/Fold`, { collapsed });
     }
 
     #initCreateArticle()
