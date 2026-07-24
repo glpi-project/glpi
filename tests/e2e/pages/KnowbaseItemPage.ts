@@ -37,6 +37,7 @@ import { TipTapEditorHelper } from "../utils/TipTapEditorHelper";
 import { SlashMenuHelper } from "../utils/SlashMenuHelper";
 import { BubbleMenuHelper } from "../utils/BubbleMenuHelper";
 import { TableEditorHelper } from "../utils/TableEditorHelper";
+import { ReadModeCommentBubbleHelper } from "../utils/ReadModeCommentBubbleHelper";
 
 export class KnowbaseItemPage extends GlpiPage
 {
@@ -44,6 +45,7 @@ export class KnowbaseItemPage extends GlpiPage
     private _slashMenuHelper: SlashMenuHelper | null = null;
     private _bubbleMenuHelper: BubbleMenuHelper | null = null;
     private _tableEditorHelper: TableEditorHelper | null = null;
+    private _readModeCommentBubbleHelper: ReadModeCommentBubbleHelper | null = null;
 
     public constructor(page: Page)
     {
@@ -80,6 +82,14 @@ export class KnowbaseItemPage extends GlpiPage
             this._tableEditorHelper = new TableEditorHelper(this.page, this.editor);
         }
         return this._tableEditorHelper;
+    }
+
+    public get readModeCommentBubble(): ReadModeCommentBubbleHelper
+    {
+        if (!this._readModeCommentBubbleHelper) {
+            this._readModeCommentBubbleHelper = new ReadModeCommentBubbleHelper(this.page);
+        }
+        return this._readModeCommentBubbleHelper;
     }
 
     public get imageDialog(): Locator
@@ -357,6 +367,35 @@ export class KnowbaseItemPage extends GlpiPage
         return this.page.getByTestId('comment').filter({
             hasText: content
         });
+    }
+
+    /**
+     * Select the given text in the (read-only) article content, outside of
+     * edit mode — triggers the ReadModeSelectionBubble.
+     */
+    public async selectTextInReadMode(text: string): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- same container TipTapEditorHelper uses
+        const content = this.page.locator('[data-glpi-kb-content]');
+        await content.getByText(text).first().click({ clickCount: 3 });
+    }
+
+    public getHighlightedComment(comment_id: number): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- data attribute set by CommentHighlighter.js/CommentHighlightExtension.js, no semantic role fits a highlight span
+        return this.page.locator(`.kb-comment-highlight[data-comment-id="${comment_id}"]`);
+    }
+
+    public getPendingAnchorQuote(): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- transient composer element, no semantic role fits
+        return this.page.locator('[data-glpi-pending-anchor-quote]').filter({ visible: true });
+    }
+
+    public getCommentThread(comment_id: number): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- data attribute rendered by comments_thread.html.twig
+        return this.page.locator(`[data-glpi-comment-thread="${comment_id}"]`).filter({ visible: true });
     }
 
     public getNewCommentTextarea(): Locator
