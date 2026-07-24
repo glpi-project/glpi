@@ -70,11 +70,8 @@ export function extractAnchor(text, start, end) {
 }
 
 /**
- * Locate an anchor's quoted text in `text`, disambiguating repeated quotes
- * using the recorded prefix/suffix context and occurrence index. Falls back
- * to the first context-matching occurrence if the recorded index no longer
- * lines up (e.g. an earlier, unrelated occurrence of the quote was removed).
- * Returns null if the quote can no longer be found at all (orphaned anchor).
+ * Locate an anchor's quoted text in `text`, disambiguating repeated quotes via
+ * prefix/suffix context and occurrence index. Returns null if orphaned.
  * @param {string} text
  * @param {{prefix: string, exact: string, suffix: string, occurrence: number}} anchor
  * @returns {[number, number]|null}
@@ -116,11 +113,9 @@ export function locateAnchor(text, anchor) {
 }
 
 /**
- * Intersect [start, end) against a list of `{start, end}` segments (text
- * offsets), returning the overlapping portion of each segment that intersects.
- * Shared by both the DOM-based (read mode) and ProseMirror-based (edit mode)
- * highlighters, which each attach their own extra fields (`node`/`pos`) to
- * their segments.
+ * Intersect [start, end) against a list of `{start, end}` segments, returning
+ * the overlapping portion of each. Shared by the DOM-based (read mode) and
+ * ProseMirror-based (edit mode) highlighters.
  * @param {Array<{start: number, end: number}>} segments
  * @param {number} start
  * @param {number} end

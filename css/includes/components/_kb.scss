@@ -41,10 +41,8 @@
     }
 }
 
-// Comment anchor highlight, shared by editor (ProseMirror decoration, a bare
-// <span>) and read view (native <mark> wrapping). background-color must be
-// set explicitly (even to transparent) to override <mark>'s default UA
-// yellow background, otherwise the two modes render inconsistently.
+// Shared by editor (ProseMirror <span>) and read view (<mark>); background-color
+// must be set explicitly to override <mark>'s default UA yellow.
 .kb-comment-highlight {
     background-color: transparent;
     text-decoration: underline;

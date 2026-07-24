@@ -83,9 +83,7 @@ final class AddCommentController extends AbstractController
             'parent_comment_id' => $parent_comment_id,
         ];
 
-        // Parse the optional text anchor (only meaningful for a new thread,
-        // never for a reply — KnowbaseItem_Comment::prepareInputForAdd()
-        // strips it anyway, but skip building it at all for clarity).
+        // Anchors only apply to a new thread, never a reply.
         if ($parent_comment_id === null && !empty($data['anchor_exact'])) {
             $input['anchor_prefix']     = (string) ($data['anchor_prefix'] ?? '');
             $input['anchor_exact']      = (string) $data['anchor_exact'];

@@ -34,10 +34,8 @@ import { extractAnchor } from '/js/modules/Knowbase/CommentAnchor.js';
 import { buildDomTextIndex, domRangeToOffsets } from '/js/modules/Knowbase/DomTextIndex.js';
 
 /**
- * Shows a minimal "Comment"-only bubble when the user selects text in a KB
- * article that is NOT currently being edited (no Tiptap/ProseMirror instance
- * active). Reuses the existing `.bubble-menu` styling so it looks consistent
- * with the edit-mode bubble menu.
+ * Minimal "Comment"-only bubble shown on text selection in a KB article that
+ * isn't being edited. Reuses `.bubble-menu` styling for visual consistency.
  */
 export class ReadModeSelectionBubble {
     /** @type {Element} */
@@ -86,9 +84,7 @@ export class ReadModeSelectionBubble {
     }
 
     /**
-     * Whether the container is currently a live, editable Tiptap instance —
-     * in which case the Tiptap bubble menu (KnowbaseEditor.js) handles
-     * selection, not this module.
+     * True if a live, editable Tiptap instance owns selection instead of this module.
      * @returns {boolean}
      */
     #isEditing() {

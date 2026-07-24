@@ -1031,10 +1031,8 @@ export class GlpiKnowbaseArticleController
             this.#onCommentSelection(e.detail.anchor);
         });
 
-        // Listened for on `document`, not `this.#container`: the comment that
-        // was just added may have gone through the mobile offcanvas panel's
-        // CommentsPanelController instance, whose container sits outside the
-        // main article container in the DOM (see article.html.twig).
+        // Listened on `document`, not the container: the mobile offcanvas panel
+        // sits outside the article container in the DOM.
         document.addEventListener('glpi:kb:comment-anchored', (e) => {
             this.#onCommentAnchored(e.detail.anchor);
         });

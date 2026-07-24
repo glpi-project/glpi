@@ -309,11 +309,8 @@ export class GlpiKnowbaseCommentsPanelController
             const inserted = this.#getCommentsDiv().lastElementChild;
             const raw = inserted?.dataset.glpiCommentAnchor;
             if (raw) {
-                // Dispatched on `document`, not `this.#container`: this
-                // controller instance can be the one owning the mobile
-                // offcanvas panel, which sits outside the main article
-                // container in the DOM (see article.html.twig), so bubbling
-                // to it would not reach ArticleController's listener.
+                // Dispatched on `document`, not the container: the offcanvas panel
+                // sits outside the article container, so bubbling wouldn't reach it.
                 document.dispatchEvent(new CustomEvent('glpi:kb:comment-anchored', {
                     detail: { anchor: JSON.parse(raw) },
                 }));

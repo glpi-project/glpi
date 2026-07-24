@@ -137,12 +137,10 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * The article header's dots menu trigger. Scoped to the article content so
-     * it is not confused with the per-row "More actions" menus that the aside
-     * tree renders on every article. `.first()` further disambiguates from
-     * per-comment "More actions" menus (comments_thread.html.twig), which
-     * share the same accessible name and live inside the same `kb-article`
-     * container, but always render after the header in DOM order.
+     * The article header's dots menu trigger, scoped to the article content to
+     * avoid other "More actions" menus (aside tree rows, per-comment menus)
+     * sharing the same accessible name. `.first()` picks the header's, which
+     * renders before those in DOM order.
      */
     public get articleActionsMenu(): Locator
     {
@@ -350,14 +348,9 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * Wait until ArticleController has finished initializing after a fresh
-     * page load (or reload) — same `pe-none` readiness signal as
-     * `doToggleChildEntities`/`selectTextInReadMode`/`waitForAsideReady`.
-     * In particular, this guarantees `#initCommentAnchors()` has already run
-     * and applied any `.kb-comment-highlight` marks: it executes
-     * synchronously earlier in the constructor, before `pe-none` is removed
-     * (see ArticleController.js), so this is a sufficient readiness signal
-     * for asserting on highlights right after a reload.
+     * Wait until ArticleController has finished initializing, including having
+     * applied any `.kb-comment-highlight` marks (same `pe-none` readiness
+     * signal as `doToggleChildEntities`/`waitForAsideReady`).
      */
     public async waitForArticleReady(): Promise<void>
     {
@@ -393,18 +386,9 @@ export class KnowbaseItemPage extends GlpiPage
      * Select the given text in the (read-only) article content, outside of
      * edit mode — triggers the ReadModeSelectionBubble.
      *
-     * Uses a scripted Range/Selection rather than a triple-click: a
-     * triple-click's selection boundaries aren't reliably confined to the
-     * clicked paragraph (it can extend into following siblings, e.g. the
-     * documents/related-items tab bar rendered after the article content),
-     * so it can neither target an arbitrary substring nor reliably stay
-     * inside `[data-glpi-kb-content]`.
-     *
-     * Also waits for ArticleController's readiness signal (same `pe-none`
-     * pattern as `doToggleChildEntities`/`waitForAsideReady`): the article
-     * content markup can be present in the DOM before ArticleController has
-     * finished running and attached ReadModeSelectionBubble's
-     * `selectionchange` listener, so selecting immediately can silently miss it.
+     * Uses a scripted Range/Selection rather than a triple-click, since a
+     * triple-click's boundaries aren't reliably confined to the clicked
+     * paragraph or to `[data-glpi-kb-content]`.
      */
     public async selectTextInReadMode(text: string): Promise<void>
     {
@@ -439,10 +423,6 @@ export class KnowbaseItemPage extends GlpiPage
 
     /**
      * All comment-anchor highlights currently rendered in the article content.
-     * Highlights carry role="button"/aria-label (set by DomTextIndex.js and
-     * CommentHighlightExtension.js), scoped to the article's native <article>
-     * landmark (there is exactly one per page) so this never needs a raw
-     * CSS locator.
      */
     public getCommentHighlights(): Locator
     {
