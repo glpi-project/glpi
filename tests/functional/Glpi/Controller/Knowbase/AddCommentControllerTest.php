@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Controller\Knowbase;
 
 use Glpi\Controller\Knowbase\AddCommentController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
@@ -123,5 +124,16 @@ class AddCommentControllerTest extends DbTestCase
         $comment = reset($comments);
         $this->assertNotFalse($comment);
         $this->assertFalse($comment->hasAnchor());
+    }
+
+    public function testUserWithoutCommentRightIsDenied(): void
+    {
+        $this->login();
+        $id = $this->makeArticle();
+
+        $_SESSION['glpiactiveprofile']['knowbase'] &= ~KnowbaseItem::COMMENTS;
+
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->callController($id, ['content' => 'Should be denied']);
     }
 }

@@ -131,8 +131,12 @@ final class KnowbaseItem_Comment extends CommonDBTM
     }
 
     #[Override]
-    public function prepareInputForAdd($input): array
+    public function prepareInputForAdd($input): array|false
     {
+        if (trim((string) ($input['comment'] ?? '')) === '') {
+            return false;
+        }
+
         if (!isset($input["users_id"])) {
             $input["users_id"] = 0;
             if ($uid = Session::getLoginUserID()) {

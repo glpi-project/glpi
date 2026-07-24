@@ -436,13 +436,12 @@ export class KnowbaseItemPage extends GlpiPage
 
     public getPendingAnchorQuote(): Locator
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- transient composer element, no semantic role fits
-        return this.page.locator('[data-glpi-pending-anchor-quote]').filter({ visible: true });
+        return this.page.getByTestId('pending-anchor-quote').filter({ visible: true });
     }
 
     public getCommentThread(comment_id: number): Locator
     {
-        return this.page.locator(`[data-glpi-comment-thread="${comment_id}"]`).filter({ visible: true });
+        return this.page.getByTestId(`comment-thread-${comment_id}`).filter({ visible: true });
     }
 
     public getNewCommentTextarea(): Locator

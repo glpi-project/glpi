@@ -208,9 +208,28 @@ export class GlpiKnowbaseCommentsPanelController
         submit_btn.querySelector('[data-glpi-loading]').classList.add('d-none');
 
         // Update content and hide form
-        content.innerHTML = result.comment.replace(/\n/g, '<br>');
+        this.#renderCommentContent(content, result.comment);
         form.classList.add('d-none');
         content.classList.remove('d-none');
+    }
+
+    /**
+     * Mirrors the server-side `{{ comment|nl2br }}` rendering (comment.html.twig)
+     * using DOM APIs, so edited content can never be interpreted as HTML.
+     *
+     * @param {HTMLElement} content
+     * @param {string} text
+     */
+    #renderCommentContent(content, text)
+    {
+        content.replaceChildren();
+        const lines = text.split('\n');
+        lines.forEach((line, index) => {
+            content.append(document.createTextNode(line));
+            if (index < lines.length - 1) {
+                content.append(document.createElement('br'));
+            }
+        });
     }
 
     async #deleteComment(delete_btn)

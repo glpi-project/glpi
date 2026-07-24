@@ -36,6 +36,7 @@
 <div
     class="kb-comment-thread"
     data-glpi-comment-thread="{{ root }}"
+    data-testid="comment-thread-{{ root }}"
     {% if root_comment.hasAnchor() %}
         data-glpi-comment-anchor="{{ {
             id: root,
