@@ -3330,6 +3330,7 @@ JS;
      *   link?: string,          // link on the displayed icon if contentid is empty
      *   linkid?: string,        // HTML id of the link
      *   linktarget?: string,    // link target
+     *   link_class?: string,    // class of the wrapper element (the <a>, or the <span> when there is no link)
      *   awesome-class?: string, // class of the icon to display (default 'fa-info')
      *   popup?: string,         // popup action
      *   img?: string,           // URL of a specific image
