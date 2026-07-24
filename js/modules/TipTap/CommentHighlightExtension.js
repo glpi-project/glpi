@@ -52,11 +52,8 @@ const CommentHighlight = Extension.create({
         };
     },
 
-    // `this.options` is recomputed from addOptions() on every access (see
-    // Tiptap's Extendable#options getter), so mutating it from a command has
-    // no lasting effect. `this.storage` is the one object Tiptap keeps as a
-    // stable reference across both addCommands() and addProseMirrorPlugins(),
-    // so it's the only place a runtime-refreshable anchor list can live.
+    // this.options is recomputed on every access, so mutations don't persist;
+    // this.storage is the stable reference shared by commands and plugins.
     addStorage() {
         return {
             anchors: this.options.anchors,

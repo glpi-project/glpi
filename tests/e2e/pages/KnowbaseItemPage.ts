@@ -137,10 +137,8 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * The article header's dots menu trigger, scoped to the article content to
-     * avoid other "More actions" menus (aside tree rows, per-comment menus)
-     * sharing the same accessible name. `.first()` picks the header's, which
-     * renders before those in DOM order.
+     * The article header's dots menu trigger, scoped to avoid other "More
+     * actions" menus (aside rows, comments); `.first()` picks the header's.
      */
     public get articleActionsMenu(): Locator
     {
@@ -335,9 +333,8 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * Wait until ArticleController has finished initializing, including having
-     * applied any `.kb-comment-highlight` marks (same `pe-none` readiness
-     * signal as `doToggleChildEntities`/`waitForAsideReady`).
+     * Wait for ArticleController's init, including highlight marks (same
+     * `pe-none` readiness signal as doToggleChildEntities/waitForAsideReady).
      */
     public async waitForArticleReady(): Promise<void>
     {
@@ -370,12 +367,9 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * Select the given text in the (read-only) article content, outside of
-     * edit mode — triggers the ReadModeSelectionBubble.
-     *
-     * Uses a scripted Range/Selection rather than a triple-click, since a
-     * triple-click's boundaries aren't reliably confined to the clicked
-     * paragraph or to `[data-glpi-kb-content]`.
+     * Select `text` in the read-only article content (outside edit mode) to
+     * trigger the ReadModeSelectionBubble. Uses a scripted Range instead of a
+     * triple-click, which doesn't reliably confine to one paragraph.
      */
     public async selectTextInReadMode(text: string): Promise<void>
     {
