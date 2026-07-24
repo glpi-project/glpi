@@ -40,6 +40,9 @@ import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
 import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
+import { CommentHighlight } from '/js/modules/TipTap/CommentHighlightExtension.js';
+import { buildPmTextIndex, pmPositionToOffset } from '/js/modules/TipTap/CommentPosition.js';
+import { extractAnchor } from '/js/modules/Knowbase/CommentAnchor.js';
 
 /**
  * Knowbase article editor based on Tiptap
@@ -77,6 +80,7 @@ class KnowbaseEditor {
             placeholder: __('Type / to insert...'),
             onUpdate: null,
             item_id: null,
+            comment_anchors: [],
             ...options
         };
 
@@ -143,6 +147,7 @@ class KnowbaseEditor {
             }),
             TableGrips,
             VideoEmbed,
+            CommentHighlight.configure({ anchors: this.#options.comment_anchors }),
         ];
 
         // Add FileHandler for image drag & drop and paste (only for existing articles)
@@ -251,6 +256,8 @@ class KnowbaseEditor {
             { type: 'divider' },
             { command: 'setLink', icon: 'ti ti-link', title: _x('button', 'Link'), special: 'link' },
             { command: 'unsetLink', icon: 'ti ti-link-off', title: __('Remove link'), special: 'unlink' },
+            { type: 'divider' },
+            { command: 'comment', icon: 'ti ti-message-circle-plus', title: __('Comment'), special: 'comment' },
         ];
 
         buttons.forEach((btn) => {
@@ -308,9 +315,32 @@ class KnowbaseEditor {
             }
         } else if (special === 'heading') {
             this.#editor.chain().focus().toggleHeading({ level }).run();
+        } else if (special === 'comment') {
+            this.#dispatchCommentSelection();
         } else if (this.#editor.chain().focus()[command]) {
             this.#editor.chain().focus()[command]().run();
         }
+    }
+
+    /**
+     * Extract an anchor for the current selection and dispatch it so
+     * ArticleController.js can open the Comments panel with it pre-filled.
+     */
+    #dispatchCommentSelection() {
+        if (!this.#editor) return;
+
+        const { from, to } = this.#editor.state.selection;
+        if (from === to) return;
+
+        const { text, segments } = buildPmTextIndex(this.#editor.state.doc);
+        const start = pmPositionToOffset(segments, from);
+        const end = pmPositionToOffset(segments, to);
+        const anchor = extractAnchor(text, start, end);
+
+        this.#element.dispatchEvent(new CustomEvent('glpi:kb:comment-selection', {
+            bubbles: true,
+            detail: { anchor },
+        }));
     }
 
     /**
@@ -391,6 +421,15 @@ class KnowbaseEditor {
         } else {
             this.#element.classList.remove('is-editing');
         }
+    }
+
+    /**
+     * Recompute the highlighted comment ranges (e.g. after a new anchored
+     * comment was added while editing).
+     * @param {Array<{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}>} anchors
+     */
+    refreshCommentAnchors(anchors) {
+        this.#editor?.commands.refreshCommentHighlights(anchors);
     }
 
     /**
