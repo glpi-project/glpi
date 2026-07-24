@@ -45,7 +45,8 @@ export type BubbleMenuCommand =
     | 'Numbered List'
     | 'Quote'
     | 'Link'
-    | 'Remove link';
+    | 'Remove link'
+    | 'Comment';
 
 export class BubbleMenuHelper {
     private readonly page: Page;
