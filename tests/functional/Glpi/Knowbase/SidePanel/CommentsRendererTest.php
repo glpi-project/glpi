@@ -98,6 +98,35 @@ final class CommentsRendererTest extends DbTestCase
         $this->assertStringContainsString('No comments yet', $comments->html());
     }
 
+    public function testAnchoredCommentShowsQuotedTextPreview(): void
+    {
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Article with anchored comment',
+        ]);
+        $this->createItems(KnowbaseItem_Comment::class, [
+            [
+                'comment'           => 'Anchored comment',
+                'users_id'          => 2,
+                'knowbaseitems_id'  => $kb->getID(),
+                'anchor_prefix'     => 'before ',
+                'anchor_exact'      => 'the quoted passage',
+                'anchor_suffix'     => ' after',
+                'anchor_occurrence' => 0,
+            ],
+        ]);
+
+        $comments = $this->renderComments($kb);
+
+        $thread = $comments->filter('[data-glpi-comment-thread]');
+        $this->assertStringContainsString('the quoted passage', $thread->text());
+
+        $anchor = json_decode($thread->attr('data-glpi-comment-anchor'), true);
+        $this->assertSame('the quoted passage', $anchor['exact']);
+        $this->assertSame('before ', $anchor['prefix']);
+    }
+
     private function renderComments(KnowbaseItem $kb): Crawler
     {
         $comments = new CommentsRenderer();
