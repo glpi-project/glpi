@@ -50,11 +50,17 @@ use KnowbaseItem_KnowbaseItem;
  */
 final class Builder
 {
+    /** @var int[] */
+    private array $folded_ids = [];
+
     public function __construct(private readonly int $current_id = 0) {}
 
     public function buildTree(): Tree
     {
         global $DB;
+
+        // Articles the current user has collapsed, restored on each render.
+        $this->folded_ids = KnowbaseItem::getFoldedIdsForCurrentUser();
 
         // 1) All articles the current user may see (visibility applied).
         $rows = $DB->request(KnowbaseItem::getListRequest([], 'browse'));
@@ -107,6 +113,7 @@ final class Builder
             illustration: $row['illustration'] ?? '',
             link: KnowbaseItem::getFormURLWithID($id),
             is_current: $this->current_id > 0 && $id === $this->current_id,
+            collapsed: in_array($id, $this->folded_ids, true),
         );
         $ancestors[$id] = true;
         foreach ($children_of[$id] ?? [] as $child_id) {
