@@ -165,15 +165,16 @@ export class GlpiKnowbaseArticleSidePanelController
 
     /**
      * Forward a pending comment anchor to the active Comments panel controller.
+     * Only the currently active container is loaded with panel content — the
+     * inactive one has no textarea, so dispatching to it would throw.
      * @param {{prefix: string, exact: string, suffix: string, occurrence: number}} anchor
      */
     setPendingCommentAnchor(anchor)
     {
-        for (const container of [this.#sidepanel_container, this.#offcanvas_container]) {
-            container.dispatchEvent(new CustomEvent('glpi:kb:set-pending-comment-anchor', {
-                detail: { anchor },
-            }));
-        }
+        const target = this.#isSmallScreen() ? this.#offcanvas_container : this.#sidepanel_container;
+        target.dispatchEvent(new CustomEvent('glpi:kb:set-pending-comment-anchor', {
+            detail: { anchor },
+        }));
     }
 
     /**
