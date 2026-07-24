@@ -94,6 +94,9 @@ export function wrapOffsetsInMarks(index, start, end, comment_id) {
         const mark = document.createElement('mark');
         mark.className = 'kb-comment-highlight';
         mark.dataset.commentId = String(comment_id);
+        mark.setAttribute('role', 'button');
+        mark.setAttribute('tabindex', '0');
+        mark.setAttribute('aria-label', __('View comment'));
         range.surroundContents(mark);
     }
 }

@@ -79,6 +79,9 @@ const CommentHighlight = Extension.create({
                     decorations.push(Decoration.inline(from, to, {
                         class: 'kb-comment-highlight',
                         'data-comment-id': String(anchor.id),
+                        role: 'button',
+                        tabindex: '0',
+                        'aria-label': __('View comment'),
                     }));
                 }
             }

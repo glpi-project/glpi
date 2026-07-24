@@ -100,7 +100,7 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await page.reload();
         await kb.waitForArticleReady();
 
-        const highlight = page.locator('.kb-comment-highlight', { hasText: 'highlighted part' });
+        const highlight = kb.getCommentHighlightByText('highlighted part');
         await expect(highlight).toBeVisible();
         await highlight.click();
 
@@ -130,6 +130,6 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
 
         await kb.doOpenCommentsPanel();
         await expect(kb.getComment('Comment that will be orphaned')).toBeVisible();
-        await expect(page.locator('.kb-comment-highlight')).toHaveCount(0);
+        await expect(kb.getCommentHighlights()).toHaveCount(0);
     });
 });

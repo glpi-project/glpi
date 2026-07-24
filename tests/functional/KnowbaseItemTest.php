@@ -85,7 +85,7 @@ class KnowbaseItemTest extends DbTestCase
         );
 
         //add some comments
-        $comment = new \KnowbaseItem_Comment();
+        $comment = new KnowbaseItem_Comment();
         $input = [
             'knowbaseitems_id' => $kb->getID(),
             'users_id'         => $users_id,
