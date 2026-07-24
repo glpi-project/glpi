@@ -412,15 +412,21 @@ export class KnowbaseItemPage extends GlpiPage
         await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
         await this.page.evaluate((needle) => {
             const container = document.querySelector('[data-glpi-kb-content]');
+            if (!container) {
+                return;
+            }
             const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
             let node = walker.nextNode();
             while (node) {
-                const idx = node.nodeValue.indexOf(needle);
+                const idx = (node.nodeValue ?? '').indexOf(needle);
                 if (idx !== -1) {
                     const range = document.createRange();
                     range.setStart(node, idx);
                     range.setEnd(node, idx + needle.length);
                     const selection = window.getSelection();
+                    if (!selection) {
+                        return;
+                    }
                     selection.removeAllRanges();
                     selection.addRange(range);
                     document.dispatchEvent(new Event('selectionchange'));
@@ -431,10 +437,21 @@ export class KnowbaseItemPage extends GlpiPage
         }, text);
     }
 
-    public getHighlightedComment(comment_id: number): Locator
+    /**
+     * All comment-anchor highlights currently rendered in the article content.
+     * Highlights carry role="button"/aria-label (set by DomTextIndex.js and
+     * CommentHighlightExtension.js), scoped to the article's native <article>
+     * landmark (there is exactly one per page) so this never needs a raw
+     * CSS locator.
+     */
+    public getCommentHighlights(): Locator
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- data attribute set by CommentHighlighter.js/CommentHighlightExtension.js, no semantic role fits a highlight span
-        return this.page.locator(`.kb-comment-highlight[data-comment-id="${comment_id}"]`);
+        return this.page.getByRole('article').getByRole('button', { name: 'View comment' });
+    }
+
+    public getCommentHighlightByText(text: string): Locator
+    {
+        return this.getCommentHighlights().filter({ hasText: text });
     }
 
     public getPendingAnchorQuote(): Locator
@@ -445,7 +462,6 @@ export class KnowbaseItemPage extends GlpiPage
 
     public getCommentThread(comment_id: number): Locator
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- data attribute rendered by comments_thread.html.twig
         return this.page.locator(`[data-glpi-comment-thread="${comment_id}"]`).filter({ visible: true });
     }
 

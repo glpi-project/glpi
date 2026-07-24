@@ -110,9 +110,6 @@ export class GlpiKnowbaseArticleController
     /** @type {Array<{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}>} */
     #comment_anchors = [];
 
-    /** @type {ReadModeSelectionBubble|null} */
-    #read_mode_selection_bubble = null;
-
     #handleTitleKeydown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -1028,7 +1025,7 @@ export class GlpiKnowbaseArticleController
         }
 
         highlightComments(content_el, this.#comment_anchors);
-        this.#read_mode_selection_bubble = new ReadModeSelectionBubble(content_el);
+        new ReadModeSelectionBubble(content_el);
 
         content_el.addEventListener('glpi:kb:comment-selection', (e) => {
             this.#onCommentSelection(e.detail.anchor);
@@ -1047,6 +1044,20 @@ export class GlpiKnowbaseArticleController
             if (!mark) {
                 return;
             }
+            this.#onHighlightClick(mark.dataset.commentId);
+        });
+
+        // Highlights carry role="button"/tabindex="0" (set in DomTextIndex.js
+        // and CommentHighlightExtension.js) — keep them keyboard-operable.
+        content_el.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') {
+                return;
+            }
+            const mark = e.target.closest('.kb-comment-highlight');
+            if (!mark) {
+                return;
+            }
+            e.preventDefault();
             this.#onHighlightClick(mark.dataset.commentId);
         });
     }
