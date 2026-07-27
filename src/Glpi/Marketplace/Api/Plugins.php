@@ -371,7 +371,7 @@ class Plugins
     {
         $response  = $this->request('tags/top', [
             'headers' => [
-                'X-Lang' => LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code,
+                'X-Lang' => LanguageRegistry::get($_SESSION['glpilanguage'])->getRegionlessCode(),
             ],
         ]);
 
