@@ -39,6 +39,17 @@ const { Extension } = TiptapCore;
 const { Plugin, PluginKey } = TiptapPMState;
 const { Decoration, DecorationSet } = TiptapPMView;
 
+const comment_highlight_key = new PluginKey('commentHighlight');
+
+/**
+ * Ids of the anchors whose quoted text is still present in the document.
+ * @param {object} state - ProseMirror editor state.
+ * @returns {string[]}
+ */
+function getResolvedCommentAnchors(state) {
+    return comment_highlight_key.getState(state)?.resolved ?? [];
+}
+
 /**
  * Highlights anchored comments' quoted text using decorations (not real marks),
  * so saved article HTML and revision history stay untouched by anchors.
@@ -64,17 +75,19 @@ const CommentHighlight = Extension.create({
         const build = (doc) => {
             const anchors = this.storage.anchors;
             if (!anchors || anchors.length === 0) {
-                return DecorationSet.empty;
+                return { set: DecorationSet.empty, resolved: [] };
             }
 
             const { text, segments } = buildPmTextIndex(doc);
             const decorations = [];
+            const resolved = [];
 
             for (const anchor of anchors) {
                 const located = locateAnchor(text, anchor);
                 if (!located) {
                     continue;
                 }
+                resolved.push(String(anchor.id));
                 const [start, end] = located;
                 for (const { segment, start: seg_start, end: seg_end } of overlaps(segments, start, end)) {
                     const from = segment.pos + (seg_start - segment.start);
@@ -89,12 +102,12 @@ const CommentHighlight = Extension.create({
                 }
             }
 
-            return DecorationSet.create(doc, decorations);
+            return { set: DecorationSet.create(doc, decorations), resolved };
         };
 
         return [
             new Plugin({
-                key: new PluginKey('commentHighlight'),
+                key: comment_highlight_key,
                 state: {
                     init: (_config, state) => build(state.doc),
                     apply: (tr, old) => {
@@ -106,7 +119,7 @@ const CommentHighlight = Extension.create({
                 },
                 props: {
                     decorations(state) {
-                        return this.getState(state);
+                        return this.getState(state).set;
                     },
                 },
             }),
@@ -128,4 +141,4 @@ const CommentHighlight = Extension.create({
     },
 });
 
-export { CommentHighlight };
+export { CommentHighlight, getResolvedCommentAnchors };

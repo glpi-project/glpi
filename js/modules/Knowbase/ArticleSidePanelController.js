@@ -177,6 +177,26 @@ export class GlpiKnowbaseArticleSidePanelController
     }
 
     /**
+     * Hide the quoted passage of every thread whose anchor no longer resolves in
+     * the article, so a deleted passage stops being cited.
+     * @param {string[]} resolved_ids - Root comment ids whose anchor still resolves.
+     */
+    setResolvedCommentAnchors(resolved_ids)
+    {
+        const target = this.#isSmallScreen()
+            ? this.#offcanvas_container.querySelector('.offcanvas-body')
+            : this.#sidepanel_container;
+
+        target?.querySelectorAll('[data-glpi-comment-thread]').forEach((thread) => {
+            const quote = thread.querySelector('[data-glpi-comment-anchor-quote]');
+            quote?.classList.toggle(
+                'd-none',
+                !resolved_ids.includes(thread.dataset.glpiCommentThread)
+            );
+        });
+    }
+
+    /**
      * Scroll the currently visible panel to the thread matching `comment_id`
      * (its root comment's id) and briefly highlight it.
      * @param {number|string} comment_id

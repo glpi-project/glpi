@@ -54,12 +54,14 @@ function clearHighlights(container) {
  * rendered HTML. Unresolvable anchors are silently skipped. Safe to call repeatedly.
  * @param {Element} container
  * @param {Array<{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}>} anchors
+ * @returns {string[]} Ids of the anchors whose quoted text was found.
  */
 export function highlightComments(container, anchors) {
     clearHighlights(container);
 
+    const resolved = [];
     if (!anchors || anchors.length === 0) {
-        return;
+        return resolved;
     }
 
     // Rebuilt per anchor: wrapOffsetsInMarks() mutates the DOM (splits text
@@ -72,5 +74,8 @@ export function highlightComments(container, anchors) {
         }
         const [start, end] = located;
         wrapOffsetsInMarks(index, start, end, anchor.id);
+        resolved.push(String(anchor.id));
     }
+
+    return resolved;
 }

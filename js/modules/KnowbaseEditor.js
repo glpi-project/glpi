@@ -40,7 +40,7 @@ import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
 import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
-import { CommentHighlight } from '/js/modules/TipTap/CommentHighlightExtension.js';
+import { CommentHighlight, getResolvedCommentAnchors } from '/js/modules/TipTap/CommentHighlightExtension.js';
 import { buildPmTextIndex, pmPositionToOffset } from '/js/modules/TipTap/CommentPosition.js';
 import { extractAnchor } from '/js/modules/Knowbase/CommentAnchor.js';
 
@@ -430,6 +430,14 @@ class KnowbaseEditor {
      */
     refreshCommentAnchors(anchors) {
         this.#editor?.commands.refreshCommentHighlights(anchors);
+    }
+
+    /**
+     * Ids of the anchors whose quoted text is still present in the document.
+     * @returns {string[]}
+     */
+    getResolvedCommentAnchorIds() {
+        return this.#editor ? getResolvedCommentAnchors(this.#editor.state) : [];
     }
 
     /**

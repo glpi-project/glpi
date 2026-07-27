@@ -451,6 +451,17 @@ export class KnowbaseItemPage extends GlpiPage
         return this.getCommentHighlights().filter({ hasText: text });
     }
 
+    /**
+     * Anchor quotes currently displayed on comment threads in the side panel.
+     */
+    public getCommentAnchorQuotes(): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute used by CommentsPanelController.js, not a test ID
+        return this.page.locator('[data-glpi-comments]')
+            .getByRole('blockquote')
+            .filter({ visible: true });
+    }
+
     public getPendingAnchorQuote(): Locator
     {
         return this.page.getByTestId('pending-anchor-quote').filter({ visible: true });
