@@ -309,6 +309,7 @@ class Tag extends CommonDropdown
      */
     public function showForm($ID, array $options = []): bool
     {
+        $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/setup/tag.html.twig', [
             'item' => $this,
             'params' => $options,
