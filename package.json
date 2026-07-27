@@ -146,8 +146,11 @@
         "webpack-dev-server": "^5.2.5"
     },
     "overrides": {
+        "@tabler/icons-webfont": {
+            "sharp": "^0.35.0"
+        },
         "monaco-editor": {
-            "dompurify": "^3.4.0"
+            "dompurify": "^3.4.12"
         },
         "qs": "^6.15.1",
         "uuid": "^14.0.0",
