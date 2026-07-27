@@ -14,8 +14,8 @@
 # Bubreg István <bubreg.istvan@gmail.com>, 2026
 # Márk Klung, 2026
 # Cédric Anne, 2026
-# Gábor Bíró, 2026
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
+# Gábor Bíró, 2026
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-06 10:07+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2026\n"
+"Last-Translator: Gábor Bíró, 2026\n"
 "Language-Team: Hungarian (Hungary) (https://app.transifex.com/glpi/teams/1637/hu_HU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1377,7 +1377,7 @@ msgstr ""
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Fő navigáció"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -2127,11 +2127,11 @@ msgstr "Jegyzet hozzáadása"
 
 #: templates/components/notepad/form.html.twig
 msgid "Expand all"
-msgstr ""
+msgstr "Összes kibontása"
 
 #: templates/components/notepad/form.html.twig
 msgid "Collapse all"
-msgstr ""
+msgstr "Összecsukás"
 
 #: templates/components/notepad/form.html.twig
 msgid "Add a note"
@@ -3313,7 +3313,7 @@ msgstr "Megjegyzés módosítása"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Idő meghatározása"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
@@ -7682,7 +7682,7 @@ msgstr "Regisztrálta"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Remove registration key"
-msgstr ""
+msgstr "Regisztrációs kulcs eltávolítása"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 #: front/marketplace.php:52 src/Glpi/Marketplace/View.php:78

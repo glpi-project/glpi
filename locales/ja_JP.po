@@ -12,8 +12,8 @@
 # peachberry <gtucr7gpw.4g2@gmail.com>, 2026
 # 青海K, 2026
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
-# INOUE Daisuke, 2026
 # Cédric Anne, 2026
+# INOUE Daisuke, 2026
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-06 10:07+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: Cédric Anne, 2026\n"
+"Last-Translator: INOUE Daisuke, 2026\n"
 "Language-Team: Japanese (Japan) (https://app.transifex.com/glpi/teams/1637/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1016,7 +1016,7 @@ msgstr "無効"
 #: templates/generic_show_form.html.twig src/CartridgeItem.php:347
 #: src/ConsumableItem.php:292
 msgid "Alert threshold"
-msgstr "在庫不足警告のしきい値"
+msgstr "注意報のしきい値"
 
 #: templates/generic_show_form.html.twig src/Peripheral.php:342
 #: src/Phone.php:406
@@ -1177,7 +1177,7 @@ msgstr "ロック解除の依頼"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Alert me when unlocked"
-msgstr "ロックが解除されたらアラートを出す"
+msgstr "ロックが解除されたら注意報"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Locked by you!"
@@ -2708,11 +2708,11 @@ msgstr "下位エンティティー"
 
 #: templates/components/form/file_uploader.html.twig
 msgid "Drop files here or click to browse"
-msgstr ""
+msgstr "ここにファイルをドロップするか、クリックしてファイル選択画面へ"
 
 #: templates/components/form/file_uploader.html.twig
 msgid "Browse Files"
-msgstr ""
+msgstr "ファイル選択"
 
 #: templates/components/form/item_remotemanagement_form.html.twig
 #: templates/components/form/reservation.html.twig
@@ -3001,11 +3001,11 @@ msgstr[0] "構成部品"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Show password"
-msgstr ""
+msgstr "パスワードを表示"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Hide password"
-msgstr ""
+msgstr "パスワードを非表示"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/pages/tools/kb/modal/sharing.html.twig
@@ -3021,7 +3021,7 @@ msgstr "クリアする"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Expected format: a hexadecimal color code, for example #FF0000."
-msgstr ""
+msgstr "入力形式 : 16進数のカラーコード ( 例：#FF0000 ) 。"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: src/CommonITILValidation.php:1783
@@ -3312,7 +3312,7 @@ msgstr "保存"
 #: src/ProjectTask.php:1489
 msgctxt "button"
 msgid "Restore"
-msgstr "リストア"
+msgstr "復元"
 
 #: templates/components/form/buttons.html.twig
 msgid "Keep the devices while deleting this item"
@@ -4751,7 +4751,7 @@ msgstr "新しいデバイスの追加"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 msgid "No illustration"
-msgstr ""
+msgstr "イラストが見つかりません"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 #, php-format
@@ -5309,7 +5309,7 @@ msgstr[0] "%d週"
 #: templates/pages/assistance/planning/add_classic_event.html.twig
 msgctxt "Planning"
 msgid "Reminder"
-msgstr "リマインダー"
+msgstr "通知"
 
 #: templates/pages/tools/project_task.html.twig
 #: templates/pages/tools/project.html.twig
@@ -5559,7 +5559,7 @@ msgstr "すぐに作成"
 
 #: templates/pages/tools/savedsearch/alert_list_notification.html.twig
 msgid "Add an alert"
-msgstr "検索件数警告を追加"
+msgstr "注意報を追加"
 
 #: templates/pages/tools/savedsearch/alert.html.twig
 #: src/SavedSearch_Alert.php:218
@@ -5627,15 +5627,15 @@ msgstr "アイテムへのリンクを追加する"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Translation mode enabled, currently editing"
-msgstr ""
+msgstr "翻訳モードを有効にし、現在編集中です"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Delete this translation"
-msgstr ""
+msgstr "この翻訳を削除"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Untitled article"
-msgstr ""
+msgstr "無題の文書"
 
 #: templates/pages/tools/kb/article.html.twig
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
@@ -5648,15 +5648,15 @@ msgstr "その他の操作"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Updated:"
-msgstr ""
+msgstr "更新 :"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "by"
-msgstr ""
+msgstr "作成 : "
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "No views"
-msgstr ""
+msgstr "未閲覧"
 
 #: templates/pages/tools/kb/article.html.twig
 #, php-format
@@ -5668,33 +5668,33 @@ msgstr[0] "表示数 %s"
 #, php-format
 msgid "%s translation"
 msgid_plural "%s translations"
-msgstr[0] ""
+msgstr[0] "翻訳数 : %s "
 
 #: templates/pages/tools/kb/article.html.twig
 #: js/modules/Knowbase/ArticleController.js:747
 #, javascript-format, php-format
 msgid "%s document"
 msgid_plural "%s documents"
-msgstr[0] ""
+msgstr[0] "ドキュメント数 : %s"
 
 #: templates/pages/tools/kb/article.html.twig
 #: js/modules/Knowbase/ArticleController.js:713
 #, javascript-format, php-format
 msgid "%s related item"
 msgid_plural "%s related items"
-msgstr[0] ""
+msgstr[0] "関連アイテム数 : %s"
 
 #: templates/pages/tools/kb/article.html.twig
 #: js/modules/Knowbase/CommentsPanelController.js:313
 #, javascript-format, php-format
 msgid "%s comment"
 msgid_plural "%s comments"
-msgstr[0] ""
+msgstr[0] "コメント数 : %s"
 
 #: templates/pages/tools/kb/article.html.twig src/KnowbaseItem.php:1252
 #: src/KnowbaseItem.php:1258
 msgid "Schedule visibility"
-msgstr ""
+msgstr "表示スケジュール"
 
 #: templates/pages/tools/kb/article.html.twig
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:751
@@ -5710,92 +5710,92 @@ msgstr "ドキュメント"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Related items"
-msgstr ""
+msgstr "関連アイテム"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add Document"
-msgstr ""
+msgstr "ドキュメントを追加"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Upload a file"
-msgstr ""
+msgstr "ファイルアップロード"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link a document"
-msgstr ""
+msgstr "ドキュメントにリンク"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "optional"
-msgstr ""
+msgstr "任意"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add a description for these documents..."
-msgstr ""
+msgstr "このドキュメントに説明を追加..."
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Upload Documents"
-msgstr ""
+msgstr "文書をアップロード"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Search for a document"
-msgstr ""
+msgstr "ドキュメントを検索"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link Documents"
-msgstr ""
+msgstr "ドキュメントへリンク"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link to another item"
-msgstr ""
+msgstr "別のアイテムへリンク"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add article"
-msgstr ""
+msgstr "文書を追加"
 
 #: templates/pages/tools/kb/permission_entry.html.twig
 msgid "recursive"
-msgstr ""
+msgstr "再帰的"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #, php-format
 msgid "Before: %s"
-msgstr ""
+msgstr "以前 : %s"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #, php-format
 msgid "After: %s"
-msgstr ""
+msgstr "以後 : %s"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 #: src/Glpi/Knowbase/LastUpdateInfo.php:55
 msgid "Deleted user"
-msgstr ""
+msgstr "削除ユーザー"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 msgid "Restore this translation version"
-msgstr ""
+msgstr "この翻訳バージョンを復元"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 msgid "Restore this version"
-msgstr ""
+msgstr "このバージョンを復元"
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "No comments yet."
-msgstr ""
+msgstr "まだコメントはありません。"
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "Add a comment..."
-msgstr ""
+msgstr "コメントを追加..."
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "Add comment"
-msgstr ""
+msgstr "コメント追加"
 
 #: templates/pages/tools/kb/sidepanel/revisions.html.twig
 #: src/KnowbaseItem.php:1197
 msgid "History"
-msgstr ""
+msgstr "履歴"
 
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 msgid "Edit comment"
@@ -5804,34 +5804,34 @@ msgstr "コメントを編集"
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 #: js/modules/Knowbase/CommentsPanelController.js:205
 msgid "Delete comment"
-msgstr ""
+msgstr "コメントを削除"
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
 msgid "Reply..."
-msgstr ""
+msgstr "返信..."
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
 msgid "Write a reply..."
-msgstr ""
+msgstr "返信を書く..."
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
 msgid "Reply"
-msgstr ""
+msgstr "返信"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Articles"
-msgstr ""
+msgstr "文書"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Search..."
-msgstr ""
+msgstr "検索..."
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Search articles"
-msgstr ""
+msgstr "文書を検索"
 
 #: templates/pages/tools/kb/aside.html.twig
 #: js/src/vue/EntitySelector/EntitySelector.vue:233
@@ -5840,20 +5840,20 @@ msgstr "検索をクリアー"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Favorites"
-msgstr ""
+msgstr "お気に入り"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Uncategorized"
-msgstr ""
+msgstr "未分類"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "No articles found."
-msgstr ""
+msgstr "文書が見つかりません。"
 
 #: templates/pages/tools/kb/document_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:618
 msgid "Unlink document"
-msgstr ""
+msgstr "ドキュメントのリンク解除"
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
@@ -5930,40 +5930,40 @@ msgstr[0] "対象"
 #: templates/pages/tools/kb/related_item_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:663
 msgid "Unlink item"
-msgstr ""
+msgstr "アイテムのリンク解除"
 
 #: templates/pages/tools/kb/modal/targets.html.twig
 msgid "Permissions"
-msgstr ""
+msgstr "権限"
 
 #: templates/pages/tools/kb/modal/targets.html.twig
 msgid "Sharing"
-msgstr ""
+msgstr "共有"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 msgid "Create a sharing link"
-msgstr ""
+msgstr "共有リンクを作成"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 msgid "Link name (optional)"
-msgstr ""
+msgstr "リンク名 ( 任意 )"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 #, php-format
 msgid "Link %d"
-msgstr ""
+msgstr "%d へリンク"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 msgid "No sharing links yet"
-msgstr ""
+msgstr "共有リンクなし"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "Visible from"
-msgstr ""
+msgstr "表示可 : "
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "No start date"
-msgstr ""
+msgstr "開始日なし"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 #: src/Glpi/Features/PlanningEvent.php:847
@@ -5972,16 +5972,16 @@ msgstr "まで"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "No end date"
-msgstr ""
+msgstr "終了日なし"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 #: src/KnowbaseItem.php:2446
 msgid "Show in service catalog"
-msgstr ""
+msgstr "サービスカタログに表示"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 msgid "Details to display in service catalog"
-msgstr ""
+msgstr "サービスカタログに表示する詳細情報"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 #: templates/pages/admin/form/service_catalog_tab.html.twig
@@ -5991,28 +5991,28 @@ msgstr "サービスカタログの最上部にピン止め"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Can be viewed by:"
-msgstr ""
+msgstr "表示可 : "
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "This article is not yet visible to anyone."
-msgstr ""
+msgstr "この文書はまだだれにも表示しません"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Add access for"
-msgstr ""
+msgstr "アクセス権限を追加"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Select a type..."
-msgstr ""
+msgstr "型を選択..."
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 #: js/modules/Knowbase/PermissionsFormController.js:37
 msgid "Show advanced options"
-msgstr ""
+msgstr "詳細設定を表示"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Delete target"
-msgstr ""
+msgstr "対象を削除"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 #: src/CommonDBVisible.php:302
@@ -6023,7 +6023,7 @@ msgstr "注意！　あなたはこのアイテムの作成者ではありませ
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "An error occurred while deleting the permission."
-msgstr ""
+msgstr "権限の削除でエラーが発生しました。"
 
 #: templates/pages/tools/project.html.twig
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
@@ -7412,11 +7412,11 @@ msgstr "正常状態の色"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Warning state color"
-msgstr "警戒状態の色"
+msgstr "警告状態の色"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Warning state threshold"
-msgstr "警戒状態のしきい値"
+msgstr "警告状態のしきい値"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Critical state color"
@@ -8707,11 +8707,11 @@ msgstr "メール署名"
 msgid ""
 "No way of sending emails available in PHP mode. Maybe there is a bad PHP "
 "configuration?"
-msgstr ""
+msgstr "PHP モードではメールの送信できません。PHP 構成に問題があると思われます。"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "The use of an SMTP option is needed."
-msgstr ""
+msgstr "SMTP 設定の利用が必要です。"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Way of sending emails"
@@ -9309,7 +9309,7 @@ msgstr "上位エンティティーの継承"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Authentication code"
-msgstr ""
+msgstr "認証コード"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "2FA is required for your account"
@@ -9323,13 +9323,13 @@ msgstr "2 要素認証設定"
 msgid ""
 "Install an authenticator app on your mobile device such as Google "
 "Authenticator or Authy."
-msgstr ""
+msgstr "Google 認証システムや Authy などの認証アプリを携帯端末にインストールしてください。"
 
 #: templates/pages/2fa/macros.html.twig
 msgid ""
 "Scan the following QR code or enter the code shown into your authenticator "
 "app."
-msgstr ""
+msgstr "認証アプリで、以下の二次元コードをスキャンするか、コードを入力してください。"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "QR Code"
@@ -9343,7 +9343,7 @@ msgstr "2 要素認証シークレット"
 msgid ""
 "After entering the code into your authenticator, enter the code shown in the"
 " app to finish the setup"
-msgstr ""
+msgstr "認証アプリにコードを入力したら、今度はアプリに表示されているコードをこちらに入力して設定は完了です。"
 
 #: templates/pages/2fa/macros.html.twig
 #, php-format
@@ -10711,7 +10711,7 @@ msgstr "送信ボタンの条件による表示・非表示"
 #: templates/pages/admin/form/form_editor.html.twig
 #: js/src/vue/Kanban/Card.vue:116 js/src/vue/Kanban/Kanban.vue:1432
 msgid "Restore"
-msgstr "リストア"
+msgstr "復元"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Put in trashbin"
@@ -10860,7 +10860,7 @@ msgstr "エンティティーの権限"
 
 #: templates/pages/admin/profile/search_list.html.twig
 msgid "Hidden fields in search and column selection"
-msgstr ""
+msgstr "検索と列選択での非表示項目"
 
 #: templates/pages/admin/profile/search_list.html.twig
 msgid "Map"
@@ -11345,11 +11345,11 @@ msgstr "証明書の警告を通知する頻度"
 #: templates/pages/admin/entity/notifications.html.twig
 #: src/ReservationItem.php:703 src/Entity.php:1315
 msgid "Alerts on reservations"
-msgstr "予約に関する警報"
+msgstr "予約の注意報"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Alerts on tickets which are not solved since"
-msgstr "指定日以降未解決のチケットに警告"
+msgstr "指定日以降未解決のチケットに注意報"
 
 #: templates/pages/admin/entity/notifications.html.twig
 msgid "Approval reminder frequency"
@@ -12252,16 +12252,16 @@ msgstr "耐荷重 (kg)"
 
 #: templates/pages/assets/plug.html.twig src/Plug.php:240
 msgid "Custom name"
-msgstr ""
+msgstr "カスタム名"
 
 #: templates/pages/assets/plug.html.twig src/Plug.php:298 src/Plug.php:310
 msgid "Support type"
-msgstr ""
+msgstr "サポート型"
 
 #: templates/pages/assets/plug.html.twig src/Plug.php:241 src/Plug.php:322
 #: src/Plug.php:334
 msgid "Associated asset"
-msgstr ""
+msgstr "関連情報資産"
 
 #: templates/pages/assets/socket.html.twig
 #: templates/pages/assets/cable.html.twig src/Glpi/Socket.php:341
@@ -12392,12 +12392,12 @@ msgstr "ITIL タスク、フォロー、解決での画像の URL を修正し�
 #: install/migrations/update_11.0.x_to_12.0.0/documents.php:51
 #, php-format
 msgid "%d documents do not have their size recorded in the database."
-msgstr ""
+msgstr "%d 件のドキュメントがデータベースにサイズを記録されていません。"
 
 #: install/migrations/update_11.0.x_to_12.0.0/documents.php:53
 #, php-format
 msgid "Run the \"%1$s\" command to compute them."
-msgstr ""
+msgstr "「%1$s」コマンドを実行して、計測・記録します。"
 
 #: install/migrations/update_10.0.x_to_11.0.0/validationsteps.php:98
 #: src/CommonITILValidation.php:149 src/Glpi/Helpdesk/Tile/GlpiPageTile.php:95
@@ -12526,7 +12526,7 @@ msgstr "エージェント構成"
 #: resources/.illustrations_translations.php:6
 msgctxt "Icon"
 msgid "alert"
-msgstr "警告"
+msgstr "注意報"
 
 #: resources/.illustrations_translations.php:7
 msgctxt "Icon"
@@ -12677,7 +12677,7 @@ msgstr "ブランディング"
 #: resources/.illustrations_translations.php:36
 msgctxt "Icon"
 msgid "Browse help articles"
-msgstr "ヘルプを表示"
+msgstr "ヘルプ文書を表示"
 
 #: resources/.illustrations_translations.php:37
 msgctxt "Icon"
@@ -13661,7 +13661,7 @@ msgstr "FAQ"
 #: resources/.illustrations_translations.php:236
 msgctxt "Icon"
 msgid "articles"
-msgstr "記事"
+msgstr "文書"
 
 #: resources/.illustrations_translations.php:237
 msgctxt "Icon"
@@ -14840,7 +14840,7 @@ msgstr "%s がアイテムを抹消"
 #: front/rack.form.php:90 front/networkequipment.form.php:90
 #, php-format
 msgid "%s restores an item"
-msgstr "%s がアイテムをリストア"
+msgstr "%s がアイテムを復元"
 
 #. TRANS: %s is the user login
 #: front/ticket.form.php:217 front/change.form.php:142
@@ -15141,7 +15141,7 @@ msgstr "パスワードを忘れたのでリセット"
 #: front/databaseinstance.form.php:65
 #, php-format
 msgid "%s links a database instance"
-msgstr ""
+msgstr "%s がデータベースインスタンスをリンク"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:79
@@ -15159,7 +15159,7 @@ msgstr "%s がデータベースインスタンスを削除"
 #: front/databaseinstance.form.php:110
 #, php-format
 msgid "%s restores a database instance"
-msgstr "%s がデータベースインスタンスをリストア"
+msgstr "%s がデータベースインスタンスを復元"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:124
@@ -15619,19 +15619,19 @@ msgstr "ログイン"
 #: front/savedsearch_alert.form.php:60
 #, php-format
 msgid "%s adds an alert"
-msgstr "%s が警告を追加"
+msgstr "%s が注意報を追加"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:77
 #, php-format
 msgid "%s purges an alert"
-msgstr "%s が警告を抹消"
+msgstr "%s が注意報を抹消"
 
 #. TRANS: %s is the user login
 #: front/savedsearch_alert.form.php:93
 #, php-format
 msgid "%s updates an alert"
-msgstr "%s が警告を更新"
+msgstr "%s が注意報を更新"
 
 #: front/massiveaction.php:46
 msgid "Bulk modification error"
@@ -15786,7 +15786,7 @@ msgstr "FQDNは正しくありません"
 
 #: src/SlaLevel.php:85
 msgid "Automatic reminders of SLA"
-msgstr "SLA の自動リマインダー"
+msgstr "SLA の自動通知"
 
 #: src/AuthMail.php:50 src/AuthMail.php:112 src/RuleRight.php:214
 msgid "Email server"
@@ -16174,7 +16174,7 @@ msgstr "同期"
 #: src/Entity_KnowbaseItem.php:69 src/KnowbaseItem_Profile.php:70
 #: src/Group_KnowbaseItem.php:70 src/KnowbaseItem_User.php:66
 msgid "This target already exists for this article."
-msgstr ""
+msgstr "すでにこの文書の対象になっています"
 
 #: src/RuleDictionnaryOperatingSystemVersionCollection.php:43
 msgid "Dictionary of operating system versions"
@@ -17041,7 +17041,7 @@ msgstr "新しい費用を追加"
 
 #: src/ContractCost.php:416 src/CommonITILCost.php:616 src/ProjectCost.php:376
 msgid "Modification date"
-msgstr ""
+msgstr "変更日"
 
 #: src/ContractCost.php:417 src/CommonITILCost.php:617
 #: src/NotificationTargetCommonITILObject.php:2120 src/Notepad.php:300
@@ -17201,7 +17201,7 @@ msgstr "プロジェクトタスクの削除"
 #: src/NotificationTargetProjectTask.php:53 src/PlanningRecall.php:52
 msgid "Planning reminder"
 msgid_plural "Planning reminders"
-msgstr[0] "計画のリマインダー"
+msgstr[0] "計画通知"
 
 #: src/NotificationTargetProjectTask.php:63
 msgid "Project task team user"
@@ -17849,7 +17849,7 @@ msgstr "MM-DD-YYYY"
 
 #: src/Toolbox.php:2762
 msgid "DD.MM.YYYY"
-msgstr ""
+msgstr "YYYY.MM.DD"
 
 #: src/CommonITILTask.php:490
 msgid "You can't remove description of a task."
@@ -18316,7 +18316,7 @@ msgstr[0] "消耗品"
 #: src/Consumable.php:156
 #, php-format
 msgid "Return %1$s (%2$s) to stock"
-msgstr ""
+msgstr "%1$s (%2$s) を在庫に戻す "
 
 #: src/Consumable.php:216
 #, php-format
@@ -18832,7 +18832,7 @@ msgstr "アルファベット順"
 
 #: src/Glpi/Form/ServiceCatalog/Provider/KnowbaseItemProvider.php:109
 msgid "FAQ articles"
-msgstr "FAQ 記事"
+msgstr "FAQ 文書"
 
 #: src/Glpi/Form/Migration/FormMigration.php:280
 #, php-format
@@ -19740,7 +19740,7 @@ msgstr "情報資産"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:432
 msgid "Allow multiple items"
-msgstr ""
+msgstr "複数アイテムを許可"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:581
 msgid "GLPI Object"
@@ -19831,11 +19831,11 @@ msgstr "選択肢の入力"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:103
 msgid "Browse help articles"
-msgstr "ヘルプを表示"
+msgstr "ヘルプ文書を表示"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:104
 msgid "See all available help articles and our FAQ."
-msgstr "ヘルプの記事と FAQ をご覧ください。"
+msgstr "ヘルプ文書と FAQ をご覧ください。"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:118 src/Ticket.php:4689
 #: src/Profile.php:2834
@@ -19902,18 +19902,18 @@ msgstr "外部ページ"
 #: src/Glpi/RichText/VideoEmbedRenderer.php:96
 #, php-format
 msgid "%s video player"
-msgstr ""
+msgstr "%s 動画プレーヤー"
 
 #: src/Glpi/RichText/VideoEmbedRenderer.php:129
 #: js/modules/TipTap/VideoEmbedExtension.js:395
 msgid "Embedded video"
-msgstr ""
+msgstr "埋め込み動画"
 
 #: src/Glpi/RichText/VideoEmbedRenderer.php:286
 #: js/modules/TipTap/VideoEmbedExtension.js:390
 #: js/modules/TipTap/SlashCommandsExtension.js:293
 msgid "Video"
-msgstr ""
+msgstr "動画"
 
 #: src/Glpi/RichText/RichText.php:519
 msgid "Next (arrow right)"
@@ -20066,7 +20066,7 @@ msgstr "電源プラグあり。通常、PDU や UPS と関連"
 #: src/Glpi/Asset/Capacity/HasPlugCapacity.php:88
 #, php-format
 msgid "%1$s plugs declared on %2$s assets"
-msgstr ""
+msgstr "%2$s 個の情報資産に %1$s 個のプラグが装備済み"
 
 #: src/Glpi/Asset/Capacity/HasNetworkPortCapacity.php:65
 msgid "Has network ports (like ethernet and wlan)"
@@ -20221,7 +20221,7 @@ msgstr "%2$s 個の情報資産に %1$s 本のソフトウェアがインスト�
 
 #: src/Glpi/Asset/Capacity/HasKnowbaseCapacity.php:60
 msgid "Knowledge base articles can be associated to these assets"
-msgstr "ナレッジベースの記事は、以下の情報資産と関連付けることができます"
+msgstr "ナレッジベース文書を以下の情報資産と関連付けることができます"
 
 #: src/Glpi/Asset/Capacity/HasKnowbaseCapacity.php:79
 #, php-format
@@ -20765,24 +20765,24 @@ msgstr "Basic 認証"
 
 #: src/Glpi/Inventory/Conf.php:414
 msgid "None (not recommended)"
-msgstr ""
+msgstr "なし ( 非推奨 )"
 
 #: src/Glpi/Inventory/Conf.php:424
 msgid ""
 "Using OAuth Client Credentials requires a registered OAuth client with the "
 "\"inventory\" scope."
-msgstr ""
+msgstr "OAuth クライアント認証情報の利用には、「インベントリー」スコープを設定して登録した OAuth クライアントが必要です。"
 
 #: src/Glpi/Inventory/Conf.php:427
 #, php-format
 msgid ""
 "The generated client ID and secret must then be set in the GLPI Agent "
 "configuration using the %s and %s parameters."
-msgstr ""
+msgstr "生成したクライアント ID と秘密鍵を %s および %s パラメーターとして GLPI Agent 構成に設定する必要があります。"
 
 #: src/Glpi/Inventory/Conf.php:432
 msgid "Add an OAuth client"
-msgstr ""
+msgstr "OAuth クライアントを追加"
 
 #: src/Glpi/Inventory/Conf.php:442
 msgid ""
@@ -20790,6 +20790,7 @@ msgid ""
 "security risk. Any agent will be able to send inventory data without "
 "verification."
 msgstr ""
+"インベントリーで認証を行わないことは推奨しません。セキュリティー上のリスクとなります。あらゆるエージェントが、検証なしにインベントリーデータを送信できるようになってしまいます。"
 
 #: src/Glpi/Inventory/Conf.php:502
 msgid "Import options"
@@ -20873,7 +20874,7 @@ msgstr "プロパティーのいくつかが未知のものです : %1$s"
 #: src/Glpi/Inventory/Conf.php:1205
 msgid ""
 "Inventory is enabled. Please select a valid authorization header method."
-msgstr ""
+msgstr "インベントリーが有効です。有効な認証ヘッダーメソッドを選択してください。"
 
 #: src/Glpi/Inventory/Conf.php:1221
 msgid ""
@@ -21350,11 +21351,11 @@ msgstr "セキュリティ"
 
 #: src/Glpi/Security/SecurityConfig.php:89
 msgid "Password Policy"
-msgstr ""
+msgstr "パスワード ポリシー"
 
 #: src/Glpi/Security/TOTPManager.php:429
 msgid "Too many failed MFA attempts. Please try again later."
-msgstr ""
+msgstr "多要素認証の試行回数が多すぎます。時間をおいて再開してください。"
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:341
 #: src/Glpi/CustomObject/AbstractDefinition.php:374
@@ -21835,20 +21836,20 @@ msgstr "移行はエラーのため中断しました。すべての変更を元
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:54
 msgid "Check user picture references that no longer exist on the filesystem."
-msgstr ""
+msgstr "ユーザー画像参照を確認してください。ファイルシステムにはすでに存在していません。"
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:60
 msgid "Clear orphaned picture references from the database."
-msgstr ""
+msgstr "データベースから、リンク切れの画像参照を消去します。"
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:71
 #, php-format
 msgid "Checking user #%s \"%s\" (%s)..."
-msgstr ""
+msgstr "#%s \"%s\" ( %s ) ユーザーをチェックしています..."
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:100
 msgid "Orphaned picture references have been cleared."
-msgstr ""
+msgstr "リンク切れの画像参照を消去しました。"
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:160
 #: src/Glpi/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:162
@@ -22629,17 +22630,17 @@ msgstr "コマンド、「%s」を実行しています…"
 
 #: src/Glpi/Console/Migration/ComputeDocumentsSizeCommand.php:56
 msgid "Computes the missing file sizes in the database."
-msgstr ""
+msgstr "データベース上のファイルサイズの欠落を計測・保存します。"
 
 #: src/Glpi/Console/Migration/ComputeDocumentsSizeCommand.php:72
 #, php-format
 msgid "Computing %s files..."
-msgstr ""
+msgstr "%s 個のファイルを計測しています..."
 
 #: src/Glpi/Console/Migration/ComputeDocumentsSizeCommand.php:83
 #, php-format
 msgid "Unable to read the file `%s` size."
-msgstr ""
+msgstr "「%s」ファイルのサイズを読み取れません。"
 
 #: src/Glpi/Console/Migration/DynamicRowFormatCommand.php:67
 msgid ""
@@ -24586,26 +24587,26 @@ msgstr "ログファイルの権限"
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:79
 #, php-format
 msgid "The log directory %s could not be created."
-msgstr ""
+msgstr "%s ログディレクトリーを作成できません。"
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:86
 #, php-format
 msgid "The log directory %s is not writable."
-msgstr ""
+msgstr "%s ログディレクトリーは書き込みできません。"
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:98
 #, php-format
 msgid "The log file %s is not writable."
-msgstr ""
+msgstr "%s ログファイルは書き込みできません。"
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:105
 #, php-format
 msgid "The log file %s could not be created."
-msgstr ""
+msgstr "%s ログファイルを作成できません。"
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:111
 msgid "Write access to log files has been validated."
-msgstr ""
+msgstr "ログファイルへの書き込み権限を検証しました。"
 
 #: src/Glpi/System/Requirement/Extension.php:57
 #, php-format
@@ -24661,29 +24662,29 @@ msgstr "ログファイル"
 #: src/Glpi/Knowbase/History/TranslationRevisionEvent.php:56
 #, php-format
 msgid "%s — Version %s"
-msgstr ""
+msgstr "%s ―― %s バージョン"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:257
 #, php-format
 msgid "Access granted to %s by"
-msgstr ""
+msgstr "%s へのアクセス権限を付与 :"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:258
 #, php-format
 msgid "Access revoked from %s by"
-msgstr ""
+msgstr "%s へのアクセス権限を取り消し : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:261
 msgid "Permissions updated"
-msgstr ""
+msgstr "権限を更新しました"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:292
 msgid "Sharing enabled"
-msgstr ""
+msgstr "共有を有効に"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:292
 msgid "Sharing disabled"
-msgstr ""
+msgstr "共有を無効に"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:293
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:319
@@ -24692,129 +24693,129 @@ msgstr ""
 #: src/Glpi/Knowbase/History/CurrentTranslationEvent.php:58
 #: src/Glpi/Knowbase/History/CurrentVersionLogEvent.php:45
 msgid "Updated by"
-msgstr ""
+msgstr "更新 : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:318
 msgid "Renamed"
-msgstr ""
+msgstr "変名"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:350
 msgid "Added to the FAQ"
-msgstr ""
+msgstr "FAQ に追加"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:351
 msgid "Removed from the FAQ"
-msgstr ""
+msgstr "FAQ から削除"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:405
 msgid "Item linked"
-msgstr ""
+msgstr "アイテムをリンク"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:406
 msgid "Item unlinked"
-msgstr ""
+msgstr "アイテムのリンク解除"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:410
 #, php-format
 msgid "%s — Linked by"
-msgstr ""
+msgstr "%s — リンク : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:410
 #, php-format
 msgid "%s — Unlinked by"
-msgstr ""
+msgstr "%s — リンク解除 : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:453
 msgid "Added to category"
-msgstr ""
+msgstr "カテゴリーに追加"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:454
 msgid "Removed from category"
-msgstr ""
+msgstr "カテゴリーから削除"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:458
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:506
 #, php-format
 msgid "%s — Added by"
-msgstr ""
+msgstr "%s — 追加 : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:458
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:506
 #, php-format
 msgid "%s — Removed by"
-msgstr ""
+msgstr "%s — 削除 : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:501
 msgid "File added"
-msgstr ""
+msgstr "ファイルを追加"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:502
 msgid "File removed"
-msgstr ""
+msgstr "ファイルを削除"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:542
 msgid "Illustration removed by"
-msgstr ""
+msgstr "イラスト削除 : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:547
 msgid "Custom illustration set by"
-msgstr ""
+msgstr "カスタムイラスト設定 : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:549
 msgid "Native illustration set by"
-msgstr ""
+msgstr "内蔵イラスト設定 : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:553
 msgid "Illustration updated"
-msgstr ""
+msgstr "イラスト更新"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:591
 msgid "Added to the service catalog by"
-msgstr ""
+msgstr "サービスカテゴリーに追加 : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:592
 msgid "Removed from the service catalog by"
-msgstr ""
+msgstr "サービスカテゴリーから削除 : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:595
 msgid "Pinned to the top by"
-msgstr ""
+msgstr "トップにピン留め : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:596
 msgid "Unpinned from the top by"
-msgstr ""
+msgstr "トップからピン留め解除 : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:598
 msgid "Description updated by"
-msgstr ""
+msgstr "説明の更新 : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:599
 msgid "Category updated by"
-msgstr ""
+msgstr "カテゴリーの更新 : "
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:606
 msgid "Service catalog updated"
-msgstr ""
+msgstr "サービスカテゴリーの更新"
 
 #: src/Glpi/Knowbase/History/CreationEvent.php:49
 #: src/Glpi/Knowbase/History/CurrentVersionLogEvent.php:44
 msgid "Current version"
-msgstr ""
+msgstr "最新バージョン"
 
 #: src/Glpi/Knowbase/History/CreationEvent.php:55
 #: src/Glpi/Knowbase/History/RevisionEvent.php:57
 msgid "Created by"
-msgstr ""
+msgstr "作成 : "
 
 #: src/Glpi/Knowbase/History/RevisionEvent.php:51
 #, php-format
 msgid "Version %s"
-msgstr ""
+msgstr "%s バージョン"
 
 #: src/Glpi/Knowbase/History/CurrentTranslationEvent.php:52
 #, php-format
 msgid "%s — Current version"
-msgstr ""
+msgstr "%s — 最新バージョン"
 
 #: src/Glpi/Mail/SMTP/OauthProvider/Azure.php:68
 msgctxt "oauth"
@@ -24920,24 +24921,24 @@ msgstr "標準値（ユーザープロファイルにもとづく）"
 
 #: src/Glpi/Controller/Knowbase/RevertTranslationRevisionController.php:101
 msgid "Failed to restore the translation revision."
-msgstr ""
+msgstr "翻訳リビジョンの復元に失敗しました。"
 
 #: src/Glpi/Controller/Knowbase/DeleteTranslationController.php:78
 msgid "Translation not found"
-msgstr ""
+msgstr "翻訳が見つかりません"
 
 #: src/Glpi/Controller/Knowbase/DeleteTranslationController.php:86
 #: js/modules/Knowbase/ArticleController.js:1540
 msgid "Translation deleted successfully"
-msgstr ""
+msgstr "翻訳を削除しました"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:85
 msgid "Missing required fields"
-msgstr ""
+msgstr "必要な項目がありません"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:95
 msgid "Content cannot be empty"
-msgstr ""
+msgstr "内容を入力してください"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:108
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:154
@@ -24945,30 +24946,30 @@ msgstr ""
 #: js/modules/Knowbase/ArticleController.js:1136
 #: js/modules/Knowbase/ArticleController.js:1447
 msgid "Title cannot be empty"
-msgstr ""
+msgstr "タイトルを入力してください"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:146
 #: js/modules/Knowbase/ArticleController.js:1481
 msgid "Translation saved successfully"
-msgstr ""
+msgstr "翻訳を保存しました"
 
 #: src/Glpi/Controller/Knowbase/DeleteArticleController.php:60
 msgid "Item successfully deleted."
-msgstr ""
+msgstr "アイテムを削除しました。"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:135
 msgid "Missing answer content"
-msgstr ""
+msgstr "回答内容がありません"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:169
 #: js/modules/Knowbase/ArticleController.js:1119
 #: js/modules/Knowbase/ArticleController.js:1499
 msgid "Article saved successfully"
-msgstr ""
+msgstr "文書を保存しました"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:175
 msgid "Failed to save the article"
-msgstr ""
+msgstr "文書の保存に失敗"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:233
 #: src/Glpi/Search/Provider/SQLProvider.php:6955 src/KnowbaseItem.php:1992
@@ -24977,15 +24978,15 @@ msgstr "このアイテムは未公開です"
 
 #: src/Glpi/Controller/Knowbase/RevertRevisionController.php:81
 msgid "Failed to restore the revision."
-msgstr ""
+msgstr "リビジョンの復元に失敗しました。"
 
 #: src/Glpi/Controller/Knowbase/RevertRevisionController.php:85
 msgid "Article restored successfully."
-msgstr ""
+msgstr "文書を復元しました。"
 
 #: src/Glpi/Controller/ShareTokenController.php:96
 msgid "Failed to create share link"
-msgstr ""
+msgstr "共有リンクの作成に失敗"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:227
 #, php-format
@@ -25200,7 +25201,7 @@ msgstr "結果のプレビュー"
 #: src/Glpi/ShareToken.php:62
 msgid "Share token"
 msgid_plural "Share tokens"
-msgstr[0] ""
+msgstr[0] "トークンを共有"
 
 #: src/Glpi/Dashboard/Provider.php:295 src/Glpi/Dashboard/FakeProvider.php:211
 #: src/Problem.php:737 src/Ticket.php:3334 src/Change.php:740
@@ -25371,7 +25372,7 @@ msgstr "グループ / 依頼グループ"
 #: src/Glpi/Dashboard/Filters/TicketStatusFilter.php:44
 msgid "Ticket status"
 msgid_plural "Ticket statuses"
-msgstr[0] ""
+msgstr[0] "チケット状態"
 
 #: src/Glpi/Dashboard/Filters/TicketTypeFilter.php:45
 msgid "Ticket type"
@@ -25472,7 +25473,7 @@ msgstr "要約番号"
 
 #: src/Glpi/Dashboard/Widget.php:325
 msgid "List of articles"
-msgstr "記事のリスト"
+msgstr "文書のリスト"
 
 #: src/Glpi/Dashboard/Widget.php:551 src/Glpi/Dashboard/Widget.php:696
 #: src/Glpi/Dashboard/Widget.php:1186 src/Glpi/Dashboard/Widget.php:1911
@@ -26567,11 +26568,11 @@ msgstr "割り当て：名前＋ドメイン"
 
 #: src/RuleAction.php:402
 msgid "Assign: equipment by MAC address"
-msgstr "割り当て：MACアドレス"
+msgstr "割り当て : 機器をMACアドレス"
 
 #: src/RuleAction.php:403
 msgid "Assign: equipment by name"
-msgstr ""
+msgstr "割り当て : 機器を名前で"
 
 #: src/RuleAction.php:404
 msgid "Recalculate"
@@ -26827,7 +26828,7 @@ msgstr "保証切れになるアイテムはありません。"
 
 #: src/Infocom.php:775
 msgid "send infocom alert failed"
-msgstr "infocomの警告の送信に失敗しました"
+msgstr "infocom 注意報の送信に失敗"
 
 #: src/Infocom.php:872 src/Infocom.php:897
 msgid "Linear"
@@ -27022,7 +27023,7 @@ msgstr "ドメイン %1$s は %2$s に期限が切れます"
 #: src/Domain.php:781
 #, php-format
 msgid "Domains alerts sending failed for entity %1$s"
-msgstr "%1$s エンティティーのドメイン警告送信に失敗"
+msgstr "%1$s エンティティーのドメイン注意報送信に失敗"
 
 #: src/NetworkPortFiberchannelType.php:41
 msgid "Fiber type"
@@ -27107,7 +27108,7 @@ msgstr "ライセンス %1$s は %2$s に期限が切れます"
 
 #: src/SoftwareLicense.php:760
 msgid "Send licenses alert failed"
-msgstr "ライセンス警告の送信に失敗しました"
+msgstr "ライセンス注意報の送信に失敗"
 
 #: src/SoftwareLicense.php:898 src/Item_SoftwareLicense.php:719
 #: src/Item_SoftwareLicense.php:1062
@@ -27189,7 +27190,7 @@ msgstr[0] "アプライアンスの型"
 #: src/KnowbaseItem_KnowbaseItemCategory.php:147 src/KnowbaseItem_Item.php:330
 msgctxt "button"
 msgid "Link knowledgebase article"
-msgstr "ナレッジをリンク"
+msgstr "ナレッジベース文書をリンク"
 
 #: src/ClusterType.php:40
 msgid "Cluster type"
@@ -27477,7 +27478,7 @@ msgstr "%1$s 証明書の期限が %2$s に切れました"
 #: src/Certificate.php:811
 #, php-format
 msgid "Certificate alerts sending failed for entity %1$s"
-msgstr "%1$s エンティティーの証明書警告送信に失敗"
+msgstr "%1$s エンティティーの証明書注意報送信に失敗"
 
 #: src/QueuedNotification.php:55
 msgid "Notification queue"
@@ -27581,7 +27582,7 @@ msgstr "通信速度"
 
 #: src/OlaLevel.php:84
 msgid "Automatic reminders of OLA"
-msgstr "OLA の自動リマインダー"
+msgstr "OLA の自動通知"
 
 #. TRANS: %1$s is Contract, %2$s is field name
 #: src/CommonITILRecurrent.php:202 src/CommonITILRecurrent.php:360
@@ -27997,15 +27998,15 @@ msgstr "リンクプロジェクト数"
 
 #: src/NotificationTargetCommonITILObject.php:2313
 msgid "Number of sent reminders since status is pending"
-msgstr "状態が保留の送信済みリマインダー数"
+msgstr "状態が保留の送信済み通知数"
 
 #: src/NotificationTargetCommonITILObject.php:2314
 msgid "Number of remaining reminders before automatic resolution"
-msgstr "自動解決前に残っているリマインダー数"
+msgstr "自動解決前に残っている通知数"
 
 #: src/NotificationTargetCommonITILObject.php:2315
 msgid "Total number of reminders before automatic resolution"
-msgstr "自動解決前に残っているリマインダー総数"
+msgstr "自動解決前に残っている通知総数"
 
 #: src/NotificationTargetCommonITILObject.php:2316
 msgid "Auto resolution deadline"
@@ -28013,7 +28014,7 @@ msgstr "自動解決締切"
 
 #: src/NotificationTargetCommonITILObject.php:2317
 msgid "Reminder text"
-msgstr "リマインダー文"
+msgstr "通知テキスト"
 
 #: src/NotificationTargetCommonITILObject.php:2318
 msgid "Pending reason name"
@@ -28488,7 +28489,7 @@ msgstr "本日予約期限切れデバイス"
 
 #: src/ReservationItem.php:828
 msgid "Send reservation alert failed"
-msgstr "予約警告の送信に失敗しました"
+msgstr "予約注意報の送信に失敗"
 
 #: src/ReservationItem.php:919
 msgid "No reservable item!"
@@ -28680,7 +28681,7 @@ msgstr[0] "解像度"
 
 #: src/Item_DeviceCamera_ImageResolution.php:138
 msgid "Is Video"
-msgstr "ビデオ"
+msgstr "動画"
 
 #: src/Link.php:61 src/Link.php:743 src/Profile.php:2186
 msgid "External link"
@@ -28947,11 +28948,11 @@ msgstr "インスタンス化の型"
 #: src/SavedSearch_Alert.php:62
 msgid "Saved search alert"
 msgid_plural "Saved searches alerts"
-msgstr[0] "検索件数警告"
+msgstr[0] "保存済み検索結果数注意報"
 
 #: src/SavedSearch_Alert.php:260
 msgid "Saved searches alerts"
-msgstr "検索警告条件"
+msgstr "保存済み検索結果数注意報"
 
 #: src/SavedSearch_Alert.php:385
 msgid "less than"
@@ -29595,7 +29596,7 @@ msgstr "%1$s 日ごと"
 #: src/Alert.php:291
 #, php-format
 msgid "Alert sent on %s"
-msgstr "%s に警告を送信しました"
+msgstr "%s に注意報を送信"
 
 #: src/RuleDictionnaryDropdownCollection.php:136
 msgid "Error replaying rules"
@@ -30103,11 +30104,11 @@ msgstr "%s に終了"
 
 #: src/ProjectTask.php:2457
 msgid "Send project task plan end date reminders"
-msgstr ""
+msgstr "プロジェクトタスク計画終了日通知を送信"
 
 #: src/ProjectTask.php:2458
 msgid "Number of days before planned end date"
-msgstr ""
+msgstr "計画終了日までの日数"
 
 #: src/RSSFeed.php:62 src/Central.php:79 src/Config.php:694
 msgid "RSS feed"
@@ -30592,7 +30593,7 @@ msgstr "項目名"
 
 #: src/CommonITILValidationCron.php:53
 msgid "Alerts on approval which are waiting"
-msgstr "承認待ちが発生したら警告する"
+msgstr "承認待ちの注意報"
 
 #: src/ImageFormat.php:43
 msgid "Image format"
@@ -31112,15 +31113,15 @@ msgstr[0] "OAuth クライアント"
 #: src/OAuthClient.php:85
 msgid "Session"
 msgid_plural "Sessions"
-msgstr[0] ""
+msgstr[0] "セッション"
 
 #: src/OAuthClient.php:147
 msgid "Revoke"
-msgstr ""
+msgstr "取り消し"
 
 #: src/OAuthClient.php:159
 msgid "Refresh token expiration date"
-msgstr ""
+msgstr "トークン更新期限日"
 
 #: src/OAuthClient.php:251 src/OAuthClient.php:275
 msgid "Invalid IP address or CIDR range"
@@ -31217,19 +31218,19 @@ msgstr[0] "アプライアンス環境"
 
 #: src/KnowbaseItem.php:1238
 msgid "Permissions and sharing"
-msgstr ""
+msgstr "権限と共有"
 
 #: src/KnowbaseItem.php:1267
 msgid "Add to favorites"
-msgstr ""
+msgstr "お気に入りに追加"
 
 #: src/KnowbaseItem.php:1278
 msgid "Add to FAQ"
-msgstr ""
+msgstr "FAQ に追加"
 
 #: src/KnowbaseItem.php:1298 js/modules/Knowbase/ArticleController.js:570
 msgid "Delete article"
-msgstr ""
+msgstr "文書を削除"
 
 #: src/KnowbaseItem.php:2051
 msgid "Use as a solution"
@@ -31261,7 +31262,7 @@ msgstr "表示終了日"
 
 #: src/KnowbaseItem.php:2428
 msgid "Is favorite"
-msgstr ""
+msgstr "お気に入り ?"
 
 #: src/KnowbaseItem.php:2493
 msgid "Knowledge base administration"
@@ -31317,7 +31318,7 @@ msgstr "%1$s カートリッジの型の在庫が少なくなっています : �
 #: src/CartridgeItem.php:518
 #, php-format
 msgid "%s: send cartridge alert failed"
-msgstr "%s: カートリッジの警告の送信に失敗しました"
+msgstr "%s: カートリッジ注意報の送信に失敗"
 
 #: src/MailCollector.php:146 src/NotificationTargetMailCollector.php:93
 #: src/NotificationTargetMailCollector.php:107
@@ -31541,7 +31542,7 @@ msgstr[0] "プラグ"
 
 #: src/Plug.php:86
 msgid "Plug name is required"
-msgstr ""
+msgstr "プラグ名を入力してください"
 
 #: src/Plug.php:187
 msgid "Add a new plug"
@@ -31549,15 +31550,15 @@ msgstr "新しいプラグを追加"
 
 #: src/Plug.php:188
 msgid "Name will by suffixed by number"
-msgstr ""
+msgstr "名前の後に番号が付きます"
 
 #: src/Plug.php:195
 msgid "Plug name"
-msgstr ""
+msgstr "プラグ名"
 
 #: src/Plug.php:204
 msgid "Number of plugs to add"
-msgstr ""
+msgstr "追加するプラグ数"
 
 #: src/SavedSearch.php:100
 msgid "Unset as default"
@@ -32074,7 +32075,7 @@ msgstr "ライフサイクル"
 
 #: src/Profile.php:200 src/Profile.php:210
 msgid "Search / list"
-msgstr ""
+msgstr "検索・リスト"
 
 #: src/Profile.php:480
 msgid ""
@@ -32107,7 +32108,7 @@ msgstr "削除を拒否しました"
 #: src/Reminder.php:720
 msgid "Public reminder"
 msgid_plural "Public reminders"
-msgstr[0] "公開リマインダー"
+msgstr[0] "公開通知"
 
 #: src/Profile.php:972 src/Profile.php:3172
 msgid "Public saved search"
@@ -32491,12 +32492,12 @@ msgstr "標準メール"
 #: src/UserEmail.php:193 src/UserEmail.php:237
 #, php-format
 msgid "Set %s email as default"
-msgstr ""
+msgstr "%s メールを標準に設定"
 
 #: src/UserEmail.php:195 src/UserEmail.php:242
 #, php-format
 msgid "Email address %s"
-msgstr ""
+msgstr "メールアドレス %s"
 
 #: src/NotificationTargetMailCollector.php:46
 msgid "Receiver errors"
@@ -32508,7 +32509,7 @@ msgstr "接続する権限がありません。"
 
 #: src/Session.php:250
 msgid "An error occurred while creating your session. Please try again."
-msgstr ""
+msgstr "セッションの作成中にエラーが発生しました。再試行してください。"
 
 #: src/Session.php:254
 msgid ""
@@ -32697,7 +32698,7 @@ msgstr "アイテムは定義済みです"
 #: src/ITILReminder.php:46
 msgid "Automatic reminder"
 msgid_plural "Automatic reminders"
-msgstr[0] "自動リマインダー"
+msgstr[0] "自動通知"
 
 #: src/Cartridge.php:259
 #, php-format
@@ -32711,7 +32712,7 @@ msgstr "カートリッジを設置しています"
 #: src/Cartridge.php:328
 #, php-format
 msgid "Install the cartridge %1$s on printer : %2$s"
-msgstr ""
+msgstr "%1$s カートリッジを %2$s プリンターに装填"
 
 #: src/Cartridge.php:341
 msgid "No free cartridge"
@@ -32724,7 +32725,7 @@ msgstr "カートリッジの取り外し"
 #: src/Cartridge.php:395
 #, php-format
 msgid "Uninstall the cartridge %1$s for end life"
-msgstr ""
+msgstr "期限切れのため %1$s カートリッジを外してください"
 
 #: src/Cartridge.php:435 src/Cartridge.php:775
 msgctxt "cartridge"
@@ -32942,7 +32943,7 @@ msgstr "契約期間の終了"
 
 #: src/Contract.php:1371
 msgid "send contract alert failed"
-msgstr "契約警告の送信に失敗しました"
+msgstr "契約注意報の送信に失敗"
 
 #: src/Contract.php:1602 src/Entity.php:1948
 msgid "End + Notice"
@@ -33112,12 +33113,12 @@ msgstr[0] "連絡先の型"
 #: src/Reminder.php:71
 msgid "Reminder"
 msgid_plural "Reminders"
-msgstr[0] "リマインダー"
+msgstr[0] "通知"
 
 #: src/Reminder.php:73 src/Reminder.php:712
 msgid "Personal reminder"
 msgid_plural "Personal reminders"
-msgstr[0] "個人のリマインダー"
+msgstr[0] "個人通知"
 
 #: src/NotificationTargetTicket.php:86
 msgid "To answer by email, write above this line"
@@ -33153,11 +33154,11 @@ msgstr "チケットの削除"
 
 #: src/NotificationTargetTicket.php:142
 msgid "Automatic reminders of SLAs"
-msgstr "SLA の自動リマインダー"
+msgstr "SLA の自動通知"
 
 #: src/NotificationTargetTicket.php:143
 msgid "Automatic reminders of OLAs"
-msgstr "OLA の自動リマインダー"
+msgstr "OLA の自動通知"
 
 #: src/NotificationTargetTicket.php:197 src/NotificationTargetTicket.php:740
 #, php-format
@@ -33433,11 +33434,11 @@ msgstr "%s あてのメールをキューに追加しました"
 #: src/NotificationTargetSavedSearch_Alert.php:61
 #, php-format
 msgid "Search  alert for \"%1$s\" (%2$s)"
-msgstr "\"%1$s\" (%2$s) の検索件数警告"
+msgstr "\"%1$s\" (%2$s) の注意報を検索"
 
 #: src/NotificationTargetSavedSearch_Alert.php:68
 msgid "Private search alert"
-msgstr "非公開の検索警告"
+msgstr "非公開の注意報検索"
 
 #: src/NotificationTargetSavedSearch_Alert.php:106
 msgid "Number of results"
@@ -33599,7 +33600,7 @@ msgstr "VoIP を許可"
 #: src/DeviceSimcard.php:131
 #, php-format
 msgid "%1$s %2$s: %3$s"
-msgstr ""
+msgstr "%1$s %2$s: %3$s"
 
 #: src/DeviceSimcard.php:131
 msgid "items"
@@ -33791,7 +33792,7 @@ msgstr[0] "デバイス : バッテリー モデル"
 #: src/NotificationTargetFieldUnicity.php:46
 #: src/NotificationTargetFieldUnicity.php:90
 msgid "Alert on duplicate record"
-msgstr "重複レコードに関する警告"
+msgstr "重複レコードの注意報"
 
 #: src/NotificationTargetFieldUnicity.php:70
 msgid "Item successfully added but duplicate record on"
@@ -33867,7 +33868,7 @@ msgstr "証明書警告のリードタイム"
 
 #: src/Entity.php:1439
 msgid "Alerts on tickets which are not solved"
-msgstr "未解決チケットを警告"
+msgstr "未解決チケットに注意報"
 
 #: src/Entity.php:1449
 msgid "Automatic assignment of tickets"
@@ -34243,7 +34244,7 @@ msgstr "今"
 #: src/Html.php:6239
 #, php-format
 msgid "%s minute ago"
-msgstr ""
+msgstr "%s 分前"
 
 #: src/Html.php:6242 js/common.js:1165
 #, javascript-format, php-format
@@ -34253,7 +34254,7 @@ msgstr "%s 分前"
 #: src/Html.php:6245
 #, php-format
 msgid "%s hour ago"
-msgstr ""
+msgstr "%s 時間前"
 
 #: src/Html.php:6248 js/common.js:1167
 #, javascript-format, php-format
@@ -34426,7 +34427,7 @@ msgstr "消耗品の型 %1$sの在庫が少なくなっています :  残数 %3
 #: src/ConsumableItem.php:454
 #, php-format
 msgid "%s: send consumable alert failed"
-msgstr "%s: 消耗品の警告の送信に失敗しました"
+msgstr "%s: 消耗品の注意報の送信に失敗しました"
 
 #: js/planning.js:284
 msgid "Clone"
@@ -34637,7 +34638,7 @@ msgstr "除外"
 #: js/src/vue/EntitySelector/useEntitySelector.js:165
 #: js/src/vue/EntitySelector/EntitySelector.vue:214
 msgid "An error occurred while changing the entity. Please try again."
-msgstr ""
+msgstr "エンティティーの変更でエラーが発生しました。再試行してください。"
 
 #: js/rack.js:106
 msgid "Add PDU"
@@ -34925,49 +34926,49 @@ msgstr ""
 
 #: js/modules/KnowbaseEditor.js:167 js/modules/KnowbaseEditor.js:431
 msgid "Image upload failed"
-msgstr ""
+msgstr "画像アップロードに失敗"
 
 #: js/modules/KnowbaseEditor.js:214
 msgid "Bold"
-msgstr ""
+msgstr "太字"
 
 #: js/modules/KnowbaseEditor.js:215
 msgid "Italic"
-msgstr ""
+msgstr "斜体"
 
 #: js/modules/KnowbaseEditor.js:216
 msgid "Strikethrough"
-msgstr ""
+msgstr "打消し線"
 
 #: js/modules/KnowbaseEditor.js:219
 #: js/modules/TipTap/SlashCommandsExtension.js:240
 msgid "Heading 1"
-msgstr ""
+msgstr "見出し 1"
 
 #: js/modules/KnowbaseEditor.js:220
 #: js/modules/TipTap/SlashCommandsExtension.js:245
 msgid "Heading 2"
-msgstr ""
+msgstr "見出し 2"
 
 #: js/modules/KnowbaseEditor.js:221
 #: js/modules/TipTap/SlashCommandsExtension.js:250
 msgid "Heading 3"
-msgstr ""
+msgstr "見出し 3"
 
 #: js/modules/KnowbaseEditor.js:223
 #: js/modules/TipTap/SlashCommandsExtension.js:255
 msgid "Bullet List"
-msgstr ""
+msgstr "リスト"
 
 #: js/modules/KnowbaseEditor.js:224
 #: js/modules/TipTap/SlashCommandsExtension.js:260
 msgid "Numbered List"
-msgstr ""
+msgstr "番号付きリスト"
 
 #: js/modules/KnowbaseEditor.js:225
 #: js/modules/TipTap/SlashCommandsExtension.js:265
 msgid "Quote"
-msgstr ""
+msgstr "引用"
 
 #: js/modules/KnowbaseEditor.js:227
 msgctxt "button"
@@ -34976,15 +34977,15 @@ msgstr "リンク"
 
 #: js/modules/KnowbaseEditor.js:228
 msgid "Remove link"
-msgstr ""
+msgstr "リンク削除"
 
 #: js/modules/KnowbaseEditor.js:277
 msgid "Enter URL"
-msgstr ""
+msgstr "URL を入力"
 
 #: js/modules/KnowbaseEditor.js:405
 msgid "Document creation failed"
-msgstr ""
+msgstr "ドキュメントの作成に失敗"
 
 #: js/modules/ProgressIndicator.js:175
 msgid "failed"
@@ -34992,60 +34993,60 @@ msgstr "失敗"
 
 #: js/modules/Knowbase/ServiceCatalogPanelController.js:141
 msgid "Service catalog settings saved."
-msgstr ""
+msgstr "サービスカタログ設定を保存しました。"
 
 #: js/modules/Knowbase/PermissionsFormController.js:38
 msgid "Hide advanced options"
-msgstr ""
+msgstr "拡張設定を非表示"
 
 #: js/modules/Knowbase/PermissionsFormController.js:177
 msgid "Access added successfully"
-msgstr ""
+msgstr "アクセスを追加しました"
 
 #: js/modules/Knowbase/LinkItemFormController.js:107
 msgid "Please select an item to link."
-msgstr ""
+msgstr "リンクするアイテムを選択してください。"
 
 #: js/modules/Knowbase/LinkItemFormController.js:130
 msgid "Item linked successfully"
-msgstr ""
+msgstr "アイテムをリンクしました"
 
 #: js/modules/Knowbase/LinkItemFormController.js:151
 #: js/modules/Knowbase/DocumentLinkController.js:327
 msgid "Linking..."
-msgstr ""
+msgstr "リンクしています..."
 
 #: js/modules/Knowbase/UploadController.js:193
 msgid "Please wait until file uploads complete."
-msgstr ""
+msgstr "ファイルのアップロードが終わるのをお待ちください。"
 
 #: js/modules/Knowbase/UploadController.js:199
 msgid "Please add at least one valid file before uploading."
-msgstr ""
+msgstr "アップロードの前に、有効なファイルを追加してください。"
 
 #: js/modules/Knowbase/UploadController.js:210 js/modules/FileUploader.js:171
 #: js/modules/FileUploader.js:178 js/modules/FileUploader.js:359
 #: js/modules/FileUploader.js:362 js/modules/FileUploader.js:371
 #: js/modules/FileUploader.js:374
 msgid "Upload failed"
-msgstr ""
+msgstr "アップロード失敗"
 
 #: js/modules/Knowbase/UploadController.js:229
 msgid "Uploading..."
-msgstr ""
+msgstr "アップロードしています。"
 
 #: js/modules/Knowbase/UploadController.js:279
 msgid "Document uploaded successfully"
-msgstr ""
+msgstr "ドキュメントをアップロードしました"
 
 #: js/modules/Knowbase/UploadController.js:280
 #, javascript-format
 msgid "%d documents uploaded successfully"
-msgstr ""
+msgstr "%d 個のドキュメントをアップロードしました"
 
 #: js/modules/Knowbase/CommentsPanelController.js:206
 msgid "Are you sure you want to delete this comment?"
-msgstr ""
+msgstr "このコメントを削除します。よろしいですか？"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:238
 #: js/modules/Knowbase/RevisionsPanelController.js:277
@@ -35060,13 +35061,13 @@ msgstr "予期しないエラーが発生しました。"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:355
 msgid "Restore revision"
-msgstr ""
+msgstr "リビジョンの復元"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:356
 msgid ""
 "Are you sure you want to restore this version? The current content will be "
 "saved as a new revision."
-msgstr ""
+msgstr "このリビジョンに復元します。よろしいですか？　現在の内容は新しいリビジョンとして保存します。"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:361
 #: js/modules/Knowbase/RevisionsPanelController.js:421
@@ -35075,80 +35076,80 @@ msgstr "確認"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:415
 msgid "Restore translation revision"
-msgstr ""
+msgstr "翻訳リビジョンの復元"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:416
 msgid ""
 "Are you sure you want to restore this translation version? The current "
 "translation content will be saved as a new revision."
-msgstr ""
+msgstr "この翻訳リビジョンに復元します。よろしいですか？　現在の翻訳は新しいリビジョンとして保存します。"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:462
 msgid "Translation revision restored successfully."
-msgstr ""
+msgstr "翻訳リビジョンを復元しました。"
 
 #: js/modules/Knowbase/DocumentLinkController.js:112
 msgid "Search for a document..."
-msgstr ""
+msgstr "ドキュメントの検索..."
 
 #: js/modules/Knowbase/DocumentLinkController.js:263
 msgid "Please select at least one document before linking."
-msgstr ""
+msgstr "リンクの前に、ドキュメントを選択してください。"
 
 #: js/modules/Knowbase/DocumentLinkController.js:279
 msgid "Linking failed"
-msgstr ""
+msgstr "リンクに失敗"
 
 #: js/modules/Knowbase/DocumentLinkController.js:305
 msgid "Document linked successfully"
-msgstr ""
+msgstr "ドキュメントをリンクしました"
 
 #: js/modules/Knowbase/DocumentLinkController.js:306
 #, javascript-format
 msgid "%d documents linked successfully"
-msgstr ""
+msgstr "%d 件のドキュメントをリンクしました"
 
 #: js/modules/Knowbase/SharingPanelController.js:146
 msgid "Delete sharing link"
-msgstr ""
+msgstr "共有リンクの削除"
 
 #: js/modules/Knowbase/SharingPanelController.js:147
 msgid ""
 "Are you sure you want to delete this sharing link? Anyone using it will lose"
 " access."
-msgstr ""
+msgstr "この共有リンクを削除します。よろしいですか？　利用者全員がアクセスできなくなります。"
 
 #: js/modules/Knowbase/ArticleController.js:242
 #: js/modules/Knowbase/ArticleController.js:258
 msgid "Preview unavailable"
-msgstr ""
+msgstr "プレビュー不可"
 
 #: js/modules/Knowbase/ArticleController.js:243
 msgid ""
 "Please save or cancel your current changes before previewing a revision."
-msgstr ""
+msgstr "リビジョンのプレビューの前に、現在までの変更を保存するか取消してください。"
 
 #: js/modules/Knowbase/ArticleController.js:259
 msgid ""
 "Please save or cancel your current changes before previewing a translation "
 "revision."
-msgstr ""
+msgstr "翻訳リビジョンのプレビューの前に、現在までの変更を保存するか取消してください。"
 
 #: js/modules/Knowbase/ArticleController.js:279
 msgid "Action unavailable"
-msgstr ""
+msgstr "操作不可"
 
 #: js/modules/Knowbase/ArticleController.js:280
 msgid "Please save or cancel your current changes first."
-msgstr ""
+msgstr "まず現在までの変更を保存するか取消してください。"
 
 #: js/modules/Knowbase/ArticleController.js:571
 msgid "Are you sure you want to delete this article?"
-msgstr ""
+msgstr "この文書を削除します。よろしいですか ?"
 
 #: js/modules/Knowbase/ArticleController.js:619
 msgid "Are you sure you want to unlink this document from the article?"
-msgstr ""
+msgstr "このドキュメントを文書からリンク解除します。よろしいですか ?"
 
 #: js/modules/Knowbase/ArticleController.js:620
 #: js/modules/Knowbase/ArticleController.js:665
@@ -35157,37 +35158,37 @@ msgstr "リンク解除"
 
 #: js/modules/Knowbase/ArticleController.js:651
 msgid "Document unlinked successfully"
-msgstr ""
+msgstr "ドキュメントをリンク解除しました"
 
 #: js/modules/Knowbase/ArticleController.js:664
 msgid "Are you sure you want to unlink this item from the article?"
-msgstr ""
+msgstr "このアイテムを文書からリンク解除します。よろしいですか ?"
 
 #: js/modules/Knowbase/ArticleController.js:682
 msgid "Item unlinked successfully"
-msgstr ""
+msgstr "アイテムをリンク解除しました"
 
 #: js/modules/Knowbase/ArticleController.js:936
 #: js/modules/Knowbase/ArticleController.js:1082
 #: js/modules/Knowbase/ArticleController.js:1454
 msgid "Saving..."
-msgstr ""
+msgstr "保存しています..."
 
 #: js/modules/Knowbase/ArticleController.js:945
 msgid "Visibility dates updated"
-msgstr ""
+msgstr "表示期間を更新しました"
 
 #: js/modules/Knowbase/ArticleController.js:971
 msgid "Child entities enabled"
-msgstr ""
+msgstr "下位エンティティー有効"
 
 #: js/modules/Knowbase/ArticleController.js:971
 msgid "Child entities disabled"
-msgstr ""
+msgstr "下位エンティティー無効"
 
 #: js/modules/Knowbase/ArticleController.js:991
 msgid "Keep typing to filter..."
-msgstr ""
+msgstr "フィルターの入力を続けてください..."
 
 #: js/modules/Knowbase/ArticleController.js:998
 msgid "Type / to insert, or start writing..."
@@ -35196,39 +35197,39 @@ msgstr ""
 #: js/modules/Knowbase/ArticleController.js:1066
 #: js/modules/Knowbase/ArticleController.js:1439
 msgid "Cannot save: article ID is missing"
-msgstr ""
+msgstr "保存不可 : 文書 ID が見つかりません"
 
 #: js/modules/Knowbase/ArticleController.js:1209
 msgid "Translation mode unavailable"
-msgstr ""
+msgstr "翻訳モード不可"
 
 #: js/modules/Knowbase/ArticleController.js:1210
 msgid ""
 "Please save or cancel your current changes before entering translation mode."
-msgstr ""
+msgstr "翻訳モードに切り替える前に、現在までの変更を保存するか取消してください。"
 
 #: js/modules/Knowbase/ArticleController.js:1270
 #: js/modules/Knowbase/ArticleController.js:1564
 #: js/modules/Knowbase/ArticleController.js:1567
 #: js/modules/Knowbase/ArticleController.js:1608
 msgid "Existing translations"
-msgstr ""
+msgstr "既存の翻訳"
 
 #: js/modules/Knowbase/ArticleController.js:1288
 #: js/modules/Knowbase/ArticleController.js:1573
 #: js/modules/Knowbase/ArticleController.js:1593
 #: js/modules/Knowbase/ArticleController.js:1596
 msgid "Add new translation"
-msgstr ""
+msgstr "新しい翻訳を追加"
 
 #: js/modules/Knowbase/ArticleController.js:1516
 msgid "Are you sure you want to delete this translation?"
-msgstr ""
+msgstr "この翻訳を削除します。よろしいですか ?"
 
 #: js/modules/Knowbase/ArticleController.js:1548
 msgid "translation"
 msgid_plural "translations"
-msgstr[0] ""
+msgstr[0] "翻訳"
 
 #: js/modules/Forms/EditorController.js:1404
 msgid "Submit button visibility"
@@ -35279,16 +35280,16 @@ msgstr "保存する前に現在の検索を送信してください"
 #: js/modules/FileUploader.js:271
 #, javascript-format
 msgid "File %s exceeds maximum size"
-msgstr ""
+msgstr "%s ファイルは最大サイズを超えています"
 
 #: js/modules/FileUploader.js:276
 #, javascript-format
 msgid "File %s is empty"
-msgstr ""
+msgstr "%s ファイルは空"
 
 #: js/modules/FileUploader.js:347 js/modules/FileUploader.js:353
 msgid "Invalid server response"
-msgstr ""
+msgstr "無効なサーバー応答"
 
 #: js/modules/Dashboard/Dashboard.js:403
 msgid "Add a card"
@@ -35321,25 +35322,26 @@ msgstr "ダッシュボードを追加"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:178
 msgid "Insert video"
-msgstr ""
+msgstr "動画を挿入"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:198
 msgid "Video URL"
-msgstr ""
+msgstr "動画 URL"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:212
 msgid "Supported: a YouTube URL, or a direct video file URL (MP4, WebM, Ogg)."
-msgstr ""
+msgstr "対応 : YouTube URL、動画ファイルの直接 URL(MP4、WebM、Ogg)。"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:234
 msgid "Insert"
-msgstr ""
+msgstr "挿入"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:252
 msgid ""
 "This video URL is not recognized. Use a YouTube URL or a direct video file "
 "URL (MP4, WebM, Ogg)."
 msgstr ""
+"動画 URL は認識できません。YouTube URL または 動画ファイルの直接 URL (MP4、WebM、Ogg) を入力してください。"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:403
 msgid "video"
@@ -35348,39 +35350,39 @@ msgstr "動画"
 #: js/modules/TipTap/VideoEmbedExtension.js:403
 #: js/modules/TipTap/VideoEmbedExtension.js:429
 msgid "Invalid video"
-msgstr ""
+msgstr "無効な動画"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:412
 msgid "video player"
-msgstr ""
+msgstr "動画プレーヤー"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:58
 msgid "Insert/Edit Image"
-msgstr ""
+msgstr "画像の挿入・編集"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:71
 msgid "Alternative description"
-msgstr ""
+msgstr "追加の説明"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:84
 msgid "Constrain proportions"
-msgstr ""
+msgstr "縦横比を維持"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:270
 msgid "Code Block"
-msgstr ""
+msgstr "コード ブロック"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:275
 msgid "Table"
-msgstr ""
+msgstr "表"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:280
 msgid "Divider"
-msgstr ""
+msgstr "区切り線"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:285
 msgid "Image"
-msgstr ""
+msgstr "画像"
 
 #: js/glpi_dialog.js:363
 msgid "Are you sure?"
@@ -35430,7 +35432,7 @@ msgstr "ヒント : このモーダル画面は、%s キーの組み合わせで
 
 #: js/src/vue/EntitySelector/EntitySelector.vue:231
 msgid "Search entities"
-msgstr ""
+msgstr "エンティティーを検索"
 
 #: js/src/vue/EntitySelector/EntitySelector.vue:238
 msgid "Select all"
@@ -35439,7 +35441,7 @@ msgstr "すべて選択"
 #: js/src/vue/EntitySelector/EntitySelector.vue:268
 #: js/src/vue/EntitySelector/EntitySelector.vue:269
 msgid "Select this entity and all its children"
-msgstr ""
+msgstr "このエンティティーとすべての下位エンティティーを選択"
 
 #: js/src/vue/FuzzySearch/Modal.vue:10
 msgid "Go to menu"

@@ -7,8 +7,8 @@
 # 5b63a00e0726b96d7ef35c99d5553cd0_b787b5f <8bb2d0f7e8927228f17fba8639d787be_31711>, 2026
 # DOMBRE Julien <moyo@indepnet.net>, 2026
 # Cédric Anne, 2026
-# Francisco Bolivar, 2026
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
+# Francisco Bolivar, 2026
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-06 10:07+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2026\n"
+"Last-Translator: Francisco Bolivar, 2026\n"
 "Language-Team: Spanish (Venezuela) (https://app.transifex.com/glpi/teams/1637/es_VE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2744,11 +2744,11 @@ msgstr "Subentidades"
 
 #: templates/components/form/file_uploader.html.twig
 msgid "Drop files here or click to browse"
-msgstr ""
+msgstr "Arrastre los archivos aquí o haga clic para explorar"
 
 #: templates/components/form/file_uploader.html.twig
 msgid "Browse Files"
-msgstr ""
+msgstr "Explorar archivos"
 
 #: templates/components/form/item_remotemanagement_form.html.twig
 #: templates/components/form/reservation.html.twig
@@ -3045,11 +3045,11 @@ msgstr[2] "Componentes"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Show password"
-msgstr ""
+msgstr "Mostrar contraseña"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Hide password"
-msgstr ""
+msgstr "Ocultar contraseña"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/pages/tools/kb/modal/sharing.html.twig
@@ -3066,6 +3066,7 @@ msgstr "Limpiar"
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Expected format: a hexadecimal color code, for example #FF0000."
 msgstr ""
+"Formato esperado: un código de color hexadecimal, por ejemplo #FF0000."
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: src/CommonITILValidation.php:1783
@@ -4847,7 +4848,7 @@ msgstr "Agregar nuevos dispositivos"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 msgid "No illustration"
-msgstr ""
+msgstr "Sin ilustración"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 #, php-format
@@ -5754,15 +5755,15 @@ msgstr "Añadir un enlace a un elemento"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Translation mode enabled, currently editing"
-msgstr ""
+msgstr "Modo de traducción activado, actualmente editando"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Delete this translation"
-msgstr ""
+msgstr "Eliminar esta traducción"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Untitled article"
-msgstr ""
+msgstr "Artículo sin título"
 
 #: templates/pages/tools/kb/article.html.twig
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
@@ -5775,15 +5776,15 @@ msgstr "Más acciones"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Updated:"
-msgstr ""
+msgstr "Actualizado:"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "by"
-msgstr ""
+msgstr "por"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "No views"
-msgstr ""
+msgstr "Sin visualizaciones"
 
 #: templates/pages/tools/kb/article.html.twig
 #, php-format
@@ -5797,41 +5798,41 @@ msgstr[2] "%s vistas"
 #, php-format
 msgid "%s translation"
 msgid_plural "%s translations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s traducción"
+msgstr[1] "%s de traducciones"
+msgstr[2] "%s traducciones"
 
 #: templates/pages/tools/kb/article.html.twig
 #: js/modules/Knowbase/ArticleController.js:747
 #, javascript-format, php-format
 msgid "%s document"
 msgid_plural "%s documents"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s documento"
+msgstr[1] "%s de documentos"
+msgstr[2] "%s documentos"
 
 #: templates/pages/tools/kb/article.html.twig
 #: js/modules/Knowbase/ArticleController.js:713
 #, javascript-format, php-format
 msgid "%s related item"
 msgid_plural "%s related items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s elemento relacionado"
+msgstr[1] "%s de elementos relacionados"
+msgstr[2] "%s elementos relacionados"
 
 #: templates/pages/tools/kb/article.html.twig
 #: js/modules/Knowbase/CommentsPanelController.js:313
 #, javascript-format, php-format
 msgid "%s comment"
 msgid_plural "%s comments"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s comentario"
+msgstr[1] "%s de comentarios"
+msgstr[2] "%s comentarios"
 
 #: templates/pages/tools/kb/article.html.twig src/KnowbaseItem.php:1252
 #: src/KnowbaseItem.php:1258
 msgid "Schedule visibility"
-msgstr ""
+msgstr "Visibilidad del horario"
 
 #: templates/pages/tools/kb/article.html.twig
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:751
@@ -5847,92 +5848,92 @@ msgstr "Documentos"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Related items"
-msgstr ""
+msgstr "Elementos relacionados"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add Document"
-msgstr ""
+msgstr "Agregar documento"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Upload a file"
-msgstr ""
+msgstr "Subir un archivo"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link a document"
-msgstr ""
+msgstr "Enlace a un documento"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "optional"
-msgstr ""
+msgstr "opcional"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add a description for these documents..."
-msgstr ""
+msgstr "Añade una descripción para estos documentos..."
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Upload Documents"
-msgstr ""
+msgstr "Subir documentos"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Search for a document"
-msgstr ""
+msgstr "Buscar un documento"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link Documents"
-msgstr ""
+msgstr "Enlace a documentos"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link to another item"
-msgstr ""
+msgstr "Enlace a otro elemento"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add article"
-msgstr ""
+msgstr "Agregar artículo"
 
 #: templates/pages/tools/kb/permission_entry.html.twig
 msgid "recursive"
-msgstr ""
+msgstr "recursivo"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #, php-format
 msgid "Before: %s"
-msgstr ""
+msgstr "Antes: %s"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #, php-format
 msgid "After: %s"
-msgstr ""
+msgstr "Después: %s"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 #: src/Glpi/Knowbase/LastUpdateInfo.php:55
 msgid "Deleted user"
-msgstr ""
+msgstr "Usuario eliminado"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 msgid "Restore this translation version"
-msgstr ""
+msgstr "Restaurar esta versión de traducción"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 msgid "Restore this version"
-msgstr ""
+msgstr "Restaurar esta versión"
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "No comments yet."
-msgstr ""
+msgstr "Aún no hay comentarios."
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "Add a comment..."
-msgstr ""
+msgstr "Añade un comentario..."
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "Add comment"
-msgstr ""
+msgstr "Añadir comentario"
 
 #: templates/pages/tools/kb/sidepanel/revisions.html.twig
 #: src/KnowbaseItem.php:1197
 msgid "History"
-msgstr ""
+msgstr "Historial"
 
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 msgid "Edit comment"
@@ -5941,34 +5942,34 @@ msgstr "Editar comentario"
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 #: js/modules/Knowbase/CommentsPanelController.js:205
 msgid "Delete comment"
-msgstr ""
+msgstr "Borrar comentario"
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
 msgid "Reply..."
-msgstr ""
+msgstr "Responder..."
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
 msgid "Write a reply..."
-msgstr ""
+msgstr "Escribe una respuesta..."
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
 msgid "Reply"
-msgstr ""
+msgstr "Responder"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Articles"
-msgstr ""
+msgstr "Artículos"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Search..."
-msgstr ""
+msgstr "Buscar..."
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Search articles"
-msgstr ""
+msgstr "Buscar artículos"
 
 #: templates/pages/tools/kb/aside.html.twig
 #: js/src/vue/EntitySelector/EntitySelector.vue:233
@@ -5977,20 +5978,20 @@ msgstr "Borrar búsqueda"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Favorites"
-msgstr ""
+msgstr "Favoritos"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Uncategorized"
-msgstr ""
+msgstr "Sin categoría"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "No articles found."
-msgstr ""
+msgstr "No se encontraron artículos."
 
 #: templates/pages/tools/kb/document_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:618
 msgid "Unlink document"
-msgstr ""
+msgstr "Desvincular documento"
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
@@ -6069,40 +6070,40 @@ msgstr[2] "Objetivos"
 #: templates/pages/tools/kb/related_item_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:663
 msgid "Unlink item"
-msgstr ""
+msgstr "Desvincular elemento"
 
 #: templates/pages/tools/kb/modal/targets.html.twig
 msgid "Permissions"
-msgstr ""
+msgstr "Permisos"
 
 #: templates/pages/tools/kb/modal/targets.html.twig
 msgid "Sharing"
-msgstr ""
+msgstr "Intercambio"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 msgid "Create a sharing link"
-msgstr ""
+msgstr "Crear un enlace para compartir"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 msgid "Link name (optional)"
-msgstr ""
+msgstr "Nombre del enlace (opcional)"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 #, php-format
 msgid "Link %d"
-msgstr ""
+msgstr "Enlace %d"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 msgid "No sharing links yet"
-msgstr ""
+msgstr "Aún no hay enlaces para compartir"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "Visible from"
-msgstr ""
+msgstr "Visible desde"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "No start date"
-msgstr ""
+msgstr "Sin fecha de inicio"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 #: src/Glpi/Features/PlanningEvent.php:847
@@ -6111,16 +6112,16 @@ msgstr "Hasta"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "No end date"
-msgstr ""
+msgstr "Sin fecha de finalización"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 #: src/KnowbaseItem.php:2446
 msgid "Show in service catalog"
-msgstr ""
+msgstr "Mostrar en el catálogo de servicios"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 msgid "Details to display in service catalog"
-msgstr ""
+msgstr "Detalles que se mostrarán en el catálogo de servicios"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 #: templates/pages/admin/form/service_catalog_tab.html.twig
@@ -6130,28 +6131,28 @@ msgstr "Fijar en la parte superior del catálogo de servicios"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Can be viewed by:"
-msgstr ""
+msgstr "Puede ser visto por:"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "This article is not yet visible to anyone."
-msgstr ""
+msgstr "Este artículo aún no es visible para nadie."
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Add access for"
-msgstr ""
+msgstr "Agregar acceso para"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Select a type..."
-msgstr ""
+msgstr "Seleccione un tipo..."
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 #: js/modules/Knowbase/PermissionsFormController.js:37
 msgid "Show advanced options"
-msgstr ""
+msgstr "Mostrar opciones avanzadas"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Delete target"
-msgstr ""
+msgstr "Eliminar objetivo"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 #: src/CommonDBVisible.php:302
@@ -6164,7 +6165,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "An error occurred while deleting the permission."
-msgstr ""
+msgstr "Se produjo un error al eliminar el permiso."
 
 #: templates/pages/tools/project.html.twig
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
@@ -8971,10 +8972,12 @@ msgid ""
 "No way of sending emails available in PHP mode. Maybe there is a bad PHP "
 "configuration?"
 msgstr ""
+"No hay forma de enviar correos electrónicos en modo PHP. ¿Quizás haya un "
+"problema con la configuración de PHP?"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "The use of an SMTP option is needed."
-msgstr ""
+msgstr "Es necesario utilizar la opción SMTP."
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Way of sending emails"
@@ -9592,7 +9595,7 @@ msgstr "Herencia de la entidad padre"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Authentication code"
-msgstr ""
+msgstr "Código de autenticación"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "2FA is required for your account"
@@ -9607,12 +9610,16 @@ msgid ""
 "Install an authenticator app on your mobile device such as Google "
 "Authenticator or Authy."
 msgstr ""
+"Instale una aplicación de autenticación en su dispositivo móvil, como Google"
+" Authenticator o Authy."
 
 #: templates/pages/2fa/macros.html.twig
 msgid ""
 "Scan the following QR code or enter the code shown into your authenticator "
 "app."
 msgstr ""
+"Escanee el siguiente código QR o introduzca el código que se muestra en su "
+"aplicación de autenticación."
 
 #: templates/pages/2fa/macros.html.twig
 msgid "QR Code"
@@ -9627,6 +9634,8 @@ msgid ""
 "After entering the code into your authenticator, enter the code shown in the"
 " app to finish the setup"
 msgstr ""
+"Después de introducir el código en tu autenticador, introduce el código que "
+"aparece en la aplicación para finalizar la configuración"
 
 #: templates/pages/2fa/macros.html.twig
 #, php-format
@@ -11198,7 +11207,7 @@ msgstr "Derecho local"
 
 #: templates/pages/admin/profile/search_list.html.twig
 msgid "Hidden fields in search and column selection"
-msgstr ""
+msgstr "Campos ocultos en la búsqueda y selección de columnas"
 
 #: templates/pages/admin/profile/search_list.html.twig
 msgid "Map"
@@ -11206,7 +11215,7 @@ msgstr "Mapa"
 
 #: templates/pages/admin/profile/search_list.html.twig
 msgid "Show map button in lists"
-msgstr ""
+msgstr "Mostrar botón de mapa en las listas"
 
 #: templates/pages/admin/profile/assistance_simple.html.twig
 #: templates/pages/admin/profile/assistance.html.twig
@@ -12647,16 +12656,16 @@ msgstr "Peso maximo"
 
 #: templates/pages/assets/plug.html.twig src/Plug.php:240
 msgid "Custom name"
-msgstr ""
+msgstr "Nombre personalizado"
 
 #: templates/pages/assets/plug.html.twig src/Plug.php:298 src/Plug.php:310
 msgid "Support type"
-msgstr ""
+msgstr "Tipo de soporte"
 
 #: templates/pages/assets/plug.html.twig src/Plug.php:241 src/Plug.php:322
 #: src/Plug.php:334
 msgid "Associated asset"
-msgstr ""
+msgstr "Activo asociado"
 
 #: templates/pages/assets/socket.html.twig
 #: templates/pages/assets/cable.html.twig src/Glpi/Socket.php:341
@@ -12795,12 +12804,12 @@ msgstr "Corregir URL de imágenes en tareas ITIL, seguimientos y soluciones."
 #: install/migrations/update_11.0.x_to_12.0.0/documents.php:51
 #, php-format
 msgid "%d documents do not have their size recorded in the database."
-msgstr ""
+msgstr "El tamaño de %d documentos no está registrado en la base de datos."
 
 #: install/migrations/update_11.0.x_to_12.0.0/documents.php:53
 #, php-format
 msgid "Run the \"%1$s\" command to compute them."
-msgstr ""
+msgstr "Ejecute el comando \"%1$s\" para calcularlos."
 
 #: install/migrations/update_10.0.x_to_11.0.0/validationsteps.php:98
 #: src/CommonITILValidation.php:149 src/Glpi/Helpdesk/Tile/GlpiPageTile.php:95
@@ -15576,7 +15585,7 @@ msgstr "Inicialización olvidada"
 #: front/databaseinstance.form.php:65
 #, php-format
 msgid "%s links a database instance"
-msgstr ""
+msgstr "%s vincula una instancia de base de datos"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:79
@@ -15851,12 +15860,12 @@ msgstr "Formulario sin título"
 #: front/reservation.form.php:109
 #, php-format
 msgid "%1$s updates reservation %2$s for %3$s %4$s"
-msgstr ""
+msgstr "%1$s actualiza la reserva %2$s para %3$s %4$s"
 
 #: front/reservation.form.php:135
 #, php-format
 msgid "%1$s purges reservation %2$s for %3$s %4$s"
-msgstr ""
+msgstr "%1$s purga la reserva %2$s para %3$s %4$s"
 
 #: front/itiltemplatefield.form.php:78
 msgid "hidden"
@@ -16647,7 +16656,7 @@ msgstr "Sincronización"
 #: src/Entity_KnowbaseItem.php:69 src/KnowbaseItem_Profile.php:70
 #: src/Group_KnowbaseItem.php:70 src/KnowbaseItem_User.php:66
 msgid "This target already exists for this article."
-msgstr ""
+msgstr "Este objetivo ya existe para este artículo."
 
 #: src/RuleDictionnaryOperatingSystemVersionCollection.php:43
 msgid "Dictionary of operating system versions"
@@ -17561,7 +17570,7 @@ msgstr "Agregar un nuevo costo"
 
 #: src/ContractCost.php:416 src/CommonITILCost.php:616 src/ProjectCost.php:376
 msgid "Modification date"
-msgstr ""
+msgstr "Fecha de modificación"
 
 #: src/ContractCost.php:417 src/CommonITILCost.php:617
 #: src/NotificationTargetCommonITILObject.php:2120 src/Notepad.php:300
@@ -18415,7 +18424,7 @@ msgstr "MM-DD-AAAA"
 
 #: src/Toolbox.php:2762
 msgid "DD.MM.YYYY"
-msgstr ""
+msgstr "DD.MM.AAAA"
 
 #: src/CommonITILTask.php:490
 msgid "You can't remove description of a task."
@@ -18910,12 +18919,12 @@ msgstr[2] "Consumibles"
 #: src/Consumable.php:156
 #, php-format
 msgid "Return %1$s (%2$s) to stock"
-msgstr ""
+msgstr "Devolver %1$s (%2$s) a las acciones"
 
 #: src/Consumable.php:216
 #, php-format
 msgid "%1$s (%2$s) given to: %3$s (%4$s id %5$s)"
-msgstr ""
+msgstr "%1$s (%2$s) entregado a: %3$s (%4$s id %5$s)"
 
 #: src/Consumable.php:246 src/Consumable.php:709 src/Cartridge.php:860
 #: src/Cartridge.php:1157
@@ -20411,7 +20420,7 @@ msgstr "Inventario"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:432
 msgid "Allow multiple items"
-msgstr ""
+msgstr "Permitir varios elementos"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:581
 msgid "GLPI Object"
@@ -20588,18 +20597,18 @@ msgstr "Página externa"
 #: src/Glpi/RichText/VideoEmbedRenderer.php:96
 #, php-format
 msgid "%s video player"
-msgstr ""
+msgstr "Reproductor de vídeo %s"
 
 #: src/Glpi/RichText/VideoEmbedRenderer.php:129
 #: js/modules/TipTap/VideoEmbedExtension.js:395
 msgid "Embedded video"
-msgstr ""
+msgstr "Vídeo incrustado"
 
 #: src/Glpi/RichText/VideoEmbedRenderer.php:286
 #: js/modules/TipTap/VideoEmbedExtension.js:390
 #: js/modules/TipTap/SlashCommandsExtension.js:293
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: src/Glpi/RichText/RichText.php:519
 msgid "Next (arrow right)"
@@ -20764,7 +20773,7 @@ msgstr "Tiene enchufes. Generalmente se relaciona con PDU o UPS"
 #: src/Glpi/Asset/Capacity/HasPlugCapacity.php:88
 #, php-format
 msgid "%1$s plugs declared on %2$s assets"
-msgstr ""
+msgstr "Los enchufes de %1$s se declararon en los activos de %2$s"
 
 #: src/Glpi/Asset/Capacity/HasNetworkPortCapacity.php:65
 msgid "Has network ports (like ethernet and wlan)"
@@ -21501,13 +21510,15 @@ msgstr "Autenticación básica"
 
 #: src/Glpi/Inventory/Conf.php:414
 msgid "None (not recommended)"
-msgstr ""
+msgstr "Ninguno (no recomendado)"
 
 #: src/Glpi/Inventory/Conf.php:424
 msgid ""
 "Using OAuth Client Credentials requires a registered OAuth client with the "
 "\"inventory\" scope."
 msgstr ""
+"El uso de credenciales de cliente OAuth requiere un cliente OAuth registrado"
+" con el ámbito \"inventory\"."
 
 #: src/Glpi/Inventory/Conf.php:427
 #, php-format
@@ -21515,10 +21526,12 @@ msgid ""
 "The generated client ID and secret must then be set in the GLPI Agent "
 "configuration using the %s and %s parameters."
 msgstr ""
+"El ID de cliente y el secreto generados deben configurarse en la "
+"configuración del agente GLPI utilizando los parámetros %s y %s."
 
 #: src/Glpi/Inventory/Conf.php:432
 msgid "Add an OAuth client"
-msgstr ""
+msgstr "Agregar un cliente OAuth"
 
 #: src/Glpi/Inventory/Conf.php:442
 msgid ""
@@ -21526,6 +21539,9 @@ msgid ""
 "security risk. Any agent will be able to send inventory data without "
 "verification."
 msgstr ""
+"No utilizar ningún tipo de autenticación en el inventario no es recomendable"
+" y supone un riesgo para la seguridad. Cualquier agente podrá enviar datos "
+"de inventario sin verificación."
 
 #: src/Glpi/Inventory/Conf.php:502
 msgid "Import options"
@@ -21614,6 +21630,8 @@ msgstr "Algunas propiedades no se conocen: %1$s"
 msgid ""
 "Inventory is enabled. Please select a valid authorization header method."
 msgstr ""
+"El inventario está habilitado. Seleccione un método de encabezado de "
+"autorización válido."
 
 #: src/Glpi/Inventory/Conf.php:1221
 msgid ""
@@ -22124,11 +22142,13 @@ msgstr "Seguridad"
 
 #: src/Glpi/Security/SecurityConfig.php:89
 msgid "Password Policy"
-msgstr ""
+msgstr "Política de contraseñas"
 
 #: src/Glpi/Security/TOTPManager.php:429
 msgid "Too many failed MFA attempts. Please try again later."
 msgstr ""
+"Se han producido demasiados intentos fallidos de autenticación multifactor. "
+"Inténtelo de nuevo más tarde."
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:341
 #: src/Glpi/CustomObject/AbstractDefinition.php:374
@@ -22659,19 +22679,21 @@ msgstr ""
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:54
 msgid "Check user picture references that no longer exist on the filesystem."
 msgstr ""
+"Compruebe las referencias a imágenes de usuario que ya no existen en el "
+"sistema de archivos."
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:60
 msgid "Clear orphaned picture references from the database."
-msgstr ""
+msgstr "Eliminar las referencias de imágenes huérfanas de la base de datos."
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:71
 #, php-format
 msgid "Checking user #%s \"%s\" (%s)..."
-msgstr ""
+msgstr "Comprobación del usuario #%s \"%s\" (%s) ..."
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:100
 msgid "Orphaned picture references have been cleared."
-msgstr ""
+msgstr "Se han eliminado las referencias de imágenes huérfanas."
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:160
 #: src/Glpi/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:162
@@ -23508,17 +23530,17 @@ msgstr "Ejecutando el comando \"%s\"..."
 
 #: src/Glpi/Console/Migration/ComputeDocumentsSizeCommand.php:56
 msgid "Computes the missing file sizes in the database."
-msgstr ""
+msgstr "Calcula los tamaños de los archivos que faltan en la base de datos."
 
 #: src/Glpi/Console/Migration/ComputeDocumentsSizeCommand.php:72
 #, php-format
 msgid "Computing %s files..."
-msgstr ""
+msgstr "Calculando archivos %s..."
 
 #: src/Glpi/Console/Migration/ComputeDocumentsSizeCommand.php:83
 #, php-format
 msgid "Unable to read the file `%s` size."
-msgstr ""
+msgstr "No se puede leer el tamaño del archivo `%s`."
 
 #: src/Glpi/Console/Migration/DynamicRowFormatCommand.php:67
 msgid ""
@@ -25623,26 +25645,26 @@ msgstr "Permisos para archivos de registro"
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:79
 #, php-format
 msgid "The log directory %s could not be created."
-msgstr ""
+msgstr "No se pudo crear el directorio de registro %s."
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:86
 #, php-format
 msgid "The log directory %s is not writable."
-msgstr ""
+msgstr "El directorio de registros %s no tiene permisos de escritura."
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:98
 #, php-format
 msgid "The log file %s is not writable."
-msgstr ""
+msgstr "El archivo de registro %s no tiene permisos de escritura."
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:105
 #, php-format
 msgid "The log file %s could not be created."
-msgstr ""
+msgstr "No se pudo crear el archivo de registro %s."
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:111
 msgid "Write access to log files has been validated."
-msgstr ""
+msgstr "Se ha validado el acceso de escritura a los archivos de registro."
 
 #: src/Glpi/System/Requirement/Extension.php:57
 #, php-format
@@ -25698,29 +25720,29 @@ msgstr "Archivo de registro"
 #: src/Glpi/Knowbase/History/TranslationRevisionEvent.php:56
 #, php-format
 msgid "%s — Version %s"
-msgstr ""
+msgstr "%s — Versión %s"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:257
 #, php-format
 msgid "Access granted to %s by"
-msgstr ""
+msgstr "Acceso concedido a %s por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:258
 #, php-format
 msgid "Access revoked from %s by"
-msgstr ""
+msgstr "Acceso revocado desde %s por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:261
 msgid "Permissions updated"
-msgstr ""
+msgstr "Permisos actualizados"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:292
 msgid "Sharing enabled"
-msgstr ""
+msgstr "Compartir habilitado"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:292
 msgid "Sharing disabled"
-msgstr ""
+msgstr "Compartir deshabilitado"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:293
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:319
@@ -25729,129 +25751,129 @@ msgstr ""
 #: src/Glpi/Knowbase/History/CurrentTranslationEvent.php:58
 #: src/Glpi/Knowbase/History/CurrentVersionLogEvent.php:45
 msgid "Updated by"
-msgstr ""
+msgstr "Actualizado por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:318
 msgid "Renamed"
-msgstr ""
+msgstr "Renombrado"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:350
 msgid "Added to the FAQ"
-msgstr ""
+msgstr "Añadido a las preguntas frecuentes"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:351
 msgid "Removed from the FAQ"
-msgstr ""
+msgstr "Eliminado de las preguntas frecuentes"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:405
 msgid "Item linked"
-msgstr ""
+msgstr "Elemento vinculado"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:406
 msgid "Item unlinked"
-msgstr ""
+msgstr "Elemento desvinculado"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:410
 #, php-format
 msgid "%s — Linked by"
-msgstr ""
+msgstr "%s - Vinculado por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:410
 #, php-format
 msgid "%s — Unlinked by"
-msgstr ""
+msgstr "%s - desvinculado por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:453
 msgid "Added to category"
-msgstr ""
+msgstr "Añadido a la categoría"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:454
 msgid "Removed from category"
-msgstr ""
+msgstr "Eliminado de la categoría"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:458
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:506
 #, php-format
 msgid "%s — Added by"
-msgstr ""
+msgstr "%s — Añadido por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:458
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:506
 #, php-format
 msgid "%s — Removed by"
-msgstr ""
+msgstr "%s - Eliminado por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:501
 msgid "File added"
-msgstr ""
+msgstr "Archivo añadido"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:502
 msgid "File removed"
-msgstr ""
+msgstr "Archivo eliminado"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:542
 msgid "Illustration removed by"
-msgstr ""
+msgstr "Ilustración eliminada por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:547
 msgid "Custom illustration set by"
-msgstr ""
+msgstr "Conjunto de ilustraciones personalizadas por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:549
 msgid "Native illustration set by"
-msgstr ""
+msgstr "Conjunto de ilustraciones nativas por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:553
 msgid "Illustration updated"
-msgstr ""
+msgstr "Ilustración actualizada"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:591
 msgid "Added to the service catalog by"
-msgstr ""
+msgstr "Agregado al catálogo de servicios por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:592
 msgid "Removed from the service catalog by"
-msgstr ""
+msgstr "Eliminado del catálogo de servicios por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:595
 msgid "Pinned to the top by"
-msgstr ""
+msgstr "Fijado en la parte superior por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:596
 msgid "Unpinned from the top by"
-msgstr ""
+msgstr "Desanclado desde arriba por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:598
 msgid "Description updated by"
-msgstr ""
+msgstr "Descripción actualizada por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:599
 msgid "Category updated by"
-msgstr ""
+msgstr "Categoría actualizada por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:606
 msgid "Service catalog updated"
-msgstr ""
+msgstr "Catálogo de servicios actualizado"
 
 #: src/Glpi/Knowbase/History/CreationEvent.php:49
 #: src/Glpi/Knowbase/History/CurrentVersionLogEvent.php:44
 msgid "Current version"
-msgstr ""
+msgstr "Versión actual"
 
 #: src/Glpi/Knowbase/History/CreationEvent.php:55
 #: src/Glpi/Knowbase/History/RevisionEvent.php:57
 msgid "Created by"
-msgstr ""
+msgstr "Creado por"
 
 #: src/Glpi/Knowbase/History/RevisionEvent.php:51
 #, php-format
 msgid "Version %s"
-msgstr ""
+msgstr "Versión %s"
 
 #: src/Glpi/Knowbase/History/CurrentTranslationEvent.php:52
 #, php-format
 msgid "%s — Current version"
-msgstr ""
+msgstr "%s — Versión actual"
 
 #: src/Glpi/Mail/SMTP/OauthProvider/Azure.php:68
 msgctxt "oauth"
@@ -25959,24 +25981,24 @@ msgstr "Predeterminado (desde el perfil del usuario)"
 
 #: src/Glpi/Controller/Knowbase/RevertTranslationRevisionController.php:101
 msgid "Failed to restore the translation revision."
-msgstr ""
+msgstr "No se pudo restaurar la revisión de la traducción."
 
 #: src/Glpi/Controller/Knowbase/DeleteTranslationController.php:78
 msgid "Translation not found"
-msgstr ""
+msgstr "No se encontró la traducción"
 
 #: src/Glpi/Controller/Knowbase/DeleteTranslationController.php:86
 #: js/modules/Knowbase/ArticleController.js:1540
 msgid "Translation deleted successfully"
-msgstr ""
+msgstr "Traducción eliminada correctamente"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:85
 msgid "Missing required fields"
-msgstr ""
+msgstr "Faltan campos obligatorios"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:95
 msgid "Content cannot be empty"
-msgstr ""
+msgstr "El contenido no puede estar vacío"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:108
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:154
@@ -25984,30 +26006,30 @@ msgstr ""
 #: js/modules/Knowbase/ArticleController.js:1136
 #: js/modules/Knowbase/ArticleController.js:1447
 msgid "Title cannot be empty"
-msgstr ""
+msgstr "El título no puede estar vacío"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:146
 #: js/modules/Knowbase/ArticleController.js:1481
 msgid "Translation saved successfully"
-msgstr ""
+msgstr "Traducción guardada correctamente"
 
 #: src/Glpi/Controller/Knowbase/DeleteArticleController.php:60
 msgid "Item successfully deleted."
-msgstr ""
+msgstr "Elemento eliminado correctamente."
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:135
 msgid "Missing answer content"
-msgstr ""
+msgstr "Falta el contenido de la respuesta"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:169
 #: js/modules/Knowbase/ArticleController.js:1119
 #: js/modules/Knowbase/ArticleController.js:1499
 msgid "Article saved successfully"
-msgstr ""
+msgstr "Artículo guardado correctamente"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:175
 msgid "Failed to save the article"
-msgstr ""
+msgstr "No se pudo guardar el artículo"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:233
 #: src/Glpi/Search/Provider/SQLProvider.php:6955 src/KnowbaseItem.php:1992
@@ -26016,15 +26038,15 @@ msgstr "Este artículo no está publicado todavía"
 
 #: src/Glpi/Controller/Knowbase/RevertRevisionController.php:81
 msgid "Failed to restore the revision."
-msgstr ""
+msgstr "No se pudo restaurar la revisión."
 
 #: src/Glpi/Controller/Knowbase/RevertRevisionController.php:85
 msgid "Article restored successfully."
-msgstr ""
+msgstr "Artículo restaurado correctamente."
 
 #: src/Glpi/Controller/ShareTokenController.php:96
 msgid "Failed to create share link"
-msgstr ""
+msgstr "No se pudo crear el enlace para compartir"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:227
 #, php-format
@@ -26246,9 +26268,9 @@ msgstr "Vista previa de resultados"
 #: src/Glpi/ShareToken.php:62
 msgid "Share token"
 msgid_plural "Share tokens"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Compartir token"
+msgstr[1] "Compartir tokens"
+msgstr[2] "Compartir tokens"
 
 #: src/Glpi/Dashboard/Provider.php:295 src/Glpi/Dashboard/FakeProvider.php:211
 #: src/Problem.php:737 src/Ticket.php:3334 src/Change.php:740
@@ -26419,9 +26441,9 @@ msgstr "Grupo / Grupo solicitante"
 #: src/Glpi/Dashboard/Filters/TicketStatusFilter.php:44
 msgid "Ticket status"
 msgid_plural "Ticket statuses"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Estado del caso"
+msgstr[1] "Estados de los casos"
+msgstr[2] "Estados de los casos"
 
 #: src/Glpi/Dashboard/Filters/TicketTypeFilter.php:45
 msgid "Ticket type"
@@ -27710,7 +27732,7 @@ msgstr "Asignar: Dirección MAC del equipo"
 
 #: src/RuleAction.php:403
 msgid "Assign: equipment by name"
-msgstr ""
+msgstr "Asignar: equipo por nombre"
 
 #: src/RuleAction.php:404
 msgid "Recalculate"
@@ -28872,7 +28894,7 @@ msgstr "No hay elementos seleccionados"
 #: src/Reservation.php:235
 #, php-format
 msgid "%1$s adds reservation %2$s for %3$s %4$s"
-msgstr ""
+msgstr "%1$s añade reserva %2$s para %3$s %4$s"
 
 #: src/Reservation.php:244
 #, php-format
@@ -31501,10 +31523,12 @@ msgstr "Finalizar a las %s"
 #: src/ProjectTask.php:2457
 msgid "Send project task plan end date reminders"
 msgstr ""
+"Enviar recordatorios de la fecha de finalización del plan de tareas del "
+"proyecto"
 
 #: src/ProjectTask.php:2458
 msgid "Number of days before planned end date"
-msgstr ""
+msgstr "Número de días antes de la fecha de finalización prevista"
 
 #: src/RSSFeed.php:62 src/Central.php:79 src/Config.php:694
 msgid "RSS feed"
@@ -31820,7 +31844,7 @@ msgstr "Abierto el %s"
 #: src/MailCollector.php:1099 src/MailCollector.php:1100
 #, php-format
 msgid "From %s"
-msgstr "desde %s"
+msgstr "Desde %s"
 
 #: src/CommonITILObject.php:6863 src/CommonITILObject.php:7263
 #, php-format
@@ -32561,17 +32585,17 @@ msgstr[2] "Clientes de OAuth"
 #: src/OAuthClient.php:85
 msgid "Session"
 msgid_plural "Sessions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Sesión"
+msgstr[1] "Sesiones"
+msgstr[2] "Sesiones"
 
 #: src/OAuthClient.php:147
 msgid "Revoke"
-msgstr ""
+msgstr "Revocar"
 
 #: src/OAuthClient.php:159
 msgid "Refresh token expiration date"
-msgstr ""
+msgstr "Actualizar la fecha de vencimiento del token"
 
 #: src/OAuthClient.php:251 src/OAuthClient.php:275
 msgid "Invalid IP address or CIDR range"
@@ -32684,19 +32708,19 @@ msgstr[2] "Entornos de aplicaciones"
 
 #: src/KnowbaseItem.php:1238
 msgid "Permissions and sharing"
-msgstr ""
+msgstr "Permisos y uso compartido"
 
 #: src/KnowbaseItem.php:1267
 msgid "Add to favorites"
-msgstr ""
+msgstr "Agregar a favoritos"
 
 #: src/KnowbaseItem.php:1278
 msgid "Add to FAQ"
-msgstr ""
+msgstr "Agregar a las preguntas frecuentes"
 
 #: src/KnowbaseItem.php:1298 js/modules/Knowbase/ArticleController.js:570
 msgid "Delete article"
-msgstr ""
+msgstr "Eliminar artículo"
 
 #: src/KnowbaseItem.php:2051
 msgid "Use as a solution"
@@ -32728,7 +32752,7 @@ msgstr "Fecha de fin de visibilidad"
 
 #: src/KnowbaseItem.php:2428
 msgid "Is favorite"
-msgstr ""
+msgstr "Es favorito"
 
 #: src/KnowbaseItem.php:2493
 msgid "Knowledge base administration"
@@ -33031,7 +33055,7 @@ msgstr[2] "Enchufes"
 
 #: src/Plug.php:86
 msgid "Plug name is required"
-msgstr ""
+msgstr "Se requiere el nombre del enchufe"
 
 #: src/Plug.php:187
 msgid "Add a new plug"
@@ -33039,15 +33063,15 @@ msgstr "Agregar un nuevo enchufe"
 
 #: src/Plug.php:188
 msgid "Name will by suffixed by number"
-msgstr ""
+msgstr "El nombre irá seguido de un número"
 
 #: src/Plug.php:195
 msgid "Plug name"
-msgstr ""
+msgstr "Nombre del enchufe"
 
 #: src/Plug.php:204
 msgid "Number of plugs to add"
-msgstr ""
+msgstr "Número de enchufes a añadir"
 
 #: src/SavedSearch.php:100
 msgid "Unset as default"
@@ -33607,7 +33631,7 @@ msgstr "Ciclos de vida"
 
 #: src/Profile.php:200 src/Profile.php:210
 msgid "Search / list"
-msgstr ""
+msgstr "Buscar / lista"
 
 #: src/Profile.php:480
 msgid ""
@@ -34058,12 +34082,12 @@ msgstr "Correo por defecto"
 #: src/UserEmail.php:193 src/UserEmail.php:237
 #, php-format
 msgid "Set %s email as default"
-msgstr ""
+msgstr "Establecer %s correo electrónico como predeterminado"
 
 #: src/UserEmail.php:195 src/UserEmail.php:242
 #, php-format
 msgid "Email address %s"
-msgstr ""
+msgstr "Dirección de correo electrónico %s"
 
 #: src/NotificationTargetMailCollector.php:46
 msgid "Receiver errors"
@@ -34075,7 +34099,7 @@ msgstr "Usted no tiene permisos para conectarse"
 
 #: src/Session.php:250
 msgid "An error occurred while creating your session. Please try again."
-msgstr ""
+msgstr "Se produjo un error al crear su sesión. Inténtelo de nuevo."
 
 #: src/Session.php:254
 msgid ""
@@ -34288,7 +34312,7 @@ msgstr[2] "Recordatorios automáticos"
 #: src/Cartridge.php:259
 #, php-format
 msgid "Cartridge (%1$s): back to stock"
-msgstr ""
+msgstr "Cartucho (%1$s): vuelve al stock"
 
 #: src/Cartridge.php:321
 msgid "Installing a cartridge"
@@ -34297,7 +34321,7 @@ msgstr "Instalando un cartucho"
 #: src/Cartridge.php:328
 #, php-format
 msgid "Install the cartridge %1$s on printer : %2$s"
-msgstr ""
+msgstr "Instale el cartucho %1$s en la impresora: %2$s"
 
 #: src/Cartridge.php:341
 msgid "No free cartridge"
@@ -34310,7 +34334,7 @@ msgstr "Desinstalando un cartucho"
 #: src/Cartridge.php:395
 #, php-format
 msgid "Uninstall the cartridge %1$s for end life"
-msgstr ""
+msgstr "Desinstale el cartucho %1$s para el fin de su vida útil"
 
 #: src/Cartridge.php:435 src/Cartridge.php:775
 msgctxt "cartridge"
@@ -35245,7 +35269,7 @@ msgstr "Permitir VoIP"
 #: src/DeviceSimcard.php:131
 #, php-format
 msgid "%1$s %2$s: %3$s"
-msgstr ""
+msgstr "%1$s %2$s: %3$s"
 
 #: src/DeviceSimcard.php:131
 msgid "items"
@@ -35253,7 +35277,7 @@ msgstr "elementos"
 
 #: src/DeviceSimcard.php:143
 msgid "Designation"
-msgstr ""
+msgstr "Designación"
 
 #: src/Dropdown.php:430 js/common.js:769
 msgid "Display on map"
@@ -35937,7 +35961,7 @@ msgstr "Justo ahora"
 #: src/Html.php:6239
 #, php-format
 msgid "%s minute ago"
-msgstr ""
+msgstr "hace %s minutos"
 
 #: src/Html.php:6242 js/common.js:1165
 #, javascript-format, php-format
@@ -35947,7 +35971,7 @@ msgstr "hace %s minuto"
 #: src/Html.php:6245
 #, php-format
 msgid "%s hour ago"
-msgstr ""
+msgstr "hace %s horas"
 
 #: src/Html.php:6248 js/common.js:1167
 #, javascript-format, php-format
@@ -36358,7 +36382,7 @@ msgstr "Excluir"
 #: js/src/vue/EntitySelector/useEntitySelector.js:165
 #: js/src/vue/EntitySelector/EntitySelector.vue:214
 msgid "An error occurred while changing the entity. Please try again."
-msgstr ""
+msgstr "Se produjo un error al modificar la entidad. Inténtelo de nuevo."
 
 #: js/rack.js:106
 msgid "Add PDU"
@@ -36642,53 +36666,53 @@ msgstr "Error inesperado"
 #: js/modules/KnowbaseEditor.js:76
 #: js/modules/Knowbase/ArticleController.js:1000
 msgid "Type / to insert..."
-msgstr ""
+msgstr "Escriba / para insertar..."
 
 #: js/modules/KnowbaseEditor.js:167 js/modules/KnowbaseEditor.js:431
 msgid "Image upload failed"
-msgstr ""
+msgstr "Error al cargar la imagen"
 
 #: js/modules/KnowbaseEditor.js:214
 msgid "Bold"
-msgstr ""
+msgstr "Negrita"
 
 #: js/modules/KnowbaseEditor.js:215
 msgid "Italic"
-msgstr ""
+msgstr "Itálica"
 
 #: js/modules/KnowbaseEditor.js:216
 msgid "Strikethrough"
-msgstr ""
+msgstr "Tachada"
 
 #: js/modules/KnowbaseEditor.js:219
 #: js/modules/TipTap/SlashCommandsExtension.js:240
 msgid "Heading 1"
-msgstr ""
+msgstr "Encabezado 1"
 
 #: js/modules/KnowbaseEditor.js:220
 #: js/modules/TipTap/SlashCommandsExtension.js:245
 msgid "Heading 2"
-msgstr ""
+msgstr "Encabezado 2"
 
 #: js/modules/KnowbaseEditor.js:221
 #: js/modules/TipTap/SlashCommandsExtension.js:250
 msgid "Heading 3"
-msgstr ""
+msgstr "Encabezado 3"
 
 #: js/modules/KnowbaseEditor.js:223
 #: js/modules/TipTap/SlashCommandsExtension.js:255
 msgid "Bullet List"
-msgstr ""
+msgstr "Lista de viñetas"
 
 #: js/modules/KnowbaseEditor.js:224
 #: js/modules/TipTap/SlashCommandsExtension.js:260
 msgid "Numbered List"
-msgstr ""
+msgstr "Lista numerada"
 
 #: js/modules/KnowbaseEditor.js:225
 #: js/modules/TipTap/SlashCommandsExtension.js:265
 msgid "Quote"
-msgstr ""
+msgstr "Cita"
 
 #: js/modules/KnowbaseEditor.js:227
 msgctxt "button"
@@ -36697,15 +36721,15 @@ msgstr "Enlace"
 
 #: js/modules/KnowbaseEditor.js:228
 msgid "Remove link"
-msgstr ""
+msgstr "Eliminar enlace"
 
 #: js/modules/KnowbaseEditor.js:277
 msgid "Enter URL"
-msgstr ""
+msgstr "Introduzca la URL"
 
 #: js/modules/KnowbaseEditor.js:405
 msgid "Document creation failed"
-msgstr ""
+msgstr "Error al crear el documento"
 
 #: js/modules/ProgressIndicator.js:175
 msgid "failed"
@@ -36713,60 +36737,60 @@ msgstr "fallido"
 
 #: js/modules/Knowbase/ServiceCatalogPanelController.js:141
 msgid "Service catalog settings saved."
-msgstr ""
+msgstr "Configuración del catálogo de servicios guardada."
 
 #: js/modules/Knowbase/PermissionsFormController.js:38
 msgid "Hide advanced options"
-msgstr ""
+msgstr "Ocultar opciones avanzadas"
 
 #: js/modules/Knowbase/PermissionsFormController.js:177
 msgid "Access added successfully"
-msgstr ""
+msgstr "Acceso añadido correctamente"
 
 #: js/modules/Knowbase/LinkItemFormController.js:107
 msgid "Please select an item to link."
-msgstr ""
+msgstr "Seleccione un elemento para enlazar."
 
 #: js/modules/Knowbase/LinkItemFormController.js:130
 msgid "Item linked successfully"
-msgstr ""
+msgstr "Artículo vinculado correctamente"
 
 #: js/modules/Knowbase/LinkItemFormController.js:151
 #: js/modules/Knowbase/DocumentLinkController.js:327
 msgid "Linking..."
-msgstr ""
+msgstr "Enlace..."
 
 #: js/modules/Knowbase/UploadController.js:193
 msgid "Please wait until file uploads complete."
-msgstr ""
+msgstr "Por favor, espere hasta que finalice la carga de archivos."
 
 #: js/modules/Knowbase/UploadController.js:199
 msgid "Please add at least one valid file before uploading."
-msgstr ""
+msgstr "Por favor, añada al menos un archivo válido antes de subirlo."
 
 #: js/modules/Knowbase/UploadController.js:210 js/modules/FileUploader.js:171
 #: js/modules/FileUploader.js:178 js/modules/FileUploader.js:359
 #: js/modules/FileUploader.js:362 js/modules/FileUploader.js:371
 #: js/modules/FileUploader.js:374
 msgid "Upload failed"
-msgstr ""
+msgstr "Error al cargar"
 
 #: js/modules/Knowbase/UploadController.js:229
 msgid "Uploading..."
-msgstr ""
+msgstr "Subiendo..."
 
 #: js/modules/Knowbase/UploadController.js:279
 msgid "Document uploaded successfully"
-msgstr ""
+msgstr "Documento cargado correctamente"
 
 #: js/modules/Knowbase/UploadController.js:280
 #, javascript-format
 msgid "%d documents uploaded successfully"
-msgstr ""
+msgstr "%d documentos cargados correctamente"
 
 #: js/modules/Knowbase/CommentsPanelController.js:206
 msgid "Are you sure you want to delete this comment?"
-msgstr ""
+msgstr "¿Seguro que quieres eliminar este comentario?"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:238
 #: js/modules/Knowbase/RevisionsPanelController.js:277
@@ -36781,13 +36805,15 @@ msgstr "Se produjo un error inesperado."
 
 #: js/modules/Knowbase/RevisionsPanelController.js:355
 msgid "Restore revision"
-msgstr ""
+msgstr "Restaurar revisión"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:356
 msgid ""
 "Are you sure you want to restore this version? The current content will be "
 "saved as a new revision."
 msgstr ""
+"¿Está seguro de que desea restaurar esta versión? El contenido actual se "
+"guardará como una nueva revisión."
 
 #: js/modules/Knowbase/RevisionsPanelController.js:361
 #: js/modules/Knowbase/RevisionsPanelController.js:421
@@ -36796,80 +36822,88 @@ msgstr "Confirmar"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:415
 msgid "Restore translation revision"
-msgstr ""
+msgstr "Restaurar la revisión de la traducción"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:416
 msgid ""
 "Are you sure you want to restore this translation version? The current "
 "translation content will be saved as a new revision."
 msgstr ""
+"¿Está seguro de que desea restaurar esta versión de la traducción? El "
+"contenido actual de la traducción se guardará como una nueva revisión."
 
 #: js/modules/Knowbase/RevisionsPanelController.js:462
 msgid "Translation revision restored successfully."
-msgstr ""
+msgstr "La revisión de la traducción se ha restaurado correctamente."
 
 #: js/modules/Knowbase/DocumentLinkController.js:112
 msgid "Search for a document..."
-msgstr ""
+msgstr "Buscar un documento..."
 
 #: js/modules/Knowbase/DocumentLinkController.js:263
 msgid "Please select at least one document before linking."
-msgstr ""
+msgstr "Seleccione al menos un documento antes de crear el enlace."
 
 #: js/modules/Knowbase/DocumentLinkController.js:279
 msgid "Linking failed"
-msgstr ""
+msgstr "Falló la conexión"
 
 #: js/modules/Knowbase/DocumentLinkController.js:305
 msgid "Document linked successfully"
-msgstr ""
+msgstr "Documento vinculado correctamente"
 
 #: js/modules/Knowbase/DocumentLinkController.js:306
 #, javascript-format
 msgid "%d documents linked successfully"
-msgstr ""
+msgstr "%d documentos vinculados correctamente"
 
 #: js/modules/Knowbase/SharingPanelController.js:146
 msgid "Delete sharing link"
-msgstr ""
+msgstr "Eliminar enlace para compartir"
 
 #: js/modules/Knowbase/SharingPanelController.js:147
 msgid ""
 "Are you sure you want to delete this sharing link? Anyone using it will lose"
 " access."
 msgstr ""
+"¿Seguro que quieres eliminar este enlace para compartir? Quien lo utilice "
+"perderá el acceso."
 
 #: js/modules/Knowbase/ArticleController.js:242
 #: js/modules/Knowbase/ArticleController.js:258
 msgid "Preview unavailable"
-msgstr ""
+msgstr "Vista previa no disponible"
 
 #: js/modules/Knowbase/ArticleController.js:243
 msgid ""
 "Please save or cancel your current changes before previewing a revision."
 msgstr ""
+"Por favor, guarda o cancela los cambios actuales antes de previsualizar una "
+"revisión."
 
 #: js/modules/Knowbase/ArticleController.js:259
 msgid ""
 "Please save or cancel your current changes before previewing a translation "
 "revision."
 msgstr ""
+"Guarde o cancele los cambios actuales antes de previsualizar una revisión de"
+" la traducción."
 
 #: js/modules/Knowbase/ArticleController.js:279
 msgid "Action unavailable"
-msgstr ""
+msgstr "Acción no disponible"
 
 #: js/modules/Knowbase/ArticleController.js:280
 msgid "Please save or cancel your current changes first."
-msgstr ""
+msgstr "Por favor, guarda o cancela los cambios que has realizado antes."
 
 #: js/modules/Knowbase/ArticleController.js:571
 msgid "Are you sure you want to delete this article?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres eliminar este artículo?"
 
 #: js/modules/Knowbase/ArticleController.js:619
 msgid "Are you sure you want to unlink this document from the article?"
-msgstr ""
+msgstr "¿Está seguro de que desea desvincular este documento del artículo?"
 
 #: js/modules/Knowbase/ArticleController.js:620
 #: js/modules/Knowbase/ArticleController.js:665
@@ -36878,80 +36912,82 @@ msgstr "Desconectar"
 
 #: js/modules/Knowbase/ArticleController.js:651
 msgid "Document unlinked successfully"
-msgstr ""
+msgstr "Documento desvinculado correctamente"
 
 #: js/modules/Knowbase/ArticleController.js:664
 msgid "Are you sure you want to unlink this item from the article?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres desvincular este elemento del artículo?"
 
 #: js/modules/Knowbase/ArticleController.js:682
 msgid "Item unlinked successfully"
-msgstr ""
+msgstr "El elemento se ha desvinculado correctamente"
 
 #: js/modules/Knowbase/ArticleController.js:936
 #: js/modules/Knowbase/ArticleController.js:1082
 #: js/modules/Knowbase/ArticleController.js:1454
 msgid "Saving..."
-msgstr ""
+msgstr "Guardando..."
 
 #: js/modules/Knowbase/ArticleController.js:945
 msgid "Visibility dates updated"
-msgstr ""
+msgstr "Fechas de visibilidad actualizadas"
 
 #: js/modules/Knowbase/ArticleController.js:971
 msgid "Child entities enabled"
-msgstr ""
+msgstr "Entidades secundarias habilitadas"
 
 #: js/modules/Knowbase/ArticleController.js:971
 msgid "Child entities disabled"
-msgstr ""
+msgstr "Entidades hijas deshabilitadas"
 
 #: js/modules/Knowbase/ArticleController.js:991
 msgid "Keep typing to filter..."
-msgstr ""
+msgstr "Sigue escribiendo para filtrar..."
 
 #: js/modules/Knowbase/ArticleController.js:998
 msgid "Type / to insert, or start writing..."
-msgstr ""
+msgstr "Escribe / para insertar o empezar a escribir..."
 
 #: js/modules/Knowbase/ArticleController.js:1066
 #: js/modules/Knowbase/ArticleController.js:1439
 msgid "Cannot save: article ID is missing"
-msgstr ""
+msgstr "No se puede guardar: falta el ID del artículo"
 
 #: js/modules/Knowbase/ArticleController.js:1209
 msgid "Translation mode unavailable"
-msgstr ""
+msgstr "Modo de traducción no disponible"
 
 #: js/modules/Knowbase/ArticleController.js:1210
 msgid ""
 "Please save or cancel your current changes before entering translation mode."
 msgstr ""
+"Por favor, guarda o cancela los cambios actuales antes de entrar en el modo "
+"de traducción."
 
 #: js/modules/Knowbase/ArticleController.js:1270
 #: js/modules/Knowbase/ArticleController.js:1564
 #: js/modules/Knowbase/ArticleController.js:1567
 #: js/modules/Knowbase/ArticleController.js:1608
 msgid "Existing translations"
-msgstr ""
+msgstr "Traducciones existentes"
 
 #: js/modules/Knowbase/ArticleController.js:1288
 #: js/modules/Knowbase/ArticleController.js:1573
 #: js/modules/Knowbase/ArticleController.js:1593
 #: js/modules/Knowbase/ArticleController.js:1596
 msgid "Add new translation"
-msgstr ""
+msgstr "Agregar nueva traducción"
 
 #: js/modules/Knowbase/ArticleController.js:1516
 msgid "Are you sure you want to delete this translation?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres eliminar esta traducción?"
 
 #: js/modules/Knowbase/ArticleController.js:1548
 msgid "translation"
 msgid_plural "translations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "traducción"
+msgstr[1] "traducciones"
+msgstr[2] "traducciones"
 
 #: js/modules/Forms/EditorController.js:1404
 msgid "Submit button visibility"
@@ -37008,16 +37044,16 @@ msgstr "Enviar la búsqueda actual antes de guardarla"
 #: js/modules/FileUploader.js:271
 #, javascript-format
 msgid "File %s exceeds maximum size"
-msgstr ""
+msgstr "El archivo %s excede el tamaño máximo"
 
 #: js/modules/FileUploader.js:276
 #, javascript-format
 msgid "File %s is empty"
-msgstr ""
+msgstr "El archivo %s está vacío"
 
 #: js/modules/FileUploader.js:347 js/modules/FileUploader.js:353
 msgid "Invalid server response"
-msgstr ""
+msgstr "Respuesta del servidor no válida"
 
 #: js/modules/Dashboard/Dashboard.js:403
 msgid "Add a card"
@@ -37050,25 +37086,29 @@ msgstr "Agregar un tablero"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:178
 msgid "Insert video"
-msgstr ""
+msgstr "Insertar vídeo"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:198
 msgid "Video URL"
-msgstr ""
+msgstr "URL del vídeo"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:212
 msgid "Supported: a YouTube URL, or a direct video file URL (MP4, WebM, Ogg)."
 msgstr ""
+"Formatos compatibles: URL de YouTube o URL directa de archivo de vídeo (MP4,"
+" WebM, Ogg)."
 
 #: js/modules/TipTap/VideoEmbedExtension.js:234
 msgid "Insert"
-msgstr ""
+msgstr "Insertar"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:252
 msgid ""
 "This video URL is not recognized. Use a YouTube URL or a direct video file "
 "URL (MP4, WebM, Ogg)."
 msgstr ""
+"Esta URL de vídeo no es reconocida. Utilice una URL de YouTube o una URL "
+"directa del archivo de vídeo (MP4, WebM, Ogg)."
 
 #: js/modules/TipTap/VideoEmbedExtension.js:403
 msgid "video"
@@ -37077,39 +37117,39 @@ msgstr "video"
 #: js/modules/TipTap/VideoEmbedExtension.js:403
 #: js/modules/TipTap/VideoEmbedExtension.js:429
 msgid "Invalid video"
-msgstr ""
+msgstr "Vídeo no válido"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:412
 msgid "video player"
-msgstr ""
+msgstr "reproductor de video"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:58
 msgid "Insert/Edit Image"
-msgstr ""
+msgstr "Insertar/Editar imagen"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:71
 msgid "Alternative description"
-msgstr ""
+msgstr "Descripción alternativa"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:84
 msgid "Constrain proportions"
-msgstr ""
+msgstr "Limitar las proporciones"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:270
 msgid "Code Block"
-msgstr ""
+msgstr "Bloque de código"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:275
 msgid "Table"
-msgstr ""
+msgstr "Tabla"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:280
 msgid "Divider"
-msgstr ""
+msgstr "Divisor"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:285
 msgid "Image"
-msgstr ""
+msgstr "Imagen"
 
 #: js/glpi_dialog.js:363
 msgid "Are you sure?"
@@ -37159,7 +37199,7 @@ msgstr "Consejo: puede llamar a este modal con la combinación de teclas %s"
 
 #: js/src/vue/EntitySelector/EntitySelector.vue:231
 msgid "Search entities"
-msgstr ""
+msgstr "Entidades de búsqueda"
 
 #: js/src/vue/EntitySelector/EntitySelector.vue:238
 msgid "Select all"
@@ -37168,7 +37208,7 @@ msgstr "Seleccionar todo"
 #: js/src/vue/EntitySelector/EntitySelector.vue:268
 #: js/src/vue/EntitySelector/EntitySelector.vue:269
 msgid "Select this entity and all its children"
-msgstr ""
+msgstr "Seleccione esta entidad y todos sus hijos"
 
 #: js/src/vue/FuzzySearch/Modal.vue:10
 msgid "Go to menu"

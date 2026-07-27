@@ -28,6 +28,7 @@
 # Johan Cwiklinski, 2026
 # Lionel-BZH, 2026
 # Legastelois François <flegastelois@teclib.com>, 2026
+# Amaury Guern, 2026
 # 
 #, fuzzy
 msgid ""
@@ -36,7 +37,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-06 10:07+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: Legastelois François <flegastelois@teclib.com>, 2026\n"
+"Last-Translator: Amaury Guern, 2026\n"
 "Language-Team: French (France) (https://app.transifex.com/glpi/teams/1637/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2769,11 +2770,11 @@ msgstr "Sous-entités"
 
 #: templates/components/form/file_uploader.html.twig
 msgid "Drop files here or click to browse"
-msgstr ""
+msgstr "Déposez des fichiers ici ou cliquez pour parcourir"
 
 #: templates/components/form/file_uploader.html.twig
 msgid "Browse Files"
-msgstr ""
+msgstr "Parcourir les fichiers"
 
 #: templates/components/form/item_remotemanagement_form.html.twig
 #: templates/components/form/reservation.html.twig
@@ -5808,11 +5809,11 @@ msgstr "Plus d'actions"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Updated:"
-msgstr ""
+msgstr "Mise à jour :"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "by"
-msgstr ""
+msgstr "par"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "No views"
@@ -5864,7 +5865,7 @@ msgstr[2] ""
 #: templates/pages/tools/kb/article.html.twig src/KnowbaseItem.php:1252
 #: src/KnowbaseItem.php:1258
 msgid "Schedule visibility"
-msgstr ""
+msgstr "Programmer la visibilité"
 
 #: templates/pages/tools/kb/article.html.twig
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:751
@@ -5880,43 +5881,43 @@ msgstr "Documents"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Related items"
-msgstr ""
+msgstr "Eléments liés"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add Document"
-msgstr ""
+msgstr "Ajouter un document"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Upload a file"
-msgstr ""
+msgstr "Télécharger un fichier"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link a document"
-msgstr ""
+msgstr "Lier un document"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "optional"
-msgstr ""
+msgstr "optionnel"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add a description for these documents..."
-msgstr ""
+msgstr "Ajouter une description pour ces documents..."
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Upload Documents"
-msgstr ""
+msgstr "Télécharger les documents"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Search for a document"
-msgstr ""
+msgstr "Rechercher un document"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link Documents"
-msgstr ""
+msgstr "Lier les documents"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link to another item"
-msgstr ""
+msgstr "Lier un autre élément"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add article"
@@ -5965,7 +5966,7 @@ msgstr ""
 #: templates/pages/tools/kb/sidepanel/revisions.html.twig
 #: src/KnowbaseItem.php:1197
 msgid "History"
-msgstr ""
+msgstr "Historique"
 
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 msgid "Edit comment"
@@ -5997,11 +5998,11 @@ msgstr ""
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Search..."
-msgstr ""
+msgstr "Rechercher..."
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Search articles"
-msgstr ""
+msgstr "Rechercher des articles"
 
 #: templates/pages/tools/kb/aside.html.twig
 #: js/src/vue/EntitySelector/EntitySelector.vue:233
@@ -6014,7 +6015,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Uncategorized"
-msgstr ""
+msgstr "Non catégorisé"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "No articles found."
@@ -6102,7 +6103,7 @@ msgstr[2] "Cibles"
 #: templates/pages/tools/kb/related_item_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:663
 msgid "Unlink item"
-msgstr ""
+msgstr "Délier un élément"
 
 #: templates/pages/tools/kb/modal/targets.html.twig
 msgid "Permissions"
@@ -6131,7 +6132,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "Visible from"
-msgstr ""
+msgstr "Visible depuis"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "No start date"
@@ -6149,7 +6150,7 @@ msgstr ""
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 #: src/KnowbaseItem.php:2446
 msgid "Show in service catalog"
-msgstr ""
+msgstr "Montrer dans le catalogue de service"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 msgid "Details to display in service catalog"
@@ -25808,7 +25809,7 @@ msgstr ""
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:406
 msgid "Item unlinked"
-msgstr ""
+msgstr "Elément délié"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:410
 #, php-format
@@ -32766,19 +32767,19 @@ msgstr[2] "Environnements d'applicatif"
 
 #: src/KnowbaseItem.php:1238
 msgid "Permissions and sharing"
-msgstr ""
+msgstr "Permissions et partage"
 
 #: src/KnowbaseItem.php:1267
 msgid "Add to favorites"
-msgstr ""
+msgstr "Ajouter aux favoris"
 
 #: src/KnowbaseItem.php:1278
 msgid "Add to FAQ"
-msgstr ""
+msgstr "Ajouter à la FAQ"
 
 #: src/KnowbaseItem.php:1298 js/modules/Knowbase/ArticleController.js:570
 msgid "Delete article"
-msgstr ""
+msgstr "Supprimer l'article"
 
 #: src/KnowbaseItem.php:2051
 msgid "Use as a solution"
@@ -36890,7 +36891,7 @@ msgstr ""
 
 #: js/modules/Knowbase/DocumentLinkController.js:112
 msgid "Search for a document..."
-msgstr ""
+msgstr "Rechercher un document..."
 
 #: js/modules/Knowbase/DocumentLinkController.js:263
 msgid "Please select at least one document before linking."
@@ -36962,11 +36963,11 @@ msgstr ""
 
 #: js/modules/Knowbase/ArticleController.js:664
 msgid "Are you sure you want to unlink this item from the article?"
-msgstr ""
+msgstr "Etes vous sûr de vouloir délier cet élément de l'article ?"
 
 #: js/modules/Knowbase/ArticleController.js:682
 msgid "Item unlinked successfully"
-msgstr ""
+msgstr "Elément délié avec succès"
 
 #: js/modules/Knowbase/ArticleController.js:936
 #: js/modules/Knowbase/ArticleController.js:1082

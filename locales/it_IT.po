@@ -16,10 +16,10 @@
 # Stefano Ceccherini <stefano.ceccherini@gmail.com>, 2026
 # Pierfrancesco Passerini <p.passerini@gmail.com>, 2026
 # DOMBRE Julien <moyo@indepnet.net>, 2026
-# Davide <spam@habilitas.it>, 2026
 # Cédric Anne, 2026
 # Beatrice Montaruli, 2026
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
+# Davide <spam@habilitas.it>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -28,7 +28,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-06 10:07+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2026\n"
+"Last-Translator: Davide <spam@habilitas.it>, 2026\n"
 "Language-Team: Italian (Italy) (https://app.transifex.com/glpi/teams/1637/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1161,7 +1161,7 @@ msgstr "Cruscotto"
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Vai al contenuto principale"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -1373,7 +1373,7 @@ msgstr "Profili"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "Percorso di navigazione"
 
 #: templates/layout/parts/global_search_form.html.twig
 #: templates/pages/tools/search_knowbaseitem.html.twig
@@ -1383,15 +1383,15 @@ msgstr "Cerca..."
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "Barra laterale"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Attiva/disattiva la navigazione"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Navigazione principale"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -3337,7 +3337,7 @@ msgstr "Modifica commento"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Specificare un orario"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
@@ -11621,9 +11621,9 @@ msgstr "Sospendi l'esecuzione di tutti i plugin"
 #, php-format
 msgid "You have %d plugin to update"
 msgid_plural "You have %d plugins to update"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Hai %d plugin da aggiornare"
+msgstr[1] "Hai %d plugin da aggiornare"
+msgstr[2] "Hai %d plugin da aggiornare"
 
 #: templates/pages/admin/entity/address.html.twig src/Location.php:127
 msgid "Location on map"
@@ -12267,7 +12267,7 @@ msgstr "L'elemento è creato o aggiornato in GLPI"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "You do not have the required permissions"
-msgstr ""
+msgstr "Non disponi delle autorizzazioni necessarie"
 
 #: templates/pages/admin/rules/engine_preview_criteria.html.twig
 msgid "No element to be tested"
@@ -12326,7 +12326,7 @@ msgstr "OR"
 
 #: templates/pages/admin/rules/preview_criteria.html.twig
 msgid "No rule criteria to display"
-msgstr ""
+msgstr "Nessun criterio per la regola da visualizzare"
 
 #: templates/pages/admin/helpdesk_home_config_tiles.html.twig
 msgid "There are no tiles defined for this item."
@@ -18124,11 +18124,11 @@ msgstr "Gruppo utenti"
 
 #: src/RuleCommonITILObject.php:1027
 msgid "Send an approval request to requester group manager"
-msgstr ""
+msgstr "Richiesta di approvazione al gestore del gruppo richiedenti"
 
 #: src/RuleCommonITILObject.php:1031
 msgid "Send an approval request to technician group manager"
-msgstr ""
+msgstr "Richiesta di approvazione al gestore del gruppo tecnici"
 
 #: src/RuleCommonITILObject.php:1036
 msgid "Set approval request step"
@@ -29072,12 +29072,12 @@ msgstr "Precedente tecnico responsabile della chiamata"
 #: src/NotificationTargetCommonITILObject.php:1010
 #, php-format
 msgid "Manager of the group in charge of the %s"
-msgstr ""
+msgstr "Gestore del gruppo responsabile di 1%s"
 
 #: src/NotificationTargetCommonITILObject.php:1014
 #, php-format
 msgid "Group in charge of the %s except manager users"
-msgstr ""
+msgstr "Gruppo responsabile di %s, esclusi i gestori"
 
 #: src/NotificationTargetCommonITILObject.php:1016
 msgid "Requester group manager"
@@ -29090,12 +29090,12 @@ msgstr "Gruppo richiedenti, esclusi i gestori"
 #: src/NotificationTargetCommonITILObject.php:1021
 #, php-format
 msgid "Technician in charge of the %s"
-msgstr ""
+msgstr "Tecnico responsabile di %s"
 
 #: src/NotificationTargetCommonITILObject.php:1024
 #, php-format
 msgid "Group in charge of the %s"
-msgstr ""
+msgstr "Gruppo responsabile di %s"
 
 #: src/NotificationTargetCommonITILObject.php:1027
 msgid "Observer group manager"
@@ -29213,7 +29213,7 @@ msgstr "Numero di problemi collegati"
 #: src/NotificationTargetCommonITILObject.php:2312
 msgctxt "quantity"
 msgid "Number of linked projects"
-msgstr ""
+msgstr "Numero di progetti collegati"
 
 #: src/NotificationTargetCommonITILObject.php:2313
 msgid "Number of sent reminders since status is pending"
@@ -29298,9 +29298,9 @@ msgstr[2] "Problemi collegati"
 #: src/NotificationTargetCommonITILObject.php:2570
 msgid "Linked project"
 msgid_plural "Linked projects"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Progetto collegato"
+msgstr[1] "Progetti collegati"
+msgstr[2] "Progetti collegati"
 
 #: src/NotificationTargetCommonITILObject.php:2357
 msgid "No defined category"
@@ -30641,7 +30641,7 @@ msgstr "Tipo di oggetto"
 
 #: src/State.php:383
 msgid "Visible"
-msgstr ""
+msgstr "Visibile"
 
 #: src/State.php:926
 #, php-format
@@ -31438,12 +31438,12 @@ msgstr "Crea un figlio per questa attività di progetto"
 #: src/ProjectTask.php:1491
 msgctxt "button"
 msgid "Affect to team"
-msgstr ""
+msgstr "Gruppo interessato"
 
 #: src/ProjectTask.php:1492
 msgctxt "button"
 msgid "Unaffect to team"
-msgstr ""
+msgstr "Gruppo non interessato"
 
 #: src/ProjectTask.php:1552 src/Project.php:1423
 msgid "Add a team member"
@@ -32179,7 +32179,7 @@ msgstr "Impossibile ridimensionare l'immagine"
 
 #: src/UploadHandler.php:532
 msgid "Invalid file type"
-msgstr ""
+msgstr "Tipo file non valido"
 
 #: src/Item_Problem.php:53
 msgid "Problem item"
@@ -34757,7 +34757,7 @@ msgstr "Nome posizione"
 #: src/NotificationTargetTicket.php:637
 msgctxt "quantity"
 msgid "Number of linked project tasks"
-msgstr ""
+msgstr "Numero di attività del progetto collegate"
 
 #: src/NotificationTargetTicket.php:652
 msgid "Solution rejection comment"
@@ -34774,9 +34774,9 @@ msgstr "Data rifiuto soluzione"
 #: src/NotificationTargetTicket.php:829 src/NotificationTargetTicket.php:834
 msgid "Linked project task"
 msgid_plural "Linked project tasks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Attività del progetto correlata"
+msgstr[1] "Attività del progetto correlate"
+msgstr[2] "Attività del progetto correlate"
 
 #: src/SNMPCredential.php:55
 msgid "SNMP credential"

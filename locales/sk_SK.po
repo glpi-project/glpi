@@ -11,6 +11,7 @@
 # feonsu <feonsu@gmail.com>, 2026
 # Peto (wt-ts) <peter.tuharsky@gmail.com>, 2026
 # Cédric Anne, 2026
+# Radoslav Koren, 2026
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-06 10:07+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: Cédric Anne, 2026\n"
+"Last-Translator: Radoslav Koren, 2026\n"
 "Language-Team: Slovak (Slovakia) (https://app.transifex.com/glpi/teams/1637/sk_SK/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1162,7 +1163,7 @@ msgstr "Panel"
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Prejsť na hlavný obsah"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -2766,7 +2767,7 @@ msgstr ""
 
 #: templates/components/form/file_uploader.html.twig
 msgid "Browse Files"
-msgstr ""
+msgstr "Prechádzať súbory"
 
 #: templates/components/form/item_remotemanagement_form.html.twig
 #: templates/components/form/reservation.html.twig
@@ -3065,11 +3066,11 @@ msgstr[3] "Komponenty"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Show password"
-msgstr ""
+msgstr "Ukázať heslo"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Hide password"
-msgstr ""
+msgstr "Skryť heslo"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/pages/tools/kb/modal/sharing.html.twig
@@ -3347,7 +3348,7 @@ msgstr "Upraviť komentár"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Špecifikujte čas"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
@@ -4887,7 +4888,7 @@ msgstr "Pridať nový komponent"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 msgid "No illustration"
-msgstr ""
+msgstr "Bez ilustrácie"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 #, php-format
@@ -5799,7 +5800,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Untitled article"
-msgstr ""
+msgstr "Nepomenovaný článok"
 
 #: templates/pages/tools/kb/article.html.twig
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
@@ -5812,7 +5813,7 @@ msgstr "Viac akcií"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Updated:"
-msgstr ""
+msgstr "Aktualizované:"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "by"
@@ -5820,7 +5821,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "No views"
-msgstr ""
+msgstr "Žiadne zobrazenia"
 
 #: templates/pages/tools/kb/article.html.twig
 #, php-format
@@ -5893,11 +5894,11 @@ msgstr ""
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add Document"
-msgstr ""
+msgstr "Pridať dokument"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Upload a file"
-msgstr ""
+msgstr "Nahrať súbor"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link a document"
@@ -5905,7 +5906,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "optional"
-msgstr ""
+msgstr "voliteľné"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add a description for these documents..."
@@ -5913,11 +5914,11 @@ msgstr ""
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Upload Documents"
-msgstr ""
+msgstr "Nahrať dokumenty"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Search for a document"
-msgstr ""
+msgstr "Hľadať dokument"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link Documents"
@@ -5929,11 +5930,11 @@ msgstr ""
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add article"
-msgstr ""
+msgstr "Pridať článok"
 
 #: templates/pages/tools/kb/permission_entry.html.twig
 msgid "recursive"
-msgstr ""
+msgstr "rekurzívne"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #, php-format
@@ -5949,7 +5950,7 @@ msgstr ""
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 #: src/Glpi/Knowbase/LastUpdateInfo.php:55
 msgid "Deleted user"
-msgstr ""
+msgstr "Odstrániť používateľa"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 msgid "Restore this translation version"
@@ -5957,7 +5958,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 msgid "Restore this version"
-msgstr ""
+msgstr "Obnoviť túto verziu"
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "No comments yet."
@@ -5965,16 +5966,16 @@ msgstr ""
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "Add a comment..."
-msgstr ""
+msgstr "Pridať komentár..."
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "Add comment"
-msgstr ""
+msgstr "Pridať komentár"
 
 #: templates/pages/tools/kb/sidepanel/revisions.html.twig
 #: src/KnowbaseItem.php:1197
 msgid "History"
-msgstr ""
+msgstr "História"
 
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 msgid "Edit comment"
@@ -5983,7 +5984,7 @@ msgstr "Upraviť komentár"
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 #: js/modules/Knowbase/CommentsPanelController.js:205
 msgid "Delete comment"
-msgstr ""
+msgstr "Zmazať komentár"
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
@@ -21616,7 +21617,7 @@ msgstr ""
 
 #: src/Glpi/Inventory/Conf.php:432
 msgid "Add an OAuth client"
-msgstr ""
+msgstr "Pridať OAuth klienta"
 
 #: src/Glpi/Inventory/Conf.php:442
 msgid ""
@@ -22220,7 +22221,7 @@ msgstr "Bezpečnosť"
 
 #: src/Glpi/Security/SecurityConfig.php:89
 msgid "Password Policy"
-msgstr ""
+msgstr "Politika hesiel"
 
 #: src/Glpi/Security/TOTPManager.php:429
 msgid "Too many failed MFA attempts. Please try again later."

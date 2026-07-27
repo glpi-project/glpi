@@ -1124,7 +1124,7 @@ msgstr "Aktywny"
 #: templates/generic_show_form.html.twig src/Computer.php:515
 #: src/DatabaseInstance.php:291
 msgid "Last boot date"
-msgstr "Ostatnia data bootowania"
+msgstr "  Data ostatniego uruchomienia"
 
 #: templates/layout/parts/saved_searches.html.twig src/SavedSearch.php:73
 msgid "Saved search"
@@ -1189,7 +1189,7 @@ msgstr "Pulpit"
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Przejdź do treści głównej"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -1203,7 +1203,7 @@ msgstr "Omijasz potrzebną aktualizację"
 #: front/transfer.action.php:61
 #: src/Glpi/Controller/Helpdesk/IndexController.php:74 src/Html.php:1069
 msgid "Home"
-msgstr "Początek"
+msgstr "Strona główna"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Read-only mode"
@@ -1295,7 +1295,7 @@ msgstr "Menu użytkownika"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Change mode"
-msgstr "Tryb modyfikacji"
+msgstr "  Tryb debugowania"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Debug mode enabled"
@@ -1313,7 +1313,7 @@ msgstr "Pomoc"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "About"
-msgstr "O"
+msgstr "Informacje"
 
 #: templates/layout/parts/user_header.html.twig src/Html.php:931
 msgid "My settings"
@@ -1401,7 +1401,7 @@ msgstr "Profile"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "Ścieżka nawigacji"
 
 #: templates/layout/parts/global_search_form.html.twig
 #: templates/pages/tools/search_knowbaseitem.html.twig
@@ -1411,15 +1411,15 @@ msgstr "Szukaj..."
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "Pasek boczny"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Przełącz nawigację"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Główna nawigacja"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -1846,7 +1846,7 @@ msgstr "Usuń widok osobisty"
 #: js/src/vue/CustomObject/FieldPreview/Field.vue:38
 msgctxt "button"
 msgid "Delete permanently"
-msgstr "Skasuj trwale"
+msgstr "Usuń trwale"
 
 #: templates/components/search/table.html.twig src/Html.php:1691
 #: src/Html.php:1692
@@ -2787,11 +2787,11 @@ msgstr "Podrzędne jednostki"
 
 #: templates/components/form/file_uploader.html.twig
 msgid "Drop files here or click to browse"
-msgstr ""
+msgstr "Upuść pliki tutaj lub kliknij, aby przeglądać"
 
 #: templates/components/form/file_uploader.html.twig
 msgid "Browse Files"
-msgstr ""
+msgstr "Przeglądaj pliki"
 
 #: templates/components/form/item_remotemanagement_form.html.twig
 #: templates/components/form/reservation.html.twig
@@ -3090,11 +3090,11 @@ msgstr[3] "Komponenty"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Show password"
-msgstr ""
+msgstr "Pokaż hasło"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Hide password"
-msgstr ""
+msgstr "Ukryj hasło"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/pages/tools/kb/modal/sharing.html.twig
@@ -3110,7 +3110,7 @@ msgstr "Czyść"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Expected format: a hexadecimal color code, for example #FF0000."
-msgstr ""
+msgstr "Oczekiwany format: szesnastkowy kod koloru, na przykład #FF0000."
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: src/CommonITILValidation.php:1783
@@ -3372,7 +3372,7 @@ msgstr "Modyfikuj komentarz"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Określ czas"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
@@ -3775,7 +3775,7 @@ msgstr "Adres e-mail"
 #: front/ticket_user.form.php:46 front/supplier_ticket.form.php:47
 #: front/problem_user.form.php:50 src/CommonITILObject.php:5106
 msgid "Email followup"
-msgstr "Powiadomienie e-mail:"
+msgstr "Aktualizacja e-mail"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Notifications are disabled because:"
@@ -3813,11 +3813,11 @@ msgstr "Liczba zgłoszeń jako zgłaszający"
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 #, php-format
 msgid "%s was already promoted"
-msgstr "%s był już promowany"
+msgstr "Obiekt %s został już przekształcony"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "Promote to Ticket"
-msgstr "Promowanie na zgłoszenie"
+msgstr "Przekształć w zgłoszenie"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "This entry is \"internal\" (visible only to technicians)"
@@ -3842,7 +3842,7 @@ msgstr "Prywatne"
 #: src/ITILFollowup.php:955 src/ITILFollowupTemplate.php:64
 #: src/ITILFollowupTemplate.php:104
 msgid "Source of followup"
-msgstr "Źródło dalszego działania"
+msgstr "Źródło aktualizacji"
 
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: templates/components/itilobject/timeline/form_task.html.twig
@@ -3854,7 +3854,7 @@ msgstr "Scalony ze zgłoszeniem %1$s"
 #: templates/components/itilobject/timeline/form_task.html.twig
 #, php-format
 msgid "Promoted to Ticket %1$s"
-msgstr "Wypromowany na zgłoszenie %1$s"
+msgstr "Przekształcono w zgłoszenie %1$s"
 
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
@@ -3863,19 +3863,19 @@ msgstr "Wypromowany na zgłoszenie %1$s"
 #: src/NotificationTargetCommonITILObject.php:2331
 msgid "Followup"
 msgid_plural "Followups"
-msgstr[0] "Dalsze działanie"
-msgstr[1] "Dalsze działania"
-msgstr[2] "Dalsze działania"
-msgstr[3] "Dalsze działania"
+msgstr[0] "Aktualizacja"
+msgstr[1] "Aktualizacje"
+msgstr[2] "Aktualizacje"
+msgstr[3] "Aktualizacje"
 
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: src/ITILFollowupTemplate.php:55
 msgid "Followup template"
 msgid_plural "Followup templates"
-msgstr[0] "Szablon dalszego działania"
-msgstr[1] "Szablony dalszego działania"
-msgstr[2] "Szablony dalszego działania"
-msgstr[3] "Szablony dalszego działania"
+msgstr[0] "Szablon aktualizacji"
+msgstr[1] "Szablony aktualizacji"
+msgstr[2] "Szablony aktualizacji"
+msgstr[3] "Szablony  aktualizacji"
 
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: templates/components/itilobject/timeline/form_solution.html.twig
@@ -3883,7 +3883,7 @@ msgstr[3] "Szablony dalszego działania"
 #: front/ticket.form.php:260 front/change.form.php:230
 #: front/problem.form.php:235
 msgid "Save and add to the knowledge base"
-msgstr "Zapisz i dodaj do Bazy wiedzy"
+msgstr "Zapisz i dodaj do bazy wiedzy"
 
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
@@ -4107,7 +4107,7 @@ msgstr "W trakcie"
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
 msgid "Next automatic follow-up scheduled on %s"
-msgstr "Następne automatyczne dalsze działanie zaplanowana na %s"
+msgstr "Następna automatyczna aktualizacja zaplanowana na %s"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
@@ -4221,7 +4221,7 @@ msgstr[3] "Powody oczekiwania"
 
 #: templates/components/itilobject/timeline/pending_reasons.html.twig
 msgid "Automatic follow-up"
-msgstr "Wiadomość automatyczna"
+msgstr "Automatyczna aktualizacja"
 
 #: templates/components/itilobject/timeline/pending_reasons.html.twig
 msgid "Automatic resolution"
@@ -4914,7 +4914,7 @@ msgstr "Dodaj nowe urządzenia"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 msgid "No illustration"
-msgstr ""
+msgstr "Brak ilustracji"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 #, php-format
@@ -5107,7 +5107,7 @@ msgstr "Używaj GLPI"
 
 #: templates/install/blocks/requirements_table.html.twig
 msgid "Test done"
-msgstr "Test wykonany"
+msgstr "Wykonany test"
 
 #: templates/install/blocks/requirements_table.html.twig
 msgid "Results"
@@ -5820,15 +5820,15 @@ msgstr "Dodaj połączony element"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Translation mode enabled, currently editing"
-msgstr ""
+msgstr "Tryb tłumaczenia włączony, obecnie edytuję"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Delete this translation"
-msgstr ""
+msgstr "Usuń to tłumaczenie"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Untitled article"
-msgstr ""
+msgstr "Artykuł bez tytułu"
 
 #: templates/pages/tools/kb/article.html.twig
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
@@ -5837,72 +5837,72 @@ msgstr ""
 #: templates/pages/admin/form/form_section.html.twig
 #: js/src/vue/Kanban/Kanban.vue:1390
 msgid "More actions"
-msgstr "Więcej akcji"
+msgstr "Więcej działań"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Updated:"
-msgstr ""
+msgstr "Zaktualizowano:"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "by"
-msgstr ""
+msgstr "przez"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "No views"
-msgstr ""
+msgstr "Brak wyświetleń"
 
 #: templates/pages/tools/kb/article.html.twig
 #, php-format
 msgid "%s view"
 msgid_plural "%s views"
-msgstr[0] "%s widok"
-msgstr[1] "%s widoki"
-msgstr[2] "%s widoków"
-msgstr[3] "%s widoki"
+msgstr[0] "%s wyświetlenie"
+msgstr[1] "%s wyświetlenia"
+msgstr[2] "%s wyświetlenia"
+msgstr[3] "%s wyświetlenia"
 
 #: templates/pages/tools/kb/article.html.twig
 #, php-format
 msgid "%s translation"
 msgid_plural "%s translations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s tłumaczenie"
+msgstr[1] "%s tłumaczenia"
+msgstr[2] "%s tłumaczenia"
+msgstr[3] "%s tłumaczenia"
 
 #: templates/pages/tools/kb/article.html.twig
 #: js/modules/Knowbase/ArticleController.js:747
 #, javascript-format, php-format
 msgid "%s document"
 msgid_plural "%s documents"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s dokument"
+msgstr[1] "%s dokumenty"
+msgstr[2] "%s dokumenty"
+msgstr[3] "%s dokumenty"
 
 #: templates/pages/tools/kb/article.html.twig
 #: js/modules/Knowbase/ArticleController.js:713
 #, javascript-format, php-format
 msgid "%s related item"
 msgid_plural "%s related items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s powiązany element"
+msgstr[1] "%s powiązanych elementów"
+msgstr[2] "%s powiązanych elementów"
+msgstr[3] "%s powiązanych elementów"
 
 #: templates/pages/tools/kb/article.html.twig
 #: js/modules/Knowbase/CommentsPanelController.js:313
 #, javascript-format, php-format
 msgid "%s comment"
 msgid_plural "%s comments"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%s komentarz"
+msgstr[1] "%s komentarze"
+msgstr[2] "%s komentarze"
+msgstr[3] "%s komentarze"
 
 #: templates/pages/tools/kb/article.html.twig src/KnowbaseItem.php:1252
 #: src/KnowbaseItem.php:1258
 msgid "Schedule visibility"
-msgstr ""
+msgstr "Harmonogram widoczności"
 
 #: templates/pages/tools/kb/article.html.twig
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:751
@@ -5918,92 +5918,92 @@ msgstr "Dokumenty"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Related items"
-msgstr ""
+msgstr "Powiązane elementy"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add Document"
-msgstr ""
+msgstr "Dodaj dokument"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Upload a file"
-msgstr ""
+msgstr "Prześlij plik"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link a document"
-msgstr ""
+msgstr "Połącz dokument"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "optional"
-msgstr ""
+msgstr "opcjonalne"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add a description for these documents..."
-msgstr ""
+msgstr "Dodaj opis do tych dokumentów..."
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Upload Documents"
-msgstr ""
+msgstr "Prześlij dokumenty"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Search for a document"
-msgstr ""
+msgstr "Wyszukaj dokument"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link Documents"
-msgstr ""
+msgstr "Połącz dokumenty"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link to another item"
-msgstr ""
+msgstr "Połącz z innym elementem"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add article"
-msgstr ""
+msgstr "Dodaj artykuł"
 
 #: templates/pages/tools/kb/permission_entry.html.twig
 msgid "recursive"
-msgstr ""
+msgstr "rekursywnie"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #, php-format
 msgid "Before: %s"
-msgstr ""
+msgstr "Przed: %s"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #, php-format
 msgid "After: %s"
-msgstr ""
+msgstr "Po: %s"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 #: src/Glpi/Knowbase/LastUpdateInfo.php:55
 msgid "Deleted user"
-msgstr ""
+msgstr "Usunięty użytkownik"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 msgid "Restore this translation version"
-msgstr ""
+msgstr "Przywróć tę wersję tłumaczenia"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 msgid "Restore this version"
-msgstr ""
+msgstr "Przywróć tę wersję"
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "No comments yet."
-msgstr ""
+msgstr "Brak komentarzy."
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "Add a comment..."
-msgstr ""
+msgstr "Dodaj komentarz..."
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "Add comment"
-msgstr ""
+msgstr "Dodaj komentarz"
 
 #: templates/pages/tools/kb/sidepanel/revisions.html.twig
 #: src/KnowbaseItem.php:1197
 msgid "History"
-msgstr ""
+msgstr "Historia"
 
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 msgid "Edit comment"
@@ -6012,34 +6012,34 @@ msgstr "Edytuj komentarz"
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 #: js/modules/Knowbase/CommentsPanelController.js:205
 msgid "Delete comment"
-msgstr ""
+msgstr "Usuń komentarz"
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
 msgid "Reply..."
-msgstr ""
+msgstr "Odpowiedź..."
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
 msgid "Write a reply..."
-msgstr ""
+msgstr "Napisz odpowiedź..."
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
 msgid "Reply"
-msgstr ""
+msgstr "Odpowiedź"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Articles"
-msgstr ""
+msgstr "Artykuły"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Search..."
-msgstr ""
+msgstr "Szukaj..."
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Search articles"
-msgstr ""
+msgstr "Szukaj artykułów"
 
 #: templates/pages/tools/kb/aside.html.twig
 #: js/src/vue/EntitySelector/EntitySelector.vue:233
@@ -6048,20 +6048,20 @@ msgstr "Wyczyść wyszukiwanie"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Favorites"
-msgstr ""
+msgstr "Ulubione"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Uncategorized"
-msgstr ""
+msgstr "Bez kategorii"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "No articles found."
-msgstr ""
+msgstr "Nie znaleziono artykułów."
 
 #: templates/pages/tools/kb/document_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:618
 msgid "Unlink document"
-msgstr ""
+msgstr "Odłącz dokument"
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
@@ -6141,40 +6141,40 @@ msgstr[3] "Odbiorcy"
 #: templates/pages/tools/kb/related_item_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:663
 msgid "Unlink item"
-msgstr ""
+msgstr "Odłącz element"
 
 #: templates/pages/tools/kb/modal/targets.html.twig
 msgid "Permissions"
-msgstr ""
+msgstr "Uprawnienia"
 
 #: templates/pages/tools/kb/modal/targets.html.twig
 msgid "Sharing"
-msgstr ""
+msgstr "Udostępnianie"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 msgid "Create a sharing link"
-msgstr ""
+msgstr "Utwórz link udostępniania"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 msgid "Link name (optional)"
-msgstr ""
+msgstr "Nazwa łącza (opcjonalnie)"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 #, php-format
 msgid "Link %d"
-msgstr ""
+msgstr "Link %d"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 msgid "No sharing links yet"
-msgstr ""
+msgstr "Brak linków udostępniania"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "Visible from"
-msgstr ""
+msgstr "Widoczne od"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "No start date"
-msgstr ""
+msgstr "Brak daty początkowej"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 #: src/Glpi/Features/PlanningEvent.php:847
@@ -6183,16 +6183,16 @@ msgstr "Aż do"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "No end date"
-msgstr ""
+msgstr "Brak daty końcowej"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 #: src/KnowbaseItem.php:2446
 msgid "Show in service catalog"
-msgstr ""
+msgstr "Pokaż w katalogu usług"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 msgid "Details to display in service catalog"
-msgstr ""
+msgstr "Szczegóły do ​​wyświetlenia w katalogu usług"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 #: templates/pages/admin/form/service_catalog_tab.html.twig
@@ -6202,28 +6202,28 @@ msgstr "Przypnij na górze katalogu usług"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Can be viewed by:"
-msgstr ""
+msgstr "Widoczne dla:"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "This article is not yet visible to anyone."
-msgstr ""
+msgstr "Ten artykuł nie jest jeszcze widoczny dla nikogo."
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Add access for"
-msgstr ""
+msgstr "Dodaj dostęp dla"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Select a type..."
-msgstr ""
+msgstr "Wybierz typ..."
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 #: js/modules/Knowbase/PermissionsFormController.js:37
 msgid "Show advanced options"
-msgstr ""
+msgstr "Pokaż opcje zaawansowane"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Delete target"
-msgstr ""
+msgstr "Usuń docelowy"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 #: src/CommonDBVisible.php:302
@@ -6236,7 +6236,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "An error occurred while deleting the permission."
-msgstr ""
+msgstr "Wystąpił błąd podczas usuwania uprawnienia."
 
 #: templates/pages/tools/project.html.twig
 #: templates/pages/setup/webhook/queuedwebhook.html.twig
@@ -7593,7 +7593,7 @@ msgstr "Wsparcie"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Private followups by default"
-msgstr "Śledzenia domyślnie są prywatne"
+msgstr "Domyślnie prywatne aktualizacje"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show new tickets on the home page"
@@ -7629,7 +7629,7 @@ msgstr "Ustaw mnie jako zgłaszającego przy tworzeniu zgłoszenia"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Add me as a technician when adding a ticket follow-up"
-msgstr "Dodaj mnie jako technika podczas dodawania uzupełnienia do zgłoszenia"
+msgstr "Dodawaj mnie jako technika przy dodawaniu aktualizacji do zgłoszenia"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Add me as a technician when adding a ticket solution"
@@ -8055,7 +8055,7 @@ msgstr "Dodany element"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Log.php:1245
 msgid "Delete the item"
-msgstr "Skasuj element"
+msgstr "Usuń element"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Log.php:1257
 msgid "Restore the item"
@@ -8248,7 +8248,7 @@ msgstr "Status zadań w toku"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Status of tasks done"
-msgstr "Status zadań wykonanych"
+msgstr "Status wykonanych zadań"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Auto Login"
@@ -9040,10 +9040,12 @@ msgid ""
 "No way of sending emails available in PHP mode. Maybe there is a bad PHP "
 "configuration?"
 msgstr ""
+"Brak możliwości wysyłania e-maili w trybie PHP. Może konfiguracja PHP jest "
+"błędna?"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "The use of an SMTP option is needed."
-msgstr ""
+msgstr "Wymagane jest użycie opcji SMTP."
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Way of sending emails"
@@ -9662,7 +9664,7 @@ msgstr "Dziedzicz z nadrzędnej jednostki"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Authentication code"
-msgstr ""
+msgstr "Kod uwierzytelniający"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "2FA is required for your account"
@@ -9677,12 +9679,16 @@ msgid ""
 "Install an authenticator app on your mobile device such as Google "
 "Authenticator or Authy."
 msgstr ""
+"Zainstaluj aplikację uwierzytelniającą na swoim urządzeniu mobilnym, np. "
+"Google Authenticator lub Authy."
 
 #: templates/pages/2fa/macros.html.twig
 msgid ""
 "Scan the following QR code or enter the code shown into your authenticator "
 "app."
 msgstr ""
+"Zeskanuj poniższy kod QR lub wprowadź wyświetlony kod w aplikacji "
+"uwierzytelniającej."
 
 #: templates/pages/2fa/macros.html.twig
 msgid "QR Code"
@@ -9697,6 +9703,8 @@ msgid ""
 "After entering the code into your authenticator, enter the code shown in the"
 " app to finish the setup"
 msgstr ""
+"Po wpisaniu kodu do urządzenia uwierzytelniającego wpisz kod wyświetlony w "
+"aplikacji, aby zakończyć konfigurację"
 
 #: templates/pages/2fa/macros.html.twig
 #, php-format
@@ -10251,7 +10259,7 @@ msgstr "Zadania wsparcia"
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "When reported by GLPI agent via native inventory"
 msgstr ""
-"Gdy zgłaszane przez agenta GLPI za pośrednictwem natywnej inwentaryzacji"
+"Gdy zostanie zgłoszone przez agenta GLPI za pomocą wbudowanej inwentaryzacji"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:187
 msgid "Wake on LAN"
@@ -11263,7 +11271,7 @@ msgstr "Uprawnienia Jednostki"
 
 #: templates/pages/admin/profile/search_list.html.twig
 msgid "Hidden fields in search and column selection"
-msgstr ""
+msgstr "Ukryte pola w wyszukiwaniu i wyborze kolumn"
 
 #: templates/pages/admin/profile/search_list.html.twig
 msgid "Map"
@@ -11271,7 +11279,7 @@ msgstr "Mapa"
 
 #: templates/pages/admin/profile/search_list.html.twig
 msgid "Show map button in lists"
-msgstr ""
+msgstr "Pokaż przycisk mapy na listach"
 
 #: templates/pages/admin/profile/assistance_simple.html.twig
 #: templates/pages/admin/profile/assistance.html.twig
@@ -11912,8 +11920,8 @@ msgstr "Automatyczne przydzielanie zgłoszeń, zmian i problemów"
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Mark followup added by a supplier though an email collector as private"
 msgstr ""
-"Oznacz kontynuację dodaną przez dostawcę poprzez kolektor email jako "
-"prywatną"
+"Oznaczaj aktualizacje dodane przez dostawcę za pośrednictwem kolektora "
+"poczty jako prywatne"
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:2530
 msgid "Replace the agent and group name with a generic name"
@@ -12718,16 +12726,16 @@ msgstr "Maksymalna szerokość"
 
 #: templates/pages/assets/plug.html.twig src/Plug.php:240
 msgid "Custom name"
-msgstr ""
+msgstr "Nazwa niestandardowa"
 
 #: templates/pages/assets/plug.html.twig src/Plug.php:298 src/Plug.php:310
 msgid "Support type"
-msgstr ""
+msgstr "Typ wsparcia"
 
 #: templates/pages/assets/plug.html.twig src/Plug.php:241 src/Plug.php:322
 #: src/Plug.php:334
 msgid "Associated asset"
-msgstr ""
+msgstr "Powiązany zasób"
 
 #: templates/pages/assets/socket.html.twig
 #: templates/pages/assets/cable.html.twig src/Glpi/Socket.php:341
@@ -12865,17 +12873,17 @@ msgstr ""
 #: install/migrations/update_9.4.1_to_9.4.2.php:78
 msgid "Fix URL of images in ITIL tasks, followups and solutions."
 msgstr ""
-"Napraw adresy URL obrazów w zadaniach ITIL, wiadomościach i rozwiązaniach."
+"Popraw adresy URL obrazów w zadaniach, aktualizacjach i rozwiązaniach."
 
 #: install/migrations/update_11.0.x_to_12.0.0/documents.php:51
 #, php-format
 msgid "%d documents do not have their size recorded in the database."
-msgstr ""
+msgstr "Rozmiar %d dokumentów nie został odnotowany w bazie danych."
 
 #: install/migrations/update_11.0.x_to_12.0.0/documents.php:53
 #, php-format
 msgid "Run the \"%1$s\" command to compute them."
-msgstr ""
+msgstr "Uruchom polecenie \"%1$s\", aby je obliczyć."
 
 #: install/migrations/update_10.0.x_to_11.0.0/validationsteps.php:98
 #: src/CommonITILValidation.php:149 src/Glpi/Helpdesk/Tile/GlpiPageTile.php:95
@@ -15647,7 +15655,7 @@ msgstr "Zapomniana inicjalizacja"
 #: front/databaseinstance.form.php:65
 #, php-format
 msgid "%s links a database instance"
-msgstr ""
+msgstr "%s powiązał instancję bazy danych"
 
 #. TRANS: %s is the user login
 #: front/databaseinstance.form.php:79
@@ -15803,7 +15811,7 @@ msgstr "%s zamienił element"
 #: front/itilfollowup.form.php:66
 #, php-format
 msgid "%s adds a followup"
-msgstr "%s dodał śledzenie"
+msgstr "%s dodał aktualizację"
 
 #. TRANS: %s is the user login
 #: front/itilfollowup.form.php:87
@@ -15815,13 +15823,13 @@ msgstr "%s potwierdził lub odmówił rozwiązania"
 #: front/itilfollowup.form.php:100
 #, php-format
 msgid "%s updates a followup"
-msgstr "%s zaktualizował śledzenie"
+msgstr "%s zmodyfikował aktualizację"
 
 #. TRANS: %s is the user login
 #: front/itilfollowup.form.php:114
 #, php-format
 msgid "%s purges a followup"
-msgstr "%s wyczyścił śledzenie"
+msgstr "%s usunął aktualizację"
 
 #: front/lostpassword.php:50
 msgid "Sending password forget notification is not enabled."
@@ -15921,12 +15929,12 @@ msgstr "Formularz bez tytułu"
 #: front/reservation.form.php:109
 #, php-format
 msgid "%1$s updates reservation %2$s for %3$s %4$s"
-msgstr ""
+msgstr "%1$s zaktualizował rezerwację%2$s dla %3$s %4$s"
 
 #: front/reservation.form.php:135
 #, php-format
 msgid "%1$s purges reservation %2$s for %3$s %4$s"
-msgstr ""
+msgstr "%1$s trwale usunął rezerwację %2$s dla %3$s %4$s"
 
 #: front/itiltemplatefield.form.php:78
 msgid "hidden"
@@ -16504,7 +16512,7 @@ msgstr "Odinstaluj oprogramowanie"
 
 #: src/Log.php:1289
 msgid "Disconnect an item"
-msgstr "Odłączono element"
+msgstr "Odłącz element"
 
 #: src/Log.php:1293 src/Glpi/Asset/Asset_PeripheralAsset.php:351
 msgid "Connect an item"
@@ -16520,7 +16528,7 @@ msgstr "Odśwież połączenie z elementem"
 
 #: src/Log.php:1305
 msgid "Delete a link with an item"
-msgstr "Skasuj link z elementem"
+msgstr "Usuń link z elementem"
 
 #: src/Log.php:1309
 msgid "Lock a link with an item"
@@ -16733,7 +16741,7 @@ msgstr "Synchronizacja"
 #: src/Entity_KnowbaseItem.php:69 src/KnowbaseItem_Profile.php:70
 #: src/Group_KnowbaseItem.php:70 src/KnowbaseItem_User.php:66
 msgid "This target already exists for this article."
-msgstr ""
+msgstr "To powiązanie już istnieje dla tego artykułu."
 
 #: src/RuleDictionnaryOperatingSystemVersionCollection.php:43
 msgid "Dictionary of operating system versions"
@@ -16795,7 +16803,7 @@ msgstr "inny komponent"
 
 #: src/ITILFollowup.php:424
 msgid "You can't add a followup without description"
-msgstr "Nie możesz dodać wiadomości bez opisu"
+msgstr "Nie można dodać aktualizacji bez opisu."
 
 #: src/ITILFollowup.php:446
 msgid "Solution approved"
@@ -16850,15 +16858,15 @@ msgstr[3] "Najnowsze daty"
 #: src/ITILFollowup.php:816 src/NotificationTargetCommonITILObject.php:2180
 msgctxt "quantity"
 msgid "Number of followups"
-msgstr "Liczba śledzeń"
+msgstr "Liczba aktualizacji"
 
 #: src/ITILFollowup.php:850
 msgid "Private followup"
-msgstr "Prywatne śledzenie"
+msgstr "Prywatna aktualizacja"
 
 #: src/ITILFollowup.php:952 src/Ticket.php:2213
 msgid "Add a new followup"
-msgstr "Dodaj nowe śledzenie"
+msgstr "Dodaj nową aktualizację"
 
 #: src/Calendar_Holiday.php:141 src/Holiday.php:64 src/Holiday.php:95
 msgid "Recurrent"
@@ -17658,7 +17666,7 @@ msgstr "Dodaj nowy koszt"
 
 #: src/ContractCost.php:416 src/CommonITILCost.php:616 src/ProjectCost.php:376
 msgid "Modification date"
-msgstr ""
+msgstr "Data modyfikacji"
 
 #: src/ContractCost.php:417 src/CommonITILCost.php:617
 #: src/NotificationTargetCommonITILObject.php:2120 src/Notepad.php:300
@@ -17952,7 +17960,7 @@ msgstr[3] "Źródła aktualizacji"
 
 #: src/AutoUpdateSystem.php:49
 msgid "GLPI Native Inventory"
-msgstr "Natywne zasoby GLPI"
+msgstr "Wbudowana inwentaryzacja GLPI"
 
 #: src/DCRoom.php:56
 msgid "Server room"
@@ -18525,7 +18533,7 @@ msgstr "MM-DD-YYYY"
 
 #: src/Toolbox.php:2762
 msgid "DD.MM.YYYY"
-msgstr ""
+msgstr "DD.MM.YYYY"
 
 #: src/CommonITILTask.php:490
 msgid "You can't remove description of a task."
@@ -18564,7 +18572,7 @@ msgstr[3] "Kategorie zadań"
 
 #: src/CommonITILTask.php:977
 msgid "Public followup"
-msgstr "Śledzenie publicznie"
+msgstr "Publiczna aktualizacja"
 
 #: src/CommonITILTask.php:1093
 msgid "Private task"
@@ -18940,7 +18948,7 @@ msgstr "Odblokuj element"
 #: src/CommonDBTM.php:4161
 msgctxt "button"
 msgid "Associate to an appliance"
-msgstr "Połącz z urządzeniem"
+msgstr "Przypisz do systemu"
 
 #: src/CommonDBTM.php:4166
 msgctxt "button"
@@ -19033,12 +19041,12 @@ msgstr[3] "Materiały"
 #: src/Consumable.php:156
 #, php-format
 msgid "Return %1$s (%2$s) to stock"
-msgstr ""
+msgstr "Zwrot %1$s (%2$s) do magazynu"
 
 #: src/Consumable.php:216
 #, php-format
 msgid "%1$s (%2$s) given to: %3$s (%4$s id %5$s)"
-msgstr ""
+msgstr "%1$s (%2$s)  wydano: %3$s (%4$s id %5$s)"
 
 #: src/Consumable.php:246 src/Consumable.php:709 src/Cartridge.php:860
 #: src/Cartridge.php:1157
@@ -19087,7 +19095,7 @@ msgstr[3] "W użyciu"
 
 #: src/Consumable.php:708 src/NetworkPort.php:1478
 msgid "Delete permanently"
-msgstr "Skasuj trwale"
+msgstr "Usuń trwale"
 
 #: src/Consumable.php:779
 msgid "Give to"
@@ -19920,11 +19928,11 @@ msgstr "Jednostka wnioskodawcy"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILFollowupFieldStrategy.php:46
 msgid "No Followup"
-msgstr "Brak śledzenia"
+msgstr "Brak aktualizacji"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILFollowupFieldStrategy.php:47
 msgid "Specific Followup templates"
-msgstr "Wybrane szablony śledzenia"
+msgstr "Dedykowane szablony aktualizacji"
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestSourceField.php:83
 msgid "Select a request source..."
@@ -19932,7 +19940,7 @@ msgstr "Wybierz źródło zgłoszenia..."
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILFollowupField.php:88
 msgid "Select followup templates..."
-msgstr "Wybierz szablony śledzenia..."
+msgstr "Wybierz szablony aktualizacji..."
 
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:55
 #, php-format
@@ -20561,7 +20569,7 @@ msgstr "Zasoby"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:432
 msgid "Allow multiple items"
-msgstr ""
+msgstr "Zezwalaj na wiele elementów"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:581
 msgid "GLPI Object"
@@ -20740,18 +20748,18 @@ msgstr "Strona zewnętrzna"
 #: src/Glpi/RichText/VideoEmbedRenderer.php:96
 #, php-format
 msgid "%s video player"
-msgstr ""
+msgstr "odtwarzacz wideo %s"
 
 #: src/Glpi/RichText/VideoEmbedRenderer.php:129
 #: js/modules/TipTap/VideoEmbedExtension.js:395
 msgid "Embedded video"
-msgstr ""
+msgstr "Osadzone wideo"
 
 #: src/Glpi/RichText/VideoEmbedRenderer.php:286
 #: js/modules/TipTap/VideoEmbedExtension.js:390
 #: js/modules/TipTap/SlashCommandsExtension.js:293
 msgid "Video"
-msgstr ""
+msgstr "Wideo"
 
 #: src/Glpi/RichText/RichText.php:519
 msgid "Next (arrow right)"
@@ -20882,13 +20890,13 @@ msgid ""
 "Can be part of an appliance. An appliance is a virtual object that groups "
 "several assets"
 msgstr ""
-"Może być częścią urządzenia. Urządzenie to wirtualny obiekt, który grupuje "
-"kilka zasobów."
+"Może być częścią systemu. System to wirtualny obiekt, który grupuje kilka "
+"zasobów."
 
 #: src/Glpi/Asset/Capacity/HasAppliancesCapacity.php:78
 #, php-format
 msgid "%1$s appliances attached to %2$s assets"
-msgstr "%1$s urządzeń połączone z %2$s zasobów"
+msgstr "%1$s systemów połączone z %2$s zasobów"
 
 #: src/Glpi/Asset/Capacity/HasCertificatesCapacity.php:59
 msgid "Track certificates used by the assets"
@@ -20918,7 +20926,7 @@ msgstr "Posiada wtyczki zasilające. Zwykle związane z PDU lub UPS."
 #: src/Glpi/Asset/Capacity/HasPlugCapacity.php:88
 #, php-format
 msgid "%1$s plugs declared on %2$s assets"
-msgstr ""
+msgstr "%1$s wtyczki zadeklarowane dla %2$s zasobów"
 
 #: src/Glpi/Asset/Capacity/HasNetworkPortCapacity.php:65
 msgid "Has network ports (like ethernet and wlan)"
@@ -21654,13 +21662,15 @@ msgstr "Uwierzytelnianie podstawowe"
 
 #: src/Glpi/Inventory/Conf.php:414
 msgid "None (not recommended)"
-msgstr ""
+msgstr "Brak (niezalecane)"
 
 #: src/Glpi/Inventory/Conf.php:424
 msgid ""
 "Using OAuth Client Credentials requires a registered OAuth client with the "
 "\"inventory\" scope."
 msgstr ""
+"Aby korzystać z poświadczeń klienta OAuth, wymagany jest zarejestrowany "
+"klient OAuth z zakresem „inventory”."
 
 #: src/Glpi/Inventory/Conf.php:427
 #, php-format
@@ -21668,10 +21678,12 @@ msgid ""
 "The generated client ID and secret must then be set in the GLPI Agent "
 "configuration using the %s and %s parameters."
 msgstr ""
+"Wygenerowany identyfikator klienta i klucz tajny należy następnie ustawić w "
+"konfiguracji agenta GLPI za pomocą parametrów %s i %s."
 
 #: src/Glpi/Inventory/Conf.php:432
 msgid "Add an OAuth client"
-msgstr ""
+msgstr "Dodaj klienta OAuth"
 
 #: src/Glpi/Inventory/Conf.php:442
 msgid ""
@@ -21679,6 +21691,9 @@ msgid ""
 "security risk. Any agent will be able to send inventory data without "
 "verification."
 msgstr ""
+"Nie zaleca się stosowania uwierzytelniania w przypadku inwentaryzacji i "
+"stanowi to zagrożenie bezpieczeństwa. Każdy agent będzie mógł przesyłać dane"
+" inwentaryzacyjne bez weryfikacji."
 
 #: src/Glpi/Inventory/Conf.php:502
 msgid "Import options"
@@ -21767,6 +21782,8 @@ msgstr "Niektóre właściwości nie są znane: %1$s"
 msgid ""
 "Inventory is enabled. Please select a valid authorization header method."
 msgstr ""
+"Inwentaryzacja jest włączona. Wybierz prawidłową metodę autoryzacji "
+"nagłówka."
 
 #: src/Glpi/Inventory/Conf.php:1221
 msgid ""
@@ -22278,11 +22295,13 @@ msgstr "Bezpieczeństwo"
 
 #: src/Glpi/Security/SecurityConfig.php:89
 msgid "Password Policy"
-msgstr ""
+msgstr "Polityka haseł"
 
 #: src/Glpi/Security/TOTPManager.php:429
 msgid "Too many failed MFA attempts. Please try again later."
 msgstr ""
+"Zbyt wiele nieudanych prób uwierzytelnienia wieloskładnikowego (MFA). "
+"Spróbuj ponownie później."
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:341
 #: src/Glpi/CustomObject/AbstractDefinition.php:374
@@ -22803,19 +22822,21 @@ msgstr ""
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:54
 msgid "Check user picture references that no longer exist on the filesystem."
 msgstr ""
+"Sprawdź odniesienia do zdjęć użytkownika, które już nie istnieją w systemie "
+"plików."
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:60
 msgid "Clear orphaned picture references from the database."
-msgstr ""
+msgstr "Usuń z bazy danych porzucone odniesienia do zdjęć."
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:71
 #, php-format
 msgid "Checking user #%s \"%s\" (%s)..."
-msgstr ""
+msgstr "Sprawdzanie użytkownika #%s \"%s\" (%s)..."
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:100
 msgid "Orphaned picture references have been cleared."
-msgstr ""
+msgstr "Usunięto porzucone odniesienia do zdjęć."
 
 #: src/Glpi/Console/Diagnostic/CheckOrphanedUserPicturesCommand.php:160
 #: src/Glpi/Console/Diagnostic/CheckDocumentsIntegrityCommand.php:162
@@ -23426,7 +23447,7 @@ msgstr ""
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:160
 msgid "Any previous appliance created in core will be lost."
-msgstr "Wszystkie wcześniej utworzone aparaty w jądrze GLPi zostaną utracone."
+msgstr "Wszystkie wcześniej utworzone systemy w jądrze GLPi zostaną utracone."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:190
 #, php-format
@@ -23457,21 +23478,21 @@ msgstr "Migracja tabeli \"%s\" nie powiodła się z komunikatem \"(%s) %s\"."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:369
 msgid "Creating Appliance Items..."
-msgstr "Tworzenie elementów Aparatów..."
+msgstr "Tworzenie elementów systemu..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:386
 #, php-format
 msgid "Importing Appliance item \"%d\"..."
-msgstr "Importowanie elementu urządzenia \"%d\"..."
+msgstr "Importowanie elementu systemu \"%d\"..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:407
 #, php-format
 msgid "Unable to create Appliance item %d."
-msgstr "Nie można utworzyć urządzenia %d."
+msgstr "Nie można utworzyć elementu systemu %d."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:429
 msgid "Creating Appliance Environment..."
-msgstr "Tworzenie środowiska urządzenia..."
+msgstr "Tworzenie środowiska systemu..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:446
 #, php-format
@@ -23482,25 +23503,25 @@ msgstr "Importowanie środowiska \"%s\"..."
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:603
 #, php-format
 msgid "Unable to create Appliance environment %s (%d)."
-msgstr "Nie można utworzyć środowiska urządzenia %s(%d)."
+msgstr "Nie można utworzyć środowiska systemu %s(%d)."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:488
 msgid "Creating Appliances..."
-msgstr "Tworzenie urządzeń..."
+msgstr "Tworzenie systemów..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:504
 #, php-format
 msgid "Importing appliance \"%s\"..."
-msgstr "Importowanie urządzenia \"%s\"..."
+msgstr "Importowanie systemu \"%s\"..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:541
 #, php-format
 msgid "Unable to create Appliance %s (%d)."
-msgstr "Nie można utworzyć urządzenia %s(%d)."
+msgstr "Nie można utworzyć systemu %s(%d)."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:563
 msgid "Creating Appliance types..."
-msgstr "Tworzenie Typów urządzenia..."
+msgstr "Tworzenie typów systemów..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:580
 #, php-format
@@ -23509,7 +23530,7 @@ msgstr "Importowanie typu \"%s\"..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:625
 msgid "Creating Appliance relations..."
-msgstr "Tworzenie relacji urządzenia..."
+msgstr "Tworzenie relacji systemu..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:657
 #, php-format
@@ -23519,12 +23540,13 @@ msgstr "Importowanie relacji \"%s\"..."
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:668
 #, php-format
 msgid "Unable to found relation type %s from Appliance Item Relation %d."
-msgstr "Nie można odnaleźć relacji typu %s dla relacji element-urządzenie %d."
+msgstr ""
+"Nie można odnaleźć typu powiązania %s  dla relacji elementu systemu %d."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:695
 #, php-format
 msgid "Unable to create Appliance Item Relation %d."
-msgstr "Nie można utworzyć relacji urządzenia %d."
+msgstr "Nie można utworzyć relacji elementu systemu. %d."
 
 #: src/Glpi/Console/Migration/AbstractPluginMigrationCommand.php:73
 msgid "Simulate the migration"
@@ -23647,17 +23669,17 @@ msgstr "Wykonywanie komendy \"%s\"..."
 
 #: src/Glpi/Console/Migration/ComputeDocumentsSizeCommand.php:56
 msgid "Computes the missing file sizes in the database."
-msgstr ""
+msgstr "Oblicza brakujące rozmiary plików w bazie danych."
 
 #: src/Glpi/Console/Migration/ComputeDocumentsSizeCommand.php:72
 #, php-format
 msgid "Computing %s files..."
-msgstr ""
+msgstr "Obliczanie%s plików..."
 
 #: src/Glpi/Console/Migration/ComputeDocumentsSizeCommand.php:83
 #, php-format
 msgid "Unable to read the file `%s` size."
-msgstr ""
+msgstr "Nie można odczytać rozmiaru pliku. `%s`."
 
 #: src/Glpi/Console/Migration/DynamicRowFormatCommand.php:67
 msgid ""
@@ -25729,26 +25751,26 @@ msgstr "Uprawnienia do plików dziennika"
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:79
 #, php-format
 msgid "The log directory %s could not be created."
-msgstr ""
+msgstr "Nie udało się utworzyć katalogu dziennika %s."
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:86
 #, php-format
 msgid "The log directory %s is not writable."
-msgstr ""
+msgstr "Katalog dziennika %s nie jest zapisywalny."
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:98
 #, php-format
 msgid "The log file %s is not writable."
-msgstr ""
+msgstr "Plik dziennika %s nie jest zapisywalny."
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:105
 #, php-format
 msgid "The log file %s could not be created."
-msgstr ""
+msgstr "Nie udało się utworzyć pliku dziennika %s."
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:111
 msgid "Write access to log files has been validated."
-msgstr ""
+msgstr "Możliwość zapisu do plików dziennika została potwierdzona."
 
 #: src/Glpi/System/Requirement/Extension.php:57
 #, php-format
@@ -25804,29 +25826,29 @@ msgstr "Plik dziennika"
 #: src/Glpi/Knowbase/History/TranslationRevisionEvent.php:56
 #, php-format
 msgid "%s — Version %s"
-msgstr ""
+msgstr "%s — Wersja %s"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:257
 #, php-format
 msgid "Access granted to %s by"
-msgstr ""
+msgstr "Dostęp do %s przyznany przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:258
 #, php-format
 msgid "Access revoked from %s by"
-msgstr ""
+msgstr "Dostęp do %s odwołany przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:261
 msgid "Permissions updated"
-msgstr ""
+msgstr "Zaktualizowano uprawnienia"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:292
 msgid "Sharing enabled"
-msgstr ""
+msgstr "Udostępnianie włączone"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:292
 msgid "Sharing disabled"
-msgstr ""
+msgstr "Udostępnianie wyłączone"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:293
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:319
@@ -25835,129 +25857,129 @@ msgstr ""
 #: src/Glpi/Knowbase/History/CurrentTranslationEvent.php:58
 #: src/Glpi/Knowbase/History/CurrentVersionLogEvent.php:45
 msgid "Updated by"
-msgstr ""
+msgstr "Zaktualizowano przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:318
 msgid "Renamed"
-msgstr ""
+msgstr "Zmieniono nazwę"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:350
 msgid "Added to the FAQ"
-msgstr ""
+msgstr "Dodano do FAQ"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:351
 msgid "Removed from the FAQ"
-msgstr ""
+msgstr "Usunięto z FAQ"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:405
 msgid "Item linked"
-msgstr ""
+msgstr "Element powiązany"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:406
 msgid "Item unlinked"
-msgstr ""
+msgstr "Element odłączony"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:410
 #, php-format
 msgid "%s — Linked by"
-msgstr ""
+msgstr "%s — powiązany przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:410
 #, php-format
 msgid "%s — Unlinked by"
-msgstr ""
+msgstr "%s — odłączone przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:453
 msgid "Added to category"
-msgstr ""
+msgstr "Dodano do kategorii"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:454
 msgid "Removed from category"
-msgstr ""
+msgstr "Usunięto z kategorii"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:458
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:506
 #, php-format
 msgid "%s — Added by"
-msgstr ""
+msgstr "%s — Dodane przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:458
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:506
 #, php-format
 msgid "%s — Removed by"
-msgstr ""
+msgstr "%s — Usunięte przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:501
 msgid "File added"
-msgstr ""
+msgstr "Plik dodany"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:502
 msgid "File removed"
-msgstr ""
+msgstr "Plik usunięty"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:542
 msgid "Illustration removed by"
-msgstr ""
+msgstr "Ilustracja usunięta przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:547
 msgid "Custom illustration set by"
-msgstr ""
+msgstr "Własną ilustrację ustawił"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:549
 msgid "Native illustration set by"
-msgstr ""
+msgstr "Domyślną ilustrację ustawił"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:553
 msgid "Illustration updated"
-msgstr ""
+msgstr "Ilustracja zaktualizowana"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:591
 msgid "Added to the service catalog by"
-msgstr ""
+msgstr "Dodano do katalogu usług przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:592
 msgid "Removed from the service catalog by"
-msgstr ""
+msgstr "Usunięto z katalogu usług przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:595
 msgid "Pinned to the top by"
-msgstr ""
+msgstr "Przypięte na górze przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:596
 msgid "Unpinned from the top by"
-msgstr ""
+msgstr "Odpięte od góry przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:598
 msgid "Description updated by"
-msgstr ""
+msgstr "Opis zaktualizowany przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:599
 msgid "Category updated by"
-msgstr ""
+msgstr "Kategoria zaktualizowana przez"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:606
 msgid "Service catalog updated"
-msgstr ""
+msgstr "Zaktualizowano katalog usług"
 
 #: src/Glpi/Knowbase/History/CreationEvent.php:49
 #: src/Glpi/Knowbase/History/CurrentVersionLogEvent.php:44
 msgid "Current version"
-msgstr ""
+msgstr "Aktualna wersja"
 
 #: src/Glpi/Knowbase/History/CreationEvent.php:55
 #: src/Glpi/Knowbase/History/RevisionEvent.php:57
 msgid "Created by"
-msgstr ""
+msgstr "Stworzone przez"
 
 #: src/Glpi/Knowbase/History/RevisionEvent.php:51
 #, php-format
 msgid "Version %s"
-msgstr ""
+msgstr "Wersja %s"
 
 #: src/Glpi/Knowbase/History/CurrentTranslationEvent.php:52
 #, php-format
 msgid "%s — Current version"
-msgstr ""
+msgstr "%s — Aktualna wersja"
 
 #: src/Glpi/Mail/SMTP/OauthProvider/Azure.php:68
 msgctxt "oauth"
@@ -26067,24 +26089,24 @@ msgstr "Domyślny (z profilu użytkownika)"
 
 #: src/Glpi/Controller/Knowbase/RevertTranslationRevisionController.php:101
 msgid "Failed to restore the translation revision."
-msgstr ""
+msgstr "Nie udało się przywrócić wersji tłumaczenia."
 
 #: src/Glpi/Controller/Knowbase/DeleteTranslationController.php:78
 msgid "Translation not found"
-msgstr ""
+msgstr "Tłumaczenie nie zostało znalezione"
 
 #: src/Glpi/Controller/Knowbase/DeleteTranslationController.php:86
 #: js/modules/Knowbase/ArticleController.js:1540
 msgid "Translation deleted successfully"
-msgstr ""
+msgstr "Tłumaczenie zostało pomyślnie usunięte"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:85
 msgid "Missing required fields"
-msgstr ""
+msgstr "Brak wymaganych pól"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:95
 msgid "Content cannot be empty"
-msgstr ""
+msgstr "Zawartość nie może być pusta"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:108
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:154
@@ -26092,30 +26114,30 @@ msgstr ""
 #: js/modules/Knowbase/ArticleController.js:1136
 #: js/modules/Knowbase/ArticleController.js:1447
 msgid "Title cannot be empty"
-msgstr ""
+msgstr "Tytuł nie może być pusty"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:146
 #: js/modules/Knowbase/ArticleController.js:1481
 msgid "Translation saved successfully"
-msgstr ""
+msgstr "Tłumaczenie zostało pomyślnie zapisane"
 
 #: src/Glpi/Controller/Knowbase/DeleteArticleController.php:60
 msgid "Item successfully deleted."
-msgstr ""
+msgstr "Element został pomyślnie usunięty."
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:135
 msgid "Missing answer content"
-msgstr ""
+msgstr "Brak treści odpowiedzi"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:169
 #: js/modules/Knowbase/ArticleController.js:1119
 #: js/modules/Knowbase/ArticleController.js:1499
 msgid "Article saved successfully"
-msgstr ""
+msgstr "Artykuł zapisany pomyślnie"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:175
 msgid "Failed to save the article"
-msgstr ""
+msgstr "Nie udało się zapisać artykułu"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:233
 #: src/Glpi/Search/Provider/SQLProvider.php:6955 src/KnowbaseItem.php:1992
@@ -26124,15 +26146,15 @@ msgstr "Ta pozycja nie została jeszcze opublikowana"
 
 #: src/Glpi/Controller/Knowbase/RevertRevisionController.php:81
 msgid "Failed to restore the revision."
-msgstr ""
+msgstr "Nie udało się przywrócić wersji."
 
 #: src/Glpi/Controller/Knowbase/RevertRevisionController.php:85
 msgid "Article restored successfully."
-msgstr ""
+msgstr "Artykuł został pomyślnie przywrócony."
 
 #: src/Glpi/Controller/ShareTokenController.php:96
 msgid "Failed to create share link"
-msgstr ""
+msgstr "Nie udało się utworzyć linku udostępniania"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:227
 #, php-format
@@ -26356,10 +26378,10 @@ msgstr "Podgląd wyników"
 #: src/Glpi/ShareToken.php:62
 msgid "Share token"
 msgid_plural "Share tokens"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Udostępnij token"
+msgstr[1] "Udostępnij tokeny"
+msgstr[2] "Udostępnij tokeny"
+msgstr[3] "Udostępnij tokeny"
 
 #: src/Glpi/Dashboard/Provider.php:295 src/Glpi/Dashboard/FakeProvider.php:211
 #: src/Problem.php:737 src/Ticket.php:3334 src/Change.php:740
@@ -26530,10 +26552,10 @@ msgstr "Grupa / Grupa zgłaszającego"
 #: src/Glpi/Dashboard/Filters/TicketStatusFilter.php:44
 msgid "Ticket status"
 msgid_plural "Ticket statuses"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Status zgłoszenia"
+msgstr[1] "Statusy zgłoszeń"
+msgstr[2] "Statusy zgłoszeń"
+msgstr[3] "Statusy zgłoszeń"
 
 #: src/Glpi/Dashboard/Filters/TicketTypeFilter.php:45
 msgid "Ticket type"
@@ -26969,7 +26991,7 @@ msgstr "Dodaj element"
 #: src/Contract.php:418
 msgctxt "button"
 msgid "Remove an item"
-msgstr "Skasuj element"
+msgstr "Usuń element"
 
 #: src/LevelAgreementLevel.php:252
 #, php-format
@@ -27855,7 +27877,7 @@ msgstr "Przydziel: sprzęt po adresie MAC"
 
 #: src/RuleAction.php:403
 msgid "Assign: equipment by name"
-msgstr ""
+msgstr "Przypisz: urządzenie według nazwy"
 
 #: src/RuleAction.php:404
 msgid "Recalculate"
@@ -28189,7 +28211,7 @@ msgstr[3] "Relacje"
 
 #: src/Appliance_Item_Relation.php:130
 msgid "An appliance item is required"
-msgstr "Element urządzenia jest wymagany"
+msgstr "Element systemu jest wymagany"
 
 #: src/Appliance_Item_Relation.php:228 src/Appliance_Item_Relation.php:229
 msgid "New relation"
@@ -28538,10 +28560,10 @@ msgstr[3] "Czujniki"
 #: src/ApplianceType.php:40
 msgid "Appliance type"
 msgid_plural "Appliance types"
-msgstr[0] "Typ urządzenia"
-msgstr[1] "Typy urządzeń"
-msgstr[2] "Typy urządzeń"
-msgstr[3] "Typy urządzeń"
+msgstr[0] "Typ systemu"
+msgstr[1] "Typy systemów"
+msgstr[2] "Typy systemów"
+msgstr[3] "Typy systemów"
 
 #: src/KnowbaseItem_KnowbaseItemCategory.php:147 src/KnowbaseItem_Item.php:330
 msgctxt "button"
@@ -28850,10 +28872,10 @@ msgstr "Czas trwania obiektu"
 #: src/Appliance.php:90
 msgid "Appliance"
 msgid_plural "Appliances"
-msgstr[0] "Urządzenie"
-msgstr[1] "Urządzenia"
-msgstr[2] "Urządzenia"
-msgstr[3] "Urządzenia"
+msgstr[0] "System"
+msgstr[1] "Systemy"
+msgstr[2] "Systemy"
+msgstr[3] "Systemy"
 
 #: src/Certificate.php:78
 msgid "Certificate"
@@ -29061,7 +29083,7 @@ msgstr "Brak zaznaczonych elementów"
 #: src/Reservation.php:235
 #, php-format
 msgid "%1$s adds reservation %2$s for %3$s %4$s"
-msgstr ""
+msgstr "%1$s utworzył rezerwację %2$s dla %3$s %4$s"
 
 #: src/Reservation.php:244
 #, php-format
@@ -29247,15 +29269,15 @@ msgstr "Usuwanie zadania"
 
 #: src/NotificationTargetCommonITILObject.php:134
 msgid "New followup"
-msgstr "Nowe śledzenie"
+msgstr "Nowa aktualizacja"
 
 #: src/NotificationTargetCommonITILObject.php:135
 msgid "Update of a followup"
-msgstr "Aktualizacja śledzenia"
+msgstr "Modyfikacja aktualizacji"
 
 #: src/NotificationTargetCommonITILObject.php:136
 msgid "Deletion of a followup"
-msgstr "Usunięcie wiadomości"
+msgstr "Usunięcie aktualizacji"
 
 #: src/NotificationTargetCommonITILObject.php:137
 msgid "User mentioned"
@@ -29341,7 +29363,7 @@ msgstr "Twórca zadania"
 
 #: src/NotificationTargetCommonITILObject.php:1052
 msgid "Followup author"
-msgstr "Twórca śledzenia"
+msgstr "Autor aktualizacji"
 
 #: src/NotificationTargetCommonITILObject.php:2093
 msgid "Date of solving"
@@ -29576,16 +29598,16 @@ msgstr "Zadanie utworzone automatycznie"
 #: src/Ticket.php:1833
 #, php-format
 msgid "%s promotes a followup from ticket %s"
-msgstr "%spromuje kontynuację ze zgłoszenia %s"
+msgstr "%s przekształcił aktualizację ze zgłoszenia %s"
 
 #: src/Ticket.php:1849
 #, php-format
 msgid "%s promotes a task from ticket %s"
-msgstr "%s promuje zadanie ze zgłoszenia %s"
+msgstr "%s przekształcił zadanie ze zgłoszenia %s"
 
 #: src/Ticket.php:2200
 msgid "Merge as Followup"
-msgstr "Scal jako kontynuację"
+msgstr "Połącz jako aktualizację"
 
 #: src/Ticket.php:2241
 msgctxt "button"
@@ -29603,7 +29625,7 @@ msgstr "Rozwiąż zaznaczone zgłoszenia"
 
 #: src/Ticket.php:2281
 msgid "Merge followups"
-msgstr "Scal kontynuację"
+msgstr "Połącz aktualizacje"
 
 #: src/Ticket.php:2287
 msgid "Merge documents"
@@ -29865,7 +29887,7 @@ msgstr "Nie można połączyć biletu %dze sobą"
 #: src/Ticket.php:5814 src/Ticket.php:5829
 #, php-format
 msgid "Failed to add followup to ticket %d"
-msgstr "Dodanie kontynuacji do zgłoszenia %dnie powiodło się"
+msgstr "Nie udało się dodać aktualizacji do zgłoszenia %d"
 
 #: src/Ticket.php:5850
 #, php-format
@@ -31204,12 +31226,12 @@ msgstr "Błąd w powtarzaniu reguł"
 msgid ""
 "Send automated follow-ups on pending tickets and solve them if necessary"
 msgstr ""
-"Wyślij automatyczne powiadomienia dotyczące oczekujących zgłoszeń i w razie "
-"potrzeby rozwiąż je"
+"Wysyłaj automatyczne aktualizacje dla zgłoszeń oczekujących i rozwiązuj je w"
+" razie potrzeby"
 
 #: src/PendingReasonCron.php:201
 msgid "Automatic followups / resolution"
-msgstr "Automatyczna wiadomość / rozwiązanie"
+msgstr "Automatyczne aktualizacje / rozwiązanie"
 
 #: src/Contract_Item.php:86
 msgid "Link Contract/Item"
@@ -31752,11 +31774,11 @@ msgstr "Koniec o %s:"
 
 #: src/ProjectTask.php:2457
 msgid "Send project task plan end date reminders"
-msgstr ""
+msgstr "Wysyłaj przypomnienia o planowanym terminie zakończenia zadania"
 
 #: src/ProjectTask.php:2458
 msgid "Number of days before planned end date"
-msgstr ""
+msgstr "Liczba dni przed planowaną datą zakończenia"
 
 #: src/RSSFeed.php:62 src/Central.php:79 src/Config.php:694
 msgid "RSS feed"
@@ -32052,7 +32074,7 @@ msgstr[3] "Kategorie techników"
 
 #: src/CommonITILObject.php:5119
 msgid "Email for followup"
-msgstr "E-mail dla śledzenia"
+msgstr "E-mail do aktualizacji"
 
 #: src/CommonITILObject.php:6674 src/CommonITILObject.php:7110
 #, php-format
@@ -32822,18 +32844,18 @@ msgstr[3] "Klienci OAuth"
 #: src/OAuthClient.php:85
 msgid "Session"
 msgid_plural "Sessions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Sesja"
+msgstr[1] "Sesje"
+msgstr[2] "Sesje"
+msgstr[3] "Sesje"
 
 #: src/OAuthClient.php:147
 msgid "Revoke"
-msgstr ""
+msgstr "Odwołaj"
 
 #: src/OAuthClient.php:159
 msgid "Refresh token expiration date"
-msgstr ""
+msgstr "Odśwież datę wygaśnięcia tokena"
 
 #: src/OAuthClient.php:251 src/OAuthClient.php:275
 msgid "Invalid IP address or CIDR range"
@@ -32947,26 +32969,26 @@ msgstr "ID dostawcy"
 #: src/ApplianceEnvironment.php:40
 msgid "Appliance environment"
 msgid_plural "Appliance environments"
-msgstr[0] "Środowisko urządzeń"
-msgstr[1] "Środowiska urządzeń"
-msgstr[2] "Środowiska urządzeń"
-msgstr[3] "Środowiska urządzeń"
+msgstr[0] "Środowisko systemu"
+msgstr[1] "Środowiska systemów"
+msgstr[2] "Środowiska systemów"
+msgstr[3] "Środowiska systemów"
 
 #: src/KnowbaseItem.php:1238
 msgid "Permissions and sharing"
-msgstr ""
+msgstr "Uprawnienia i udostępnianie"
 
 #: src/KnowbaseItem.php:1267
 msgid "Add to favorites"
-msgstr ""
+msgstr "Dodaj do ulubionych"
 
 #: src/KnowbaseItem.php:1278
 msgid "Add to FAQ"
-msgstr ""
+msgstr "Dodaj do FAQ"
 
 #: src/KnowbaseItem.php:1298 js/modules/Knowbase/ArticleController.js:570
 msgid "Delete article"
-msgstr ""
+msgstr "Usuń artykuł"
 
 #: src/KnowbaseItem.php:2051
 msgid "Use as a solution"
@@ -32998,7 +33020,7 @@ msgstr "Data końca widoczności"
 
 #: src/KnowbaseItem.php:2428
 msgid "Is favorite"
-msgstr ""
+msgstr "Jest ulubionym"
 
 #: src/KnowbaseItem.php:2493
 msgid "Knowledge base administration"
@@ -33220,12 +33242,12 @@ msgstr "Zarządzaj typami dokumentów"
 
 #: src/Document.php:1360 src/Document.php:1386
 msgid "An unexpected error occured."
-msgstr ""
+msgstr "Wystąpił nieoczekiwany błąd."
 
 #: src/Document.php:1621
 msgctxt "button"
 msgid "Remove a document"
-msgstr "Skasuj dokument"
+msgstr "Usuń dokument"
 
 #: src/Document.php:1741
 msgid ""
@@ -33308,7 +33330,7 @@ msgstr[3] "Wtyczki"
 
 #: src/Plug.php:86
 msgid "Plug name is required"
-msgstr ""
+msgstr "Nazwa wtyczki jest wymagana"
 
 #: src/Plug.php:187
 msgid "Add a new plug"
@@ -33316,15 +33338,15 @@ msgstr "Dodaj nową wtyczkę"
 
 #: src/Plug.php:188
 msgid "Name will by suffixed by number"
-msgstr ""
+msgstr "Do nazwy zostanie dodany sufiks w postaci numeru"
 
 #: src/Plug.php:195
 msgid "Plug name"
-msgstr ""
+msgstr "Nazwa wtyczki"
 
 #: src/Plug.php:204
 msgid "Number of plugs to add"
-msgstr ""
+msgstr "Liczba wtyczek do dodania"
 
 #: src/SavedSearch.php:100
 msgid "Unset as default"
@@ -33897,7 +33919,7 @@ msgstr "Cykle życia"
 
 #: src/Profile.php:200 src/Profile.php:210
 msgid "Search / list"
-msgstr ""
+msgstr "Szukaj / lista"
 
 #: src/Profile.php:480
 msgid ""
@@ -34138,11 +34160,11 @@ msgstr[3] "Szablony zdarzeń zewnętrznych"
 
 #: src/Appliance_Item.php:257
 msgid "Add to an appliance"
-msgstr "Dodaj do urządzenia"
+msgstr "Dodaj do systemu"
 
 #: src/Appliance_Item.php:352
 msgid "An appliance is required"
-msgstr "Urządzenie jest wymagane"
+msgstr "System jest wymagany"
 
 #: src/Knowbase.php:62
 msgctxt "button"
@@ -34277,23 +34299,23 @@ msgstr "Domyślnie oczekujące"
 
 #: src/PendingReason.php:81
 msgid "Automatic follow-up/solution frequency"
-msgstr "Częstotliwość automatycznej odpowiedzi/rozwiązania"
+msgstr "Częstotliwość automatycznych aktualizacji/rozwiązań"
 
 #: src/PendingReason.php:93 src/PendingReason.php:123
 msgid "Follow-ups before automatic resolution"
-msgstr "Wiadomości przed automatycznym rozwiązaniem"
+msgstr "Aktualizacje przed automatycznym rozwiązaniem"
 
 #: src/PendingReason.php:114
 msgid "Automatic follow-up frequency"
-msgstr "Częstotliwość wiadomości automatycznych"
+msgstr "Częstotliwość automatycznych aktualizacji"
 
 #: src/PendingReason.php:133
 msgid "Follow-up template"
-msgstr "Szablon wiadomości"
+msgstr "Szablon aktualizacji"
 
 #: src/PendingReason.php:176
 msgid "Automatic follow-up disabled"
-msgstr "Wiadomości automatyczne wyłączone"
+msgstr "Automatyczne aktualizacje są wyłączone"
 
 #: src/PendingReason.php:206
 msgid "Every day"
@@ -34331,19 +34353,19 @@ msgstr ""
 
 #: src/PendingReason.php:293
 msgid "No follow-up"
-msgstr "Brak śledzenia"
+msgstr "Brak aktualizacji"
 
 #: src/PendingReason.php:294
 msgid "After one follow-up"
-msgstr "Po jednej wiadomości"
+msgstr "Po jednej aktualizacji"
 
 #: src/PendingReason.php:295
 msgid "After two follow-ups"
-msgstr "Po dwóch wiadomościach"
+msgstr "Po dwóch aktualizacjach"
 
 #: src/PendingReason.php:296
 msgid "After three follow-ups"
-msgstr "Po trzech wiadomościach"
+msgstr "Po trzech aktualizacjach"
 
 #: src/GLPIUploadHandler.php:105
 msgid "The file upload has been refused for security reasons."
@@ -34356,12 +34378,12 @@ msgstr "Domyślny E-mail"
 #: src/UserEmail.php:193 src/UserEmail.php:237
 #, php-format
 msgid "Set %s email as default"
-msgstr ""
+msgstr "Ustaw adres e-mail %s jako domyślny"
 
 #: src/UserEmail.php:195 src/UserEmail.php:242
 #, php-format
 msgid "Email address %s"
-msgstr ""
+msgstr "Adres e-mail %s"
 
 #: src/NotificationTargetMailCollector.php:46
 msgid "Receiver errors"
@@ -34373,7 +34395,7 @@ msgstr "Nie jesteś uprawniony do połączenia"
 
 #: src/Session.php:250
 msgid "An error occurred while creating your session. Please try again."
-msgstr ""
+msgstr "Wystąpił błąd podczas tworzenia sesji. Spróbuj ponownie."
 
 #: src/Session.php:254
 msgid ""
@@ -34591,7 +34613,7 @@ msgstr[3] "Przypomnienia automatyczne"
 #: src/Cartridge.php:259
 #, php-format
 msgid "Cartridge (%1$s): back to stock"
-msgstr ""
+msgstr "Kartridż (%1$s): powrót do magazynu"
 
 #: src/Cartridge.php:321
 msgid "Installing a cartridge"
@@ -34600,7 +34622,7 @@ msgstr "Instalowywanie kartridżu"
 #: src/Cartridge.php:328
 #, php-format
 msgid "Install the cartridge %1$s on printer : %2$s"
-msgstr ""
+msgstr "Zainstaluj kartridż %1$s w drukarce: %2$s"
 
 #: src/Cartridge.php:341
 msgid "No free cartridge"
@@ -34613,7 +34635,7 @@ msgstr "Odinstalowywanie kartridżu"
 #: src/Cartridge.php:395
 #, php-format
 msgid "Uninstall the cartridge %1$s for end life"
-msgstr ""
+msgstr "  Wymień zużyty kartridż %1$s"
 
 #: src/Cartridge.php:435 src/Cartridge.php:775
 msgctxt "cartridge"
@@ -35268,7 +35290,7 @@ msgstr "Domyślne dla zgłoszeń"
 
 #: src/RequestType.php:57 src/RequestType.php:97
 msgid "Default for followups"
-msgstr "Domyślne dla wiadomości"
+msgstr "Domyślnie dla aktualizacji"
 
 #: src/RequestType.php:61 src/RequestType.php:106
 msgid "Default for mail recipients"
@@ -35276,7 +35298,7 @@ msgstr "Domyślne dla odbiorców poczty"
 
 #: src/RequestType.php:65 src/RequestType.php:115
 msgid "Default for followup mail recipients"
-msgstr "Domyślna dla adresatów kontynuacji wiadomości"
+msgstr "Domyślne dla odbiorców aktualizacji e-mail"
 
 #: src/RequestType.php:69 src/RequestType.php:132
 msgid "Request source visible for tickets"
@@ -35284,7 +35306,7 @@ msgstr "Żądanie źródła widocznego dla zgłoszeń"
 
 #: src/RequestType.php:73 src/RequestType.php:140
 msgid "Request source visible for followups"
-msgstr "Żądanie źródła widocznego dla kontynuacji"
+msgstr "Wyświetlaj źródło zgłoszenia w aktualizacjach"
 
 #: src/RequestType.php:194 src/RequestType.php:202 src/RequestType.php:210
 #: src/RequestType.php:218
@@ -35564,7 +35586,7 @@ msgstr "Zezwalaj na VOIP"
 #: src/DeviceSimcard.php:131
 #, php-format
 msgid "%1$s %2$s: %3$s"
-msgstr ""
+msgstr "%1$s %2$s: %3$s"
 
 #: src/DeviceSimcard.php:131
 msgid "items"
@@ -35572,7 +35594,7 @@ msgstr "rzeczy"
 
 #: src/DeviceSimcard.php:143
 msgid "Designation"
-msgstr ""
+msgstr "Oznaczenie"
 
 #: src/Dropdown.php:430 js/common.js:769
 msgid "Display on map"
@@ -35610,7 +35632,7 @@ msgstr "Zarządzanie kablami"
 
 #: src/Dropdown.php:1413
 msgid "Appliances"
-msgstr "Urządzenia"
+msgstr "Systemy"
 
 #: src/Dropdown.php:1431 src/Dropdown.php:1433
 msgid "Custom dropdowns"
@@ -36275,7 +36297,7 @@ msgstr "Właśnie teraz"
 #: src/Html.php:6239
 #, php-format
 msgid "%s minute ago"
-msgstr ""
+msgstr "%s minut temu"
 
 #: src/Html.php:6242 js/common.js:1165
 #, javascript-format, php-format
@@ -36285,7 +36307,7 @@ msgstr "%s minut temu"
 #: src/Html.php:6245
 #, php-format
 msgid "%s hour ago"
-msgstr ""
+msgstr "%s godzin temu"
 
 #: src/Html.php:6248 js/common.js:1167
 #, javascript-format, php-format
@@ -36703,7 +36725,7 @@ msgstr "Wyklucz"
 #: js/src/vue/EntitySelector/useEntitySelector.js:165
 #: js/src/vue/EntitySelector/EntitySelector.vue:214
 msgid "An error occurred while changing the entity. Please try again."
-msgstr ""
+msgstr "Wystąpił błąd podczas zmiany jednostki. Spróbuj ponownie."
 
 #: js/rack.js:106
 msgid "Add PDU"
@@ -36987,53 +37009,53 @@ msgstr "Nieoczekiwany błąd"
 #: js/modules/KnowbaseEditor.js:76
 #: js/modules/Knowbase/ArticleController.js:1000
 msgid "Type / to insert..."
-msgstr ""
+msgstr "Wpisz /, aby wstawić..."
 
 #: js/modules/KnowbaseEditor.js:167 js/modules/KnowbaseEditor.js:431
 msgid "Image upload failed"
-msgstr ""
+msgstr "Nie udało się przesłać obrazu"
 
 #: js/modules/KnowbaseEditor.js:214
 msgid "Bold"
-msgstr ""
+msgstr "Pogrubiony"
 
 #: js/modules/KnowbaseEditor.js:215
 msgid "Italic"
-msgstr ""
+msgstr "Kursywa"
 
 #: js/modules/KnowbaseEditor.js:216
 msgid "Strikethrough"
-msgstr ""
+msgstr "Przekreślenie"
 
 #: js/modules/KnowbaseEditor.js:219
 #: js/modules/TipTap/SlashCommandsExtension.js:240
 msgid "Heading 1"
-msgstr ""
+msgstr "Nagłówek 1"
 
 #: js/modules/KnowbaseEditor.js:220
 #: js/modules/TipTap/SlashCommandsExtension.js:245
 msgid "Heading 2"
-msgstr ""
+msgstr "Nagłówek 2"
 
 #: js/modules/KnowbaseEditor.js:221
 #: js/modules/TipTap/SlashCommandsExtension.js:250
 msgid "Heading 3"
-msgstr ""
+msgstr "Nagłówek 3"
 
 #: js/modules/KnowbaseEditor.js:223
 #: js/modules/TipTap/SlashCommandsExtension.js:255
 msgid "Bullet List"
-msgstr ""
+msgstr "Lista punktowana"
 
 #: js/modules/KnowbaseEditor.js:224
 #: js/modules/TipTap/SlashCommandsExtension.js:260
 msgid "Numbered List"
-msgstr ""
+msgstr "Lista numerowana"
 
 #: js/modules/KnowbaseEditor.js:225
 #: js/modules/TipTap/SlashCommandsExtension.js:265
 msgid "Quote"
-msgstr ""
+msgstr "Cytat"
 
 #: js/modules/KnowbaseEditor.js:227
 msgctxt "button"
@@ -37042,15 +37064,15 @@ msgstr "Link"
 
 #: js/modules/KnowbaseEditor.js:228
 msgid "Remove link"
-msgstr ""
+msgstr "Usuń link"
 
 #: js/modules/KnowbaseEditor.js:277
 msgid "Enter URL"
-msgstr ""
+msgstr "Wprowadź adres URL"
 
 #: js/modules/KnowbaseEditor.js:405
 msgid "Document creation failed"
-msgstr ""
+msgstr "Nie udało się utworzyć dokumentu"
 
 #: js/modules/ProgressIndicator.js:175
 msgid "failed"
@@ -37058,60 +37080,60 @@ msgstr "niepowodzenie"
 
 #: js/modules/Knowbase/ServiceCatalogPanelController.js:141
 msgid "Service catalog settings saved."
-msgstr ""
+msgstr "Ustawienia katalogu usług zostały zapisane."
 
 #: js/modules/Knowbase/PermissionsFormController.js:38
 msgid "Hide advanced options"
-msgstr ""
+msgstr "Ukryj opcje zaawansowane"
 
 #: js/modules/Knowbase/PermissionsFormController.js:177
 msgid "Access added successfully"
-msgstr ""
+msgstr "Dostęp dodany pomyślnie"
 
 #: js/modules/Knowbase/LinkItemFormController.js:107
 msgid "Please select an item to link."
-msgstr ""
+msgstr "Wybierz element do powiązania."
 
 #: js/modules/Knowbase/LinkItemFormController.js:130
 msgid "Item linked successfully"
-msgstr ""
+msgstr "Element został połączony pomyślnie"
 
 #: js/modules/Knowbase/LinkItemFormController.js:151
 #: js/modules/Knowbase/DocumentLinkController.js:327
 msgid "Linking..."
-msgstr ""
+msgstr "Tworzenie linku..."
 
 #: js/modules/Knowbase/UploadController.js:193
 msgid "Please wait until file uploads complete."
-msgstr ""
+msgstr "Proszę zaczekać, aż przesyłanie plików zostanie zakończone."
 
 #: js/modules/Knowbase/UploadController.js:199
 msgid "Please add at least one valid file before uploading."
-msgstr ""
+msgstr "Przed przesłaniem dodaj co najmniej jeden prawidłowy plik."
 
 #: js/modules/Knowbase/UploadController.js:210 js/modules/FileUploader.js:171
 #: js/modules/FileUploader.js:178 js/modules/FileUploader.js:359
 #: js/modules/FileUploader.js:362 js/modules/FileUploader.js:371
 #: js/modules/FileUploader.js:374
 msgid "Upload failed"
-msgstr ""
+msgstr "Przesyłanie nie powiodło się"
 
 #: js/modules/Knowbase/UploadController.js:229
 msgid "Uploading..."
-msgstr ""
+msgstr "Przesyłanie..."
 
 #: js/modules/Knowbase/UploadController.js:279
 msgid "Document uploaded successfully"
-msgstr ""
+msgstr "Dokument został pomyślnie przesłany"
 
 #: js/modules/Knowbase/UploadController.js:280
 #, javascript-format
 msgid "%d documents uploaded successfully"
-msgstr ""
+msgstr "Pomyślnie przesłano %d dokumenty"
 
 #: js/modules/Knowbase/CommentsPanelController.js:206
 msgid "Are you sure you want to delete this comment?"
-msgstr ""
+msgstr "Czy na pewno chcesz usunąć ten komentarz?"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:238
 #: js/modules/Knowbase/RevisionsPanelController.js:277
@@ -37122,17 +37144,19 @@ msgstr ""
 #: js/modules/Knowbase/ArticleController.js:185 js/modules/Ajax.js:78
 #: js/modules/Ajax.js:107
 msgid "An unexpected error occurred."
-msgstr ""
+msgstr "Wystąpił nieoczekiwany błąd."
 
 #: js/modules/Knowbase/RevisionsPanelController.js:355
 msgid "Restore revision"
-msgstr ""
+msgstr "Przywróć wersję"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:356
 msgid ""
 "Are you sure you want to restore this version? The current content will be "
 "saved as a new revision."
 msgstr ""
+"Czy na pewno chcesz przywrócić tę wersję? Aktualna zawartość zostanie "
+"zapisana jako nowa wersja."
 
 #: js/modules/Knowbase/RevisionsPanelController.js:361
 #: js/modules/Knowbase/RevisionsPanelController.js:421
@@ -37141,80 +37165,86 @@ msgstr "Potwierdź"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:415
 msgid "Restore translation revision"
-msgstr ""
+msgstr "Przywróć wersję tłumaczenia"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:416
 msgid ""
 "Are you sure you want to restore this translation version? The current "
 "translation content will be saved as a new revision."
 msgstr ""
+"Czy na pewno chcesz przywrócić tę wersję tłumaczenia? Aktualna treść "
+"tłumaczenia zostanie zapisana jako nowa wersja."
 
 #: js/modules/Knowbase/RevisionsPanelController.js:462
 msgid "Translation revision restored successfully."
-msgstr ""
+msgstr "Wersja tłumaczenia została pomyślnie przywrócona."
 
 #: js/modules/Knowbase/DocumentLinkController.js:112
 msgid "Search for a document..."
-msgstr ""
+msgstr "Wyszukaj dokument..."
 
 #: js/modules/Knowbase/DocumentLinkController.js:263
 msgid "Please select at least one document before linking."
-msgstr ""
+msgstr "Wybierz co najmniej jeden dokument przed połączeniem."
 
 #: js/modules/Knowbase/DocumentLinkController.js:279
 msgid "Linking failed"
-msgstr ""
+msgstr "Łączenie nie powiodło się"
 
 #: js/modules/Knowbase/DocumentLinkController.js:305
 msgid "Document linked successfully"
-msgstr ""
+msgstr "Dokument został połączony pomyślnie"
 
 #: js/modules/Knowbase/DocumentLinkController.js:306
 #, javascript-format
 msgid "%d documents linked successfully"
-msgstr ""
+msgstr "%d dokumentów zostało połączonych pomyślnie"
 
 #: js/modules/Knowbase/SharingPanelController.js:146
 msgid "Delete sharing link"
-msgstr ""
+msgstr "Usuń link udostępniania"
 
 #: js/modules/Knowbase/SharingPanelController.js:147
 msgid ""
 "Are you sure you want to delete this sharing link? Anyone using it will lose"
 " access."
 msgstr ""
+"Czy na pewno chcesz usunąć ten link udostępniania? Każdy, kto z niego "
+"korzysta, utraci dostęp."
 
 #: js/modules/Knowbase/ArticleController.js:242
 #: js/modules/Knowbase/ArticleController.js:258
 msgid "Preview unavailable"
-msgstr ""
+msgstr "Podgląd niedostępny"
 
 #: js/modules/Knowbase/ArticleController.js:243
 msgid ""
 "Please save or cancel your current changes before previewing a revision."
-msgstr ""
+msgstr "Przed wyświetleniem podglądu wersji zapisz lub anuluj bieżące zmiany."
 
 #: js/modules/Knowbase/ArticleController.js:259
 msgid ""
 "Please save or cancel your current changes before previewing a translation "
 "revision."
 msgstr ""
+"Przed wyświetleniem podglądu wersji tłumaczenia zapisz lub anuluj bieżące "
+"zmiany."
 
 #: js/modules/Knowbase/ArticleController.js:279
 msgid "Action unavailable"
-msgstr ""
+msgstr "Akcja niedostępna"
 
 #: js/modules/Knowbase/ArticleController.js:280
 msgid "Please save or cancel your current changes first."
-msgstr ""
+msgstr "Najpierw zapisz lub anuluj bieżące zmiany."
 
 #: js/modules/Knowbase/ArticleController.js:571
 msgid "Are you sure you want to delete this article?"
-msgstr ""
+msgstr "Czy na pewno chcesz usunąć ten artykuł?"
 
 #: js/modules/Knowbase/ArticleController.js:619
 msgid "Are you sure you want to unlink this document from the article?"
-msgstr ""
+msgstr "Czy na pewno chcesz odłączyć ten dokument od artykułu?"
 
 #: js/modules/Knowbase/ArticleController.js:620
 #: js/modules/Knowbase/ArticleController.js:665
@@ -37223,81 +37253,82 @@ msgstr "Odłącz"
 
 #: js/modules/Knowbase/ArticleController.js:651
 msgid "Document unlinked successfully"
-msgstr ""
+msgstr "Dokument został odłączony pomyślnie"
 
 #: js/modules/Knowbase/ArticleController.js:664
 msgid "Are you sure you want to unlink this item from the article?"
-msgstr ""
+msgstr "Czy na pewno chcesz odłączyć ten element od artykułu?"
 
 #: js/modules/Knowbase/ArticleController.js:682
 msgid "Item unlinked successfully"
-msgstr ""
+msgstr "Element został odłączony pomyślnie"
 
 #: js/modules/Knowbase/ArticleController.js:936
 #: js/modules/Knowbase/ArticleController.js:1082
 #: js/modules/Knowbase/ArticleController.js:1454
 msgid "Saving..."
-msgstr ""
+msgstr "Zapisywanie..."
 
 #: js/modules/Knowbase/ArticleController.js:945
 msgid "Visibility dates updated"
-msgstr ""
+msgstr "Zaktualizowano daty widoczności"
 
 #: js/modules/Knowbase/ArticleController.js:971
 msgid "Child entities enabled"
-msgstr ""
+msgstr "Włączono jednostki podrzędne"
 
 #: js/modules/Knowbase/ArticleController.js:971
 msgid "Child entities disabled"
-msgstr ""
+msgstr "Wyłączono jednostki podrzędne"
 
 #: js/modules/Knowbase/ArticleController.js:991
 msgid "Keep typing to filter..."
-msgstr ""
+msgstr "Kontynuuj pisanie, aby filtrować..."
 
 #: js/modules/Knowbase/ArticleController.js:998
 msgid "Type / to insert, or start writing..."
-msgstr ""
+msgstr "Wpisz /, aby wstawić element, lub zacznij pisać..."
 
 #: js/modules/Knowbase/ArticleController.js:1066
 #: js/modules/Knowbase/ArticleController.js:1439
 msgid "Cannot save: article ID is missing"
-msgstr ""
+msgstr "Nie można zapisać: brakuje ID artykułu"
 
 #: js/modules/Knowbase/ArticleController.js:1209
 msgid "Translation mode unavailable"
-msgstr ""
+msgstr "Tryb tłumaczenia niedostępny"
 
 #: js/modules/Knowbase/ArticleController.js:1210
 msgid ""
 "Please save or cancel your current changes before entering translation mode."
 msgstr ""
+"Zapisz lub anuluj bieżące zmiany przed przejściem do trybu tłumaczenia."
 
 #: js/modules/Knowbase/ArticleController.js:1270
 #: js/modules/Knowbase/ArticleController.js:1564
 #: js/modules/Knowbase/ArticleController.js:1567
 #: js/modules/Knowbase/ArticleController.js:1608
 msgid "Existing translations"
-msgstr ""
+msgstr "Istniejące tłumaczenia"
 
 #: js/modules/Knowbase/ArticleController.js:1288
 #: js/modules/Knowbase/ArticleController.js:1573
 #: js/modules/Knowbase/ArticleController.js:1593
 #: js/modules/Knowbase/ArticleController.js:1596
 msgid "Add new translation"
-msgstr ""
+msgstr "Dodaj nowe tłumaczenie"
 
 #: js/modules/Knowbase/ArticleController.js:1516
 msgid "Are you sure you want to delete this translation?"
-msgstr ""
+msgstr "Czy na pewno chcesz usunąć to tłumaczenie?"
 
 #: js/modules/Knowbase/ArticleController.js:1548
 msgid "translation"
 msgid_plural "translations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "tłumaczenie"
+msgstr[1] "tłumaczenia"
+msgstr[2] "tłumaczenia"
+msgstr[3] "tłumaczenia"
 
 #: js/modules/Forms/EditorController.js:1404
 msgid "Submit button visibility"
@@ -37356,16 +37387,16 @@ msgstr "Prześlij bieżące wyszukiwanie przed zapisaniem"
 #: js/modules/FileUploader.js:271
 #, javascript-format
 msgid "File %s exceeds maximum size"
-msgstr ""
+msgstr "Plik %s przekracza maksymalny rozmiar"
 
 #: js/modules/FileUploader.js:276
 #, javascript-format
 msgid "File %s is empty"
-msgstr ""
+msgstr "Plik %s jest pusty"
 
 #: js/modules/FileUploader.js:347 js/modules/FileUploader.js:353
 msgid "Invalid server response"
-msgstr ""
+msgstr "Nieprawidłowa odpowiedź serwera"
 
 #: js/modules/Dashboard/Dashboard.js:403
 msgid "Add a card"
@@ -37398,25 +37429,29 @@ msgstr "Dodaj pulpit"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:178
 msgid "Insert video"
-msgstr ""
+msgstr "Wstaw wideo"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:198
 msgid "Video URL"
-msgstr ""
+msgstr "Adres URL filmu"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:212
 msgid "Supported: a YouTube URL, or a direct video file URL (MP4, WebM, Ogg)."
 msgstr ""
+"Obsługiwane: adres URL serwisu YouTube lub bezpośredni adres URL pliku wideo"
+" (MP4, WebM, Ogg)."
 
 #: js/modules/TipTap/VideoEmbedExtension.js:234
 msgid "Insert"
-msgstr ""
+msgstr "Wstaw"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:252
 msgid ""
 "This video URL is not recognized. Use a YouTube URL or a direct video file "
 "URL (MP4, WebM, Ogg)."
 msgstr ""
+"Ten adres URL filmu nie został rozpoznany. Użyj adresu URL YouTube lub "
+"bezpośredniego adresu URL pliku wideo (MP4, WebM, Ogg)."
 
 #: js/modules/TipTap/VideoEmbedExtension.js:403
 msgid "video"
@@ -37425,39 +37460,39 @@ msgstr "wideo"
 #: js/modules/TipTap/VideoEmbedExtension.js:403
 #: js/modules/TipTap/VideoEmbedExtension.js:429
 msgid "Invalid video"
-msgstr ""
+msgstr "Nieprawidłowy film"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:412
 msgid "video player"
-msgstr ""
+msgstr "odtwarzacz wideo"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:58
 msgid "Insert/Edit Image"
-msgstr ""
+msgstr "Wstaw/Edytuj obraz"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:71
 msgid "Alternative description"
-msgstr ""
+msgstr "Alternatywny opis"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:84
 msgid "Constrain proportions"
-msgstr ""
+msgstr "Zachowaj proporcje"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:270
 msgid "Code Block"
-msgstr ""
+msgstr "Blok kodu"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:275
 msgid "Table"
-msgstr ""
+msgstr "Tabela"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:280
 msgid "Divider"
-msgstr ""
+msgstr "Separator"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:285
 msgid "Image"
-msgstr ""
+msgstr "Obraz"
 
 #: js/glpi_dialog.js:363
 msgid "Are you sure?"
@@ -37486,7 +37521,7 @@ msgstr "Dodaj więcej pól"
 
 #: js/src/vue/CustomObject/FieldPreview/Sidebar.vue:44
 msgid "Native fields"
-msgstr "Pola natywne"
+msgstr "Pola wbudowane"
 
 #: js/src/vue/CustomObject/FieldPreview/Sidebar.vue:49
 msgid "Custom fields"
@@ -37507,7 +37542,7 @@ msgstr "Wskazówka: możesz wywołać polecenie za pomocą kombinacji klawiszy %
 
 #: js/src/vue/EntitySelector/EntitySelector.vue:231
 msgid "Search entities"
-msgstr ""
+msgstr "Wyszukaj jednostki"
 
 #: js/src/vue/EntitySelector/EntitySelector.vue:238
 msgid "Select all"
@@ -37516,7 +37551,7 @@ msgstr "Zaznacz wszystkie"
 #: js/src/vue/EntitySelector/EntitySelector.vue:268
 #: js/src/vue/EntitySelector/EntitySelector.vue:269
 msgid "Select this entity and all its children"
-msgstr ""
+msgstr "Wybierz tę jednostkę i wszystkie jej elementy podrzędne"
 
 #: js/src/vue/FuzzySearch/Modal.vue:10
 msgid "Go to menu"

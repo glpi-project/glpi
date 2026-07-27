@@ -19,7 +19,6 @@
 # Ezequiel Blejman <eblejman@cstechlab.com>, 2026
 # Adrián seimandi, 2026
 # Michael Manganiello, 2026
-# Luis Angel Uriarte <luisuriarte@gmail.com>, 2026
 # Exequiel Benitez, 2026
 # Matías Orozco, 2026
 # Fernando Toledo <ftoledo@docksud.com.ar>, 2026
@@ -29,6 +28,7 @@
 # Joaquin Etchegaray, 2026
 # Cédric Anne, 2026
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
+# Luis Angel Uriarte <luisuriarte@gmail.com>, 2026
 # Alan Lehoux, 2026
 # 
 #, fuzzy
@@ -1171,7 +1171,7 @@ msgstr "Tablero"
 #: templates/layout/parts/page_header.html.twig
 #: templates/layout/page_card_notlogged.html.twig
 msgid "Go to main content"
-msgstr ""
+msgstr "Ir al contenido principal"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -1383,7 +1383,7 @@ msgstr "Perfiles"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "Ruta de navegación"
 
 #: templates/layout/parts/global_search_form.html.twig
 #: templates/pages/tools/search_knowbaseitem.html.twig
@@ -1393,15 +1393,15 @@ msgstr "Buscar…"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
-msgstr ""
+msgstr "Barra lateral"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Toggle navigation"
-msgstr ""
+msgstr "Alternar navegación"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Main navigation"
-msgstr ""
+msgstr "Navegación principal"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
@@ -2765,7 +2765,7 @@ msgstr "Entidades hijas"
 
 #: templates/components/form/file_uploader.html.twig
 msgid "Drop files here or click to browse"
-msgstr ""
+msgstr "Arrastrá archivos acá o hacé clic para buscar"
 
 #: templates/components/form/file_uploader.html.twig
 msgid "Browse Files"
@@ -3066,11 +3066,11 @@ msgstr[2] "Componentes"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Show password"
-msgstr ""
+msgstr "Mostrar contraseña"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Hide password"
-msgstr ""
+msgstr "Ocultar contraseña"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/pages/tools/kb/modal/sharing.html.twig
@@ -3347,7 +3347,7 @@ msgstr "Modificar el comentario"
 
 #: templates/components/form/genericdate_picker.html.twig
 msgid "Specify a time"
-msgstr ""
+msgstr "Especifique una hora"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
@@ -5780,7 +5780,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Delete this translation"
-msgstr ""
+msgstr "Eliminar esta traducción"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Untitled article"
@@ -5797,11 +5797,11 @@ msgstr "Más acciones"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Updated:"
-msgstr ""
+msgstr "Actualizado:"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "by"
-msgstr ""
+msgstr "por"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "No views"
@@ -5819,36 +5819,36 @@ msgstr[2] "%s vistas"
 #, php-format
 msgid "%s translation"
 msgid_plural "%s translations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s traducción"
+msgstr[1] "%s traducciones"
+msgstr[2] "%s traducciones"
 
 #: templates/pages/tools/kb/article.html.twig
 #: js/modules/Knowbase/ArticleController.js:747
 #, javascript-format, php-format
 msgid "%s document"
 msgid_plural "%s documents"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s documento"
+msgstr[1] "%s documentos"
+msgstr[2] "%s documentos"
 
 #: templates/pages/tools/kb/article.html.twig
 #: js/modules/Knowbase/ArticleController.js:713
 #, javascript-format, php-format
 msgid "%s related item"
 msgid_plural "%s related items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s elemento relacionado"
+msgstr[1] "%s elementos relacionados"
+msgstr[2] "%s elementos relacionados"
 
 #: templates/pages/tools/kb/article.html.twig
 #: js/modules/Knowbase/CommentsPanelController.js:313
 #, javascript-format, php-format
 msgid "%s comment"
 msgid_plural "%s comments"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s comentario"
+msgstr[1] "%s comentarios"
+msgstr[2] "%s comentarios"
 
 #: templates/pages/tools/kb/article.html.twig src/KnowbaseItem.php:1252
 #: src/KnowbaseItem.php:1258
@@ -5873,7 +5873,7 @@ msgstr ""
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add Document"
-msgstr ""
+msgstr "Agregar Documento"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Upload a file"
@@ -5881,19 +5881,19 @@ msgstr ""
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link a document"
-msgstr ""
+msgstr "Vincular un documento"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "optional"
-msgstr ""
+msgstr "opcional"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add a description for these documents..."
-msgstr ""
+msgstr "Agregar una descripción para estos documentos..."
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Upload Documents"
-msgstr ""
+msgstr "Subir Documentos"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Search for a document"
@@ -5901,60 +5901,60 @@ msgstr ""
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link Documents"
-msgstr ""
+msgstr "Vincular Documentos"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Link to another item"
-msgstr ""
+msgstr "Vincular a otro elemento"
 
 #: templates/pages/tools/kb/article.html.twig
 msgid "Add article"
-msgstr ""
+msgstr "Agregar artículo"
 
 #: templates/pages/tools/kb/permission_entry.html.twig
 msgid "recursive"
-msgstr ""
+msgstr "recursivo"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #, php-format
 msgid "Before: %s"
-msgstr ""
+msgstr "Antes: %s"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #, php-format
 msgid "After: %s"
-msgstr ""
+msgstr "Después: %s"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 #: src/Glpi/Knowbase/LastUpdateInfo.php:55
 msgid "Deleted user"
-msgstr ""
+msgstr "Usuario eliminado"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 msgid "Restore this translation version"
-msgstr ""
+msgstr "Restaurar esta versión de traducción"
 
 #: templates/pages/tools/kb/sidepanel/revision_item.html.twig
 msgid "Restore this version"
-msgstr ""
+msgstr "Restaurar esta versión"
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "No comments yet."
-msgstr ""
+msgstr "Sin comentarios aún."
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "Add a comment..."
-msgstr ""
+msgstr "Agregar un comentario..."
 
 #: templates/pages/tools/kb/sidepanel/comments.html.twig
 msgid "Add comment"
-msgstr ""
+msgstr "Agregar comentario"
 
 #: templates/pages/tools/kb/sidepanel/revisions.html.twig
 #: src/KnowbaseItem.php:1197
 msgid "History"
-msgstr ""
+msgstr "Historial"
 
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 msgid "Edit comment"
@@ -5963,34 +5963,34 @@ msgstr "Editar comentario"
 #: templates/pages/tools/kb/sidepanel/comment.html.twig
 #: js/modules/Knowbase/CommentsPanelController.js:205
 msgid "Delete comment"
-msgstr ""
+msgstr "Eliminar comentario"
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
 msgid "Reply..."
-msgstr ""
+msgstr "Responder..."
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
 msgid "Write a reply..."
-msgstr ""
+msgstr "Escribir una respuesta..."
 
 #: templates/pages/tools/kb/sidepanel/comment_reply_form.html.twig
 #: templates/pages/tools/kb/sidepanel/comments_thread.html.twig
 msgid "Reply"
-msgstr ""
+msgstr "Respuesta"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Articles"
-msgstr ""
+msgstr "Artículos"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Search..."
-msgstr ""
+msgstr "Buscar..."
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Search articles"
-msgstr ""
+msgstr "Buscar artículos"
 
 #: templates/pages/tools/kb/aside.html.twig
 #: js/src/vue/EntitySelector/EntitySelector.vue:233
@@ -5999,20 +5999,20 @@ msgstr "Borrar búsqueda"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Favorites"
-msgstr ""
+msgstr "Favoritos"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Uncategorized"
-msgstr ""
+msgstr "Sin categorizar"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "No articles found."
-msgstr ""
+msgstr "No se encontraron artículos."
 
 #: templates/pages/tools/kb/document_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:618
 msgid "Unlink document"
-msgstr ""
+msgstr "Desvincular documento"
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 msgid "Views"
@@ -6091,40 +6091,40 @@ msgstr[2] "Destinos"
 #: templates/pages/tools/kb/related_item_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:663
 msgid "Unlink item"
-msgstr ""
+msgstr "Desvincular elemento"
 
 #: templates/pages/tools/kb/modal/targets.html.twig
 msgid "Permissions"
-msgstr ""
+msgstr "Permisos"
 
 #: templates/pages/tools/kb/modal/targets.html.twig
 msgid "Sharing"
-msgstr ""
+msgstr "Compartiendo"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 msgid "Create a sharing link"
-msgstr ""
+msgstr "Crear un enlace para compartir"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 msgid "Link name (optional)"
-msgstr ""
+msgstr "Nombre de enlace (opcional)"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 #, php-format
 msgid "Link %d"
-msgstr ""
+msgstr "Enlace %d"
 
 #: templates/pages/tools/kb/modal/sharing.html.twig
 msgid "No sharing links yet"
-msgstr ""
+msgstr "Sin enlaces para compartir aún"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "Visible from"
-msgstr ""
+msgstr "Visible desde"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "No start date"
-msgstr ""
+msgstr "Sin fecha de inicio"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 #: src/Glpi/Features/PlanningEvent.php:847
@@ -6133,12 +6133,12 @@ msgstr "Válido hasta"
 
 #: templates/pages/tools/kb/modal/schedule_visibility.html.twig
 msgid "No end date"
-msgstr ""
+msgstr "Sin fecha de fin"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 #: src/KnowbaseItem.php:2446
 msgid "Show in service catalog"
-msgstr ""
+msgstr "Mostrar en el catálogo de servicios"
 
 #: templates/pages/tools/kb/modal/service_catalog.html.twig
 msgid "Details to display in service catalog"
@@ -6152,28 +6152,28 @@ msgstr "Fijar en la parte superior del catálogo de servicios"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Can be viewed by:"
-msgstr ""
+msgstr "Puede ser visto por:"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "This article is not yet visible to anyone."
-msgstr ""
+msgstr "Este artículo aún no es visible para nadie."
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Add access for"
-msgstr ""
+msgstr "Agregar acceso para"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Select a type..."
-msgstr ""
+msgstr "Seleccionar un tipo..."
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 #: js/modules/Knowbase/PermissionsFormController.js:37
 msgid "Show advanced options"
-msgstr ""
+msgstr "Mostrar opciones avanzadas"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 msgid "Delete target"
-msgstr ""
+msgstr "Eliminar destino"
 
 #: templates/pages/tools/kb/modal/permissions.html.twig
 #: src/CommonDBVisible.php:302
@@ -8991,7 +8991,7 @@ msgstr ""
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "The use of an SMTP option is needed."
-msgstr ""
+msgstr "El uso de una opción SMTP es requerido."
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Way of sending emails"
@@ -9609,7 +9609,7 @@ msgstr "Herencia de la entidad padre"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "Authentication code"
-msgstr ""
+msgstr "Código de autenticación"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "2FA is required for your account"
@@ -12665,7 +12665,7 @@ msgstr "Peso máx."
 
 #: templates/pages/assets/plug.html.twig src/Plug.php:240
 msgid "Custom name"
-msgstr ""
+msgstr "Nombre personalizado"
 
 #: templates/pages/assets/plug.html.twig src/Plug.php:298 src/Plug.php:310
 msgid "Support type"
@@ -12674,7 +12674,7 @@ msgstr ""
 #: templates/pages/assets/plug.html.twig src/Plug.php:241 src/Plug.php:322
 #: src/Plug.php:334
 msgid "Associated asset"
-msgstr ""
+msgstr "Activo asociado"
 
 #: templates/pages/assets/socket.html.twig
 #: templates/pages/assets/cable.html.twig src/Glpi/Socket.php:341
@@ -16664,7 +16664,7 @@ msgstr "Sincronización"
 #: src/Entity_KnowbaseItem.php:69 src/KnowbaseItem_Profile.php:70
 #: src/Group_KnowbaseItem.php:70 src/KnowbaseItem_User.php:66
 msgid "This target already exists for this article."
-msgstr ""
+msgstr "Este destino ya existe para este artículo."
 
 #: src/RuleDictionnaryOperatingSystemVersionCollection.php:43
 msgid "Dictionary of operating system versions"
@@ -17577,7 +17577,7 @@ msgstr "Agregar un nuevo costo"
 
 #: src/ContractCost.php:416 src/CommonITILCost.php:616 src/ProjectCost.php:376
 msgid "Modification date"
-msgstr ""
+msgstr "Fecha de modificación"
 
 #: src/ContractCost.php:417 src/CommonITILCost.php:617
 #: src/NotificationTargetCommonITILObject.php:2120 src/Notepad.php:300
@@ -18427,7 +18427,7 @@ msgstr "MM-DD-AAAA"
 
 #: src/Toolbox.php:2762
 msgid "DD.MM.YYYY"
-msgstr ""
+msgstr "DD.MM.AAAA"
 
 #: src/CommonITILTask.php:490
 msgid "You can't remove description of a task."
@@ -20424,7 +20424,7 @@ msgstr "Activos"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:432
 msgid "Allow multiple items"
-msgstr ""
+msgstr "Permitir múltiples elementos"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:581
 msgid "GLPI Object"
@@ -20605,13 +20605,13 @@ msgstr ""
 #: src/Glpi/RichText/VideoEmbedRenderer.php:129
 #: js/modules/TipTap/VideoEmbedExtension.js:395
 msgid "Embedded video"
-msgstr ""
+msgstr "Video incrustado"
 
 #: src/Glpi/RichText/VideoEmbedRenderer.php:286
 #: js/modules/TipTap/VideoEmbedExtension.js:390
 #: js/modules/TipTap/SlashCommandsExtension.js:293
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: src/Glpi/RichText/RichText.php:519
 msgid "Next (arrow right)"
@@ -21517,7 +21517,7 @@ msgstr "Autenticación Básica"
 
 #: src/Glpi/Inventory/Conf.php:414
 msgid "None (not recommended)"
-msgstr ""
+msgstr "Ninguno (no recomendado)"
 
 #: src/Glpi/Inventory/Conf.php:424
 msgid ""
@@ -21534,7 +21534,7 @@ msgstr ""
 
 #: src/Glpi/Inventory/Conf.php:432
 msgid "Add an OAuth client"
-msgstr ""
+msgstr "Agregar un cliente OAuth"
 
 #: src/Glpi/Inventory/Conf.php:442
 msgid ""
@@ -22137,7 +22137,7 @@ msgstr "Seguridad"
 
 #: src/Glpi/Security/SecurityConfig.php:89
 msgid "Password Policy"
-msgstr ""
+msgstr "Política de Contraseñas"
 
 #: src/Glpi/Security/TOTPManager.php:429
 msgid "Too many failed MFA attempts. Please try again later."
@@ -25724,7 +25724,7 @@ msgstr ""
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:261
 msgid "Permissions updated"
-msgstr ""
+msgstr "Permisos actualizados"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:292
 msgid "Sharing enabled"
@@ -25741,27 +25741,27 @@ msgstr ""
 #: src/Glpi/Knowbase/History/CurrentTranslationEvent.php:58
 #: src/Glpi/Knowbase/History/CurrentVersionLogEvent.php:45
 msgid "Updated by"
-msgstr ""
+msgstr "Actualizado por"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:318
 msgid "Renamed"
-msgstr ""
+msgstr "Renombrado"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:350
 msgid "Added to the FAQ"
-msgstr ""
+msgstr "Agregado a las Preguntas Frecuentes"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:351
 msgid "Removed from the FAQ"
-msgstr ""
+msgstr "Removido de las Preguntas Frecuentes"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:405
 msgid "Item linked"
-msgstr ""
+msgstr "Elemento vinculado"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:406
 msgid "Item unlinked"
-msgstr ""
+msgstr "Elemento desvinculado"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:410
 #, php-format
@@ -25775,11 +25775,11 @@ msgstr ""
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:453
 msgid "Added to category"
-msgstr ""
+msgstr "Agregado a categoría"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:454
 msgid "Removed from category"
-msgstr ""
+msgstr "Removido de categoría"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:458
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:506
@@ -32704,15 +32704,15 @@ msgstr ""
 
 #: src/KnowbaseItem.php:1267
 msgid "Add to favorites"
-msgstr ""
+msgstr "Agregar a favoritos"
 
 #: src/KnowbaseItem.php:1278
 msgid "Add to FAQ"
-msgstr ""
+msgstr "Agregar a Preguntas Frecuentes"
 
 #: src/KnowbaseItem.php:1298 js/modules/Knowbase/ArticleController.js:570
 msgid "Delete article"
-msgstr ""
+msgstr "Eliminar artículo"
 
 #: src/KnowbaseItem.php:2051
 msgid "Use as a solution"
@@ -36744,12 +36744,12 @@ msgstr ""
 
 #: js/modules/Knowbase/LinkItemFormController.js:130
 msgid "Item linked successfully"
-msgstr ""
+msgstr "Elemento vinculado exitosamente"
 
 #: js/modules/Knowbase/LinkItemFormController.js:151
 #: js/modules/Knowbase/DocumentLinkController.js:327
 msgid "Linking..."
-msgstr ""
+msgstr "Vinculando..."
 
 #: js/modules/Knowbase/UploadController.js:193
 msgid "Please wait until file uploads complete."
@@ -36768,11 +36768,11 @@ msgstr ""
 
 #: js/modules/Knowbase/UploadController.js:229
 msgid "Uploading..."
-msgstr ""
+msgstr "Subiendo..."
 
 #: js/modules/Knowbase/UploadController.js:279
 msgid "Document uploaded successfully"
-msgstr ""
+msgstr "Documento subido exitosamente"
 
 #: js/modules/Knowbase/UploadController.js:280
 #, javascript-format
@@ -36907,7 +36907,7 @@ msgstr ""
 #: js/modules/Knowbase/ArticleController.js:1082
 #: js/modules/Knowbase/ArticleController.js:1454
 msgid "Saving..."
-msgstr ""
+msgstr "Guardando..."
 
 #: js/modules/Knowbase/ArticleController.js:945
 msgid "Visibility dates updated"
@@ -36955,7 +36955,7 @@ msgstr ""
 #: js/modules/Knowbase/ArticleController.js:1593
 #: js/modules/Knowbase/ArticleController.js:1596
 msgid "Add new translation"
-msgstr ""
+msgstr "Agregar nueva traducción"
 
 #: js/modules/Knowbase/ArticleController.js:1516
 msgid "Are you sure you want to delete this translation?"
@@ -36964,9 +36964,9 @@ msgstr ""
 #: js/modules/Knowbase/ArticleController.js:1548
 msgid "translation"
 msgid_plural "translations"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "traducción"
+msgstr[1] "traducciones"
+msgstr[2] "traducciones"
 
 #: js/modules/Forms/EditorController.js:1404
 msgid "Submit button visibility"
@@ -37070,7 +37070,7 @@ msgstr ""
 
 #: js/modules/TipTap/VideoEmbedExtension.js:198
 msgid "Video URL"
-msgstr ""
+msgstr "URL del video"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:212
 msgid "Supported: a YouTube URL, or a direct video file URL (MP4, WebM, Ogg)."
@@ -37078,7 +37078,7 @@ msgstr ""
 
 #: js/modules/TipTap/VideoEmbedExtension.js:234
 msgid "Insert"
-msgstr ""
+msgstr "Insertar"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:252
 msgid ""
@@ -37093,7 +37093,7 @@ msgstr "video"
 #: js/modules/TipTap/VideoEmbedExtension.js:403
 #: js/modules/TipTap/VideoEmbedExtension.js:429
 msgid "Invalid video"
-msgstr ""
+msgstr "Video inválido"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:412
 msgid "video player"
@@ -37101,11 +37101,11 @@ msgstr ""
 
 #: js/modules/TipTap/SlashCommandsExtension.js:58
 msgid "Insert/Edit Image"
-msgstr ""
+msgstr "Insertar/Editar Imagen"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:71
 msgid "Alternative description"
-msgstr ""
+msgstr "Descripción alternativa"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:84
 msgid "Constrain proportions"

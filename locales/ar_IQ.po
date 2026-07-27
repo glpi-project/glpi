@@ -4,8 +4,8 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# Haider Sattar Kuhami <hastkmr1772@gmail.com>, 2026
 # Johan Cwiklinski, 2026
+# Haider Sattar Kuhami <hastkmr1772@gmail.com>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -14,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-06 10:07+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: Johan Cwiklinski, 2026\n"
+"Last-Translator: Haider Sattar Kuhami <hastkmr1772@gmail.com>, 2026\n"
 "Language-Team: Arabic (Iraq) (https://app.transifex.com/glpi/teams/1637/ar_IQ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1387,7 +1387,7 @@ msgstr "ملفات شخصية"
 
 #: templates/layout/parts/breadcrumbs.html.twig
 msgid "Breadcrumbs"
-msgstr ""
+msgstr "مسار التنقل"
 
 #: templates/layout/parts/global_search_form.html.twig
 #: templates/pages/tools/search_knowbaseitem.html.twig
@@ -19384,7 +19384,7 @@ msgstr "ميلي فولت"
 
 #: src/DeviceBattery.php:117
 msgid "Design capacity"
-msgstr ""
+msgstr "القدرة التصميمية"
 
 #: src/DeviceBattery.php:135 src/Item_DeviceBattery.php:63
 msgid "Real capacity"
@@ -24521,15 +24521,15 @@ msgstr "فرض إعادة إنشاء مفاتيح OAuth حتى إذا كانت �
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:60
 msgid "OAuth keys already exist. Use --force option to regenerate them."
-msgstr ""
+msgstr "مفاتيح OAuth موجودة بالفعل. استخدم الخيار --force لإعادة إنشائها."
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:67
 msgid "Unable to generate OAuth keys."
-msgstr ""
+msgstr "تعذر إنشاء مفاتيح OAuth."
 
 #: src/Glpi/Console/Security/ChangeOAuthKeyCommand.php:73
 msgid "OAuth keys have been successfully generated."
-msgstr ""
+msgstr "تم إنشاء مفاتيح OAuth بنجاح."
 
 #: src/Glpi/Console/Security/ChangekeyCommand.php:58
 msgid "Change password storage key and update values in database."
@@ -25041,35 +25041,36 @@ msgstr ""
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:159
 msgid "Enable SSL for database connection"
-msgstr ""
+msgstr "قم بتمكين بروتوكول SSL لاتصال قاعدة البيانات"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:166
 msgid "Path to the database SSL CA certificate file"
-msgstr ""
+msgstr "مسار ملف شهادة مرجع التصديق (CA) لاتصال SSL بقاعدة البيانات."
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:173
 msgid "Path to the database SSL client certificate file"
-msgstr ""
+msgstr "مسار ملف شهادة عميل SSL لقاعدة البيانات."
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:180
 msgid "Path to the database SSL client key file"
-msgstr ""
+msgstr "مسار ملف مفتاح عميل SSL لقاعدة البيانات"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:187
 msgid "Path to a directory containing trusted SSL CA certificates"
 msgstr ""
+"مسار الدليل الذي يحتوي على شهادات مرجع التصديق (CA) الموثوقة لاتصال SSL."
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:194
 msgid "List of allowable ciphers for SSL database connection"
-msgstr ""
+msgstr "قائمة التشفيرات المسموح بها لاتصال قاعدة البيانات عبر بروتوكول SSL"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:205
 msgid "Database host:"
-msgstr ""
+msgstr "مضيف قاعدة البيانات:"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:206
 msgid "Database port (optional):"
-msgstr ""
+msgstr "منفذ قاعدة البيانات (اختياري):"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:219
 msgid "Database name:"
@@ -25085,27 +25086,27 @@ msgstr "كلمة مرور قاعدة البيانات:"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:237
 msgid "Enable SSL for database connection?"
-msgstr ""
+msgstr "هل تريد تفعيل بروتوكول SSL للاتصال بقاعدة البيانات؟"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:245
 msgid "Path to SSL CA certificate file (optional):"
-msgstr ""
+msgstr "مسار ملف شهادة SSL CA (اختياري):"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:246
 msgid "Path to SSL client certificate file (optional):"
-msgstr ""
+msgstr "مسار ملف شهادة عميل SSL (اختياري):"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:247
 msgid "Path to SSL client key file (optional):"
-msgstr ""
+msgstr "مسار ملف مفتاح عميل SSL (اختياري):"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:248
 msgid "Path to directory containing trusted SSL CA certificates (optional):"
-msgstr ""
+msgstr "مسار الدليل الذي يحتوي على شهادات SSL CA الموثوقة (اختياري):"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:249
 msgid "List of allowable ciphers for SSL connection (optional):"
-msgstr ""
+msgstr "قائمة التشفيرات المسموح بها لاتصال SSL (اختياري):"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:304
 #: src/Glpi/Console/Database/InstallCommand.php:177
@@ -25147,23 +25148,23 @@ msgstr "--db-password لا يمكن أن تكون قيمة الخيار فارغ
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:604
 msgid "SSL CA certificate"
-msgstr ""
+msgstr "شهادة SSL CA"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:605
 msgid "SSL client certificate"
-msgstr ""
+msgstr "شهادة عميل SSL"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:606
 msgid "SSL client key"
-msgstr ""
+msgstr "مفتاح عميل SSL"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:607
 msgid "SSL CA path"
-msgstr ""
+msgstr "SSL CA مسار"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:608
 msgid "SSL cipher"
-msgstr ""
+msgstr "تشفير SSL"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:637
 #: src/Glpi/Console/Database/EnableTimezonesCommand.php:83
@@ -30346,12 +30347,12 @@ msgstr "إنشاء قالب"
 #: src/MassiveAction.php:667
 msgctxt "button"
 msgid "Associate group"
-msgstr ""
+msgstr "مجموعة تابعة"
 
 #: src/MassiveAction.php:668
 msgctxt "button"
 msgid "Dissociate group"
-msgstr ""
+msgstr "مجموعة متفككة"
 
 #: src/MassiveAction.php:694
 msgctxt "button"
@@ -30415,7 +30416,7 @@ msgstr "لا يمكنك حذف هذا العنصر، لأنه يُستخدم ل�
 
 #: src/MassiveAction.php:1762
 msgid "Invalid field name."
-msgstr ""
+msgstr "اسم الحقل غير صالح."
 
 #: src/MassiveAction.php:1927
 #, php-format
@@ -32108,12 +32109,12 @@ msgstr "إنشاء مهمة فرعية من مهمة المشروع هذا"
 #: src/ProjectTask.php:1491
 msgctxt "button"
 msgid "Affect to team"
-msgstr ""
+msgstr "التأثير على الفريق"
 
 #: src/ProjectTask.php:1492
 msgctxt "button"
 msgid "Unaffect to team"
-msgstr ""
+msgstr "لا يؤثر على الفريق"
 
 #: src/ProjectTask.php:1552 src/Project.php:1423
 msgid "Add a team member"
@@ -37001,7 +37002,7 @@ msgstr "عنوان URL الأساسي غير صالح!"
 
 #: src/Config.php:216
 msgid "Invalid SSO logout URL."
-msgstr ""
+msgstr "عنوان URL غير صالح لتسجيل الخروج من نظام تسجيل الدخول الموحد (SSO)."
 
 #: src/Config.php:345
 msgid ""
@@ -37989,11 +37990,11 @@ msgstr "أنقذ"
 
 #: js/modules/Dashboard/Dashboard.js:494
 msgid "Dashboard has been reset to default"
-msgstr ""
+msgstr "تمت إعادة ضبط لوحة التحكم إلى الوضع الافتراضي"
 
 #: js/modules/Dashboard/Dashboard.js:504
 msgid "An error occurred while resetting the dashboard"
-msgstr ""
+msgstr "حدث خطأ أثناء إعادة ضبط لوحة التحكم"
 
 #: js/modules/Dashboard/Dashboard.js:1080
 #, javascript-format
