@@ -69,7 +69,7 @@ export class ReadModeSelectionBubble {
         button.className = 'bubble-menu-btn';
 
         const label = document.createElement('span');
-        label.textContent = __('Comment');
+        label.textContent = _x('button', 'Comment');
         button.appendChild(label);
 
         const icon = document.createElement('i');
