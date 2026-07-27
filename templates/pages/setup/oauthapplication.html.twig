@@ -82,7 +82,7 @@
                                 }
                             ) }}
 
-                            <div id="tenant_id_container_{{ rand }}">
+                            <div id="tenant_id_container_{{ rand }}" class="col-12 col-sm-6">
                                 {% if item.isNewItem() or item.fields['provider'] == constant('OAuthApplication::AZURE') %}
                                     {{ fields.textField(
                                         'tenant_id',
@@ -91,6 +91,7 @@
                                         {
                                             helper: __('Required for Microsoft Azure (directory/tenant ID)'),
                                             required: true,
+                                            field_class: '',
                                         }
                                     ) }}
                                 {% endif %}

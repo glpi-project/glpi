@@ -96,7 +96,7 @@ final class OAuthApplication extends CommonDBTM
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item instanceof self && $tabnum === 1) {
-            $item->getLinkedMailCollectors(true);
+            $item->displayLinkedMailCollectors();
             return true;
         }
         return false;
@@ -127,10 +127,9 @@ final class OAuthApplication extends CommonDBTM
     }
 
     /**
-     * @param bool $show
-     * @return list<array{id: int, name: string, plain_name: string, is_active: string, last_collect_date: mixed}>|void
+     * @return list<array{id: int, name: string, plain_name: string, is_active: string, last_collect_date: mixed}>
      */
-    public function getLinkedMailCollectors(bool $show = false)
+    public function getLinkedMailCollectors(): array
     {
         global $DB;
 
@@ -152,27 +151,30 @@ final class OAuthApplication extends CommonDBTM
             ];
         }
 
-        if ($show) {
-            TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-                'is_tab'          => true,
-                'nofilter'        => true,
-                'nosort'          => true,
-                'columns'         => [
-                    'name'              => __('Name'),
-                    'is_active'         => __('Active'),
-                    'last_collect_date' => __('Last collection date'),
-                ],
-                'formatters'      => [
-                    'name'              => 'raw_html',
-                    'last_collect_date' => 'datetime',
-                ],
-                'entries'         => $entries,
-                'total_number'    => count($entries),
-                'filtered_number' => count($entries),
-            ]);
-        } else {
-            return $entries;
-        }
+        return $entries;
+    }
+
+    public function displayLinkedMailCollectors(): void
+    {
+        $entries = $this->getLinkedMailCollectors();
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab'          => true,
+            'nofilter'        => true,
+            'nosort'          => true,
+            'columns'         => [
+                'name'              => __('Name'),
+                'is_active'         => __('Active'),
+                'last_collect_date' => __('Last collection date'),
+            ],
+            'formatters'      => [
+                'name'              => 'raw_html',
+                'last_collect_date' => 'datetime',
+            ],
+            'entries'         => $entries,
+            'total_number'    => count($entries),
+            'filtered_number' => count($entries),
+        ]);
     }
 
     public function cleanDBonPurge(): void
@@ -266,12 +268,10 @@ final class OAuthApplication extends CommonDBTM
     public function pre_deleteItem()
     {
         $lkd_collectors = $this->getLinkedMailCollectors();
-        if (is_array($lkd_collectors) && count($lkd_collectors) > 0) {
+        if (count($lkd_collectors) > 0) {
             Session::addMessageAfterRedirect(__s('The app could not be deleted, it is linked with the following receiver(s): '), message_type: ERROR);
             foreach ($lkd_collectors as $collector) {
-                $col = new MailCollector();
-                $col->getFromDB($collector['id']);
-                Session::addMessageAfterRedirect('- ' . $col->getLink(), message_type: ERROR);
+                Session::addMessageAfterRedirect('- ' . $collector['name'], message_type: ERROR);
             }
 
             return false;

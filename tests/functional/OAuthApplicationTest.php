@@ -516,13 +516,13 @@ class OAuthApplicationTest extends DbTestCase
         $this->login();
 
         // canCreate() delegates to canUpdate(), so removing UPDATE must deny creation
-        $saved = $_SESSION['glpiactiveprofile']['config'];
-        $_SESSION['glpiactiveprofile']['config'] = $saved & ~UPDATE;
+        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname];
+        $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved & ~UPDATE;
 
         try {
             $this->assertFalse(OAuthApplication::canCreate());
         } finally {
-            $_SESSION['glpiactiveprofile']['config'] = $saved;
+            $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved;
         }
     }
 
@@ -531,13 +531,13 @@ class OAuthApplicationTest extends DbTestCase
         $this->login();
 
         // canPurge() delegates to canUpdate(), so removing UPDATE must deny purge
-        $saved = $_SESSION['glpiactiveprofile']['config'];
-        $_SESSION['glpiactiveprofile']['config'] = $saved & ~UPDATE;
+        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname];
+        $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved & ~UPDATE;
 
         try {
             $this->assertFalse(OAuthApplication::canPurge());
         } finally {
-            $_SESSION['glpiactiveprofile']['config'] = $saved;
+            $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved;
         }
     }
 
@@ -545,14 +545,14 @@ class OAuthApplicationTest extends DbTestCase
     {
         $this->login();
 
-        $saved = $_SESSION['glpiactiveprofile']['config'];
-        $_SESSION['glpiactiveprofile']['config'] = READ;
+        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname];
+        $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = READ;
 
         try {
             $this->assertFalse(OAuthApplication::canUpdate());
             $this->assertTrue(OAuthApplication::canView());
         } finally {
-            $_SESSION['glpiactiveprofile']['config'] = $saved;
+            $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved;
         }
     }
 
