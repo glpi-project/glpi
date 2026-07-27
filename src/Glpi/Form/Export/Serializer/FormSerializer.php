@@ -733,6 +733,7 @@ final class FormSerializer extends AbstractFormSerializer
                 is_array($value)
                 && isset($value['itemtype'])
                 && isset($value['items_id'])
+                && ($value['items_id'] !== 0)
                 && getItemForItemtype($value['itemtype'])
             ) {
                 $items_id = $mapper->getItemId(

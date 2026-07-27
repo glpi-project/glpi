@@ -105,6 +105,13 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     private ?array $entities = null;
 
+    private static bool $ldap_group_batch_mode = false;
+
+    public static function enableLdapGroupBatchMode(): void
+    {
+        self::$ldap_group_batch_mode = true;
+    }
+
     public function getCloneRelations(): array
     {
         return [
@@ -2229,9 +2236,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
             return false;
         }
 
-        // Use cached lookup when MATCHING_RULE_IN_CHAIN is set (AD nested groups).
+        // Only use M-queries-per-group cache in batch mode; FPM spawns a new process per login so the cache never reuses.
         if (
-            str_contains($ldap_method["group_member_field"], AuthLDAP::MATCHING_RULE_IN_CHAIN_OID)
+            self::$ldap_group_batch_mode
+            && str_contains($ldap_method["group_member_field"], AuthLDAP::MATCHING_RULE_IN_CHAIN_OID)
             && !empty($ldap_method["group_field"])
         ) {
             return $this->getFromLDAPGroupDiscretCached(

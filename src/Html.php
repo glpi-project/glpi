@@ -2500,7 +2500,7 @@ TWIG,
                 if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
                     $out .= Html::showToolTip(
                         __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.'),
-                        ['display' => false, 'awesome-class' => 'btn btn-sm border-danger text-danger me-1 fa-info']
+                        ['display' => false, 'link_class' => 'btn btn-sm border-danger text-danger me-1']
                     );
                 }
             }
@@ -3330,6 +3330,7 @@ JS;
      *   link?: string,          // link on the displayed icon if contentid is empty
      *   linkid?: string,        // HTML id of the link
      *   linktarget?: string,    // link target
+     *   link_class?: string,    // class of the wrapper element (the <a>, or the <span> when there is no link)
      *   awesome-class?: string, // class of the icon to display (default 'fa-info')
      *   popup?: string,         // popup action
      *   img?: string,           // URL of a specific image
@@ -3386,17 +3387,22 @@ JS;
         }
 
         if (empty($param['applyto'])) {
-            if (!empty($param['link'])) {
-                $out .= "<a id='" . (!empty($param['linkid']) ? htmlescape($param['linkid']) : "tooltiplink$rand") . "'
+            // Keep wrapper classes (e.g. btn) off the icon element, since they can clash with fas/fa-* on font-family and hide the glyph.
+            $has_wrapper = !empty($param['link']) || !empty($param['link_class']);
+            $wrapper_tag = !empty($param['link']) ? 'a' : 'span';
+            if ($has_wrapper) {
+                $out .= "<{$wrapper_tag} id='" . (!empty($param['linkid']) ? htmlescape($param['linkid']) : "tooltiplink$rand") . "'
                         class='dropdown_tooltip " . htmlescape($param['link_class']) . "'";
 
-                if (!empty($param['linktarget'])) {
-                    $out .= " target='" . htmlescape($param['linktarget']) . "' ";
-                }
-                $out .= " href='" . htmlescape($param['link']) . "'";
+                if (!empty($param['link'])) {
+                    if (!empty($param['linktarget'])) {
+                        $out .= " target='" . htmlescape($param['linktarget']) . "' ";
+                    }
+                    $out .= " href='" . htmlescape($param['link']) . "'";
 
-                if (!empty($param['popup'])) {
-                    $out .= " data-bs-toggle='modal' data-bs-target='#tooltippopup$rand' ";
+                    if (!empty($param['popup'])) {
+                        $out .= " data-bs-toggle='modal' data-bs-target='#tooltippopup$rand' ";
+                    }
                 }
                 $out .= '>';
             }
@@ -3408,11 +3414,11 @@ JS;
                 $out .= "<span id='tooltip$rand' class='fas {$class} fa-fw'></span>";
             }
 
-            if (!empty($param['link'])) {
-                $out .= "</a>";
+            if ($has_wrapper) {
+                $out .= "</{$wrapper_tag}>";
             }
 
-            $param['applyto'] = (!empty($param['link']) && !empty($param['linkid'])) ? $param['linkid'] : "tooltip$rand";
+            $param['applyto'] = (!empty($param['linkid']) && $has_wrapper) ? $param['linkid'] : "tooltip$rand";
         }
 
         if (empty($param['contentid'])) {
