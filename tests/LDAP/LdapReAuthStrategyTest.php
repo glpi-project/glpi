@@ -37,6 +37,7 @@ namespace tests\units;
 use AuthLDAP;
 use Glpi\Security\ReAuth\LdapReAuthStrategy;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RequiresPhpExtension;
@@ -52,6 +53,8 @@ use User;
 #[Group('reauth')]
 class LdapReAuthStrategyTest extends DbTestCase
 {
+    use ReAuthTrait;
+
     private AuthLDAP $ldap;
 
     public function setUp(): void
@@ -149,7 +152,10 @@ class LdapReAuthStrategyTest extends DbTestCase
         $users_id = $import_ldap_user ? $this->importLdapUser('brazil6') : 999999;
 
         // --- act + assert ---
-        $this->assertSame($expected, (new LdapReAuthStrategy())->verify($users_id, $password));
+        $this->assertSame(
+            $expected,
+            (new LdapReAuthStrategy())->verify($users_id, $this->makeVerifyRequest($password))
+        );
     }
 
     public static function unsafeInputProvider(): iterable
@@ -170,7 +176,7 @@ class LdapReAuthStrategyTest extends DbTestCase
         $users_id = $this->importLdapUser('brazil6');
 
         // --- act + assert ---
-        $this->assertFalse((new LdapReAuthStrategy())->verify($users_id, $user_input));
+        $this->assertFalse((new LdapReAuthStrategy())->verify($users_id, $this->makeVerifyRequest($user_input)));
     }
 
     /** Fails closed (no bypass) when the directory is unreachable. */
@@ -195,7 +201,7 @@ class LdapReAuthStrategyTest extends DbTestCase
         $DB->update('glpi_users', ['auths_id' => $unreachable->getID()], ['id' => $users_id]);
 
         // --- act + assert ---
-        $this->assertFalse((new LdapReAuthStrategy())->verify($users_id, 'password'));
+        $this->assertFalse((new LdapReAuthStrategy())->verify($users_id, $this->makeVerifyRequest('password')));
 
         // The failed bind against the unreachable host is expected to be logged.
         $this->hasPhpLogRecordThatContains(

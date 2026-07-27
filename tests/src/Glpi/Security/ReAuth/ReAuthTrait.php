@@ -39,6 +39,7 @@ use Glpi\Security\ReAuth\InPlaceReAuthStrategy;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\ReAuth\ReAuthStrategyEnum;
 use Glpi\Security\ReAuth\ReAuthStrategyInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Helpers shared by the re-authentication tests: fake a web request context and
@@ -49,6 +50,14 @@ trait ReAuthTrait
     private function getReAuthManager(): ReAuthManager
     {
         return ReAuthManager::getInstance();
+    }
+
+    /**
+     * Prompt form submission carrying a single secret, as {@see ReAuthController::verify()} receives it.
+     */
+    private function makeVerifyRequest(string $user_input): Request
+    {
+        return Request::create('/ReAuth/Verify', 'POST', ['user_input' => $user_input]);
     }
 
     /**
@@ -170,7 +179,7 @@ trait ReAuthTrait
                 private string $verify_http_method,
             ) {}
 
-            public function verify(int $users_id, string $user_input): bool
+            public function verify(int $users_id, Request $request): bool
             {
                 return true;
             }

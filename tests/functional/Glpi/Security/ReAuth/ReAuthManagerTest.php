@@ -246,7 +246,7 @@ class ReAuthManagerTest extends DbTestCase
 
         // --- act + assert : the fallback prompt is used and any input is accepted ---
         $this->assertSame('pages/reauth/fallback_form.html.twig', $manager->getPromptTemplate());
-        $this->assertTrue($manager->verify('no-check-is-done'));
+        $this->assertTrue($manager->verify($this->makeVerifyRequest('no-check-is-done')));
     }
 
     /** Throws InvalidArgumentException when a non-CommonGLPI class is passed. */
