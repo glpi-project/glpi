@@ -91,6 +91,13 @@
     border-left: 1px solid #e1e4e8;
     height: calc(100vh - 150px);
 
+    // Mirror .kb-article's transition so the pair always sums to the row width;
+    // `clip` contains the content mid-animation without making this a scroller.
+    overflow-x: clip;
+    transition:
+        width 0.35s ease-in-out,
+        padding 0.35s ease-in-out;
+
     .steps-vertical {
         position: relative;
         left: -1.5rem;
@@ -375,17 +382,29 @@ body.in_modal .kb-article {
 // just-submitted anchored comment.
 .kb-comment-thread--focused {
     outline: 2px solid var(--tblr-primary);
-    outline-offset: 2px;
+
+    // Offset, not padding: the threads are spaced with a flex gap, so any
+    // padding here would shift the layout when the outline appears.
+    outline-offset: 6px;
     border-radius: var(--tblr-border-radius);
     transition: outline-color 0.2s ease-in-out;
 }
 
-// A selection can be arbitrarily long; cap the quote at ~3 lines and scroll it
-// rather than let it drown the thread.
+// A selection can be arbitrarily long; truncate the quote at 3 lines rather
+// than let it drown the thread behind a scrollbar.
 .kb-comment-anchor-quote {
-    max-height: 4.3em;
-    overflow-y: auto;
+    /* stylelint-disable-next-line value-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+    display: -webkit-box;
+    /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+    -webkit-line-clamp: 3;
+    /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     overflow-wrap: anywhere;
+
+    // Without this, blockquote's 1rem block padding widens the clip box and a
+    // 4th line bleeds through under the ellipsis.
+    padding-block: 0;
 }
 
 // KB visibility dates
