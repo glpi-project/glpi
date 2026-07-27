@@ -157,9 +157,11 @@ The present file will list all changes made to the project; according to the
 - `ITILFollowup::ADDGROUPTICKET` constant
 - `ITILFollowup::ADDMYTICKET` constant
 - `KnowbaseItem::normalizeKbRevisionDiffHtml()`
+- `KnowbaseItem_KnowbaseItemCategory` class
 - `KnowbaseItem_Comment::getCommentForm()`
 - `KnowbaseItem_Comment::showForItem()`
 - `KnowbaseItem_Revision::showForItem()`
+- `KnowbaseItemCategory` class
 - `KnowbaseItemTranslation::defineTabs()`
 - `KnowbaseItemTranslation::displayTabContentForItem()`
 - `KnowbaseItemTranslation::getTabNameForItem()`
