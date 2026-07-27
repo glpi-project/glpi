@@ -110,6 +110,9 @@ export class GlpiKnowbaseArticleController
     /** @type {Array<{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}>} */
     #comment_anchors = [];
 
+    /** @type {string[]} */
+    #resolved_anchor_ids = [];
+
     #handleTitleKeydown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -1016,7 +1019,7 @@ export class GlpiKnowbaseArticleController
             this.#comment_anchors = [];
         }
 
-        highlightComments(content_el, this.#comment_anchors);
+        this.#renderCommentAnchors();
         new ReadModeSelectionBubble(content_el);
 
         content_el.addEventListener('glpi:kb:comment-selection', (e) => {
@@ -1031,6 +1034,11 @@ export class GlpiKnowbaseArticleController
 
         document.addEventListener('glpi:kb:comment-unanchored', (e) => {
             this.#onCommentUnanchored(e.detail.id);
+        });
+
+        // Panel content is replaced by AJAX; re-apply the quote state to the new HTML.
+        document.addEventListener('glpi:kb:panel-loaded', () => {
+            this.#syncAnchorQuotes();
         });
 
         content_el.addEventListener('click', (e) => {
@@ -1092,13 +1100,21 @@ export class GlpiKnowbaseArticleController
     {
         if (this.#editor) {
             this.#editor.refreshCommentAnchors(this.#comment_anchors);
-            return;
+            this.#resolved_anchor_ids = this.#editor.getResolvedCommentAnchorIds();
+        } else {
+            const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+            this.#resolved_anchor_ids = content_el
+                ? highlightComments(content_el, this.#comment_anchors)
+                : [];
         }
 
-        const content_el = this.#container.querySelector('[data-glpi-kb-content]');
-        if (content_el) {
-            highlightComments(content_el, this.#comment_anchors);
-        }
+        this.#syncAnchorQuotes();
+    }
+
+    #syncAnchorQuotes()
+    {
+        // Undefined in "add" mode, where the article doesn't exist yet.
+        this.#side_panel?.setResolvedCommentAnchors(this.#resolved_anchor_ids);
     }
 
     /**
@@ -1203,6 +1219,8 @@ export class GlpiKnowbaseArticleController
                 comment_anchors: this.#comment_anchors,
                 onUpdate: () => {
                     setHasUnsavedChanges(true);
+                    this.#resolved_anchor_ids = this.#editor?.getResolvedCommentAnchorIds() ?? [];
+                    this.#syncAnchorQuotes();
                 },
             });
         } else {

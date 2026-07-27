@@ -105,6 +105,8 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await highlight.click();
 
         await expect(kb.getComment('Comment for click-to-open test')).toBeVisible();
+        // A still-resolvable anchor must keep citing its passage.
+        await expect(kb.getCommentAnchorQuotes()).toHaveCount(1);
     });
 
     test('A highlight created in read mode is still shown in edit mode', async ({ page, profile, api }) => {
@@ -151,7 +153,7 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await expect(kb.getPendingAnchorQuote()).toHaveText('A whole paragraph selected at once');
     });
 
-    test('A comment survives editing away its quoted text, without a highlight', async ({ page, profile, api }) => {
+    test('A comment survives editing away its quoted text, without a highlight nor a quote', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);
 
@@ -175,5 +177,13 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await kb.doOpenCommentsPanel();
         await expect(kb.getComment('Comment that will be orphaned')).toBeVisible();
         await expect(kb.getCommentHighlights()).toHaveCount(0);
+        await expect(kb.getCommentAnchorQuotes()).toHaveCount(0);
+
+        // The anchor is still in DB: the quote must stay hidden once re-sent by the server.
+        await page.reload();
+        await kb.waitForArticleReady();
+        await kb.doOpenCommentsPanel();
+        await expect(kb.getComment('Comment that will be orphaned')).toBeVisible();
+        await expect(kb.getCommentAnchorQuotes()).toHaveCount(0);
     });
 });
