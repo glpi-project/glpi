@@ -37,6 +37,7 @@ declare(strict_types=1);
 namespace Glpi\Security\ReAuth;
 
 use Glpi\Security\TOTPManager;
+use Symfony\Component\HttpFoundation\Request;
 
 final class TOTPReAuthStrategy extends InPlaceReAuthStrategy
 {
@@ -48,8 +49,10 @@ final class TOTPReAuthStrategy extends InPlaceReAuthStrategy
     }
 
     #[\Override]
-    public function verify(int $users_id, string $user_input): bool
+    public function verify(int $users_id, Request $request): bool
     {
+        $user_input = (string) $request->request->get('user_input', '');
+
         return $this->totp_manager->verifyCodeForUser($user_input, $users_id);
     }
 
