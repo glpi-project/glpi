@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\Operator;
+use Glpi\DBAL\Parts\Having;
+use Glpi\DBAL\Parts\LeftJoin;
+use Glpi\DBAL\Parts\Select;
+use Glpi\DBAL\Parts\Where;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\Output\ExportSearchOutput;
@@ -293,6 +298,7 @@ class Search
      * @param  array  &$data                TODO: should be a class property (output parameter)
      *
      * @return void
+     * @deprecated 12
      */
     public static function constructAdditionalSqlForMetacriteria(
         $criteria = [],
@@ -474,37 +480,28 @@ class Search
      *
      * @since 9.4: $num param has been dropped
      *
-     * @param string  $LINK           link to use
+     * @param Operator $LINK           link to use
      * @param bool    $NOT            is is a negative search ?
      * @param string  $itemtype       item type
      * @param int     $ID             ID of the item to search
      * @param string  $searchtype     search type ('contains' or 'equals')
      * @param string  $val            value search
      *
-     * @return string HAVING clause sub-string (Does not include the "HAVING" keyword).
-     **/
-    public static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val)
+     * @return Having
+     */
+    public static function addHaving(Operator $LINK, $NOT, $itemtype, $ID, $searchtype, $val): Having
     {
-        global $DB;
+        $having = new Having();
         $criteria = SQLProvider::getHavingCriteria($LINK, $NOT, $itemtype, $ID, $searchtype, $val);
         if (count($criteria) === 0) {
             // Related search option is not valid for SQL searching.
-            return '';
+            return $having;
         }
-        $iterator = new DBmysqlIterator($DB);
-        $iterator->buildQuery([
-            'FROM' => 'table',
-            'HAVING' => $criteria,
-        ]);
-        $sql = $iterator->getSql();
-        // Remove HAVING and everything before it
-        $sql = substr($sql, strpos($sql, 'HAVING ') + 6);
 
-        $link = trim($LINK);
-        if (empty($link)) {
-            return " $sql";
-        }
-        return " $link $sql";
+        return $having
+            ->setOperator($LINK)
+            ->withCriteria($criteria)
+        ;
     }
 
 
@@ -580,23 +577,29 @@ class Search
      * @param bool $meta         boolean is a meta
      * @param string  $meta_type    meta item type
      *
-     * @return string Select string
-     **/
-    public static function addSelect($itemtype, $ID, $meta = false, $meta_type = '')
+     * @return Select
+     */
+    public static function addSelect($itemtype, $ID, $meta = false, $meta_type = ''): Select
     {
         if ($meta_type === 0) {
             $meta_type = '';
         }
         $select_criteria = SQLProvider::getSelectCriteria((string) $itemtype, (int) $ID, (bool) $meta, (string) $meta_type);
         $select_string = '';
+        $select_values = [];
         foreach ($select_criteria as $criteria) {
             if (is_a($criteria, QueryExpression::class)) {
                 $select_string .= $criteria->getValue() . ', ';
+                $select_values = array_merge($select_values, $criteria->getParams());
             } else {
                 $select_string .= $criteria . ', ';
             }
         }
-        return $select_string;
+        $select = new Select();
+        return $select
+            ->setQuery($select_string)
+            ->setParams($select_values)
+        ;
     }
 
 
@@ -605,29 +608,22 @@ class Search
      *
      * @param class-string<CommonDBTM> $itemtype device type
      *
-     * @return string Where string
-     **/
-    public static function addDefaultWhere($itemtype)
+     * @return Where
+     */
+    public static function addDefaultWhere(string $itemtype): Where
     {
-        global $DB;
+        $where = new Where();
         $criteria = SQLProvider::getDefaultWhereCriteria($itemtype);
         if (count($criteria) === 0) {
-            return '';
+            return $where;
         }
-        $iterator = new DBmysqlIterator($DB);
-        $iterator->buildQuery([
-            'FROM' => 'table',
-            'WHERE' => $criteria,
-        ]);
-        $sql = $iterator->getSql();
-        // Remove WHERE and everything before it
-        return substr($sql, strpos($sql, 'WHERE ') + 6);
+        return $where->withCriteria($criteria);
     }
 
     /**
      * Generic Function to add where to a request
      *
-     * @param string  $link         Link string
+     * @param Operator $link         Link string
      * @param bool $nott         Is it a negative search ?
      * @param class-string<CommonDBTM>  $itemtype     Item type
      * @param int $ID           ID of the item to search
@@ -635,29 +631,20 @@ class Search
      * @param string  $val          Item num in the request
      * @param bool    $meta         Is a meta search (meta=2 in search.class.php) (default 0)
      *
-     * @return string|false Where string or false if an error occurred or if there was no valid WHERE string that could be created.
+     * @return Where
      **/
-    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = false)
+    public static function addWhere(Operator $link, $nott, $itemtype, $ID, $searchtype, $val, $meta = false): Where
     {
-        global $DB;
+        $where = new Where();
         $criteria = SQLProvider::getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta);
         if (count($criteria) === 0) {
-            return '';
+            return $where;
         }
-        $iterator = new DBmysqlIterator($DB);
-        $iterator->buildQuery([
-            'FROM' => 'table',
-            'WHERE' => $criteria,
-        ]);
-        $sql = $iterator->getSql();
-        // Remove WHERE and everything before it
-        $sql = substr($sql, strpos($sql, 'WHERE ') + 6);
 
-        $link = trim($link);
-        if (empty($link)) {
-            return " $sql";
-        }
-        return " $link $sql";
+        return $where
+            ->setOperator($link)
+            ->withCriteria($criteria)
+        ;
     }
 
     /**
@@ -667,40 +654,32 @@ class Search
      * @param string $ref_table            Reference table
      * @param array &$already_link_tables  Array of tables already joined
      *
-     * @return string Left join string
+     * @return LeftJoin
      **/
-    public static function addDefaultJoin($itemtype, $ref_table, array &$already_link_tables)
+    public static function addDefaultJoin($itemtype, $ref_table, array &$already_link_tables): LeftJoin
     {
-        global $DB;
+        $ljoin = new LeftJoin();
         $criteria = SQLProvider::getDefaultJoinCriteria($itemtype, $ref_table, $already_link_tables);
-        $iterator = new DBmysqlIterator($DB);
-        $iterator->buildQuery([
-            'FROM' => 'table',
-        ] + $criteria);
-        $sql = $iterator->getSql();
-        // Remove FROM $table clause and everything before it
-        $prefix = 'SELECT * FROM `table` ';
-        $sql = substr($sql, strlen($prefix));
-        return $sql . ' ';
+        return $ljoin->withCriteria($criteria);
     }
 
 
     /**
      * Generic Function to add left join to a request
      *
-     * @param string  $itemtype             Item type
-     * @param string  $ref_table            Reference table
-     * @param array   $already_link_tables  Array of tables already joined
-     * @param string  $new_table            New table to join
-     * @param string  $linkfield            Linkfield for LeftJoin
-     * @param bool $meta                 Is it a meta item ? (default 0)
-     * @param string  $meta_type            Meta item type
-     * @param array   $joinparams           Array join parameters (condition / joinbefore...)
-     * @param string  $field                Field to display (needed for translation join) (default '')
-     * @param bool    $use_join_subquery    Use a subquery for the join (default false)
+     * @param string             $itemtype             Item type
+     * @param string             $ref_table            Reference table
+     * @param array<int, string> $already_link_tables  Array of tables already joined
+     * @param string             $new_table            New table to join
+     * @param string             $linkfield            Linkfield for LeftJoin
+     * @param bool               $meta                 Is it a meta item ? (default 0)
+     * @param string             $meta_type            Meta item type
+     * @param array              $joinparams           Array join parameters (condition / joinbefore...)
+     * @param string             $field                Field to display (needed for translation join) (default '')
+     * @param bool               $use_join_subquery    Use a subquery for the join (default false)
      *
-     * @return string Left join string
-     **/
+     * @return LeftJoin
+     */
     public static function addLeftJoin(
         $itemtype,
         $ref_table,
@@ -712,8 +691,9 @@ class Search
         $joinparams = [],
         $field = '',
         $use_join_subquery = false
-    ) {
-        global $DB;
+    ): LeftJoin {
+        $ljoin = new LeftJoin();
+
         $criteria = SQLProvider::getLeftJoinCriteria(
             $itemtype,
             $ref_table,
@@ -726,38 +706,30 @@ class Search
             $field,
             $use_join_subquery
         );
-        $iterator = new DBmysqlIterator($DB);
-        $iterator->buildQuery([
-            'FROM' => 'table',
-        ] + $criteria);
-        $sql = $iterator->getSql();
-        // Remove FROM $table clause and everything before it
-        $prefix = 'SELECT * FROM `table` ';
-        $sql = substr($sql, strlen($prefix));
-        return $sql . ' ';
+
+        return $ljoin->withCriteria($criteria);
     }
 
 
     /**
      * Generic Function to add left join for meta items
      *
-     * @param string $from_type             Reference item type ID
-     * @param string $to_type               Item type to add
-     * @param array  $already_link_tables2  Array of tables already joined
-     * @param array $joinparams             Array join parameters (condition / joinbefore...)
+     * @param string             $from_type             Reference item type ID
+     * @param string             $to_type               Item type to add
+     * @param array<int, string> $already_link_tables2  Array of tables already joined
+     * @param array              $joinparams             Array join parameters (condition / joinbefore...)
      *
-     * @return string Meta Left join string
+     * @return LeftJoin
      */
     public static function addMetaLeftJoin(
         $from_type,
         $to_type,
         array &$already_link_tables2,
         $joinparams = []
-    ) {
-        global $DB;
+    ): LeftJoin {
         $joins = SQLProvider::getMetaLeftJoinCriteria($from_type, $to_type, $already_link_tables2, $joinparams);
-        $iterator = new DBmysqlIterator($DB);
-        return $iterator->analyseJoins($joins) . ' ';
+        $ljoin = new LeftJoin();
+        return $ljoin->withCriteria($joins);
     }
 
 

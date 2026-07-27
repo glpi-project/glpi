@@ -750,7 +750,7 @@ class NetworkPort extends CommonDBChild
         ) {
             $search_config_top .= "<span class='ti ti-table-row cursor-pointer' title='"
             . __s('Select default items to show') . "' data-bs-toggle='modal' data-bs-target='#search_config_top'>
-            <span class='sr-only'>" . __s('Select default items to show') . "</span></span>";
+            <span class='visually-hidden'>" . __s('Select default items to show') . "</span></span>";
 
             $pref_url = $CFG_GLPI["root_doc"] . "/front/displaypreference.form.php?itemtype="
                      . static::class;
@@ -1003,7 +1003,7 @@ class NetworkPort extends CommonDBChild
                                     break;
                             }
                             $output .= sprintf(
-                                '<i class="ti ti-circle-filled %s" title="%s"></i> <span class="sr-only">%s</span>',
+                                '<i class="ti ti-circle-filled %s" title="%s"></i> <span class="visually-hidden">%s</span>',
                                 htmlescape($state_class),
                                 htmlescape($state_title),
                                 htmlescape($state_title)
@@ -1214,7 +1214,7 @@ class NetworkPort extends CommonDBChild
                                     break;
                             }
                             $output .= sprintf(
-                                '<i class="ti %s" title="%s"></i> <span class="sr-only">%s</span>',
+                                '<i class="ti %s" title="%s"></i> <span class="visually-hidden">%s</span>',
                                 htmlescape($co_class),
                                 htmlescape($title),
                                 htmlescape($title)
@@ -1259,7 +1259,7 @@ class NetworkPort extends CommonDBChild
                             ) {
                                 $netport_table = $this->getTable();
                                 $already_link_tables = [];
-                                $join = Search::addLeftJoin(
+                                $ljoin = Search::addLeftJoin(
                                     self::class,
                                     $netport_table,
                                     $already_link_tables,
@@ -1270,9 +1270,10 @@ class NetworkPort extends CommonDBChild
                                     $option["joinparams"],
                                     $option["field"]
                                 );
+                                $qexpr = new QueryExpression($ljoin->getQuery(), values: $ljoin->getParams());
                                 $iterator = $DB->request([
                                     'FROM'   => $netport_table,
-                                    'JOIN'   => [new QueryExpression($join)],
+                                    'JOIN'   => [$qexpr],
                                     'WHERE'  => [
                                         "$netport_table.id" => $port['id'],
                                     ],

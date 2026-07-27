@@ -42,6 +42,7 @@ use Glpi\Form\Tag\CommentDescriptionTagProvider;
 use Glpi\Form\Tag\CommentTitleTagProvider;
 use Glpi\Form\Tag\FormTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
+use Glpi\Form\Tag\FullFormTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
 use Glpi\Form\Tag\SectionTagProvider;
 use Glpi\Form\Tag\Tag;
@@ -99,6 +100,11 @@ final class FormTagsManagerTest extends DbTestCase
                 value: $this->getQuestionId($form, 'Last name'),
                 provider: new AnswerTagProvider(),
             ),
+            new Tag(
+                label: 'Full form (all questions and answers)',
+                value: $form->getId(),
+                provider: new FullFormTagProvider(),
+            ),
         ];
 
         // Without filter
@@ -111,6 +117,7 @@ final class FormTagsManagerTest extends DbTestCase
             $this->getTagByName($tags, 'Answer: Last name'),
             $this->getTagByName($tags, 'Comment title: Comment title'),
             $this->getTagByName($tags, 'Comment description: Comment description'),
+            $this->getTagByName($tags, 'Full form (all questions and answers)'),
         ]);
 
         // With "name" filter
@@ -126,12 +133,14 @@ final class FormTagsManagerTest extends DbTestCase
         $this->checkGetTags($form, "Question", [
             $this->getTagByName($tags, 'Question: First name'),
             $this->getTagByName($tags, 'Question: Last name'),
+            $this->getTagByName($tags, 'Full form (all questions and answers)'),
         ]);
 
         // With "Answer" filter
         $this->checkGetTags($form, "Answer", [
             $this->getTagByName($tags, 'Answer: First name'),
             $this->getTagByName($tags, 'Answer: Last name'),
+            $this->getTagByName($tags, 'Full form (all questions and answers)'),
         ]);
 
         // With "First" filter

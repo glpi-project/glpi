@@ -1,0 +1,62 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+import("/js/modules/Forms/QuestionDropdown.js").then((m) => {
+    {% if question is not null %}
+        const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand|e('css')|e('js') }}"]');
+        container.data(
+            'manager',
+            new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container)
+        );
+    {% else %}
+        $(document).on('glpi-form-editor-question-type-changed', function(e, question, type) {
+            if (type === '{{ question_type|escape('js') }}') {
+                const container = question.find('div[data-glpi-form-editor-selectable-question-options]');
+                container.data(
+                    'manager',
+                    new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container, true)
+                );
+            }
+        });
+
+        $(document).on('glpi-form-editor-question-duplicated', function(e, question, new_question) {
+            const question_type = question.find('input[data-glpi-form-editor-original-name="type"]').val();
+            if (question_type === '{{ question_type|escape('js') }}') {
+                const container = new_question.find('div[data-glpi-form-editor-selectable-question-options]');
+                container.data(
+                    'manager',
+                    new m.GlpiFormQuestionTypeDropdown('{{ input_type|escape('js') }}', container, true)
+                );
+            }
+        });
+    {% endif %}
+});

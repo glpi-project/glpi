@@ -30,22 +30,21 @@
  * ---------------------------------------------------------------------
  */
 
-require('@jest/globals');
+import '/js/impact.js';
 
 describe('Impact', () => {
     //let window_href_spy;
     beforeEach(() => {
-        require('/js/impact.js');
         delete window.location;
         Object.defineProperty(window, 'location', {
             value: {
                 href: '',
-                reload: jest.fn().mockImplementation(() => {})
+                reload: vi.fn().mockImplementation(() => {})
             },
             writable: true,
             configurable: true,
         });
-        //window_href_spy = jest.spyOn(window.location, 'href');
+        //window_href_spy = vi.spyOn(window.location, 'href');
     });
     it('Sets globals', () => {
         expect(window.GLPIImpact).toBeDefined();
@@ -140,10 +139,10 @@ describe('Impact', () => {
     });
     it('Get network styles', () => {
         const styles = window.GLPIImpact.getNetworkStyle();
-        expect(styles).toBeArray();
+        expect(Array.isArray(styles)).toBe(true);
         expect(styles.length).toBeGreaterThan(0);
         styles.forEach((style) => {
-            expect(style).toBeObject();
+            expect(style).toBeTypeOf('object');
             expect(style).toHaveProperty('selector');
             expect(style).toSatisfy((s) => Object.prototype.hasOwnProperty.call(s, 'style') || Object.prototype.hasOwnProperty.call(s, 'css'));
         });
@@ -156,7 +155,7 @@ describe('Impact', () => {
         });
         expect(window.GLPIImpact.no_positions).toHaveLength(0);
         expect(layout.name).toBe('preset');
-        expect(layout.positions).toBeFunction();
+        expect(layout.positions).toBeTypeOf('function');
 
         expect(layout.positions({
             data: (k) => ({id: 'node1'}[k]),

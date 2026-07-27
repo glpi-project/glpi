@@ -1488,6 +1488,82 @@ class Entity extends CommonTreeDropdown implements
         ];
 
         $tab[] = [
+            'id'                 => '43',
+            'table'              => static::getTable(),
+            'field'              => 'inquest_config',
+            'name'               => sprintf(__('Satisfaction survey configuration (%s)'), Ticket::getTypeName(1)),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific',
+            'additionalfields'   => ['id'],
+        ];
+
+        $tab[] = [
+            'id'                 => '44',
+            'table'              => static::getTable(),
+            'field'              => 'inquest_rate',
+            'name'               => sprintf(__('Satisfaction survey trigger rate (%s)'), Ticket::getTypeName(1)),
+            'massiveaction'      => false,
+            'datatype'           => 'number',
+        ];
+
+        $tab[] = [
+            'id'                 => '45',
+            'table'              => static::getTable(),
+            'field'              => 'inquest_delay',
+            'name'               => sprintf(__('Create satisfaction survey after (%s)'), Ticket::getTypeName(1)),
+            'massiveaction'      => false,
+            'datatype'           => 'number',
+        ];
+
+        $tab[] = [
+            'id'                 => '46',
+            'table'              => static::getTable(),
+            'field'              => 'inquest_URL',
+            'name'               => sprintf(__('Satisfaction survey URL (%s)'), Ticket::getTypeName(1)),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
+            'id'                 => '71',
+            'table'              => static::getTable(),
+            'field'              => 'inquest_config_change',
+            'name'               => sprintf(__('Satisfaction survey configuration (%s)'), Change::getTypeName(1)),
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'datatype'           => 'specific',
+            'additionalfields'   => ['id'],
+        ];
+
+        $tab[] = [
+            'id'                 => '72',
+            'table'              => static::getTable(),
+            'field'              => 'inquest_rate_change',
+            'name'               => sprintf(__('Satisfaction survey trigger rate (%s)'), Change::getTypeName(1)),
+            'massiveaction'      => false,
+            'datatype'           => 'number',
+        ];
+
+        $tab[] = [
+            'id'                 => '73',
+            'table'              => static::getTable(),
+            'field'              => 'inquest_delay_change',
+            'name'               => sprintf(__('Create satisfaction survey after (%s)'), Change::getTypeName(1)),
+            'massiveaction'      => false,
+            'datatype'           => 'number',
+        ];
+
+        $tab[] = [
+            'id'                 => '74',
+            'table'              => static::getTable(),
+            'field'              => 'inquest_URL_change',
+            'name'               => sprintf(__('Satisfaction survey URL (%s)'), Change::getTypeName(1)),
+            'massiveaction'      => false,
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
             'id'                 => 'assets',
             'name'               => _n('Asset', 'Assets', Session::getPluralNumber()),
         ];
@@ -1540,80 +1616,6 @@ class Entity extends CommonTreeDropdown implements
             'massiveaction'      => false,
             'nosearch'           => true,
             'datatype'           => 'specific',
-        ];
-
-        $tab[] = [
-            'id'                 => '43',
-            'table'              => static::getTable(),
-            'field'              => 'inquest_config',
-            'name'               => sprintf(__('Satisfaction survey configuration (%s)'), Ticket::getTypeName(1)),
-            'massiveaction'      => false,
-            'nosearch'           => true,
-            'datatype'           => 'specific',
-        ];
-
-        $tab[] = [
-            'id'                 => '44',
-            'table'              => static::getTable(),
-            'field'              => 'inquest_rate',
-            'name'               => sprintf(__('Satisfaction survey trigger rate (%s)'), Ticket::getTypeName(1)),
-            'massiveaction'      => false,
-            'datatype'           => 'number',
-        ];
-
-        $tab[] = [
-            'id'                 => '45',
-            'table'              => static::getTable(),
-            'field'              => 'inquest_delay',
-            'name'               => sprintf(__('Create satisfaction survey after (%s)'), Ticket::getTypeName(1)),
-            'massiveaction'      => false,
-            'datatype'           => 'number',
-        ];
-
-        $tab[] = [
-            'id'                 => '46',
-            'table'              => static::getTable(),
-            'field'              => 'inquest_URL',
-            'name'               => sprintf(__('Satisfaction survey URL (%s)'), Ticket::getTypeName(1)),
-            'massiveaction'      => false,
-            'datatype'           => 'string',
-        ];
-
-        $tab[] = [
-            'id'                 => '71',
-            'table'              => static::getTable(),
-            'field'              => 'inquest_config_change',
-            'name'               => sprintf(__('Satisfaction survey configuration (%s)'), Change::getTypeName(1)),
-            'massiveaction'      => false,
-            'nosearch'           => true,
-            'datatype'           => 'specific',
-        ];
-
-        $tab[] = [
-            'id'                 => '72',
-            'table'              => static::getTable(),
-            'field'              => 'inquest_rate_change',
-            'name'               => sprintf(__('Satisfaction survey trigger rate (%s)'), Change::getTypeName(1)),
-            'massiveaction'      => false,
-            'datatype'           => 'number',
-        ];
-
-        $tab[] = [
-            'id'                 => '73',
-            'table'              => static::getTable(),
-            'field'              => 'inquest_delay_change',
-            'name'               => sprintf(__('Create satisfaction survey after (%s)'), Change::getTypeName(1)),
-            'massiveaction'      => false,
-            'datatype'           => 'number',
-        ];
-
-        $tab[] = [
-            'id'                 => '74',
-            'table'              => static::getTable(),
-            'field'              => 'inquest_URL_change',
-            'name'               => sprintf(__('Satisfaction survey URL (%s)'), Change::getTypeName(1)),
-            'massiveaction'      => false,
-            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -2670,23 +2672,24 @@ class Entity extends CommonTreeDropdown implements
 
             case 'inquest_config':
             case 'inquest_config_change':
-                if ($values[$field] === self::CONFIG_PARENT) {
+                if ((int) $values[$field] === self::CONFIG_PARENT) {
                     return __s('Inheritance of the parent entity');
                 }
                 $inherit = '';
+                $entity_id = (int) ($values['id'] ?? 0);
                 $inquest_rate = self::getUsedConfig(
                     $field,
-                    $options['entity']->fields['entities_id'],
+                    $entity_id,
                     str_replace('config', 'rate', $field)
                 );
                 $inherit .= '<br>';
-                if ($inquest_rate === 0) {
+                if ((int) $inquest_rate === 0) {
                     $inherit .= __s('Disabled');
                 } else {
                     $inherit .= htmlescape(CommonITILSatisfaction::getTypeInquestName($values[$field])) . '<br>';
                     $inqconf = self::getUsedConfig(
                         $field,
-                        $options['entity']->fields['entities_id'],
+                        $entity_id,
                         str_replace('config', 'delay', $field)
                     );
 
@@ -2695,13 +2698,17 @@ class Entity extends CommonTreeDropdown implements
                     //TRANS: %d is the percentage. %% to display %
                     $inherit .= sprintf(__s('%d%%'), $inquest_rate);
 
-                    if ($values[$field] === 2) {
-                        $inherit .= "<br>";
-                        $inherit .= htmlescape(self::getUsedConfig(
+                    if ((int) $values[$field] === CommonITILSatisfaction::TYPE_EXTERNAL) {
+                        $url = self::getUsedConfig(
                             $field,
-                            $options['entity']->fields['entities_id'],
-                            str_replace('config', 'URL', $field)
-                        ));
+                            $entity_id,
+                            str_replace('config', 'URL', $field),
+                            ''
+                        );
+                        if ($url !== '') {
+                            $inherit .= "<br>";
+                            $inherit .= '<a href="' . htmlescape($url) . '" target="_blank">' . htmlescape($url) . '</a>';
+                        }
                     }
                 }
                 return $inherit;

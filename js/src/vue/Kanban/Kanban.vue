@@ -5,7 +5,7 @@
 
     import { Rights } from "./Rights.js";
     import Column from "./Column.vue";
-    import {computed, nextTick, onMounted, ref, watch} from "vue";
+    import {computed, nextTick, onMounted, ref, useTemplateRef, watch} from "vue";
     import SearchInput from "./SearchInput.js";
     import {TeamBadgeProvider} from "./TeamBadgeProvider.js";
 
@@ -94,6 +94,8 @@
     let mutation_observer = null;
     let is_sorting_active = false;
     let sort_data = undefined;
+    const kanban = useTemplateRef('kanban');
+    const source_filter_input = useTemplateRef('source_filter_input');
 
     const team_badge_provider = new TeamBadgeProvider(props.display_initials, props.max_team_images);
 
@@ -153,7 +155,7 @@
                 }
             });
         });
-        mutation_observer.observe($(`#${CSS.escape(props.element_id)}`).get(0), {
+        mutation_observer.observe(kanban.value, {
             subtree: true,
             childList: true
         });
@@ -1301,7 +1303,7 @@
     backgroundRefresh();
     onMounted(() => {
         initMutationObserver();
-        filter_input = new SearchInput($(`#${CSS.escape(props.element_id)} input[name="filter"]`), {
+        filter_input = new SearchInput(source_filter_input.value, {
             allowed_tags: props.supported_filters,
             on_result_change: (e, result) => {
                 filters.value = {
@@ -1330,13 +1332,13 @@
 </script>
 
 <template>
-    <div :id="element_id" class="kanban">
+    <div :id="element_id" class="kanban" ref="kanban">
         <div class="kanban-container">
             <div v-if="show_toolbar" class="kanban-toolbar flex-column flex-md-row btn-group shadow-none">
                 <select name="kanban-board-switcher" v-model="kanban_switcher">
                     <option v-for="(k_name, k_id) in all_kanbans" :value="k_id" :selected="k_id === item.items_id" :key="k_id">{{ k_name }}</option>
                 </select>
-                <input name="filter" class="form-control ms-1" type="text" :placeholder="__('Search or filter results')" autocomplete="off"/>
+                <input ref="source_filter_input" name="filter" class="form-control ms-1" type="text" :placeholder="__('Search or filter results')" autocomplete="off"/>
                 <div class="dropdown">
                     <button type="button" class="kanban-add-column btn btn-outline-secondary ms-1" v-if="rights.canModifyView()"
                             data-bs-toggle="dropdown" data-bs-auto-close="outside" @click="updateAllColumnsList()">{{ __('Add column') }}</button>
@@ -1385,7 +1387,7 @@
                 </div>
                 <div class="dropdown">
                     <button type="button" class="btn btn-outline-secondary btn-icon ms-1 kanban-extra-toolbar-options" v-if="rights.canModifyView()"
-                            data-bs-toggle="dropdown" data-bs-auto-close="outside">
+                            data-bs-toggle="dropdown" data-bs-auto-close="outside" :title="__('More actions')" :aria-label="__('More actions')">
                         <i class="ti ti-dots-vertical"></i>
                     </button>
                     <ul class="kanban-dropdown dropdown-menu kanban-extra-toolbar-options-menu" role="menu">

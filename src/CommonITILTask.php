@@ -434,12 +434,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      */
     private function handleTaskDuration(array &$input, int $timestart, int $timeend): void
     {
-        // If 'actiontime' is set and different from the current 'actiontime'
-        if (isset($input['actiontime']) && $this->fields['actiontime'] != $input['actiontime']) {
+        // A non-zero 'actiontime' recomputes 'end'.
+        // A zero value (empty dropdown choice) must not override an explicitly entered end date.
+        if (!empty($input['actiontime']) && $this->fields['actiontime'] != $input['actiontime']) {
             // Compute the end date based on 'actiontime'
             $input["end"] = date("Y-m-d H:i:s", $timestart + $input['actiontime']);
         } else {
-            // If 'actiontime' is not set, compute it based on the start and end times
+            // Otherwise, compute the duration based on the start and end times
             $input["actiontime"] = $timeend - $timestart;
         }
     }
@@ -1208,6 +1209,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             ],
             'computation'        => QueryFunction::max('TABLE.date'),
             'nometa'             => true, // cannot GROUP_CONCAT a MAX
+            'usehaving'          => true,
         ];
 
         $tab[] = [

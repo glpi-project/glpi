@@ -71,7 +71,7 @@ class Item_DeviceSimcard extends Item_Devices implements AssignableItemInterface
                 'short name' => __('PIN code'),
                 'size'       => 20,
                 'id'         => 15,
-                'datatype'   => 'text',
+                'datatype'   => 'string',
                 'right'      => 'devicesimcard_pinpuk',
                 'nosearch'   => true,
                 'nodisplay'  => true,

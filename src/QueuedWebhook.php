@@ -36,9 +36,9 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\RequestOptions;
+use Glpi\Toolbox\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 
 use function Safe\json_decode;
 use function Safe\strtotime;
@@ -179,13 +179,6 @@ class QueuedWebhook extends CommonDBChild
             return false;
         }
 
-        $guzzle_options = [
-            'timeout' => 5,
-        ];
-        if (in_array(Webhook::class, $CFG_GLPI['proxy_exclusions'])) {
-            $guzzle_options['proxy_excluded'] = true;
-        }
-
         $webhook = new Webhook();
         if (!$webhook->getFromDB($queued_webhook->fields['webhooks_id'])) {
             return false;
@@ -204,7 +197,7 @@ class QueuedWebhook extends CommonDBChild
             }
         }
 
-        $client = Toolbox::getGuzzleClient($guzzle_options);
+        $client = new HttpClient(context: Webhook::class);
 
         $process_request = true;
 
@@ -213,29 +206,28 @@ class QueuedWebhook extends CommonDBChild
             $oauth_url   = (string) $webhook->fields['oauth_url'];
             $oauth_error = null;
 
-            if (Toolbox::isUrlSafe($oauth_url)) {
-                // Send OAuth Client Credentials
-                try {
-                    $oauth_response = $client->request('POST', $oauth_url, [
-                        RequestOptions::FORM_PARAMS => [
-                            'grant_type' => 'client_credentials',
-                            'client_id' => $webhook->fields['clientid'],
+            // Send OAuth Client Credentials
+            try {
+                $oauth_response = $client->post(
+                    $oauth_url,
+                    [
+                        'body' => [
+                            'grant_type'    => 'client_credentials',
+                            'client_id'     => $webhook->fields['clientid'],
                             'client_secret' => (new GLPIKey())->decrypt($webhook->fields['clientsecret']),
-                            'scope' => '',
+                            'scope'         => '',
                         ],
-                    ]);
-                    $oauth_response = json_decode((string) $oauth_response->getBody(), true);
+                    ]
+                );
+                $oauth_response = json_decode($oauth_response->getContent(), true);
 
-                    if (array_key_exists('access_token', $oauth_response)) {
-                        $bearer_token = $oauth_response['access_token'];
-                    } else {
-                        $oauth_error = 'Unable to retrieve bearer token from response.';
-                    }
-                } catch (GuzzleException $e) {
-                    $oauth_error = $e->getMessage();
+                if (array_key_exists('access_token', $oauth_response)) {
+                    $bearer_token = $oauth_response['access_token'];
+                } else {
+                    $oauth_error = 'Unable to retrieve bearer token from response.';
                 }
-            } else {
-                $oauth_error = sprintf('Oauth server URL `%s` is unsafe.', $oauth_url);
+            } catch (ExceptionInterface $e) {
+                $oauth_error = $e->getMessage();
             }
 
             if ($oauth_error !== null) {
@@ -259,21 +251,21 @@ class QueuedWebhook extends CommonDBChild
             $request_url   = (string) $queued_webhook->fields['url'];
             $request_error = null;
 
-            if (Toolbox::isUrlSafe($request_url)) {
-                try {
-                    $response = $client->request($queued_webhook->fields['http_method'], $request_url, [
-                        RequestOptions::HEADERS => $headers,
-                        RequestOptions::BODY => $queued_webhook->fields['body'],
-                    ]);
-                } catch (GuzzleException $e) {
-                    if ($e instanceof RequestException) {
-                        $response = $e->getResponse();
-                    }
-
-                    $request_error = $e->getMessage();
+            try {
+                $response = $client->request(
+                    $queued_webhook->fields['http_method'],
+                    $request_url,
+                    [
+                        'headers' => $headers,
+                        'body'    => $queued_webhook->fields['body'],
+                    ]
+                );
+            } catch (ExceptionInterface $e) {
+                if ($e instanceof HttpExceptionInterface) {
+                    $response = $e->getResponse();
                 }
-            } else {
-                $request_error = sprintf('Webhook target URL `%s` is unsafe.', $request_url);
+
+                $request_error = $e->getMessage();
             }
 
             if ($request_error !== null) {
@@ -292,10 +284,10 @@ class QueuedWebhook extends CommonDBChild
         if ($response !== null) {
             $input['last_status_code'] = $response->getStatusCode();
             if (GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING && $queued_webhook->fields['save_response_body']) {
-                $input['response_body'] = (string) $response->getBody();
+                $input['response_body'] = $response->getContent();
             } else {
                 // Save to property that won't be saved in DB, but can still be available to plugins
-                $input['_response_body'] = (string) $response->getBody();
+                $input['_response_body'] = $response->getContent();
             }
 
             if ($webhook->fields['log_in_item_history']) {
@@ -675,7 +667,7 @@ JS);
                     ],
                 ]
             );
-            $vol = $DB->affectedRows();
+            $vol = $DB->getAffectedRows();
         }
 
         $task->setVolume($vol);

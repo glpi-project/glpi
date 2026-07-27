@@ -46,9 +46,17 @@ $CFG_GLPI = [];
 // set the default app_name
 $CFG_GLPI['app_name'] = 'GLPI';
 
-// dictionnaries
+// Languages dictionnary:
+// 0 => regionalized lang code
+// 1 => translated (native) name
+// 2 => MO file Name
+// 3 => jquery lang code
+// 4 => other JS codes. Tinymce has a specific mapping in Html::initEditorSystem().
+//      ⚠️ Also used for page lang! ⚠️
+// 5 => english name
+// 6 => number for plural
 $CFG_GLPI['languages'] = [
-    //Code       Name in native lang          LANG FILE      jquery tinymce english name            standard plural number
+    //Code       Name in native lang          LANG FILE      jquery  js    english name            standard plural number
     'ar_SA'  => ['العربية السعودية',          'ar_SA.mo',    'ar',    'ar_SA', 'arabic',            103],
     'ar_IQ'  => ['العربية العراق',            'ar_IQ.mo',    'ar',    'ar', 'irak arabic',          103],
     'ar_SY'  => ['العربية سوريا',             'ar_SY.mo',    'ar',    'ar', 'syria arabic',         103],
@@ -591,10 +599,10 @@ $CFG_GLPI['javascript'] = [
     'helpdesk'  => [
         'dashboard' => ['dashboard'],
         'planning'  => ['clipboard', 'fullcalendar', 'planning'],
-        'ticket'    => ['rateit', 'dashboard'],
+        'ticket'    => ['dashboard'],
         'problem'   => ['sortable'],
-        'change'    => ['sortable', 'rateit'],
-        'stat'      => ['charts', 'rateit'],
+        'change'    => ['sortable'],
+        'stat'      => ['charts'],
     ],
     'tools'     => [
         'project'                 => ['sortable'],
@@ -621,7 +629,7 @@ $CFG_GLPI['javascript'] = [
     'preference'   => ['clipboard'],
     'self-service' => $reservations_libs,
     'reservation'   => $reservations_libs,
-    'helpdesk-home' => ['home-scss-file', 'gridstack', 'dashboard'],
+    'helpdesk-home' => ['home-scss-file', 'dashboard'],
 ];
 
 // push reservations libs to reservations itemtypes (they shoul in asset sector)

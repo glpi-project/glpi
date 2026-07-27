@@ -52,6 +52,7 @@ use Glpi\Knowbase\History\HistoryBuilder;
 use Glpi\Knowbase\LastUpdateInfo;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
+use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
 use Glpi\UI\IllustrationManager;
@@ -306,6 +307,32 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
     }
 
+    /**
+     * Validate that the given category id can be used as a prefill for the
+     * current session: it must exist and belong to a reachable entity.
+     *
+     * @return int|null Category id when readable, null otherwise.
+     */
+    public static function getReadablePrefilledCategoryId(int $category_id): ?int
+    {
+        if ($category_id <= 0) {
+            return null;
+        }
+        $category = new KnowbaseItemCategory();
+        if (!$category->getFromDB($category_id)) {
+            return null;
+        }
+        if (
+            !Session::haveAccessToEntity(
+                (int) $category->fields['entities_id'],
+                (bool) $category->fields['is_recursive']
+            )
+        ) {
+            return null;
+        }
+        return $category_id;
+    }
+
     public function post_addItem()
     {
         // Handle rich-text images and uploaded documents
@@ -327,7 +354,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if (isset($this->input["_visibility"]['_type']) && !empty($this->input["_visibility"]["_type"])) {
             $this->input["_visibility"]['knowbaseitems_id'] = $this->getID();
             $item                                           = null;
-
+            if (isset($this->input["_visibility"]['entities_id']) && $this->input["_visibility"]['entities_id'] == -1) {
+                // "No restriction" value selected
+                $this->input["_visibility"]['entities_id'] = null;
+                $this->input["_visibility"]['no_entity_restriction'] = 1;
+            }
             switch ($this->input["_visibility"]['_type']) {
                 case 'User':
                     if (
@@ -899,23 +930,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return $input;
         }
 
-        $value = (string) $input['illustration'];
-        if ($value === '') {
-            return $input;
-        }
-
         $manager = new IllustrationManager();
-        $prefix  = IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX;
-
-        if (str_starts_with($value, $prefix)) {
-            $custom_id = substr($value, strlen($prefix));
-            if ($manager->getCustomIllustrationFile($custom_id) === null) {
-                unset($input['illustration']);
-            }
-            return $input;
-        }
-
-        if (!in_array($value, $manager->getAllIconsIds(), true)) {
+        if (!$manager->isKnownIllustrationValue((string) $input['illustration'])) {
             unset($input['illustration']);
         }
 
@@ -943,6 +959,19 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         NotificationEvent::raiseEvent('delete', $this);
     }
 
+    /**
+     * @param array<string, mixed> $query_params
+     * @return array<string, mixed>
+     */
+    public function getFormOptionsFromUrl(array $query_params): array
+    {
+        $options = [];
+        if (isset($query_params['knowbaseitemcategories_id'])) {
+            $options['knowbaseitemcategories_id'] = $query_params['knowbaseitemcategories_id'];
+        }
+        return $options;
+    }
+
     public function showForm($ID, array $options = []): bool
     {
         // show kb item form
@@ -955,7 +984,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return false;
         }
 
-        $this->showFull(['mode' => 'add']);
+        $this->showFull(['mode' => 'add'] + $options);
         return true;
     }
 
@@ -1047,7 +1076,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             // General fields
             $params['views']        = $this->fields['view'];
             $params['can_edit']     = $can_update;
-            $params['illustration'] = $this->fields['illustration'] ?: 'kb-faq';
+            $params['illustration'] = $this->fields['illustration'] ?? '';
 
             // Translations informations
             $params['translations_count']    = KnowbaseItemTranslation::getNumberOfTranslationsForItem($this);
@@ -1066,9 +1095,23 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
             // Add actions
             $params['actions'] = $this->getEditorActions();
+
+            // Public sharing state (for the header "Share" button)
+            $params['is_published'] = (new ShareTokenManager())
+                ->hasActiveToken(self::class, $this->fields['id']);
         } elseif ($mode === "add") {
             $params['can_edit']     = $this->can(-1, CREATE);
-            $params['illustration'] = 'kb-faq';
+            $params['illustration'] = '';
+
+            $raw_category_id = (int) ($options['knowbaseitemcategories_id'] ?? 0);
+            $prefilled_category_id = self::getReadablePrefilledCategoryId($raw_category_id);
+            if ($prefilled_category_id !== null) {
+                $params['prefilled_category'] = [
+                    'id' => $prefilled_category_id,
+                ];
+            }
+
+            $params['is_published'] = false;
         }
 
         $out = TemplateRenderer::getInstance()->render(
@@ -1246,8 +1289,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
 
-            $label = __('Permissions and sharing');
-            $icon  = "ti ti-eye";
+            $label = __('Permissions');
+            $icon  = "ti ti-lock";
             $actions[] = new EditorAction(
                 label: $label,
                 icon: $icon,
@@ -1270,6 +1313,28 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
         }
+
+        // Include base actions that are available for articles in the aside
+        $management = $this->getAsideActions();
+        if ($management !== []) {
+            if ($actions !== []) {
+                $actions[] = new EditorActionSeparator();
+            }
+            array_push($actions, ...$management);
+        }
+
+        return $actions;
+    }
+
+    /**
+     * Build the actions that will be available on the aside dots menu for
+     * the loaded article.
+     *
+     * @return array<EditorAction|EditorActionSeparator>
+     */
+    public function getAsideActions(): array
+    {
+        $actions = [];
 
         // Toggle actions
         $toggles = [];
@@ -1296,15 +1361,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
         }
-        if ($toggles !== []) {
-            if ($actions !== []) {
-                $actions[] = new EditorActionSeparator();
-            }
-            array_push($actions, ...$toggles);
-        }
+        array_push($actions, ...$toggles);
 
         if ($this->can($this->fields['id'], PURGE)) {
-            $actions[] = new EditorActionSeparator();
+            if ($toggles !== []) {
+                $actions[] = new EditorActionSeparator();
+            }
             $actions[] = new EditorAction(
                 label: __("Delete article"),
                 icon: "ti ti-trash",
@@ -1327,6 +1389,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public function canManageSharing(): bool
     {
         return $this->can($this->getID(), UPDATE);
+    }
+
+    public function allowsMultipleShareTokens(): bool
+    {
+        // The article header exposes a single "Publish to web" link.
+        return false;
     }
 
     public function getShareableViewTemplate(): string
@@ -2524,16 +2592,17 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get KB answer, with id on titles to set anchors
+     * Get KB answer with heading anchors. The HTML is returned raw — sanitization
+     * and display enrichments (lazy images, gallery, video iframes…) are applied
+     * by the `|enhanced_html` filter in the article templates.
      *
      * @return string
+     *
+     * @psalm-taint-source html
      */
     public function getAnswer()
     {
         $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
-        $answer = RichText::getEnhancedHtml($answer, [
-            'text_maxsize' => 0, // Show all text without read more button
-        ]);
 
         $callback = static function ($matches) {
             // 1 => tag name, 2 => existing attributes, 3 => title contents
@@ -2749,9 +2818,13 @@ TWIG, $twig_params);
     #[Override]
     public function getServiceCatalogItemDescription(): string
     {
-        // Fallback to answer when using the home page search results as the
-        // service catalog data may not be specified in this case.
-        return $this->fields['description'] ?? $this->fields['answer'] ?? "";
+        if (!empty($this->fields['description'])) {
+            return $this->fields['description'];
+        }
+
+        // No description: fall back to a plain-text excerpt of the answer, not the raw HTML.
+        $answer = RichText::getTextFromHtml($this->fields['answer'] ?? '', false, true);
+        return Html::resume_text($answer, 200);
     }
 
     #[Override]
@@ -2787,6 +2860,8 @@ TWIG, $twig_params);
     public static function getAdditionalMenuLinks(): array
     {
         $links = [];
+
+        $links['all_articles'] = self::getSearchURL(false);
 
         if (KnowbaseItemCategory::canView()) {
             $links['view_kb_categories'] = KnowbaseItemCategory::getSearchURL(false);
@@ -2833,7 +2908,7 @@ TWIG, $twig_params);
             $articles[] = new Article(
                 id: (int) $data['id'],
                 title: $data['name'] ?? '',
-                illustration: $data['illustration'] ?: 'kb-faq',
+                illustration: $data['illustration'] ?? '',
                 link: self::getFormURLWithID($data['id']),
                 // Take note of the current article as we will render it in
                 // the favorite list even if it is not yet a favorite.
@@ -2861,13 +2936,23 @@ TWIG, $twig_params);
             return null;
         }
 
+        // Whether to render the per-article dots menu trigger. This is a cheap
+        // session-level check: the menu content itself (and its per-article
+        // permission gating) is lazy-loaded on demand, so we never load every
+        // tree article here just to know if any action is available.
+        $show_actions = KnowbaseItem_Favorite::canCreate()
+            || self::canUpdate()
+            || self::canPurge();
+
         return TemplateRenderer::getInstance()->render(
             'pages/tools/kb/aside.html.twig',
             [
-                'tree'                => (new Builder($current_id))->buildTree(),
+                'tree'                => $tree,
                 'favorites'           => $favorites,
                 'current_is_favorite' => $current_is_favorite,
                 'has_other_favorites' => $has_other_favorites,
+                'can_create'          => self::canCreate(),
+                'show_actions'        => $show_actions,
             ]
         );
     }

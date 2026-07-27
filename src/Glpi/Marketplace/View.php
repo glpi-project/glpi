@@ -800,7 +800,7 @@ JS;
             }
 
             $buttons .= '
-                <button data-bs-toggle="modal"
+                <button class="add_tooltip" data-bs-toggle="modal"
                         data-bs-target="#uninstallModal' . htmlescape($plugin_inst->getField('directory')) . '"
                         title="' . __s("Uninstall") . '">
                     <i class="ti ti-folder-x"></i>

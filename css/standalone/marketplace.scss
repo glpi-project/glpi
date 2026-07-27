@@ -259,6 +259,11 @@ $break_s_screen: 1400px;
                         padding: 5px;
                         margin-left: auto;
 
+                        &:has(> .fa-cog:only-child) {
+                            display: block;
+                            text-align: center;
+                        }
+
                         button {
                             background-color: rgb(100, 100, 100, 10%);
                             border: 1px solid rgb(100, 100, 100, 40%);

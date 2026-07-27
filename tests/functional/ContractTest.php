@@ -232,51 +232,327 @@ class ContractTest extends DbTestCase
         $this->assertCount(1, $relation_items, 'Original Contract_User not found!');
     }
 
-    public function testContractExpirationWithEdgeDates()
+    public static function warrantyExpirProvider(): array
     {
-        $this->login();
-        $this->setEntity('_test_root_entity', true);
-
-        $test_cases = [
+        return [
+            // Standard expiration: correct end-of-month when day overflows (31 Jan + 12 months = 30 Jan).
             [
-                'name' => 'Contract start 01/31 for 12 months should end on 01/30',
-                'begin_date' => '2025-01-31',
-                'duration' => 12,
-                'expected_date' => '2026-01-30',
+                'current_time' => '2027-01-01',
+                'from'         => '2025-01-31',
+                'addwarranty'  => 12,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => '2026-01-30',
             ],
+            // Standard expiration: end-of-month in February (28 days, non-leap year).
             [
-                'name' => 'Contract start 03/01 for 12 months should end on 02/28',
-                'begin_date' => '2025-03-01',
-                'duration' => 12,
-                'expected_date' => '2026-02-28',
+                'current_time' => '2027-01-01',
+                'from'         => '2025-03-01',
+                'addwarranty'  => 12,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => '2026-02-28',
             ],
+            // Standard expiration: end-of-month in February of a leap year (29 days).
             [
-                'name' => 'Contract starting on 03/01/2031 for 12 months should end on 02/29',
-                'begin_date' => '2031-03-01',
-                'duration' => 12,
-                'expected_date' => '2032-02-29',
+                'current_time' => '2027-01-01',
+                'from'         => '2031-03-01',
+                'addwarranty'  => 12,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => '2032-02-29',
             ],
+            // Lifelong warranty without notice: returns "Never".
             [
-                'name' => 'Contract start 05/31 for 6 months should end on 11/30',
-                'begin_date' => '2025-05-31',
-                'duration' => 6,
-                'expected_date' => '2025-11-30',
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => -1,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => __('Never'),
+            ],
+            // Zero duration without notice: returns the start date.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 0,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => '2020-01-01',
+            ],
+            // Standard expiration without notice or renewal (24 months → last day included).
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 24,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => '2021-12-31',
+            ],
+            // Lifelong warranty with notice: returns "Never" because duration is infinite.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => -1,
+                'deletenotice' => 1,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => __('Never'),
+            ],
+            // Zero duration with 1-month notice: notice is clamped to the start date.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 0,
+                'deletenotice' => 1,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => '2020-01-01',
+            ],
+            // 1-month notice on a 24-month contract without renewal.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 24,
+                'deletenotice' => 1,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 0,
+                'expected'     => '2021-12-01',
+            ],
+            // Lifelong warranty with tacit renewal and no notice: returns "Never".
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => -1,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 0,
+                'expected'     => __('Never'),
+            ],
+            // Zero duration with tacit renewal and no notice: returns the start date.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 0,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 0,
+                'expected'     => '2020-01-01',
+            ],
+            // Tacit renewal without notice: next future expiration (2020 + n×24 months).
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 24,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 0,
+                'expected'     => '2028-01-01',
+            ],
+            // Lifelong warranty with tacit renewal and notice: returns "Never".
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => -1,
+                'deletenotice' => 1,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 0,
+                'expected'     => __('Never'),
+            ],
+            // Zero duration, tacit renewal, 1-month notice: notice is clamped to the start date.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 0,
+                'deletenotice' => 1,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 0,
+                'expected'     => '2020-01-01',
+            ],
+            // Tacit renewal with notice: next future notice (1 month before the next due date).
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 24,
+                'deletenotice' => 1,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 0,
+                'expected'     => '2027-12-01',
+            ],
+            // Lifelong warranty, periodicity different from duration, no notice: returns "Never".
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => -1,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 12,
+                'expected'     => __('Never'),
+            ],
+            // Zero duration, 12-month periodicity, no notice or renewal: returns the start date.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 0,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 12,
+                'expected'     => '2020-01-01',
+            ],
+            // 24-month contract with 12-month periodicity, no notice or renewal: standard expiration.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 24,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 12,
+                'expected'     => '2021-12-31',
+            ],
+            // Lifelong warranty, 12-month periodicity, 1-month notice, no renewal: returns "Never".
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => -1,
+                'deletenotice' => 1,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 12,
+                'expected'     => __('Never'),
+            ],
+            // Zero duration, 12-month periodicity, 1-month notice: clamped to the start date.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 0,
+                'deletenotice' => 1,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 12,
+                'expected'     => '2020-01-01',
+            ],
+            // 24-month contract, 12-month periodicity, 1-month notice, no renewal: notice of the last period.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 24,
+                'deletenotice' => 1,
+                'color'        => false,
+                'auto_renew'   => false,
+                'periodicity'  => 12,
+                'expected'     => '2021-12-01',
+            ],
+            // Lifelong warranty, tacit renewal, 12-month periodicity, no notice: returns "Never".
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => -1,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 12,
+                'expected'     => __('Never'),
+            ],
+            // Zero duration, tacit renewal, 12-month periodicity: zero renewal period → "Never".
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 0,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 12,
+                'expected'     => __('Never'),
+            ],
+            // Tacit renewal, 12-month periodicity different from duration (24 months): next future expiration.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 24,
+                'deletenotice' => 0,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 12,
+                'expected'     => '2028-01-01',
+            ],
+            // Lifelong warranty, tacit renewal, 12-month periodicity, 1-month notice: returns "Never".
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => -1,
+                'deletenotice' => 1,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 12,
+                'expected'     => __('Never'),
+            ],
+            // Zero duration, tacit renewal, 1-month notice, 12-month periodicity: notice active from contract start.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 0,
+                'deletenotice' => 1,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 12,
+                'expected'     => '2020-01-01',
+            ],
+            // Tacit renewal, 12-month periodicity, 1-month notice: next future notice.
+            [
+                'current_time' => '2027-01-01',
+                'from'         => '2020-01-01',
+                'addwarranty'  => 24,
+                'deletenotice' => 1,
+                'color'        => false,
+                'auto_renew'   => true,
+                'periodicity'  => 12,
+                'expected'     => '2027-12-01',
             ],
         ];
+    }
 
-        foreach ($test_cases as $test_case) {
-            $expiration = \Infocom::getWarrantyExpir(
-                $test_case['begin_date'],
-                $test_case['duration'],
-            );
+    #[DataProvider('warrantyExpirProvider')]
+    public function testContractExpirationWithEdgeDates(
+        string $current_time,
+        string $from,
+        int $addwarranty,
+        int $deletenotice,
+        bool $color,
+        bool $auto_renew,
+        int $periodicity,
+        string $expected
+    ): void {
+        $this->login();
+        $_SESSION['glpi_currenttime'] = $current_time;
 
-            $formatted_expected = \Html::convDate($test_case['expected_date']);
+        $result = \Infocom::getWarrantyExpir($from, $addwarranty, $deletenotice, $color, $auto_renew, $periodicity);
 
-            $this->assertEquals(
-                $formatted_expected,
-                $expiration,
-                $test_case['name'] . " - Expected: {$formatted_expected}, Got: {$expiration}"
-            );
-        }
+        $formatted_expected = in_array($expected, [__('Never'), ''], true) ? $expected : \Html::convDate($expected);
+
+        $this->assertEquals($formatted_expected, $result);
     }
 }

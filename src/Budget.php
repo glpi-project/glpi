@@ -128,8 +128,7 @@ class Budget extends CommonDropdown
     {
         TemplateRenderer::getInstance()->display('pages/management/budget.html.twig', [
             'item' => $this,
-            'no_header' => true,
-            'params' => [
+            'params' => $options + [
                 'canedit' => $this->canUpdateItem(),
             ],
         ]);

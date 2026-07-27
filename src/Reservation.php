@@ -580,21 +580,19 @@ class Reservation extends CommonDBChild
             $default_date = sprintf('%04d-%02d-01', $year, $month);
         }
 
-        $js = "
-            $(function() {
-                var reservation = new Reservations();
-                reservation.init({
+        $can_reserve_js = $can_reserve ? "true" : "false";
+        $now = jsescape($_SESSION["glpi_currenttime"]);
+        $default_date = jsescape($default_date);
+        echo <<<HTML
+            <script type="module">
+                window.Vue.createApp(window.Vue.components['Reservations/ReservationScheduler'].component, {
                     id: $ID,
-                    is_all: " . ($ID === 0 ? "true" : "false") . ",
-                    rand: $rand,
-                    can_reserve: " . ($can_reserve ? "true" : "false") . ",
-                    now: '" . jsescape($_SESSION["glpi_currenttime"]) . "',
-                    defaultDate: '" . jsescape($default_date) . "',
-                });
-                reservation.displayPlanning();
-          });
-        ";
-        echo Html::scriptBlock($js);
+                    can_reserve: $can_reserve_js,
+                    now: '$now',
+                    default_date: '$default_date',
+                }).mount('#reservations_planning_$rand');
+            </script>
+HTML;
     }
 
     public static function getEvents(array $params): array
@@ -685,7 +683,7 @@ class Reservation extends CommonDBChild
                 'start'       => $data['begin'],
                 'end'         => $data['end'],
                 'comment'     => $can_read || $my_item ? $data['comment'] : '',
-                'title'       => $params['reservationitems_id'] ? "" : $name,
+                'title'       => $name,
                 'icon'        => $item->getIcon(),
                 'description' => $item->getTypeName(),
                 'itemtype'    => $data['itemtype'],
@@ -1032,23 +1030,23 @@ class Reservation extends CommonDBChild
             $default_date = sprintf('%04d-%02d-01', $year, $month);
         }
         $default_date = jsescape($default_date);
-        $now = date("Y-m-d H:i:s");
-        $js = <<<JAVASCRIPT
-            $(() => {
-                const reservation = new Reservations();
-                reservation.init({
+
+        $can_reserve_js =  (
+            Session::haveRight("reservation", ReservationItem::RESERVEANITEM)
+            && count(self::getReservableItemtypes()) > 0
+        ) ? "true" : "false";
+        $now = jsescape($_SESSION["glpi_currenttime"]);
+        echo <<<HTML
+            <script type="module">
+                window.Vue.createApp(window.Vue.components['Reservations/ReservationScheduler'].component, {
                     id: $ID,
-                    is_all: false,
-                    is_tab: true,
-                    rand: $rand,
-                    currentv: 'listFull',
-                    defaultDate: '$default_date',
+                    can_reserve: $can_reserve_js,
                     now: '$now',
-                });
-                reservation.displayPlanning();
-            });
-JAVASCRIPT;
-        echo Html::scriptBlock($js);
+                    default_date: '$default_date',
+                    current_view: 'listFull',
+                }).mount('#reservations_planning_$rand');
+            </script>
+HTML;
         echo "</div>";
     }
 
@@ -1177,13 +1175,13 @@ JAVASCRIPT;
                 $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&month=$mois&year=$annee";
                 $entry['planning'] = "<a href='$href' title='" . __s('See planning') . "'>";
                 $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
-                $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
+                $entry['planning'] .= "<span class='visually-hidden'>" . __s('See planning') . "</span>";
                 $entry['planning'] .= "</a>";
             } elseif ($item instanceof CommonDBTM) {
                 $href = htmlescape($item::getFormURLWithID($item->getID()) . "&forcetab=Reservation$1&tab_params[defaultDate]={$data['start_date']}");
                 $entry['planning'] = "<a href='$href' title=\"" . __s('See planning') . "\">";
                 $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
-                $entry['planning'] .= "<span class='sr-only'>" . __s('See planning') . "</span>";
+                $entry['planning'] .= "<span class='visually-hidden'>" . __s('See planning') . "</span>";
             }
             return $entry;
         };

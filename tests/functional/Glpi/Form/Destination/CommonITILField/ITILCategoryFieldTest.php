@@ -148,11 +148,11 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "ITILCategory 1" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[0]->getID(),
+                    'items_ids' => [$itilcategories[0]->getID()],
                 ],
                 "ITILCategory 2" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[1]->getID(),
+                    'items_ids' => [$itilcategories[1]->getID()],
                 ],
             ],
             expected_itilcategory: $itilcategories[0]->getID()
@@ -168,11 +168,11 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "ITILCategory 1" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[0]->getID(),
+                    'items_ids' => [$itilcategories[0]->getID()],
                 ],
                 "ITILCategory 2" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[1]->getID(),
+                    'items_ids' => [$itilcategories[1]->getID()],
                 ],
             ],
             expected_itilcategory: $itilcategories[1]->getID()
@@ -198,11 +198,11 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "ITILCategory 1" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[0]->getID(),
+                    'items_ids' => [$itilcategories[0]->getID()],
                 ],
                 "ITILCategory 2" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[1]->getID(),
+                    'items_ids' => [$itilcategories[1]->getID()],
                 ],
             ],
             expected_itilcategory: $itilcategories[1]->getID()
@@ -215,7 +215,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "ITILCategory 1" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[0]->getID(),
+                    'items_ids' => [$itilcategories[0]->getID()],
                 ],
             ],
             expected_itilcategory: $itilcategories[0]->getID()
@@ -228,10 +228,29 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "ITILCategory 2" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[1]->getID(),
+                    'items_ids' => [$itilcategories[1]->getID()],
                 ],
             ],
             expected_itilcategory: $itilcategories[1]->getID()
+        );
+
+        // First question is filled with a valid category, but the last question
+        // is left empty. The empty answer must be ignored so the last *valid*
+        // answer (the first question) is used.
+        $this->sendFormAndAssertTicketCategory(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "ITILCategory 1" => [
+                    'itemtype' => ITILCategory::getType(),
+                    'items_ids' => [$itilcategories[0]->getID()],
+                ],
+                "ITILCategory 2" => [
+                    'itemtype' => ITILCategory::getType(),
+                    'items_ids' => [-1],
+                ],
+            ],
+            expected_itilcategory: $itilcategories[0]->getID()
         );
 
         // No answers, fallback to default value

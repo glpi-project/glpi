@@ -79,8 +79,7 @@ class Central extends CommonGLPI
                 4 => self::createTabEntry(_n('RSS feed', 'RSS feeds', Session::getPluralNumber()), 0, null, RSSFeed::getIcon()),
             ];
 
-            $grid = new Grid('central');
-            if ($grid::canViewOneDashboard()) {
+            if (Grid::canViewOneDashboard()) {
                 array_unshift($tabs, self::createTabEntry(__('Dashboard'), 0, null, Dashboard::getIcon()));
             }
 
@@ -285,6 +284,7 @@ class Central extends CommonGLPI
         $twig_params = [
             'cards' => [],
         ];
+
         foreach ($lists as $list) {
             $card_params = [
                 'start'              => 0,
@@ -304,6 +304,7 @@ class Central extends CommonGLPI
         $card_params = [
             'who' => Session::getLoginUserID(),
         ];
+
         $idor = Session::getNewIDORToken(Planning::class, $card_params);
         $twig_params['cards'][] = [
             'itemtype'  => Planning::class,
@@ -321,21 +322,25 @@ class Central extends CommonGLPI
                 '_idor_token'  => $idor,
             ],
         ];
-        $idor = Session::getNewIDORToken(Reminder::class, [
-            'personal'  => 'false',
-        ]);
+
         if (Session::haveRight("reminder_public", READ)) {
+            $idor = Session::getNewIDORToken(Reminder::class, [
+                'personal' => 'false',
+            ]);
+
             $twig_params['cards'][] = [
-                'itemtype'  => Reminder::class,
-                'widget'    => 'central_list',
-                'params'    => [
-                    'personal'     => 'false',
-                    '_idor_token'  => $idor,
+                'itemtype' => Reminder::class,
+                'widget' => 'central_list',
+                'params' => [
+                    'personal' => 'false',
+                    '_idor_token' => $idor,
                 ],
             ];
         }
-        $idor = Session::getNewIDORToken(Project::class);
+
         if (Session::haveRight("project", Project::READMY)) {
+            $idor = Session::getNewIDORToken(Project::class);
+
             $twig_params['cards'][] = [
                 'itemtype'  => Project::class,
                 'widget'    => 'central_list',
@@ -345,8 +350,10 @@ class Central extends CommonGLPI
                 ],
             ];
         }
-        $idor = Session::getNewIDORToken(ProjectTask::class);
+
         if (Session::haveRight("projecttask", ProjectTask::READMY)) {
+            $idor = Session::getNewIDORToken(ProjectTask::class);
+
             $twig_params['cards'][] = [
                 'itemtype'  => ProjectTask::class,
                 'widget'    => 'central_list',
@@ -496,8 +503,8 @@ class Central extends CommonGLPI
             ];
         }
 
-        $idor = Session::getNewIDORToken(Project::class);
         if (Session::haveRight("project", Project::READMY)) {
+            $idor = Session::getNewIDORToken(Project::class);
             $twig_params['cards'][] = [
                 'itemtype'  => Project::class,
                 'widget'    => 'central_list',
@@ -507,8 +514,8 @@ class Central extends CommonGLPI
                 ],
             ];
         }
-        $idor = Session::getNewIDORToken(ProjectTask::class);
         if (Session::haveRight("projecttask", ProjectTask::READMY)) {
+            $idor = Session::getNewIDORToken(ProjectTask::class);
             $twig_params['cards'][] = [
                 'itemtype'  => ProjectTask::class,
                 'widget'    => 'central_list',
@@ -521,7 +528,6 @@ class Central extends CommonGLPI
 
         TemplateRenderer::getInstance()->display('central/widget_tab.html.twig', $twig_params);
     }
-
 
     private static function getMessages(): array
     {
@@ -663,7 +669,6 @@ class Central extends CommonGLPI
 
         return $messages;
     }
-
 
     /**
      * @return void

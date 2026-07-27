@@ -83,7 +83,7 @@ describe('Form access policy', () => {
             cy.visit(direct_access_url);
 
             // Check if the form title is displayed
-            cy.findByRole('heading', { 'name': 'Form title' }).should('exist').contains('Test form for the access policy form suite');
+            cy.findByTestId('form-title').should('exist').contains('Test form for the access policy form suite');
         });
     });
 
@@ -149,7 +149,7 @@ describe('Form access policy', () => {
             cy.visit(direct_access_url);
 
             // Check if the form title is displayed
-            cy.findByRole('heading', { 'name': 'Form title' }).should('exist').contains('Test form for the access policy form suite');
+            cy.findByTestId('form-title').should('exist').contains('Test form for the access policy form suite');
         });
     });
 
@@ -212,7 +212,7 @@ describe('Form access policy', () => {
             cy.visit(direct_access_url);
 
             // Check if the form title is displayed
-            cy.findByRole('heading', { 'name': 'Form title' }).should('exist').contains('Test form for the access policy form suite');
+            cy.findByTestId('form-title').should('exist').contains('Test form for the access policy form suite');
 
             // Check if the actor question is hidden
             cy.findByRole('heading', { 'name': 'Actor question title' }).should('not.exist');
@@ -253,7 +253,7 @@ describe('Form access policy', () => {
             .invoke('val')
             .then((direct_access_url) => {
                 cy.visit(direct_access_url);
-                cy.findByRole('heading', { 'name': 'Form title' }).should('exist');
+                cy.findByTestId('form-title').should('exist');
                 cy.findByRole('textbox', { 'name': 'Question 1' }).type('My answer');
                 cy.findByRole('button', { 'name': 'Submit' }).click();
                 cy.findByRole('alert').should('contain.text', 'Item successfully created');

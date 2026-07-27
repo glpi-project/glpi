@@ -2212,6 +2212,10 @@ EOT,
         /** @var CommonITILObject $item */
         $item = $request->getParameter('_item');
 
+        if (!$item->can($item->getID(), READ)) {
+            return self::getAccessDeniedErrorResponse();
+        }
+
         $team = self::getCleanTeam($item);
         return new JSONResponse($team);
     }
@@ -2241,6 +2245,10 @@ EOT,
     {
         /** @var CommonITILObject $item */
         $item = $request->getParameter('_item');
+
+        if (!$item->can($item->getID(), READ)) {
+            return self::getAccessDeniedErrorResponse();
+        }
 
         $role_id = self::getRoleName($request->getAttribute('role'));
 
@@ -2284,6 +2292,10 @@ EOT,
     {
         /** @var CommonITILObject $item */
         $item = $request->getParameter('_item');
+
+        if (!$item->can($item->getID(), READ) || !$item->canAssign()) {
+            return self::getAccessDeniedErrorResponse();
+        }
 
         $member_itemtype = $request->getParameter('type');
         $member_items_id = $request->getParameter('id');
@@ -2333,6 +2345,10 @@ EOT,
     {
         /** @var CommonITILObject $item */
         $item = $request->getParameter('_item');
+
+        if (!$item->can($item->getID(), READ) || !$item->canAssign()) {
+            return self::getAccessDeniedErrorResponse();
+        }
 
         $member_itemtype = $request->getParameter('type');
         $member_items_id = $request->getParameter('id');

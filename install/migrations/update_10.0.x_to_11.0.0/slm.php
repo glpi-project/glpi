@@ -35,4 +35,4 @@
 /**
  * @var Migration $migration
  */
-$migration->addRight(SLM::$rightname, SLM::RIGHT_ASSIGN, ['ticket' => UPDATE]);
+$migration->giveRight(SLM::$rightname, SLM::RIGHT_ASSIGN, ['ticket' => UPDATE]);

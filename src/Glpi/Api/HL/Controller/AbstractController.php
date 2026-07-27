@@ -36,7 +36,6 @@
 namespace Glpi\Api\HL\Controller;
 
 use CommonDBTM;
-use Document;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RoutePath;
@@ -226,7 +225,7 @@ abstract class AbstractController
             return self::getCRUDErrorResponse(self::CRUD_ACTION_CREATE);
         }
 
-        return self::getItemLinkResponse($new_id, $api_path);
+        return self::getItemLinkResponse($new_id, $api_path, 201);
     }
 
     /**

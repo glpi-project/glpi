@@ -90,6 +90,7 @@ use function Safe\file_put_contents;
 use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\md5_file;
+use function Safe\preg_match;
 
 final class FormSerializer extends AbstractFormSerializer
 {
@@ -306,7 +307,13 @@ final class FormSerializer extends AbstractFormSerializer
             $forms = $this->doImportFormFormSpecs($form_spec, $mapper);
             $DB->commit();
         } catch (Throwable $e) {
-            $DB->rollback();
+            try {
+                $DB->rollback();
+            } catch (Throwable $rollback_e) {
+                // Catch rollback failures so the original exception is propagated
+            }
+
+            // Propagate the exception
             throw $e;
         }
         return $forms;
@@ -666,14 +673,21 @@ final class FormSerializer extends AbstractFormSerializer
             if (
                 is_array($spec->value)
                 && isset($spec->value['itemtype'])
-                && isset($spec->value['items_id'])
-                && ($item = getItemForItemtype($spec->value['itemtype']))
-                && $item->getFromDB($spec->value['items_id'])
+                && isset($spec->value['items_ids'])
             ) {
-                // Condition is on a database item, add it to the requirements
-                $requirement = DataRequirementSpecification::fromItem($item);
-                $spec->value['items_id'] = $requirement->name;
-                $form_spec->addDataRequirement($requirement);
+                if (!is_array($spec->value['items_ids'])) {
+                    $spec->value['items_ids'] = [$spec->value['items_ids']];
+                }
+                // Condition is on database items, replace ids with names and add requirements
+                $item_obj = getItemForItemtype($spec->value['itemtype']);
+                foreach ($spec->value['items_ids'] as $index => $items_id) {
+                    if (!$item_obj || !$item_obj->getFromDB($items_id)) {
+                        continue;
+                    }
+                    $requirement = DataRequirementSpecification::fromItem($item_obj);
+                    $spec->value['items_ids'][$index] = $requirement->name;
+                    $form_spec->addDataRequirement($requirement);
+                }
             }
 
             $specs[] = $spec;
@@ -725,14 +739,18 @@ final class FormSerializer extends AbstractFormSerializer
             if (
                 is_array($value)
                 && isset($value['itemtype'])
-                && isset($value['items_id'])
+                && isset($value['items_ids'])
                 && getItemForItemtype($value['itemtype'])
             ) {
-                $items_id = $mapper->getItemId(
-                    itemtype: $value['itemtype'],
-                    key: $value['items_id'],
-                );
-                $value['items_id'] = $items_id;
+                if (!is_array($value['items_ids'])) {
+                    $value['items_ids'] = [$value['items_ids']];
+                }
+                foreach ($value['items_ids'] as $index => $name) {
+                    $value['items_ids'][$index] = $mapper->getItemId(
+                        itemtype: $value['itemtype'],
+                        key: $name,
+                    );
+                }
             }
 
             $data[] = new ConditionData(
@@ -1143,6 +1161,11 @@ final class FormSerializer extends AbstractFormSerializer
         }
 
         $prefix = IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX;
+
+        // Reject keys that could escape the illustration directory via path traversal
+        if (!preg_match('/^[a-zA-Z0-9._-]+$/', $illustration->key)) {
+            throw new RuntimeException("Invalid illustration key: " . $illustration->key);
+        }
 
         // Check if file already exist
         $manager = new IllustrationManager();

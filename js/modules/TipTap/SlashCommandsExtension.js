@@ -32,6 +32,8 @@
 
 /* global TiptapCore, TiptapSuggestion, FloatingUI */
 
+import { showVideoDialog } from '/js/modules/TipTap/VideoEmbedExtension.js';
+
 /**
  * Slash commands extension for Tiptap editor
  * Provides a Notion-like command menu triggered by typing "/"
@@ -287,6 +289,14 @@ const SLASH_COMMANDS = [
             showImageDialog(editor);
         },
     },
+    {
+        title: __('Video'),
+        icon: 'ti ti-video',
+        command: (editor, range) => {
+            editor.chain().focus().deleteRange(range).run();
+            showVideoDialog(editor);
+        },
+    },
 ];
 
 /**
@@ -343,6 +353,16 @@ const SlashCommands = Extension.create({
                 char: '/',
                 allowSpaces: false,
                 startOfLine: false,
+                // Block the menu inside table cells to avoid nested tables/blocks.
+                allow: ({ state, range }) => {
+                    const $from = state.doc.resolve(range.from);
+                    for (let depth = $from.depth; depth > 0; depth--) {
+                        if ($from.node(depth).type.name === 'table') {
+                            return false;
+                        }
+                    }
+                    return true;
+                },
                 items: ({ query }) => {
                     const lowerQuery = query.toLowerCase();
                     return SLASH_COMMANDS.filter((item) =>
@@ -415,6 +435,15 @@ const SlashCommands = Extension.create({
                             // Initial position
                             updatePosition(props);
 
+                            const suggestionEl = document.querySelector('.suggestion');
+                            if (suggestionEl) {
+                                if (props.query === '') {
+                                    suggestionEl.classList.add('is-empty');
+                                } else {
+                                    suggestionEl.classList.remove('is-empty');
+                                }
+                            }
+
                             // Auto-update position on scroll/resize
                             const virtualElement = {
                                 getBoundingClientRect: props.clientRect,
@@ -447,6 +476,15 @@ const SlashCommands = Extension.create({
                                 cleanupAutoUpdate = autoUpdate(virtualElement, floatingElement, () => {
                                     updatePosition(props);
                                 });
+                            }
+
+                            const suggestionEl = document.querySelector('.suggestion');
+                            if (suggestionEl) {
+                                if (props.query === '') {
+                                    suggestionEl.classList.add('is-empty');
+                                } else {
+                                    suggestionEl.classList.remove('is-empty');
+                                }
                             }
                         },
 

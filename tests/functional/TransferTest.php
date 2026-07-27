@@ -1382,6 +1382,53 @@ class TransferTest extends DbTestCase
         unset($_SESSION['glpitransfer_list']);
     }
 
+    public function testShowTransferListWithItemDevicesDoesNotFailOnMissingNameField(): void
+    {
+        $this->login();
+
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'Transfer test computer',
+            'entities_id' => $entity_id,
+        ]);
+
+        $soundcard = $this->createItem(\DeviceSoundCard::class, [
+            'designation' => 'Transfer test soundcard',
+            'entities_id' => $entity_id,
+        ]);
+
+        $item_soundcard = $this->createItem(\Item_DeviceSoundCard::class, [
+            'itemtype'            => Computer::class,
+            'items_id'            => $computer->getID(),
+            'devicesoundcards_id' => $soundcard->getID(),
+            'entities_id'         => $entity_id,
+        ]);
+
+        $_SESSION['glpitransfer_list'] = [
+            \Item_DeviceSoundCard::class => [$item_soundcard->getID() => $item_soundcard->getID()],
+        ];
+
+        $transfer = new \Transfer();
+        ob_start();
+        try {
+            $transfer->showTransferList();
+            $output = ob_get_clean();
+        } catch (\Throwable $e) {
+            ob_end_clean();
+            throw $e;
+        } finally {
+            unset($_SESSION['glpitransfer_list']);
+        }
+
+        $this->assertStringContainsString('<tbody>', $output);
+
+        $this->assertStringContainsString(
+            sprintf('(%d)', $item_soundcard->getID()),
+            $output
+        );
+    }
+
     private function createMassiveActionMock(string $action): \MassiveAction
     {
         $ma = $this->getMockBuilder(\MassiveAction::class)

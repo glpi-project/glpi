@@ -35,17 +35,18 @@
 namespace tests\units\Glpi\Inventory;
 
 use Config;
-use GLpi\Tests\GLPITestCase;
-use GuzzleHttp;
+use Glpi\Tests\GLPITestCase;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class InventoryTest extends GLPITestCase
 {
-    private $http_client;
+    private HttpClientInterface $http_client;
     private $base_uri;
 
     public function setUp(): void
     {
-        $this->http_client = new GuzzleHttp\Client();
+        $this->http_client = HttpClient::create();
         $this->base_uri    = trim(GLPI_URI, '/') . '/';
 
         // Enable inventory
@@ -136,11 +137,11 @@ class InventoryTest extends GLPITestCase
         $this->assertSame(200, $res->getStatusCode());
         $this->assertSame(
             "<?xml version=\"1.0\"?>\n<REPLY><RESPONSE>SEND</RESPONSE></REPLY>",
-            (string) $res->getBody()
+            $res->getContent(false)
         );
         $this->assertSame(
             'application/xml',
-            $res->getHeader('content-type')[0]
+            $res->getHeaders(false)['content-type'][0]
         );
 
         //check agent in database

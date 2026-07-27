@@ -47,6 +47,11 @@ interface ShareableInterface
     public function canManageSharing(): bool;
 
     /**
+     * Whether an item of this type may hold several share tokens at once.
+     */
+    public function allowsMultipleShareTokens(): bool;
+
+    /**
      * Get the Twig template path for the anonymous public view.
      */
     public function getShareableViewTemplate(): string;

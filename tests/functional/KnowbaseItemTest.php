@@ -44,6 +44,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
 
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
+use function Safe\ob_end_clean;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+
 /* Test for inc/knowbaseitem.class.php */
 
 class KnowbaseItemTest extends DbTestCase
@@ -922,6 +928,86 @@ HTML,
         $this->assertEqualsCanonicalizing([$kb_cat_id1, $kb_cat_id2], $category_ids);
     }
 
+    public function testShowFullAddModeIgnoresUnknownCategory(): void
+    {
+        $this->login();
+
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                      => 'add',
+            'display'                   => false,
+            'knowbaseitemcategories_id' => 999999,
+        ]);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
+    }
+
+    public function testShowFullAddModeIgnoresNonNumericCategory(): void
+    {
+        $this->login();
+
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                      => 'add',
+            'display'                   => false,
+            'knowbaseitemcategories_id' => 'abc',
+        ]);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
+    }
+
+    public function testShowFullAddModeIgnoresCategoryFromUnreachableEntity(): void
+    {
+        $this->login();
+
+        $sibling_entity_id = (int) getItemByTypeName('Entity', '_test_child_1', true);
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name'                      => __FUNCTION__,
+            'knowbaseitemcategories_id' => 0,
+            'entities_id'               => $sibling_entity_id,
+            'is_recursive'              => 0,
+        ]);
+        $cat_id = $cat->getID();
+
+        // Restrict the active session to a sibling that cannot reach the category
+        $this->setEntity('_test_child_2', false);
+
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                      => 'add',
+            'display'                   => false,
+            'knowbaseitemcategories_id' => $cat_id,
+        ]);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
+    }
+
+    public function testShowFullAddModePrefillsCategoryFromOptions(): void
+    {
+        $this->login();
+
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name'                      => __FUNCTION__,
+            'knowbaseitemcategories_id' => 0,
+            'entities_id'               => $this->getTestRootEntity(only_id: true),
+            'is_recursive'              => 1,
+        ]);
+        $cat_id = $cat->getID();
+
+        $item = new KnowbaseItem();
+        $item->getEmpty();
+        $html = (string) $item->showFull([
+            'mode'                      => 'add',
+            'display'                   => false,
+            'knowbaseitemcategories_id' => $cat_id,
+        ]);
+
+        $this->assertStringContainsString(
+            'data-glpi-kb-prefilled-category-id="' . $cat_id . '"',
+            $html
+        );
+    }
+
     protected function testGetVisibilityCriteriaProvider(): iterable
     {
         yield from $this->testGetVisibilityCriteriaProvider_FAQ_public();
@@ -1229,6 +1315,7 @@ HTML,
     protected function testGetVisibilityCriteriaProvider_KB(): iterable
     {
         // Create set of test subjects
+        $this->login();
         $glpi_user = getItemByTypeName("User", "glpi", true);
         $tech_user = getItemByTypeName("User", "tech", true);
         $this->createItems("KnowbaseItem", [
@@ -1358,6 +1445,38 @@ HTML,
             ],
         ]);
 
+        // Create KnowBase items with specific visibility for users
+        $this->createItems(KnowbaseItem::class, [
+            [
+                'name'     => 'KB 14',
+                'answer'   => 'KB 14',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                '_visibility' => [
+                    'entities_id' => -1,
+                    'is_recursive' => 1,
+                    '_type' => \User::class,
+                    'users_id' => $tech_user,
+                ],
+            ],
+            [
+                'name'     => 'KB 15',
+                'answer'   => 'KB 15',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                '_visibility' => [
+                    'entities_id' => -1,
+                    'is_recursive' => 1,
+                    '_type' => \User::class,
+                    'users_id' => $normal_user,
+                ],
+            ],
+        ]);
+
         // Add group restrictions for articles 4 to 7
         $kb_4 = getItemByTypeName("KnowbaseItem", "KB 4", true);
         $kb_5 = getItemByTypeName("KnowbaseItem", "KB 5", true);
@@ -1403,6 +1522,38 @@ HTML,
             ],
         ]);
 
+        // Create KnowBase items with specific visibility for groups
+        $this->createItems(KnowbaseItem::class, [
+            [
+                'name'     => 'KB 16',
+                'answer'   => 'KB 16',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                '_visibility' => [
+                    'entities_id' => -1,
+                    'is_recursive' => 1,
+                    '_type' => \Group::class,
+                    'groups_id' => $group_a,
+                ],
+            ],
+            [
+                'name'     => 'KB 17',
+                'answer'   => 'KB 17',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                '_visibility' => [
+                    'entities_id' => -1,
+                    'is_recursive' => 1,
+                    '_type' => \Group::class,
+                    'groups_id' => $group_b,
+                ],
+            ],
+        ]);
+
         // Add profiles restrictions for article 8 to 11
         $kb_8 = getItemByTypeName("KnowbaseItem", "KB 8", true);
         $kb_9 = getItemByTypeName("KnowbaseItem", "KB 9", true);
@@ -1439,6 +1590,38 @@ HTML,
             ],
         ]);
 
+        // Create KnowBase items with specific visibility for profiles
+        $this->createItems(KnowbaseItem::class, [
+            [
+                'name'     => 'KB 18',
+                'answer'   => 'KB 18',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                '_visibility' => [
+                    'entities_id' => -1,
+                    'is_recursive' => 1,
+                    '_type' => \Profile::class,
+                    'profiles_id' => getItemByTypeName("Profile", "Technician", true),
+                ],
+            ],
+            [
+                'name'     => 'KB 19',
+                'answer'   => 'KB 19',
+                'is_faq'   => false,
+                'users_id' => $glpi_user,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                '_visibility' => [
+                    'entities_id' => -1,
+                    'is_recursive' => 1,
+                    '_type' => \Profile::class,
+                    'profiles_id' => getItemByTypeName("Profile", "Hotliner", true),
+                ],
+            ],
+        ]);
+
         // Add entity restriction for articles 12 and 13
         $kb_12 = getItemByTypeName("KnowbaseItem", "KB 12", true);
         $kb_13 = getItemByTypeName("KnowbaseItem", "KB 13", true);
@@ -1460,7 +1643,7 @@ HTML,
         yield [
             'articles' => [
                 'FAQ 2', 'KB 2', 'KB 3', 'KB 4', 'KB 6', 'KB 7', 'KB 8', 'KB 9',
-                'KB 10', 'KB 12', 'KB 13',
+                'KB 10', 'KB 12', 'KB 13', 'KB 14', 'KB 16', 'KB 18',
             ],
         ];
 
@@ -1469,6 +1652,7 @@ HTML,
         yield [
             'articles' => [
                 'FAQ 2', 'KB 2', 'KB 3', 'KB 4', 'KB 7', 'KB 8', 'KB 10', 'KB 12',
+                'KB 14', 'KB 16', 'KB 18',
             ],
         ];
 
@@ -1478,7 +1662,8 @@ HTML,
             'articles' => [
                 'FAQ 1', 'FAQ 2', 'FAQ 3', 'KB 1', 'KB 2', 'KB 3', 'KB 4',
                 'KB 5', 'KB 6', 'KB 7', 'KB 8', 'KB 9', 'KB 10', 'KB 11',
-                'KB 12', 'KB 13',
+                'KB 12', 'KB 13', 'KB 14', 'KB 15', 'KB 16', 'KB 17',
+                'KB 18', 'KB 19',
             ],
         ];
     }
@@ -1521,6 +1706,7 @@ HTML,
                 'as_map'       => 0,
                 'browse'       => 0,
                 'unpublished'  => 1,
+                'export_all'   => 1,
             ];
             ob_start();
             \Search::showList('KnowbaseItem', $params);
@@ -1970,5 +2156,88 @@ HTML,
                 'items_id'     => $kb->getID(),
             ])
         );
+    }
+
+    public function testGetReadablePrefilledCategoryIdRejectsZeroOrUnreadableIds(): void
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $cat = $this->createItem(\KnowbaseItemCategory::class, [
+            'name' => 'Public static test cat',
+            'knowbaseitemcategories_id' => 0,
+            'entities_id' => $entity_id,
+            'is_recursive' => 1,
+        ]);
+
+        $this->assertSame(
+            $cat->getID(),
+            KnowbaseItem::getReadablePrefilledCategoryId($cat->getID())
+        );
+        $this->assertNull(KnowbaseItem::getReadablePrefilledCategoryId(0));
+        $this->assertNull(KnowbaseItem::getReadablePrefilledCategoryId(999999));
+    }
+
+    public function testGetFormOptionsFromUrlWhitelistsCategoryOnly(): void
+    {
+        $item = new KnowbaseItem();
+        $this->assertSame(
+            ['knowbaseitemcategories_id' => 5],
+            $item->getFormOptionsFromUrl(['knowbaseitemcategories_id' => 5, 'unrelated' => 'x'])
+        );
+        $this->assertSame([], $item->getFormOptionsFromUrl(['unrelated' => 'x']));
+    }
+
+    public function testGetServiceCatalogItemDescriptionWithDescriptionSet(): void
+    {
+        $this->login();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__,
+            'answer'      => '<h1>Full procedure</h1><p>' . str_repeat('Lorem ipsum dolor sit amet. ', 30) . '</p>',
+            'description' => 'A short description for the tile',
+            'is_faq'      => 1,
+        ]);
+
+        $this->assertEquals(
+            'A short description for the tile',
+            $kb->getServiceCatalogItemDescription()
+        );
+    }
+
+    public function testGetServiceCatalogItemDescriptionFallsBackToAnswerExcerpt(): void
+    {
+        $this->login();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => '<h1>PROCESS</h1><p>Screenshot on an Android smartphone</p>'
+                . '<img src="https://example.org/screenshot.png">'
+                . '<p>' . str_repeat('Lorem ipsum dolor sit amet. ', 30) . '</p>',
+            'is_faq' => 1,
+        ]);
+
+        $description = $kb->getServiceCatalogItemDescription();
+
+        // No raw HTML leaking into the tile.
+        $this->assertStringNotContainsString('<h1>', $description);
+        $this->assertStringNotContainsString('<img', $description);
+        $this->assertStringNotContainsString('<p>', $description);
+
+        // Truncated to a fixed length.
+        $this->assertLessThanOrEqual(200 + mb_strlen('&nbsp;(...)'), mb_strlen($description));
+        $this->assertStringEndsWith('&nbsp;(...)', $description);
+    }
+
+    public function testGetServiceCatalogItemDescriptionFallsBackToShortAnswer(): void
+    {
+        $this->login();
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => '<p>Short answer</p>',
+            'is_faq' => 1,
+        ]);
+
+        $this->assertEquals('Short answer', $kb->getServiceCatalogItemDescription());
     }
 }

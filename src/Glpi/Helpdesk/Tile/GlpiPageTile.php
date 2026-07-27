@@ -51,6 +51,8 @@ use Toolbox;
 
 final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTranslationsInterface
 {
+    use TileRightTrait;
+
     public static string $rightname = 'config';
 
     public const PAGE_SERVICE_CATALOG = 'service_catalog';
@@ -72,18 +74,6 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTra
     public function getLabel(): string
     {
         return __("GLPI page");
-    }
-
-    #[Override]
-    public static function canCreate(): bool
-    {
-        return self::canUpdate();
-    }
-
-    #[Override]
-    public static function canPurge(): bool
-    {
-        return self::canUpdate();
     }
 
     public static function getPossiblesPages(): array

@@ -49,6 +49,7 @@
         <div class="kb-link-item-dropdowns">
             {% do call('KnowbaseItem_Item::dropdownAllTypes', [item, 'items_id', used_items]) %}
         </div>
+        <div class="invalid-feedback d-block" role="alert" data-glpi-kb-link-item-error></div>
     {% else %}
         {{ 'KnowbaseItem'|itemtype_dropdown({
             'entity': item.getEntityID(),

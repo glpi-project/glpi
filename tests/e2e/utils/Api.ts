@@ -135,27 +135,13 @@ export class Api
         id: number,
         tiles: Tile[]
     ): Promise<void> {
-        // Create a few tiles
-        const created_tiles = [];
         for (const tile of tiles) {
-            created_tiles.push(
-                this.createItem('Glpi\\Helpdesk\\Tile\\GlpiPageTile', tile)
-            );
+            await this.createItem('Glpi\\Helpdesk\\Tile\\GlpiPageTile', {
+                ...tile,
+                '_itemtype_item': itemtype,
+                '_items_id_item': id,
+            });
         }
-        const tile_ids = await Promise.all(created_tiles);
-
-        const linked_tiles = [];
-        let i = 0;
-        for (const tile_id of tile_ids) {
-            linked_tiles.push(this.createItem('Glpi\\Helpdesk\\Tile\\Item_Tile', {
-                'itemtype_item': itemtype,
-                'items_id_item': id,
-                'itemtype_tile': 'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
-                'items_id_tile': tile_id,
-                'rank': i++,
-            }));
-        }
-        await Promise.all(linked_tiles);
     }
 
     private async doCreateItem(itemtype: string, fields: object): Promise<number>

@@ -156,6 +156,7 @@ final class Profile
 
     /**
      * @param string $query
+     * @param ?array<int|string, mixed> $params
      * @param float $time
      * @param int $rows
      * @param string $errors
@@ -163,8 +164,10 @@ final class Profile
      *
      * @return void
      */
-    public function addSQLQueryData(string $query, float $time, int $rows = 0, string $errors = '', string $warnings = '')
+    public function addSQLQueryData(string $query, ?array $params, float $time, int $rows = 0, string $errors = '', string $warnings = '')
     {
+        global $DB;
+
         if ($this->disabled) {
             return;
         }
@@ -176,7 +179,9 @@ final class Profile
         $next_num = count($this->additional_info['sql']['queries'] ?? []);
         $this->additional_info['sql']['queries'][] = [
             'num' => $next_num,
-            'query' => $query,
+            'query' => $DB->interpolateParams($query, $params),
+            'raw_query' => $query,
+            'params' => $params,
             'time' => $time,
             'rows' => $rows,
             'errors' => $errors,

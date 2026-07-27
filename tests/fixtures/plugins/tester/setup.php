@@ -39,13 +39,15 @@ use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\ServiceCatalog\HomeSearchManager;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Helpdesk\Tile\TilesManager;
+use Glpi\Http\SessionManager;
+use Glpi\Plugin\Hooks;
 use GlpiPlugin\Tester\Form\ComputerDestination;
 use GlpiPlugin\Tester\Form\ComputerProvider;
 use GlpiPlugin\Tester\Form\CustomTile;
 use GlpiPlugin\Tester\Form\DayOfTheWeekPolicy;
-use GlpiPlugin\Tester\Form\QuestionTypeRange;
-use GlpiPlugin\Tester\Form\QuestionTypeColor;
 use GlpiPlugin\Tester\Form\ExternalIDField;
+use GlpiPlugin\Tester\Form\QuestionTypeColor;
+use GlpiPlugin\Tester\Form\QuestionTypeRange;
 use GlpiPlugin\Tester\Form\TesterCategory;
 use GlpiPlugin\Tester\MyPsr4Class;
 
@@ -59,8 +61,8 @@ function plugin_version_tester()
         'requirements'   => [
             'glpi' => [
                 'min' => '9.5.0',
-            ]
-        ]
+            ],
+        ],
     ];
 }
 
@@ -125,11 +127,18 @@ function plugin_init_tester(): void
     $service_catalog_manager->registerPluginProvider(new ComputerProvider());
 
     $PLUGIN_HOOKS['menu_toadd']['tester'] = ['management' => MyPsr4Class::class];
+    $PLUGIN_HOOKS[Hooks::ASSIGN_TO_TICKET]['tester'] = true;
+}
+
+function plugin_tester_AssignToTicket(array $types): array
+{
+    $types[ConsumableItem::class] = ConsumableItem::getTypeName();
+    return $types;
 }
 
 function plugin_tester_boot()
 {
-    \Glpi\Http\SessionManager::registerPluginStatelessPath('tester', '#^/$#');
-    \Glpi\Http\SessionManager::registerPluginStatelessPath('tester', '#^/StatelessURI$#');
-    \Glpi\Http\SessionManager::registerPluginStatelessPath('tester', '#^/post-only$#');
+    SessionManager::registerPluginStatelessPath('tester', '#^/$#');
+    SessionManager::registerPluginStatelessPath('tester', '#^/StatelessURI$#');
+    SessionManager::registerPluginStatelessPath('tester', '#^/post-only$#');
 }

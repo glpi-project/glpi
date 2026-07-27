@@ -43,6 +43,7 @@ use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\MainAsset\GenericAsset;
 use Glpi\Inventory\MainAsset\GenericNetworkAsset;
 use Glpi\Inventory\MainAsset\GenericPrinterAsset;
+use Glpi\Inventory\MainAsset\NetworkEquipment;
 use Glpi\Tests\DbTestCase;
 
 class IsInventoriableCapacityTest extends DbTestCase
@@ -87,7 +88,11 @@ class IsInventoriableCapacityTest extends DbTestCase
             // Check that the class is globally registered
             if ($has_capacity) {
                 $this->assertContains($classname, $CFG_GLPI['inventory_types']);
-                $this->assertContains($classname, $CFG_GLPI['agent_types']);
+                if (!is_a($classname, NetworkEquipment::class, true)) {
+                    $this->assertContains($classname, $CFG_GLPI['agent_types']);
+                } else {
+                    $this->assertNotContains($classname, $CFG_GLPI['agent_types']);
+                }
                 $this->assertContains($classname, $CFG_GLPI['environment_types']);
                 $this->assertContains($classname, $CFG_GLPI['process_types']);
             } else {
@@ -138,14 +143,14 @@ class IsInventoriableCapacityTest extends DbTestCase
             ]
         );
 
-        // Ensure  class is registered to global config
+        // Ensure class is registered to global config
         $this->assertContains($classname_1, $CFG_GLPI['inventory_types']);
         $this->assertContains($classname_1, $CFG_GLPI['agent_types']);
         $this->assertContains($classname_1, $CFG_GLPI['environment_types']);
         $this->assertContains($classname_1, $CFG_GLPI['process_types']);
         $this->assertNotContains($classname_1, $CFG_GLPI['printer_types']);
         $this->assertContains($classname_2, $CFG_GLPI['inventory_types']);
-        $this->assertContains($classname_2, $CFG_GLPI['agent_types']);
+        $this->assertNotContains($classname_2, $CFG_GLPI['agent_types']);
         $this->assertContains($classname_2, $CFG_GLPI['environment_types']);
         $this->assertContains($classname_2, $CFG_GLPI['process_types']);
         $this->assertContains($classname_2, $CFG_GLPI['printer_types']);
@@ -159,7 +164,7 @@ class IsInventoriableCapacityTest extends DbTestCase
 
         // Ensure global registration is preserved for other definition
         $this->assertContains($classname_2, $CFG_GLPI['inventory_types']);
-        $this->assertContains($classname_2, $CFG_GLPI['agent_types']);
+        $this->assertNotContains($classname_2, $CFG_GLPI['agent_types']);
         $this->assertContains($classname_2, $CFG_GLPI['environment_types']);
         $this->assertContains($classname_2, $CFG_GLPI['process_types']);
     }

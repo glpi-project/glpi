@@ -311,6 +311,14 @@ abstract class Spreadsheet extends ExportSearchOutput
                                 $titlecontain = sprintf(__('%1$s > %2$s'), $titlecontain, $valuename);
                                 break;
 
+                            case "lessthanorequal":
+                                $titlecontain = sprintf(__('%1$s <= %2$s'), $titlecontain, $valuename);
+                                break;
+
+                            case "morethanorequal":
+                                $titlecontain = sprintf(__('%1$s >= %2$s'), $titlecontain, $valuename);
+                                break;
+
                             case "contains":
                                 $titlecontain = sprintf(
                                     __('%1$s = %2$s'),
@@ -447,6 +455,22 @@ abstract class Spreadsheet extends ExportSearchOutput
                         case "morethan":
                             $titlecontain2 = sprintf(
                                 __('%1$s > %2$s'),
+                                $titlecontain2,
+                                $metacriteria['value']
+                            );
+                            break;
+
+                        case "lessthanorequal":
+                            $titlecontain2 = sprintf(
+                                __('%1$s <= %2$s'),
+                                $titlecontain2,
+                                $metacriteria['value']
+                            );
+                            break;
+
+                        case "morethanorequal":
+                            $titlecontain2 = sprintf(
+                                __('%1$s >= %2$s'),
                                 $titlecontain2,
                                 $metacriteria['value']
                             );

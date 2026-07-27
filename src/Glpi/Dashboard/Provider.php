@@ -54,7 +54,6 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Debug\Profiler;
 use Glpi\Search\Input\QueryBuilder;
-use Glpi\Search\SearchOption;
 use Group;
 use Group_Ticket;
 use Profile_User;
@@ -683,14 +682,26 @@ class Provider
         $groupTable = Group::getTable();
 
         $ownExceeded = Ticket::generateSLAOLAComputation('time_to_own', $table);
+        $ownExceeded_values = $ownExceeded ? $ownExceeded->getParams() : [];
+
         $resolveExceeded = Ticket::generateSLAOLAComputation('time_to_resolve', $table);
-        $slaState = "IF ($ownExceeded AND $resolveExceeded, 3, IF ($resolveExceeded, 2, IF ($ownExceeded, 1, 0)))";
+        $resolveExceeded_values = $resolveExceeded ? $resolveExceeded->getParams() : [];
+        $qexpr = new QueryExpression(
+            "IF ($ownExceeded AND $resolveExceeded, 3, IF ($resolveExceeded, 2, IF ($ownExceeded, 1, 0)))",
+            'sla_state',
+            array_merge(
+                $ownExceeded_values,
+                $resolveExceeded_values,
+                $resolveExceeded_values,
+                $ownExceeded_values,
+            )
+        );
 
         $query_criteria = [
             'COUNT' => 'cpt',
             'SELECT'    => [
                 "$groupTable.name",
-                new QueryExpression("$slaState as `sla_state`"),
+                $qexpr,
             ],
             'FROM'   => $table,
             'INNER JOIN' => [

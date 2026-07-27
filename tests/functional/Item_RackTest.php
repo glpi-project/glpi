@@ -760,6 +760,90 @@ class Item_RackTest extends DbTestCase
     }
 
     /**
+     * Regression test: updating required_units must not produce a false-positive
+     * conflict when the same model is used by multiple items in the same rack.
+     *
+     * Before the fix, $positionsToCheck was initialized outside the foreach loop,
+     * causing positions from item N to accumulate and be checked against item N+1,
+     * triggering a spurious error even though each item individually had enough room.
+     */
+    public function testRackIssuesWithMultipleItemsSameModel(): void
+    {
+        $model = $this->createItem(
+            'ComputerModel',
+            [
+                'name'           => 'SW-1U',
+                'required_units' => 1,
+                'depth'          => 1,
+                'is_half_rack'   => 0,
+            ]
+        );
+
+        $rack = $this->createItem(
+            'Rack',
+            [
+                'name'         => 'Test rack multi',
+                'number_units' => 10,
+                'dcrooms_id'   => 0,
+                'position'     => 0,
+                'entities_id'  => 0,
+            ]
+        );
+
+        $computer1 = $this->createItem(
+            'Computer',
+            [
+                'name'              => 'Computer-A',
+                'computermodels_id' => $model->getID(),
+                'entities_id'       => 0,
+            ]
+        );
+
+        $computer2 = $this->createItem(
+            'Computer',
+            [
+                'name'              => 'Computer-B',
+                'computermodels_id' => $model->getID(),
+                'entities_id'       => 0,
+            ]
+        );
+
+        // computer1 at position 1, computer2 at position 3 — updating to 2U gives
+        // 1-2 for computer1 and 3-4 for computer2, no overlap, must succeed.
+        $this->createItem(
+            'Item_Rack',
+            [
+                'racks_id'    => $rack->getID(),
+                'position'    => 1,
+                'orientation' => 0,
+                'itemtype'    => 'Computer',
+                'items_id'    => $computer1->getID(),
+            ]
+        );
+
+        $this->createItem(
+            'Item_Rack',
+            [
+                'racks_id'    => $rack->getID(),
+                'position'    => 3,
+                'orientation' => 0,
+                'itemtype'    => 'Computer',
+                'items_id'    => $computer2->getID(),
+            ]
+        );
+
+        $this->assertTrue(
+            $model->update([
+                'id'             => $model->getID(),
+                'required_units' => 2,
+            ]),
+            'Model update should succeed when all rack items individually have enough room'
+        );
+
+        $this->hasNoSessionMessages([ERROR]);
+    }
+
+    /**
      * Test for updating horizontal position of items rack
      */
     public function testUpdateItemHorizontalPosition()

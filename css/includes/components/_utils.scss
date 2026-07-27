@@ -69,6 +69,10 @@
     display: flex;
 }
 
+.fs-08x {
+    font-size: 0.8em !important;
+}
+
 .fs-2x {
     font-size: 2em !important;
 }
@@ -147,4 +151,8 @@
             var(--tblr-link-hover-color) var(--tblr-link-opacity, 100%)
         ) !important;
     }
+}
+
+.cursor-wait {
+    cursor: wait !important;
 }

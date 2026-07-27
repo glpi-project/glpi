@@ -65,7 +65,7 @@ class Grid
     protected int $grid_cols       = 26;
     protected int $grid_rows       = 24;
     protected string $current         = "";
-    protected ?Dashboard $dashboard       = null;
+    protected Dashboard $dashboard;
     protected array $items           = [];
     protected string $context            = '';
 
@@ -111,7 +111,7 @@ class Grid
      *
      * @return bool
      */
-    public static function loadAllDashboards(bool $force = true): bool
+    public static function loadAllDashboards(bool $force = false): bool
     {
         if (
             count(self::$all_dashboards) === 0
@@ -225,13 +225,7 @@ HTML;
     {
         self::loadAllDashboards();
 
-        $dashboard = new Dashboard($key);
-        $dashboard->load();
-        // check global (admin) right
-        if (Dashboard::canView() && !$dashboard->isPrivate()) {
-            return true;
-        }
-
+        // The dashboards in the static property are filtered for the current user
         return isset(self::$all_dashboards[$key]);
     }
 
@@ -243,17 +237,24 @@ HTML;
      */
     public function show(bool $mini = false, ?string $token = null)
     {
-        global $GLPI_CACHE;
-
         $rand = mt_rand();
-
-        if (!self::$embed && !$this->dashboard->canViewCurrent()) {
-            return;
-        }
 
         self::loadAllDashboards();
 
+        $can_view_current = isset(self::$all_dashboards[$this->dashboard->getKey()]);
+        if (!self::$embed && !$can_view_current) {
+            return;
+        }
+
         $this->restoreLastDashboard();
+
+        // Load known database values into $this->dashboard properties to prevent
+        // it from being loaded again when used by other methods
+        if ($can_view_current) {
+            $this->dashboard->fields = self::$all_dashboards[$this->dashboard->getKey()];
+            $this->dashboard->setItems(self::$all_dashboards[$this->dashboard->getKey()]['items'] ?? []);
+            $this->dashboard->setRights(self::$all_dashboards[$this->dashboard->getKey()]['rights'] ?? []);
+        }
 
         if ($mini) {
             $this->cell_margin = 3;

@@ -33,6 +33,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\Exception\Database\QueryException;
 
 /**
  * Update from 9.1 to 9.2
@@ -2288,15 +2289,20 @@ Regards,',
     ];
     foreach ($tables as $table => $fields) {
         $add = true;
-        $result = $DB->doQuery("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
-        if ($result && $DB->numrows($result)) {
-            $row = $DB->fetchAssoc($result);
-            if ($row['Non_unique'] == 1) {
-                $migration->dropKey($table, 'unicity');
-                $migration->migrationOneTable($table);
-            } else {
-                $add = false;
+
+        try {
+            $result = $DB->doQuery("SHOW INDEX FROM `$table` WHERE Key_name='unicity'");
+            if ($DB->numrows($result)) {
+                $row = $DB->fetchAssoc($result);
+                if ($row['Non_unique'] == 1) {
+                    $migration->dropKey($table, 'unicity');
+                    $migration->migrationOneTable($table);
+                } else {
+                    $add = false;
+                }
             }
+        } catch (QueryException) {
+            //do nothing
         }
 
         if ($add) {

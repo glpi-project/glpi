@@ -1554,4 +1554,16 @@ class SessionTest extends DbTestCase
         \Html::generateMenuSession(true);
         $this->assertArrayHasKey('content', $_SESSION['glpimenu']['config']);
     }
+
+    public function testLoadEntitySetsParentEntities(): void
+    {
+        // Non-regression: Session::loadEntity() was not setting glpiparententities,
+        // causing getEntitiesRestrictRequest() to call getAncestorsOf("glpi_entities", '')
+        // and generate an invalid "IN ()" SQL clause.
+        \Session::loadEntity(0, true);
+
+        $this->assertArrayHasKey('glpiparententities', $_SESSION);
+        $this->assertArrayHasKey('glpiparententities_string', $_SESSION);
+        $this->assertIsArray($_SESSION['glpiparententities']);
+    }
 }

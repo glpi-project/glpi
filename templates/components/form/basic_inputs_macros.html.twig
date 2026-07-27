@@ -86,16 +86,18 @@
     {% set more_html %}
         {% if options.is_disclosable %}
             <button type="button" class="btn btn-outline-secondary"
-                 onmousedown="showDisclosablePasswordField('{{ options.id|e('js') }}')"
-                 onmouseup="hideDisclosablePasswordField('{{ options.id|e('js') }}')"
-                 onmouseout="hideDisclosablePasswordField('{{ options.id|e('js') }}')">
-                <i class="ti ti-eye disclose"></i>
+                 aria-label="{{ __('Show password') }}" title="{{ __('Show password') }}"
+                 data-show-label="{{ __('Show password') }}" data-hide-label="{{ __('Hide password') }}"
+                 onclick="toggleDisclosablePasswordField(this, '{{ options.id|e('js') }}')">
+                <i class="ti ti-eye disclose" aria-hidden="true"></i>
             </button>
         {% endif %}
 
         {% if options.is_copyable %}
-            <button type="button" class="btn btn-outline-secondary" onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id|e('js') }}')">
-                <i class="ti ti-clipboard-copy disclose"></i>
+            <button type="button" class="btn btn-outline-secondary"
+                 aria-label="{{ __('Click to copy to clipboard') }}" title="{{ __('Click to copy to clipboard') }}"
+                 onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id|e('js') }}')">
+                <i class="ti ti-clipboard-copy disclose" aria-hidden="true"></i>
             </button>
         {% endif %}
     {% endset %}
@@ -171,10 +173,16 @@
         id: name ~ '_' ~ (options.rand ?? random()),
     }|merge(options) %}
 
+    {% set describedby = options.id ~ '_format' %}
     {{ _self.input(name, value, options|merge({
         'type': 'text',
         'input_addclass': 'rounded-0',
+        'additional_attributes': (options.additional_attributes ?? {})|merge({
+            'placeholder': '#RRGGBB',
+            'aria-describedby': describedby,
+        }),
     })) }}
+    <span id="{{ describedby }}" class="visually-hidden">{{ __('Expected format: a hexadecimal color code, for example #FF0000.') }}</span>
     <script>
         $(function () {
             $("#{{ options.id|e('css')|e('js') }}").spectrum({
@@ -289,7 +297,7 @@
             {% set calendar_icon = options.enableTime ? 'ti ti-calendar-time' : 'ti ti-calendar' %}
             <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
                 <i class="{{ calendar_icon }}"></i>
-                <span class="sr-only">{{ __('Enter or select a date') }}</span>
+                <span class="visually-hidden">{{ __('Enter or select a date') }}</span>
             </button>
             {# maybeempty has no distinct purpose, but it was here first #}
             {% if options.clearable or options.maybeempty %}
@@ -523,8 +531,10 @@
         {# Indeed, otherwise, due to the usage of `data-bs-html="true"`, any code snippet would be interpreted. #}
         {% set helper_safe_text = options.helper|escape|nl2br %}
         {% set helper %}
-        <span class="form-help"
+        <span class="form-help" tabindex="0"
+              aria-label="{{ options.helper }}"
               data-bs-toggle="tooltip"
+              data-bs-trigger="hover focus"
               data-bs-placement="top"
               data-bs-html="true"
               data-bs-title="{{ helper_safe_text|raw }}">

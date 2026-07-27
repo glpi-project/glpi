@@ -825,6 +825,23 @@ class Group_User extends CommonDBRelation
 
         // Group cache must be invalidated when a user is added to a group
         Group::updateLastGroupChange();
+
+        foreach (ProjectTask::getActiveProjectTaskIDsForGroup([(int) $this->fields['groups_id']]) as $row) {
+            $task = new ProjectTask();
+            if (!$task->getFromDB($row['id']) || $task->fields['recall'] === null) {
+                continue;
+            }
+            if (PlanningRecall::getForItem(ProjectTask::class, $task->getID(), $this->fields['users_id']) !== null) {
+                continue;
+            }
+            PlanningRecall::manageDatas([
+                'itemtype'    => ProjectTask::class,
+                'items_id'    => $row['id'],
+                'users_id'    => (int) $this->fields['users_id'],
+                'before_time' => (int) $task->fields['recall'],
+                'field'       => 'plan_end_date',
+            ]);
+        }
     }
 
     public function post_purgeItem()
@@ -900,6 +917,19 @@ class Group_User extends CommonDBRelation
 
         // Group cache must be invalidated when a user is remove from a group
         Group::updateLastGroupChange();
+
+        foreach (ProjectTask::getActiveProjectTaskIDsForGroup([(int) $this->fields['groups_id']]) as $row) {
+            $projecttasks_id = $row['id'];
+            $still_in_team = array_flip(ProjectTaskTeam::getUserInTeamFor($projecttasks_id));
+
+            if (isset($still_in_team[(int) $this->fields['users_id']])) {
+                continue;
+            }
+            $recall = PlanningRecall::getForItem(ProjectTask::class, $projecttasks_id, (int) $this->fields['users_id']);
+            if ($recall !== null) {
+                $recall->delete(['id' => $recall->getID()]);
+            }
+        }
     }
 
     /**

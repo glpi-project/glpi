@@ -35,12 +35,11 @@
 namespace Glpi\Api\HL\GraphQL;
 
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\GraphQL\Type\DateTimeType;
 use Glpi\Api\HL\OpenAPIGenerator;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
-
-use function Safe\strtotime;
 
 class Types
 {
@@ -91,13 +90,14 @@ class Types
             Doc\Schema::TYPE_BOOLEAN => Type::boolean(),
             default => null,
         };
+        if (
+            $graphql_type === Type::string()
+            && isset($property['format'])
+            && $property['format'] === Doc\Schema::FORMAT_STRING_DATE_TIME
+        ) {
+            $graphql_type = DateTimeType::dateTime();
+        }
         if ($graphql_type !== null) {
-            if (($property['format'] ?? $property['type']) === Doc\Schema::FORMAT_STRING_DATE_TIME) {
-                return [
-                    'type' => $graphql_type,
-                    'resolve' => static fn($value) => isset($value[$name]) ? date(DATE_RFC3339, strtotime($value[$name])) : null,
-                ];
-            }
             return ['type' => $graphql_type];
         }
 

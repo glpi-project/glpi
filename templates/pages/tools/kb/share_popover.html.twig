@@ -1,0 +1,94 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div data-glpi-share-popover
+     data-glpi-itemtype="{{ itemtype }}"
+     data-glpi-items-id="{{ id }}"
+     {% if token %}data-glpi-token-id="{{ token.id }}"{% endif %}
+>
+    {# "Publish to web" toggle row #}
+    <div class="d-flex align-items-start gap-2">
+        <i class="ti ti-world text-secondary mt-1"></i>
+        <div class="flex-grow-1">
+            <label class="form-check-label fw-medium" for="share-publish-toggle-{{ id }}">
+                {{ __('Publish to web') }}
+            </label>
+            <div class="text-secondary small">
+                {{ __('Anyone with the link can view this article') }}
+            </div>
+        </div>
+        <div class="form-check form-switch mb-0 ms-auto">
+            <input class="form-check-input"
+                   type="checkbox"
+                   role="switch"
+                   id="share-publish-toggle-{{ id }}"
+                   aria-label="{{ __('Publish to web') }}"
+                   {{ is_published ? 'checked' : '' }}
+                   {{ not can_edit ? 'disabled' : '' }}
+                   data-glpi-share-toggle>
+        </div>
+    </div>
+
+    {# Link row (only when published) #}
+    {% if is_published and token %}
+        {% set share_url = config('url_base') ~ '/Share/' ~ token.token %}
+        <div class="mt-2"
+             data-glpi-share-link-row
+             data-glpi-share-url="{{ share_url }}">
+            <div class="input-group input-group-sm flex-nowrap">
+                <input type="text"
+                       class="form-control text-secondary"
+                       value="{{ share_url }}"
+                       readonly
+                       aria-label="{{ __('Public link') }}">
+                <button type="button"
+                        class="btn"
+                        data-glpi-clipboard-text="{{ share_url }}"
+                        title="{{ __('Copy link') }}"
+                        aria-label="{{ __('Copy link') }}"
+                        data-bs-toggle="tooltip">
+                    <i class="ti ti-copy"></i>
+                </button>
+                {% if can_edit %}
+                    <button type="button"
+                            class="btn"
+                            data-glpi-share-regenerate
+                            title="{{ __('Regenerate link') }}"
+                            aria-label="{{ __('Regenerate link') }}"
+                            data-bs-toggle="tooltip">
+                        <i class="ti ti-refresh"></i>
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>

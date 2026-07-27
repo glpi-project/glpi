@@ -48,6 +48,9 @@ use Psr\Log\LogLevel;
 use User;
 use UserCategory;
 
+use function Safe\json_decode;
+use function Safe\strtotime;
+
 class UserTest extends DbTestCase
 {
     public function testGenerateUserToken()
@@ -702,7 +705,6 @@ class UserTest extends DbTestCase
         $inputs = [
             'api_token'             => \bin2hex(\random_bytes(16)),
             '_reset_api_token'      => true,
-            'cookie_token'          => \bin2hex(\random_bytes(16)),
             'password_forget_token' => \bin2hex(\random_bytes(16)),
             'personal_token'        => \bin2hex(\random_bytes(16)),
             '_reset_personal_token' => true,
@@ -745,6 +747,35 @@ class UserTest extends DbTestCase
                 $this->assertEquals(true, \array_key_exists($key, $output));
             }
         }
+    }
+
+    public function testPrepareInputForUpdateAuthTypeWithSession(): void
+    {
+        $this->login();
+
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+
+        // Check with right to update auth method
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
+        $this->assertArrayHasKey('authtype', $output);
+        $this->assertEquals(\Auth::EXTERNAL, $output['authtype']);
+
+        // Check without right to update auth method
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
+        $this->assertArrayNotHasKey('authtype', $output);
+    }
+
+    public function testPrepareInputForUpdateAuthTypeAsSystemRoutine(): void
+    {
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+
+        // Check without right to update auth method
+        $_SESSION['glpiactiveprofile']['user'] = 0;
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
+        $this->assertArrayHasKey('authtype', $output);
+        $this->assertEquals(\Auth::EXTERNAL, $output['authtype']);
     }
 
     public function testPost_addItem()
@@ -915,6 +946,34 @@ class UserTest extends DbTestCase
                 'is_dynamic'    => $row['is_dynamic'],
             ]));
         }
+    }
+
+    public function testCloneDoesNotCopyLdapFields(): void
+    {
+        $this->login();
+
+        $user = new User();
+        $uid = $user->add([
+            'name'       => 'ldap_user_to_clone',
+            'user_dn'    => 'uid=ldap_user_to_clone,ou=people,dc=example,dc=com',
+            'sync_field' => 'ldap_user_to_clone',
+        ]);
+        $this->assertGreaterThan(0, $uid);
+        $this->assertTrue($user->getFromDB($uid));
+
+        $this->assertNotEmpty($user->fields['user_dn']);
+        $this->assertNotEmpty($user->fields['user_dn_hash']);
+        $this->assertNotEmpty($user->fields['sync_field']);
+
+        $cloned_id = $user->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        $cloned_user = new User();
+        $this->assertTrue($cloned_user->getFromDB($cloned_id));
+
+        $this->assertEmpty($cloned_user->fields['user_dn']);
+        $this->assertEmpty($cloned_user->fields['user_dn_hash']);
+        $this->assertEmpty($cloned_user->fields['sync_field']);
     }
 
     public function testGetFromDBbyDn()
@@ -2110,7 +2169,6 @@ class UserTest extends DbTestCase
                 $this->assertArrayHasKey('password', $fields);
                 $this->assertArrayHasKey('personal_token', $fields);
                 $this->assertArrayHasKey('api_token', $fields);
-                $this->assertArrayHasKey('cookie_token', $fields);
                 $this->assertArrayHasKey('password_forget_token', $fields);
                 $this->assertArrayHasKey('password_forget_token_date', $fields);
 
@@ -2119,7 +2177,6 @@ class UserTest extends DbTestCase
                 $this->assertEquals(false, \array_key_exists('password', $fields));
                 $this->assertEquals(false, \array_key_exists('personal_token', $fields));
                 $this->assertEquals(false, \array_key_exists('api_token', $fields));
-                $this->assertEquals(false, \array_key_exists('cookie_token', $fields));
                 $this->assertEquals($disclose, \array_key_exists('password_forget_token', $fields));
                 $this->assertEquals($disclose, \array_key_exists('password_forget_token_date', $fields));
             }
@@ -2133,7 +2190,6 @@ class UserTest extends DbTestCase
             'name'                       => 'test',
             'password'                   => \bin2hex(\random_bytes(16)),
             'api_token'                  => \bin2hex(\random_bytes(16)),
-            'cookie_token'               => \bin2hex(\random_bytes(16)),
             'password_forget_token'      => \bin2hex(\random_bytes(16)),
             'personal_token'             => \bin2hex(\random_bytes(16)),
             'password_forget_token_date' => '2024-10-25 13:15:12',
@@ -2512,6 +2568,82 @@ class UserTest extends DbTestCase
     }
 
     /**
+     * Non-regression: willProcessRuleRight() must be called after processAllRules() in getFromSSO()
+     * so that Profile_User records are actually created after the Auth::login() update cycle.
+     */
+    public function testGetFromSSOAppliesRightRulesOnUpdate(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $root_entity_id = $this->getTestRootEntity(true);
+
+        // Minimal SSO config: expose at least the login field via a server variable.
+        $original_sso_config = $CFG_GLPI['name_ssofield'] ?? '';
+        $CFG_GLPI['name_ssofield'] = 'HTTP_SSO_LOGIN';
+
+        // Rule: TYPE = EXTERNAL → assign Super-Admin profile on root entity.
+        $rule = $this->createItem(\RuleRight::class, [
+            'name'      => __FUNCTION__,
+            'is_active' => 1,
+            'sub_type'  => 'RuleRight',
+            'match'     => 'AND',
+            'condition' => 0,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'TYPE',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => \Auth::EXTERNAL,
+        ]);
+
+        $profile_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'profiles_id',
+            'value'       => $profile_id,
+        ]);
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => $root_entity_id,
+        ]);
+
+        // Create the user as an external (SSO) user.
+        $user = $this->createItem(User::class, [
+            'name'     => $this->getUniqueString(),
+            'authtype' => \Auth::EXTERNAL,
+        ]);
+
+        // Simulate the SSO server variable so getFromSSO() can populate user fields.
+        $_SERVER['HTTP_SSO_LOGIN'] = $user->fields['name'];
+
+        $user->getFromSSO();
+
+        // _ldap_rules must be set so that applyRightRules() will run.
+        $this->assertArrayHasKey('_ldap_rules', $user->fields, '_ldap_rules not set by processAllRules()');
+        $this->assertNotEmpty($user->fields['_ldap_rules']['rules_entities_rights']);
+
+        // Simulate Auth::login() update cycle (copies fields, calls update).
+        $input = $user->fields;
+        unset($input['api_token'], $input['password_forget_token'], $input['personal_token']);
+        $user->update($input);
+
+        // The profile must now be assigned in Profile_User.
+        $profile_users = Profile_User::getUserProfiles($user->getID());
+        $this->assertArrayHasKey($profile_id, $profile_users, 'Profile_User record not created after SSO login rule processing');
+
+        // Cleanup: restore SSO config.
+        $CFG_GLPI['name_ssofield'] = $original_sso_config;
+        unset($_SERVER['HTTP_SSO_LOGIN']);
+    }
+
+    /**
      * The TreeBrowse list is available for users, but user categories are not hierarchical.
      * This test ensures results can be fetched properly even for flat results.
      * @return void
@@ -2719,5 +2851,75 @@ class UserTest extends DbTestCase
             '_is_recursive' => 1,
         ]);
         $this->assertTrue(User::isValidUserForEntity($recursive_user->getID(), $child1_entity_id));
+    }
+
+    /**
+     * The `pdffont` user preference stores a font key that must exist in the
+     * fonts shipped with TCPDF. The TCPDF 7.0 migration dropped several fonts
+     * (Arabic `aealarabiya`/`aefurat` and the CJK CID fonts
+     * `kozminproregular`, `kozgopromedium`, `msungstdlight`, `stsongstdlight`,
+     * `hysmyeongjostdmedium`), so a value saved with a previous version may no
+     * longer be valid.
+     *
+     * This test documents how the preference behaves on save when the selected
+     * font is (in)valid.
+     */
+    public function testPdffontPreference()
+    {
+        $this->login();
+
+        $font_list = \GLPIPDF::getFontList();
+        // Sanity checks on the font list provided by the current TCPDF version.
+        $this->assertArrayHasKey('times', $font_list);
+        // Font dropped by the TCPDF 7.0 migration.
+        $this->assertArrayNotHasKey('kozminproregular', $font_list);
+
+        $user = new User();
+        $uid  = $user->add(['name' => $this->getUniqueString()]);
+        $this->assertGreaterThan(0, $uid);
+
+        // A font available in the current font list is accepted and stored.
+        $this->assertTrue($user->update([
+            'id'      => $uid,
+            'pdffont' => 'times',
+        ]));
+        $this->hasNoSessionMessages([ERROR, WARNING]);
+        $this->assertTrue($user->getFromDB($uid));
+        $this->assertSame('times', $user->fields['pdffont']);
+
+        // Saving the preferences form with a font that no longer exists (e.g. a
+        // value inherited from a previous TCPDF version) is refused: the bad
+        // value is discarded with an error message while the other submitted
+        // fields are still saved and the previous font is kept.
+        $this->assertTrue($user->update([
+            'id'       => $uid,
+            'realname' => 'Font Tester',
+            'pdffont'  => 'kozminproregular',
+        ]));
+        $this->hasSessionMessages(
+            ERROR,
+            ['The following field has an incorrect value: &quot;PDF export font&quot;.']
+        );
+        $this->assertTrue($user->getFromDB($uid));
+        $this->assertSame('Font Tester', $user->fields['realname']); // other field saved
+        $this->assertSame('times', $user->fields['pdffont']); // font preference unchanged
+
+        // A stale value may already be stored in database (saved before the
+        // migration). It stays untouched as long as `pdffont` is not part of
+        // the submitted input...
+        global $DB;
+        $DB->update(User::getTable(), ['pdffont' => 'kozminproregular'], ['id' => $uid]);
+        $this->assertTrue($user->update([
+            'id'       => $uid,
+            'realname' => 'Font Tester 2',
+        ]));
+        $this->hasNoSessionMessages([ERROR, WARNING]);
+        $this->assertTrue($user->getFromDB($uid));
+        $this->assertSame('kozminproregular', $user->fields['pdffont']);
+
+        // ... but GLPIPDF silently falls back to the default font at export
+        // time, so PDF generation does not break.
+        $pdf = new \GLPIPDF(['font' => $user->fields['pdffont']]);
+        $this->assertSame('helvetica', $pdf->getFontFamily());
     }
 }

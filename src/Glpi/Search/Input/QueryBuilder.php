@@ -287,6 +287,8 @@ final class QueryBuilder implements SearchInputInterface
             case "notequals":
             case "morethan":
             case "lessthan":
+            case "morethanorequal":
+            case "lessthanorequal":
             case "under":
             case "notunder":
                 if (isset($searchopt['field'])) {
@@ -338,6 +340,7 @@ final class QueryBuilder implements SearchInputInterface
                     }
 
                     // Standard datatype usage
+                    $skip_value_to_select = false;
                     if (isset($searchopt['datatype'])) {
                         switch ($searchopt['datatype']) {
                             case "date":
@@ -345,13 +348,31 @@ final class QueryBuilder implements SearchInputInterface
                             case "datetime":
                                 $options2['relative_dates'] = true;
                                 break;
+
+                            case "count":
+                            case "mio":
+                            case "number":
+                            case "integer":
+                            case "decimal":
+                                if (
+                                    in_array(
+                                        $request['searchtype'],
+                                        ['morethan', 'lessthan', 'morethanorequal', 'lessthanorequal'],
+                                        true
+                                    )
+                                ) {
+                                    $skip_value_to_select = true;
+                                }
+                                break;
                         }
                     }
 
-                    $out = $item->getValueToSelect($searchopt, $inputname, $request['value'], $options2);
-                    if (strlen($out)) {
-                        echo $out;
-                        $display = true;
+                    if (!$skip_value_to_select) {
+                        $out = $item->getValueToSelect($searchopt, $inputname, $request['value'], $options2);
+                        if (strlen($out)) {
+                            echo $out;
+                            $display = true;
+                        }
                     }
 
                     //Could display be handled by a plugin ?
@@ -816,6 +837,10 @@ final class QueryBuilder implements SearchInputInterface
             && $usesession
         ) {
             foreach ($params as $key => $val) {
+                // 'reset' is one-shot, must not persist in session
+                if ($key === 'reset') {
+                    continue;
+                }
                 $_SESSION['glpisearch'][$itemtype][$key] = $val;
             }
         }

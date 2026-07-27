@@ -105,4 +105,27 @@ class IPUtilitiesTest extends GLPITestCase
         unset($_SERVER['HTTP_FORWARDED']);
         $this->assertEquals('10.10.4.4', $ipUtilities::getClientIP());
     }
+
+    public function testCidrToRange(): void
+    {
+        $this->assertEquals(['10.10.0.0', '10.10.255.255'], IPUtilities::cidrToRange('10.10.4.0/16'));
+        $this->assertEquals(['fd79:a3b1:c4d2:1::', 'fd79:a3b1:c4d2:1:ffff:ffff:ffff:ffff'], IPUtilities::cidrToRange('fd79:a3b1:c4d2:1::/64'));
+        $this->assertEquals(['8.0.0.0', '11.255.255.255'], IPUtilities::cidrToRange('10.10.4.0/6'));
+    }
+
+    public function testIsCidrMatch(): void
+    {
+        $this->assertTrue(IPUtilities::isCidrMatch(ip: '10.10.54.0', range: '10.10.4.0/16'));
+        $this->assertTrue(IPUtilities::isCidrMatch(ip: '8.10.4.0', range: '10.10.4.0/6'));
+        $this->assertFalse(IPUtilities::isCidrMatch(ip: '7.10.4.0', range: '10.10.4.0/6'));
+        $this->assertTrue(IPUtilities::isCidrMatch(ip: 'fd79:a3b1:c4d2:1::5', range: 'fd79:a3b1:c4d2:1::/64'));
+        $this->assertFalse(IPUtilities::isCidrMatch(ip: 'fd79:a3b1:c4d2:2::5', range: 'fd79:a3b1:c4d2:1::/64'));
+    }
+
+    public function testIsIpInRange(): void
+    {
+        $this->assertTrue(IPUtilities::isIPInList(ip: '8.10.4.0', allowed_ips: ['8.10.4.0']));
+        $this->assertTrue(IPUtilities::isIPInList(ip: '8.10.4.0', allowed_ips: ['10.10.4.0/6']));
+        $this->assertFalse(IPUtilities::isIPInList(ip: 'fd79:a3b1:c4d2:2::5', allowed_ips: ['fd79:a3b1:c4d2:1::/64']));
+    }
 }

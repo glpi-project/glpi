@@ -1,0 +1,130 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# Renders the <li> items of a dots menu from a list of EditorAction /
+ # EditorActionSeparator value objects. Extracted so it can be rendered both
+ # inline (article editor) and standalone (lazy-loaded aside menu content). #}
+{% macro render_actions_items(actions) %}
+    {% set add_separator = false %}
+    {% for action in actions %}
+        {% if action is instanceof('\\Glpi\\Knowbase\\EditorActionSeparator') %}
+            {# Will add an extra border on the next iteration #}
+            {% set add_separator = true %}
+        {% else %}
+            <li class="{{ add_separator ? 'border-top' : '' }}">
+                <button
+                    type="button"
+                    class="dropdown-item {{ action.is_danger ? "text-danger" : "" }}"
+                    aria-label="{{ action.label }}"
+                    data-glpi-kb-action="{{ action.type.value }}"
+                    {% for key, param in action.params %}
+                        data-glpi-kb-action-param-{{ key }}="{{ param }}"
+                    {% endfor %}
+                >
+                    <i class="{{ action.icon }}"></i>
+                    <span>{{ action.label }}</span>
+
+                    {% if action.counter is not null %}
+                        <span
+                            class="badge glpi-badge ms-auto"
+                            data-testid="{{ action.params.key }}-counter"
+                            data-glpi-kb-action-counter="{{ action.params.key }}"
+                        >{{ action.counter }}</span>
+                    {% endif %}
+
+                    {% if action.type == constant('Glpi\\Knowbase\\EditorActionType::TOGGLE_VALUE') or action.type == constant('Glpi\\Knowbase\\EditorActionType::TOGGLE_FAVORITE') %}
+                        <span class="form-check form-switch ms-auto mb-0">
+                            <input
+                                type="checkbox"
+                                class="form-check-input ms-0"
+                                {{ action.params.checked ? 'checked' : '' }}
+                            >
+                        </span>
+                    {% endif %}
+                </button>
+            </li>
+            {% set add_separator = false %}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
+{# Renders a "vertical dots" menu with its items rendered inline. Used by
+ # the KB article editor header, where the actions are already available. #}
+{% macro render_actions_menu(actions) %}
+    {% import _self as self %}
+    <div class="dropdown cursor-pointer d-flex align-items-center">
+        {% if actions|length > 0 %}
+            <button
+                type="button"
+                class="border-0 bg-transparent p-0 text-reset lh-1"
+                data-glpi-kb-dots
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                aria-label="{{ __('More actions') }}"
+                title="{{ __('More actions') }}"
+            >
+                <i class="ti ti-dots-vertical" aria-hidden="true"></i>
+            </button>
+            <ul class="dropdown-menu" data-bs-popper="none">
+                {{ self.render_actions_items(actions) }}
+            </ul>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+{# Renders a dots menu whose items are lazy-loaded (on hover/open) by the aside
+ # controller, so the tree never has to build every article's actions up-front.
+ # The menu starts with a loading placeholder that gets replaced with the
+ # fetched items. #}
+{% macro render_actions_menu_lazy() %}
+    <div class="dropdown cursor-pointer d-flex align-items-center">
+        <button
+            type="button"
+            class="border-0 bg-transparent p-0 text-reset lh-1"
+            data-glpi-kb-dots
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            aria-label="{{ __('More actions') }}"
+            title="{{ __('More actions') }}"
+        >
+            <i class="fs-08x ti ti-dots-vertical " aria-hidden="true"></i>
+        </button>
+        <ul class="dropdown-menu" data-bs-popper="none" data-glpi-kb-actions-menu>
+            <li data-glpi-kb-actions-loading>
+                <span class="dropdown-item-text text-muted d-flex align-items-center">
+                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                    {{ __('Loading...') }}
+                </span>
+            </li>
+        </ul>
+    </div>
+{% endmacro %}

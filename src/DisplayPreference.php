@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DisplayPreference extends CommonDBTM
 {
@@ -60,6 +61,18 @@ class DisplayPreference extends CommonDBTM
             static::$rightname,
             [DisplayPreference::PERSONAL | DisplayPreference::GENERAL],
         );
+    }
+
+    /**
+     * @param array<string, mixed> $input
+     */
+    public static function checkCrudItem(array $input): void
+    {
+        $item = new self();
+        $item->fields['users_id'] = isset($input['users_id']) ? (int) $input['users_id'] : (int) Session::getLoginUserID();
+        if (!$item->canCrudItem()) {
+            throw new AccessDeniedHttpException();
+        }
     }
 
     public function canCrudItem(): bool
@@ -521,6 +534,9 @@ class DisplayPreference extends CommonDBTM
             'entries' => $entries,
             'has_personal' => $has_personal,
             'is_global' => $global,
+            'can_edit' => $global
+                ? Session::haveRight(self::$rightname, self::GENERAL)
+                : Session::haveRight(self::$rightname, self::PERSONAL),
             'available_itemtype' => $available_itemtype,
             'interface' => $interface,
         ]);
@@ -663,6 +679,7 @@ class DisplayPreference extends CommonDBTM
                 $global_only = $forced_tab === 'DisplayPreference$1' && !$allow_tab_switch;
                 $personal_only = $forced_tab === 'DisplayPreference$2' && !$allow_tab_switch;
                 $ong = [];
+                $has_general = Session::haveRight(self::$rightname, self::GENERAL);
                 $ong[1] = $personal_only ? null : self::createTabEntry(__('Global View'));
                 if (Session::haveRight(self::$rightname, self::PERSONAL)) {
                     $ong[2] = $global_only ? null : self::createTabEntry(__('Personal View'));
@@ -670,7 +687,8 @@ class DisplayPreference extends CommonDBTM
 
                 $itemtype = $_GET["itemtype"] ?? null;
                 if (
-                    is_a($itemtype, CommonDBTM::class, true)
+                    $has_general
+                    && is_a($itemtype, CommonDBTM::class, true)
                     && $itemtype::supportHelpdeskDisplayPreferences()
                 ) {
                     $ong[3] = self::createTabEntry(__('Helpdesk View'));
@@ -704,6 +722,7 @@ class DisplayPreference extends CommonDBTM
                         return true;
 
                     case 3:
+                        Session::checkRight(self::$rightname, self::GENERAL);
                         $itemtype = $_GET["displaytype"] ?? null;
                         if (
                             !is_a($itemtype, CommonDBTM::class, true)

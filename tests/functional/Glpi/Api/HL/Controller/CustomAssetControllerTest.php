@@ -39,7 +39,6 @@ use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
-use HLAPICallAsserter;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class CustomAssetControllerTest extends HLAPITestCase
@@ -57,7 +56,6 @@ class CustomAssetControllerTest extends HLAPITestCase
 
         $this->login();
         $this->api->call(new Request('GET', '/Assets/Custom'), function ($call) use ($types) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($types) {
@@ -89,7 +87,6 @@ class CustomAssetControllerTest extends HLAPITestCase
         $request = new Request('GET', '/Assets/Custom/' . $schema);
         $request->setParameter('filter', $filters);
         $this->api->call($request, function ($call) use ($expected) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($expected) {
@@ -133,7 +130,6 @@ class CustomAssetControllerTest extends HLAPITestCase
         $type_1 = getItemByTypeName('Glpi\\CustomAsset\\Test01AssetType', 'Test01Type01', true);
 
         $this->api->call(new Request('GET', '/Assets/Custom/Test01/' . $asset_1), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -146,11 +142,9 @@ class CustomAssetControllerTest extends HLAPITestCase
         $request->setParameter('model', $model_1);
         $request->setParameter('type', $type_1);
         $this->api->call($request, function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response->isOK();
         });
         $this->api->call(new Request('GET', '/Assets/Custom/Test01/' . $asset_1), function ($call) use ($model_1, $type_1) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($model_1, $type_1) {
@@ -165,7 +159,6 @@ class CustomAssetControllerTest extends HLAPITestCase
         $this->login();
 
         $this->api->call(new Request('GET', '/Assets/Custom/Test01Model'), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -174,7 +167,6 @@ class CustomAssetControllerTest extends HLAPITestCase
                 });
         });
         $this->api->call(new Request('GET', '/Assets/Custom/Test02Model'), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -184,7 +176,6 @@ class CustomAssetControllerTest extends HLAPITestCase
         });
 
         $this->api->call(new Request('GET', '/Assets/Custom/Test01Type'), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -193,7 +184,6 @@ class CustomAssetControllerTest extends HLAPITestCase
                 });
         });
         $this->api->call(new Request('GET', '/Assets/Custom/Test02Type'), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {

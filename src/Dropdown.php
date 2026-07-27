@@ -175,7 +175,11 @@ class Dropdown
 
         if ($params['multiple']) {
             $params['display_emptychoice'] = false;
-            $params['values'] = $params['value'] ?? [];
+            // Only fall back to 'value' when 'values' was not provided as an array.
+            // Otherwise the pre-selection is lost
+            if (!isset($params['values']) || !is_array($params['values'])) {
+                $params['values'] = $params['value'] ?? [];
+            }
             $params['comments'] = false;
             unset($params['value']);
         }
@@ -336,7 +340,7 @@ class Dropdown
             $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
             $add_item_icon .= "<span data-bs-toggle='tooltip'>
               <i class='ti ti-plus'></i>
-              <span class='sr-only'>" . __s('Add') . "</span>
+              <span class='visually-hidden'>" . __s('Add') . "</span>
                 </span>";
             $add_item_icon .= '</div>';
         }
@@ -1248,6 +1252,9 @@ HTML;
                 ],
 
                 __('Assistance') => [
+                    'TicketTemplate'  => null,
+                    'ChangeTemplate'  => null,
+                    'ProblemTemplate' => null,
                     'ITILCategory' => null,
                     'TaskCategory' => null,
                     'TaskTemplate' => null,
@@ -2526,6 +2533,8 @@ HTML;
                 'templateResult'    => $param["templateResult"],
                 'templateSelection' => $param["templateSelection"],
                 'init'              => $param["init"],
+                'allowclear'        => !empty($param["allowClear"]),
+                'placeholder'       => $param["placeholder"] ?? '',
             ];
             $output .= Html::jsAdaptDropdown($field_id, $adapt_params);
         }
@@ -2661,7 +2670,7 @@ HTML;
 
                 echo "<span class='fa fa-info pointer'"
                  . " title=\"" . __s('Duplicate the element as many times as there are connections')
-                 . "\"><span class='sr-only'>" . __s('Duplicate the element as many times as there are connections') . "</span></span>";
+                 . "\"><span class='visually-hidden'>" . __s('Duplicate the element as many times as there are connections') . "</span></span>";
             }
         } else {
             if ($params['management_restrict'] == 2) {
@@ -2805,7 +2814,7 @@ HTML;
         Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
         echo "<button type='submit' name='export' class='btn' "
              . " title=\"" . _sx('button', 'Export') . "\">"
-             . "<i class='ti ti-device-floppy'></i><span class='sr-only'>" . _sx('button', 'Export') . "<span>";
+             . "<i class='ti ti-device-floppy'></i><span class='visually-hidden'>" . _sx('button', 'Export') . "<span>";
     }
 
 
@@ -2966,25 +2975,24 @@ HTML;
 
         $ljoin = [];
 
+        $condition = [];
         if (!empty($post['condition']) && !is_array($post['condition'])) {
             // Retrieve conditions from SESSION using its key
             $key = $post['condition'];
             if (isset($_SESSION['glpicondition'][$key])) {
-                $post['condition'] = $_SESSION['glpicondition'][$key];
-            } else {
-                $post['condition'] = [];
+                $condition = $_SESSION['glpicondition'][$key];
             }
         }
 
-        if (!empty($post['condition'])) {
-            if (isset($post['condition']['LEFT JOIN'])) {
-                $ljoin = $post['condition']['LEFT JOIN'];
-                unset($post['condition']['LEFT JOIN']);
+        if (!empty($condition)) {
+            if (isset($condition['LEFT JOIN'])) {
+                $ljoin = $condition['LEFT JOIN'];
+                unset($condition['LEFT JOIN']);
             }
-            if (isset($post['condition']['WHERE'])) {
-                $where = array_merge($where, $post['condition']['WHERE']);
+            if (isset($condition['WHERE'])) {
+                $where = array_merge($where, $condition['WHERE']);
             } else {
-                foreach ($post['condition'] as $key => $value) {
+                foreach ($condition as $key => $value) {
                     if (is_array($value) && isset($value['LEFT JOIN'])) {
                         $ljoin = $value['LEFT JOIN'];
                     }
@@ -5193,6 +5201,9 @@ HTML;
         if (in_array($itemtype, $CFG_GLPI['asset_types'])) {
             $item = getItemForItemtype($itemtype);
             if ($item) {
+                if ($item->isField('contact')) {
+                    $displaywith[] = 'contact';
+                }
                 if ($item->isField('serial')) {
                     $displaywith[] = 'serial';
                 }

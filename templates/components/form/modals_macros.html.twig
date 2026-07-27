@@ -57,11 +57,11 @@
       'modal_classes': ''
    }|merge(options) %}
 
-   <div class="modal fade {{ options.modal_classes }}" id="{{ options.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+   <div class="modal fade {{ options.modal_classes }}" id="{{ options.id }}" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="{{ options.id }}_title" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
             <div class="modal-header">
-               <h5 class="modal-title">{{ modal_title }}</h5>
+               <h5 class="modal-title" id="{{ options.id }}_title">{{ modal_title }}</h5>
                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _x('button', 'Close') }}"></button>
             </div>
             <div class="modal-body overflow-auto">

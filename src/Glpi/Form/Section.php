@@ -265,10 +265,13 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
             if ($horizontalRank !== null) {
                 if (!isset($groupedBlocks[$verticalRank])) {
                     $groupedBlocks[$verticalRank] = [];
+                } elseif (!is_array($groupedBlocks[$verticalRank])) {
+                    // A solo block was already placed at this rank (corrupted data after migration)
+                    $groupedBlocks[$verticalRank] = [$groupedBlocks[$verticalRank]];
                 }
                 $groupedBlocks[$verticalRank][] = $block;
             } else {
-                $groupedBlocks[] = $block;
+                $groupedBlocks[$verticalRank] = $block;
             }
         }
 

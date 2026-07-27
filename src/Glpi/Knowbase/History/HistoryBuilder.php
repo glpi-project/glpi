@@ -36,10 +36,12 @@ namespace Glpi\Knowbase\History;
 
 use Document;
 use Entity;
+use Glpi\ShareToken;
 use Glpi\UI\IllustrationManager;
 use Group;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
+use KnowbaseItemCategory;
 use KnowbaseItemTranslation;
 use Log;
 use LogicException;
@@ -65,8 +67,10 @@ final class HistoryBuilder
         $this->addFaqStatusChangesToHistory();
         $this->addServiceCatalogChangesToHistory();
         $this->addAssociatedItemChangesToHistory();
+        $this->addCategoryChangesToHistory();
         $this->addDocumentChangesToHistory();
         $this->addPermissionChangesToHistory();
+        $this->addSharingChangesToHistory();
         $this->addNameChangesToHistory();
         $this->addIllustrationChangesToHistory();
 
@@ -262,6 +266,47 @@ final class HistoryBuilder
         }
     }
 
+    // TODO for next implementation (item agnostic): lift to a generic SharingHistorySource
+    // when a second itemtype implements ShareableInterface. The write side (ShareToken hooks) is already generic :
+    // only this read path is KnowbaseItem-specific.
+    private function addSharingChangesToHistory(): void
+    {
+        global $DB;
+
+        $logs = $DB->request([
+            'SELECT' => ['date_mod', 'user_name', 'linked_action'],
+            'FROM'   => Log::getTable(),
+            'WHERE'  => [
+                'itemtype'      => KnowbaseItem::class,
+                'items_id'      => $this->kb->getID(),
+                'itemtype_link' => ShareToken::class,
+                'linked_action' => [
+                    Log::HISTORY_ADD_RELATION,
+                    Log::HISTORY_DEL_RELATION,
+                    Log::HISTORY_UPDATE_RELATION,
+                ],
+            ],
+            'ORDER' => 'id DESC',
+        ]);
+
+        foreach ($logs as $row) {
+            $linked_action = (int) $row['linked_action'];
+
+            $label = match ($linked_action) {
+                Log::HISTORY_UPDATE_RELATION => __("Sharing link regenerated"),
+                Log::HISTORY_ADD_RELATION    => __("Sharing enabled"),
+                default                      => __("Sharing disabled"),
+            };
+
+            $this->history->addEvent(new LogEvent(
+                label: $label,
+                description: __("Updated by"),
+                date: $row['date_mod'],
+                author: $row['user_name'],
+            ));
+        }
+    }
+
     private function addNameChangesToHistory(): void
     {
         global $DB;
@@ -385,6 +430,54 @@ final class HistoryBuilder
         }
     }
 
+    private function addCategoryChangesToHistory(): void
+    {
+        global $DB;
+
+        $logs = $DB->request([
+            'SELECT' => [
+                'date_mod',
+                'user_name',
+                'linked_action',
+                'old_value',
+                'new_value',
+            ],
+            'FROM' => Log::getTable(),
+            'WHERE' => [
+                'itemtype'      => KnowbaseItem::class,
+                'items_id'      => $this->kb->getID(),
+                'itemtype_link' => KnowbaseItemCategory::class,
+                'linked_action' => [
+                    Log::HISTORY_ADD_RELATION,
+                    Log::HISTORY_DEL_RELATION,
+                ],
+            ],
+            'ORDER' => 'id DESC',
+        ]);
+
+        foreach ($logs as $row) {
+            $is_add = $row['linked_action'] == Log::HISTORY_ADD_RELATION;
+            $category_name = $is_add ? $row['new_value'] : $row['old_value'];
+
+            $label = $is_add
+                ? __("Added to category")
+                : __("Removed from category")
+            ;
+
+            $description = sprintf(
+                $is_add ? __('%s — Added by') : __('%s — Removed by'),
+                $category_name
+            );
+
+            $this->history->addEvent(new LogEvent(
+                label: $label,
+                description: $description,
+                date: $row['date_mod'],
+                author: $row['user_name'],
+            ));
+        }
+    }
+
     private function addDocumentChangesToHistory(): void
     {
         global $DB;
@@ -455,14 +548,16 @@ final class HistoryBuilder
         ]);
 
         foreach ($logs as $row) {
-            $is_custom = str_starts_with(
+            if ($row['new_value'] === '') {
+                $description = __("Illustration removed by");
+            } elseif (str_starts_with(
                 $row['new_value'],
                 IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX
-            );
-            $description = $is_custom
-                ? __("Custom illustration set by")
-                : __("Native illustration set by")
-            ;
+            )) {
+                $description = __("Custom illustration set by");
+            } else {
+                $description = __("Native illustration set by");
+            }
 
             $this->history->addEvent(new LogEvent(
                 label: __("Illustration updated"),

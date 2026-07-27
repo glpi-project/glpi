@@ -381,7 +381,7 @@ class SoftwareLicenseTest extends DbTestCase
         $this->assertEquals($initial_total + 1, $total_after_computer);
 
         $user = getItemByTypeName('User', TU_USER);
-        $user_license_id = $this->createItem(\SoftwareLicense_User::class, [
+        $this->createItem(\SoftwareLicense_User::class, [
             'softwarelicenses_id' => $license_id,
             'users_id' => $user->getID(),
         ])->getID();
@@ -498,7 +498,7 @@ class SoftwareLicenseTest extends DbTestCase
 
         // Add a computer to this license to reach the limit
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $item_license_id = $this->createItem(\Item_SoftwareLicense::class, [
+        $this->createItem(\Item_SoftwareLicense::class, [
             'softwarelicenses_id' => $license_id,
             'items_id' => $computer->getID(),
             'itemtype' => 'Computer',
@@ -525,7 +525,7 @@ class SoftwareLicenseTest extends DbTestCase
         $this->assertTrue($license2->getFromDB($license2_id));
 
         // Add a computer to this license to reach the limit
-        $item_license2_id = $this->createItem(\Item_SoftwareLicense::class, [
+        $this->createItem(\Item_SoftwareLicense::class, [
             'softwarelicenses_id' => $license2_id,
             'items_id' => $computer->getID(),
             'itemtype' => 'Computer',
@@ -622,4 +622,63 @@ class SoftwareLicenseTest extends DbTestCase
         $count_after_second = \SoftwareLicense_User::countForLicense($license_id);
         $this->assertEquals(1, $count_after_second);
     }
+
+
+    public function testIsRecursiveReflectsLicenseOwnField(): void
+    {
+        $this->login();
+
+        // Software must be recursive so that maybeRecursive() returns true for the license
+        $software_id = $this->createItem(\Software::class, [
+            'name'         => 'Recursive software ' . $this->getUniqueString(),
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ])->getID();
+
+        $recursive_license = $this->createItem(\SoftwareLicense::class, [
+            'name'         => 'Recursive license',
+            'softwares_id' => $software_id,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->assertTrue($recursive_license->isRecursive());
+
+        $non_recursive_license = $this->createItem(\SoftwareLicense::class, [
+            'name'         => 'Non-recursive license',
+            'softwares_id' => $software_id,
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+        ]);
+        $this->assertFalse($non_recursive_license->isRecursive());
+    }
+
+    public function testIsRecursiveWithNonRecursiveSoftware(): void
+    {
+        $this->login();
+
+        $software_id = $this->createItem(\Software::class, [
+            'name'         => 'Non-recursive software ' . $this->getUniqueString(),
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+        ])->getID();
+
+        // Even when the software is not recursive, the “is_recursive” field in the license must be used
+        // The software is not recursive, but the license is recursive
+        $recursive_license = $this->createItem(\SoftwareLicense::class, [
+            'name'         => 'Recursive license',
+            'softwares_id' => $software_id,
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->assertTrue($recursive_license->isRecursive());
+
+        $non_recursive_license = $this->createItem(\SoftwareLicense::class, [
+            'name'         => 'Non-recursive license',
+            'softwares_id' => $software_id,
+            'entities_id'  => 0,
+            'is_recursive' => 0,
+        ]);
+        $this->assertFalse($non_recursive_license->isRecursive());
+    }
+
 }

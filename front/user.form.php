@@ -127,12 +127,14 @@ if (isset($_GET['getvcard'])) {
     $user->redirectToList();
 } elseif (isset($_POST["force_ldap_resynch"])) {
     Session::checkRight('user', User::UPDATEAUTHENT);
+    $user->check($_POST['id'], UPDATE);
 
     $user->getFromDB($_POST["id"]);
     AuthLDAP::forceOneUserSynchronization($user);
     Html::back();
 } elseif (isset($_POST["clean_ldap_fields"])) {
     Session::checkRight('user', User::UPDATEAUTHENT);
+    $user->check($_POST['id'], UPDATE);
 
     $user->getFromDB($_POST["id"]);
     AuthLDAP::forceOneUserSynchronization($user, true);
@@ -151,6 +153,7 @@ if (isset($_GET['getvcard'])) {
     Html::back();
 } elseif (isset($_POST["change_auth_method"])) {
     Session::checkRight('user', User::UPDATEAUTHENT);
+    $user->check($_POST['id'], UPDATE);
 
     if (isset($_POST["auths_id"])) {
         User::changeAuthMethod([$_POST["id"]], $_POST["authtype"], $_POST["auths_id"]);
@@ -183,6 +186,7 @@ if (isset($_GET['getvcard'])) {
     Html::redirect(User::getFormURLWithID($impersonated_user_id));
 } elseif (isset($_POST['disable_2fa'])) {
     Session::checkRight('user', User::UPDATEAUTHENT);
+    $user->check($_POST['id'], UPDATE);
     (new TOTPManager())->disable2FAForUser($_POST['id']);
     Html::back();
 } else {

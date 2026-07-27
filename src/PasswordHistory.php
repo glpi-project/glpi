@@ -194,6 +194,7 @@ final class PasswordHistory
     private function getPasswordHistoryLengthToValidate(): int
     {
         global $CFG_GLPI;
-        return ($CFG_GLPI['non_reusable_passwords_count'] ?? 1) - 1;
+        $password_count = (int) ($CFG_GLPI['non_reusable_passwords_count'] ?? 1);
+        return max(0, $password_count - 1);
     }
 }

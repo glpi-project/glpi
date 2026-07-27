@@ -43,7 +43,7 @@ class Route
     /**
      * @param string $description
      * @param string[] $methods
-     * @param Parameter[] $parameters
+     * @param array<Parameter|ParameterReference> $parameters
      * @param Response[] $responses
      */
     public function __construct(
@@ -69,7 +69,7 @@ class Route
     }
 
     /**
-     * @return Parameter[]
+     * @return array<Parameter|ParameterReference>
      */
     public function getParameters(): array
     {

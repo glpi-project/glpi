@@ -36,6 +36,7 @@
 namespace Glpi\Application\View\Extension;
 
 use Entity;
+use Html;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -49,7 +50,18 @@ class ConfigExtension extends AbstractExtension
         return [
             new TwigFunction('config', [$this, 'config']),
             new TwigFunction('entity_config', [$this, 'getEntityConfig']),
+            new TwigFunction('help_url', [$this, 'helpUrl']),
         ];
+    }
+
+    /**
+     * Get the help/documentation URL for the current interface.
+     *
+     * @return string
+     */
+    public function helpUrl(): string
+    {
+        return Html::getHelpURL();
     }
 
     /**

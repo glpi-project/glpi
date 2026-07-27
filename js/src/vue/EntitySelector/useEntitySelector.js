@@ -30,15 +30,76 @@
  * ---------------------------------------------------------------------
  */
 
-import { ref } from 'vue';
+import {nextTick, onMounted, ref} from 'vue';
 
-export function useEntitySelector()
+export function useEntitySelector(container_el)
 {
     const loading = ref(false);
     const tree_data = ref([]);
 
-    function loadTreeData()
-    {
+    onMounted(() => {
+        container_el.value.addEventListener('shown.bs.dropdown', () => {
+            container_el.value.querySelector('input[name="entsearchtext"]').focus();
+        });
+        // Add key listeners for navigating the tree with the keyboard
+        container_el.value.addEventListener('keyup', (event) => {
+            const list_item = event.target.closest('li');
+            if (!list_item) {
+                return;
+            }
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                // Focus the next visible list item
+                const next = list_item.nextElementSibling;
+                if (next) {
+                    next.focus();
+                }
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                // Focus the previous visible list item
+                const prev = list_item.previousElementSibling;
+                if (prev) {
+                    prev.focus();
+                }
+            } else if (event.key === 'ArrowRight') {
+                event.preventDefault();
+                if (list_item.dataset.hasChildren === 'true' && list_item.ariaExpanded === 'false') {
+                    list_item.querySelector('.collapse-item').click();
+                    // Need to wait for DOM changes since child items are not in the DOM until the parent is expanded
+                    nextTick().then(() => {
+                        const next = list_item.nextElementSibling;
+                        if (next && parseInt(next.dataset.nodeLevel) > parseInt(list_item.dataset.nodeLevel)) {
+                            next.focus();
+                        }
+                    });
+                }
+            } else if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                if (list_item.dataset.hasChildren === 'true' && list_item.ariaExpanded === 'true') {
+                    list_item.querySelector('.collapse-item').click();
+                } else {
+                    // Focus the parent list item
+                    const level = parseInt(list_item.dataset.nodeLevel);
+                    if (level > 0) {
+                        let prev = list_item.previousElementSibling;
+                        while (prev && parseInt(prev.dataset.nodeLevel) >= level) {
+                            prev = prev.previousElementSibling;
+                        }
+                        if (prev) {
+                            prev.focus();
+                        }
+                    }
+                }
+            } else if (event.key === 'Enter') {
+                const select_children = event.metaKey || event.ctrlKey; // Allow selecting an entity and all its children by holding Ctrl or Cmd
+                event.preventDefault();
+                event.stopPropagation();
+                changeEntity(list_item.dataset.key, select_children);
+            }
+        });
+    });
+
+    function loadTreeData() {
         loading.value = true;
         return fetch(`${window.CFG_GLPI.root_doc}/ajax/entitytreesons.php`, {
             method: 'GET',
@@ -73,8 +134,7 @@ export function useEntitySelector()
     /**
      * Change entity to "Full structure" which means access to all of the user's entities.
      */
-    function changeFullStructure()
-    {
+    function changeFullStructure() {
         return fetch(`${window.CFG_GLPI.root_doc}/Session/ChangeEntity`, {
             method: 'POST',
             headers: {
@@ -87,8 +147,7 @@ export function useEntitySelector()
         });
     }
 
-    function changeEntity(entity_id, is_recursive)
-    {
+    function changeEntity(entity_id, is_recursive) {
         return fetch(`${window.CFG_GLPI.root_doc}/Session/ChangeEntity`, {
             method: 'POST',
             headers: {
@@ -99,6 +158,12 @@ export function useEntitySelector()
                 id: entity_id,
                 is_recursive: is_recursive,
             }),
+        }).then(response => {
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                window.glpi_toast_error(__('An error occurred while changing the entity. Please try again.'));
+            }
         });
     }
 

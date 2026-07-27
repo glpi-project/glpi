@@ -39,12 +39,30 @@ use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\TooManyResultsException;
+use Glpi\Plugin\Hooks;
+use Plugin;
 use Ramsey\Uuid\Uuid;
 use Session;
 use Toolbox;
 
 use function Safe\json_decode;
 
+/**
+ * @phpstan-type DashboardConfigDescription list<array{
+ *   key: string,
+ *   name: string,
+ *   context: string,
+ *   items: list<array{
+ *     x: int,
+ *     y: int,
+ *     width: int,
+ *     height: int,
+ *     gridstack_id: string,
+ *     card_id: string,
+ *     card_options: array{color: string, widgettype: string}
+ *   }>
+ * }>
+ */
 class Dashboard extends CommonDBTM
 {
     protected int $id      = 0;
@@ -197,6 +215,7 @@ class Dashboard extends CommonDBTM
         Profiler::getInstance()->start(__METHOD__);
 
         if (!$this->load()) {
+            Profiler::getInstance()->stop(__METHOD__);
             return false;
         }
 
@@ -507,6 +526,26 @@ class Dashboard extends CommonDBTM
         ];
     }
 
+    public function getKey(): string
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param array<string, mixed> $items
+     */
+    public function setItems(array $items): void
+    {
+        $this->items = $items;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $rights
+     */
+    public function setRights(array $rights): void
+    {
+        $this->rights = $rights;
+    }
 
     /**
      * Retrieve all dashboards and store them into a static var
@@ -533,7 +572,18 @@ class Dashboard extends CommonDBTM
                 $id  = $dashboard['id'];
 
                 $d_rights = array_filter($rights, static fn($right_line) => $right_line['dashboards_dashboards_id'] == $id);
+                $d_items = array_filter($items, static fn($i) => $i['dashboards_dashboards_id'] == $id);
+                $d_items = array_map(static function ($item) {
+                    $item['card_options'] = importArrayFromDB($item['card_options']);
+                    return $item;
+                }, $d_items);
+
+                // Load known data directly into the item properties to avoid
+                // an useless trip to the database
                 $dashboardItem = new self($key);
+                $dashboardItem->fields = $dashboard;
+                $dashboardItem->items  = $d_items;
+                $dashboardItem->rights = $d_rights;
                 if ($check_rights && !$dashboardItem->canViewCurrent()) {
                     continue;
                 }
@@ -723,27 +773,11 @@ class Dashboard extends CommonDBTM
     /**
      * Return default dashboards data.
      *
-     * @return list<array{
-     *   key: string,
-     *   name: string,
-     *   context: string,
-     *   items: list<array{
-     *     x: int,
-     *     y: int,
-     *     width: int,
-     *     height: int,
-     *     gridstack_id: string,
-     *     card_id: string,
-     *     card_options: array{
-     *       color: string,
-     *       widgettype: string,
-     *     },
-     *   }>,
-     * }>
+     * @return DashboardConfigDescription
      */
     public static function getDefaults(): array
     {
-        return [
+        $default_dashboards = [
             [
                 'key' => 'central',
                 'name' => __('Central'),
@@ -1653,5 +1687,13 @@ class Dashboard extends CommonDBTM
                 ],
             ],
         ];
+
+        $more_dashboards = Plugin::doHookFunction(Hooks::DASHBOARD_DEFAULTS);
+        if (is_array($more_dashboards)) {
+            /** @var DashboardConfigDescription $more_dashboards */
+            $default_dashboards = array_merge($default_dashboards, $more_dashboards);
+        }
+
+        return $default_dashboards;
     }
 }

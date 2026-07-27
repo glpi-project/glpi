@@ -617,6 +617,102 @@ class ChangeTest extends DbTestCase
         $this->assertCount(1, $found);
     }
 
+    public function testCreateChangeFromTicket()
+    {
+        // ensure change created from ticket displays
+        // ticket information
+        $options = [
+            "tickets_id" => "1",
+            "_target" => "/front/change.form.php",
+            "id" => "0",
+            "withtemplate" => 0,
+        ];
+        $change = new Change();
+        $change->getEmpty();
+
+        $this->login();
+        ob_start();
+        $change->showForm($change->getID(), $options);
+        $html = ob_get_clean();
+
+        $this->assertNotEmpty($html);
+        $this->assertStringContainsString("_ticket01", $html);
+        $this->assertStringContainsString("Content for ticket _ticket01", $html);
+    }
+
+    public function testCreateChangeFromProblem()
+    {
+        // ensure change created from problem displays
+        // problem information
+        $options = [
+            "problems_id" => "1",
+            "_target" => "/front/change.form.php",
+            "id" => "0",
+            "withtemplate" => 0,
+        ];
+        $change = new Change();
+        $change->getEmpty();
+
+        $this->login();
+        ob_start();
+        $change->showForm($change->getID(), $options);
+        $html = ob_get_clean();
+
+        $this->assertNotEmpty($html);
+        $this->assertStringContainsString("_problem01", $html);
+        $this->assertStringContainsString("Content for problem _problem01", $html);
+
+    }
+
+    public function testChangeFromTicketSetCatecory()
+    {
+        $options = [
+            "tickets_id" => "1",
+            "_target" => "/front/change.form.php",
+            "id" => "0",
+            "withtemplate" => 0,
+        ];
+        $change = new Change();
+        $change->getEmpty();
+
+        $this->login();
+        // User input done before changing catecory or other page reload
+        $_SESSION["saveInput"][Change::class]['content'] = "New test content";
+        ob_start();
+        $change->showForm($change->getID(), $options);
+        $html = ob_get_clean();
+
+        $this->assertNotEmpty($html);
+        $this->assertStringContainsString("_ticket01", $html);
+        $this->assertStringContainsString("New test content", $html);
+    }
+
+    public function testChangeFromProblemCatecoryReload(): void
+    {
+        $options = [
+            "problems_id" => "1",
+            "_target" => "/front/change.form.php",
+            "id" => "0",
+            "withtemplate" => 0,
+        ];
+        $change = new Change();
+        $change->getEmpty();
+
+        $this->login();
+        ob_start();
+        // User input done before changing catecory or other page reload
+        $_SESSION["saveInput"][Change::class]['content'] = "New test content";
+        $change->showForm($change->getID(), $options);
+        $html = ob_get_clean();
+
+        $this->assertNotEmpty($html);
+        $this->assertStringContainsString("_problem01", $html);
+        $this->assertStringNotContainsString("Content for problem _problem01", $html);
+        $this->assertStringContainsString("New test content", $html);
+    }
+
+
+
     public function testTitleIsTruncatedTo255Characters(): void
     {
         $this->login();

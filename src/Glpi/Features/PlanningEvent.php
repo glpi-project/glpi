@@ -335,11 +335,11 @@ trait PlanningEvent
      * @param string $day
      *
      * @see addInstanceException
-     * @return void
+     * @return bool
      */
-    public function deleteInstance(int $id = 0, string $day = "")
+    public function deleteInstance(int $id = 0, string $day = ""): bool
     {
-        $this->addInstanceException($id, $day);
+        return $this->addInstanceException($id, $day);
     }
 
     /**
@@ -741,14 +741,6 @@ trait PlanningEvent
         if ($complete) {
             $html .= "<span>" . htmlescape(Planning::getState($val["state"])) . "</span><br>";
             $html .= "<div class='event-description rich_text_container'>" . $content . "</div>";
-        } else {
-            $html .= Html::showToolTip(
-                "<span class='b'>" . htmlescape(Planning::getState($val["state"])) . "</span><br>" . $content,
-                [
-                    'applyto' => "reminder_" . $val[$item_fk] . $rand,
-                    'display' => false,
-                ]
-            );
         }
 
         $parent = getItemForItemtype($val['itemtype']);

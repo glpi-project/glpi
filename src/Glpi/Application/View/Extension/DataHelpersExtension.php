@@ -41,7 +41,6 @@ use Toolbox;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
-use Twig\TwigTest;
 
 /**
  * @since 10.0.0
@@ -72,13 +71,6 @@ class DataHelpersExtension extends AbstractExtension
     {
         return [
             new TwigFunction('progress_bar', [$this, 'getProgressBar'], ['is_safe' => ['html']]),
-        ];
-    }
-
-    public function getTests(): array
-    {
-        return [
-            new TwigTest('url_safe', Toolbox::isUrlSafe(...)),
         ];
     }
 

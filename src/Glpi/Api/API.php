@@ -1600,7 +1600,8 @@ abstract class API
      *        Each criterion object must provide :
      *           - link: (optional for 1st element) logical operator in [AND, OR, AND NOT, AND NOT].
      *           - field: id of searchoptions.
-     *           - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+     *           - searchtype: type of search in [contains, equals, notequals, lessthan, morethan,
+     *                         lessthanorequal, morethanorequal, under, notunder].
      *           - value : value to search.
      *    - 'metacriteria' (optional): array of metacriterion object to filter search.
      *                                  Optional.
@@ -1610,7 +1611,8 @@ abstract class API
      *            - link: logical operator in [AND, OR, AND NOT, AND NOT]. Mandatory
      *            - itemtype: second itemtype to link.
      *            - field: id of searchoptions.
-     *            - searchtype: type of search in [contains, equals, notequals, lessthan, morethan, under, notunder].
+     *            - searchtype: type of search in [contains, equals, notequals, lessthan, morethan,
+     *                          lessthanorequal, morethanorequal, under, notunder].
      *            - value : value to search.
      *    - 'sort' :  id of searchoption to sort by (default 1). Optional.
      *    - 'order' : ASC - Ascending sort / DESC Descending sort (default ASC). Optional.

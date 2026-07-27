@@ -45,6 +45,8 @@ use Ticket;
 
 final class FormTile extends CommonDBChild implements TileInterface
 {
+    use TileRightTrait;
+
     public static string $rightname = 'config';
     public static string $itemtype = Form::class;
     public static string $items_id = 'forms_forms_id';
@@ -61,18 +63,6 @@ final class FormTile extends CommonDBChild implements TileInterface
     public function getLabel(): string
     {
         return Form::getTypeName(1);
-    }
-
-    #[Override]
-    public static function canCreate(): bool
-    {
-        return self::canUpdate();
-    }
-
-    #[Override]
-    public static function canPurge(): bool
-    {
-        return self::canUpdate();
     }
 
     #[Override]

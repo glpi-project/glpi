@@ -39,6 +39,7 @@ use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Exception\EarlyExitException;
+use Glpi\Exception\Database\QueryException;
 use Glpi\System\Requirement\DbConfiguration;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -169,11 +170,11 @@ class Utf8mb4Command extends AbstractCommand implements ConfigurationCommandInte
             $progress_message = (fn(string $table) => sprintf(__('Migrating table "%s"...'), $table));
 
             foreach ($this->iterate($tables, $progress_message) as $table) {
-                $result = $this->db->doQuery(
-                    sprintf('ALTER TABLE %s CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci', $this->db->quoteName($table))
-                );
-
-                if (!$result) {
+                try {
+                    $this->db->doQuery(
+                        sprintf('ALTER TABLE %s CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci', $this->db->quoteName($table))
+                    );
+                } catch (QueryException $e) {
                     $this->outputMessage(
                         '<error>' . sprintf(__('Error migrating table "%s".'), $table) . '</error>',
                         OutputInterface::VERBOSITY_QUIET

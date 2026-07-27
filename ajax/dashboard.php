@@ -258,7 +258,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'display_add_filter':
-        if (!$dashboard->canUpdateCurrent()) {
+        if (!$dashboard->canViewCurrent()) {
             throw new AccessDeniedHttpException();
         }
 

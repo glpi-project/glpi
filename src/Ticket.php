@@ -163,8 +163,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     {
 
         if (
-            isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
-            || isset($this->fields['status']) && in_array($this->fields['status'], static::getClosedStatusArray())
+            $this->isDeletedOrClosed()
         ) {
             return false;
         }
@@ -173,6 +172,40 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                   && ($this->countUsers(CommonITILActor::ASSIGN) == 0)));
     }
 
+
+    /**
+     * Check whether a specific user has the right to assign themselves to this ticket,
+     * based on their own profile rights rather than the current session.
+     *
+     * @since 11.0.8
+     * @param int $user_id
+     *
+     * @return bool
+     */
+    public function canAssignToUser(int $user_id): bool
+    {
+        if (
+            $this->isDeletedOrClosed()
+        ) {
+            return false;
+        }
+
+        $entity_id = $this->fields['entities_id'] ?? 0;
+
+        return (
+            Profile::haveUserRight($user_id, self::$rightname, self::STEAL, $entity_id)
+            || (
+                Profile::haveUserRight($user_id, self::$rightname, self::OWN, $entity_id)
+                && $this->countUsers(CommonITILActor::ASSIGN) == 0
+            )
+        );
+    }
+
+    private function isDeletedOrClosed(): bool
+    {
+        return (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
+            || isset($this->fields['status']) && in_array($this->fields['status'], static::getClosedStatusArray()));
+    }
 
     /**
      * @param int $ticket_id
@@ -189,7 +222,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 'tickets_id' => $ticket_id,
                 'users_id'   => $user_id,
             ]);
-            if (!count($ticket_user) && $ticket->canAssignToMe()) {
+            if (!count($ticket_user) && $ticket->canAssignToUser($user_id)) {
                 $ticket->update([
                     'id' => $ticket_id,
                     '_users_id_assign' => $user_id,

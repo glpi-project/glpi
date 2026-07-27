@@ -150,8 +150,6 @@
 
       {# TODO These tokens could be data attributes on the related elements #}
       {% set idor_display_criteria = idor_token(itemtype) %}
-      {% set idor_display_meta_criteria = idor_token(itemtype) %}
-      {% set idor_display_criteria_group = idor_token(itemtype) %}
       {% set itemtype_escaped = itemtype|escape('js') %}
 
       {# TODO JS could probably be moved to a JS file #}

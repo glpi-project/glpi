@@ -40,6 +40,7 @@ use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Exception\EarlyExitException;
+use Glpi\Exception\Database\QueryException;
 use Glpi\System\Requirement\DbTimezones;
 use Safe\DateTime;
 use Symfony\Component\Console\Input\InputInterface;
@@ -186,8 +187,9 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
                 // apply alter to table
                 $query = "ALTER TABLE " . $this->db->quoteName($table) . " " . $tablealter . ";\n";
 
-                $result = $this->db->doQuery($query);
-                if (false === $result) {
+                try {
+                    $this->db->doQuery($query);
+                } catch (QueryException $e) {
                     $message = sprintf(
                         __('Migration of table "%s" failed with message "(%s) %s".'),
                         $table,

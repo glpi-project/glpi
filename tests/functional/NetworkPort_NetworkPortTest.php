@@ -86,6 +86,67 @@ class NetworkPort_NetworkPortTest extends DbTestCase
         $this->assertSame($id_1, $wired->getOppositeContact($id_2));
     }
 
+    /**
+     * Non-regression: deleting a NetworkPort_NetworkPort record must not throw
+     * TooManyResultsException when the same port appears in multiple connection rows
+     * (corrupted data caused by SNMP discovery creating duplicate entries).
+     */
+    public function testDeleteSucceedsWithDuplicateConnectionRows(): void
+    {
+        global $DB;
+        $this->login();
+
+        $switch = $this->createItem(\NetworkEquipment::class, [
+            'name'        => $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $port_switch = $this->createItem(\NetworkPort::class, [
+            'items_id'           => $switch->getID(),
+            'itemtype'           => \NetworkEquipment::class,
+            'entities_id'        => $switch->fields['entities_id'],
+            'name'               => 'eth0',
+            'instantiation_type' => 'NetworkPortEthernet',
+        ]);
+
+        $unmanaged1 = $this->createItem(\Unmanaged::class, [
+            'name'        => $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $port_b = $this->createItem(\NetworkPort::class, [
+            'items_id'           => $unmanaged1->getID(),
+            'itemtype'           => \Unmanaged::class,
+            'entities_id'        => $unmanaged1->fields['entities_id'],
+            'name'               => 'eth0',
+            'instantiation_type' => 'NetworkPortEthernet',
+        ]);
+
+        $unmanaged2 = $this->createItem(\Unmanaged::class, [
+            'name'        => $this->getUniqueString(),
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $port_c = $this->createItem(\NetworkPort::class, [
+            'items_id'           => $unmanaged2->getID(),
+            'itemtype'           => \Unmanaged::class,
+            'entities_id'        => $unmanaged2->fields['entities_id'],
+            'name'               => 'eth0',
+            'instantiation_type' => 'NetworkPortEthernet',
+        ]);
+
+        $conn = $this->createItem(\NetworkPort_NetworkPort::class, [
+            'networkports_id_1' => $port_switch->getID(),
+            'networkports_id_2' => $port_b->getID(),
+        ]);
+
+        // Bypass prepareInputForAdd to simulate corrupted data: switch port appears in two rows
+        $DB->insert(\NetworkPort_NetworkPort::getTable(), [
+            'networkports_id_1' => $port_switch->getID(),
+            'networkports_id_2' => $port_c->getID(),
+        ]);
+
+        $nnp = new \NetworkPort_NetworkPort();
+        $this->assertTrue($nnp->delete(['id' => $conn->getID()]));
+    }
+
     public function testHub()
     {
         $this->login();

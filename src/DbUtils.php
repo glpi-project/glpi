@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Exception\Database\QueryException;
 use Safe\Exceptions\JsonException;
 
 use function Safe\json_decode;
@@ -397,9 +398,10 @@ final class DbUtils
         global $GLPI_CACHE;
 
         // If a class exists for this itemtype, just return the declared class name.
-        $matches = preg_grep('/^' . preg_quote($itemtype, '/') . '$/i', get_declared_classes());
-        if (count($matches) === 1) {
-            return current($matches);
+        // The "false" second parameters make sure we do not trigger autoload since
+        // case might not be correct.
+        if (class_exists($itemtype, false)) {
+            return (new ReflectionClass($itemtype))->getName();
         }
 
         static $mapping = []; // Mappings already retrieved in current request
@@ -702,14 +704,18 @@ final class DbUtils
             return false;
         }
 
-        $result = $DB->doQuery("SHOW INDEX FROM `$table`");
+        try {
+            $result = $DB->doQuery("SHOW INDEX FROM `$table`");
 
-        if ($result && $DB->numrows($result)) {
-            while ($data = $DB->fetchAssoc($result)) {
-                if ($data["Key_name"] === $field) {
-                    return true;
+            if ($DB->numrows($result)) {
+                while ($data = $DB->fetchAssoc($result)) {
+                    if ($data["Key_name"] === $field) {
+                        return true;
+                    }
                 }
             }
+        } catch (QueryException) {
+            //do nothing.
         }
         return false;
     }

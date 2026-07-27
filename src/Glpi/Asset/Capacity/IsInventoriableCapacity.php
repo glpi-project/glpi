@@ -133,7 +133,9 @@ class IsInventoriableCapacity extends AbstractCapacity
     public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('inventory_types', $classname);
-        $this->registerToTypeConfig('agent_types', $classname);
+        if (!is_a($config->getValue('inventory_mainasset') ?? '', \Glpi\Inventory\MainAsset\NetworkEquipment::class, true)) {
+            $this->registerToTypeConfig('agent_types', $classname);
+        }
         $this->registerToTypeConfig('environment_types', $classname);
         $this->registerToTypeConfig('process_types', $classname);
         $this->registerToTypeConfig('ruleimportasset_types', $classname);
@@ -158,7 +160,9 @@ class IsInventoriableCapacity extends AbstractCapacity
     {
         global $DB;
         $this->unregisterFromTypeConfig('inventory_types', $classname);
-        $this->unregisterFromTypeConfig('agent_types', $classname);
+        if (!is_a($config->getValue('inventory_mainasset') ?? '', \Glpi\Inventory\MainAsset\NetworkEquipment::class, true)) {
+            $this->unregisterFromTypeConfig('agent_types', $classname);
+        }
         $this->unregisterFromTypeConfig('environment_types', $classname);
         $this->unregisterFromTypeConfig('process_types', $classname);
         $this->unregisterFromTypeConfig('ruleimportasset_types', $classname);

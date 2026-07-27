@@ -256,6 +256,57 @@ final class ShareTokenManager
     }
 
     /**
+     * Whether the item currently has at least one active share token.
+     *
+     * @param class-string<CommonDBTM> $itemtype The item class name
+     * @param int $items_id The item ID
+     */
+    public function hasActiveToken(string $itemtype, int $items_id): bool
+    {
+        return $this->getActiveToken($itemtype, $items_id) !== null;
+    }
+
+    /**
+     * Return the active share token row (with the plaintext token) for an item,
+     * or null when the item is not currently published.
+     *
+     * @param class-string<CommonDBTM> $itemtype The item class name
+     * @param int $items_id The item ID
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getActiveToken(string $itemtype, int $items_id): ?array
+    {
+        foreach ($this->getTokensForItem($itemtype, $items_id) as $row) {
+            if ((int) $row['is_active'] === 1) {
+                $row['token'] = $this->decryptToken((string) $row['token']);
+                return $row;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Return the single share token row (active OR inactive) for an item, with
+     * the plaintext token, or null when the item has no token at all.
+     *
+     * @param class-string<CommonDBTM> $itemtype The item class name
+     * @param int $items_id The item ID
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getToken(string $itemtype, int $items_id): ?array
+    {
+        foreach ($this->getTokensForItem($itemtype, $items_id) as $row) {
+            $row['token'] = $this->decryptToken((string) $row['token']);
+            return $row;
+        }
+
+        return null;
+    }
+
+    /**
      * Get all tokens for a given item.
      *
      * @param class-string<CommonDBTM> $itemtype The item class name

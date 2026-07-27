@@ -62,13 +62,6 @@ class QueuedNotification extends CommonDBTM
     }
 
     #[Override]
-    public static function canCreate(): bool
-    {
-        // Everybody can create : human and cron
-        return Session::getLoginUserID(false);
-    }
-
-    #[Override]
     public static function unsetUndisclosedFields(&$fields)
     {
         parent::unsetUndisclosedFields($fields);
@@ -688,7 +681,7 @@ class QueuedNotification extends CommonDBTM
                     new QueryExpression(QueryFunction::unixTimestamp('send_time') . ' < ' . $DB::quoteValue($send_time)),
                 ]
             );
-            $vol = $DB->affectedRows();
+            $vol = $DB->getAffectedRows();
         }
 
         $task->setVolume($vol);
@@ -726,7 +719,7 @@ class QueuedNotification extends CommonDBTM
                     ),
                 ]
             );
-            $vol = $DB->affectedRows();
+            $vol = $DB->getAffectedRows();
         }
 
         $task->setVolume($vol);

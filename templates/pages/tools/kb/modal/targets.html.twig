@@ -44,19 +44,6 @@
                 <i class="ti ti-lock me-1"></i>{{ __('Permissions') }}
             </button>
         </li>
-        {% if can_edit %}
-            <li class="nav-item" role="presentation">
-                <button
-                    class="nav-link"
-                    data-bs-toggle="tab"
-                    data-bs-target="#targets-sharing-{{ id }}"
-                    type="button"
-                    role="tab"
-                >
-                    <i class="ti ti-share me-1"></i>{{ __('Sharing') }}
-                </button>
-            </li>
-        {% endif %}
     </ul>
 </div>
 
@@ -64,19 +51,9 @@
     <div class="tab-pane active" id="targets-permissions-{{ id }}" role="tabpanel">
         {% include 'pages/tools/kb/modal/permissions.html.twig' with permissions only %}
     </div>
-    {% if can_edit %}
-        <div class="tab-pane" id="targets-sharing-{{ id }}" role="tabpanel">
-            {% include 'pages/tools/kb/modal/sharing.html.twig' with sharing only %}
-        </div>
-    {% endif %}
 </div>
 
 <script type="module">
     import { GlpiKnowbaseTargetsModalController } from "/js/modules/Knowbase/TargetsModalController.js";
-    import { GlpiKnowbaseSharingPanelController } from "/js/modules/Knowbase/SharingPanelController.js";
     new GlpiKnowbaseTargetsModalController();
-    const sharingPanel = document.querySelector('[data-glpi-sharing-panel]');
-    if (sharingPanel) {
-        new GlpiKnowbaseSharingPanelController(sharingPanel);
-    }
 </script>

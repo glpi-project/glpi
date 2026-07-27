@@ -30,12 +30,14 @@
  * ---------------------------------------------------------------------
  */
 
-/* global TiptapCore, TiptapStarterKit, TiptapLink, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
-/* global TiptapTable, TiptapTableRow, TiptapTableHeader, TiptapTableCell */
+/* global TiptapCore, TiptapStarterKit, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
+/* global TableKit, TiptapPMTables */
 /* global TiptapFileHandler, glpi_toast_error */
 
 import { SlashCommands } from '/js/modules/TipTap/SlashCommandsExtension.js';
 import { Base64ImageHandler } from '/js/modules/TipTap/Base64ImageHandlerExtension.js';
+import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
+import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
 
@@ -72,7 +74,7 @@ class KnowbaseEditor {
         this.#options = {
             content: '',
             readonly: true,
-            placeholder: __('Start writing...'),
+            placeholder: __('Type / to insert...'),
             onUpdate: null,
             item_id: null,
             ...options
@@ -107,14 +109,11 @@ class KnowbaseEditor {
                 heading: {
                     levels: [1, 2, 3, 4, 5, 6],
                 },
-                // Disable Link from StarterKit - we configure it separately below
-                // (StarterKit v3 includes Link by default)
-                link: false,
-            }),
-            TiptapLink.configure({
-                openOnClick: false,
-                HTMLAttributes: {
-                    rel: 'noopener noreferrer',
+                link: {
+                    openOnClick: false,
+                    HTMLAttributes: {
+                        rel: 'noopener noreferrer',
+                    },
                 },
             }),
             TiptapImage.configure({
@@ -123,22 +122,27 @@ class KnowbaseEditor {
             }),
             TiptapPlaceholder.configure({
                 placeholder: this.#options.placeholder,
+                showOnlyCurrent: true,
             }),
             TiptapBubbleMenu.configure({
                 element: this.#bubbleMenuElement,
                 appendTo: () => this.#element.closest('.kb-article') ?? document.body,
-                shouldShow: ({ editor, state }) => editor.isEditable && !state.selection.empty && !editor.isActive('image'),
+                shouldShow: ({ editor, state }) => editor.isEditable
+                    && !state.selection.empty
+                    && !editor.isActive('image')
+                    && !(state.selection instanceof TiptapPMTables.CellSelection),
                 options: {
                     placement: 'top',
                     offset: 8,
                 },
             }),
-            TiptapTable.configure({
-                resizable: true,
+            TableKit.configure({
+                table: {
+                    resizable: true,
+                }
             }),
-            TiptapTableRow,
-            TiptapTableHeader,
-            TiptapTableCell,
+            TableGrips,
+            VideoEmbed,
         ];
 
         // Add FileHandler for image drag & drop and paste (only for existing articles)
@@ -183,6 +187,26 @@ class KnowbaseEditor {
             extensions,
             content: this.#options.content,
             editable: this.#isEditable,
+            editorProps: {
+                // Chromium/Brave mis-place the caret when clicking inside a
+                // ProseMirror table cell (the caret drops into the block above
+                // the table). posAtCoords is correct, but native contenteditable
+                // placement ignores it; ProseMirror follows the wrong native
+                // position on a plain click. Force the selection to the
+                // PM-computed pos so the click lands in the clicked cell.
+                // Firefox already places it correctly, so this is idempotent there.
+                handleClick: (view, pos) => {
+                    const $pos = view.state.doc.resolve(pos);
+                    for (let depth = $pos.depth; depth > 0; depth--) {
+                        const name = $pos.node(depth).type.name;
+                        if (name === 'tableCell' || name === 'tableHeader') {
+                            this.#editor?.commands.setTextSelection(pos);
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+            },
             onUpdate: ({ editor }) => {
                 if (typeof this.#options.onUpdate === 'function') {
                     this.#options.onUpdate(editor.getHTML());

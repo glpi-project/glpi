@@ -247,7 +247,7 @@ class RuleRight extends Rule
 
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
-        if ($criteria['field'] === 'type') {
+        if (($criteria['field'] ?? '') === 'type') {
             Auth::dropdown([
                 'name'  => $name,
                 'value' => $value,
@@ -413,6 +413,7 @@ class RuleRight extends Rule
             $add_buttons = [
                 [
                     'text' => _x('button', 'Test'),
+                    'icon' => 'ti ti-stethoscope',
                     'type' => 'button',
                     'onclick' => "$('#ruletestmodal').modal('show');",
                 ],

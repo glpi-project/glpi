@@ -75,3 +75,47 @@ test('Can fold and unfold a category in the KB aside', async ({ page, profile, a
     await expect(category_toggle).toHaveAttribute('aria-expanded', 'true');
     await expect(article_link).toBeVisible();
 });
+
+test('Category fold state is remembered across reloads', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    // Arrange: create some articles and categories so we have something to fold.
+    const unique = randomUUID().slice(0, 8);
+    const category_name = `E2E Category ${unique}`;
+    const article_name = `E2E Article ${unique}`;
+
+    const category_id = await api.createItem('KnowbaseItemCategory', {
+        name: category_name,
+        entities_id: getWorkerEntityId(),
+    });
+    const article_id = await api.createItem('KnowbaseItem', {
+        name: article_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+        _categories: [category_id],
+    });
+
+    await kb.goto(article_id);
+    await kb.waitForAsideReady();
+
+    const category_toggle = kb.getAsideCategoryToggle(category_name);
+    const article_link = kb.getAsideCategoryArticle(category_name, article_name);
+
+    // Fold the category, then reload: the folded state must be restored.
+    await kb.doToggleAsideCategoryAndWaitForPersist(category_name);
+    await expect(article_link).toBeHidden();
+
+    await page.reload();
+    await expect(category_toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(article_link).toBeHidden();
+
+    // Unfold and reload again: the expanded state must likewise be restored.
+    await kb.waitForAsideReady();
+    await kb.doToggleAsideCategoryAndWaitForPersist(category_name);
+    await expect(article_link).toBeVisible();
+
+    await page.reload();
+    await expect(category_toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(article_link).toBeVisible();
+});

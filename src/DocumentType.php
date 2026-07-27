@@ -179,7 +179,7 @@ class DocumentType extends CommonDropdown
 
         $display = "&nbsp;";
         $display .= "<a href='#' data-bs-toggle='modal' data-bs-target='#documenttypelist_" . htmlescape($p['rand']) . "' class='fa fa-info pointer' title='" . __s('Help') . "' >";
-        $display .= "<span class='sr-only'>" . __s('Help') . "></span>";
+        $display .= "<span class='visually-hidden'>" . __s('Help') . "></span>";
         $display .= "</a>";
         $display .= Ajax::createIframeModalWindow(
             "documenttypelist_{$p['rand']}",

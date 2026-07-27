@@ -1998,10 +1998,7 @@ HTML;
     {
 
         // Life warranty
-        if (
-            ($addwarranty == -1)
-            && ($deletenotice == 0)
-        ) {
+        if ($addwarranty == -1) {
             return __s('Never');
         }
 
@@ -2024,6 +2021,9 @@ HTML;
             // For TACIT contracts: renewal is based on addwarranty, not periodicity
             // For EXPRESS contracts: renewal is based on periodicity
             $renewal_period = $auto_renew ? $addwarranty : $periodicity;
+            if ($renewal_period <= 0) {
+                return htmlescape(Html::convDate($from));
+            }
 
             // Find which period we are in
             $current_period = floor($months_elapsed / $renewal_period);
@@ -2037,7 +2037,7 @@ HTML;
             }
 
             // The notice is X months before the end of the period (without subtracting 1 day)
-            $notice_months = $period_end_months - $deletenotice;
+            $notice_months = max(0, $period_end_months - $deletenotice);
             $notice_date = new DateTime($from);
             $notice_date->add(new DateInterval("P{$notice_months}M"));
             $timestamp = $notice_date->getTimestamp();
@@ -2063,7 +2063,10 @@ HTML;
             // Standard calculation
             if ($deletenotice > 0) {
                 // For NOTICE: duration - notice (WITHOUT subtracting 1 day)
-                $initial_notice_timestamp = strtotime("$from+$addwarranty month -$deletenotice month");
+                $notice_months = max(0, $addwarranty - $deletenotice);
+                $initial_notice_date = new DateTime($from);
+                $initial_notice_date->add(new DateInterval("P{$notice_months}M"));
+                $initial_notice_timestamp = $initial_notice_date->getTimestamp();
 
                 // For TACIT contracts: calculate the next FUTURE notice
                 if ($auto_renew && $periodicity > 0) {
@@ -2071,8 +2074,8 @@ HTML;
 
                     $start_date = new DateTime($from);
                     $first_notice_date = clone $start_date;
-                    $first_notice_date->modify("+{$addwarranty} month");
-                    $first_notice_date->modify("-{$deletenotice} month");
+                    $first_notice_months = max(0, $addwarranty - $deletenotice);
+                    $first_notice_date->add(new DateInterval("P{$first_notice_months}M"));
 
                     $timestamp = $first_notice_date->getTimestamp();
 
@@ -2105,6 +2108,9 @@ HTML;
         if ($auto_renew && $periodicity > 0 && $deletenotice == 0) {
             // Renewal occurs every addwarranty months (initial duration)
             $renewal_period = ($periodicity != $addwarranty) ? $addwarranty : $periodicity;
+            if ($renewal_period <= 0) {
+                return __s('Never');
+            }
 
             while ($timestamp < strtotime($_SESSION['glpi_currenttime'])) {
                 $datetime = new DateTime();
@@ -2112,7 +2118,7 @@ HTML;
                 $datetime->add(new DateInterval("P{$renewal_period}M"));
                 $timestamp = $datetime->getTimestamp();
             }
-        } elseif ($deletenotice == 0) {
+        } elseif ($deletenotice == 0 && $addwarranty > 0) {
             $datetime = new DateTime();
             $datetime->setTimestamp($timestamp);
             $datetime->sub(new DateInterval("P1D"));

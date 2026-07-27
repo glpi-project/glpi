@@ -37,6 +37,9 @@
 {% set is_helpdesk = anonymous or get_current_interface() == 'helpdesk' %}
 
 <body class="{{ user_pref('fold_menu') and is_vertical ? 'navbar-collapsed' : '' }} {{ is_vertical ? 'vertical-layout' : 'horizontal-layout' }} {{ is_debug_active ? 'debug-active' : '' }} {{ is_helpdesk ? 'helpdesk' : 'central' }}">
+   <div class="skip-links">
+      <a class="visually-hidden-focusable skip-link" href="#page">{{ __('Go to main content') }}</a>
+   </div>
    {% if call('DBConnection::isDbAvailable') and constant('GLPI_SKIP_UPDATES') is defined and not call('Update::isDbUpToDate') %}
       <div class="banner-need-update">
          {{ __("You are bypassing a needed update") }}
@@ -48,9 +51,9 @@
    <div class="page">
 
       {% if is_vertical %}
-      <aside class="navbar navbar-vertical navbar-expand-lg sticky-lg-top sidebar" data-testid="sidebar">
+      <aside class="navbar navbar-vertical navbar-expand-lg sticky-lg-top sidebar" data-testid="sidebar" aria-label="{{ __('Sidebar') }}">
          <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-label="{{ __('Toggle navigation') }}">
                <span class="navbar-toggler-icon"></span>
             </button>
 
@@ -73,7 +76,7 @@
             {% endif %}
 
             {% if not anonymous %}
-               <div class="collapse navbar-collapse" id="navbar-menu">
+               <nav class="collapse navbar-collapse" id="navbar-menu" aria-label="{{ __('Main navigation') }}">
                    <span class="d-inline-block d-lg-none ms-2">
                        {{ include('layout/parts/goto_button.html.twig') }}
                    </span>
@@ -85,13 +88,13 @@
                         <span class="menu-label">{{ __('Collapse menu') }}</span>
                      </button>
                   </p>
-               </div>
+               </nav>
             {% endif %}
          </div>
       </aside>
       {% endif %}
 
-      <header class="navbar d-print-none sticky-lg-top shadow-sm {{ is_vertical ? 'navbar-light navbar-expand-md' : 'navbar-dark navbar-expand-xl topbar' }}" data-testid="main-header">
+      <header class="navbar d-print-none sticky-lg-top shadow-sm {{ is_vertical ? 'navbar-light navbar-expand-md' : 'navbar-dark navbar-expand-xl topbar' }}" data-testid="main-header" role="banner">
          {# On the helpdesk interface, the container will be displayed with a reduced width #}
          <div class="header-container container-fluid flex-xl-nowrap pe-xl-0 {{ is_helpdesk ? 'container-xl' : '' }}">
             {% if is_vertical %}
@@ -102,7 +105,7 @@
                 </div>
 
             {% elseif is_horizontal %}
-               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-label="{{ __('Toggle navigation') }}">
                   <span class="navbar-toggler-icon"></span>
                </button>
 
@@ -116,14 +119,14 @@
                </div>
 
                {% if not anonymous or (menu|length > 0 and menu.home is not defined) %}
-               <div class="collapse navbar-collapse justify-content-center" id="navbar-menu">
+               <nav class="collapse navbar-collapse justify-content-center" id="navbar-menu" aria-label="{{ __('Main navigation') }}">
                   {{ include('layout/parts/menu.html.twig') }}
                   {% if not anonymous %}
                   <span class="ms-xl-2 d-inline-block mt-2 mt-xl-2">
                      {{ include('layout/parts/goto_button.html.twig') }}
                   </span>
                   {% endif %}
-               </div>
+               </nav>
                {% endif %}
             {% endif %}
 
@@ -147,4 +150,4 @@
 
       <div class="page-wrapper mb-0">
          <div class="page-body container-fluid {{ is_helpdesk ? 'container-xl' : '' }}">
-            <main role="main" id="page" class="legacy">
+            <main role="main" id="page" class="legacy" tabindex="-1">

@@ -41,6 +41,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
+use Glpi\Security\SessionTracker;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\InfoException;
 
@@ -267,7 +268,7 @@ class CronTask extends CommonDBTM
             ]
         );
 
-        if ($DB->affectedRows() > 0) {
+        if ($DB->getAffectedRows() > 0) {
             $this->timer  = microtime(true);
             $this->volume = 0;
             $log = new CronTaskLog();
@@ -353,7 +354,7 @@ class CronTask extends CommonDBTM
             ]
         );
 
-        if ($DB->affectedRows() > 0) {
+        if ($DB->getAffectedRows() > 0) {
             // No gettext for log but add gettext line to be parsed for pot generation
             // order is important for insertion in english in the database
             if ($log_state === CronTaskLog::STATE_ERROR) {
@@ -746,7 +747,7 @@ class CronTask extends CommonDBTM
      **/
     public static function getStateName(int $state): string
     {
-        return match ($state) {
+        return match ((int) $state) {
             self::STATE_RUNNING => __('Running'),
             self::STATE_WAITING => __('Scheduled'),
             self::STATE_DISABLE => __('Disabled'),
@@ -789,7 +790,7 @@ class CronTask extends CommonDBTM
      **/
     public static function getModeName(int $mode): string
     {
-        return match ($mode) {
+        return match ((int) $mode) {
             self::MODE_INTERNAL => __('GLPI'),
             self::MODE_EXTERNAL => __('CLI'),
             default => '???',
@@ -1537,6 +1538,8 @@ TWIG, ['msg' => __('Last run list')]);
      **/
     public static function cronSession(self $task): int
     {
+        global $DB, $CFG_GLPI;
+
         // max time to keep the file session
         try {
             $maxlifetime = (int) ini_get('session.gc_maxlifetime');
@@ -1554,10 +1557,18 @@ TWIG, ['msg' => __('Last run list')]);
                     @unlink($filename);
                     ++$nb;
                 } catch (FilesystemException $e) {
-                    //mepty catch
+                    //empty catch
                 }
             }
         }
+        SessionTracker::revokeSessionsByAge($maxlifetime);
+
+        // Clean expired remember me tokens
+        $cookie_lifetime = time() + $CFG_GLPI['login_remember_time'];
+        $DB->delete('glpi_usertokens', [
+            'type' => 'rememberme',
+            'date_expiration' => ['<', $cookie_lifetime],
+        ]);
 
         $task->setVolume($nb);
         if ($nb) {

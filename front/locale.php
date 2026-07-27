@@ -38,7 +38,6 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Application\Environment;
 use Glpi\Error\ErrorHandler;
 use Laminas\I18n\Translator\TextDomain;
-use Laminas\I18n\Translator\Translator;
 
 use function Safe\fopen;
 use function Safe\json_encode;

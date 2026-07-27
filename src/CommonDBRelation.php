@@ -2060,7 +2060,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         global $DB;
 
         $params = static::getListForItemParams($item);
-        unset($params['SELECT']);
+        unset($params['SELECT'], $params['ORDER']);
         $params['COUNT'] = 'cpt';
         $iterator = $DB->request($params);
 
@@ -2093,7 +2093,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             }
 
             $params = static::getTypeItemsQueryParams($item->fields['id'], $data['itemtype']);
-            unset($params['SELECT']);
+            unset($params['SELECT'], $params['ORDER']);
             $params['COUNT'] = 'cpt';
             $iterator = $DB->request($params);
 

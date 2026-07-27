@@ -260,12 +260,23 @@ const setRichTextEditorContent = function(editor_id, content) {
 if (typeof tinyMCE != 'undefined') {
     tinyMCE.PluginManager.add('glpi_upload_doc', (editor) => {
         let last_paste_content = null;
+        let last_paste_image_files = [];
         const rtf_img_types = {
             'pngblip': 'image/png',
             'jpegblip': 'image/jpeg',
         };
         editor.on('paste', (e) => {
             last_paste_content = e.clipboardData;
+            // Collect all image files from clipboard items so PastePreProcess can
+            // use the binary data instead of any URL the pasted HTML may contain.
+            last_paste_image_files = [];
+            if (last_paste_content && last_paste_content.items) {
+                for (const item of last_paste_content.items) {
+                    if (item.kind === 'file' && isImage(item)) {
+                        last_paste_image_files.push(item.getAsFile());
+                    }
+                }
+            }
         });
         editor.on('PastePreProcess', (event) => {
             const base64_img_contents = [];
@@ -301,6 +312,12 @@ if (typeof tinyMCE != 'undefined') {
                 if (src.match(file_pattern) !== null && base64_img_contents.length > 0) {
                     const rtf_content = base64_img_contents.shift();
                     src = `data:${rtf_content['type']};base64,${rtf_content['content']}`;
+                    image.attr('src', src);
+                } else if (last_paste_image_files.length > 0) {
+                    // If the clipboard carries binary image data, prefer it over whatever
+                    // src the pasted HTML contains by converting it to a blob URL — the
+                    // upload flow below then handles it identically to a directly pasted image.
+                    src = URL.createObjectURL(last_paste_image_files.shift());
                     image.attr('src', src);
                 }
                 if (src.match(new RegExp('^(data|blob):')) !== null) {

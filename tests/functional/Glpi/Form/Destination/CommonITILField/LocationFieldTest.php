@@ -68,13 +68,13 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "Location 2" => [
                     'itemtype' => Location::class,
-                    'items_id' => $location->getID(),
+                    'items_ids' => [$location->getID()],
                 ],
                 // Regression test: there was a failure when an itil category
                 // was sent after a location
                 "ITIL Category" => [
                     'itemtype' => ITILCategory::class,
-                    'items_id' => 0,
+                    'items_ids' => [0],
                 ],
             ],
             // Assert: the location should be set
@@ -166,11 +166,11 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "Location 1" => [
                     'itemtype' => Location::getType(),
-                    'items_id' => $locations[0]->getID(),
+                    'items_ids' => [$locations[0]->getID()],
                 ],
                 "Location 2" => [
                     'itemtype' => Location::getType(),
-                    'items_id' => $locations[1]->getID(),
+                    'items_ids' => [$locations[1]->getID()],
                 ],
             ],
             expected_location_id: $locations[0]->getID()
@@ -186,11 +186,11 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "Location 1" => [
                     'itemtype' => Location::getType(),
-                    'items_id' => $locations[0]->getID(),
+                    'items_ids' => [$locations[0]->getID()],
                 ],
                 "Location 2" => [
                     'itemtype' => Location::getType(),
-                    'items_id' => $locations[1]->getID(),
+                    'items_ids' => [$locations[1]->getID()],
                 ],
             ],
             expected_location_id: $locations[1]->getID()
@@ -217,11 +217,11 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "Location 1" => [
                     'itemtype' => Location::getType(),
-                    'items_id' => $locations[0]->getID(),
+                    'items_ids' => [$locations[0]->getID()],
                 ],
                 "Location 2" => [
                     'itemtype' => Location::getType(),
-                    'items_id' => $locations[1]->getID(),
+                    'items_ids' => [$locations[1]->getID()],
                 ],
             ],
             expected_location_id: $locations[1]->getID()
@@ -234,7 +234,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "Location 1" => [
                     'itemtype' => Location::getType(),
-                    'items_id' => $locations[0]->getID(),
+                    'items_ids' => [$locations[0]->getID()],
                 ],
             ],
             expected_location_id: $locations[0]->getID()
@@ -247,10 +247,29 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "Location 2" => [
                     'itemtype' => Location::getType(),
-                    'items_id' => $locations[1]->getID(),
+                    'items_ids' => [$locations[1]->getID()],
                 ],
             ],
             expected_location_id: $locations[1]->getID()
+        );
+
+        // First question is filled with a valid location, but the last question
+        // is left empty. The empty answer must be ignored so the last *valid*
+        // answer (the first question) is used.
+        $this->sendFormAndAssertLocation(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Location 1" => [
+                    'itemtype' => Location::getType(),
+                    'items_ids' => [$locations[0]->getID()],
+                ],
+                "Location 2" => [
+                    'itemtype' => Location::getType(),
+                    'items_ids' => [-1],
+                ],
+            ],
+            expected_location_id: $locations[0]->getID()
         );
 
         // No answers, fallback to default value

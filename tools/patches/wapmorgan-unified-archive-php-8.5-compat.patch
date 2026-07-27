@@ -1,8 +1,8 @@
 diff --git a/src/Drivers/SplitbrainPhpArchive.php b/src/Drivers/SplitbrainPhpArchive.php
-index 986d185..d41345b 100644
+index 7ef3677..1373ce8 100644
 --- a/src/Drivers/SplitbrainPhpArchive.php
 +++ b/src/Drivers/SplitbrainPhpArchive.php
-@@ -75,8 +75,8 @@ class SplitbrainPhpArchive extends BasicPureDriver
+@@ -74,8 +74,8 @@ class SplitbrainPhpArchive extends BasicPureDriver
          switch ($format) {
              case Formats::ZIP:
              case Formats::TAR:
@@ -11,5 +11,5 @@ index 986d185..d41345b 100644
 +            case Formats::TAR_GZIP:
 +            case Formats::TAR_BZIP:
                  return [
-                     BasicDriver::OPEN,
+                     Abilities::OPEN,
  //                    BasicDriver::EXTRACT_CONTENT,

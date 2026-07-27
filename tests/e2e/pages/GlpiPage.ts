@@ -69,7 +69,7 @@ export class GlpiPage
         this.page = page;
 
         // Define locators
-        this.user_menu             = this.getLink('User menu');
+        this.user_menu             = this.getButton('User menu');
         this.logout_link           = this.getLink('Logout');
         this.change_profile_button = this.getButton('Change profile');
         this.history_rows          = page.getByRole('row');
@@ -141,12 +141,22 @@ export class GlpiPage
             .getByRole('listbox')
             .getByRole('option', {'name': value, exact: exact})
         ;
+        // Tree dropdowns (e.g. entities) prefix hierarchical options with "»",
+        // which Select2 4.1.0 exposes in the option accessible name.
+        const simple_dropdown_with_prefix = this.page
+            .getByRole('listbox')
+            .getByRole('option', {'name': `»${value}`, exact: exact})
+        ;
         const dropdown_with_groups = this.page
             .getByRole('listbox')
             .getByRole('listitem', {'name': value, exact: exact})
         ;
 
-        await simple_dropdown.or(dropdown_with_groups).click();
+        await simple_dropdown
+            .or(simple_dropdown_with_prefix)
+            .or(dropdown_with_groups)
+            .click()
+        ;
 
         if (check_value) {
             await expect(dropdown).toContainText(value);
@@ -157,13 +167,17 @@ export class GlpiPage
         dropdown: Locator,
         value: string,
     ): Promise<void> {
-        // We have no control on select2 selectors
-        // eslint-disable-next-line playwright/no-raw-locators
-        await dropdown.getByText(value)
-            .locator('..')
-            .locator('.select2-selection__choice__remove')
+        await dropdown.getByTitle(value)
+            .getByRole('button', {name: /remove item/i})
             .click()
         ;
+    }
+
+    public async assertDropdownIsClearable(dropdown: Locator): Promise<void>
+    {
+        // We have no control on select2 selectors
+        // eslint-disable-next-line playwright/no-raw-locators
+        await expect(dropdown.locator('.select2-selection__clear')).toBeVisible();
     }
 
     public async doLogout(): Promise<void>
@@ -204,7 +218,10 @@ export class GlpiPage
         entity_name: string
     ): Promise<void> {
         // eslint-disable-next-line playwright/no-raw-locators
-        await this.getButton(entity_name).locator('//ancestor::li').getByRole('button', { name: 'Select this entity and all its children' }).click();
+        await this.getButton(entity_name).locator('//ancestor::li').getByRole('button', {
+            name: 'Select this entity and all its children',
+            includeHidden: true, // Button is hidden in the accessibility tree because it is replaced by keyboard controls.
+        }).click();
     }
 
     public async doSwitchToEntityWithoutRecursion(

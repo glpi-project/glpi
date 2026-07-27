@@ -40,6 +40,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Filesystem\Path;
 
+use function Safe\file_get_contents;
 use function Safe\hash_file;
 use function Safe\preg_replace;
 
@@ -140,11 +141,11 @@ class ImportMapGenerator
         }
 
         if (!$core_modules) {
+            $core_modules = ['imports' => $this->getLibModulesImports()];
+
             // Scan GLPI core directories
-            $core_modules = ['imports' => []];
             $this->addModulesToImportMap($core_modules, $this->glpi_root . '/js/modules', $this->glpi_root);
             $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/js/modules', $this->glpi_root);
-            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/lib', $this->glpi_root);
             $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/build', $this->glpi_root);
 
             // Cache core modules
@@ -204,6 +205,50 @@ class ImportMapGenerator
     }
 
     /**
+     * @return array<string, string>
+     */
+    private function getLibModulesImports(): array
+    {
+        $lib_dir  = $this->glpi_root . '/public/lib';
+
+        // We add a cache layer for dev environements, as the import map will
+        // be generated for each requests.
+        // Lib files doesn't change unless dependencies are modified.
+        $package_hash = $this->glpi_root . '/.package.hash';
+        $cache = $this->cache;
+        $use_cache = Environment::get()->shouldExpectResourcesToChange()
+            && $cache
+            && file_exists($this->glpi_root . '/.package.hash')
+        ;
+        $lib_cache_key = null;
+
+        // Compute cache key
+        if ($use_cache) {
+            $package_hash  = file_get_contents($this->glpi_root . '/.package.hash');
+            $lib_cache_key = 'js_import_map_lib_' . \sha1($this->root_doc . '|' . $package_hash);
+        }
+
+        // Try to read from cache
+        if ($use_cache && $lib_cache_key) {
+            $lib_modules = $cache->get($lib_cache_key);
+            if ($lib_modules) {
+                return $lib_modules;
+            }
+        }
+
+        // Read without cache
+        $lib_modules = ['imports' => []];
+        $this->addModulesToImportMap($lib_modules, $lib_dir, $this->glpi_root);
+
+        // Set cache
+        if ($use_cache && $lib_cache_key) {
+            $cache->set($lib_cache_key, $lib_modules['imports']);
+        }
+
+        return $lib_modules['imports'];
+    }
+
+    /**
      * Add modules from a directory to the import map
      *
      * @param array{imports: array<string, string>} $import_map Reference to the import map array
@@ -240,7 +285,14 @@ class ImportMapGenerator
                 $clean_path = '/' . $relative_path;
 
                 // Generate version parameter
-                $version_param = $this->generateVersionParam($file_path);
+                if (Environment::get() == Environment::DEVELOPMENT) {
+                    // Faster but less precise. It help with performances in
+                    // dev envs where we don't have production specific contraints
+                    // like multiple servers or re-deploy.
+                    $version_param = $file->getMTime();
+                } else {
+                    $version_param = $this->generateVersionParam($file_path);
+                }
 
                 // Add to import map
                 $import_map['imports'][$clean_path] = $this->root_doc . $clean_path . '?v=' . $version_param;
