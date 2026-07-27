@@ -34,9 +34,11 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\HttpClient;
 use Glpi\Toolbox\VersionParser;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
-use function Safe\json_decode;
 use function Safe\preg_replace;
 
 class GLPINetwork extends CommonGLPI
@@ -156,7 +158,7 @@ class GLPINetwork extends CommonGLPI
      */
     public static function getRegistrationInformations(bool $force_refresh = false)
     {
-        global $GLPI_CACHE, $CFG_GLPI;
+        global $GLPI_CACHE;
 
         $registration_key = self::getRegistrationKey();
         $lang = preg_replace('/^([a-z]+)_.+$/', '$1', $_SESSION["glpilanguage"]);
@@ -178,48 +180,33 @@ class GLPINetwork extends CommonGLPI
         }
 
         // Verify registration from registration API
-        $error_message = null;
-        $eopts = [
-            CURLOPT_HTTPHEADER => [
-                'Accept:application/json',
-                'Accept-Language: ' . $lang,
-                'Content-Type:application/json',
-                'User-Agent:' . self::getGlpiUserAgent(),
-                'X-Registration-Key:' . $registration_key,
-                'X-Glpi-Network-Uid:' . self::getGlpiNetworkUid(),
-            ],
-        ];
-        if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
-            $eopts['proxy_excluded'] = true;
-        }
-        $registration_response = Toolbox::callCurl(
-            rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/info',
-            $eopts,
-            $error_message
-        );
-
-        $valid_json = false;
         $registration_data = null;
-        if ($error_message === null) {
-            if (Toolbox::isJSON($registration_response)) {
-                $valid_json = true;
-                $registration_data = json_decode($registration_response, true);
-            }
+
+        $http_client = new HttpClient(context: self::class);
+        try {
+            $registration_response = $http_client->get(
+                rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/info',
+                [
+                    'headers' => [
+                        'Accept'             => 'application/json',
+                        'Accept-Language'    => $lang,
+                        'User-Agent'         => self::getGlpiUserAgent(),
+                        'X-Registration-Key' => $registration_key,
+                        'X-Glpi-Network-Uid' => self::getGlpiNetworkUid(),
+                    ],
+                ]
+            );
+            $registration_data = $registration_response->toArray();
+        } catch (ExceptionInterface|DecodingExceptionInterface $e) {
+            global $PHPLOGGER;
+            $PHPLOGGER->warning(
+                "Unable to fetch registration information: {$e->getMessage()}",
+                ['exception' => $e]
+            );
         }
 
-        if (
-            $error_message !== null || !$valid_json
-            || !is_array($registration_data) || !array_key_exists('is_valid', $registration_data)
-        ) {
+        if ($registration_data === null || !array_key_exists('is_valid', $registration_data)) {
             $informations['validation_message'] = __('Unable to fetch registration information.');
-            trigger_error(
-                sprintf(
-                    "Unable to fetch registration information.\nError message:%s\nResponse:\n%s",
-                    $error_message,
-                    $registration_response
-                ),
-                E_USER_WARNING
-            );
             return $informations;
         }
 
@@ -293,20 +280,22 @@ class GLPINetwork extends CommonGLPI
      */
     public static function isServicesAvailable(&$curl_error = null): bool
     {
-        global $CFG_GLPI;
-
-        $error_msg = null;
-        $eopts = [];
-        if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
-            $eopts['proxy_excluded'] = true;
+        $http_client = new HttpClient(context: self::class);
+        try {
+            $response = $http_client->get(
+                rtrim(GLPI_NETWORK_API_URL, '/') . '/ping'
+            );
+            $success = $response->getContent() !== '';
+        } catch (ExceptionInterface $e) {
+            $success = false;
         }
-        $content = Toolbox::callCurl(rtrim(GLPI_NETWORK_API_URL, '/') . '/ping', $eopts, $error_msg, $curl_error);
-        return $content !== '';
+
+        return $success;
     }
 
     public static function getOffers(bool $force_refresh = false): array
     {
-        global $GLPI_CACHE, $CFG_GLPI;
+        global $GLPI_CACHE;
 
         $lang = preg_replace('/^([a-z]+)_.+$/', '$1', $_SESSION["glpilanguage"]);
         $cache_key = 'glpi_network_offers_' . $lang;
@@ -315,40 +304,29 @@ class GLPINetwork extends CommonGLPI
             return $offers;
         }
 
-        $error_message = null;
-        $eopts = [
-            CURLOPT_HTTPHEADER => [
-                'Accept:application/json',
-                'Accept-Language: ' . $lang,
-            ],
-        ];
-        if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
-            $eopts['proxy_excluded'] = true;
-        }
-        $response = Toolbox::callCurl(
-            rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/offers',
-            $eopts,
-            $error_message
-        );
-
-        $valid_json = false;
         $offers = null;
-        if ($error_message === null) {
-            if (Toolbox::isJSON($response)) {
-                $valid_json = true;
-                $offers = json_decode($response);
-            }
+
+        $http_client = new HttpClient(context: self::class);
+        try {
+            $response = $http_client->get(
+                rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/offers',
+                [
+                    'headers' => [
+                        'Accept'          => 'application/json',
+                        'Accept-Language' => $lang,
+                    ],
+                ]
+            );
+            $offers = $response->toArray();
+        } catch (ExceptionInterface|DecodingExceptionInterface $e) {
+            global $PHPLOGGER;
+            $PHPLOGGER->warning(
+                "Unable to fetch offers information: {$e->getMessage()}",
+                ['exception' => $e]
+            );
         }
 
-        if ($error_message !== null || !$valid_json || !is_array($offers)) {
-            trigger_error(
-                sprintf(
-                    "Unable to fetch offers information.\nError message:%s\nResponse:\n%s",
-                    $error_message,
-                    $response
-                ),
-                E_USER_WARNING
-            );
+        if ($offers === null) {
             return [];
         }
 

@@ -39,7 +39,6 @@ use Glpi\DBAL\QueryParam;
 use Glpi\Error\ErrorUtils;
 use Glpi\Event;
 use Glpi\Exception\Database\StatementException;
-use Glpi\Exception\EmptyCurlContentException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Helpdesk\DefaultDataManager;
@@ -49,35 +48,32 @@ use Glpi\OAuth\Server;
 use Glpi\Plugin\Hooks;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Rules\RulesManager;
+use Glpi\Toolbox\HttpClient;
 use Glpi\Toolbox\URL;
 use Glpi\Toolbox\VersionParser;
-use GuzzleHttp\Client;
 use Laminas\Mail\Protocol\Imap;
 use Laminas\Mail\Protocol\Pop3;
 use Laminas\Mail\Storage\AbstractStorage;
 use Mexitek\PHPColors\Color;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
-use Safe\Exceptions\CurlException;
 use Safe\Exceptions\ErrorfuncException;
 use Safe\Exceptions\FilesystemException;
 use Safe\Exceptions\ImageException;
 use Safe\Exceptions\InfoException;
 use Safe\Exceptions\JsonException;
-use Safe\Exceptions\PcreException;
 use Safe\Exceptions\UrlException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
 use function Safe\base64_decode;
 use function Safe\chmod;
 use function Safe\class_uses;
 use function Safe\copy;
-use function Safe\curl_exec;
-use function Safe\curl_getinfo;
-use function Safe\curl_init;
 use function Safe\error_log;
 use function Safe\fclose;
 use function Safe\filemtime;
@@ -971,20 +967,20 @@ class Toolbox
      **/
     public static function checkNewVersionAvailable()
     {
-        global $CFG_GLPI;
-
         //parse GitHub releases (get last version number)
-        $error = "";
-        $eopts = [];
-        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
-            $eopts['proxy_excluded'] = true;
-        }
-        $json_gh_releases = self::getURLContent("https://api.github.com/repos/glpi-project/glpi/releases", $error, 0, $eopts);
-        if (empty($json_gh_releases)) {
-            return $error;
+        $http_client = new HttpClient(context: GLPINetwork::class);
+        try {
+            $response = $http_client->get('https://api.github.com/repos/glpi-project/glpi/releases');
+            $all_gh_releases = $response->toArray();
+        } catch (ExceptionInterface|DecodingExceptionInterface $e) {
+            global $PHPLOGGER;
+            $PHPLOGGER->warning(
+                "Unable to fetch GLPI releases data: {$e->getMessage()}",
+                ['exception' => $e]
+            );
+            return __('Unable to fetch GLPI releases data.');
         }
 
-        $all_gh_releases = json_decode($json_gh_releases, true);
         $released_tags = [];
         foreach ($all_gh_releases as $release) {
             if ($release['prerelease'] == false) {
@@ -995,7 +991,7 @@ class Toolbox
         $latest_version = array_pop($released_tags);
 
         if (strlen(trim($latest_version)) == 0) {
-            return $error;
+            return __('Unable to fetch GLPI releases data.');
         } else {
             $currentVersion = preg_replace('/^((\d+\.?)+).*$/', '$1', GLPI_VERSION);
             if (version_compare($currentVersion, $latest_version, '<')) {
@@ -1207,238 +1203,6 @@ class Toolbox
             }
         }
         return $out;
-    }
-
-
-    /**
-     * Check an url is safe.
-     * Used to mitigate SSRF exploits.
-     *
-     * @since 10.0.3
-     *
-     * @param string    $url        URL to check
-     * @param array     $allowlist  Allowlist (regex array)
-     *
-     * @return bool
-     */
-    public static function isUrlSafe(string $url, array $allowlist = GLPI_SERVERSIDE_URL_ALLOWLIST): bool
-    {
-        foreach ($allowlist as $allow_regex) {
-            try {
-                $result = preg_match($allow_regex, $url);
-                if ($result === 1) {
-                    return true;
-                }
-            } catch (PcreException $e) {
-                trigger_error(
-                    sprintf('Unable to validate URL safeness. Following regex is probably invalid: "%s".', $allow_regex),
-                    E_USER_WARNING
-                );
-            }
-        }
-
-        return false;
-    }
-
-
-    /**
-     * Get a web page. Use proxy if configured
-     *
-     * @param string  $url    URL to retrieve
-     * @param string  $msgerr set if problem encountered (default NULL)
-     * @param int     $rec    internal use only Must be 0 (default 0)
-     * @param array   $eopts  CURL options (or 'proxy_excluded')
-     *
-     * @return string content of the page (or empty)
-     **/
-    public static function getURLContent($url, &$msgerr = null, $rec = 0, array $eopts = [])
-    {
-        $curl_error = null;
-        $content = self::callCurl($url, $eopts, $msgerr, $curl_error, true);
-        return $content;
-    }
-
-    /**
-     * Get a new Guzzle client with proxy if configured and the specified other options.
-     * @param array $extra_options Extra options to pass to the Guzzle client constructor
-     * @return Client Guzzle client
-     */
-    public static function getGuzzleClient(array $extra_options = []): Client
-    {
-        global $CFG_GLPI;
-
-        $options = $extra_options + ['connect_timeout' => 5];
-        // add proxy string if configured in glpi - and not excluded
-        if (!empty($CFG_GLPI["proxy_name"]) && ($extra_options['proxy_excluded'] ?? false) === false) {
-            $proxy_creds = "";
-            if (!empty($CFG_GLPI["proxy_user"])) {
-                $proxy_user = rawurlencode($CFG_GLPI["proxy_user"]);
-                $proxy_pass = rawurlencode((new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]));
-                $proxy_creds = $proxy_user . ":" . $proxy_pass . "@";
-            }
-            $proxy_string = "http://{$proxy_creds}" . $CFG_GLPI['proxy_name'] . ":" . $CFG_GLPI['proxy_port'];
-            $options['proxy'] = $proxy_string;
-        }
-        return new Client($options);
-    }
-
-    /**
-     * Executes a curl call
-     *
-     * @param string  $url         URL to retrieve
-     * @param array   $eopts       Extra curl opts
-     * @param ?string $msgerr      will contain a human-readable error string if an error occurs or url returns empty contents
-     * @param ?string $curl_error  will contain curl error message if an error occurs
-     * @param bool    $check_url_safeness    indicates whether the URL have to be filtered by safety checks
-     * @param ?array  $curl_info   will contain contents provided by `curl_getinfo`
-     *
-     * @return string
-     */
-    public static function callCurl(
-        $url,
-        array $eopts = [],
-        &$msgerr = null,
-        &$curl_error = null,
-        bool $check_url_safeness = false,
-        ?array &$curl_info = null
-    ) {
-        global $CFG_GLPI, $PHPLOGGER;
-
-        try {
-            return self::doCallCurl($url, $eopts, $msgerr, $curl_error, $check_url_safeness, $curl_info);
-        } catch (CurlException $e) {
-            $PHPLOGGER->error($e->getMessage(), ['exception' => $e]);
-
-            $curl_error = $e->getMessage();
-            if (empty($CFG_GLPI["proxy_name"]) || ($eopts['proxy_excluded'] ?? false)) {
-                $msgerr = sprintf(
-                    __('Connection failed. If you use a proxy, please configure it. (%s)'),
-                    $curl_error
-                );
-            } else {
-                $msgerr = sprintf(
-                    __('Failed to connect to the proxy server (%s)'),
-                    $curl_error
-                );
-            }
-
-            return "";
-        } catch (EmptyCurlContentException $e) {
-            $PHPLOGGER->error($e->getMessage(), ['exception' => $e]);
-            $msgerr = __('No data available on the website');
-            return "";
-        }
-    }
-
-    /**
-     * Executes a curl call
-     *
-     * @param string  $url
-     * @param array   $eopts
-     * @param ?string $msgerr
-     * @param ?string $curl_error
-     * @param bool    $check_url_safeness
-     * @param ?array  $curl_info
-     *
-     * @return string
-     *
-     * @throws CurlException
-     * @throws EmptyCurlContentException|UrlException
-     */
-    private static function doCallCurl(
-        $url,
-        array $eopts = [],
-        &$msgerr = null,
-        &$curl_error = null,
-        bool $check_url_safeness = false,
-        ?array &$curl_info = null
-    ): string {
-        global $CFG_GLPI;
-
-        if ($check_url_safeness && !Toolbox::isUrlSafe($url)) {
-            $msgerr = sprintf(
-                __('URL "%s" is not considered safe and cannot be fetched from GLPI server.'),
-                $url
-            );
-            trigger_error(sprintf('Unsafe URL "%s" fetching has been blocked.', $url), E_USER_NOTICE);
-            return '';
-        }
-
-        $content = "";
-        $taburl  = parse_url($url);
-
-        $defaultport = 80;
-
-        // Manage standard HTTPS port : scheme detection or port 443
-        if (
-            (isset($taburl["scheme"]) && $taburl["scheme"] == 'https')
-            || (isset($taburl["port"]) && $taburl["port"] == '443')
-        ) {
-            $defaultport = 443;
-        }
-
-        $ch = curl_init($url);
-        $proxy_excluded = false;
-        if (isset($eopts['proxy_excluded'])) {
-            $proxy_excluded = (bool) $eopts['proxy_excluded'];
-            unset($eopts['proxy_excluded']);
-        }
-        $opts = [
-            CURLOPT_URL             => $url,
-            CURLOPT_USERAGENT       => "GLPI/" . trim($CFG_GLPI["version"]),
-            CURLOPT_RETURNTRANSFER  => 1,
-            CURLOPT_CONNECTTIMEOUT  => 5,
-        ] + $eopts;
-
-        if ($check_url_safeness) {
-            $opts[CURLOPT_FOLLOWLOCATION] = false;
-        }
-
-        if (!empty($CFG_GLPI["proxy_name"]) && !$proxy_excluded) {
-            // Connection using proxy
-            $opts += [
-                CURLOPT_PROXY           => $CFG_GLPI['proxy_name'],
-                CURLOPT_PROXYPORT       => $CFG_GLPI['proxy_port'],
-                CURLOPT_PROXYTYPE       => CURLPROXY_HTTP,
-            ];
-
-            if (!empty($CFG_GLPI["proxy_user"])) {
-                $proxy_user = rawurlencode($CFG_GLPI["proxy_user"]);
-                $proxy_pass = rawurlencode((new GLPIKey())->decrypt($CFG_GLPI["proxy_passwd"]));
-                $opts += [
-                    CURLOPT_PROXYAUTH    => CURLAUTH_BASIC,
-                    CURLOPT_PROXYUSERPWD => $proxy_user . ":" . $proxy_pass,
-                ];
-            }
-
-            if ($defaultport == 443) {
-                $opts += [
-                    CURLOPT_HTTPPROXYTUNNEL => 1,
-                ];
-            }
-        }
-
-        $curl_version = curl_version();
-        if (defined('CURLSSLOPT_NATIVE_CA')
-            && $curl_version
-            && version_compare($curl_version['version'], '7.71', '>=')) {
-            $opts += [
-                CURLOPT_SSL_OPTIONS => CURLSSLOPT_NATIVE_CA,
-            ];
-        }
-
-        curl_setopt_array($ch, $opts);
-        $content = curl_exec($ch);
-        $curl_info = curl_getinfo($ch);
-        $curl_redirect = $curl_info['redirect_url'] ?? null;
-
-        if (!empty($curl_redirect)) {
-            return self::callCurl($curl_redirect, $eopts, $msgerr, $curl_error, $check_url_safeness, $curl_info);
-        } elseif (empty($content)) {
-            throw new EmptyCurlContentException();
-        }
-
-        return $content;
     }
 
     /**

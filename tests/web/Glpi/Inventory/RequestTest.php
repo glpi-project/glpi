@@ -37,20 +37,20 @@ namespace tests\units\Glpi\Inventory;
 use Config;
 use Glpi\Inventory\Conf;
 use GLPIKey;
-use GuzzleHttp;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class RequestTest extends TestCase
 {
-    private $http_client;
+    private HttpClientInterface $http_client;
     private $base_uri;
 
     public function setUp(): void
     {
-        $this->http_client = new GuzzleHttp\Client();
+        $this->http_client = HttpClient::create();
         $this->base_uri    = trim(GLPI_URI, '/') . '/';
 
         // Enable inventory
@@ -74,161 +74,137 @@ class RequestTest extends TestCase
     /**
      * Check a XML response
      *
-     * @param Response $res   Request response
+     * @param ResponseInterface $res   Request response
      * @param string   $reply Reply tag contents
      * @param int  $reply Reply HTTP code
      *
      * @return void
      */
-    private function checkXmlResponse(Response $res, $reply, $code)
+    private function checkXmlResponse(ResponseInterface $res, $reply, $code)
     {
         $this->assertSame($code, $res->getStatusCode());
         $this->assertSame(
             'application/xml',
-            $res->getHeader('content-type')[0]
+            $res->getHeaders(false)['content-type'][0]
         );
         $this->assertSame(
             "<?xml version=\"1.0\"?>\n<REPLY>$reply</REPLY>",
-            (string) $res->getBody()
+            $res->getContent(false)
         );
     }
 
     /**
      * Check a JSON response
      *
-     * @param Response $res   Request response
+     * @param ResponseInterface $res   Request response
      * @param string   $reply Reply tag contents
      * @param int  $reply Reply HTTP code
      *
      * @return void
      */
-    private function checkJsonResponse(Response $res, $reply, $code)
+    private function checkJsonResponse(ResponseInterface $res, $reply, $code)
     {
         $this->assertSame($code, $res->getStatusCode());
-        $this->assertSame('application/json', $res->getHeader('content-type')[0]);
-        $this->assertSame($reply, (string) $res->getBody());
+        $this->assertSame('application/json', $res->getHeaders(false)['content-type'][0]);
+        $this->assertSame($reply, $res->getContent(false));
     }
 
     public function testUnsupportedHttpMethod()
     {
-        try {
-            $this->http_client->request(
-                'GET',
-                $this->base_uri . 'front/inventory.php'
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->assertSame(405, $response->getStatusCode());
-            $this->assertSame('', (string) $response->getBody());
-        }
+        $response = $this->http_client->request(
+            'GET',
+            $this->base_uri . 'front/inventory.php'
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertSame(405, $response->getStatusCode());
+        $this->assertSame('', $response->getContent(false));
     }
 
     public function testUnsupportedLegacyRequest()
     {
-        try {
-            $this->http_client->request(
-                'GET',
-                $this->base_uri . 'front/inventory.php?action=getConfig'
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->assertSame(400, $response->getStatusCode());
-            $this->assertSame(
-                '{"status":"error","message":"Protocol not supported","expiration":24}',
-                (string) $response->getBody()
-            );
-        }
+        $response = $this->http_client->request(
+            'GET',
+            $this->base_uri . 'front/inventory.php?action=getConfig'
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(
+            '{"status":"error","message":"Protocol not supported","expiration":24}',
+            $response->getContent(false)
+        );
     }
 
     public function testRequestInvalidContent()
     {
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'front/inventory.php',
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/xml',
-                    ],
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->assertSame(400, $response->getStatusCode());
-            $this->assertSame(
-                "<?xml version=\"1.0\"?>\n<REPLY><ERROR><![CDATA[XML not well formed!]]></ERROR></REPLY>",
-                (string) $response->getBody()
-            );
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'front/inventory.php',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml',
+                ],
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(
+            "<?xml version=\"1.0\"?>\n<REPLY><ERROR><![CDATA[XML not well formed!]]></ERROR></REPLY>",
+            $response->getContent(false)
+        );
     }
 
     public function testRequestInvalidJSONContent()
     {
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'front/inventory.php',
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/json',
-                    ],
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->assertSame(400, $response->getStatusCode());
-            $this->assertSame(
-                '{"status":"error","message":"JSON not well formed!","expiration":24}',
-                (string) $response->getBody()
-            );
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'front/inventory.php',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(
+            '{"status":"error","message":"JSON not well formed!","expiration":24}',
+            $response->getContent(false)
+        );
 
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'front/inventory.php',
-                [
-                    'headers' => [
-                        'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13',
-                    ],
-                    'body'   => '{ bad content',
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->assertSame(400, $response->getStatusCode());
-            $this->assertSame(
-                '{"status":"error","message":"JSON not well formed!","expiration":24}',
-                (string) $response->getBody()
-            );
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'front/inventory.php',
+            [
+                'headers' => [
+                    'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13',
+                ],
+                'body'   => '{ bad content',
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(
+            '{"status":"error","message":"JSON not well formed!","expiration":24}',
+            $response->getContent(false)
+        );
 
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'front/inventory.php',
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/x-compress-zlib',
-                        'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13',
-                    ],
-                    'body'   => gzcompress('{ bad content'),
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->assertSame(400, $response->getStatusCode());
-            $this->assertSame(
-                gzcompress('{"status":"error","message":"JSON not well formed!","expiration":24}'),
-                (string) $response->getBody()
-            );
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'front/inventory.php',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/x-compress-zlib',
+                    'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13',
+                ],
+                'body'   => gzcompress('{ bad content'),
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertSame(400, $response->getStatusCode());
+        $this->assertSame(
+            gzcompress('{"status":"error","message":"JSON not well formed!","expiration":24}'),
+            $response->getContent(false)
+        );
     }
 
     public function testPrologRequest()
@@ -302,26 +278,22 @@ class RequestTest extends TestCase
         ]);
 
         //first call should be unauthorized and return 401
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'Inventory',
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/xml',
-                    ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
-                        . '<REQUEST>'
-                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
-                        . '<QUERY>PROLOG</QUERY>'
-                        . '</REQUEST>',
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'Inventory',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml',
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                    . '<REQUEST>'
+                    . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                    . '<QUERY>PROLOG</QUERY>'
+                    . '</REQUEST>',
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
 
         //second attempt should be authorized
         $res = $this->http_client->request(
@@ -366,31 +338,26 @@ class RequestTest extends TestCase
                 'auth_required'     => $auth_required,
             ]);
 
-            try {
-                $this->http_client->request(
-                    'POST',
-                    $this->base_uri . 'Inventory',
-                    [
-                        'headers' => [
-                            'Content-Type' => 'application/xml',
-                        ],
-                        'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
-                            . '<REQUEST>'
-                            . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
-                            . '<QUERY>PROLOG</QUERY>'
-                            . '</REQUEST>',
-                    ]
-                );
-                $this->fail('Expected a 503 response due to invalid inventory auth_required configuration.');
-            } catch (RequestException $e) {
-                $response = $e->getResponse();
-                $this->assertInstanceOf(Response::class, $response);
-                $this->checkJsonResponse(
-                    $response,
-                    '{"status":"error","message":"Server configuration error: invalid inventory authentication setting. Please configure the Inventory \u2192 Authorization header in GLPI.","expiration":24}',
-                    503
-                );
-            }
+            $response = $this->http_client->request(
+                'POST',
+                $this->base_uri . 'Inventory',
+                [
+                    'headers' => [
+                        'Content-Type' => 'application/xml',
+                    ],
+                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                        . '<REQUEST>'
+                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                        . '<QUERY>PROLOG</QUERY>'
+                        . '</REQUEST>',
+                ]
+            );
+            $this->assertInstanceOf(ResponseInterface::class, $response);
+            $this->checkJsonResponse(
+                $response,
+                '{"status":"error","message":"Server configuration error: invalid inventory authentication setting. Please configure the Inventory \u2192 Authorization header in GLPI.","expiration":24}',
+                503
+            );
         } finally {
             Config::setConfigurationValues('inventory', [
                 'enabled_inventory' => true,
@@ -413,51 +380,43 @@ class RequestTest extends TestCase
         ]);
 
         //first call should be unauthorized and return 401
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'Inventory',
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/xml',
-                    ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
-                        . '<REQUEST>'
-                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
-                        . '<QUERY>PROLOG</QUERY>'
-                        . '</REQUEST>',
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'Inventory',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml',
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                    . '<REQUEST>'
+                    . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                    . '<QUERY>PROLOG</QUERY>'
+                    . '</REQUEST>',
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
 
         //second attempt should be unauthorized and return 401
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'Inventory',
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/xml',
-                        //deliberate omission of "Basic "
-                        'Authorization' => base64_encode($basic_auth_login . ":" . $basic_auth_password),
-                    ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
-                        . '<REQUEST>'
-                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
-                        . '<QUERY>PROLOG</QUERY>'
-                        . '</REQUEST>',
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->assertEquals('Basic realm="basic"', $response->getHeaderLine('www-authenticate'));
-            $this->checkJsonResponse($response, '{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}', 401);
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'Inventory',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml',
+                    //deliberate omission of "Basic "
+                    'Authorization' => base64_encode($basic_auth_login . ":" . $basic_auth_password),
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                    . '<REQUEST>'
+                    . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                    . '<QUERY>PROLOG</QUERY>'
+                    . '</REQUEST>',
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertEquals(['Basic realm="basic"'], $response->getHeaders(false)['www-authenticate']);
+        $this->checkJsonResponse($response, '{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}', 401);
 
         // disable basic auth
         Config::setConfigurationValues('inventory', [
@@ -485,51 +444,43 @@ class RequestTest extends TestCase
         ]);
 
         //first call should be unauthorized and return 401
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'Inventory',
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/xml',
-                    ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
-                        . '<REQUEST>'
-                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
-                        . '<QUERY>PROLOG</QUERY>'
-                        . '</REQUEST>',
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->assertEquals('Basic realm="basic"', $response->getHeaderLine('www-authenticate'));
-            $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'Inventory',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml',
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                    . '<REQUEST>'
+                    . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                    . '<QUERY>PROLOG</QUERY>'
+                    . '</REQUEST>',
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertEquals(['Basic realm="basic"'], $response->getHeaders(false)['www-authenticate']);
+        $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
 
         //second attempt should be unauthorized and return 401
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'Inventory',
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/xml',
-                        'Authorization' => base64_encode("Basic wrong_login:wrong_password"),
-                    ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
-                        . '<REQUEST>'
-                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
-                        . '<QUERY>PROLOG</QUERY>'
-                        . '</REQUEST>',
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->assertEquals('Basic realm="basic"', $response->getHeaderLine('www-authenticate'));
-            $this->checkJsonResponse($response, '{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}', 401);
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'Inventory',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml',
+                    'Authorization' => base64_encode("Basic wrong_login:wrong_password"),
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                    . '<REQUEST>'
+                    . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                    . '<QUERY>PROLOG</QUERY>'
+                    . '</REQUEST>',
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertEquals(['Basic realm="basic"'], $response->getHeaders(false)['www-authenticate']);
+        $this->checkJsonResponse($response, '{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}', 401);
 
         // disable basic auth
         Config::setConfigurationValues('inventory', [
@@ -593,7 +544,7 @@ class RequestTest extends TestCase
 
         // check the response contains a valid access token
         $this->assertEquals(200, $response->getStatusCode());
-        $responseContent = json_decode((string) $response->getBody(), true);
+        $responseContent = $response->toArray(false);
 
         $this->assertArrayHasKey('token_type', $responseContent);
         $this->assertArrayHasKey('access_token', $responseContent);
@@ -605,26 +556,22 @@ class RequestTest extends TestCase
         $this->assertGreaterThan(0, $responseContent['expires_in']);
 
         //first call to inventory should be unauthorized and return 401
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'Inventory',
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/xml',
-                    ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
-                        . '<REQUEST>'
-                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
-                        . '<QUERY>PROLOG</QUERY>'
-                        . '</REQUEST>',
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'Inventory',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml',
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                    . '<REQUEST>'
+                    . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                    . '<QUERY>PROLOG</QUERY>'
+                    . '</REQUEST>',
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
 
         // second attempt with Bearer token, should be authorized
         $response =  $this->http_client->request(
@@ -683,28 +630,23 @@ class RequestTest extends TestCase
         $blocked_data = $it->current();
 
         // Obtaining a token must be denied because the IP is not allowed
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'api.php/token',
-                [
-                    'headers' => ['Content-Type' => 'application/json'],
-                    'body'    => json_encode([
-                        'grant_type'    => 'client_credentials',
-                        'client_id'     => $blocked_data['identifier'],
-                        'client_secret' => (new GLPIKey())->decrypt($blocked_data['secret']),
-                        'scope'         => 'inventory',
-                    ]),
-                ]
-            );
-            $this->fail('Expected a 401 response due to IP restriction on token endpoint');
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->assertSame(401, $response->getStatusCode());
-            $body = json_decode((string) $response->getBody(), true);
-            $this->assertSame('access_denied', $body['error']);
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'api.php/token',
+            [
+                'headers' => ['Content-Type' => 'application/json'],
+                'body'    => json_encode([
+                    'grant_type'    => 'client_credentials',
+                    'client_id'     => $blocked_data['identifier'],
+                    'client_secret' => (new GLPIKey())->decrypt($blocked_data['secret']),
+                    'scope'         => 'inventory',
+                ]),
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->assertSame(401, $response->getStatusCode());
+        $body = $response->toArray(false);
+        $this->assertSame('access_denied', $body['error']);
 
         // Create an OAuth client with the local IP allowed (127.0.0.1)
         $allowed_client = new \OAuthClient();
@@ -741,7 +683,7 @@ class RequestTest extends TestCase
             ]
         );
         $this->assertEquals(200, $token_response->getStatusCode());
-        $token_content = json_decode((string) $token_response->getBody(), true);
+        $token_content = $token_response->toArray(false);
         $this->assertNotEmpty($token_content['access_token']);
 
         // Inventory request must succeed
@@ -784,49 +726,41 @@ class RequestTest extends TestCase
         ]);
 
         // first call to inventory should be unauthorized and return 401
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'Inventory',
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/xml',
-                    ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
-                        . '<REQUEST>'
-                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
-                        . '<QUERY>PROLOG</QUERY>'
-                        . '</REQUEST>',
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'Inventory',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml',
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                    . '<REQUEST>'
+                    . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                    . '<QUERY>PROLOG</QUERY>'
+                    . '</REQUEST>',
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
 
         // second call to inventory with an invalid Bearer token should return 401
-        try {
-            $this->http_client->request(
-                'POST',
-                $this->base_uri . 'Inventory',
-                [
-                    'headers' => [
-                        'Content-Type' => 'application/xml',
-                        'Authorization' => 'Bearer ' . $invalid_bearer_token,
-                    ],
-                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
-                        . '<REQUEST>'
-                        . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
-                        . '<QUERY>PROLOG</QUERY>'
-                        . '</REQUEST>',
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-            $this->assertInstanceOf(Response::class, $response);
-            $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
-        }
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'Inventory',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml',
+                    'Authorization' => 'Bearer ' . $invalid_bearer_token,
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>'
+                    . '<REQUEST>'
+                    . '<DEVICEID>mydeviceuniqueid</DEVICEID>'
+                    . '<QUERY>PROLOG</QUERY>'
+                    . '</REQUEST>',
+            ]
+        );
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+        $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
 
         // disable oauth client credentials
         Config::setConfigurationValues('inventory', [

@@ -35,14 +35,17 @@
 
 namespace Glpi\System\Status;
 
+use Auth;
 use AuthLDAP;
 use CronTask;
 use DBConnection;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\HttpClient;
 use GLPIKey;
 use MailCollector;
 use Plugin;
 use RuntimeException;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Throwable;
 use Toolbox;
 use Update;
@@ -421,21 +424,14 @@ final class StatusChecker
                 }
                 $url .= '/' . $CFG_GLPI['cas_uri'];
 
-                if (Toolbox::isUrlSafe($url)) {
-                    $data = Toolbox::getURLContent($url);
-                    if (!empty($data)) {
-                        $status['status'] = self::STATUS_OK;
-                    } else {
-                        $status['status'] = self::STATUS_PROBLEM;
-                    }
-                } else {
-                    $status['status'] = self::STATUS_NO_DATA;
-                    if (!$public_only) {
-                        $status['status_msg'] = sprintf(
-                            __('URL "%s" is not considered safe and cannot be fetched from GLPI server.'),
-                            $url
-                        );
-                    }
+                $http_client = new HttpClient(Auth::class);
+                try {
+                    $response = $http_client->get($url);
+                    $status['status'] = $response->getContent() !== ''
+                        ? self::STATUS_OK
+                        : self::STATUS_PROBLEM;
+                } catch (ExceptionInterface $e) {
+                    $status['status'] = self::STATUS_PROBLEM;
                 }
             }
             self::$cached_status['cas'] = $status;

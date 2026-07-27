@@ -62,7 +62,6 @@ describe('Planning/PlanningFiltersPanel Vue Component', () => {
                             "filter_data":{"display":false,"type":"group_users","users":{"user_2":{"color":"#D4EDFB","display":true,"type":"user"},"user_4":{"color":"#E1D0E1","display":true,"type":"user"}}},"expanded":"","title":"Techs","params":{"show_delete":true,"filter_color_index":1},"color":"#D4EDFB","show_export_buttons":false,"uID":0,"gID":0,"webcal_base_url":null,"caldav_url":"http://glpi.localhost/caldav.php/calendars/groups/1/calendar",
                             "child_filters":{"user_2":{"filter_key":"user_2","filter_data":{"color":"#D4EDFB","display":true,"type":"user"},"expanded":"","title":"glpi","params":{"show_delete":false,"filter_color_index":0},"color":"#D4EDFB","show_export_buttons":true,"uID":2,"gID":0,"webcal_base_url":"webcal://glpi.localhost","caldav_url":"http://glpi.localhost/caldav.php/calendars/users/glpi/calendar","child_filters":[]},"user_4":{"filter_key":"user_4","filter_data":{"color":"#E1D0E1","display":true,"type":"user"},"expanded":"","title":"tech","params":{"show_delete":false,"filter_color_index":0},"color":"#E1D0E1","show_export_buttons":true,"uID":4,"gID":0,"webcal_base_url":"webcal://glpi.localhost","caldav_url":"http://glpi.localhost/caldav.php/calendars/users/tech/calendar","child_filters":[]}}
                         },
-                        "external_unsafe": {"filter_key":"external_unsafe","filter_data":{"color":"#ffeec4","display":true,"type":"external","url_safe":false,"url":"example.com"},"expanded":"","title":"external_unsafe","params":{"show_delete":false,"filter_color_index":0},"color":"#ffeec4","show_export_buttons":true,"child_filters":[]},
                     }
                 },
                 active_entity: {
@@ -96,16 +95,6 @@ describe('Planning/PlanningFiltersPanel Vue Component', () => {
         expect(component.find('input[type="checkbox"][value="group_1_users"]').element).not.toBeChecked();
         expect(component.find('input[type="checkbox"][value="user_4"]').element).toBeChecked();
 
-        // Check unsafe URL warning
-        expect(component.find('input[type="checkbox"][value="user_2"]').element.parentElement.querySelector('.ti-alert-triangle')).not.toBeTruthy();
-        const unsafe_filter_parent = component.find('input[type="checkbox"][value="external_unsafe"]').element.parentElement;
-        const unsafe_warning = unsafe_filter_parent.querySelector('.ti-alert-triangle');
-        expect(unsafe_warning).toBeTruthy();
-        expect(unsafe_warning.getAttribute('title'))
-            .toBe('URL "example.com" is not allowed by your administrator.');
-        expect(unsafe_warning.getAttribute('aria-label'))
-            .toBe('URL "example.com" is not allowed by your administrator.');
-
         // Check that filters with children have an expand button
         const group_filter_parent = component.find('input[type="checkbox"][value="group_1_users"]').element.parentElement;
         expect(group_filter_parent.querySelector('button[title="Toggle filters"] i').classList.contains('ti-caret-down-filled')).toBe(true);
@@ -115,12 +104,6 @@ describe('Planning/PlanningFiltersPanel Vue Component', () => {
         await flushPromises();
         expect(group_filter_parent.querySelector('button[title="Toggle filters"] i').classList.contains('ti-caret-up-filled')).toBe(true);
         expect(component.find('input[type="checkbox"][value="user_4"]').element.closest('ul').classList.contains('d-none')).toBe(false);
-
-        // Delete option
-        unsafe_filter_parent.querySelector('button[title="Actions"]').click();
-        expect(component.find('.dropdown-menu.show').findAll('button').filter(btn => btn.text() === 'Delete').length).toBe(0);
-        component.find('input[type="checkbox"][value="user_2"]').element.parentElement.querySelector('button[title="Actions"]').click();
-        expect(component.find('.dropdown-menu.show').findAll('button').filter(btn => btn.text() === 'Delete').length).toBe(1);
     });
 
     test('toggle filter', async () => {

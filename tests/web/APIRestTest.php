@@ -53,17 +53,18 @@ use Glpi\Tests\Api\Deprecated\ComputerAntivirus;
 use Glpi\Tests\Api\Deprecated\ComputerVirtualMachine;
 use Glpi\Tests\Api\Deprecated\TicketFollowup;
 use GLPIKey;
-use GuzzleHttp;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
 use Item_DeviceSimcard;
 use NetworkPort_NetworkPort;
 use Notepad;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\ResponseInterface;
 use QueuedNotification;
 use ReflectionClass;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Component\Mime\Part\Multipart\FormDataPart;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 use Ticket;
 use TicketTemplate;
 use TicketTemplateMandatoryField;
@@ -73,7 +74,7 @@ use User;
 class APIRestTest extends TestCase
 {
     protected $session_token;
-    protected GuzzleHttp\Client $http_client;
+    protected HttpClientInterface $http_client;
     protected $base_uri = "";
     protected $last_error;
 
@@ -107,7 +108,7 @@ class APIRestTest extends TestCase
         $file_updated = file_put_contents($this->getLogFilePath(), "");
         $this->assertNotSame(false, $file_updated);
 
-        $this->http_client = new GuzzleHttp\Client();
+        $this->http_client = HttpClient::create();
         $this->base_uri    = trim(GLPI_URI, '/') . '/api.php/v1/';
 
         $this->initSessionCredentials();
@@ -397,8 +398,8 @@ class APIRestTest extends TestCase
 
         $headers = $data['headers'];
         $this->assertIsArray($headers);
-        $this->assertArrayHasKey('Accept-Range', $headers);
-        $this->assertStringStartsWith('User', $headers['Accept-Range'][0]);
+        $this->assertArrayHasKey('accept-range', $headers);
+        $this->assertStringStartsWith('User', $headers['accept-range'][0]);
         $this->assertCount(9, $data['rawdata']);
 
         $first_user = array_shift($data['data']);
@@ -479,8 +480,8 @@ class APIRestTest extends TestCase
         $this->assertArrayHasKey('order', $data);
         $this->assertArrayHasKey('rawdata', $data);
 
-        $this->assertArrayHasKey('Accept-Range', $data['headers']);
-        $this->assertStringStartsWith('User', $data['headers']['Accept-Range'][0]);
+        $this->assertArrayHasKey('accept-range', $data['headers']);
+        $this->assertStringStartsWith('User', $data['headers']['accept-range'][0]);
 
         $this->assertCount(9, $data['rawdata']);
         $this->checkEmptyContentRange($data, $data['headers']);
@@ -1015,14 +1016,14 @@ class APIRestTest extends TestCase
         $this->assertArrayHasKey('headers', $data);
 
         $headers = $data['headers'];
-        $this->assertArrayHasKey('Content-Range', $headers);
+        $this->assertArrayHasKey('content-range', $headers);
 
         // Count only the item entries (exclude the 'headers' meta key)
         $itemCount = count($data) - 1;
         $this->assertGreaterThan(0, $itemCount);
 
         // Parse Content-Range header: "start-end/total"
-        $contentRange = $headers['Content-Range'][0];
+        $contentRange = $headers['content-range'][0];
         $this->assertMatchesRegularExpression('/^\d+-\d+\/\d+$/', $contentRange);
 
         [$rangePart, $total] = explode('/', $contentRange);
@@ -1759,9 +1760,9 @@ class APIRestTest extends TestCase
     protected function checkContentRange($data, $headers)
     {
         $this->assertLessThanOrEqual($data['totalcount'], $data['count']);
-        $this->assertArrayHasKey('Content-Range', $headers);
+        $this->assertArrayHasKey('content-range', $headers);
         $expectedContentRange = '0-' . ($data['count'] - 1) . '/' . $data['totalcount'];
-        $this->assertSame($expectedContentRange, $headers['Content-Range'][0]);
+        $this->assertSame($expectedContentRange, $headers['content-range'][0]);
     }
 
     /**
@@ -1776,7 +1777,7 @@ class APIRestTest extends TestCase
     {
         $this->assertLessThanOrEqual($data['totalcount'], $data['count']);
         $this->assertEquals(0, $data['totalcount']);
-        $this->assertArrayNotHasKey('Content-Range', $headers);
+        $this->assertArrayNotHasKey('content-range', $headers);
     }
 
     /**
@@ -1800,14 +1801,10 @@ class APIRestTest extends TestCase
         file_put_contents($logfile, "");
     }
 
-    protected function doHttpRequest($verb = "get", $relative_uri = "", $params = [])
+    protected function doHttpRequest($verb = "get", $relative_uri = "", $params = []): ResponseInterface
     {
-        if (!empty($relative_uri)) {
+        if (!empty($relative_uri) && !isset($params['headers']['Content-Type'])) {
             $params['headers']['Content-Type'] = "application/json";
-        }
-        if (isset($params['multipart'])) {
-            // Guzzle lib will automatically push the correct Content-type
-            unset($params['headers']['Content-Type']);
         }
         return $this->http_client->request(
             $verb,
@@ -1861,37 +1858,30 @@ class APIRestTest extends TestCase
             $params['server_errors']
         );
         // launch query
-        try {
-            $res = $this->doHttpRequest($verb, $relative_uri, $params);
-        } catch (ClientException $e) {
-            $response = $e->getResponse();
-            if (!in_array($response->getStatusCode(), $expected_codes)) {
-                //throw exceptions not expected
-                throw $e;
-            }
-            $this->assertContains($response->getStatusCode(), $expected_codes);
-            $body = json_decode($e->getResponse()->getBody());
-            $this->assertIsArray($body);
-            $this->assertArrayHasKey('0', $body);
-            $this->assertSame($expected_symbol, $body[0]);
-            return $body;
+        $response = $this->doHttpRequest($verb, $relative_uri, $params);
+
+        $this->assertContains($response->getStatusCode(), $expected_codes);
+
+        if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 500) {
+            $data = $response->toArray(false);
+            $this->assertArrayHasKey('0', $data);
+            $this->assertSame($expected_symbol, $data[0]);
+            return $data;
         }
 
         // retrieve data
-        $body = $res->getBody();
+        $body = $response->getContent(false);
 
         if ($no_decode) {
             $data = $body;
         } else {
             $data = json_decode($body, true);
             if (is_array($data)) {
-                $data['headers'] = $res->getHeaders();
+                $data['headers'] = $response->getHeaders(false);
             }
         }
 
         // common tests
-        $this->assertNotNull($res);
-        $this->assertContains($res->getStatusCode(), $expected_codes);
         $this->checkServerSideError($expected_errors);
         return $data;
     }
@@ -1910,24 +1900,23 @@ class APIRestTest extends TestCase
             ]
         );
 
-        $this->assertNotNull($res);
         $this->assertEquals(200, $res->getStatusCode());
-        $headers = $res->getHeaders();
-        $this->assertArrayHasKey('Access-Control-Allow-Methods', $headers);
-        $this->assertArrayHasKey('Access-Control-Allow-Headers', $headers);
+        $headers = $res->getHeaders(false);
+        $this->assertArrayHasKey('access-control-allow-methods', $headers);
+        $this->assertArrayHasKey('access-control-allow-headers', $headers);
 
-        $this->assertStringContainsString('GET', $headers['Access-Control-Allow-Methods'][0]);
-        $this->assertStringContainsString('PUT', $headers['Access-Control-Allow-Methods'][0]);
-        $this->assertStringContainsString('POST', $headers['Access-Control-Allow-Methods'][0]);
-        $this->assertStringContainsString('DELETE', $headers['Access-Control-Allow-Methods'][0]);
-        $this->assertStringContainsString('OPTIONS', $headers['Access-Control-Allow-Methods'][0]);
+        $this->assertStringContainsString('GET', $headers['access-control-allow-methods'][0]);
+        $this->assertStringContainsString('PUT', $headers['access-control-allow-methods'][0]);
+        $this->assertStringContainsString('POST', $headers['access-control-allow-methods'][0]);
+        $this->assertStringContainsString('DELETE', $headers['access-control-allow-methods'][0]);
+        $this->assertStringContainsString('OPTIONS', $headers['access-control-allow-methods'][0]);
 
-        $this->assertStringContainsString('origin', $headers['Access-Control-Allow-Headers'][0]);
-        $this->assertStringContainsString('content-type', $headers['Access-Control-Allow-Headers'][0]);
-        $this->assertStringContainsString('accept', $headers['Access-Control-Allow-Headers'][0]);
-        $this->assertStringContainsString('session-token', $headers['Access-Control-Allow-Headers'][0]);
-        $this->assertStringContainsString('authorization', $headers['Access-Control-Allow-Headers'][0]);
-        $this->assertStringContainsString('app-token', $headers['Access-Control-Allow-Headers'][0]);
+        $this->assertStringContainsString('origin', $headers['access-control-allow-headers'][0]);
+        $this->assertStringContainsString('content-type', $headers['access-control-allow-headers'][0]);
+        $this->assertStringContainsString('accept', $headers['access-control-allow-headers'][0]);
+        $this->assertStringContainsString('session-token', $headers['access-control-allow-headers'][0]);
+        $this->assertStringContainsString('authorization', $headers['access-control-allow-headers'][0]);
+        $this->assertStringContainsString('app-token', $headers['access-control-allow-headers'][0]);
     }
 
     public function testInlineDocumentation()
@@ -1935,9 +1924,9 @@ class APIRestTest extends TestCase
         $res = $this->doHttpRequest('GET');
         $this->assertNotNull($res);
         $this->assertEquals(200, $res->getStatusCode());
-        $headers = $res->getHeaders();
-        $this->assertArrayHasKey('Content-Type', $headers);
-        $this->assertSame('text/html; charset=UTF-8', $headers['Content-Type'][0]);
+        $headers = $res->getHeaders(false);
+        $this->assertArrayHasKey('content-type', $headers);
+        $this->assertSame('text/html; charset=UTF-8', $headers['content-type'][0]);
 
         // FIXME Remove this when deprecation notices will be fixed on michelf/php-markdown side
         $file_updated = file_put_contents($this->getLogFilePath(), "");
@@ -1945,15 +1934,13 @@ class APIRestTest extends TestCase
 
     public function initSessionCredentials()
     {
-        $res = $this->doHttpRequest('GET', 'initSession/', ['auth' => [TU_USER, TU_PASS]]);
+        $res = $this->doHttpRequest('GET', 'initSession/', ['auth_basic' => [TU_USER, TU_PASS]]);
 
         $this->assertNotNull($res);
         $this->assertEquals(200, $res->getStatusCode());
-        $this->assertContains('application/json; charset=UTF-8', $res->getHeader('content-type'));
+        $this->assertContains('application/json; charset=UTF-8', $res->getHeaders(false)['content-type']);
 
-        $body = $res->getBody();
-        $data = json_decode($body, true);
-        $this->assertIsArray($data);
+        $data = $res->toArray(false);
         $this->assertArrayHasKey('session_token', $data);
         $this->session_token = $data['session_token'];
     }
@@ -1984,12 +1971,9 @@ class APIRestTest extends TestCase
             ]
         );
 
-        $this->assertNotNull($res);
         $this->assertEquals(200, $res->getStatusCode());
 
-        $body = $res->getBody();
-        $data = json_decode($body, true);
-        $this->assertIsArray($data);
+        $data = $res->toArray(false);
         $this->assertArrayHasKey('session_token', $data);
         $this->assertArrayHasKey('session', $data);
         $this->assertEquals($uid, $data['session']['glpiID']);
@@ -2119,6 +2103,27 @@ class APIRestTest extends TestCase
         $filename      = "README.md";
         $filecontent   = file_get_contents($filename);
 
+        $form_data = new FormDataPart([
+            [
+                'uploadManifest' => new DataPart(
+                    json_encode([
+                        'input' => [
+                            'name'       => $document_name,
+                            '_filename'  => [$filename],
+                        ],
+                    ]),
+                    null,
+                    'application/json'
+                ),
+            ],
+            [
+                'filename[]' => new DataPart(
+                    $filecontent,
+                    $filename,
+                    'text/plain'
+                ),
+            ],
+        ]);
         $data = $this->query(
             'createItems',
             [
@@ -2126,25 +2131,9 @@ class APIRestTest extends TestCase
                 'itemtype'  => 'Document',
                 'headers'   => [
                     'Session-Token' => $this->session_token,
+                    'Content-Type'  => $form_data->getPreparedHeaders()->get('content-type')->getBodyAsString(),
                 ],
-                'multipart' => [
-                    // the document part
-                    [
-                        'name'     => 'uploadManifest',
-                        'contents' => json_encode([
-                            'input' => [
-                                'name'       => $document_name,
-                                '_filename'  => [$filename],
-                            ],
-                        ]),
-                    ],
-                    // the FILE part
-                    [
-                        'name'     => 'filename[]',
-                        'contents' => $filecontent,
-                        'filename' => $filename,
-                    ],
-                ],
+                'body' => $form_data->bodyToString(),
             ],
             201
         );
@@ -2381,7 +2370,7 @@ class APIRestTest extends TestCase
 
         // Request
         $response = $this->query("User/$id/Picture", $params, 200, '', true);
-        $this->assertEquals($file_content, $response->__toString(), sprintf("File %s doesn't match", GLPI_PICTURE_DIR . "/$pic"));
+        $this->assertEquals($file_content, $response, sprintf("File %s doesn't match", GLPI_PICTURE_DIR . "/$pic"));
 
         /**
          * Case 2: user doesn't exist
@@ -2650,7 +2639,7 @@ class APIRestTest extends TestCase
         );
 
         $data = $this->query(
-            "search/$itemtype?$itemtype_query",
+            "search/" . \rawurlencode($itemtype) . "?$itemtype_query",
             ['headers' => $headers],
             [200, 206]
         );
@@ -2886,7 +2875,7 @@ class APIRestTest extends TestCase
                 'response' => [],
             ],
             [
-                'url' => 'getMassiveActionParameters/Computer/Glpi\\Asset\\Asset_PeripheralAsset:add',
+                'url' => 'getMassiveActionParameters/Computer/Glpi%5CAsset%5CAsset_PeripheralAsset:add',
                 'status' => 200,
                 'response' => [
                     ["name" => "peer_itemtype_peripheral", "type" => "dropdown"],
@@ -3246,34 +3235,30 @@ class APIRestTest extends TestCase
         $computer = $this->createComputer();
         $computers_id = $computer->getID();
 
-        try {
-            $response = $this->http_client->put(
-                $this->base_uri . 'Computer/' . $computers_id,
-                [
-                    'headers' => [
-                        'Session-Token' => $this->session_token,
-                        'Content-Type'  => 'application/x-www-form-urlencoded',
-                    ],
-                    'body' => http_build_query(
-                        [
-                            'input' => [
-                                'serial' => 'abcdefg',
-                                'comment' => 'This computer has been updated.',
-                            ],
+        $response = $this->http_client->request(
+            'PUT',
+            $this->base_uri . 'Computer/' . $computers_id,
+            [
+                'headers' => [
+                    'Session-Token' => $this->session_token,
+                    'Content-Type'  => 'application/x-www-form-urlencoded',
+                ],
+                'body' => http_build_query(
+                    [
+                        'input' => [
+                            'serial' => 'abcdefg',
+                            'comment' => 'This computer has been updated.',
                         ],
-                        '',
-                        '&'
-                    ),
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-        }
+                    ],
+                    '',
+                    '&'
+                ),
+            ]
+        );
 
         // Check response
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
-        $body = $response->getBody()->getContents();
         $this->assertEquals(
             [
                 [
@@ -3281,7 +3266,7 @@ class APIRestTest extends TestCase
                     'message'             => '',
                 ],
             ],
-            json_decode($body, true)
+            $response->toArray(false)
         );
 
         // Check computer is updated
@@ -3302,31 +3287,27 @@ class APIRestTest extends TestCase
         $computer = $this->createComputer();
         $computers_id = $computer->getID();
 
-        try {
-            $response = $this->http_client->delete(
-                $this->base_uri . 'Computer',
-                [
-                    'headers' => [
-                        'Session-Token' => $this->session_token,
-                        'Content-Type'  => 'application/x-www-form-urlencoded',
-                    ],
-                    'body' => http_build_query(
-                        [
-                            'input' => [
-                                'id' => $computers_id,
-                            ],
-                        ]
-                    ),
-                ]
-            );
-        } catch (RequestException $e) {
-            $response = $e->getResponse();
-        }
+        $response = $this->http_client->request(
+            'DELETE',
+            $this->base_uri . 'Computer',
+            [
+                'headers' => [
+                    'Session-Token' => $this->session_token,
+                    'Content-Type'  => 'application/x-www-form-urlencoded',
+                ],
+                'body' => http_build_query(
+                    [
+                        'input' => [
+                            'id' => $computers_id,
+                        ],
+                    ]
+                ),
+            ]
+        );
 
         // Check response
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertEquals(200, $response->getStatusCode());
-        $body = $response->getBody()->getContents();
         $this->assertEquals(
             [
                 [
@@ -3334,7 +3315,7 @@ class APIRestTest extends TestCase
                     'message'             => '',
                 ],
             ],
-            json_decode($body, true)
+            $response->toArray(false)
         );
 
         // Check computer is updated
@@ -3489,8 +3470,7 @@ class APIRestTest extends TestCase
 
     public function testGetItemIDZero()
     {
-        $this->expectException(ClientException::class);
-        $this->doHttpRequest(
+        $response = $this->doHttpRequest(
             'GET',
             '/Entity/0',
             [
@@ -3498,17 +3478,16 @@ class APIRestTest extends TestCase
             ]
         );
         // We are connected to a child entity, so we expect a 403 error
-        $this->expectExceptionMessage('403 Forbidden');
+        $this->assertEquals(403, $response->getStatusCode());
 
-        $this->expectException(ClientException::class);
-        $this->doHttpRequest(
+        $response = $this->doHttpRequest(
             'GET',
             '/User/0',
             [
                 'headers'  => ['Session-Token' => $this->session_token],
             ]
         );
-        $this->expectExceptionMessage('404 Not Found');
+        $this->assertEquals(404, $response->getStatusCode());
     }
 
 
@@ -3666,7 +3645,7 @@ class APIRestTest extends TestCase
         $headers = ['Session-Token' => $this->session_token];
         $data = json_decode(
             $this->query(
-                resource: $type . '?range=0-9000',
+                resource: \rawurlencode($type) . '?range=0-9000',
                 params: [
                     'headers' => $headers,
                 ],

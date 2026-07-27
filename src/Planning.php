@@ -38,6 +38,7 @@ use Glpi\CalDAV\Backend\Calendar;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Features\PlanningEvent;
 use Glpi\RichText\RichText;
+use Glpi\Toolbox\HttpClient;
 use RRule\RRule;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VEvent;
@@ -48,6 +49,7 @@ use Sabre\VObject\Property\ICalendar\Recur;
 use Sabre\VObject\Reader;
 use Safe\DateTime;
 use Safe\Exceptions\UrlException;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
 use function Safe\parse_url;
 use function Safe\preg_match;
@@ -899,10 +901,6 @@ JAVASCRIPT;
                 . ($parsed_url['path'] ?? '');
         }
 
-        if ($filter_data['type'] === 'external') {
-            $filter_data['url_safe'] = Toolbox::isUrlSafe($filter_data['url'] ?? '');
-        }
-
         return [
             'filter_key'            => $filter_key,
             'filter_data'           => $filter_data,
@@ -1255,15 +1253,6 @@ TWIG, $twig_params);
     {
         if (empty($params['url'])) {
             Session::addMessageAfterRedirect(__s('A url is required'), false, ERROR);
-            return;
-        }
-
-        if (!Toolbox::isUrlSafe($params['url'])) {
-            Session::addMessageAfterRedirect(
-                sprintf(__s('URL "%s" is not allowed by your administrator.'), htmlescape($params['url'])),
-                false,
-                ERROR
-            );
             return;
         }
 
@@ -2003,23 +1992,30 @@ TWIG, $twig_params);
      */
     private static function getExternalCalendarRawEvents(string $limit_begin, string $limit_end): array
     {
-        global $CFG_GLPI;
-
         $raw_events = [];
 
         foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning_params) {
             if ('external' !== $planning_params['type'] || !$planning_params['display']) {
                 continue; // Ignore non-external and inactive calendars
             }
-            $errmsg = null;
-            $eopts = [];
-            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
-                $eopts['proxy_excluded'] = true;
+
+            $http_client = new HttpClient(Planning::class);
+            try {
+                $response = $http_client->get($planning_params['url']);
+            } catch (ExceptionInterface $e) {
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    sprintf('Unable to fetch calendar data from URL: "%s"', $e->getMessage()),
+                    ['exception' => $e]
+                );
+                continue;
             }
-            $calendar_data = Toolbox::getURLContent($planning_params['url'], $errmsg, 0, $eopts);
+
+            $calendar_data = $response->getContent();
             if (empty($calendar_data)) {
                 continue;
             }
+
             try {
                 $vcalendar = Reader::read($calendar_data);
             } catch (ParseException $exception) {

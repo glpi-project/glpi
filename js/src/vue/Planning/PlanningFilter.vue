@@ -80,9 +80,6 @@
         <i v-if="event_type !== 'event_filter'" :class="`ms-1 pb-1 actor_icon ti ti-${event_type.split('_')[0] === 'group' ? 'users' : 'user'}`"></i>
         <label :for="filter_key" class="ps-1 overflow-hidden d-inline-block text-nowrap">
             {{ label_title }}
-            <i v-if="event_type === 'external' && !filter_data.filter_data.url_safe"
-               class="ti ti-alert-triangle text-warning float-end" :title="url_not_allowed_label" :aria-label="url_not_allowed_label">
-            </i>
         </label>
         <div class="ms-auto d-flex align-items-center">
             <span v-if="event_type !== 'group_users' && filter_key !== 'OnlyBgEvents' && filter_key !== 'StateDone'">

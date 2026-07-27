@@ -80,6 +80,7 @@ class PlanningTest extends DbTestCase
 
     public function testGetExternalCalendarEvents()
     {
+        global $CFG_GLPI;
 
         $this->login();
 
@@ -130,14 +131,14 @@ class PlanningTest extends DbTestCase
                 'display' => true,
                 'type'    => 'external',
                 'name'    => 'External calendar 1',
-                'url'     => 'file://' . realpath(GLPI_ROOT . '/tests/fixtures/ical/sample_1.ics'),
+                'url'     => $CFG_GLPI['url_base'] . '/test/planning-fixtures/sample_1.ics',
             ],
             'external_2' => [
                 'backgroundColor'   => '#a500b3',
                 'display' => true,
                 'type'    => 'external',
                 'name'    => 'External calendar 2',
-                'url'     => 'file://' . realpath(GLPI_ROOT . '/tests/fixtures/ical/sample_2.ics'),
+                'url'     => $CFG_GLPI['url_base'] . '/test/planning-fixtures/sample_2.ics',
             ],
         ];
 

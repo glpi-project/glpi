@@ -86,6 +86,8 @@ The present file will list all changes made to the project; according to the
 - `Forms/FaIconSelector` JS module
 - `Knowbase` JS module
 - `league/csv` PHP library. Use `phpoffice/phpspreadsheet` instead.
+- `guzzlehttp/guzzle` PHP library. Use `Glpi\Toolbox\HttpClient` instead.
+- `GLPI_SERVERSIDE_URL_ALLOWLIST` constant, replaced by `GLPI_SERVERSIDE_URL_ALLOWED_PRIVATE_NETWORKS_CONTEXTS`
 - `Auth::getErr()`
 - `AuthLDAP::DELETED_USER_PRESERVE`
 - `AuthLDAP::DELETED_USER_DELETE`
@@ -176,6 +178,10 @@ The present file will list all changes made to the project; according to the
 - `Ticket_Ticket::getLinkedTicketsTo()`
 - `Timer` class
 - `Toolbox::addslashes_deep()`
+- `Toolbox::callCurl()`: use `Glpi\Toolbox\HttpClient` instead
+- `Toolbox::getGuzzleClient()`: use `Glpi\Toolbox\HttpClient` instead
+- `Toolbox::getURLContent()`: use `Glpi\Toolbox\HttpClient` instead
+- `Toolbox::isUrlSafe()`
 - `Toolbox::seems_utf8()`
 - `Toolbox::sendFile()`
 - `Toolbox::stripslashes_deep()`
