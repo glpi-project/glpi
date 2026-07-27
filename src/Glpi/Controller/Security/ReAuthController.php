@@ -36,7 +36,6 @@ declare(strict_types=1);
 
 namespace Glpi\Controller\Security;
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
@@ -59,14 +58,12 @@ class ReAuthController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function prompt(bool $failed = false): Response
     {
-        return new Response(
-            TemplateRenderer::getInstance()->render(
-                'pages/reauth/prompt.html.twig', // includes the template defined in $this->buildTemplateContext() ('template' key).
-                [
-                    ...$this->buildTemplateContext(),
-                    'failed' => $failed,
-                ]
-            )
+        return $this->render(
+            'pages/reauth/prompt.html.twig',
+            [
+                ...$this->buildTemplateContext(),
+                'failed' => $failed,
+            ]
         );
     }
 
@@ -83,13 +80,11 @@ class ReAuthController extends AbstractController
         if ($this->reAuthManager->verify((string) $user_input)) {
             $this->reAuthManager->authenticate();
 
-            return new Response(
-                TemplateRenderer::getInstance()->render('pages/redirect_post.html.twig', [
-                    'http_method' => $this->reAuthManager->getRequestedMethod(),
-                    'url'         => $this->reAuthManager->getRequestedURL(),
-                    'post_data'   => $this->reAuthManager->getRequestedPostData(),
-                ])
-            );
+            return $this->render('pages/redirect_post.html.twig', [
+                'http_method' => $this->reAuthManager->getRequestedMethod(),
+                'url'         => $this->reAuthManager->getRequestedURL(),
+                'post_data'   => $this->reAuthManager->getRequestedPostData(),
+            ]);
         }
 
         return $this->prompt(true);
