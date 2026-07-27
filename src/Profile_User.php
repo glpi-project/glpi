@@ -1332,6 +1332,7 @@ TWIG, $avatar_params) . $username;
         }
     }
 
+    #[Override]
     protected static function itemTypeRequiresReauthentication(): bool
     {
         return true;
