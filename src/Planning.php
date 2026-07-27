@@ -2001,7 +2001,7 @@ TWIG, $twig_params);
 
             $http_client = new HttpClient(Planning::class);
             try {
-                $response = $http_client->request('GET', $planning_params['url']);
+                $response = $http_client->get($planning_params['url']);
             } catch (ExceptionInterface $e) {
                 global $PHPLOGGER;
                 $PHPLOGGER->error(

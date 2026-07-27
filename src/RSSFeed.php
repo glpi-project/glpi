@@ -663,7 +663,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         if (($raw_data = $GLPI_CACHE->get($cache_key)) === null) {
             $http_client = new HttpClient(context: self::class);
             try {
-                $response = $http_client->request('GET', $url);
+                $response = $http_client->get($url);
                 $raw_data = $response->getContent();
             } catch (ExceptionInterface $e) {
                 return false;

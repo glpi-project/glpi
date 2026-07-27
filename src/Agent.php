@@ -701,7 +701,7 @@ class Agent extends CommonDBTM
             );
 
             try {
-                $response = $httpClient->request('GET', $endpoint, []);
+                $response = $httpClient->get($endpoint, []);
                 self::$found_address = $address;
                 break;
             } catch (ExceptionInterface $exception) {

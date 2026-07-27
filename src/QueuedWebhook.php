@@ -208,8 +208,7 @@ class QueuedWebhook extends CommonDBChild
 
             // Send OAuth Client Credentials
             try {
-                $oauth_response = $client->request(
-                    'POST',
+                $oauth_response = $client->post(
                     $oauth_url,
                     [
                         'body' => [

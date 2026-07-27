@@ -970,7 +970,7 @@ class Toolbox
         //parse GitHub releases (get last version number)
         $http_client = new HttpClient(context: GLPINetwork::class);
         try {
-            $response = $http_client->request('GET', 'https://api.github.com/repos/glpi-project/glpi/releases');
+            $response = $http_client->get('https://api.github.com/repos/glpi-project/glpi/releases');
             $all_gh_releases = $response->toArray();
         } catch (ExceptionInterface|DecodingExceptionInterface $e) {
             global $PHPLOGGER;

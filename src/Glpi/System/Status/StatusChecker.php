@@ -426,7 +426,7 @@ final class StatusChecker
 
                 $http_client = new HttpClient(Auth::class);
                 try {
-                    $response = $http_client->request('GET', $url);
+                    $response = $http_client->get($url);
                     $status['status'] = $response->getContent() !== ''
                         ? self::STATUS_OK
                         : self::STATUS_PROBLEM;

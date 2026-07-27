@@ -1098,8 +1098,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $httpClient = new HttpClient(context: self::class);
         try {
             //prepare query / body
-            $response = $httpClient->request(
-                'GET',
+            $response = $httpClient->get(
                 $url,
                 [
                     'query' => ['crc_token' => $secret_signature],

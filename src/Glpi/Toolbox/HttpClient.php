@@ -57,7 +57,7 @@ final class HttpClient
      * @param class-string<CommonGLPI>|null $context Configuration context.
      * @param array<string, mixed> $options Client options, see `HttpClientInterface::DEFAULT_OPTIONS`.
      */
-    public function __construct(public ?string $context = null, public array $options = [])
+    public function __construct(?string $context = null, array $options = [])
     {
         global $CFG_GLPI;
 
@@ -124,5 +124,41 @@ final class HttpClient
         }
 
         return $response;
+    }
+
+    /**
+     * Requests an HTTP resource with the GET method.
+     *
+     * @param string $uri
+     * @param array<string, mixed> $options Client options, see `HttpClientInterface::DEFAULT_OPTIONS`.
+     *
+     * @return ResponseInterface
+     *
+     * @throws RedirectionExceptionInterface    When a 3xx error response is received (after redirect limit is reached)
+     * @throws ClientExceptionInterface         When a 4xx error response is received
+     * @throws ServerExceptionInterface         When a 5xx error response is received
+     * @throws TransportExceptionInterface      When an unsupported option is passed
+     */
+    public function get(string $uri = '', array $options = []): ResponseInterface
+    {
+        return $this->request(Request::METHOD_GET, $uri, $options);
+    }
+
+    /**
+     * Requests an HTTP resource with the POST method.
+     *
+     * @param string $uri
+     * @param array<string, mixed> $options Client options, see `HttpClientInterface::DEFAULT_OPTIONS`.
+     *
+     * @return ResponseInterface
+     *
+     * @throws RedirectionExceptionInterface    When a 3xx error response is received (after redirect limit is reached)
+     * @throws ClientExceptionInterface         When a 4xx error response is received
+     * @throws ServerExceptionInterface         When a 5xx error response is received
+     * @throws TransportExceptionInterface      When an unsupported option is passed
+     */
+    public function post(string $uri = '', array $options = []): ResponseInterface
+    {
+        return $this->request(Request::METHOD_POST, $uri, $options);
     }
 }

@@ -184,8 +184,7 @@ class GLPINetwork extends CommonGLPI
 
         $http_client = new HttpClient(context: self::class);
         try {
-            $registration_response = $http_client->request(
-                'GET',
+            $registration_response = $http_client->get(
                 rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/info',
                 [
                     'headers' => [
@@ -283,8 +282,7 @@ class GLPINetwork extends CommonGLPI
     {
         $http_client = new HttpClient(context: self::class);
         try {
-            $response = $http_client->request(
-                'GET',
+            $response = $http_client->get(
                 rtrim(GLPI_NETWORK_API_URL, '/') . '/ping'
             );
             $success = $response->getContent() !== '';
@@ -310,8 +308,7 @@ class GLPINetwork extends CommonGLPI
 
         $http_client = new HttpClient(context: self::class);
         try {
-            $response = $http_client->request(
-                'GET',
+            $response = $http_client->get(
                 rtrim(GLPI_NETWORK_REGISTRATION_API_URL, '/') . '/offers',
                 [
                     'headers' => [

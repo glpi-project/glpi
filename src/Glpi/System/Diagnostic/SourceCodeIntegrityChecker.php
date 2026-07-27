@@ -232,7 +232,7 @@ class SourceCodeIntegrityChecker
 
         $dest = null;
         try {
-            $response = $client->request('GET', $gh_releases_endpoint);
+            $response = $client->get($gh_releases_endpoint);
             $release = json_decode((string) $response->getContent(), true, 512, JSON_THROW_ON_ERROR);
             foreach ($release['assets'] as $asset) {
                 if (str_starts_with($asset['name'], 'glpi-' . $version_to_get)) {
@@ -242,7 +242,7 @@ class SourceCodeIntegrityChecker
                         break;
                     }
                     $url = $asset['browser_download_url'];
-                    $client->request('GET', $url, ['sink' => $dest]);
+                    $client->get($url, ['sink' => $dest]);
                     break;
                 }
             }

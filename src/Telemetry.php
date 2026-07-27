@@ -310,8 +310,7 @@ class Telemetry extends CommonGLPI
 
         $http_client = new HttpClient(context: GLPINetwork::class);
         try {
-            $response = $http_client->request(
-                'POST',
+            $response = $http_client->post(
                 GLPI_TELEMETRY_URI . '/telemetry',
                 [
                     'headers' => [
