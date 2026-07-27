@@ -1029,6 +1029,10 @@ export class GlpiKnowbaseArticleController
             this.#onCommentAnchored(e.detail.anchor);
         });
 
+        document.addEventListener('glpi:kb:comment-unanchored', (e) => {
+            this.#onCommentUnanchored(e.detail.id);
+        });
+
         content_el.addEventListener('click', (e) => {
             const mark = e.target.closest('.kb-comment-highlight');
             if (!mark) {
@@ -1070,14 +1074,30 @@ export class GlpiKnowbaseArticleController
     #onCommentAnchored(anchor)
     {
         this.#comment_anchors = [...this.#comment_anchors, anchor];
+        this.#renderCommentAnchors();
+    }
 
+    /**
+     * @param {number|string} comment_id - Root comment id of the deleted thread.
+     */
+    #onCommentUnanchored(comment_id)
+    {
+        this.#comment_anchors = this.#comment_anchors.filter(
+            (anchor) => String(anchor.id) !== String(comment_id)
+        );
+        this.#renderCommentAnchors();
+    }
+
+    #renderCommentAnchors()
+    {
         if (this.#editor) {
             this.#editor.refreshCommentAnchors(this.#comment_anchors);
-        } else {
-            const content_el = this.#container.querySelector('[data-glpi-kb-content]');
-            if (content_el) {
-                highlightComments(content_el, this.#comment_anchors);
-            }
+            return;
+        }
+
+        const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+        if (content_el) {
+            highlightComments(content_el, this.#comment_anchors);
         }
     }
 
