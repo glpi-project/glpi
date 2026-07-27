@@ -43,6 +43,7 @@ use Glpi\Toolbox\SingletonTrait;
 use InvalidArgumentException;
 use RuntimeException;
 use Safe\DateTime;
+use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\parse_url;
 
@@ -107,11 +108,17 @@ final class ReAuthManager
         return $current_limit_timestamp !== null && $current_limit_timestamp > $calculated_limit_timestamp;
     }
 
-    public function verify(string $user_input): bool
+    /**
+     * Delegate the prompt form submission to the selected strategy.
+     *
+     * The whole request is forwarded: extracting the relevant fields is the strategy's
+     * responsibility, as their number and meaning depend on the verification method.
+     */
+    public function verify(Request $request): bool
     {
         $strategy = $this->getStrategy();
 
-        return $strategy->verify($_SESSION['glpiID'], $user_input);
+        return $strategy->verify($_SESSION['glpiID'], $request);
     }
 
     /**

@@ -75,9 +75,7 @@ class ReAuthController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     public function verify(Request $request): Response
     {
-        $user_input = $request->request->get('user_input');
-
-        if ($this->reAuthManager->verify((string) $user_input)) {
+        if ($this->reAuthManager->verify($request)) {
             $this->reAuthManager->authenticate();
 
             return $this->render('pages/redirect_post.html.twig', [
