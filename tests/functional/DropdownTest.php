@@ -3174,7 +3174,7 @@ HTML;
         $this->assertContains($computer_with_contact_id, $ids);
         $this->assertNotContains($other_computer_id, $ids);
     }
-    
+
     public function testGetStandardDropdownItemtypes(): void
     {
         global $CFG_GLPI;
