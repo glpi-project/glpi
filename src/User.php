@@ -105,6 +105,13 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     private ?array $entities = null;
 
+    private static bool $ldap_group_batch_mode = false;
+
+    public static function enableLdapGroupBatchMode(): void
+    {
+        self::$ldap_group_batch_mode = true;
+    }
+
     public function getCloneRelations(): array
     {
         return [
@@ -1504,6 +1511,35 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
     /**
+     * Rebuild a LDAP connection from the user's recorded auths_id/user_dn, so RuleRight
+     * LDAP-attribute criteria can be evaluated outside of an actual LDAP authentication.
+     *
+     * @return array<string, mixed> Empty if no LDAP connection could be established.
+     */
+    private function getLdapConnectionForRules(): array
+    {
+        if (empty($this->fields['auths_id']) || empty($this->fields['user_dn'])) {
+            return [];
+        }
+
+        $config_ldap = new AuthLDAP();
+        if (!$config_ldap->getFromDB($this->fields['auths_id'])) {
+            return [];
+        }
+
+        $connection = $config_ldap->connect();
+        if (!$connection) {
+            return [];
+        }
+
+        return [
+            'connection'  => $connection,
+            'userdn'      => $this->fields['user_dn'],
+            'ldap_server' => $this->fields['auths_id'],
+        ];
+    }
+
+    /**
      * Force authorization assignment rules to be processed for this user
      * @return void
      */
@@ -1516,11 +1552,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
         $result = $rules->processAllRules(
             $groups_id,
             $this->fields,
-            [
-                'type' => $this->fields['authtype'],
-                'login' => $this->fields['name'],
-                'email' => UserEmail::getDefaultForUser($this->getID()),
-            ]
+            array_merge(
+                [
+                    'type' => $this->fields['authtype'],
+                    'login' => $this->fields['name'],
+                    'email' => UserEmail::getDefaultForUser($this->getID()),
+                ],
+                $this->getLdapConnectionForRules()
+            )
         );
 
         $this->input = $result;
@@ -2203,9 +2242,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
             return false;
         }
 
-        // Use cached lookup when MATCHING_RULE_IN_CHAIN is set (AD nested groups).
+        // Only use M-queries-per-group cache in batch mode; FPM spawns a new process per login so the cache never reuses.
         if (
-            str_contains($ldap_method["group_member_field"], AuthLDAP::MATCHING_RULE_IN_CHAIN_OID)
+            self::$ldap_group_batch_mode
+            && str_contains($ldap_method["group_member_field"], AuthLDAP::MATCHING_RULE_IN_CHAIN_OID)
             && !empty($ldap_method["group_field"])
         ) {
             return $this->getFromLDAPGroupDiscretCached(
@@ -2861,11 +2901,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $groups_id = array_column($groups, 'id');
             }
 
-            $this->fields = $rule->processAllRules($groups_id, $this->fields, [
-                'type'   => Auth::EXTERNAL,
-                'email'  => $this->fields["_emails"] ?? [],
-                'login'  => $this->fields["name"],
-            ]);
+            $this->fields = $rule->processAllRules($groups_id, $this->fields, array_merge(
+                [
+                    'type'   => Auth::EXTERNAL,
+                    'email'  => $this->fields["_emails"] ?? [],
+                    'login'  => $this->fields["name"],
+                ],
+                $this->getLdapConnectionForRules()
+            ));
 
             $this->willProcessRuleRight();
 
@@ -3850,6 +3893,14 @@ HTML;
             'additionalfields'  => ['2fa'],
             'nosearch'          => true, // Searching virtual fields is not supported currently
             'nosort'            => true, // Same as above
+        ];
+
+        $tab[] = [
+            'id'                => 133,
+            'table'             => 'glpi_users',
+            'field'             => 'notification_to_myself',
+            'name'              => __('Notifications to myself'),
+            'datatype'          => 'bool',
         ];
 
         // add objectlock search options

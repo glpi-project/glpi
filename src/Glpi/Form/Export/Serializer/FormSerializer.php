@@ -746,6 +746,10 @@ final class FormSerializer extends AbstractFormSerializer
                     $value['items_ids'] = [$value['items_ids']];
                 }
                 foreach ($value['items_ids'] as $index => $name) {
+                    if ($name === 0) {
+                        continue;
+                    }
+
                     $value['items_ids'][$index] = $mapper->getItemId(
                         itemtype: $value['itemtype'],
                         key: $name,

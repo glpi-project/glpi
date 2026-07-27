@@ -131,7 +131,7 @@ class DomainTest extends DbTestCase
             "SELECT * FROM `glpi_domains` WHERE "
             . "NOT (`date_expiration` IS NULL) AND `entities_id` = ? AND `is_deleted` = ? "
             . "AND DATEDIFF(CURDATE(), `date_expiration`) > ? AND DATEDIFF(CURDATE(), `date_expiration`) > ?",
-            $iterator->getSql()
+            $this->cleanSQL($iterator->getSql())
         );
         $this->assertEquals(
             [$entity->fields['id'], 0, 1, 0],
@@ -143,7 +143,7 @@ class DomainTest extends DbTestCase
             "SELECT * FROM `glpi_domains` WHERE "
             . "NOT (`date_expiration` IS NULL) AND `entities_id` = ? AND `is_deleted` = ? "
             . "AND DATEDIFF(CURDATE(), `date_expiration`) > ? AND DATEDIFF(CURDATE(), `date_expiration`) < ?",
-            $iterator->getSql()
+            $this->cleanSQL($iterator->getSql())
         );
         $this->assertEquals(
             [$entity->fields['id'], 0, -7, 0],

@@ -525,6 +525,8 @@ describe('Dashboard', () => {
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
         dashboard.is_recursive = 1;
+        dashboard.profiles_id = 4;
+        dashboard.users_id = 5;
         dashboard.grid.removeAll = vi.fn().mockImplementation(() => {});
         dashboard.grid.makeWidget = vi.fn().mockImplementation(() => {});
         dashboard.getCardsAjax = vi.fn().mockImplementation(() => {});
@@ -538,6 +540,8 @@ describe('Dashboard', () => {
             token: 'mytoken',
             entities_id: 3,
             is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
         }, () => {
             return `
                 <div class="grid-stack-item" gs-id="4"><div class="card"></div></div>
@@ -1095,6 +1099,8 @@ describe('Dashboard', () => {
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
         dashboard.is_recursive = 1;
+        dashboard.profiles_id = 4;
+        dashboard.users_id = 5;
         dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
@@ -1114,6 +1120,8 @@ describe('Dashboard', () => {
             token: 'mytoken',
             entities_id: 3,
             is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
             card_id: 1
         }, () => {return true;}));
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
@@ -1122,6 +1130,8 @@ describe('Dashboard', () => {
             token: 'mytoken',
             entities_id: 3,
             is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
             card_id: 2
         }, () => {return true;}));
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'GET', {
@@ -1130,6 +1140,8 @@ describe('Dashboard', () => {
             token: 'mytoken',
             entities_id: 3,
             is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
             card_id: 3
         }, () => {return true;}));
 
@@ -1216,6 +1228,8 @@ describe('Dashboard', () => {
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
         dashboard.is_recursive = 1;
+        dashboard.profiles_id = 4;
+        dashboard.users_id = 5;
         dashboard.getFiltersFromDB = vi.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
@@ -1240,7 +1254,9 @@ describe('Dashboard', () => {
             "embed": 1,
             "token": "mytoken",
             "entities_id": 3,
-            "is_recursive": 1
+            "is_recursive": 1,
+            "profiles_id": 4,
+            "users_id": 5
         };
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/ajax/dashboard.php', 'POST', {
             action: 'get_cards',

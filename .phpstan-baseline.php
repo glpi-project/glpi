@@ -32,18 +32,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/cable.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects string, class\\-string\\<CommonDBTM\\>\\|CommonDBTM given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/comments.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, class\\-string\\<CommonDBTM\\>\\|CommonDBTM given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/comments.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$object_or_class of function method_exists expects object\\|string, CommonDBTM\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -368,16 +356,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/reservable_items.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$event of static method Reservation\\:\\:updateEvent\\(\\) expects array\\{id\\: int, start\\: string, end\\: string\\}, non\\-empty\\-array\\<mixed\\> given\\.$#',
+	'message' => '#^Parameter \\#1 \\$event of static method Reservation\\:\\:updateEvent\\(\\) expects array\\{id\\: int, start\\: string, end\\: string\\}, array\\<mixed\\> given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/ajax/reservations.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$options of static method RuleAction\\:\\:dropdownActions\\(\\) expects array\\{subtype\\: class\\-string\\<Rule\\>, name\\: string, field\\?\\: string, value\\?\\: string, alreadyused\\: bool, display\\?\\: bool\\}, array\\{subtype\\: class\\-string, name\\: \'action_type\', field\\: mixed, value\\: mixed, alreadyused\\: bool\\} given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/ruleaction.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$sub_type of static method Rule\\:\\:getActionsByType\\(\\) expects class\\-string\\<Rule\\>, class\\-string given\\.$#',
@@ -394,7 +376,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method can\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/ajax/timeline.php',
 ];
 $ignoreErrors[] = [
@@ -458,100 +440,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/webhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/appliance_item.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/appliance_item_relation.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'items_id_peripheral\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/asset/asset_peripheralasset.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'itemtype_peripheral\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/asset/asset_peripheralasset.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/asset/asset_peripheralasset.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'calendars_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/calendar_holiday.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/calendar_holiday.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'cartridgeitems_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/cartridgeitem_printermodel.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/cartridgeitem_printermodel.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'certificates_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/certificate_item.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/certificate_item.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$items_id of static method Glpi\\\\Event\\:\\:log\\(\\) expects int\\|string, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/change.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'changes_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/change_problem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/change_problem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'changes_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/change_ticket.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/change_ticket.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method check\\(\\) on CommonDBTM\\|false\\.$#',
@@ -566,34 +458,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/commonitilobject_commonitilobject.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset string might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/commonitilobject_item.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/commonitilobject_item.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of static method CommonDBTM\\:\\:displayFullPageForItem\\(\\) expects int\\|string, int\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/config.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'contracts_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/contract_item.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/contract_item.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getPath\\(\\) on Glpi\\\\UI\\\\Theme\\|null\\.$#',
@@ -608,40 +476,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/document.send.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'documents_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/document_item.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/document_item.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$values of method Domain_Item\\:\\:addItem\\(\\) expects array, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/domain.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of method CommonGLPI\\:\\:getFormURLWithID\\(\\) expects int, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/domainrecord.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'groups_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/group_user.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/group_user.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
@@ -656,26 +494,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/impactcsv.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'clusters_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_cluster.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_cluster.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getLinkURL\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_device.common.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/item_device.common.form.php',
 ];
@@ -692,76 +512,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/item_disk.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'enclosures_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_enclosure.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_enclosure.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'lines_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_line.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_line.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getFormURLWithID\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 3,
 	'path' => __DIR__ . '/front/item_operatingsystem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'items_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_operatingsystem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'itemtype\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_operatingsystem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_operatingsystem.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'projects_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_project.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_project.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'racks_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_rack.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/item_rack.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
@@ -818,30 +572,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/itemvirtualmachine.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'projects_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/itil_project.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/itil_project.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'knowbaseitems_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/knowbaseitem_item.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/knowbaseitem_item.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method can\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 3,
@@ -884,12 +614,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/notepad.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/notification_notificationtemplate.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of static method CommonDBTM\\:\\:displayFullPageForItem\\(\\) expects int\\|string, int\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -926,18 +650,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/palette_preview.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'racks_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/pdu_rack.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/pdu_rack.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$ID of method CommonDBTM\\:\\:getFromDB\\(\\) expects int\\|string, int\\|string\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -962,70 +674,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/printerlogcsv.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'problems_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/problem_ticket.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/problem_ticket.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'users_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/profile_user.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/profile_user.form.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$items_id of static method Glpi\\\\Event\\:\\:log\\(\\) expects int\\|string, int\\|false given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/front/project.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'projecttasks_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/projecttask_ticket.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/projecttask_ticket.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'projecttasks_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/projecttaskteam.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/projecttaskteam.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'projects_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/front/projectteam.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/projectteam.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access offset \'plugin\' on non\\-empty\\-array\\|true\\.$#',
@@ -1142,18 +794,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/stat.global.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of static method Stat\\:\\:getItems\\(\\) expects class\\-string\\<CommonGLPI\\>, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/front/stat.location.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of static method Stat\\:\\:showTable\\(\\) expects class\\-string\\<CommonITILObject\\>, string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/stat.location.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method add\\(\\) on Stencil\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -1164,12 +804,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/front/stencil.form.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:add\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/front/ticket_contract.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$id of static method CommonGLPI\\:\\:getFormURLWithID\\(\\) expects int, int\\|string\\|false given\\.$#',
@@ -3785,12 +3419,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method maybeRecursive\\(\\) on CommonDBTM\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 2,
-	'path' => __DIR__ . '/src/DbUtils.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DbUtils\\:\\:getDbRelations\\(\\) should return array\\<string, array\\<string, list\\<array\\{string, string\\}\\|string\\>\\|string\\>\\> but returns array\\<array\\<list\\<array\\<mixed\\>\\|string\\>\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [

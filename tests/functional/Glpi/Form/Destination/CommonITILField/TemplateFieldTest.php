@@ -35,6 +35,12 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
+use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
+use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\RequestTypeField;
+use Glpi\Form\Destination\CommonITILField\RequestTypeFieldConfig;
+use Glpi\Form\Destination\CommonITILField\RequestTypeFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\TemplateField;
 use Glpi\Form\Destination\CommonITILField\TemplateFieldConfig;
 use Glpi\Form\Destination\CommonITILField\TemplateFieldStrategy;
@@ -42,6 +48,7 @@ use Glpi\Form\Form;
 use Glpi\Tests\AbstractDestinationFieldTest;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use ITILCategory;
 use Override;
 use Ticket;
 use TicketTemplate;
@@ -208,6 +215,132 @@ final class TemplateFieldTest extends AbstractDestinationFieldTest
             ),
             expected_tickettemplates_id: $default_template->getID()
         );
+    }
+
+    /**
+     * A category can link a different template per request type; the resolved template must match the applied type, not an assumed default
+     */
+    public function testDefaultTemplateIsResolvedUsingRequestType(): void
+    {
+        $demand_template = $this->createItem(
+            TicketTemplate::class,
+            ['name' => 'Template for demand']
+        );
+        $itilcategory = $this->createItem(
+            ITILCategory::class,
+            [
+                'name'                       => 'Category with demand template',
+                'tickettemplates_id_demand'  => $demand_template->getID(),
+            ]
+        );
+
+        $form = $this->createAndGetFormWithTicketDestination();
+        $this->login();
+
+        $destinations = $form->getDestinations();
+        $this->assertCount(1, $destinations);
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    TemplateField::getKey() => (new TemplateFieldConfig(
+                        strategy: TemplateFieldStrategy::DEFAULT_TEMPLATE,
+                    ))->jsonSerialize(),
+                    ITILCategoryField::getKey() => (new ITILCategoryFieldConfig(
+                        strategy: ITILCategoryFieldStrategy::SPECIFIC_VALUE,
+                        specific_itilcategory_id: $itilcategory->getID(),
+                    ))->jsonSerialize(),
+                    RequestTypeField::getKey() => (new RequestTypeFieldConfig(
+                        strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
+                        specific_request_type: Ticket::DEMAND_TYPE,
+                    ))->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers(
+            $form,
+            [],
+            getItemByTypeName(\User::class, TU_USER, true)
+        );
+
+        $created_items = $answers->getCreatedItems();
+        $this->assertCount(1, $created_items);
+        $ticket = current($created_items);
+
+        $this->assertEquals(Ticket::DEMAND_TYPE, $ticket->fields['type']);
+        $this->assertEquals($demand_template->getID(), $ticket->fields['tickettemplates_id']);
+    }
+
+    /**
+     * The form's request type answer must still prevail over a type predefined on the resolved template
+     */
+    public function testRequestTypeAnswerPrevailsOverPredefinedTemplateType(): void
+    {
+        $template = $this->createItem(
+            TicketTemplate::class,
+            ['name' => 'Template predefining incident type']
+        );
+        $this->createItem(
+            TicketTemplatePredefinedField::class,
+            [
+                'tickettemplates_id' => $template->getID(),
+                'num'                => 14, // Type
+                'value'              => Ticket::INCIDENT_TYPE,
+            ]
+        );
+        $itilcategory = $this->createItem(
+            ITILCategory::class,
+            [
+                'name'                         => 'Category with incident template',
+                'tickettemplates_id_incident'  => $template->getID(),
+                'tickettemplates_id_demand'    => $template->getID(),
+            ]
+        );
+
+        $form = $this->createAndGetFormWithTicketDestination();
+        $this->login();
+
+        $destinations = $form->getDestinations();
+        $this->assertCount(1, $destinations);
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    TemplateField::getKey() => (new TemplateFieldConfig(
+                        strategy: TemplateFieldStrategy::DEFAULT_TEMPLATE,
+                    ))->jsonSerialize(),
+                    ITILCategoryField::getKey() => (new ITILCategoryFieldConfig(
+                        strategy: ITILCategoryFieldStrategy::SPECIFIC_VALUE,
+                        specific_itilcategory_id: $itilcategory->getID(),
+                    ))->jsonSerialize(),
+                    RequestTypeField::getKey() => (new RequestTypeFieldConfig(
+                        strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
+                        specific_request_type: Ticket::DEMAND_TYPE,
+                    ))->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers(
+            $form,
+            [],
+            getItemByTypeName(\User::class, TU_USER, true)
+        );
+
+        $created_items = $answers->getCreatedItems();
+        $this->assertCount(1, $created_items);
+        $ticket = current($created_items);
+
+        $this->assertEquals(Ticket::DEMAND_TYPE, $ticket->fields['type']);
     }
 
     private function checkTemplateFieldConfiguration(

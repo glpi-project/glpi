@@ -743,39 +743,39 @@ class DBmysqlIteratorTest extends DbTestCase
     public function testOperators()
     {
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => 1]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` = ?', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` = ?', $this->cleanSQL($it->getSql()));
         $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['=', 1]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` = ?', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` = ?', $this->cleanSQL($it->getSql()));
         $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['>', 1]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` > ?', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` > ?', $this->cleanSQL($it->getSql()));
         $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['LIKE', '%bar%']]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` LIKE ?', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` LIKE ?', $this->cleanSQL($it->getSql()));
         $this->assertEquals(['%bar%'], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['NOT' => ['a' => ['LIKE', '%bar%']]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE NOT (`a` LIKE ?)', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE NOT (`a` LIKE ?)', $this->cleanSQL($it->getSql()));
         $this->assertEquals(['%bar%'], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['NOT LIKE', '%bar%']]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` NOT LIKE ?', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` NOT LIKE ?', $this->cleanSQL($it->getSql()));
         $this->assertEquals(['%bar%'], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['<>', 1]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` <> ?', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` <> ?', $this->cleanSQL($it->getSql()));
         $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['&', 1]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` & ?', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` & ?', $this->cleanSQL($it->getSql()));
         $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['|', 1]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` | ?', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` | ?', $this->cleanSQL($it->getSql()));
         $this->assertEquals([1], $it->getValues());
     }
 
@@ -927,19 +927,19 @@ class DBmysqlIteratorTest extends DbTestCase
     public function testLogical()
     {
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [['a' => 1, 'b' => 2]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE (`a` = ? AND `b` = ?)', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE (`a` = ? AND `b` = ?)', $this->cleanSQL($it->getSql()));
         $this->assertEquals([1, 2], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['AND' => ['a' => 1, 'b' => 2]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE (`a` = ? AND `b` = ?)', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE (`a` = ? AND `b` = ?)', $this->cleanSQL($it->getSql()));
         $this->assertEquals([1, 2], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['OR' => ['a' => 1, 'b' => 2]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE (`a` = ? OR `b` = ?)', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE (`a` = ? OR `b` = ?)', $this->cleanSQL($it->getSql()));
         $this->assertEquals([1, 2], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['NOT' => ['a' => 1, 'b' => 2]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE NOT (`a` = ? AND `b` = ?)', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE NOT (`a` = ? AND `b` = ?)', $this->cleanSQL($it->getSql()));
         $this->assertEquals([1, 2], $it->getValues());
 
         $crit = [
@@ -980,7 +980,7 @@ class DBmysqlIteratorTest extends DbTestCase
         ];
         $sql = "SELECT * FROM `foo` WHERE `a` = ? AND (`b` = ? OR NOT (`c` IN (?, ?) AND (`d` = ? AND `e` = ?)))";
         $it = $this->it->execute($crit);
-        $this->assertSame($sql, $it->getSql());
+        $this->assertSame($sql, $this->cleanSQL($it->getSql()));
         $this->assertEquals([1, 2, 2, 3, 4, 5], $it->getValues());
 
         $crit = [
@@ -991,7 +991,7 @@ class DBmysqlIteratorTest extends DbTestCase
             ],
         ];
         $it = $this->it->execute($crit);
-        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = ? AND ((SELECT COUNT(*) FROM xyz) = ?)", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = ? AND ((SELECT COUNT(*) FROM xyz) = ?)", $this->cleanSQL($it->getSql()));
         $this->assertEquals(['baz', 5], $it->getValues());
 
         $crit = [
@@ -1129,7 +1129,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['NOT' => ['bar' => $sub_query]]]);
         $this->assertSame(
             "SELECT * FROM `foo` WHERE NOT (`bar` IN $raw_subq)",
-            $it->getSql()
+            $this->cleanSQL($it->getSql())
         );
 
         $sub_query = new QuerySubQuery($crit, 'thesubquery');
@@ -1551,7 +1551,12 @@ class DBmysqlIteratorTest extends DbTestCase
         ];
 
         $it = $this->it->execute($criteria);
-        $this->assertSame($raw_query, $it->getSql());
+
+        // Assert same except for the union query alias at the end which can change based on whitepace differences
+        $expected_sql = $this->cleanSQL(preg_replace('/ AS `union_[a-f0-9]{32}`$/', ' AS `union_md5hash`', $raw_query));
+        $actual_sql = $this->cleanSQL(preg_replace('/ AS `union_[a-f0-9]{32}`$/', ' AS `union_md5hash`', $it->getSql()));
+        $this->assertSame($expected_sql, $actual_sql);
+
         $this->assertEquals($parameters, $it->getValues());
     }
 

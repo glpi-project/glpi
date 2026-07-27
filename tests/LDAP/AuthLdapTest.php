@@ -950,6 +950,51 @@ class AuthLdapTest extends DbTestCase
     }
 
     /**
+     * `AuthLDAP::processMassiveActionsForOneItemtype()` must resolve `mode` and `authldaps_id`
+     * from the massive action input (`$ma->getInput()`), not from the `$_REQUEST` superglobal,
+     * which is not populated when the action is replayed from `$_SESSION` (see MassiveAction's
+     * "process" stage reload) and triggers "Undefined array key" warnings for every processed
+     * item otherwise.
+     */
+    public function testProcessMassiveActionsForOneItemtypeSyncIgnoresRequest()
+    {
+        $this->login();
+
+        $ldap = $this->ldap;
+
+        // Pollute the request with values that must NOT be used, to prove the massive
+        // action input is used instead.
+        $_REQUEST['mode'] = 999;
+        $_REQUEST['authldaps_id'] = 0;
+
+        $ma = $this->getMockBuilder(\MassiveAction::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAction', 'addMessage', 'getInput', 'itemDone'])
+            ->getMock();
+        $ma->method('getAction')->willReturn('sync');
+        $ma->method('addMessage')->willReturn(null);
+        $ma->method('getInput')->willReturn([
+            'mode'         => AuthLDAP::ACTION_IMPORT,
+            'authldaps_id' => $ldap->getID(),
+        ]);
+
+        $results = [];
+        $ma->method('itemDone')->willReturnCallback(function ($itemtype, $ids, $result) use (&$results) {
+            $results[] = $result;
+        });
+
+        AuthLDAP::processMassiveActionsForOneItemtype($ma, new AuthLDAP(), ['ecuador0']);
+
+        unset($_REQUEST['mode'], $_REQUEST['authldaps_id']);
+
+        $this->assertCount(1, $results);
+
+        $user = new \User();
+        $this->assertTrue($user->getFromDBbyName('ecuador0'));
+        $this->assertSame($ldap->getID(), $user->fields['auths_id']);
+    }
+
+    /**
      * Test get groups
      *
      * @return void
@@ -2420,6 +2465,55 @@ class AuthLdapTest extends DbTestCase
             'users_id' => $users_id,
         ]);
         $this->assertCount(1, $gus);
+    }
+
+
+    /**
+     * Non-regression: reapplyRightRules() must preserve LDAP-attribute-based dynamic rights on Auth::EXTERNAL.
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testReapplyRightRulesPreservesLdapAttributeRuleOnExternalAuth(): void
+    {
+        $rule_builder = new RuleBuilder(__FUNCTION__, RuleRight::class);
+        $rule_builder->setEntity(0)
+            ->setIsRecursive(1)
+            ->addCriteria('employeenumber', \Rule::PATTERN_IS, 8)
+            ->addAction('assign', 'profiles_id', 5) // 'normal' profile
+            ->addAction('assign', 'entities_id', 1); // '_test_child_1' entity
+        $this->createRule($rule_builder);
+
+        // Real LDAP sync: assigns the dynamic profile/entity and records auths_id/user_dn.
+        $this->realLogin('brazil6', 'password', false);
+        $users_id = \User::getIdByName('brazil6');
+        $this->assertGreaterThan(0, $users_id);
+
+        $user = new \User();
+        $this->assertTrue($user->getFromDB($users_id));
+        $this->assertNotEmpty($user->fields['auths_id']);
+        $this->assertNotEmpty($user->fields['user_dn']);
+
+        // Simulate the SSO/OAuth login context: the plugin authenticates the
+        // user as Auth::EXTERNAL and calls reapplyRightRules() on the already
+        // LDAP-synced User object.
+        $user->fields['authtype'] = \Auth::EXTERNAL;
+        $user->reapplyRightRules();
+
+        $pu = Profile_User::getForUser($users_id, true);
+        $found = false;
+        foreach ($pu as $right) {
+            if (
+                isset($right['entities_id']) && $right['entities_id'] == 1
+                && isset($right['profiles_id']) && $right['profiles_id'] == 5
+                && isset($right['is_dynamic']) && $right['is_dynamic'] == 1
+            ) {
+                $found = true;
+                break;
+            }
+        }
+        $this->assertTrue(
+            $found,
+            'Dynamic right based on a LDAP attribute criterion was purged on Auth::EXTERNAL reapplyRightRules()'
+        );
     }
 
 

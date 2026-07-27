@@ -451,6 +451,7 @@ class SearchTest extends DbTestCase
         ];
 
         $data = $this->doSearch(Computer::class, $search_params);
+        $sql  = $this->cleanSQL($data['sql']['search']->getQuery());
 
         $regexps = [
             // join parts
@@ -489,7 +490,7 @@ class SearchTest extends DbTestCase
         foreach ($contains as $contain) {
             $this->assertStringContainsString(
                 $contain,
-                $data['sql']['search']->getQuery()
+                $sql
             );
         }
     }
@@ -515,6 +516,7 @@ class SearchTest extends DbTestCase
                 ],
             ],
         ]);
+        $sql = $this->cleanSQL($data['sql']['search']->getQuery());
 
         $default_charset = DBConnection::getDefaultCharset();
 
@@ -528,7 +530,7 @@ class SearchTest extends DbTestCase
         foreach ($contains as $contain) {
             $this->assertStringContainsString(
                 $contain,
-                $data['sql']['search']->getQuery()
+                $sql
             );
         }
 
@@ -546,13 +548,13 @@ class SearchTest extends DbTestCase
         foreach ($regexps as $regexp) {
             $this->assertMatchesRegularExpression(
                 $regexp,
-                $data['sql']['search']->getQuery()
+                $sql
             );
         }
 
         $this->assertDoesNotMatchRegularExpression(
             "/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE ?\s*\)\)/",
-            $data['sql']['search']->getQuery()
+            $sql
         );
     }
 
@@ -3010,14 +3012,15 @@ class SearchTest extends DbTestCase
             ],
         ];
         $data = $this->doSearch('AllAssets', $search_params);
+        $sql = $this->cleanSQL($data['sql']['search']->getQuery());
 
         $this->assertMatchesRegularExpression(
             "/OR\s*\(`glpi_entities`\.`completename`\s*LIKE \?\s*\)/",
-            $data['sql']['search']->getQuery()
+            $sql
         );
         $this->assertMatchesRegularExpression(
             "/OR\s*\(`glpi_states`\.`completename`\s*LIKE \?\s*\)/",
-            $data['sql']['search']->getQuery()
+            $sql
         );
 
         $types = [
@@ -3032,23 +3035,23 @@ class SearchTest extends DbTestCase
         foreach ($types as $type) {
             $this->assertStringContainsString(
                 "`$type`.`is_deleted` = ?",
-                $data['sql']['search']->getQuery()
+                $sql
             );
             $this->assertStringContainsString(
                 "AND `$type`.`is_template` = ?",
-                $data['sql']['search']->getQuery()
+                $sql
             );
             $this->assertStringContainsString(
                 "`$type`.`entities_id` IN (?, ?, ?, ?)",
-                $data['sql']['search']->getQuery()
+                $sql
             );
             $this->assertStringContainsString(
                 "OR (`$type`.`is_recursive` = ? AND `$type`.`entities_id` IN (?))",
-                $data['sql']['search']->getQuery()
+                $sql
             );
             $this->assertMatchesRegularExpression(
                 "/`$type`\.`name` LIKE \?/m",
-                $data['sql']['search']->getQuery()
+                $sql
             );
         }
 

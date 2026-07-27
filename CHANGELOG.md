@@ -200,6 +200,8 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- Fixed searching values with multiple concurrent spaces.
+- Fixed import of exported forms containing a condition on an item dropdown with no item selected.
 
 ### Deprecated
 
@@ -210,6 +212,7 @@ The present file will list all changes made to the project; according to the
 #### Added
 
 #### Changes
+- Duplicate spaces in some SQL queries, including values, (usually ones that used subqueries) no longer removed.
 
 #### Deprecated
 

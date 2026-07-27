@@ -183,7 +183,7 @@ class DBTest extends GLPITestCase
     {
         $instance = new \DB();
         $insert = $instance->buildInsert($table, $values);
-        $this->assertSame($expected_sql, $insert->getQuery());
+        $this->assertSame($expected_sql, $this->cleanSQL($insert->getQuery()));
         $this->assertSame($expected_values, $insert->getParams());
     }
 

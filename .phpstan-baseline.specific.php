@@ -117,6 +117,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method DbUtils\\:\\:getDbRelations\\(\\) should return array\\<string, array\\<string, list\\<array\\{string, string\\}\\|string\\>\\|string\\>\\> but returns array\\<array\\<list\\<array\\<mixed, mixed\\>\\|string\\>\\>\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method DbUtils\\:\\:getDbRelations\\(\\) should return array\\<string, array\\<string, list\\<array\\{string, string\\}\\|string\\>\\|string\\>\\> but returns array\\<array\\<list\\<array\\<mixed\\>\\|string\\>\\>\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type class\\-string\\<CommonDBTM\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 4,

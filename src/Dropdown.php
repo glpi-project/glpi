@@ -373,8 +373,6 @@ class Dropdown
                     } else {
                         $options_tooltip['link'] = $item::getSearchURL();
                     }
-                } else {
-                    $options_tooltip['awesome-class'] = 'btn btn-outline-secondary fa-info';
                 }
 
                 if (empty($comment)) {

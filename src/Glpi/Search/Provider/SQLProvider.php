@@ -5557,6 +5557,9 @@ final class SQLProvider implements SearchProviderInterface
                         );
                         $values = array_merge($values, $sub_sql->getParams());
                     }
+                } elseif (!isset($criterion['field'])) {
+                    // No field to filter on
+                    continue;
                 } elseif (
                     isset($meta_searchopt[$criterion['field']]["usehaving"])
                     || ($meta && "AND NOT" === $criterion['link'])

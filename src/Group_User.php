@@ -512,7 +512,7 @@ class Group_User extends CommonDBRelation
                     'label' => __('Delegatee'),
                     'filter_formatter' => 'yesno',
                 ],
-                'is_active' => [
+                'active' => [
                     'label' => __('Active'),
                     'filter_formatter' => 'yesno',
                 ],
@@ -523,7 +523,7 @@ class Group_User extends CommonDBRelation
                 'dynamic' => 'raw_html',
                 'manager' => 'raw_html',
                 'delegatee' => 'raw_html',
-                'is_active' => 'raw_html',
+                'active' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => $number,
