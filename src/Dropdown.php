@@ -41,6 +41,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\AssignableItem;
 use Glpi\Form\Category;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\SocketModel;
@@ -1572,12 +1573,10 @@ HTML;
      */
     public static function getLanguages()
     {
-        global $CFG_GLPI;
-
         $languages = [];
-        foreach ($CFG_GLPI["languages"] as $key => $val) {
-            if (isset($val[1]) && is_file(GLPI_ROOT . "/locales/" . $val[1])) {
-                $languages[$key] = $val[0];
+        foreach (LanguageRegistry::all() as $key => $language) {
+            if (is_file(GLPI_ROOT . "/locales/" . $language->mo_file)) {
+                $languages[$key] = $language->native_name;
             }
         }
 
@@ -1594,8 +1593,8 @@ HTML;
      **/
     public static function getLanguageName($value)
     {
-        global $CFG_GLPI;
-        return $CFG_GLPI["languages"][$value][0] ?? $value;
+        $language = LanguageRegistry::tryGet($value);
+        return $language !== null ? $language->native_name : $value;
     }
 
 

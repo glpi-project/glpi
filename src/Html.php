@@ -48,6 +48,7 @@ use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Inventory\Inventory;
 use Glpi\Kernel\Kernel;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\SecurityConfig;
 use Glpi\System\Log\LogViewer;
@@ -650,7 +651,7 @@ TWIG,
         $lang = $_SESSION['glpilanguage'] ?? Session::getPreferredLanguage();
 
         $tpl_vars = [
-            'lang'               => $CFG_GLPI["languages"][$lang][3],
+            'lang'               => LanguageRegistry::get($lang)->getPageLang(),
             'title'              => $title,
             'theme'              => $theme,
             'is_anonymous_page'  => false,
@@ -1200,7 +1201,7 @@ TWIG,
         /**
          * @var bool $HEADER_LOADED
          */
-        global $CFG_GLPI, $HEADER_LOADED, $DB;
+        global $HEADER_LOADED, $DB;
 
         // If in modal : display popHeader
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1314,7 +1315,7 @@ TWIG,
             // select2
             $filename = sprintf(
                 'lib/select2/js/i18n/%s.js',
-                $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]
+                LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code
             );
             if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 $tpl_vars['js_files'][] = ['path' => $filename];
@@ -3133,8 +3134,9 @@ JS;
         $language_RFC5646    = str_replace('_', '-', $_SESSION['glpilanguage']);      // convert to RFC5646 format (fr_FR -> fr-FR)
         $language_regionless = preg_replace('/_.*$/', '', $_SESSION['glpilanguage']); // fallback to regionless locale (fr_FR -> fr)
         $expected_languages  = [$language_RFC5646, $language_regionless];
-        if (array_key_exists($language_regionless, $CFG_GLPI['main_languages'])) {
-            $expected_languages[] = str_replace('_', '-', $CFG_GLPI['main_languages'][$language_regionless]); // fallback to main language (fr_CA -> fr_FR)
+        $main_language       = LanguageRegistry::getMainLanguage($language_regionless);
+        if ($main_language !== null) {
+            $expected_languages[] = str_replace('_', '-', $main_language); // fallback to main language (fr_CA -> fr_FR)
         }
         $language_opts = '';
         foreach ($expected_languages as $language) {
@@ -5485,7 +5487,7 @@ JS);
      */
     public static function requireJs($name)
     {
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $PLUGIN_HOOKS;
 
         if (isset($_SESSION['glpi_js_toload'][$name])) {
             //already in stack
@@ -5509,13 +5511,14 @@ JS);
                 $_SESSION['glpi_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
                 if (isset($_SESSION['glpilanguage'])) {
                     $filename = "lib/flatpickr/l10n/"
-                    . strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]) . ".js";
+                    . strtolower(LanguageRegistry::get($_SESSION['glpilanguage'])->js_code) . ".js";
                     if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                         $_SESSION['glpi_js_toload'][$name][] = $filename;
                         break;
                     }
                 }
                 break;
+
             case 'fileupload':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery-file-upload.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
@@ -5608,7 +5611,7 @@ JS);
         if (isset($_SESSION['glpilanguage'])) {
             // select2
             $filename = "lib/select2/js/i18n/"
-                     . $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2] . ".js";
+                     . LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code . ".js";
             if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 echo Html::script($filename);
             }

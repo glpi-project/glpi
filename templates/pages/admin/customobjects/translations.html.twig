@@ -90,7 +90,7 @@
                 {% for trans_data in translations %}
                     <tr data-field="{{ trans_data['id'] }}" data-language="{{ trans_data['language'] }}" data-translation="{{ trans_data['translation']|json_encode }}">
                         <td>{{ trans_data['name'] }}</td>
-                        <td lang="{{ trans_data['language'] }}">{{ config('languages')[trans_data['language']][0] }}</td>
+                        <td lang="{{ trans_data['language'] }}">{{ get_language_name(trans_data['language']) }}</td>
                         <td lang="{{ trans_data['language'] }}">
                             {% include "pages/admin/customobjects/plurals.html.twig" with {
                                 'plurals': trans_data['translation'],
