@@ -2137,7 +2137,7 @@ TWIG, $twig_params);
                     if (!$parent->getFromDB($parent_id) || !$parent->can($parent_id, READ)) {
                         continue;
                     }
-                    $href = self::getSearchURL() . "?knowbaseitems_id_parent=" . $parent_id . '&amp;forcetab=Knowbase$2';
+                    $href = self::getSearchURL() . "?knowbaseitems_id_parent=" . $parent_id . '&forcetab=Knowbase$2';
                     $parents_names[] = "<a class='kb-parent' href='" . htmlescape($href) . "'"
                         . " data-parent-id='" . htmlescape($parent_id) . "'>"
                         . htmlescape($parent->fields['name']) . '</a>';
