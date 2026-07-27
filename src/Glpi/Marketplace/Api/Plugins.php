@@ -38,7 +38,6 @@ namespace Glpi\Marketplace\Api;
 use Glpi\Toolbox\HttpClient;
 use GLPINetwork;
 use Session;
-use Symfony\Component\HttpClient\Response\MockResponse;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
@@ -97,8 +96,7 @@ class Plugins
         string $method = 'GET'
     ) {
         if (!GLPINetwork::isRegistered()) {
-            // Simulate empty response if registration key is not valid
-            return new MockResponse('[]', ['http_code' => 200]);
+            return false;
         }
 
         $options['headers'] = array_merge_recursive(
