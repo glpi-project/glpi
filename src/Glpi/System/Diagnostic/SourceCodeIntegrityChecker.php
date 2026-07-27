@@ -52,6 +52,8 @@ use Throwable;
 
 use function Safe\file_get_contents;
 use function Safe\fileperms;
+use function Safe\fopen;
+use function Safe\fwrite;
 use function Safe\hash_file;
 use function Safe\json_decode;
 use function Safe\preg_replace;
@@ -242,7 +244,12 @@ class SourceCodeIntegrityChecker
                         break;
                     }
                     $url = $asset['browser_download_url'];
-                    $client->get($url, ['sink' => $dest]);
+                    $client->get($url);
+
+                    $file = fopen($dest, 'w');
+                    foreach ($client->stream($response) as $chunk) {
+                        fwrite($file, $chunk->getContent());
+                    }
                     break;
                 }
             }

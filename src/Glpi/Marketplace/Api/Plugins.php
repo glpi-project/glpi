@@ -38,16 +38,19 @@ namespace Glpi\Marketplace\Api;
 use Glpi\Toolbox\HttpClient;
 use GLPINetwork;
 use Session;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
+use function Safe\fopen;
+use function Safe\fwrite;
 use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\session_write_close;
 
 class Plugins
 {
-    protected ?HttpClient $httpClient = null;
+    protected HttpClient $httpClient;
 
     protected bool $last_request_failed = false;
 
@@ -86,7 +89,7 @@ class Plugins
      *
      * @param string $endpoint which resource whe need to query
      * @param array $options array of options for guzzle lib
-     * @param string $method GET/POST, etc
+     * @param Request::METHOD_* $method GET/POST, etc
      *
      * @return ResponseInterface|false
      */
@@ -132,7 +135,7 @@ class Plugins
      *
      * @param string $endpoint which resource whe need to query
      * @param array $options array of options for guzzle lib
-     * @param string $method GET/POST, etc
+     * @param Request::METHOD_* $method GET/POST, etc
      *
      * @return array full collection
      */
@@ -352,7 +355,7 @@ class Plugins
         $this->request(
             "plugin/{$key}/download/{$version}",
             [
-                'allow_redirects' => false, // Prevent follow redirects to download page sent by Plugins API
+                'max_redirects' => 0, // Prevent follow redirects to download page sent by Plugins API
             ]
         );
     }
@@ -439,11 +442,10 @@ class Plugins
             'headers'  => [
                 'Accept' => '*/*',
             ],
-            'sink'     => $dest,
         ];
         if ($track_progress) {
             // track download progress
-            $options['progress'] = function ($downloadTotal, $downloadedBytes) use ($plugin_key) {
+            $options['on_progress'] = function ($downloadedBytes, $downloadTotal) use ($plugin_key) {
                 if (PHP_SAPI !== 'cli') {
                     // Prevent "net::ERR_RESPONSE_HEADERS_TOO_BIG" error
                     // Each time Session::start() is called, PHP add a 'Set-Cookie' header,
@@ -483,7 +485,16 @@ class Plugins
             $_SESSION['marketplace_dl_progress'][$plugin_key] = 100;
         }
 
-        return $response !== false && $response->getStatusCode() === 200;
+        if ($response === false || $response->getStatusCode() !== 200) {
+            return false;
+        }
+
+        $file = fopen($dest, 'w');
+        foreach ($this->httpClient->stream($response) as $chunk) {
+            fwrite($file, $chunk->getContent());
+        }
+
+        return true;
     }
 
     /**

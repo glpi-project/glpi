@@ -11264,12 +11264,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Mail/SMTP/OauthConfig.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on Glpi\\\\Toolbox\\\\HttpClient\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Marketplace/Api/Plugins.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method addVolume\\(\\) on CronTask\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,

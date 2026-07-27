@@ -48,6 +48,7 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
+use Symfony\Contracts\HttpClient\ResponseStreamInterface;
 
 final class HttpClient
 {
@@ -160,5 +161,16 @@ final class HttpClient
     public function post(string $uri = '', array $options = []): ResponseInterface
     {
         return $this->request(Request::METHOD_POST, $uri, $options);
+    }
+
+    /**
+     * Yields response chunk by chunk as it complete.
+     *
+     * @param ResponseInterface $response   Response created by the current HTTP client
+     * @param float|null        $timeout    The idle timeout before yielding timeout chunks
+     */
+    public function stream(ResponseInterface $response, ?float $timeout = null): ResponseStreamInterface
+    {
+        return $this->client->stream($response, $timeout);
     }
 }
