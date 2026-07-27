@@ -36,26 +36,16 @@
 {#  script to push totp_code[] input in a flat hidden input
     this script might be handled in the component with an argument
 #}
-
 <script>
-   $(document).ready(function() {
-      $('input[name="totp_code[]"]').on('keyup', function(e) {
-         if (e.which !== 8 && $(this).val().length === 1) {
-            const next = $(this).next('input[name="totp_code[]"]');
-            if (next.length) {
-               next.focus();
-            } else {
-               $(this).closest('form').submit();
-            }
-         }
-      }).on('input', function() {
-         let value = '';
-         $('input[name="totp_code[]"]').each(function() {
-            value += $(this).val();
-         });
-         $('#user_input').val(value);
-      });
-   });
+    jQuery(function () {
+        $('input[name="totp_code[]"]').on('input', function () {
+            let value = '';
+            $('input[name="totp_code[]"]').each(function () {
+                value += $(this).val();
+            });
+            $('#user_input').val(value);
+        })
+    })
 </script>
 <input type="hidden" name="user_input" id="user_input" value="" />
 
