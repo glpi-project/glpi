@@ -7568,12 +7568,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Altcha/AltchaManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Altcha\\\\AltchaManager\\:\\:\\$_instances type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Altcha/AltchaManager.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:applyMassiveAction\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -12524,12 +12518,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Features/AssignableItemInterface.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Features\\\\CloneMapper\\:\\:\\$_instances type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Features/CloneMapper.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Features\\\\KanbanInterface\\:\\:getAllForKanban\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -13161,12 +13149,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Clone\\\\FormCloneHelper\\:\\:updateQuestionIdReferencesInCommonItilDestinationFieldInput\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Clone/FormCloneHelper.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Form\\\\Clone\\\\FormCloneHelper\\:\\:\\$_instances type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Clone/FormCloneHelper.php',
@@ -15602,12 +15584,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Migration/TypesConversionMapper.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Form\\\\Migration\\\\TypesConversionMapper\\:\\:\\$_instances type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Migration/TypesConversionMapper.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Question\\:\\:getDefaultValue\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -16502,19 +16478,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Section.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Form\\\\ServiceCatalog\\\\HomeSearchManager\\:\\:\\$_instances type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/ServiceCatalog/HomeSearchManager.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\ServiceCatalog\\\\Provider\\\\FormProvider\\:\\:getCachedEntityRestriction\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/ServiceCatalog/Provider/FormProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Form\\\\ServiceCatalog\\\\Provider\\\\FormProvider\\:\\:\\$_instances type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/ServiceCatalog/Provider/FormProvider.php',
@@ -16524,12 +16488,6 @@ $ignoreErrors[] = [
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/ServiceCatalog/Provider/FormProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Form\\\\ServiceCatalog\\\\ServiceCatalogManager\\:\\:\\$_instances type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/ServiceCatalog/ServiceCatalogManager.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Tag\\\\FormTagsManager\\:\\:filterTags\\(\\) has parameter \\$tags with no value type specified in iterable type array\\.$#',
@@ -18174,12 +18132,6 @@ $ignoreErrors[] = [
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Toolbox/MarkdownBuilder.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Toolbox\\\\UuidStore\\:\\:\\$_instances type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Toolbox/UuidStore.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Toolbox\\\\UuidStore\\:\\:\\$store type has no value type specified in iterable type array\\.$#',
