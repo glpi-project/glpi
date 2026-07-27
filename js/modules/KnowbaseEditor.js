@@ -257,7 +257,7 @@ class KnowbaseEditor {
             { command: 'setLink', icon: 'ti ti-link', title: _x('button', 'Link'), special: 'link' },
             { command: 'unsetLink', icon: 'ti ti-link-off', title: __('Remove link'), special: 'unlink' },
             { type: 'divider' },
-            { command: 'comment', icon: 'ti ti-message-circle-plus', title: __('Comment'), special: 'comment' },
+            { command: 'comment', icon: 'ti ti-message-circle-plus', title: _x('button', 'Comment'), special: 'comment' },
         ];
 
         buttons.forEach((btn) => {
