@@ -6620,20 +6620,26 @@ HTML;
     public function applyGroupsRules()
     {
         if (!isset($this->input["_ldap_rules"]['groups_id'])) {
-            if (isset($this->input["_ldap_rules"]) && isset($this->input['id'])) {
+            // Only remove previously auto-assigned dynamic groups when a fresh LDAP group fetch just
+            // happened (syncLdapGroups() sets this session key from a live directory read). Without
+            // fresh data, we have nothing reliable to compare against, so existing dynamic groups
+            // (e.g. from an earlier sync) are left as-is.
+            if (
+                isset($this->input["_ldap_rules"])
+                && isset($this->input['id'])
+                && isset($_SESSION['_ldap_groups'])
+            ) {
                 $group_user = new Group_User();
                 $groups = $group_user->find([
                     'users_id' => $this->input['id'],
                     'is_dynamic' => true,
                 ]);
                 foreach ($groups as $group) {
-                    if (!isset($_SESSION['_ldap_groups']) || !in_array($group['groups_id'], $_SESSION['_ldap_groups'])) {
+                    if (!in_array($group['groups_id'], $_SESSION['_ldap_groups'])) {
                         $group_user->delete($group);
                     }
                 }
-                if (isset($_SESSION['_ldap_groups'])) {
-                    unset($_SESSION['_ldap_groups']);
-                }
+                unset($_SESSION['_ldap_groups']);
             }
             return;
         }
