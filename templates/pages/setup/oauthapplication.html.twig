@@ -73,7 +73,7 @@
 
                             {{ fields.passwordField(
                                 'client_secret',
-                                item.fields['client_secret'],
+                                item.fields['client_secret']|decrypt,
                                 __('Client Secret'),
                                 {
                                     is_disclosable: true,
