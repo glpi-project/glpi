@@ -67,10 +67,15 @@ export class ReadModeSelectionBubble {
         const button = document.createElement('button');
         button.type = 'button';
         button.className = 'bubble-menu-btn';
-        button.title = __('Comment');
+
+        const label = document.createElement('span');
+        label.textContent = __('Comment');
+        button.appendChild(label);
 
         const icon = document.createElement('i');
         icon.className = 'ti ti-message-circle-plus';
+        // Decorative: the label already names the button.
+        icon.setAttribute('aria-hidden', 'true');
         button.appendChild(icon);
 
         button.addEventListener('mousedown', (e) => {
@@ -119,8 +124,13 @@ export class ReadModeSelectionBubble {
 
         const rect = range.getBoundingClientRect();
         this.#bubble.style.display = '';
+
+        // Centered on the selection's bounding box, clamped to the viewport.
+        const max_left = document.documentElement.clientWidth - this.#bubble.offsetWidth;
+        const left = Math.min(Math.max(0, rect.left + (rect.width - this.#bubble.offsetWidth) / 2), max_left);
+
         this.#bubble.style.top = `${window.scrollY + rect.top - this.#bubble.offsetHeight - 8}px`;
-        this.#bubble.style.left = `${window.scrollX + rect.left}px`;
+        this.#bubble.style.left = `${window.scrollX + left}px`;
     }
 
     #hide() {

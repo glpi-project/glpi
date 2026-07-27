@@ -847,6 +847,13 @@
     }
 }
 
+// Single labelled action, so it grows past the icon-only 2rem square.
+.kb-read-mode-comment-bubble .bubble-menu-btn {
+    width: auto;
+    gap: 0.375rem;
+    padding: 0 0.5rem;
+}
+
 // Grip-triggered table delete control
 .kb-table-menu {
     .kb-table-delete {
