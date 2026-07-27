@@ -44,6 +44,11 @@ export class GlpiKnowbaseArticleSidePanelController
     static #OFFCANVAS_BREAKPOINT = 1500;
 
     /**
+     * @type {number} Fallback delay, above the 0.35s CSS transition.
+     */
+    static #OPEN_TIMEOUT = 500;
+
+    /**
      * @type {HTMLElement}
      */
     #sidepanel_container;
@@ -103,16 +108,64 @@ export class GlpiKnowbaseArticleSidePanelController
         });
     }
 
+    /**
+     * @returns {Promise<void>} Resolves once the panel finished opening, so
+     * callers measure a settled layout instead of an animating one.
+     */
     #open()
     {
         if (this.#isSmallScreen()) {
-            const offcanvas = bootstrap.Offcanvas.getOrCreateInstance(this.#offcanvas_container);
-            offcanvas.show();
-        } else {
-            this.#sidepanel_container.classList.remove('closed');
-            this.#article.classList.remove('col-12');
-            this.#article.classList.add('col-9');
+            if (this.#offcanvas_container.classList.contains('show')) {
+                return Promise.resolve();
+            }
+            const shown = new Promise((resolve) => {
+                this.#offcanvas_container.addEventListener(
+                    'shown.bs.offcanvas',
+                    () => resolve(),
+                    { once: true }
+                );
+            });
+            bootstrap.Offcanvas.getOrCreateInstance(this.#offcanvas_container).show();
+            return shown;
         }
+
+        if (!this.#sidepanel_container.classList.contains('closed')) {
+            return Promise.resolve();
+        }
+
+        const opened = GlpiKnowbaseArticleSidePanelController.#whenWidthSettles(
+            this.#sidepanel_container
+        );
+        this.#sidepanel_container.classList.remove('closed');
+        this.#article.classList.remove('col-12');
+        this.#article.classList.add('col-9');
+
+        return opened;
+    }
+
+    /**
+     * Resolve when `element`'s width transition ends, or on timeout when none
+     * runs (reduced motion, no transition...).
+     * @param {HTMLElement} element
+     * @returns {Promise<void>}
+     */
+    static #whenWidthSettles(element)
+    {
+        return new Promise((resolve) => {
+            let timer = null;
+            const done = () => {
+                clearTimeout(timer);
+                element.removeEventListener('transitionend', onEnd);
+                resolve();
+            };
+            const onEnd = (e) => {
+                if (e.target === element && e.propertyName === 'width') {
+                    done();
+                }
+            };
+            timer = setTimeout(done, GlpiKnowbaseArticleSidePanelController.#OPEN_TIMEOUT);
+            element.addEventListener('transitionend', onEnd);
+        });
     }
 
     #close()
@@ -150,7 +203,7 @@ export class GlpiKnowbaseArticleSidePanelController
 
         // jQuery's .html() trigger scripts execution, which is needed for select2 and tinymce
         $(target).html(html);
-        this.#open();
+        const opened = this.#open();
 
         // Notify controllers that new content was loaded
         target.dispatchEvent(new CustomEvent('glpi:kb:panel-loaded', {
@@ -161,6 +214,10 @@ export class GlpiKnowbaseArticleSidePanelController
         new bootstrap.Tooltip(target, {
             selector: "[data-bs-toggle='tooltip']"
         });
+
+        // Callers measuring the panel (scrollToComment...) need the open
+        // animation done, so only resolve once the layout settled.
+        await opened;
     }
 
     /**
