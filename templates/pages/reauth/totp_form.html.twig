@@ -33,7 +33,11 @@
 {% import 'pages/2fa/macros.html.twig' as tfa %}
 
 <p class="text-muted mb-2">{{ __('Please enter the code from your authenticator app') }}</p>
-{{ tfa.tfa_code_input() }}
+<twig:Mfa:CodeInput />
+
+{#  script to push totp_code[] input in a flat hidden input
+    this script might be handled in the component with an argument
+#}
 
 <script>
    $(document).ready(function() {
