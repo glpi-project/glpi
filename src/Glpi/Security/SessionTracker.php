@@ -596,9 +596,11 @@ final class SessionTracker
             }
 
             if ($data['_type'] === 'api') {
+                $session['internal_identifier'] = $data['id'];
                 $session['details'] = '<span class="fw-bold">' . htmlescape($data['client_name']) . '</span>&nbsp;&middot;&nbsp;';
                 $session['details'] .= '<span class="text-muted">' . htmlescape(implode(', ', json_decode($data['scopes'], true))) . '</span>';
             } else {
+                $session['internal_identifier'] = $data['login_session_uid'];
                 $dd->setUserAgent($data['user_agent']);
                 $dd->parse();
 
