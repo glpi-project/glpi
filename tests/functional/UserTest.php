@@ -2682,9 +2682,15 @@ class UserTest extends DbTestCase
         $this->assertStringStartsWith(__FUNCTION__ . '_2', $tree[0]['title']);
     }
 
+    public function testLdapGroupBatchModeDefaultsFalse(): void
+    {
+        $prop = (new \ReflectionClass(User::class))->getProperty('ldap_group_batch_mode');
+        $this->assertFalse($prop->getValue(null));
+    }
+
     /**
-     * Verify that getFromLDAPGroupDiscret() routes to the cached path when the
-     * LDAP_MATCHING_RULE_IN_CHAIN OID is present in group_member_field.
+     * Verify that getFromLDAPGroupDiscret() routes to the cached path only when
+     * batch mode is enabled and the LDAP_MATCHING_RULE_IN_CHAIN OID is present.
      *
      * The cached path queries GLPI groups from DB (no LDAP call when DB is empty)
      * and returns true, while the standard path returns false when
@@ -2727,7 +2733,10 @@ class UserTest extends DbTestCase
         );
         $this->assertFalse($result);
 
-        // CHAIN OID present + group_field set → cached path → true.
+        // Batch mode required: cached path is only active during batch sync.
+        User::enableLdapGroupBatchMode();
+
+        // CHAIN OID present + batch mode + group_field set → cached path → true.
         // No groups with ldap_group_dn exist in DB, so no ldap_search is fired.
         $result = $this->callPrivateMethod(
             $user,
@@ -2776,6 +2785,7 @@ class UserTest extends DbTestCase
 
         $userdn = 'uid=cachetest,dc=example,dc=com';
 
+        User::enableLdapGroupBatchMode();
         $user1 = new User();
 
         // First call — DB has no groups with ldap_group_dn, cache is primed as empty.
