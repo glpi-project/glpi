@@ -8,7 +8,7 @@
         "node": ">= 24.11"
     },
     "dependencies": {
-        "@floating-ui/dom": "^1.7.6",
+        "@floating-ui/dom": "^1.8.0",
         "@fontsource-utils/scss": "^0.2.2",
         "@fontsource/inter": "^5.2.8",
         "@fortawesome/fontawesome-free": "^7.3.1",
