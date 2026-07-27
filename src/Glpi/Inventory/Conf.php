@@ -69,6 +69,7 @@ use Monitor;
 use NetworkPort;
 use NetworkPortType;
 use OAuthClient;
+use Override;
 use Peripheral;
 use Plugin;
 use Printer;
@@ -755,7 +756,7 @@ class Conf extends CommonGLPI
         return "ti ti-adjustments";
     }
 
-    #[\Override]
+    #[Override]
     protected static function itemTypeRequiresReauthentication(): bool
     {
         return true;

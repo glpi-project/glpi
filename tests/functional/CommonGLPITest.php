@@ -323,6 +323,7 @@ class ReauthTestItem extends CommonGLPI
         return self::$allowed;
     }
 
+    #[\Override]
     protected static function itemTypeRequiresReauthentication(): bool
     {
         return self::$requires_reauth;
