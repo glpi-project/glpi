@@ -73,6 +73,30 @@ export class GlpiKnowbaseAsideController
     #actions_cache = new Map();
 
     /**
+     * Viewport width (px) under which the aside becomes a sliding overlay.
+     * @type {number}
+     */
+    static #COLLAPSE_BREAKPOINT = 992;
+
+    /**
+     * localStorage key persisting the desktop collapsed preference.
+     * @type {string}
+     */
+    static #STORAGE_KEY = 'glpi-kb-aside-collapsed';
+
+    /** @type {HTMLElement|null} */
+    #collapse_btn = null;
+
+    /** @type {HTMLElement|null} */
+    #expand_btn = null;
+
+    /** @type {HTMLElement|null} */
+    #body = null;
+
+    /** @type {HTMLElement|null} */
+    #backdrop = null;
+
+    /**
      * @param {HTMLElement} aside
      */
     constructor(aside)
@@ -82,6 +106,7 @@ export class GlpiKnowbaseAsideController
         this.#initSearch();
         this.#initCreateArticle();
         this.#initActions();
+        this.#initToggle();
     }
 
     #initCategoryToggle()
@@ -112,6 +137,128 @@ export class GlpiKnowbaseAsideController
 
             this.#persistCategoryFold(node.dataset.glpiKbAsideCategory, new_collapsed_state);
         });
+    }
+
+    #initToggle()
+    {
+        this.#collapse_btn = this.#aside.querySelector('[data-glpi-kb-aside-collapse]');
+        this.#expand_btn   = this.#aside.querySelector('[data-glpi-kb-aside-expand]');
+        this.#body         = this.#aside.querySelector('[data-glpi-kb-aside-body]');
+
+        // Defensive: the aside may render without the toggle controls.
+        if (!this.#collapse_btn || !this.#expand_btn || !this.#body) {
+            return;
+        }
+
+        // Restore the persisted desktop collapsed state; the overlay starts closed.
+        if (this.#readCollapsed()) {
+            this.#aside.setAttribute('data-glpi-kb-aside-collapsed', '');
+        }
+        this.#syncAria();
+
+        // Commit the initial state (reflow) before enabling transitions, so only user toggles animate.
+        void this.#aside.offsetWidth;
+        this.#aside.classList.add('kb-aside-animated');
+
+        this.#collapse_btn.addEventListener('click', () => this.#close());
+        this.#expand_btn.addEventListener('click', () => this.#open());
+
+        // Close the mobile overlay on Escape.
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.#aside.hasAttribute('data-glpi-kb-aside-open')) {
+                this.#close();
+            }
+        });
+
+        // Reset the transient overlay state when crossing the breakpoint.
+        let was_mobile = this.#isMobile();
+        window.addEventListener('resize', () => {
+            const now_mobile = this.#isMobile();
+            if (now_mobile !== was_mobile) {
+                was_mobile = now_mobile;
+                this.#aside.removeAttribute('data-glpi-kb-aside-open');
+                this.#removeBackdrop();
+                this.#syncAria();
+            }
+        });
+    }
+
+    #isMobile()
+    {
+        return window.innerWidth < GlpiKnowbaseAsideController.#COLLAPSE_BREAKPOINT;
+    }
+
+    // localStorage can throw when storage is blocked (enterprise policy…); degrade to no persistence.
+    #readCollapsed()
+    {
+        try {
+            return window.localStorage.getItem(GlpiKnowbaseAsideController.#STORAGE_KEY) === '1';
+        } catch {
+            return false;
+        }
+    }
+
+    #storeCollapsed(collapsed)
+    {
+        try {
+            window.localStorage.setItem(GlpiKnowbaseAsideController.#STORAGE_KEY, collapsed ? '1' : '0');
+        } catch { /* storage unavailable */ }
+    }
+
+    #open()
+    {
+        if (this.#isMobile()) {
+            this.#aside.setAttribute('data-glpi-kb-aside-open', '');
+            this.#addBackdrop();
+        } else {
+            this.#aside.removeAttribute('data-glpi-kb-aside-collapsed');
+            this.#storeCollapsed(false);
+        }
+        this.#syncAria();
+        // Focus the control that stays visible, else focus is stranded on a hidden button.
+        this.#collapse_btn.focus();
+    }
+
+    #close()
+    {
+        if (this.#isMobile()) {
+            this.#aside.removeAttribute('data-glpi-kb-aside-open');
+            this.#removeBackdrop();
+        } else {
+            this.#aside.setAttribute('data-glpi-kb-aside-collapsed', '');
+            this.#storeCollapsed(true);
+        }
+        this.#syncAria();
+        // Collapsed: the chevron is hidden, so focus the rail's expand button.
+        this.#expand_btn.focus();
+    }
+
+    #syncAria()
+    {
+        const body_visible = this.#isMobile()
+            ? this.#aside.hasAttribute('data-glpi-kb-aside-open')
+            : !this.#aside.hasAttribute('data-glpi-kb-aside-collapsed');
+        this.#collapse_btn.setAttribute('aria-expanded', String(body_visible));
+        this.#expand_btn.setAttribute('aria-expanded', String(body_visible));
+    }
+
+    #addBackdrop()
+    {
+        if (this.#backdrop) {
+            return;
+        }
+        this.#backdrop = document.createElement('div');
+        this.#backdrop.className = 'kb-aside-backdrop';
+        this.#backdrop.addEventListener('click', () => this.#close());
+        document.body.appendChild(this.#backdrop);
+    }
+
+    #removeBackdrop()
+    {
+        if (this.#backdrop) {
+            this.#backdrop.remove();
+            this.#backdrop = null;
+        }
     }
 
     #initCreateArticle()

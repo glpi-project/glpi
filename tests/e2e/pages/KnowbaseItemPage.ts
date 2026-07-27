@@ -173,6 +173,31 @@ export class KnowbaseItemPage extends GlpiPage
         return this.page.getByRole('main').getByRole('complementary');
     }
 
+    public getAsideTitle(): Locator
+    {
+        return this.aside.getByRole('heading', { name: 'Articles' });
+    }
+
+    public getAsideCollapseButton(): Locator
+    {
+        return this.aside.getByRole('button', { name: 'Collapse articles list' });
+    }
+
+    public getAsideExpandButton(): Locator
+    {
+        return this.aside.getByRole('button', { name: 'Show articles list' });
+    }
+
+    public async doCollapseAside(): Promise<void>
+    {
+        await this.getAsideCollapseButton().click();
+    }
+
+    public async doExpandAside(): Promise<void>
+    {
+        await this.getAsideExpandButton().click();
+    }
+
     public getAsideTreeArticleRow(id: number): Locator
     {
         return this.aside.locator(`[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${id}"]`);

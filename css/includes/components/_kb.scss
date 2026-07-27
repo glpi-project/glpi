@@ -1307,3 +1307,123 @@
         }
     }
 }
+
+[data-main-page-aside="knowbaseitem"] {
+    // Animate max-width so open and close both glide; JS gate skips the on-load snap.
+    &.kb-aside-animated {
+        transition: max-width 0.35s ease-in-out;
+    }
+
+    // Layout in CSS, not `.d-flex`: its `!important` would beat the collapsed `display: none`.
+    [data-glpi-kb-aside-body] {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    // Rail launcher, shown only when collapsed.
+    .kb-aside-rail {
+        display: none;
+        flex-direction: column;
+    }
+
+    // Both toggle buttons: bare icons, no hover fill; keyboard focus keeps a ring.
+    [data-glpi-kb-aside-collapse],
+    [data-glpi-kb-aside-expand] {
+        width: 1.75rem;
+        height: 1.75rem;
+        min-width: 0;
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        color: var(--tblr-secondary);
+
+        &:hover,
+        &:focus,
+        &:active {
+            background: transparent;
+            box-shadow: none;
+            color: var(--tblr-body-color);
+        }
+
+        &:focus-visible {
+            box-shadow: 0 0 0 0.2rem rgb(var(--tblr-secondary-rgb), 0.35);
+        }
+    }
+
+    // Right-align the collapse icon with the search field's right border.
+    [data-glpi-kb-aside-collapse] {
+        justify-content: flex-end;
+    }
+
+    // Desktop collapse via max-width + overflow:hidden (zeroes the flex min so the column shrinks to the rail).
+    @media (min-width: 992px) {
+        &[data-glpi-kb-aside-collapsed] {
+            max-width: 2.75rem;
+            overflow: hidden;
+
+            [data-glpi-kb-aside-body] {
+                display: none;
+            }
+
+            .kb-aside-rail {
+                display: flex;
+            }
+        }
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-main-page-aside="knowbaseitem"].kb-aside-animated {
+        transition: none;
+    }
+}
+
+@media (max-width: 991.98px) {
+    [data-main-page-aside="knowbaseitem"] {
+        // Shrink to the rail; the body floats over content as an overlay.
+        flex: 0 0 auto;
+        width: 2.75rem;
+        overflow: visible;
+
+        .kb-aside-rail {
+            display: flex;
+        }
+
+        [data-glpi-kb-aside-body] {
+            position: fixed;
+            inset-block: 0;
+            inset-inline-start: 0;
+            width: min(320px, 85vw);
+            background-color: var(--tblr-card-cap-bg);
+            border-inline-end: 1px solid var(--tblr-border-color);
+            transform: translateX(-100%);
+
+            // visibility (not opacity) keeps the closed overlay out of the tab order.
+            visibility: hidden;
+            transition: transform 0.3s ease, visibility 0.3s ease;
+            overflow-y: auto;
+            z-index: 1045;
+        }
+
+        &[data-glpi-kb-aside-open] [data-glpi-kb-aside-body] {
+            transform: translateX(0);
+            visibility: visible;
+        }
+    }
+
+    .kb-aside-backdrop {
+        position: fixed;
+        inset: 0;
+        background-color: rgb(0 0 0 / 40%);
+        z-index: 1044;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-main-page-aside="knowbaseitem"] [data-glpi-kb-aside-body] {
+        transition: none;
+    }
+}
