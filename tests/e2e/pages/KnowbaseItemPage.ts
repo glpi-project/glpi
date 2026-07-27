@@ -416,6 +416,29 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
+     * Select the paragraph containing `text` the way a triple-click does, with
+     * Range boundaries on the element instead of on a text node.
+     */
+    public async selectWholeParagraphInReadMode(text: string): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- same container TipTapEditorHelper uses
+        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
+        await this.page.evaluate((needle) => {
+            const paragraph = [...document.querySelectorAll('[data-glpi-kb-content] p')]
+                .find((candidate) => (candidate.textContent ?? '').includes(needle));
+            const selection = window.getSelection();
+            if (!paragraph || !selection) {
+                return;
+            }
+            const range = document.createRange();
+            range.selectNodeContents(paragraph);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.dispatchEvent(new Event('selectionchange'));
+        }, text);
+    }
+
+    /**
      * All comment-anchor highlights currently rendered in the article content.
      */
     public getCommentHighlights(): Locator

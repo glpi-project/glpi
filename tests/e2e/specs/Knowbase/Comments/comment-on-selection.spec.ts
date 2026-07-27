@@ -107,6 +107,50 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await expect(kb.getComment('Comment for click-to-open test')).toBeVisible();
     });
 
+    test('A highlight created in read mode is still shown in edit mode', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test cross-mode highlight',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>An anchored passage near the start</p>',
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode('anchored passage');
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment kept across modes');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment kept across modes')).toBeVisible();
+
+        await page.reload();
+        await kb.waitForArticleReady();
+        await expect(kb.getCommentHighlightByText('anchored passage')).toBeVisible();
+
+        // ProseMirror text has none of the template's indentation whitespace.
+        await kb.editor.enterEditMode();
+        await expect(kb.getCommentHighlightByText('anchored passage')).toBeVisible();
+    });
+
+    test('Commenting works on a selection spanning a whole paragraph', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test paragraph-wide selection',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>A whole paragraph selected at once</p>',
+        });
+
+        await kb.goto(id);
+        // Range boundaries land on the <p>, not on a text node.
+        await kb.selectWholeParagraphInReadMode('whole paragraph');
+        await kb.readModeCommentBubble.click();
+
+        await expect(kb.getPendingAnchorQuote()).toHaveText('A whole paragraph selected at once');
+    });
+
     test('A comment survives editing away its quoted text, without a highlight', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);

@@ -33,8 +33,27 @@
 import { overlaps } from '/js/modules/Knowbase/CommentAnchor.js';
 
 /**
- * Build a plain-text index of `root`'s text nodes (concatenated, no separator
- * at block boundaries — matches CommentPosition.js's ProseMirror-side index).
+ * Indentation between block tags: renders as nothing and absent from the
+ * ProseMirror index, unlike an inline space (`<b>a</b> <i>b</i>`).
+ * @param {Text} node
+ * @returns {boolean}
+ */
+function isFormattingWhitespace(node) {
+    if (node.nodeValue.trim() !== '') {
+        return false;
+    }
+    const parent = node.parentElement;
+    if (parent === null) {
+        return false;
+    }
+    return [...parent.children].some(
+        (child) => !/^(inline|contents)/.test(getComputedStyle(child).display)
+    );
+}
+
+/**
+ * Plain-text index of `root`'s rendered text nodes, concatenated with no
+ * separator — matches CommentPosition.js's ProseMirror-side index.
  * @param {Element} root
  * @returns {{text: string, segments: Array<{node: Text, start: number, end: number}>}}
  */
@@ -44,31 +63,62 @@ export function buildDomTextIndex(root) {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
     let node = walker.nextNode();
     while (node) {
-        const start = text.length;
-        text += node.nodeValue;
-        segments.push({ node, start, end: text.length });
+        if (!isFormattingWhitespace(node)) {
+            const start = text.length;
+            text += node.nodeValue;
+            segments.push({ node, start, end: text.length });
+        }
         node = walker.nextNode();
     }
     return { text, segments };
 }
 
 /**
- * Convert a DOM Range into plain-text offsets. Only handles start/end
- * containers that are indexed text nodes; returns null otherwise.
+ * Map a Range boundary to a plain-text offset, snapping inwards when it isn't
+ * an indexed text node (triple-click, drag past a block end).
+ * @param {{segments: Array<{node: Text, start: number, end: number}>}} index
+ * @param {Node} container
+ * @param {number} offset
+ * @param {boolean} is_end
+ * @returns {number|null}
+ */
+function boundaryToOffset(index, container, offset, is_end) {
+    const segment = index.segments.find((candidate) => candidate.node === container);
+    if (segment) {
+        return segment.start + offset;
+    }
+
+    const boundary = document.createRange();
+    boundary.setStart(container, offset);
+    boundary.collapse(true);
+
+    // Segments are in document order: last match for an end, first for a start.
+    let snapped = null;
+    for (const candidate of index.segments) {
+        if (is_end) {
+            if (boundary.comparePoint(candidate.node, candidate.node.length) <= 0) {
+                snapped = candidate.end;
+            }
+        } else if (snapped === null && boundary.comparePoint(candidate.node, 0) >= 0) {
+            snapped = candidate.start;
+        }
+    }
+    return snapped;
+}
+
+/**
+ * Convert a DOM Range into plain-text offsets, or null if it covers no text.
  * @param {{segments: Array<{node: Text, start: number, end: number}>}} index
  * @param {Range} range
  * @returns {[number, number]|null}
  */
 export function domRangeToOffsets(index, range) {
-    const start_segment = index.segments.find((segment) => segment.node === range.startContainer);
-    const end_segment = index.segments.find((segment) => segment.node === range.endContainer);
-    if (!start_segment || !end_segment) {
+    const start = boundaryToOffset(index, range.startContainer, range.startOffset, false);
+    const end = boundaryToOffset(index, range.endContainer, range.endOffset, true);
+    if (start === null || end === null || start >= end) {
         return null;
     }
-    return [
-        start_segment.start + range.startOffset,
-        end_segment.start + range.endOffset,
-    ];
+    return [start, end];
 }
 
 /**
