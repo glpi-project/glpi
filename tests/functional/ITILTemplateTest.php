@@ -1099,4 +1099,70 @@ class ITILTemplateTest extends DbTestCase
             }
         }
     }
+
+    /**
+     * Check that when a mandatory template field is not filled, the update of an existing item is blocked
+     */
+    #[DataProvider('itilProvider')]
+    public function testBlockUpdateWhenMandatoryTemplateFieldNotFilled($itiltype)
+    {
+        $this->login();
+
+        // Create a category, an entity and a template for the given ITIL type
+        $itil_category = $this->createItem(\ITILCategory::class, [
+            'name' => 'Category for mandatory template field on update test (' . $itiltype . ')',
+        ]);
+
+        $entity = $this->createItem(\Entity::class, [
+            'name'        => 'Entity for mandatory template field on update test (' . $itiltype . ')',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+
+        $tpl_class = '\\' . $itiltype . 'Template';
+        $template = $this->createItem($tpl_class, [
+            'name' => 'Template with mandatory category for ' . $itiltype,
+        ]);
+
+        // Assign the template to the entity
+        $this->updateItem(\Entity::class, $entity->getID(), [
+            strtolower($itiltype) . 'templates_id' => $template->getID(),
+        ]);
+
+        // Create ITIL item
+        $add_input = [
+            'name'        => 'title',
+            'content'     => 'content',
+            'entities_id' => $entity->getID(),
+        ];
+        $item = $this->createItem($itiltype, $add_input);
+        $this->assertEquals(0, (int) $item->fields['itilcategories_id']);
+
+        // Set the category like mandatory field in the template
+        $tpl = new $tpl_class();
+        $mandat_class = '\\' . $itiltype . 'TemplateMandatoryField';
+        $mandat = new $mandat_class();
+        $this->createItem($mandat_class, [
+            $mandat::$items_id => $template->getID(),
+            'num'              => $mandat->getFieldNum($tpl, 'Category'),
+        ]);
+
+        // Update ITIL item without filling the mandatory category field, which should be rejected
+        $result = $item->update([
+            'id'                => $item->getID(),
+            'itilcategories_id' => 0,
+            'content'           => 'updated description',
+        ]);
+
+        $this->assertFalse($result, 'Update should be rejected: mandatory category is not filled');
+        $this->hasSessionMessageThatContains('Mandatory fields are not filled', ERROR);
+
+        $this->assertTrue($item->getFromDB($item->getID()));
+        $this->assertEquals('content', $item->fields['content'], 'Content should not have been updated');
+
+        // Filling the mandatory category should let the update succeed.
+        $this->updateItem($itiltype, $item->getID(), [
+            'itilcategories_id' => $itil_category->getID(),
+            'content'           => 'updated description',
+        ]);
+    }
 }

@@ -1893,15 +1893,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
-        // If category, entity, or type fields are not updated, the template is not changed.
-        if (
-            (empty($input['itilcategories_id']) || $this->fields['itilcategories_id'] == $input['itilcategories_id'])
-            && (empty($input['entities_id']) || $this->fields['entities_id'] == $input['entities_id'])
-            && (empty($input['type']) || $this->fields['type'] == $input['type'])
-        ) {
-            return $input;
-        }
-
         // First get ticket template associated: entity and type/category
         $tt = $this->getITILTemplateFromInput($input);
 
@@ -1910,9 +1901,19 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return $input;
         }
 
-        $tpl_class = static::getTemplateClass();
-        $input[$tpl_class::getForeignKeyField()] = $tt->getID();
-        $input[static::getTemplateFormFieldName()] = $tt->getID();
+        // If category, entity, or type fields are updated, the template used by the
+        // item may have changed
+        $update_template = !(
+            (empty($input['itilcategories_id']) || $this->fields['itilcategories_id'] == $input['itilcategories_id'])
+            && (empty($input['entities_id']) || $this->fields['entities_id'] == $input['entities_id'])
+            && (empty($input['type']) || $this->fields['type'] == $input['type'])
+        );
+
+        if ($update_template) {
+            $tpl_class = static::getTemplateClass();
+            $input[$tpl_class::getForeignKeyField()] = $tt->getID();
+            $input[static::getTemplateFormFieldName()] = $tt->getID();
+        }
 
         if (count($tt->mandatory)) {
             $mandatory_missing = [];
