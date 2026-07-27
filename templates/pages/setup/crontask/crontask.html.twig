@@ -74,19 +74,20 @@
                                 (constant('CronTask::STATE_DISABLE')): __('Disabled'),
                                 (constant('CronTask::STATE_WAITING')): __('Scheduled')
                             } %}
+                            {% set state_msg = '' %}
                             {% if item.fields['state'] == constant('CronTask::STATE_ERROR') %}
                                 {% set state_options = state_options + {
                                     (constant('CronTask::STATE_ERROR')): _n('Error', 'Errors', 1)
                                 } %}
+                                {% set state_msg = '<span class="text-danger ms-2">' ~ __('This action has repeatedly failed and needs manual intervention')|e ~ '</span>' %}
                             {% elseif item.fields['state'] == constant('CronTask::STATE_ABORTED') %}
                                 {% set state_options = state_options + {
                                     (constant('CronTask::STATE_ABORTED')): __('Aborted')
                                 } %}
+                                {% set state_msg = '<span class="text-danger ms-2">' ~ __('This action was aborted externally and will be retried as soon as possible')|e ~ '</span>' %}
                             {% endif %}
-                            {% set error_state_msg = '<span class="text-danger ms-2">' ~ __('This action has repeatedly failed and needs manual intervention') ~ '</span>' %}
-                            {% set aborted_state_msg = '<span class="text-danger ms-2">' ~ __('This action was aborted externally and will be retried as soon as possible') ~ '</span>' %}
                             {{ fields.dropdownArrayField('state', item.fields['state'], state_options, __('Status'), {
-                                add_field_html: item.fields['state'] == constant('CronTask::STATE_ERROR') ? error_state_msg : (item.fields['state'] == constant('CronTask::STATE_ABORTED') ? aborted_state_msg : '')
+                                add_field_html: state_msg
                             }) }}
 
                             {# Run mode #}
@@ -141,7 +142,7 @@
                                     {% else %}
                                         {{ item.fields['lastrun']|formatted_datetime }}
                                         {% if can_execute %}
-                                            {# ID defined in components/form/buttons.html.twig #}
+                                            {# ID field is defined in components/form/buttons.html.twig #}
                                             <button class="btn btn-icon border-0" type="submit" name="resetdate" title="{{ __('Blank') }}">
                                                 <i class="ti ti-circle-x me-1"></i>
                                             </button>
@@ -163,7 +164,7 @@
                                             {{ __('Maintenance mode enabled, running tasks is disabled') }}
                                         </div>
                                     {% elseif can_execute and launch %}
-                                        {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
+                                        {# ID is defined in components/form/buttons.html.twig #}
                                         <button class="btn btn-primary" type="submit" name="execute" value="{{ item.fields['name'] }}">
                                             <i class="ti ti-player-play me-1"></i>
                                             {{ __('Execute') }}
@@ -171,7 +172,7 @@
                                     {% endif %}
 
                                     {% if can_execute and item.fields['state'] == constant('CronTask::STATE_RUNNING') %}
-                                        {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
+                                        {# ID field is defined in components/form/buttons.html.twig #}
                                         <button class="btn btn-primary" type="submit" name="resetstate">
                                             <i class="ti ti-circle-x me-1"></i>
                                             {{ __('Blank') }}
