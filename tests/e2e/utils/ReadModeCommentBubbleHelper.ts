@@ -40,8 +40,7 @@ export class ReadModeCommentBubbleHelper {
     }
 
     private getBubble(): Locator {
-        // eslint-disable-next-line playwright/no-raw-locators -- transient positioned bubble, no semantic role fits
-        return this.page.locator('.kb-read-mode-comment-bubble');
+        return this.page.getByRole('button', { name: 'Comment', exact: true });
     }
 
     async assertVisible(): Promise<Locator> {
@@ -56,6 +55,6 @@ export class ReadModeCommentBubbleHelper {
 
     async click(): Promise<void> {
         const bubble = await this.assertVisible();
-        await bubble.getByTitle('Comment', { exact: true }).click();
+        await bubble.click();
     }
 }
