@@ -38,6 +38,7 @@ namespace Glpi\System\Log;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
+use Override;
 use Session;
 
 final class LogViewer extends CommonGLPI
@@ -177,6 +178,7 @@ final class LogViewer extends CommonGLPI
         );
     }
 
+    #[Override]
     protected static function itemTypeRequiresReauthentication(): bool
     {
         // LogViewer and Config share the same reauth requirements in logviewer.php

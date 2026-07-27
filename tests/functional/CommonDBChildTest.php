@@ -120,6 +120,7 @@ class CommonDBChildTest extends DbTestCase
                 return true;
             }
 
+            #[\Override]
             public static function itemTypeRequiresReauthentication(): bool
             {
                 return true;

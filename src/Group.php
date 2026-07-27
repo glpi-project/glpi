@@ -990,6 +990,7 @@ class Group extends CommonTreeDropdown
         }
     }
 
+    #[Override]
     public static function itemTypeRequiresReauthentication(): bool
     {
         return true;
