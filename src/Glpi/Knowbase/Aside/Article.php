@@ -36,11 +36,31 @@ namespace Glpi\Knowbase\Aside;
 
 final class Article
 {
+    /** @var Article[] */
+    private array $children = [];
+
     public function __construct(
         public readonly int $id,
         public readonly string $title,
         public readonly string $illustration,
         public readonly string $link,
         public readonly bool $is_current = false,
+        public readonly bool $collapsed = false,
     ) {}
+
+    public function addChild(self $child): void
+    {
+        $this->children[] = $child;
+    }
+
+    /** @return Article[] */
+    public function getChildren(): array
+    {
+        return $this->children;
+    }
+
+    public function hasChildren(): bool
+    {
+        return $this->children !== [];
+    }
 }

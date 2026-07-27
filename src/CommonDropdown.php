@@ -953,8 +953,6 @@ abstract class CommonDropdown extends CommonDBTM
      */
     public function getLinks($withname = false)
     {
-        global $CFG_GLPI;
-
         $ret = '';
 
         if ($withname) {
@@ -964,63 +962,29 @@ abstract class CommonDropdown extends CommonDBTM
 
         if (
             !$this->isNewItem()
-            && $this->isField('knowbaseitemcategories_id')
-            && $this->fields['knowbaseitemcategories_id']
+            && $this->isField('knowbaseitems_id')
+            && $this->fields['knowbaseitems_id']
+            && Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])
         ) {
-            $title = __s('FAQ');
+            $is_central = Session::getCurrentInterface() == 'central';
 
-            $condition = [
-                KnowbaseItem::getTable() . '.id'  => KnowbaseItem::getForCategory($this->fields['knowbaseitemcategories_id']),
-            ];
-
-            if (Session::getCurrentInterface() == 'central') {
-                $title = __s('Knowledge base');
-            } else {
-                $condition[KnowbaseItem::getTable() . '.is_faq'] = 1;
-            }
-
-            $rand = mt_rand();
             $kbitem = new KnowbaseItem();
-            $found_kbitem = $kbitem->find($condition);
+            $found = $kbitem->getFromDB($this->fields['knowbaseitems_id'])
+                // In the simplified interface, only show the article if it is
+                // part of the FAQ.
+                && ($is_central || $kbitem->fields['is_faq']);
 
-            if (count($found_kbitem)) {
-                $kbitem->getFromDB(reset($found_kbitem)['id']);
+            if ($found) {
+                $rand = mt_rand();
                 $ret .= "<div class='faqadd_block'>";
                 $ret .= "<label for='display_faq_chkbox$rand'>";
                 $ret .= "<i class='ti ti-zoom-question'></i>";
                 $ret .= "</label>";
                 $ret .= "<input type='checkbox'  class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
                 $ret .= "<div class='faqadd_entries'>";
-                if (count($found_kbitem) == 1) {
-                    $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
-                    $ret .= $kbitem->showFull(['display' => false]);
-                    $ret .= "</div>"; // .faqadd_block_content
-                } else {
-                    $ret .= Html::scriptBlock("
-                        var getKnowbaseItemAnswer$rand = function() {
-                            var knowbaseitems_id = $('#dropdown_knowbaseitems_id$rand').val();
-                            $('#faqadd_block_content$rand').load(
-                                '" . jsescape($CFG_GLPI['root_doc']) . "/ajax/getKnowbaseItemAnswer.php',
-                                {
-                                    'knowbaseitems_id': knowbaseitems_id
-                                }
-                            );
-                        };
-                    ");
-                    $ret .= "<label for='dropdown_knowbaseitems_id$rand'>"
-                        . htmlescape(KnowbaseItem::getTypeName())
-                        . "</label>&nbsp;";
-                    $ret .= KnowbaseItem::dropdown([
-                        'value'     => reset($found_kbitem)['id'],
-                        'display'   => false,
-                        'rand'      => $rand,
-                        'condition' => $condition,
-                        'on_change' => "getKnowbaseItemAnswer$rand()",
-                    ]);
-                    $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
-                    $ret .= $kbitem->showFull(['display' => false]);
-                    $ret .= "</div>"; // .faqadd_block_content
-                }
+                $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";
+                $ret .= $kbitem->showFull(['display' => false]);
+                $ret .= "</div>"; // .faqadd_block_content
                 $ret .= Html::scriptBlock("
                         var setMaxWidth = function() {
                             var maxWidth = $('#faqadd_block_content$rand').closest('.form-field').width();

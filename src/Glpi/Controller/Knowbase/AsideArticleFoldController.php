@@ -38,21 +38,21 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
-use KnowbaseItemCategory;
+use KnowbaseItem;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * Persists whether a knowledge base aside category is collapsed (folded) for the
+ * Persists whether a knowledge base aside article is collapsed (folded) for the
  * current user.
  */
-final class AsideCategoryFoldController extends AbstractController
+final class AsideArticleFoldController extends AbstractController
 {
     #[Route(
-        "/Knowbase/Aside/Category/{id}/Fold",
-        name: "knowbase_aside_category_fold",
+        "/Knowbase/Aside/Article/{id}/Fold",
+        name: "knowbase_aside_article_fold",
         requirements: [
             'id' => '\d+',
         ],
@@ -72,8 +72,8 @@ final class AsideCategoryFoldController extends AbstractController
             return new Response();
         }
 
-        KnowbaseItemCategory::setCategoryFoldedForCurrentUser(
-            category_id: $id,
+        KnowbaseItem::setFoldedForCurrentUser(
+            id: $id,
             folded: (bool) $collapsed
         );
 
