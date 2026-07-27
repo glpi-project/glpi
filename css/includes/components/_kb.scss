@@ -380,6 +380,14 @@ body.in_modal .kb-article {
     transition: outline-color 0.2s ease-in-out;
 }
 
+// A selection can be arbitrarily long; cap the quote at ~3 lines and scroll it
+// rather than let it drown the thread.
+.kb-comment-anchor-quote {
+    max-height: 4.3em;
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+}
+
 // KB visibility dates
 .kb-schedule-panel {
     min-width: 280px;

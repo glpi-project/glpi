@@ -256,7 +256,17 @@ export class GlpiKnowbaseCommentsPanelController
 
         if (comments.length === 1) {
             // This is the only comment in this thread, delete the whole thread
+            const anchor_id = parent_thread.dataset.glpiCommentAnchor
+                ? parent_thread.dataset.glpiCommentThread
+                : null;
             parent_thread.remove();
+
+            if (anchor_id !== null) {
+                // Dispatched on `document` for the same reason as glpi:kb:comment-anchored.
+                document.dispatchEvent(new CustomEvent('glpi:kb:comment-unanchored', {
+                    detail: { id: anchor_id },
+                }));
+            }
         } else {
             // Delete the comment
             comment_card.remove();

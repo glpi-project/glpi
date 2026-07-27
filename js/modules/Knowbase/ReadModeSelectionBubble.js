@@ -159,9 +159,4 @@ export class ReadModeSelectionBubble {
             detail: { anchor },
         }));
     }
-
-    destroy() {
-        document.removeEventListener('selectionchange', this.#onSelectionChange);
-        this.#bubble.remove();
-    }
 }
