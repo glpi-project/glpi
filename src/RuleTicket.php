@@ -320,7 +320,7 @@ class RuleTicket extends RuleCommonITILObject
         $actions['slas_id_ttr']['condition']                  = ['glpi_slas.type' => SLM::TTR];
 
         // empty ttr
-        $actions['time_to_resolve']['name']                   = __('Remove Time To Resolve value');
+        $actions['time_to_resolve']['name']                   = __('Time to resolve');
         $actions['time_to_resolve']['type']                   = 'yesno';
         $actions['time_to_resolve']['force_actions']          = ['delete'];
 
@@ -337,15 +337,15 @@ class RuleTicket extends RuleCommonITILObject
         $actions['slas_id_tto']['condition']                  = ['glpi_slas.type' => SLM::TTO];
 
         // empty sla tto
-        $actions['time_to_own']['name']                       = __('Remove Time To Own value');
+        $actions['time_to_own']['name']                       = __('Time to own');
         $actions['time_to_own']['type']                       = 'yesno';
         $actions['time_to_own']['force_actions']              = ['delete'];
 
-        // assign (existing) ola tto
+        // assign (existing) ola
         $actions['olas_id']['type']                       = 'dropdown';
         $actions['olas_id']['table']                      = 'glpi_olas';
         $actions['olas_id']['field']                      = 'name';
-        $actions['olas_id']['name']                       = 'OLA TTR/TTO';
+        $actions['olas_id']['name']                       = __('OLA');
         $actions['olas_id']['force_actions']              = ['append'];
         $actions['olas_id']['permitseveral']              = ['append'];
 
