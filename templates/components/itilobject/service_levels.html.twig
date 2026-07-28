@@ -516,20 +516,25 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         {{ __('Add') }}
     </button>
 
-    {# show new ola dropdown - ajax request #}
+    {% set dropdown_tpl %}
+        {{ fields.dropdownField('OLA', '_olas_id[]', 0, '', {
+            'full_width': true,
+            'no_label': true,
+            'include_field': false,
+            'rand': rand
+        }) }}
+    {% endset %}
+
     <script>
-        document.getElementById('{{ button_id }}').addEventListener('click', () => {
-            fetch('{{ path("/dropdown") }}?' + new URLSearchParams({
-                itemtype: 'OLA',
-                fieldname: '_olas_id[]',
-            }))
-                .then(r => r.text())
-                .then(html => {
-                    const container = document.createElement('div');
-                    container.className = 'my-1';
-                    container.appendChild(document.createRange().createContextualFragment(html)); // enable fetched javascript
-                    document.getElementById('{{ dropdown_placeholder_dom_id }}').append(container);
-                });
+        document.getElementById('{{ button_id|e('js') }}').addEventListener('click', () => {
+            const html = '{{ dropdown_tpl|e('js') }}';
+            const container = document.createElement('div');
+            container.className = 'my-1';
+            container.appendChild(
+                // enable fetched javascript
+                document.createRange().createContextualFragment(html.replaceAll('{{ options.rand|e('js') }}', uniqid()))
+            );
+            document.getElementById('{{ dropdown_placeholder_dom_id }}').append(container);
         });
     </script>
 {% endmacro %}
