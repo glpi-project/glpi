@@ -37,18 +37,16 @@ namespace tests\units\Glpi\Security\ReAuth;
 use Glpi\Security\ReAuth\TOTPReAuthStrategy;
 use Glpi\Security\TOTPManager;
 use Glpi\Tests\DbTestCase;
-use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use PHPUnit\Framework\Attributes\Group;
 use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
+use Symfony\Component\HttpFoundation\Request;
 use User;
 
 #[Group('reauth')]
 class TOTPReAuthStrategyTest extends DbTestCase
 {
-    use ReAuthTrait;
-
     private const SECRET = 'G3QWAUUBIOM7GUU3EHC76WGMV5FIO3FB';
 
     /** Returns false when no TOTP secret is registered for the user. */
@@ -82,7 +80,7 @@ class TOTPReAuthStrategyTest extends DbTestCase
         $users_id = $this->enableTotpForTestUser();
 
         // --- act + assert ---
-        $this->assertTrue($strategy->verify($users_id, $this->makeVerifyRequest($this->generateValidCode())));
+        $this->assertTrue($strategy->verify($users_id, $this->makeTotpVerifyRequest($this->generateValidCode())));
     }
 
     /** Returns false when the submitted TOTP code does not match the secret. */
@@ -93,7 +91,18 @@ class TOTPReAuthStrategyTest extends DbTestCase
         $users_id = $this->enableTotpForTestUser();
 
         // --- act + assert ---
-        $this->assertFalse($strategy->verify($users_id, $this->makeVerifyRequest('000000')));
+        $this->assertFalse($strategy->verify($users_id, $this->makeTotpVerifyRequest('000000')));
+    }
+
+    /** Returns false when the prompt form is submitted without any digit. */
+    public function testVerifyReturnsFalseWhenCodeIsMissing(): void
+    {
+        // --- arrange ---
+        $strategy = new TOTPReAuthStrategy();
+        $users_id = $this->enableTotpForTestUser();
+
+        // --- act + assert ---
+        $this->assertFalse($strategy->verify($users_id, Request::create('/ReAuth/Verify', 'POST')));
     }
 
     /**
@@ -108,7 +117,7 @@ class TOTPReAuthStrategyTest extends DbTestCase
         assert(!(new TOTPManager())->is2FAEnabled($users_id), 'Fixture: test user must not have TOTP enabled');
 
         // --- act + assert ---
-        $this->assertFalse($strategy->verify($users_id, $this->makeVerifyRequest('000000')));
+        $this->assertFalse($strategy->verify($users_id, $this->makeTotpVerifyRequest('000000')));
     }
 
     /** Test $strategy->getPromptTemplate(), $strategy->getPriority() & $strategy->getLabel() */
@@ -121,6 +130,15 @@ class TOTPReAuthStrategyTest extends DbTestCase
         $this->assertSame('pages/reauth/totp_form.html.twig', $strategy->getPromptTemplate());
         $this->assertSame(100, $strategy->getPriority());
         $this->assertNotEmpty($strategy->getLabel());
+    }
+
+    /**
+     * Prompt form submission as the Mfa:CodeInput component sends it: one `totp_code[]`
+     * entry per digit, which verify() concatenates back into the full code.
+     */
+    private function makeTotpVerifyRequest(string $code): Request
+    {
+        return Request::create('/ReAuth/Verify', 'POST', ['totp_code' => str_split($code)]);
     }
 
     private function enableTotpForTestUser(): int

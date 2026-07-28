@@ -51,7 +51,7 @@ final class TOTPReAuthStrategy extends InPlaceReAuthStrategy
     #[\Override]
     public function verify(int $users_id, Request $request): bool
     {
-        $user_input = (string) $request->request->get('user_input', '');
+        $user_input = implode('', $request->request->all('totp_code'));
 
         return $this->totp_manager->verifyCodeForUser($user_input, $users_id);
     }

@@ -33,19 +33,3 @@
 <p class="text-muted mb-2">{{ __('Please enter the code from your authenticator app') }}</p>
 <twig:Mfa:CodeInput />
 
-{#  script to push totp_code[] input in a flat hidden input
-    this script might be handled in the component with an argument
-#}
-<script>
-    jQuery(function () {
-        $('input[name="totp_code[]"]').on('input', function () {
-            let value = '';
-            $('input[name="totp_code[]"]').each(function () {
-                value += $(this).val();
-            });
-            $('#user_input').val(value);
-        })
-    })
-</script>
-<input type="hidden" name="user_input" id="user_input" value="" />
-
