@@ -266,6 +266,11 @@ class TicketParametersTest extends AbstractParametersTest
                         'type'     => 'Time to own',
                         'duration' => 15,
                         'unit'     => 'minutes',
+                        'group'    => [
+                            'id'            => $ola_group_id,
+                            'name'          => 'ola_assigned_group',
+                            'completename'  => 'ola_assigned_group',
+                        ],
                     ],
                 ],
                 'olas_ttr' => [
@@ -275,6 +280,11 @@ class TicketParametersTest extends AbstractParametersTest
                         'type'     => 'Time to resolve',
                         'duration' => 4,
                         'unit'     => 'hours',
+                        'group'    => [
+                            'id'            => $ola_group_id,
+                            'name'          => 'ola_assigned_group',
+                            'completename'  => 'ola_assigned_group',
+                        ],
                     ],
                     [
                         'id'       => $olas_id_ttr2,
@@ -282,6 +292,11 @@ class TicketParametersTest extends AbstractParametersTest
                         'type'     => 'Time to resolve',
                         'duration' => 6,
                         'unit'     => 'hours',
+                        'group'    => [
+                            'id'            => $ola_group_id,
+                            'name'          => 'ola_assigned_group',
+                            'completename'  => 'ola_assigned_group',
+                        ],
                     ],
                 ],
                 'requesttype' => [
