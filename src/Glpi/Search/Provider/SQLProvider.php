@@ -6934,7 +6934,7 @@ final class SQLProvider implements SearchProviderInterface
                     } elseif (isset($field_data['trans_name']) && !empty($field_data['trans_name'])) {
                         $out .= \htmlescape($field_data['trans_name']);
                     } else {
-                        $out .= \htmlescape($field_data['name'] ?: '');
+                        $out .= \htmlescape($field_data['name'] ?? '');
                     }
                 }
             }
