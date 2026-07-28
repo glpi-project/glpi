@@ -8053,8 +8053,8 @@ final class SQLProvider implements SearchProviderInterface
             $out .= '<div class="mb-1"><span class="text-nowrap">' . \htmlescape($pg_data['text']) . '</span>'
                 . '<div class="progress" style="height: 16px">'
                 . '<div class="progress-bar progress-bar-striped" role="progressbar"'
-                . ' style="width:' . $pg_data['percent'] . '%; background-color:' . \htmlescape($pg_data['color']) . ';"'
-                . ' aria-valuenow="' . $pg_data['percent'] . '" aria-valuemin="0" aria-valuemax="100">'
+                . ' style="width:' . \htmlescape($pg_data['percent']) . '%; background-color:' . \htmlescape($pg_data['color']) . ';"'
+                . ' aria-valuenow="' . \htmlescape($pg_data['percent']) . '" aria-valuemin="0" aria-valuemax="100">'
                 . \htmlescape($pg_data['percent_text']) . '%'
                 . '</div></div></div>';
         }
