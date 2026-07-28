@@ -4868,7 +4868,8 @@ HTML;
         if (!in_array($sort, $sortable_columns, true)) {
             $sort = 'name';
         }
-        $order = strtoupper($_GET['order'] ?? 'ASC');
+        $order = $_GET['order'] ?? 'ASC';
+        $order = is_string($order) ? strtoupper($order) : 'ASC';
         if (!in_array($order, ['ASC', 'DESC'], true)) {
             $order = 'ASC';
         }
