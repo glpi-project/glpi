@@ -58,8 +58,14 @@ class OLAParametersTest extends AbstractParametersTest
                 'id'       => getItemByTypeName('OLA', 'ola_testGetValues', true),
                 'name'     => 'ola_testGetValues',
                 'type'     => 'Time to own',
-                'duration' => '4',
+                'duration' => 4,
                 'unit'     => 'hours',
+                'group'    => [
+                    'id'            => 1,
+                    'name'          => '_test_group_1',
+                    'completename'  => '_test_group_1',
+
+                ],
             ],
             $values
         );

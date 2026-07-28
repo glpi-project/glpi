@@ -10910,6 +10910,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/ContentTemplates/Parameters/LocationParameters.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\ContentTemplates\\\\Parameters\\\\OLAParameters\\:\\:defineValues\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/ContentTemplates/Parameters/OLAParameters.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\ContentTemplates\\\\Parameters\\\\OLAParameters\\:\\:getTargetClasses\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
