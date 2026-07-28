@@ -370,9 +370,9 @@ class Provider
                 $query_criteria['WHERE'][] = [
                     'OR' => [
                         CommonITILObject::generateSLAOLAComputation('time_to_resolve', 'glpi_tickets'),
-                        ['1' => $ola_ttr_late_criteria ],
+                        $ola_ttr_late_criteria,
                         CommonITILObject::generateSLAOLAComputation('time_to_own', 'glpi_tickets'),
-                        ['1' => $ola_tto_late_criteria ],
+                        $ola_tto_late_criteria,
                     ],
                 ];
                 break;
