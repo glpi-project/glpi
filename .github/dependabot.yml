@@ -206,6 +206,9 @@ updates:
       symfony-polyfills:
         patterns:
           - "symfony/polyfill-*"
+      tcpdf:
+        patterns:
+          - "tecnickcom/*"
       twig:
         patterns:
           - "twig/*"
