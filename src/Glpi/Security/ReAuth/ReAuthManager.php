@@ -37,9 +37,12 @@ declare(strict_types=1);
 namespace Glpi\Security\ReAuth;
 
 use Glpi\Application\Environment;
+use Glpi\Exception\Http\ReAuthRequiredHttpException;
 use Glpi\Exception\RedirectException;
 use Glpi\Kernel\Kernel;
+use Glpi\Kernel\Listener\ExceptionListener\AccessErrorListener;
 use Glpi\Toolbox\SingletonTrait;
+use Glpi\Toolbox\URL;
 use InvalidArgumentException;
 use RuntimeException;
 use Safe\DateTime;
@@ -60,7 +63,7 @@ final class ReAuthManager
     private array $additional_strategies = [];
 
     /**
-     * @throws RedirectException
+     * @throws RedirectException|ReAuthRequiredHttpException
      */
     public function checkReAuthenticationOrRedirect(): void
     {
@@ -74,11 +77,20 @@ final class ReAuthManager
     /**
      * Redirect to reauth prompt and save current request data (url + post data)
      *
-     * @throws RedirectException
+     * Requests that cannot display the prompt (AJAX, or a client expecting anything else than
+     * HTML) get a ReAuthRequiredHttpException instead of the redirection.
+     *
+     * @throws RedirectException|ReAuthRequiredHttpException
      */
     public function redirectToReauth(): never
     {
         global $CFG_GLPI;
+
+        if (!$this->canDisplayPrompt()) {
+            $this->setCallerPageAsTarget();
+
+            throw new ReAuthRequiredHttpException();
+        }
 
         $this->setRequestedTarget();
 
@@ -360,5 +372,92 @@ final class ReAuthManager
             'POST' => 'POST',
             default => throw new \LogicException(sprintf('Unsupported HTTP method for redirect: %s', $http_method)),
         };
+    }
+
+    /**
+     * Requests that cannot be answered with the prompt page are denied instead of redirected.
+     *
+     * Same discrimination as {@see AccessErrorListener}:
+     * an AJAX caller would inject the prompt page in the current one, and a client expecting
+     * anything else than HTML has nothing to do with it.
+     */
+    private function canDisplayPrompt(): bool
+    {
+        /** @var Kernel $kernel */
+        global $kernel;
+
+        $request = $kernel->getMainRequest();
+
+        return !$request->isXmlHttpRequest() && $request->getPreferredFormat() === 'html';
+    }
+
+    /**
+     * Record the page the current request was issued from as the target of the re-authentication.
+     *
+     * Used when the prompt cannot be served as the answer of the request: the client is expected to
+     * send the browser to the prompt on its own, so the flow must already know where to land
+     * afterwards. The rejected request itself is not a suitable target — it is an endpoint, not a
+     * page, and replaying it would display its raw answer — so the user has to redo the action once
+     * back on the page.
+     */
+    private function setCallerPageAsTarget(): void
+    {
+        $caller_page = $this->getCallerPageUrl();
+
+        // The replay is submitted as a form, and the browser rebuilds the query string of a GET
+        // from its fields: the query string must be handed over as data instead of being left in
+        // the action URL, or it would be dropped. @see setRequestedTarget()
+        $query_string = parse_url($caller_page, PHP_URL_QUERY);
+        $query_params = [];
+        if (is_string($query_string)) {
+            parse_str($query_string, $query_params);
+        }
+
+        $this->setRequestedURL(strstr($caller_page, '?', true) ?: $caller_page);
+        $this->setRequestedMethod('GET');
+        $this->setRequestedData($query_params);
+        // Cancelling the prompt leads back to where the user was, i.e. that same page. It is a
+        // plain link, so it keeps the query string.
+        $this->setOriginURL($caller_page);
+    }
+
+    /**
+     * Absolute URL of the page the current request was issued from.
+     *
+     * The `Referer` header is the only hint available, as the request URL is the endpoint that was
+     * called and not the page holding it. It cannot be trusted: it may be forged, dropped by a
+     * referrer policy, or point outside of GLPI. Only its path and query string are kept and the
+     * host is rebuilt from the current request, so an unusable value degrades into the GLPI home
+     * page instead of turning the re-authentication into an open redirection.
+     */
+    private function getCallerPageUrl(): string
+    {
+        global $CFG_GLPI;
+
+        /** @var Kernel $kernel */
+        global $kernel;
+
+        $request  = $kernel->getMainRequest();
+        $home_url = $request->getSchemeAndHttpHost() . $CFG_GLPI['root_doc'] . '/';
+
+        $referer = \Html::getRefererUrl();
+        if ($referer === null) {
+            return $home_url;
+        }
+
+        $path = parse_url($referer, PHP_URL_PATH);
+        if (!is_string($path) || !str_starts_with($path, $CFG_GLPI['root_doc'] . '/')) {
+            return $home_url;
+        }
+
+        $query        = parse_url($referer, PHP_URL_QUERY);
+        $relative_url = $path . (is_string($query) ? '?' . $query : '');
+
+        // Landing on the re-authentication flow itself would loop.
+        if (!URL::isGLPIRelativeUrl($relative_url) || $this->isReAuthRoute($relative_url)) {
+            return $home_url;
+        }
+
+        return $request->getSchemeAndHttpHost() . $relative_url;
     }
 }

@@ -39,6 +39,7 @@
 /* global L */
 /* global fuzzy */
 /* global glpi_html_dialog */
+/* global glpi_confirm */
 /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
 /* global _ */
 /* global uploaded_images, removeFailedUploadImage */
@@ -1322,6 +1323,64 @@ function getAjaxCsrfToken() {
     console.warn('Csrf protection is now handled without tokens.');
     return "";
 }
+
+/**
+ * Name of the response header marking a 403 caused by a missing re-authentication.
+ *
+ * @see \Glpi\Exception\Http\ReAuthRequiredHttpException::HEADER
+ */
+const REAUTH_REQUIRED_HEADER = 'X-Glpi-Reauth-Required';
+
+// Avoid stacking one dialog per pending request when several of them are rejected at once.
+var reauth_required_dialog_shown = false;
+
+/**
+ * Offer a re-authentication when a request was rejected because it lacked one.
+ *
+ * The prompt is a full page, so it cannot be served as the answer of an AJAX request: the server
+ * answers with a 403 carrying the REAUTH_REQUIRED_HEADER header instead, and records the calling
+ * page as the one to come back to once the identity is confirmed. Sending the browser straight to
+ * the prompt is therefore enough, whether the calling page requires a re-authentication on its own
+ * or not.
+ *
+ * The rejected action is not replayed: the user has to redo it on the restored page.
+ *
+ * @param {string|null} header_value value of the REAUTH_REQUIRED_HEADER response header
+ *
+ * @returns {boolean} true if a re-authentication was required, whether the dialog was shown or not
+ */
+function handleReauthRequiredResponse(header_value) {
+    if (!header_value) {
+        return false;
+    }
+
+    if (reauth_required_dialog_shown) {
+        return true;
+    }
+    reauth_required_dialog_shown = true;
+
+    glpi_confirm({
+        title: __('Re-authentication required'),
+        message: __('This action requires you to confirm your identity.'),
+        confirm_label: __('Continue'),
+        confirm_callback: () => {
+            window.location.assign(`${CFG_GLPI.root_doc}/ReAuth/Prompt`);
+        },
+        close_callback: () => {
+            reauth_required_dialog_shown = false;
+        },
+    });
+
+    return true;
+}
+
+// Catch the re-authentication requirement on every jQuery request. Requests issued through
+// `js/modules/Ajax.js` handle it on their own, as fetch() is out of jQuery's reach.
+$(function() {
+    $(document).ajaxError(function(event, jqxhr) {
+        handleReauthRequiredResponse(jqxhr.getResponseHeader(REAUTH_REQUIRED_HEADER));
+    });
+});
 
 // init tooltips
 $(

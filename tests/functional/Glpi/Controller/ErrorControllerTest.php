@@ -39,8 +39,10 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\Http\ReAuthRequiredHttpException;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -290,5 +292,28 @@ class ErrorControllerTest extends DbTestCase
 
         $this->assertArrayHasKey('trace', $decoded_content);
         $this->assertEquals($debug_mode, $decoded_content['trace'] !== null);
+    }
+
+    /**
+     * Headers carried by the exception must reach the response, whatever its shape: Symfony drops
+     * them as soon as the error response is built by this controller instead of by the kernel.
+     *
+     * @param array<string, string> $server
+     */
+    #[TestWith([[]], 'error page')]
+    #[TestWith([['HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest']], 'error block')]
+    #[TestWith([['HTTP_ACCEPT' => 'application/json']], 'json')]
+    public function testExceptionHeadersAreForwardedToTheResponse(array $server): void
+    {
+        // --- arrange ---
+        $exception = new ReAuthRequiredHttpException();
+        $controller = new ErrorController();
+
+        // --- act ---
+        $response = $controller->__invoke(new Request(server: $server), $exception);
+
+        // --- assert ---
+        $this->assertSame(403, $response->getStatusCode());
+        $this->assertSame('1', $response->headers->get(ReAuthRequiredHttpException::HEADER));
     }
 }

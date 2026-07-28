@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Security\ReAuth;
 
 use Computer;
+use Glpi\Exception\Http\ReAuthRequiredHttpException;
 use Glpi\Exception\RedirectException;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
@@ -42,6 +43,7 @@ use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use Safe\DateTime;
 use User;
 
@@ -59,8 +61,9 @@ class ReAuthManagerTest extends DbTestCase
 
     public function tearDown(): void
     {
-        // Always restore the CLI flag so the reauth branch does not leak to other tests.
-        unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
+        // Always restore the request context (CLI flag included) so the reauth branch taken here
+        // does not leak to other tests.
+        $this->restoreWebContext();
         $this->resetReAuthManager();
         parent::tearDown();
     }
@@ -206,6 +209,113 @@ class ReAuthManagerTest extends DbTestCase
 
         // --- assert ---
         $this->assertSame($CFG_GLPI['root_doc'], $this->getReAuthManager()->getOriginURL());
+    }
+
+    /**
+     * Requests that cannot display the prompt are denied with a marked 403 instead of being
+     * redirected, and the page they were issued from becomes the target of the re-authentication:
+     * the client only has to send the browser to the prompt, whatever the page it is on.
+     */
+    // The prompt is a full page: injecting it in the current one is meaningless.
+    #[TestWith([true, 'text/html'], 'ajax request')]
+    // The caller does not expect HTML at all.
+    #[TestWith([false, 'application/json'], 'json request')]
+    public function testRedirectToReauthDeniesRequestsThatCannotDisplayThePrompt(
+        bool $xml_http_request,
+        string $accept
+    ): void {
+        // --- arrange ---
+        $caller_page = 'https://glpi.example.org/front/user.form.php?id=2';
+        $this->fakeWebContext(
+            request_uri: '/ajax/dropdownValue.php',
+            referer: $caller_page,
+            xml_http_request: $xml_http_request,
+            accept: $accept,
+        );
+
+        // --- act ---
+        try {
+            $this->getReAuthManager()->redirectToReauth();
+            $this->fail('A ReAuthRequiredHttpException should have been thrown.');
+        } catch (ReAuthRequiredHttpException $e) {
+            // --- assert ---
+            $this->assertSame(403, $e->getStatusCode());
+            $this->assertSame('1', $e->getHeaders()[ReAuthRequiredHttpException::HEADER] ?? null);
+        }
+
+        // The denied endpoint is not the target: replaying it would display its raw answer. The
+        // user is sent back to the page instead, and has to redo the action.
+        $this->assertSame('GET', $this->getReAuthManager()->getRequestedMethod());
+        // The query string goes with the data and not in the URL, as the replayed GET is submitted
+        // as a form (see testRedirectToReauthStoresUrlWithoutGetParams).
+        $this->assertSame(
+            'https://glpi.example.org/front/user.form.php',
+            $this->getReAuthManager()->getRequestedURL()
+        );
+        $this->assertSame(['id' => '2'], $this->getReAuthManager()->getRequestedPostData());
+        // Cancelling the prompt leads back to that same page.
+        $this->assertSame($caller_page, $this->getReAuthManager()->getOriginURL());
+    }
+
+    /**
+     * A Referer that cannot be used as a landing page degrades into the GLPI home page: anything
+     * else would either loop or send the user to a page GLPI does not serve.
+     */
+    // Dropped by a referrer policy, or a client that does not send one.
+    #[TestWith([''], 'no referer')]
+    // Landing back on the re-authentication flow would loop.
+    #[TestWith(['https://glpi.example.org/ReAuth/Prompt'], 'reauth route')]
+    // A path GLPI would never serve.
+    #[TestWith(['https://glpi.example.org/front/../../etc/passwd'], 'traversal attempt')]
+    public function testDeniedRequestTargetFallsBackToHomeWhenRefererIsUnusable(string $referer): void
+    {
+        global $CFG_GLPI;
+
+        // --- arrange ---
+        $this->fakeWebContext(
+            request_uri: '/ajax/dropdownValue.php',
+            referer: $referer,
+            xml_http_request: true,
+        );
+
+        // --- act ---
+        try {
+            $this->getReAuthManager()->redirectToReauth();
+            $this->fail('A ReAuthRequiredHttpException should have been thrown.');
+        } catch (ReAuthRequiredHttpException) {
+        }
+
+        // --- assert ---
+        $home_url = 'https://glpi.example.org' . $CFG_GLPI['root_doc'] . '/';
+        $this->assertSame($home_url, $this->getReAuthManager()->getRequestedURL());
+        $this->assertSame($home_url, $this->getReAuthManager()->getOriginURL());
+    }
+
+    /**
+     * The Referer host is never reused: a forged one must not turn the re-authentication into an
+     * open redirection.
+     */
+    public function testDeniedRequestTargetIgnoresTheRefererHost(): void
+    {
+        // --- arrange ---
+        $this->fakeWebContext(
+            request_uri: '/ajax/dropdownValue.php',
+            referer: 'https://evil.example.org/front/central.php',
+            xml_http_request: true,
+        );
+
+        // --- act ---
+        try {
+            $this->getReAuthManager()->redirectToReauth();
+            $this->fail('A ReAuthRequiredHttpException should have been thrown.');
+        } catch (ReAuthRequiredHttpException) {
+        }
+
+        // --- assert : only the path was kept, the host comes from the current request ---
+        $this->assertSame(
+            'https://glpi.example.org/front/central.php',
+            $this->getReAuthManager()->getRequestedURL()
+        );
     }
 
     /** All getters return safe defaults when the re-auth session keys are absent. */

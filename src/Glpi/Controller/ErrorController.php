@@ -60,6 +60,12 @@ class ErrorController extends AbstractController
 
         $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
 
+        // Headers carried by the exception, e.g. the marker of
+        // \Glpi\Exception\Http\ReAuthRequiredHttpException. Symfony only copies them onto the
+        // response when it had to build the error response itself (@see HttpKernel::handleThrowable()),
+        // which is not the case here, so they must be forwarded explicitly.
+        $headers = $exception instanceof HttpExceptionInterface ? $exception->getHeaders() : [];
+
         $title      = _n('Error', 'Errors', 1);
         $message    = __('An unexpected error occurred');
         $link_text  = null;
@@ -142,7 +148,8 @@ class ErrorController extends AbstractController
                     'message' => $message,
                     'trace'   => $trace,
                 ],
-                status: $status_code
+                status: $status_code,
+                headers: $headers
             );
         }
 
@@ -157,7 +164,7 @@ class ErrorController extends AbstractController
             return $this->render(
                 'error_block.html.twig',
                 $error_block_params,
-                new Response(status: $status_code)
+                new Response(status: $status_code, headers: $headers)
             );
         }
 
@@ -182,7 +189,7 @@ class ErrorController extends AbstractController
                 'link_url'      => $link_url ?? Html::getBackUrl(),
                 'link_text'     => $link_text ?? __('Return to previous page'),
             ] + $error_block_params,
-            new Response(status: $status_code)
+            new Response(status: $status_code, headers: $headers)
         );
     }
 

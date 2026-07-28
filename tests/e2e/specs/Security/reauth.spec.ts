@@ -32,8 +32,9 @@
 
 import { expect, test } from '../../fixtures/glpi_fixture';
 import { ReAuthPromptPage } from '../../pages/ReAuthPromptPage';
+import { ReAuthRequiredDialog } from '../../pages/ReAuthRequiredDialog';
 import { Config } from '../../utils/Config';
-import { getWorkerLogin } from '../../utils/WorkerEntities';
+import { getWorkerEntityId, getWorkerLogin } from '../../utils/WorkerEntities';
 
 // Config requires reauth (Config::itemTypeRequiresReauthentication() === true),
 // and the e2e worker account is Super-Admin, so reaching this page with an
@@ -80,6 +81,45 @@ test.describe('Reauth (sudo mode)', () => {
 
         await expect(prompt.failure_alert).toBeVisible();
         await expect(prompt.password_field).toBeVisible();
+    });
+
+    /**
+     * The prompt cannot be served as the answer of an AJAX request, so the client is sent to it
+     * explicitly. The calling page is deliberately one that does not require a reauth on its own:
+     * merely reloading it would never reach the prompt, and the user would be stuck retrying the
+     * action forever.
+     */
+    test('a rejected ajax request leads to the prompt and back to the calling page', async ({ page, api }) => {
+        // Computer does not require a reauth, and the id in the URL checks that the query string of
+        // the calling page survives the round trip: the replay is submitted as a form, and the
+        // browser rebuilds the query string of a GET from its fields.
+        const computer_id = await api.createItem('Computer', {
+            name: 'Reauth ajax caller',
+            entities_id: getWorkerEntityId(),
+        });
+        const calling_page = `/front/computer.form.php?id=${computer_id}`;
+        await page.goto(calling_page);
+
+        // Request a page that requires a reauth as an AJAX call: the server answers with a marked
+        // 403. Going through jQuery is what matters, as the global ajaxError handler of
+        // js/common.js is the code under test.
+        await page.evaluate((url) => {
+            const glpi = window as any;
+            void glpi.$.get(`${glpi.CFG_GLPI.root_doc}${url}`);
+        }, protected_url);
+
+        const dialog = new ReAuthRequiredDialog(page);
+        await expect(dialog.dialog).toBeVisible();
+        await dialog.doContinue();
+
+        const prompt = new ReAuthPromptPage(page);
+        await expect(page).toHaveURL(/\/ReAuth\/Prompt/);
+        await prompt.doVerify(getWorkerLogin());
+
+        // Back on the calling page, id included. The rejected action is not replayed: the user has
+        // to redo it.
+        await expect(page).toHaveURL(new RegExp(`computer\\.form\\.php\\?id=${computer_id}$`));
+        await expect(prompt.heading).toBeHidden();
     });
 
     test('cancel returns to the origin page', async ({ page }) => {

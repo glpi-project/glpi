@@ -31,6 +31,24 @@
  */
 
 /* global glpi_toast_error */
+/* global REAUTH_REQUIRED_HEADER, handleReauthRequiredResponse */
+
+/**
+ * Report a failed response to the user.
+ *
+ * A missing re-authentication gets its own dialog offering to reach the prompt, so the generic
+ * error must not be piled on top of it.
+ *
+ * @param {Response} response
+ */
+function reportFailedResponse(response)
+{
+    if (handleReauthRequiredResponse(response.headers.get(REAUTH_REQUIRED_HEADER))) {
+        return;
+    }
+
+    glpi_toast_error(__("An unexpected error occurred."));
+}
 
 /**
  * Perform a POST request to a GLPI endpoint.
@@ -45,6 +63,10 @@
  */
 export async function post(url, values = null)
 {
+    // A rejected response is reported by reportFailedResponse(), which may pick a more specific
+    // message than the generic one of the catch block.
+    let error_reported = false;
+
     try {
         const is_plain_object = values !== null
             && !(values instanceof FormData)
@@ -70,12 +92,16 @@ export async function post(url, values = null)
 
         const response = await fetch(`${CFG_GLPI.root_doc}/${url}`, params);
         if (!response.ok) {
+            error_reported = true;
+            reportFailedResponse(response);
             throw new Error("POST request failed");
         }
 
         return response;
     } catch (e) {
-        glpi_toast_error(__("An unexpected error occurred."));
+        if (!error_reported) {
+            glpi_toast_error(__("An unexpected error occurred."));
+        }
         throw e;
     }
 }
@@ -89,6 +115,9 @@ export async function post(url, values = null)
  */
 export async function get(url)
 {
+    // @see post()
+    let error_reported = false;
+
     try {
         const params = {
             method: 'GET',
@@ -99,12 +128,16 @@ export async function get(url)
 
         const response = await fetch(`${CFG_GLPI.root_doc}/${url}`, params);
         if (!response.ok) {
+            error_reported = true;
+            reportFailedResponse(response);
             throw new Error("GET request failed");
         }
 
         return response;
     } catch (e) {
-        glpi_toast_error(__("An unexpected error occurred."));
+        if (!error_reported) {
+            glpi_toast_error(__("An unexpected error occurred."));
+        }
         throw e;
     }
 }
