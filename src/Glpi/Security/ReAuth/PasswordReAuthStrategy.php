@@ -38,17 +38,20 @@ namespace Glpi\Security\ReAuth;
 
 use Auth;
 use Override;
+use Symfony\Component\HttpFoundation\Request;
 use User;
 
 final class PasswordReAuthStrategy extends InPlaceReAuthStrategy
 {
     #[Override]
-    public function verify(int $users_id, string $user_input): bool
+    public function verify(int $users_id, Request $request): bool
     {
         $user = new User();
         if (!$user->getFromDB($users_id)) {
             return false;
         }
+
+        $user_input = (string) $request->request->get('user_input', '');
 
         return Auth::checkPassword($user_input, $user->fields['password']);
     }

@@ -37,6 +37,7 @@ declare(strict_types=1);
 namespace Glpi\Security\ReAuth;
 
 use Override;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Fallback re-authentication strategy.
@@ -52,7 +53,7 @@ use Override;
 final class FallbackReAuthStrategy extends InPlaceReAuthStrategy
 {
     #[Override]
-    public function verify(int $users_id, string $user_input): bool
+    public function verify(int $users_id, Request $request): bool
     {
         return true;
     }

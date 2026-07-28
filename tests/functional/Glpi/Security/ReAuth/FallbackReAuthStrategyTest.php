@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Security\ReAuth;
 
 use Glpi\Security\ReAuth\FallbackReAuthStrategy;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use User;
@@ -43,6 +44,8 @@ use User;
 #[Group('reauth')]
 class FallbackReAuthStrategyTest extends DbTestCase
 {
+    use ReAuthTrait;
+
     public static function usersProvider(): iterable
     {
         // [use_test_user]
@@ -83,7 +86,7 @@ class FallbackReAuthStrategyTest extends DbTestCase
         $users_id = $use_test_user ? getItemByTypeName(User::class, TU_USER, true) : 999999;
 
         // --- act + assert ---
-        $this->assertTrue($strategy->verify($users_id, $user_input));
+        $this->assertTrue($strategy->verify($users_id, $this->makeVerifyRequest($user_input)));
     }
 
     /** Test $strategy->getPromptTemplate(), $strategy->getPriority() & $strategy->getLabel() */

@@ -38,6 +38,7 @@ namespace Glpi\Security\ReAuth;
 
 use Auth;
 use Override;
+use Symfony\Component\HttpFoundation\Request;
 use User;
 
 /**
@@ -53,12 +54,14 @@ use User;
 final class LdapReAuthStrategy extends InPlaceReAuthStrategy
 {
     #[Override]
-    public function verify(int $users_id, string $user_input): bool
+    public function verify(int $users_id, Request $request): bool
     {
+        $ldap_password = (string) $request->request->get('user_input', '');
+
         // Guard against empty password and null-byte injection: some directories accept an
         // unauthenticated (anonymous) bind on an empty password, which would turn this check
         // into an authentication bypass.
-        if ($user_input === '' || str_contains($user_input, "\0")) {
+        if ($ldap_password === '' || str_contains($ldap_password, "\0")) {
             return false;
         }
 
@@ -74,7 +77,7 @@ final class LdapReAuthStrategy extends InPlaceReAuthStrategy
 
         // connection_ldap() returns the LDAP entry on success, or false on a wrong password
         // or an unreachable directory. Both cases fail closed here.
-        $result = (new Auth())->connection_ldap($ldap_method, $user->fields['name'], $user_input);
+        $result = (new Auth())->connection_ldap($ldap_method, $user->fields['name'], $ldap_password);
 
         return $result !== false;
     }

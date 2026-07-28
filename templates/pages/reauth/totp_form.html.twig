@@ -30,30 +30,6 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'pages/2fa/macros.html.twig' as tfa %}
-
 <p class="text-muted mb-2">{{ __('Please enter the code from your authenticator app') }}</p>
-{{ tfa.tfa_code_input() }}
-
-<script>
-   $(document).ready(function() {
-      $('input[name="totp_code[]"]').on('keyup', function(e) {
-         if (e.which !== 8 && $(this).val().length === 1) {
-            const next = $(this).next('input[name="totp_code[]"]');
-            if (next.length) {
-               next.focus();
-            } else {
-               $(this).closest('form').submit();
-            }
-         }
-      }).on('input', function() {
-         let value = '';
-         $('input[name="totp_code[]"]').each(function() {
-            value += $(this).val();
-         });
-         $('#user_input').val(value);
-      });
-   });
-</script>
-<input type="hidden" name="user_input" id="user_input" value="" />
+<twig:Mfa:CodeInput />
 

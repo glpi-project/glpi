@@ -36,16 +36,22 @@ declare(strict_types=1);
 
 namespace Glpi\Security\ReAuth;
 
+use Symfony\Component\HttpFoundation\Request;
+
 interface ReAuthStrategyInterface
 {
     /**
-     * Verify the user input against this re-authentication strategy.
+     * Verify the prompt form submission against this re-authentication strategy.
      *
-     * @param int    $users_id   The user ID
-     * @param string $user_input The user input (password, TOTP code, etc.)
-     * @return bool  Successful verification
+     * The whole request is passed so a strategy is free to read as many fields (or headers)
+     * as it needs: a single secret (the `user_input` field of the native prompt templates)
+     * is only the simplest case.
+     *
+     * @param int     $users_id The user ID
+     * @param Request $request  The prompt form submission
+     * @return bool   Successful verification
      */
-    public function verify(int $users_id, string $user_input): bool;
+    public function verify(int $users_id, Request $request): bool;
 
     /**
      * Prompt form submission's url
