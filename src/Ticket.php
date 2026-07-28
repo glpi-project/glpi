@@ -4951,7 +4951,8 @@ JAVASCRIPT;
             'ON' => [
                 self::getTable() => 'id',
                 Item_Ola::getTable() => 'items_id',
-                ['AND' => ['glpi_items_olas.itemtype' => ['=', Ticket::class]],
+                [
+                    'AND' => ['glpi_items_olas.itemtype' => Ticket::class],
                 ],
             ],
         ];
