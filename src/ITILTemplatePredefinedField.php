@@ -235,9 +235,12 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
             $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
             $itil_object->getSearchOptionIDByField('field', 'items_id', $itemstable),
             $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates'),
-            190,
-            191,
         ];
+
+        if ($itil_class === Ticket::class) {
+            $fields[] = 190; // glpi_olas.name ['type' => SLM::TTO]
+            $fields[] = 191; // glpi_olas.name ['type' => SLM::TTR]
+        }
 
         return $fields;
     }
