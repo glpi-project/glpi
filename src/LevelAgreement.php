@@ -471,19 +471,6 @@ TWIG, $twig_params);
         return true;
     }
 
-    /**
-     * Get all LevelAgreements related to the ticket, filtered by LevelAgreement type (SLM::TTR | SLM::TTO)
-     *
-     * @param int $tickets_id
-     * @param int $type
-     * @return false
-     */
-    public function getDataForTicket($tickets_id, $type)
-    {
-        Toolbox::deprecated('The `' . __FUNCTION__ . '` method is deprecated, use Ticket::getOlasData() | Ticket::getSlasData().');
-        return false;
-    }
-
     public function rawSearchOptions()
     {
         $tab = [];

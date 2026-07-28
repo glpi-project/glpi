@@ -168,6 +168,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItemTranslation::showForm()`
 - `KnowbaseItemTranslation::showFull()`
 - `KnowbaseItemTranslation::showTranslations()`
+- `LevelAgreement::getDataForTicket()`
 - `Migration::addNewMessageArea()`
 - `Migration::setOutputHandler()`
 - `Migration::displayError()`
