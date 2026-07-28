@@ -193,6 +193,34 @@ final class KnowbaseItem_Comment extends CommonDBTM
     }
 
     /**
+     * Drop the anchors of the given comments; ids belonging elsewhere are ignored.
+     *
+     * @param array<mixed> $comment_ids
+     */
+    public function clearAnchorsForItem(KnowbaseItem $article, array $comment_ids): void
+    {
+        foreach ($comment_ids as $comment_id) {
+            if (!is_scalar($comment_id)) {
+                continue;
+            }
+            $comment = new self();
+            if (!$comment->getFromDB((int) $comment_id)) {
+                continue;
+            }
+            if ((int) $comment->fields['knowbaseitems_id'] !== $article->getID()) {
+                continue;
+            }
+            $comment->update([
+                'id'                => $comment->getID(),
+                'anchor_prefix'     => null,
+                'anchor_exact'      => null,
+                'anchor_suffix'     => null,
+                'anchor_occurrence' => null,
+            ]);
+        }
+    }
+
+    /**
      * @return list<array{id: int, prefix: string, exact: string, suffix: string, occurrence: int}>
      */
     public static function getAnchorsForItem(KnowbaseItem $article): array
