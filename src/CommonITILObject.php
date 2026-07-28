@@ -2568,7 +2568,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             && !is_null($this->fields["time_to_resolve"])
         ) { // Date set
             if ($this->fields["time_to_resolve"] < $this->fields["date"]) {
-                Session::addMessageAfterRedirect(__s("Invalid dates, computed ttr is before 'date'. Update cancelled."), false, ERROR);
+                Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
 
                 if (($key = array_search('date', $this->updates)) !== false) {
                     unset($this->updates[$key]);
