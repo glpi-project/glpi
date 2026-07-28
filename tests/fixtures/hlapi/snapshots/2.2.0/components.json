@@ -18650,7 +18650,8 @@
                 },
                 "ola_ttr": {
                     "type": "object",
-                    "x-itemtype": "OLA",
+                    "nullable": true,
+                    "x-full-schema": "OLA",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -18661,11 +18662,12 @@
                             "readOnly": true
                         }
                     },
-                    "x-full-schema": "OLA"
+                    "readOnly": true
                 },
                 "ola_tto": {
                     "type": "object",
-                    "x-itemtype": "OLA",
+                    "nullable": true,
+                    "x-full-schema": "OLA",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -18676,7 +18678,7 @@
                             "readOnly": true
                         }
                     },
-                    "x-full-schema": "OLA"
+                    "readOnly": true
                 },
                 "sla_level_ttr": {
                     "type": "object",
@@ -18695,7 +18697,8 @@
                 },
                 "ola_level_ttr": {
                     "type": "object",
-                    "x-itemtype": "OlaLevel",
+                    "nullable": true,
+                    "x-full-schema": "OLALevel",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -18706,7 +18709,7 @@
                             "readOnly": true
                         }
                     },
-                    "x-full-schema": "OLALevel"
+                    "readOnly": true
                 },
                 "sla_waiting_duration": {
                     "type": "integer",
@@ -18718,13 +18721,13 @@
                 },
                 "ola_ttr_begin_date": {
                     "type": "string",
-                    "readOnly": true,
-                    "format": "date-time"
+                    "format": "date-time",
+                    "readOnly": true
                 },
                 "ola_tto_begin_date": {
                     "type": "string",
-                    "readOnly": true,
-                    "format": "date-time"
+                    "format": "date-time",
+                    "readOnly": true
                 },
                 "internal_resolution_date": {
                     "type": "string",

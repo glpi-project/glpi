@@ -352,7 +352,7 @@
       {% endset %}
 
       {% if la_content|trim|length > 0 %}
-         {% set nb_la = (item.fields['slas_id_tto'] > 0 ? 1 : 0) + (item.fields['slas_id_ttr'] > 0 ? 1 : 0) + (item.fields['olas_id_tto'] > 0 ? 1 : 0) + (item.fields['olas_id_ttr'] > 0 ? 1 : 0) %}
+         {% set nb_la = (item.fields['slas_id_tto'] > 0 ? 1 : 0) + (item.fields['slas_id_ttr'] > 0 ? 1 : 0) + (item.getOlasData()|length) %}
          {% set servicelevels_show = headers_states['service-levels'] is defined and headers_states['service-levels'] == "true" ? true : false %}
          <section class="accordion-item" aria-label="{{ _n('Service level', 'Service levels', get_plural_number()) }}">
             <div class="accordion-header" id="service-levels-heading" title="{{ _n('Service level', 'Service levels', get_plural_number()) }}" data-bs-toggle="tooltip">

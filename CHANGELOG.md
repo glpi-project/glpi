@@ -168,6 +168,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItemTranslation::showForm()`
 - `KnowbaseItemTranslation::showFull()`
 - `KnowbaseItemTranslation::showTranslations()`
+- `LevelAgreement::getDataForTicket()`
 - `Migration::addNewMessageArea()`
 - `Migration::setOutputHandler()`
 - `Migration::displayError()`
@@ -183,6 +184,8 @@ The present file will list all changes made to the project; according to the
 - `SavedSearch::addVisibilityRestrict()`
 - `Search::joinDropdownTranslations()`
 - `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
+- `Ticket::getDatasToAddOLA()`
+- `Ticket::olaAffect()`
 - `Ticket_Ticket::getLinkedTicketsTo()`
 - `Timer` class
 - `Toolbox::addslashes_deep()`

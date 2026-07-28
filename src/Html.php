@@ -2861,7 +2861,7 @@ JS;
         // format dates
         foreach ($options['dates'] as &$data) {
             $data['date'] = $data['timestamp'] !== null
-                ? date("Y-m-d H:i:s", $data['timestamp'])
+                ? date("Y-m-d H:i:s", (int) $data['timestamp'])
                 : null;
         }
 

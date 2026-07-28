@@ -1874,12 +1874,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDevice.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonDevice\\:\\:displayFullPageForItem\\(\\) has parameter \\$menus with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDevice.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method CommonDevice\\:\\:getDeviceTypes\\(\\) should return array\\<array\\<class\\-string\\<CommonDevice\\>\\>\\|class\\-string\\<CommonDevice\\>\\> but returns array\\<int\\<0, max\\>\\|string, array\\<int\\<0, max\\>, class\\-string\\<CommonDevice\\>\\|CommonDevice\\>\\|class\\-string\\<CommonDevice\\>\\|CommonDevice\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -2392,7 +2386,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property CommonDBTM\\:\\:\\$updates \\(list\\<string\\>\\) does not accept array\\<int\\<0, max\\>, string\\>\\.$#',
 	'identifier' => 'assign.propertyType',
-	'count' => 14,
+	'count' => 12,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -3014,7 +3008,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: string, version\\: \'2\\.3\\.0\', description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
+	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: string, version\\: \'2\\.4\\.0\', description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Config.php',
@@ -7518,6 +7512,18 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/RequesterFieldConfig.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getDateSLM\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLMFieldStrategy\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLAField.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getSLMID\\(\\) on Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLMFieldStrategy\\|false\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLAField.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLATTRField\\:\\:getTimeDefinitionFromLegacy\\(\\) should return string but returns string\\|false\\.$#',
@@ -12890,6 +12896,36 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Line.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method Item_Ola\\:\\:fillItemOlaData\\(\\) should return array\\{items_olas_id\\?\\: int, name\\: string, entities_id\\: int, is_recursive\\: bool, type\\: int, comment\\: string, number_time\\: int, use_ticket_calendar\\: bool, \\.\\.\\.\\} but returns array\\<string, mixed\\>\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Ola.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'linkid\' does not exist on array\\{id\\: int, name\\: string, entities_id\\: int, is_recursive\\: int, type\\: 0\\|1, comment\\: string, number_time\\: int, use_ticket_calendar\\: int, \\.\\.\\.\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Ola.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset string\\|null might not exist on array\\{start_time\\: string, olas_id\\: int, itemtype\\: class\\-string\\<CommonITILObject\\>, items_id\\: int\\}\\.$#',
+	'identifier' => 'offsetAccess.notFound',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Item_Ola.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of method CommonDBConnexity\\:\\:getConnexityItem\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Ola.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$items_id of method CommonDBConnexity\\:\\:getConnexityItem\\(\\) expects string, string\\|null given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Ola.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
 	'identifier' => 'property.nonObject',
 	'count' => 2,
@@ -13148,25 +13184,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/LevelAgreement.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method add\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreement.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method clone\\(\\) on LevelAgreementLevel\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreement.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method delete\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreement.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method deleteByCriteria\\(\\) on LevelAgreementLevel\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/LevelAgreement.php',
@@ -13203,12 +13221,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method LevelAgreement\\:\\:getLevelClass\\(\\) should return class\\-string\\<LevelAgreementLevel\\> but returns string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/LevelAgreement.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method LevelAgreement\\:\\:getLevelTicketClass\\(\\) should return class\\-string\\<CommonDBTM\\> but returns string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/LevelAgreement.php',
@@ -14492,12 +14504,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$item of method NotificationTargetCommonITILObject\\<T of CommonITILObject\\>\\:\\:getDataForObject\\(\\) expects CommonITILObject, \\(T of CommonITILObject\\)\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 6,
@@ -14969,6 +14975,12 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method getID\\(\\) on Ticket\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTargetTicket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Parameter \\#2 \\$id of static method Dropdown\\:\\:getDropdownName\\(\\) expects int, float\\|int\\|string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 2,
 	'path' => __DIR__ . '/src/NotificationTargetTicket.php',
 ];
 $ignoreErrors[] = [
@@ -16850,12 +16862,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'appendto\' might not exist on array\\<string, array\\<int\\|string\\>\\|string\\>\\|string\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset 1 might not exist on array\\{\\}\\|array\\{non\\-falsy\\-string, non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -17152,7 +17158,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot assign offset \'name\' to array\\<string, array\\<int\\|string\\>\\|string\\>\\|string\\.$#',
 	'identifier' => 'offsetAssign.dimType',
-	'count' => 8,
+	'count' => 6,
 	'path' => __DIR__ . '/src/RuleTicket.php',
 ];
 $ignoreErrors[] = [
@@ -17170,13 +17176,25 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot assign offset \'table\' to array\\<string, array\\<int\\|string\\>\\|string\\>\\|string\\.$#',
 	'identifier' => 'offsetAssign.dimType',
-	'count' => 4,
+	'count' => 2,
 	'path' => __DIR__ . '/src/RuleTicket.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot assign offset \'table\' to array\\|string\\.$#',
 	'identifier' => 'offsetAssign.dimType',
-	'count' => 9,
+	'count' => 7,
+	'path' => __DIR__ . '/src/RuleTicket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot assign offset \'type\' to array\\<string, array\\<int\\|string\\>\\|string\\>\\|string\\.$#',
+	'identifier' => 'offsetAssign.dimType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleTicket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot assign offset \'type\' to array\\|string\\.$#',
+	'identifier' => 'offsetAssign.dimType',
+	'count' => 1,
 	'path' => __DIR__ . '/src/RuleTicket.php',
 ];
 $ignoreErrors[] = [
@@ -17736,12 +17754,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 9,
 	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#3 \\$specifictime of static method Html\\:\\:computeGenericDateTimeSearch\\(\\) expects int\\|string, int\\|false given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/TicketRecurrent.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method TicketTask\\:\\:displayPlanningItem\\(\\) should return string but returns string\\|false\\.$#',
