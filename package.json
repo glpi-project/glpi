@@ -10,7 +10,7 @@
     "dependencies": {
         "@floating-ui/dom": "^1.7.6",
         "@fontsource-utils/scss": "^0.2.2",
-        "@fontsource/inter": "^5.2.8",
+        "@fontsource/inter": "^5.3.0",
         "@fortawesome/fontawesome-free": "^7.3.1",
         "@fullcalendar/core": "^6.1.20",
         "@fullcalendar/daygrid": "^6.1.20",
