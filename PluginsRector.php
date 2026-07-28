@@ -50,7 +50,7 @@ use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRect
  *
  * @param string[] $paths
  */
-return static fn (array $paths): RectorConfigBuilder => RectorConfig::configure()
+return static fn(array $paths): RectorConfigBuilder => RectorConfig::configure()
     ->withPaths($paths)
     ->withRootFiles()
     ->withCache(
