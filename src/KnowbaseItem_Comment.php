@@ -46,10 +46,10 @@ final class KnowbaseItem_Comment extends CommonDBTM
     // public static string $itemtype = KnowbaseItem::class;
     // public static string $items_id = 'knowbaseitems_id';
 
-    /** Longest passage a comment may quote, in characters. Matches `anchor_exact`. */
+    /** Longest quotable passage, in characters. */
     public const MAX_ANCHOR_LENGTH = 1000;
 
-    /** Longest context kept around the quote. Matches `anchor_prefix`/`anchor_suffix`. */
+    /** Longest context kept around the quote, in characters. */
     public const MAX_ANCHOR_CONTEXT_LENGTH = 255;
 
     #[Override]
