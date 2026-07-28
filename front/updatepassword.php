@@ -37,6 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Security\ReAuth\ReAuthManager;
 
 // Cannot use `Session::checkLoginUser()` as it block users that have their password expired to be able to change it.
 // Indeed, when password expired, sessions is loaded without profiles nor rights, and `Session::checkLoginUser()`
@@ -44,6 +45,8 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 if (Session::getLoginUserID() === false) {
     throw new AccessDeniedHttpException();
 }
+
+ReAuthManager::getInstance()->checkReAuthenticationOrRedirect();
 
 switch (Session::getCurrentInterface()) {
     case 'central':
