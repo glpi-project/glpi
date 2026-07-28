@@ -44,6 +44,7 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\VideoEmbedRenderer;
 use Group_KnowbaseItem;
 use KnowbaseItem;
+use KnowbaseItem_Comment;
 use KnowbaseItem_Profile;
 use KnowbaseItem_User;
 use Session;
@@ -165,6 +166,12 @@ final class KnowbaseItemController extends AbstractController
         $success = $kbitem->update($update_data);
 
         if ($success) {
+            // The saved content no longer carries these comments' quoted passage.
+            $orphaned = $data['orphaned_comment_ids'] ?? [];
+            if (is_array($orphaned) && $orphaned !== []) {
+                (new KnowbaseItem_Comment())->clearAnchorsForItem($kbitem, $orphaned);
+            }
+
             return new JsonResponse([
                 'success' => true,
                 'message' => __('Article saved successfully'),

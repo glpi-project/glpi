@@ -287,6 +287,58 @@ class KnowbaseItem_CommentTest extends DbTestCase
         ]));
     }
 
+    public function testClearAnchorsForItemDropsEveryAnchorField(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id'  => $kb1->getID(),
+            'comment'           => 'Anchored on a passage about to be edited away',
+            'anchor_prefix'     => 'before ',
+            'anchor_exact'      => 'the quoted text',
+            'anchor_suffix'     => ' after',
+            'anchor_occurrence' => 2,
+        ]);
+
+        (new KnowbaseItem_Comment())->clearAnchorsForItem($kb1, [$id]);
+
+        $comment->getFromDB($id);
+        $this->assertFalse($comment->hasAnchor());
+        $this->assertNull($comment->fields['anchor_prefix']);
+        $this->assertNull($comment->fields['anchor_exact']);
+        $this->assertNull($comment->fields['anchor_suffix']);
+        $this->assertNull($comment->fields['anchor_occurrence']);
+        // The comment itself survives; only its anchoring is dropped.
+        $this->assertSame('Anchored on a passage about to be edited away', $comment->fields['comment']);
+    }
+
+    public function testClearAnchorsForItemIgnoresCommentsOfAnotherArticle(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $other = new KnowbaseItem();
+        $this->assertNotFalse($other->add([
+            'name'    => 'KB item owning the anchor',
+            'content' => 'Content',
+        ]));
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id' => $other->getID(),
+            'comment'          => 'Anchored elsewhere',
+            'anchor_exact'     => 'untouchable',
+        ]);
+
+        (new KnowbaseItem_Comment())->clearAnchorsForItem($kb1, [$id]);
+
+        $comment->getFromDB($id);
+        $this->assertTrue($comment->hasAnchor());
+        $this->assertSame('untouchable', $comment->fields['anchor_exact']);
+    }
+
     public function testCommentWithoutAnchorHasNoAnchor(): void
     {
         $this->login();

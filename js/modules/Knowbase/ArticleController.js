@@ -1317,10 +1317,19 @@ export class GlpiKnowbaseArticleController
         save_button.disabled = true;
         save_button.innerHTML = `<i class="ti ti-loader me-1" aria-hidden="true"></i>${__("Saving...")}`;
 
+        // Anchors whose quoted passage the saved content no longer carries: the
+        // server drops them, so they can't linger as dead rows.
+        const orphaned_ids = this.#comment_anchors
+            .filter((anchor) => !this.#resolved_anchor_ids.includes(String(anchor.id)))
+            .map((anchor) => anchor.id);
+
         try {
             const body = {
                 answer: this.#editor.getHTML(),
             };
+            if (orphaned_ids.length > 0) {
+                body.orphaned_comment_ids = orphaned_ids;
+            }
             if (new_title !== null) {
                 body.name = new_title;
             }
@@ -1330,6 +1339,12 @@ export class GlpiKnowbaseArticleController
             }
 
             await post(`Knowbase/KnowbaseItem/${this.#item_id}/Answer`, body);
+
+            if (orphaned_ids.length > 0) {
+                this.#comment_anchors = this.#comment_anchors.filter(
+                    (anchor) => !orphaned_ids.includes(anchor.id)
+                );
+            }
 
             // Update originals for future cancel operations
             this.#original_content = this.#editor.getHTML();
