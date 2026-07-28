@@ -854,12 +854,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_11.0.2_to_11.0.3/tokens.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between false and mysqli_result\\|true will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_11.0.x_to_12.0.0/ola.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'Non_unique\' might not exist on array\\<string\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,

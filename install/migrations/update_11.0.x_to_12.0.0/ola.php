@@ -39,26 +39,21 @@
  * @var Migration $migration
  */
 
-use function Safe\json_encode;
 
-$migration->log('Group managed olas', false);
 
 add_groups_id_field_in_olas($migration);
-create_items_olas_table($migration);
-migrate_items_olas_data($migration);
+create_items_olas_table($migration, $DB);
+migrate_items_olas_data($migration, $DB);
 remove_olas_fields_in_tickets($migration);
 update_crontask($migration, $DB);
-
-$migration->executeMigration();
-return;
 
 // --- functions
 
 function add_groups_id_field_in_olas(Migration $migration): void
 {
     $migration->addField(
-        OLA::getTable(),
-        Group::getForeignKeyField(),
+        'glpi_olas',
+        'groups_id',
         'fkey',
         [
             'value' => '0',
@@ -66,30 +61,10 @@ function add_groups_id_field_in_olas(Migration $migration): void
             'after' => 'slms_id',
         ]
     );
-
-    // addKey requires the table to exist -> execute migration before
-    $migration->executeMigration();
-    $migration->addKey(OLA::getTable(), Group::getForeignKeyField());
+    $migration->addKey('glpi_olas', 'groups_id');
 }
 
-function remove_olas_fields_in_tickets(Migration $migration): void
-{
-    $fields_to_remove = [
-        'ola_waiting_duration',
-        'olas_id_tto',
-        'olas_id_ttr',
-        'olalevels_id_ttr',
-        'ola_tto_begin_date',
-        'ola_ttr_begin_date',
-        'internal_time_to_resolve',
-        'internal_time_to_own',
-    ];
-
-    foreach ($fields_to_remove as $field) {
-        $migration->dropField(Ticket::getTable(), $field);
-    }
-}
-function create_items_olas_table(Migration $migration): void
+function create_items_olas_table(Migration $migration, DBmysql $DB): void
 {
     $charset = DBConnection::getDefaultCharset();
     $collation = DBConnection::getDefaultCollation();
@@ -107,63 +82,90 @@ function create_items_olas_table(Migration $migration): void
         `waiting_time`  int NOT NULL DEFAULT 0,
         `waiting_start` timestamp,
         `is_late`       tinyint NOT NULL DEFAULT 0,
-        PRIMARY KEY (`id`)
+        PRIMARY KEY (`id`),
+        KEY `olas_id` (`olas_id`),
+        KEY `item` (`itemtype`, `items_id`)
          ) ENGINE=InnoDB DEFAULT CHARSET=$charset COLLATE=$collation ROW_FORMAT=DYNAMIC;";
-    $migration->addPreQuery($query);
-    $migration->executeMigration();
-
-    $migration->addKey('glpi_items_olas', 'olas_id');
-    $migration->addKey('glpi_items_olas', ['itemtype', 'items_id'], 'item');
+    $DB->doQuery($query);
 }
 
-function migrate_items_olas_data(Migration $migration): void
+function migrate_items_olas_data(Migration $migration, DBmysql $DB): void
 {
-    $_ticket = new Ticket();
-    if (!$_ticket->isField('olas_id_tto')) {
+    if (!$DB->fieldExists('glpi_tickets', 'olas_id_tto')) {
         // olas_id_tto field is removed : considere migration as done
         return;
     }
-    $tickets_with_ola = $_ticket->find(['OR'
-        => [
-            ['NOT' => ['olas_id_tto' => null]],
-            ['NOT' => ['olas_id_ttr' => null]],
-        ]]);
+
+    $tickets_with_ola = $DB->request(
+        [
+            'FROM'  => 'glpi_tickets',
+            'WHERE' => [
+                'OR' => [
+                    ['NOT' => ['olas_id_tto' => null]],
+                    ['NOT' => ['olas_id_ttr' => null]],
+                ],
+            ],
+        ]
+    );
 
     foreach ($tickets_with_ola as $ticket) {
         if ($ticket['olas_id_tto'] !== 0) {
-            $io = new Item_Ola();
-
-            $_data = [
-                'itemtype' => Ticket::class,
-                'items_id' => $ticket['id'],
-                'olas_id' => $ticket['olas_id_tto'],
-                'start_time' => $ticket['ola_tto_begin_date'],
-                'due_time' => $ticket['internal_time_to_own'],
-                'waiting_time' => $ticket['ola_waiting_duration'],
-                'waiting_start' => null,
-            ];
-
-            if (!$io->add($_data)) {
-                throw new Exception('Failed to migrate OLA TTO data: ' . json_encode($_data));
-            }
+            $migration->addPostQuery(
+                $DB->buildInsert(
+                    'glpi_items_olas',
+                    [
+                        'itemtype'      => 'Ticket',
+                        'items_id'      => $ticket['id'],
+                        'olas_id'       => $ticket['olas_id_tto'],
+                        'ola_type'      => 1,
+                        'start_time'    => $ticket['ola_tto_begin_date'],
+                        'due_time'      => $ticket['internal_time_to_own'],
+                        'end_time'      => null,
+                        'waiting_time'  => $ticket['ola_waiting_duration'],
+                        'waiting_start' => null,
+                        'is_late'       => false,
+                    ]
+                )
+            );
         }
 
         if ($ticket['olas_id_ttr'] !== 0) {
-            $io = new Item_Ola();
-
-            $_data = [
-                'itemtype' => Ticket::class,
-                'items_id' => $ticket['id'],
-                'olas_id' => $ticket['olas_id_ttr'],
-                'start_time' => $ticket['ola_ttr_begin_date'],
-                'due_time' => $ticket['internal_time_to_resolve'],
-                'waiting_time' => $ticket['ola_waiting_duration'],
-            ];
-
-            if (!$io->add($_data)) {
-                throw new Exception('Failed to migrato OLA TTO data: ' . json_encode($_data));
-            }
+            $migration->addPostQuery(
+                $DB->buildInsert(
+                    'glpi_items_olas',
+                    [
+                        'itemtype'      => 'Ticket',
+                        'items_id'      => $ticket['id'],
+                        'olas_id'       => $ticket['olas_id_ttr'],
+                        'ola_type'      => 2,
+                        'start_time'    => $ticket['ola_ttr_begin_date'],
+                        'due_time'      => $ticket['internal_time_to_resolve'],
+                        'end_time'      => null,
+                        'waiting_time'  => $ticket['ola_waiting_duration'],
+                        'waiting_start' => null,
+                        'is_late'       => false,
+                    ]
+                )
+            );
         }
+    }
+}
+
+function remove_olas_fields_in_tickets(Migration $migration): void
+{
+    $fields_to_remove = [
+        'ola_waiting_duration',
+        'olas_id_tto',
+        'olas_id_ttr',
+        'olalevels_id_ttr',
+        'ola_tto_begin_date',
+        'ola_ttr_begin_date',
+        'internal_time_to_resolve',
+        'internal_time_to_own',
+    ];
+
+    foreach ($fields_to_remove as $field) {
+        $migration->dropField('glpi_tickets', $field);
     }
 }
 
@@ -172,7 +174,7 @@ function update_crontask(Migration $migration, DBmysql $DB): void
     // find if cron task already exists to choose against adding it or updating it
     $crontask = $DB->request([
         'SELECT' => ['id'],
-        'FROM' => CronTask::getTable(),
+        'FROM' => 'glpi_crontasks',
         'WHERE' => [
             'name' => 'olaticket',
         ],
@@ -181,25 +183,31 @@ function update_crontask(Migration $migration, DBmysql $DB): void
 
     if (is_null($id)) {
         // add new crontask
-        $migration->insertInTable(
-            'glpi_crontasks',
-            [
-                'itemtype' => 'Item_Ola',
-                'name' => 'olaticket',
-                'frequency' => 5 * MINUTE_TIMESTAMP,
-                'param' => null,
-                'state' => CronTask::STATE_WAITING,
-                'mode' => CronTask::MODE_INTERNAL,
-                'lastrun' => null,
-                'logs_lifetime' => 30,
-                'hourmin' => 0,
-                'hourmax' => 24,
-            ]
+        $migration->addPostQuery(
+            $DB->buildInsert(
+                'glpi_crontasks',
+                [
+                    'itemtype'      => 'Item_Ola',
+                    'name'          => 'olaticket',
+                    'frequency'     => 300,
+                    'param'         => null,
+                    'state'         => 1, // waiting
+                    'mode'          => 1, // internal
+                    'lastrun'       => null,
+                    'logs_lifetime' => 30,
+                    'hourmin'       => 0,
+                    'hourmax'       => 24,
+                ]
+            )
         );
     } else {
         // update existing crontask
-        if (false === $DB->doQuery($DB->buildUpdate('glpi_crontasks', ['itemtype' => 'Item_Ola'], ['id' => $id]))) {
-            throw new Exception('Failed to update crontask itemtype');
-        }
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_crontasks',
+                ['itemtype' => 'Item_Ola'],
+                ['id' => $id]
+            )
+        );
     }
 }
