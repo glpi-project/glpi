@@ -24394,25 +24394,6 @@
                     },
                     "x-full-schema": "SLA"
                 },
-                "sla_level_ttr": {
-                    "type": "object",
-                    "x-itemtype": "SlaLevel",
-                    "properties": {
-                        "id": {
-                            "type": "integer",
-                            "format": "int64"
-                        },
-                        "name": {
-                            "type": "string",
-                            "readOnly": true
-                        }
-                    },
-                    "x-full-schema": "SLALevel"
-                },
-                "sla_waiting_duration": {
-                    "type": "integer",
-                    "readOnly": true
-                },
                 "ola_ttr": {
                     "type": "object",
                     "nullable": true,
@@ -24445,6 +24426,21 @@
                     },
                     "readOnly": true
                 },
+                "sla_level_ttr": {
+                    "type": "object",
+                    "x-itemtype": "SlaLevel",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "SLALevel"
+                },
                 "ola_level_ttr": {
                     "type": "object",
                     "nullable": true,
@@ -24459,6 +24455,10 @@
                             "readOnly": true
                         }
                     },
+                    "readOnly": true
+                },
+                "sla_waiting_duration": {
+                    "type": "integer",
                     "readOnly": true
                 },
                 "ola_waiting_duration": {
@@ -25818,6 +25818,7 @@
                         "unifont",
                         "unifont_csur",
                         "unifont_jp",
+                        "unifont_t",
                         "unifont_upper",
                         "zapfdingbats"
                     ]

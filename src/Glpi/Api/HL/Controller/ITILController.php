@@ -431,28 +431,6 @@ final class ITILController extends AbstractController
                 $schemas[$itil_type]['properties']['request_type'] = self::getDropdownTypeSchema(class: RequestType::class, full_schema: 'RequestType');
 
                 // SLA/OLA Properties
-                $schemas[$itil_type]['properties']['take_into_account_date'] = [
-                    'x-version-introduced' => '2.1.0',
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                    'x-field' => 'takeintoaccountdate',
-                ];
-                $schemas[$itil_type]['properties']['take_into_account_duration'] = [
-                    'x-version-introduced' => '2.1.0',
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'readOnly' => true,
-                    'description' => 'Total take into account duration in seconds',
-                    'x-field' => 'takeintoaccount_delay_stat',
-                ];
-                $schemas[$itil_type]['properties']['sla_ttr'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_ttr', full_schema: 'SLA') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['sla_tto'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_tto', full_schema: 'SLA') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['sla_level_ttr'] = self::getDropdownTypeSchema(class: SlaLevel::class, field: 'slalevels_id_ttr', full_schema: 'SLALevel') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['sla_waiting_duration'] = [
-                    'x-version-introduced' => '2.1.0',
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'readOnly' => true,
-                    'description' => 'Total SLA waiting duration in seconds',
-                ];
 
                 // OLA fields: since OLAs are now stored in the items_ola junction table
                 // (no more direct olas_id_ttr / olas_id_tto FK on the ticket), we use
@@ -476,7 +454,6 @@ final class ITILController extends AbstractController
                     }
                     return $ola_data_cache[$cache_key];
                 };
-
                 $ola_dropdown_properties = [
                     'type' => Doc\Schema::TYPE_OBJECT,
                     'nullable' => true,
@@ -487,6 +464,22 @@ final class ITILController extends AbstractController
                         'name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
                     ],
                 ];
+
+                $schemas[$itil_type]['properties']['take_into_account_date'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'takeintoaccountdate',
+                ];
+                $schemas[$itil_type]['properties']['take_into_account_duration'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                    'description' => 'Total take into account duration in seconds',
+                    'x-field' => 'takeintoaccount_delay_stat',
+                ];
+                $schemas[$itil_type]['properties']['sla_ttr'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_ttr', full_schema: 'SLA') + ['x-version-introduced' => '2.1.0'];
+                $schemas[$itil_type]['properties']['sla_tto'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_tto', full_schema: 'SLA') + ['x-version-introduced' => '2.1.0'];
                 $schemas[$itil_type]['properties']['ola_ttr'] = $ola_dropdown_properties + [
                     'x-version-introduced' => '2.1.0',
                     'readOnly' => true,
@@ -503,6 +496,7 @@ final class ITILController extends AbstractController
                         return $ola !== null ? ['id' => $ola['olas_id'], 'name' => $ola['name']] : [];
                     },
                 ];
+                $schemas[$itil_type]['properties']['sla_level_ttr'] = self::getDropdownTypeSchema(class: SlaLevel::class, field: 'slalevels_id_ttr', full_schema: 'SLALevel') + ['x-version-introduced' => '2.1.0'];
 
                 // OLA level for TTR (equivalent of sla_level_ttr)
                 $schemas[$itil_type]['properties']['ola_level_ttr'] = [
@@ -523,6 +517,13 @@ final class ITILController extends AbstractController
                         }
                         return ['id' => $ola['level']->getID(), 'name' => $ola['level']->getName()];
                     },
+                ];
+
+                $schemas[$itil_type]['properties']['sla_waiting_duration'] = [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                    'description' => 'Total SLA waiting duration in seconds',
                 ];
 
                 // OLA waiting duration (sum of TTR + TTO waiting times; replaces old single ola_waiting_duration column)
