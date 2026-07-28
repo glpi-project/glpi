@@ -35,8 +35,8 @@
 
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Config\ProxyExclusions;
-use Glpi\Locale\LanguageRegistry;
 use Glpi\Form\Category;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Marketplace\Controller;
 use Glpi\Socket;
 use Glpi\SocketModel;
