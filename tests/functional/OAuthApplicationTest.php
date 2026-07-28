@@ -516,14 +516,9 @@ class OAuthApplicationTest extends DbTestCase
         $this->login();
 
         // canCreate() checks its own CREATE bit, so removing it must deny creation
-        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] ?? 0;
-        $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved & ~CREATE;
-
-        try {
+        $this->withRight(fn($right) => $right & ~CREATE, function () {
             $this->assertFalse(OAuthApplication::canCreate());
-        } finally {
-            $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved;
-        }
+        });
     }
 
     public function testCannotPurgeWithoutConfigRight(): void
@@ -531,26 +526,34 @@ class OAuthApplicationTest extends DbTestCase
         $this->login();
 
         // canPurge() checks its own PURGE bit, so removing it must deny purge
-        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] ?? 0;
-        $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved & ~PURGE;
-
-        try {
+        $this->withRight(fn($right) => $right & ~PURGE, function () {
             $this->assertFalse(OAuthApplication::canPurge());
-        } finally {
-            $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved;
-        }
+        });
     }
 
     public function testCannotUpdateWithoutConfigRight(): void
     {
         $this->login();
 
-        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] ?? 0;
-        $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = READ;
-
-        try {
+        $this->withRight(fn($right) => READ, function () {
             $this->assertFalse(OAuthApplication::canUpdate());
             $this->assertTrue(OAuthApplication::canView());
+        });
+    }
+
+    /**
+     * Temporarily overrides the active profile's right on OAuthApplication for the
+     * duration of $callback, restoring the original value afterwards even on failure.
+     *
+     * @param callable(int): int $override Receives the current right and returns the value to set.
+     */
+    private function withRight(callable $override, callable $callback): void
+    {
+        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] ?? 0;
+        $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $override($saved);
+
+        try {
+            $callback();
         } finally {
             $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved;
         }
