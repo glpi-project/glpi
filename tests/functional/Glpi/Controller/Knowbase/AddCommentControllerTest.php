@@ -139,6 +139,32 @@ class AddCommentControllerTest extends DbTestCase
         ]);
     }
 
+    public function testOversizedAnchorPrefixIsRejected(): void
+    {
+        $this->login();
+        $id = $this->makeArticle();
+
+        $this->expectException(BadRequestHttpException::class);
+        $this->callController($id, [
+            'content'       => 'My comment',
+            'anchor_prefix' => str_repeat('a', KnowbaseItem_Comment::MAX_ANCHOR_CONTEXT_LENGTH + 1),
+            'anchor_exact'  => 'quoted',
+        ]);
+    }
+
+    public function testOversizedAnchorSuffixIsRejected(): void
+    {
+        $this->login();
+        $id = $this->makeArticle();
+
+        $this->expectException(BadRequestHttpException::class);
+        $this->callController($id, [
+            'content'       => 'My comment',
+            'anchor_exact'  => 'quoted',
+            'anchor_suffix' => str_repeat('a', KnowbaseItem_Comment::MAX_ANCHOR_CONTEXT_LENGTH + 1),
+        ]);
+    }
+
     public function testUserWithoutCommentRightIsDenied(): void
     {
         $this->login();
