@@ -166,6 +166,10 @@ updates:
           - "leaflet"
           - "leaflet-*"
           - "leaflet.*"
+      fontsource:
+        patterns:
+          - "@fontsource/*"
+          - "@fontsource-*"
       fullcalendar:
         patterns:
           - "@fullcalendar/*"
