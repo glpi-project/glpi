@@ -38,6 +38,7 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\AuthenticationFailedException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\TOTPManager;
 use Html;
 use Session;
@@ -95,6 +96,8 @@ final class MFAController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function verify(Request $request): Response
     {
+        ReAuthManager::getInstance()->checkReAuthenticationOrRedirect();
+
         $pre_auth_data = $_SESSION['mfa_pre_auth'] ?? null;
 
         $from_login = $pre_auth_data !== null;
