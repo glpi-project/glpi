@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Controller\Knowbase;
 
 use Glpi\Controller\Knowbase\AddCommentController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
@@ -124,6 +125,18 @@ class AddCommentControllerTest extends DbTestCase
         $comment = reset($comments);
         $this->assertNotFalse($comment);
         $this->assertFalse($comment->hasAnchor());
+    }
+
+    public function testOversizedAnchorIsRejected(): void
+    {
+        $this->login();
+        $id = $this->makeArticle();
+
+        $this->expectException(BadRequestHttpException::class);
+        $this->callController($id, [
+            'content'      => 'My comment',
+            'anchor_exact' => str_repeat('a', KnowbaseItem_Comment::MAX_ANCHOR_LENGTH + 1),
+        ]);
     }
 
     public function testUserWithoutCommentRightIsDenied(): void

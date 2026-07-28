@@ -45,7 +45,9 @@ $migration->addField($table, 'anchor_prefix', 'string', [
     'after' => 'parent_comment_id',
     'value' => null,
 ]);
-$migration->addField($table, 'anchor_exact', 'text', [
+// Bounded on purpose: the quote duplicates article content, see
+// KnowbaseItem_Comment::MAX_ANCHOR_LENGTH.
+$migration->addField($table, 'anchor_exact', 'varchar(1000) DEFAULT NULL', [
     'after' => 'anchor_prefix',
 ]);
 $migration->addField($table, 'anchor_suffix', 'string', [

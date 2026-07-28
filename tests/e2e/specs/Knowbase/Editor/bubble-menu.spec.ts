@@ -361,5 +361,25 @@ test.describe('Knowledge Base Editor - Bubble Menu', () => {
             await expect(kb.getComment('Commenting on this passage')).toBeVisible();
             await kb.editor.cancel();
         });
+
+        test('Comment button is disabled for a selection longer than the anchor limit', async ({ page, profile, api }) => {
+            await profile.set(Profiles.SuperAdmin);
+            const kb = new KnowbaseItemPage(page);
+
+            const id = await api.createItem('KnowbaseItem', {
+                name: 'Test oversized selection in editor',
+                // Over KnowbaseItem_Comment::MAX_ANCHOR_LENGTH.
+                answer: `<p>${'a'.repeat(1001)}</p>`,
+                entities_id: getWorkerEntityId(),
+            });
+
+            await kb.goto(id);
+            await kb.editor.enterEditMode();
+
+            await kb.bubbleMenu.selectAllContent();
+            await kb.bubbleMenu.assertButtonDisabled('Comment');
+
+            await kb.editor.cancel();
+        });
     });
 });

@@ -85,6 +85,9 @@ final class AddCommentController extends AbstractController
 
         // Anchors only apply to a new thread, never a reply.
         if ($parent_comment_id === null && !empty($data['anchor_exact'])) {
+            if (mb_strlen((string) $data['anchor_exact']) > KnowbaseItem_Comment::MAX_ANCHOR_LENGTH) {
+                throw new BadRequestHttpException();
+            }
             $input['anchor_prefix']     = (string) ($data['anchor_prefix'] ?? '');
             $input['anchor_exact']      = (string) $data['anchor_exact'];
             $input['anchor_suffix']     = (string) ($data['anchor_suffix'] ?? '');

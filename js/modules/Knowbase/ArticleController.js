@@ -110,6 +110,9 @@ export class GlpiKnowbaseArticleController
     /** @type {Array<{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}>} */
     #comment_anchors = [];
 
+    /** @type {number} */
+    #comment_anchor_max_length = Number.POSITIVE_INFINITY;
+
     /** @type {string[]} */
     #resolved_anchor_ids = [];
 
@@ -1019,8 +1022,13 @@ export class GlpiKnowbaseArticleController
             this.#comment_anchors = [];
         }
 
+        // Absent attribute means no client-side gate; the server still enforces it.
+        this.#comment_anchor_max_length =
+            Number.parseInt(content_el.dataset.glpiCommentAnchorMaxLength, 10)
+            || Number.POSITIVE_INFINITY;
+
         this.#renderCommentAnchors();
-        new ReadModeSelectionBubble(content_el);
+        new ReadModeSelectionBubble(content_el, this.#comment_anchor_max_length);
 
         content_el.addEventListener('glpi:kb:comment-selection', (e) => {
             this.#onCommentSelection(e.detail.anchor);
@@ -1217,6 +1225,7 @@ export class GlpiKnowbaseArticleController
                 },
                 item_id: this.#item_id,
                 comment_anchors: this.#comment_anchors,
+                comment_anchor_max_length: this.#comment_anchor_max_length,
                 onUpdate: () => {
                     setHasUnsavedChanges(true);
                     this.#resolved_anchor_ids = this.#editor?.getResolvedCommentAnchorIds() ?? [];

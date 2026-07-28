@@ -8324,7 +8324,7 @@ CREATE TABLE `glpi_knowbaseitems_comments` (
   `comment` text,
   `parent_comment_id` int unsigned DEFAULT NULL,
   `anchor_prefix` varchar(255) DEFAULT NULL,
-  `anchor_exact` text DEFAULT NULL,
+  `anchor_exact` varchar(1000) DEFAULT NULL,
   `anchor_suffix` varchar(255) DEFAULT NULL,
   `anchor_occurrence` int DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,

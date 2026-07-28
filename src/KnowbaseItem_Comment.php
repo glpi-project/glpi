@@ -46,6 +46,12 @@ final class KnowbaseItem_Comment extends CommonDBTM
     // public static string $itemtype = KnowbaseItem::class;
     // public static string $items_id = 'knowbaseitems_id';
 
+    /** Longest passage a comment may quote, in characters. Matches `anchor_exact`. */
+    public const MAX_ANCHOR_LENGTH = 1000;
+
+    /** Longest context kept around the quote. Matches `anchor_prefix`/`anchor_suffix`. */
+    public const MAX_ANCHOR_CONTEXT_LENGTH = 255;
+
     #[Override]
     public static function getTypeName($nb = 0): string
     {
@@ -152,9 +158,33 @@ final class KnowbaseItem_Comment extends CommonDBTM
                 $input['anchor_suffix'],
                 $input['anchor_occurrence'],
             );
+        } elseif (!$this->hasValidAnchorLengths($input)) {
+            return false;
         }
 
         return $input;
+    }
+
+    /**
+     * The quote duplicates article content; unbounded, it is an abuse vector.
+     *
+     * @param array<string, mixed> $input
+     */
+    private function hasValidAnchorLengths(array $input): bool
+    {
+        $limits = [
+            'anchor_prefix' => self::MAX_ANCHOR_CONTEXT_LENGTH,
+            'anchor_exact'  => self::MAX_ANCHOR_LENGTH,
+            'anchor_suffix' => self::MAX_ANCHOR_CONTEXT_LENGTH,
+        ];
+
+        foreach ($limits as $field => $limit) {
+            if (mb_strlen((string) ($input[$field] ?? '')) > $limit) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function hasAnchor(): bool
