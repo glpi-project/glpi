@@ -35,11 +35,16 @@
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\CodeQuality\Rector as CodeQuality;
 use Rector\Config\RectorConfig;
+use Rector\Configuration\PhpLevelSetResolver;
 use Rector\DeadCode\Rector as DeadCode;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\ValueObject\PhpVersion;
 
 return RectorConfig::configure()
+    ->withSets([
+        // apply PHP sets up to PHP 7.4
+        ...PhpLevelSetResolver::resolveFromPhpVersion(PhpVersion::PHP_74),
+    ])
     ->withPaths([
         __DIR__ . '/ajax',
         __DIR__ . '/dependency_injection',
@@ -107,5 +112,4 @@ return RectorConfig::configure()
         CodeQuality\Ternary\UnnecessaryTernaryExpressionRector::class,
         DeadCode\Assign\RemoveUnusedVariableAssignRector::class,
     ])
-    ->withPhpSets(php74: true) // apply PHP sets up to PHP 7.4
 ;

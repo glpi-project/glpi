@@ -1460,7 +1460,6 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
 
         /** @var array<mixed, mixed> $GO_FIELDS */
         $GO_FIELDS = [];
-        // @phpstan-ignore closure.unusedUse
         (function () use (&$GO_FIELDS, $constant_files) {
             foreach ($constant_files as $constant_file) {
                 if (\file_exists($constant_file)) {
