@@ -290,9 +290,9 @@ class Document_ItemTest extends DbTestCase
         $this->assertGreaterThan(1, $entity_id, 'This test requires a non-root sub-entity');
         $this->setEntity('_test_root_entity', true);
 
+        // DocumentCategory is a global tree dropdown (no entities_id column).
         $category = $this->createItem(\DocumentCategory::class, [
-            'name'        => 'testcat_' . mt_rand(),
-            'entities_id' => $entity_id,
+            'name' => 'testcat_' . mt_rand(),
         ]);
 
         $filename = uniqid('glpitest_', true) . '.txt';
