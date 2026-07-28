@@ -9074,6 +9074,46 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'oauth_client',
                 'rights' => self::RIGHT_NONE,
             ],
+            [
+                'profiles_id' => self::PROFILE_SELF_SERVICE,
+                'name' => 'oauth_application',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_OBSERVER,
+                'name' => 'oauth_application',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_ADMIN,
+                'name' => 'oauth_application',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPER_ADMIN,
+                'name' => 'oauth_application',
+                'rights' => ALLSTANDARDRIGHT,
+            ],
+            [
+                'profiles_id' => self::PROFILE_HOTLINER,
+                'name' => 'oauth_application',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_TECHNICIAN,
+                'name' => 'oauth_application',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_SUPERVISOR,
+                'name' => 'oauth_application',
+                'rights' => self::RIGHT_NONE,
+            ],
+            [
+                'profiles_id' => self::PROFILE_READ_ONLY,
+                'name' => 'oauth_application',
+                'rights' => self::RIGHT_NONE,
+            ],
         ];
 
 

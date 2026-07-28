@@ -515,9 +515,9 @@ class OAuthApplicationTest extends DbTestCase
     {
         $this->login();
 
-        // canCreate() delegates to canUpdate(), so removing UPDATE must deny creation
-        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname];
-        $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved & ~UPDATE;
+        // canCreate() checks its own CREATE bit, so removing it must deny creation
+        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] ?? 0;
+        $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved & ~CREATE;
 
         try {
             $this->assertFalse(OAuthApplication::canCreate());
@@ -530,9 +530,9 @@ class OAuthApplicationTest extends DbTestCase
     {
         $this->login();
 
-        // canPurge() delegates to canUpdate(), so removing UPDATE must deny purge
-        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname];
-        $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved & ~UPDATE;
+        // canPurge() checks its own PURGE bit, so removing it must deny purge
+        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] ?? 0;
+        $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = $saved & ~PURGE;
 
         try {
             $this->assertFalse(OAuthApplication::canPurge());
@@ -545,7 +545,7 @@ class OAuthApplicationTest extends DbTestCase
     {
         $this->login();
 
-        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname];
+        $saved = $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] ?? 0;
         $_SESSION['glpiactiveprofile'][OAuthApplication::$rightname] = READ;
 
         try {
