@@ -110,7 +110,7 @@
         "twig/string-extra": "^3.24",
         "twig/twig": "^3.27",
         "wapmorgan/unified-archive": "^1.3",
-        "webonyx/graphql-php": "^15.33"
+        "webonyx/graphql-php": "^15.35"
     },
     "require-dev": {
         "ext-xml": "*",
