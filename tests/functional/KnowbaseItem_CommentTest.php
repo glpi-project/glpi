@@ -39,6 +39,7 @@ use KnowbaseItem;
 use KnowbaseItem_Comment;
 use KnowbaseItem_User;
 use Session;
+use User;
 
 class KnowbaseItem_CommentTest extends DbTestCase
 {
@@ -337,6 +338,69 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $comment->getFromDB($id);
         $this->assertTrue($comment->hasAnchor());
         $this->assertSame('untouchable', $comment->fields['anchor_exact']);
+    }
+
+    public function testClearAnchorsForItemSkipsCommentsTheUserCannotUpdate(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id' => $kb1->getID(),
+            'users_id'         => getItemByTypeName(User::class, 'normal', true),
+            'comment'          => 'Someone else comment',
+            'anchor_exact'     => 'untouchable',
+        ]);
+
+        // Keeps the comment right but drops the KB-admin bit: neither author nor admin.
+        $_SESSION['glpiactiveprofile']['knowbase'] &= ~KnowbaseItem::KNOWBASEADMIN;
+
+        (new KnowbaseItem_Comment())->clearAnchorsForItem($kb1, [$id]);
+
+        $comment->getFromDB($id);
+        $this->assertTrue($comment->hasAnchor());
+        $this->assertSame('untouchable', $comment->fields['anchor_exact']);
+    }
+
+    public function testUpdateWithAnOversizedAnchorIsRejected(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id' => $kb1->getID(),
+            'comment'          => 'Anchored comment',
+            'anchor_exact'     => 'quoted',
+        ]);
+
+        $this->assertFalse($comment->update([
+            'id'           => $id,
+            'anchor_exact' => str_repeat('a', KnowbaseItem_Comment::MAX_ANCHOR_LENGTH + 1),
+        ]));
+    }
+
+    public function testUpdateWithoutAnchorFieldsIsUnaffected(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id' => $kb1->getID(),
+            'comment'          => 'Before edit',
+            'anchor_exact'     => 'quoted',
+        ]);
+
+        $this->assertNotFalse($comment->update([
+            'id'      => $id,
+            'comment' => 'After edit',
+        ]));
+
+        $comment->getFromDB($id);
+        $this->assertSame('After edit', $comment->fields['comment']);
+        $this->assertTrue($comment->hasAnchor());
     }
 
     public function testCommentWithoutAnchorHasNoAnchor(): void

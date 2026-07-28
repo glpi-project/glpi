@@ -165,12 +165,22 @@ final class KnowbaseItem_Comment extends CommonDBTM
         return $input;
     }
 
+    #[Override]
+    public function prepareInputForUpdate($input): array|false
+    {
+        if (!$this->hasValidAnchorLengths($input)) {
+            return false;
+        }
+
+        return $input;
+    }
+
     /**
      * The quote duplicates article content; unbounded, it is an abuse vector.
      *
      * @param array<string, mixed> $input
      */
-    private function hasValidAnchorLengths(array $input): bool
+    public function hasValidAnchorLengths(array $input): bool
     {
         $limits = [
             'anchor_prefix' => self::MAX_ANCHOR_CONTEXT_LENGTH,
@@ -208,6 +218,9 @@ final class KnowbaseItem_Comment extends CommonDBTM
                 continue;
             }
             if ((int) $comment->fields['knowbaseitems_id'] !== $article->getID()) {
+                continue;
+            }
+            if (!$comment->can($comment->getID(), UPDATE)) {
                 continue;
             }
             $comment->update([
