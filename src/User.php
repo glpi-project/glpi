@@ -4863,6 +4863,16 @@ HTML;
         $start       = intval($_GET["start"] ?? 0);
         $get_filters   = $_GET["filters"] ?? [];
 
+        $sortable_columns = ['type', 'entity', 'name', 'serial', 'otherserial', 'states', 'group', 'users'];
+        $sort = $_GET['sort'] ?? 'name';
+        if (!in_array($sort, $sortable_columns, true)) {
+            $sort = 'name';
+        }
+        $order = strtoupper($_GET['order'] ?? 'ASC');
+        if (!in_array($order, ['ASC', 'DESC'], true)) {
+            $order = 'ASC';
+        }
+
         $type_choices = [];
         foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
@@ -5071,8 +5081,9 @@ HTML;
                 $type_name = $item->getTypeName(1);
 
                 foreach ($item_iterator as $data) {
-                    $cansee = $item->can($data["id"], READ);
-                    $link   = $data[$item->getNameField()];
+                    $cansee   = $item->can($data["id"], READ);
+                    $raw_name = $data[$item->getNameField()] ?? '';
+                    $link     = $raw_name;
                     if ($cansee) {
                         $link_item = $item::getFormURLWithID($data['id']);
                         if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
@@ -5080,44 +5091,54 @@ HTML;
                         }
                         $link = "<a href='" . $link_item . "'>" . $link . "</a>";
                     }
-                    if ($number >= $start && $number < $start + $_SESSION['glpilist_limit']) {
-                        $group_names = [];
-                        foreach (explode(',', $data['groups_ids'] ?? '') as $group_id) {
-                            if (empty($group_id)) {
-                                continue;
-                            }
-                            if (!isset($group_choices[$group_id])) {
-                                $group_choices[$group_id] = Dropdown::getDropdownName("glpi_groups", (int) $group_id);
-                            }
-                            $group_names[] = htmlescape($group_choices[$group_id]);
-                        }
-                        $user_id = (int) ($data[$field_user] ?? 0);
-                        if ($user_id > 0 && !isset($user_choices[$user_id])) {
-                            $user_choices[$user_id] = getUserName($user_id);
-                        }
 
-                        $entries[] = [
-                            'itemtype'      => $itemtype,
-                            'id'            => $data["id"],
-                            'type'          => $type_name,
-                            'entity'        => Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
-                            'name'          => $link,
-                            'serial'        => $data["serial"] ?? '',
-                            'otherserial'   => $data["otherserial"] ?? '',
-                            'states'        => !empty($data['states_id'])
-                                ? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, '')
-                                : '',
-                            'group'         => implode('<br>', array_filter($group_names)),
-                            'users'         => $user_id > 0 ? ($user_choices[$user_id] ?? '') : '',
-                        ];
+                    $group_names = [];
+                    foreach (explode(',', $data['groups_ids'] ?? '') as $group_id) {
+                        if (empty($group_id)) {
+                            continue;
+                        }
+                        if (!isset($group_choices[$group_id])) {
+                            $group_choices[$group_id] = Dropdown::getDropdownName("glpi_groups", (int) $group_id);
+                        }
+                        $group_names[] = htmlescape($group_choices[$group_id]);
                     }
+                    $user_id = (int) ($data[$field_user] ?? 0);
+                    if ($user_id > 0 && !isset($user_choices[$user_id])) {
+                        $user_choices[$user_id] = getUserName($user_id);
+                    }
+
+                    $entries[] = [
+                        'itemtype'      => $itemtype,
+                        'id'            => $data["id"],
+                        'type'          => $type_name,
+                        'entity'        => Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
+                        'name'          => $link,
+                        'name_sort'     => $raw_name,
+                        'serial'        => $data["serial"] ?? '',
+                        'otherserial'   => $data["otherserial"] ?? '',
+                        'states'        => !empty($data['states_id'])
+                            ? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, '')
+                            : '',
+                        'group'         => implode('<br>', array_filter($group_names)),
+                        'users'         => $user_id > 0 ? ($user_choices[$user_id] ?? '') : '',
+                    ];
                     $number++;
                 }
             }
         }
 
+        $sort_key = $sort === 'name' ? 'name_sort' : $sort;
+        usort($entries, function ($a, $b) use ($sort_key, $order) {
+            $cmp = strnatcasecmp((string) ($a[$sort_key] ?? ''), (string) ($b[$sort_key] ?? ''));
+            return $order === 'DESC' ? -$cmp : $cmp;
+        });
+
+        $paged_entries = array_slice($entries, $start, (int) $_SESSION['glpilist_limit']);
+
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start'                 => $start,
+            'sort'                  => $sort,
+            'order'                 => $order,
             'is_tab'                => true,
             'limit'                 => $_SESSION['glpilist_limit'],
             'items_id'              => $ID,
@@ -5159,7 +5180,7 @@ HTML;
                 'name'   => 'raw_html',
                 'group'  => 'raw_html',
             ],
-            'entries'               => $entries,
+            'entries'               => $paged_entries,
             'total_number'          => $number,
             'filtered_number'       => $number,
             'showmassiveactions'    => true,
