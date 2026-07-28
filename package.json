@@ -54,7 +54,7 @@
         "jquery-migrate": "^3.6.0",
         "jquery-ui": "^1.14.2",
         "leaflet": "^1.9.4",
-        "leaflet-control-geocoder": "^3.3.1",
+        "leaflet-control-geocoder": "^4.0.0",
         "leaflet-fullscreen": "^1.0.2",
         "leaflet-spin": "^1.1.0",
         "leaflet.awesome-markers": "^2.0.5",
