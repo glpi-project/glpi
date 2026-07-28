@@ -5111,13 +5111,13 @@ HTML;
                         'itemtype'      => $itemtype,
                         'id'            => $data["id"],
                         'type'          => $type_name,
-                        'entity'        => Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
+                        'entity'        => $entity_choices[$data["entities_id"]] ?? Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
                         'name'          => $link,
                         'name_sort'     => $raw_name,
                         'serial'        => $data["serial"] ?? '',
                         'otherserial'   => $data["otherserial"] ?? '',
                         'states'        => !empty($data['states_id'])
-                            ? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, '')
+                            ? ($state_choices[$data['states_id']] ?? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, ''))
                             : '',
                         'group'         => implode('<br>', array_filter($group_names)),
                         'users'         => $user_id > 0 ? ($user_choices[$user_id] ?? '') : '',
