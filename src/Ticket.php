@@ -5152,8 +5152,11 @@ JAVASCRIPT;
                     'description' => __('Automatic closed tickets purge'),
                     'parameter' => __('Maximum number of tickets purged per entity (0 = unlimited)'),
                 ];
+
+            case 'createinquestticket':
+                return ['description' => __('Generation of tickets satisfaction surveys')];
         }
-        return parent::cronInfo($name);
+        return [];
     }
 
 
@@ -5383,6 +5386,18 @@ JAVASCRIPT;
         }
 
         return ($tot > 0 ? 1 : 0);
+    }
+
+    /**
+     * Cron for automatically creating tickets satisfaction surveys
+     *
+     * @param CronTask $task
+     *
+     * @return int (0 : nothing done - 1 : done)
+     **/
+    public static function cronCreateInquestTicket($task)
+    {
+        return parent::cronCreateInquest($task);
     }
 
 
