@@ -47,7 +47,9 @@ class OLAParameters extends LevelAgreementParameters
 {
     public function getAvailableParameters(): array
     {
-        return parent::getAvailableParameters() + [new ObjectParameter(new GroupParameters()),];
+        $parameters = parent::getAvailableParameters();
+        $parameters[] = new ObjectParameter(new GroupParameters());
+        return $parameters;
     }
 
     public static function getDefaultNodeName(): string
