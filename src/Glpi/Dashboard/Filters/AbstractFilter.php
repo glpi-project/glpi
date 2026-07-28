@@ -283,12 +283,16 @@ abstract class AbstractFilter
 
     protected static function getDatesCriteria(string $field, array $dates): array
     {
-        $begin = strtotime($dates[0]);
-        $end   = strtotime($dates[1]);
+        $begin    = strtotime($dates[0]);
+        $end      = strtotime($dates[1]);
+        $next_day = strtotime('+1 day', $end);
 
         return [
             [$field => ['>=', date('Y-m-d', $begin)]],
-            [$field => ['<=', date('Y-m-d', $end)]],
+            // Use strict less-than against the following day so that the entire end day is
+            // included. MySQL compares DATETIME against a bare date as 'YYYY-MM-DD 00:00:00',
+            // which would otherwise exclude any record created after midnight on end_date.
+            [$field => ['<',  date('Y-m-d', $next_day)]],
         ];
     }
 
@@ -303,12 +307,13 @@ abstract class AbstractFilter
                 'value'      => date('Y-m-d 00:00:00', $begin),
             ];
         } else {
-            $end   = strtotime($dates[1]);
+            $end = strtotime($dates[1]);
             return [
                 'link'       => 'AND',
                 'field'      => $searchoption_id,
                 'searchtype' => 'lessthan',
-                'value'      => date('Y-m-d 00:00:00', $end),
+                // +1 day so the whole end day is included (same logic as getDatesCriteria).
+                'value'      => date('Y-m-d 00:00:00', strtotime('+1 day', $end)),
             ];
         }
     }
