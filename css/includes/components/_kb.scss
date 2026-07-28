@@ -41,9 +41,11 @@
     }
 }
 
-// Shared by editor (ProseMirror <span>) and read view (<mark>); background-color
-// must be set explicitly to override <mark>'s default UA yellow.
+// Shared by the editor's <span> and the read view's <mark>: neutralize Tabler's
+// `mark` styling, which reaches only the latter.
 .kb-comment-highlight {
+    padding: 0;
+    color: inherit;
     background-color: transparent;
     text-decoration: underline;
     text-decoration-color: var(--tblr-warning);

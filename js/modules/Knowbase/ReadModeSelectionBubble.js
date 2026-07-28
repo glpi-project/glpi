@@ -56,8 +56,7 @@ export class ReadModeSelectionBubble {
     /**
      * @param {Element} container - The KB article content container
      *  (`[data-glpi-kb-content]`).
-     * @param {number} max_anchor_length - Longest quotable passage; the server
-     *  enforces the same limit, this only keeps the UI honest.
+     * @param {number} max_anchor_length - Longest quotable passage; also enforced server-side.
      */
     constructor(container, max_anchor_length) {
         this.#container = container;
@@ -98,9 +97,7 @@ export class ReadModeSelectionBubble {
         return bubble;
     }
 
-    /**
-     * @param {number} length - Length of the currently selected text.
-     */
+    /** @param {number} length - Length of the currently selected text. */
     #setButtonAvailability(length) {
         this.#button.disabled = length > this.#max_anchor_length;
     }
@@ -171,8 +168,7 @@ export class ReadModeSelectionBubble {
         const [start, end] = offsets;
         const anchor = extractAnchor(index.text, start, end);
 
-        // `range.toString()` gates the button, but the indexed text is what gets
-        // stored — re-check it so the two can never disagree against the server.
+        // The button is gated on range.toString(); re-check what actually gets stored.
         if (anchor.exact.length > this.#max_anchor_length) {
             return;
         }

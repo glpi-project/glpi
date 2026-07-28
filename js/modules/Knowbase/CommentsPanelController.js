@@ -211,8 +211,7 @@ export class GlpiKnowbaseCommentsPanelController
     }
 
     /**
-     * Restored in a `finally` by every caller: a failed request must not leave
-     * the button stuck on its spinner.
+     * Reset this in a `finally`: a failed request must not leave a stuck spinner.
      *
      * @param {HTMLElement} button
      * @param {boolean} is_loading
