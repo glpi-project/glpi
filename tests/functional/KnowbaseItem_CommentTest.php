@@ -240,6 +240,53 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertSame(0, (int) $comment->fields['anchor_occurrence']);
     }
 
+    public function testAnchorAtTheLengthLimitIsAccepted(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        // Multi-byte on purpose: the limit counts characters, not bytes.
+        $exact = str_repeat('é', KnowbaseItem_Comment::MAX_ANCHOR_LENGTH);
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id' => $kb1->getID(),
+            'comment'          => 'Anchor at the limit',
+            'anchor_exact'     => $exact,
+        ]);
+        $this->assertGreaterThan(0, $id);
+
+        $comment->getFromDB($id);
+        $this->assertSame($exact, $comment->fields['anchor_exact']);
+    }
+
+    public function testAnchorLongerThanTheLengthLimitIsRejected(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $this->assertFalse($comment->add([
+            'knowbaseitems_id' => $kb1->getID(),
+            'comment'          => 'Oversized anchor',
+            'anchor_exact'     => str_repeat('a', KnowbaseItem_Comment::MAX_ANCHOR_LENGTH + 1),
+        ]));
+    }
+
+    public function testAnchorContextLongerThanTheLengthLimitIsRejected(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $this->assertFalse($comment->add([
+            'knowbaseitems_id' => $kb1->getID(),
+            'comment'          => 'Oversized anchor context',
+            'anchor_prefix'    => str_repeat('a', KnowbaseItem_Comment::MAX_ANCHOR_CONTEXT_LENGTH + 1),
+            'anchor_exact'     => 'quoted',
+        ]));
+    }
+
     public function testCommentWithoutAnchorHasNoAnchor(): void
     {
         $this->login();

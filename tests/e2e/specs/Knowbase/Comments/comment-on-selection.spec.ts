@@ -186,4 +186,26 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await expect(kb.getComment('Comment that will be orphaned')).toBeVisible();
         await expect(kb.getCommentAnchorQuotes()).toHaveCount(0);
     });
+
+    test('Comment button is disabled for a selection longer than the anchor limit', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        // Over KnowbaseItem_Comment::MAX_ANCHOR_LENGTH.
+        const oversized = 'a'.repeat(1001);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test oversized selection',
+            entities_id: getWorkerEntityId(),
+            answer: `<p>${oversized}</p><p>Short passage</p>`,
+        });
+
+        await kb.goto(id);
+
+        await kb.selectTextInReadMode(oversized);
+        await kb.readModeCommentBubble.assertDisabled();
+
+        await kb.selectTextInReadMode('Short passage');
+        await kb.readModeCommentBubble.assertEnabled();
+    });
 });

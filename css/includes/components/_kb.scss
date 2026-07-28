@@ -889,6 +889,15 @@ body.in_modal .kb-editor-reserved {
             background: var(--tblr-bg-surface-secondary);
         }
 
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.4;
+
+            &:hover {
+                background: none;
+            }
+        }
+
         &.is-active {
             background: var(--tblr-primary);
             color: var(--tblr-primary-fg);

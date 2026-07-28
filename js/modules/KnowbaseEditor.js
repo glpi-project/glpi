@@ -81,6 +81,7 @@ class KnowbaseEditor {
             onUpdate: null,
             item_id: null,
             comment_anchors: [],
+            comment_anchor_max_length: Number.POSITIVE_INFINITY,
             ...options
         };
 
@@ -323,6 +324,17 @@ class KnowbaseEditor {
     }
 
     /**
+     * A passage longer than the server accepts can't be commented on.
+     * @param {HTMLButtonElement} button
+     */
+    #updateCommentButtonAvailability(button) {
+        const { from, to } = this.#editor.state.selection;
+        const selected = this.#editor.state.doc.textBetween(from, to);
+
+        button.disabled = selected.length > this.#options.comment_anchor_max_length;
+    }
+
+    /**
      * Extract an anchor for the current selection and dispatch it so
      * ArticleController.js can open the Comments panel with it pre-filled.
      */
@@ -336,6 +348,10 @@ class KnowbaseEditor {
         const start = pmPositionToOffset(segments, from);
         const end = pmPositionToOffset(segments, to);
         const anchor = extractAnchor(text, start, end);
+
+        if (anchor.exact.length > this.#options.comment_anchor_max_length) {
+            return;
+        }
 
         this.#element.dispatchEvent(new CustomEvent('glpi:kb:comment-selection', {
             bubbles: true,
@@ -378,6 +394,8 @@ class KnowbaseEditor {
                 isActive = this.#editor.isActive('orderedList');
             } else if (command === 'toggleBlockquote') {
                 isActive = this.#editor.isActive('blockquote');
+            } else if (special === 'comment') {
+                this.#updateCommentButtonAvailability(btn);
             }
 
             btn.classList.toggle('is-active', isActive);

@@ -1403,6 +1403,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'answer'  => $this->getAnswer(),
             'mode'    => $mode,
             'actions' => [],
+            'comment_anchor_max_length' => KnowbaseItem_Comment::MAX_ANCHOR_LENGTH,
         ];
 
         if ($mode === "edit" || $mode === "view") {

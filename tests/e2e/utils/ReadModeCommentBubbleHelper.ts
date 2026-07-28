@@ -53,6 +53,14 @@ export class ReadModeCommentBubbleHelper {
         await expect(this.getBubble()).toBeHidden();
     }
 
+    async assertDisabled(): Promise<void> {
+        await expect(this.getBubble()).toBeDisabled();
+    }
+
+    async assertEnabled(): Promise<void> {
+        await expect(this.getBubble()).toBeEnabled();
+    }
+
     async click(): Promise<void> {
         const bubble = await this.assertVisible();
         await bubble.click();
