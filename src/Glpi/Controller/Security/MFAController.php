@@ -38,6 +38,7 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\AuthenticationFailedException;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Security\TOTPManager;
 use Html;
 use Session;
@@ -98,6 +99,12 @@ final class MFAController extends AbstractController
         $pre_auth_data = $_SESSION['mfa_pre_auth'] ?? null;
 
         $from_login = $pre_auth_data !== null;
+
+        if (!$from_login) {
+            // Reauth only applies when an already authenticated user changes their own 2FA settings
+            ReAuthManager::getInstance()->checkReAuthenticationOrRedirect();
+        }
+
         $users_id = $from_login ? (int) $pre_auth_data['user_id'] : (int) Session::getLoginUserID();
         if (!$users_id) {
             return new RedirectResponse($request->getBasePath() . '/MFA/Prompt');
