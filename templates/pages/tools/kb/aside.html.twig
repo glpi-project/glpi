@@ -245,12 +245,10 @@
 
 </div>
 
+{# Static import: evaluated before DOMContentLoaded, so the server-rendered toggles never predate their listeners. #}
 <script type="module">
-    (async () => {
-        const { GlpiKnowbaseAsideController } = await import(
-            "/js/modules/Knowbase/AsideController.js"
-        );
-        const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
-        new GlpiKnowbaseAsideController(aside);
-    })();
+    import { GlpiKnowbaseAsideController } from "/js/modules/Knowbase/AsideController.js";
+
+    const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
+    new GlpiKnowbaseAsideController(aside);
 </script>
