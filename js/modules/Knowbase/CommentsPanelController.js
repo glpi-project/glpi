@@ -192,25 +192,36 @@ export class GlpiKnowbaseCommentsPanelController
         const textarea     = form.querySelector(comment_edit_textarea_selector);
         const content      = comment_card.querySelector(comment_content_selector);
 
-        // Show loading state
-        submit_btn.classList.add('pointer-events-none');
-        submit_btn.querySelector('[data-glpi-loading]').classList.remove('d-none');
-        submit_btn.querySelector('[data-glpi-icon]').classList.add('d-none');
+        this.#setButtonLoading(submit_btn, true);
 
-        const response = await post(`Knowbase/UpdateComment/${comment_id}`, {
-            'content': textarea.value,
-        });
-        const result = await response.json();
-
-        // Reset loading state
-        submit_btn.classList.remove('pointer-events-none');
-        submit_btn.querySelector('[data-glpi-icon]').classList.remove('d-none');
-        submit_btn.querySelector('[data-glpi-loading]').classList.add('d-none');
+        let result;
+        try {
+            const response = await post(`Knowbase/UpdateComment/${comment_id}`, {
+                'content': textarea.value,
+            });
+            result = await response.json();
+        } finally {
+            this.#setButtonLoading(submit_btn, false);
+        }
 
         // Update content and hide form
         this.#renderCommentContent(content, result.comment);
         form.classList.add('d-none');
         content.classList.remove('d-none');
+    }
+
+    /**
+     * Restored in a `finally` by every caller: a failed request must not leave
+     * the button stuck on its spinner.
+     *
+     * @param {HTMLElement} button
+     * @param {boolean} is_loading
+     */
+    #setButtonLoading(button, is_loading)
+    {
+        button.classList.toggle('pointer-events-none', is_loading);
+        button.querySelector('[data-glpi-loading]').classList.toggle('d-none', !is_loading);
+        button.querySelector('[data-glpi-icon]').classList.toggle('d-none', is_loading);
     }
 
     /**
@@ -282,18 +293,7 @@ export class GlpiKnowbaseCommentsPanelController
             return;
         }
 
-        // Show loading state
-        this.#getSubmitButton().classList.add('pointer-events-none');
-        this.#getSubmitButton()
-            .querySelector('[data-glpi-loading]')
-            .classList
-            .remove('d-none')
-        ;
-        this.#getSubmitButton()
-            .querySelector('[data-glpi-icon]')
-            .classList
-            .add('d-none')
-        ;
+        this.#setButtonLoading(this.#getSubmitButton(), true);
 
         const pending_anchor = this.#pending_anchor;
         const body = { 'content': this.#getContentTextarea().value };
@@ -311,21 +311,10 @@ export class GlpiKnowbaseCommentsPanelController
             // Always clear the pending anchor, even if the POST fails, so a
             // stale anchor can never leak into a later, unrelated submission.
             this.#clearPendingAnchor();
+            this.#setButtonLoading(this.#getSubmitButton(), false);
         }
 
-        // Clear input/UI
         this.#getContentTextarea().value = "";
-        this.#getSubmitButton().classList.remove('pointer-events-none');
-        this.#getSubmitButton()
-            .querySelector('[data-glpi-icon]')
-            .classList
-            .remove('d-none')
-        ;
-        this.#getSubmitButton()
-            .querySelector('[data-glpi-loading]')
-            .classList
-            .add('d-none')
-        ;
 
         // Insert new comment
         const html = await response.text();
