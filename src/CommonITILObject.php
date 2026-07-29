@@ -11113,7 +11113,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $this->loadActors();
         }
 
-        $can_update_item = $this->can($this->getID(), UPDATE);
         if (
             array_key_exists('_actors', $input)
             && is_array($input['_actors'])
@@ -11124,7 +11123,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign()) {
                     continue;
                 }
-                if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$can_update_item) {
+                if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$this->can($this->getID(), UPDATE)) {
                     continue;
                 }
 
