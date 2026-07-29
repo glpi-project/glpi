@@ -156,6 +156,27 @@ class OperatingSystem extends InventoryAsset
             'items_id'  => $this->item->fields['id'],
         ]);
 
+        if (!$ios->isNewItem()) {
+            $reset_fields = [
+                'operatingsystemversions_id'       => 0,
+                'operatingsystemservicepacks_id'   => 0,
+                'operatingsystemarchitectures_id'  => 0,
+                'operatingsystemkernelversions_id' => 0,
+                'operatingsystemeditions_id'       => 0,
+                'licenseid'                        => '',
+                'license_number'                   => '',
+                'company'                          => '',
+                'owner'                            => '',
+                'hostid'                           => '',
+                'install_date'                     => null,
+            ];
+            foreach ($reset_fields as $field => $empty_value) {
+                if (!property_exists($val, $field)) {
+                    $val->$field = $empty_value;
+                }
+            }
+        }
+
         $input_os = $this->handleInput($val, $ios) + [
             'itemtype'                          => $this->item->getType(),
             'items_id'                          => $this->item->fields['id'],
@@ -165,29 +186,6 @@ class OperatingSystem extends InventoryAsset
 
         if (!$ios->isNewItem()) {
             //OS exists, check for updates
-
-            // Reset OS specific fields that are no longer reported by the inventory
-            $lockeds = new \Lockedfield();
-            $locks = $lockeds->getLockedNames($ios->getType(), $ios->getID());
-            $reset_fields = [
-                //dropdown foreign keys
-                'operatingsystemversions_id'        => 0,
-                'operatingsystemservicepacks_id'    => 0,
-                'operatingsystemarchitectures_id'   => 0,
-                'operatingsystemkernelversions_id'  => 0,
-                'operatingsystemeditions_id'        => 0,
-                'licenseid'                         => '',
-                'license_number'                    => '',
-                'company'                           => '',
-                'owner'                             => '',
-                'hostid'                            => '',
-            ];
-            foreach ($reset_fields as $os_field => $empty_value) {
-                if (!array_key_exists($os_field, $input_os) && !in_array($os_field, $locks, true)) {
-                    $input_os[$os_field] = $empty_value;
-                }
-            }
-
             $same = true;
             foreach ($input_os as $key => $value) {
                 if (array_key_exists($key, $ios->fields) && $ios->fields[$key] != $value) {

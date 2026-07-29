@@ -1125,6 +1125,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
       <SERVICE_PACK>17763.8755</SERVICE_PACK>
       <VERSION>1809</VERSION>
       <HOSTID>a1b2c3d4</HOSTID>
+      <INSTALL_DATE>2025-08-13 20:32:10</INSTALL_DATE>
     </OPERATINGSYSTEM>
     <HARDWARE>
       <NAME>pc-spclear</NAME>
@@ -1155,6 +1156,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $this->assertSame('Test Company', $theos['company']);
         $this->assertSame('Windows User', $theos['owner']);
         $this->assertSame('a1b2c3d4', $theos['hostid']);
+        $this->assertSame('2025-08-13', $theos['install_date']);
 
         //second inventory: same device reinstalled under Linux, no service pack reported
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -1192,6 +1194,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $this->assertEmpty($theos['company']);
         $this->assertEmpty($theos['owner']);
         $this->assertEmpty($theos['hostid']);
+        $this->assertNull($theos['install_date']);
     }
 
     public function testLockedOsFieldKeptOnOsChange()
