@@ -1528,29 +1528,7 @@ $(() => {
         }
     });
 
-    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0);
-    $(document).on('click', '[data-disclose-password]', function(e) {
-        if (isTouch) {
-            e.preventDefault();
-            const target = $(this).data('disclose-password');
-            if ($("#" + CSS.escape(target)).prop('type') === 'password') {
-                showDisclosablePasswordField(target);
-            } else {
-                hideDisclosablePasswordField(target);
-            }
-        }
-    });
 
-    if (!isTouch) {
-        $(document).on('mousedown', '[data-disclose-password]', function(e) {
-            e.preventDefault();
-            showDisclosablePasswordField($(this).data('disclose-password'));
-        });
-        $(document).on('mouseup mouseleave', '[data-disclose-password]', function(e) {
-            e.preventDefault();
-            hideDisclosablePasswordField($(this).data('disclose-password'));
-        });
-    }
 });
 
 /**
@@ -1621,7 +1599,6 @@ function toggleDisclosablePasswordField(button, item) {
  */
 function showDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "text");
-    $(`[data-disclose-password="${CSS.escape(item)}"]`).find('.ti-eye').removeClass('ti-eye').addClass('ti-eye-off');
 }
 
 /**
@@ -1631,7 +1608,6 @@ function showDisclosablePasswordField(item) {
  */
 function hideDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "password");
-    $(`[data-disclose-password="${CSS.escape(item)}"]`).find('.ti-eye-off').removeClass('ti-eye-off').addClass('ti-eye');
 };
 
 /**
