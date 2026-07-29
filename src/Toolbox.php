@@ -1511,7 +1511,7 @@ class Toolbox
         // i.e. "{mail.domain.org/imap/ssl}INBOX", or "{mail.domain.org/pop}"
         $type = preg_replace('/^\{[^\/]+\/([^\/]+)(?:\/.+)*\}.*/', '$1', $value);
         $tab['type'] = in_array($type, array_keys(self::getMailServerProtocols($allow_plugins_protocols)))
-            || preg_match('/^oauth_imap_\d+$/', $type)
+            || preg_match('/^' . preg_quote(OAuthApplication::PROTOCOL_PREFIX, '/') . '\d+$/', $type)
             ? $type
             : '';
 

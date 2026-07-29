@@ -43,6 +43,8 @@ final class OAuthApplication extends CommonDBTM
     public const AZURE = 'azure';
     public const GOOGLE = 'google';
 
+    public const PROTOCOL_PREFIX = 'oauth_imap_';
+
     public static array $undisclosedFields = [
         'client_secret',
     ];
@@ -105,7 +107,7 @@ final class OAuthApplication extends CommonDBTM
     /** @return array<string, mixed> */
     private function linkedMailCollectorsWhere(int $id): array
     {
-        $app_key = 'oauth_imap_' . $id;
+        $app_key = self::PROTOCOL_PREFIX . $id;
         return [
             'OR' => [
                 ['host' => ['LIKE', '%/' . $app_key . '/%']],

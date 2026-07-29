@@ -217,14 +217,6 @@ class Notification extends CommonDBTM implements FilterableInterface
             $menu['options'][NotificationTemplate::class]['links']['lists']  = "";
             $menu['options'][NotificationTemplate::class]['lists_itemtype']  = NotificationTemplate::class;
 
-            if (OAuthApplication::canView()) {
-                $menu['options'][OAuthApplication::class]['icon']            = OAuthApplication::getIcon();
-                $menu['options'][OAuthApplication::class]['title']           = OAuthApplication::getTypeName(Session::getPluralNumber());
-                $menu['options'][OAuthApplication::class]['page']            = OAuthApplication::getSearchURL(false);
-                $menu['options'][OAuthApplication::class]['links']['search'] = OAuthApplication::getSearchURL(false);
-                $menu['options'][OAuthApplication::class]['links']['add']    = OAuthApplication::getFormURL(false);
-            }
-
             $menu['options'][NotificationMailingSetting::class]['title'] = NotificationMailingSetting::getTypeName();
             $menu['options'][NotificationMailingSetting::class]['page']  = NotificationMailingSetting::getFormURL(false);
             $menu['options'][NotificationMailingSetting::class]['icon']  = NotificationMailingSetting::getIcon();
