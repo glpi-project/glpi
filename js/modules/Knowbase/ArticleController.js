@@ -113,8 +113,8 @@ export class GlpiKnowbaseArticleController
     /** @type {number} */
     #comment_anchor_max_length = Number.POSITIVE_INFINITY;
 
-    /** @type {string[]} */
-    #resolved_anchor_ids = [];
+    /** @type {Array<{id: string, text: string}>} */
+    #resolved_anchors = [];
 
     #handleTitleKeydown = (e) => {
         if (e.key === 'Enter') {
@@ -1116,10 +1116,10 @@ export class GlpiKnowbaseArticleController
     {
         if (this.#editor) {
             this.#editor.refreshCommentAnchors(this.#comment_anchors);
-            this.#resolved_anchor_ids = this.#editor.getResolvedCommentAnchorIds();
+            this.#resolved_anchors = this.#editor.getResolvedCommentAnchors();
         } else {
             const content_el = this.#container.querySelector('[data-glpi-kb-content]');
-            this.#resolved_anchor_ids = content_el
+            this.#resolved_anchors = content_el
                 ? highlightComments(content_el, this.#comment_anchors)
                 : [];
         }
@@ -1130,7 +1130,7 @@ export class GlpiKnowbaseArticleController
     #syncAnchorQuotes()
     {
         // Undefined in "add" mode, where the article doesn't exist yet.
-        this.#side_panel?.setResolvedCommentAnchors(this.#resolved_anchor_ids);
+        this.#side_panel?.setResolvedCommentAnchors(this.#resolved_anchors);
     }
 
     /**
@@ -1236,7 +1236,7 @@ export class GlpiKnowbaseArticleController
                 comment_anchor_max_length: this.#comment_anchor_max_length,
                 onUpdate: () => {
                     setHasUnsavedChanges(true);
-                    this.#resolved_anchor_ids = this.#editor?.getResolvedCommentAnchorIds() ?? [];
+                    this.#resolved_anchors = this.#editor?.getResolvedCommentAnchors() ?? [];
                     this.#syncAnchorQuotes();
                 },
             });
@@ -1320,7 +1320,7 @@ export class GlpiKnowbaseArticleController
         // Anchors whose quoted passage the saved content no longer carries: the
         // server drops them, so they can't linger as dead rows.
         const orphaned_ids = this.#comment_anchors
-            .filter((anchor) => !this.#resolved_anchor_ids.includes(String(anchor.id)))
+            .filter((anchor) => !this.#resolved_anchors.some((resolved) => resolved.id === String(anchor.id)))
             .map((anchor) => anchor.id);
 
         try {

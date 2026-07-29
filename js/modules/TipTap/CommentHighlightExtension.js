@@ -42,9 +42,10 @@ const { Decoration, DecorationSet } = TiptapPMView;
 const comment_highlight_key = new PluginKey('commentHighlight');
 
 /**
- * Ids of the anchors whose quoted text is still present in the document.
+ * Anchors whose quoted text is still present in the document.
  * @param {object} state - ProseMirror editor state.
- * @returns {string[]}
+ * @returns {Array<{id: string, text: string}>} The text actually located, which can
+ * drift from the stored `exact` when resolved by bracketing.
  */
 function getResolvedCommentAnchors(state) {
     return comment_highlight_key.getState(state)?.resolved ?? [];
@@ -87,8 +88,8 @@ const CommentHighlight = Extension.create({
                 if (!located) {
                     continue;
                 }
-                resolved.push(String(anchor.id));
                 const [start, end] = located;
+                resolved.push({ id: String(anchor.id), text: text.slice(start, end) });
                 for (const { segment, start: seg_start, end: seg_end } of overlaps(segments, start, end)) {
                     const from = segment.pos + (seg_start - segment.start);
                     const to = segment.pos + (seg_end - segment.start);

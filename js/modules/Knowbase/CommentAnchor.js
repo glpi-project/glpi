@@ -32,6 +32,9 @@
 
 const CONTEXT_LENGTH = 32;
 
+/** Mirrors KnowbaseItem_Comment::MAX_ANCHOR_LENGTH. */
+const MAX_ANCHOR_LENGTH = 1000;
+
 /**
  * Count how many times `exact` occurs in `text` strictly before `before_index`.
  * @param {string} text
@@ -70,8 +73,56 @@ export function extractAnchor(text, start, end) {
 }
 
 /**
- * Locate an anchor's quoted text in `text`, disambiguating repeated quotes via
- * prefix/suffix context and occurrence index. Returns null if orphaned.
+ * Index of `needle` in `text` if it occurs exactly once, else null.
+ * @param {string} text
+ * @param {string} needle
+ * @returns {number|null}
+ */
+function findUniqueOccurrence(text, needle) {
+    const first = text.indexOf(needle);
+    if (first === -1 || text.indexOf(needle, first + 1) !== -1) {
+        return null;
+    }
+    return first;
+}
+
+/**
+ * Locate the quoted passage by bracketing it between `prefix`'s end and
+ * `suffix`'s start, for when `exact` can no longer be matched verbatim (the
+ * quoted passage itself was edited). Refuses when prefix/suffix don't occur
+ * exactly once, the resulting range is empty or inverted (passage deleted,
+ * not rewritten), or it exceeds MAX_ANCHOR_LENGTH.
+ * @param {string} text
+ * @param {string} prefix
+ * @param {string} suffix
+ * @returns {[number, number]|null}
+ */
+function locateByBracketing(text, prefix, suffix) {
+    let start;
+    if (prefix.length === 0) {
+        start = 0;
+    } else {
+        const prefix_index = findUniqueOccurrence(text, prefix);
+        if (prefix_index === null) {
+            return null;
+        }
+        start = prefix_index + prefix.length;
+    }
+
+    const end = suffix.length === 0 ? text.length : findUniqueOccurrence(text, suffix);
+    if (end === null || end <= start || end - start > MAX_ANCHOR_LENGTH) {
+        return null;
+    }
+
+    return [start, end];
+}
+
+/**
+ * Locate an anchor's quoted text in `text`. Prefix/suffix context is used to
+ * disambiguate repeated quotes, not to validate the quote itself: a single
+ * occurrence of `exact` is always accepted, and an edited quote falls back to
+ * bracketing between its prefix and suffix rather than being treated as
+ * orphaned. Returns null only when nothing can be located.
  * @param {string} text
  * @param {{prefix: string, exact: string, suffix: string, occurrence: number}} anchor
  * @returns {[number, number]|null}
@@ -88,28 +139,32 @@ export function locateAnchor(text, anchor) {
         matches.push(idx);
         idx = text.indexOf(exact, idx + 1);
     }
-    if (matches.length === 0) {
-        return null;
-    }
 
-    const matchesContext = (start) => {
-        const end = start + exact.length;
-        const actual_prefix = text.slice(Math.max(0, start - prefix.length), start);
-        const actual_suffix = text.slice(end, end + suffix.length);
-        return actual_prefix === prefix && actual_suffix === suffix;
-    };
-
-    if (matches[occurrence] !== undefined && matchesContext(matches[occurrence])) {
-        const start = matches[occurrence];
+    if (matches.length === 1) {
+        const start = matches[0];
         return [start, start + exact.length];
     }
 
-    const fallback = matches.find(matchesContext);
-    if (fallback !== undefined) {
-        return [fallback, fallback + exact.length];
+    if (matches.length > 1) {
+        const matchesContext = (start) => {
+            const end = start + exact.length;
+            const actual_prefix = text.slice(Math.max(0, start - prefix.length), start);
+            const actual_suffix = text.slice(end, end + suffix.length);
+            return actual_prefix === prefix && actual_suffix === suffix;
+        };
+
+        if (matches[occurrence] !== undefined && matchesContext(matches[occurrence])) {
+            const start = matches[occurrence];
+            return [start, start + exact.length];
+        }
+
+        const fallback = matches.find(matchesContext);
+        if (fallback !== undefined) {
+            return [fallback, fallback + exact.length];
+        }
     }
 
-    return null;
+    return locateByBracketing(text, prefix, suffix);
 }
 
 /**
