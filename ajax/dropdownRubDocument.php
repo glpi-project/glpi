@@ -66,8 +66,16 @@ if (isset($_POST["rubdoc"])) {
         throw new RuntimeException('Invalid name provided!');
     }
 
-    if (!isset($_POST['entity']) || $_POST['entity'] === '') {
+    if (!isset($_POST['entity']) || $_POST['entity'] === '' || $_POST['entity'] === []) {
         $_POST['entity'] = $_SESSION['glpiactive_entity'];
+    }
+
+    // `entity` may be a single entity id (scalar) or a list of entity ids
+    // (e.g. a recursive item passes the whole entities subtree).
+    if (is_array($_POST['entity'])) {
+        $entity = array_values(array_map('intval', $_POST['entity']));
+    } else {
+        $entity = (int) $_POST['entity'];
     }
 
     Dropdown::show(
@@ -76,7 +84,7 @@ if (isset($_POST["rubdoc"])) {
             'name'      => $_POST['myname'],
             'used'      => $used,
             'width'     => '50%',
-            'entity'    => intval($_POST['entity']),
+            'entity'    => $entity,
             'rand'      => intval($_POST['rand']),
             'condition' => ['glpi_documents.documentcategories_id' => (int) $_POST["rubdoc"]],
             'value'     => (int) ($_POST['value'] ?? -1),
