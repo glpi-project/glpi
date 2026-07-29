@@ -96,6 +96,7 @@ class TicketTask extends CommonITILTask
      */
     public static function buildParentCondition()
     {
-        return "(0 = 1 " . Ticket::buildCanViewCondition("tickets_id") . ") ";
+        $tasktable = static::getTable();
+        return "(0 = 1 " . Ticket::buildCanViewCondition("tickets_id", $tasktable) . ") ";
     }
 }
