@@ -169,8 +169,10 @@ for (const questionType of ['Radio', 'Checkbox', 'Dropdown']) {
         // Click the option's "Copy UUID" button
         await copyButton.click();
 
-        // Assert the button switches to its "Copied" confirmation state
-        await expect(question.getByRole('button', { name: 'Copied' })).toBeVisible();
+        // Assert the generic clipboard handler confirmed the copy
+        await expect(
+            page.getByRole('alert').filter({ hasText: 'Copied to clipboard' })
+        ).toBeVisible();
 
         // Assert the clipboard holds the option's (non-empty) uuid
         const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());

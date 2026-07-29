@@ -415,6 +415,7 @@ TWIG;
                     class="btn btn-sm btn-action px-1 text-nowrap {{ value ? '' : 'd-none' }}"
                     data-glpi-form-editor-question-extra-details
                     data-glpi-form-editor-question-option-copy-uuid
+                    data-glpi-clipboard-text="{{ uuid }}"
                 >
                     <i class="ti ti-copy me-1"></i>
                     <span>{{ translations.copy_uuid }}</span>

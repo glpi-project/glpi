@@ -130,15 +130,12 @@ export class GlpiFormQuestionTypeSelectable {
             const clone = template.content.cloneNode(true);
             const uuid = getUUID(); // Generate a new UUID to avoid duplicates
 
-            $(clone).find('input[type="text"]')
-                .val(value.value)
-                .attr('name', `options[${uuid}]`);
+            this.#setOptionUuid($(clone), uuid);
+            $(clone).find('input[type="text"]').val(value.value);
             $(clone).find(`input[type="${CSS.escape(this._inputType)}"]`)
-                .val(uuid)
                 .prop('checked', value.checked);
             $(clone).find('input[data-glpi-form-editor-question-option-order]')
-                .val(value.order)
-                .attr('name', `options_order[${uuid}]`);
+                .val(value.order);
 
             const insertedElement = $(clone).children().appendTo(this._container);
 
@@ -194,42 +191,24 @@ export class GlpiFormQuestionTypeSelectable {
             .find('button[data-glpi-form-editor-question-option-remove]')
             .on('click', (event) => this.#removeOption(event));
 
-        option
-            .find('[data-glpi-form-editor-question-option-copy-uuid]')
-            .on('click', (event) => this.#copyOptionUuidToClipboard(event));
+        // The "copy uuid" button is handled by the generic `data-glpi-clipboard-text`
+        // handler, no listener is needed here. Its value is kept in sync by
+        // `#setOptionUuid()`.
     }
 
     /**
-     * Copy the option's UUID to the clipboard and briefly confirm on the button.
+     * Assign an uuid to an option and update every input/attribute referencing it.
      *
-     * @param {JQuery.ClickEvent} event
+     * @param {JQuery<HTMLElement>} option
+     * @param {string} uuid
      */
-    #copyOptionUuidToClipboard(event) {
-        const button = $(event.currentTarget);
-        const option = button.closest('[data-glpi-form-selectable-question-option]');
-        const uuid = option.find(`input[type="${CSS.escape(this._inputType)}"]`).val();
-
-        // Write the uuid to the clipboard
-        navigator.clipboard.writeText(uuid);
-
-        // Swap the button to a "Copied" confirmation state, then restore it.
-        // Keep the original markup so repeated clicks don't lose it.
-        if (button.data('copy-reset-timeout')) {
-            clearTimeout(button.data('copy-reset-timeout'));
-        } else {
-            button.data('copy-original-html', button.html());
-        }
-
-        button
-            .addClass('text-success')
-            .html(`<i class="ti ti-check me-1"></i><span>${__("Copied")}</span>`);
-
-        button.data('copy-reset-timeout', setTimeout(() => {
-            button
-                .removeClass('text-success')
-                .html(button.data('copy-original-html'))
-                .removeData('copy-reset-timeout');
-        }, 2000));
+    #setOptionUuid(option, uuid) {
+        option.find(`input[type="${CSS.escape(this._inputType)}"]`).val(uuid);
+        option.find('input[type="text"]').attr('name', `options[${uuid}]`);
+        option.find('input[data-glpi-form-editor-question-option-order]')
+            .attr('name', `options_order[${uuid}]`);
+        option.find('[data-glpi-form-editor-question-option-copy-uuid]')
+            .attr('data-glpi-clipboard-text', uuid);
     }
 
     /**
@@ -274,10 +253,7 @@ export class GlpiFormQuestionTypeSelectable {
         }
 
         // Update the uuid with a new random value (random number like mt_rand)
-        const uuid = getUUID();
-        $(input).parent().next().find('input[type="radio"], input[type="checkbox"]').val(uuid);
-        $(input).parent().next().find('input[type="text"]').attr('name', `options[${uuid}]`);
-        $(input).parent().next().find('input[data-glpi-form-editor-question-option-order]').attr('name', `options_order[${uuid}]`);
+        this.#setOptionUuid($(input).parent().next(), getUUID());
         $(input).parent().next().find('input[data-glpi-form-editor-question-option-order]').val(this._container.children().length + 1);
 
         /**
