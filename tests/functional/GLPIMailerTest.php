@@ -192,7 +192,6 @@ class GLPIMailerTest extends DbTestCase
         $CFG_GLPI['smtp_port'] = $bkp_port;
         $CFG_GLPI['smtp_username'] = $bkp_user;
         $CFG_GLPI['smtp_check_certificate'] = $bkp_check_certif;
-        $CFG_GLPI['url_base'] = $bkp_url_base;
         if ($bkp_server_name === null) {
             unset($_SERVER['SERVER_NAME']);
         } else {
