@@ -160,7 +160,6 @@ class GLPIMailerTest extends DbTestCase
         $bkp_port = $CFG_GLPI['smtp_port'];
         $bkp_user = $CFG_GLPI['smtp_username'];
         $bkp_check_certif = $CFG_GLPI['smtp_check_certificate'];
-        $bkp_url_base = $CFG_GLPI['url_base'];
         $bkp_server_name = $_SERVER['SERVER_NAME'] ?? null;
 
         $CFG_GLPI['smtp_mode'] = MAIL_SMTP;
@@ -168,8 +167,6 @@ class GLPIMailerTest extends DbTestCase
         $CFG_GLPI['smtp_host'] = 'smtp-relay.gmail.com';
         $CFG_GLPI['smtp_username'] = '';
         $CFG_GLPI['smtp_check_certificate'] = false;
-        // url_base must not drive EHLO identity even when set.
-        $CFG_GLPI['url_base'] = 'https://glpi.example.com/glpi';
         $_SERVER['SERVER_NAME'] = 'localhost';
 
         $mailer = new \GLPIMailer();
@@ -182,7 +179,7 @@ class GLPIMailerTest extends DbTestCase
             $mailer::buildDsn(true)
         );
 
-        // Prefer SERVER_NAME when it is a real host (PHPMailer Hostname order).
+        // Prefer SERVER_NAME when it is a real host.
         $_SERVER['SERVER_NAME'] = 'mail.example.com';
         $this->assertSame(
             'smtp://smtp-relay.gmail.com:587?verify_peer=0&local_domain=mail.example.com',

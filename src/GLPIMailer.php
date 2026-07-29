@@ -180,8 +180,7 @@ class GLPIMailer
      * Resolve the SMTP EHLO / local_domain value.
      *
      * Mirrors the former PHPMailer Hostname fallbacks (server name, then machine
-     * hostname). Deliberately ignores url_base: that is the public app URL and is
-     * not a reliable sender identity for EHLO.
+     * hostname).
      */
     private static function resolveLocalDomain(): string
     {
