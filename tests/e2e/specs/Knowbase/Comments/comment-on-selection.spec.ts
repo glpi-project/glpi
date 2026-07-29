@@ -252,6 +252,41 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await expect(kb.getCommentAnchorQuotes()).toHaveText('This passage needs rewriting badly.');
     });
 
+    test('A comment anchor survives an in-place edit even when its prefix repeats elsewhere', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test anchor with repeated prefix, unique suffix',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Shared lead-in phrase. The passage needs tweaking. '
+                + 'Marker after passage. Shared lead-in phrase used again here.</p>',
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode('The passage needs tweaking.');
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment surviving a repeated prefix');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment surviving a repeated prefix')).toBeVisible();
+
+        await kb.editor.enterEditMode();
+        // Prefix repeats but suffix stays unique: must still resolve, not orphan.
+        await kb.editor.setContent(
+            'Shared lead-in phrase. The passage absolutely needs tweaking. '
+            + 'Marker after passage. Shared lead-in phrase. Repeated once more.'
+        );
+        await kb.editor.save();
+
+        await page.reload();
+        await kb.waitForArticleReady();
+        await expect(kb.getCommentHighlightByText('The passage absolutely needs tweaking.')).toBeVisible();
+
+        await kb.doOpenCommentsPanel();
+        await expect(kb.getComment('Comment surviving a repeated prefix')).toBeVisible();
+        await expect(kb.getCommentAnchorQuotes()).toHaveText('The passage absolutely needs tweaking.');
+    });
+
     test('A comment anchor resolves correctly when its quoted text also appears elsewhere in the article', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);

@@ -73,48 +73,53 @@ export function extractAnchor(text, start, end) {
 }
 
 /**
- * Index of `needle` in `text` if it occurs exactly once, else null.
+ * All indices at which `needle` occurs in `text`, left to right.
  * @param {string} text
  * @param {string} needle
- * @returns {number|null}
+ * @returns {number[]}
  */
-function findUniqueOccurrence(text, needle) {
-    const first = text.indexOf(needle);
-    if (first === -1 || text.indexOf(needle, first + 1) !== -1) {
-        return null;
+function findAllOccurrences(text, needle) {
+    const indices = [];
+    let idx = text.indexOf(needle);
+    while (idx !== -1) {
+        indices.push(idx);
+        idx = text.indexOf(needle, idx + 1);
     }
-    return first;
+    return indices;
 }
 
 /**
- * Locate the quoted passage by bracketing it between `prefix`'s end and
- * `suffix`'s start, for when `exact` can no longer be matched verbatim (the
- * quoted passage itself was edited). Refuses when prefix/suffix don't occur
- * exactly once, the resulting range is empty or inverted (passage deleted,
- * not rewritten), or it exceeds MAX_ANCHOR_LENGTH.
+ * Locate the quoted passage by bracketing it between `prefix` and `suffix`,
+ * for when `exact` no longer matches verbatim. Pairs every occurrence of
+ * each rather than requiring either alone to be unique; refuses when more
+ * than one pairing is valid.
  * @param {string} text
  * @param {string} prefix
  * @param {string} suffix
  * @returns {[number, number]|null}
  */
 function locateByBracketing(text, prefix, suffix) {
-    let start;
-    if (prefix.length === 0) {
-        start = 0;
-    } else {
-        const prefix_index = findUniqueOccurrence(text, prefix);
-        if (prefix_index === null) {
-            return null;
+    const starts = prefix.length === 0
+        ? [0]
+        : findAllOccurrences(text, prefix).map((idx) => idx + prefix.length);
+    const ends = suffix.length === 0
+        ? [text.length]
+        : findAllOccurrences(text, suffix);
+
+    let candidate = null;
+    for (const start of starts) {
+        for (const end of ends) {
+            if (end <= start || end - start > MAX_ANCHOR_LENGTH) {
+                continue;
+            }
+            if (candidate !== null) {
+                return null;
+            }
+            candidate = [start, end];
         }
-        start = prefix_index + prefix.length;
     }
 
-    const end = suffix.length === 0 ? text.length : findUniqueOccurrence(text, suffix);
-    if (end === null || end <= start || end - start > MAX_ANCHOR_LENGTH) {
-        return null;
-    }
-
-    return [start, end];
+    return candidate;
 }
 
 /**
