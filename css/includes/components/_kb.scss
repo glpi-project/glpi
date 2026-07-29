@@ -55,6 +55,12 @@
 
     &:hover {
         text-decoration-thickness: 3px;
+        background-color: var(--tblr-warning-bg-subtle);
+    }
+
+    // Softer than the app-wide orange ::selection.
+    &::selection {
+        background-color: var(--tblr-warning-bg-subtle);
     }
 }
 
@@ -367,8 +373,7 @@
     outline-offset: 6px;
     border-radius: var(--tblr-border-radius);
 
-    // The flex gap alone isn't enough clearance for the outline's bottom
-    // edge, which otherwise nearly touches the next thread's quote.
+    // Extra clearance for the outline's bottom edge.
     margin-bottom: 0.5rem;
     transition: outline-color 0.2s ease-in-out;
 }
