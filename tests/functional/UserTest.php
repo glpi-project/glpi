@@ -2682,12 +2682,6 @@ class UserTest extends DbTestCase
         $this->assertStringStartsWith(__FUNCTION__ . '_2', $tree[0]['title']);
     }
 
-    public function testLdapGroupBatchModeDefaultsFalse(): void
-    {
-        $prop = (new \ReflectionClass(User::class))->getProperty('ldap_group_batch_mode');
-        $this->assertFalse($prop->getValue(null));
-    }
-
     /**
      * Verify that getFromLDAPGroupDiscret() routes to the cached path only when
      * batch mode is enabled and the LDAP_MATCHING_RULE_IN_CHAIN OID is present.
@@ -2733,9 +2727,6 @@ class UserTest extends DbTestCase
         );
         $this->assertFalse($result);
 
-        // Batch mode required: cached path is only active during batch sync.
-        User::enableLdapGroupBatchMode();
-
         // CHAIN OID present + batch mode + group_field set → cached path → true.
         // No groups with ldap_group_dn exist in DB, so no ldap_search is fired.
         $result = $this->callPrivateMethod(
@@ -2746,7 +2737,8 @@ class UserTest extends DbTestCase
                 'group_member_field' => 'member:' . AuthLDAP::MATCHING_RULE_IN_CHAIN_OID,
             ]),
             'uid=testuser,dc=example,dc=com',
-            'testuser'
+            'testuser',
+            true
         );
         $this->assertTrue($result);
         $this->assertEmpty($user->fields['_groups'] ?? []);
@@ -2785,7 +2777,6 @@ class UserTest extends DbTestCase
 
         $userdn = 'uid=cachetest,dc=example,dc=com';
 
-        User::enableLdapGroupBatchMode();
         $user1 = new User();
 
         // First call — DB has no groups with ldap_group_dn, cache is primed as empty.
@@ -2795,7 +2786,8 @@ class UserTest extends DbTestCase
             null,
             $ldap_method,
             $userdn,
-            'cachetest'
+            'cachetest',
+            true
         );
         $this->assertTrue($result);
         $this->assertEmpty($user1->fields['_groups'] ?? []);
@@ -2816,7 +2808,8 @@ class UserTest extends DbTestCase
             null,
             $ldap_method,
             $userdn,
-            'cachetest'
+            'cachetest',
+            true
         );
         $this->assertTrue($result);
         $this->assertEmpty($user2->fields['_groups'] ?? []);
