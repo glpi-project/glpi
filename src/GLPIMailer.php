@@ -39,6 +39,7 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Mail\SMTP\OauthConfig;
 use League\OAuth2\Client\Grant\RefreshToken;
 use Safe\DateTime;
+use Safe\Exceptions\NetworkException;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Transport\Smtp\Auth\XOAuth2Authenticator;
@@ -47,6 +48,7 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
+use function Safe\gethostname;
 use function Safe\preg_replace;
 
 /** GLPI Mailer class
@@ -156,12 +158,56 @@ class GLPIMailer
                 $CFG_GLPI['smtp_port']
             );
 
+            $query_params = [];
             if (!$CFG_GLPI['smtp_check_certificate']) {
-                $dsn .= '?verify_peer=0';
+                $query_params[] = 'verify_peer=0';
+            }
+            // Without an explicit local domain, Symfony's EsmtpTransport defaults to
+            // `[127.0.0.1]`, which strict relays (e.g. Google Workspace) reject at EHLO.
+            $local_domain = self::resolveLocalDomain();
+            if ($local_domain !== '') {
+                $query_params[] = 'local_domain=' . rawurlencode($local_domain);
+            }
+            if ($query_params !== []) {
+                $dsn .= '?' . implode('&', $query_params);
             }
         }
 
         return $dsn;
+    }
+
+    /**
+     * Resolve the SMTP EHLO / local_domain value.
+     *
+     * Mirrors the former PHPMailer Hostname fallbacks (server name, then machine
+     * hostname).
+     */
+    private static function resolveLocalDomain(): string
+    {
+        $server_name = $_SERVER['SERVER_NAME'] ?? '';
+        if (
+            is_string($server_name)
+            && $server_name !== ''
+            && !in_array(strtolower($server_name), ['localhost', '127.0.0.1', '::1'], true)
+        ) {
+            return $server_name;
+        }
+
+        try {
+            $hostname = gethostname();
+            if ($hostname !== '') {
+                return $hostname;
+            }
+        } catch (NetworkException) {
+            // Fall through to php_uname when Safe\gethostname cannot resolve a host.
+        }
+
+        $uname = php_uname('n');
+        if ($uname !== '') {
+            return $uname;
+        }
+
+        return '';
     }
 
     /**
