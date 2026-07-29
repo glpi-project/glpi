@@ -162,6 +162,7 @@ class OperatingSystem extends InventoryAsset
                 'operatingsystemservicepacks_id'   => 0,
                 'operatingsystemarchitectures_id'  => 0,
                 'operatingsystemkernelversions_id' => 0,
+                'operatingsystemkernels_id'        => 0,
                 'operatingsystemeditions_id'       => 0,
                 'licenseid'                        => '',
                 'license_number'                   => '',
