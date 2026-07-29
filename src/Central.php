@@ -652,6 +652,15 @@ class Central extends CommonGLPI
                 }
             }
 
+            // Re-authentication on sensitive actions can be turned off by a constant.
+            // It lowers the security level of the whole instance: warn the administrators.
+            if (GLPI_DISABLE_REAUTH === true) {
+                $messages['warnings'][] = sprintf(
+                    __s('Re-authentication on sensitive actions is disabled by the "%s" constant.'),
+                    'GLPI_DISABLE_REAUTH'
+                ) . ' ' . __s('Remove it from your configuration to restore the expected security level.');
+            }
+
             // Check for available plugin updates
             $count = Controller::countUpdatablePlugins();
 
