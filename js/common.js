@@ -1583,6 +1583,20 @@ function toggleDisclosablePasswordField(button, item) {
     if (label !== undefined) {
         button.setAttribute("aria-label", label);
         button.setAttribute("title", label);
+        button.setAttribute("data-bs-original-title", label);
+        
+        if (typeof bootstrap !== 'undefined') {
+            const tooltip = bootstrap.Tooltip.getInstance(button);
+            if (tooltip !== null) {
+                const tipElement = tooltip.getTipElement ? tooltip.getTipElement() : tooltip.tip;
+                if (tipElement) {
+                    const inner = tipElement.querySelector('.tooltip-inner');
+                    if (inner) {
+                        inner.textContent = label;
+                    }
+                }
+            }
+        }
     }
 
     const icon = button.querySelector("i.disclose");
