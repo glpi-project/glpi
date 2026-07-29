@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight(OAuthApplication::$rightname, UPDATE);
+Session::checkRightsOr(OAuthApplication::$rightname, [CREATE, UPDATE]);
 
 $provider = $_REQUEST['provider'] ?? '';
 $item_id  = (int) ($_REQUEST['item_id'] ?? 0);
