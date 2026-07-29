@@ -71,9 +71,7 @@ if (isset($_POST["rubdoc"])) {
     }
 
     // `entity` may be a single entity id (scalar) or a list of entity ids
-    // (e.g. a recursive item passes the whole entities subtree). Using intval()
-    // on an array would silently collapse it to `1`, mis-scoping (or emptying)
-    // the document list, so normalize both forms to int(s).
+    // (e.g. a recursive item passes the whole entities subtree).
     if (is_array($_POST['entity'])) {
         $entity = array_values(array_map('intval', $_POST['entity']));
     } else {
