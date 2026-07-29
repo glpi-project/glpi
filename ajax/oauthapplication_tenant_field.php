@@ -50,7 +50,7 @@ $item = new OAuthApplication();
 $tenant_id = ($item_id > 0 && $item->getFromDB($item_id)) ? ($item->fields['tenant_id'] ?? '') : '';
 
 // language=twig
-echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
     {% import 'components/form/fields_macros.html.twig' as fields %}
     {{ fields.textField(
         'tenant_id',
