@@ -389,6 +389,10 @@ body.in_modal .kb-article {
     // padding here would shift the layout when the outline appears.
     outline-offset: 6px;
     border-radius: var(--tblr-border-radius);
+
+    // The flex gap alone isn't enough clearance for the outline's bottom
+    // edge, which otherwise nearly touches the next thread's quote.
+    margin-bottom: 0.5rem;
     transition: outline-color 0.2s ease-in-out;
 }
 
