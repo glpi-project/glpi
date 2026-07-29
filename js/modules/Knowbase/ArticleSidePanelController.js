@@ -235,10 +235,12 @@ export class GlpiKnowbaseArticleSidePanelController
 
     /**
      * Hide the quoted passage of every thread whose anchor no longer resolves in
-     * the article, so a deleted passage stops being cited.
-     * @param {string[]} resolved_ids - Root comment ids whose anchor still resolves.
+     * the article, so a deleted passage stops being cited. For a still-resolving
+     * anchor, refresh the quote to the text actually located: it can drift from
+     * the stored `anchor_exact` once resolution falls back to bracketing.
+     * @param {Array<{id: string, text: string}>} resolved_anchors
      */
-    setResolvedCommentAnchors(resolved_ids)
+    setResolvedCommentAnchors(resolved_anchors)
     {
         const target = this.#isSmallScreen()
             ? this.#offcanvas_container.querySelector('.offcanvas-body')
@@ -246,10 +248,16 @@ export class GlpiKnowbaseArticleSidePanelController
 
         target?.querySelectorAll('[data-glpi-comment-thread]').forEach((thread) => {
             const quote = thread.querySelector('[data-glpi-comment-anchor-quote]');
-            quote?.classList.toggle(
-                'd-none',
-                !resolved_ids.includes(thread.dataset.glpiCommentThread)
+            if (!quote) {
+                return;
+            }
+            const resolved = resolved_anchors.find(
+                (anchor) => anchor.id === thread.dataset.glpiCommentThread
             );
+            quote.classList.toggle('d-none', !resolved);
+            if (resolved) {
+                quote.textContent = resolved.text;
+            }
         });
     }
 

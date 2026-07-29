@@ -451,10 +451,10 @@ class KnowbaseEditor {
     }
 
     /**
-     * Ids of the anchors whose quoted text is still present in the document.
-     * @returns {string[]}
+     * Anchors whose quoted text is still present in the document.
+     * @returns {Array<{id: string, text: string}>}
      */
-    getResolvedCommentAnchorIds() {
+    getResolvedCommentAnchors() {
         return this.#editor ? getResolvedCommentAnchors(this.#editor.state) : [];
     }
 

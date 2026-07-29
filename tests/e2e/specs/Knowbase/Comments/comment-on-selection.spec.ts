@@ -187,6 +187,159 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await expect(kb.getCommentAnchorQuotes()).toHaveCount(0);
     });
 
+    test('A comment anchor survives edits to the surrounding words, keeping its quote unchanged', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test anchor survives context edits',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Some lead-in words. The quoted passage stays intact. Some trailing words.</p>',
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode('The quoted passage stays intact.');
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment on a passage kept as-is');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment on a passage kept as-is')).toBeVisible();
+
+        await kb.editor.enterEditMode();
+        await kb.editor.setContent(
+            'Totally different lead-in now. The quoted passage stays intact. Totally different trailing now.'
+        );
+        await kb.editor.save();
+
+        await page.reload();
+        await kb.waitForArticleReady();
+        await expect(kb.getCommentHighlightByText('The quoted passage stays intact.')).toBeVisible();
+
+        await kb.doOpenCommentsPanel();
+        await expect(kb.getComment('Comment on a passage kept as-is')).toBeVisible();
+        await expect(kb.getCommentAnchorQuotes()).toHaveText('The quoted passage stays intact.');
+    });
+
+    test('A comment anchor follows its quoted passage when it is reworded', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test anchor follows reworded passage',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Lead-in context words. This passage needs a rewrite. Trailing context words.</p>',
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode('This passage needs a rewrite.');
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment on a passage being reworded');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment on a passage being reworded')).toBeVisible();
+
+        await kb.editor.enterEditMode();
+        await kb.editor.setContent(
+            'Lead-in context words. This passage needs rewriting badly. Trailing context words.'
+        );
+        await kb.editor.save();
+
+        await page.reload();
+        await kb.waitForArticleReady();
+        await expect(kb.getCommentHighlightByText('This passage needs rewriting badly.')).toBeVisible();
+
+        await kb.doOpenCommentsPanel();
+        await expect(kb.getComment('Comment on a passage being reworded')).toBeVisible();
+        // The quote follows the rewritten text, not the stale stored `anchor_exact`.
+        await expect(kb.getCommentAnchorQuotes()).toHaveText('This passage needs rewriting badly.');
+    });
+
+    test('A comment anchor resolves correctly when its quoted text also appears elsewhere in the article', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test anchor with a repeated quote',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Alpha section: a repeated phrase sits here. Beta section: a repeated phrase sits here.</p>',
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode('a repeated phrase sits here.');
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment on a phrase that repeats');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment on a phrase that repeats')).toBeVisible();
+
+        await page.reload();
+        await kb.waitForArticleReady();
+        // Only the originally-quoted occurrence is highlighted, not both.
+        await expect(kb.getCommentHighlightByText('a repeated phrase sits here.')).toHaveCount(1);
+
+        await kb.doOpenCommentsPanel();
+        await expect(kb.getComment('Comment on a phrase that repeats')).toBeVisible();
+        await expect(kb.getCommentAnchorQuotes()).toHaveText('a repeated phrase sits here.');
+    });
+
+    test('A comment anchor stays orphaned when its context becomes ambiguous after a rewrite', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test anchor with ambiguous context after edit',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Unique lead-in context. The passage needs a rewrite. Unique trailing context.</p>',
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode('The passage needs a rewrite.');
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment orphaned by ambiguous context');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment orphaned by ambiguous context')).toBeVisible();
+
+        await kb.editor.enterEditMode();
+        // The quoted passage is gone, and its prefix now occurs twice: bracketing
+        // can no longer tell which occurrence bounds the original quote.
+        await kb.editor.setContent(
+            'Unique lead-in context. This is totally different wording. '
+            + 'Unique lead-in context. More filler content. Unique trailing context.'
+        );
+        await kb.editor.save();
+
+        await kb.doOpenCommentsPanel();
+        await expect(kb.getComment('Comment orphaned by ambiguous context')).toBeVisible();
+        await expect(kb.getCommentHighlights()).toHaveCount(0);
+        await expect(kb.getCommentAnchorQuotes()).toHaveCount(0);
+    });
+
+    test('A comment anchor stays orphaned when the rewritten passage exceeds the anchor limit', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test anchor with oversized rewritten passage',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Lead marker. The passage to change. Trail marker.</p>',
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode('The passage to change.');
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment orphaned by oversized rewrite');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment orphaned by oversized rewrite')).toBeVisible();
+
+        await kb.editor.enterEditMode();
+        // Prefix and suffix both stay unique, but the gap between them is over
+        // KnowbaseItem_Comment::MAX_ANCHOR_LENGTH: bracketing must refuse it.
+        await kb.editor.setContent(`Lead marker. ${'x'.repeat(1001)} Trail marker.`);
+        await kb.editor.save();
+
+        await kb.doOpenCommentsPanel();
+        await expect(kb.getComment('Comment orphaned by oversized rewrite')).toBeVisible();
+        await expect(kb.getCommentHighlights()).toHaveCount(0);
+        await expect(kb.getCommentAnchorQuotes()).toHaveCount(0);
+    });
+
     test('Comment button is disabled for a selection longer than the anchor limit', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);
