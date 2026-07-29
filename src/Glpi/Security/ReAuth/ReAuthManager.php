@@ -37,6 +37,7 @@ declare(strict_types=1);
 namespace Glpi\Security\ReAuth;
 
 use Glpi\Application\Environment;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\RedirectException;
 use Glpi\Kernel\Kernel;
 use Glpi\Toolbox\SingletonTrait;
@@ -60,7 +61,7 @@ final class ReAuthManager
     private array $additional_strategies = [];
 
     /**
-     * @throws RedirectException
+     * @throws RedirectException|AccessDeniedHttpException
      */
     public function checkReAuthenticationOrRedirect(): void
     {
@@ -74,11 +75,18 @@ final class ReAuthManager
     /**
      * Redirect to reauth prompt and save current request data (url + post data)
      *
-     * @throws RedirectException
+     * Requests that cannot display the prompt (AJAX, or a client expecting anything else than
+     * HTML) are denied instead of being redirected.
+     *
+     * @throws RedirectException|AccessDeniedHttpException
      */
     public function redirectToReauth(): never
     {
         global $CFG_GLPI;
+
+        if (!$this->canDisplayPrompt()) {
+            throw new AccessDeniedHttpException('Re-authentication required.');
+        }
 
         $this->setRequestedTarget();
 
@@ -360,5 +368,18 @@ final class ReAuthManager
             'POST' => 'POST',
             default => throw new \LogicException(sprintf('Unsupported HTTP method for redirect: %s', $http_method)),
         };
+    }
+
+    /**
+     * Requests that cannot be answered with the prompt page are denied instead of redirected.
+     */
+    private function canDisplayPrompt(): bool
+    {
+        /** @var Kernel $kernel */
+        global $kernel;
+
+        $request = $kernel->getMainRequest();
+
+        return !$request->isXmlHttpRequest() && $request->getPreferredFormat() === 'html';
     }
 }

@@ -78,6 +78,8 @@ trait ReAuthTrait
      *
      * @param array<string, string> $get
      * @param array<string, string> $post
+     * @param bool                  $xml_http_request send the request as an AJAX call
+     * @param string                $accept           Accept header, drives Request::getPreferredFormat()
      */
     private function fakeWebContext(
         string $request_uri = '/front/central.php',
@@ -85,6 +87,8 @@ trait ReAuthTrait
         array $get = [],
         array $post = [],
         string $referer = 'https://glpi.example.org/front/central.php',
+        bool $xml_http_request = false,
+        string $accept = 'text/html',
     ): void {
         // getMainRequest() falls back to Request::createFromGlobals() in the test context, so the
         // super globals must carry the exact keys Symfony reads: HTTPS (not REQUEST_SCHEME) drives
@@ -102,6 +106,12 @@ trait ReAuthTrait
         // A real web request always carries a client IP; without it SessionTracker::recordNewSession()
         // would try to insert a NULL ip_address when login() is called under the faked web context.
         $_SERVER['REMOTE_ADDR']    = '127.0.0.1';
+        $_SERVER['HTTP_ACCEPT']    = $accept;
+        if ($xml_http_request) {
+            $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
+        } else {
+            unset($_SERVER['HTTP_X_REQUESTED_WITH']);
+        }
         $_GET  = $get ?: $get_from_uri;
         $_POST = $post;
     }
@@ -120,6 +130,8 @@ trait ReAuthTrait
             $_SERVER['REQUEST_METHOD'],
             $_SERVER['HTTP_REFERER'],
             $_SERVER['REMOTE_ADDR'],
+            $_SERVER['HTTP_ACCEPT'],
+            $_SERVER['HTTP_X_REQUESTED_WITH'],
         );
     }
 

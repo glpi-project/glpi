@@ -38,7 +38,7 @@ use Glpi\Marketplace\View;
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
-Session::checkRight("config", UPDATE);
+(new Config())->checkGlobal(UPDATE);
 
 // This has to be called before search process is called, in order to add
 // "new" plugins in DB to be able to display them.

@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Security\ReAuth;
 
 use Computer;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\RedirectException;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
@@ -42,6 +43,7 @@ use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use Safe\DateTime;
 use User;
 
@@ -59,8 +61,9 @@ class ReAuthManagerTest extends DbTestCase
 
     public function tearDown(): void
     {
-        // Always restore the CLI flag so the reauth branch does not leak to other tests.
-        unset($GLOBALS['GLPI_IS_COMMAND_LINE']);
+        // Always restore the request context (CLI flag included) so the reauth branch taken here
+        // does not leak to other tests.
+        $this->restoreWebContext();
         $this->resetReAuthManager();
         parent::tearDown();
     }
@@ -206,6 +209,34 @@ class ReAuthManagerTest extends DbTestCase
 
         // --- assert ---
         $this->assertSame($CFG_GLPI['root_doc'], $this->getReAuthManager()->getOriginURL());
+    }
+
+    /**
+     * Requests that cannot display the prompt are denied instead of being redirected to it.
+     */
+    #[TestWith([true, 'text/html'], 'ajax request')] // The prompt is a full page: injecting it in the current one is meaningless.
+    #[TestWith([false, 'application/json'], 'json request')] // The caller does not expect HTML at all.
+    public function testRedirectToReauthDeniesRequestsThatCannotDisplayThePrompt(
+        bool $xml_http_request,
+        string $accept
+    ): void {
+        // --- arrange ---
+        $this->fakeWebContext(
+            request_uri: '/ajax/dropdownValue.php',
+            xml_http_request: $xml_http_request,
+            accept: $accept,
+        );
+
+        // --- act ---
+        try {
+            $this->getReAuthManager()->redirectToReauth();
+            $this->fail('An AccessDeniedHttpException should have been thrown.');
+        } catch (AccessDeniedHttpException $e) {
+            // --- assert ---
+            $this->assertSame(403, $e->getStatusCode());
+            // The refusal is about the missing re-authentication, not about missing rights.
+            $this->assertSame('Re-authentication required.', $e->getMessage());
+        }
     }
 
     /** All getters return safe defaults when the re-auth session keys are absent. */
