@@ -58,9 +58,10 @@
         background-color: var(--tblr-warning-bg-subtle);
     }
 
-    // Softer than the app-wide orange ::selection.
+    // Distinct from the :hover wash, so selecting text stays tellable from
+    // merely hovering it.
     &::selection {
-        background-color: var(--tblr-warning-bg-subtle);
+        background-color: rgb(var(--tblr-warning-rgb), 0.4);
     }
 }
 
