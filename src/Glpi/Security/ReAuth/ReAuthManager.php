@@ -209,7 +209,7 @@ final class ReAuthManager
      * pointless to inject it for a replayed GET request (it would only ever
      * land in $_GET).
      *
-     * @return array<string, string>
+     * @return array<array-key, mixed>
      */
     public function getRequestedPostData(): array
     {
@@ -356,7 +356,12 @@ final class ReAuthManager
         $_SESSION['glpi_reauth_requested_url'] = $url;
     }
 
-    /** @param array<string, string> $post */
+    /**
+     * Nested values are supported: query strings and POST bodies carry them, and the replay
+     * template renders them recursively.
+     *
+     * @param array<array-key, mixed> $post
+     */
     private function setRequestedData(array $post): void
     {
         $_SESSION['glpi_reauth_requested_post_data'] = $post;
@@ -375,7 +380,7 @@ final class ReAuthManager
     }
 
     /**
-     * Requests that cannot be answered with the prompt page are denied instead of redirected.
+     * Can the current request be answered with the prompt page?
      *
      * Same discrimination as {@see AccessErrorListener}:
      * an AJAX caller would inject the prompt page in the current one, and a client expecting
