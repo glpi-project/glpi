@@ -588,7 +588,7 @@ trait PlanningEvent
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 $event_obj->getFromResultSet($data);
-                if ($event_obj->canViewItem()) {
+                if ($event_obj->can($event_obj->getID(), READ)) {
                     $key = $data["begin"]
                       . "$$" . $itemtype
                       . "$$" . $data["id"]
@@ -623,7 +623,7 @@ trait PlanningEvent
                                         . "?action=edit_event_form"
                                         . "&itemtype=$itemtype"
                                         . "&id=" . $data['id'],
-                        'editable'         => $event_obj->canUpdateItem(),
+                        'editable'         => $event_obj->can($event_obj->getID(), UPDATE),
                         'url'              => $url,
                         'begin'            => !$is_rrule && (strcmp($begin, $data["begin"]) > 0)
                                           ? $begin
