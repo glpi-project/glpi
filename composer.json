@@ -93,7 +93,7 @@
         "symfony/polyfill-iconv": "^1.37",
         "symfony/polyfill-mbstring": "^1.35",
         "symfony/polyfill-php84": "^1.38",
-        "symfony/polyfill-php85": "^1.38",
+        "symfony/polyfill-php85": "^1.41",
         "symfony/property-access": "^7.4",
         "symfony/property-info": "^7.4",
         "symfony/rate-limiter": "^7.4",
