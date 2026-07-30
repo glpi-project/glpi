@@ -194,7 +194,6 @@ class NetworkCard extends Device
                     }
                 }
 
-
                 if (property_exists($val_port, 'mac')) {
                     $val_port->mac = strtolower($val_port->mac);
                     $portkey = $val_port->name . '-' . $val_port->mac;
