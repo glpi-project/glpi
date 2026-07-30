@@ -460,20 +460,17 @@ export class GlpiKnowbaseCommentsPanelController
             return;
         }
 
-        // Show loading state
-        submit_btn.classList.add('pointer-events-none');
-        submit_btn.querySelector('[data-glpi-loading]').classList.remove('d-none');
-        submit_btn.querySelector('[data-glpi-icon]').classList.add('d-none');
+        this.#setButtonLoading(submit_btn, true);
 
-        const response = await post(`Knowbase/${this.#getKbId()}/AddComment`, {
-            content : content,
-            parent_comment_id : parent_comment_id,
-        });
-
-        // Reset loading state
-        submit_btn.classList.remove('pointer-events-none');
-        submit_btn.querySelector('[data-glpi-icon]').classList.remove('d-none');
-        submit_btn.querySelector('[data-glpi-loading]').classList.add('d-none');
+        let response;
+        try {
+            response = await post(`Knowbase/${this.#getKbId()}/AddComment`, {
+                content : content,
+                parent_comment_id : parent_comment_id,
+            });
+        } finally {
+            this.#setButtonLoading(submit_btn, false);
+        }
 
         // Insert new comment before the reply button
         const trigger = thread.querySelector(reply_trigger_selector);
