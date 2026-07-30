@@ -50,6 +50,16 @@ use function Safe\preg_match;
 class TimestampsCommand extends AbstractCommand implements ConfigurationCommandInterface
 {
     /**
+     * Minimum value supported by MySQL/MariaDB TIMESTAMP type, in UTC.
+     */
+    private const TIMESTAMP_MIN_VALUE = '1970-01-01 00:00:01';
+
+    /**
+     * Maximum value supported by MySQL/MariaDB TIMESTAMP type, in UTC.
+     */
+    private const TIMESTAMP_MAX_VALUE = '2038-01-19 03:14:07';
+
+    /**
      * Error code returned when failed to migrate one table.
      *
      * @var int
@@ -129,17 +139,8 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
                         $nullable = true;
                     }
 
-                    // Fix invalid zero dates
-                    $this->db->update(
-                        $table,
-                        [
-                            $column['COLUMN_NAME'] => $nullable ? null : '1970-01-01 00:00:01',
-                        ],
-                        [
-                            ['NOT' => [$column['COLUMN_NAME'] => null]],
-                            [$column['COLUMN_NAME'] => ['<', '1970-01-01 00:00:01']],
-                        ]
-                    );
+                    // Fix invalid zero dates and dates out of TIMESTAMP range
+                    $this->normalizeOutOfRangeValues($table, $column['COLUMN_NAME'], $nullable);
 
                     //guess default value
                     if (is_null($column['COLUMN_DEFAULT']) && !$nullable) { // no default
@@ -151,16 +152,12 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
                     } elseif (!is_null($column['COLUMN_DEFAULT']) && strtoupper($column['COLUMN_DEFAULT']) != 'NULL') {
                         if (preg_match('/^current_timestamp(\(\))?$/i', $column['COLUMN_DEFAULT']) === 1) {
                             $default = $column['COLUMN_DEFAULT'];
-                        } elseif ($column['COLUMN_DEFAULT'] < '1970-01-01 00:00:01') {
+                        } elseif ($column['COLUMN_DEFAULT'] < self::TIMESTAMP_MIN_VALUE) {
                             // Prevent default value to be out of range (lower to min possible value)
-                            $defaultDate = new DateTime('1970-01-01 00:00:01', new DateTimeZone('UTC'));
-                            $defaultDate->setTimezone(new DateTimeZone(date_default_timezone_get()));
-                            $default = $this->db->quoteValue($defaultDate->format("Y-m-d H:i:s"));
-                        } elseif ($column['COLUMN_DEFAULT'] > '2038-01-19 03:14:07') {
+                            $default = $this->db->quoteValue($this->getTimestampBoundValue(self::TIMESTAMP_MIN_VALUE));
+                        } elseif ($column['COLUMN_DEFAULT'] > self::TIMESTAMP_MAX_VALUE) {
                             // Prevent default value to be out of range (greater to max possible value)
-                            $defaultDate = new DateTime('2038-01-19 03:14:07', new DateTimeZone('UTC'));
-                            $defaultDate->setTimezone(new DateTimeZone(date_default_timezone_get()));
-                            $default = $this->db->quoteValue($defaultDate->format("Y-m-d H:i:s"));
+                            $default = $this->db->quoteValue($this->getTimestampBoundValue(self::TIMESTAMP_MAX_VALUE));
                         } else {
                             $default = $this->db->quoteValue($column['COLUMN_DEFAULT']);
                         }
@@ -241,6 +238,71 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
         }
 
         return 0; // Success
+    }
+
+    private function normalizeOutOfRangeValues(string $table, string $column, bool $nullable): void
+    {
+        $min_value = $this->getTimestampBoundValue(self::TIMESTAMP_MIN_VALUE);
+        $max_value = $this->getTimestampBoundValue(self::TIMESTAMP_MAX_VALUE);
+
+        $this->updateOutOfRangeValues(
+            $table,
+            $column,
+            ['<', $min_value],
+            $nullable ? null : $min_value,
+            sprintf(__('less than "%s"'), $min_value)
+        );
+
+        $this->updateOutOfRangeValues(
+            $table,
+            $column,
+            ['>', $max_value],
+            $max_value,
+            sprintf(__('greater than "%s"'), $max_value)
+        );
+    }
+
+    private function updateOutOfRangeValues(
+        string $table,
+        string $column,
+        array $condition,
+        ?string $replacement,
+        string $condition_description
+    ): void {
+        $this->db->update(
+            $table,
+            [
+                $column => $replacement,
+            ],
+            [
+                ['NOT' => [$column => null]],
+                [$column => $condition],
+            ]
+        );
+
+        $affected_rows = $this->db->affectedRows();
+        if ($affected_rows <= 0) {
+            return;
+        }
+
+        $this->outputMessage(
+            '<comment>' . sprintf(
+                __('%1$s row(s) from "%2$s"."%3$s" containing values %4$s were updated to "%5$s" to fit TIMESTAMP bounds.'),
+                $affected_rows,
+                $table,
+                $column,
+                $condition_description,
+                $replacement ?? 'NULL'
+            ) . '</comment>'
+        );
+    }
+
+    private function getTimestampBoundValue(string $value): string
+    {
+        $date = new DateTime($value, new DateTimeZone('UTC'));
+        $date->setTimezone(new DateTimeZone(date_default_timezone_get()));
+
+        return $date->format('Y-m-d H:i:s');
     }
 
     public function getConfigurationFilesToUpdate(InputInterface $input): array
