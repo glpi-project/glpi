@@ -61,7 +61,7 @@ class TimestampsCommandTest extends GLPITestCase
             $this->getDbHandle()->query(
                 sprintf(
                     <<<'SQL'
-INSERT INTO `%s` (`id`, `nullable_date`, `required_date`) VALUES
+INSERT IGNORE INTO `%s` (`id`, `nullable_date`, `required_date`) VALUES
    (1, NULL, '2020-01-01 00:00:00'),
    (2, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
    (3, '2050-01-01 00:00:00', '2050-01-01 00:00:00')
