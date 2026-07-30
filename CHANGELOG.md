@@ -85,6 +85,7 @@ The present file will list all changes made to the project; according to the
 - `fields.csrfField()` Twig macro in `fields_macros.html.twig`.
 - `escapeMarkupText()` javascript function.
 - `Html::link()`
+- Inclusion of the `inc/includes.php` file.
 
 #### Removed
 
