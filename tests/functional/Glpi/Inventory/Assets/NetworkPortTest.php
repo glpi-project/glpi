@@ -608,20 +608,11 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
               <MACADDR>00:24:13:ea:a7:01</MACADDR>
               <STATUS>Up</STATUS>
               <TYPE>ethernet</TYPE>
-            </NETWORKS>
-            <NETWORK_PORTS>
               <IFINERRORS>$ifinerrors</IFINERRORS>
-              <IFINOCTETS>$ifinbytes</IFINOCTETS>
-              <IFNUMBER>10001</IFNUMBER>
+              <IFINBYTES>$ifinbytes</IFINBYTES>
               <IFOUTERRORS>$ifouterrors</IFOUTERRORS>
-              <IFOUTOCTETS>$ifoutbytes</IFOUTOCTETS>
-              <MAC>00:24:13:ea:a7:01</MAC>
-              <NAME>Ethernet</NAME>
-            </NETWORK_PORTS>
-            <NETWORK_PORTS>
-              <IFNUMBER>10002</IFNUMBER>
-              <NAME>Dummy</NAME>
-            </NETWORK_PORTS>
+              <IFOUTBYTES>$ifoutbytes</IFOUTBYTES>
+            </NETWORKS>
             <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1</VERSIONCLIENT>
           </CONTENT>
           <DEVICEID>foo-computer</DEVICEID>
@@ -638,20 +629,17 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $conf = new Conf();
 
-        // First process NetworkCard so that the port gets created properly with logical_number
         $cardAsset = new NetworkCard($computer, $json->content->networks);
         $cardAsset->setExtraData((array) $json->content);
         $cardAsset->checkConf($conf);
         $cardAsset->prepare();
-        $cardAsset->handle();
 
-        // Then process NetworkPort to map metrics
-        $asset = new \Glpi\Inventory\Asset\NetworkPort($computer, $json->content->network_ports);
-        $asset->setMainAsset(new \Glpi\Inventory\MainAsset\Computer($computer, []));
-        $asset->setExtraData((array) $json->content);
-        $asset->checkConf($conf);
-        $asset->prepare();
-        $asset->handle();
+        // Simulate the MainAsset flow: collect NetworkCard ports and create them via handlePorts()
+        // on the Computer main asset, which calls portCreated() → handlePortMetrics().
+        $mainAsset = new \Glpi\Inventory\MainAsset\Computer($computer, []);
+        $mainAsset->checkConf($conf);
+        $mainAsset->addNetworkPorts($cardAsset->getNetworkPorts());
+        $mainAsset->handlePorts($computer::class, $computer_id);
 
         //get networkport
         $this->assertTrue(
@@ -675,20 +663,6 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "networkports_id" => $networkport->fields['id'],
         ];
         $this->assertSame($expected_input, $db_input);
-
-        $this->assertEquals(10001, $networkport->fields['logical_number']);
-
-        // The Dummy NETWORK_PORTS entry (IFNUMBER=10002, no MAC, no matching NETWORKS.DESCRIPTION)
-        // must NOT have created a ghost NetworkPortEthernet for this Computer.
-        $this->assertSame(
-            1,
-            countElementsInTable(\NetworkPort::getTable(), [
-                'itemtype'           => 'Computer',
-                'items_id'           => $computer_id,
-                'instantiation_type' => 'NetworkPortEthernet',
-            ]),
-            'A NETWORK_PORTS entry with no matching NETWORKS.DESCRIPTION must not create a ghost port'
-        );
     }
 
     public function testVlanChange()

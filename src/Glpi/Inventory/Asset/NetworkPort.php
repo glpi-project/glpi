@@ -41,7 +41,6 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\FilesToJSON;
-use Glpi\Inventory\MainAsset\Computer;
 use Glpi\Inventory\MainAsset\NetworkEquipment;
 use Glpi\Inventory\MainAsset\Printer;
 use mysqli_stmt;
@@ -78,7 +77,6 @@ class NetworkPort extends InventoryAsset
     private mysqli_stmt $vlan_stmt;
     private mysqli_stmt $pvlan_stmt;
     protected Conf $conf;
-    protected array $extra_data = ['networks' => null];
 
     public function prepare(): array
     {
@@ -161,34 +159,6 @@ class NetworkPort extends InventoryAsset
 
             if (!property_exists($val, 'trunk')) {
                 $val->trunk = 0;
-            }
-
-            // For Computer inventories, every NETWORK_PORTS entry must correspond
-            // to a NETWORKS entry (matched by name/description). NETWORKS covers both
-            // physical and virtual interfaces (VIRTUALDEV). Entries absent from NETWORKS
-            // have no declared interface counterpart and would otherwise create orphan
-            // ghost ports on the asset.
-            if ($this->main_asset instanceof Computer) {
-                $port_name = property_exists($val, 'name') ? strtolower((string) $val->name) : '';
-                $found = false;
-
-                if (isset($this->extra_data['networks'])) {
-                    $networks = is_array($this->extra_data['networks']) ? $this->extra_data['networks'] : [$this->extra_data['networks']];
-                    foreach ($networks as $network) {
-                        $net_descr = property_exists($network, 'description')
-                            ? strtolower((string) $network->description)
-                            : '';
-                        if ($port_name !== '' && $net_descr !== '' && $port_name === $net_descr) {
-                            $found = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!$found) {
-                    unset($this->data[$k]);
-                    continue;
-                }
             }
 
             //Port name "Management" is reserved
