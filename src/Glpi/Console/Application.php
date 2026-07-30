@@ -62,8 +62,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Toolbox;
 use Update;
 
-use function Safe\preg_replace;
-
 class Application extends BaseApplication
 {
     /**
@@ -247,17 +245,6 @@ class Application extends BaseApplication
     public function getOutput()
     {
         return $this->output;
-    }
-
-    protected function getCommandName(InputInterface $input): ?string
-    {
-        $name = parent::getCommandName($input);
-        if ($name !== null) {
-            // strip `glpi:` prefix that was used before GLPI 10.0.6
-            // FIXME Deprecate usage of `glpi:` prefix in GLPI 11.0.
-            $name = preg_replace('/^glpi:/', '', $name);
-        }
-        return $name;
     }
 
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output): int

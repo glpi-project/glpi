@@ -153,7 +153,7 @@ class FrontEndAssetsExtension extends AbstractExtension
             if (!str_starts_with($clean_path, '/')) {
                 $clean_path = '/' . $clean_path; // be sure to have a path starting with `/`
 
-                // FIXME Trigger a warning in GLPI 12.0.
+                // FIXME Trigger a warning.
             }
 
             if (!$is_debug) {
@@ -198,7 +198,7 @@ class FrontEndAssetsExtension extends AbstractExtension
         if (!str_starts_with($path, '/')) {
             $path = '/' . $path; // be sure to have a path starting with `/`
 
-            // FIXME Trigger a warning in GLPI 12.0.
+            // FIXME Trigger a warning.
         }
 
         if (!$is_debug) {

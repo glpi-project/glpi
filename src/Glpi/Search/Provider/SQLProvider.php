@@ -4923,20 +4923,12 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             if ($data['itemtype'] == Entity::class) {
-                //$COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable);
                 $where_criteria = array_merge($where_criteria, getEntitiesRestrictCriteria($itemtable));
             } elseif (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
                 // Will be replaced below in Union/Recursivity Hack
                 $ADDDEFAULTWHERE = true;
                 $ENTITYRESTRICT = true;
             } else {
-                /*$COMMONWHERE .= getEntitiesRestrictRequest(
-                    $LINK,
-                    $itemtable,
-                    '',
-                    '',
-                    $data['item']->maybeRecursive() && $data['item']->isField('is_recursive')
-                );*/
                 $where_criteria = array_merge(
                     $where_criteria,
                     getEntitiesRestrictCriteria(

@@ -68,8 +68,7 @@ enum EntityFieldStrategy: string
     public function getEntityID(
         EntityFieldConfig $config,
         AnswersSet $answers_set,
-        // TODO: remove default value on 12.0, it was only added to prevent BC breaks
-        array $input = [],
+        array $input,
     ): int {
         return match ($this) {
             self::FORM_FILLER          => $this->getFormFillerEntityID(),

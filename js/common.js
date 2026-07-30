@@ -1033,7 +1033,7 @@ var getTextWithoutDiacriticalMarks = function (text) {
  * @return {string}
  */
 var escapeMarkupText = function (text) {
-    // TODO in GLPI 12.0: console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
+    console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
 
     if (typeof(text) !== 'string') {
         return text;

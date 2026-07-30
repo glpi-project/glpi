@@ -650,7 +650,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return bool
      *
-     * @TODO In GLPI 12.0, do something with the return value that is currently not used.
+     * @TODO Do something with the return value that is currently not used.
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
@@ -667,7 +667,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return bool
      *
-     * @TODO In GLPI 12.0, do something with the return value that is currently not used.
+     * @TODO Do something with the return value that is currently not used.
      */
     public static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = [])
     {
