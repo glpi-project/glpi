@@ -83,6 +83,7 @@ The present file will list all changes made to the project; according to the
 - `csrf_token()` Twig function: remove all `_glpi_csrf_token` hidden fields from forms; they are no longer required.
 - `getAjaxCsrfToken()` JavaScript function: remove all `X-Glpi-Csrf-Token` request headers from AJAX calls; they are no longer required.
 - `fields.csrfField()` Twig macro in `fields_macros.html.twig`.
+- Inclusion of the `inc/includes.php` file.
 
 #### Removed
 
