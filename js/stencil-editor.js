@@ -60,6 +60,17 @@ const StencilEditor = function (container, rand, zones_definition) {
             const cropper = new window.Cropper(img);
             croppers.push(cropper);
             img.cropper = cropper;
+
+            // clear other croppers on interaction to enforce single mapping
+            ['pointerdown', 'touchstart', 'mousedown'].forEach((eventType) => {
+                cropper.container.addEventListener(eventType, () => {
+                    croppers.forEach((c) => {
+                        if (c !== cropper) {
+                            c.getCropperSelection().$clear();
+                        }
+                    });
+                });
+            });
         });
 
         // set default state of croppers objects
