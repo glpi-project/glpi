@@ -104,6 +104,12 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implemen
     }
 
     #[Override]
+    public function allowsMultipleDefaultValues(?Question $question): bool
+    {
+        return $this->isMultipleDropdown($question);
+    }
+
+    #[Override]
     public function hideOptionsContainerWhenUnfocused(): bool
     {
         return true;

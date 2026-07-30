@@ -51,7 +51,7 @@ use function Safe\json_decode;
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType, ConditionValueTransformerInterface
+abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType, ConditionValueTransformerInterface, PredefinedValueValidationInterface
 {
     public const TRANSLATION_KEY_OPTION = 'option';
 
@@ -162,6 +162,26 @@ TWIG;
         }
 
         return implode(',', $uuids);
+    }
+
+    #[Override]
+    public function isValidPredefinedValue(string $value, Question $question): bool
+    {
+        // A question that only accepts a single option can not decide which
+        // value to keep, the whole parameter is therefore rejected.
+        return $this->allowsMultipleDefaultValues($question)
+            || count(explode(',', $value)) === 1;
+    }
+
+    /**
+     * Check if the question allows several options to be selected by default
+     *
+     * @param ?Question $question
+     * @return bool
+     */
+    public function allowsMultipleDefaultValues(?Question $question): bool
+    {
+        return true;
     }
 
     #[Override]
