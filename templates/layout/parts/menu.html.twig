@@ -120,12 +120,21 @@ $(function() {
                return;
             }
 
+            // find the clicked dropdown item, handling clicks on inner elements (icons, spans)
+            var dropdownItem = orig_event.target.closest('.dropdown-item');
+
             // prevent menu links to close menu (waiting the page redirection)
-            if (orig_event.target.className.indexOf('dropdown-item') !== false) {
-               for (var item of document.querySelectorAll('#menu_{{ rand }} .dropdown-item')) {
-                  item.classList.remove('active');
+            if (dropdownItem) {
+               // Only change the active state if it's a normal click (no modifiers, left click)
+               var isModifierClick = orig_event.ctrlKey || orig_event.metaKey || orig_event.shiftKey || orig_event.altKey || orig_event.button === 1;
+
+               if (!isModifierClick) {
+                  for (var item of document.querySelectorAll('#menu_{{ rand }} .dropdown-item')) {
+                     item.classList.remove('active');
+                  }
+                  dropdownItem.classList.add('active');
                }
-               orig_event.target.classList.add('active');
+               
                event.preventDefault();
             }
          }
