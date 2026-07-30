@@ -38,6 +38,7 @@ use Glpi\Search\SearchEngine;
 use Glpi\Tests\CommonITILTaskTestCase;
 use Override;
 use TicketTask;
+use User;
 
 final class TicketTaskTest extends CommonITILTaskTestCase
 {
@@ -1091,5 +1092,30 @@ final class TicketTaskTest extends CommonITILTaskTestCase
                 'tickets_id' => $ticket->getID(),
             ])
         );
+    }
+
+    /**
+     * Non-regression: buildParentCondition() must qualify column names to avoid MySQL 1052
+     * when the search engine JOINs polymorphic tables that share the same column name.
+     */
+    public function testBuildParentConditionReturnsQualifiedColumns(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $selfservice_user = $this->createItem(User::class, [
+            'name'         => 'selfservice_' . $this->getUniqueString(),
+            'password'     => 'testpassword',
+            'password2'    => 'testpassword',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => $entity_id,
+        ], ['password', 'password2']);
+        $this->login($selfservice_user->fields['name']);
+
+        $condition = TicketTask::buildParentCondition();
+        $table = TicketTask::getTable();
+
+        $this->assertStringContainsString("OR `$table`.`tickets_id` IN", $condition);
+        $this->assertStringNotContainsString('OR `tickets_id` IN', $condition);
     }
 }

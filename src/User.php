@@ -105,13 +105,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     private ?array $entities = null;
 
-    private static bool $ldap_group_batch_mode = false;
-
-    public static function enableLdapGroupBatchMode(): void
-    {
-        self::$ldap_group_batch_mode = true;
-    }
-
     public function getCloneRelations(): array
     {
         return [
@@ -2230,10 +2223,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param array    $ldap_method        LDAP method
      * @param string   $userdn             Basedn of the user
      * @param string   $login              User login
+     * @param bool     $batch_mode         True when called from a loop importing/syncing many users
+     *                                     (massive action or CLI sync), enabling the per-group query cache.
      *
      * @return bool true if search is applicable, false otherwise
      */
-    private function getFromLDAPGroupDiscret($ldap_connection, array $ldap_method, $userdn, $login)
+    private function getFromLDAPGroupDiscret($ldap_connection, array $ldap_method, $userdn, $login, bool $batch_mode = false)
     {
         global $DB;
 
@@ -2242,9 +2237,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
             return false;
         }
 
-        // Only use M-queries-per-group cache in batch mode; FPM spawns a new process per login so the cache never reuses.
+        // Only use M-queries-per-group cache in batch mode: it only pays off when reused across many users in the same loop.
         if (
-            self::$ldap_group_batch_mode
+            $batch_mode
             && str_contains($ldap_method["group_member_field"], AuthLDAP::MATCHING_RULE_IN_CHAIN_OID)
             && !empty($ldap_method["group_field"])
         ) {
@@ -2415,10 +2410,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param string   $userdn          Basedn of the user
      * @param string   $login           User Login
      * @param bool  $import          true for import, false for update
+     * @param bool  $batch_mode      True when called from a loop importing/syncing many users
+     *                               (massive action or CLI sync), enabling the per-group query cache.
      *
      * @return bool true if found / false if not
      */
-    public function getFromLDAP($ldap_connection, array $ldap_method, $userdn, $login, $import = true)
+    public function getFromLDAP($ldap_connection, array $ldap_method, $userdn, $login, $import = true, bool $batch_mode = false)
     {
         global $CFG_GLPI, $DB;
 
@@ -2553,7 +2550,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 ($ldap_method["group_search_type"] == 1)
                 || ($ldap_method["group_search_type"] == 2)
             ) {
-                $this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login);
+                $this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login, $batch_mode);
             }
 
             ///Only process rules if working on the master database
@@ -4943,6 +4940,17 @@ HTML;
         $start       = intval($_GET["start"] ?? 0);
         $get_filters   = $_GET["filters"] ?? [];
 
+        $sortable_columns = ['type', 'entity', 'name', 'serial', 'otherserial', 'states', 'group', 'users'];
+        $sort = $_GET['sort'] ?? 'name';
+        if (!in_array($sort, $sortable_columns, true)) {
+            $sort = 'name';
+        }
+        $order = $_GET['order'] ?? 'ASC';
+        $order = is_string($order) ? strtoupper($order) : 'ASC';
+        if (!in_array($order, ['ASC', 'DESC'], true)) {
+            $order = 'ASC';
+        }
+
         $type_choices = [];
         foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
@@ -5151,8 +5159,9 @@ HTML;
                 $type_name = $item->getTypeName(1);
 
                 foreach ($item_iterator as $data) {
-                    $cansee = $item->can($data["id"], READ);
-                    $link   = $data[$item->getNameField()];
+                    $cansee   = $item->can($data["id"], READ);
+                    $raw_name = $data[$item->getNameField()] ?? '';
+                    $link     = $raw_name;
                     if ($cansee) {
                         $link_item = $item::getFormURLWithID($data['id']);
                         if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
@@ -5160,44 +5169,54 @@ HTML;
                         }
                         $link = "<a href='" . $link_item . "'>" . $link . "</a>";
                     }
-                    if ($number >= $start && $number < $start + $_SESSION['glpilist_limit']) {
-                        $group_names = [];
-                        foreach (explode(',', $data['groups_ids'] ?? '') as $group_id) {
-                            if (empty($group_id)) {
-                                continue;
-                            }
-                            if (!isset($group_choices[$group_id])) {
-                                $group_choices[$group_id] = Dropdown::getDropdownName("glpi_groups", (int) $group_id);
-                            }
-                            $group_names[] = htmlescape($group_choices[$group_id]);
-                        }
-                        $user_id = (int) ($data[$field_user] ?? 0);
-                        if ($user_id > 0 && !isset($user_choices[$user_id])) {
-                            $user_choices[$user_id] = getUserName($user_id);
-                        }
 
-                        $entries[] = [
-                            'itemtype'      => $itemtype,
-                            'id'            => $data["id"],
-                            'type'          => $type_name,
-                            'entity'        => Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
-                            'name'          => $link,
-                            'serial'        => $data["serial"] ?? '',
-                            'otherserial'   => $data["otherserial"] ?? '',
-                            'states'        => !empty($data['states_id'])
-                                ? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, '')
-                                : '',
-                            'group'         => implode('<br>', array_filter($group_names)),
-                            'users'         => $user_id > 0 ? ($user_choices[$user_id] ?? '') : '',
-                        ];
+                    $group_names = [];
+                    foreach (explode(',', $data['groups_ids'] ?? '') as $group_id) {
+                        if (empty($group_id)) {
+                            continue;
+                        }
+                        if (!isset($group_choices[$group_id])) {
+                            $group_choices[$group_id] = Dropdown::getDropdownName("glpi_groups", (int) $group_id);
+                        }
+                        $group_names[] = htmlescape($group_choices[$group_id]);
                     }
+                    $user_id = (int) ($data[$field_user] ?? 0);
+                    if ($user_id > 0 && !isset($user_choices[$user_id])) {
+                        $user_choices[$user_id] = getUserName($user_id);
+                    }
+
+                    $entries[] = [
+                        'itemtype'      => $itemtype,
+                        'id'            => $data["id"],
+                        'type'          => $type_name,
+                        'entity'        => $entity_choices[$data["entities_id"]] ?? Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
+                        'name'          => $link,
+                        'name_sort'     => $raw_name,
+                        'serial'        => $data["serial"] ?? '',
+                        'otherserial'   => $data["otherserial"] ?? '',
+                        'states'        => !empty($data['states_id'])
+                            ? ($state_choices[$data['states_id']] ?? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, ''))
+                            : '',
+                        'group'         => implode('<br>', array_filter($group_names)),
+                        'users'         => $user_id > 0 ? ($user_choices[$user_id] ?? '') : '',
+                    ];
                     $number++;
                 }
             }
         }
 
+        $sort_key = $sort === 'name' ? 'name_sort' : $sort;
+        usort($entries, function ($a, $b) use ($sort_key, $order) {
+            $cmp = strnatcasecmp((string) ($a[$sort_key] ?? ''), (string) ($b[$sort_key] ?? ''));
+            return $order === 'DESC' ? -$cmp : $cmp;
+        });
+
+        $paged_entries = array_slice($entries, $start, (int) $_SESSION['glpilist_limit']);
+
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start'                 => $start,
+            'sort'                  => $sort,
+            'order'                 => $order,
             'is_tab'                => true,
             'limit'                 => $_SESSION['glpilist_limit'],
             'items_id'              => $ID,
@@ -5239,7 +5258,7 @@ HTML;
                 'name'   => 'raw_html',
                 'group'  => 'raw_html',
             ],
-            'entries'               => $entries,
+            'entries'               => $paged_entries,
             'total_number'          => $number,
             'showmassiveactions'    => true,
             'massiveactionparams'   => [

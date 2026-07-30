@@ -7912,7 +7912,7 @@ final class SQLProvider implements SearchProviderInterface
                     } elseif (!empty($field_data['trans_name'])) {
                         $out .= \htmlescape($field_data['trans_name']);
                     } else {
-                        $out .= \htmlescape($field_data['name'] ?: '');
+                        $out .= \htmlescape($field_data['name'] ?? '');
                     }
                 }
             }

@@ -95,6 +95,7 @@ dev_nodes=(
     "phpunit.xml.dist"
     "playwright.config.ts"
     "PluginsMakefile.mk"
+    "PluginsRector.php"
     "psalm.xml"
     "rector.php"
     "stubs"
