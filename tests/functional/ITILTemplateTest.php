@@ -1133,6 +1133,7 @@ class ITILTemplateTest extends DbTestCase
             'name'        => 'title',
             'content'     => 'content',
             'entities_id' => $entity->getID(),
+            'status' => Ticket::INCOMING,
         ];
         $item = $this->createItem($itiltype, $add_input);
         $this->assertEquals(0, (int) $item->fields['itilcategories_id']);
@@ -1159,10 +1160,29 @@ class ITILTemplateTest extends DbTestCase
         $this->assertTrue($item->getFromDB($item->getID()));
         $this->assertEquals('content', $item->fields['content'], 'Content should not have been updated');
 
+        // Check that adding a solution is also rejected when the mandatory category is not filled
+        $itilsolution = new \ITILSolution();
+        $result_itilsolution = $itilsolution->add([
+            'itemtype' => $itiltype,
+            'items_id' => $item->getID(),
+            'content'  => 'solution content',
+        ]);
+        $this->assertFalse($result_itilsolution, 'Adding a solution should be rejected: mandatory category is not filled');
+        $this->hasSessionMessageThatContains('Mandatory fields are not filled', ERROR);
+        $item->getFromDB($item->getID());
+        $this->assertEquals($item->fields['status'], Ticket::INCOMING, 'Status should not have been updated');
+
         // Filling the mandatory category should let the update succeed.
         $this->updateItem($itiltype, $item->getID(), [
             'itilcategories_id' => $itil_category->getID(),
             'content'           => 'updated description',
+        ]);
+
+        // Check that adding a solution is now allowed
+        $this->createItem(\ITILSolution::class, [
+            'itemtype' => $itiltype,
+            'items_id' => $item->getID(),
+            'content'  => 'solution content',
         ]);
     }
 }

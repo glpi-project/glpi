@@ -203,6 +203,15 @@ class ITILSolution extends CommonDBChild
 
         $this->item = $parent_item;
 
+        if (!$this->item->checkRequiredFieldsFilled()) {
+            Session::addMessageAfterRedirect(
+                __s('Mandatory fields are not filled.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         // Handle template
         if (isset($input['_solutiontemplates_id'])) {
             $template = new SolutionTemplate();
