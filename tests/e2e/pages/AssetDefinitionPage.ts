@@ -44,7 +44,7 @@ export class AssetDefinitionPage extends GlpiPage
     public constructor(page: Page)
     {
         super(page);
-        this.system_name_input = page.getByLabel("System name");
+        this.system_name_input = page.getByRole("textbox", { name: "System name" });
         this.active_dropdown = this.getDropdownByLabel('Active');
         this.add_button = this.getButton('Add');
         this.save_button = this.getButton('Save');

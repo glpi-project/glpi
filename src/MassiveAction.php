@@ -36,9 +36,9 @@
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Event;
 use Glpi\Features\Clonable;
+use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\preg_match;
 
@@ -1679,6 +1679,11 @@ class MassiveAction
                     break;
                 }
 
+                if (!$item::canUpdate()) {
+                    $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                    break;
+                }
+
                 // Load input
                 $input = $ma->getInput();
                 $amendment = $input['amendment'];
@@ -1687,7 +1692,7 @@ class MassiveAction
                     $item->getFromDB($id);
 
                     // Check rights
-                    if (!$item->canUpdateItem()) {
+                    if (!$item->can($item->getID(), UPDATE)) {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;
@@ -1847,6 +1852,9 @@ class MassiveAction
      **/
     public function itemDone($itemtype, $id, $result)
     {
+        /** @var Kernel $kernel */
+        global $kernel;
+
         $this->current_itemtype = (string) $itemtype;
 
         if (!isset($this->done[$itemtype])) {
@@ -1890,7 +1898,7 @@ class MassiveAction
         // Reload every X seconds to refresh the progress bar
         $refresh_delay = 5;
         if ((microtime(true) - $this->start_time) > $refresh_delay) {
-            $request = Request::createFromGlobals();
+            $request = $kernel->getMainRequest();
             Html::redirect($request->getBasePath() . $request->getPathInfo() . '?identifier=' . $this->identifier);
         }
     }

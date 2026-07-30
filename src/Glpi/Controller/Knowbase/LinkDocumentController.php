@@ -34,7 +34,9 @@
 
 namespace Glpi\Controller\Knowbase;
 
+use Document;
 use Document_Item;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -73,7 +75,8 @@ final class LinkDocumentController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        $linked_count = 0;
+        $linked = [];
+        $twig = TemplateRenderer::getInstance();
 
         foreach ($documents_ids as $doc_id) {
             $doc_id = (int) $doc_id;
@@ -82,18 +85,40 @@ final class LinkDocumentController extends AbstractController
             }
 
             try {
-                $this->add(Document_Item::class, [
+                $doc_item = $this->add(Document_Item::class, [
                     'documents_id' => $doc_id,
                     'itemtype'     => KnowbaseItem::class,
                     'items_id'     => $id,
                 ]);
-                $linked_count++;
             } catch (\RuntimeException) {
                 // Skip documents that fail (duplicates, permission issues, etc.)
                 continue;
             }
+
+            $document = new Document();
+            if (!$document->getFromDB($doc_id)) {
+                continue;
+            }
+
+            $filename  = (string) ($document->fields['filename'] ?? '');
+            $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+            $styles    = KnowbaseItem::getDocumentIconAndColor($extension);
+
+            $linked[] = [
+                'html' => $twig->render('pages/tools/kb/document_badge.html.twig', [
+                    'doc'      => [
+                        'assoc_id'     => $doc_item->getID(),
+                        'id'           => $doc_id,
+                        'filename'     => $filename,
+                        'download_url' => $document->getDownloadUrl(),
+                        'icon_class'   => $styles['icon_class'],
+                        'color_class'  => $styles['color_class'],
+                    ],
+                    'can_edit' => true,
+                ]),
+            ];
         }
 
-        return new JsonResponse(['linked_count' => $linked_count]);
+        return new JsonResponse(['documents' => $linked]);
     }
 }

@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use CommonITILActor;
+use Entity;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
@@ -263,6 +264,12 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
 
     public function testSpecificActorsExcludesUnauthorizedActors(): void
     {
+        // The ticket's entity defaults to the active entity of whoever
+        // submits the form (see EntityFieldStrategy::FORM_FILLER). Without a
+        // logged in user, it would fall back to the root entity, unrelated
+        // to the entity used below for the authorized actors.
+        $this->login();
+
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $entities_id = $this->getTestRootEntity(only_id: true);
         $authorized_user = $this->createItem(User::class, [
@@ -310,6 +317,59 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
         );
     }
 
+    public function testSpecificActorsFollowResolvedEntityWhenDifferentFromForm(): void
+    {
+        $this->login();
+
+        // Form lives in the test root entity, but its destination's entity
+        // is resolved from an answered "Entity" question, pointing to a
+        // different, unrelated entity.
+        $builder = new FormBuilder();
+        $builder->setEntitiesId($this->getTestRootEntity(only_id: true));
+        $builder->addQuestion("Entity", QuestionTypeItem::class, 0, json_encode([
+            'itemtype'             => Entity::getType(),
+            'root_items_id'        => 0,
+            'subtree_depth'        => 0,
+            'selectable_tree_root' => false,
+        ]));
+        $builder->addQuestion("Assignee", QuestionTypeAssignee::class, '');
+        $form = $this->createForm($builder);
+
+        $other_entity = $this->createItem(Entity::class, [
+            'name'        => 'testSpecificActorsFollowResolvedEntityWhenDifferentFromForm Entity',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // This user only has assignment rights on that other entity, not on
+        // the form's own entity.
+        $user = $this->createItem(User::class, [
+            'name' => 'testSpecificActorsFollowResolvedEntityWhenDifferentFromForm User',
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id'    => $user->getID(),
+            'profiles_id' => getItemByTypeName(Profile::class, 'Technician', true),
+            'entities_id' => $other_entity->getID(),
+        ]);
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [$this->getQuestionId($form, "Assignee")]
+            ),
+            answers: [
+                "Entity" => [
+                    'itemtype' => Entity::getType(),
+                    'items_ids' => [$other_entity->getID()],
+                ],
+                "Assignee" => ["users_id-{$user->getID()}"],
+            ],
+            expected_actors: [
+                ['items_id' => $user->getID()],
+            ]
+        );
+    }
+
     public function testActorsFromSpecificQuestions(): void
     {
         // Login is required to assign actors
@@ -344,11 +404,11 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             "Assignee email 2" => 'test2@test.test',
             "User question 1" => [
                 'itemtype' => User::class,
-                'items_id' => $user1->getID(),
+                'items_ids' => [$user1->getID()],
             ],
             "User question 2" => [
                 'itemtype' => User::class,
-                'items_id' => $user2->getID(),
+                'items_ids' => [$user2->getID()],
             ],
         ];
 
@@ -563,6 +623,33 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             expected_actors: [['items_id' => 0, 'alternative_email' => 'test2@test.test']]
         );
 
+        // First actor question is filled, but the last one is left empty. The
+        // empty answer must be ignored so the last *valid* answer (the first
+        // question) is used.
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Assignee 1" => [
+                    User::getForeignKeyField() . '-' . $user1->getID(),
+                ],
+                "Assignee 2" => [], // empty answer
+            ],
+            expected_actors: [['items_id' => $user1->getID()]]
+        );
+
+        // Same scenario with email questions: the last email answer is empty,
+        // so the previous valid email answer must be used.
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Assignee email 1" => 'test1@test.test',
+                "Assignee email 2" => '', // empty answer
+            ],
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test1@test.test']]
+        );
+
         // No answers, fallback to default value
         $this->sendFormAndAssertTicketActors(
             form: $form,
@@ -771,10 +858,14 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 3, // Assignee
                     'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
-            'field_config' => fn($migration, $form) => (new AssigneeField())->getDefaultConfig($form),
+            'field_config' => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER],
+            ),
         ];
 
         yield 'Tech group from an object' => [
@@ -783,10 +874,50 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 3, // Assignee
                     'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
-            'field_config' => fn($migration, $form) => (new AssigneeField())->getDefaultConfig($form),
+            'field_config' => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+            ),
+        ];
+
+        yield 'Group from an object with question' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3, // Assignee
+                    'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    'actor_value' => 74, // Computer question
+                ],
+            ],
+            'field_config' => fn($migration, $form) => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 74)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                ]
+            ),
+        ];
+
+        yield 'Tech group from an object with question' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3, // Assignee
+                    'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    'actor_value' => 74, // Computer question
+                ],
+            ],
+            'field_config' => fn($migration, $form) => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 74)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                ]
+            ),
         ];
 
         yield 'Form author\'s supervisor' => [

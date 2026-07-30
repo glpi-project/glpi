@@ -40,6 +40,7 @@ use Glpi\Inventory\Asset\NetworkCard;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
+use Glpi\Inventory\MainAsset\Computer;
 use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -448,16 +449,16 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
           <QUERY>SNMPQUERY</QUERY>
         </REQUEST>";
 
-        //networkequipement inventory
+        //networkequipment inventory
         $inventory = $this->doInventory($xml_source, true);
 
-        //check networkequipement
-        $networkquipement_id = $inventory->getItem()->fields['id'];
-        $this->assertGreaterThan(0, $networkquipement_id);
+        //check networkequipment
+        $networkequipment_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $networkequipment_id);
 
         //get networkport
         $this->assertTrue(
-            $networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet'])
+            $networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkequipment_id, 'instantiation_type' => 'NetworkPortEthernet'])
         );
 
         //get networkport metric
@@ -509,7 +510,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $xml_source = str_replace($old_ifinerrors, $ifinerrors, $xml_source);
         $xml_source = str_replace($old_ifouterrors, $ifouterrors, $xml_source);
 
-        //networkequipement inventory
+        //networkequipment inventory
         $inventory = $this->doInventory($xml_source, true);
 
         //now we have two metrics, one for yesterday and one for today
@@ -558,7 +559,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $xml_source = str_replace($old_ifinerrors, $ifinerrors, $xml_source);
         $xml_source = str_replace($old_ifouterrors, $ifouterrors, $xml_source);
 
-        //networkequipement inventory
+        //networkequipment inventory
         $inventory = $this->doInventory($xml_source, true);
 
         //we still have two metrics, but today metrics are updated
@@ -636,7 +637,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         // Simulate the MainAsset flow: collect NetworkCard ports and create them via handlePorts()
         // on the Computer main asset, which calls portCreated() → handlePortMetrics().
-        $mainAsset = new \Glpi\Inventory\MainAsset\Computer($computer, []);
+        $mainAsset = new Computer($computer, []);
         $mainAsset->checkConf($conf);
         $mainAsset->addNetworkPorts($cardAsset->getNetworkPorts());
         $mainAsset->handlePorts($computer::class, $computer_id);
@@ -663,6 +664,71 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             "networkports_id" => $networkport->fields['id'],
         ];
         $this->assertSame($expected_input, $db_input);
+    }
+
+    public function testNetworkPortEthernetSpeed()
+    {
+        $networkport = new \NetworkPort();
+        $ethernet    = new \NetworkPortEthernet();
+
+        //import a NetworkEquipment with an Ethernet port reporting a 1 Gbit/s speed.
+        //SNMP inventory only provides `ifspeed` (in bits/s), not `speed`.
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <DEVICE>
+              <INFO>
+                <IPS>
+                  <IP>192.168.1.27</IP>
+                </IPS>
+                <MAC>00:24:13:ea:a7:00</MAC>
+                <MANUFACTURER>Cisco</MANUFACTURER>
+                <MODEL>Catalyst 2960-24TC</MODEL>
+                <NAME>CB-27.example.com</NAME>
+                <SERIAL>FOC1247X5DX</SERIAL>
+                <TYPE>NETWORKING</TYPE>
+              </INFO>
+              <PORTS>
+                <PORT>
+                  <IFDESCR>GigabitEthernet0/1</IFDESCR>
+                  <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+                  <IFMTU>1500</IFMTU>
+                  <IFNAME>Gi0/1</IFNAME>
+                  <IFNUMBER>10001</IFNUMBER>
+                  <IFPORTDUPLEX>2</IFPORTDUPLEX>
+                  <IFSPEED>1000000000</IFSPEED>
+                  <IFSTATUS>1</IFSTATUS>
+                  <IFTYPE>6</IFTYPE>
+                  <MAC>00:24:13:ea:a7:01</MAC>
+                </PORT>
+              </PORTS>
+            </DEVICE>
+            <MODULEVERSION>5.1</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+          </CONTENT>
+          <DEVICEID>foo</DEVICEID>
+          <QUERY>SNMPQUERY</QUERY>
+        </REQUEST>";
+
+        //networkequipment inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        //check networkequipment
+        $networkequipment_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $networkequipment_id);
+
+        //get networkport
+        $this->assertTrue(
+            $networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkequipment_id, 'instantiation_type' => 'NetworkPortEthernet'])
+        );
+
+        //the raw speed (in bits/s) is correctly stored on the NetworkPort.
+        $this->assertSame(1000000000, $networkport->fields['ifspeed']);
+
+        //the Ethernet instantiation speed (in Mbit/s) must match the reported speed,
+        //and not the default value of the column (10 Mbit/s).
+        $this->assertTrue($ethernet->getFromDbByCrit(['networkports_id' => $networkport->fields['id']]));
+        $this->assertSame(1000, $ethernet->fields['speed']);
     }
 
     public function testVlanChange()
@@ -721,16 +787,16 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
           <QUERY>SNMPQUERY</QUERY>
         </REQUEST>";
 
-        //networkequipement inventory
+        //networkequipment inventory
         $inventory = $this->doInventory($xml_source, true);
 
-        //check networkequipement
-        $networkquipement_id = $inventory->getItem()->fields['id'];
-        $this->assertGreaterThan(0, $networkquipement_id);
+        //check networkequipment
+        $networkequipment_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $networkequipment_id);
 
         //get networkport
         $this->assertTrue(
-            $networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet'])
+            $networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkequipment_id, 'instantiation_type' => 'NetworkPortEthernet'])
         );
         $networkports_id = $networkport->fields['id'];
 
@@ -752,13 +818,13 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $xml_source = str_replace($oldname, $vlanname, $xml_source);
 
-        //networkequipement inventory
+        //networkequipment inventory
         $inventory = $this->doInventory($xml_source, true);
-        $this->assertSame($inventory->getItem()->fields['id'], $networkquipement_id);
+        $this->assertSame($inventory->getItem()->fields['id'], $networkequipment_id);
 
         //get networkport
         $this->assertTrue(
-            $networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet'])
+            $networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkequipment_id, 'instantiation_type' => 'NetworkPortEthernet'])
         );
         $this->assertSame($networkport->fields['id'], $networkports_id);
 
@@ -830,16 +896,16 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
           <QUERY>SNMPQUERY</QUERY>
         </REQUEST>";
 
-        //networkequipement inventory
+        //networkequipment inventory
         $inventory = $this->doInventory($xml_source, true);
 
-        //check networkequipement
-        $networkquipement_id = $inventory->getItem()->fields['id'];
-        $this->assertGreaterThan(0, $networkquipement_id);
+        //check networkequipment
+        $networkequipment_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $networkequipment_id);
 
         //get networkport
         $this->assertTrue(
-            $networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet'])
+            $networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkequipment_id, 'instantiation_type' => 'NetworkPortEthernet'])
         );
 
         //check alias
@@ -896,16 +962,16 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
           <QUERY>SNMPQUERY</QUERY>
         </REQUEST>";
 
-        //networkequipement inventory
+        //networkequipment inventory
         $inventory = $this->doInventory($xml_source, true);
 
-        //check networkequipement
-        $networkquipement_id = $inventory->getItem()->fields['id'];
-        $this->assertGreaterThan(0, $networkquipement_id);
+        //check networkequipment
+        $networkequipment_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $networkequipment_id);
 
         //get networkport
         $this->assertTrue(
-            $networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkquipement_id, 'instantiation_type' => 'NetworkPortEthernet'])
+            $networkport->getFromDbByCrit(['itemtype' => 'NetworkEquipment', 'items_id' => $networkequipment_id, 'instantiation_type' => 'NetworkPortEthernet'])
         );
 
         //check alias
@@ -974,18 +1040,18 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
               <QUERY>SNMPQUERY</QUERY>
             </REQUEST>";
 
-        //networkequipement inventory
+        //networkequipment inventory
         $inventory = $this->doInventory($xml_source, true);
 
-        //check networkequipement
-        $networkquipement_id = $inventory->getItem()->fields['id'];
-        $this->assertGreaterThan(0, $networkquipement_id);
+        //check networkequipment
+        $networkequipment_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $networkequipment_id);
 
         //get networkport
         $this->assertTrue(
             $networkport->getFromDbByCrit([
                 'itemtype' => 'NetworkEquipment',
-                'items_id' => $networkquipement_id,
+                'items_id' => $networkequipment_id,
                 'name' => 'radio0_ssid_id0',
             ])
         );

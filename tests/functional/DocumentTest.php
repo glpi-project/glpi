@@ -1857,4 +1857,49 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($can_view_1);
         $this->assertFalse($can_view_2);
     }
+
+    public function testLinkedDocumentsCantBeViewedOnUnrelatedItem(): void
+    {
+        // Arrange: create two forms with attached documents
+        $builder = new FormBuilder();
+        $builder->setUseDefaultAccessPolicies(false);
+        $builder->addAccessControl(AllowList::class, new AllowListConfig(
+            user_ids: [getItemByTypeName(User::class, "post-only", true)],
+        ));
+        $builder->addQuestion('My question', QuestionTypeLongText::class);
+        $form = $this->createForm($builder);
+        $question = Question::getById($this->getQuestionId($form, 'My question'));
+        $this->addDocumentToItem("foo.txt", "content", $form);
+        $this->addDocumentToItem("foo.txt", "content", $question);
+
+        $other_builder = new FormBuilder();
+        $other_builder->setUseDefaultAccessPolicies(false);
+        $other_builder->addAccessControl(AllowList::class, new AllowListConfig(
+            user_ids: [getItemByTypeName(User::class, "normal", true)],
+        ));
+        $other_builder->addQuestion('My question', QuestionTypeLongText::class);
+        $other_form = $this->createForm($builder);
+        $other_question = Question::getById($this->getQuestionId($other_form, 'My question'));
+        $document3 = $this->addDocumentToItem("foo.txt", "content", $other_form);
+        $document4 = $this->addDocumentToItem("foo.txt", "content", $other_question);
+
+        // Act: try to view document from the second form using a reference
+        // to the first form
+        $this->login("post-only");
+        $can_view_3 = $document3->canViewFile([
+            'itemtype' => Form::class,
+            // Document 3 is linked to $other_form, not $form
+            'items_id' => $form->getID(),
+        ]);
+        $can_view_4 = $document4->canViewFile([
+            'itemtype' => Question::class,
+            // Document 4 is linked to $other_question, not $question
+            'items_id' => $question->getID(),
+        ]);
+
+        // Assert: the user should not be able to view the documents as they
+        // are not linked to the form he is allowed to see.
+        $this->assertFalse($can_view_3);
+        $this->assertFalse($can_view_4);
+    }
 }

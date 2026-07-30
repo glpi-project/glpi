@@ -82,8 +82,10 @@ Cypress.Commands.add('selectDropdownValue', {prevSubject: true}, (
                     .click();
             });
         } else {
-            const select2_id = subject.get(0).children[0].id.replace('-container', '');
-            cy.get(`[id="${select2_id}-results"]`).findByRole('option', { name: new_value }).click();
+            // Select2 4.1.0: single-select exposes the results listbox via aria-owns
+            cy.get(`[id="${subject.attr('aria-owns')}"]`)
+                .findByRole('option', { name: new_value })
+                .click();
         }
     });
 
@@ -109,8 +111,10 @@ Cypress.Commands.add('hasDropdownValue', {prevSubject: true}, (
                     .should(should_exist ? 'exist' : 'not.exist');
             });
         } else {
-            const select2_id = subject.get(0).children[0].id.replace('-container', '');
-            cy.get(`[id="${select2_id}-results"]`).findByRole('option', { name: expected_value }).should(should_exist ? 'exist' : 'not.exist');
+            // Select2 4.1.0: single-select exposes the results listbox via aria-owns
+            cy.get(`[id="${subject.attr('aria-owns')}"]`)
+                .findByRole('option', { name: expected_value })
+                .should(should_exist ? 'exist' : 'not.exist');
         }
     });
 

@@ -44,6 +44,7 @@ use Glpi\Debug\Profiler;
 use Glpi\Event;
 use Glpi\Exception\RedirectException;
 use Glpi\Exception\SessionExpiredException;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Marketplace\Controller as MarketplaceController;
 use Glpi\Marketplace\View as MarketplaceView;
 use Glpi\Plugin\Hooks;
@@ -579,17 +580,18 @@ class Plugin extends CommonDBTM
                 continue;
             }
             $locales_dir = "$base_dir/$plugin_key/locales/";
+            $trytoload_lang = LanguageRegistry::tryGet($trytoload);
+            $default_lang = !empty($CFG_GLPI["language"]) ? LanguageRegistry::tryGet($CFG_GLPI["language"]) : null;
             if (
-                array_key_exists($trytoload, $CFG_GLPI["languages"])
-                && file_exists($locales_dir . $CFG_GLPI["languages"][$trytoload][1])
+                $trytoload_lang !== null
+                && file_exists($locales_dir . $trytoload_lang->mo_file)
             ) {
-                $mofile = $locales_dir . $CFG_GLPI["languages"][$trytoload][1];
+                $mofile = $locales_dir . $trytoload_lang->mo_file;
             } elseif (
-                !empty($CFG_GLPI["language"])
-                && array_key_exists($CFG_GLPI["language"], $CFG_GLPI["languages"])
-                && file_exists($locales_dir . $CFG_GLPI["languages"][$CFG_GLPI["language"]][1])
+                $default_lang !== null
+                && file_exists($locales_dir . $default_lang->mo_file)
             ) {
-                $mofile = $locales_dir . $CFG_GLPI["languages"][$CFG_GLPI["language"]][1];
+                $mofile = $locales_dir . $default_lang->mo_file;
             } elseif (file_exists($locales_dir . "en_GB.mo")) {
                 $mofile = $locales_dir . "en_GB.mo";
             }
@@ -2842,7 +2844,7 @@ class Plugin extends CommonDBTM
                     $config_url = htmlescape("{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}");
                     $output .= '<a href="' . $config_url . '" title="' . __s('Configure') . '">'
                     . '<i class="ti ti-tool fs-2x"></i>'
-                    . '<span class="sr-only">' . __s('Configure') . '</span>'
+                    . '<span class="visually-hidden">' . __s('Configure') . '</span>'
                     . '</a>'
                     . '&nbsp;';
                 }
@@ -2916,7 +2918,7 @@ class Plugin extends CommonDBTM
                                                           data-bs-toggle="modal"
                                                           data-bs-target="#updateModal' . htmlescape($plugin->getField('directory')) . '"
                                                           title="' . __s("Update") . '">
-                                                          <span class="sr-only">' . __s("Update") . '</span>
+                                                          <span class="visually-hidden">' . __s("Update") . '</span>
                                                       </span></a>',
                                 'update_btn' => Html::getSimpleForm(
                                     static::getFormURL(),
@@ -2957,7 +2959,7 @@ class Plugin extends CommonDBTM
                                 data-bs-toggle="modal"
                                 data-bs-target="#uninstallModal' . htmlescape($plugin->getField('directory')) . '"
                                 title="' . $uninstall_label . '">
-                                <span class="sr-only">' . $uninstall_label . '</span>
+                                <span class="visually-hidden">' . $uninstall_label . '</span>
                             </span></a>
                         ';
 
@@ -3004,7 +3006,7 @@ class Plugin extends CommonDBTM
                 if (!empty($value)) {
                     $value = htmlescape($value);
                     return "<a href=\"" . $value . "\" target='_blank'>
-                     <i class='ti ti-external-link-alt fs-2x'></i><span class='sr-only'>$value</span>
+                     <i class='ti ti-external-link-alt fs-2x'></i><span class='visually-hidden'>$value</span>
                   </a>";
                 }
                 return "&nbsp;";
@@ -3278,7 +3280,7 @@ class Plugin extends CommonDBTM
      */
     private function resetHookableCacheEntries(string $plugin_key): bool
     {
-        global $CFG_GLPI, $GLPI_CACHE;
+        global $GLPI_CACHE;
 
         $to_clear = [
             // Plugin lowercase/case-sensitive class names mapping.
@@ -3289,11 +3291,14 @@ class Plugin extends CommonDBTM
             'all_possible_rights',
         ];
 
-        foreach (array_keys($CFG_GLPI['languages']) as $language) {
+        foreach (array_keys(LanguageRegistry::all()) as $language) {
             // Hookable using `$CFG_GLPI['device_types']`, `$CFG_GLPI['asset_types']`,
             // and `Hooks::DASHBOARD_FILTERS`.
             $to_clear[] = Grid::getAllDashboardCardsCacheKey($language);
         }
+
+        // FIXME Try to separate template cache for each Twig namespace, in order to be able to reset only the plugin Twig templates cache.
+        (new CacheManager())->resetCompiledTemplates();
 
         return $GLPI_CACHE->deleteMultiple($to_clear);
     }

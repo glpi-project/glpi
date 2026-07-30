@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\json_encode;
+
 global $CFG_GLPI;
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -75,8 +77,11 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
         $p['valuename'] = $_POST['valuename'];
     }
     if (isset($_POST['entity_restrict'])) {
-        $p['entity_restrict']           = $_POST['entity_restrict'];
-        $idor_params['entity_restrict'] = $_POST['entity_restrict'];
+        $entity_restrict = is_array($_POST['entity_restrict'])
+            ? json_encode(array_values($_POST['entity_restrict']))
+            : $_POST['entity_restrict'];
+        $p['entity_restrict']           = $entity_restrict;
+        $idor_params['entity_restrict'] = $entity_restrict;
     }
     if (isset($_POST['condition'])) {
         $p['condition']           = $_POST['condition'];
@@ -90,6 +95,9 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
     }
     if (isset($_POST['width'])) {
         $p['width'] = $_POST['width'];
+    }
+    if (isset($_POST['multiple'])) {
+        $p['multiple'] = (bool) $_POST['multiple'];
     }
     if (isset($_POST['container_css_class'])) {
         $p['container_css_class'] = $_POST['container_css_class'];
@@ -116,8 +124,8 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
         $params = ['items_id' => '__VALUE__',
             'itemtype' => $_POST["idtable"],
         ];
-        if (isset($_POST['entity_restrict'])) {
-            $params['entity_restrict'] = $_POST['entity_restrict'];
+        if (isset($entity_restrict)) {
+            $params['entity_restrict'] = $entity_restrict;
         }
 
         $id = 'showItemSpecificity_' . $_POST['name'] . $rand;

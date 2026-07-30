@@ -109,6 +109,10 @@ final class IllustrationManager
      */
     public function renderIcon(string $icon_id, ?int $size = null): string
     {
+        if ($icon_id === '') {
+            return '';
+        }
+
         $custom_icon_prefix = self::CUSTOM_ILLUSTRATION_PREFIX;
         if (str_starts_with($icon_id, $custom_icon_prefix)) {
             return $this->renderCustomIcon(
@@ -145,6 +149,24 @@ final class IllustrationManager
     public function getAllIconsIds(): array
     {
         return array_keys($this->getIconsDefinitions());
+    }
+
+    /**
+     * Tell whether a string is a valid illustration value: empty (no
+     * illustration), a known native icon id, or an existing custom file.
+     */
+    public function isKnownIllustrationValue(string $value): bool
+    {
+        if ($value === '') {
+            return true;
+        }
+
+        if (str_starts_with($value, self::CUSTOM_ILLUSTRATION_PREFIX)) {
+            $custom_id = substr($value, strlen(self::CUSTOM_ILLUSTRATION_PREFIX));
+            return $this->getCustomIllustrationFile($custom_id) !== null;
+        }
+
+        return in_array($value, $this->getAllIconsIds(), true);
     }
 
     public function countIcons(string $filter = ""): int
@@ -219,12 +241,22 @@ final class IllustrationManager
 
     public function saveCustomIllustration(string $id, string $path): void
     {
-        rename($path, self::CUSTOM_ILLUSTRATION_DIR . "/$id");
+        $dest = self::CUSTOM_ILLUSTRATION_DIR . "/$id";
+        $real_dest = realpath(dirname($dest)) . DIRECTORY_SEPARATOR . basename($dest);
+        if (!str_starts_with($real_dest, realpath(self::CUSTOM_ILLUSTRATION_DIR) . DIRECTORY_SEPARATOR)) {
+            throw new RuntimeException("Illustration path traversal detected: $id");
+        }
+        rename($path, $dest);
     }
 
     public function saveCustomScene(string $id, string $path): void
     {
-        rename($path, self::CUSTOM_SCENES_DIR . "/$id");
+        $dest = self::CUSTOM_SCENES_DIR . "/$id";
+        $real_dest = realpath(dirname($dest)) . DIRECTORY_SEPARATOR . basename($dest);
+        if (!str_starts_with($real_dest, realpath(self::CUSTOM_SCENES_DIR) . DIRECTORY_SEPARATOR)) {
+            throw new RuntimeException("Scene path traversal detected: $id");
+        }
+        rename($path, $dest);
     }
 
     public function getCustomIllustrationFile(string $id): ?string

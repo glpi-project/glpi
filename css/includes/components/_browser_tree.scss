@@ -32,27 +32,28 @@
  */
 
 #tree_browse {
-    display: flex;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+
+    --wb-border-color: var(--tblr-border-color);
+    --wb-focus-border-color: var(--tblr-focus-ring-color);
+    --wb-background-color: var(--tblr-card-bg);
+    --wb-node-text-color: var(--tblr-body-color);
+    --wb-active-color-grayscale: rgb(var(--tblr-secondary-rgb), 0.08);
+    --wb-active-color: rgb(var(--tblr-secondary-rgb), 0.08);
+    --wb-hover-color: rgb(var(--tblr-secondary-rgb), 0.08);
+    --wb-active-hover-color-grayscale: rgb(var(--tblr-secondary-rgb), 0.08);
+    --wb-active-hover-color: rgb(var(--tblr-secondary-rgb), 0.08);
+    --wb-active-border-color-grayscale: var(--tblr-border-color);
+    --wb-active-border-color: var(--tblr-border-color);
 
     .browser_tree {
-        flex-basis: 250px;
-        flex-shrink: 0;
         padding-right: 10px;
         padding-left: 2px;
 
         .browser-tree-container {
             overflow-x: hidden;
             overflow-y: auto;
-            flex: 1;
-
-            .fancytree-container {
-                overflow-y: auto;
-
-                i.fa.sub_items {
-                    color: #787878;
-                }
-            }
         }
 
         .browser_tree_search {

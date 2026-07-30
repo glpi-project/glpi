@@ -35,6 +35,7 @@
 
 namespace Glpi\OAuth;
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Toolbox\IPUtilities;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
@@ -95,10 +96,21 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         $DB->delete('glpi_oauth_refresh_tokens', [
             'access_token' => new QuerySubQuery([
                 'SELECT' => 'identifier',
-                'FROM'   => 'glpi_oauth_access_tokens',
-                'WHERE'  => ['client' => $clientIdentifier],
+                'FROM' => 'glpi_oauth_access_tokens',
+                'WHERE' => ['client' => $clientIdentifier],
             ]),
         ]);
+    }
+
+    /**
+     * Revoke all refresh tokens.
+     *
+     * @return void
+     */
+    public function revokeAll(): void
+    {
+        global $DB;
+        $DB->delete('glpi_oauth_refresh_tokens', [new QueryExpression('true')]);
     }
 
     /**

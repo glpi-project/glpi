@@ -56,10 +56,8 @@
                   {% set session_get_plural = get_plural_number() %}
                   {% set rand = random() %}
 
-                  {% if ID %}
-                     <input type="hidden" name="itemtype" value="{{ item.fields['itemtype'] }}">
-                     <input type="hidden" name="items_id" value="{{ item.fields['items_id'] }}">
-                  {% endif %}
+                  <input type="hidden" name="itemtype" value="{{ item.fields['itemtype'] }}">
+                  <input type="hidden" name="items_id" value="{{ item.fields['items_id'] }}">
 
                   {{ fields.textField(
                      'name',
@@ -73,7 +71,7 @@
                         <a class="btn btn-sm btn-outline-danger"
                         onclick=" submitGetLink('{{ item.getFormURL()|e('js')|e }}', {'unaffect': 'unaffect', 'id': '{{ ID|e('js')|e }}', '_glpi_simple_form': '1'});">
                            <span class="ti ti-unlink " title={{ _x('button', 'Dissociate') }}>
-                              <span class="sr-only">{{ _x('button', 'Dissociate') }}</span>
+                              <span class="visually-hidden">{{ _x('button', 'Dissociate') }}</span>
                            </span>
                         </a>
 

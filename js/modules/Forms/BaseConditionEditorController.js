@@ -64,6 +64,8 @@ export class BaseConditionEditorController {
     /** @type {string} */
     #editorEndpoint;
 
+    #ongoingRenderCount = 0;
+
     constructor(container, item_uuid, item_type, forms_sections, form_questions, form_comments, editorEndpoint) {
         this.#container = container;
         if (this.#container.dataset.glpiConditionsEditorContainer === undefined) {
@@ -128,20 +130,34 @@ export class BaseConditionEditorController {
 
     async #doRenderEditor(data) {
         const url = this.#editorEndpoint;
-        const content = await $.ajax({
-            url: url,
-            method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-        });
 
-        // Note: must use `$().html` to make sure we trigger scripts
-        $(this.#container.querySelector('[data-glpi-conditions-editor]')).html(content);
+        // Prevent interractions while loading
+        this.#ongoingRenderCount++;
+        this.#container.classList.add('pe-none');
+        this.#container.classList.add('cursor-wait');
 
-        // The number of conditions may have changed, notify
-        this.#notifyConditionsCountChanged(
-            data.conditions.length
-        );
+        try {
+            const content = await $.ajax({
+                url: url,
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+            });
+
+            // Note: must use `$().html` to make sure we trigger scripts
+            $(this.#container.querySelector('[data-glpi-conditions-editor]')).html(content);
+
+            // The number of conditions may have changed, notify
+            this.#notifyConditionsCountChanged(
+                data.conditions.length
+            );
+        } finally {
+            this.#ongoingRenderCount--;
+            if (this.#ongoingRenderCount === 0) {
+                this.#container.classList.remove('pe-none');
+                this.#container.classList.remove('cursor-wait');
+            }
+        }
     }
 
     #initEventHandlers() {
@@ -262,15 +278,43 @@ export class BaseConditionEditorController {
             const condition_value = $(condition).find(
                 '[data-glpi-conditions-editor-value]'
             );
-            if (condition_value.length === 1) {
-                condition_data.value = condition_value.val();
-            } else if (condition_value.length > 1) {
-                condition_data.value = {};
-                condition_value.each((index, element) => {
-                    const name_parts = element.name.split(/[[\]]+/);
-                    const last_part = name_parts[name_parts.length - 2]; // Get the last non-empty part
-                    condition_data.value[last_part] = element.value;
+            if (condition_value.length > 0) {
+                const value_entries = [];
+                condition_value.each((_index, element) => {
+                    // Extract the path after `[value]` from input names like
+                    // `_conditions[0][value][a][b]`. An empty path means the
+                    // value is a scalar.
+                    const match = element.name.match(/\[value\](.*)$/);
+                    const path_str = match ? match[1] : '';
+                    const path_keys = [...path_str.matchAll(/\[([^\]]*)\]/g)]
+                        .map((m) => m[1]);
+                    // Drop trailing empty key from PHP `[]` array notation
+                    // (multi-select inputs render as `name="...[items_ids][]"`).
+                    if (path_keys.length > 0 && path_keys[path_keys.length - 1] === '') {
+                        path_keys.pop();
+                    }
+                    // Use jQuery `.val()` so multi-select dropdowns return the
+                    // full array of selected values instead of only the first.
+                    value_entries.push({ keys: path_keys, value: $(element).val() });
                 });
+
+                if (value_entries.length === 1 && value_entries[0].keys.length === 0) {
+                    condition_data.value = value_entries[0].value;
+                } else {
+                    condition_data.value = {};
+                    for (const entry of value_entries) {
+                        let target = condition_data.value;
+                        for (let i = 0; i < entry.keys.length - 1; i++) {
+                            const key = entry.keys[i];
+                            if (target[key] === undefined || typeof target[key] !== 'object') {
+                                target[key] = {};
+                            }
+                            target = target[key];
+                        }
+                        const last_key = entry.keys[entry.keys.length - 1];
+                        target[last_key] = entry.value;
+                    }
+                }
             }
 
             conditions_data.push(condition_data);

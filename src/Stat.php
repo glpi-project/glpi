@@ -36,13 +36,13 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Output\Csv;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\Output\Pdf;
 use Glpi\Search\SearchEngine;
 use Glpi\Stat\StatData;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\mktime;
 use function Safe\strtotime;
@@ -438,6 +438,9 @@ class Stat extends CommonGLPI
      **/
     public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = '')
     {
+        /** @var Kernel $kernel */
+        global $kernel;
+
         $numrows = count($value);
         // Set display type for export if define
         $output_type = $_GET["display_type"] ?? Search::HTML_OUTPUT;
@@ -466,7 +469,7 @@ class Stat extends CommonGLPI
             $nbcols--;
         }
 
-        $request = Request::createFromGlobals();
+        $request = $kernel->getMainRequest();
 
         if ($is_html_output) {
             $html_output .= $output::showHeader($end_display - $start + 1, $nbcols);

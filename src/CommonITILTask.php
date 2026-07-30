@@ -434,12 +434,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      */
     private function handleTaskDuration(array &$input, int $timestart, int $timeend): void
     {
-        // If 'actiontime' is set and different from the current 'actiontime'
-        if (isset($input['actiontime']) && $this->fields['actiontime'] != $input['actiontime']) {
+        // A non-zero 'actiontime' recomputes 'end'.
+        // A zero value (empty dropdown choice) must not override an explicitly entered end date.
+        if (!empty($input['actiontime']) && $this->fields['actiontime'] != $input['actiontime']) {
             // Compute the end date based on 'actiontime'
             $input["end"] = date("Y-m-d H:i:s", $timestart + $input['actiontime']);
         } else {
-            // If 'actiontime' is not set, compute it based on the start and end times
+            // Otherwise, compute the duration based on the start and end times
             $input["actiontime"] = $timeend - $timestart;
         }
     }
@@ -1477,7 +1478,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 $item->getFromResultSet($data);
-                if ($item->canViewItem()) {
+                if ($item->can($item->getID(), READ)) {
                     if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()])) {
                         //not planned
                         if (isset($data['notp_date'])) {
@@ -1538,7 +1539,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                         $interv[$key]["status"]   = $parentitem->fields["status"];
                         $interv[$key]["priority"] = $parentitem->fields["priority"];
 
-                        $interv[$key]["editable"] = $item->canUpdateItem();
+                        $interv[$key]["editable"] = $item->can($item->getID(), UPDATE);
 
                         /// Specific for tickets
                         $interv[$key]["device"] = [];
@@ -2066,7 +2067,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         global $CFG_GLPI;
 
-        if (!$this->canViewItem()) {
+        if (!$this->can($this->getID(), READ)) {
             return null;
         }
 

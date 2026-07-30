@@ -55,7 +55,7 @@
                         }) }}
 
                         <div class="text-end">
-                            {{ inputs.submit('add', _x('button', 'Add a new file'), '', {'icon': 'ti ti-plus'}, 1) }}
+                            {{ inputs.submit('add', _x('button', 'Add a new file'), 1, {'icon': 'ti ti-plus'}) }}
                         </div>
 
                         {{ inputs.hidden('entities_id', entity) }}
@@ -91,7 +91,7 @@
                         </div>
 
                         <div class="d-flex flex-column align-items-center text-end mt-auto">
-                            {{ inputs.submit('add', _x('button', 'Associate'), '', {'icon': 'ti ti-link'}, 1) }}
+                            {{ inputs.submit('add', _x('button', 'Associate'), 1, {'icon': 'ti ti-link'}) }}
                         </div>
 
                         {{ inputs.hidden('itemtype', item.getType()) }}

@@ -1,0 +1,17 @@
+diff --git a/node_modules/gettext.js/lib/gettext.js b/node_modules/gettext.js/lib/gettext.js
+index 1234567..abcdefg 100644
+--- a/node_modules/gettext.js/lib/gettext.js
++++ b/node_modules/gettext.js/lib/gettext.js
+@@ -218,7 +218,12 @@
+         // because it's not possible to define both a singular and a plural form of the same msgid,
+         // we need to check that the stored form is the same as the expected one.
+         // if not, we'll just ignore the translation and consider it as not translated.
+         if (msgid_plural) {
++          // If the translation is stored as a string (e.g. languages with nplurals=1),
++          // wrap it in an array so plural form lookup works correctly.
++          if (exist && "string" === typeof _dictionary[domain][locale][key]) {
++            _dictionary[domain][locale][key] = [_dictionary[domain][locale][key]];
++          }
+           exist = exist && "string" !== typeof _dictionary[domain][locale][key];
+         } else {
+           exist = exist && "string" === typeof _dictionary[domain][locale][key];

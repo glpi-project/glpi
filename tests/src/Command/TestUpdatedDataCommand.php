@@ -44,6 +44,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
+use function Safe\json_encode;
+
 class TestUpdatedDataCommand extends Command
 {
     protected function configure()
@@ -263,6 +265,12 @@ class TestUpdatedDataCommand extends Command
                 if ($found_in_updated->count() !== 1) {
                     $missing = true;
                     $msg = sprintf('Unable to find the following object in table "%s": %s', $table_name, json_encode($row_data));
+                    $msg .= sprintf(
+                        "Query:\n%s\nParameters:\n%s\n%s",
+                        $found_in_updated->getSql(),
+                        json_encode($found_in_updated->getValues()),
+                        var_export($criteria, true)
+                    );
                     $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
                 }
             }

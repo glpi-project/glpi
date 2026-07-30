@@ -196,6 +196,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             ]
         );
 
+        $alert = new Alert();
+        $alert->cleanDBonItemDelete(self::class, $this->fields['id']);
+        (new PlanningRecall())->cleanDBonItemDelete(self::class, $this->fields['id']);
+
         parent::cleanDBonPurge();
     }
 
@@ -314,6 +318,20 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             self::recalculatePercentDone($this->input['_old_projecttasks_id']);
         }
 
+        if (in_array('plan_end_date', $this->updates, true)) {
+            $alert = new Alert();
+            $alert->cleanDBonItemDelete(self::class, $this->getID());
+            PlanningRecall::managePlanningUpdates(
+                static::class,
+                $this->getID(),
+                $this->fields['plan_end_date']
+            );
+        }
+
+        if (in_array('recall', $this->updates, true)) {
+            $this->handlePlanningRecall();
+        }
+
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
             // Read again project to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
@@ -377,11 +395,52 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             Project::recalculatePercentDone($this->fields['projects_id']);
         }
 
+        if ($this->fields['recall'] !== null) {
+            $this->handlePlanningRecall();
+        }
+
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
             // Clean reload of the project
             $this->getFromDB($this->fields['id']);
 
             NotificationEvent::raiseEvent('new', $this);
+        }
+    }
+
+    private function handlePlanningRecall(): void
+    {
+        global $DB;
+
+        $recall_data = [
+            'itemtype'    => static::class,
+            'items_id'    => $this->fields['id'],
+            'before_time' => $this->fields['recall'] !== null ? (int) $this->fields['recall'] : null,
+            'field'       => 'plan_end_date',
+        ];
+
+        $team = ProjectTaskTeam::getTeamFor($this->fields['id']);
+        foreach ($team as $type => $actors) {
+            switch ($type) {
+                case User::class:
+                    foreach ($actors as $actor) {
+                        $recall_data['users_id'] = (int) $actor['items_id'];
+                        PlanningRecall::manageDatas($recall_data);
+                    }
+                    break;
+                case Group::class:
+                    foreach ($actors as $actor) {
+                        $iterator = $DB->request([
+                            'SELECT' => 'users_id',
+                            'FROM'   => Group_User::getTable(),
+                            'WHERE'  => ['groups_id' => $actor['items_id']],
+                        ]);
+                        foreach ($iterator as $row) {
+                            $recall_data['users_id'] = (int) $row['users_id'];
+                            PlanningRecall::manageDatas($recall_data);
+                        }
+                    }
+                    break;
+            }
         }
     }
 
@@ -480,6 +539,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function prepareInputForUpdate($input)
     {
+        if (array_key_exists('recall', $input) && $input['recall'] === '') {
+            $input['recall'] = null;
+        }
+
         if (isset($input['auto_percent_done']) && $input['auto_percent_done']) {
             unset($input['percent_done']);
         }
@@ -541,6 +604,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function prepareInputForAdd($input)
     {
+        if (array_key_exists('recall', $input) && $input['recall'] === '') {
+            $input['recall'] = null;
+        }
+
         if (!isset($input['projects_id']) || (int) $input['projects_id'] === 0) {
             Session::addMessageAfterRedirect(
                 __s('A linked project is mandatory'),
@@ -806,6 +873,27 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             $duration_dropdown_to_add[$i * DAY_TIMESTAMP] = sprintf(_n('%s day', '%s days', $i), $i);
         }
 
+        $recall_values = [
+            ''                  => __('None'),
+            0                   => sprintf(_n('%d minute', '%d minutes', 0), 0),
+        ];
+        foreach ([15, 30, 45] as $minutes) {
+            $recall_values[$minutes * MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', $minutes), $minutes);
+        }
+        foreach ([1, 2, 3, 4, 12] as $hours) {
+            $recall_values[$hours * HOUR_TIMESTAMP] = sprintf(_n('%d hour', '%d hours', $hours), $hours);
+        }
+        for ($i = 1; $i <= 6; $i++) {
+            $recall_values[$i * DAY_TIMESTAMP] = sprintf(_n('%d day', '%d days', $i), $i);
+        }
+        for ($i = 1; $i <= 3; $i++) {
+            $recall_values[$i * WEEK_TIMESTAMP] = sprintf(_n('%d week', '%d weeks', $i), $i);
+        }
+        for ($i = 1; $i <= 11; $i++) {
+            $recall_values[$i * MONTH_TIMESTAMP] = sprintf(_n('%d month', '%d months', $i), $i);
+        }
+        $recall_values[12 * MONTH_TIMESTAMP] = sprintf(_n('%d year', '%d years', 1), 1);
+
         $this->initForm($ID, $options);
 
         TemplateRenderer::getInstance()->display('pages/tools/project_task.html.twig', [
@@ -817,6 +905,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'projecttasks_id'          => $projecttasks_id,
             'recursive'                => $recursive,
             'duration_dropdown_to_add' => $duration_dropdown_to_add,
+            'recall_values'            => $recall_values,
             'duration'                 => $duration,
             'rand'                     => mt_rand(),
         ]);
@@ -1028,6 +1117,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -1036,6 +1126,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -1044,6 +1135,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'field'              => 'real_start_date',
             'name'               => __('Real start date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -1052,6 +1144,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'field'              => 'real_end_date',
             'name'               => __('Real end date'),
             'datatype'           => 'datetime',
+            'maybefuture'        => true,
         ];
 
         $tab[] = [
@@ -1222,7 +1315,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
         $ID = $item->getID();
 
-        if (!$item->canViewItem()) {
+        if (!$item->can($item->getID(), READ)) {
             return false;
         }
 
@@ -1997,7 +2090,7 @@ TWIG, $twig_params);
                 $interv[$key]["status"]   = $task->fields["percent_done"];
 
                 $ttask->getFromDB($data["id"]);
-                $interv[$key]["editable"] = $ttask->canUpdateItem();
+                $interv[$key]["editable"] = $ttask->can($ttask->getID(), UPDATE);
             }
         }
 
@@ -2252,7 +2345,7 @@ TWIG, $twig_params);
     {
         global $CFG_GLPI;
 
-        if (!$this->canViewItem()) {
+        if (!$this->can($this->getID(), READ)) {
             return null;
         }
 
@@ -2373,5 +2466,99 @@ TWIG, $twig_params);
             }
         }
         return $result;
+    }
+
+    /**
+     * @return array<string, string>
+     * @used-by CronTask
+     */
+    public static function cronInfo(string $name): array
+    {
+        return match ($name) {
+            'projecttasksreminder' => [
+                'description' => __('Send project task plan end date reminders'),
+                'parameter'   => __('Number of days before planned end date'),
+            ],
+            default => [],
+        };
+    }
+
+    public static function cronProjectTasksReminder(?CronTask $task = null): int
+    {
+        global $CFG_GLPI, $DB;
+
+        if (!$CFG_GLPI['use_notifications']) {
+            return 0;
+        }
+
+        $cron_status = 0;
+        $task_table  = self::getTable();
+        $days_before = (int) (($task !== null && $task->fields['param'] > 0) ? $task->fields['param'] : 3);
+
+        $iterator = $DB->request([
+            'SELECT'    => [$task_table . '.*'],
+            'FROM'      => $task_table,
+            'LEFT JOIN' => [
+                ProjectState::getTable() => [
+                    'ON' => [
+                        ProjectState::getTable() => 'id',
+                        $task_table              => 'projectstates_id',
+                        [
+                            'OR' => [
+                                [ProjectState::getTable() . '.is_finished' => 0],
+                                [ProjectState::getTable() . '.is_finished' => null],
+                            ],
+                        ],
+                    ],
+                ],
+                Alert::getTable() => [
+                    'ON' => [
+                        $task_table         => 'id',
+                        Alert::getTable()   => 'items_id', [
+                            'AND' => [
+                                Alert::getTable() . '.itemtype' => self::class,
+                                Alert::getTable() . '.type'     => Alert::ACTION,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                $task_table . '.is_deleted'     => 0,
+                $task_table . '.is_template'    => 0,
+                'NOT'                           => [$task_table . '.plan_end_date' => null],
+                [$task_table . '.plan_end_date' => ['>', QueryFunction::now()]],
+                [$task_table . '.plan_end_date' => ['<', QueryFunction::dateAdd(
+                    date: QueryFunction::now(),
+                    interval: $days_before,
+                    interval_unit: 'DAY',
+                )]],
+                'OR' => [
+                    [$task_table . '.projectstates_id' => 0],
+                    ['NOT' => [ProjectState::getTable() . '.id' => null]],
+                ],
+                Alert::getTable() . '.date'     => null,
+            ],
+        ]);
+
+        $projecttask = new self();
+        $alert       = new Alert();
+        foreach ($iterator as $data) {
+            $projecttask->getFromResultSet($data);
+            $options = ['entities_id' => $projecttask->getEntityID()];
+            if (NotificationEvent::raiseEvent('planningrecall', $projecttask, $options)) {
+                $cron_status = 1;
+                if ($task !== null) {
+                    $task->addVolume(1);
+                }
+                $alert->add([
+                    'itemtype' => self::class,
+                    'type'     => Alert::ACTION,
+                    'items_id' => $data['id'],
+                ]);
+            }
+        }
+
+        return $cron_status;
     }
 }

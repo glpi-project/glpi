@@ -47,6 +47,7 @@ use Glpi\Features\AssignableItem;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Features\Clonable;
 use Glpi\Features\DCBreadcrumbInterface;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
@@ -59,6 +60,7 @@ use Glpi\Toolbox\UuidStore;
 use Glpi\UI\IllustrationManager;
 
 use function Safe\getimagesize;
+use function Safe\json_encode;
 use function Safe\preg_grep;
 use function Safe\preg_match;
 use function Safe\preg_replace;
@@ -409,6 +411,8 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      * @since 9.2
+     *
+     * @phpstan-impure
      */
     public function getFromDBByCrit(array $criteria)
     {
@@ -427,10 +431,11 @@ class CommonDBTM extends CommonGLPI
         } elseif (count($iter) > 1) {
             throw new TooManyResultsException(
                 sprintf(
-                    '`%1$s::getFromDBByCrit()` expects to get one result, %2$s found in query "%3$s".',
+                    '`%1$s::getFromDBByCrit()` expects to get one result, %2$s found in query "%3$s" with values: %4$s.',
                     static::class,
                     count($iter),
-                    $iter->getSql()
+                    $iter->getSql(),
+                    json_encode($iter->getValues())
                 )
             );
         }
@@ -471,10 +476,11 @@ class CommonDBTM extends CommonGLPI
         } elseif (count($iterator) > 1) {
             throw new TooManyResultsException(
                 sprintf(
-                    '`%1$s::getFromDBByRequest()` expects to get one result, %2$s found in query "%3$s".',
+                    '`%1$s::getFromDBByRequest()` expects to get one result, %2$s found in query "%3$s" with values "%4$s".',
                     static::class,
                     count($iterator),
-                    $iterator->getSql()
+                    $iterator->getSql(),
+                    json_encode($iterator->getValues())
                 )
             );
         }
@@ -736,7 +742,7 @@ class CommonDBTM extends CommonGLPI
             $tobeupdated,
             ['id' => $this->fields['id']]
         );
-        $affected_rows = $DB->affectedRows();
+        $affected_rows = $DB->getAffectedRows();
 
         if (count($oldvalues) && $affected_rows > 0) {
             Log::constructHistory($this, $oldvalues, $this->fields);
@@ -803,9 +809,8 @@ class CommonDBTM extends CommonGLPI
                 $params['date_mod'] = $_SESSION["glpi_currenttime"];
             }
 
-            if ($DB->update(static::getTable(), $params, ['id' => $this->fields['id']])) {
-                return true;
-            }
+            $DB->update(static::getTable(), $params, ['id' => $this->fields['id']]);
+            return true;
         }
         return false;
     }
@@ -1453,6 +1458,7 @@ class CommonDBTM extends CommonGLPI
      *    - class       : string  / CSS class to add to the link
      *    - icon        : boolean / display item icon next to label
      *    - forceid     : boolean  override config and display item's ID (false by default)
+     *    - tooltip     : boolean / display item tooltip (true by default)
      *
      * @return string HTML link
      **/
@@ -1465,6 +1471,7 @@ class CommonDBTM extends CommonGLPI
             'additional' => false,
             'icon'       => false,
             'forceid'    => false,
+            'tooltip'    => true,
         ];
         if (array_key_exists('linkoption', $options)) {
             trigger_error('`linkoption` option is now ignored in `CommonDBTM::getLink()`.', E_USER_WARNING);
@@ -1499,9 +1506,9 @@ class CommonDBTM extends CommonGLPI
         $html = '';
         if ($link_url !== '') {
             $html .= sprintf(
-                '<a href="%s" data-bs-toggle="tooltip" data-bs-placement="bottom" title="%s"%s>',
+                '<a href="%s"%s%s>',
                 htmlescape($link_url),
-                htmlescape($link_title),
+                $p['tooltip'] ? sprintf(' data-bs-toggle="tooltip" data-bs-placement="bottom" title="%s"', htmlescape($link_title)) : '',
                 $p['class'] !== '' ? sprintf(' class="%s"', htmlescape($p['class'])) : '',
             );
         }
@@ -1806,11 +1813,11 @@ class CommonDBTM extends CommonGLPI
                     $this->clearSavedInput();
                 }
 
-                Webhook::raise('update', $this);
                 $this->post_updateItem($history);
                 if ($this instanceof CacheableListInterface) {
                     $this->invalidateListCache();
                 }
+                Webhook::raise('update', $this);
 
                 return true;
             }
@@ -1890,20 +1897,22 @@ class CommonDBTM extends CommonGLPI
         ) {
             $fields = array_values($this->updates);
             $fields = array_filter($fields, fn($f) => $f !== 'date_mod');
-            $stmt = $DB->prepare(
-                $DB->buildInsert(
-                    $lockedfield->getTable(),
-                    [
-                        'itemtype'        => static::class,
-                        'items_id'        => $this->fields['id'],
-                        'date_creation'   => $_SESSION["glpi_currenttime"],
-                        'field'           => new QueryParam(),
-                    ]
-                )
+            $insert_stmt = $DB->buildInsert(
+                $lockedfield->getTable(),
+                [
+                    'itemtype'        => static::class,
+                    'items_id'        => $this->fields['id'],
+                    'date_creation'   => $_SESSION["glpi_currenttime"],
+                    'field'           => new QueryParam(),
+                ]
             );
+            $stmt = $DB->prepare($insert_stmt);
             foreach ($fields as $field) {
                 try {
-                    $DB->executeStatement($stmt, [$field]);
+                    $DB->executeStatement(
+                        $stmt,
+                        [...$insert_stmt->getParams(), $field]
+                    );
                 } catch (StatementException $e) {
                     if ($e->getCode() != 1062) {
                         throw new RuntimeException('Unable to add locked field!', code: $e->getCode(), previous: $e);
@@ -3917,6 +3926,9 @@ class CommonDBTM extends CommonGLPI
             ];
         }
 
+        // Add asset URL search option for asset types
+        $tab = array_merge($tab, BarcodeManager::rawSearchOptionsToAdd(get_class($this)));
+
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
@@ -4665,11 +4677,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Clean all infos which match some criteria
      *
-     * @param array   $crit    array of criteria (ex array('is_active'=>'1'))
-     * @param bool $force   force purge not on put in trashbin (default false)
-     * @param bool $history do history log ? (true by default)
+     * @param array $crit    array of criteria (ex array('is_active'=>'1'))
+     * @param bool  $force   force purge not on put in trashbin (default false)
+     * @param bool  $history do history log ? (true by default)
      *
-     * @return bool
+     * @return bool false if a deletion failed or there was nothing to delete (criteria did not match any entry)
      **/
     public function deleteByCriteria($crit = [], $force = false, $history = true)
     {
@@ -4687,9 +4699,9 @@ class CommonDBTM extends CommonGLPI
                 }
             }
         }
+
         return $ok;
     }
-
 
     /**
      * get the Entity of an Item
@@ -4950,8 +4962,9 @@ class CommonDBTM extends CommonGLPI
                         break;
 
                     case "language":
-                        if (isset($CFG_GLPI['languages'][$value ?? ''])) {
-                            return htmlescape($CFG_GLPI['languages'][$value][0]);
+                        $language = LanguageRegistry::tryGet($value ?? '');
+                        if ($language !== null) {
+                            return htmlescape($language->native_name);
                         }
                         return __s('Default value');
                 }

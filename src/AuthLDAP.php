@@ -388,8 +388,16 @@ class AuthLDAP extends CommonDBTM
                         // Is recursive is in the main form and thus, don't pass through
                         // zero_on_empty mechanism inside massive action form ...
                         $is_recursive = (empty($input['ldap_import_recursive'][$id]) ? 0 : 1);
+
+                        $common_input = ['entities_id'  => $entity, 'is_recursive' => $is_recursive];
+                        if (!$group->can(-1, CREATE, $common_input)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
                         $options      = [
-                            'authldaps_id' => $_REQUEST['authldaps_id'],
+                            'authldaps_id' => (int) ($input['authldaps_id'] ?? 0),
                             'entities_id'  => $entity,
                             'is_recursive' => $is_recursive,
                             'type'         => $input['ldap_import_type'][$id],
@@ -413,14 +421,17 @@ class AuthLDAP extends CommonDBTM
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
+                User::enableLdapGroupBatchMode();
+                $mode         = (int) ($input['mode'] ?? self::ACTION_IMPORT);
+                $authldaps_id = (int) ($input['authldaps_id'] ?? 0);
                 foreach ($ids as $id) {
                     if (
                         self::ldapImportUserByServerId(
                             ['method' => self::IDENTIFIER_LOGIN,
                                 'value'  => $id,
                             ],
-                            (int) $_REQUEST['mode'],
-                            $_REQUEST['authldaps_id'],
+                            $mode,
+                            $authldaps_id,
                             true
                         )
                     ) {
@@ -2090,7 +2101,7 @@ TWIG, $twig_params);
     ) {
         $limitexceeded = false;
         $ldap_groups   = self::getAllGroups(
-            $_REQUEST['authldaps_id'],
+            (int) $_REQUEST['authldaps_id'],
             $filter,
             $filter2,
             $entity,
@@ -2191,7 +2202,7 @@ TWIG, $twig_params);
                     self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'import_group' => _sx('button', 'Import'),
                 ],
                 'extraparams' => [
-                    'authldaps_id' => $_REQUEST['authldaps_id'],
+                    'authldaps_id' => (int) $_REQUEST['authldaps_id'],
                     'massive_action_fields' => [
                         'authldaps_id',
                         'dn',
@@ -2669,7 +2680,7 @@ TWIG, $twig_params);
                             //In case user id has changed : get id by dn (Used to check if restoration is needed)
                             $user_found = $searched_user->getFromDBbyDn($user_dn);
                         }
-                        if ($user_found && $searched_user->fields['is_deleted_ldap'] && $searched_user->fields['user_dn']) {
+                        if ($user_found && ($searched_user->fields['is_deleted_ldap'] || !$searched_user->fields['is_active']) && $searched_user->fields['user_dn']) {
                             User::manageRestoredUserInLdap($searched_user->fields['id']);
                             return ['action' => self::USER_RESTORED_LDAP,
                                 'id' => $searched_user->fields['id'],
@@ -3578,6 +3589,9 @@ TWIG, $twig_params);
         $_REQUEST['mode'] = (int) ($_REQUEST['mode'] ?? self::ACTION_IMPORT);
 
         $_REQUEST['entities_id'] ??= $_SESSION['glpiactive_entity'];
+
+        unset($_REQUEST['entity_filter']); //Not meant to be set from request; this is calculated later
+
         if (isset($_REQUEST['toprocess'])) {
             $_REQUEST['action'] = 'process';
         }
@@ -3643,7 +3657,7 @@ TWIG, $twig_params);
                 }
 
                 if ($_REQUEST['authldaps_id'] > 0) {
-                    $authldap->getFromDB($_REQUEST['authldaps_id']);
+                    $authldap->getFromDB((int) $_REQUEST['authldaps_id']);
                     $_REQUEST['basedn'] = $authldap->fields['basedn'];
                 }
             }
@@ -3683,11 +3697,11 @@ TWIG, $twig_params);
         // If there is still no LDAP selected, use the first active one
         $servers = array_values(self::getLdapServers(true));
         if (
-            $_REQUEST['authldaps_id'] <= 0
+            (int) $_REQUEST['authldaps_id'] <= 0
             && count($servers) > 0
         ) {
             $_REQUEST['authldaps_id'] = $servers[0]['id'];
-            $authldap->getFromDB($_REQUEST['authldaps_id']);
+            $authldap->getFromDB((int) $_REQUEST['authldaps_id']);
             $_REQUEST['basedn']      = $authldap->fields['basedn'];
             if (($_REQUEST['ldap_filter'] ?? '') === '') {
                 $_REQUEST['ldap_filter'] = self::buildLdapFilter($authldap);
@@ -3705,7 +3719,7 @@ TWIG, $twig_params);
     public static function showUserImportForm(AuthLDAP $authldap)
     {
         // Get data related to entity (directory and ldap filter)
-        $authldap->getFromDB($_REQUEST['authldaps_id']);
+        $authldap->getFromDB((int) $_REQUEST['authldaps_id']);
         TemplateRenderer::getInstance()->display('pages/admin/ldap.user_criteria.html.twig', [
             'has_multiple_servers' => self::getNumberOfServers() > 1,
             'authldap'             => $authldap,
@@ -3724,7 +3738,7 @@ TWIG, $twig_params);
     public static function showGroupImportForm(AuthLDAP $authldap)
     {
         // Get data related to entity (directory and ldap filter)
-        $authldap->getFromDB($_REQUEST['authldaps_id']);
+        $authldap->getFromDB((int) $_REQUEST['authldaps_id']);
 
         TemplateRenderer::getInstance()->display('pages/admin/ldap.group_criteria.html.twig', [
             'has_multiple_servers' => self::getNumberOfServers() > 1,
@@ -3774,7 +3788,7 @@ TWIG, $twig_params);
                         // no Toolbox::substr, to be consistent with strlen result
                         $value = substr($value, $begin, $length - $end - $begin);
                     }
-                    $filter .= '(' . $authldap->fields[$criteria] . '=' . ($begin ? '' : '*') . $value . ($end ? '' : '*') . ')';
+                    $filter .= '(' . $authldap->fields[$criteria] . '=' . ($begin ? '' : '*') . ldap_escape($value, '', LDAP_ESCAPE_FILTER) . ($end ? '' : '*') . ')';
                 }
             }
         } else {

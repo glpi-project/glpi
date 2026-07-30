@@ -47,6 +47,8 @@ use Glpi\Exception\RedirectException;
 use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Inventory\Inventory;
+use Glpi\Kernel\Kernel;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\SecurityConfig;
 use Glpi\System\Log\LogViewer;
@@ -56,7 +58,6 @@ use Glpi\UI\ThemeManager;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use ScssPhp\ScssPhp\Compiler;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\file_get_contents;
 use function Safe\filesize;
@@ -650,7 +651,7 @@ TWIG,
         $lang = $_SESSION['glpilanguage'] ?? Session::getPreferredLanguage();
 
         $tpl_vars = [
-            'lang'               => $CFG_GLPI["languages"][$lang][3],
+            'lang'               => LanguageRegistry::get($lang)->getPageLang(),
             'title'              => $title,
             'theme'              => $theme,
             'is_anonymous_page'  => false,
@@ -702,6 +703,14 @@ TWIG,
                 }
             }
 
+            //TODO Stop using sector-based JS loading
+
+            //Remove huge memory waste by loading dashboard and related libraries (looking at you echarts...)
+            //on pages when there is no right to view dashboards (mainly for simplified interface users)
+            if (!Grid::canViewOneDashboard()) {
+                $jslibs = array_filter($jslibs, static fn($lib) => $lib !== 'dashboard');
+            }
+
             if (in_array('dashboard', $jslibs)) {
                 // include more js libs for dashboard case
                 $jslibs = array_merge($jslibs, [
@@ -709,25 +718,6 @@ TWIG,
                     'charts',
                     'clipboard',
                 ]);
-            }
-
-            if (in_array('planning', $jslibs)) {
-                Html::requireJs('planning');
-            }
-
-            if (in_array('fullcalendar', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'lib/fullcalendar.css'];
-                Html::requireJs('fullcalendar');
-            }
-
-            if (in_array('reservations', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'css/standalone/reservations.scss'];
-                Html::requireJs('reservations');
-            }
-
-            if (in_array('rateit', $jslibs)) {
-                $tpl_vars['css_files'][] = ['path' => 'lib/jquery.rateit.css'];
-                Html::requireJs('rateit');
             }
 
             if (in_array('dashboard', $jslibs)) {
@@ -776,11 +766,6 @@ TWIG,
             if (in_array('home-scss-file', $jslibs)) {
                 $tpl_vars['css_files'][] = ['path' => 'css/helpdesk_home.scss'];
             }
-        }
-
-        if (Session::getCurrentInterface() == "helpdesk") {
-            $tpl_vars['css_files'][] = ['path' => 'lib/jquery.rateit.css'];
-            Html::requireJs('rateit');
         }
 
         // Sortable required for drag and drop of display preferences and some other things like dashboards, kanban, etc
@@ -1216,7 +1201,7 @@ TWIG,
         /**
          * @var bool $HEADER_LOADED
          */
-        global $CFG_GLPI, $HEADER_LOADED, $DB;
+        global $HEADER_LOADED, $DB;
 
         // If in modal : display popHeader
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1279,8 +1264,9 @@ TWIG,
     {
         /**
          * @var bool $FOOTER_LOADED
+         * @var Kernel $kernel
          */
-        global $CFG_GLPI, $FOOTER_LOADED;
+        global $CFG_GLPI, $FOOTER_LOADED, $kernel;
 
         // If in modal : display popFooter
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1329,7 +1315,7 @@ TWIG,
             // select2
             $filename = sprintf(
                 'lib/select2/js/i18n/%s.js',
-                $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]
+                LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code
             );
             if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 $tpl_vars['js_files'][] = ['path' => $filename];
@@ -1344,7 +1330,7 @@ TWIG,
         Profiler::getInstance()->stopAll();
         if (
             $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
-            && !str_starts_with(Request::createFromGlobals()->getPathInfo(), '/install/')
+            && !str_starts_with($kernel->getMainRequest()->getPathInfo(), '/install/')
         ) {
             $tpl_vars['debug_info'] = DebugProfile::getCurrent()->getDebugInfo();
         }
@@ -1453,6 +1439,25 @@ TWIG,
     }
 
     /**
+     * Returns the help/documentation URL for the current interface.
+     *
+     * @return string
+     */
+    public static function getHelpURL(): string
+    {
+        global $CFG_GLPI;
+
+        $help_url_key = Session::getCurrentInterface() === 'central'
+            ? 'central_doc_url'
+            : 'helpdesk_doc_url';
+        $help_url = !empty($CFG_GLPI[$help_url_key])
+            ? $CFG_GLPI[$help_url_key]
+            : 'https://glpi-project.org/documentation';
+
+        return URL::sanitizeURL($help_url);
+    }
+
+    /**
      * Returns template variables that can be used for page header in any context.
      *
      * @return array
@@ -1485,20 +1490,13 @@ TWIG,
             // may remove this header for security reasons.
         }
 
-        $help_url_key = Session::getCurrentInterface() === 'central'
-            ? 'central_doc_url'
-            : 'helpdesk_doc_url';
-        $help_url = !empty($CFG_GLPI[$help_url_key])
-            ? $CFG_GLPI[$help_url_key]
-            : 'https://glpi-project.org/documentation';
-
         return [
             'is_debug_active'       => $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE,
             'is_impersonate_active' => Session::isImpersonateActive(),
             'found_new_version'   => $found_new_version,
             'user'                  => $user instanceof User ? $user : null,
             'platform'              => $platform,
-            'help_url'              => URL::sanitizeURL($help_url),
+            'help_url'              => self::getHelpURL(),
         ];
     }
 
@@ -2065,7 +2063,7 @@ TWIG,
                 if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
                     $out .= Html::showToolTip(
                         __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.'),
-                        ['display' => false, 'awesome-class' => 'btn btn-sm border-danger text-danger me-1 fa-info']
+                        ['display' => false, 'link_class' => 'btn btn-sm border-danger text-danger me-1']
                     );
                 }
             }
@@ -2206,7 +2204,7 @@ TWIG,
         $calendar_btn = $p['calendar_btn']
          ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle>
                 <i class='ti ti-calendar'></i>
-                <span class='sr-only'>" . $calendar_tooltip . "</span>
+                <span class='visually-hidden'>" . $calendar_tooltip . "</span>
             </button>"
          : "";
         $clear_btn = $p['clear_btn'] && $p['maybeempty'] && $p['canedit']
@@ -2517,7 +2515,7 @@ JS;
         if (empty($value)) {
             $value = 'NOW';
         }
-        $specific_value = date("Y-m-d H:i:s");
+        $specific_value = date("Y-m-d");
 
         if (preg_match("/\d{4}-\d{2}-\d{2}.*/", $value)) {
             $specific_value = $value;
@@ -2543,7 +2541,7 @@ JS;
 
         $params     = ['value'         => '__VALUE__',
             'name'          => $element,
-            'withtime'      => $p['with_time'],
+            'withtime'      => false,
             'specificvalue' => $specific_value,
         ];
 
@@ -2863,7 +2861,7 @@ JS;
         // format dates
         foreach ($options['dates'] as &$data) {
             $data['date'] = $data['timestamp'] !== null
-                ? date("Y-m-d H:i:s", $data['timestamp'])
+                ? date("Y-m-d H:i:s", (int) $data['timestamp'])
                 : null;
         }
 
@@ -2895,6 +2893,7 @@ JS;
      *   link?: string,          // link on the displayed icon if contentid is empty
      *   linkid?: string,        // HTML id of the link
      *   linktarget?: string,    // link target
+     *   link_class?: string,    // class of the wrapper element (the <a>, or the <span> when there is no link)
      *   awesome-class?: string, // class of the icon to display (default 'fa-info')
      *   popup?: string,         // popup action
      *   img?: string,           // URL of a specific image
@@ -2951,17 +2950,22 @@ JS;
         }
 
         if (empty($param['applyto'])) {
-            if (!empty($param['link'])) {
-                $out .= "<a id='" . (!empty($param['linkid']) ? htmlescape($param['linkid']) : "tooltiplink$rand") . "'
+            // Keep wrapper classes (e.g. btn) off the icon element, since they can clash with fas/fa-* on font-family and hide the glyph.
+            $has_wrapper = !empty($param['link']) || !empty($param['link_class']);
+            $wrapper_tag = !empty($param['link']) ? 'a' : 'span';
+            if ($has_wrapper) {
+                $out .= "<{$wrapper_tag} id='" . (!empty($param['linkid']) ? htmlescape($param['linkid']) : "tooltiplink$rand") . "'
                         class='dropdown_tooltip " . htmlescape($param['link_class']) . "'";
 
-                if (!empty($param['linktarget'])) {
-                    $out .= " target='" . htmlescape($param['linktarget']) . "' ";
-                }
-                $out .= " href='" . htmlescape($param['link']) . "'";
+                if (!empty($param['link'])) {
+                    if (!empty($param['linktarget'])) {
+                        $out .= " target='" . htmlescape($param['linktarget']) . "' ";
+                    }
+                    $out .= " href='" . htmlescape($param['link']) . "'";
 
-                if (!empty($param['popup'])) {
-                    $out .= " data-bs-toggle='modal' data-bs-target='#tooltippopup$rand' ";
+                    if (!empty($param['popup'])) {
+                        $out .= " data-bs-toggle='modal' data-bs-target='#tooltippopup$rand' ";
+                    }
                 }
                 $out .= '>';
             }
@@ -2973,11 +2977,11 @@ JS;
                 $out .= "<span id='tooltip$rand' class='fas {$class} fa-fw'></span>";
             }
 
-            if (!empty($param['link'])) {
-                $out .= "</a>";
+            if ($has_wrapper) {
+                $out .= "</{$wrapper_tag}>";
             }
 
-            $param['applyto'] = (!empty($param['link']) && !empty($param['linkid'])) ? $param['linkid'] : "tooltip$rand";
+            $param['applyto'] = (!empty($param['linkid']) && $has_wrapper) ? $param['linkid'] : "tooltip$rand";
         }
 
         if (empty($param['contentid'])) {
@@ -3136,8 +3140,9 @@ JS;
         $language_RFC5646    = str_replace('_', '-', $_SESSION['glpilanguage']);      // convert to RFC5646 format (fr_FR -> fr-FR)
         $language_regionless = preg_replace('/_.*$/', '', $_SESSION['glpilanguage']); // fallback to regionless locale (fr_FR -> fr)
         $expected_languages  = [$language_RFC5646, $language_regionless];
-        if (array_key_exists($language_regionless, $CFG_GLPI['main_languages'])) {
-            $expected_languages[] = str_replace('_', '-', $CFG_GLPI['main_languages'][$language_regionless]); // fallback to main language (fr_CA -> fr_FR)
+        $main_language       = LanguageRegistry::getMainLanguage($language_regionless);
+        if ($main_language !== null) {
+            $expected_languages[] = str_replace('_', '-', $main_language); // fallback to main language (fr_CA -> fr_FR)
         }
         $language_opts = '';
         foreach ($expected_languages as $language) {
@@ -3919,9 +3924,9 @@ JAVASCRIPT
             $link .= $btlabel;
         } else {
             if (str_starts_with($btimage, 'fa-')) {
-                $link .= "<span class='fas $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
+                $link .= "<span class='fas $btimage' title='$btlabel'><span class='visually-hidden'>$btlabel</span>";
             } elseif (str_starts_with($btimage, 'ti-')) {
-                $link .= "<span class='ti $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
+                $link .= "<span class='ti $btimage' title='$btlabel'><span class='visually-hidden'>$btlabel</span>";
             } else {
                 $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel' class='pointer'>";
             }
@@ -4023,6 +4028,7 @@ JAVASCRIPT
         $ajax_limit_count    = (int) $CFG_GLPI['ajax_limit_count'];
         $templateresult      = $params["templateResult"] ?? "templateResult";
         $templateselection   = $params["templateSelection"] ?? "templateSelection";
+        $allowclear          = !empty($params["allowclear"]) ? 'true' : 'false';
 
         // escape values for JS
         $id = jsescape($id);
@@ -4040,6 +4046,7 @@ JAVASCRIPT
                 ajax_limit_count: {$ajax_limit_count},
                 templateresult: {$templateresult},
                 templateselection: {$templateselection},
+                allowclear: {$allowclear},
             };
 JS;
 
@@ -5486,7 +5493,7 @@ JS);
      */
     public static function requireJs($name)
     {
-        global $CFG_GLPI, $PLUGIN_HOOKS;
+        global $PLUGIN_HOOKS;
 
         if (isset($_SESSION['glpi_js_toload'][$name])) {
             //already in stack
@@ -5505,37 +5512,19 @@ JS);
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/UserMention.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/RichText/ContentTemplatesParameters.js';
                 break;
-            case 'planning':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/planning.js';
-                break;
             case 'flatpickr':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/flatpickr.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/flatpickr_buttons_plugin.js';
                 if (isset($_SESSION['glpilanguage'])) {
                     $filename = "lib/flatpickr/l10n/"
-                    . strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]) . ".js";
+                    . strtolower(LanguageRegistry::get($_SESSION['glpilanguage'])->js_code) . ".js";
                     if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                         $_SESSION['glpi_js_toload'][$name][] = $filename;
                         break;
                     }
                 }
                 break;
-            case 'fullcalendar':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/fullcalendar.js';
-                if (isset($_SESSION['glpilanguage'])) {
-                    foreach ([2, 3] as $loc) {
-                        $filename = "lib/fullcalendar/core/locales/"
-                         . strtolower($CFG_GLPI["languages"][$_SESSION['glpilanguage']][$loc]) . ".js";
-                        if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
-                            $_SESSION['glpi_js_toload'][$name][] = $filename;
-                            break;
-                        }
-                    }
-                }
-                break;
-            case 'rateit':
-                $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery.rateit.js';
-                break;
+
             case 'fileupload':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/jquery-file-upload.js';
                 $_SESSION['glpi_js_toload'][$name][] = 'js/fileupload.js';
@@ -5572,9 +5561,6 @@ JS);
                 break;
             case 'photoswipe':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/photoswipe.js';
-                break;
-            case 'reservations':
-                $_SESSION['glpi_js_toload'][$name][] = 'js/reservations.js';
                 break;
             case 'cable':
                 $_SESSION['glpi_js_toload'][$name][] = 'js/cable.js';
@@ -5631,7 +5617,7 @@ JS);
         if (isset($_SESSION['glpilanguage'])) {
             // select2
             $filename = "lib/select2/js/i18n/"
-                     . $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2] . ".js";
+                     . LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code . ".js";
             if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
                 echo Html::script($filename);
             }

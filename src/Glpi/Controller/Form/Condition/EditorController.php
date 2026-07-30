@@ -40,7 +40,6 @@ use Glpi\Form\Condition\EditorManager;
 use Glpi\Form\Condition\FormData;
 use Glpi\Form\Condition\QuestionData;
 use Glpi\Form\Condition\Type;
-use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use InvalidArgumentException;

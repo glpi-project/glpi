@@ -245,6 +245,23 @@
       $("#itil-footer .main-actions").hide();
       $("#right-actions").hide();
       setHasUnsavedChanges(true);
+
+      // Load the answer form on first open, then keep it (preserves input when toggling).
+      const $placeholder = $(this).find('.new-itil-answer-form[data-answer-loaded="false"]').first();
+      if ($placeholder.length) {
+         {# Forward `_openfollowup` so the reopen flow keeps its behaviour. #}
+         const ajax_url = "{{ path('/ajax/timeline.php')|e('js') }}"{% if openfollowup %} + "?_openfollowup=1"{% endif %};
+         $placeholder
+            .attr('data-answer-loaded', 'true')
+            .html('<div class="d-flex justify-content-center p-3"><span class="spinner-border" role="status" aria-hidden="true"></span></div>')
+            .load(ajax_url, {
+               'action'     : 'viewsubitem',
+               'type'       : $placeholder.data('subitem-type'),
+               'parenttype' : '{{ item.getType()|e('js') }}',
+               '{{ item.getForeignKeyField()|e('js') }}': {{ item.getID() }},
+               'id'         : 0
+            });
+      }
    });
 
    // Restore primary actions once all top-level forms are fully hidden (direct children only, to avoid false positives from nested .collapse.show inside forms such as pending-reasons).

@@ -74,7 +74,11 @@ final class FormData
         $questions_data = [];
         $comments_data = [];
 
+        // Map section ids to their uuid so questions and comments can reference
+        // their parent section without triggering a database load per item.
+        $section_uuids = [];
         foreach ($form->getSections() as $section) {
+            $section_uuids[$section->getID()] = $section->fields['uuid'];
             $sections_data[] = [
                 'uuid' => $section->fields['uuid'],
                 'name' => $section->fields['name'],
@@ -83,17 +87,19 @@ final class FormData
 
         foreach ($form->getQuestions() as $question) {
             $questions_data[] = [
-                'uuid'       => $question->fields['uuid'],
-                'name'       => $question->fields['name'],
-                'type'       => $question->getQuestionType(),
-                'extra_data' => json_decode($question->fields['extra_data'] ?? '{}', true),
+                'uuid'                => $question->fields['uuid'],
+                'name'                => $question->fields['name'],
+                'type'                => $question->getQuestionType(),
+                'extra_data'          => json_decode($question->fields['extra_data'] ?? '{}', true),
+                'forms_sections_uuid' => $section_uuids[$question->fields['forms_sections_id']] ?? null,
             ];
         }
 
         foreach ($form->getFormComments() as $comment) {
             $comments_data[] = [
-                'uuid' => $comment->fields['uuid'],
-                'name' => $comment->fields['name'],
+                'uuid'                => $comment->fields['uuid'],
+                'name'                => $comment->fields['name'],
+                'forms_sections_uuid' => $section_uuids[$comment->fields['forms_sections_id']] ?? null,
             ];
         }
 
@@ -168,6 +174,7 @@ final class FormData
                 name: $question_data['name'],
                 type: new $type(),
                 extra_data: $question_data['extra_data'] ?? null,
+                section_uuid: $question_data['forms_sections_uuid'] ?? null,
             );
         }
     }
@@ -178,6 +185,7 @@ final class FormData
             $this->comments_data[] = new CommentData(
                 uuid: $comment_data['uuid'],
                 name: $comment_data['name'],
+                section_uuid: $comment_data['forms_sections_uuid'] ?? null,
             );
         }
     }

@@ -274,7 +274,7 @@ export class DocumentLinkController
             });
             const result = await response.json();
 
-            this.#onSuccess(result.linked_count);
+            this.#onSuccess(result.documents ?? []);
         } catch (error) {
             glpi_toast_error(__('Linking failed'));
             throw error;
@@ -284,10 +284,15 @@ export class DocumentLinkController
     }
 
     /**
-     * @param {number} count
+     * @param {Array<{html: string}>} documents
      */
-    #onSuccess(count)
+    #onSuccess(documents)
     {
+        const count = documents.length;
+
+        // Persist newly linked IDs so the dropdown stays correct after reset
+        this.#container.dataset.glpiKbLinkUsedIds = JSON.stringify(this.#usedIds);
+
         if (this.#modal) {
             const modalInstance = bootstrap.Modal.getInstance(this.#modal);
             if (modalInstance) {
@@ -301,7 +306,10 @@ export class DocumentLinkController
                 : __('%d documents linked successfully').replace('%d', count)
         );
 
-        window.location.reload();
+        this.#container.dispatchEvent(new CustomEvent('documents:uploaded', {
+            bubbles: true,
+            detail: { count, documents },
+        }));
     }
 
     /**
@@ -323,6 +331,20 @@ export class DocumentLinkController
                 this.#submitBtn.innerHTML = this.#submitBtn.dataset.originalHtml;
             }
         }
+    }
+
+    /**
+     * Remove a document ID from the used list so it reappears in the dropdown.
+     * Called by ArticleController after a document is unlinked from the article.
+     * @param {number} documentId
+     */
+    removeFromUsed(documentId)
+    {
+        const idx = this.#usedIds.indexOf(documentId);
+        if (idx !== -1) {
+            this.#usedIds.splice(idx, 1);
+        }
+        this.#container.dataset.glpiKbLinkUsedIds = JSON.stringify(this.#usedIds);
     }
 
     #reset()

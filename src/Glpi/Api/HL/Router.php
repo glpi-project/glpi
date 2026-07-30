@@ -95,7 +95,7 @@ use function Safe\preg_match;
 class Router
 {
     /** @var string */
-    public const API_VERSION = '2.3.0';
+    public const API_VERSION = '2.4.0';
 
     /**
      * @var AbstractController[]
@@ -187,8 +187,8 @@ EOT;
             ],
             [
                 'api_version' => '2',
-                'version' => '2.3.0',
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.3',
+                'version' => '2.4.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.4',
             ],
         ];
     }
@@ -724,7 +724,7 @@ EOT;
                     $params = $matched_route->getRouteDoc($request->getMethod())?->getParameters() ?? [];
                     $missing_params = [];
                     foreach ($params as $param) {
-                        if ($param->getRequired() && !$request->hasParameter($param->getName())) {
+                        if (($param['required'] ?? false) && !$request->hasParameter($param->getName())) {
                             $missing_params[] = $param->getName();
                         }
                     }

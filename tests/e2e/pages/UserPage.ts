@@ -82,4 +82,20 @@ export class UserPage extends GlpiPage
     {
         await this.page.getByLabel('Add a new Emails').click();
     }
+
+    /**
+     * Email fields each carry a distinct accessible name ("Email address 1",
+     * "Email address 2"...), so match them by prefix to keep positional access.
+     */
+    public getEmailFields(): Locator
+    {
+        return this.page.getByRole('textbox', { name: /^Email address \d+$/ })
+            .filter({ visible: true });
+    }
+
+    public getDefaultEmailRadios(): Locator
+    {
+        return this.page.getByRole('radio', { name: /^Set \d+ email as default$/ })
+            .filter({ visible: true });
+    }
 }

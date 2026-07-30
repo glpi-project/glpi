@@ -35,6 +35,7 @@
 
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Config\ProxyExclusions;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Marketplace\Controller;
 use Glpi\Socket;
 use Glpi\SocketModel;
@@ -46,130 +47,22 @@ $CFG_GLPI = [];
 // set the default app_name
 $CFG_GLPI['app_name'] = 'GLPI';
 
-// dictionnaries
-$CFG_GLPI['languages'] = [
-    //Code       Name in native lang          LANG FILE      jquery tinymce english name            standard plural number
-    'ar_SA'  => ['العربية السعودية',          'ar_SA.mo',    'ar',    'ar_SA', 'arabic',            103],
-    'ar_IQ'  => ['العربية العراق',            'ar_IQ.mo',    'ar',    'ar', 'irak arabic',          103],
-    'ar_SY'  => ['العربية سوريا',             'ar_SY.mo',    'ar',    'ar', 'syria arabic',         103],
-    'az_AZ'  => ['Azərbaycan dili',           'az_AZ.mo',    'az',    'az', 'azerbaijani',          2],
-    'bg_BG'  => ['Български',                 'bg_BG.mo',    'bg',    'bg', 'bulgarian',            2],
-    'bn_BD'  => ['বাংলা (বাংলাদেশ)',          'bn_BD.mo',    'bn',    'bn_BD', 'bengali',           2],
-    'id_ID'  => ['Bahasa Indonesia',          'id_ID.mo',    'id',    'id', 'indonesian',           2],
-    'ms_MY'  => ['Bahasa Melayu',             'ms_MY.mo',    'ms',    'ms', 'malay',                2],
-    'ca_ES'  => ['Català',                    'ca_ES.mo',    'ca',    'ca', 'catalan',              2], // ca_CA
-    'cs_CZ'  => ['Čeština',                   'cs_CZ.mo',    'cs',    'cs', 'czech',                10],
-    'de_DE'  => ['Deutsch',                   'de_DE.mo',    'de',    'de', 'german',               2],
-    'da_DK'  => ['Dansk',                     'da_DK.mo',    'da',    'da', 'danish',               2], // dk_DK
-    'et_EE'  => ['Eesti',                     'et_EE.mo',    'et',    'et', 'estonian',             2], // ee_ET
-    'en_GB'  => ['English',                   'en_GB.mo',    'en-GB', 'en', 'english',              2],
-    'en_US'  => ['English (US)',              'en_US.mo',    'en-GB', 'en', 'english',              2],
-    'es_AR'  => ['Español (Argentina)',       'es_AR.mo',    'es',    'es', 'spanish',              2],
-    'es_EC'  => ['Español (Ecuador)',         'es_EC.mo',    'es',    'es', 'spanish',              2],
-    'es_CO'  => ['Español (Colombia)',        'es_CO.mo',    'es',    'es', 'spanish',              2],
-    'es_ES'  => ['Español (España)',          'es_ES.mo',    'es',    'es', 'spanish',              2],
-    'es_419' => ['Español (América Latina)',  'es_419.mo',   'es',    'es', 'spanish',              2],
-    'es_MX'  => ['Español (Mexico)',          'es_MX.mo',    'es',    'es', 'spanish',              2],
-    'es_VE'  => ['Español (Venezuela)',       'es_VE.mo',    'es',    'es', 'spanish',              2],
-    'eu_ES'  => ['Euskara',                   'eu_ES.mo',    'eu',    'eu', 'basque',               2],
-    'fr_FR'  => ['Français',                  'fr_FR.mo',    'fr',    'fr', 'french',               2],
-    'fr_CA'  => ['Français (Canada)',         'fr_CA.mo',    'fr',    'fr', 'french',               2],
-    'fr_BE'  => ['Français (Belgique)',       'fr_BE.mo',    'fr',    'fr', 'french',               2],
-    'gl_ES'  => ['Galego',                    'gl_ES.mo',    'gl',    'gl', 'galician',             2],
-    'el_GR'  => ['Ελληνικά',                  'el_GR.mo',    'el',    'el', 'greek',                2], // el_EL
-    'he_IL'  => ['עברית',                     'he_IL.mo',    'he',    'he', 'hebrew',               2], // he_HE
-    'hi_IN'  => ['हिन्दी',                     'hi_IN.mo',    'hi',    'hi_IN', 'hindi',             2],
-    'hr_HR'  => ['Hrvatski',                  'hr_HR.mo',    'hr',    'hr', 'croatian',             2],
-    'hu_HU'  => ['Magyar',                    'hu_HU.mo',    'hu',    'hu', 'hungarian',            2],
-    'it_IT'  => ['Italiano',                  'it_IT.mo',    'it',    'it', 'italian',              2],
-    'km_KH'  => ['ខ្មែរ (កម្ពុជា)',              'km_KH.mo',    'km',    'km_KH', 'cambodgian khmer',  0],
-    'kn'     => ['ಕನ್ನಡ',                      'kn.mo',       'en-GB', 'en', 'kannada',              2],
-    'lv_LV'  => ['Latviešu',                  'lv_LV.mo',    'lv',    'lv', 'latvian',              2],
-    'lt_LT'  => ['Lietuvių',                  'lt_LT.mo',    'lt',    'lt', 'lithuanian',           2],
-    'mn_MN'  => ['Монгол хэл',                'mn_MN.mo',    'mn',    'mn', 'mongolian',            2],
-    'nl_NL'  => ['Nederlands',                'nl_NL.mo',    'nl',    'nl', 'dutch',                2],
-    'nl_BE'  => ['Flemish',                   'nl_BE.mo',    'nl',    'nl', 'flemish',              2],
-    'nb_NO'  => ['Norsk (Bokmål)',            'nb_NO.mo',    'no',    'nb', 'norwegian',            2],
-    'nn_NO'  => ['Norsk (Nynorsk)',           'nn_NO.mo',    'no',    'nn', 'norwegian',            2],
-    'fa_IR'  => ['فارسی',                     'fa_IR.mo',    'fa',    'fa', 'persian',              2],
-    'pl_PL'  => ['Polski',                    'pl_PL.mo',    'pl',    'pl', 'polish',               2],
-    'pt_PT'  => ['Português',                 'pt_PT.mo',    'pt',    'pt', 'portuguese',           2],
-    'pt_BR'  => ['Português do Brasil',       'pt_BR.mo',    'pt-BR', 'pt', 'brazilian portuguese', 2],
-    'ro_RO'  => ['Română',                    'ro_RO.mo',    'ro',    'en', 'romanian',             2],
-    'ru_RU'  => ['Русский',                   'ru_RU.mo',    'ru',    'ru', 'russian',              2],
-    'sk_SK'  => ['Slovenčina',                'sk_SK.mo',    'sk',    'sk', 'slovak',               10],
-    'sl_SI'  => ['Slovenščina',               'sl_SI.mo',    'sl',    'sl', 'slovenian slovene',    2],
-    'sq_AL'  => ['Shqip',                     'sq_AL.mo',    'sq',    'sq', 'albanian',             2],
-    'sr_RS'  => ['Srpski',                    'sr_RS.mo',    'sr',    'sr', 'serbian',              2],
-    'fi_FI'  => ['Suomi',                     'fi_FI.mo',    'fi',    'fi', 'finish',               2],
-    'sv_SE'  => ['Svenska',                   'sv_SE.mo',    'sv',    'sv', 'swedish',              2],
-    'vi_VN'  => ['Tiếng Việt',                'vi_VN.mo',    'vi',    'vi', 'vietnamese',           2],
-    'th_TH'  => ['ภาษาไทย',                   'th_TH.mo',    'th',    'th', 'thai',                 2],
-    'tr_TR'  => ['Türkçe',                    'tr_TR.mo',    'tr',    'tr', 'turkish',              2],
-    'uk_UA'  => ['Українська',                'uk_UA.mo',    'uk',    'en', 'ukrainian',            2], // ua_UA
-    'ja_JP'  => ['日本語',                    'ja_JP.mo',    'ja',    'ja', 'japanese',             2],
-    'zh_CN'  => ['简体中文',                  'zh_CN.mo',    'zh-CN', 'zh', 'chinese',              2],
-    'zh_TW'  => ['繁體中文',                  'zh_TW.mo',    'zh-TW', 'zh', 'chinese',              2],
-    'ko_KR'  => ['한국/韓國',                 'ko_KR.mo',    'ko',    'ko', 'korean',               1],
-    'zh_HK'  => ['香港',                      'zh_HK.mo',    'zh-HK', 'zh', 'chinese',              2],
-    'be_BY'  => ['Belarussian',               'be_BY.mo',    'be',    'be', 'belarussian',          3],
-    'is_IS'  => ['íslenska',                  'is_IS.mo',    'is',    'en', 'icelandic',            2],
-    'eo'     => ['Esperanto',                 'eo.mo',       'eo',    'en', 'esperanto',            2],
-    'es_CL'  => ['Español chileno',           'es_CL.mo',    'es',    'es', 'spanish chilean',      2],
-];
-
-// Mapping of short language codes to their main locale
-$CFG_GLPI['main_languages'] = [
-    // 'ar' => 'ar_SA', // not sure about the default region for arabic language
-    'az' => 'az_AZ',
-    'bg' => 'bg_BG',
-    'bn' => 'bn_BD',
-    'id' => 'id_ID',
-    'ms' => 'ms_MY',
-    'ca' => 'ca_ES',
-    'cs' => 'cs_CZ',
-    'de' => 'de_DE',
-    'da' => 'da_DK',
-    'et' => 'et_EE',
-    'en' => 'en_GB',
-    'es' => 'es_ES',
-    'eu' => 'eu_ES',
-    'fr' => 'fr_FR',
-    'gl' => 'gl_ES',
-    'el' => 'el_GR',
-    'he' => 'he_IL',
-    'hi' => 'hi_IN',
-    'hr' => 'hr_HR',
-    'hu' => 'hu_HU',
-    'it' => 'it_IT',
-    'km' => 'km_KH',
-    'lv' => 'lv_LV',
-    'lt' => 'lt_LT',
-    'mn' => 'mn_MN',
-    'nl' => 'nl_NL',
-    'nb' => 'nb_NO',
-    'nn' => 'nn_NO',
-    'fa' => 'fa_IR',
-    'pl' => 'pl_PL',
-    'pt' => 'pt_BR',
-    'ro' => 'ro_RO',
-    'ru' => 'ru_RU',
-    'sk' => 'sk_SK',
-    'sl' => 'sl_SI',
-    'sq' => 'sq_AL',
-    'sr' => 'sr_RS',
-    'fi' => 'fi_FI',
-    'sv' => 'sv_SE',
-    'vi' => 'vi_VN',
-    'th' => 'th_TH',
-    'tr' => 'tr_TR',
-    'uk' => 'uk_UA',
-    'ja' => 'ja_JP',
-    'zh' => 'zh_CN',
-    'ko' => 'ko_KR',
-    'be' => 'be_BY',
-    'is' => 'is_IS',
-];
+// Languages data.
+// The `languages` and `main_languages` arrays are derived from the canonical
+// Glpi\Locale\LanguageRegistry catalog and kept here for backward compatibility
+// (plugins, ...). GLPI core code should rely on Glpi\Locale\LanguageRegistry
+// instead (and the `get_language_name()` Twig function in templates).
+//
+// Each `languages` entry is a positional array:
+// 0 => translated (native) name
+// 1 => MO file Name
+// 2 => jquery lang code
+// 3 => other JS codes. Tinymce has a specific mapping in Html::initEditorSystem().
+//      ⚠️ Also used for page lang! ⚠️
+// 4 => english name
+// 5 => number for plural
+$CFG_GLPI['languages']      = LanguageRegistry::toLegacyArray();
+$CFG_GLPI['main_languages'] = LanguageRegistry::getMainLanguages();
 
 // Init to store glpi itemtype / tables link
 $CFG_GLPI['glpitables'] = [];
@@ -224,7 +117,7 @@ $CFG_GLPI['document_types']               = [Budget::class, CartridgeItem::class
     ChangeTask::class, ProblemTask::class, TicketTask::class, Appliance::class,
     DatabaseInstance::class, Rack::class, ComputerModel::class, MonitorModel::class,
     NetworkEquipmentModel::class, PeripheralModel::class, PhoneModel::class, PrinterModel::class,
-    DeviceGenericModel::class,
+    DeviceGenericModel::class,  Location::class,
 ];
 
 $CFG_GLPI['consumables_types']            = [Group::class, User::class];
@@ -591,10 +484,10 @@ $CFG_GLPI['javascript'] = [
     'helpdesk'  => [
         'dashboard' => ['dashboard'],
         'planning'  => ['clipboard', 'fullcalendar', 'planning'],
-        'ticket'    => ['rateit', 'dashboard'],
+        'ticket'    => ['dashboard'],
         'problem'   => ['sortable'],
-        'change'    => ['sortable', 'rateit'],
-        'stat'      => ['charts', 'rateit'],
+        'change'    => ['sortable'],
+        'stat'      => ['charts'],
     ],
     'tools'     => [
         'project'                 => ['sortable'],
@@ -621,7 +514,7 @@ $CFG_GLPI['javascript'] = [
     'preference'   => ['clipboard'],
     'self-service' => $reservations_libs,
     'reservation'   => $reservations_libs,
-    'helpdesk-home' => ['home-scss-file', 'gridstack', 'dashboard'],
+    'helpdesk-home' => ['home-scss-file', 'dashboard'],
 ];
 
 // push reservations libs to reservations itemtypes (they shoul in asset sector)

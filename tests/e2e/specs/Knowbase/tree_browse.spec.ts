@@ -58,7 +58,7 @@ test('tree browse selects category from URL parameter', async ({ page, profile, 
     );
 
     // eslint-disable-next-line playwright/no-raw-locators
-    const active_node = page.locator('#tree_category .fancytree-active .fancytree-title');
+    const active_node = page.locator('#tree_category .wb-row.wb-active .wb-title');
     await expect(active_node).toContainText(category_name);
 });
 
@@ -68,6 +68,6 @@ test('tree browse defaults to "Without Category" when no URL parameter', async (
     await page.goto('/front/knowbaseitem.php?browse=1&forcetab=Knowbase$2');
 
     // eslint-disable-next-line playwright/no-raw-locators
-    const active_node = page.locator('#tree_category .fancytree-active .fancytree-title');
+    const active_node = page.locator('#tree_category .wb-row.wb-active .wb-title');
     await expect(active_node).toContainText('Without Category');
 });

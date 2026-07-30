@@ -378,7 +378,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             'uploader' => $this->fields['users_id'] > 0 ? getUserLink($this->fields["users_id"]) : '',
             'uploaded_files' => self::getUploadedFiles(),
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
             ],
         ]);
 
@@ -838,8 +838,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     private function canViewFileFromItem($itemtype, $items_id): bool
     {
-        global $DB;
-
         if (!is_a($itemtype, CommonDBTM::class, true)) {
             return false;
         }
@@ -852,26 +850,28 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         /** @var CommonDBTM $item */
         $item->getFromDB($items_id);
-        if (!$item->canViewItem()) {
+        if (!$item->can($item->getID(), READ)) {
             return false;
         }
 
+        return $this->hasLinkedItem($itemtype, $items_id);
+    }
+
+    private function hasLinkedItem(string $itemtype, int $items_id): bool
+    {
+        global $DB;
+
         $result = $DB->request([
             'FROM'  => Document_Item::getTable(),
-            'COUNT' => 'cpt',
+            'COUNT' => 'nb_of_linked_documents',
             'WHERE' => [
                 'itemtype'     => $itemtype,
                 'items_id'     => $items_id,
                 'documents_id' => $this->getID(),
             ],
-            'LIMIT' => 1, // Only need to see one result
         ])->current();
 
-        if ($result['cpt'] === 0) {
-            return false;
-        }
-
-        return true;
+        return $result['nb_of_linked_documents'] > 0;
     }
 
     /**
@@ -1342,7 +1342,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
             if (Session::haveRight('dropdown', READ)) {
                 $message .= " <a target='_blank' href='" . htmlescape(DocumentType::getSearchURL()) . "' class='pointer'>
-                         <i class='fa fa-info'</i><span class='sr-only'>" . __s('Manage document types') . "</span></a>";
+                         <i class='fa fa-info'</i><span class='visually-hidden'>" . __s('Manage document types') . "</span></a>";
             }
             Session::addMessageAfterRedirect($message, false, ERROR);
             return '';
@@ -1832,6 +1832,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
     private function canViewFileFromForm(string $itemtype, int $items_id): bool
     {
+        if (!$this->hasLinkedItem($itemtype, $items_id)) {
+            return false;
+        }
+
         if ($itemtype === Form::class) {
             $form = Form::getById($items_id);
             if (!$form) {

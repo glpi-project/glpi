@@ -35,16 +35,20 @@
 
 namespace Glpi\System\Status;
 
+use Auth;
 use AuthLDAP;
 use CronTask;
 use DBConnection;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\HttpClient;
 use GLPIKey;
 use MailCollector;
 use Plugin;
 use RuntimeException;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Throwable;
 use Toolbox;
+use Update;
 
 use function Safe\fclose;
 
@@ -75,6 +79,12 @@ final class StatusChecker
      */
     public const STATUS_NO_DATA = 'NO_DATA';
 
+    /**
+     * The value is hidden.
+     * This is likely when value is sensitive and method is called with `$public_only = true`).
+     */
+    public const VALUE_REDACTED = 'REDACTED';
+
     private static array $cached_status = [];
 
     /**
@@ -86,6 +96,7 @@ final class StatusChecker
     public static function getServices(): array
     {
         return [
+            'glpi'            => [self::class, 'getGLPIStatus'],
             'db'              => [self::class, 'getDBStatus'],
             'cas'             => [self::class, 'getCASStatus'],
             'ldap'            => [self::class, 'getLDAPStatus'],
@@ -129,11 +140,7 @@ final class StatusChecker
     {
         $services = self::getServices();
         if ($service === 'all' || $service === null) {
-            $status = [
-                'glpi'   => [
-                    'status' => self::STATUS_OK,
-                ],
-            ];
+            $status = [];
             foreach (array_keys($services) as $name) {
                 $service_status = self::getServiceStatus($name, $public_only);
                 $status[$name] = $service_status;
@@ -152,6 +159,43 @@ final class StatusChecker
             return $service_check_method($public_only);
         }
         return [];
+    }
+
+    /**
+     * Get GLPI service's status
+     *
+     * @param bool $public_only True if only public status information should be given.
+     * @return array{status: string, database_version: array{defined: string, installed: string, uptodate: bool, status: string}}
+     */
+    public static function getGLPIStatus(bool $public_only = true): array
+    {
+        $cache_key = 'glpi.' . ($public_only ? 'public' : 'private');
+        if (!isset(self::$cached_status[$cache_key])) {
+            global $CFG_GLPI;
+
+            $status = [
+                'status' => self::STATUS_OK,
+                'database_version' => [
+                    'defined' => $public_only ? self::VALUE_REDACTED : GLPI_SCHEMA_VERSION,
+                    'installed' => $public_only ? self::VALUE_REDACTED : trim($CFG_GLPI['dbversion'] ?? ''),
+                    'uptodate' => $public_only ? false : Update::isDbUpToDate(),
+                ],
+            ];
+
+            // Compute database_version status from "uptodate" state
+            $status['database_version']['status'] = (
+                $public_only
+                ? self::STATUS_NO_DATA
+                : ($status['database_version']['uptodate'] ? self::STATUS_OK : self::STATUS_WARNING)
+            );
+
+            // Propagate database_version status to root status
+            $status['status'] = $status['database_version']['status'];
+
+            self::$cached_status[$cache_key] = $status;
+        }
+
+        return self::$cached_status[$cache_key];
     }
 
     /**
@@ -380,21 +424,14 @@ final class StatusChecker
                 }
                 $url .= '/' . $CFG_GLPI['cas_uri'];
 
-                if (Toolbox::isUrlSafe($url)) {
-                    $data = Toolbox::getURLContent($url);
-                    if (!empty($data)) {
-                        $status['status'] = self::STATUS_OK;
-                    } else {
-                        $status['status'] = self::STATUS_PROBLEM;
-                    }
-                } else {
-                    $status['status'] = self::STATUS_NO_DATA;
-                    if (!$public_only) {
-                        $status['status_msg'] = sprintf(
-                            __('URL "%s" is not considered safe and cannot be fetched from GLPI server.'),
-                            $url
-                        );
-                    }
+                $http_client = new HttpClient(Auth::class);
+                try {
+                    $response = $http_client->get($url);
+                    $status['status'] = $response->getContent() !== ''
+                        ? self::STATUS_OK
+                        : self::STATUS_PROBLEM;
+                } catch (ExceptionInterface $e) {
+                    $status['status'] = self::STATUS_PROBLEM;
                 }
             }
             self::$cached_status['cas'] = $status;
@@ -468,18 +505,27 @@ final class StatusChecker
             $status = [
                 'status' => self::STATUS_NO_DATA,
                 'stuck' => [],
+                'errored' => [],
             ];
             if (self::isDBAvailable()) {
-                global $DB;
-
                 $crontasks = getAllDataFromTable('glpi_crontasks');
                 $running = count(array_filter($crontasks, static fn($crontask) => $crontask['state'] === CronTask::STATE_RUNNING));
                 $stuck_crontasks = CronTask::getZombieCronTasks();
                 foreach ($stuck_crontasks as $ct) {
                     $status['stuck'][] = $ct['name'];
                 }
-                $status['status'] = count($status['stuck']) ? self::STATUS_PROBLEM : self::STATUS_OK;
-                $status['status_msg'] = sprintf(_x('glpi_status', 'RUNNING: %d, STUCK: %d, TOTAL: %d'), $running, count($stuck_crontasks), count($crontasks));
+                $errored_crontasks = array_filter($crontasks, static fn($crontask) => $crontask['state'] === CronTask::STATE_ERROR);
+                foreach ($errored_crontasks as $ct) {
+                    $status['errored'][] = $ct['name'];
+                }
+                $status['status'] = (count($status['stuck']) + count($status['errored'])) > 0 ? self::STATUS_PROBLEM : self::STATUS_OK;
+                $status['status_msg'] = sprintf(
+                    _x('glpi_status', 'RUNNING: %d, STUCK: %d, ERRORED: %d, TOTAL: %d'),
+                    $running,
+                    count($stuck_crontasks),
+                    count($errored_crontasks),
+                    count($crontasks)
+                );
             }
             self::$cached_status['crontasks'] = $status;
         }

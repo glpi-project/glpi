@@ -247,6 +247,7 @@ test.describe('Form rendering', () => {
                 subtree_depth: 0,
                 selectable_tree_root: false,
                 itemtype: "Entity",
+                is_multiple_items: false,
             }),
         });
 
@@ -266,6 +267,7 @@ test.describe('Form rendering', () => {
                 subtree_depth: "1",
                 selectable_tree_root: "1",
                 itemtype: "Entity",
+                is_multiple_items: false,
             }),
         });
         await page.reload();
@@ -319,6 +321,7 @@ test.describe('Form rendering', () => {
                 subtree_depth: "0",
                 selectable_tree_root: "0",
                 itemtype: "Location",
+                is_multiple_items: false,
             }),
         });
 
@@ -338,6 +341,7 @@ test.describe('Form rendering', () => {
                 subtree_depth: "1",
                 selectable_tree_root: "1",
                 itemtype: "Location",
+                is_multiple_items: false,
             }),
         });
         await page.reload();

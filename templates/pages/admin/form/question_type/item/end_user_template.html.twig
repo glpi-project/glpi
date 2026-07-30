@@ -50,6 +50,7 @@
     'toadd'              : {
         '-1': constant('Dropdown::EMPTY_VALUE'),
     },
+    'multiple'           : is_multiple_items,
 } %}
 
 {# Display additional fields in dropdown: IDs for ITIL objects, serial/user for assets #}
@@ -59,8 +60,8 @@
 
 {{ fields.dropdownField(
     itemtype,
-    question.getEndUserInputName() ~ '[items_id]',
-    default_items_id,
+    question.getEndUserInputName() ~ '[items_ids]',
+    is_multiple_items ? default_items_ids : default_items_ids|first,
     '',
     dropdown_options
 ) }}

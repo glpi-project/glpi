@@ -78,6 +78,27 @@ SCSS,
         $this->assertSame('My dark theme', $my_dark_theme->getName());
     }
 
+    #[AllowMockObjectsWithoutExpectations()]
+    public function testGetCustomThemesUsesThemeNameComment(): void
+    {
+        vfsStream::setup('custom_themes', null, [
+            'plugin_branding_1.scss' => '/* theme-name: My Brand Palette */' . "\n" . ':root[data-glpi-theme="plugin_branding_1"] {}',
+            'plugin_branding_2.scss' => ':root[data-glpi-theme="plugin_branding_2"] {}',
+        ]);
+        $theme_manager = $this->getMockBuilder(ThemeManager::class)
+            ->onlyMethods(['getCustomThemesDirectory'])
+            ->getMock();
+        $theme_manager->method('getCustomThemesDirectory')->willReturn(vfsStream::url('custom_themes'));
+
+        $named = $theme_manager->getTheme('plugin_branding_1');
+        $this->assertNotNull($named);
+        $this->assertSame('My Brand Palette', $named->getName());
+
+        $fallback = $theme_manager->getTheme('plugin_branding_2');
+        $this->assertNotNull($fallback);
+        $this->assertSame('Plugin branding 2', $fallback->getName());
+    }
+
     public function testGetAllThemes(): void
     {
         $themes = ThemeManager::getInstance()->getCoreThemes();

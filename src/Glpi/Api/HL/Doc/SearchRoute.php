@@ -46,41 +46,10 @@ class SearchRoute extends Route
         parent::__construct(
             description: $description,
             parameters: [
-                new Parameter(
-                    name: 'filter',
-                    schema: new Schema(Schema::TYPE_STRING),
-                    description: 'RSQL query string'
-                ),
-                new Parameter(
-                    name: 'start',
-                    schema: new Schema(
-                        type: Schema::TYPE_INTEGER,
-                        format: Schema::FORMAT_INTEGER_INT64,
-                        default: 0,
-                        extra_data: [
-                            'minimum' => 0,
-                        ]
-                    ),
-                    description: 'The first item to return'
-                ),
-                new Parameter(
-                    name: 'limit',
-                    schema: new Schema(
-                        type: Schema::TYPE_INTEGER,
-                        format: Schema::FORMAT_INTEGER_INT64,
-                        default: 100,
-                        extra_data: [
-                            'minimum' => 0,
-                        ]
-                    ),
-                    description: 'The maximum number of items to return'
-                ),
-                new Parameter(
-                    name: 'sort',
-                    schema: new Schema(Schema::TYPE_STRING),
-                    description: 'One or more properties to sort by in the form of property:direction where property is the full property name in dot notation and direction is either asc or desc.
-                                  If no direction is provided, asc is assumed. Multiple sorts can be provided by separating them with a comma.',
-                ),
+                new ParameterReference('filter'),
+                new ParameterReference('start'),
+                new ParameterReference('limit'),
+                new ParameterReference('sort'),
             ],
             responses: $responses
         );

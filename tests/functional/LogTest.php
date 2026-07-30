@@ -578,14 +578,14 @@ class LogTest extends DbTestCase
             ],
             [
                 [
-                    'affected_fields' => ['linked_action::1,5,42;itemtype_link::SomeItem;'],
+                    'affected_fields' => ['linked_action::1,5,42;itemtype_link::Computer;'],
                 ],
                 [
                     [
                         'OR' => [
                             [
                                 'linked_action' => [1, 5, 42],
-                                'itemtype_link' => ['SomeItem'],
+                                'itemtype_link' => ['Computer'],
                             ],
                         ],
                     ],
@@ -593,7 +593,7 @@ class LogTest extends DbTestCase
             ],
             [
                 [
-                    'affected_fields' => ['id_search_option::24;', 'linked_action:NOT:35;itemtype_link::SomeItem;'],
+                    'affected_fields' => ['id_search_option::24;', 'linked_action:NOT:35;itemtype_link::Monitor;'],
                 ],
                 [
                     [
@@ -605,7 +605,7 @@ class LogTest extends DbTestCase
                                 'NOT' => [
                                     'linked_action' => [35],
                                 ],
-                                'itemtype_link' => ['SomeItem'],
+                                'itemtype_link' => ['Monitor'],
                             ],
                         ],
                     ],
@@ -691,7 +691,7 @@ class LogTest extends DbTestCase
             ],
             [
                 [
-                    'affected_fields' => ['id_search_option::5;', 'linked_action:NOT:1,3,4;itemtype_link::SomeItem;'],
+                    'affected_fields' => ['id_search_option::5;', 'linked_action:NOT:1,3,4;itemtype_link::Ticket;'],
                     'date' => '2018-04-22',
                     'linked_actions' => [3, 26, 'other'],
                     'users_names' => ['user1'],
@@ -706,7 +706,7 @@ class LogTest extends DbTestCase
                                 'NOT' => [
                                     'linked_action' => [1, 3, 4],
                                 ],
-                                'itemtype_link' => ['SomeItem'],
+                                'itemtype_link' => ['Ticket'],
                             ],
                         ],
                     ],

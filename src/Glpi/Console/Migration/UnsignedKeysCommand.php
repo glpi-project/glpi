@@ -39,6 +39,7 @@ use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Exception\EarlyExitException;
+use Glpi\Exception\Database\QueryException;
 use Plugin;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -213,9 +214,9 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
                     $extra
                 );
 
-                $result = $this->db->doQuery($query);
-
-                if ($result === false) {
+                try {
+                    $this->db->doQuery($query);
+                } catch (QueryException $e) {
                     $message = sprintf(
                         __('Migration of column "%s.%s" failed with message "(%s) %s".'),
                         $table_name,
@@ -231,7 +232,6 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
                     if ($is_plugin_table) {
                         $errored_plugins[] = $plugin_key;
                     }
-                    continue; // Go to next column
                 }
             }
         }

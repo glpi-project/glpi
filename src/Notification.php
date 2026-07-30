@@ -196,6 +196,7 @@ class Notification extends CommonDBTM implements FilterableInterface
             $menu['icon']                                       = self::getIcon();
             $menu['options'][Notification::class]['title']           = _n('Notification', 'Notifications', Session::getPluralNumber());
             $menu['options'][Notification::class]['page']            = Notification::getSearchURL(false);
+            $menu['options'][Notification::class]['icon']            = Notification::getIcon();
             $menu['options'][Notification::class]['links']['add']    = Notification::getFormURL(false);
             $menu['options'][Notification::class]['links']['search'] = Notification::getSearchURL(false);
             //saved search list
@@ -206,6 +207,8 @@ class Notification extends CommonDBTM implements FilterableInterface
                         = _n('Notification template', 'Notification templates', Session::getPluralNumber());
             $menu['options'][NotificationTemplate::class]['page']
                         = NotificationTemplate::getSearchURL(false);
+            $menu['options'][NotificationTemplate::class]['icon']
+                        = NotificationTemplate::getIcon();
             $menu['options'][NotificationTemplate::class]['links']['add']
                         = NotificationTemplate::getFormURL(false);
             $menu['options'][NotificationTemplate::class]['links']['search']
@@ -213,6 +216,14 @@ class Notification extends CommonDBTM implements FilterableInterface
             //saved search list
             $menu['options'][NotificationTemplate::class]['links']['lists']  = "";
             $menu['options'][NotificationTemplate::class]['lists_itemtype']  = NotificationTemplate::class;
+
+            $menu['options'][NotificationMailingSetting::class]['title'] = NotificationMailingSetting::getTypeName();
+            $menu['options'][NotificationMailingSetting::class]['page']  = NotificationMailingSetting::getFormURL(false);
+            $menu['options'][NotificationMailingSetting::class]['icon']  = NotificationMailingSetting::getIcon();
+
+            $menu['options'][NotificationAjaxSetting::class]['title'] = NotificationAjaxSetting::getTypeName();
+            $menu['options'][NotificationAjaxSetting::class]['page']  = NotificationAjaxSetting::getFormURL(false);
+            $menu['options'][NotificationAjaxSetting::class]['icon']  = NotificationAjaxSetting::getIcon();
         }
         if (count($menu)) {
             return $menu;

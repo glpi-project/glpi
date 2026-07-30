@@ -131,9 +131,10 @@
                 {% elseif type == 'textarea' %}
                     {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                 {% elseif type == 'illustration' %}
+                        {% set _default_illustration = field['default_illustration'] ?? constant('Glpi\\UI\\IllustrationManager::DEFAULT_ILLUSTRATION') %}
                         {{ fields.illustrationField(
                             field['name'],
-                            item.fields[field['name']]|default(constant('Glpi\\UI\\IllustrationManager::DEFAULT_ILLUSTRATION')),
+                            item.fields[field['name']]|default(_default_illustration),
                             field['label'],
                         ) }}
                 {% elseif type == 'integer' %}

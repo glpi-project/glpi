@@ -498,7 +498,7 @@ class Group extends CommonTreeDropdown
     {
         if (
             !$this->fields['is_usergroup']
-            || !self::canUpdate()
+            || !$this->can($this->getID(), UPDATE)
             || !Session::haveRight("user", User::UPDATEAUTHENT)
             || !AuthLDAP::useAuthLdap()
         ) {
@@ -520,7 +520,7 @@ class Group extends CommonTreeDropdown
      **/
     public function showSecurityForm($ID)
     {
-        $canedit = self::canUpdate() && Session::haveRight("user", User::UPDATEAUTHENT);
+        $canedit = $this->can($this->getID(), UPDATE) && Session::haveRight("user", User::UPDATEAUTHENT);
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $this,
@@ -746,7 +746,7 @@ class Group extends CommonTreeDropdown
                 'name'     => $item->getLink(['comments' => true]),
                 'entity'   => $entity_names[$item->getEntityID()],
             ];
-            if ($item->canViewItem() && self::canUpdate()) {
+            if ($item->can($item->getID(), READ)) {
                 // Show massive actions if there is at least one viewable/updatable item.
                 $show_massive_actions = true;
             } else {
@@ -919,18 +919,19 @@ class Group extends CommonTreeDropdown
     /**
      * Get group link.
      *
-     * @param bool $enable_anonymization
+     * @param bool  $enable_anonymization
+     * @param array<string, mixed> $options
      *
      * @return string
      */
-    public function getGroupLink(bool $enable_anonymization = false): string
+    public function getGroupLink(bool $enable_anonymization = false, $options = []): string
     {
         if ($enable_anonymization && Session::getCurrentInterface() === 'helpdesk' && ($anon = static::getAnonymizedName()) !== null) {
             // if anonymized name active, return only the anonymized name
             return $anon;
         }
 
-        return $this->getLink();
+        return $this->getLink($options);
     }
 
     public function post_addItem()

@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\Parts\BasePart;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Message\MessageType;
@@ -763,7 +764,12 @@ class Migration
     public function executeMigration()
     {
         foreach ($this->queries[self::PRE_QUERY] as $query) {
-            $this->db->doQuery($query['query']);
+            if ($query['query'] instanceof BasePart) {
+                $stmt = $this->db->prepare($query['query']->getQuery());
+                $this->db->executeStatement($stmt, $query['query']->getParams());
+            } else {
+                $this->db->doQuery($query['query']);
+            }
         }
         $this->queries[self::PRE_QUERY] = [];
 
@@ -777,7 +783,12 @@ class Migration
         }
 
         foreach ($this->queries[self::POST_QUERY] as $query) {
-            $this->db->doQuery($query['query']);
+            if ($query['query'] instanceof BasePart) {
+                $stmt = $this->db->prepare($query['query']->getQuery());
+                $this->db->executeStatement($stmt, $query['query']->getParams());
+            } else {
+                $this->db->doQuery($query['query']);
+            }
         }
         $this->queries[self::POST_QUERY] = [];
 
@@ -1094,8 +1105,8 @@ class Migration
                             'glpi_configs',
                             [
                                 'context' => $context,
-                                'name'    => $name,
-                                'value'   => $value,
+                                'name' => $name,
+                                'value' => $value,
                             ]
                         );
                     }

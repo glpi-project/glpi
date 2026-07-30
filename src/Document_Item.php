@@ -181,7 +181,7 @@ class Document_Item extends CommonDBRelation
             'documents_id'      => $input['documents_id'],
             'itemtype'          => $input['itemtype'],
             'items_id'          => $input['items_id'],
-            'timeline_position' => $input['timeline_position'] ?? null,
+            'timeline_position' => $input['timeline_position'] ?? 0,
         ];
         if (array_key_exists('timeline_position', $input) && !empty($input['timeline_position'])) {
             $criteria['timeline_position'] = $input['timeline_position'];

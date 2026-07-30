@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\QuestionType;
 use Computer;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
@@ -57,7 +58,7 @@ final class QuestionTypeItemTest extends DbTestCase
      *
      *   [
      *     'itemtype'   => class-string,
-     *     'items_id'   => int,
+     *     'items_ids'   => array of int,
      *     'extra_data' => string (JSON),
      *     'question'   => string,
      *     'content'    => string, // expected content in the ticket description (after stripping HTML tags)
@@ -69,10 +70,10 @@ final class QuestionTypeItemTest extends DbTestCase
             'basic asset — only name' => [
                 fn(self $t) => [
                     'itemtype'   => Computer::class,
-                    'items_id'   => $t->createItem(Computer::class, [
+                    'items_ids'   => [$t->createItem(Computer::class, [
                         'name'        => 'My Computer',
                         'entities_id' => $t->getTestRootEntity(true),
-                    ])->getID(),
+                    ])->getID()],
                     'extra_data' => json_encode(
                         (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
                     ),
@@ -84,11 +85,11 @@ final class QuestionTypeItemTest extends DbTestCase
             'user — friendly name (realname firstname)' => [
                 fn(self $t) => [
                     'itemtype'  => User::class,
-                    'items_id'  => $t->createItem(User::class, [
+                    'items_ids'  => [$t->createItem(User::class, [
                         'name'      => 'jdoe',
                         'firstname' => 'John',
                         'realname'  => 'Doe',
-                    ])->getID(),
+                    ])->getID()],
                     'extra_data' => json_encode(
                         (new QuestionTypeItemExtraDataConfig(itemtype: User::class))->jsonSerialize()
                     ),
@@ -100,11 +101,11 @@ final class QuestionTypeItemTest extends DbTestCase
             'asset with serial only' => [
                 fn(self $t) => [
                     'itemtype'  => Computer::class,
-                    'items_id'  => $t->createItem(Computer::class, [
+                    'items_ids'  => [$t->createItem(Computer::class, [
                         'name'        => 'My Laptop',
                         'serial'      => 'SN-1234',
                         'entities_id' => $t->getTestRootEntity(true),
-                    ])->getID(),
+                    ])->getID()],
                     'extra_data' => json_encode(
                         (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
                     ),
@@ -116,12 +117,12 @@ final class QuestionTypeItemTest extends DbTestCase
             'asset with serial and otherserial' => [
                 fn(self $t) => [
                     'itemtype'  => Computer::class,
-                    'items_id'  => $t->createItem(Computer::class, [
+                    'items_ids'  => [$t->createItem(Computer::class, [
                         'name'        => 'My Laptop',
                         'serial'      => 'SN-1234',
                         'otherserial' => 'INV-5678',
                         'entities_id' => $t->getTestRootEntity(true),
-                    ])->getID(),
+                    ])->getID()],
                     'extra_data' => json_encode(
                         (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
                     ),
@@ -133,7 +134,7 @@ final class QuestionTypeItemTest extends DbTestCase
             'asset with linked user' => [
                 fn(self $t) => [
                     'itemtype'  => Computer::class,
-                    'items_id'  => $t->createItem(Computer::class, [
+                    'items_ids'  => [$t->createItem(Computer::class, [
                         'name'        => 'My Desktop',
                         'users_id'    => $t->createItem(User::class, [
                             'name'      => 'jdoe',
@@ -141,7 +142,7 @@ final class QuestionTypeItemTest extends DbTestCase
                             'realname'  => 'Doe',
                         ])->getID(),
                         'entities_id' => $t->getTestRootEntity(true),
-                    ])->getID(),
+                    ])->getID()],
                     'extra_data' => json_encode(
                         (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
                     ),
@@ -153,7 +154,7 @@ final class QuestionTypeItemTest extends DbTestCase
             'asset with all extra fields' => [
                 fn(self $t) => [
                     'itemtype'  => Computer::class,
-                    'items_id'  => $t->createItem(Computer::class, [
+                    'items_ids'  => [$t->createItem(Computer::class, [
                         'name'        => 'My Workstation',
                         'serial'      => 'SN-AAAA',
                         'otherserial' => 'INV-BBBB',
@@ -163,7 +164,7 @@ final class QuestionTypeItemTest extends DbTestCase
                             'realname'  => 'Doe',
                         ])->getID(),
                         'entities_id' => $t->getTestRootEntity(true),
-                    ])->getID(),
+                    ])->getID()],
                     'extra_data' => json_encode(
                         (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
                     ),
@@ -175,12 +176,12 @@ final class QuestionTypeItemTest extends DbTestCase
             'asset with empty serial — no parentheses' => [
                 fn(self $t) => [
                     'itemtype'  => Computer::class,
-                    'items_id'  => $t->createItem(Computer::class, [
+                    'items_ids'  => [$t->createItem(Computer::class, [
                         'name'        => 'My Server',
                         'serial'      => '',
                         'otherserial' => '',
                         'entities_id' => $t->getTestRootEntity(true),
-                    ])->getID(),
+                    ])->getID()],
                     'extra_data' => json_encode(
                         (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
                     ),
@@ -199,7 +200,7 @@ final class QuestionTypeItemTest extends DbTestCase
                     ]);
                     return [
                         'itemtype'  => Ticket::class,
-                        'items_id'  => $linked->getID(),
+                        'items_ids'  => [$linked->getID()],
                         'extra_data' => json_encode(
                             (new QuestionTypeItemExtraDataConfig(itemtype: Ticket::class))->jsonSerialize()
                         ),
@@ -219,7 +220,7 @@ final class QuestionTypeItemTest extends DbTestCase
                     ]);
                     return [
                         'itemtype'     => Ticket::class,
-                        'items_id'     => $linked->getID(),
+                        'items_ids'     => [$linked->getID()],
                         'extra_data'   => json_encode(
                             (new QuestionTypeItemExtraDataConfig(itemtype: Ticket::class))->jsonSerialize()
                         ),
@@ -231,7 +232,103 @@ final class QuestionTypeItemTest extends DbTestCase
         ];
     }
 
+    public static function itemAnswerInTicketMultipleProvider(): iterable
+    {
+        yield 'multiple assets' => [
+            fn(self $t) => [
+                'itemtype'  => Computer::class,
+                'items_ids'  => [
+                    $t->createItem(Computer::class, [
+                        'name'        => 'Computer A',
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ])->getID(),
+                    $t->createItem(Computer::class, [
+                        'name'        => 'Computer B',
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ])->getID(),
+                ],
+                'extra_data' => json_encode(
+                    (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class, is_multiple_items: true))->jsonSerialize()
+                ),
+                'question'  => 'Assets',
+                'content'   => '1) Assets: Computer A, Computer B',
+            ],
+        ];
+
+        yield 'multiple users' => [
+            fn(self $t) => [
+                'itemtype'  => User::class,
+                'items_ids'  => [
+                    $t->createItem(User::class, [
+                        'name'      => 'jdoe',
+                        'firstname' => 'John',
+                        'realname'  => 'Doe',
+                    ])->getID(),
+                    $t->createItem(User::class, [
+                        'name'      => 'asmith',
+                        'firstname' => 'Alice',
+                        'realname'  => 'Smith',
+                    ])->getID(),
+                ],
+                'extra_data' => json_encode(
+                    (new QuestionTypeItemExtraDataConfig(itemtype: User::class, is_multiple_items: true))->jsonSerialize()
+                ),
+                'question'  => 'Technicians',
+                'content'   => '1) Technicians: Doe John, Smith Alice',
+            ],
+        ];
+
+        yield 'multiple assets with some having empty serials' => [
+            fn(self $t) => [
+                'itemtype'  => Computer::class,
+                'items_ids'  => [
+                    $t->createItem(Computer::class, [
+                        'name'        => 'Computer A',
+                        'serial'      => '',
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ])->getID(),
+                    $t->createItem(Computer::class, [
+                        'name'        => 'Computer B',
+                        'serial'      => 'SN-5678',
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ])->getID(),
+                ],
+                'extra_data' => json_encode(
+                    (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class, is_multiple_items: true))->jsonSerialize()
+                ),
+                'question'  => 'Assets',
+                'content'   => '1) Assets: Computer A, Computer B - SN-5678',
+            ],
+        ];
+
+        yield 'multiple ITIL type — IDs appended when not visible in session' => [
+            fn(self $t) => (static function () use ($t) {
+                $_SESSION['glpiis_ids_visible'] = false;
+                $linked1 = $t->createItem(Ticket::class, [
+                    'name'        => 'Ticket A',
+                    'content'     => 'content A',
+                    'entities_id' => $t->getTestRootEntity(true),
+                ]);
+                $linked2 = $t->createItem(Ticket::class, [
+                    'name'        => 'Ticket B',
+                    'content'     => 'content B',
+                    'entities_id' => $t->getTestRootEntity(true),
+                ]);
+                return [
+                    'itemtype'  => Ticket::class,
+                    'items_ids'  => [$linked1->getID(), $linked2->getID()],
+                    'extra_data' => json_encode(
+                        (new QuestionTypeItemExtraDataConfig(itemtype: Ticket::class, is_multiple_items: true))->jsonSerialize()
+                    ),
+                    'question'  => 'Linked Tickets',
+                    'content'   => '1) Linked Tickets: Ticket A - ' . $linked1->getID() . ', Ticket B - ' . $linked2->getID(),
+                ];
+            })(),
+        ];
+    }
+
     #[DataProvider('itemAnswerInTicketProvider')]
+    #[DataProvider('itemAnswerInTicketMultipleProvider')]
     public function testItemAnswerIsDisplayedInTicketDescription(callable $setup): void
     {
         $this->login();
@@ -249,7 +346,7 @@ final class QuestionTypeItemTest extends DbTestCase
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
             $case['question'] => [
                 'itemtype' => $case['itemtype'],
-                'items_id' => $case['items_id'],
+                'items_ids' => $case['items_ids'],
             ],
         ]);
 
@@ -270,7 +367,7 @@ final class QuestionTypeItemTest extends DbTestCase
         yield [
             fn(self $t) => [
                 'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: Computer::class),
-                'itemtype_id' => ['items_id' => $t->createItem(Computer::class, [
+                'itemtype_id' => ['items_ids' => $t->createItem(Computer::class, [
                     'name'        => 'ComputerTest',
                     'entities_id' => $t->getTestRootEntity(true),
                 ])->getID()],
@@ -281,7 +378,7 @@ final class QuestionTypeItemTest extends DbTestCase
         yield [
             fn(self $t) => [
                 'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: \ITILCategory::class),
-                'itemtype_id' => ['items_id' => $t->createItem(\ITILCategory::class, [
+                'itemtype_id' => ['items_ids' => $t->createItem(\ITILCategory::class, [
                     'name' => 'Parent Category',
                     'entities_id' => $t->getTestRootEntity(true),
                 ])->getID()],
@@ -292,7 +389,7 @@ final class QuestionTypeItemTest extends DbTestCase
         yield [
             fn(self $t) => [
                 'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: \ITILCategory::class),
-                'itemtype_id' => ['items_id' => $t->createItem(\ITILCategory::class, [
+                'itemtype_id' => ['items_ids' => $t->createItem(\ITILCategory::class, [
                     'name' => 'Child Category',
                     'entities_id' => $t->getTestRootEntity(true),
                     'itilcategories_id' => $t->createItem(\ITILCategory::class, [
@@ -305,7 +402,74 @@ final class QuestionTypeItemTest extends DbTestCase
         ];
     }
 
+    /**
+     * Data provider for testing the transformation of condition values for comparisons.
+     * Each case provides a question configuration, an input itemtype_id value with multiple IDs, and the expected output after transformation.
+     */
+    public static function transformConditionValueForComparisonsMultipleProvider()
+    {
+        yield 'multiple assets' => [
+            fn(self $t) => [
+                'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: Computer::class, is_multiple_items: true),
+                'itemtype_id' => ['items_ids' => [
+                    $t->createItem(Computer::class, [
+                        'name'        => 'Computer A',
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ])->getID(),
+                    $t->createItem(Computer::class, [
+                        'name'        => 'Computer B',
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ])->getID(),
+                ]],
+                'expected_name' => 'Computer A, Computer B',
+            ],
+        ];
+
+        yield 'multiple itil categories - flat dropdown' => [
+            fn(self $t) => [
+                'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: \ITILCategory::class),
+                'itemtype_id' => ['items_ids' => [
+                    $t->createItem(\ITILCategory::class, [
+                        'name' => 'Parent Category A',
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ])->getID(),
+                    $t->createItem(\ITILCategory::class, [
+                        'name' => 'Parent Category B',
+                        'entities_id' => $t->getTestRootEntity(true),
+                    ])->getID(),
+                ]],
+                'expected_name' => 'Parent Category A, Parent Category B',
+            ],
+        ];
+
+        yield 'multiple itil categories - hierarchical dropdown with parent-child relationship' => [
+            fn(self $t) => [
+                'question_config' => new QuestionTypeItemExtraDataConfig(itemtype: \ITILCategory::class),
+                'itemtype_id' => ['items_ids' => [
+                    $t->createItem(\ITILCategory::class, [
+                        'name' => 'Child Category A',
+                        'entities_id' => $t->getTestRootEntity(true),
+                        'itilcategories_id' => $t->createItem(\ITILCategory::class, [
+                            'name' => 'Parent Category A',
+                            'entities_id' => $t->getTestRootEntity(true),
+                        ])->getID(),
+                    ])->getID(),
+                    $t->createItem(\ITILCategory::class, [
+                        'name' => 'Child Category B',
+                        'entities_id' => $t->getTestRootEntity(true),
+                        'itilcategories_id' => $t->createItem(\ITILCategory::class, [
+                            'name' => 'Parent Category B',
+                            'entities_id' => $t->getTestRootEntity(true),
+                        ])->getID(),
+                    ])->getID(),
+                ]],
+                'expected_name' => 'Parent Category A > Child Category A, Parent Category B > Child Category B',
+            ],
+        ];
+    }
+
     #[DataProvider('transformConditionValueForComparisonsProvider')]
+    #[DataProvider('transformConditionValueForComparisonsMultipleProvider')]
     public function testTransformConditionValueForComparisons(callable $setup): void
     {
         $this->login();
@@ -325,12 +489,12 @@ final class QuestionTypeItemTest extends DbTestCase
             'item is a user' => [
                 fn(self $t) => [
                     'answer'   => [
-                        'itemtype' => User::class,
-                        'items_id' => $t->createItem(User::class, [
+                        'itemtype'  => User::class,
+                        'items_ids' => [$t->createItem(User::class, [
                             'name'      => 'jdoe',
                             'firstname' => 'John',
                             'realname'  => 'Doe',
-                        ])->getID(),
+                        ])->getID()],
                     ],
                     'expected' => 'Doe John',
                 ],
@@ -339,11 +503,11 @@ final class QuestionTypeItemTest extends DbTestCase
             'location without parent' => [
                 fn(self $t) => [
                     'answer'   => [
-                        'itemtype' => Location::class,
-                        'items_id' => $t->createItem(Location::class, [
+                        'itemtype'  => Location::class,
+                        'items_ids' => [$t->createItem(Location::class, [
                             'name'        => 'Headquarters',
                             'entities_id' => $t->getTestRootEntity(true),
-                        ])->getID(),
+                        ])->getID()],
                     ],
                     'expected' => 'Headquarters',
                 ],
@@ -367,8 +531,8 @@ final class QuestionTypeItemTest extends DbTestCase
                     ]);
                     return [
                         'answer'   => [
-                            'itemtype' => Location::class,
-                            'items_id' => $leaf->getID(),
+                            'itemtype'  => Location::class,
+                            'items_ids' => [$leaf->getID()],
                         ],
                         'expected' => 'France > Paris > Office',
                     ];
@@ -378,8 +542,8 @@ final class QuestionTypeItemTest extends DbTestCase
             'non-existent item' => [
                 fn(self $t) => [
                     'answer'   => [
-                        'itemtype' => Computer::class,
-                        'items_id' => PHP_INT_MAX,
+                        'itemtype'  => Computer::class,
+                        'items_ids' => [PHP_INT_MAX],
                     ],
                     'expected' => '',
                 ],
@@ -387,7 +551,108 @@ final class QuestionTypeItemTest extends DbTestCase
         ];
     }
 
+    public static function formatRawAnswerMultipleProvider(): iterable
+    {
+        yield 'multiple users' => [
+            fn(self $t) => [
+                'answer'   => [
+                    'itemtype'  => User::class,
+                    'items_ids' => [
+                        $t->createItem(User::class, [
+                            'name'      => 'jdoe',
+                            'firstname' => 'John',
+                            'realname'  => 'Doe',
+                        ])->getID(),
+                        $t->createItem(User::class, [
+                            'name'      => 'asmith',
+                            'firstname' => 'Alice',
+                            'realname'  => 'Smith',
+                        ])->getID(),
+                    ],
+                ],
+                'expected' => 'Doe John, Smith Alice',
+            ],
+        ];
+
+        yield 'multiple locations without hierarchy' => [
+            fn(self $t) => (static function () use ($t) {
+                $loc1 = $t->createItem(Location::class, [
+                    'name'        => 'New York Office',
+                    'entities_id' => $t->getTestRootEntity(true),
+                ]);
+                $loc2 = $t->createItem(Location::class, [
+                    'name'        => 'Berlin Office',
+                    'entities_id' => $t->getTestRootEntity(true),
+                ]);
+                return [
+                    'answer'   => [
+                        'itemtype'  => Location::class,
+                        'items_ids' => [$loc1->getID(), $loc2->getID()],
+                    ],
+                    'expected' => 'New York Office, Berlin Office',
+                ];
+            })(),
+        ];
+
+        yield 'multiple locations with hierarchy' => [
+            fn(self $t) => (static function () use ($t) {
+                $root1 = $t->createItem(Location::class, [
+                    'name'        => 'USA',
+                    'entities_id' => $t->getTestRootEntity(true),
+                ]);
+                $leaf1 = $t->createItem(Location::class, [
+                    'name'        => 'New York Office',
+                    'locations_id' => $root1->getID(),
+                    'entities_id' => $t->getTestRootEntity(true),
+                ]);
+                $root2 = $t->createItem(Location::class, [
+                    'name'        => 'Germany',
+                    'entities_id' => $t->getTestRootEntity(true),
+                ]);
+                $leaf2 = $t->createItem(Location::class, [
+                    'name'        => 'Berlin Office',
+                    'locations_id' => $root2->getID(),
+                    'entities_id' => $t->getTestRootEntity(true),
+                ]);
+                return [
+                    'answer'   => [
+                        'itemtype'  => Location::class,
+                        'items_ids' => [$leaf1->getID(), $leaf2->getID()],
+                    ],
+                    'expected' => 'USA > New York Office, Germany > Berlin Office',
+                ];
+            })(),
+        ];
+
+        yield 'multiple items with all non-existent' => [
+            fn(self $t) => [
+                'answer'   => [
+                    'itemtype'  => Computer::class,
+                    'items_ids' => [PHP_INT_MAX - 1, PHP_INT_MAX],
+                ],
+                'expected' => '',
+            ],
+        ];
+
+        yield 'multiple items with some non-existent' => [
+            fn(self $t) => [
+                'answer'   => [
+                    'itemtype'  => Computer::class,
+                    'items_ids' => [
+                        $t->createItem(Computer::class, [
+                            'name'        => 'Existing Computer',
+                            'entities_id' => $t->getTestRootEntity(true),
+                        ])->getID(),
+                        PHP_INT_MAX, // Non-existent ID
+                    ],
+                ],
+                'expected' => 'Existing Computer',
+            ],
+        ];
+    }
+
     #[DataProvider('formatRawAnswerProvider')]
+    #[DataProvider('formatRawAnswerMultipleProvider')]
     public function testFormatRawAnswer(callable $setup): void
     {
         $this->login();
@@ -396,5 +661,45 @@ final class QuestionTypeItemTest extends DbTestCase
         $result = (new QuestionTypeItem())->formatRawAnswer($case['answer'], new Question());
 
         $this->assertEquals($case['expected'], $result);
+    }
+
+    public static function formatPredefinedValueProvider(): array
+    {
+        return [
+            'valid positive integer' => [
+                'value'    => '42',
+                'expected' => json_encode((new QuestionTypeItemDefaultValueConfig([42]))->jsonSerialize()),
+            ],
+            'valid id of 1' => [
+                'value'    => '1',
+                'expected' => json_encode((new QuestionTypeItemDefaultValueConfig([1]))->jsonSerialize()),
+            ],
+            'zero is rejected' => [
+                'value'    => '0',
+                'expected' => null,
+            ],
+            'negative number is rejected' => [
+                'value'    => '-5',
+                'expected' => null,
+            ],
+            'non-numeric string is rejected' => [
+                'value'    => 'abc',
+                'expected' => null,
+            ],
+            'float string is rejected' => [
+                'value'    => '1.5',
+                'expected' => null,
+            ],
+            'empty string is rejected' => [
+                'value'    => '',
+                'expected' => null,
+            ],
+        ];
+    }
+
+    #[DataProvider('formatPredefinedValueProvider')]
+    public function testFormatPredefinedValue(string $value, ?string $expected): void
+    {
+        $this->assertSame($expected, (new QuestionTypeItem())->formatPredefinedValue($value));
     }
 }

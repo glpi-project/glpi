@@ -108,6 +108,14 @@ final class IllustrationManagerTest extends GLPITestCase
         $ids = $manager->searchIcons(page: $page, page_size: $page_size);
     }
 
+    public function testRenderIconReturnsEmptyStringForEmptyValue(): void
+    {
+        $manager = new IllustrationManager();
+
+        $this->assertSame('', $manager->renderIcon(''));
+        $this->assertSame('', $manager->renderIcon('', 60));
+    }
+
     public function testIllustrationsTranslationsAreGenerated(): void
     {
         // Assert: a file with translations for each icons should exist in the

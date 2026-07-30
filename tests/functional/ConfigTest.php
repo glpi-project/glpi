@@ -125,7 +125,6 @@ class ConfigTest extends DbTestCase
             'Config$12'     => "Management",
             'Config$9'      => "Logs purge",
             'Config$5'      => "System",
-            'Config$10'     => "Security",
             'Config$7'      => "Performance",
             'Config$8'      => "API",
             'Config$11'      => "Impact analysis",
@@ -397,6 +396,22 @@ class ConfigTest extends DbTestCase
             ], [
                 'raw'       => '10.6.7-MariaDB-1:10.6.7-2ubuntu1.1',
                 'version'   => '10.6.7',
+                'compat'    => false,
+            ], [
+                'raw'       => '10.11.18-MariaDB',
+                'version'   => '10.11.18',
+                'compat'    => true,
+            ], [
+                'raw'       => '11.4.12-MariaDB',
+                'version'   => '11.4.12',
+                'compat'    => true,
+            ], [
+                'raw'       => '11.8.8-MariaDB',
+                'version'   => '11.8.8',
+                'compat'    => true,
+            ], [
+                'raw'       => '12.3.2-MariaDB',
+                'version'   => '12.3.2',
                 'compat'    => true,
             ], [
                 'raw'       => '5.6.38-log',
@@ -409,6 +424,14 @@ class ConfigTest extends DbTestCase
             ], [
                 'raw'       => '8.0.23-standard',
                 'version'   => '8.0.23',
+                'compat'    => true,
+            ], [
+                'raw'       => '8.4.10',
+                'version'   => '8.4.10',
+                'compat'    => true,
+            ], [
+                'raw'       => '9.7.1',
+                'version'   => '9.7.1',
                 'compat'    => true,
             ],
         ];
@@ -567,6 +590,36 @@ class ConfigTest extends DbTestCase
         );
 
         $CFG_GLPI['devices_in_menu'] = $bkp_devices_in_menu;
+    }
+
+    /**
+     * Test that the legacy SMTP password is cleared when switching to SMTP OAuth.
+     *
+     * SMTP OAuth does not use `smtp_passwd`. When changing the SMTP mode to OAuth,
+     * the previous SMTP password must be overwritten with an empty value instead of
+     * being kept in the database.
+     */
+    public function testSmtpPasswordIsClearedWhenSwitchingToSmtpOauth(): void
+    {
+        $conf = new Config();
+
+        Config::setConfigurationValues('core', [
+            'smtp_mode'   => MAIL_SMTP,
+            'smtp_passwd' => 'old-password',
+        ]);
+
+        $conf->update([
+            'id'        => 1,
+            'smtp_mode' => MAIL_SMTPOAUTH,
+        ]);
+
+        $values = Config::getConfigurationValues('core', [
+            'smtp_mode',
+            'smtp_passwd',
+        ]);
+
+        $this->assertSame(MAIL_SMTPOAUTH, (int) $values['smtp_mode']);
+        $this->assertSame('', $values['smtp_passwd']);
     }
 
     /**

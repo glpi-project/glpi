@@ -174,10 +174,10 @@ describe('Common', () => {
 
     it('getExtIcon', () => {
         window.AjaxMock.start();
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//pics/icones/png-dist.png', 'HEAD', {}, () => ''));
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/pics/icones/png-dist.png', 'HEAD', {}, () => ''));
         expect(common.getExtIcon('png')).toBe(`<img src="${window.CFG_GLPI.root_doc}/pics/icones/png-dist.png" title="png">`);
         expect(window.AjaxMock.isResponseStackEmpty()).toBe(true);
-        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//pics/icones/fake-dist.png', 'HEAD', {}, () => '', false, 'error'));
+        window.AjaxMock.addMockResponse(new window.AjaxMockResponse('/pics/icones/fake-dist.png', 'HEAD', {}, () => '', false, 'error'));
         expect(common.getExtIcon('fake')).toBe(`<img src="${window.CFG_GLPI.root_doc}/pics/icones/defaut-dist.png" title="fake">`);
     });
 

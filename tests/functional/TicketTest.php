@@ -49,6 +49,7 @@ use Glpi\Search\SearchOption;
 use Glpi\Team\Team;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\ITILTrait;
+use Glpi\Tests\Glpi\SLMTrait;
 use Glpi\Tests\Glpi\ValidationStepTrait;
 use Group;
 use Group_Ticket;
@@ -57,6 +58,8 @@ use ITILCategory;
 use ITILFollowup;
 use ITILReminder;
 use ITILSolution;
+use Laminas\Mail\Storage\Message as MailMessage;
+use MailCollector;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Profile_User;
@@ -79,6 +82,7 @@ use TicketTemplate;
 use TicketTemplateMandatoryField;
 use TicketValidation;
 use User;
+use UserEmail;
 
 /* Test for inc/ticket.class.php */
 
@@ -86,6 +90,7 @@ class TicketTest extends DbTestCase
 {
     use ValidationStepTrait;
     use ITILTrait;
+    use SLMTrait;
 
     public static function addActorsProvider(): iterable
     {
@@ -1632,17 +1637,9 @@ class TicketTest extends DbTestCase
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_own]:not([disabled])"));
         $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Time to own editable $caller");
 
-        // Internal time to own, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_own]:not([disabled])"));
-        $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Internal time to own editable $caller");
-
         // Time to resolve, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_resolve]:not([disabled])"));
         $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Time to resolve $caller");
-
-        // Internal time to resolve, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
-        $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Internal time to resolve $caller");
 
         //Type
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=type]:not([disabled])"));
@@ -3154,11 +3151,6 @@ class TicketTest extends DbTestCase
         $this->assertEquals(0, (int) $input['slas_id_tto']);
         $this->assertEquals(0, (int) $input['slas_id_ttr']);
 
-        $this->assertEquals('NULL', $input['internal_time_to_resolve']);
-        $this->assertEquals('NULL', $input['internal_time_to_own']);
-        $this->assertEquals(0, (int) $input['olas_id_tto']);
-        $this->assertEquals(0, (int) $input['olas_id_ttr']);
-
         $this->assertEquals(0, (int) $input['_add_validation']);
 
         $this->assertCount(0, $input['_validation_targets']);
@@ -3624,6 +3616,26 @@ class TicketTest extends DbTestCase
                 $this->assertEquals($_SESSION['glpi_currenttime'], $ticket->fields['takeintoaccountdate']);
             }
         }
+    }
+
+    public function testGetSlasData(): void
+    {
+        $this->login();
+        // arrange - create a ticket with TTO SLA
+        ['sla' => $sla_tto] = $this->createSla(sla_type: SLM::TTO);
+        ['sla' => $sla_ttr] = $this->createSla(sla_type: SLM::TTR);
+        $ticket = $this->createTicket(['slas_id_tto' => $sla_tto->getID()]);
+
+        // act + assert
+        $slas_data = $ticket->getSlasData();
+        $this->assertCount(1, $slas_data);
+        $this->assertEquals($sla_tto->getID(), $slas_data[0]['id']);
+
+        // arrange - add TTR SLA to the ticket
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), [            'slas_id_ttr' => $sla_ttr->getID(),        ]);
+        $slas_data = $ticket->getSlasData();
+        $this->assertCount(2, $slas_data);
+        $this->assertEqualsCanonicalizing([$sla_ttr->getID(), $sla_tto->getID()], array_column($slas_data, 'id'));
     }
 
     /**
@@ -7138,29 +7150,29 @@ HTML,
         $entity_id = 0;
 
         $ticket = new Ticket();
-        $fup = new ITILFollowup();
-        $sol = new ITILSolution();
 
         //create a ticket
-        $ticket_id = $ticket->add([
+        $ticket = $this->createItem(Ticket::class, [
             'name'                  => __METHOD__,
             'content'               => __METHOD__,
             'entities_id'           => $entity_id,
             '_skip_auto_assign'     => true,
             '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
         ]);
-        $this->assertGreaterThan(0, $ticket_id);
+        $ticket_id = $ticket->getID();
 
         //add a followup to the ticket without assigning to me (tech)
         $this->login('tech', 'tech');
-        $_SESSION['glpiset_followup_tech'] = 0;
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 0]);
+        $tech_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
-            ])
+                'users_id'  => $tech_user->getID(),
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
@@ -7168,15 +7180,17 @@ HTML,
         $this->assertCount(0, $actors);
 
         //add a private followup to the ticket and NOT assign to me (tech)
-        $_SESSION['glpiset_followup_tech'] = 1;
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
+        $tech_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'      => 'Ticket',
                 'items_id'      => $ticket_id,
                 'content'       => 'A simple followup',
                 'is_private'    => 1,
-            ])
+                'users_id'      => $tech_user->getID(),
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
@@ -7184,97 +7198,118 @@ HTML,
         $this->assertCount(0, $actors);
 
         //add a followup to the ticket and assign to me (tech)
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
-            ])
+                'users_id'  => $tech_user->getID(),
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount(1, $actors);
+        $this->assertSame(User::class, array_values($actors)[0]['itemtype']);
+        $this->assertSame($tech_user->getID(), (int) array_values($actors)[0]['items_id']);
 
         //add a solution to the ticket and assign to me
         $this->login('glpi', 'glpi');
-        $_SESSION['glpiset_solution_tech'] = 1;
-        $this->assertGreaterThan(
-            0,
-            (int) $sol->add([
+        $glpi_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_solution_tech' => 1]);
+        $glpi_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILSolution::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple solution',
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount(2, $actors);
+        $this->assertSame(User::class, array_values($actors)[1]['itemtype']);
+        $this->assertSame($glpi_user->getID(), (int) array_values($actors)[1]['items_id']);
 
         //create a new ticket
-        $ticket_id = $ticket->add([
-            'name'                  => __METHOD__,
-            'content'               => __METHOD__,
-            'entities_id'           => $entity_id,
-            '_skip_auto_assign'     => true,
-            '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
-        ]);
-        $this->assertGreaterThan(0, $ticket_id);
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name'                  => __METHOD__,
+                'content'               => __METHOD__,
+                'entities_id'           => $entity_id,
+                '_skip_auto_assign'     => true,
+                '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
+            ]
+        );
+        $ticket_id = $ticket->getID();
 
         //add a solution to the ticket without assigning to me
         $this->login('tech', 'tech');
-        $_SESSION['glpiset_solution_tech'] = 0;
-        $this->assertGreaterThan(
-            0,
-            (int) $sol->add([
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_solution_tech' => 0]);
+        $tech_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILSolution::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple solution',
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount(0, $actors);
 
+        $requester_id = getItemByTypeName('User', 'glpi', true);
+
         //create a new ticket
-        $ticket_id = $ticket->add([
-            'name'                  => __METHOD__,
-            'content'               => __METHOD__,
-            'entities_id'           => $entity_id,
-            '_skip_auto_assign'     => true,
-            '_users_id_requester'   => getItemByTypeName('User', 'glpi', true),
-            '_users_id_observer'    => getItemByTypeName('User', 'tech', true),
-        ]);
-        $this->assertGreaterThan(0, $ticket_id);
-        $ticket->getFromDB($ticket_id);
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name'                  => __METHOD__,
+                'content'               => __METHOD__,
+                'entities_id'           => $entity_id,
+                '_skip_auto_assign'     => true,
+                '_users_id_requester'   => $requester_id,
+                '_users_id_observer'    => getItemByTypeName('User', 'tech', true),
+            ]
+        );
+        $ticket_id = $ticket->getID();
+
         $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
         $this->assertCount(1, $actors);
+        $this->assertSame(User::class, array_values($actors)[0]['itemtype']);
+        $this->assertSame($requester_id, (int) array_values($actors)[0]['items_id']);
 
         //add a followup to the ticket without assigning to me
         $this->login('glpi', 'glpi');
-        $_SESSION['glpiset_followup_tech'] = 1;
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $glpi_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
+        $glpi_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
-            ])
+                'users_id'  => $glpi_user->getID(),
+            ]
         );
 
         //add a followup to the ticket without assigning to me
         $this->login('tech', 'tech');
-        $_SESSION['glpiset_followup_tech'] = 1;
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
+        $tech_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
-            ])
+                'users_id'  => $tech_user->getID(),
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
@@ -7283,19 +7318,120 @@ HTML,
 
         //add a solution to the ticket without assigning to me
         $this->login('glpi', 'glpi');
-        $_SESSION['glpiset_solution_tech'] = 1;
-        $this->assertGreaterThan(
-            0,
-            (int) $sol->add([
+        $glpi_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_solution_tech' => 1]);
+        $glpi_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILSolution::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple solution',
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount(0, $actors);
+    }
+
+    public static function mailCollectorFollowupSetAssigneeProvider(): array
+    {
+        return [
+            'self_service_user_has_no_tech_rights' => [
+                'from_user'        => 'post-only',
+                'set_followup_tech' => 1,
+                'expected_actors_count' => 0,
+            ],
+            'tech_user_disabled_preference' => [
+                'from_user'        => 'tech',
+                'set_followup_tech' => 0,
+                'expected_actors_count' => 0,
+            ],
+            'tech_user_enabled_preference' => [
+                'from_user'        => 'tech',
+                'set_followup_tech' => 1,
+                'expected_actors_count' => 1,
+            ],
+        ];
+    }
+
+    #[DataProvider('mailCollectorFollowupSetAssigneeProvider')]
+    public function testMailCollectorFollowupSetAssignee(string $from_user, int $set_followup_tech, int $expected_actors_count): void
+    {
+        // Log in as glpi and enable "assign me" preference to simulate the mail collector's
+        // own session
+        $this->login();
+        $glpi_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
+        $glpi_user->loadPreferencesInSession();
+
+        // Set the followup author's own preference in the database
+        $from_user_id = getItemByTypeName('User', $from_user, true);
+        $this->updateItem(User::class, $from_user_id, ['set_followup_tech' => $set_followup_tech]);
+
+        // Associate an email address with the sender so MailCollector can resolve them
+        $sender_email = $from_user . '@test.glpi.com';
+        $this->createItem(
+            UserEmail::class,
+            ['users_id' => $from_user_id, 'is_default' => 1, 'email' => $sender_email]
+        );
+
+        $collector = $this->createItem(
+            MailCollector::class,
+            [
+                'name'             => 'test-collector',
+                'is_active'        => 1,
+                'filesize_max'     => 2097152,
+                'requester_field'  => MailCollector::REQUESTER_FIELD_FROM,
+                'mail_server'      => 'imap.test.glpi.com',
+                'server_type'      => '/imap',
+            ],
+            ['mail_server', 'server_type']
+        );
+        $mailgate_id = $collector->getID();
+
+        // Create a ticket with no assignee
+        $ticket = $this->createItem(Ticket::class, [
+            'name'              => __METHOD__,
+            'content'           => __METHOD__,
+            'entities_id'       => 0,
+            '_skip_auto_assign' => true,
+        ]);
+        $ticket_id = $ticket->getID();
+
+        // Build a raw email from the sender replying to the ticket (linked via subject line)
+        $raw = implode("\r\n", [
+            "From: {$from_user} <{$sender_email}>",
+            "To: helpdesk@glpi.com",
+            "Subject: Re: [GLPI #{$ticket_id}]",
+            "Message-ID: <test-{$from_user}-followup@glpi-test.com>",
+            "Date: Mon, 01 Jan 2024 12:00:00 +0000",
+            "",
+            "This is a test followup sent via email.",
+        ]);
+        $message = new MailMessage(['raw' => $raw]);
+
+        $tkt = $collector->buildTicket(1, $message, ['mailgates_id' => $mailgate_id, 'play_rules' => false]);
+
+        $this->assertFalse($tkt['_blacklisted']);
+        $this->assertArrayHasKey('tickets_id', $tkt);
+        $this->assertSame($ticket_id, $tkt['tickets_id']);
+        $this->assertSame($from_user_id, $tkt['users_id']);
+
+        // Replicate the followup-creation logic from MailCollector::collect()
+        $fup_input             = $tkt;
+        $fup_input['itemtype'] = Ticket::class;
+        $fup_input['items_id'] = $fup_input['tickets_id'];
+        unset($fup_input['tickets_id']);
+
+        $this->createItem(ITILFollowup::class, $fup_input, ['name', 'add_reopen']);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->assertCount($expected_actors_count, $actors);
+        if ($expected_actors_count > 0) {
+            $this->assertSame(User::class, array_values($actors)[0]['itemtype']);
+            $this->assertSame($from_user_id, (int) array_values($actors)[0]['items_id']);
+        }
     }
 
     public function testNotificationDisabled()
@@ -9295,7 +9431,7 @@ HTML,
             'pattern' => 'ITILsolution',
         ]);
 
-        $this->createItem(\UserEmail::class, [
+        $this->createItem(UserEmail::class, [
             'users_id' => $user->getID(),
             'is_default' => 1,
             'email' => 'tech@tech.tech',

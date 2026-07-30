@@ -149,10 +149,15 @@ class Profile_User extends CommonDBRelation
         $start       = (int) ($_GET["start"] ?? 0);
         $limit       = $_SESSION["glpilist_limit"];
         $sort        = $_GET["sort"] ?? "";
-        $order       = strtoupper($_GET["order"] ?? "");
+        $order       = strtoupper($_GET["order"] ?? "") === 'DESC' ? 'DESC' : 'ASC';
+        // Map the displayed column keys to their actual SQL columns.
+        $sort_columns = [
+            'entity'  => 'glpi_entities.completename',
+            'profile' => 'glpi_profiles.name',
+        ];
         $sort_params = [];
-        if ($sort !== '') {
-            $sort_params = [$sort => $order === 'DESC' ? 'DESC' : 'ASC'];
+        if (isset($sort_columns[$sort])) {
+            $sort_params = [$sort_columns[$sort] . ' ' . $order];
         }
         $iterator = self::getListForItem($user, $start, $limit, $sort_params);
         $total_num = self::countForItem($user);
@@ -389,7 +394,7 @@ TWIG, $avatar_params) . $username;
 
             $entries[] = [
                 'itemtype' => self::class,
-                'id' => $data['id'],
+                'id' => $data['linkid'],
                 'name' => $username,
                 'profile' => $data['pname'],
             ];
@@ -574,7 +579,7 @@ TWIG, $avatar_params) . $username;
 TWIG, $avatar_params) . $username;
             $entries[] = [
                 'itemtype' => self::class,
-                'id' => $data['id'],
+                'id' => $data['linkid'],
                 'name' => $username,
                 'entity' => $entity_names[$data['entity']],
             ];

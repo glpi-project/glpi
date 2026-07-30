@@ -43,8 +43,6 @@ use Glpi\Toolbox\IPUtilities;
 use Safe\Exceptions\LdapException;
 
 use function Safe\ini_get;
-use function Safe\json_decode;
-use function Safe\json_encode;
 use function Safe\ldap_bind;
 use function Safe\parse_url;
 use function Safe\preg_match;
@@ -541,7 +539,7 @@ class Auth extends CommonGLPI
      */
     public function getAlternateAuthSystemsUserLogin($authtype = 0)
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
 
         switch ($authtype) {
             case self::CAS:
@@ -673,31 +671,45 @@ class Auth extends CommonGLPI
 
                 if ($CFG_GLPI["login_remember_time"]) {
                     $data = null;
-                    if (array_key_exists($cookie_name, $_COOKIE)) {
-                        $data = json_decode($_COOKIE[$cookie_name], true);
-                    }
-                    if (is_array($data) && count($data) === 2) {
-                        [$cookie_id, $cookie_token] = $data;
-
-                        $user = new User();
-                        $user->getFromDB($cookie_id);
-                        $hash = $user->getAuthToken('cookie_token');
-
-                        if (self::checkPassword($cookie_token, $hash)) {
-                            $this->user->fields['name'] = $user->fields['name'];
-                            // Use current time as session time may not be initialized yet or may be from previous session
-                            $user->update(['id' => $user->getID(), 'last_login' => date("Y-m-d H:i:s")]);
-                            return true;
-                        } else {
-                            $this->addToError(__("Invalid cookie data"));
+                    try {
+                        if (array_key_exists($cookie_name, $_COOKIE)) {
+                            $data = $_COOKIE[$cookie_name];
                         }
+                        if (!empty($data) && str_contains($data, ':')) {
+                            [$token_uid, $token_hash] = explode(':', $data);
+
+                            $it = $DB->request([
+                                'SELECT' => ['users_id', 'token_hash'],
+                                'FROM' => 'glpi_usertokens',
+                                'WHERE' => [
+                                    'type' => 'rememberme',
+                                    'token_uid' => $token_uid,
+                                    'date_expiration' => ['>', date('Y-m-d H:i:s')],
+                                ],
+                                'LIMIT' => 1,
+                            ]);
+                            $known_hash = $it->current()['token_hash'] ?? null;
+                            if ($known_hash !== null && self::checkPassword($token_hash, $known_hash)) {
+                                $user = new User();
+                                $user->getFromDB($it->current()['users_id']);
+                                $this->user->fields['name'] = $user->fields['name'];
+                                $user->update(['id' => $user->getID(), 'last_login' => date("Y-m-d H:i:s")]);
+                                return true;
+                            } else {
+                                $this->addToError(__("Invalid cookie data"));
+                            }
+                        }
+                    } catch (Throwable) {
+                        // Probably an old cookie format, ignore it and remove the cookie
+                        $this->addToError(__("Invalid cookie data"));
                     }
                 } else {
                     $this->addToError(__("Auto login disabled"));
                 }
 
-                // Remove cookie to allow new login
-                self::setRememberMeCookie('');
+                // Remove cookie to allow new login by setting a blank cookie with a past expiration date
+                setcookie($cookie_name, '', ['expires' => time() - 3600, 'path' => '/']);
+                unset($_COOKIE[$cookie_name]);
                 break;
         }
         return false;
@@ -1034,6 +1046,11 @@ class Auth extends CommonGLPI
                 $this->denied_by_rule = true;
             }
 
+            // Capture restore need before clearing the flag (original DB state still in fields).
+            $needs_ldap_restore = $this->user_present
+                && ($this->user->fields['authtype'] ?? 0) == self::LDAP
+                && ($this->user->fields['is_deleted_ldap'] || !$this->user->fields['is_active']);
+
             //Set user an not deleted from LDAP
             $this->user->fields['is_deleted_ldap'] = 0;
 
@@ -1060,6 +1077,10 @@ class Auth extends CommonGLPI
                     unset($input['api_token'], $input['cookie_token'], $input['password_forget_token'], $input['personal_token']);
 
                     $this->user->update($input);
+
+                    if ($needs_ldap_restore) {
+                        User::manageRestoredUserInLdap($this->user->fields['id']);
+                    }
                 } elseif ($CFG_GLPI["is_users_auto_add"]) {
                     // Auto add user
                     $input = $this->user->fields;
@@ -1148,18 +1169,12 @@ class Auth extends CommonGLPI
             $_SESSION["noAUTO"] = 1;
         }
 
-        if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me) {
-            $token = $this->user->getAuthToken('cookie_token', true);
-
-            if ($token) {
-                $data = json_encode([
-                    $this->user->fields['id'],
-                    $token,
-                ]);
-
-                //Send cookie to browser
-                self::setRememberMeCookie($data);
-            }
+        if ($this->auth_succeded && $CFG_GLPI['login_remember_time'] > 0 && $remember_me && Session::getLoginSessionUID() !== null) {
+            self::setRememberMeCookie(
+                users_id: $this->user->getID(),
+                token_uid: Session::getLoginSessionUID(),
+                token: bin2hex(random_bytes(16)),
+            );
         }
 
         if ($this->auth_succeded && !empty($this->user->fields['timezone']) && 'null' !== strtolower($this->user->fields['timezone'])) {
@@ -1584,7 +1599,7 @@ class Auth extends CommonGLPI
      */
     public static function showSynchronizationForm(User $user)
     {
-        if (Session::haveRight("user", User::UPDATEAUTHENT)) {
+        if (Session::haveRight("user", User::UPDATEAUTHENT) && $user->can($user->getID(), READ)) {
             TemplateRenderer::getInstance()->display('pages/setup/authentication/sync.html.twig', [
                 'user' => $user,
             ]);
@@ -1735,28 +1750,39 @@ class Auth extends CommonGLPI
     /**
      * Defines "rememberme" cookie.
      *
-     * @param string $cookie_value
+     * @param int $users_id The ID of the user for which the remember me cookie is being set.
+     * @param string $token_uid The value used in the query to the DB to fetch the remember me token.
+     * @param string $token The non-hashed token value. A hashed version of this value is stored in the DB and compared to the hashed value of the cookie when validating the remember me token.
      *
      * @return void
      */
-    public static function setRememberMeCookie(string $cookie_value): void
+    private static function setRememberMeCookie(int $users_id, string $token_uid, string $token): void
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $DB;
+
+        if (empty($token_uid) || empty($token)) {
+            throw new InvalidArgumentException('Token UID and hash must not be empty.');
+        }
 
         $cookie_name     = session_name() . '_rememberme';
-        $cookie_lifetime = empty($cookie_value) ? time() - 3600 : time() + $CFG_GLPI['login_remember_time'];
+        $cookie_lifetime = time() + $CFG_GLPI['login_remember_time'];
         $cookie_path     = ini_get('session.cookie_path');
         $cookie_domain   = ini_get('session.cookie_domain');
         $cookie_secure   = filter_var(ini_get('session.cookie_secure'), FILTER_VALIDATE_BOOLEAN);
         $cookie_samesite = ini_get('session.cookie_samesite');
+        $token_hash = password_hash($token, PASSWORD_DEFAULT);
 
-        if (empty($cookie_value) && !isset($_COOKIE[$cookie_name])) {
-            return;
-        }
+        $DB->insert('glpi_usertokens', [
+            'type' => 'rememberme',
+            'users_id' => $users_id,
+            'token_uid' => $token_uid,
+            'token_hash' => $token_hash,
+            'date_expiration' => date('Y-m-d H:i:s', $cookie_lifetime),
+        ]);
 
         setcookie(
             $cookie_name,
-            $cookie_value,
+            $token_uid . ':' . $token,
             [
                 'expires'  => $cookie_lifetime,
                 'path'     => $cookie_path,
@@ -1767,10 +1793,14 @@ class Auth extends CommonGLPI
             ]
         );
 
-        if (empty($cookie_value)) {
-            unset($_COOKIE[$cookie_name]);
-        } else {
-            $_COOKIE[$cookie_name] = $cookie_value;
-        }
+        $_COOKIE[$cookie_name] = $token_uid . ':' . $token;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAuthType(): int
+    {
+        return $this->auth_type;
     }
 }

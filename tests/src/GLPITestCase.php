@@ -239,7 +239,7 @@ class GLPITestCase extends TestCase
     {
         $method = new ReflectionMethod($instance, $methodName);
 
-        return $method->invoke($instance, ...$args);
+        return $method->invoke(is_string($instance) ? null : $instance, ...$args);
     }
 
     /**
@@ -700,5 +700,24 @@ class GLPITestCase extends TestCase
                 $e
             );
         }
+    }
+
+    /**
+     * Clean a SQL query string by removing extra whitespaces to make it easier to compare with another SQL query string.
+     * @param $sql
+     * @return string
+     */
+    protected function cleanSQL(string $sql): string
+    {
+        // Clean whitespaces
+        $sql = preg_replace('/\s+/', ' ', $sql);
+
+        // Remove whitespaces around parenthesis
+        $sql = preg_replace('/\(\s+/', '(', $sql);
+        $sql = preg_replace('/\s+\)/', ')', $sql);
+
+        $sql = trim($sql);
+
+        return $sql;
     }
 }

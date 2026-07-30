@@ -39,6 +39,8 @@
 abstract class AbstractQuery
 {
     protected ?string $alias = null;
+    /** @var array<int, mixed> */
+    protected array $params = [];
 
     /**
      * Create a query
@@ -73,5 +75,22 @@ abstract class AbstractQuery
     public function __toString()
     {
         return $this->getQuery();
+    }
+
+    /**
+    * @return array<int, mixed>
+    */
+    public function getParams(): array
+    {
+        return $this->params;
+    }
+
+    /**
+     * @param array<int, mixed> $params
+     */
+    public function setParams(array $params): static
+    {
+        $this->params = $params;
+        return $this;
     }
 }

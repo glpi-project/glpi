@@ -62,7 +62,7 @@ final class GetDestinationFormController extends AbstractController
         $twig = TemplateRenderer::getInstance()->render('pages/admin/form/form_destination_form.html.twig', [
             'destination' => $destination,
             'form' => $destination->getForm(),
-            'can_update' => FormDestination::canUpdate() && $destination->canUpdateItem(),
+            'can_update' => $destination->can($destination->getID(), UPDATE),
             'concrete_destination' => $destination->getConcreteDestinationItem(),
         ]);
         return new Response($twig);

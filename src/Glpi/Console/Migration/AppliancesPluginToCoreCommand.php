@@ -45,6 +45,7 @@ use Contract_Item;
 use Document_Item;
 use Domain;
 use Glpi\Console\AbstractCommand;
+use Glpi\Exception\Database\QueryException;
 use Infocom;
 use Item_Problem;
 use Item_Project;
@@ -287,15 +288,17 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         );
 
         $table  = Profile::getTable();
-        $result = $this->db->doQuery(
-            sprintf(
-                "UPDATE %s SET helpdesk_item_type = REPLACE(helpdesk_item_type, '%s', '%s')",
-                $this->db->quoteName($table),
-                self::PLUGIN_APPLIANCE_ITEMTYPE,
-                self::CORE_APPLIANCE_ITEMTYPE
-            )
-        );
-        if (false === $result) {
+
+        try {
+            $result = $this->db->doQuery(
+                sprintf(
+                    "UPDATE %s SET helpdesk_item_type = REPLACE(helpdesk_item_type, '%s', '%s')",
+                    $this->db->quoteName($table),
+                    self::PLUGIN_APPLIANCE_ITEMTYPE,
+                    self::CORE_APPLIANCE_ITEMTYPE
+                )
+            );
+        } catch (QueryException $e) {
             $this->outputImportError(
                 sprintf(__('Unable to update "%s" in profiles.'), __('Associable items to a ticket'))
             );

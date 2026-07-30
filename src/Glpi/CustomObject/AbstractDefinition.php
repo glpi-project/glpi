@@ -42,6 +42,7 @@ use Gettext\Languages\CldrData as Language_CldrData;
 use Gettext\Languages\Language;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldDefinition;
+use Glpi\Locale\LanguageRegistry;
 use LogicException;
 use Profile;
 use ProfileRight;
@@ -330,8 +331,6 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     protected function showTranslationForm(): void
     {
-        global $CFG_GLPI;
-
         $asset_name_translations = $this->getDecodedTranslationsField();
 
         $translations = [];
@@ -360,7 +359,10 @@ abstract class AbstractDefinition extends CommonDBTM
 
         usort(
             $translations,
-            static fn(array $a, array $b) => strnatcasecmp($CFG_GLPI['languages'][$a['language']][0], $CFG_GLPI['languages'][$b['language']][0])
+            static fn(array $a, array $b) => strnatcasecmp(
+                LanguageRegistry::get($a['language'])->native_name,
+                LanguageRegistry::get($b['language'])->native_name
+            )
         );
 
         $rand = mt_rand();
@@ -912,8 +914,6 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     protected function validateTranslationsArray(mixed $translations): bool
     {
-        global $CFG_GLPI;
-
         if (!is_array($translations)) {
             return false;
         }
@@ -921,7 +921,7 @@ TWIG, ['name' => $name, 'value' => $value]);
         $is_valid = true;
 
         foreach ($translations as $language => $values) {
-            if (!in_array($language, array_keys($CFG_GLPI['languages']), true)) {
+            if (!LanguageRegistry::has($language)) {
                 $is_valid = false;
                 break;
             }
@@ -953,10 +953,8 @@ TWIG, ['name' => $name, 'value' => $value]);
      */
     public static function getPluralFormsForLanguage(string $language): array
     {
-        global $CFG_GLPI;
-
         // check language exists in GLPI configuration
-        if (!array_key_exists($language, $CFG_GLPI['languages'])) {
+        if (!LanguageRegistry::has($language)) {
             return [];
         }
 

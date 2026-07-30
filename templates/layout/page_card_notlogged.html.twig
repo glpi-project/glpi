@@ -67,7 +67,10 @@
 
 {{ include('layout/parts/head.html.twig') }}
 <body class="welcome-anonymous">
-   <div class="page-anonymous">
+   <div class="skip-links">
+      <a class="visually-hidden-focusable skip-link" href="#page">{{ __('Go to main content') }}</a>
+   </div>
+   <main id="page" class="page-anonymous" role="main" tabindex="-1">
       <div class="flex-fill d-flex flex-column justify-content-center py-4 mt-4">
          {% set style = null %}
          {% if card_md_width is defined %}
@@ -83,20 +86,29 @@
                   <span class="glpi-logo mb-4" title="GLPI"></span>
                </div>
             </div>
-            <div class="card card-md main-content-card">
-               {# Keep the header on one line so that the :empty CSS selector will work #}
-               <div class="card-header">{% block header_block %}{% endblock %}</div>
-               <div class="card-body">
-                  {% block content_block %}{% endblock %}
+            <main>
+               <div class="card card-md main-content-card">
+                  {# Keep the header on one line so that the :empty CSS selector will work #}
+                  <div class="card-header">{% block header_block %}{% endblock %}</div>
+                  <div class="card-body">
+                     {% block content_block %}{% endblock %}
+                  </div>
                </div>
-            </div>
+            </main>
 
             <div class="text-center text-muted mt-3">
                {% block footer_block %}{% endblock %}
             </div>
+
+            <div class="text-center mt-3">
+               <a href="{{ help_url() }}">
+                  <i class="ti ti-help" aria-hidden="true"></i>
+                  {{ __('Help') }}
+               </a>
+            </div>
          </div>
       </div>
-   </div>
+   </main>
 
    {% block javascript_block %}{% endblock %}
 </body>

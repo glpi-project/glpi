@@ -1,0 +1,140 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = random() %}
+{% set field_id = field_id|default("rating_data" ~ rand) %}
+{% set field_name = field_name|default('rating') %}
+{% set max = max|default(5)|round(1, 'floor') %}
+{% set value = value|default(0)|round(1, 'floor') %}
+{% set readonly = readonly|default(false) %}
+
+{% if not readonly %}
+    <select id="{{ field_id }}" name="{{ field_name }}" class="visually-hidden">
+        {% for i in range(0, max) %}
+            <option value="{{ i }}" {% if i == value %} selected {% endif %}>{{ i }}</option>
+        {% endfor %}
+    </select>
+{% else %}
+    <input type="hidden" id="{{ field_id }}" name="{{ field_name }}" value="{{ value }}">
+    <span class="visually-hidden">{{ value }} / {{ max }}</span>
+{% endif %}
+<div aria-hidden="true" id="rating_selector{{ rand }}" class="user-select-none text-nowrap">
+    <style>
+       @scope {
+          span {
+             padding: 0.25rem;
+             margin: 0 -0.25rem;
+          }
+          .star-selected {
+             color: var(--tblr-orange);
+             &::before {
+                content: "\f6a6" !important; //filled
+             }
+          }
+          .star-preview {
+             color: var(--tblr-yellow);
+             &::before {
+                content: "\f6a6" !important; //filled
+             }
+          }
+          .star-selectable::before {
+             content: "\eb2e"; //empty
+          }
+       }
+    </style>
+    {% if value > 0 %}
+        {% for i in range(0, value - 1) %}
+            <span class="ti star-selectable star-selected {{ not readonly ? 'cursor-pointer' : '' }}"></span>
+        {% endfor %}
+    {% endif %}
+    {% if value < max %}
+        {% for i in range(value, max - 1) %}
+            <span class="ti star-selectable {{ not readonly ? 'cursor-pointer' : '' }}"></span>
+        {% endfor %}
+    {% endif %}
+</div>
+
+{% if not readonly %}
+    <script type="module">
+        const rating_container = document.getElementById('rating_selector{{ rand }}');
+        const rating_input = document.getElementById('{{ field_id }}');
+
+        rating_container.addEventListener('mouseenter', (event) => {
+            if (event.target.classList.contains('star-selectable')) {
+                rating_container.querySelectorAll('.star-selected').forEach(star => star.classList.remove('star-selected'));
+            }
+        }, { capture: true });
+        rating_container.addEventListener('mouseover', _.throttle((event) => {
+            if (event.target.classList.contains('star-selectable')) {
+                let star = event.target;
+                while (star) {
+                    star.classList.add('star-preview');
+                    star = star.previousElementSibling;
+                }
+            }
+        }, 100), { passive: true });
+        rating_container.addEventListener('mouseout', (event) => {
+            if (event.target.classList.contains('star-selectable')) {
+                let star = event.target;
+                while (star) {
+                    star.classList.remove('star-preview');
+                    star = star.previousElementSibling;
+                }
+                const rating = parseInt(rating_input.value);
+                if (rating > 0) {
+                    let star = rating_container.querySelectorAll('.star-selectable')[rating - 1];
+                    while (star) {
+                        star.classList.add('star-selected');
+                        star = star.previousElementSibling;
+                    }
+                }
+            }
+        });
+        rating_container.addEventListener('click', (event) => {
+            if (event.target.classList.contains('star-selectable')) {
+                const stars = rating_container.querySelectorAll('.star-selected');
+                stars.forEach(star => {
+                    star.classList.remove('star-selected');
+                });
+                let star = event.target;
+                const rating = Array.from(rating_container.querySelectorAll('.star-selectable')).indexOf(star) + 1;
+                while (star) {
+                    star.classList.add('star-selected');
+                    star = star.previousElementSibling;
+                }
+                const select = document.getElementById('{{ field_id }}');
+                select.value = rating;
+                select.dispatchEvent(new Event('change'));
+            }
+        });
+    </script>
+{% endif %}

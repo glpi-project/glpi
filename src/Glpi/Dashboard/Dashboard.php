@@ -39,12 +39,30 @@ use CommonDBTM;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\TooManyResultsException;
+use Glpi\Plugin\Hooks;
+use Plugin;
 use Ramsey\Uuid\Uuid;
 use Session;
 use Toolbox;
 
 use function Safe\json_decode;
 
+/**
+ * @phpstan-type DashboardConfigDescription list<array{
+ *   key: string,
+ *   name: string,
+ *   context: string,
+ *   items: list<array{
+ *     x: int,
+ *     y: int,
+ *     width: int,
+ *     height: int,
+ *     gridstack_id: string,
+ *     card_id: string,
+ *     card_options: array{color: string, widgettype: string}
+ *   }>
+ * }>
+ */
 class Dashboard extends CommonDBTM
 {
     protected int $id      = 0;
@@ -755,27 +773,11 @@ class Dashboard extends CommonDBTM
     /**
      * Return default dashboards data.
      *
-     * @return list<array{
-     *   key: string,
-     *   name: string,
-     *   context: string,
-     *   items: list<array{
-     *     x: int,
-     *     y: int,
-     *     width: int,
-     *     height: int,
-     *     gridstack_id: string,
-     *     card_id: string,
-     *     card_options: array{
-     *       color: string,
-     *       widgettype: string,
-     *     },
-     *   }>,
-     * }>
+     * @return DashboardConfigDescription
      */
     public static function getDefaults(): array
     {
-        return [
+        $default_dashboards = [
             [
                 'key' => 'central',
                 'name' => __('Central'),
@@ -1685,5 +1687,13 @@ class Dashboard extends CommonDBTM
                 ],
             ],
         ];
+
+        $more_dashboards = Plugin::doHookFunction(Hooks::DASHBOARD_DEFAULTS);
+        if (is_array($more_dashboards)) {
+            /** @var DashboardConfigDescription $more_dashboards */
+            $default_dashboards = array_merge($default_dashboards, $more_dashboards);
+        }
+
+        return $default_dashboards;
     }
 }

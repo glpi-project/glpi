@@ -65,34 +65,69 @@ class DbEngineTest extends GLPITestCase
                 'messages'  => ['Database engine version (8.0.23) is supported.'],
             ],
             [
+                'version'   => '8.0.23-standard',
+                'validated' => true,
+                'messages'  => ['Database engine version (8.0.23) is supported.'],
+            ],
+            [
+                'version'   => '8.4.6',
+                'validated' => true,
+                'messages'  => ['Database engine version (8.4.6) is supported.'],
+            ],
+            [
+                'version'   => '9.7.1',
+                'validated' => true,
+                'messages'  => ['Database engine version (9.7.1) is supported.'],
+            ],
+            [
                 'version'   => '10.1.48-MariaDB',
                 'validated' => false,
-                'messages'  => ['Database engine version (10.1.48) is not supported. Minimum required version is MariaDB 10.6.'],
+                'messages'  => ['Database engine version (10.1.48) is not supported. Minimum required version is MariaDB 10.11.'],
             ],
             [
                 'version'   => '10.2.36-MariaDB',
                 'validated' => false,
-                'messages'  => ['Database engine version (10.2.36) is not supported. Minimum required version is MariaDB 10.6.'],
+                'messages'  => ['Database engine version (10.2.36) is not supported. Minimum required version is MariaDB 10.11.'],
             ],
             [
                 'version'   => '10.3.28-MariaDB',
                 'validated' => false,
-                'messages'  => ['Database engine version (10.3.28) is not supported. Minimum required version is MariaDB 10.6.'],
+                'messages'  => ['Database engine version (10.3.28) is not supported. Minimum required version is MariaDB 10.11.'],
             ],
             [
                 'version'   => '10.4.8-MariaDB-1:10.4.8+maria~bionic',
                 'validated' => false,
-                'messages'  => ['Database engine version (10.4.8) is not supported. Minimum required version is MariaDB 10.6.'],
+                'messages'  => ['Database engine version (10.4.8) is not supported. Minimum required version is MariaDB 10.11.'],
             ],
             [
                 'version'   => '10.5.9-MariaDB',
                 'validated' => false,
-                'messages'  => ['Database engine version (10.5.9) is not supported. Minimum required version is MariaDB 10.6.'],
+                'messages'  => ['Database engine version (10.5.9) is not supported. Minimum required version is MariaDB 10.11.'],
             ],
             [
                 'version'   => '10.6.12-MariaDB',
+                'validated' => false,
+                'messages'  => ['Database engine version (10.6.12) is not supported. Minimum required version is MariaDB 10.11.'],
+            ],
+            [
+                'version'   => '10.11.18-MariaDB',
                 'validated' => true,
-                'messages'  => ['Database engine version (10.6.12) is supported.'],
+                'messages'  => ['Database engine version (10.11.18) is supported.'],
+            ],
+            [
+                'version'   => '11.4.12-MariaDB',
+                'validated' => true,
+                'messages'  => ['Database engine version (11.4.12) is supported.'],
+            ],
+            [
+                'version'   => '11.8.8-MariaDB',
+                'validated' => true,
+                'messages'  => ['Database engine version (11.8.8) is supported.'],
+            ],
+            [
+                'version'   => '12.3.2-MariaDB',
+                'validated' => true,
+                'messages'  => ['Database engine version (12.3.2) is supported.'],
             ],
         ];
     }

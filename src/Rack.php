@@ -238,6 +238,14 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
         ];
 
         $tab[] = [
+            'id'                 => '9',
+            'table'              => $this->getTable(),
+            'field'              => 'max_power',
+            'name'               => __('Max. power (in watts)'),
+            'datatype'           => 'number',
+        ];
+
+        $tab[] = [
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',

@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Controller;
 
 use CommonDBTM;
 use Glpi\Controller\ShareAccessController;
+use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Security\ShareTokenManager;
 use Glpi\ShareableInterface;
 use Glpi\ShareToken;
@@ -101,5 +102,14 @@ final class ShareAccessControllerTest extends DbTestCase
         $response = $controller->__invoke($request, $plain);
 
         $this->assertSame('no-referrer', $response->headers->get('Referrer-Policy'));
+    }
+
+    public function testUnknownTokenIsRejected(): void
+    {
+        $this->expectException(NotFoundHttpException::class);
+
+        $unknown = str_repeat('a', 64);
+        $request = Request::create('/Share/' . $unknown, 'GET');
+        (new ShareAccessController())->__invoke($request, $unknown);
     }
 }

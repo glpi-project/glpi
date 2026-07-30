@@ -53,9 +53,9 @@ use Glpi\Features\Clonable;
 use Glpi\Http\Request;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\FilterableTrait;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Exception\RequestException;
+use Glpi\Toolbox\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
 use Twig\Extra\Markdown\MarkdownExtension;
 
 use function Safe\json_decode;
@@ -1030,7 +1030,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         TemplateRenderer::getInstance()->display('pages/setup/webhook/payload_editor.html.twig', [
             'item' => $this,
             'params' => [
-                'canedit' => $this->canUpdateItem(),
+                'canedit' => $this->can($this->getID(), UPDATE),
                 'candel' => false,
             ],
             'response_schema' => $response_schema,
@@ -1090,37 +1090,23 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     public static function validateCRAChallenge(string $url, string $body, string $secret): array
     {
-        global $CFG_GLPI;
-
-        if (!Toolbox::isUrlSafe($url)) {
-            return [
-                'status' => false,
-                'message' => sprintf(__('URL "%s" is not allowed by your administrator.'), $url),
-            ];
-        }
-
         $decrypted_secret = (new GLPIKey())->decrypt($secret);
         $secret_signature = self::getSignature($body, $decrypted_secret);
 
         $challenge_response = [];
-        $options = [
-            'base_uri'        => $url,
-            'connect_timeout' => 1,
-        ];
-        if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
-            $options['proxy_excluded'] = true;
-        }
 
-        // init guzzle client with base options
-        $httpClient = Toolbox::getGuzzleClient($options);
+        $httpClient = new HttpClient(context: self::class);
         try {
             //prepare query / body
-            $response = $httpClient->request('GET', '', [
-                'query' => ['crc_token' => $secret_signature],
-            ]);
+            $response = $httpClient->get(
+                $url,
+                [
+                    'query' => ['crc_token' => $secret_signature],
+                ]
+            );
 
             if ($response->getStatusCode() === 200) {
-                $response_challenge = $response->getBody()->getContents();
+                $response_challenge = $response->getContent();
                 //check response
                 if (hash_equals(hash_hmac('sha256', $secret_signature, $decrypted_secret), $response_challenge)) {
                     $challenge_response = [
@@ -1135,23 +1121,17 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 }
             } else {
                 $challenge_response = [
-                    'status' => false,
-                    'message' => $response->getReasonPhrase(),
+                    'status'      => false,
+                    'message'     => sprintf(__('Unexpected code %d received'), $response->getStatusCode()),
                 ];
             }
-        } catch (ClientException|RequestException $e) {
-            $challenge_response['status'] = false;
-            if ($e->hasResponse()) {
-                $response = $e->getResponse();
-                $challenge_response['message'] = $response->getReasonPhrase();
-                $challenge_response['status_code'] = $response->getStatusCode();
-            } else {
-                $challenge_response['message'] = $e->getMessage();
-                $challenge_response['status_code'] = 503;
-            }
-        } catch (GuzzleException $e) {
+        } catch (ExceptionInterface $e) {
             $challenge_response['status'] = false;
             $challenge_response['message'] = $e->getMessage();
+
+            if ($e instanceof HttpExceptionInterface) {
+                $challenge_response['status_code'] = $e->getResponse()->getStatusCode();
+            }
         }
 
         return $challenge_response;

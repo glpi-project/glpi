@@ -37,9 +37,11 @@ namespace tests\units\Glpi\Inventory;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Asset\Software;
 use Glpi\Inventory\Conf;
+use Glpi\Inventory\ImportResult;
 use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
 use Glpi\Tests\InventoryTestCase;
+use Glpi\Toolbox\FileInfo;
 use Item_OperatingSystem;
 use Lockedfield;
 use OperatingSystem;
@@ -47,6 +49,7 @@ use OperatingSystemArchitecture;
 use OperatingSystemServicePack;
 use OperatingSystemVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 use RuleImportAsset;
 use UserEmail;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
@@ -4653,11 +4656,18 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $json_name = 'computer_1.json';
         $json_path = self::INV_FIXTURES . $json_name;
         $conf = new Conf();
-        $result = $conf->importFiles([$json_name => $json_path]);
+        $result = $conf->importFiles([new FileInfo($json_name, $json_path)]);
 
-        $this->assertIsArray($result[$json_name]);
+        $this->assertInstanceOf(ImportResult::class, $result[$json_name]);
+        $this->assertTrue($result[$json_name]->isSuccess());
+        $this->assertInstanceOf('Computer', $result[$json_name]->getItems()[0]);
+
+        // Legacy array access is still supported (deprecated)
         $this->assertTrue($result[$json_name]['success']);
-        $this->assertInstanceOf('Computer', $result[$json_name]['items'][0]);
+        $this->hasPhpLogRecordThatContains(
+            'ImportResult array access is deprecated. Use the dedicated getters instead.',
+            LogLevel::INFO
+        );
 
         //1 computer and 1 printer has been inventoried
         $nbcomputers++;
@@ -4665,6 +4675,32 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $this->assertSame(countElementsInTable(\Computer::getTable()), $nbcomputers);
         $this->assertSame(countElementsInTable(\Printer::getTable()), $nbprinters);
+
+        //unsupported file
+        $result = $conf->importFiles([new FileInfo('InventoryTest.php', __FILE__)]);
+        $this->assertFalse($result['InventoryTest.php']->isSuccess());
+        $this->assertSame(
+            'File `InventoryTest.php` has not been imported. (`php` format is not supported)',
+            $result['InventoryTest.php']->getMessage()
+        );
+    }
+
+    public function testImportFilesLegacyArray()
+    {
+        $json_name = 'computer_1.json';
+        $json_path = self::INV_FIXTURES . $json_name;
+        $conf = new Conf();
+
+        // Passing a `filename => filepath` array is deprecated but must still work
+        $result = $conf->importFiles([$json_name => $json_path]);
+        $this->hasPhpLogRecordThatContains(
+            'User Deprecated: Passing an array of "filename => filepath" to Conf::importFiles() is deprecated.',
+            LogLevel::INFO
+        );
+
+        $this->assertInstanceOf(ImportResult::class, $result[$json_name]);
+        $this->assertTrue($result[$json_name]->isSuccess());
+        $this->assertInstanceOf('Computer', $result[$json_name]->getItems()[0]);
     }
 
     /**
@@ -4680,26 +4716,33 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             realpath(self::INV_FIXTURES . 'computer_1.json'),
             realpath(self::INV_FIXTURES . 'networkequipment_1.json'),
             realpath(self::INV_FIXTURES . 'printer_1.json'),
+            realpath(__FILE__),
         ];
 
         UnifiedArchive::create($json_paths, self::INVENTORY_ARCHIVE_PATH);
 
         $conf = new Conf();
-        $result = $conf->importFiles(['to_inventory.zip' => self::INVENTORY_ARCHIVE_PATH]);
+        $result = $conf->importFiles([new FileInfo('to_inventory.zip', self::INVENTORY_ARCHIVE_PATH)]);
 
-        $this->assertCount(3, $result);
+        $this->assertCount(4, $result);
 
         // Expected result for computer_1.json
-        $this->assertTrue($result['to_inventory.zip/computer_1.json']['success']);
-        $this->assertInstanceOf('Computer', $result['to_inventory.zip/computer_1.json']['items'][0]);
+        $this->assertTrue($result['to_inventory.zip/computer_1.json']->isSuccess());
+        $this->assertInstanceOf('Computer', $result['to_inventory.zip/computer_1.json']->getItems()[0]);
 
         // Expected result for networkequipment_1.json
-        $this->assertTrue($result['to_inventory.zip/networkequipment_1.json']['success']);
-        $this->assertInstanceOf('NetworkEquipment', $result['to_inventory.zip/networkequipment_1.json']['items'][0]);
+        $this->assertTrue($result['to_inventory.zip/networkequipment_1.json']->isSuccess());
+        $this->assertInstanceOf('NetworkEquipment', $result['to_inventory.zip/networkequipment_1.json']->getItems()[0]);
 
         // Expected result for printer_1.json
-        $this->assertTrue($result['to_inventory.zip/printer_1.json']['success']);
-        $this->assertInstanceOf('Printer', $result['to_inventory.zip/printer_1.json']['items'][0]);
+        $this->assertTrue($result['to_inventory.zip/printer_1.json']->isSuccess());
+        $this->assertInstanceOf('Printer', $result['to_inventory.zip/printer_1.json']->getItems()[0]);
+
+        $this->assertFalse($result['to_inventory.zip/InventoryTest.php']->isSuccess());
+        $this->assertSame(
+            'File `to_inventory.zip/InventoryTest.php` has not been imported. (`php` format is not supported)',
+            $result['to_inventory.zip/InventoryTest.php']->getMessage()
+        );
 
         //1 computer 2 printers and a network equipment has been inventoried
         $nbcomputers++;

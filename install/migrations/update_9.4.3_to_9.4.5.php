@@ -50,7 +50,6 @@ function update943to945()
     $migration->setVersion('9.4.5');
 
     /** Add OLA TTR begin date field to Tickets */
-    $iterator = new DBmysqlIterator(null);
     $migration->addField(
         'glpi_tickets',
         'ola_ttr_begin_date',
@@ -58,7 +57,7 @@ function update943to945()
         [
             'after'     => 'olalevels_id_ttr',
             'update'    => $DB->quoteName('date'), // Assign ticket creation date by default
-            'condition' => 'WHERE ' . $iterator->analyseCrit(['NOT' => ['olas_id_ttr' => '0']]),
+            'condition' => sprintf('WHERE NOT(%s = %d)', $DB->quoteName('olas_id_ttr'), 0),
         ]
     );
     /** /Add OLA TTR begin date field to Tickets */

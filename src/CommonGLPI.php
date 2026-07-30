@@ -37,10 +37,10 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\parse_url;
 
@@ -926,6 +926,9 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function showTabsContent($options = [])
     {
+        /** @var Kernel $kernel */
+        global $kernel;
+
         // for objects not in table like central
         if (isset($this->fields['id'])) {
             $ID = $this->fields['id'];
@@ -940,7 +943,7 @@ class CommonGLPI implements CommonGLPIInterface
         $cleaned_options = $options;
         unset($cleaned_options['id'], $cleaned_options['stock_image']);
 
-        $request        = Request::createFromGlobals();
+        $request        = $kernel->getMainRequest();
         $target         = $request->getBasePath() . $request->getPathInfo();
         $withtemplate   = "";
 
@@ -1039,6 +1042,9 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function showNavigationHeader($options = [])
     {
+        /** @var Kernel $kernel */
+        global $kernel;
+
         // for objects not in table like central
         if (isset($this->fields['id'])) {
             $ID = $this->fields['id'];
@@ -1050,7 +1056,7 @@ class CommonGLPI implements CommonGLPIInterface
             }
         }
 
-        $request        = Request::createFromGlobals();
+        $request        = $kernel->getMainRequest();
         $target         = $request->getBasePath() . $request->getPathInfo();
         $extraparamhtml = "";
 
@@ -1165,7 +1171,8 @@ class CommonGLPI implements CommonGLPIInterface
             echo "</div>";
 
             if (static::$showTitleInNavigationHeader && $this instanceof CommonDBTM) {
-                echo "<h3 class='navigationheader-title strong d-flex align-items-center order-2'>";
+                // Page title as <h1> for heading hierarchy; fs-3 keeps the size (the class has no font-size of its own)
+                echo "<h1 class='navigationheader-title strong fs-3 d-flex align-items-center order-2'>";
                 if (method_exists($this, 'getStatusIcon') && $this->isField('status')) {
                     echo "<span class='me-1'>" . $this->getStatusIcon($this->fields['status']) . '</span>';
                 }
@@ -1182,12 +1189,13 @@ class CommonGLPI implements CommonGLPIInterface
                     echo __s('Deleted');
                     echo "</span>";
                 }
-                echo "</h3>";
+                echo "</h1>";
             } else {
                 echo TemplateRenderer::getInstance()->render('components/form/header_content.html.twig', [
                     'item'          => $this,
                     'params'        => $options,
                     'in_navheader'  => true,
+                    'level'         => 1,
                     'header_toolbar' => $this->getFormHeaderToolbar(),
                 ]);
             }

@@ -68,7 +68,8 @@
 {% endif %}
    <div id="mainformtable">
       {% if include_header_content %}
-         {{ include('components/form/header_content.html.twig') }}
+         {# New item has no navigation header, so this title is the page h1; otherwise it sits below the navheader h1 #}
+         {{ include('components/form/header_content.html.twig', {level: item.isNewItem() ? 1 : 2}) }}
       {% endif %}
 
       {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params ?? []}) }}

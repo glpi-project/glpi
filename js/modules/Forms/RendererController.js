@@ -208,7 +208,7 @@ export class GlpiFormRendererController
 
                 // Find the input field within the question
                 let has_input_field = true;
-                const inputFields = question.find('input:not([type=hidden]):not([data-uploader-name]):not(.select2-search__field), select, textarea');
+                const inputFields = question.find('input:not([type=hidden]):not([data-uploader-name]):not(.select2-search__field), select, textarea:not(.select2-search__field)');
                 if (!inputFields.length) {
                     has_input_field = false;
                 }
@@ -508,6 +508,15 @@ export class GlpiFormRendererController
         );
         if (submit_button !== null) {
             this.#applyVisibilityToItem(submit_button, results.form_visibility);
+        }
+
+        // Altcha widget must follow the same visibility as the submit button,
+        // as it has no purpose when the form cannot be submitted.
+        const altcha = container.querySelector(
+            '[data-glpi-form-renderer-altcha]'
+        );
+        if (altcha !== null) {
+            this.#applyVisibilityToItem(altcha, results.form_visibility);
         }
 
         // Apply sections visibility

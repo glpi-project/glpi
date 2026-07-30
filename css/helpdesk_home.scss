@@ -129,7 +129,11 @@ header {
         overflow: hidden;
 
         svg {
-            height: 393px;
+            width: 100%;
+            height: auto;
+
+            // keep that ratio so the illustration scales with the scene width without distortion.
+            aspect-ratio: 842 / 596;
         }
 
         img {
@@ -141,6 +145,23 @@ header {
         // Hide for screens smaller than 1600px
         @media (max-width: 1600px) {
             display: none;
+        }
+    }
+
+    // If the search bar is not present
+    &:has(.search-bar-container-placeholder){
+        .scene {
+            // Keep the illustrations visible below 1600px (they are hidden by
+            // default), scaling them down so they still fit.
+            @media (max-width: 1600px) {
+                display: flex;
+                width: 300px;
+            }
+
+            // Hide for screens smaller than 992px
+            @media (max-width: 992px) {
+                display: none;
+            }
         }
     }
 

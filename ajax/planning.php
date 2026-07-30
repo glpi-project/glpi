@@ -70,8 +70,9 @@ if (($_POST["action"] ?? null) == "clone_event") {
 }
 
 if (($_POST["action"] ?? null) == "delete_event") {
-    $extevent->check((int) $_POST['event']['items_id'], DELETE);
-    echo Planning::deleteEvent($_POST['event']);
+    $event = $_POST['event'];
+    // rights check is done inside `Planning::deleteEvent()`, depending on the event itemtype
+    echo Planning::deleteEvent($event);
     return;
 }
 
@@ -131,10 +132,6 @@ if ($_REQUEST["action"] == "add_event_classic_form") {
 
 if ($_REQUEST["action"] == "edit_event_form") {
     Planning::editEventForm($_REQUEST);
-}
-
-if ($_REQUEST["action"] == "get_filters_form") {
-    Planning::showPlanningFilter();
 }
 
 if (($_POST["action"] ?? null) == "toggle_filter") {

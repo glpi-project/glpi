@@ -93,7 +93,7 @@ class MailCollector extends CommonDBTM
     /**
      * Tag used to recognize embedded images of a mail
      */
-    public array $tags;
+    public array $tags = [];
     /**
      * Message to add to body to build ticket
      */
@@ -1742,25 +1742,55 @@ class MailCollector extends CommonDBTM
                 $content = '';
 
                 // Extract everything located prior to doctype/html declaration
-                $pre_content_matches = [];
-                if (preg_match('/^(?<pre_content>.*?)(?:<!doctype|<html)/is', $raw_content, $pre_content_matches)) {
-                    $content .= trim($pre_content_matches['pre_content']);
+                $html_opening_matches = [];
+                if (preg_match('/(<!doctype|<html)/uis', $raw_content, $html_opening_matches, PREG_OFFSET_CAPTURE) === 1) {
+                    // Regex offset is in bytes, not in chars, and must be converted for unicode support
+                    $html_opening_pos = mb_strlen(substr($raw_content, 0, $html_opening_matches[1][1] ?? 0));
+
+                    $content .= mb_substr(
+                        $raw_content,
+                        0,
+                        $html_opening_pos
+                    );
                 }
 
                 // Extract everything located inside the body
-                $body_matches = [];
-                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $raw_content, $body_matches)) {
-                    $content .= $body_matches['body'];
+                $body_opening_matches = [];
+                $body_closing_matches = [];
+                if (
+                    preg_match('/(<body[^>]*>)/uis', $raw_content, $body_opening_matches, PREG_OFFSET_CAPTURE) === 1
+                    && preg_match('/(<\/body>)/uis', $raw_content, $body_closing_matches, PREG_OFFSET_CAPTURE) === 1
+                    && ($body_closing_matches[1][1] ?? 0) > ($body_opening_matches[1][1] ?? 0)
+                ) {
+                    // Regex offset is in bytes, not in chars, and must be converted for unicode support
+                    $body_opening_pos = mb_strlen(substr($raw_content, 0, $body_opening_matches[1][1] ?? 0));
+                    $body_closing_pos = mb_strlen(substr($raw_content, 0, $body_closing_matches[1][1] ?? 0));
+
+                    $body_content_start_pos = $body_opening_pos + mb_strlen($body_opening_matches[1][0] ?? '');
+                    $body_content_end_pos   = $body_closing_pos;
+
+                    $content .= mb_substr(
+                        $raw_content,
+                        $body_content_start_pos,
+                        $body_content_end_pos - $body_content_start_pos
+                    );
                 }
 
                 // Extract everything located after the html closing tag
-                $post_content_matches = [];
-                if (preg_match('/(?:<\/html>)(?<post_content>.*?)$/is', $raw_content, $post_content_matches)) {
-                    $content .= trim($post_content_matches['post_content']);
+                $html_closing_matches = [];
+                if (preg_match('/(<\/html>)/uis', $raw_content, $html_closing_matches, PREG_OFFSET_CAPTURE) === 1) {
+                    // Regex offset is in bytes, not in chars, and must be converted for unicode support
+                    $html_closing_pos = mb_strlen(substr($raw_content, 0, $html_closing_matches[1][1] ?? 0));
+
+                    $content .= mb_substr(
+                        $raw_content,
+                        $html_closing_pos + mb_strlen($html_closing_matches[1][0] ?? ''),
+                        null
+                    );
                 }
 
                 // If we have extracted content, use it, otherwise fallback to original
-                if ($content === '') {
+                if (trim($content) === '') {
                     $content = $raw_content;
                 }
 

@@ -7,14 +7,25 @@ The present file will list all changes made to the project; according to the
 ## [12.0.0] unreleased
 
 ### Added
+- `morethan` and `lessthan` search operators for numeric fields (number, integer, decimal, count, mio).
 - Sessions tab for OAuth Clients to display non-expired sessions associated with the client and allow revoking them.
 - Improved client IP detection.
   If your GLPI instance is behind a reverse proxy, you should add its IP(s) the new `GLPI_TRUSTED_REVERSE_PROXIES` constant and modify the new `GLPI_REVERSE_PROXY_HEADERS` constant to include the headers your proxy uses to forward the client IP.
   Only the required HTTP headers should be listed for better security as any header not handled by the proxy could be spoofed by the client.
+- Remember me support for multiple devices at the same time.
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
 - Password policy and 2FA settings moved from `Setup > General` to `Setup > Security`.
+- CLI command `system:status` now gives information about database version.
+- New `ERROR` status for automatic actions that have repeatedly failed.
+  Action failure is tracked based on a shutdown handler that checks if the action has completed normally.
+  When an action failure is caught, it will go back to a scheduled status and increment an error counter. If the action fails 5 times, the action gets put in an ERROR status and it will need manual intervention.
+  Failed actions get rescheduled using a backoff strategy starting at 1 minute and doubling for each failure up to a max delay of 30 minutes, plus a random delay between 0 and 2 minutes.
+- New `ABORTED` status for automatic actions terminated externally (ex: killed process). These actions are scheduled to re-run as soon as possible.
+- `status_msg` property for the cronttask (automatic actions) service in the status checker format changed from "RUNNING: %d, STUCK: %d, TOTAL: %d" to "RUNNING: %d, STUCK: %d, ERROR: %d, TOTAL: %d".
+  If your monitoring relies on parsing this string, make sure it can handle the new format.
+- New `errored` property for the cronttask (automatic actions) service in the status checker to indicate the names of the errored actions requiring manual intervention.
 
 ### Deprecated
 
@@ -43,6 +54,9 @@ The present file will list all changes made to the project; according to the
 - `countDistinctElementsInTable` / `DbUtils::countDistinctElementsInTable()` method signatures changed.
 - `getAllDataFromTable` / `DbUtils::getAllDataFromTable()` method signatures changed.
 - Methods in `Dbutils` and the global counterparts in `src/autoload/dbutils-aliases.php` now have strict type declarations except for methods that have been deprecated.
+- `User::getAuthToken()` cannot be used for `cookie_token` anymore.
+- Remember me cookie token no longer stored in the `glpi_users` table. It is now stored in the `glpi_user_tokens` table.
+- `Auth::setRememberMeCookie()` signature changed. It no longer accepts an empty value to trigger the removal of the cookie.
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.
@@ -73,10 +87,15 @@ The present file will list all changes made to the project; according to the
 #### Removed
 
 - `diff-match-patch` JS library
+- `hotkeys-js` JS library
 - `jquery-prettytextdiff` JS library
+- `jquery.rateit` JS library
+- `jquery.fancytree` JS library. Use `Wunderbaum` instead.
 - `Forms/FaIconSelector` JS module
 - `Knowbase` JS module
 - `league/csv` PHP library. Use `phpoffice/phpspreadsheet` instead.
+- `guzzlehttp/guzzle` PHP library. Use `Glpi\Toolbox\HttpClient` instead.
+- `GLPI_SERVERSIDE_URL_ALLOWLIST` constant, replaced by `GLPI_SERVERSIDE_URL_ALLOWED_PRIVATE_NETWORKS_CONTEXTS`
 - `Auth::getErr()`
 - `AuthLDAP::DELETED_USER_PRESERVE`
 - `AuthLDAP::DELETED_USER_DELETE`
@@ -139,6 +158,7 @@ The present file will list all changes made to the project; according to the
 - `ITILFollowup::ADDALLTICKET` constant
 - `ITILFollowup::ADDGROUPTICKET` constant
 - `ITILFollowup::ADDMYTICKET` constant
+- `KnowbaseItem::normalizeKbRevisionDiffHtml()`
 - `KnowbaseItem_Comment::getCommentForm()`
 - `KnowbaseItem_Comment::showForItem()`
 - `KnowbaseItem_Revision::showForItem()`
@@ -148,6 +168,7 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItemTranslation::showForm()`
 - `KnowbaseItemTranslation::showFull()`
 - `KnowbaseItemTranslation::showTranslations()`
+- `LevelAgreement::getDataForTicket()`
 - `Migration::addNewMessageArea()`
 - `Migration::setOutputHandler()`
 - `Migration::displayError()`
@@ -163,15 +184,45 @@ The present file will list all changes made to the project; according to the
 - `SavedSearch::addVisibilityRestrict()`
 - `Search::joinDropdownTranslations()`
 - `SynchronizeUsersCommand::convertOldDeleteStrategyToNew()`
+- `Ticket::getDatasToAddOLA()`
+- `Ticket::olaAffect()`
 - `Ticket_Ticket::getLinkedTicketsTo()`
 - `Timer` class
 - `Toolbox::addslashes_deep()`
+- `Toolbox::callCurl()`: use `Glpi\Toolbox\HttpClient` instead
+- `Toolbox::getGuzzleClient()`: use `Glpi\Toolbox\HttpClient` instead
+- `Toolbox::getURLContent()`: use `Glpi\Toolbox\HttpClient` instead
+- `Toolbox::isUrlSafe()`
 - `Toolbox::seems_utf8()`
 - `Toolbox::sendFile()`
 - `Toolbox::stripslashes_deep()`
 
 
-## [11.0.8] unreleased
+## [11.0.9] unreleased
+
+### Added
+
+### Changed
+- Fixed searching values with multiple concurrent spaces.
+- Fixed import of exported forms containing a condition on an item dropdown with no item selected.
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+- Duplicate spaces in some SQL queries, including values, (usually ones that used subqueries) no longer removed.
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.8] 2026-06-24
 
 ### Added
 

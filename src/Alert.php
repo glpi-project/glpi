@@ -277,12 +277,14 @@ class Alert extends CommonDBTM
 
         if ($items_id) {
             $iter = $DB->request([
-                'FROM'     => self::getTable(),
-                'FIELDS'   => 'date',
-                'ORDER'    => 'date DESC',
-                'LIMIT'    => 1,
-                'itemtype' => $itemtype,
-                'items_id' => $items_id,
+                'FROM'   => self::getTable(),
+                'FIELDS' => 'date',
+                'WHERE'  => [
+                    'itemtype' => $itemtype,
+                    'items_id' => $items_id,
+                ],
+                'ORDER'  => 'date DESC',
+                'LIMIT'  => 1,
             ]);
             if ($row = $iter->current()) {
                 //TRANS: %s is the date

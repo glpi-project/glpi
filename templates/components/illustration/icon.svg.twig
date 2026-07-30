@@ -32,5 +32,5 @@
 
 <svg role="img" width="{{ width }}" height="{{ height }}" class="flex-shrink-0">
     <title>{{ title ?? '' }}</title>
-    <use xlink:href="{{ path(file_path) }}#{{ icon_id }}"/>
+    <use data-testid="illustration-use" xlink:href="{{ path(file_path) }}#{{ icon_id }}"/>
 </svg>

@@ -211,6 +211,25 @@ e2e-db-update: ## Update e2e testing's database
 		--env=e2e_testing
 .PHONY: e2e-db-update
 
+e2e-db-check: ## Ensure the e2e database is up to date before running the tests
+	@if $(CONSOLE) database:is_up_to_date --env=e2e_testing >/dev/null 2>&1; then \
+		exit 0; \
+	fi; \
+	printf $(_ERROR) "playwright" "The e2e database is out of date or not yet installed."; \
+	if [ -t 0 ]; then \
+		read -p "Reinstall it now? [y/N] " answer; \
+		if [ "$$answer" = "y" ] || [ "$$answer" = "Y" ]; then \
+			$(MAKE) --no-print-directory e2e-db-install; \
+		else \
+			printf $(_ERROR) "playwright" "Aborted. Run \"make e2e-db-install\" to reinstall it."; \
+			exit 1; \
+		fi; \
+	else \
+		printf $(_ERROR) "playwright" "Run \"make e2e-db-install\" to reinstall it."; \
+		exit 1; \
+	fi
+.PHONY: e2e-db-check
+
 ## —— Dependencies —————————————————————————————————————————————————————————————
 composer: ## Run a composer command, example: make composer c='require mypackage/package'
 	@$(eval c ?=)
@@ -284,7 +303,7 @@ cypress-open: ## Open cypress UI
 	$(PHP) node_modules/.bin/cypress open --e2e --browser electron --project tests $(c)
 .PHONY: cypress-open
 
-playwright: ## Run playwright tests
+playwright: e2e-db-check ## Run playwright tests
 	@$(eval c ?=)
 	$(CONSOLE) config:set url_base $(E2E_BASE_URL) --env=e2e_testing
 	$(PLAYWRIGHT) test $(c)
@@ -296,7 +315,7 @@ playwright-report: ## View playwright reports
 	$(PLAYWRIGHT) show-report tests/e2e/results --host=0.0.0.0 $(c)
 .PHONY: playwright-report
 
-playwright-ui: ## Open playwright's UI mode
+playwright-ui: e2e-db-check ## Open playwright's UI mode
 	@$(eval c ?=)
 	$(PLAYWRIGHT) test --ui-host=0.0.0.0 --ui-port=9323 $(c)
 .PHONY: playwright-ui

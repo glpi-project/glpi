@@ -111,7 +111,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
         $links = [];
         if (static::canView()) {
             $insts = "<i class=\"fas fa-ethernet pointer\" title=\"" . htmlescape(Socket::getTypeName(Session::getPluralNumber()))
-            . "\"></i><span class=\"sr-only\">" . htmlescape(Socket::getTypeName(Session::getPluralNumber())) . "</span>";
+            . "\"></i><span class=\"visually-hidden\">" . htmlescape(Socket::getTypeName(Session::getPluralNumber())) . "</span>";
             $links[$insts] = Socket::getSearchURL(false);
         }
         if (count($links)) {

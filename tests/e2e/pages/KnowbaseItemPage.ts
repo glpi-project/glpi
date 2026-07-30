@@ -36,12 +36,14 @@ import { GlpiPage } from "./GlpiPage";
 import { TipTapEditorHelper } from "../utils/TipTapEditorHelper";
 import { SlashMenuHelper } from "../utils/SlashMenuHelper";
 import { BubbleMenuHelper } from "../utils/BubbleMenuHelper";
+import { TableEditorHelper } from "../utils/TableEditorHelper";
 
 export class KnowbaseItemPage extends GlpiPage
 {
     private _editorHelper: TipTapEditorHelper | null = null;
     private _slashMenuHelper: SlashMenuHelper | null = null;
     private _bubbleMenuHelper: BubbleMenuHelper | null = null;
+    private _tableEditorHelper: TableEditorHelper | null = null;
 
     public constructor(page: Page)
     {
@@ -72,10 +74,42 @@ export class KnowbaseItemPage extends GlpiPage
         return this._bubbleMenuHelper;
     }
 
+    public get tableEditor(): TableEditorHelper
+    {
+        if (!this._tableEditorHelper) {
+            this._tableEditorHelper = new TableEditorHelper(this.page, this.editor);
+        }
+        return this._tableEditorHelper;
+    }
+
     public get imageDialog(): Locator
     {
         // eslint-disable-next-line playwright/no-raw-locators -- custom TipTap dialog, no ARIA role available
         return this.page.locator('.image-dialog');
+    }
+
+    public get videoDialog(): Locator
+    {
+        return this.page.getByRole('dialog', { name: 'Insert video' });
+    }
+
+    public get videoEmbedPlaceholders(): Locator
+    {
+        // VideoEmbedExtension nodeView wraps each placeholder in a role="figure"
+        // labelled "<Provider> video" (or "Invalid video" for tampered nodes).
+        return this.page.getByRole('figure', { name: /\bvideo$/i });
+    }
+
+    public get videoEmbedIframes(): Locator
+    {
+        // VideoEmbedRenderer emits iframes with title="<Provider> video player".
+        return this.page.getByTitle(/video player$/i);
+    }
+
+    public get videoEmbedVideos(): Locator
+    {
+        // VideoEmbedRenderer emits direct <video> elements with title="Embedded video".
+        return this.page.getByTitle('Embedded video');
     }
 
     public get subject(): Locator
@@ -90,6 +124,18 @@ export class KnowbaseItemPage extends GlpiPage
             `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`,
             { waitUntil: 'domcontentloaded' }
         );
+    }
+
+    /**
+     * The article header's dots menu trigger. Scoped to the article content so
+     * it is not confused with the per-row "More actions" menus that the aside
+     * tree renders on every article.
+     */
+    public get articleActionsMenu(): Locator
+    {
+        return this.page
+            .getByTestId('kb-article')
+            .getByRole('button', { name: 'More actions' });
     }
 
     public async doToggleFaqStatus(): Promise<void>
@@ -122,6 +168,141 @@ export class KnowbaseItemPage extends GlpiPage
         return this.favoritesSection.getByRole('link', { name: title });
     }
 
+    public get aside(): Locator
+    {
+        return this.page.getByRole('main').getByRole('complementary');
+    }
+
+    public getAsideTitle(): Locator
+    {
+        return this.aside.getByRole('heading', { name: 'Articles' });
+    }
+
+    public getAsideCollapseButton(): Locator
+    {
+        return this.aside.getByRole('button', { name: 'Collapse articles list' });
+    }
+
+    public getAsideExpandButton(): Locator
+    {
+        return this.aside.getByRole('button', { name: 'Show articles list' });
+    }
+
+    public async doCollapseAside(): Promise<void>
+    {
+        await this.getAsideCollapseButton().click();
+    }
+
+    public async doExpandAside(): Promise<void>
+    {
+        await this.getAsideExpandButton().click();
+    }
+
+    public getAsideTreeArticleRow(id: number): Locator
+    {
+        return this.aside.locator(`[data-glpi-kb-aside-tree] [data-glpi-kb-article-id="${id}"]`);
+    }
+
+    public getFavoriteArticleRow(id: number): Locator
+    {
+        return this.favoritesSection.locator(`[data-glpi-kb-article-id="${id}"]`);
+    }
+
+    /**
+     * The illustration slot (`<use>` element for a native icon) of an article
+     * row in the aside tree.
+     */
+    public getAsideTreeArticleIllustration(id: number): Locator
+    {
+        return this.getAsideTreeArticleRow(id)
+            .getByTestId('kb-illustration')
+            .getByTestId('illustration-use')
+        ;
+    }
+
+    /**
+     * The illustration slot (`<use>` element for a native icon) of an article
+     * row in the aside favorites section.
+     */
+    public getFavoriteArticleIllustration(id: number): Locator
+    {
+        return this.getFavoriteArticleRow(id)
+            .getByTestId('kb-illustration')
+            .getByTestId('illustration-use')
+        ;
+    }
+
+    /**
+     * The dots menu trigger button of an article in the aside tree.
+     */
+    public getAsideArticleMenuTrigger(id: number): Locator
+    {
+        return this.getAsideTreeArticleRow(id).getByRole('button', { name: 'More actions' });
+    }
+
+    /**
+     * Open the (lazy-loaded) dots menu of an article in the aside tree.
+     */
+    public async doOpenAsideArticleMenu(id: number): Promise<void>
+    {
+        const row = this.getAsideTreeArticleRow(id);
+        await row.hover();
+        await this.getAsideArticleMenuTrigger(id).click();
+        // The aside menu content is lazy-loaded; wait until it is rendered.
+        await expect(row.getByRole('button', { name: 'Add to favorites' })).toBeVisible();
+    }
+
+    /**
+     * An action button inside an aside tree article's dots menu.
+     */
+    public getAsideArticleAction(id: number, name: string): Locator
+    {
+        return this.getAsideTreeArticleRow(id).getByRole('button', { name });
+    }
+
+    public async doToggleAsideFavorite(id: number): Promise<void>
+    {
+        const response_promise = this.page.waitForResponse(
+            response => response.url().includes('/ToggleFavorite')
+        );
+        await this.getAsideArticleAction(id, 'Add to favorites').click();
+        await response_promise;
+    }
+
+    public async doToggleAsideFaq(id: number): Promise<void>
+    {
+        const response_promise = this.page.waitForResponse(
+            response => response.url().includes('/ToggleField')
+        );
+        await this.getAsideArticleAction(id, 'Add to FAQ').click();
+        await response_promise;
+    }
+
+    public async doDeleteAsideArticle(id: number): Promise<void>
+    {
+        await this.getAsideArticleAction(id, 'Delete article').click();
+
+        const confirm_button = this.page.getByRole('button', { name: 'Delete', exact: true });
+        await expect(confirm_button).toBeVisible();
+
+        const response_promise = this.page.waitForResponse(
+            response => response.url().includes('/Delete')
+        );
+        await confirm_button.click();
+        await response_promise;
+    }
+
+    /**
+     * "Add to favorites" toggles currently visible in the aside, i.e. inside an
+     * open dots menu. Used to assert that only a single menu is open at a time.
+     */
+    public get openAsideFavoriteToggles(): Locator
+    {
+        return this.aside
+            .getByRole('button', { name: 'Add to favorites' })
+            .filter({ visible: true });
+    }
+
     public get childEntitiesCheckbox(): Locator
     {
         return this.page.getByRole('checkbox', { name: 'Child entities' });
@@ -137,7 +318,7 @@ export class KnowbaseItemPage extends GlpiPage
 
     public async doOpenCommentsPanel(): Promise<void>
     {
-        await this.page.getByTitle('More actions').click();
+        await this.articleActionsMenu.click();
         await this.getButton('Comments').click();
     }
 
@@ -217,7 +398,7 @@ export class KnowbaseItemPage extends GlpiPage
 
     public async doEnableSchedulePanel(): Promise<void>
     {
-        await this.page.getByTitle('More actions').click();
+        await this.articleActionsMenu.click();
         await this.getButton('Schedule visibility').click();
         await expect(this.page.getByTestId('schedule-panel')).toBeVisible();
     }
@@ -236,8 +417,8 @@ export class KnowbaseItemPage extends GlpiPage
 
     public async doOpenVisibilityModal(): Promise<void>
     {
-        await this.page.getByTitle('More actions').click();
-        await this.getButton('Permissions and sharing').click();
+        await this.articleActionsMenu.click();
+        await this.getButton('Permissions').click();
     }
 
     public getVisibilityModal(): Locator
@@ -257,7 +438,7 @@ export class KnowbaseItemPage extends GlpiPage
 
     public async doOpenHistoryPanel(): Promise<void>
     {
-        await this.page.getByTitle('More actions').click();
+        await this.articleActionsMenu.click();
         await this.getButton('History').click();
     }
 
@@ -290,9 +471,44 @@ export class KnowbaseItemPage extends GlpiPage
         });
     }
 
+    public getAsideCategoryCreateInput(category_title: string): Locator
+    {
+        return this.getAsideCategory(category_title).getByPlaceholder('New article...');
+    }
+
     public async doToggleAsideCategory(title: string): Promise<void>
     {
         await this.getAsideCategoryToggle(title).click();
+    }
+
+    /**
+     * Toggle a category and wait for its fold state to be persisted server-side.
+     * Persistence is a fire-and-forget POST, so callers that reload right after
+     * toggling must wait for it, otherwise the reload can abort the in-flight
+     * request and the server renders stale state.
+     */
+    public async doToggleAsideCategoryAndWaitForPersist(title: string): Promise<void>
+    {
+        await Promise.all([
+            this.page.waitForResponse(
+                (response) =>
+                    /\/Knowbase\/Aside\/Category\/\d+\/Fold$/.test(response.url())
+                    && response.request().method() === 'POST'
+                    && response.ok()
+            ),
+            this.doToggleAsideCategory(title),
+        ]);
+    }
+
+    /**
+     * Wait until the aside controller has finished initializing. It signals
+     * readiness by removing the `pe-none` class from the search input once all
+     * listeners (search, category toggle, actions) are attached, so interacting
+     * before this can silently no-op.
+     */
+    public async waitForAsideReady(): Promise<void>
+    {
+        await expect(this.asideSearchInput).not.toHaveClass(/pe-none/);
     }
 
     public get asideSearchInput(): Locator
@@ -331,30 +547,59 @@ export class KnowbaseItemPage extends GlpiPage
         await this.asideSearchClearButton.click();
     }
 
-    public async doOpenSharingTab(): Promise<Locator>
+    /**
+     * Open the header "Share" popover and wait for its lazily-loaded content
+     * to be ready.
+     */
+    public async openSharePopover(): Promise<void>
     {
-        await this.page.getByTitle('More actions').click();
-        await this.getButton('Permissions and sharing').click();
-
-        const modal = this.page.getByRole('dialog');
-        await expect(modal).toBeVisible();
-
-        await modal.getByRole('tab', { name: 'Sharing' }).click();
-        return modal;
+        await this.getButton('Share').click();
+        await expect(this.publishSwitch()).toBeVisible();
     }
 
-    public async doCreateSharingLink(modal: Locator, name?: string): Promise<void>
+    public publishSwitch(): Locator
     {
-        await modal.getByRole('button', { name: 'Create a sharing link' }).click();
+        return this.page.getByRole('switch', { name: 'Publish to web' });
+    }
 
-        const name_input = modal.getByPlaceholder('Link name (optional)');
-        await expect(name_input).toBeVisible();
+    public shareLink(): Locator
+    {
+        return this.page.getByLabel('Public link');
+    }
 
-        if (name) {
-            await name_input.fill(name);
-        }
+    public copyLinkButton(): Locator
+    {
+        return this.page.getByRole('button', { name: 'Copy link' });
+    }
 
-        await name_input.press('Enter');
+    /**
+     * Read the full share URL (with secret) via the copy button. The field can be
+     * visually truncated, so the copy affordance is the reliable way to get the
+     * whole link. Requires the clipboard permissions on the browser context.
+     */
+    public async copiedShareUrl(): Promise<string>
+    {
+        // Clear first so we never read a stale value from a previous copy (the
+        // copy handler writes asynchronously, e.g. right after a regenerate).
+        await this.page.evaluate(() => navigator.clipboard.writeText(''));
+        await this.copyLinkButton().click();
+        await expect
+            .poll(() => this.page.evaluate(() => navigator.clipboard.readText()))
+            .toContain('/Share/');
+        return this.page.evaluate(() => navigator.clipboard.readText());
+    }
+
+    public regenerateButton(): Locator
+    {
+        return this.page.getByRole('button', { name: 'Regenerate link' });
+    }
+
+    /**
+     * Confirm the "Regenerate link" danger dialog opened by regenerateButton().
+     */
+    public async confirmRegenerate(): Promise<void>
+    {
+        await this.page.getByRole('button', { name: 'Regenerate', exact: true }).click();
     }
 }
 

@@ -312,21 +312,30 @@ class AuthTest extends DbTestCase
 
     public function testRememberMeLastLogin(): void
     {
-        $user = getItemByTypeName(User::class, 'post-only');
-        $token = $user->getAuthToken('cookie_token', true);
+        global $CFG_GLPI, $DB;
+
+        $CFG_GLPI['login_remember_time'] = 3600;
+
+        $cookie_name = session_name() . '_rememberme';
+        $user = getItemByTypeName(User::class, TU_USER);
         $this->assertnull($user->fields['last_login']);
 
-        $_COOKIE[session_name() . '_rememberme'] = json_encode([
-            $user->getID(),
-            $token,
-        ]);
-
-        //login using remember_me cookie just set
+        $this->callPrivateMethod(Auth::class, 'setRememberMeCookie', $user->getID(), bin2hex(random_bytes(8)), bin2hex(random_bytes(16)));
+        $first_cookie_value = $_COOKIE[$cookie_name];
         $this->assertTrue((new Auth())->login('', ''));
 
         //check if last_login is now set
         $this->assertTrue($user->getFromDB($user->getID()));
         $this->assertNotNull($user->fields['last_login']);
+
+        // Delete the cookie and then set another one to simulate a new login on another device
+        unset($_COOKIE[$cookie_name]);
+        $this->callPrivateMethod(Auth::class, 'setRememberMeCookie', $user->getID(), bin2hex(random_bytes(8)), bin2hex(random_bytes(16)));
+        $this->assertTrue((new Auth())->login('', ''));
+
+        // Restore the first cookie value to ensure it is still valid
+        $_COOKIE[$cookie_name] = $first_cookie_value;
+        $this->assertTrue((new Auth())->login('', ''));
     }
 
     /**

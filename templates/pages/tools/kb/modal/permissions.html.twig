@@ -46,61 +46,10 @@
     {% endif %}
 
     {% for entry in entries %}
-        <li class="list-group-item d-flex align-items-center gap-2 py-2 px-0 border-0"
-            data-testid="permission-entry"
-            data-glpi-permission-id="{{ entry.id }}"
-            data-glpi-permission-itemtype="{{ entry.itemtype }}"
-        >
-
-            {# Avatar: user picture for Users, typed icon for others #}
-            {% if entry.type == 'User' %}
-                {{ include('components/user/picture.html.twig', {
-                    users_id: entry.users_id,
-                    avatar_size: 'avatar-sm',
-                    with_link: false,
-                    enable_anonymization: false,
-                }) }}
-            {% else %}
-                <span
-                    class="avatar avatar-sm rounded {{ entry.badge_class }}"
-                    title="{{ entry.type|itemtype_name }}"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="left"
-                >
-                    <i class="ti {{ entry.icon }}"></i>
-                </span>
-            {% endif %}
-
-            {# Info #}
-            <div class="flex-grow-1" style="min-width: 0;">
-                <div class="d-flex align-items-center gap-1" data-testid="entry-label">
-                    <span class="fw-medium text-truncate">{{ entry.name }}</span>
-                    {% if entry.type == "Entity" and entry.is_recursive %}
-                        <span class="text-secondary">({{ __("recursive") }})</span>
-                    {% endif %}
-                </div>
-                {% if entry.entity_name and (entry.entities_id != 0 or entry.is_recursive != 1) %}
-                    <div class="text-secondary small text-truncate" data-testid="entry-context">
-                        {{ entry.entity_name }}
-                        {% if entry.type != "Entity" and entry.is_recursive %}
-                            <span>({{ __("recursive") }})</span>
-                        {% endif %}
-                    </div>
-                {% endif %}
-            </div>
-
-            {# Delete button #}
-            {% if can_edit %}
-                <button type="button"
-                    class="btn btn-ghost-danger btn-sm btn-icon ms-auto"
-                    data-glpi-permission-delete
-                    title="{{ __('Delete') }}"
-                    data-bs-toggle="tooltip"
-                >
-                    <i class="ti ti-trash"></i>
-                </button>
-            {% endif %}
-        </li>
+        {{ include('pages/tools/kb/permission_entry.html.twig', {
+            entry: entry,
+            can_edit: can_edit,
+        }, with_context = false) }}
     {% endfor %}
 </ul>
 

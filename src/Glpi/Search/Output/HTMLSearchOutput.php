@@ -247,7 +247,9 @@ class HTMLSearchOutput extends AbstractSearchOutput
                 DisplayPreference::GENERAL,
             ]),
             'may_be_deleted'      => $item instanceof CommonDBTM && $item->maybeDeleted() && !$item->useDeletedToLockIfDynamic(),
-            'may_be_located'      => $item instanceof CommonDBTM && $item->maybeLocated(),
+            'may_be_located'      => $item instanceof CommonDBTM
+                && $item->maybeLocated()
+                && (bool) ($_SESSION['glpiactiveprofile']['show_map'] ?? true),
             'may_be_browsed'      => $item !== null && Toolbox::hasTrait($item, TreeBrowse::class),
             'may_be_unpublished'  => $itemtype == 'KnowbaseItem' && $item->canUpdate(),
             'original_params'     => $params,

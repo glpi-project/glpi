@@ -83,6 +83,11 @@
                         <i class="ti ti-circuit-changeover me-2"></i>
                         {{ __('Conditional visibility') }}
                     </h3>
+                    {% if allow_unauthenticated_access is defined and allow_unauthenticated_access %}
+                    <p class="text-muted small mb-3">
+                        {{ __('For anonymous forms, the ALTCHA anti-bot widget will follow this same visibility.') }}
+                    </p>
+                    {% endif %}
 
                     {# Parent properties #}
                     {% set strategies = 'Glpi\\Form\\Condition\\VisibilityStrategy' %}

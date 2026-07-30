@@ -36,6 +36,7 @@ namespace Glpi\Knowbase\History;
 
 use Document;
 use Entity;
+use Glpi\ShareToken;
 use Glpi\UI\IllustrationManager;
 use Group;
 use KnowbaseItem;
@@ -69,6 +70,7 @@ final class HistoryBuilder
         $this->addCategoryChangesToHistory();
         $this->addDocumentChangesToHistory();
         $this->addPermissionChangesToHistory();
+        $this->addSharingChangesToHistory();
         $this->addNameChangesToHistory();
         $this->addIllustrationChangesToHistory();
 
@@ -258,6 +260,47 @@ final class HistoryBuilder
             $this->history->addEvent(new LogEvent(
                 label: __("Permissions updated"),
                 description: $description,
+                date: $row['date_mod'],
+                author: $row['user_name'],
+            ));
+        }
+    }
+
+    // TODO for next implementation (item agnostic): lift to a generic SharingHistorySource
+    // when a second itemtype implements ShareableInterface. The write side (ShareToken hooks) is already generic :
+    // only this read path is KnowbaseItem-specific.
+    private function addSharingChangesToHistory(): void
+    {
+        global $DB;
+
+        $logs = $DB->request([
+            'SELECT' => ['date_mod', 'user_name', 'linked_action'],
+            'FROM'   => Log::getTable(),
+            'WHERE'  => [
+                'itemtype'      => KnowbaseItem::class,
+                'items_id'      => $this->kb->getID(),
+                'itemtype_link' => ShareToken::class,
+                'linked_action' => [
+                    Log::HISTORY_ADD_RELATION,
+                    Log::HISTORY_DEL_RELATION,
+                    Log::HISTORY_UPDATE_RELATION,
+                ],
+            ],
+            'ORDER' => 'id DESC',
+        ]);
+
+        foreach ($logs as $row) {
+            $linked_action = (int) $row['linked_action'];
+
+            $label = match ($linked_action) {
+                Log::HISTORY_UPDATE_RELATION => __("Sharing link regenerated"),
+                Log::HISTORY_ADD_RELATION    => __("Sharing enabled"),
+                default                      => __("Sharing disabled"),
+            };
+
+            $this->history->addEvent(new LogEvent(
+                label: $label,
+                description: __("Updated by"),
                 date: $row['date_mod'],
                 author: $row['user_name'],
             ));
@@ -505,14 +548,16 @@ final class HistoryBuilder
         ]);
 
         foreach ($logs as $row) {
-            $is_custom = str_starts_with(
+            if ($row['new_value'] === '') {
+                $description = __("Illustration removed by");
+            } elseif (str_starts_with(
                 $row['new_value'],
                 IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX
-            );
-            $description = $is_custom
-                ? __("Custom illustration set by")
-                : __("Native illustration set by")
-            ;
+            )) {
+                $description = __("Custom illustration set by");
+            } else {
+                $description = __("Native illustration set by");
+            }
 
             $this->history->addEvent(new LogEvent(
                 label: __("Illustration updated"),

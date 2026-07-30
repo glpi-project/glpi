@@ -57,6 +57,7 @@ use Glpi\Kernel\Listener\RequestListener\LegacyItemtypeRouteListener;
 use Glpi\Kernel\Listener\RequestListener\LegacyRouterListener;
 use Glpi\Kernel\Listener\RequestListener\PluginsRouterListener;
 use Glpi\Kernel\Listener\RequestListener\RedirectLegacyRouteListener;
+use Glpi\Kernel\Listener\RequestListener\SessionActivityListener;
 use Glpi\Kernel\Listener\RequestListener\SessionCheckCookieListener;
 use Glpi\Kernel\Listener\RequestListener\SessionVariables;
 
@@ -108,6 +109,9 @@ final class ListenersPriority
 
         // This listener will forward to the inventory controller any inventory agent requests made on the index endpoint.
         CatchInventoryAgentRequestListener::class => 420,
+
+        // Update session activity date
+        SessionActivityListener::class     => 410,
 
         // Executes the legacy controller scripts (`/ajax/*.php` or `/front/*.php` scripts) whenever the
         // requested URI matches an existing file.

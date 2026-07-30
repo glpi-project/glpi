@@ -433,6 +433,20 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     public function getSpecificMassiveActions($checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
+
+        if (Session::getCurrentInterface() === 'central') {
+            if (Item_Problem::canCreate()) {
+                $actions['Item_Problem' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
+                = "<i class='ti ti-plus'></i>"
+                 . _sx('button', 'Add an item');
+            }
+
+            if (Item_Problem::canDelete()) {
+                $actions['Item_Problem' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_item']
+                = _sx('button', 'Remove an item');
+            }
+        }
+
         if (ProblemTask::canCreate()) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task'] = __s('Add a new task');
         }

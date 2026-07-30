@@ -209,6 +209,18 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 
+        if (Session::getCurrentInterface() === 'central') {
+            if (Change_Item::canCreate()) {
+                $actions['Change_Item' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
+                = "<i class='ti ti-plus'></i>"
+                 . _sx('button', 'Add an item');
+            }
+
+            if (Change_Item::canDelete()) {
+                $actions['Change_Item' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_item']
+                = _sx('button', 'Remove an item');
+            }
+        }
         if ($this->canAdminActors()) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = __s('Add an actor');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif']

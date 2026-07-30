@@ -252,7 +252,7 @@
             tags: true,
             width: select2_width,
             tokenSeparators: [',', ' '],
-            containerCssClass: 'actor-field',
+            selectionCssClass: 'actor-field',
             templateSelection: (option) => genericTemplate(option, true),
             templateResult: (option) => genericTemplate(option, false),
             disabled: {{ canupdate ? 'false' : 'true' }},
