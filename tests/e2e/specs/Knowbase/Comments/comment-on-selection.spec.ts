@@ -396,4 +396,131 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await kb.selectTextInReadMode('Short passage');
         await kb.readModeCommentBubble.assertEnabled();
     });
+
+    // Context shared by three paragraphs, each with a unique middle.
+    const SHARED_HEAD = 'Sed ut perspiciatis unde omnis iste natus error sit accusantium laudantium totam rem aperiam. ';
+    const SHARED_TAIL = ' Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.';
+    const QUOTED_MIDDLE = 'The second branch documents how to reset a federated account.';
+    const EDITED_MIDDLE = 'The branch documents how to reset a federated account.';
+
+    const repeatedContextArticle = () => [
+        `<p>${SHARED_HEAD}The first branch documents how to reset a local account.${SHARED_TAIL}</p>`,
+        `<p>${SHARED_HEAD}${QUOTED_MIDDLE}${SHARED_TAIL}</p>`,
+        `<p>${SHARED_HEAD}The third branch documents how to reset a service account.${SHARED_TAIL}</p>`,
+    ].join('');
+
+    test('A highlight survives deleting a few words inside its quoted passage', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test in-place deletion inside a quote',
+            entities_id: getWorkerEntityId(),
+            answer: repeatedContextArticle(),
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode(QUOTED_MIDDLE);
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment kept through an in-place deletion');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment kept through an in-place deletion')).toBeVisible();
+
+        await kb.editor.enterEditMode();
+        await kb.selectTextInEditMode('second ');
+        await kb.editor.pressKey('Backspace');
+
+        // The highlight narrows to the surviving words instead of vanishing.
+        await expect(kb.getCommentHighlightByText(EDITED_MIDDLE)).toBeVisible();
+        await expect(kb.getCommentHighlights()).toHaveCount(1);
+    });
+
+    test('A highlight grows when words are typed inside its quoted passage', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test in-place insertion inside a quote',
+            entities_id: getWorkerEntityId(),
+            answer: repeatedContextArticle(),
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode(QUOTED_MIDDLE);
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment kept through an in-place insertion');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment kept through an in-place insertion')).toBeVisible();
+
+        await kb.editor.enterEditMode();
+        await kb.selectTextInEditMode('second');
+        await kb.editor.typeText('newly rewritten second');
+
+        await expect(
+            kb.getCommentHighlightByText('The newly rewritten second branch documents how to reset a federated account.')
+        ).toBeVisible();
+    });
+
+    test('An edited quote stays anchored through repeated saves', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test anchor refreshed on save',
+            entities_id: getWorkerEntityId(),
+            answer: repeatedContextArticle(),
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode(QUOTED_MIDDLE);
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment whose quote is refreshed on save');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment whose quote is refreshed on save')).toBeVisible();
+
+        await kb.editor.enterEditMode();
+        await kb.selectTextInEditMode('second ');
+        await kb.editor.pressKey('Backspace');
+        await kb.editor.save();
+
+        // Reloading resolves against the stored anchor: it has to carry the edited quote.
+        await page.reload();
+        await kb.waitForArticleReady();
+        await expect(kb.getCommentHighlightByText(EDITED_MIDDLE)).toBeVisible();
+        await kb.doOpenCommentsPanel();
+        await expect(kb.getCommentAnchorQuotes()).toHaveText(EDITED_MIDDLE);
+
+        // Saving again must not report the comment as orphaned.
+        await kb.editor.enterEditMode();
+        await kb.editor.save();
+        await page.reload();
+        await kb.waitForArticleReady();
+        await expect(kb.getCommentHighlightByText(EDITED_MIDDLE)).toBeVisible();
+    });
+
+    test('Undoing the removal of a quoted passage brings its highlight back', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test undo restores a highlight',
+            entities_id: getWorkerEntityId(),
+            answer: repeatedContextArticle(),
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode(QUOTED_MIDDLE);
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment restored by undo');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment restored by undo')).toBeVisible();
+
+        await kb.editor.enterEditMode();
+        await kb.selectTextInEditMode(QUOTED_MIDDLE);
+        await kb.editor.pressKey('Backspace');
+        await expect(kb.getCommentHighlights()).toHaveCount(0);
+
+        await kb.editor.pressKey('Control+z');
+        await expect(kb.getCommentHighlightByText(QUOTED_MIDDLE)).toBeVisible();
+    });
 });

@@ -234,6 +234,57 @@ final class KnowbaseItem_Comment extends CommonDBTM
     }
 
     /**
+     * Move the given comments' anchors onto the quote the saved content now carries, so
+     * an edited passage stays anchored. Ids belonging elsewhere are ignored, and an
+     * anchor is only ever moved, never created: dropping one goes through
+     * clearAnchorsForItem().
+     *
+     * @param array<mixed> $anchors
+     */
+    public function refreshAnchorsForItem(KnowbaseItem $article, array $anchors): void
+    {
+        foreach ($anchors as $anchor) {
+            if (!is_array($anchor) || !is_scalar($anchor['id'] ?? null)) {
+                continue;
+            }
+
+            $prefix     = $anchor['prefix'] ?? '';
+            $exact      = $anchor['exact'] ?? '';
+            $suffix     = $anchor['suffix'] ?? '';
+            $occurrence = $anchor['occurrence'] ?? 0;
+            if (
+                !is_scalar($prefix) || !is_scalar($exact)
+                || !is_scalar($suffix) || !is_scalar($occurrence)
+                || trim((string) $exact) === ''
+            ) {
+                continue;
+            }
+
+            $comment = new self();
+            if (!$comment->getFromDB((int) $anchor['id'])) {
+                continue;
+            }
+            if ((int) $comment->fields['knowbaseitems_id'] !== $article->getID()) {
+                continue;
+            }
+            if (!$comment->hasAnchor()) {
+                continue;
+            }
+            if (!$comment->can($comment->getID(), UPDATE)) {
+                continue;
+            }
+
+            $comment->update([
+                'id'                => $comment->getID(),
+                'anchor_prefix'     => (string) $prefix,
+                'anchor_exact'      => (string) $exact,
+                'anchor_suffix'     => (string) $suffix,
+                'anchor_occurrence' => (int) $occurrence,
+            ]);
+        }
+    }
+
+    /**
      * @return list<array{id: int, prefix: string, exact: string, suffix: string, occurrence: int}>
      */
     public static function getAnchorsForItem(KnowbaseItem $article): array

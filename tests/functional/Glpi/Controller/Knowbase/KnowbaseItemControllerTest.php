@@ -93,6 +93,49 @@ class KnowbaseItemControllerTest extends DbTestCase
         $this->assertFalse($comment->hasAnchor());
     }
 
+    public function testEditedAnchorsAreRefreshedOnSave(): void
+    {
+        $this->login();
+        $id         = $this->makeArticle();
+        $comment_id = $this->makeAnchoredComment($id);
+
+        $this->updateAnswer($id, [
+            'answer'          => '<p>The edited passage lives here</p>',
+            'comment_anchors' => [[
+                'id'         => $comment_id,
+                'prefix'     => 'The ',
+                'exact'      => 'edited passage',
+                'suffix'     => ' lives',
+                'occurrence' => 0,
+            ]],
+        ]);
+
+        $comment = new KnowbaseItem_Comment();
+        $comment->getFromDB($comment_id);
+        $this->assertSame('edited passage', $comment->fields['anchor_exact']);
+    }
+
+    public function testRefreshedAnchorOfAnotherArticleIsNotTouched(): void
+    {
+        $this->login();
+        $id       = $this->makeArticle();
+        $other_id = $this->makeArticle();
+        // Belongs to $other_id, but reported as refreshed while saving $id.
+        $comment_id = $this->makeAnchoredComment($other_id);
+
+        $this->updateAnswer($id, [
+            'answer'          => '<p>The edited passage lives here</p>',
+            'comment_anchors' => [[
+                'id'    => $comment_id,
+                'exact' => 'hijacked',
+            ]],
+        ]);
+
+        $comment = new KnowbaseItem_Comment();
+        $comment->getFromDB($comment_id);
+        $this->assertSame('quoted passage', $comment->fields['anchor_exact']);
+    }
+
     public function testAnchorsAreKeptWhenNoneAreReportedOrphaned(): void
     {
         $this->login();

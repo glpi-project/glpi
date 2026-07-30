@@ -89,10 +89,12 @@ function findAllOccurrences(text, needle) {
 }
 
 /**
- * Locate the quoted passage by bracketing it between `prefix` and `suffix`,
- * for when `exact` no longer matches verbatim. Pairs every occurrence of
- * each rather than requiring either alone to be unique; refuses when more
- * than one pairing is valid.
+ * Locate the quoted passage by bracketing it between `prefix` and `suffix`, for when
+ * `exact` no longer matches verbatim. Each occurrence of `prefix` opens one candidate,
+ * closed by the first `suffix` that follows it, so context repeating further down the
+ * article no longer defeats the match. Refuses when several candidates remain: sizing
+ * them against the stored quote would favour an unedited near-duplicate, and pointing a
+ * comment at unrelated text is worse than leaving it unanchored.
  * @param {string} text
  * @param {string} prefix
  * @param {string} suffix
@@ -108,15 +110,15 @@ function locateByBracketing(text, prefix, suffix) {
 
     let candidate = null;
     for (const start of starts) {
-        for (const end of ends) {
-            if (end <= start || end - start > MAX_ANCHOR_LENGTH) {
-                continue;
-            }
-            if (candidate !== null) {
-                return null;
-            }
-            candidate = [start, end];
+        // findAllOccurrences returns ascending indices, so this is the nearest suffix.
+        const end = ends.find((idx) => idx > start);
+        if (end === undefined || end - start > MAX_ANCHOR_LENGTH) {
+            continue;
         }
+        if (candidate !== null) {
+            return null;
+        }
+        candidate = [start, end];
     }
 
     return candidate;

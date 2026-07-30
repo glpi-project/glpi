@@ -166,6 +166,12 @@ final class KnowbaseItemController extends AbstractController
         $success = $kbitem->update($update_data);
 
         if ($success) {
+            // The saved content still carries these comments' passage, at an edited quote.
+            $refreshed = $data['comment_anchors'] ?? [];
+            if (is_array($refreshed) && $refreshed !== []) {
+                (new KnowbaseItem_Comment())->refreshAnchorsForItem($kbitem, $refreshed);
+            }
+
             // The saved content no longer carries these comments' quoted passage.
             $orphaned = $data['orphaned_comment_ids'] ?? [];
             if (is_array($orphaned) && $orphaned !== []) {
