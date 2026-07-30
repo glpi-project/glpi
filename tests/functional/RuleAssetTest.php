@@ -862,6 +862,51 @@ class RuleAssetTest extends DbTestCase
         $this->assertSame('Comment changed', $computer->fields['comment']);
     }
 
+    public function testManufacturerCriteria()
+    {
+        $this->login();
+
+        $manufacturer = $this->createItem(\Manufacturer::class, [
+            'name' => 'Test manufacturer criteria',
+        ]);
+
+        $rule_asset = $this->createItem(\RuleAsset::class, [
+            'name'         => 'rule manufacturer criteria',
+            'match'        => 'AND',
+            'is_active'    => 1,
+            'sub_type'     => 'RuleAsset',
+            'condition'    => \RuleAsset::ONADD,
+            'is_recursive' => 1,
+        ]);
+        $this->createItem(RuleCriteria::class, [
+            'rules_id'  => $rule_asset->getID(),
+            'criteria'  => 'manufacturer',
+            'condition' => Rule::PATTERN_IS,
+            'pattern'   => $manufacturer->getID(),
+        ]);
+        $this->createItem(RuleAction::class, [
+            'rules_id'    => $rule_asset->getID(),
+            'action_type' => 'assign',
+            'field'       => 'comment',
+            'value'       => 'Comment set by manufacturer rule',
+        ]);
+
+        // Computer with the matching manufacturer must trigger the rule
+        $computer = $this->createItem(Computer::class, [
+            'name'             => 'Computer with matching manufacturer',
+            'entities_id'      => 0,
+            'manufacturers_id' => $manufacturer->getID(),
+        ]);
+        $this->assertSame('Comment set by manufacturer rule', $computer->fields['comment']);
+
+        // Computer with no manufacturer must not trigger the rule
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'Computer without matching manufacturer',
+            'entities_id' => 0,
+        ]);
+        $this->assertEmpty($computer->fields['comment']);
+    }
+
     public function testFormatInventoryNumberWithName()
     {
         $this->login();

@@ -5781,6 +5781,11 @@ class CommonDBTM extends CommonGLPI
                 $input['_auto'] = 0;
             }
 
+            // The 'manufacturer' criterion is matched by its code, not by the 'manufacturers_id' field
+            if (isset($input['manufacturers_id'])) {
+                $input['manufacturer'] = $input['manufacturers_id'];
+            }
+
             // Add last_inventory_update
             if (!isset($this->input['last_inventory_update']) && isset($this->fields['last_inventory_update'])) {
                 $input['last_inventory_update'] = $this->fields['last_inventory_update'];
