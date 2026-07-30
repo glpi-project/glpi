@@ -1315,12 +1315,18 @@ export class GlpiKnowbaseArticleController
             .filter((anchor) => !this.#resolved_anchors.some((resolved) => resolved.id === String(anchor.id)))
             .map((anchor) => anchor.id);
 
+        // The others moved with the edits, so their stored quote has to move too.
+        const refreshed_anchors = this.#editor.getRefreshedCommentAnchors();
+
         try {
             const body = {
                 answer: this.#editor.getHTML(),
             };
             if (orphaned_ids.length > 0) {
                 body.orphaned_comment_ids = orphaned_ids;
+            }
+            if (refreshed_anchors.length > 0) {
+                body.comment_anchors = refreshed_anchors;
             }
             if (new_title !== null) {
                 body.name = new_title;
@@ -1337,6 +1343,13 @@ export class GlpiKnowbaseArticleController
                     (anchor) => !orphaned_ids.includes(anchor.id)
                 );
             }
+
+            // Keep the in-memory anchors in step with what was just stored, so a second
+            // save in the same session doesn't report them against a stale quote.
+            this.#comment_anchors = this.#comment_anchors.map((anchor) => {
+                const refreshed = refreshed_anchors.find((candidate) => candidate.id === String(anchor.id));
+                return refreshed === undefined ? anchor : { ...anchor, ...refreshed, id: anchor.id };
+            });
 
             // Update originals for future cancel operations
             this.#original_content = this.#editor.getHTML();

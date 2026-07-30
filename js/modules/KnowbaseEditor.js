@@ -40,7 +40,7 @@ import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
 import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
-import { CommentHighlight, getResolvedCommentAnchors } from '/js/modules/TipTap/CommentHighlightExtension.js';
+import { CommentHighlight, getRefreshedCommentAnchors, getResolvedCommentAnchors } from '/js/modules/TipTap/CommentHighlightExtension.js';
 import { buildPmTextIndex, pmPositionToOffset } from '/js/modules/TipTap/CommentPosition.js';
 import { extractAnchor } from '/js/modules/Knowbase/CommentAnchor.js';
 
@@ -456,6 +456,14 @@ class KnowbaseEditor {
      */
     getResolvedCommentAnchors() {
         return this.#editor ? getResolvedCommentAnchors(this.#editor.state) : [];
+    }
+
+    /**
+     * Anchors re-extracted from where their highlight now sits, to be persisted on save.
+     * @returns {Array<{id: string, prefix: string, exact: string, suffix: string, occurrence: number}>}
+     */
+    getRefreshedCommentAnchors() {
+        return this.#editor ? getRefreshedCommentAnchors(this.#editor.state) : [];
     }
 
     /**

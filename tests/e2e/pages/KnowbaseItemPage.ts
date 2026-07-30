@@ -403,6 +403,43 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
+     * Select `text` inside the editor so the next keystroke replaces exactly that
+     * run. Lets a test edit within a comment's quoted passage the way a user does,
+     * instead of replacing the whole document through setContent().
+     */
+    public async selectTextInEditMode(text: string): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- ProseMirror's own root, as TipTapEditorHelper uses
+        const editor = this.page.locator('.ProseMirror[contenteditable="true"]');
+        await editor.waitFor();
+        await editor.focus();
+        await this.page.evaluate((needle) => {
+            const container = document.querySelector('.ProseMirror[contenteditable="true"]');
+            if (!container) {
+                return;
+            }
+            const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+            let node = walker.nextNode();
+            while (node) {
+                const idx = (node.nodeValue ?? '').indexOf(needle);
+                if (idx !== -1) {
+                    const range = document.createRange();
+                    range.setStart(node, idx);
+                    range.setEnd(node, idx + needle.length);
+                    const selection = window.getSelection();
+                    if (!selection) {
+                        return;
+                    }
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    return;
+                }
+                node = walker.nextNode();
+            }
+        }, text);
+    }
+
+    /**
      * Select the paragraph containing `text` the way a triple-click does, with
      * Range boundaries on the element instead of on a text node.
      */

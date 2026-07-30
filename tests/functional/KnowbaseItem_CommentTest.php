@@ -403,6 +403,104 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertTrue($comment->hasAnchor());
     }
 
+    public function testRefreshAnchorsForItemStoresTheEditedQuote(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id'  => $kb1->getID(),
+            'comment'           => 'Anchored on a passage the author then edited',
+            'anchor_prefix'     => 'before ',
+            'anchor_exact'      => 'the quoted text',
+            'anchor_suffix'     => ' after',
+            'anchor_occurrence' => 0,
+        ]);
+
+        (new KnowbaseItem_Comment())->refreshAnchorsForItem($kb1, [[
+            'id'         => $id,
+            'prefix'     => 'right before ',
+            'exact'      => 'the edited quoted text',
+            'suffix'     => ' right after',
+            'occurrence' => 2,
+        ]]);
+
+        $comment->getFromDB($id);
+        $this->assertSame('right before ', $comment->fields['anchor_prefix']);
+        $this->assertSame('the edited quoted text', $comment->fields['anchor_exact']);
+        $this->assertSame(' right after', $comment->fields['anchor_suffix']);
+        $this->assertSame(2, (int) $comment->fields['anchor_occurrence']);
+    }
+
+    public function testRefreshAnchorsForItemIgnoresCommentsOfAnotherArticle(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $other = new KnowbaseItem();
+        $this->assertNotFalse($other->add([
+            'name'    => 'KB item owning the anchor',
+            'content' => 'Content',
+        ]));
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id' => $other->getID(),
+            'comment'          => 'Anchored elsewhere',
+            'anchor_exact'     => 'untouchable',
+        ]);
+
+        (new KnowbaseItem_Comment())->refreshAnchorsForItem($kb1, [[
+            'id'    => $id,
+            'exact' => 'hijacked',
+        ]]);
+
+        $comment->getFromDB($id);
+        $this->assertSame('untouchable', $comment->fields['anchor_exact']);
+    }
+
+    public function testRefreshAnchorsForItemDoesNotAnchorACommentThatNeverWas(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id' => $kb1->getID(),
+            'comment'          => 'Plain comment, never anchored',
+        ]);
+
+        (new KnowbaseItem_Comment())->refreshAnchorsForItem($kb1, [[
+            'id'    => $id,
+            'exact' => 'smuggled anchor',
+        ]]);
+
+        $comment->getFromDB($id);
+        $this->assertFalse($comment->hasAnchor());
+    }
+
+    public function testRefreshAnchorsForItemRejectsAnOverlongQuote(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id' => $kb1->getID(),
+            'comment'          => 'Anchored within the allowed length',
+            'anchor_exact'     => 'the quoted text',
+        ]);
+
+        (new KnowbaseItem_Comment())->refreshAnchorsForItem($kb1, [[
+            'id'    => $id,
+            'exact' => str_repeat('a', KnowbaseItem_Comment::MAX_ANCHOR_LENGTH + 1),
+        ]]);
+
+        $comment->getFromDB($id);
+        $this->assertSame('the quoted text', $comment->fields['anchor_exact']);
+    }
+
     public function testCommentWithoutAnchorHasNoAnchor(): void
     {
         $this->login();
