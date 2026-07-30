@@ -291,4 +291,42 @@ class IPAddressTest extends DbTestCase
             $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
         }
     }
+
+    public function testShowForItemWithOrphanNetworkName()
+    {
+        $this->login();
+
+        $ipNetwork = new \IPNetwork();
+        $ipnetwork_id = $ipNetwork->add([
+            'name'         => 'orphan-test-network',
+            'network'      => '10.20.30.0 / 255.255.255.0',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            'addressable'  => 0,
+        ]);
+        $this->assertGreaterThan(0, (int) $ipnetwork_id);
+        $this->assertTrue($ipNetwork->getFromDB($ipnetwork_id));
+
+        // A NetworkName not linked to any NetworkPort (itemtype = '') makes
+        // IPAddress::getCriteriaLinkedToNetwork() return a NULL item_type for
+        // its IPAddress, which used to crash IPAddress::showForItem().
+        $networkName = new \NetworkName();
+        $networkname_id = $networkName->add([
+            'name'          => 'orphan-name',
+            '_ipaddresses'  => [-1 => '10.20.30.5'],
+            'entities_id'   => 0,
+            'items_id'      => 0,
+            'itemtype'      => '',
+            'fqdns_id'      => 0,
+            'comment'       => '',
+            'ipnetworks_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, (int) $networkname_id);
+
+        ob_start();
+        \IPAddress::showForItem($ipNetwork);
+        $output = ob_get_clean();
+
+        $this->assertStringContainsString('10.20.30.5', $output);
+    }
 }

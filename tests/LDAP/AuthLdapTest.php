@@ -2468,6 +2468,57 @@ class AuthLdapTest extends DbTestCase
         );
     }
 
+    /**
+     * reapplyRightRules() must preserve dynamic groups synced from the LDAP
+     * when the matching RuleRight does not itself assign a group.
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testReapplyRightRulesPreservesLdapSyncedGroupsOnExternalAuth(): void
+    {
+        $this->updateItem(
+            AuthLDAP::class,
+            getItemByTypeName(AuthLDAP::class, '_local_ldap', true),
+            [
+                'group_search_type' => AuthLDAP::GROUP_SEARCH_BOTH,
+            ]
+        );
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, RuleRight::class);
+        $rule_builder->setEntity(0)
+            ->setIsRecursive(1)
+            ->addCriteria('employeenumber', \Rule::PATTERN_IS, 8)
+            ->addAction('assign', 'profiles_id', 5) // 'normal' profile
+            ->addAction('assign', 'entities_id', 1); // '_test_child_1' entity
+        $this->createRule($rule_builder);
+
+        // Group dynamically bound to the user via LDAP attributes, outside of any RuleRight action.
+        $group_id = $this->createItem(Group::class, [
+            'name'       => __FUNCTION__,
+            'ldap_field' => 'uid',
+            'ldap_value' => 'brazil6',
+        ])->getID();
+
+        // Real LDAP sync: assigns the dynamic profile/entity/group and records auths_id/user_dn.
+        $this->realLogin('brazil6', 'password', false);
+        $users_id = \User::getIdByName('brazil6');
+        $this->assertGreaterThan(0, $users_id);
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $group_id));
+
+        $user = new \User();
+        $this->assertTrue($user->getFromDB($users_id));
+
+        // Simulate the SSO/OAuth login context: the plugin authenticates the
+        // user as Auth::EXTERNAL and calls reapplyRightRules() on the already
+        // LDAP-synced User object, without redoing a real LDAP group fetch.
+        $user->fields['authtype'] = \Auth::EXTERNAL;
+        $user->reapplyRightRules();
+
+        $this->assertTrue(
+            Group_User::isUserInGroup($users_id, $group_id),
+            'Dynamic group synced from the LDAP directory was purged on Auth::EXTERNAL reapplyRightRules()'
+        );
+    }
+
 
     /**
      * Test if rules targeting ldap criteria are working

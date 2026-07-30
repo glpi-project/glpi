@@ -166,6 +166,10 @@ updates:
           - "leaflet"
           - "leaflet-*"
           - "leaflet.*"
+      fontsource:
+        patterns:
+          - "@fontsource/*"
+          - "@fontsource-utils/*"
       fullcalendar:
         patterns:
           - "@fullcalendar/*"
@@ -206,6 +210,9 @@ updates:
       symfony-polyfills:
         patterns:
           - "symfony/polyfill-*"
+      tcpdf:
+        patterns:
+          - "tecnickcom/*"
       twig:
         patterns:
           - "twig/*"

@@ -168,7 +168,7 @@ class SeLinux extends AbstractRequirement
 
     protected function doesSelinuxBinariesExists(): bool
     {
-        return file_exists('/usr/sbin/getenforce') && file_exists('/usr/sbin/getsebool');
+        return @file_exists('/usr/sbin/getenforce') && @file_exists('/usr/sbin/getsebool');
     }
 
     protected function doesSelinuxIsEnabledFunctionExists(): bool

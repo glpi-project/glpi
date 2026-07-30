@@ -382,7 +382,6 @@ class SynchronizeUsersCommand extends AbstractCommand
                 $users_progress_bar = new ProgressBar($output, count($users));
                 $users_progress_bar->start();
 
-                User::enableLdapGroupBatchMode();
                 foreach ($users as $user) {
                     $users_progress_bar->advance(1);
 
@@ -425,7 +424,9 @@ class SynchronizeUsersCommand extends AbstractCommand
                             'user_field'       => $user_field,
                         ],
                         $action,
-                        $server_id
+                        $server_id,
+                        false,
+                        true
                     );
 
                     if (false !== $result) {

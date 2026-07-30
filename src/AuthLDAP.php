@@ -466,7 +466,6 @@ class AuthLDAP extends CommonDBTM
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
-                User::enableLdapGroupBatchMode();
                 $mode         = (int) ($input['mode'] ?? self::ACTION_IMPORT);
                 $authldaps_id = (int) ($input['authldaps_id'] ?? 0);
                 foreach ($ids as $id) {
@@ -477,6 +476,7 @@ class AuthLDAP extends CommonDBTM
                             ],
                             $mode,
                             $authldaps_id,
+                            true,
                             true
                         )
                     ) {
@@ -2640,6 +2640,8 @@ TWIG, $twig_params);
      * @param int $action synchronize (self::ACTION_SYNCHRONIZE) or import (self::ACTION_IMPORT)
      * @param int $ldap_server ID of the LDAP server to use
      * @param bool $display display message information on redirect (false by default)
+     * @param bool $batch_mode True when called from a loop importing/syncing many users
+     *                         (massive action or CLI sync), enabling the per-group query cache.
      *
      * @return array|bool  with state, else false
      * @throws SodiumException
@@ -2648,7 +2650,8 @@ TWIG, $twig_params);
         array $params,
         $action,
         $ldap_server,
-        $display = false
+        $display = false,
+        bool $batch_mode = false
     ) {
         global $DB;
 
@@ -2718,7 +2721,8 @@ TWIG, $twig_params);
                             $config_ldap->fields,
                             $user_dn,
                             $login,
-                            ($action === self::ACTION_IMPORT)
+                            ($action === self::ACTION_IMPORT),
+                            $batch_mode
                         )
                     ) {
                         //Get the ID by sync field (Used to check if restoration is needed)

@@ -36,11 +36,12 @@ namespace tests\units;
 
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\CriteriaFilter;
-use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
+use ITILFollowup;
 use Psr\Log\LogLevel;
 use QueuedWebhook;
 use Ticket;
+use User;
 use Webhook;
 
 use function Safe\json_encode;
@@ -526,5 +527,70 @@ JSON;
         $matching_itemtype = \Computer::class;
         $no_mismatch = $webhook->getID() && $matching_itemtype !== $webhook->fields['itemtype'];
         $this->assertFalse($no_mismatch, 'Correct itemtype should not trigger the mismatch guard');
+    }
+
+    /**
+     * Non-regression: a Self-Service user adding a followup must not produce a webhook error
+     * popup (Webhook::raise() catches exceptions and converts them to session messages).
+     */
+    public function testWebhookDoesNotErrorOnFollowupAddBySelfServiceUser(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+
+        $selfservice_user = $this->createItem(User::class, [
+            'name'         => 'selfservice_' . $this->getUniqueString(),
+            'password'     => 'testpassword',
+            'password2'    => 'testpassword',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => $entity_id,
+        ], ['password', 'password2']);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'                => 'Test ticket',
+            'content'             => 'Test content',
+            'entities_id'         => $entity_id,
+            '_users_id_requester' => $selfservice_user->getID(),
+        ]);
+
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => ITILFollowup::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+        $this->createItem(CriteriaFilter::class, [
+            'itemtype'        => Webhook::class,
+            'items_id'        => $webhook->getID(),
+            'search_itemtype' => ITILFollowup::class,
+            'search_criteria' => json_encode([[
+                'link'       => 'AND',
+                'field'      => 4, // is_private
+                'searchtype' => 'equals',
+                'value'      => '0',
+            ]]),
+        ], ['search_criteria']);
+
+        $this->login($selfservice_user->fields['name']);
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+
+        $followup    = new ITILFollowup();
+        $followup_id = $followup->add([
+            'items_id' => $ticket->getID(),
+            'itemtype' => Ticket::class,
+            'content'  => 'Test followup',
+        ]);
+
+        $this->assertGreaterThan(0, $followup_id);
+
+        $webhook_errors = array_filter(
+            $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] ?? [],
+            static fn(string $msg) => stripos($msg, 'webhook') !== false
+        );
+        $this->assertEmpty($webhook_errors);
     }
 }
