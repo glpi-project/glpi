@@ -72,9 +72,9 @@ describe('Webhooks', () => {
         cy.findByRole('tab', { name: 'Security' }).click();
         cy.findByRole('tabpanel').within(() => {
             cy.findByLabelText(/^Secret/).should('have.attr', 'type', 'password');
-            cy.findByLabelText(/^Secret/).next().trigger('mousedown');
+            cy.findByLabelText(/^Secret/).next().click();
             cy.findByLabelText(/^Secret/).should('have.attr', 'type', 'text');
-            cy.findByLabelText(/^Secret/).next().trigger('mouseup');
+            cy.findByLabelText(/^Secret/).next().click();
             cy.findByLabelText(/^Secret/).should('have.attr', 'type', 'password');
             cy.findByLabelText(/^Secret/).next().next().click();
             cy.findByLabelText(/^Secret/).invoke('val').then((secretValue) => {

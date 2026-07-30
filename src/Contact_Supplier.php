@@ -149,7 +149,7 @@ class Contact_Supplier extends CommonDBRelation
                 );
                 $website = $website_url !== ''
                     ? "<a target=_blank href='" . htmlescape($website_url) . "'>" . htmlescape($data["website"]) . "</a>"
-                    : $data["website"];
+                    : htmlescape($data["website"]);
             }
 
             $supplier->getFromDB($data["id"]);

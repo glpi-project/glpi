@@ -681,7 +681,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                         => min($_SESSION['glpilist_limit'], $number),
                      'container'
                         => 'mass' . self::class . $rand,
-                     'specific_actions'
+                     'add_actions'
                         => [self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_version'
                                        => _x('button', 'Move'),
                             'purge' => _x('button', 'Delete permanently'),

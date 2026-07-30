@@ -638,7 +638,9 @@ TWIG, $twig_params);
                 }
                 $cal_href = htmlescape(Reservation::getSearchURL() . "?reservationitems_id=" . $row['id']);
                 $entry['calendar'] = "<a href='$cal_href'>";
-                $entry['calendar'] .= "<i class='" . htmlescape(Reservation::getIcon()) . " fa-2x cursor-pointer' title=\"" . __s("Reserve this item") . "\"></i>";
+                $entry['calendar'] .= "<i class='" . htmlescape(Reservation::getIcon()) . " fa-2x cursor-pointer' aria-hidden='true'></i>";
+                $entry['calendar'] .= "<span class='visually-hidden'>" . __s("Reserve this item") . "</span>";
+                $entry['calendar'] .= "</a>";
 
                 $ok = true;
                 $entries[] = $entry;

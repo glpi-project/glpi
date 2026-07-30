@@ -113,6 +113,7 @@ abstract class AbstractDocumentUploadController extends AbstractController
 
             $created[] = [
                 'assoc_id'     => $doc_item->getID(),
+                'id'           => $doc_id,
                 'filename'     => $filename,
                 'download_url' => $document->getDownloadUrl(),
                 'extension'    => $extension,

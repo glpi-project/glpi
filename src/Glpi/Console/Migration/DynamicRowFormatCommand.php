@@ -37,6 +37,7 @@ namespace Glpi\Console\Migration;
 
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Exception\EarlyExitException;
+use Glpi\Exception\Database\QueryException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -133,9 +134,9 @@ class DynamicRowFormatCommand extends AbstractCommand
         $progress_message = (fn(string $table) => sprintf(__('Migrating table "%s"...'), $table));
 
         foreach ($this->iterate($tables, $progress_message) as $table) {
-            $result = $this->db->doQuery(sprintf('ALTER TABLE %s ROW_FORMAT = DYNAMIC', $this->db->quoteName($table)));
-
-            if (!$result) {
+            try {
+                $this->db->doQuery(sprintf('ALTER TABLE %s ROW_FORMAT = DYNAMIC', $this->db->quoteName($table)));
+            } catch (QueryException $e) {
                 $message = sprintf(
                     __('Migration of table "%s" failed with message "(%s) %s".'),
                     $table,

@@ -39,8 +39,8 @@ use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\BadRequestHttpException;
 use KnowbaseItem_Favorite;
 use Session;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class ToggleFavoriteController extends AbstractController
@@ -55,7 +55,7 @@ final class ToggleFavoriteController extends AbstractController
         ],
         methods: 'POST',
     )]
-    public function __invoke(int $id, Request $request): Response
+    public function __invoke(int $id, Request $request): JsonResponse
     {
         $value = $request->getPayload()->get('value');
 
@@ -70,15 +70,15 @@ final class ToggleFavoriteController extends AbstractController
             'users_id'         => $user_id,
         ];
 
-        if ($value) {
+        $favorite = new KnowbaseItem_Favorite();
+        $exists   = $favorite->getFromDBByCrit($criteria);
+
+        if ($value && !$exists) {
             $this->add(KnowbaseItem_Favorite::class, $criteria);
-        } else {
-            $favorite = new KnowbaseItem_Favorite();
-            if ($favorite->getFromDBByCrit($criteria)) {
-                $this->purge(KnowbaseItem_Favorite::class, $favorite->getID());
-            }
+        } elseif (!$value && $exists) {
+            $this->purge(KnowbaseItem_Favorite::class, $favorite->getID());
         }
 
-        return new Response(); // OK
+        return new JsonResponse(['favorite' => (bool) $value]);
     }
 }

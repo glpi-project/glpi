@@ -38,6 +38,7 @@ use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasKnowbaseCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
+use KnowbaseItem;
 use KnowbaseItem_Item;
 use Toolbox;
 
@@ -227,7 +228,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
     {
         $this->login();
         $kb_item = new KnowbaseItem_Item();
-        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
 
         // KnowbaseItem tab is no longer displayed (handled in main article view)
         $this->assertSame('', $kb_item->getTabNameForItem($kb1));

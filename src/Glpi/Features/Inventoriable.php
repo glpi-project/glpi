@@ -158,7 +158,7 @@ HTML;
             }
         } else {
             echo sprintf(
-                "<span style='float: right;'><i class='ti ti-ban'></i> <span class='sr-only'>%s</span></span>",
+                "<span style='float: right;'><i class='ti ti-ban'></i> <span class='visually-hidden'>%s</span></span>",
                 __s('Inventory file missing')
             );
         }

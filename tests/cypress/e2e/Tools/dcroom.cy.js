@@ -77,8 +77,7 @@ describe('DC Room', () => {
             cy.findByRole('dialog')
                 .should('have.attr', 'data-cy-shown', 'true')
                 .within(() => {
-                    //TODO the heading here should not be level 3
-                    cy.findByRole('heading', {level: 3}).should('contain.text', 'New item - Rack');
+                    cy.findByRole('heading', {level: 1}).should('contain.text', 'New item - Rack');
                     cy.findByRole('button', {name: 'Close'}).click();
                     cy.should('not.exist');
                 });

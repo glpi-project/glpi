@@ -36,9 +36,11 @@
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
+use Glpi\Toolbox\HttpClient;
 use Glpi\Toolbox\URL;
 use Safe\Exceptions\UrlException;
 use SimplePie\SimplePie;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
 use function Safe\parse_url;
 
@@ -542,15 +544,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             return false;
         }
 
-        if (!Toolbox::isUrlSafe($url)) {
-            Session::addMessageAfterRedirect(
-                htmlescape(sprintf(__('URL "%s" is not allowed by your administrator.'), $url)),
-                false,
-                ERROR
-            );
-            return false;
-        }
-
         return true;
     }
 
@@ -623,7 +616,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public function showFeedContent(): bool
     {
-        if (!$this->canViewItem()) {
+        if (!$this->can($this->getID(), READ)) {
             return false;
         }
         $rss_feed = [
@@ -641,9 +634,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 ];
             }
         } else {
-            $rss_feed['error'] = !Toolbox::isUrlSafe($this->fields['url'])
-                ? sprintf(__('URL "%s" is not allowed by your administrator.'), $this->fields['url'])
-                : __('Error retrieving RSS feed');
+            $rss_feed['error'] = __('Error retrieving RSS feed');
             $this->setError(true);
         }
 
@@ -664,24 +655,17 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
     {
-        global $GLPI_CACHE, $CFG_GLPI;
+        global $GLPI_CACHE;
 
         // Fetch feed data, unless it is already cached
         $cache_key = sha1($url);
         $update_cache = false;
         if (($raw_data = $GLPI_CACHE->get($cache_key)) === null) {
-            if (!Toolbox::isUrlSafe($url)) {
-                return false;
-            }
-
-            $error_msg  = null;
-            $curl_error = null;
-            $eopts = [];
-            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
-                $eopts['proxy_excluded'] = true;
-            }
-            $raw_data = Toolbox::callCurl($url, $eopts, $error_msg, $curl_error, true);
-            if (empty($raw_data)) {
+            $http_client = new HttpClient(context: self::class);
+            try {
+                $response = $http_client->get($url);
+                $raw_data = $response->getContent();
+            } catch (ExceptionInterface $e) {
                 return false;
             }
 

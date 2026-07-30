@@ -41,6 +41,23 @@
 >
     {% if icon_ids|length %}
         <div class="row g-3 mb-4 align-items-start">
+            {% if page == 1 and filter is empty %}
+                {# Tile to clear the selection — only shown on the first page with no filter. #}
+                <div
+                    class="col-4 col-sm-3 col-lg-2"
+                    role="button"
+                    aria-label="{{ __('No illustration') }}"
+                    data-bs-dismiss="modal"
+                    data-glpi-icon-picker-value=""
+                >
+                    <div class="card border-secondary-hover cursor-pointer rounded">
+                        <div class="card-body h-100 aspect-ratio-1 d-flex flex-column align-items-center justify-content-center text-secondary">
+                            <i class="ti ti-photo-off fs-1" aria-hidden="true"></i>
+                            <span class="mt-2 small text-center">{{ __("No illustration") }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
             {% for icon_id in icon_ids %}
                 <div class="col-4 col-sm-3 col-lg-2" data-bs-dismiss="modal" data-glpi-icon-picker-value="{{ icon_id }}">
                     <div class="card border-secondary-hover cursor-pointer rounded">

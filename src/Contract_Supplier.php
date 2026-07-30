@@ -306,7 +306,7 @@ TWIG, $twig_params);
                 );
                 $website = $website_url !== ''
                     ? "<a target=_blank href='" . htmlescape($website_url) . "'>" . htmlescape($data["website"]) . "</a>"
-                    : $data["website"];
+                    : htmlescape($data["website"]);
             }
 
             if (!isset($entity_cache[$data['entity']])) {

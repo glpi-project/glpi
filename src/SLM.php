@@ -230,6 +230,24 @@ TWIG, $twig_params);
             'datatype'           => 'text',
         ];
 
+        $tab[] = [
+            'id'              => '80',
+            'table'           => Entity::getTable(),
+            'field'           => 'completename',
+            'name'            => Entity::getTypeName(1),
+            'massiveaction'   => false,
+            'datatype'        => 'dropdown',
+        ];
+
+        $tab[] = [
+            'id'            => '86',
+            'table'         => static::getTable(),
+            'field'         => 'is_recursive',
+            'name'          => __('Child entities'),
+            'datatype'      => 'bool',
+            'massiveaction' => false,
+        ];
+
         return $tab;
     }
 

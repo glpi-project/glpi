@@ -39,6 +39,7 @@ use DateInterval;
 use Entity;
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Exception\AuthenticationFailedException;
 use GLPIKey;
 use Group_User;
 use JsonException;
@@ -49,6 +50,10 @@ use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\TwoFactorAuthException;
 use Safe\DateTimeImmutable;
 use SodiumException;
+use Symfony\Component\Cache\Adapter\Psr16Adapter;
+use Symfony\Component\RateLimiter\LimiterInterface;
+use Symfony\Component\RateLimiter\RateLimiterFactory;
+use Symfony\Component\RateLimiter\Storage\CacheStorage;
 
 use function Safe\json_encode;
 
@@ -79,6 +84,16 @@ final class TOTPManager
      * app is using a different one, and then store the used algorithm in the user's 2FA config.
      */
     public const CODE_ALGORITHM = ['sha1', 'sha256'];
+
+    /**
+     * @var int Maximum number of MFA verification attempts within the lockout window
+     */
+    public const MFA_MAX_ATTEMPTS = 5;
+
+    /**
+     * @var string Duration of the MFA lockout window (sliding window interval)
+     */
+    public const MFA_LOCKOUT_INTERVAL = '15 minutes';
 
     /**
      * @var int 2FA is not enforced. Users can choose to enable it or not.
@@ -399,6 +414,45 @@ final class TOTPManager
             }
         }
         return false;
+    }
+
+    /**
+     * Consume one rate-limit token for the given user.
+     * Throws AuthenticationFailedException if the limit is already exhausted.
+     * @param int $users_id ID of the user
+     * @throws AuthenticationFailedException
+     */
+    public function checkMFARateLimit(int $users_id): void
+    {
+        if (!$this->getMFARateLimiter($users_id)->consume(1)->isAccepted()) {
+            throw new AuthenticationFailedException(
+                authentication_errors: [__('Too many failed MFA attempts. Please try again later.')]
+            );
+        }
+    }
+
+    /**
+     * Reset the MFA rate-limit counter for a user after a successful verification.
+     * @param int $users_id ID of the user
+     */
+    public function clearMFAFailures(int $users_id): void
+    {
+        $this->getMFARateLimiter($users_id)->reset();
+    }
+
+    private function getMFARateLimiter(int $users_id): LimiterInterface
+    {
+        global $GLPI_CACHE;
+        $factory = new RateLimiterFactory(
+            [
+                'id'       => 'mfa_verify',
+                'policy'   => 'sliding_window',
+                'limit'    => self::MFA_MAX_ATTEMPTS,
+                'interval' => self::MFA_LOCKOUT_INTERVAL,
+            ],
+            new CacheStorage(new Psr16Adapter($GLPI_CACHE))
+        );
+        return $factory->create('user_' . $users_id);
     }
 
     /**

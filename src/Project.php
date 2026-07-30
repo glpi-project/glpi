@@ -1727,7 +1727,7 @@ TWIG, $twig_params);
             }
 
             $project->fields = $subproject;
-            $item['_readonly'] = !Project::canUpdate() || !$project->canUpdateItem();
+            $item['_readonly'] = !$project->can($project->getID(), UPDATE);
 
             $subproject_teams = array_filter($projectteams, static fn($e) => $e['projects_id'] === $subproject['id']);
             foreach ($subproject_teams as $teammember) {
@@ -1770,7 +1770,7 @@ TWIG, $twig_params);
             }
 
             $projecttask->fields = $subtask;
-            $item['_readonly'] = !ProjectTask::canUpdate() || !$projecttask->canUpdateItem();
+            $item['_readonly'] = !$projecttask->can($projecttask->getID(), UPDATE);
 
             $subtask_teams = array_filter($projecttaskteams, static fn($e) => $e['projecttasks_id'] == $subtask['id']);
             foreach ($subtask_teams as $teammember) {
@@ -1923,7 +1923,7 @@ TWIG, $twig_params);
         }
 
         foreach (array_keys($columns) as $column_id) {
-            if ($column_id !== 0 && !in_array($column_id, $column_ids)) {
+            if ($column_id !== 0 && !$get_default && !in_array($column_id, $column_ids)) {
                 unset($columns[$column_id]);
             }
         }
@@ -1952,7 +1952,7 @@ TWIG, $twig_params);
         $project = new Project();
         if (
             ($ID <= 0 && !self::canView())
-            || ($ID > 0 && (!$project->getFromDB($ID) || !$project->canViewItem()))
+            || ($ID > 0 && (!$project->getFromDB($ID) || !$project->can($project->getID(), READ)))
         ) {
             return false;
         }

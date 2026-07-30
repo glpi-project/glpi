@@ -40,10 +40,12 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
+use Glpi\Toolbox\HttpClient;
 use Glpi\Toolbox\IPUtilities;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Response;
 use Safe\DateTime;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -678,12 +680,10 @@ class Agent extends CommonDBTM
      *
      * @param string $endpoint Endpoint to reach
      *
-     * @return Response
+     * @return ResponseInterface
      */
-    public function requestAgent($endpoint): Response
+    public function requestAgent($endpoint): ResponseInterface
     {
-        global $CFG_GLPI;
-
         if (self::$found_address !== false) {
             $addresses = [self::$found_address];
         } else {
@@ -693,21 +693,18 @@ class Agent extends CommonDBTM
         $exception = null;
         $response = null;
         foreach ($addresses as $address) {
-            $options = [
-                'base_uri'        => $address,
-            ];
+            $httpClient = new HttpClient(
+                context: self::class,
+                options: [
+                    'base_uri' => $address,
+                ]
+            );
 
-            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
-                $options['proxy_excluded'] = true;
-            }
-
-            // init guzzle client with base options
-            $httpClient = Toolbox::getGuzzleClient($options);
             try {
-                $response = $httpClient->request('GET', $endpoint, []);
+                $response = $httpClient->get($endpoint, []);
                 self::$found_address = $address;
                 break;
-            } catch (Throwable $exception) {
+            } catch (ExceptionInterface $exception) {
                 // many addresses will be incorrect
             }
         }
@@ -731,7 +728,7 @@ class Agent extends CommonDBTM
         try {
             $response = $this->requestAgent('status');
             return $this->handleAgentResponse($response, self::ACTION_STATUS);
-        } catch (ClientException $e) {
+        } catch (ClientExceptionInterface $e) {
             ErrorHandler::logCaughtException($e);
             // not authorized
             return ['answer' => __('Not allowed')];
@@ -750,9 +747,9 @@ class Agent extends CommonDBTM
     {
         // must return json
         try {
-            $this->requestAgent('now');
-            return $this->handleAgentResponse(new Response(), self::ACTION_INVENTORY);
-        } catch (ClientException $e) {
+            $response = $this->requestAgent('now');
+            return $this->handleAgentResponse($response, self::ACTION_INVENTORY);
+        } catch (ClientExceptionInterface $e) {
             ErrorHandler::logCaughtException($e);
             // not authorized
             return ['answer' => __('Not allowed')];
@@ -765,16 +762,16 @@ class Agent extends CommonDBTM
     /**
      * Handle agent response and returns an array to be serialized as json
      *
-     * @param Response $response Response
-     * @param string   $request  Request type (either status or now)
+     * @param ResponseInterface $response Response
+     * @param string            $request  Request type (either status or now)
      *
      * @return array{answer: string}
      */
-    private function handleAgentResponse(Response $response, $request): array
+    private function handleAgentResponse(ResponseInterface $response, $request): array
     {
         $data = [];
 
-        $raw_content = (string) $response->getBody();
+        $raw_content = $response->getContent();
 
         switch ($request) {
             case self::ACTION_STATUS:

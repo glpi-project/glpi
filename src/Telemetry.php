@@ -35,6 +35,9 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Toolbox\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 
 use function Safe\curl_exec;
 use function Safe\curl_getinfo;
@@ -42,7 +45,6 @@ use function Safe\curl_init;
 use function Safe\curl_setopt;
 use function Safe\file_get_contents;
 use function Safe\ini_get;
-use function Safe\json_decode;
 use function Safe\json_encode;
 use function Safe\parse_url;
 use function Safe\preg_match;
@@ -304,32 +306,34 @@ class Telemetry extends CommonGLPI
      */
     public static function cronTelemetry($task): ?int
     {
-        global $CFG_GLPI;
-
         $data = self::getTelemetryInfos();
-        $infos = json_encode(['data' => $data]);
 
-        $url = GLPI_TELEMETRY_URI . '/telemetry';
-        $opts = [
-            CURLOPT_POSTFIELDS      => $infos,
-            CURLOPT_HTTPHEADER      => ['Content-Type:application/json'],
-        ];
-        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
-            $opts['proxy_excluded'] = true;
+        $http_client = new HttpClient(context: GLPINetwork::class);
+        try {
+            $response = $http_client->post(
+                GLPI_TELEMETRY_URI . '/telemetry',
+                [
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                    ],
+                    'body' => json_encode(['data' => $data]),
+                ]
+            );
+            $response_data = $response->toArray();
+        } catch (ExceptionInterface|DecodingExceptionInterface $e) {
+            global $PHPLOGGER;
+            $PHPLOGGER->warning(
+                "Something went wrong sending telemetry information: {$e->getMessage()}",
+                ['exception' => $e]
+            );
+            return null; // null = Action aborted
         }
 
-        $errstr = null;
-        $content = json_decode(Toolbox::callCurl($url, $opts, $errstr));
-
-        if ($content && property_exists($content, 'message')) {
+        if (array_key_exists('message', $response_data)) {
             //all is OK!
             return 1;
         } else {
-            $message = 'Something went wrong sending telemetry information';
-            if ($errstr != '') {
-                $message .= ": $errstr";
-            }
-            trigger_error($message, E_USER_WARNING);
+            trigger_error('Something went wrong sending telemetry information', E_USER_WARNING);
             return null; // null = Action aborted
         }
     }

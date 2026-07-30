@@ -31,7 +31,6 @@
  #}
 
 {% extends 'layout/page_card_notlogged.html.twig' %}
-{% import 'pages/2fa/macros.html.twig' as tfa %}
 
 {% block header_block %}
    <span class="card-title">{{ __('Please enter the code from your authenticator app') }}</span>
@@ -40,7 +39,7 @@
 {% block content_block %}
    <form method="post" action="{{ path(action, {"redirect": redirect}) }}" data-submit-once autocomplete="off" class="m-md-n4" data-code-type="code">
       <div>
-         {{ tfa.tfa_code_input() }}
+         <twig:Mfa:CodeInput />
          <input type="text" name="backup_code" class="form-control d-none" disabled="disabled" placeholder="{{ __('Backup code') }}"/>
       </div>
       <div class="border-top mt-2 pt-2 mx-n2 d-flex">
@@ -52,12 +51,11 @@
                     const card_title = btn.closest('.card').find('.card-title');
                     const form = btn.closest('form');
 
+                    const code_group = $('[data-mfa-code-input]');
                     if (form.attr('data-code-type') === 'code') {
                         // Switch to backup code
                         form.attr('data-code-type', 'backup_code');
-                        $('input[name="totp_code[]"]')
-                            .attr('disabled', 'disabled')
-                            .addClass('d-none');
+                        code_group.addClass('d-none').find('input').attr('disabled', 'disabled');
                         $('input[name="backup_code"]')
                             .removeAttr('disabled')
                             .removeClass('d-none');
@@ -69,9 +67,7 @@
                         $('input[name="backup_code"]')
                             .attr('disabled', 'disabled')
                             .toggleClass('d-none');
-                        $('input[name="totp_code[]"]')
-                            .removeAttr('disabled')
-                            .removeClass('d-none');
+                        code_group.removeClass('d-none').find('input').removeAttr('disabled');
                         btn.text('{{ __('Use a backup code') }}');
                         card_title.text('{{ __('Please enter the code from your authenticator app') }}');
                     }

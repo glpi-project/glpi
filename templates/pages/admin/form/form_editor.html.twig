@@ -248,6 +248,7 @@
 
                                         {% set visibility_dropdown_field = include('pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig', {
                                                 'item'      : item,
+                                                'allow_unauthenticated_access': allow_unauthenticated_access,
                                             }, with_context = false) %}
 
                                         {{ fields.field(

@@ -38,6 +38,9 @@ use CommonDBTM;
 use Computer;
 use Glpi\Plugin\Hooks;
 use Glpi\Tests\DbTestCase;
+use Group;
+use Group_Item;
+use Group_User;
 use ImpactCompound;
 use ImpactItem;
 use ImpactRelation;
@@ -579,5 +582,133 @@ class ImpactTest extends DbTestCase
 
             $this->assertSame($root_doc . '/pics/impact/default.png', \Impact::getImpactIcon('PluginTesterAnotherAsset'));
         }
+    }
+
+    public function testSearchAssetNoRights(): void
+    {
+        $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $this->login();
+        $_SESSION['glpiactiveprofile'][Computer::$rightname] = 0;
+
+        $this->createItem(Computer::class, ['name' => 'impact-test-norights-1', 'entities_id' => $entity_id]);
+        $this->createItem(Computer::class, ['name' => 'impact-test-norights-2', 'entities_id' => $entity_id]);
+
+        $result = \Impact::searchAsset(Computer::class, [], 'impact-test-norights');
+        $this->assertSame([], $result['items']);
+        $this->assertSame(0, $result['total']);
+    }
+
+    public function testSearchAssetReadRight(): void
+    {
+        $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $this->login();
+        $assigned_user_id = getItemByTypeName('User', 'normal', true);
+
+        $c1 = $this->createItem(Computer::class, ['name' => 'impact-test-read-1', 'entities_id' => $entity_id]);
+        $c2 = $this->createItem(Computer::class, ['name' => 'impact-test-read-2', 'entities_id' => $entity_id]);
+        $c3 = $this->createItem(Computer::class, [
+            'name' => 'impact-test-read-3',
+            'entities_id' => $entity_id,
+            'users_id_tech' => $assigned_user_id,
+        ]);
+
+
+        $_SESSION['glpiactiveprofile'][Computer::$rightname] = READ;
+
+        $result = \Impact::searchAsset(Computer::class, [], 'impact-test-read');
+
+        $this->assertSame(3, $result['total']);
+
+        $ids = array_column($result['items'], 'id');
+        $this->assertContains($c1->getID(), $ids);
+        $this->assertContains($c2->getID(), $ids);
+        $this->assertContains($c3->getID(), $ids);
+    }
+
+    public function testSearchAssetReadAssignedRight(): void
+    {
+        $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $this->login();
+        $user_id = $_SESSION['glpiID'];
+
+        // Direct user assignment
+        $assigned = $this->createItem(Computer::class, [
+            'name'          => 'impact-test-assigned-yes',
+            'entities_id'   => $entity_id,
+            'users_id_tech' => $user_id,
+        ]);
+        $not_assigned = $this->createItem(Computer::class, [
+            'name'        => 'impact-test-assigned-no',
+            'entities_id' => $entity_id,
+        ]);
+
+        $_SESSION['glpiactiveprofile'][Computer::$rightname] = READ_ASSIGNED;
+
+        $result = \Impact::searchAsset(Computer::class, [], 'impact-test-assigned');
+        $this->assertSame(1, $result['total']);
+        $ids = array_column($result['items'], 'id');
+        $this->assertContains($assigned->getID(), $ids);
+        $this->assertNotContains($not_assigned->getID(), $ids);
+
+        // Group-based tech assignment
+        $group = $this->createItem(Group::class, [
+            'name'        => 'impact-test-tech-group',
+            'entities_id' => $entity_id,
+        ]);
+
+        // Add user to the group and reflect in session
+        $this->createItem(Group_User::class, [
+            'groups_id' => $group->getID(),
+            'users_id'  => $user_id,
+        ]);
+        $_SESSION['glpigroups'][] = $group->getID();
+
+        $group_assigned = $this->createItem(Computer::class, [
+            'name'        => 'impact-test-group-assigned-yes',
+            'entities_id' => $entity_id,
+        ]);
+        $group_not_assigned = $this->createItem(Computer::class, [
+            'name'        => 'impact-test-group-assigned-no',
+            'entities_id' => $entity_id,
+        ]);
+
+        // Link computer to the tech group
+        $this->createItem(Group_Item::class, [
+            'groups_id' => $group->getID(),
+            'items_id'  => $group_assigned->getID(),
+            'itemtype'  => Computer::class,
+            'type'      => Group_Item::GROUP_TYPE_TECH,
+        ]);
+
+        $result = \Impact::searchAsset(Computer::class, [], 'impact-test-group-assigned');
+        $this->assertSame(1, $result['total']);
+        $ids = array_column($result['items'], 'id');
+        $this->assertContains($group_assigned->getID(), $ids);
+        $this->assertNotContains($group_not_assigned->getID(), $ids);
+    }
+
+    public function testSearchAssetReadOwnedRight(): void
+    {
+        $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $this->login();
+        $user_id = $_SESSION['glpiID'];
+
+        $owned = $this->createItem(Computer::class, [
+            'name'        => 'impact-test-owned-yes',
+            'entities_id' => $entity_id,
+            'users_id'    => $user_id,
+        ]);
+        $not_owned = $this->createItem(Computer::class, [
+            'name'        => 'impact-test-owned-no',
+            'entities_id' => $entity_id,
+        ]);
+
+        $_SESSION['glpiactiveprofile'][Computer::$rightname] = READ_OWNED;
+
+        $result = \Impact::searchAsset(Computer::class, [], 'impact-test-owned');
+        $this->assertSame(1, $result['total']);
+        $ids = array_column($result['items'], 'id');
+        $this->assertContains($owned->getID(), $ids);
+        $this->assertNotContains($not_owned->getID(), $ids);
     }
 }

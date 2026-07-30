@@ -39,6 +39,7 @@ use CommonGLPI;
 use Config;
 use Document;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
 use GLPINetwork;
 use Html;
@@ -923,9 +924,7 @@ JS;
      */
     public static function getLocalizedDescription(array $plugin = [], string $version = 'short_description'): string
     {
-        global $CFG_GLPI;
-
-        $userlang = $CFG_GLPI['languages'][$_SESSION['glpilanguage']][3] ?? "en";
+        $userlang = LanguageRegistry::get($_SESSION['glpilanguage'] ?? 'en')->getPageLang();
 
         if (!isset($plugin['descriptions'])) {
             return "";

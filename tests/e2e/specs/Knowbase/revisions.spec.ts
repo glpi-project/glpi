@@ -54,7 +54,7 @@ test('Can view revision history and restore a previous version', async ({ page, 
 
     // Toggle history panel
     await expect(kb.getHeading('History')).not.toBeAttached();
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await expect(page.getByTestId('history-counter')).toHaveText("3");
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
@@ -84,7 +84,7 @@ test('Can view revision history and restore a previous version', async ({ page, 
     await expect(page.getByText('Original content')).toBeVisible();
 
     // Counter should be updated (new revision created from previous current version)
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await expect(page.getByTestId('history-counter')).toHaveText("4");
 });
 
@@ -112,7 +112,7 @@ test('Associated item changes appear in history', async ({ page, profile, api })
 
     // Go to article and open history panel
     await kb.goto(kb_id);
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
 
@@ -139,7 +139,7 @@ test('Permission changes appear in history', async ({ page, profile, api }) => {
     });
 
     await kb.goto(id);
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
 
@@ -172,7 +172,7 @@ test('Document attachment changes appear in history', async ({ page, profile, ap
 
     // Go to article and open history panel
     await kb.goto(kb_id);
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
 
@@ -196,7 +196,7 @@ test('Name changes appear in history', async ({ page, profile, api }) => {
 
     // Go to article and open history panel
     await kb.goto(id);
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
 
@@ -222,7 +222,7 @@ test('Can compare a revision with the current version', async ({ page, profile, 
     await expect(page.getByText('Updated paragraph')).toBeVisible();
 
     // Open history panel
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
 
@@ -269,7 +269,7 @@ test('Switching between revisions does not corrupt the diff', async ({ page, pro
     await kb.goto(id);
 
     // Open history panel
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
 
@@ -318,7 +318,7 @@ test('Clicking current version deactivates comparison', async ({ page, profile, 
     await expect(page.getByText('Updated content')).toBeVisible();
 
     // Open history panel
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
 

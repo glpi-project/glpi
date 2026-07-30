@@ -52,16 +52,22 @@
 {% endset %}
 
 {% set picture_field %}
-    <div
-        {% if can_update %}
-            class="cursor-pointer flex-shrink-1" title="{{ __('Change picture') }}" role="button" data-bs-toggle="modal" data-bs-target="#modal_picture_{{ rand_field }}"
-        {% endif %}>
+    {% set picture_avatars %}
         <div data-current-avatar data-testid="current-avatar-container">{{ avatar }}</div>
         <div data-default-avatar data-testid="default-avatar" class="d-none">{{ avatar_initials }}</div>
         <div class="avatar avatar-xl rounded d-none" data-preview-avatar data-testid="preview-avatar">
             <img src="" alt="{{ __('Preview') }}" class="img-fluid" />
         </div>
-    </div>
+    {% endset %}
+    {% if can_update %}
+        <button type="button" class="cursor-pointer flex-shrink-1 border-0 bg-transparent p-0"
+                title="{{ __('Change picture') }}" aria-label="{{ __('Change picture') }}"
+                data-bs-toggle="modal" data-bs-target="#modal_picture_{{ rand_field }}">
+            {{ picture_avatars }}
+        </button>
+    {% else %}
+        <div>{{ picture_avatars }}</div>
+    {% endif %}
     {% if can_update %}
         {% set modal_content %}
             <div class="text-center">

@@ -165,7 +165,7 @@ final class Parser
                         $b = str_replace(['%', '*'], ['_', '%'], $b);
                         return [
                             [
-                                $this->db::quoteName($a) => ['LIKE', QueryFunction::cast(new QueryExpression($this->db->quote($b)), 'BINARY')],
+                                $this->db::quoteName($a) => ['LIKE', QueryFunction::cast(new QueryExpression('?', null, [$b]), 'BINARY')],
                             ],
                         ];
                     },
@@ -231,7 +231,7 @@ final class Parser
                     'sql_where_callable' => function ($a, $b) {
                         $b = str_replace(['%', '*'], ['_', '%'], $b);
                         return [
-                            [$this->db::quoteName($a) => ['NOT LIKE', QueryFunction::cast(new QueryExpression($this->db->quote($b)), 'BINARY')]],
+                            [$this->db::quoteName($a) => ['NOT LIKE', QueryFunction::cast(new QueryExpression('?', null, [$b]), 'BINARY')]],
                         ];
                     },
                 ],
@@ -258,12 +258,13 @@ final class Parser
      */
     public function parse(array $tokens): Result
     {
-        $it = new DBmysqlIterator($this->db);
         // We are building a SQL string instead of criteria array because it isn't worth the complexity or overhead.
         // Everything done here should be standard SQL. If there is a platform difference, it should be handled in the callables for each operator.
         // SQL already will process logical separators (AND, OR) in the correct order, so we don't need to worry about that.
         $sql_where_string = '';
+        $sql_where_values = [];
         $sql_having_string = '';
+        $sql_having_values = [];
 
         $position = 0;
         $token_count = count($tokens);
@@ -326,10 +327,13 @@ final class Parser
                         };
                     }
                     $criteria_array = $buffer['operator']($buffer['field'], $value);
+                    $it = new DBmysqlIterator($this->db);
                     if (isset($flat_props[$buffer['property']]['computation'])) {
                         $sql_having_string .= $it->analyseCrit($criteria_array);
+                        $sql_having_values = array_merge($sql_having_values, $it->getValues());
                     } else {
                         $sql_where_string .= $it->analyseCrit($criteria_array);
+                        $sql_where_values = array_merge($sql_where_values, $it->getValues());
                     }
                 }
                 $buffer = [];
@@ -354,6 +358,9 @@ final class Parser
             $sql_having_string = '1';
         }
 
-        return new Result(new QueryExpression($sql_where_string), new QueryExpression($sql_having_string), $invalid_filters);
+        $sql_where = new QueryExpression($sql_where_string, values: $sql_where_values);
+        $sql_having = new QueryExpression($sql_having_string, values: $sql_having_values);
+
+        return new Result($sql_where, $sql_having, $invalid_filters);
     }
 }

@@ -62,7 +62,7 @@ test('Side panel displays as offcanvas on small screens', async ({
     await expect(page.getByText('Responsive test answer')).toBeVisible();
 
     // Open comments panel
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('Comments').click();
 
     // On small screens, an offcanvas should be disabled
@@ -112,7 +112,7 @@ test('Side panel displays normally on large screens', async ({
     await expect(page.getByText('Responsive test answer')).toBeVisible();
 
     // Open comments panel and verify it uses the side panel
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
     await kb.getButton('Comments').click();
 
     // On default sized screens, a side panel should be disabled

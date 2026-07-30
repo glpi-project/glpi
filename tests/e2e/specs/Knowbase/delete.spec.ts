@@ -46,7 +46,7 @@ test('Can delete an article', async ({ page, profile, api }) => {
     });
 
     await kb.goto(id);
-    await page.getByTitle('More actions').click();
+    await kb.articleActionsMenu.click();
 
     // Delete article
     const delete_button = kb.getButton('Delete article');

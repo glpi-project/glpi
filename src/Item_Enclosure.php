@@ -41,7 +41,8 @@ class Item_Enclosure extends CommonDBRelation
     public static ?string $items_id_1 = 'enclosures_id';
     public static ?string $itemtype_2 = 'itemtype';
     public static ?string $items_id_2 = 'items_id';
-    public static int $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static int $checkItem_1_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
+    public static bool $checkAlwaysBothItems = true;
     public static bool $mustBeAttached_1 = false; // FIXME It make no sense for an enclosure item to not be attached to an Enclosure.
     public static bool $mustBeAttached_2 = false; // FIXME It make no sense for an enclosure item to not be attached to an Item.
 
@@ -117,7 +118,18 @@ class Item_Enclosure extends CommonDBRelation
         $entries = [];
         foreach ($items as $row) {
             $item = getItemForItemtype($row['itemtype']);
-            $item->getFromDB($row['items_id']);
+            if (
+                !$item instanceof CommonDBTM
+                || !$item->getFromDB($row['items_id'])
+                || !$item->can($row['items_id'], READ)
+            ) {
+                $entries[] = [
+                    'item'     => __('You are not allowed to view this item'),
+                    'position' => $row['position'],
+                    'skip_ma'  => true,
+                ];
+                continue;
+            }
             $entries[] = [
                 'itemtype' => static::class,
                 'id'       => $row['id'],

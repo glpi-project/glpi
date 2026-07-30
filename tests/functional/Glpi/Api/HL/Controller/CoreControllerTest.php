@@ -34,10 +34,12 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Transfer;
 
 class CoreControllerTest extends HLAPITestCase
 {
@@ -62,7 +64,6 @@ class CoreControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('OPTIONS', '/Session'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) {
@@ -72,7 +73,6 @@ class CoreControllerTest extends HLAPITestCase
         });
 
         $this->api->call(new Request('OPTIONS', '/Administration/User'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) {
@@ -86,7 +86,6 @@ class CoreControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('HEAD', '/Session'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) {
@@ -108,9 +107,7 @@ class CoreControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call($request, function ($call) use ($schema_name) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->matchesSchema($schema_name);
+            $call->response->matchesSchema($schema_name);
         });
     }
 
@@ -184,7 +181,19 @@ class CoreControllerTest extends HLAPITestCase
             ],
         ];
 
-        $this->login();
+        $request = new Request('POST', '/Transfer', [
+            'Content-Type' => 'application/json',
+            'GLPI-Entity' => $root_entity,
+            'GLPI-Entity-Recursive' => 'true',
+        ], json_encode($transfer_records));
+
+        $_SESSION['glpiactiveprofile'][Transfer::$rightname] = 0;
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+        $this->api->call($request, function ($call) {
+            $call->response->isAccessDenied();
+        });
+
+        $_SESSION['glpiactiveprofile'][Transfer::$rightname] = READ;
 
         $request = new Request('POST', '/Transfer', [
             'Content-Type' => 'application/json',
@@ -192,7 +201,6 @@ class CoreControllerTest extends HLAPITestCase
             'GLPI-Entity-Recursive' => 'true',
         ], json_encode($transfer_records));
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->status(fn($status) => $this->assertEquals(200, $status))
                 ->content(fn($content) => $this->assertEmpty($content));
@@ -253,7 +261,6 @@ class CoreControllerTest extends HLAPITestCase
 
         $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($auth_data));
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->status(fn($status) => $this->assertEquals(400, $status))
                 ->jsonContent(function ($content) {
@@ -269,7 +276,6 @@ class CoreControllerTest extends HLAPITestCase
 
         $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($auth_data));
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->status(fn($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
@@ -313,7 +319,6 @@ class CoreControllerTest extends HLAPITestCase
             'Authorization' => 'Basic ' . base64_encode($client_data['identifier'] . ':' . (new \GLPIKey())->decrypt($client_data['secret'])),
         ], json_encode($auth_data));
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->status(fn($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
@@ -354,7 +359,6 @@ class CoreControllerTest extends HLAPITestCase
 
         $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($auth_data));
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->status(fn($status) => $this->assertEquals(400, $status))
                 ->jsonContent(function ($content) {
@@ -371,7 +375,6 @@ class CoreControllerTest extends HLAPITestCase
 
         $request = new Request('POST', '/Token', ['Content-Type' => 'application/json'], json_encode($auth_data));
         $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->status(fn($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
@@ -386,7 +389,6 @@ class CoreControllerTest extends HLAPITestCase
     {
         $this->login(api_options: ['scope' => 'api']);
         $this->api->call(new Request('GET', '/Status'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isAccessDenied()
                 ->jsonContent(function ($content) {
@@ -395,7 +397,6 @@ class CoreControllerTest extends HLAPITestCase
         });
         $this->login(api_options: ['scope' => 'status']);
         $this->api->call(new Request('GET', '/Status'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK();
         });
@@ -405,7 +406,6 @@ class CoreControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('GET', '/Session/EntityTree'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {

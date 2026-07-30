@@ -539,7 +539,7 @@ var switchFoldMenu = function() {
 
 $(function() {
     //TODO Remove. Only applies to legacy tables using .tab_cadre_fixehov class
-    $("body").delegate('td','mouseover mouseleave', function(e) {
+    $("body").delegate('.tab_cadre_fixehov td','mouseover mouseleave', function(e) {
         var col = $(this).closest('tr').children().index($(this));
         var tr = $(this).closest('tr');
         if (!$(this).closest('tr').hasClass('noHover')) {
@@ -1297,6 +1297,21 @@ function initTooltips(container) {
     );
 }
 
+// Tooltip ARIA pattern: dismiss the focused element's tooltip on Escape.
+document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") {
+        return;
+    }
+    const active = document.activeElement;
+    if (active === null || typeof bootstrap === "undefined") {
+        return;
+    }
+    const instance = bootstrap.Tooltip.getInstance(active);
+    if (instance !== null) {
+        instance.hide();
+    }
+});
+
 /**
  * Returns CSRF token that can be used for AJAX requests.
  *
@@ -1546,8 +1561,38 @@ $(document.body).on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
 });
 
 /**
+ * Toggles a disclosable password field between its hidden and revealed states.
+ * The button's label changes between show/hide so it can be operated with the
+ * keyboard and announces the action it will perform next.
+ * @param {HTMLButtonElement} button The toggle button that was activated
+ * @param {string} item The ID of the field to reveal/hide
+ */
+function toggleDisclosablePasswordField(button, item) {
+    const field = document.getElementById(item);
+    if (field === null) {
+        return;
+    }
+
+    const reveal = field.type === "password";
+    field.type = reveal ? "text" : "password";
+
+    const label = reveal ? button.dataset.hideLabel : button.dataset.showLabel;
+    if (label !== undefined) {
+        button.setAttribute("aria-label", label);
+        button.setAttribute("title", label);
+    }
+
+    const icon = button.querySelector("i.disclose");
+    if (icon !== null) {
+        icon.classList.toggle("ti-eye", !reveal);
+        icon.classList.toggle("ti-eye-off", reveal);
+    }
+}
+
+/**
  * Converts a disclosable password field to a normal text field
  * @param {string} item The ID of the field to be shown
+ * @deprecated 12.0 Use {@link toggleDisclosablePasswordField} instead. Kept for backward compatibility.
  */
 function showDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "text");
@@ -1556,6 +1601,7 @@ function showDisclosablePasswordField(item) {
 /**
  * Converts a normal text field to a password field
  * @param {string} item The ID of the field to be hidden
+ * @deprecated 12.0 Use {@link toggleDisclosablePasswordField} instead. Kept for backward compatibility.
  */
 function hideDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "password");
@@ -1566,18 +1612,23 @@ function hideDisclosablePasswordField(item) {
  * @param {string} item The ID of the field to be copied
  */
 function copyDisclosablePasswordFieldToClipboard(item) {
-    const is_password_input = $("#" + CSS.escape(item)).prop("type") === "password";
-    if (is_password_input) {
-        showDisclosablePasswordField(item);
+    const field = document.getElementById(item);
+    if (field === null) {
+        return;
     }
-    $("#" + CSS.escape(item)).select();
+
+    const is_password_input = field.type === "password";
+    if (is_password_input) {
+        field.type = "text";
+    }
+    field.select();
     try {
         document.execCommand("copy");
     } catch {
-        alert("Copy to clipboard failed'");
+        alert("Copy to clipboard failed");
     }
     if (is_password_input) {
-        hideDisclosablePasswordField(item);
+        field.type = "password";
     }
 }
 
@@ -1698,7 +1749,7 @@ function setupAjaxDropdown(config) {
     const field_id = CSS.escape(config.field_id);
 
     const select2_el = $('#' + field_id).select2({
-        containerCssClass: config.container_css_class,
+        selectionCssClass: config.container_css_class,
         width: config.width,
         multiple: config.multiple,
         placeholder: config.placeholder,
@@ -1892,9 +1943,18 @@ function setupAdaptDropdown(config)
         },
         templateResult: config.templateresult,
         templateSelection: config.templateselection,
+        allowClear: !!config.allowclear,
     };
     if (config.placeholder !== undefined && config.placeholder !== '') {
         options.placeholder = config.placeholder;
+    }
+    if (config.allowclear && $('#' + field_id + ' option[value=""]').length === 0) {
+        const $select = $('#' + field_id);
+        const hasSelected = $select.find('option[selected]').length > 0;
+        $select.prepend('<option value=""></option>');
+        if (!hasSelected) {
+            $select.val('');
+        }
     }
     const select2_el = $('#' + field_id).select2(options);
 

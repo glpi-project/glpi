@@ -35,6 +35,8 @@
 {% set title = __('Inventory') %}
 {% set menu = ["admin", "glpi\\inventory\\inventory"] %}
 
+{% block content_title %}{{ __('Inventory') }}{% endblock %}
+
 {% block content_body %}
 <div class="container-fluid">
     <div class="search_page">
@@ -56,29 +58,33 @@
                 </div>
                 <div class="table-responsive-md">
                     <table class="search-results table table-hover table-card">
+                        <caption class="visually-hidden">{{ __('Inventory files import results') }}</caption>
                         <thead>
-                            <th>{{ __('Filename') }}</th>
-                            <th>{{ __('Result') }}</th>
-                            <th>{{ _n('Item', 'Items', get_plural_number()) }}</th>
+                            <tr>
+                                <th scope="col">{{ __('Filename') }}</th>
+                                <th scope="col">{{ __('Result') }}</th>
+                                <th scope="col">{{ _n('Item', 'Items', get_plural_number()) }}</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {% for filename, result in imported_files %}
                             <tr>
                                 <td>{{ filename }}</td>
                                 <td>
-                                    <span class="{{ result['success'] ? 'text-success' : 'text-danger' }}">
-                                        <i class="ti {{ result['success'] ? 'ti-check' : 'ti-alert-triange' }}"></i>
-                                        {{ result['message'] }}
+                                    <span class="{{ result.isSuccess() ? 'text-success' : 'text-danger' }}">
+                                        <i class="ti {{ result.isSuccess() ? 'ti-check' : 'ti-alert-triangle' }}" aria-hidden="true"></i>
+                                        <span class="visually-hidden">{{ result.isSuccess() ? __('Success') : _n('Error', 'Errors', 1) }}</span>
+                                        {{ result.getMessage() }}
                                     </span>
                                 </td>
                                 <td>
-                                    {% if result['items'] is empty %}
+                                    {% if result.getItems() is empty %}
                                         {{ __('Import denied (no log)') }}
                                     {% else %}
-                                        {% for item in result['items'] %}
+                                        {% for item in result.getItems() %}
                                             <div>
                                                 <span>
-                                                <i class="{{ item.getIcon() }}"></i>
+                                                <i class="{{ item.getIcon() }}" aria-hidden="true"></i>
                                                 {{ get_item_link(item) }}
                                                 </span>
                                             </div>
@@ -86,6 +92,10 @@
                                     {% endif %}
 
                                 </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted">{{ __('No file imported') }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

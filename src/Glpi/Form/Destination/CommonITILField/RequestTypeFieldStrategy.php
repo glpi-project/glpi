@@ -94,8 +94,12 @@ enum RequestTypeFieldStrategy: string
     private function getRequestTypeForLastValidAnswer(
         AnswersSet $answers_set,
     ): ?int {
-        $valid_answers = $answers_set->getAnswersByType(
-            QuestionTypeRequestType::class
+        $valid_answers = array_filter(
+            $answers_set->getAnswersByType(
+                QuestionTypeRequestType::class
+            ),
+            fn($answer) => is_numeric($answer->getRawAnswer())
+                && (int) $answer->getRawAnswer() > 0
         );
 
         if (count($valid_answers) == 0) {

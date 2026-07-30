@@ -41,6 +41,7 @@ use Glpi\Asset\CustomFieldType\RawType;
 use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Locale\LanguageRegistry;
 use InvalidArgumentException;
 use RuntimeException;
 use Session;
@@ -378,8 +379,6 @@ final class CustomFieldDefinition extends CommonDBChild
      */
     protected function validateTranslationsArray(mixed $translations): bool
     {
-        global $CFG_GLPI;
-
         if (!is_array($translations)) {
             return false;
         }
@@ -388,7 +387,7 @@ final class CustomFieldDefinition extends CommonDBChild
 
         // Array keys must be valid language codes
         foreach (array_keys($translations) as $language) {
-            if (!array_key_exists($language, $CFG_GLPI['languages'])) {
+            if (!LanguageRegistry::has($language)) {
                 $is_valid = false;
                 break;
             }

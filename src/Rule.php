@@ -1273,7 +1273,7 @@ TWIG, $twig_params);
                         }
                         const criteria_id = $(e.currentTarget).data('id');
                         if (criteria_id) {
-                            $('#viewcriteria{$rules_id}{$rand}').load('/ajax/viewsubitem.php',{
+                            $('#viewcriteria{$rules_id}{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($this->rulecriteriaclass) . "',
                                 parenttype: '" . jsescape($rule_class) . "',
                                 rules_id: $rules_id,
@@ -3296,11 +3296,21 @@ TWIG, ['label' => $this->getTitle()]);
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
                 case SLA::class:
-                case OLA::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_ruleactions',
                             ['field' => $item::getFieldNames($item->fields['type'])[1],
+                                'value' => $item->getID(),
+                            ]
+                        );
+                    }
+                    return self::createTabEntry(self::getTypeName($nb), $nb, $item::class);
+
+                case OLA::class:
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = countElementsInTable(
+                            'glpi_ruleactions',
+                            [   'field' => 'olas_id',
                                 'value' => $item->getID(),
                             ]
                         );

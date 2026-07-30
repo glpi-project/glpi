@@ -70,7 +70,7 @@ class CronTaskTest extends DbTestCase
         foreach ($tmp_dir_iterator as $path) {
             if (basename($path) !== 'recent_file.txt') {
                 // change the modification date of the file to make it considered as "not recent"
-                $this->assertTrue(touch($path, time() - (HOUR_TIMESTAMP * 2)));
+                $this->assertTrue(touch($path, time() - (HOUR_TIMESTAMP * 2)), 'Cannot set time on file ' . $path);
             }
         }
 

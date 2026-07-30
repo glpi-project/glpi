@@ -33,7 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use function Safe\glob;
+use Com\Tecnick\Pdf\Font\FontPaths;
+
+use function Safe\file_get_contents;
+use function Safe\json_decode;
 
 /**
  * @since 0.85
@@ -41,6 +44,8 @@ use function Safe\glob;
 class GLPIPDF extends TCPDF
 {
     private int $total_count;
+
+    private string $title = '';
 
     private static array $default_config = [
         'orientation'        => 'P',
@@ -84,6 +89,7 @@ class GLPIPDF extends TCPDF
         }
 
         if ($title !== null) {
+            $this->title = $title;
             $this->SetTitle($title);
             $this->SetHeaderData('', 0, $title, '');
         }
@@ -145,28 +151,33 @@ class GLPIPDF extends TCPDF
     /**
      * Get the list of available fonts.
      *
-     * @return array Array of "filename" => "font name"
+     * Since TCPDF 7.0, fonts are provided by the `tecnickcom/tc-lib-pdf-font`
+     * library as JSON definition files (the legacy PHP `.php`/`.z` descriptors
+     * are gone). Definition files are searched in the tc-lib font directories
+     * (and in `K_PATH_FONTS` when defined). Font assets must have been generated
+     * beforehand (see the `make fonts` procedure); an empty list means no font
+     * definition is available.
+     *
+     * @return array Array of "font key" => "font name"
      **/
     public static function getFontList()
     {
-
         $list = [];
 
-        $path = TCPDF_FONTS::_getfontpath();
-
-        // Includes will be made inside a function to ensure that declared variables are
-        // only available inside the function scope, and will so not affect other elements from loop.
-        // Also, varibales declared in font file will be automatically garbage collected (some are huge).
-        $include_fct = function ($font_path) use (&$list) {
-            include $font_path;
-
-            $name ??= null;
-            $type ??= null;
-            if ($name === null) {
-                return; // Not a font file
+        $register = static function (string $font_path) use (&$list): void {
+            try {
+                $definition = json_decode(file_get_contents($font_path), true);
+            } catch (Throwable) {
+                return; // Unreadable or invalid JSON, not a font definition file
             }
 
-            $font = basename($font_path, '.php');
+            $name = is_array($definition) ? ($definition['name'] ?? null) : null;
+            $type = is_array($definition) ? ($definition['type'] ?? null) : null;
+            if ($name === null || $name === '') {
+                return; // Not a font definition file
+            }
+
+            $font = basename($font_path, '.json');
 
             // skip subfonts
             if (
@@ -182,7 +193,7 @@ class GLPIPDF extends TCPDF
                 return;
             }
 
-            if ($type == 'cidfont0') {
+            if ($type === 'cidfont0') {
                 // cidfont often have the same name (ArialUnicodeMS)
                 $list[$font] = sprintf(__('%1$s (%2$s)'), $name, $font);
             } else {
@@ -190,9 +201,30 @@ class GLPIPDF extends TCPDF
             }
         };
 
-        foreach (glob($path . '/*.php') as $font_path) {
-            $include_fct($font_path);
+        // Collect definition files first, then sort them so that base fonts are
+        // processed before their bold/italic variants (needed by the subfont skip).
+        $font_paths = [];
+        foreach (FontPaths::buildAllowedPaths() as $font_dir) {
+            if (!is_dir($font_dir)) {
+                continue;
+            }
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($font_dir, FilesystemIterator::SKIP_DOTS)
+            );
+            foreach ($iterator as $file) {
+                if ($file->isFile() && strtolower($file->getExtension()) === 'json') {
+                    $font_paths[$file->getPathname()] = true;
+                }
+            }
         }
+        $font_paths = array_keys($font_paths);
+        sort($font_paths);
+
+        foreach ($font_paths as $font_path) {
+            $register($font_path);
+        }
+
+        asort($list);
         return $list;
     }
 

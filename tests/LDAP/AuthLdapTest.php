@@ -950,6 +950,51 @@ class AuthLdapTest extends DbTestCase
     }
 
     /**
+     * `AuthLDAP::processMassiveActionsForOneItemtype()` must resolve `mode` and `authldaps_id`
+     * from the massive action input (`$ma->getInput()`), not from the `$_REQUEST` superglobal,
+     * which is not populated when the action is replayed from `$_SESSION` (see MassiveAction's
+     * "process" stage reload) and triggers "Undefined array key" warnings for every processed
+     * item otherwise.
+     */
+    public function testProcessMassiveActionsForOneItemtypeSyncIgnoresRequest()
+    {
+        $this->login();
+
+        $ldap = $this->ldap;
+
+        // Pollute the request with values that must NOT be used, to prove the massive
+        // action input is used instead.
+        $_REQUEST['mode'] = 999;
+        $_REQUEST['authldaps_id'] = 0;
+
+        $ma = $this->getMockBuilder(\MassiveAction::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAction', 'addMessage', 'getInput', 'itemDone'])
+            ->getMock();
+        $ma->method('getAction')->willReturn('sync');
+        $ma->method('addMessage')->willReturn(null);
+        $ma->method('getInput')->willReturn([
+            'mode'         => AuthLDAP::ACTION_IMPORT,
+            'authldaps_id' => $ldap->getID(),
+        ]);
+
+        $results = [];
+        $ma->method('itemDone')->willReturnCallback(function ($itemtype, $ids, $result) use (&$results) {
+            $results[] = $result;
+        });
+
+        AuthLDAP::processMassiveActionsForOneItemtype($ma, new AuthLDAP(), ['ecuador0']);
+
+        unset($_REQUEST['mode'], $_REQUEST['authldaps_id']);
+
+        $this->assertCount(1, $results);
+
+        $user = new \User();
+        $this->assertTrue($user->getFromDBbyName('ecuador0'));
+        $this->assertSame($ldap->getID(), $user->fields['auths_id']);
+    }
+
+    /**
      * Test get groups
      *
      * @return void
@@ -2424,6 +2469,106 @@ class AuthLdapTest extends DbTestCase
 
 
     /**
+     * Non-regression: reapplyRightRules() must preserve LDAP-attribute-based dynamic rights on Auth::EXTERNAL.
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testReapplyRightRulesPreservesLdapAttributeRuleOnExternalAuth(): void
+    {
+        $rule_builder = new RuleBuilder(__FUNCTION__, RuleRight::class);
+        $rule_builder->setEntity(0)
+            ->setIsRecursive(1)
+            ->addCriteria('employeenumber', \Rule::PATTERN_IS, 8)
+            ->addAction('assign', 'profiles_id', 5) // 'normal' profile
+            ->addAction('assign', 'entities_id', 1); // '_test_child_1' entity
+        $this->createRule($rule_builder);
+
+        // Real LDAP sync: assigns the dynamic profile/entity and records auths_id/user_dn.
+        $this->realLogin('brazil6', 'password', false);
+        $users_id = \User::getIdByName('brazil6');
+        $this->assertGreaterThan(0, $users_id);
+
+        $user = new \User();
+        $this->assertTrue($user->getFromDB($users_id));
+        $this->assertNotEmpty($user->fields['auths_id']);
+        $this->assertNotEmpty($user->fields['user_dn']);
+
+        // Simulate the SSO/OAuth login context: the plugin authenticates the
+        // user as Auth::EXTERNAL and calls reapplyRightRules() on the already
+        // LDAP-synced User object.
+        $user->fields['authtype'] = \Auth::EXTERNAL;
+        $user->reapplyRightRules();
+
+        $pu = Profile_User::getForUser($users_id, true);
+        $found = false;
+        foreach ($pu as $right) {
+            if (
+                isset($right['entities_id']) && $right['entities_id'] == 1
+                && isset($right['profiles_id']) && $right['profiles_id'] == 5
+                && isset($right['is_dynamic']) && $right['is_dynamic'] == 1
+            ) {
+                $found = true;
+                break;
+            }
+        }
+        $this->assertTrue(
+            $found,
+            'Dynamic right based on a LDAP attribute criterion was purged on Auth::EXTERNAL reapplyRightRules()'
+        );
+    }
+
+    /**
+     * reapplyRightRules() must preserve dynamic groups synced from the LDAP
+     * when the matching RuleRight does not itself assign a group.
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testReapplyRightRulesPreservesLdapSyncedGroupsOnExternalAuth(): void
+    {
+        $this->updateItem(
+            AuthLDAP::class,
+            getItemByTypeName(AuthLDAP::class, '_local_ldap', true),
+            [
+                'group_search_type' => AuthLDAP::GROUP_SEARCH_BOTH,
+            ]
+        );
+
+        $rule_builder = new RuleBuilder(__FUNCTION__, RuleRight::class);
+        $rule_builder->setEntity(0)
+            ->setIsRecursive(1)
+            ->addCriteria('employeenumber', \Rule::PATTERN_IS, 8)
+            ->addAction('assign', 'profiles_id', 5) // 'normal' profile
+            ->addAction('assign', 'entities_id', 1); // '_test_child_1' entity
+        $this->createRule($rule_builder);
+
+        // Group dynamically bound to the user via LDAP attributes, outside of any RuleRight action.
+        $group_id = $this->createItem(Group::class, [
+            'name'       => __FUNCTION__,
+            'ldap_field' => 'uid',
+            'ldap_value' => 'brazil6',
+        ])->getID();
+
+        // Real LDAP sync: assigns the dynamic profile/entity/group and records auths_id/user_dn.
+        $this->realLogin('brazil6', 'password', false);
+        $users_id = \User::getIdByName('brazil6');
+        $this->assertGreaterThan(0, $users_id);
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $group_id));
+
+        $user = new \User();
+        $this->assertTrue($user->getFromDB($users_id));
+
+        // Simulate the SSO/OAuth login context: the plugin authenticates the
+        // user as Auth::EXTERNAL and calls reapplyRightRules() on the already
+        // LDAP-synced User object, without redoing a real LDAP group fetch.
+        $user->fields['authtype'] = \Auth::EXTERNAL;
+        $user->reapplyRightRules();
+
+        $this->assertTrue(
+            Group_User::isUserInGroup($users_id, $group_id),
+            'Dynamic group synced from the LDAP directory was purged on Auth::EXTERNAL reapplyRightRules()'
+        );
+    }
+
+
+    /**
      * Test if rules targeting ldap criteria are working
      *
      * @return void
@@ -3248,5 +3393,36 @@ class AuthLdapTest extends DbTestCase
             Group_User::isUserInGroup($users_id, $group_id),
             'User should still be member of the rule-assigned group after sync'
         );
+    }
+
+    /**
+     * A user disabled in AD (is_deleted_ldap=1, is_active=0) must be
+     * re-activated during the login request once they are re-enabled in LDAP.
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testLoginRestoresLdapDeletedUser(): void
+    {
+        global $CFG_GLPI;
+
+        // First login imports the user into GLPI.
+        $first_auth = $this->realLogin('brazil8', 'password', false);
+        $user_id = $first_auth->user->fields['id'];
+
+        // Simulate the user being disabled in AD and synced.
+        $user = new \User();
+        $this->assertTrue($user->update(['id' => $user_id, 'is_active' => 0, 'is_deleted_ldap' => 1]));
+
+        $original_restore_cfg = $CFG_GLPI['user_restored_ldap'] ?? null;
+        $CFG_GLPI['user_restored_ldap'] = AuthLDAP::RESTORED_USER_ENABLE;
+
+        // Login after re-enablement in AD must restore the account.
+        $auth = new \Auth();
+        $auth->login('brazil8', 'password', false, false, 'ldap-' . $this->ldap->getID());
+
+        $CFG_GLPI['user_restored_ldap'] = $original_restore_cfg;
+
+        $user->getFromDB($user_id);
+        $this->assertSame(1, (int) $user->fields['is_active']);
+        $this->assertSame(0, (int) $user->fields['is_deleted_ldap']);
     }
 }

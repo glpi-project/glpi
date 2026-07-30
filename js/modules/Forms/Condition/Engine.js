@@ -83,16 +83,25 @@ export class GlpiFormConditionEngine
             }
 
             if (key.includes('[')) {
-                // Handle array values: answers_questionId[] or answers_questionId[key]
-                const array_key_regex = /^_?answers_([^[]+)(\[(\d*|[^\]]*)\])$/;
+                // Handle bracket-suffixed keys, including nested ones such as
+                // answers_questionId[], answers_questionId[key] and
+                // answers_questionId[key][] (multi-select dropdown).
+                const array_key_regex = /^_?answers_([^[]+)((?:\[[^\]]*\])+)$/;
                 const match = array_key_regex.exec(key);
 
                 if (match && match[1]) {
                     const question_id = match[1];
-                    const array_key = match[3];  // Extract the key inside brackets
 
                     // Check if this question is a criteria
-                    if (questions_criteria_ids.indexOf(question_id) !== -1) {
+                    if (questions_criteria_ids.indexOf(question_id) === -1) {
+                        continue;
+                    }
+
+                    const path_keys = [...match[2].matchAll(/\[([^\]]*)\]/g)]
+                        .map((m) => m[1]);
+
+                    if (path_keys.length === 1) {
+                        const array_key = path_keys[0];
                         if (array_key === '') {
                             // For answers_questionId[]
                             if (!array_values.has(question_id)) {
@@ -109,6 +118,28 @@ export class GlpiFormConditionEngine
                             if (value !== '') {
                                 keyed_array_values.get(question_id)[array_key] = value;
                             }
+                        }
+                    } else {
+                        // Nested keys, e.g. answers_questionId[items_ids][]
+                        if (!keyed_array_values.has(question_id)) {
+                            keyed_array_values.set(question_id, {});
+                        }
+                        let target = keyed_array_values.get(question_id);
+                        for (let i = 0; i < path_keys.length - 1; i++) {
+                            const k = path_keys[i];
+                            const next_is_array = path_keys[i + 1] === '';
+                            if (target[k] === undefined) {
+                                target[k] = next_is_array ? [] : {};
+                            }
+                            target = target[k];
+                        }
+                        const last_key = path_keys[path_keys.length - 1];
+                        if (last_key === '') {
+                            if (value !== '') {
+                                target.push(value);
+                            }
+                        } else if (value !== '') {
+                            target[last_key] = value;
                         }
                     }
                 }

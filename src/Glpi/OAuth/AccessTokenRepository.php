@@ -35,11 +35,14 @@
 
 namespace Glpi\OAuth;
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Toolbox\IPUtilities;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use Ramsey\Uuid\Uuid;
 use Safe\DateTime;
+use Session;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
@@ -79,6 +82,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
             'user_identifier' => $accessTokenEntity->getUserIdentifier(),
             'scopes' => exportArrayToDB($accessTokenEntity->getScopes()),
             'ip_address' => IPUtilities::getClientIP(),
+            'uuid' => Uuid::uuid4()->toString(),
         ]);
     }
 
@@ -90,7 +94,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     public function revokeAccessToken($tokenId): void
     {
         global $DB;
-
         $DB->delete('glpi_oauth_access_tokens', ['identifier' => $tokenId]);
     }
 
@@ -106,6 +109,57 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         global $DB;
 
         $DB->delete('glpi_oauth_access_tokens', ['client' => $clientIdentifier]);
+    }
+
+    /**
+     * Revoke access token by its UUID.
+     * Useful in cases where the token may be revoked by the frontend where it is not desirable to expose the real access token.
+     * @param string $uuid
+     * @return void
+     */
+    public function revokeAccessTokenByUUID(string $uuid): void
+    {
+        global $DB;
+        $DB->delete('glpi_oauth_access_tokens', ['uuid' => $uuid]);
+    }
+
+    /**
+     * Revoke access token by its UUID if it belongs to the current user.
+     * @param string $uuid
+     * @return void
+     * @see AccessTokenRepository::revokeAccessTokenByUUID()
+     */
+    public function revokeMyAccessTokenByUUID(string $uuid): void
+    {
+        global $DB;
+        $DB->delete('glpi_oauth_access_tokens', [
+            'uuid' => $uuid,
+            'user_identifier' => Session::getLoginUserID(),
+        ]);
+    }
+
+    /**
+     * Revoke all access tokens.
+     *
+     * @return void
+     */
+    public function revokeAll(): void
+    {
+        global $DB;
+        $DB->delete('glpi_oauth_access_tokens', [new QueryExpression('true')]);
+    }
+
+    /**
+     * Revoke all access tokens for a specific user.
+     *
+     * @param int $users_id
+     *
+     * @return void
+     */
+    public function revokeAllForUser(int $users_id): void
+    {
+        global $DB;
+        $DB->delete('glpi_oauth_access_tokens', ['user_identifier' => $users_id]);
     }
 
     /**

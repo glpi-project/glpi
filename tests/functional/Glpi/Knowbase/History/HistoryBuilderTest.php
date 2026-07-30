@@ -39,6 +39,7 @@ use Document;
 use Document_Item;
 use Entity;
 use Entity_KnowbaseItem;
+use Glpi\Controller\ShareTokenController;
 use Glpi\Form\Category;
 use Glpi\Knowbase\History\CreationEvent;
 use Glpi\Knowbase\History\CurrentTranslationEvent;
@@ -46,6 +47,7 @@ use Glpi\Knowbase\History\HistoryBuilder;
 use Glpi\Knowbase\History\LogEvent;
 use Glpi\Knowbase\History\RevisionEvent;
 use Glpi\Knowbase\History\TranslationRevisionEvent;
+use Glpi\ShareToken;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_Item;
@@ -60,6 +62,17 @@ use User;
 
 final class HistoryBuilderTest extends DbTestCase
 {
+    /**
+     * Formatted name of the user performing the actions (logged in via login()).
+     * Resolved dynamically because the _test_user id is not a stable fixture value.
+     */
+    private function loggedInUserName(): string
+    {
+        $user = new User();
+        $user->getFromDB(getItemByTypeName(User::class, TU_USER, true));
+        return $user->getNameID(['forceid' => true]);
+    }
+
     public function testNewKnowbaseItemReturnsCreationEvent(): void
     {
         $this->login();
@@ -276,7 +289,7 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Permissions updated",
                 description: sprintf("Access granted to %s by", $entity_name),
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -354,13 +367,13 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Permissions updated",
                 description: sprintf("Access revoked from %s by", $entity_name),
                 date: "2026-01-15 12:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Permissions updated",
                 description: sprintf("Access granted to %s by", $entity_name),
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -456,13 +469,13 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Permissions updated",
                 description: sprintf("Access granted to %s by", $user_name),
                 date: "2026-01-15 12:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Permissions updated",
                 description: sprintf("Access granted to %s by", $entity_name),
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -545,19 +558,425 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Removed from the FAQ",
                 description: "Updated by",
                 date: "2026-01-15 12:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Added to the FAQ",
                 description: "Updated by",
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
                 author: 2,
             ),
         ], $events);
+    }
+
+    public function testSharingEnabledAppearsWhenFirstActiveTokenIsCreated(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ], skip_fields: ['token']);
+
+        $kb->getFromDB($kb->getID());
+        $events = (new HistoryBuilder($kb))->buildHistory()->getEvents();
+
+        $this->assertEquals([
+            new LogEvent(
+                label: "Sharing enabled",
+                description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+    }
+
+    public function testSharingDisabledAppearsWhenLastActiveTokenIsDeleted(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $token = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ], skip_fields: ['token']);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->deleteItem(ShareToken::class, $token->getID(), purge: true);
+
+        $kb->getFromDB($kb->getID());
+        $events = (new HistoryBuilder($kb))->buildHistory()->getEvents();
+
+        $this->assertEquals([
+            new LogEvent(
+                label: "Sharing disabled",
+                description: "Updated by",
+                date: "2026-01-15 12:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new LogEvent(
+                label: "Sharing enabled",
+                description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+    }
+
+    public function testSharingEnabledAppearsWhenInactiveTokenIsActivated(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $token = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 0,
+        ], skip_fields: ['token']);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(ShareToken::class, $token->getID(), [
+            'is_active' => 1,
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $events = (new HistoryBuilder($kb))->buildHistory()->getEvents();
+
+        $this->assertEquals([
+            new LogEvent(
+                label: "Sharing enabled",
+                description: "Updated by",
+                date: "2026-01-15 12:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+    }
+
+    public function testSharingDisabledAppearsWhenActiveTokenIsDeactivated(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $token = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ], skip_fields: ['token']);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(ShareToken::class, $token->getID(), [
+            'is_active' => 0,
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $events = (new HistoryBuilder($kb))->buildHistory()->getEvents();
+
+        $this->assertEquals([
+            new LogEvent(
+                label: "Sharing disabled",
+                description: "Updated by",
+                date: "2026-01-15 12:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new LogEvent(
+                label: "Sharing enabled",
+                description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+    }
+
+    public function testNoSharingEventWhenAddingTokenWhileAnotherActiveExists(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ], skip_fields: ['token']);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ], skip_fields: ['token']);
+
+        $kb->getFromDB($kb->getID());
+        $events = (new HistoryBuilder($kb))->buildHistory()->getEvents();
+
+        // Only the first token creation produces a "Sharing enabled" event.
+        $this->assertEquals([
+            new LogEvent(
+                label: "Sharing enabled",
+                description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+    }
+
+    public function testNoSharingEventWhenDeletingInactiveToken(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $token = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 0,
+        ], skip_fields: ['token']);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->deleteItem(ShareToken::class, $token->getID(), purge: true);
+
+        $kb->getFromDB($kb->getID());
+        $events = (new HistoryBuilder($kb))->buildHistory()->getEvents();
+
+        $this->assertEquals([
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+    }
+
+    public function testNoSharingEventWhenDeletingActiveTokenButOthersRemainActive(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $token_1 = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ], skip_fields: ['token']);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ], skip_fields: ['token']);
+
+        $this->setCurrentTime("2026-01-15 13:00:00");
+        $this->deleteItem(ShareToken::class, $token_1->getID(), purge: true);
+
+        $kb->getFromDB($kb->getID());
+        $events = (new HistoryBuilder($kb))->buildHistory()->getEvents();
+
+        // Only one "Sharing enabled" event from the initial transition; no
+        // disable event since another active token remains.
+        $this->assertEquals([
+            new LogEvent(
+                label: "Sharing enabled",
+                description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+    }
+
+    public function testMultipleSharingTransitionsAreOrderedDesc(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $token = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ], skip_fields: ['token']);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(ShareToken::class, $token->getID(), [
+            'is_active' => 0,
+        ]);
+
+        $this->setCurrentTime("2026-01-15 13:00:00");
+        $this->updateItem(ShareToken::class, $token->getID(), [
+            'is_active' => 1,
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $events = (new HistoryBuilder($kb))->buildHistory()->getEvents();
+
+        $this->assertEquals([
+            new LogEvent(
+                label: "Sharing enabled",
+                description: "Updated by",
+                date: "2026-01-15 13:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new LogEvent(
+                label: "Sharing disabled",
+                description: "Updated by",
+                date: "2026-01-15 12:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new LogEvent(
+                label: "Sharing enabled",
+                description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+    }
+
+    public function testSharingLinkRegeneratedAppearsAsSingleEventWithoutSpuriousPair(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $token = $this->createItem(ShareToken::class, [
+            'itemtype'  => KnowbaseItem::class,
+            'items_id'  => $kb->getID(),
+            'is_active' => 1,
+        ], skip_fields: ['token']);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $response = (new ShareTokenController())->regenerate($token->getID());
+        $payload = json_decode((string) $response->getContent(), true);
+        $this->assertTrue($payload['success']);
+
+        $kb->getFromDB($kb->getID());
+        $events = (new HistoryBuilder($kb))->buildHistory()->getEvents();
+
+        $this->assertEquals([
+            new LogEvent(
+                label: "Sharing link regenerated",
+                description: "Updated by",
+                date: "2026-01-15 12:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new LogEvent(
+                label: "Sharing enabled",
+                description: "Updated by",
+                date: "2026-01-15 11:00:00",
+                author: $this->loggedInUserName(),
+            ),
+            new CreationEvent(
+                date: "2026-01-15 10:00:00",
+                author: 2,
+            ),
+        ], $events);
+
+        // No spurious "Sharing disabled" event from the purge+add pair.
+        $disabled_events = array_values(array_filter(
+            $events,
+            static fn($e) => $e instanceof LogEvent && $e->getLabel() === "Sharing disabled"
+        ));
+        $this->assertCount(0, $disabled_events);
     }
 
     public function testServiceCatalogChanges(): void
@@ -617,7 +1036,7 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Service catalog updated",
                 description: "Category updated by",
                 date: "2026-01-15 16:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
                 new_value: "My category ({$category->getID()})",
                 old_value: " (0)",
             ),
@@ -625,32 +1044,32 @@ final class HistoryBuilderTest extends DbTestCase
                 label: "Service catalog updated",
                 description: "Removed from the service catalog by",
                 date: "2026-01-15 15:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Service catalog updated",
                 description: "Unpinned from the top by",
                 date: "2026-01-15 14:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Service catalog updated",
                 description: "Description updated by",
                 date: "2026-01-15 13:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
                 new_value: "Service catalog description",
             ),
             new LogEvent(
                 label: "Service catalog updated",
                 description: "Pinned to the top by",
                 date: "2026-01-15 12:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new LogEvent(
                 label: "Service catalog updated",
                 description: "Added to the service catalog by",
                 date: "2026-01-15 11:00:00",
-                author: "_test_user (8)",
+                author: $this->loggedInUserName(),
             ),
             new CreationEvent(
                 date: "2026-01-15 10:00:00",
@@ -1018,6 +1437,38 @@ final class HistoryBuilderTest extends DbTestCase
         $this->assertInstanceOf(LogEvent::class, $events[0]);
         $this->assertEquals("Illustration updated", $events[0]->getLabel());
         $this->assertEquals("Native illustration set by", $events[0]->getDescription());
+        $this->assertEquals("2026-01-15 11:00:00", $events[0]->getDate());
+
+        $this->assertInstanceOf(CreationEvent::class, $events[1]);
+    }
+
+    public function testIllustrationRemovedAppearsInHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Test article',
+            'answer' => 'Test content',
+            'illustration' => 'kb-faq',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 11:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'illustration' => '',
+        ]);
+
+        $kb->getFromDB($kb->getID());
+        $history = (new HistoryBuilder($kb))->buildHistory();
+        $events = $history->getEvents();
+
+        $this->assertCount(2, $events);
+
+        $this->assertInstanceOf(LogEvent::class, $events[0]);
+        $this->assertEquals("Illustration updated", $events[0]->getLabel());
+        $this->assertEquals("Illustration removed by", $events[0]->getDescription());
         $this->assertEquals("2026-01-15 11:00:00", $events[0]->getDate());
 
         $this->assertInstanceOf(CreationEvent::class, $events[1]);

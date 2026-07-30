@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-@import "~select2/src/scss/core";
+@import "~select2/select2";
 
 .select2-container {
     display: inline-block;
@@ -47,7 +47,8 @@
         box-shadow: var(--tblr-box-shadow-input);
         transition: $input-transition;
 
-        .select2-selection__rendered input[type="search"] {
+        .select2-selection__rendered input[type="search"],
+        .select2-selection__rendered textarea {
             color: var(--tblr-body-color);
         }
 
@@ -128,17 +129,25 @@
                     background-color: var(--tblr-active-bg);
                     border: var(--tblr-border-width) solid var(--tblr-border-color);
                     border-radius: var(--tblr-border-radius-sm);
-                    padding: 1px 3px;
-                    margin: 3px 3px 0 0;
+                    padding: 1px 3px 1px 20px; // keep room for the absolutely-positioned remove button (Select2 4.1.0)
+                    margin: 3px 3px 0; // Select2 4.1.0 moved the left gutter to the choice margin (was on the container in 4.0.13)
                     max-width: 100%;
                     white-space: normal;
 
                     .select2-selection__choice__remove {
+                        // Flatten Select2 4.1.0's boxed remove button into a compact centred cross
+                        display: flex;
+                        align-items: center;
+                        top: 0;
+                        bottom: 0;
+                        border: 0;
+                        border-radius: 0;
+                        padding: 0 4px;
                         color: var(--tblr-dark);
                         font-weight: bold;
-                        margin: 0 0 0 3px;
 
                         &:hover {
+                            background-color: transparent;
                             color: var(--tblr-black);
                         }
                     }

@@ -38,6 +38,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Http\RedirectResponse;
 use Glpi\Inventory\Conf;
+use Glpi\Toolbox\FileInfo;
 use RefusedEquipment;
 use Session;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -188,7 +189,7 @@ final class InventoryController extends AbstractController
         $to_import = [];
         foreach ($request->files->get('inventory_files') as $file) {
             if ($file instanceof UploadedFile && $file->isValid()) {
-                $to_import[$file->getClientOriginalName()] = $file->getPathname();
+                $to_import[] = new FileInfo($file->getClientOriginalName(), $file->getPathname());
             }
         }
 

@@ -155,6 +155,8 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
             throw new InvalidArgumentException("Unexpected config class");
         }
 
+        $has_actors = false;
+
         // Apply each configured strategy to get ITIL actors
         foreach ($config->getStrategies() as $strategy) {
             $itilactors = $strategy->getITILActors($this, $config, $answers_set);
@@ -165,7 +167,18 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
 
             // Process each actor found by the strategy
             foreach ($itilactors as $itilactor) {
-                if (!$this->isActorAllowed($itilactor, $answers_set)) {
+                if (!$this->isActorAllowed($itilactor, $input)) {
+                    continue;
+                }
+                $this->addActorToInput($input, $itilactor);
+                $has_actors = true;
+            }
+        }
+
+        // No strategy resolved an actor: apply the field's fallback, if any.
+        if (!$has_actors) {
+            foreach ($this->getFallbackActors($config, $answers_set) as $itilactor) {
+                if (!$this->isActorAllowed($itilactor, $input)) {
                     continue;
                 }
                 $this->addActorToInput($input, $itilactor);
@@ -173,6 +186,16 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
         }
 
         return $input;
+    }
+
+    /**
+     * Actors to use when no configured strategy resolved any actor.
+     *
+     * @return array<array{itemtype: class-string<\CommonDBTM>, items_id: int, use_notification?: int|string, alternative_email?: string}>
+     */
+    protected function getFallbackActors(ITILActorFieldConfig $config, AnswersSet $answers_set): array
+    {
+        return [];
     }
 
     /**
@@ -207,8 +230,12 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
      *     use_notification?: int|string,
      *     alternative_email?: string
      * } $itilactor
+     * @param array<string, mixed> $input The ITIL object input being built,
+     *                      used to read the actual target entity (already
+     *                      computed by `EntityField` before actors are
+     *                      processed).
      */
-    private function isActorAllowed(array $itilactor, AnswersSet $answers_set): bool
+    private function isActorAllowed(array $itilactor, array $input): bool
     {
         if (!isset($itilactor['itemtype'], $itilactor['items_id'])) {
             return false;
@@ -227,8 +254,12 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                 return true;
             }
 
-            $form = $answers_set->getItem();
-            $entities_id = $form instanceof Form ? $form->getEntityID() : 0;
+            // The entity in which the ITIL object will actually be created
+            // may differ from the form's own entity (it can depend on the
+            // requester, on a specific answer, ...). It is already resolved
+            // at this point by the EntityField, so it must be used instead
+            // of the form's entity to check assignment rights.
+            $entities_id = (int) ($input['entities_id'] ?? -1);
             if ($entities_id < 0) {
                 return false;
             }
@@ -355,8 +386,8 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                 7 => ITILActorFieldStrategy::SPECIFIC_VALUES, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_SUPPLIER
                 8 => ITILActorFieldStrategy::SPECIFIC_ANSWERS, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_SUPPLIER
                 9 => ITILActorFieldStrategy::SPECIFIC_ANSWERS, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_ACTORS
-                // 10 => Group from an object // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
-                // 11 => Tech group from an object // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                10 => ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                11 => ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
                 // 12 => Form author supervisor // PluginFormcreatorTarget_Actor::ACTOR_TYPE_SUPERVISOR
             ];
 
@@ -381,7 +412,11 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                         }
                     }
 
-                    if ($strategy === ITILActorFieldStrategy::SPECIFIC_ANSWERS) {
+                    if (
+                        $strategy === ITILActorFieldStrategy::SPECIFIC_ANSWERS
+                        || $strategy === ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER
+                        || $strategy === ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER
+                    ) {
                         foreach ($ids as $id) {
                             $mapped_item = $migration->getMappedItemTarget(
                                 'PluginFormcreatorQuestion',

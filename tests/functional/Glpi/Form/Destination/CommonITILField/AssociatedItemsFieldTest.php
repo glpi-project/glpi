@@ -728,6 +728,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             'root_items_id'        => 0,
             'subtree_depth'        => 0,
             'selectable_tree_root' => false,
+            'is_multiple_items'    => false,
         ]));
 
         return $this->createForm($builder);

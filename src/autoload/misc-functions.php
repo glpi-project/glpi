@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Kernel\Kernel;
 use Twig\Runtime\EscaperRuntime;
 
 use function Safe\preg_match;
@@ -56,15 +57,12 @@ function isCommandLine(): bool
  */
 function isAPI()
 {
-    $script = $_SERVER['REQUEST_URI'] ?? '';
-    if (str_contains($script, 'api.php')) {
-        return true;
-    }
-    if (str_contains($script, 'apirest.php')) {
-        return true;
-    }
+    /** @var Kernel $kernel */
+    global $kernel;
 
-    return false;
+    $path = $kernel->getMainRequest()->getPathInfo();
+
+    return str_starts_with($path, '/api.php') || str_starts_with($path, '/apirest.php');
 }
 
 /**

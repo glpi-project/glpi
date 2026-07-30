@@ -289,71 +289,9 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         return true;
     }
 
-    /**
-     * Is the license may be recursive
-     *
-     * @return bool
-     **/
-    public function maybeRecursive()
-    {
-        $soft = new Software();
-        if (
-            isset($this->fields["softwares_id"])
-            && $soft->getFromDB($this->fields["softwares_id"])
-        ) {
-            return $soft->isRecursive();
-        }
-
-        return true;
-    }
-
-    /**
-     * Is the license recursive ?
-     *
-     * @return bool
-     **/
-    public function isRecursive()
-    {
-        $soft = new Software();
-        if (
-            isset($this->fields["softwares_id"])
-            && $soft->getFromDB($this->fields["softwares_id"])
-        ) {
-            return $soft->isRecursive();
-        }
-
-        return false;
-    }
-
     public function rawSearchOptions()
     {
-        $tab = [];
-
-        // Only use for History (not by search Engine)
-        $tab[] = [
-            'id'                 => 'common',
-            'name'               => __('Characteristics'),
-        ];
-
-        $tab[] = [
-            'id'                 => '1',
-            'table'              => static::getTable(),
-            'field'              => 'name',
-            'name'               => __('Name'),
-            'datatype'           => 'itemlink',
-            'massiveaction'      => false,
-            'forcegroupby'       => true,
-        ];
-
-        $tab[] = [
-            'id'                 => '2',
-            'table'              => static::getTable(),
-            'field'              => 'id',
-            'name'               => __('ID'),
-            'massiveaction'      => false,
-            'datatype'           => 'number',
-            'forcegroupby'       => true,
-        ];
+        $tab = parent::rawSearchOptions();
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
@@ -442,33 +380,6 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         ];
 
         $tab[] = [
-            'id'                 => '13',
-            'table'              => static::getTable(),
-            'field'              => 'completename',
-            'name'               => __('Father'),
-            'datatype'           => 'itemlink',
-            'forcegroupby'       => true,
-            'joinparams'        => ['condition' => [new QueryExpression('true')]], // Add virtual condition to relink table
-        ];
-
-        $tab[] = [
-            'id'                 => '16',
-            'table'              => static::getTable(),
-            'field'              => 'comment',
-            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
-            'datatype'           => 'text',
-        ];
-
-        $tab[] = [
-            'id'                 => '121',
-            'table'              => $this->getTable(),
-            'field'              => 'date_creation',
-            'name'               => __('Creation date'),
-            'datatype'           => 'datetime',
-            'massiveaction'      => false,
-        ];
-
-        $tab[] = [
             'id'                 => '24',
             'table'              => User::getTable(),
             'field'              => 'name',
@@ -549,22 +460,6 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         ];
 
         $tab[] = [
-            'id'                 => '80',
-            'table'              => Entity::getTable(),
-            'field'              => 'completename',
-            'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown',
-        ];
-
-        $tab[] = [
-            'id'                 => '86',
-            'table'              => static::getTable(),
-            'field'              => 'is_recursive',
-            'name'               => __('Child entities'),
-            'datatype'           => 'bool',
-        ];
-
-        $tab[] = [
             'id'                 => '162',
             'table'              => static::getTable(),
             'field'              => 'otherserial',
@@ -605,8 +500,6 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
             'nosort'             => true,
         ];
 
-        // add objectlock search options
-        $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         return $tab;

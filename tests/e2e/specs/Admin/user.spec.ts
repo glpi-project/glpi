@@ -140,23 +140,23 @@ test('Can add emails and set one as default', async ({ page, profile, api }) => 
 
     // Add first email
     await user_page.gotoUserForm(user_id, 'User$main');
-    await user_page.getTextbox('Email address').fill(email1);
+    await user_page.getEmailFields().fill(email1);
     await user_page.save_button.click();
 
     // Email should be added
-    await expect(user_page.getTextbox('Email address').first()).toHaveValue(email1);
-    await expect(user_page.getRadio('Set as default email')).toBeChecked();
+    await expect(user_page.getEmailFields().first()).toHaveValue(email1);
+    await expect(user_page.getDefaultEmailRadios()).toBeChecked();
 
     // Add second email
     await user_page.doAddNewEmailField();
-    await user_page.getTextbox('Email address').nth(1).fill(email2);
+    await user_page.getEmailFields().nth(1).fill(email2);
     await user_page.save_button.click();
 
     // Both email should be visible
-    await expect(user_page.getTextbox('Email address').nth(0)).toHaveValue(email2);
-    await expect(user_page.getTextbox('Email address').nth(1)).toHaveValue(email1);
-    await expect(user_page.getRadio('Set as default email').nth(0)).not.toBeChecked();
-    await expect(user_page.getRadio('Set as default email').nth(1)).toBeChecked();
+    await expect(user_page.getEmailFields().nth(0)).toHaveValue(email2);
+    await expect(user_page.getEmailFields().nth(1)).toHaveValue(email1);
+    await expect(user_page.getDefaultEmailRadios().nth(0)).not.toBeChecked();
+    await expect(user_page.getDefaultEmailRadios().nth(1)).toBeChecked();
 });
 
 test('Can add and remove my substitutes', async ({ page, profile, api }) => {

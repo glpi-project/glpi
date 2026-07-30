@@ -54,6 +54,7 @@ global $GLPI_CACHE, $kernel;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
+global $kernel;
 $kernel = new Kernel(Environment::TESTING->value);
 $kernel->boot();
 

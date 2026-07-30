@@ -39,11 +39,18 @@ use KnowbaseItemCategory;
 
 final class Builder
 {
+    /** @var int[] */
+    private array $folded_category_ids = [];
+
     public function __construct(private readonly int $current_id = 0) {}
 
     public function buildTree(): Tree
     {
-        $tree = new Tree();
+        $this->folded_category_ids = KnowbaseItemCategory::getFoldedCategoryIdsForCurrentUser();
+
+        $tree = new Tree(
+            uncategorized_collapsed: in_array(0, $this->folded_category_ids, true),
+        );
         $this->populateNode($tree, 0);
         return $tree;
     }
@@ -62,7 +69,7 @@ final class Builder
             $node->addArticle(new Article(
                 id: (int) $article_data['id'],
                 title: $article_data['name'] ?? '',
-                illustration: $article_data['illustration'] ?? 'kb-faq',
+                illustration: $article_data['illustration'] ?? '',
                 link: KnowbaseItem::getFormURLWithID($article_data['id']),
                 is_current: $this->current_id > 0 && (int) $article_data['id'] === $this->current_id,
             ));
@@ -73,8 +80,10 @@ final class Builder
         ]);
         foreach ($categories as $cat_data) {
             $category = new Category(
+                id: (int) $cat_data['id'],
                 title: $cat_data['name'] ?? '',
-                illustration: $cat_data['illustration'] ?: 'kb-faq',
+                illustration: $cat_data['illustration'] ?? '',
+                collapsed: in_array((int) $cat_data['id'], $this->folded_category_ids, true),
             );
             $this->populateNode($category, (int) $cat_data['id']);
             $node->addCategory($category);

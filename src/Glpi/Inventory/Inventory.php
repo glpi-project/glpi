@@ -461,8 +461,14 @@ class Inventory
             }
         } catch (Throwable $e) {
             if (!defined('TU_USER')) {
-                $DB->rollback();
+                try {
+                    $DB->rollback();
+                } catch (Throwable $rollback_e) {
+                    // Catch rollback failures so the original exception is propagated
+                }
             }
+
+            // Propagate the exception
             throw $e;
         } finally {
             unset($_SESSION['glpiinventoryuserrunning']);

@@ -100,14 +100,9 @@ describe('Edit helpdesk translations', () => {
             'title': tile_title,
             'description': tile_description,
             'page': 'faq',
-        }).as('tileId').then((tile_id) => {
-            cy.createWithAPI('Glpi\\Helpdesk\\Tile\\Item_Tile', {
-                'itemtype_item': 'Entity',
-                'items_id_item': 1,
-                'itemtype_tile': 'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
-                'items_id_tile': tile_id,
-            });
-        });
+            '_itemtype_item': 'Entity',
+            '_items_id_item': 1,
+        }).as('tileId');
 
         // Navigate to the helpdesk translations tab in general configuration
         cy.visit('/front/config.form.php');

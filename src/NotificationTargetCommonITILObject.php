@@ -1208,7 +1208,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $objettype = strtolower($this->obj::class);
 
         // Get data from ITIL objects
-        if ($event != 'alertnotclosed') {
+        if ($event != 'alertnotclosed' && !is_null($this->obj)) {
             $this->data = $this->getDataForObject($this->obj, $options);
         } else {
             if (
@@ -1222,6 +1222,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 }
                 $item = getItemForItemtype($objettype);
                 if ($item instanceof CommonITILObject) {
+                    /** @var T $item */
                     $objettypes = Toolbox::strtolower(getPlural($objettype));
                     $items      = [];
                     foreach ($options['items'] as $object) {
@@ -1261,9 +1262,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Get data from an item
      *
-     * @param CommonITILObject $item    Object instance
-     * @param array            $options Options
-     * @param bool          $simple  (false by default)
+     * @param T     $item    Object instance
+     * @param array $options Options
+     * @param bool  $simple  (false by default)
      *
      * @return array
      **/
@@ -1937,7 +1938,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $data['timelineitems'][] = $tmptimelineitem;
             }
 
-            /** @var CommonITILObject $item */
             $inquest = $item::getSatisfactionClassInstance();
             if ($inquest !== null) {
                 $data['##satisfaction.type##'] = '';
@@ -2553,22 +2553,22 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'linkedproject.planstartdate'   => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project', 'Linked projects', 1),
-                __('Plan start date')
+                __('Planned start date')
             ),
             'linkedproject.planenddate'   => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project', 'Linked projects', 1),
-                __('Plan end date')
+                __('Planned end date')
             ),
             'linkedproject.realstartdate'   => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project', 'Linked projects', 1),
-                __('Plan start date')
+                __('Real start date')
             ),
             'linkedproject.realenddate'   => sprintf(
                 __('%1$s: %2$s'),
                 _n('Linked project', 'Linked projects', 1),
-                __('Plan start date')
+                __('Real start date')
             ),
         ];
 

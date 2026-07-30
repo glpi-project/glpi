@@ -34,6 +34,8 @@
 // Common styles for ItemTranslation-based components (FormTranslation and HelpdeskTranslation)
 #glpi-form-translations-languages,
 #glpi-helpdesk-translations-languages {
+    table-layout: fixed;
+
     tr {
         &:has(input.form-control:focus) {
             box-shadow: inset 2px 0 0 var(--tblr-primary);
@@ -66,6 +68,10 @@
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
         white-space: nowrap;
+    }
+
+    .rich_text_container_translation {
+        overflow: auto;
     }
 
     div[data-glpi-tinymce-init-on-demand-render] {

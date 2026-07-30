@@ -529,10 +529,12 @@ abstract class CommonITILValidation extends CommonDBChild
 
         // -- notifications
         if (
-            count($this->updates)
+            in_array('status', $this->updates)
+            && (int) $this->fields["status"] !== self::WAITING
             && $donotif
         ) {
-            $options  = ['validation_id'     => $this->fields["id"],
+            $options  = [
+                'validation_id'     => $this->fields["id"],
                 'validation_status' => $this->fields["status"],
             ];
             NotificationEvent::raiseEvent('validation_answer', $this->getItem(), $options, $this);
@@ -1112,7 +1114,7 @@ abstract class CommonITILValidation extends CommonDBChild
                                title="{{ edit_button_label }}"
                                onclick="glpi_ajax_dialog({{ edit_dialog_params|json_encode }});"
                             >
-                                <span class="sr-only">{{ edit_button_label }}</span>
+                                <span class="visually-hidden">{{ edit_button_label }}</span>
                             </span>
                         </div>
                     </div>
@@ -1808,12 +1810,20 @@ HTML;
     {
         global $CFG_GLPI;
 
+        $default_right = 'validate';
+        if (static::class === self::class) {
+            // Impossible to know the itemtype the validation is for (probably from the approval template form)
+            $default_right = ['validate_request', 'validate_incident', 'validate'];
+        } elseif (static::$itemtype == Ticket::class) {
+            $default_right = ['validate_request', 'validate_incident'];
+        }
+
         $params = [
             'prefix'             => null,
             'id'                 => 0,
             'parents_id'         => null,
             'entity'             => $_SESSION['glpiactive_entity'],
-            'right'              => static::$itemtype == Ticket::class ? ['validate_request', 'validate_incident'] : 'validate',
+            'right'              => $default_right,
             'groups_id'          => 0,
             'itemtype_target'    => '',
             'items_id_target'    => 0,

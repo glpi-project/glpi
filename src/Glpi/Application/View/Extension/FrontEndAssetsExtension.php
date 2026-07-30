@@ -39,6 +39,7 @@ use Config;
 use DBmysql;
 use Entity;
 use Glpi\Application\ImportMapGenerator;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
@@ -268,8 +269,6 @@ class FrontEndAssetsExtension extends AbstractExtension
      */
     public function localesJs(): string
     {
-        global $CFG_GLPI;
-
         if (!isset($_SESSION['glpilanguage'])) {
             return '';
         }
@@ -288,7 +287,7 @@ class FrontEndAssetsExtension extends AbstractExtension
 
             $.fn.select2.defaults.set(
                 'language',
-                '" . \jsescape($CFG_GLPI['languages'][$_SESSION['glpilanguage']][2]) . "',
+                '" . \jsescape(LanguageRegistry::get($_SESSION['glpilanguage'])->jquery_code) . "',
             );
         ";
 

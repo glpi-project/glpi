@@ -44,7 +44,6 @@ use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use Group_Item;
-use HLAPICallAsserter;
 use Item_RemoteManagement;
 use OperatingSystem;
 use OperatingSystemArchitecture;
@@ -68,7 +67,6 @@ class AssetControllerTest extends HLAPITestCase
 
         $this->login();
         $this->api->call(new Request('GET', '/Assets'), function ($call) use ($types) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($types) {
@@ -120,7 +118,6 @@ class AssetControllerTest extends HLAPITestCase
         $request = new Request('GET', '/Assets/' . $schema);
         $request->setParameter('filter', $filters);
         $this->api->call($request, function ($call) use ($expected) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($expected) {
@@ -148,7 +145,6 @@ class AssetControllerTest extends HLAPITestCase
             ],
         ];
         $this->api->call(new Request('GET', '/Assets'), function ($call) use ($dataset) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($dataset) {
@@ -183,7 +179,6 @@ class AssetControllerTest extends HLAPITestCase
         $this->login();
         $request = new Request('GET', '/Assets/' . $schema . '/' . $id);
         $this->api->call($request, function ($call) use ($schema, $expected) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($expected) {
@@ -240,7 +235,6 @@ class AssetControllerTest extends HLAPITestCase
 
         // get rack items (should be empty)
         $this->api->call(new Request('GET', '/Assets/Rack/' . $rack_id . '/Item'), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -255,7 +249,6 @@ class AssetControllerTest extends HLAPITestCase
         $request->setParameter('position', 1);
         $rackitem_location = null;
         $this->api->call($request, function ($call) use (&$rackitem_location) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$rackitem_location) {
@@ -266,7 +259,6 @@ class AssetControllerTest extends HLAPITestCase
 
         // get rack items (should contain the computer)
         $this->api->call(new Request('GET', '/Assets/Rack/' . $rack_id . '/Item'), function ($call) use ($computer_id) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($computer_id) {
@@ -280,14 +272,11 @@ class AssetControllerTest extends HLAPITestCase
         $request = new Request('PATCH', $rackitem_location);
         $request->setParameter('position', 2);
         $this->api->call($request, function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+            $call->response->isOK();
         });
 
         // get specific rack item and validate the update
         $this->api->call(new Request('GET', $rackitem_location), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -297,14 +286,11 @@ class AssetControllerTest extends HLAPITestCase
 
         // Delete computer from rack
         $this->api->call(new Request('DELETE', $rackitem_location), function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+            $call->response->isOK();
         });
 
         // get rack items (should be empty)
         $this->api->call(new Request('GET', '/Assets/Rack/' . $rack_id . '/Item'), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -321,7 +307,6 @@ class AssetControllerTest extends HLAPITestCase
         $request->setParameter('filter', ['name=ilike=*_test*']);
         $request->setParameter('limit', 10000);
         $this->api->call($request, function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -354,7 +339,6 @@ class AssetControllerTest extends HLAPITestCase
         $request->setParameter('name', '1.0');
         $new_item_location = null;
         $this->api->call($request, function ($call) use ($software_id, &$new_item_location) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use ($software_id, &$new_item_location) {
@@ -366,7 +350,6 @@ class AssetControllerTest extends HLAPITestCase
 
         // Get and verify
         $this->api->call(new Request('GET', $new_item_location), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -379,7 +362,6 @@ class AssetControllerTest extends HLAPITestCase
         $request = new Request('PATCH', $new_item_location);
         $request->setParameter('name', '1.1');
         $this->api->call($request, function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -389,16 +371,12 @@ class AssetControllerTest extends HLAPITestCase
 
         // Delete
         $this->api->call(new Request('DELETE', $new_item_location), function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+            $call->response->isOK();
         });
 
         // Verify item does not exist anymore
         $this->api->call(new Request('GET', $new_item_location), function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response
-                ->isNotFoundError();
+            $call->response->isNotFoundError();
         });
     }
 
@@ -427,7 +405,6 @@ class AssetControllerTest extends HLAPITestCase
 
         // Get and verify
         $this->api->call(new Request('GET', '/Assets/Computer/' . $computer_id), function ($call) use ($state_id) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($state_id) {
@@ -440,7 +417,6 @@ class AssetControllerTest extends HLAPITestCase
             'Accept-Language' => 'fr_FR',
         ]);
         $this->api->call($request, function ($call) use ($state_id) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($state_id) {
@@ -467,7 +443,6 @@ class AssetControllerTest extends HLAPITestCase
 
         // Get and verify
         $this->api->call(new Request('GET', '/Assets/Computer/' . $computer_id), function ($call) use ($state_id) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($state_id) {
@@ -478,7 +453,6 @@ class AssetControllerTest extends HLAPITestCase
         // Change language and verify the default name is returned instead of null
         $_SESSION['glpilanguage'] = 'fr_FR';
         $this->api->call(new Request('GET', '/Assets/Computer/' . $computer_id), function ($call) use ($state_id) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($state_id) {
@@ -498,9 +472,7 @@ class AssetControllerTest extends HLAPITestCase
 
         $this->login();
         $this->api->call(new Request('GET', '/Assets/Computer/' . $computers_id . '/Infocom'), function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response
-                ->isNotFoundError();
+            $call->response->isNotFoundError();
         });
 
         $this->createItem('Infocom', [
@@ -510,7 +482,6 @@ class AssetControllerTest extends HLAPITestCase
         ]);
 
         $this->api->call(new Request('GET', '/Assets/Computer/' . $computers_id . '/Infocom'), function ($call) use ($computers_id) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($computers_id) {
@@ -531,7 +502,6 @@ class AssetControllerTest extends HLAPITestCase
         $request->setParameter('name', 'Test');
         $new_location = null;
         $this->api->call($request, function ($call) use (&$new_location) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$new_location) {
@@ -541,7 +511,6 @@ class AssetControllerTest extends HLAPITestCase
         });
 
         $this->api->call(new Request('GET', $new_location), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -556,7 +525,6 @@ class AssetControllerTest extends HLAPITestCase
         $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
 
         $this->api->call(new Request('GET', '/Assets'), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -572,7 +540,6 @@ class AssetControllerTest extends HLAPITestCase
                         $new_location = null;
                         $new_items_id = null;
                         $this->api->call($create_request, function ($call) use (&$new_location, &$new_items_id) {
-                            /** @var HLAPICallAsserter $call */
                             $call->response
                                 ->isOK()
                                 ->headers(function ($headers) use (&$new_location) {
@@ -641,7 +608,6 @@ class AssetControllerTest extends HLAPITestCase
 
         $this->login();
         $this->api->call(new Request('GET', '/Assets/Computer/' . $computers_id), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -710,7 +676,6 @@ class AssetControllerTest extends HLAPITestCase
 
         $new_location = null;
         $this->api->call($request, function ($call) use (&$new_location) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$new_location) {
@@ -721,7 +686,6 @@ class AssetControllerTest extends HLAPITestCase
 
         // Search
         $this->api->call(new Request('GET', "/Assets/Computer/{$computer_id}/SoftwareInstallation"), function ($call) use ($softwareversion_id) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($softwareversion_id) {
@@ -730,7 +694,6 @@ class AssetControllerTest extends HLAPITestCase
                 });
         });
         $this->api->call(new Request('GET', "/Assets/Computer/{$other_computer_id}/SoftwareInstallation"), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -740,7 +703,6 @@ class AssetControllerTest extends HLAPITestCase
 
         // Get
         $this->api->call(new Request('GET', $new_location), function ($call) use ($softwareversion_id) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($softwareversion_id) {
@@ -753,7 +715,6 @@ class AssetControllerTest extends HLAPITestCase
         $request = new Request('PATCH', $new_location);
         $request->setParameter('date_install', '2026-02-10');
         $this->api->call($request, function ($call) use ($softwareversion_id) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($softwareversion_id) {
@@ -764,13 +725,10 @@ class AssetControllerTest extends HLAPITestCase
 
         // Delete
         $this->api->call(new Request('DELETE', $new_location), function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+            $call->response->isOK();
         });
 
         $this->api->call(new Request('GET', $new_location), function ($call) {
-            /** @var HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });
     }
@@ -826,7 +784,6 @@ class AssetControllerTest extends HLAPITestCase
         $new_location = null;
         $this->login();
         $this->api->call($request, function ($call) use (&$new_location, $computer_id) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->headers(function ($headers) use (&$new_location, $computer_id) {
@@ -837,7 +794,6 @@ class AssetControllerTest extends HLAPITestCase
 
         // Get and verify
         $this->api->call(new Request('GET', $new_location), function ($call) use ($appliance_id) {
-            /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($appliance_id) {
@@ -847,16 +803,12 @@ class AssetControllerTest extends HLAPITestCase
 
         // Delete
         $this->api->call(new Request('DELETE', $new_location), function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response
-                ->isOK();
+            $call->response->isOK();
         });
 
         // Verify item does not exist anymore
         $this->api->call(new Request('GET', $new_location), function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response
-                ->isNotFoundError();
+            $call->response->isNotFoundError();
         });
     }
 

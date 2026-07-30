@@ -87,7 +87,7 @@ test.describe('Session', () => {
         await login_page.goto();
         await login_page.doLogin(username, 'glpi');
 
-        await anonymousPage.goto('/front/preference.php?forcetab=Preference$1');
+        await anonymousPage.goto('/front/preference.php?forcetab=Preference$0');
         const secret = await anonymousPage.getByRole('textbox', { name: '2FA secret' }).inputValue();
         await login_page.doFillTotpCode(authenticator.generate(secret));
         await expect(anonymousPage.getByRole('button', { name: 'Disable 2FA' })).toBeVisible();
@@ -166,5 +166,100 @@ test.describe('Session', () => {
         await login_page.doFillTotpCode(authenticator.generate(secret));
 
         await expect(anonymousPage).toHaveURL(/\/front\/central\.php/);
+    });
+
+    test('2FA setup screen has accessible structure', async ({ anonymousPage, api }) => {
+        test.slow();
+
+        const username = `e2e_tests_2fa${Date.now()}`;
+        const user_id = await api.createItem('User', {
+            name: username,
+            login: username,
+            password: 'glpi',
+            password2: 'glpi',
+            _profiles_id: Profiles.SuperAdmin,
+        });
+        const group_id = await api.createItem('Group', {
+            name: `e2e_tests_group_2fa${Date.now()}`,
+            entities_id: 0,
+            '2fa_enforced': 1,
+        });
+        await api.createItem('Group_User', {
+            groups_id: group_id,
+            users_id: user_id,
+        });
+
+        await anonymousPage.setExtraHTTPHeaders({ 'Accept-Language': 'en-GB,en;q=0.9' });
+        const login_page = new LoginPage(anonymousPage);
+        await login_page.goto();
+        await login_page.doLogin(username, 'glpi');
+        await expect(anonymousPage).toHaveURL(/\/MFA\/Setup/);
+
+        // Setup instructions are a semantic ordered list of 3 steps (criterion 9.3)
+        await expect(anonymousPage.getByRole('list').getByRole('listitem')).toHaveCount(3);
+
+        // The code entry is a labelled group of per-digit fields (no auto-submit)
+        await expect(anonymousPage.getByRole('group', { name: 'Authentication code' })).toBeVisible();
+        await expect(anonymousPage.getByRole('textbox', { name: /Digit \d of \d/ })).toHaveCount(6);
+
+        const secret = await anonymousPage.getByRole('textbox', { name: '2FA secret' }).inputValue();
+        await login_page.doFillTotpCode(authenticator.generate(secret));
+        await expect(anonymousPage).toHaveURL(/\/MFA\/ShowBackupCodes/);
+    });
+
+    test('2FA code field advances focus on typing and fills on paste', async ({ anonymousPage, api }) => {
+        test.slow();
+
+        // Exercises the per-digit keyboard/paste logic against the real rendered
+        // markup rather than a hand-built DOM (the unit test covers the JS in isolation).
+        const username = `e2e_tests_2fa${Date.now()}`;
+        const user_id = await api.createItem('User', {
+            name: username,
+            login: username,
+            password: 'glpi',
+            password2: 'glpi',
+            _profiles_id: Profiles.SuperAdmin,
+        });
+        const group_id = await api.createItem('Group', {
+            name: `e2e_tests_group_2fa${Date.now()}`,
+            entities_id: 0,
+            '2fa_enforced': 1,
+        });
+        await api.createItem('Group_User', {
+            groups_id: group_id,
+            users_id: user_id,
+        });
+
+        await anonymousPage.setExtraHTTPHeaders({ 'Accept-Language': 'en-GB,en;q=0.9' });
+        const login_page = new LoginPage(anonymousPage);
+        await login_page.goto();
+        await login_page.doLogin(username, 'glpi');
+        await expect(anonymousPage).toHaveURL(/\/MFA\/Setup/);
+
+        // The keyboard/paste logic loads via a dynamic import; wait until it is wired.
+        await expect(anonymousPage.getByRole('group', { name: 'Authentication code' }))
+            .toHaveAttribute('data-mfa-code-input-ready', 'true');
+
+        // Typing a digit auto-advances focus to the next field.
+        await anonymousPage.getByRole('textbox', { name: 'Digit 1 of 6' }).pressSequentially('1');
+        await expect(anonymousPage.getByRole('textbox', { name: 'Digit 2 of 6' })).toBeFocused();
+
+        // Pasting the full code into the first field spreads it across every field;
+        // the user still validates explicitly (no auto-submit).
+        const secret = await anonymousPage.getByRole('textbox', { name: '2FA secret' }).inputValue();
+        const token = authenticator.generate(secret);
+
+        await anonymousPage.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+        await anonymousPage.evaluate((code) => navigator.clipboard.writeText(code), token);
+        await anonymousPage.getByRole('textbox', { name: 'Digit 1 of 6' }).focus();
+        await anonymousPage.keyboard.press('Control+V');
+
+        for (let i = 0; i < token.length; i++) {
+            await expect(anonymousPage.getByRole('textbox', { name: `Digit ${i + 1} of ${token.length}` }))
+                .toHaveValue(token[i]);
+        }
+
+        await anonymousPage.getByRole('button', { name: 'Verify' }).click();
+        await expect(anonymousPage).toHaveURL(/\/MFA\/ShowBackupCodes/);
     });
 });

@@ -41,7 +41,11 @@ class GroupTechFilter extends AbstractGroupFilter
 {
     public static function getName(): string
     {
-        return __("Technician group");
+        return sprintf(
+            __('%1$s / %2$s'),
+            __('Technician group'),
+            _n('Assigned group', 'Assigned groups', 1)
+        );
     }
 
     public static function getId(): string

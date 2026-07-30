@@ -115,6 +115,23 @@ abstract class AbstractFilter
     }
 
     /**
+     * @return list<int>
+     */
+    protected static function normalizeIntValues(mixed $value): array
+    {
+        $values = is_array($value) ? $value : [$value];
+
+        $ids = [];
+        foreach ($values as $v) {
+            if ((int) $v > 0) {
+                $ids[] = (int) $v;
+            }
+        }
+
+        return array_values(array_unique($ids));
+    }
+
+    /**
      * Get generic HTML for a filter
      *
      * @param string $id system name of the filter (ex "dates")
@@ -134,8 +151,17 @@ abstract class AbstractFilter
         $rand  = mt_rand();
         $class = $filled ? "filled" : "";
 
+        // First Step: Add 'filled' class if the filter has a default value on load
         $js = "
             $(function () {
+                var select_elem = $('#filter-{$rand} select');
+                if (select_elem.length > 0) {
+                    var initial_val = select_elem.val();
+                    if (initial_val !== null && initial_val !== '') {
+                        $('#filter-{$rand}').addClass('filled');
+                    }
+                }
+
                 $('#filter-{$rand} input')
                     .on('input', function() {
                         var str_len = $(this).val().length;
@@ -177,13 +203,13 @@ abstract class AbstractFilter
         string $value,
         string $fieldname,
         string $itemtype,
-        array $add_params = []
+        array $add_params = [],
+        string $function = 'dropdown',
     ): string {
         $value     = !empty($value) ? $value : null;
         $rand      = mt_rand();
-        $field     = $itemtype::dropdown([
+        $field     = $itemtype::$function([
             'name'                => $fieldname,
-            'value'               => $value,
             'rand'                => $rand,
             'display'             => false,
             'display_emptychoice' => false,
@@ -192,7 +218,7 @@ abstract class AbstractFilter
             'on_change'           => "on_change_{$rand}()",
             'allowClear'          => true,
             'width'               => '',
-        ] + $add_params);
+        ] + ($value !== null ? ['value' => $value] : []) + $add_params);
 
         $js = "
             var on_change_{$rand} = function() {
@@ -203,20 +229,70 @@ abstract class AbstractFilter
 
                 $(dom_elem).closest('fieldset').toggleClass('filled', selected !== null);
             };
+
+            $(function() {
+             if ($('#dropdown_" . \jsescape($fieldname . $rand) . "').val()) on_change_{$rand}();
+            });
+
         ";
         $field .= Html::scriptBlock($js);
 
         return self::field($fieldname, $field, $label, $value !== null);
     }
 
+    /**
+     * @param array<int|string> $values
+     * @param array<string, mixed> $add_params
+     */
+    protected static function displayMultipleList(
+        string $label,
+        array $values,
+        string $fieldname,
+        string $itemtype,
+        array $add_params = [],
+    ): string {
+        $rand  = mt_rand();
+        $field = $itemtype::dropdown([
+            'name'                => $fieldname,
+            'values'              => $values,
+            'rand'                => $rand,
+            'display'             => false,
+            'display_emptychoice' => false,
+            'emptylabel'          => '',
+            'placeholder'         => $label,
+            'on_change'           => "on_change_{$rand}()",
+            'allowClear'          => true,
+            'width'               => '',
+            'multiple'            => true,
+        ] + $add_params);
+
+        $js = "
+            var on_change_{$rand} = function() {
+                var dom_elem = $('#dropdown_" . \jsescape($fieldname . $rand) . "');
+                var selected = dom_elem.val() || [];
+
+                GLPI.Dashboard.getActiveDashboard().saveFilter('" . \jsescape($fieldname) . "', selected);
+
+                dom_elem.closest('fieldset').toggleClass('filled', selected.length > 0);
+            };
+        ";
+        $field .= Html::scriptBlock($js);
+
+        return self::field($fieldname, $field, $label, count($values) > 0);
+    }
+
     protected static function getDatesCriteria(string $field, array $dates): array
     {
-        $begin = strtotime($dates[0]);
-        $end   = strtotime($dates[1]);
+        $begin    = strtotime($dates[0]);
+        $end      = strtotime($dates[1]);
+        $next_day = strtotime('+1 day', $end);
 
         return [
             [$field => ['>=', date('Y-m-d', $begin)]],
-            [$field => ['<=', date('Y-m-d', $end)]],
+            // Use strict less-than against the following day so that the entire end day is
+            // included. MySQL compares DATETIME against a bare date as 'YYYY-MM-DD 00:00:00',
+            // which would otherwise exclude any record created after midnight on end_date.
+            [$field => ['<',  date('Y-m-d', $next_day)]],
         ];
     }
 
@@ -231,12 +307,13 @@ abstract class AbstractFilter
                 'value'      => date('Y-m-d 00:00:00', $begin),
             ];
         } else {
-            $end   = strtotime($dates[1]);
+            $end = strtotime($dates[1]);
             return [
                 'link'       => 'AND',
                 'field'      => $searchoption_id,
                 'searchtype' => 'lessthan',
-                'value'      => date('Y-m-d 00:00:00', $end),
+                // +1 day so the whole end day is included (same logic as getDatesCriteria).
+                'value'      => date('Y-m-d 00:00:00', strtotime('+1 day', $end)),
             ];
         }
     }

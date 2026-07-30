@@ -33,11 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\Parts\BasePart;
+use Glpi\DBAL\Parts\Delete;
+use Glpi\DBAL\Parts\Insert;
+use Glpi\DBAL\Parts\Update;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profile;
+use Glpi\Exception\Database\QueryException;
 use Glpi\Exception\Database\StatementException;
 use Glpi\System\Requirement\DbTimezones;
 use Glpi\Toolbox\SanitizedStringsDecoder;
@@ -197,7 +202,16 @@ class DBmysql
 
     private bool $cache_disabled = false;
 
-    private string $current_query;
+    /**
+     * Maps prepared statements to their original SQL query string.
+     *
+     * Keyed by the mysqli_stmt object so each statement carries its own query
+     * (no shared connection-level state), with automatic cleanup once the
+     * statement is garbage collected.
+     *
+     * @var ?WeakMap<mysqli_stmt, string>
+     */
+    private ?WeakMap $statement_queries = null;
 
     private DBmysqlIterator $iterator;
 
@@ -221,6 +235,7 @@ class DBmysql
      * Indicates whether the data fetched from DB must be unsanitized.
      */
     private bool $must_unsanitize_data = false;
+    private int $affected_rows = 0;
 
     /**
      * Constructor / Connect to the MySQL Database
@@ -231,6 +246,8 @@ class DBmysql
      */
     public function __construct($choice = null)
     {
+        $this->statement_queries = new WeakMap();
+
         // Handle separate DB instances per worker for unit tests (when enabled)
         // First runner will use the existing `glpi` database
         // Second runner will use `glpi_2`
@@ -374,12 +391,18 @@ class DBmysql
      *
      * @phpstan-impure Results will depend on database content.
      *
-     * @param string $query Query to execute
+     * @param string|BasePart $query Query to execute
      *
      * @return mysqli_result|true Returns true for add/delete/update; and mysqli_result for select
      */
-    public function doQuery($query)
+    public function doQuery(BasePart|string $query): true|mysqli_result
     {
+        $is_stmt = false;
+        if ($query instanceof BasePart) {
+            $params = $query->getParams();
+            $query = $query->getQuery();
+            $is_stmt = true;
+        }
         $debug_data = [
             'query' => $query,
             'time' => 0,
@@ -391,50 +414,47 @@ class DBmysql
         $start_time = microtime(true);
 
         $this->checkForDeprecatedTableOptions($query);
+        $this->checkForDDLInsideTransaction($query);
 
-        $res = $this->dbh->query($query);
-        if (!$res) {
-            throw new RuntimeException(
-                sprintf(
-                    'MySQL query error: %s (%d) in SQL query "%s".',
-                    $this->dbh->error,
-                    $this->dbh->errno,
-                    $query
-                )
-            );
+        if ($is_stmt) {
+            $stmt = $this->prepare($query);
+            $this->executeStatement($stmt, $params);
+            $this->affected_rows = (int) $stmt->affected_rows;
+
+            // get_result() returns a mysqli_result for SELECT queries, and
+            // false for queries that do not produce a result set (add/delete/update).
+            $res = $stmt->get_result();
+            if ($res === false) {
+                $res = true;
+            }
+        } else {
+            $res = $this->dbh->query($query);
+            if (!$res) {
+                throw new QueryException(
+                    sprintf(
+                        'MySQL query error: %s (%d) in SQL query "%s".',
+                        $this->dbh->error,
+                        $this->dbh->errno,
+                        $query
+                    )
+                );
+            }
+            $this->affected_rows = (int) $this->dbh->affected_rows;
         }
 
         $duration = (microtime(true) - $start_time) * 1000;
 
         $debug_data['time'] = $duration;
-        $debug_data['rows'] = $this->affectedRows();
+        $debug_data['rows'] = $this->getAffectedRows();
 
         // Trigger warning errors if any SQL warnings was produced by the query
-        $sql_warnings = $this->fetchQueryWarnings(); // Ensure that we collect warning after affected rows
-        if (count($sql_warnings) > 0) {
-            $warnings_string = implode(
-                "\n",
-                array_map(
-                    static fn($warning) => sprintf('%s: %s', $warning['Code'], $warning['Message']),
-                    $sql_warnings
-                )
-            );
+        $debug_data['warnings'] = $this->getSQLWarnings($query);
 
-            $debug_data['warnings'] = $warnings_string;
-
-            trigger_error(
-                sprintf(
-                    "MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s",
-                    $query,
-                    $warnings_string
-                ),
-                E_USER_WARNING
-            );
-        }
-
-        if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
+        //query data for prepared statements are added in executeStatement method
+        if (!$is_stmt && isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
             Profile::getCurrent()->addSQLQueryData(
                 $debug_data['query'],
+                [],
                 $debug_data['time'],
                 $debug_data['rows'],
                 $debug_data['errors'],
@@ -448,6 +468,30 @@ class DBmysql
         return $res;
     }
 
+    private function getSQLWarnings(string $query): string
+    {
+        $sql_warnings = $this->fetchQueryWarnings(); // Ensure that we collect warning after affected rows
+        if (count($sql_warnings) > 0) {
+            $warnings_string = implode(
+                "\n",
+                array_map(
+                    static fn($warning) => sprintf('%s: %s', $warning['Code'], $warning['Message']),
+                    $sql_warnings
+                )
+            );
+
+            trigger_error(
+                sprintf(
+                    "MySQL query warnings:\n  SQL: %s\n  Warnings: \n%s",
+                    $query,
+                    $warnings_string
+                ),
+                E_USER_WARNING
+            );
+        }
+        return $warnings_string ?? '';
+    }
+
     /**
      * Prepare a MySQL query
      *
@@ -459,7 +503,7 @@ class DBmysql
     {
         $res = $this->dbh->prepare($query);
         if (!$res) {
-            throw new RuntimeException(
+            throw new StatementException(
                 sprintf(
                     'MySQL prepare error: %s (%d) in SQL query "%s".',
                     $this->dbh->error,
@@ -468,12 +512,15 @@ class DBmysql
                 )
             );
         }
-        $this->current_query = $query;
+        // Some subclasses wrap an existing mysqli handle without calling
+        // parent::__construct(), so the WeakMap may not be initialized yet.
+        $this->statement_queries ??= new WeakMap();
+        $this->statement_queries[$res] = $query;
         return $res;
     }
 
     /**
-     * Give result from a sql result
+     * Give result from a SQL result
      *
      * @param mysqli_result $result MySQL result handler
      * @param int           $i      Row offset to give
@@ -916,10 +963,23 @@ class DBmysql
      * Get number of affected rows in previous MySQL operation
      *
      * @return int number of affected rows on success, and -1 if the last query failed.
+     * @deprecated 12
      */
     public function affectedRows()
     {
-        return (int) $this->dbh->affected_rows;
+        Toolbox::deprecated();
+        return $this->getAffectedRows();
+    }
+
+    /**
+     * Get number of affected rows in previous MySQL operation
+     * Rely on a class variable since GLPI v12 and statements usage, as $this->dbh->affected_rows is not reliable when statements are used.
+     *
+     * @return int number of affected rows on success, and -1 if the last query failed.
+     */
+    public function getAffectedRows(): int
+    {
+        return $this->affected_rows;
     }
 
     /**
@@ -1241,7 +1301,7 @@ class DBmysql
             return $name;
         }
 
-        // do not quote alreay quoted names
+        // do not quote already quoted names
         if (preg_match('/^`[^`]+`$/', $name) === 1) {
             return $name;
         }
@@ -1285,43 +1345,48 @@ class DBmysql
     /**
      * Builds an insert statement
      *
-     * @since 9.3
-     *
      * @param string $table  Table name
-     * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
+     * @param QuerySubQuery|array<string, mixed>  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
      * @phpstan-param array<string, mixed>|QuerySubQuery $params
      *
-     * @return string
+     * @return Insert
      */
-    public function buildInsert($table, $params)
+    public function buildInsert(string $table, array|QuerySubQuery $params): Insert
     {
         $query = "INSERT INTO " . self::quoteName($table) . ' ';
 
         if ($params instanceof QuerySubQuery) {
             // INSERT INTO ... SELECT Query where the sub-query returns all columns needed for the insert
             $query .= $params->getQuery();
+            $values = $params->getParams();
         } else {
             $fields = [];
+            $parameters = [];
             $values = [];
             foreach ($params as $key => $value) {
                 $fields[] = static::quoteName($key);
                 if ($value instanceof QueryExpression) {
-                    $values[] = $value->getValue();
+                    $parameters[] = $value->getValue();
+                    $values = array_merge($values, $value->getParams());
                     unset($params[$key]);
                 } elseif ($value instanceof QueryParam) {
-                    $values[] = $value->getValue();
+                    $parameters[] = $value->getValue();
                 } else {
-                    $values[] = self::quoteValue($value);
+                    $values[] = $value;
+                    $parameters[] = '?';
                 }
             }
             $query .= "(";
             $query .= implode(', ', $fields);
             $query .= ") VALUES (";
-            $query .= implode(", ", $values);
+            $query .= implode(', ', $parameters);
             $query .= ")";
         }
 
-        return $query;
+        $insert = new Insert();
+        return $insert
+            ->setQuery($query)
+            ->setParams($values);
     }
 
     /**
@@ -1336,9 +1401,10 @@ class DBmysql
      */
     public function insert($table, $params)
     {
-        $this->doQuery(
-            $this->buildInsert($table, $params)
-        );
+        $query = $this->buildInsert($table, $params);
+        $stmt = $this->prepare($query->getQuery());
+        $this->executeStatement($stmt, $query->getParams());
+        $this->affected_rows = (int) $stmt->affected_rows;
         return true;
     }
 
@@ -1349,14 +1415,15 @@ class DBmysql
      *
      * @param string $table   Table name
      * @param array  $params  Query parameters ([field name => field value)
-     * @param array  $clauses Clauses to use. If not 'WHERE' key specified, will b the WHERE clause (@see DBmysqlIterator capabilities)
+     * @param array  $clauses Clauses to use. If not 'WHERE' key specified, will be the WHERE clause (@see DBmysqlIterator capabilities)
      * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return string
+     * @return Update
      */
-    public function buildUpdate($table, $params, $clauses, array $joins = [])
+    public function buildUpdate($table, $params, $clauses, array $joins = []): Update
     {
+        $values = [];
         //when no explicit "WHERE", we only have a WHERE clause.
         if (!isset($clauses['WHERE'])) {
             $clauses  = ['WHERE' => $clauses];
@@ -1385,38 +1452,60 @@ class DBmysql
         $query  = "UPDATE " . self::quoteName($table);
 
         //JOINS
+        // track how many values have already been consumed to only fetch the new ones
+        // and keep them in the same order as the placeholders in the query.
         $this->iterator = new DBmysqlIterator($this);
         $query .= $this->iterator->analyseJoins($joins);
+        // JOIN placeholders come first in the query.
+        $values = $this->iterator->getValues();
+        $consumed = count($values);
 
+        // SET placeholders come after the JOIN ones; collect them separately
+        $set_values = [];
         $query .= " SET ";
         foreach ($params as $field => $value) {
-            if ($value instanceof QueryParam || $value instanceof QueryExpression) {
-                //no quote for query parameters nor expressions
+            if ($value instanceof QueryParam) {
                 $query .= self::quoteName($field) . " = " . $value->getValue() . ", ";
+            } elseif ($value instanceof QueryExpression) {
+                $qvalues = $value->getParams();
+                $query .= self::quoteName($field) . " = " . $value->getValue() . ", ";
+                $set_values = array_merge($set_values, $qvalues);
             } elseif ($value === null || $value === 'NULL' || $value === 'null') {
-                $query .= self::quoteName($field) . " = NULL, ";
+                $query .= self::quoteName($field) . " = ?, ";
+                $set_values[] = null;
             } elseif (is_bool($value)) {
+                $query .= self::quoteName($field) . " = ?, ";
                 // transform boolean as int (prevent `false` to be transformed to empty string)
-                $query .= self::quoteName($field) . " = '" . (int) $value . "', ";
+                $set_values[] = (int) $value;
             } else {
-                $query .= self::quoteName($field) . " = " . self::quoteValue($value) . ", ";
+                $query .= self::quoteName($field) . " = ?, ";
+                $set_values[] = $value;
             }
         }
         $query = rtrim($query, ', ');
+        // append SET values after the JOIN values and before the WHERE ones.
+        $values = array_merge($values, $set_values);
 
         $query .= " WHERE " . $this->iterator->analyseCrit($clauses['WHERE']);
 
         // ORDER BY
-        if (isset($clauses['ORDER']) && !empty($clauses['ORDER'])) {
+        if (!empty($clauses['ORDER'])) {
             $query .= $this->iterator->handleOrderClause($clauses['ORDER']);
         }
 
-        if (isset($clauses['LIMIT']) && !empty($clauses['LIMIT'])) {
-            $offset = (isset($clauses['START']) && !empty($clauses['START'])) ? $clauses['START'] : null;
+        if (!empty($clauses['LIMIT'])) {
+            $offset = (!empty($clauses['START'])) ? $clauses['START'] : null;
             $query .= $this->iterator->handleLimits($clauses['LIMIT'], $offset);
         }
 
-        return $query;
+        // WHERE/ORDER/LIMIT placeholders come last: only fetch the values added
+        // by the iterator since the JOIN analysis (skip the already consumed ones).
+        $values = array_merge($values, array_slice($this->iterator->getValues(), $consumed));
+
+        $update = new Update();
+        return $update
+            ->setQuery($query)
+            ->setParams($values);
     }
 
     /**
@@ -1435,7 +1524,9 @@ class DBmysql
     public function update($table, $params, $where, array $joins = [])
     {
         $query = $this->buildUpdate($table, $params, $where, $joins);
-        $this->doQuery($query);
+        $stmt = $this->prepare($query->getQuery());
+        $this->executeStatement($stmt, $query->getParams());
+        $this->affected_rows = (int) $stmt->affected_rows;
         return true;
     }
 
@@ -1454,7 +1545,9 @@ class DBmysql
     public function updateOrInsert($table, $params, $where, $onlyone = true)
     {
         $query = $this->buildUpdateOrInsert($table, $params, $where, $onlyone);
-        $this->doQuery($query);
+        $stmt = $this->prepare($query->getQuery());
+        $this->executeStatement($stmt, $query->getParams());
+        $this->affected_rows = (int) $stmt->affected_rows;
         return true;
     }
 
@@ -1463,10 +1556,8 @@ class DBmysql
      * @param array $params
      * @param array $where
      * @param bool $onlyone
-     *
-     * @return string
      */
-    public function buildUpdateOrInsert($table, $params, $where, $onlyone = true): string
+    public function buildUpdateOrInsert($table, $params, $where, $onlyone = true): Update|Insert
     {
         $req = $this->request(array_merge(['FROM' => $table], $where));
         $data = array_merge($where, $params);
@@ -1489,7 +1580,7 @@ class DBmysql
      * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return string
+     * @return Delete
      */
     public function buildDelete($table, $where, array $joins = [])
     {
@@ -1501,10 +1592,14 @@ class DBmysql
         $query  = "DELETE " . self::quoteName($table) . " FROM " . self::quoteName($table);
 
         $this->iterator = new DBmysqlIterator($this);
-        $query .= $this->iterator->analyseJoins($joins);
-        $query .= " WHERE " . $this->iterator->analyseCrit($where);
+        $query .= $this->iterator->analyseJoins($joins); //TODO: maybe rely on DBAL\LeftJoin
+        $query .= " WHERE " . $this->iterator->analyseCrit($where); //TODO: maybe rely on DBAL\Where
+        $values = $this->iterator->getValues();
 
-        return $query;
+        $delete = new Delete();
+        return $delete
+            ->setQuery($query)
+            ->setParams($values);
     }
 
     /**
@@ -1522,7 +1617,9 @@ class DBmysql
     public function delete($table, $where, array $joins = [])
     {
         $query = $this->buildDelete($table, $where, $joins);
-        $this->doQuery($query);
+        $stmt = $this->prepare($query->getQuery());
+        $this->executeStatement($stmt, $query->getParams());
+        $this->affected_rows = (int) $stmt->affected_rows;
         return true;
     }
 
@@ -1708,7 +1805,19 @@ class DBmysql
         if ($success) {
             $this->transaction_level--;
         } else {
-            throw new RuntimeException("Failed to commit transaction.");
+            $exception = new RuntimeException("Failed to commit transaction.");
+            ;
+
+            // Error is logged here since it is likely to caught and silented by the caller.
+            // It may result in being logged twice, but it is probalby preferable than risking having it not logged
+            // at all for a few specific cases.
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                'An error occurred during DB transaction commit.',
+                ['exception' => $exception]
+            );
+
+            throw $exception;
         }
     }
 
@@ -1724,18 +1833,29 @@ class DBmysql
         if (!$this->isInNestedTransaction()) {
             // A simple transaction is underway, roll it back.
             $success = $this->dbh->rollback();
+            if ($success) {
+                $this->transaction_level--;
+            } else {
+                $exception = new RuntimeException("Failed to rollback transaction.");
+
+                // Error is logged here since it is likely to caught and silented by the caller.
+                // It may result in being logged twice, but it is probalby preferable than risking having it not logged
+                // at all for a few specific cases.
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    'An error occurred during DB transaction rollback.',
+                    ['exception' => $exception]
+                );
+
+                throw $exception;
+            }
         } else {
-            // A nested transaction is already underway, roolback to current savepoint.
+            // A nested transaction is already underway, rollback to current savepoint.
             $savepoint = $this->formatAndQuoteSavePointName(
                 $this->transaction_level
             );
-            $success = $this->doQuery("ROLLBACK TO $savepoint");
-        }
-
-        if ($success) {
+            $this->doQuery("ROLLBACK TO $savepoint");
             $this->transaction_level--;
-        } else {
-            throw new RuntimeException("Failed to rollback transaction.");
         }
     }
 
@@ -1982,6 +2102,18 @@ class DBmysql
     }
 
     /**
+     * Returns the original SQL query string associated with a prepared statement.
+     *
+     * @param mysqli_stmt $stmt Statement prepared through self::prepare()
+     *
+     * @return string The query string, or an empty string if the statement was not tracked.
+     */
+    private function getStatementQuery(mysqli_stmt $stmt): string
+    {
+        return $this->statement_queries[$stmt] ?? '';
+    }
+
+    /**
      * Binds parameters to a prepared statement
      *
      * @param mysqli_stmt $stmt   Statement to bind parameters to
@@ -1996,6 +2128,11 @@ class DBmysql
             return;
         }
         $params = array_values($params); //no need for the keys
+        foreach ($params as &$param) {
+            if ($param === false) {
+                $param = 0;
+            }
+        }
 
         if ($types === null) {
             //no types specified, assume all strings
@@ -2004,15 +2141,32 @@ class DBmysql
             $types = implode('', $types);
         }
 
-        if (false === $stmt->bind_param($types, ...$params)) {
+        $query = $this->getStatementQuery($stmt);
+        try {
+            if (false === $stmt->bind_param($types, ...$params)) {
+                throw new StatementException(
+                    sprintf(
+                        'Error binding params in SQL query "%s": %s (%d).',
+                        $query,
+                        $stmt->error,
+                        $stmt->errno
+                    ),
+                    $stmt->errno
+                );
+            }
+        } catch (ArgumentCountError $e) {
+            $scount = substr_count($query, '?');
+            $vcount = count($params);
             throw new StatementException(
                 sprintf(
-                    'Error binding params in SQL query "%s": %s (%d).',
-                    $this->current_query,
-                    $stmt->error,
-                    $stmt->errno
+                    "Number of placeholders (%d) in SQL statement does not match number of values (%d).\n     SQL query:\n%s\n    Parameters:\n%s",
+                    $scount,
+                    $vcount,
+                    $query,
+                    var_export($params, true)
                 ),
-                $stmt->errno
+                $e->getCode(),
+                $e
             );
         }
     }
@@ -2028,6 +2182,17 @@ class DBmysql
      */
     public function executeStatement(mysqli_stmt $stmt, ?array $params = null, ?array $types = null): void
     {
+        $query = $this->getStatementQuery($stmt);
+        $debug_data = [
+            'query' => $query,
+            'time' => 0,
+            'rows' => 0,
+            'errors' => '',
+            'warnings' => '',
+        ];
+
+        $start_time = microtime(true);
+
         if ($params !== null) {
             $this->bindStatementParams($stmt, $params, $types);
         }
@@ -2037,11 +2202,58 @@ class DBmysql
                     'MySQL statement error: %s (%d) in SQL query "%s".',
                     $stmt->error,
                     $stmt->errno,
-                    $this->current_query
+                    $query
                 ),
                 $stmt->errno
             );
         }
+
+        $duration = (microtime(true) - $start_time) * 1000;
+        $debug_data['time'] = $duration;
+        $debug_data['rows'] = (int) $stmt->affected_rows;
+        $debug_data['warnings'] = $this->getSQLWarnings($query);
+
+        if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
+            Profile::getCurrent()->addSQLQueryData(
+                $debug_data['query'],
+                $params,
+                $debug_data['time'],
+                $debug_data['rows'],
+                $debug_data['errors'],
+                $debug_data['warnings']
+            );
+        }
+    }
+
+    /**
+     * Inlines parameter values into a prepared statement query, for debug display only.
+     *
+     * The result is never executed; it just rebuilds the final query the debug bar
+     * used to show before queries were turned into prepared statements. Placeholders
+     * are replaced left-to-right, mirroring how self::bindStatementParams() coerces
+     * values.
+     *
+     * @param string $query  Query string with `?` placeholders
+     * @param ?array<int|string, mixed> $params Parameters bound to the query
+     *
+     * @return string
+     */
+    public function interpolateParams(string $query, ?array $params): string
+    {
+        if (empty($params)) {
+            return $query;
+        }
+        foreach ($params as $param) {
+            if ($param === null) {
+                $value = 'NULL';
+            } elseif (is_bool($param)) {
+                $value = $param ? '1' : '0';
+            } else {
+                $value = $this->quote($param);
+            }
+            $query = preg_replace('/\?/', $value, $query, 1);
+        }
+        return $query;
     }
 
     /**
@@ -2113,6 +2325,29 @@ class DBmysql
                     $field_matches['field']
                 ),
                 E_USER_WARNING
+            );
+        }
+    }
+
+    /**
+     * Block DDL statement execution inside an active transaction.
+     *
+     * DDL statements (ALTER, CREATE, DROP, RENAME, TRUNCATE) cause an implicit
+     * commit in MySQL/MariaDB, which silently invalidates all open savepoints.
+     * Running such a statement inside a transaction is almost certainly a bug.
+     */
+    private function checkForDDLInsideTransaction(string $query): void
+    {
+        if (!$this->isInTransaction()) {
+            return;
+        }
+
+        if (preg_match('/^\s*(ALTER|CREATE|DROP|RENAME|TRUNCATE)\s+/i', $query)) {
+            throw new RuntimeException(
+                sprintf(
+                    'DDL statement executed inside a transaction will cause an implicit commit: "%s".',
+                    substr($query, 0, 200)
+                )
             );
         }
     }

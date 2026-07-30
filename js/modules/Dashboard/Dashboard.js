@@ -70,6 +70,8 @@ window.GLPI.Dashboard = {
  * @property {string|null} [token] Token
  * @property {number|null} [entities_id] Entities ID
  * @property {number|boolean|null} [is_recursive] Recursive
+ * @property {number|null} [profiles_id] Profile ID of the user who shared the dashboard
+ * @property {number|null} [users_id] User ID of the user who shared the dashboard
  * @property {{}[]} [all_cards] All cards
  * @property {string} [context] Dashboard context
  * @property {string} [current] Current dashboard
@@ -121,6 +123,8 @@ class GLPIDashboard {
             token:       null,
             entities_id: null,
             is_recursive:null,
+            profiles_id: null,
+            users_id:    null,
             ajax_cards:  true,
             all_cards:   [],
             context:     "core"
@@ -136,6 +140,8 @@ class GLPIDashboard {
         this.token        = options.token;
         this.entities_id  = options.entities_id;
         this.is_recursive = options.is_recursive;
+        this.profiles_id  = options.profiles_id;
+        this.users_id     = options.users_id;
         this.ajax_cards   = options.ajax_cards;
         this.all_cards    = options.all_cards;
         this.all_widgets  = options.all_widgets;
@@ -438,7 +444,7 @@ class GLPIDashboard {
             const filters = this.getFiltersFromDB();
             delete filters[filter_id];
             this.setFiltersInDB(filters);
-            this.refreshCardsImpactedByFilter(filter_id);
+            this.refreshCardsImpactedByFilter(filter_id, filters);
         });
 
         // save new or existing widget (submit form)
@@ -734,6 +740,8 @@ class GLPIDashboard {
             data.token        = this.token;
             data.entities_id  = this.entities_id;
             data.is_recursive = this.is_recursive;
+            data.profiles_id  = this.profiles_id;
+            data.users_id     = this.users_id;
         }
 
         $.get({
@@ -775,20 +783,22 @@ class GLPIDashboard {
         // store current filter in localStorage
         const filters = this.getFiltersFromDB();
         filters[filter_id] = value;
+
+        // persist (async, no need to wait: the refresh below carries the filters)
         this.setFiltersInDB(filters);
 
         // refresh sortable
         sortable(this.filters_selector, 'reload');
 
-        // refresh all card impacted by the changed filter
-        this.refreshCardsImpactedByFilter(filter_id);
+        // we directly apply the filters we already have in memory. no more re-reading from the server, no more waiting
+        this.refreshCardsImpactedByFilter(filter_id, filters);
     }
 
-    refreshCardsImpactedByFilter(filter_id) {
+    refreshCardsImpactedByFilter(filter_id, filters) {
         $('.dashboard .card.filter-'+filter_id).each((i, elem) => {
             const gridstack_item = $(elem).closest(".grid-stack-item");
             const card_id = gridstack_item.attr('gs-id');
-            this.getCardsAjax(`[gs-id="${CSS.escape(card_id)}"]`);
+            this.getCardsAjax(`[gs-id="${CSS.escape(card_id)}"]`, filters);
         });
     }
 
@@ -1131,10 +1141,11 @@ class GLPIDashboard {
             .trigger('change');
     }
 
-    getCardsAjax(specific_one) {
+    getCardsAjax(specific_one, filters) {
         specific_one = specific_one || "";
 
-        const filters = this.getFiltersFromDB();
+        // Callers that already know the filters can pass them in to avoid a redundant synch round-trip to the server
+        filters = filters || this.getFiltersFromDB();
         const force = (specific_one.length > 0 ? 1 : 0);
 
         const requested_cards = [];
@@ -1188,6 +1199,8 @@ class GLPIDashboard {
                     data.token        = this.token;
                     data.entities_id  = this.entities_id;
                     data.is_recursive = this.is_recursive;
+                    data.profiles_id  = this.profiles_id;
+                    data.users_id     = this.users_id;
                 }
 
                 promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", data).then((html) => {
@@ -1215,6 +1228,8 @@ class GLPIDashboard {
                 data.token        = this.token;
                 data.entities_id  = this.entities_id;
                 data.is_recursive = this.is_recursive;
+                data.profiles_id  = this.profiles_id;
+                data.users_id     = this.users_id;
             }
 
             return $.ajax({
@@ -1337,7 +1352,7 @@ class GLPIDashboard {
         if (this.current_name.length > 0) {
             filters[this.current_name] = sub_filters;
         }
-        $.ajax({
+        return $.ajax({
             method: 'POST',
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
             data: {

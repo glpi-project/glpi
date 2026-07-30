@@ -42,6 +42,10 @@ final class Tree implements Node
     /** @var Category[] */
     protected array $categories = [];
 
+    public function __construct(
+        public readonly bool $uncategorized_collapsed = false,
+    ) {}
+
     public function addArticle(Article $article): void
     {
         $this->articles[] = $article;

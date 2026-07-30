@@ -49,9 +49,9 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Restore dependencies cache"
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
@@ -61,7 +61,7 @@ jobs:
             app_home_deps-${{ matrix.php-version }}-
             app_home_deps-
       - name: "Restore lint cache"
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             files/_cache/php-cs-fixer
@@ -130,9 +130,9 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.5", "db-image": "mariadb:11.8", "run-js-tests": true},
-                  {"php-version": "8.3", "db-image": "mariadb:10.6", "run-js-tests": false},
-                  {"php-version": "8.5", "db-image": "mysql:8.4", "run-js-tests": false},
+                  {"php-version": "8.5", "db-image": "mariadb:12.3", "run-js-tests": true},
+                  {"php-version": "8.3", "db-image": "mariadb:10.11", "run-js-tests": false},
+                  {"php-version": "8.5", "db-image": "mysql:9.7", "run-js-tests": false},
                   {"php-version": "8.5", "db-image": "mysql:8.0", "run-js-tests": false}
                 ]
               }
@@ -141,8 +141,8 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.5", "db-image": "mariadb:11.8", "run-js-tests": true},
-                  {"php-version": "8.3", "db-image": "mysql:8.4", "run-js-tests": false}
+                  {"php-version": "8.5", "db-image": "mariadb:12.3", "run-js-tests": true},
+                  {"php-version": "8.3", "db-image": "mysql:9.7", "run-js-tests": false}
                 ]
               }
             '
@@ -169,9 +169,9 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Restore dependencies cache"
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
@@ -211,12 +211,13 @@ jobs:
         if: "${{ success() || failure() }}"
         run: |
           docker compose exec -T db bash -c '
+            set -e -u -o pipefail
             if command -v mariadb &> /dev/null; then
               DB_CLIENT="mariadb"
               DB_DUMP="mariadb-dump"
             else
               DB_CLIENT="mysql"
-              DB_DUMP="mysqldump"
+              DB_DUMP="mysqldump --set-gtid-purged=OFF"
             fi
             for i in 2 3 4; do
               $DB_CLIENT -u root -e "CREATE DATABASE glpi_$i CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
@@ -256,17 +257,17 @@ jobs:
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
-      DB_IMAGE: "githubactions-mariadb:10.11"
-      PHP_IMAGE: "githubactions-php-apache:8.3"
+      DB_IMAGE: "githubactions-mariadb:12.3"
+      PHP_IMAGE: "githubactions-php-apache:8.5"
       UPDATE_FILES_ACL: true
     steps:
       - name: "Set env"
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Restore dependencies cache"
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
@@ -325,7 +326,7 @@ jobs:
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
-      DB_IMAGE: "githubactions-mariadb:11.8"
+      DB_IMAGE: "githubactions-mariadb:12.3"
       PHP_IMAGE: "githubactions-php-apache:8.5"
       UPDATE_FILES_ACL: true
     steps:
@@ -333,9 +334,9 @@ jobs:
         run: |
           echo "APP_CONTAINER_HOME=${{ runner.temp }}/app_home" >> $GITHUB_ENV
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Restore dependencies cache"
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
@@ -394,9 +395,9 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
       - name: "Setup Node.js"
-        uses: "actions/setup-node@v6"
+        uses: "actions/setup-node@v7"
         with:
           node-version: "lts/*"
       - name: "Install dependencies"

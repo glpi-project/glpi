@@ -335,11 +335,11 @@ trait PlanningEvent
      * @param string $day
      *
      * @see addInstanceException
-     * @return void
+     * @return bool
      */
-    public function deleteInstance(int $id = 0, string $day = "")
+    public function deleteInstance(int $id = 0, string $day = ""): bool
     {
-        $this->addInstanceException($id, $day);
+        return $this->addInstanceException($id, $day);
     }
 
     /**
@@ -588,7 +588,7 @@ trait PlanningEvent
         if (count($iterator)) {
             foreach ($iterator as $data) {
                 $event_obj->getFromResultSet($data);
-                if ($event_obj->canViewItem()) {
+                if ($event_obj->can($event_obj->getID(), READ)) {
                     $key = $data["begin"]
                       . "$$" . $itemtype
                       . "$$" . $data["id"]
@@ -623,7 +623,7 @@ trait PlanningEvent
                                         . "?action=edit_event_form"
                                         . "&itemtype=$itemtype"
                                         . "&id=" . $data['id'],
-                        'editable'         => $event_obj->canUpdateItem(),
+                        'editable'         => $event_obj->can($event_obj->getID(), UPDATE),
                         'url'              => $url,
                         'begin'            => !$is_rrule && (strcmp($begin, $data["begin"]) > 0)
                                           ? $begin
@@ -741,14 +741,6 @@ trait PlanningEvent
         if ($complete) {
             $html .= "<span>" . htmlescape(Planning::getState($val["state"])) . "</span><br>";
             $html .= "<div class='event-description rich_text_container'>" . $content . "</div>";
-        } else {
-            $html .= Html::showToolTip(
-                "<span class='b'>" . htmlescape(Planning::getState($val["state"])) . "</span><br>" . $content,
-                [
-                    'applyto' => "reminder_" . $val[$item_fk] . $rand,
-                    'display' => false,
-                ]
-            );
         }
 
         $parent = getItemForItemtype($val['itemtype']);

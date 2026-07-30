@@ -36,6 +36,7 @@ namespace Glpi\Tests;
 
 use Calendar;
 use CalendarSegment;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 
 abstract class CommonITILRecurrentTest extends DbTestCase
 {
@@ -726,6 +727,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         $this->assertEquals($expected_date, $recurrent->fields['next_creation_date']);
     }
 
+    #[AllowMockObjectsWithoutExpectations()]
     public function testCronDoesNotWarnOnMissingTicketPerItemField(): void
     {
         global $DB;

@@ -134,7 +134,16 @@ class RouterTest extends GLPITestCase
             foreach ($properties as $prop_name => $prop) {
                 $full_prop_name = $parent_path !== '' ? ($parent_path . '.' . $prop_name) : $prop_name;
                 if (isset($prop['x-mapper'])) {
-                    if (!isset($prop['readOnly']) || $prop['readOnly'] !== true) {
+                    // A mapped property must be read-only. It either declares `readOnly` outright,
+                    // or defers it to a later API version via `x-version-readonly` (legacy properties
+                    // that used to be writable columns) — in which case that version must already be
+                    // reached by the current API version.
+                    $is_readonly = ($prop['readOnly'] ?? false) === true
+                        || (
+                            isset($prop['x-version-readonly'])
+                            && version_compare(Router::API_VERSION, $prop['x-version-readonly']) >= 0
+                        );
+                    if (!$is_readonly) {
                         $schemas_errors[] = "Property '$full_prop_name' in schema $schema_name in " . $controller::class . " is mapped but is not marked as readOnly";
                     }
                 }
@@ -148,6 +157,10 @@ class RouterTest extends GLPITestCase
         };
 
         foreach ($controllers as $controller) {
+            // Use the unfiltered (all-versions) schemas so every property is covered regardless
+            // of the version it belongs to. Version-gated attributes like x-version-readonly are
+            // resolved against Router::API_VERSION directly in the check below, since the per-version
+            // filter would strip that marker from its output.
             $schemas = $controller::getKnownSchemas(null);
             foreach ($schemas as $schema_name => $schema) {
                 if (!isset($schema['properties']) || !is_array($schema['properties'])) {

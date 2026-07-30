@@ -313,36 +313,45 @@ final class Engine
      */
     private function computeConditions(array $conditions, array &$result_per_condition = []): bool
     {
-        $conditions_result = null;
+        // Evaluate each condition individually and collect its logic operator.
+        $evaluated = [];
+        $operators = [];
         foreach ($conditions as $condition) {
             if (empty($condition->getItemUuid())) {
                 continue;
             }
-
-            // Apply condition (item + value operator + value)
             $condition_result = $this->computeCondition($condition);
             $result_per_condition[spl_object_id($condition)] = $condition_result;
+            $evaluated[] = $condition_result;
+            $operators[] = $condition->getLogicOperator();
+        }
 
-            // Apply logic operator
-            if ($conditions_result === null) {
-                // This was the first condition, ignore operator.
-                $conditions_result = $condition_result;
+        if ($evaluated === []) {
+            return false;
+        }
+
+        // Apply AND-over-OR operator precedence (matching legacy formcreator behavior):
+        // operators[0] is the first condition's operator and is always ignored.
+        // operators[i] (i > 0) is the operator connecting evaluated[i-1] to evaluated[i].
+        // We split on OR boundaries into AND-groups, then OR-reduce across groups.
+        $or_groups = [];
+        $current_group = [$evaluated[0]];
+        for ($i = 1, $count = count($evaluated); $i < $count; $i++) {
+            if ($operators[$i] === LogicOperator::OR) {
+                $or_groups[] = $current_group;
+                $current_group = [$evaluated[$i]];
             } else {
-                // Merge result with previous result using the defined operator.
-                $operator = $condition->getLogicOperator();
-                $conditions_result = $operator->apply(
-                    $conditions_result,
-                    $condition_result,
-                );
+                $current_group[] = $evaluated[$i];
             }
         }
+        $or_groups[] = $current_group;
 
-        // No conditions are defined, we consider the result to be false
-        if ($conditions_result === null) {
-            $conditions_result = false;
+        foreach ($or_groups as $group) {
+            if (!in_array(false, $group, true)) {
+                return true; // all conditions in this AND-group are true
+            }
         }
-
-        return $conditions_result;
+        return false;
     }
 
     private function computeCondition(ConditionData $condition): bool

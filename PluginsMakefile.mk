@@ -28,6 +28,9 @@ PSALM_BIN      = $(shell test -f vendor/bin/psalm        && echo vendor/bin/psal
 PHPCSFIXER_BIN = $(shell test -f vendor/bin/php-cs-fixer && echo vendor/bin/php-cs-fixer || echo ../../vendor/bin/php-cs-fixer)
 PARALLEL-LINT_BIN = $(shell test -f vendor/bin/parallel-lint && echo vendor/bin/parallel-lint || echo ../../vendor/bin/parallel-lint)
 
+# Path to GLPI's core, where the root Makefile lives.
+GLPI_DIR = ../..
+
 ##
 ##This Makefile is used for *local development* only.
 ##Production or deployment should be handled following GLPI's documentation.
@@ -76,6 +79,10 @@ test-setup: ## Setup the plugin for tests
 	@$(CONSOLE) plugin:install --env=testing $(PLUGIN_DIR) -u glpi --force
 	@$(CONSOLE) plugin:enable --env=testing $(PLUGIN_DIR)
 .PHONY: test-setup
+
+test-uninstall: ## Uninstall the plugin in test env
+	@$(CONSOLE) plugin:uninstall --env=testing $(PLUGIN_DIR) -q
+.PHONY: uninstall
 
 test-e2e-setup: ## Setup the plugin for end-to-end tests
 	@$(CONSOLE) plugin:install --env=e2e_testing $(PLUGIN_DIR) -u glpi --force
@@ -139,6 +146,11 @@ phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/M
 	@$(eval c ?=)
 	@$(PLUGIN) php $(PHPUNIT_BIN) $(c)
 .PHONY: phpunit
+
+playwright: ## Run the plugin's playwright tests, example: make playwright c='--headed'
+	@$(eval c ?=)
+	@$(MAKE) -C $(GLPI_DIR) playwright c='--project=plugin:$(PLUGIN_DIR) $(c)'
+.PHONY: playwright
 
 phpstan: ## Run phpstan
 	@$(eval c ?=)

@@ -51,19 +51,20 @@ if (!isset($_REQUEST["action"])) {
 $request_data = array_merge($_REQUEST, json_decode($_REQUEST['data'] ?? '{}', true));
 unset($request_data['data']);
 
-$embed = false;
-if (
-    in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])
+// Session check is disabled for this script when "embed" mode is used.
+// Indeed, it is declared as stateless by `\Glpi\Http\SessionManager::isResourceStateless()`,
+// to prevent using the session cookie for embed dashboards.
+$is_embed_request = in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])
     && array_key_exists('embed', $request_data)
-    && (bool) $request_data['embed']
-) {
-    // Session check is disabled for this script when "embed" mode is used.
-    // Indeed, it is declared as stateless by `\Glpi\Http\SessionManager::isResourceStateless()`,
-    // to prevent using the session cookie for embed dashboards.
+    && (bool) $request_data['embed'];
+
+if ($is_embed_request) {
+    // Right checks must be enforced at the controller/front file level, not only relied on
+    // through `Grid::initEmbed()`, so that this remains true even if the usage of `initEmbed()`
+    // is removed/changed in the future.
     if (Grid::checkToken($request_data) === false) {
         throw new AccessDeniedHttpException();
     }
-    $embed = true;
 }
 
 $dashboard = new Dashboard($_REQUEST['dashboard'] ?? "");
@@ -181,8 +182,8 @@ switch ($_GET['action'] ?? null) {
 
 Profiler::getInstance()->start('Grid::construct');
 $grid = new Grid($_REQUEST['dashboard'] ?? "");
-if ($embed) {
-    $grid->initEmbedSession($_REQUEST);
+if ($is_embed_request) {
+    $grid->initEmbed($request_data);
 }
 Profiler::getInstance()->stop('Grid::construct');
 
@@ -223,7 +224,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'get_card':
-        if (!$dashboard->canViewCurrent() && !$embed) {
+        if (!$dashboard->canViewCurrent() && !$is_embed_request) {
             throw new AccessDeniedHttpException();
         }
 
@@ -236,7 +237,7 @@ switch ($_REQUEST['action']) {
     case 'get_cards':
         header("Content-Type: application/json; charset=UTF-8");
 
-        if (!$dashboard->canViewCurrent() && !$embed) {
+        if (!$dashboard->canViewCurrent() && !$is_embed_request) {
             throw new AccessDeniedHttpException();
         }
 
@@ -280,7 +281,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'get_dashboard_items':
-        if (!$dashboard->canViewCurrent() && !$embed) {
+        if (!$dashboard->canViewCurrent() && !$is_embed_request) {
             throw new AccessDeniedHttpException();
         }
 
