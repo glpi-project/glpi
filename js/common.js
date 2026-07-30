@@ -1797,6 +1797,14 @@ function setupAjaxDropdown(config) {
                     $('#' + field_id).append(newOption).trigger('change');
                 }
             });
+        })
+        .bind('appendValueToRestrict', function (e, value) {
+            if (!config.params._appended_entities) {
+                config.params._appended_entities = [];
+            }
+            if (!config.params._appended_entities.includes(parseInt(value))) {
+                config.params._appended_entities.push(parseInt(value));
+            }
         });
 
     if (config.on_change !== '') {

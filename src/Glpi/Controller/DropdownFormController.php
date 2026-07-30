@@ -101,7 +101,7 @@ class DropdownFormController extends AbstractController
                 if ($_SESSION['glpibackcreated']) {
                     $url = $dropdown->getLinkURL();
                     if ($in_modal) {
-                        $url .= "&_in_modal=1";
+                        $url .= "&_in_modal=1&_update_parent=1";
                     }
                     return new RedirectResponse($url);
                 }
@@ -193,6 +193,18 @@ class DropdownFormController extends AbstractController
                 true,
                 ...$dropdown->getSectorizedDetails()
             );
+
+            if ($request->query->has('_update_parent') && $id > 0) {
+                echo "<script>
+                    if (window.frameElement && window.frameElement.id.startsWith('iframeadd_')) {
+                        let field_id = window.frameElement.id.replace('iframeadd_', '');
+                        if (window.parent.$('#' + field_id).length) {
+                            window.parent.$('#' + field_id).trigger('appendValueToRestrict', $id);
+                        }
+                    }
+                </script>";
+            }
+
             $dropdown->showForm($id);
             Html::popFooter();
             $content = ob_get_clean();
