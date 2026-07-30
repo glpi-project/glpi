@@ -2898,6 +2898,17 @@ HTML;
                     $entities[] = (int) $value;
                 }
             }
+
+            // Allow client to dynamically append newly created entities without breaking IDOR token
+            if (isset($post['_appended_entities']) && is_array($post['_appended_entities'])) {
+                foreach ($post['_appended_entities'] as $value) {
+                    // Only allow appending if the user actually has access to this entity
+                    if (Session::haveAccessToEntity((int)$value)) {
+                        $entities[] = (int) $value;
+                    }
+                }
+            }
+
             $post["entity_restrict"] = Session::getMatchingActiveEntities($entities);
         }
 
