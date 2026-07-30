@@ -1638,7 +1638,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @param string $name  Task's name
      *
-     * @return array Array of information
+     * @return array{description?: string}
      **/
     public static function cronInfo($name)
     {
