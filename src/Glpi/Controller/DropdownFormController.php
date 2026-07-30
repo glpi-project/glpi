@@ -107,7 +107,11 @@ class DropdownFormController extends AbstractController
                 }
             }
 
-            return new RedirectResponse(Html::getBackUrl());
+            $url = Html::getBackUrl();
+            if ($in_modal) {
+                $url .= (strpos($url, '?') !== false ? '&' : '?') . '_update_parent=1&id=' . $newID;
+            }
+            return new RedirectResponse($url);
         }
 
         if (isset($input["purge"])) {
