@@ -95,6 +95,11 @@ abstract class AbstractTileRightsTest extends DbTestCase
             '_items_id_item' => $linked_profile->getID(),
         ];
         $this->assertTrue((new $tile_class())->can(-1, CREATE, $create_input));
+
+        // ...and TilesManager must confirm this user is allowed to add at
+        // least one tile type (this is what gates the "Add tile" button
+        // visibility).
+        $this->assertTrue(TilesManager::getInstance()->canAddTile());
     }
 
     /**
@@ -136,6 +141,10 @@ abstract class AbstractTileRightsTest extends DbTestCase
             '_items_id_item' => $linked_profile->getID(),
         ];
         $this->assertFalse((new $tile_class())->can(-1, CREATE, $create_input));
+
+        // ...and TilesManager must confirm this user is not allowed to add
+        // any tile type.
+        $this->assertFalse(TilesManager::getInstance()->canAddTile());
     }
 
     /**
