@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e1f33841a9705f65fbe07823ca326346",
+    "content-hash": "0d91b62ae298f8d15c999e9a82a4e5eb",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -4774,24 +4774,25 @@
         },
         {
             "name": "rlanvin/php-rrule",
-            "version": "v2.6.0",
+            "version": "v3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rlanvin/php-rrule.git",
-                "reference": "2a389a9fa67dda58bc5a569a3264555152db3c49"
+                "reference": "93a083db12dcb6f58e4840392a22e158ce96f1ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rlanvin/php-rrule/zipball/2a389a9fa67dda58bc5a569a3264555152db3c49",
-                "reference": "2a389a9fa67dda58bc5a569a3264555152db3c49",
+                "url": "https://api.github.com/repos/rlanvin/php-rrule/zipball/93a083db12dcb6f58e4840392a22e158ce96f1ff",
+                "reference": "93a083db12dcb6f58e4840392a22e158ce96f1ff",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6.0"
+                "php": ">=7.3"
             },
             "require-dev": {
+                "nesbot/carbon": "*",
                 "phpmd/phpmd": "@stable",
-                "phpunit/phpunit": "^5.7|^6.5|^8.0"
+                "phpunit/phpunit": "^9.0"
             },
             "suggest": {
                 "ext-intl": "Intl extension is needed for humanReadable()"
@@ -4817,9 +4818,9 @@
             ],
             "support": {
                 "issues": "https://github.com/rlanvin/php-rrule/issues",
-                "source": "https://github.com/rlanvin/php-rrule/tree/v2.6.0"
+                "source": "https://github.com/rlanvin/php-rrule/tree/v3.0.0"
             },
-            "time": "2025-04-25T07:40:09+00:00"
+            "time": "2026-07-29T06:25:26+00:00"
         },
         {
             "name": "robthree/twofactorauth",
