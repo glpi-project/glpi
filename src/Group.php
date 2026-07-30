@@ -989,4 +989,10 @@ class Group extends CommonTreeDropdown
             Session::loadGroups();
         }
     }
+
+    #[Override]
+    public static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
 }

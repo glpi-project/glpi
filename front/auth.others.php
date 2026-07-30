@@ -37,9 +37,8 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 global $CFG_GLPI;
 
-Session::checkRight("config", UPDATE);
-
 $config = new Config();
+$config->checkGlobal(UPDATE);
 
 //Update CAS configuration
 if (isset($_POST["update"])) {

@@ -49,6 +49,7 @@ use Glpi\System\Log\LogViewer;
 use Html;
 use Infocom;
 use ITILSolution;
+use Override;
 use RuntimeException;
 use Session;
 use Toolbox;
@@ -653,4 +654,12 @@ class Event extends CommonDBTM
     {
         return [ READ => __('Read')];
     }
+
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
+
 }

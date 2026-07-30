@@ -35,6 +35,7 @@ import { authenticator } from 'otplib';
 import { test } from '../../fixtures/glpi_fixture';
 import { LoginPage } from '../../pages/LoginPage';
 import { GlpiPage } from '../../pages/GlpiPage';
+import { ReAuthPromptPage } from '../../pages/ReAuthPromptPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerLogin } from '../../utils/WorkerEntities';
 
@@ -90,6 +91,11 @@ test.describe('Session', () => {
         await anonymousPage.goto('/front/preference.php?forcetab=Preference$0');
         const secret = await anonymousPage.getByRole('textbox', { name: '2FA secret' }).inputValue();
         await login_page.doFillTotpCode(authenticator.generate(secret));
+
+        // ReAuth required
+        const reauth_prompt = new ReAuthPromptPage(anonymousPage);
+        await reauth_prompt.doVerify('glpi');
+
         await expect(anonymousPage.getByRole('button', { name: 'Disable 2FA' })).toBeVisible();
 
         await login_page.doLogout();
