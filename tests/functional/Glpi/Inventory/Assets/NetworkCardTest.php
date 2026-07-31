@@ -1101,5 +1101,42 @@ class NetworkCardTest extends AbstractInventoryAsset
 
         $this->assertSame(1500, $networkport->fields['ifmtu']);
         $this->assertSame(258000000, $networkport->fields['ifspeed']);
+
+        // Test update of existing port (this was failing before we added ifmtu/ifspeed to $np_dyn_props)
+        $xml_source2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <NETWORKS>
+              <DESCRIPTION>Wi-Fi</DESCRIPTION>
+              <MACADDR>12:dd:31:e6:c3:d7</MACADDR>
+              <STATUS>up</STATUS>
+              <TYPE>wifi</TYPE>
+              <SPEED>300</SPEED>
+              <MTU>9000</MTU>
+            </NETWORKS>
+          </CONTENT>
+          <DEVICEID>foo-computer</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $data2 = $converter->convert($xml_source2);
+        $json2 = json_decode($data2);
+
+        $cardAsset2 = new \Glpi\Inventory\Asset\NetworkCard($computer, $json2->content->networks);
+        $cardAsset2->setExtraData((array) $json2->content);
+        $cardAsset2->checkConf($conf);
+        $cardAsset2->prepare();
+
+        $mainAsset2 = new \Glpi\Inventory\MainAsset\Computer($computer, []);
+        $mainAsset2->checkConf($conf);
+        $mainAsset2->addNetworkPorts($cardAsset2->getNetworkPorts());
+        $mainAsset2->handlePorts($computer::class, $computer_id);
+
+        $this->assertTrue(
+            $networkport->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer_id, 'instantiation_type' => 'NetworkPortWifi', 'mac' => '12:dd:31:e6:c3:d7'])
+        );
+
+        $this->assertSame(9000, $networkport->fields['ifmtu']);
+        $this->assertSame(300000000, $networkport->fields['ifspeed']);
     }
 }
