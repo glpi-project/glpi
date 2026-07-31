@@ -1078,18 +1078,18 @@ class NetworkCardTest extends AbstractInventoryAsset
         $computer_id = $computer->fields['id'];
         $this->assertGreaterThan(0, $computer_id);
 
-        $converter = new \Glpi\Inventory\Converter();
+        $converter = new Converter();
         $data = $converter->convert($xml_source);
         $json = json_decode($data);
 
-        $conf = new \Glpi\Inventory\Conf();
+        $conf = new Conf();
 
-        $cardAsset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
+        $cardAsset = new NetworkCard($computer, $json->content->networks);
         $cardAsset->setExtraData((array) $json->content);
         $cardAsset->checkConf($conf);
         $cardAsset->prepare();
 
-        $mainAsset = new \Glpi\Inventory\MainAsset\Computer($computer, []);
+        $mainAsset = new Computer($computer, []);
         $mainAsset->checkConf($conf);
         $mainAsset->addNetworkPorts($cardAsset->getNetworkPorts());
         $mainAsset->handlePorts($computer::class, $computer_id);
@@ -1122,12 +1122,12 @@ class NetworkCardTest extends AbstractInventoryAsset
         $data2 = $converter->convert($xml_source2);
         $json2 = json_decode($data2);
 
-        $cardAsset2 = new \Glpi\Inventory\Asset\NetworkCard($computer, $json2->content->networks);
+        $cardAsset2 = new NetworkCard($computer, $json2->content->networks);
         $cardAsset2->setExtraData((array) $json2->content);
         $cardAsset2->checkConf($conf);
         $cardAsset2->prepare();
 
-        $mainAsset2 = new \Glpi\Inventory\MainAsset\Computer($computer, []);
+        $mainAsset2 = new Computer($computer, []);
         $mainAsset2->checkConf($conf);
         $mainAsset2->addNetworkPorts($cardAsset2->getNetworkPorts());
         $mainAsset2->handlePorts($computer::class, $computer_id);
