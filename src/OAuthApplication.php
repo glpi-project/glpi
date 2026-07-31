@@ -179,17 +179,6 @@ final class OAuthApplication extends CommonDBTM
         ]);
     }
 
-    public function cleanDBonPurge(): void
-    {
-        global $DB;
-
-        $DB->update(
-            MailCollector::getTable(),
-            ['host' => '', 'is_active' => 0],
-            $this->linkedMailCollectorsWhere($this->getID())
-        );
-    }
-
     public function showForm($ID, array $options = []): bool
     {
         TemplateRenderer::getInstance()->display('pages/setup/oauthapplication.html.twig', [
