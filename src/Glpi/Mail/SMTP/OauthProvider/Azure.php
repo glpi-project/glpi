@@ -35,11 +35,29 @@
 
 namespace Glpi\Mail\SMTP\OauthProvider;
 
-final class Azure extends \TheNetworg\OAuth2\Client\Provider\Azure implements ProviderInterface
+use Glpi\Mail\OauthProvider\ImapOauthProviderTrait;
+use Glpi\Mail\OauthProvider\OwnerDetails;
+use Glpi\Mail\OauthProvider\ProviderInterface as ImapProviderInterface;
+use League\OAuth2\Client\Token\AccessToken;
+use OAuthAuthorization;
+use TheNetworg\OAuth2\Client\Provider\AzureResourceOwner;
+
+final class Azure extends \TheNetworg\OAuth2\Client\Provider\Azure implements ProviderInterface, ImapProviderInterface
 {
+    use ImapOauthProviderTrait;
+
+    /**
+     * Scopes requested for this instance.
+     */
+    private array $requestedScopes;
+
     public function __construct(array $options = [])
     {
-        $options['scopes'] = $this->getScopes();
+        $type = $options['type'] ?? OAuthAuthorization::TYPE_SMTP;
+        unset($options['type']);
+
+        $this->requestedScopes = $options['scopes'] ?? $this->getScopesForType($type);
+        unset($options['scopes']);
         $options['defaultEndPointVersion'] = self::ENDPOINT_VERSION_2_0;
 
         parent::__construct($options);
@@ -49,7 +67,7 @@ final class Azure extends \TheNetworg\OAuth2\Client\Provider\Azure implements Pr
     {
         $options = [
             'prompt' => 'login', // ensure user will have to specify the account to use
-            'scope'  => $this->getScopes(),
+            'scope'  => $this->requestedScopes,
         ];
 
         return parent::getAuthorizationUrl($options);
@@ -72,7 +90,12 @@ final class Azure extends \TheNetworg\OAuth2\Client\Provider\Azure implements Pr
         ];
     }
 
-    private function getScopes(): array
+    /**
+     * Default (SMTP-sending) scopes requested by this provider.
+     *
+     * @return array
+     */
+    public static function getSmtpDefaultScopes(): array
     {
         return [
             'openid', // required
@@ -80,5 +103,44 @@ final class Azure extends \TheNetworg\OAuth2\Client\Provider\Azure implements Pr
             'offline_access',
             'https://outlook.office.com/SMTP.Send',
         ];
+    }
+
+    public static function getImapDefaults(): array
+    {
+        return [
+            'host' => 'outlook.office365.com',
+            'port' => 993,
+            'ssl'  => 'SSL',
+        ];
+    }
+
+    public function getOwnerDetails(AccessToken $token): ?OwnerDetails
+    {
+        $owner = $this->getResourceOwner($token);
+        if (!$owner instanceof AzureResourceOwner) {
+            return null;
+        }
+
+        $owner_details = new OwnerDetails();
+        $owner_details->email     = $owner->getEmail() ?? $owner->getUpn() ?? '';
+        $owner_details->firstname = $owner->getFirstName() ?? '';
+        $owner_details->lastname  = $owner->getLastName() ?? '';
+
+        return $owner_details;
+    }
+
+    protected function getImapScopes(): array
+    {
+        return [
+            'openid',
+            'email',
+            'offline_access',
+            'https://outlook.office.com/IMAP.AccessAsUser.All',
+        ];
+    }
+
+    protected function getSmtpScopes(): array
+    {
+        return self::getSmtpDefaultScopes();
     }
 }
