@@ -307,7 +307,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                 $input['date_creation'] = 'NULL';
             }
 
-            if (empty($input['ttl'])) {
+            if (!isset($input['ttl']) || $input['ttl'] === '') {
                 $input['ttl'] = self::DEFAULT_TTL;
             }
         }
@@ -379,6 +379,13 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
             $this->fields['data_obj'] = 'NULL';
             $this->updates[]          = 'data_obj';
         }
+    }
+
+    public function post_getEmpty()
+    {
+        // Reflect the actual default applied on add, so the form does not
+        // display "0" for a value that will really be saved as DEFAULT_TTL.
+        $this->fields['ttl'] = self::DEFAULT_TTL;
     }
 
     public function showForm($ID, array $options = [])
