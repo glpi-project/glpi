@@ -72,7 +72,7 @@
                     <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
                 </button>
             {% endif %}
-            <a class="text-dark text-hover-link text-truncate flex-grow-1" href="{{ article.link }}">
+            <a class="text-dark text-hover-link text-truncate flex-grow-1" href="{{ article.link }}" draggable="false">
                 <span data-glpi-kb-article-illustration data-testid="kb-illustration">
                     {% if article.illustration %}
                         {{ render_illustration(article.illustration, 20) }}
@@ -110,7 +110,7 @@
  #}
 {% macro render_tree(articles, can_create = false, show_actions = false) %}
     {% import _self as macros %}
-    <ul class="kb-tree ps-0" data-testid="kb-aside-tree-list">
+    <ul class="kb-tree ps-0" data-testid="kb-aside-tree-list" aria-label="{{ __('All articles') }}">
         {{ macros.render_rows(articles, can_create, show_actions) }}
     </ul>
 {% endmacro %}

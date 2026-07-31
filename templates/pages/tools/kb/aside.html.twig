@@ -116,7 +116,7 @@
         <i class="ti ti-star-filled me-1 fs-5 text-yellow" aria-hidden="true"></i>
         {{ __("Favorites") }}
     </h4>
-        <ul class="kb-tree ps-0">
+        <ul class="kb-tree ps-0" aria-label="{{ __('Favorite articles') }}">
             {% for article in favorites %}
                 {% if article.is_current %}
                     {{ macros.render_article(
@@ -149,7 +149,12 @@
 {# Static import: evaluated before DOMContentLoaded, so the server-rendered toggles never predate their listeners. #}
 <script type="module">
     import { GlpiKnowbaseAsideController } from "/js/modules/Knowbase/AsideController.js";
+    import { GlpiKnowbaseAsideDragController } from "/js/modules/Knowbase/AsideDragController.js";
 
     const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
     new GlpiKnowbaseAsideController(aside);
+    {# Without the update right every move would be refused server-side. #}
+    {% if can_update %}
+        new GlpiKnowbaseAsideDragController(aside);
+    {% endif %}
 </script>

@@ -814,6 +814,111 @@ export class KnowbaseItemPage extends GlpiPage
         await this.asideSearchClearButton.click();
     }
 
+    public getAsideArticlesList(): Locator
+    {
+        return this.aside.getByRole('list', { name: 'All articles' });
+    }
+
+    /**
+     * Drags an article row onto another one. The move is driven with real
+     * mouse events because the controller listens to pointer events, not to
+     * the HTML5 drag and drop API.
+     */
+    public async doDragArticleOnto(
+        source_title: string,
+        target_title: string
+    ): Promise<void> {
+        await this.dragTo(
+            this.getAsideArticleTitleLink(source_title),
+            this.getAsideArticleTitleLink(target_title)
+        );
+    }
+
+    /**
+     * Drags an article to the root drop zone, i.e. inside the tree container
+     * but on no row. The rows tile the whole articles list, so its centre is
+     * never empty space: the drop must aim at the free area left below it.
+     */
+    public async doDragArticleToRoot(source_title: string): Promise<void>
+    {
+        await this.dragToPoint(this.getAsideArticleTitleLink(source_title), async () => {
+            // Scroll to the last link so the list's full-content bottom edge is on screen.
+            const list_locator = this.getAsideArticlesList();
+            await list_locator.getByRole('link').last().scrollIntoViewIfNeeded();
+            const list = await list_locator.boundingBox();
+            if (list === null) {
+                throw new Error('Cannot drag: the aside tree is not visible');
+            }
+
+            return { x: list.x + list.width / 2, y: list.y + list.height + 8 };
+        });
+    }
+
+    private async dragTo(source: Locator, target: Locator): Promise<void>
+    {
+        await this.dragToPoint(source, async () => {
+            await target.scrollIntoViewIfNeeded();
+            const to = await target.boundingBox();
+            if (to === null) {
+                throw new Error('Cannot drag: target is not visible');
+            }
+            return { x: to.x + to.width / 2, y: to.y + to.height / 2 };
+        });
+    }
+
+    // boundingBox() never scrolls, so callers scroll into view first;
+    // the destination is resolved last since grabbing the source can move it.
+    private async dragToPoint(
+        source: Locator,
+        resolveTo: () => Promise<{ x: number, y: number }>
+    ): Promise<void> {
+        await source.scrollIntoViewIfNeeded();
+        const from = await source.boundingBox();
+        if (from === null) {
+            throw new Error('Cannot drag: source is not visible');
+        }
+
+        await this.page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
+        await this.page.mouse.down();
+        // Two moves: the first crosses the 5px arming threshold, the second
+        // settles on the target so the drop zone is resolved.
+        await this.page.mouse.move(from.x + from.width / 2 + 20, from.y + from.height / 2);
+        const to = await resolveTo();
+        await this.page.mouse.move(to.x, to.y, { steps: 10 });
+        await this.page.mouse.up();
+    }
+
+    /**
+     * Drags the occurrence of an article that sits under a given parent, as
+     * opposed to any of its other occurrences elsewhere in the tree.
+     */
+    public async dragOccurrenceOnto(
+        parent_title: string,
+        source_title: string,
+        target_title: string
+    ): Promise<void> {
+        await this.dragTo(
+            this.getAsideCategoryArticle(parent_title, source_title),
+            this.getAsideArticleTitleLink(target_title)
+        );
+    }
+
+    /**
+     * Drags an (unambiguous) article onto the specific occurrence of another
+     * article that sits under a given parent, as opposed to any of that
+     * other article's occurrences elsewhere in the tree.
+     */
+    public async dragOntoOccurrence(
+        source_title: string,
+        target_parent_title: string,
+        target_title: string
+    ): Promise<void> {
+        await this.dragTo(
+            this.getAsideArticleTitleLink(source_title),
+            this.getAsideCategoryArticle(target_parent_title, target_title)
+        );
+    }
+
     /**
      * The search results list, which stands in for the tree while a search is
      * active.
