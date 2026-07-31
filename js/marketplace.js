@@ -82,6 +82,28 @@ $(document).ready(function() {
                         if (version_span.length > 0) {
                             version_span.html(`<i class="ti ti-git-branch"></i> ${new_version}`);
                         }
+
+                        var main_div = li.find('.main');
+                        if (main_div.hasClass('bg-warning-subtle')) {
+                            main_div.removeClass('bg-warning-subtle');
+
+                            var alert_div = $('.marketplace .alert-important.alert-warning');
+                            if (alert_div.length > 0) {
+                                var text_div = alert_div.children('div');
+                                var text = text_div.text();
+                                var matches = text.match(/\d+/);
+                                if (matches && matches.length > 0) {
+                                    var count = parseInt(matches[0], 10);
+                                    if (count > 1) {
+                                        text_div.text(text.replace(count, count - 1));
+                                    } else {
+                                        alert_div.remove();
+                                    }
+                                } else {
+                                    alert_div.remove();
+                                }
+                            }
+                        }
                     }
 
                     displayAjaxMessageAfterRedirect();
