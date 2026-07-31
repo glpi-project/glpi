@@ -3411,6 +3411,7 @@ TWIG, $twig_params);
                 'current_is_favorite' => $current_is_favorite,
                 'has_other_favorites' => $has_other_favorites,
                 'can_create'          => self::canCreate(),
+                'can_update'          => self::canUpdate(),
                 'show_actions'        => $show_actions,
             ]
         );

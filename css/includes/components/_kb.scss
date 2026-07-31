@@ -1418,7 +1418,9 @@ body.in_modal .kb-article {
 
             // visibility (not opacity) keeps the closed overlay out of the tab order.
             visibility: hidden;
-            transition: transform 0.3s ease, visibility 0.3s ease;
+            transition:
+                transform 0.3s ease,
+                visibility 0.3s ease;
             overflow-y: auto;
             z-index: 1045;
         }
@@ -1440,5 +1442,46 @@ body.in_modal .kb-article {
 @media (prefers-reduced-motion: reduce) {
     [data-main-page-aside="knowbaseitem"] [data-glpi-kb-aside-body] {
         transition: none;
+    }
+}
+
+// KB aside: drag and drop reparenting.
+.kb-drag-ghost {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1080;
+    max-width: 240px;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--tblr-border-radius);
+    background: var(--tblr-bg-surface);
+    box-shadow: var(--tblr-box-shadow);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+}
+
+body.kb-drag-active {
+    cursor: grabbing;
+    user-select: none;
+}
+
+[data-glpi-kb-aside-tree] {
+    [data-glpi-kb-drag-source] > .article-line {
+        opacity: 0.4;
+    }
+
+    [data-glpi-kb-drop-target] > .article-line {
+        outline: 2px solid var(--tblr-primary);
+        outline-offset: 2px;
+        border-radius: var(--tblr-border-radius);
+    }
+
+    ul.kb-tree[data-glpi-kb-drop-target] {
+        outline: 2px dashed var(--tblr-primary);
+        outline-offset: 4px;
+        border-radius: var(--tblr-border-radius);
     }
 }
