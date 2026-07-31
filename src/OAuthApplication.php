@@ -230,8 +230,8 @@ final class OAuthApplication extends CommonDBTM
             return false;
         }
 
-        if (($input['provider'] ?? null) === self::GOOGLE && !empty($input['tenant_id'])) {
-            unset($input['tenant_id']);
+        if (($input['provider'] ?? null) === self::GOOGLE) {
+            $input['tenant_id'] = '';
         }
 
         return $input;
