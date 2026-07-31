@@ -356,7 +356,7 @@ trait InventoryNetworkPort
         $db_ports = [];
         $networkport = new NetworkPort();
 
-        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias', 'is_dynamic'];
+        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias', 'is_dynamic', 'ifmtu', 'ifspeed'];
         $iterator = $DB->request([
             'SELECT' => array_merge(['id', 'name', 'mac', 'instantiation_type'], $np_dyn_props),
             'FROM'   => 'glpi_networkports',
