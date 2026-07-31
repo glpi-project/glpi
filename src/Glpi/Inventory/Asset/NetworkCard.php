@@ -213,12 +213,6 @@ class NetworkCard extends Device
                             $this->ports[$portkey]->ipaddress[] = $val_port->ipaddress6;
                         }
                     }
-                    if (
-                        !property_exists($val_port, 'speed')
-                        || $val_port->speed == ''
-                    ) {
-                        $val_port->speed = 0;
-                    }
                 } else {
                     if (property_exists($val_port, 'ip')) {
                         if ($val_port->ip != '') {
