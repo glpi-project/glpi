@@ -1,0 +1,234 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace tests\units\Glpi\Controller\Knowbase;
+
+use Glpi\Controller\Knowbase\MoveArticleController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Tests\DbTestCase;
+use KnowbaseItem;
+use KnowbaseItem_KnowbaseItem;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+use function Safe\json_encode;
+
+class MoveArticleControllerTest extends DbTestCase
+{
+    private function callController(int $id, int $from_parent_id, int $to_parent_id): Response
+    {
+        $request = Request::create(
+            '/Knowbase/Aside/Article/' . $id . '/Move',
+            'POST',
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: json_encode([
+                'from_parent_id' => $from_parent_id,
+                'to_parent_id'   => $to_parent_id,
+            ]),
+        );
+        return (new MoveArticleController())->__invoke($id, $request);
+    }
+
+    /** @param int[] $parents */
+    private function makeArticle(array $parents = []): int
+    {
+        return $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Move ' . $this->getUniqueString(),
+            'answer'   => '<p>x</p>',
+            '_parents' => $parents,
+        ])->getID();
+    }
+
+    private function countLink(int $child_id, int $parent_id): int
+    {
+        return (int) countElementsInTable(KnowbaseItem_KnowbaseItem::getTable(), [
+            'knowbaseitems_id'        => $child_id,
+            'knowbaseitems_id_parent' => $parent_id,
+        ]);
+    }
+
+    public function testMoveDetachesSourceAndAttachesTarget(): void
+    {
+        $this->login();
+        $parent_a = $this->makeArticle();
+        $parent_b = $this->makeArticle();
+        $child    = $this->makeArticle([$parent_a]);
+
+        $this->callController($child, $parent_a, $parent_b);
+
+        $this->assertSame(0, $this->countLink($child, $parent_a));
+        $this->assertSame(1, $this->countLink($child, $parent_b));
+    }
+
+    public function testMoveLeavesOtherParentsUntouched(): void
+    {
+        $this->login();
+        $parent_a = $this->makeArticle();
+        $parent_b = $this->makeArticle();
+        $parent_c = $this->makeArticle();
+        $child    = $this->makeArticle([$parent_a, $parent_b]);
+
+        $this->callController($child, $parent_a, $parent_c);
+
+        $this->assertSame(0, $this->countLink($child, $parent_a));
+        $this->assertSame(1, $this->countLink($child, $parent_b));
+        $this->assertSame(1, $this->countLink($child, $parent_c));
+    }
+
+    public function testMoveToRootOnlyRemovesTheGrabbedEdge(): void
+    {
+        $this->login();
+        $parent_a = $this->makeArticle();
+        $child    = $this->makeArticle([$parent_a]);
+
+        $this->callController($child, $parent_a, 0);
+
+        $this->assertSame(0, $this->countLink($child, $parent_a));
+    }
+
+    public function testMoveFromRootOnlyCreatesTheTargetEdge(): void
+    {
+        $this->login();
+        $parent_a = $this->makeArticle();
+        $child    = $this->makeArticle();
+
+        $this->callController($child, 0, $parent_a);
+
+        $this->assertSame(1, $this->countLink($child, $parent_a));
+    }
+
+    public function testDroppingOnAnExistingParentMergesOccurrences(): void
+    {
+        $this->login();
+        $parent_a = $this->makeArticle();
+        $parent_b = $this->makeArticle();
+        $child    = $this->makeArticle([$parent_a, $parent_b]);
+
+        // Target edge already exists: the unicity constraint must not surface.
+        $response = $this->callController($child, $parent_a, $parent_b);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(0, $this->countLink($child, $parent_a));
+        $this->assertSame(1, $this->countLink($child, $parent_b));
+    }
+
+    public function testCycleIsRejectedAndSourceEdgeIsKept(): void
+    {
+        $this->login();
+        $grand_parent = $this->makeArticle();
+        $parent       = $this->makeArticle([$grand_parent]);
+        $child        = $this->makeArticle([$parent]);
+
+        try {
+            $this->callController($grand_parent, 0, $child);
+        } catch (BadRequestHttpException) {
+            // Expected: the model refuses a link that would create a cycle.
+        }
+
+        $this->assertSame(0, $this->countLink($grand_parent, $child));
+        $this->assertSame(1, $this->countLink($parent, $grand_parent));
+    }
+
+    public function testSelfParentingIsRejected(): void
+    {
+        $this->login();
+        $article = $this->makeArticle();
+
+        $this->expectException(BadRequestHttpException::class);
+        $this->callController($article, 0, $article);
+    }
+
+    public function testMoveIsDeniedWithoutUpdateRightOnTheArticle(): void
+    {
+        $this->login();
+        $parent_a = $this->makeArticle();
+        $child    = $this->makeArticle([$parent_a]);
+
+        // Drop the knowbase UPDATE right, keeping READ so the article loads.
+        $this->setEntity('_test_root_entity', true);
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ;
+
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->callController($child, $parent_a, 0);
+    }
+
+    public function testMoveOntoAnUnreadableTargetIsDenied(): void
+    {
+        $this->login();
+        $child = $this->makeArticle();
+
+        // A target id that does not resolve must not be a valid drop destination.
+        $this->expectException(NotFoundHttpException::class);
+        $this->callController($child, 0, 999999999);
+    }
+
+    public function testMoveAcrossIncoherentEntitiesIsRejected(): void
+    {
+        $this->login();
+        $entity_a = getItemByTypeName('Entity', '_test_child_1', true);
+        $entity_b = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Move ' . $this->getUniqueString(),
+            'answer'      => '<p>x</p>',
+            'entities_id' => $entity_a,
+        ])->getID();
+        $target = $this->createItem(KnowbaseItem::class, [
+            'name'        => 'Move ' . $this->getUniqueString(),
+            'answer'      => '<p>x</p>',
+            'entities_id' => $entity_b,
+        ])->getID();
+
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->callController($child, 0, $target);
+    }
+
+    public function testMissingPayloadKeysAreRejected(): void
+    {
+        $this->login();
+        $article = $this->makeArticle();
+
+        $request = Request::create(
+            '/Knowbase/Aside/Article/' . $article . '/Move',
+            'POST',
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: json_encode([]),
+        );
+
+        $this->expectException(BadRequestHttpException::class);
+        (new MoveArticleController())->__invoke($article, $request);
+    }
+}
