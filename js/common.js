@@ -1244,6 +1244,7 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
                             resolved_params[k] = v;
                         }
                     });
+                    try { $(target).find('.select2-hidden-accessible').select2('destroy'); } catch(e) {}
                     $(target).load(url, resolved_params);
                 };
                 if (conditional && (min_size_condition || force_load_condition)) {
