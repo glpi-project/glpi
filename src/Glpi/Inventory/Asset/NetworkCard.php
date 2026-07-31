@@ -71,9 +71,7 @@ class NetworkCard extends Device
             'ipdhcp'      => 'dhcpserver',
             'wwn'         => 'wwn',
             'speed'       => 'speed',
-            'ifspeed'     => 'ifspeed',
             'mtu'         => 'ifmtu',
-            'ifmtu'       => 'ifmtu',
             'ifinbytes'   => 'ifinbytes',
             'ifoutbytes'  => 'ifoutbytes',
             'ifinerrors'  => 'ifinerrors',
@@ -214,6 +212,17 @@ class NetworkCard extends Device
                         if (!in_array($val_port->ipaddress6, $this->ports[$portkey]->ipaddress)) {
                             $this->ports[$portkey]->ipaddress[] = $val_port->ipaddress6;
                         }
+                    }
+                    if (
+                        !property_exists($val_port, 'speed')
+                        || $val_port->speed == ''
+                    ) {
+                        $val_port->speed = 0;
+                    }
+
+                    // Populate ifspeed (bps) from speed (Mbps) for standard SNMP UI compatibility
+                    if (!property_exists($val_port, 'ifspeed') && $val_port->speed > 0) {
+                        $val_port->ifspeed = $val_port->speed * 1000000;
                     }
                 } else {
                     if (property_exists($val_port, 'ip')) {
