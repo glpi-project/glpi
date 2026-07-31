@@ -75,6 +75,15 @@ $(document).ready(function() {
                 } else {
                     html = html.replace('cleaned', '');
                     buttons.html(html);
+
+                    var new_version = buttons.find('.new-version').data('new-version');
+                    if (new_version) {
+                        var version_span = li.find('.misc-right .version');
+                        if (version_span.length > 0) {
+                            version_span.html('<i class="ti ti-git-branch"></i> ' + new_version);
+                        }
+                    }
+
                     displayAjaxMessageAfterRedirect();
                     addTooltips();
                 }
