@@ -74,4 +74,25 @@ class DomainRecordTest extends DbTestCase
         $this->assertFalse($record->prepareInputForUpdate(['domains_id' => '']));
         $this->hasSessionMessages(ERROR, ['A domain is required']);
     }
+
+    public function testPrepareInputTtl()
+    {
+        $this->login();
+        $record = new DomainRecord();
+
+        // Explicit ttl = 0 on add must be kept as-is, not coerced to the default.
+        $input = $record->prepareInputForAdd(['domains_id' => 1, 'ttl' => 0]);
+        $this->assertSame(0, $input['ttl']);
+
+        // Missing/empty ttl on add falls back to the default.
+        $input = $record->prepareInputForAdd(['domains_id' => 1]);
+        $this->assertSame(DomainRecord::DEFAULT_TTL, $input['ttl']);
+
+        $input = $record->prepareInputForAdd(['domains_id' => 1, 'ttl' => '']);
+        $this->assertSame(DomainRecord::DEFAULT_TTL, $input['ttl']);
+
+        // A fresh (empty) item should reflect the real default ttl, not 0.
+        $record->getEmpty();
+        $this->assertSame(DomainRecord::DEFAULT_TTL, $record->fields['ttl']);
+    }
 }
