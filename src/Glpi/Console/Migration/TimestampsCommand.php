@@ -41,6 +41,7 @@ use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\Requirement\DbTimezones;
+use LogicException;
 use Safe\DateTime;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -273,7 +274,7 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
         string $condition_description
     ): void {
         if ($this->db === null) {
-            return;
+            throw new LogicException(); // To make PHPStan happy
         }
         $this->db->update(
             $table,
