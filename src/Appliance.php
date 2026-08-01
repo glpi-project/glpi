@@ -185,6 +185,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
             'field'         => 'name',
             'name'          => User::getTypeName(1),
             'datatype'      => 'dropdown',
+            'right'    => 'all',
         ];
 
         $tab[] = [
