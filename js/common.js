@@ -1814,8 +1814,8 @@ function setupAjaxDropdown(config) {
 
     $('#' + field_id).on('select2:selecting', function (e) {
         if (e.params && e.params.args && e.params.args.data) {
-            var data = e.params.args.data;
-            var option = this.querySelector(`option[value="${CSS.escape(String(data.id))}"]`);
+            const data = e.params.args.data;
+            const option = this.querySelector(`option[value="${CSS.escape(String(data.id))}"]`);
             if (option) {
                 option.text = data.text;
             }
