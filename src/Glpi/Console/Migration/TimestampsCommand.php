@@ -40,11 +40,16 @@ use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Exception\EarlyExitException;
+use Glpi\DBAL\QueryExpression;
 use Glpi\System\Requirement\DbTimezones;
 use LogicException;
 use Safe\DateTime;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Throwable;
 
 use function Safe\preg_match;
 
@@ -56,9 +61,14 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
     private const TIMESTAMP_MIN_VALUE = '1970-01-01 00:00:01';
 
     /**
-     * Maximum value supported by MySQL/MariaDB TIMESTAMP type, in UTC.
+     * Maximum value supported by the standard MariaDB (32-bit)/MySQL TIMESTAMP type, in UTC.
      */
     private const TIMESTAMP_MAX_VALUE = '2038-01-19 03:14:07';
+
+    /**
+     * Maximum value supported by the extended (64-bit) MariaDB 11.5+ TIMESTAMP type, in UTC.
+     */
+    private const TIMESTAMP_MAX_VALUE_EXTENDED = '2106-02-07 06:28:15';
 
     /**
      * Error code returned when failed to migrate one table.
@@ -74,12 +84,32 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
      */
     public const ERROR_UNABLE_TO_UPDATE_CONFIG = 2;
 
+    /**
+     * Error code returned when future dates beyond the server TIMESTAMP range are detected
+     * and explicit consent to clamp them was not given.
+     *
+     * @var int
+     */
+    public const ERROR_FUTURE_DATES_REQUIRE_CONSENT = 3;
+
+    /**
+     * Cached server TIMESTAMP upper bound (resolved once per execution).
+     * Null until resolved by {@link getTimestampMaxValue()}.
+     */
+    private ?string $timestamp_max_value = null;
+
     protected function configure()
     {
         parent::configure();
 
         $this->setName('migration:timestamps');
         $this->setDescription(__('Convert "datetime" fields to "timestamp" to use timezones.'));
+        $this->addOption(
+            'allow-future-date-clamping',
+            null,
+            InputOption::VALUE_NONE,
+            __('Authorize clamping of future dates beyond the server TIMESTAMP range without prompting.')
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -109,6 +139,8 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
                 $tables[] = $table_data['TABLE_NAME'];
             }
             sort($tables);
+
+            $this->confirmFutureDateClamping($tables);
 
             $progress_message = (fn(string $table) => sprintf(__('Migrating table "%s"...'), $table));
 
@@ -156,9 +188,9 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
                         } elseif ($column['COLUMN_DEFAULT'] < self::TIMESTAMP_MIN_VALUE) {
                             // Prevent default value to be out of range (lower to min possible value)
                             $default = $this->db->quoteValue($this->getTimestampBoundValue(self::TIMESTAMP_MIN_VALUE));
-                        } elseif ($column['COLUMN_DEFAULT'] > self::TIMESTAMP_MAX_VALUE) {
+                        } elseif ($column['COLUMN_DEFAULT'] > $this->getTimestampMaxValue()) {
                             // Prevent default value to be out of range (greater to max possible value)
-                            $default = $this->db->quoteValue($this->getTimestampBoundValue(self::TIMESTAMP_MAX_VALUE));
+                            $default = $this->db->quoteValue($this->getTimestampBoundValue($this->getTimestampMaxValue()));
                         } else {
                             $default = $this->db->quoteValue($column['COLUMN_DEFAULT']);
                         }
@@ -244,7 +276,7 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
     private function normalizeOutOfRangeValues(string $table, string $column, bool $nullable): void
     {
         $min_value = $this->getTimestampBoundValue(self::TIMESTAMP_MIN_VALUE);
-        $max_value = $this->getTimestampBoundValue(self::TIMESTAMP_MAX_VALUE);
+        $max_value = $this->getTimestampBoundValue($this->getTimestampMaxValue());
 
         $this->updateOutOfRangeValues(
             $table,
@@ -310,6 +342,146 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
         $date->setTimezone(new DateTimeZone(date_default_timezone_get()));
 
         return $date->format('Y-m-d H:i:s');
+    }
+
+    /**
+     * Resolve the server's TIMESTAMP upper bound, in UTC.
+     *
+     * Uses a behavioral probe: attempts to CAST the extended (64-bit MariaDB 11.5+) max
+     * value to TIMESTAMP. If the server accepts it, the extended range is supported;
+     * otherwise falls back to the standard 32-bit limit. The result is cached for the
+     * command lifetime.
+     */
+    private function getTimestampMaxValue(): string
+    {
+        if ($this->timestamp_max_value !== null) {
+            return $this->timestamp_max_value;
+        }
+
+        $extended = false;
+        try {
+            $iterator = $this->db->request([
+                'SELECT' => new QueryExpression(
+                    sprintf("CAST('%s' AS TIMESTAMP) AS probe", self::TIMESTAMP_MAX_VALUE_EXTENDED)
+                ),
+            ]);
+            foreach ($iterator as $row) {
+                $extended = isset($row['probe']) && $row['probe'] === self::TIMESTAMP_MAX_VALUE_EXTENDED;
+                break;
+            }
+        } catch (Throwable $e) {
+            $extended = false;
+        }
+
+        $this->timestamp_max_value = $extended
+            ? self::TIMESTAMP_MAX_VALUE_EXTENDED
+            : self::TIMESTAMP_MAX_VALUE;
+
+        return $this->timestamp_max_value;
+    }
+
+    /**
+     * Pre-scan the tables to migrate for datetime values beyond the server's TIMESTAMP
+     * upper bound and ask for explicit consent before clamping them.
+     *
+     * Pre-1970 dates are considered genuinely invalid and are clamped silently during
+     * migration; only future dates beyond the server max require consent.
+     *
+     * @param list<string> $tables
+     */
+    private function confirmFutureDateClamping(array $tables): void
+    {
+        $max_value = $this->getTimestampBoundValue($this->getTimestampMaxValue());
+
+        $affected = [];
+        $total_rows = 0;
+
+        foreach ($tables as $table) {
+            $col_iterator = $this->db->request([
+                'SELECT' => ['column_name AS COLUMN_NAME'],
+                'FROM'   => 'information_schema.columns',
+                'WHERE'  => [
+                    'table_schema' => $this->db->dbdefault,
+                    'table_name'   => $table,
+                    'data_type'    => 'datetime',
+                ],
+            ]);
+
+            foreach ($col_iterator as $column) {
+                $column_name = $column['COLUMN_NAME'];
+                $count_iterator = $this->db->request([
+                    'COUNT'  => 'cpt',
+                    'FROM'   => $table,
+                    'WHERE'  => [
+                        ['NOT' => [$column_name => null]],
+                        [$column_name => ['>', $max_value]],
+                    ],
+                ]);
+                $count = (int) ($count_iterator->current()['cpt'] ?? 0);
+                if ($count > 0) {
+                    $affected[] = ['table' => $table, 'column' => $column_name, 'rows' => $count];
+                    $total_rows += $count;
+                }
+            }
+        }
+
+        if ($total_rows === 0) {
+            return;
+        }
+
+        $this->output->writeln(
+            '<comment>' . sprintf(
+                __('%1$s row(s) with future dates beyond the server TIMESTAMP limit (%2$s) were detected and will be clamped to that limit, destroying the original values:'),
+                $total_rows,
+                $max_value
+            ) . '</comment>',
+            OutputInterface::VERBOSITY_QUIET
+        );
+        foreach ($affected as $item) {
+            $this->output->writeln(
+                '<comment>' . sprintf(
+                    __('- "%1$s"."%2$s": %3$s row(s)'),
+                    $item['table'],
+                    $item['column'],
+                    $item['rows']
+                ) . '</comment>',
+                OutputInterface::VERBOSITY_QUIET
+            );
+        }
+
+        if ($this->input->getOption('allow-future-date-clamping')) {
+            return;
+        }
+
+        if (!$this->input->getOption('no-interaction')) {
+            $question_helper = new QuestionHelper();
+            $confirmed = $question_helper->ask(
+                $this->input,
+                $this->output,
+                new ConfirmationQuestion(
+                    sprintf(
+                        __('Continue and clamp these future dates to "%s"? [yes/No]'),
+                        $max_value
+                    ),
+                    false
+                )
+            );
+            if (!$confirmed) {
+                throw new EarlyExitException(
+                    '<comment>' . __('Aborted.') . '</comment>',
+                    0
+                );
+            }
+            return;
+        }
+
+        throw new EarlyExitException(
+            '<error>' . sprintf(
+                __('Future dates beyond the server TIMESTAMP range were detected. Either fix them, run the command interactively, or pass the "%1$s" option to authorize clamping.'),
+                '--allow-future-date-clamping'
+            ) . '</error>',
+            self::ERROR_FUTURE_DATES_REQUIRE_CONSENT
+        );
     }
 
     public function getConfigurationFilesToUpdate(InputInterface $input): array

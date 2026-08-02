@@ -78,12 +78,16 @@ SQL,
 
             $rows = $this->fetchRows();
 
+            $max_value = $this->getServerTimestampMaxValue();
+
             $this->assertSame(null, $rows[1]['nullable_date']);
             $this->assertSame('2020-01-01 00:00:00', $rows[1]['required_date']);
             $this->assertSame(null, $rows[2]['nullable_date']);
             $this->assertSame('1970-01-01 00:00:01', $rows[2]['required_date']);
-            $this->assertSame('2038-01-19 03:14:07', $rows[3]['nullable_date']);
-            $this->assertSame('2038-01-19 03:14:07', $rows[3]['required_date']);
+            // 2050 is within the extended (2106) range on 64-bit MariaDB 11.5+ and is preserved;
+            // on standard (32-bit / MySQL) servers it is clamped to the 2038 max.
+            $this->assertSame($max_value === '2038-01-19 03:14:07' ? '2038-01-19 03:14:07' : '2050-01-01 00:00:00', $rows[3]['nullable_date']);
+            $this->assertSame($max_value === '2038-01-19 03:14:07' ? '2038-01-19 03:14:07' : '2050-01-01 00:00:00', $rows[3]['required_date']);
 
             $display = $output->fetch();
             $this->assertStringContainsString(
@@ -95,7 +99,9 @@ SQL,
                 $display
             );
             $this->assertStringContainsString('updated to "NULL"', $display);
-            $this->assertStringContainsString('updated to "2038-01-19 03:14:07"', $display);
+            if ($max_value === '2038-01-19 03:14:07') {
+                $this->assertStringContainsString('updated to "2038-01-19 03:14:07"', $display);
+            }
         } finally {
             date_default_timezone_set($original_timezone);
         }
@@ -131,10 +137,46 @@ SQL,
 
             $rows = $this->fetchRows();
 
-            $this->assertSame('2038-01-19 03:14:07', $rows[1]['nullable_date']);
-            $this->assertSame('2038-01-19 03:14:07', $rows[1]['required_date']);
+            $max_value = $this->getServerTimestampMaxValue();
+
+            // 2050 is within the extended (2106) range on 64-bit MariaDB 11.5+ and is preserved;
+            // on standard (32-bit / MySQL) servers it is clamped to the 2038 max.
+            $expected = $max_value === '2038-01-19 03:14:07' ? '2038-01-19 03:14:07' : '2050-01-01 00:00:00';
+            $this->assertSame($expected, $rows[1]['nullable_date']);
+            $this->assertSame($expected, $rows[1]['required_date']);
             $this->assertNotSame('0000-00-00 00:00:00', $rows[1]['nullable_date']);
             $this->assertNotSame('0000-00-00 00:00:00', $rows[1]['required_date']);
+        } finally {
+            date_default_timezone_set($original_timezone);
+        }
+    }
+
+    public function testNormalizeOutOfRangeValuesClampsDatesBeyondExtendedRange(): void
+    {
+        $original_timezone = date_default_timezone_get();
+
+        try {
+            date_default_timezone_set('UTC');
+            $this->getDbHandle()->query("SET SESSION time_zone = '+00:00'");
+            $this->createTestTable();
+
+            // 2200-01-01 is beyond even the extended (2106) range and must always be clamped.
+            $this->getDbHandle()->query(
+                sprintf(
+                    "INSERT INTO `%s` (`id`, `nullable_date`, `required_date`) VALUES (1, '2200-01-01 00:00:00', '2200-01-01 00:00:00')",
+                    self::TABLE
+                )
+            );
+
+            $command = $this->getCommand(new BufferedOutput());
+
+            $this->callPrivateMethod($command, 'normalizeOutOfRangeValues', self::TABLE, 'nullable_date', true);
+            $this->callPrivateMethod($command, 'normalizeOutOfRangeValues', self::TABLE, 'required_date', false);
+
+            $rows = $this->fetchRows();
+
+            $this->assertSame($this->getServerTimestampMaxValue(), $rows[1]['nullable_date']);
+            $this->assertSame($this->getServerTimestampMaxValue(), $rows[1]['required_date']);
         } finally {
             date_default_timezone_set($original_timezone);
         }
@@ -195,6 +237,30 @@ SQL,
         $this->setPrivateProperty($command, 'output', $output);
 
         return $command;
+    }
+
+    /**
+     * Probe the actual server TIMESTAMP upper bound using the same behavioral
+     * detection as the command, so tests pass on both standard (2038) and
+     * extended (2106, 64-bit MariaDB 11.5+) servers.
+     */
+    private function getServerTimestampMaxValue(): string
+    {
+        global $DB;
+
+        try {
+            $result = $DB->request([
+                'SELECT' => new \Glpi\DBAL\QueryExpression("CAST('2106-02-07 06:28:15' AS TIMESTAMP) AS probe"),
+            ]);
+            $row = $result->current();
+            if (isset($row['probe']) && $row['probe'] === '2106-02-07 06:28:15') {
+                return '2106-02-07 06:28:15';
+            }
+        } catch (\Throwable $e) {
+            // extended range not supported
+        }
+
+        return '2038-01-19 03:14:07';
     }
 
     private function fetchRows(): array
