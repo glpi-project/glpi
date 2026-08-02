@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Console\Migration;
 
 use Glpi\Console\Migration\TimestampsCommand;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\GLPITestCase;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -250,7 +251,7 @@ SQL,
 
         try {
             $result = $DB->request([
-                'SELECT' => new \Glpi\DBAL\QueryExpression("CAST('2106-02-07 06:28:15' AS TIMESTAMP) AS probe"),
+                'SELECT' => new QueryExpression("CAST('2106-02-07 06:28:15' AS TIMESTAMP) AS probe"),
             ]);
             $row = $result->current();
             if (isset($row['probe']) && $row['probe'] === '2106-02-07 06:28:15') {

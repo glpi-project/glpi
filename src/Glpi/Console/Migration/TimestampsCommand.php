@@ -358,6 +358,10 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
             return $this->timestamp_max_value;
         }
 
+        if ($this->db === null) {
+            throw new LogicException(); // To make PHPStan happy
+        }
+
         $extended = false;
         try {
             $iterator = $this->db->request([
@@ -391,6 +395,10 @@ class TimestampsCommand extends AbstractCommand implements ConfigurationCommandI
      */
     private function confirmFutureDateClamping(array $tables): void
     {
+        if ($this->db === null) {
+            throw new LogicException(); // To make PHPStan happy
+        }
+
         $max_value = $this->getTimestampBoundValue($this->getTimestampMaxValue());
 
         $affected = [];
