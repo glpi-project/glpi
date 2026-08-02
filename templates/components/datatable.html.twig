@@ -158,7 +158,7 @@
                             <th scope="col" style="width: 30px;">
                                 <div>
                                     <input class="form-check-input massive_action_checkbox" type="checkbox" id="checkall_{{ massiveactionparams['container'] }}"
-                                        autocomplete="off" value="" aria-label="{{ __('Check all') }}"
+                                        value="" aria-label="{{ __('Check all') }}"
                                         onclick="checkAsCheckboxes(this, '{{ massiveactionparams['container']|e('js') }}', '.massive_action_checkbox');" />
                                 </div>
                             </th>
@@ -293,7 +293,7 @@
                                 <td style="width: 10px">
                                     {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
                                         <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
-                                               autocomplete="off" value="1" aria-label="{{ __("Select item") }}"
+                                               value="1" aria-label="{{ __("Select item") }}"
                                                name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
                                     {% endif %}
                                 </td>

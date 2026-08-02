@@ -2112,7 +2112,7 @@ TWIG,
             $rand = (int) $rand;
         }
 
-        $out  = "<input title='" . __s('Check all as') . "' type='checkbox' autocomplete='off' class='form-check-input massive_action_checkbox'
+        $out  = "<input title='" . __s('Check all as') . "' type='checkbox' class='form-check-input massive_action_checkbox'
                       title='" . __s('Check all as') . "'
                       name='_checkall_$rand' id='checkall_$rand'
                       onclick= \"if ( checkAsCheckboxes(this, '" . htmlescape(jsescape($container_id)) . "', '.massive_action_checkbox')) {return true;}\">";
@@ -2228,8 +2228,7 @@ TWIG,
             $out .= '<input type="hidden" name="' . htmlescape($params['name']) . '" value="0" />';
         }
 
-        $autocomplete = str_contains($params['class'], 'massive_action_checkbox') ? " autocomplete='off'" : "";
-        $out .= "<input type='checkbox' class='form-check-input " . htmlescape($params['class']) . "' title=\"" . htmlescape($params['title']) . "\"{$autocomplete} ";
+        $out .= "<input type='checkbox' class='form-check-input " . htmlescape($params['class']) . "' title=\"" . htmlescape($params['title']) . "\" ";
         if (isset($params['onclick'])) {
             $out .= " onclick='" . htmlescape($params['onclick']) . "'";
         }
