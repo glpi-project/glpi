@@ -504,6 +504,41 @@ class ChangeTest extends DbTestCase
         $this->assertNotEquals($root_entity, (int) $change->fields['entities_id']);
     }
 
+    public function testShowFormFromItemIgnoresInaccessibleItemEntity(): void
+    {
+        // Arrange: an asset in an entity the current session has no access to
+        $this->login('glpi', 'glpi');
+
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer in an entity the session cannot access',
+            'entities_id' => $item_entity,
+        ]);
+
+        $active_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        // Restrict the active session to a sibling entity only (no access to
+        // the asset's entity, even though the user's profile is recursive
+        // from a common ancestor)
+        $this->assertTrue(Session::changeActiveEntities($active_entity, false));
+
+        $change = new Change();
+        $change->getEmpty();
+
+        // Act: render form for a new change created from the (inaccessible) asset
+        ob_start();
+        $change->showForm($change->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the change falls back to the active session entity, the
+        // asset entity is NOT used since the session has no access to it
+        $this->assertEquals($active_entity, (int) $change->fields['entities_id']);
+        $this->assertNotEquals($item_entity, (int) $change->fields['entities_id']);
+    }
+
     public function testShowFormClosedItem(): void
     {
         // Arrange: prepare an empty change
