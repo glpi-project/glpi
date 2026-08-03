@@ -280,7 +280,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             unset($output[$action->fields["field"] . '_notif']);
 
                             if ($action->fields["value"] === 'requester_manager') {
-                                if(!is_array($input['_users_id_requester'])){
+                                if (!is_array($input['_users_id_requester'])) {
                                     $input['_users_id_requester'] = [$input['_users_id_requester']];
                                 }
                                 foreach ($input['_users_id_requester'] as $user_id) {
