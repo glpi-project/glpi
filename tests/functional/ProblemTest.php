@@ -65,7 +65,7 @@ class ProblemTest extends DbTestCase
 
         // Login again to access the new entity
         $this->login('glpi', 'glpi');
-        $success = \Session::changeActiveEntities($entity->getID(), true);
+        $success = Session::changeActiveEntities($entity->getID(), true);
         $this->assertTrue($success);
 
         $group = new \Group();
@@ -457,7 +457,7 @@ class ProblemTest extends DbTestCase
                 'requester' => [
                     [
                         'itemtype'  => 'User',
-                        'items_id'  => \Session::getLoginUserID(),
+                        'items_id'  => Session::getLoginUserID(),
                     ],
                 ],
             ],
