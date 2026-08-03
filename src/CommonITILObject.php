@@ -622,6 +622,18 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return false;
         }
 
+        if (
+            isset($options['_add_fromitem'])
+            && isset($options['itemtype'])
+            && is_a($options['itemtype'], CommonDBTM::class, true)
+        ) {
+            $item = new $options['itemtype']();
+            $item->getFromDB($options['items_id'][$options['itemtype']][0]);
+            if (Session::haveAccessToEntity($item->fields['entities_id'])) {
+                $options['entities_id'] = $item->fields['entities_id'];
+            }
+        }
+
         $this->restoreInputAndDefaults($ID, $options);
 
         $canupdate = !$ID || (Session::getCurrentInterface() == "central" && $this->canUpdateItem());

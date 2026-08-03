@@ -3683,7 +3683,9 @@ JAVASCRIPT;
         if (isset($options['_add_fromitem']) && isset($options['itemtype']) && is_a($options['itemtype'], CommonDBTM::class, true)) {
             $item = new $options['itemtype']();
             $item->getFromDB($options['items_id'][$options['itemtype']][0]);
-            $options['entities_id'] = $item->fields['entities_id'];
+            if (Session::haveAccessToEntity($item->fields['entities_id'])) {
+                $options['entities_id'] = $item->fields['entities_id'];
+            }
         }
 
         $this->restoreInputAndDefaults($ID, $options, null, true);
