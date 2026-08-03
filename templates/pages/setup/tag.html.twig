@@ -40,38 +40,45 @@
     {{ fields.dropdownItemTypes('_itemtypes', null, _n('Associated Itemtype', 'Associated Itemtypes', get_plural_number()), {
         types: config('taggable_types'),
         multiple: true,
-        values: item.getItemtypes,
+        values: item.getItemtypes(),
     }) }}
-    {{ fields.colorField('bg_color', item.isNewItem ? generate_bg_color : item.getBackgroundColor(), __('Background Color')) }}
-    {{ fields.colorField('color', item.isNewItem ? item.generateTextColor(generate_bg_color) : item.getTextColor(), __('Color')) }}
+    {{ fields.colorField('bg_color', item.isNewItem() ? generate_bg_color : item.getBackgroundColor(), __('Background Color')) }}
+    {{ fields.colorField('color', item.isNewItem() ? item.generateTextColor(generate_bg_color) : item.getTextColor(), __('Color')) }}
 
     {{ fields.smallTitle(__('Preview')) }}
 
     <div class="col-12 mt-2">
         <div class="card-body d-flex align-items-center justify-content-center py-4">
             <span id="{{ preview_id }}" class="badge fs-4 py-2 px-3"
-                    style="background-color: {{ item.isNewItem ? generate_bg_color : item.getBackgroundColor() }}; color: {{ item.isNewItem ? item.generateTextColor(generate_bg_color) : item.getTextColor() }};">
-                {{ item.isNewItem ? __('Tag preview') : item.fields['name'] }}
+                    style="background-color: {{ item.isNewItem() ? generate_bg_color : item.getBackgroundColor() }}; color: {{ item.isNewItem() ? item.generateTextColor(generate_bg_color) : item.getTextColor() }};">
+                {{ item.isNewItem() ? __('Tag preview') : item.fields['name'] }}
             </span>
         </div>
     </div>
 
-    <script>
-        $(function () {
-            const $preview = $('#{{ preview_id|e('js') }}');
-            const $form    = $preview.closest('form');
+    <script type="module">
+        const preview = document.getElementById('{{ preview_id|e('js') }}');
+        const form = preview.closest('form');
+        const nameInput = form.querySelector('input[name="name"]');
+        const bgColorInput = form.querySelector('input[name="bg_color"]');
+        const colorInput = form.querySelector('input[name="color"]');
 
-            function updatePreview() {
-                const name = $form.find('input[name="name"]').val();
-                const bg_color = $form.find('input[name="bg_color"]').val();
-                const color = $form.find('input[name="color"]').val();
-                if (name.length) { $preview.text(name); }
-                if (bg_color.length) { $preview.css('background-color', bg_color); }
-                if (color.length) { $preview.css('color', color); }
+        function updatePreview() {
+            if (nameInput.value.length) {
+                preview.textContent = nameInput.value;
             }
+            if (bgColorInput.value.length) {
+                preview.style.backgroundColor = bgColorInput.value;
+            }
+            if (colorInput.value.length) {
+                preview.style.color = colorInput.value;
+            }
+        }
 
-            $form.find('input[name="name"]').on('input', updatePreview);
-            $form.find('input[name="bg_color"], input[name="color"]').on('change', updatePreview);
-        });
+        nameInput.addEventListener('input', updatePreview);
+
+        const colorPickerObserver = new MutationObserver(updatePreview);
+        colorPickerObserver.observe(bgColorInput, { attributes: true, attributeFilter: ['style'] });
+        colorPickerObserver.observe(colorInput, { attributes: true, attributeFilter: ['style'] });
     </script>
 {% endblock %}

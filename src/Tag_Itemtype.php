@@ -56,13 +56,13 @@ class Tag_Itemtype extends CommonDBChild
     }
 
     /**
-     * Remove all associations for an itemtype
+     * Remove all tag associations for a plugin's itemtypes.
      *
-     * @param class-string<CommonDBTM> $itemtype  itemtype for which all tag associations must be removed
+     * @param string $plugin_directory  plugin directory for which all tag associations must be removed
      *
      * @return void
      */
-    public static function deleteForItemtype($itemtype): void
+    public static function deleteForItemtype(string $plugin_directory): void
     {
         global $DB;
 
@@ -70,8 +70,8 @@ class Tag_Itemtype extends CommonDBChild
             self::getTable(),
             [
                 'OR' => [
-                    ['itemtype'  => ['LIKE', "%Plugin$itemtype%"]],
-                    ['itemtype'  => ['LIKE', 'GlpiPlugin\\\\' . ucfirst($itemtype) . '\\\\%']],
+                    ['itemtype'  => ['LIKE', "%Plugin$plugin_directory%"]],
+                    ['itemtype'  => ['LIKE', 'GlpiPlugin\\\\' . ucfirst($plugin_directory) . '\\\\%']],
                 ],
             ]
         );

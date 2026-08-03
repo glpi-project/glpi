@@ -63,7 +63,7 @@ class Tag extends CommonDropdown
      */
     public function getBackgroundColor(): string
     {
-        if (Html::isValidHexColor($this->fields['bg_color'])) {
+        if (Toolbox::isValidHexColor($this->fields['bg_color'])) {
             return $this->fields['bg_color'];
         }
         return $this->generateBackgroundColor($this->fields['name']);
@@ -76,7 +76,7 @@ class Tag extends CommonDropdown
      */
     public function getTextColor(): string
     {
-        if (Html::isValidHexColor($this->fields['color'])) {
+        if (Toolbox::isValidHexColor($this->fields['color'])) {
             return $this->fields['color'];
         }
         return $this->generateTextColor($this->getBackgroundColor());
@@ -120,14 +120,14 @@ class Tag extends CommonDropdown
      */
     private function prepareColorsInput(array $input): array
     {
-        if (isset($input['bg_color']) && (empty($input['bg_color']) || !Html::isValidHexColor($input['bg_color']))) {
+        if (isset($input['bg_color']) && (empty($input['bg_color']) || !Toolbox::isValidHexColor($input['bg_color']))) {
             $input['bg_color'] = $this->generateBackgroundColor($input['name'] ?? $this->fields['name'] ?? '');
         }
         $effective_bg = $input['bg_color'] ?? $this->fields['bg_color'] ?? null;
-        if (!Html::isValidHexColor($effective_bg)) {
+        if (!Toolbox::isValidHexColor($effective_bg)) {
             $effective_bg = $this->generateBackgroundColor($input['name'] ?? $this->fields['name'] ?? '');
         }
-        if (isset($input['color']) && (empty($input['color']) || !Html::isValidHexColor($input['color']))) {
+        if (isset($input['color']) && (empty($input['color']) || !Toolbox::isValidHexColor($input['color']))) {
             $input['color'] = $this->generateTextColor($effective_bg);
         }
         return $input;
@@ -156,22 +156,27 @@ class Tag extends CommonDropdown
     }
 
     /**
-     * Check that no tag with the same name exists in the same entity.
+     * Check that no tag with the same name exists in a visible entity.
      *
      * @param array<string, mixed> $input
      * @return bool
      */
     private function isUnique(array $input): bool
     {
-        $tags = $this->find(
-            [
-                'name'        => $input['name'],
-                'entities_id' => $input['entities_id'],
-                ['id'          => ['<>', $this->getID()]],
-            ]
+        $criteria = [
+            'name' => $input['name'],
+            ['id'  => ['<>', $this->getID()]],
+        ];
+        $criteria += getEntitiesRestrictCriteria(
+            $this->getTable(),
+            '',
+            $input['entities_id'],
+            $this->maybeRecursive()
         );
 
-        return count($tags) === 0 ;
+        $tags = $this->find($criteria);
+
+        return count($tags) === 0;
     }
 
     /**

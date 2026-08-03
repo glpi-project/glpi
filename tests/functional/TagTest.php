@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Computer;
+use Entity;
 use Glpi\Form\Category;
 use Glpi\SocketModel;
 use Glpi\Tests\DbTestCase;
@@ -206,7 +207,7 @@ class TagTest extends DbTestCase
      * @param Tag $tag Tag to verify
      * @param array|string $itemtypes Expected itemtypes
      */
-    private function verifItemtypes(Tag $tag, array|string $itemtypes): void
+    private function verifyItemtypes(Tag $tag, array|string $itemtypes): void
     {
         global $CFG_GLPI;
 
@@ -237,7 +238,7 @@ class TagTest extends DbTestCase
     private function createTag(array $input, array $skip_fields = []): Tag
     {
         $tag = $this->createItem(Tag::class, $input, $skip_fields);
-        $this->verifItemtypes($tag, $input['_itemtypes'] ?? []);
+        $this->verifyItemtypes($tag, $input['_itemtypes'] ?? []);
 
         return $tag;
     }
@@ -254,7 +255,7 @@ class TagTest extends DbTestCase
     private function updateTag(Tag $tag, array $input, array $skip_fields = []): Tag
     {
         $tag = $this->updateItem(Tag::class, $tag->getID(), $input, $skip_fields);
-        $this->verifItemtypes($tag, $input['_itemtypes'] ?? []);
+        $this->verifyItemtypes($tag, $input['_itemtypes'] ?? []);
         return $tag;
     }
 
@@ -394,6 +395,69 @@ class TagTest extends DbTestCase
     }
 
     /**
+     * Test that tags must have unique names
+     */
+    public function testUniqueName(): void
+    {
+        $this->login();
+
+        $root_entity_id = $this->getTestRootEntity(true);
+        $child_entity = $this->createItem(Entity::class, [
+            'name'        => 'Child Entity',
+            'entities_id' => $root_entity_id,
+        ]);
+
+        //Create a tag in the root entity
+        $tag = $this->createTag([
+            'name'        => 'Unique Tag Name',
+            'entities_id' => $root_entity_id,
+        ]);
+
+        // Check if creating a tag with the same name in the same entity fails
+        $tag_duplicate = new Tag();
+        $result = $tag_duplicate->add([
+            'name'        => 'Unique Tag Name',
+            'entities_id' => $root_entity_id,
+        ]);
+        $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, ['Tag must be unique!']);
+
+        // Updating the tag with its own name must still be allowed
+        $this->updateTag($tag, [
+            'name'        => 'Unique Tag Name',
+            'entities_id' => $root_entity_id,
+        ]);
+
+        // Check if creating a tag with the same name in a child entity fails
+        $this->createTag([
+            'name'         => 'Duplicate Tag Name',
+            'entities_id'  => $root_entity_id,
+            'is_recursive' => 0,
+        ]);
+        $this->createTag([
+            'name'        => 'Duplicate Tag Name',
+            'entities_id' => $child_entity->getID(),
+        ]);
+
+        // Check if creating a tag with the same name in a child entity fails
+        // when the parent tag is recursive
+        $recursive_tag = $this->createTag([
+            'name'         => 'Recursive Tag Name',
+            'entities_id'  => $root_entity_id,
+            'is_recursive' => 1,
+        ]);
+
+        $conflicting = new Tag();
+        $this->assertFalse($conflicting->add([
+            'name'        => 'Recursive Tag Name',
+            'entities_id' => $child_entity->getID(),
+        ]));
+        $this->hasSessionMessages(ERROR, ['Tag must be unique!']);
+
+        $this->deleteItem(Tag::class, $recursive_tag->getID());
+    }
+
+    /**
      * Test that deleting all associations for an itemtype removes both standard and legacy plugin associations
      */
     public function testPluginUninstallRemovesTagAssociations(): void
@@ -404,12 +468,12 @@ class TagTest extends DbTestCase
         ]);
 
         // Insert a legacy-style plugin class directly (bypasses taggable_types validation)
-        $tag_itemtype = new Tag_Itemtype();
-        $tag_itemtype->add([
+        $this->createItem(Tag_Itemtype::class, [
             'tags_id'  => $tag->getID(),
             'itemtype' => 'PluginTesterComputer',
         ]);
 
+        $tag_itemtype = new Tag_Itemtype();
         $this->assertCount(3, $tag_itemtype->find(['tags_id' => $tag->getID()]));
 
         // Simulate plugin uninstall
