@@ -1,0 +1,84 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "generic_show_form.html.twig" %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% set generate_bg_color = item.generateBackgroundColor(random()) %}
+{% set preview_id = 'tag_preview_' ~ random() %}
+
+{% block more_fields %}
+    {{ fields.dropdownItemTypes('_itemtypes', null, _n('Associated Itemtype', 'Associated Itemtypes', get_plural_number()), {
+        types: config('taggable_types'),
+        multiple: true,
+        values: item.getItemtypes(),
+    }) }}
+    {{ fields.colorField('bg_color', item.isNewItem() ? generate_bg_color : item.getBackgroundColor(), __('Background Color')) }}
+    {{ fields.colorField('color', item.isNewItem() ? item.generateTextColor(generate_bg_color) : item.getTextColor(), __('Color')) }}
+
+    {{ fields.smallTitle(__('Preview')) }}
+
+    <div class="col-12 mt-2">
+        <div class="card-body d-flex align-items-center justify-content-center py-4">
+            <span id="{{ preview_id }}" class="badge fs-4 py-2 px-3"
+                    style="background-color: {{ item.isNewItem() ? generate_bg_color : item.getBackgroundColor() }}; color: {{ item.isNewItem() ? item.generateTextColor(generate_bg_color) : item.getTextColor() }};">
+                {{ item.isNewItem() ? __('Tag preview') : item.fields['name'] }}
+            </span>
+        </div>
+    </div>
+
+    <script type="module">
+        const preview = document.getElementById('{{ preview_id|e('js') }}');
+        const form = preview.closest('form');
+        const nameInput = form.querySelector('input[name="name"]');
+        const bgColorInput = form.querySelector('input[name="bg_color"]');
+        const colorInput = form.querySelector('input[name="color"]');
+
+        function updatePreview() {
+            if (nameInput.value.length) {
+                preview.textContent = nameInput.value;
+            }
+            if (bgColorInput.value.length) {
+                preview.style.backgroundColor = bgColorInput.value;
+            }
+            if (colorInput.value.length) {
+                preview.style.color = colorInput.value;
+            }
+        }
+
+        nameInput.addEventListener('input', updatePreview);
+
+        const colorPickerObserver = new MutationObserver(updatePreview);
+        colorPickerObserver.observe(bgColorInput, { attributes: true, attributeFilter: ['style'] });
+        colorPickerObserver.observe(colorInput, { attributes: true, attributeFilter: ['style'] });
+    </script>
+{% endblock %}

@@ -699,6 +699,7 @@ $RELATION = [
         'glpi_wifinetworks'                => 'entities_id',
         'glpi_webhooks'                    => 'entities_id',
         'glpi_queuedwebhooks'              => 'entities_id',
+        'glpi_tags'                        => 'entities_id',
     ],
 
     'glpi_filesystems' => [
@@ -1730,6 +1731,10 @@ $RELATION = [
     'glpi_webhookcategories' => [
         'glpi_webhookcategories'    => 'webhookcategories_id',
         'glpi_webhooks'             => 'webhookcategories_id',
+    ],
+
+    'glpi_tags' => [
+        '_glpi_tags_itemtypes' => 'tags_id',
     ],
 
 ];
