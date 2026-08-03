@@ -460,6 +460,59 @@ class RuleTest extends DbTestCase
         }
     }
 
+    public function testCloneMultiple()
+    {
+
+        $rule = $this->createItem(RuleTicket::class, [
+            'name'        => 'Clone with altered runtime state',
+            'is_active'   => 1,
+            'entities_id' => 0,
+            'sub_type'    => RuleTicket::class,
+            'match'       => Rule::AND_MATCHING,
+            'condition'   => \RuleCommonITILObject::ONADD,
+            'description' => '',
+        ]);
+        $rules_id = $rule->getID();
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rules_id,
+            'criteria'  => 'name',
+            'condition' => Rule::PATTERN_CONTAIN,
+            'pattern'   => 'printer',
+        ]);
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'urgency',
+            'value'       => '5',
+        ]);
+
+        // Resolving the table of a `Rule` subclass must not make `glpi_rules` resolve to that
+        // subclass, otherwise `CommonDBChild::getItemField()` cannot guess the `rules_id` field.
+        $this->assertSame('glpi_rules', getTableForItemType(RuleTicket::class));
+        $this->assertSame(Rule::class, getItemTypeForTable(Rule::getTable()));
+
+        $this->assertTrue($rule->cloneMultiple(2));
+
+        $clones = [
+            'Clone with altered runtime state (copy)',
+            'Clone with altered runtime state (copy 2)',
+        ];
+        foreach ($clones as $clone_name) {
+            $clone = getItemByTypeName(RuleTicket::class, $clone_name);
+            $this->assertInstanceOf(RuleTicket::class, $clone);
+            $this->assertSame(
+                1,
+                countElementsInTable(\RuleCriteria::getTable(), ['rules_id' => $clone->getID()])
+            );
+            $this->assertSame(
+                1,
+                countElementsInTable(\RuleAction::getTable(), ['rules_id' => $clone->getID()])
+            );
+        }
+    }
+
     public function testCleanDBonPurge()
     {
         $rule       = new Rule();

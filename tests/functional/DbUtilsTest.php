@@ -205,6 +205,27 @@ class DbUtilsTest extends DbTestCase
         $this->assertSame($table, getTableForItemType($type));
     }
 
+    /**
+     * Classes sharing the table of one of their parents must not be registered as the itemtype
+     * corresponding to that table, as they are not its canonical owner.
+     */
+    public function testGetTableForItemTypeKeepsCanonicalItemtypeForTable()
+    {
+        $instance = new \DbUtils();
+
+        $this->assertSame('glpi_rules', $instance->getTableForItemType(\RuleTicket::class));
+        $this->assertSame(\Rule::class, $instance->getItemTypeForTable('glpi_rules'));
+
+        $this->assertSame(
+            'glpi_notificationtargets',
+            $instance->getTableForItemType(\NotificationTargetTicket::class)
+        );
+        $this->assertSame(
+            \NotificationTarget::class,
+            $instance->getItemTypeForTable('glpi_notificationtargets')
+        );
+    }
+
     #[DataProvider('dataTableType')]
     public function testGetExpectedTableNameForClass($table, $type, $is_valid_type)
     {

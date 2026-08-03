@@ -211,7 +211,10 @@ final class DbUtils
                 : $this->getExpectedTableNameForClass($itemtype);
 
             $CFG_GLPI['glpitablesitemtype'][$itemtype] = $table;
-            $CFG_GLPI['glpiitemtypetables'][$table]    = $itemtype;
+            // Only register the reverse mapping when the itemtype is the canonical owner of the table.
+            if ($this->getExpectedTableNameForClass($itemtype) === $table) {
+                $CFG_GLPI['glpiitemtypetables'][$table] = $itemtype;
+            }
         }
 
         return $CFG_GLPI['glpitablesitemtype'][$itemtype];
