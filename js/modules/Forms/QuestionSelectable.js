@@ -203,7 +203,10 @@ export class GlpiFormQuestionTypeSelectable {
      * @param {string} uuid
      */
     #setOptionUuid(option, uuid) {
-        option.find(`input[type="${CSS.escape(this._inputType)}"]`).val(uuid);
+        // The option may still use the input type of the template it was cloned
+        // from (which is not updated when the question switches between single
+        // and multiple mode), so both types must be targeted here.
+        option.find('input[type="radio"], input[type="checkbox"]').val(uuid);
         option.find('input[type="text"]').attr('name', `options[${uuid}]`);
         option.find('input[data-glpi-form-editor-question-option-order]')
             .attr('name', `options_order[${uuid}]`);
