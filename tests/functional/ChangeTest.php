@@ -38,8 +38,10 @@ use Change;
 use Change_User;
 use CommonITILActor;
 use CommonITILObject;
+use Computer;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
 use User;
 
 /* Test for inc/change.class.php */
@@ -63,7 +65,7 @@ class ChangeTest extends DbTestCase
 
         // Login again to acess the new entity
         $this->login('glpi', 'glpi');
-        $success = \Session::changeActiveEntities($entity->getID(), true);
+        $success = Session::changeActiveEntities($entity->getID(), true);
         $this->assertTrue($success);
 
         $group = new \Group();
@@ -467,6 +469,76 @@ class ChangeTest extends DbTestCase
         $this->assertNotEmpty($html);
     }
 
+    public function testShowFormFromItemUsesItemEntity(): void
+    {
+        // Arrange: an asset in a sub-entity, while the current (default)
+        // session entity is its parent entity
+        $this->login('glpi', 'glpi');
+
+        $root_entity = $this->getTestRootEntity(only_id: true);
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer used to create a change from item',
+            'entities_id' => $item_entity,
+        ]);
+
+        // Active entity is the parent entity (with access to its sub-entities),
+        // which is not the same as the asset's own entity
+        $this->assertTrue(Session::changeActiveEntities($root_entity, true));
+
+        $change = new Change();
+        $change->getEmpty();
+
+        // Act: render form for a new change created from the asset
+        ob_start();
+        $change->showForm($change->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the change entity follows the asset entity, not the
+        // currently active session entity
+        $this->assertEquals($item_entity, (int) $change->fields['entities_id']);
+        $this->assertNotEquals($root_entity, (int) $change->fields['entities_id']);
+    }
+
+    public function testShowFormFromItemIgnoresInaccessibleItemEntity(): void
+    {
+        // Arrange: an asset in an entity the current session has no access to
+        $this->login('glpi', 'glpi');
+
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer in an entity the session cannot access',
+            'entities_id' => $item_entity,
+        ]);
+
+        $active_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        // Restrict the active session to a sibling entity only (no access to
+        // the asset's entity, even though the user's profile is recursive
+        // from a common ancestor)
+        $this->assertTrue(Session::changeActiveEntities($active_entity, false));
+
+        $change = new Change();
+        $change->getEmpty();
+
+        // Act: render form for a new change created from the (inaccessible) asset
+        ob_start();
+        $change->showForm($change->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the change falls back to the active session entity, the
+        // asset entity is NOT used since the session has no access to it
+        $this->assertEquals($active_entity, (int) $change->fields['entities_id']);
+        $this->assertNotEquals($item_entity, (int) $change->fields['entities_id']);
+    }
+
     public function testShowFormClosedItem(): void
     {
         // Arrange: prepare an empty change
@@ -578,7 +650,7 @@ class ChangeTest extends DbTestCase
                 'requester' => [
                     [
                         'itemtype'  => 'User',
-                        'items_id'  => \Session::getLoginUserID(),
+                        'items_id'  => Session::getLoginUserID(),
                     ],
                 ],
             ],
