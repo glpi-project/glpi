@@ -617,7 +617,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * "_add_fromitem"/"itemtype"/"items_id" form options), provided the
      * current user has access to that entity.
      *
-     * @param array $options
+     * @param array<string, mixed> $options
      *
      * @return int|null The asset entity, or null if it cannot be determined or is not accessible.
      */
