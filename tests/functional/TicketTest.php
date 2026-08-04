@@ -4346,6 +4346,65 @@ class TicketTest extends DbTestCase
         ]));
     }
 
+    public function testMergeDoesNotTriggerNotifications(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $_SESSION['glpiactiveprofile']['interface'] = '';
+        $this->setEntity('Root entity', true);
+
+        $user = getItemByTypeName(User::class, 'tech');
+        $this->createItem(UserEmail::class, [
+            'users_id'    => $user->getID(),
+            'is_default'  => 1,
+            'email'       => 'tech@tech.tech',
+        ]);
+
+        $ticket1 = $this->createItem(Ticket::class, [
+            'name'        => 'merge notif target',
+            'content'     => 'merge notif target',
+            'entities_id' => 0,
+            'status'      => CommonITILObject::INCOMING,
+            '_actors'     => [
+                'requester' => [
+                    ['itemtype' => 'User', 'items_id' => $user->getID(), 'use_notification' => 1],
+                ],
+            ],
+        ])->getID();
+        $ticket2 = $this->createItem(Ticket::class, [
+            'name'        => 'merge notif source',
+            'content'     => 'merge notif source',
+            'entities_id' => 0,
+            'status'      => CommonITILObject::INCOMING,
+        ])->getID();
+
+        $fup = new ITILFollowup();
+        $fup->add([
+            'itemtype'  => 'Ticket',
+            'items_id'  => $ticket2,
+            'content'   => 'source ticket followup',
+        ]);
+
+        $status = [];
+        Ticket::merge($ticket1, [$ticket2], $status, [
+            'linktypes'  => ['ITILFollowup'],
+            'link_type'  => \CommonITILObject_CommonITILObject::SON_OF,
+        ]);
+        $this->assertSame([$ticket2 => 0], $status);
+
+        // Merging must not queue any "add_followup" notification for the merged-in content
+        $queue = new \QueuedNotification();
+        $this->assertFalse($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket1,
+            'event'    => 'add_followup',
+        ]));
+    }
+
     /**
      * When two tickets have a SON_OF link but the child is NOT deleted (not actually merged),
      * responses added to the child must NOT be propagated to the parent.
