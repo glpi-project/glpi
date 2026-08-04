@@ -592,8 +592,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if (CloneMapper::getInstance()->hasItemId(Project::class, $source->fields['projects_id'])) {
             // The whole project is being cloned (e.g. a project is created from a template).
             // All its tasks, including the sub-tasks of the current one, are already cloned by
-            // `Clonable::cloneRelations()`, which also takes care of remapping the parent/child
-            // relations. Cloning them here again would create duplicated tasks in the source project.
+            // `Clonable::cloneRelations()`.
             return;
         }
 
