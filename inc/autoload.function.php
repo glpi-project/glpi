@@ -60,22 +60,21 @@ function isAPI()
     /** @var array $CFG_GLPI */
     global $CFG_GLPI;
 
-    $called_url = (($_SERVER['HTTPS'] ?? "") !== 'off'
-                     ? 'https'
-                     : 'http') .
-                 '://' . ($_SERVER['HTTP_HOST'] ?? "") .
-                 ($_SERVER['REQUEST_URI'] ?? "");
+    $request_path = explode('?', $_SERVER['REQUEST_URI'] ?? '', 2)[0];
 
-    $base_api_url = $CFG_GLPI['url_base_api'] ?? ""; // $CFG_GLPI may be not defined if DB is not available
-    if (!empty($base_api_url) && strpos($called_url, $base_api_url) !== false) {
-        return true;
+    $root_doc = $CFG_GLPI['root_doc'] ?? ''; // $CFG_GLPI may be not defined if DB is not available
+    foreach (['apirest.php', 'apixmlrpc.php'] as $api_script) {
+        $api_path = $root_doc . '/' . $api_script;
+        if ($request_path === $api_path || strpos($request_path, $api_path . '/') === 0) {
+            return true;
+        }
     }
 
     $script = $_SERVER['SCRIPT_FILENAME'] ?? '';
-    if (strpos($script, 'apirest.php') !== false) {
+    if (str_ends_with($script, 'apirest.php')) {
         return true;
     }
-    if (strpos($script, 'apixmlrpc.php') !== false) {
+    if (str_ends_with($script, 'apixmlrpc.php')) {
         return true;
     }
 
