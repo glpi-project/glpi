@@ -164,7 +164,7 @@ class DeactivateCommand extends AbstractPluginCommand
     {
 
         $choices = [];
-        $plugin_iterator = $this->db->request(
+        $plugin_iterator = $this->getDb()->request(
             [
                 'FROM'  => Plugin::getTable(),
                 'WHERE' => [

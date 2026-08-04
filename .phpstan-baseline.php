@@ -5798,68 +5798,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Database/AbstractConfigureCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Diagnostic\\\\DatabaseSchemaIntegrityChecker constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getTzIncompatibleTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/EnableTimezonesCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Requirement\\\\DbTimezones constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/EnableTimezonesCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access offset 0 on array\\|false\\|null\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbssl on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbsslca on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbsslcacipher on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbsslcapath on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbsslcert on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbsslkey on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method connect\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
 ];
@@ -5870,30 +5810,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbdefault on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbhost on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbuser on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method disableTableCaching\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'hash\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, version\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, hash\\: non\\-empty\\-string, 2\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -5902,18 +5818,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset \'version\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, version\\: non\\-empty\\-string, 1\\: non\\-empty\\-string, hash\\: non\\-empty\\-string, 2\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$DB of class Update constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Diagnostic\\\\DatabaseSchemaIntegrityChecker constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
 ];
@@ -5930,82 +5834,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Ldap/SynchronizeUsersCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Ldap/SynchronizeUsersCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$name of method Symfony\\\\Component\\\\Console\\\\Command\\\\Command\\:\\:setName\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/AbstractPluginMigrationCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method fieldExists\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method tableExists\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method delete\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method fieldExists\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 5,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method tableExists\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method update\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on CommonDBTM\\|null\\.$#',
@@ -6014,148 +5846,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbdefault on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/BuildMissingTimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 7,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DomainsPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getMyIsamTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method listTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/DynamicRowFormatCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\Form\\\\Migration\\\\FormMigration constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/FormCreatorPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\Migration\\\\GenericobjectPluginMigration constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/GenericobjectPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method find\\(\\) on Symfony\\\\Component\\\\Console\\\\Application\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/MigrateAllCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getMyIsamTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method delete\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 9,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method tableExists\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:createDatacenter\\(\\) should return int\\|null but returns int\\|true\\.$#',
@@ -6170,132 +5864,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$dbdefault on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$use_timezones on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method escape\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getTzIncompatibleTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteValue\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method update\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Requirement\\\\DbTimezones constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method errno\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method error\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getForeignKeysContraints\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getSignedKeysColumns\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteValue\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method update\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'plugin_key\' might not exist on array\\{\\}\\|array\\{0\\: non\\-falsy\\-string, plugin_key\\: non\\-empty\\-string, 1\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -6306,90 +5874,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot access property \\$use_utf8mb4 on DBmysql\\|null\\.$#',
-	'identifier' => 'property.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method doQuery\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getMyIsamTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getNonUtf8mb4Tables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method listTables\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$db of class Glpi\\\\System\\\\Requirement\\\\DbConfiguration constructor expects DBmysql, DBmysql\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Migration/Utf8mb4Command.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Plugin/ActivateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Plugin/DeactivateCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Plugin/UninstallCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Rules/ProcessSoftwareCategoryRulesCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method quoteName\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Task/UnlockCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method request\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Task/UnlockCommand.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call static method quoteValue\\(\\) on DBmysql\\|null\\.$#',
-	'identifier' => 'staticMethod.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Task/UnlockCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method find\\(\\) on CommonDBTM\\|false\\.$#',

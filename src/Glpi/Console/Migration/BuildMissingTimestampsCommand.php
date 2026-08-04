@@ -55,7 +55,7 @@ class BuildMissingTimestampsCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
 
-        $tables_iterator = $this->db->request(
+        $tables_iterator = $this->getDb()->request(
             [
                 'SELECT' => [
                     'table_name AS TABLE_NAME',
@@ -63,7 +63,7 @@ class BuildMissingTimestampsCommand extends AbstractCommand
                 ],
                 'FROM'   => 'information_schema.columns',
                 'WHERE'  => [
-                    'table_schema' => $this->db->dbdefault,
+                    'table_schema' => $this->getDb()->dbdefault,
                     'table_name'   => ['LIKE', 'glpi\_%'],
                     'column_name'  => ['date_creation', 'date_mod'],
                 ],
@@ -95,7 +95,7 @@ class BuildMissingTimestampsCommand extends AbstractCommand
             $target_date = $column === 'date_creation' ? 'MIN(`date_mod`)' : 'MAX(`date_mod`)';
 
             try {
-                $result = $this->db->doQuery(
+                $result = $this->getDb()->doQuery(
                     "
             UPDATE `$table`
             LEFT JOIN (
@@ -112,8 +112,8 @@ class BuildMissingTimestampsCommand extends AbstractCommand
                     __('Update of `%s`.`%s` failed with message "(%s) %s".'),
                     $table,
                     $column,
-                    $this->db->errno(),
-                    $this->db->error()
+                    $this->getDb()->errno(),
+                    $this->getDb()->error()
                 );
                 $output->writeln(
                     '<error>' . $message . '</error>',

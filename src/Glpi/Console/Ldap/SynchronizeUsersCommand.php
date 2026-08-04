@@ -243,7 +243,7 @@ class SynchronizeUsersCommand extends AbstractCommand
 
         $servers_id = $input->getOption('ldap-server-id');
         if (empty($servers_id)) {
-            $servers_iterator = $this->db->request(
+            $servers_iterator = $this->getDb()->request(
                 [
                     'SELECT' => 'id',
                     'FROM'   => AuthLDAP::getTable(),
@@ -264,7 +264,7 @@ class SynchronizeUsersCommand extends AbstractCommand
         if (!$input->getOption('no-interaction')) {
             // Ask for confirmation (unless --no-interaction)
 
-            $servers_iterator = $this->db->request(
+            $servers_iterator = $this->getDb()->request(
                 [
                     'SELECT' => ['id', 'name'],
                     'FROM'   => AuthLDAP::getTable(),
