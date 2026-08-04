@@ -98,15 +98,15 @@ class UnlockCommand extends AbstractCommand
         $tasks = $input->getOption('task');
 
         if (null !== $cycle) {
-            $delay = $cycle . ' * ' . $this->db->quoteName('frequency');
+            $delay = $cycle . ' * ' . $this->getDb()->quoteName('frequency');
         }
 
-        $task_iterator = $this->db->request(
+        $task_iterator = $this->getDb()->request(
             [
                 'SELECT' => [
                     'id',
                     QueryFunction::concat(
-                        params: ['itemtype', new QueryExpression($this->db::quoteValue('::')), 'name'],
+                        params: ['itemtype', new QueryExpression($this->getDb()::quoteValue('::')), 'name'],
                         alias: 'task'
                     ),
                 ],

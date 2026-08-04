@@ -362,7 +362,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
         ];
         $missing_tables = false;
         foreach ($rack_tables as $table) {
-            if (!$this->db->tableExists($table)) {
+            if (!$this->getDb()->tableExists($table)) {
                 $this->output->writeln(
                     '<error>' . sprintf(__('Racks plugin table "%s" is missing.'), $table) . '</error>',
                     OutputInterface::VERBOSITY_QUIET
@@ -403,7 +403,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
         ];
 
         foreach ($core_tables as $table) {
-            $result = $this->db->delete($table, [1]);
+            $result = $this->getDb()->delete($table, [1]);
 
             if (!$result) {
                 throw new RuntimeException(
@@ -502,7 +502,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_VERBOSE
         );
 
-        $othermodels_iterator = $this->db->request(
+        $othermodels_iterator = $this->getDb()->request(
             [
                 'FROM' => 'glpi_plugin_racks_othermodels',
             ]
@@ -619,7 +619,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     OutputInterface::VERBOSITY_NORMAL
                 );
 
-                $otheritems_iterator = $this->db->request(
+                $otheritems_iterator = $this->getDb()->request(
                     [
                         'FROM'  => 'glpi_plugin_racks_others',
                         'WHERE' => [
@@ -699,7 +699,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $specs_iterator = $this->db->request(
+        $specs_iterator = $this->getDb()->request(
             [
                 'FROM'  => 'glpi_plugin_racks_itemspecifications',
                 'ORDER' => 'id ASC',
@@ -793,7 +793,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $models_iterator = $this->db->request(
+        $models_iterator = $this->getDb()->request(
             [
                 'FROM' => 'glpi_plugin_racks_rackmodels',
             ]
@@ -872,7 +872,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $types_iterator = $this->db->request(
+        $types_iterator = $this->getDb()->request(
             [
                 'FROM' => 'glpi_plugin_racks_racktypes',
             ]
@@ -953,7 +953,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $states_iterator = $this->db->request(
+        $states_iterator = $this->getDb()->request(
             [
                 'FROM' => 'glpi_plugin_racks_rackstates',
             ]
@@ -1035,7 +1035,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $rooms_iterator = $this->db->request(
+        $rooms_iterator = $this->getDb()->request(
             [
                 'FROM' => 'glpi_plugin_racks_roomlocations',
             ]
@@ -1118,7 +1118,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $racks_iterator = $this->db->request(
+        $racks_iterator = $this->getDb()->request(
             [
                 'FROM' => 'glpi_plugin_racks_racks',
             ]
@@ -1245,7 +1245,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $items_iterator = $this->db->request(
+        $items_iterator = $this->getDb()->request(
             [
                 'FROM'  => 'glpi_plugin_racks_racks_items',
                 'ORDER' => 'id',

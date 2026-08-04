@@ -166,7 +166,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
             }
 
             [$tablename, $fieldname] = explode('.', $field);
-            if (!$this->db->tableExists($tablename) || !$this->db->fieldExists($tablename, $fieldname)) {
+            if (!$this->getDb()->tableExists($tablename) || !$this->getDb()->fieldExists($tablename, $fieldname)) {
                 $this->output->writeln(
                     '<error>' . sprintf(__('Plugin database field "%s" is missing.'), $field) . '</error>',
                     OutputInterface::VERBOSITY_QUIET

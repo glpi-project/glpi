@@ -56,6 +56,6 @@ class GenericobjectPluginToCoreCommand extends AbstractPluginMigrationCommand
     #[Override]
     public function getMigration(): AbstractPluginMigration
     {
-        return new GenericobjectPluginMigration($this->db);
+        return new GenericobjectPluginMigration($this->getDb());
     }
 }

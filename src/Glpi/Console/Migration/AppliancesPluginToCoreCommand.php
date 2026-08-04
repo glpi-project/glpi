@@ -185,7 +185,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
     {
         $missing_tables = false;
         foreach (self::PLUGIN_APPLIANCE_TABLES as $table => $fields) {
-            if (!$this->db->tableExists($table)) {
+            if (!$this->getDb()->tableExists($table)) {
                 $this->output->writeln(
                     '<error>' . sprintf(__('Appliances plugin table "%s" is missing.'), $table) . '</error>',
                     OutputInterface::VERBOSITY_QUIET
@@ -193,7 +193,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                 $missing_tables = true;
             } else {
                 foreach ($fields as $field) {
-                    if (!$this->db->fieldExists($table, $field)) {
+                    if (!$this->getDb()->fieldExists($table, $field)) {
                         $this->output->writeln(
                             '<error>' . sprintf(__('Appliances plugin field "%s" is missing.'), $table . '.' . $field) . '</error>',
                             OutputInterface::VERBOSITY_QUIET
@@ -230,7 +230,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         ];
 
         foreach ($core_tables as $table) {
-            $result = $this->db->delete($table, [1]);
+            $result = $this->getDb()->delete($table, [1]);
 
             if (!$result) {
                 throw new RuntimeException(
@@ -240,7 +240,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         }
 
         $table  = Infocom::getTable();
-        $result = $this->db->delete($table, [
+        $result = $this->getDb()->delete($table, [
             'itemtype' => self::CORE_APPLIANCE_ITEMTYPE,
         ]);
         if (!$result) {
@@ -290,10 +290,10 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         $table  = Profile::getTable();
 
         try {
-            $result = $this->db->doQuery(
+            $result = $this->getDb()->doQuery(
                 sprintf(
                     "UPDATE %s SET helpdesk_item_type = REPLACE(helpdesk_item_type, '%s', '%s')",
-                    $this->db->quoteName($table),
+                    $this->getDb()->quoteName($table),
                     self::PLUGIN_APPLIANCE_ITEMTYPE,
                     self::CORE_APPLIANCE_ITEMTYPE
                 )
@@ -334,7 +334,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
         ];
 
         foreach ($itemtypes_tables as $itemtype_table) {
-            $result = $this->db->update($itemtype_table, [
+            $result = $this->getDb()->update($itemtype_table, [
                 'itemtype' => self::CORE_APPLIANCE_ITEMTYPE,
             ], [
                 'itemtype' => self::PLUGIN_APPLIANCE_ITEMTYPE,
@@ -345,8 +345,8 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
                     sprintf(
                         __('Migration of table "%s" failed with message "(%s) %s".'),
                         $itemtype_table,
-                        $this->db->errno(),
-                        $this->db->error()
+                        $this->getDb()->errno(),
+                        $this->getDb()->error()
                     )
                 );
                 if (!$this->input->getOption('skip-errors')) {
@@ -370,7 +370,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $iterator = $this->db->request([
+        $iterator = $this->getDb()->request([
             'FROM' => 'glpi_plugin_appliances_appliances_items',
         ]);
 
@@ -430,7 +430,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $iterator = $this->db->request([
+        $iterator = $this->getDb()->request([
             'FROM' => 'glpi_plugin_appliances_environments',
         ]);
 
@@ -488,7 +488,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             '<comment>' . __('Creating Appliances...') . '</comment>',
             OutputInterface::VERBOSITY_NORMAL
         );
-        $iterator = $this->db->request([
+        $iterator = $this->getDb()->request([
             'FROM' => 'glpi_plugin_appliances_appliances',
         ]);
 
@@ -564,7 +564,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $iterator = $this->db->request([
+        $iterator = $this->getDb()->request([
             'FROM' => 'glpi_plugin_appliances_appliancetypes',
         ]);
 
@@ -626,7 +626,7 @@ class AppliancesPluginToCoreCommand extends AbstractCommand
             OutputInterface::VERBOSITY_NORMAL
         );
 
-        $iterator = $this->db->request([
+        $iterator = $this->getDb()->request([
             'SELECT'       => ['rel.*', 'app.relationtype'],
             'FROM'         => 'glpi_plugin_appliances_relations AS rel',
             'INNER JOIN'   => [
