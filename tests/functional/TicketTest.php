@@ -4389,19 +4389,30 @@ class TicketTest extends DbTestCase
             'content'   => 'source ticket followup',
         ]);
 
+        $task = new TicketTask();
+        $task->add([
+            'tickets_id' => $ticket2,
+            'content'    => 'source ticket task',
+        ]);
+
         $status = [];
         Ticket::merge($ticket1, [$ticket2], $status, [
-            'linktypes'  => ['ITILFollowup'],
+            'linktypes'  => ['ITILFollowup', 'TicketTask'],
             'link_type'  => \CommonITILObject_CommonITILObject::SON_OF,
         ]);
         $this->assertSame([$ticket2 => 0], $status);
 
-        // Merging must not queue any "add_followup" notification for the merged-in content
+        // Merging must not queue any "add_followup"/"add_task" notification for the merged-in content
         $queue = new \QueuedNotification();
         $this->assertFalse($queue->getFromDBByCrit([
             'itemtype' => Ticket::class,
             'items_id' => $ticket1,
             'event'    => 'add_followup',
+        ]));
+        $this->assertFalse($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket1,
+            'event'    => 'add_task',
         ]));
     }
 
