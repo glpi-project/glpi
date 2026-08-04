@@ -1571,6 +1571,21 @@ class SearchTest extends DbTestCase
         $this->assertEquals($bk_id, $_SESSION['glpi_loaded_savedsearch']);
         $this->assertArrayNotHasKey('reset', $_SESSION['glpisearch']['Ticket']);
 
+        // Simulate a page refresh where only the URL is taken into account, and not the “sort”/“order” criteria.
+        // The sort order of the saved search must still be restored from the session and not replaced by the default
+        // sort order for that item type
+        \Search::manageParams('Ticket', [
+            'criteria' => [
+                [
+                    'field' => '5',
+                    'searchtype' => 'equals',
+                    'value' => $uid,
+                ],
+            ],
+        ], true, false);
+        $this->assertEquals([2], $_SESSION['glpisearch']['Ticket']['sort']);
+        $this->assertEquals(['DESC'], $_SESSION['glpisearch']['Ticket']['order']);
+
         // saved search criteria must survive a subsequent unrelated request (sort/pagination)
         \Search::manageParams('Ticket', ['sort' => 6, 'order' => 'ASC'], true, false);
         $this->assertEquals(
