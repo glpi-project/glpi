@@ -184,6 +184,42 @@ abstract class CommonITILActor extends CommonDBRelation
                   && ((int) $this->fields['users_id'] === Session::getLoginUserID())));
     }
 
+    /**
+     * Get the deletion notification event name and the `_old_*` option key matching
+     * this actor's role (requester/observer/assign) and itemtype (user/group/supplier).
+     *
+     * @return array{event: string, option_key: string}|null
+     */
+    private function getActorDeletionNotificationContext(): ?array
+    {
+        $type_names = [
+            self::REQUESTER => 'requester',
+            self::ASSIGN    => 'assign',
+            self::OBSERVER  => 'observer',
+        ];
+        $fkey_names = [
+            'users_id'     => 'user',
+            'groups_id'    => 'group',
+            'suppliers_id' => 'supplier',
+        ];
+
+        $type = (int) ($this->fields['type'] ?? 0);
+        if (!isset($type_names[$type])) {
+            return null;
+        }
+
+        foreach ($fkey_names as $fkey => $itemtype_name) {
+            if (isset($this->fields[$fkey])) {
+                return [
+                    'event'      => sprintf('remove_%s_%s', $type_names[$type], $itemtype_name),
+                    'option_key' => '_old_' . $itemtype_name,
+                ];
+            }
+        }
+
+        return null;
+    }
+
     public function post_deleteFromDB()
     {
         global $CFG_GLPI;
@@ -193,6 +229,11 @@ abstract class CommonITILActor extends CommonDBRelation
         $item = $this->getConnexityItem(static::$itemtype_1, static::getItilObjectForeignKey());
 
         if ($item instanceof CommonITILObject) {
+            $notification_context = $this->getActorDeletionNotificationContext();
+            $options = $notification_context !== null
+                ? [$notification_context['option_key'] => $this->fields]
+                : [];
+
             if (
                 ($item->countSuppliers(self::ASSIGN) === 0)
                 && ($item->countUsers(self::ASSIGN) === 0)
@@ -209,23 +250,17 @@ abstract class CommonITILActor extends CommonDBRelation
                     'id'     => $this->fields[static::getItilObjectForeignKey()],
                     'status' => $status,
                 ]);
-                if ($donotif) {
-                    $options = [];
-                    if (isset($this->fields['users_id'])) {
-                        $options = ['_old_user' => $this->fields];
-                        NotificationEvent::raiseEvent('del_assign_user', $item, $options);
-                    }
+                if ($donotif && $notification_context !== null) {
+                    NotificationEvent::raiseEvent($notification_context['event'], $item, $options);
                 }
             } else {
                 $item->updateDateMod($this->fields[static::getItilObjectForeignKey()]);
 
                 if ($donotif) {
-                    $options = [];
-                    if (isset($this->fields['users_id'])) {
-                        $options = ['_old_user' => $this->fields];
-                    }
                     NotificationEvent::raiseEvent("update", $item, $options);
-                    NotificationEvent::raiseEvent('del_assign_user', $item, $options);
+                    if ($notification_context !== null) {
+                        NotificationEvent::raiseEvent($notification_context['event'], $item, $options);
+                    }
                 }
             }
         }
