@@ -462,6 +462,8 @@ class RuleTest extends DbTestCase
 
     public function testCloneMultiple()
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
 
         $rule = $this->createItem(RuleTicket::class, [
             'name'        => 'Clone with altered runtime state',
@@ -488,10 +490,13 @@ class RuleTest extends DbTestCase
             'value'       => '5',
         ]);
 
-        // Resolving the table of a `Rule` subclass must not make `glpi_rules` resolve to that
-        // subclass, otherwise `CommonDBChild::getItemField()` cannot guess the `rules_id` field.
-        $this->assertSame('glpi_rules', getTableForItemType(RuleTicket::class));
-        $this->assertSame(Rule::class, getItemTypeForTable(Rule::getTable()));
+        // The `glpi_rules` table may be mapped to any of the `Rule` subclasses, depending on the
+        // runtime state of the itemtype/table mapping cache. Clone must not depend on it, as
+        // `CommonDBChild::getItemField()` has to be able to guess the `rules_id` field anyway.
+        $CFG_GLPI['glpiitemtypetables'][Rule::getTable()] = RuleTicket::class;
+
+        $this->assertSame('rules_id', \RuleCriteria::getItemField(RuleTicket::class));
+        $this->assertSame('rules_id', \RuleAction::getItemField(RuleTicket::class));
 
         $this->assertTrue($rule->cloneMultiple(2));
 

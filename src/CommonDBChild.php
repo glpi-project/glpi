@@ -1028,7 +1028,7 @@ abstract class CommonDBChild extends CommonDBConnexity
             $itemtype = Rule::class;
         }
 
-        if (getItemtypeForForeignKeyField(static::$items_id) == $itemtype) {
+        if (getTableNameForForeignKeyField(static::$items_id) === getTableForItemType($itemtype)) {
             return static::$items_id;
         }
 
