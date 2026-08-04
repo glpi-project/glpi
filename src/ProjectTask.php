@@ -39,6 +39,7 @@ use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Features\CloneMapper;
 use Glpi\Features\PlanningEvent;
 use Glpi\Features\Teamwork;
 use Glpi\Features\TeamworkInterface;
@@ -588,13 +589,26 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public function post_clone($source, $history)
     {
+        if (CloneMapper::getInstance()->hasItemId(Project::class, $source->fields['projects_id'])) {
+            // The whole project is being cloned (e.g. a project is created from a template).
+            // All its tasks, including the sub-tasks of the current one, are already cloned by
+            // `Clonable::cloneRelations()`, which also takes care of remapping the parent/child
+            // relations. Cloning them here again would create duplicated tasks in the source project.
+            return;
+        }
+
         // Clone all sub-tasks of the source and link them to the cloned task
         foreach (self::getAllForProjectTask($source->getID()) as $task) {
             if ($task = self::getById($task['id'])) {
                 if (method_exists($task, 'clone')) {
-                    $task->clone([
-                        'projecttasks_id' => $this->getID(),
-                    ]);
+                    $task->clone(
+                        [
+                            'projects_id'     => $this->fields['projects_id'],
+                            'projecttasks_id' => $this->getID(),
+                        ],
+                        $history,
+                        clean_mapper: false
+                    );
                 }
             }
         }
