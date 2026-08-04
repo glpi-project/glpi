@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use Computer;
+use Contact;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
@@ -331,6 +332,20 @@ final class QuestionTypeItemTest extends DbTestCase
                             'name'      => 'jdoe',
                             'firstname' => 'John',
                             'realname'  => 'Doe',
+                        ])->getID(),
+                    ],
+                    'expected' => 'Doe John',
+                ],
+            ],
+
+            'item is a contact' => [
+                fn(self $t) => [
+                    'answer'   => [
+                        'itemtype' => Contact::class,
+                        'items_id' => $t->createItem(Contact::class, [
+                            'name'        => 'Doe',
+                            'firstname'   => 'John',
+                            'entities_id' => $t->getTestRootEntity(true),
                         ])->getID(),
                     ],
                     'expected' => 'Doe John',
