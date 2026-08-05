@@ -52,6 +52,7 @@ use Glpi\Inventory\Asset\Firmware;
 use Glpi\Inventory\Asset\InventoryAsset;
 use Glpi\Inventory\Asset\InventoryNetworkPort;
 use Glpi\Inventory\Asset\NetworkCard;
+use Glpi\Inventory\Asset\Peripheral;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use NetworkEquipment;
@@ -1060,11 +1061,18 @@ abstract class MainAsset extends InventoryAsset
         $controllers = [];
         $ignored_controllers = [];
 
-        //ensure controllers are done last, some components will
-        //ask to ignore their associated controller
+        $peripherals = [];
+        $ignored_peripherals = [];
+
+        //ensure controllers and peripherals are done last, some components will
+        //ask to ignore their associated controller or usbdevice
         if (isset($assets_list[Controller::class])) {
             $controllers = $assets_list[Controller::class];
             unset($assets_list[Controller::class]);
+        }
+        if (isset($assets_list[Peripheral::class])) {
+            $peripherals = $assets_list[Peripheral::class];
+            unset($assets_list[Peripheral::class]);
         }
 
         foreach ($assets_list as $assets) {
@@ -1081,6 +1089,7 @@ abstract class MainAsset extends InventoryAsset
                 $asset->handleLinks();
                 $asset->handle();
                 $ignored_controllers = array_merge($ignored_controllers, $asset->getIgnored('controllers'));
+                $ignored_peripherals = array_merge($ignored_peripherals, $asset->getIgnored('usbdevices'));
             }
         }
 
@@ -1092,6 +1101,18 @@ abstract class MainAsset extends InventoryAsset
             $asset->setExtraData([static::class => $mainasset]);
             //do not handle ignored controllers
             $asset->setExtraData(['ignored' => $ignored_controllers]);
+            $asset->handleLinks();
+            $asset->handle();
+        }
+
+        //do peripherals
+        foreach ($peripherals as $asset) {
+            $asset->setEntityID($this->getEntityID());
+            $asset->setEntityRecursive($this->getEntityRecursive());
+            $asset->setExtraData($this->assets);
+            $asset->setExtraData([static::class => $mainasset]);
+            //do not handle ignored peripherals
+            $asset->setExtraData(['ignored' => $ignored_peripherals]);
             $asset->handleLinks();
             $asset->handle();
         }
