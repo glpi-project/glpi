@@ -763,8 +763,8 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertGreaterThan(0, $tickets_id_3);
 
         $tickets_id_4 = $ticket->add([
-            'name'    => 'test manager number 3',
-            'content' => 'test manager number 3',
+            'name'    => 'test manager number 4',
+            'content' => 'test manager number 4',
             '_users_id_requester' => [$user_id],
         ]);
         $this->assertGreaterThan(0, $tickets_id_4);
