@@ -113,6 +113,7 @@ final class LocalesCompileCommand extends AbstractCommand
             if (!$proc->isSuccessful()) {
                 $success = false;
                 $this->io->writeln(" <error>Failed to compile $basename</error>");
+                $this->io->writeln(" <error>{$proc->getErrorOutput()}</error>");
             } else {
                 $this->io->writeln(" <info>Compiled $basename</info>");
             }
