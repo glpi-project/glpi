@@ -37,6 +37,10 @@
     cropper-canvas {
         min-height: 100px;
     }
+
+    cropper-canvas:not([disabled]) {
+        cursor: crosshair;
+    }
 }
 
 .defined-zone {
