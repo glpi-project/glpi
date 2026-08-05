@@ -762,10 +762,25 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         ]);
         $this->assertGreaterThan(0, $tickets_id_3);
 
+        $tickets_id_4 = $ticket->add([
+            'name'    => 'test manager number 3',
+            'content' => 'test manager number 3',
+            '_users_id_requester' => [$user_id],
+        ]);
+        $this->assertGreaterThan(0, $tickets_id_4);
+
         // check manager
         $this->assertTrue(
             $ticket_user->getFromDBByCrit([
                 'tickets_id'    => $tickets_id_3,
+                'users_id'      => $manager_id,
+                'type'          => \CommonITILActor::OBSERVER,
+            ])
+        );
+
+        $this->assertTrue(
+            $ticket_user->getFromDBByCrit([
+                'tickets_id'    => $tickets_id_4,
                 'users_id'      => $manager_id,
                 'type'          => \CommonITILActor::OBSERVER,
             ])
