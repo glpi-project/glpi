@@ -1,0 +1,10 @@
+From: normal@glpi-project.org
+To: unittests@glpi-project.org
+Subject: Base64 invalido
+Message-ID: <charset-evidence-invalid-base64@example.org>
+Date: Tue, 12 May 2026 10:04:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+
+U29saWNpdGHDp8OjbyBlbSBiYXNlNjQgaW52w6FsaWRvIGFpbmRhIGRldmUgY29udGludWFy!!!!

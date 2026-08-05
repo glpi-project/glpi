@@ -1,0 +1,10 @@
+From: normal@glpi-project.org
+To: unittests@glpi-project.org
+Subject: =?Windows-1252?Q?Remetente_inv=E1lido_=96_teste?=
+Message-ID: <charset-evidence-windows1252@example.org>
+Date: Tue, 12 May 2026 10:01:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=Windows-1252
+Content-Transfer-Encoding: quoted-printable
+
+Remetente inv=E1lido: =93aspas=94, travess=E3o =96 e euro =80
