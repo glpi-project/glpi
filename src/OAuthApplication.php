@@ -366,6 +366,7 @@ final class OAuthApplication extends CommonDBTM
         return $CFG_GLPI['url_base'] . '/oauth/callback';
     }
 
+
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
         if (!is_array($values)) {

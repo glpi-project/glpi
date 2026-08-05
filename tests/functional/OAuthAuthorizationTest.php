@@ -480,6 +480,11 @@ final class FakeOauthProviderForTests implements ProviderInterface
         return $this->access_token_result;
     }
 
+    public function getState()
+    {
+        return 'fake-state';
+    }
+
     public function getOwnerDetails(AccessToken $token): ?OwnerDetails
     {
         return $this->owner_details;
@@ -519,13 +524,24 @@ final class TestableOAuthAuthorization extends OAuthAuthorization
         return $this->fake_provider;
     }
 
-    protected function probeImapConnection(string $host, int $port, string $ssl, string $email, string $token): bool
+    protected function probeImapConnection(string $host, int $port, string $ssl, string $email, string $token): array
     {
-        return $this->probe_result ?? true;
+        return $this->fakeProbeResult();
     }
 
-    protected function probeSmtpConnection(string $host, int $port, string $email, string $token): bool
+    protected function probeSmtpConnection(string $host, int $port, string $email, string $token): array
     {
-        return $this->probe_result ?? true;
+        return $this->fakeProbeResult();
+    }
+
+    /** @return array{success: bool, message: string} */
+    private function fakeProbeResult(): array
+    {
+        $success = $this->probe_result ?? true;
+
+        return [
+            'success' => $success,
+            'message' => $success ? 'Connection successful' : 'Connection failed',
+        ];
     }
 }

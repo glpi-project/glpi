@@ -47,6 +47,11 @@ class OAuthAuthorization extends CommonDBChild
     public const TYPE_IMAP = 'IMAP';
     public const TYPE_SMTP = 'SMTP';
 
+    /**
+     * Timeout, in seconds, used when probing a mail server.
+     */
+    private const PROBE_TIMEOUT = 10;
+
     public static array $undisclosedFields = [
         'code',
         'token',
@@ -391,54 +396,120 @@ class OAuthAuthorization extends CommonDBChild
                 // No SMTP host/port is stored on this entity (SMTP sending
                 // still goes through the legacy glpi_configs-based flow), so
                 // only the token validity checked above can be verified here.
-                $success = $this->probeSmtpConnection('', 0, $this->fields['email'], $token->getToken());
-            } else {
-                $defaults = $this->resolveProvider($application, self::TYPE_IMAP)::getImapDefaults();
-                $success = $this->probeImapConnection(
-                    $defaults['host'],
-                    $defaults['port'],
-                    $defaults['ssl'],
-                    $this->fields['email'],
-                    $token->getToken()
-                );
+                return $this->probeSmtpConnection('', 0, $this->fields['email'], $token->getToken());
             }
+
+            $defaults = $this->resolveProvider($application, self::TYPE_IMAP)::getImapDefaults();
+
+            return $this->probeImapConnection(
+                $defaults['host'],
+                $defaults['port'],
+                $defaults['ssl'],
+                $this->fields['email'],
+                $token->getToken()
+            );
         } catch (Throwable $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
-
-        return [
-            'success' => $success,
-            'message' => $success ? __('Connection successful') : __('Connection failed'),
-        ];
     }
 
     /**
-     * Performs a minimal IMAP `AUTHENTICATE XOAUTH2` handshake.
+     * Performs a minimal IMAP `AUTHENTICATE XOAUTH2` handshake and reports
+     * what the server actually answered.
      *
      * Isolated in its own (protected) method so tests can stub it out
      * without opening a real network connection.
+     *
+     * @return array{success: bool, message: string}
      */
-    protected function probeImapConnection(string $host, int $port, string $ssl, string $email, string $token): bool
+    protected function probeImapConnection(string $host, int $port, string $ssl, string $email, string $token): array
     {
-        $transport = $ssl === 'SSL' ? 'ssl://' : '';
+        $transport = match (strtoupper($ssl)) {
+            'SSL'   => 'ssl://',
+            'TLS'   => 'tls://',
+            default => '',
+        };
+
+        $errno = 0;
+        $errstr = '';
         $socket = @stream_socket_client(
             $transport . $host . ':' . $port,
             $errno,
             $errstr,
-            5
+            self::PROBE_TIMEOUT
         );
         if ($socket === false) {
-            throw new RuntimeException($errstr !== '' ? $errstr : 'Unable to connect');
+            return [
+                'success' => false,
+                'message' => sprintf(
+                    __('Unable to connect to %1$s:%2$d: %3$s'),
+                    $host,
+                    $port,
+                    $errstr !== '' ? $errstr : __('connection refused')
+                ),
+            ];
         }
 
+        stream_set_timeout($socket, self::PROBE_TIMEOUT);
+
         try {
-            fgets($socket); // greeting
+            $greeting = fgets($socket);
+            if ($greeting === false) {
+                return [
+                    'success' => false,
+                    'message' => sprintf(__('%s closed the connection without sending a greeting.'), $host),
+                ];
+            }
+            if (preg_match('/^\*\s+(BYE|NO|BAD)\b\s*(.*)$/i', trim($greeting), $matches) === 1) {
+                return [
+                    'success' => false,
+                    'message' => sprintf(__('%1$s refused the connection: %2$s'), $host, trim($matches[2])),
+                ];
+            }
 
             $auth = base64_encode(sprintf("user=%s\1auth=Bearer %s\1\1", $email, $token));
-            fwrite($socket, "a1 AUTHENTICATE XOAUTH2 {$auth}\r\n");
-            $response = fgets($socket);
+            fwrite($socket, 'GLPI1 AUTHENTICATE XOAUTH2 ' . $auth . "\r\n");
 
-            return $response !== false && preg_match('/^a1 OK/i', $response) === 1;
+            // On failure, the server first sends a `+ <base64 JSON>` challenge
+            // describing the error and waits for an empty client response
+            // before sending its final tagged answer. Untagged `*` lines may
+            // also be interleaved, so read until the tagged line shows up.
+            $challenge = null;
+            while (($line = fgets($socket)) !== false) {
+                $line = trim($line);
+                if ($line === '') {
+                    continue;
+                }
+
+                if (str_starts_with($line, '+')) {
+                    $challenge = trim(substr($line, 1));
+                    fwrite($socket, "\r\n");
+                    continue;
+                }
+
+                if (str_starts_with($line, '*')) {
+                    continue; // untagged information, not the command result
+                }
+
+                if (preg_match('/^GLPI1\s+(OK|NO|BAD)\b\s*(.*)$/i', $line, $matches) === 1) {
+                    if (strtoupper($matches[1]) === 'OK') {
+                        return ['success' => true, 'message' => sprintf(__('Connected to %s successfully.'), $host)];
+                    }
+
+                    return [
+                        'success' => false,
+                        'message' => $this->explainXoauth2Failure(trim($matches[2]), $challenge),
+                    ];
+                }
+            }
+
+            return [
+                'success' => false,
+                'message' => sprintf(
+                    __('No answer from %s (the connection timed out or was closed during authentication).'),
+                    $host
+                ),
+            ];
         } finally {
             fclose($socket);
         }
@@ -449,19 +520,36 @@ class OAuthAuthorization extends CommonDBChild
      *
      * Isolated in its own (protected) method so tests can stub it out
      * without opening a real network connection.
+     *
+     * @return array{success: bool, message: string}
      */
-    protected function probeSmtpConnection(string $host, int $port, string $email, string $token): bool
+    protected function probeSmtpConnection(string $host, int $port, string $email, string $token): array
     {
         if ($host === '') {
             // No SMTP host configured on this authorization: only the token
             // validity (already ensured by testConnection()) can be checked.
-            return true;
+            return [
+                'success' => true,
+                'message' => __('The access token is valid. No SMTP server is configured on this authorization, so the connection itself was not tested.'),
+            ];
         }
 
-        $socket = @stream_socket_client($host . ':' . $port, $errno, $errstr, 5);
+        $errno = 0;
+        $errstr = '';
+        $socket = @stream_socket_client($host . ':' . $port, $errno, $errstr, self::PROBE_TIMEOUT);
         if ($socket === false) {
-            throw new RuntimeException($errstr !== '' ? $errstr : 'Unable to connect');
+            return [
+                'success' => false,
+                'message' => sprintf(
+                    __('Unable to connect to %1$s:%2$d: %3$s'),
+                    $host,
+                    $port,
+                    $errstr !== '' ? $errstr : __('connection refused')
+                ),
+            ];
         }
+
+        stream_set_timeout($socket, self::PROBE_TIMEOUT);
 
         try {
             fgets($socket); // greeting
@@ -471,13 +559,99 @@ class OAuthAuthorization extends CommonDBChild
             }
 
             $auth = base64_encode(sprintf("user=%s\1auth=Bearer %s\1\1", $email, $token));
-            fwrite($socket, "AUTH XOAUTH2 {$auth}\r\n");
-            $response = fgets($socket);
+            fwrite($socket, 'AUTH XOAUTH2 ' . $auth . "\r\n");
 
-            return $response !== false && preg_match('/^235/', $response) === 1;
+            $challenge = null;
+            while (($response = fgets($socket)) !== false) {
+                $response = trim($response);
+                if ($response === '') {
+                    continue;
+                }
+
+                if (str_starts_with($response, '334')) {
+                    $challenge = trim(substr($response, 3));
+                    fwrite($socket, "\r\n");
+                    continue;
+                }
+
+                if (str_starts_with($response, '235')) {
+                    return ['success' => true, 'message' => sprintf(__('Connected to %s successfully.'), $host)];
+                }
+
+                return [
+                    'success' => false,
+                    'message' => $this->explainXoauth2Failure($response, $challenge),
+                ];
+            }
+
+            return [
+                'success' => false,
+                'message' => sprintf(
+                    __('No answer from %s (the connection timed out or was closed during authentication).'),
+                    $host
+                ),
+            ];
         } finally {
             fclose($socket);
         }
+    }
+
+    /**
+     * Turns a rejected XOAUTH2 handshake into an actionable explanation.
+     *
+     * Providers answer a failed XOAUTH2 authentication with a base64-encoded
+     * JSON payload (the SASL challenge) telling why the token was refused and
+     * which scope the server expected.
+     */
+    private function explainXoauth2Failure(string $server_response, ?string $challenge): string
+    {
+        $payload = null;
+        if ($challenge !== null && $challenge !== '') {
+            $decoded = base64_decode($challenge, true);
+            if ($decoded !== false) {
+                $payload = json_decode($decoded, true);
+            }
+        }
+
+        $status = is_array($payload) ? (string) ($payload['status'] ?? '') : '';
+        $scope  = is_array($payload) ? (string) ($payload['scope'] ?? '') : '';
+
+        $lines = [$this->getXoauth2FailureHint($server_response, $status)];
+
+        if ($scope !== '') {
+            $lines[] = sprintf(__('Scope expected by the server: %s'), $scope);
+        }
+        if ($status !== '') {
+            $lines[] = sprintf(__('Status returned by the server: %s'), $status);
+        }
+        if ($server_response !== '') {
+            $lines[] = sprintf(__('Server response: %s'), $server_response);
+        }
+
+        return implode("\n", $lines);
+    }
+
+    /**
+     * Returns the most specific explanation available for a rejected
+     * XOAUTH2 handshake.
+     */
+    private function getXoauth2FailureHint(string $server_response, string $status): string
+    {
+        // Exchange Online answers this when the token itself was accepted but
+        // the mailbox could not be opened over the requested protocol.
+        if (stripos($server_response, 'authenticated but not connected') !== false) {
+            return __('The account was authenticated, but the mailbox could not be opened over this protocol. Check that IMAP is enabled for this mailbox, that the application has the "IMAP.AccessAsUser.All" permission with administrator consent, and that the account has a mailbox licence.');
+        }
+
+        if (stripos($server_response, 'IMAP access is disabled') !== false) {
+            return __('IMAP access is disabled for this account. Enable it in the mailbox settings.');
+        }
+
+        return match ($status) {
+            '400' => __('The mail server rejected the access token: it does not carry the permission required by this protocol. Grant the matching API permission to the application (with administrator consent), then create the authorization again.'),
+            '401' => __('The mail server refused the access token. It may have been revoked, or this mailbox may not be allowed to use this protocol.'),
+            default => __('The mail server refused the authentication. Check that the protocol is enabled for this mailbox and that the application has the required permission.'),
+        };
     }
 
     /**
