@@ -364,14 +364,141 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
 
+    /**
+     * Get DB criteria for items linked to a user, directly or through groups.
+     *
+     * @param int  $users_id User ID
+     * @param bool $tech     false = used items, true = managed items
+     *
+     * @return array{field_user: string, groups_ids: int[], criteria: array<string, mixed>}
+     */
+    private static function getItemsForUserCriteria(int $users_id, bool $tech): array
+    {
+        global $DB;
+
+        $field_user = $tech ? 'users_id_tech' : 'users_id';
+
+        $iterator = $DB->request([
+            'SELECT' => ['glpi_groups.id'],
+            'FROM'   => 'glpi_groups',
+            'LEFT JOIN' => [
+                'glpi_groups_users' => [
+                    'FKEY' => [
+                        'glpi_groups_users' => 'groups_id',
+                        'glpi_groups'       => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => ['glpi_groups_users.users_id' => $users_id],
+        ]);
+
+        $groups_ids = array_column(iterator_to_array($iterator), 'id');
+
+        $criteria = [$field_user => $users_id];
+
+        if (count($groups_ids) > 0) {
+            $criteria = [
+                'OR' => [
+                    $criteria,
+                    [
+                        Group_Item::getTable() . '.groups_id' => $groups_ids,
+                        Group_Item::getTable() . '.type'      => $tech
+                            ? Group_Item::GROUP_TYPE_TECH
+                            : Group_Item::GROUP_TYPE_NORMAL,
+                    ],
+                ],
+            ];
+        }
+
+        return [
+            'field_user' => $field_user,
+            'groups_ids' => $groups_ids,
+            'criteria'   => $criteria,
+        ];
+    }
+
+
+    /**
+     * Count items linked to a user.
+     *
+     * @param int  $users_id User ID
+     * @param bool $tech     false = used items, true = managed items
+     *
+     * @return int
+     */
+    public static function countItemsForUser(int $users_id, bool $tech): int
+    {
+        global $CFG_GLPI, $DB;
+
+        $user_criteria = self::getItemsForUserCriteria($users_id, $tech);
+        $count = 0;
+
+        foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
+            if (!class_exists($itemtype)) {
+                continue;
+            }
+
+            $item = getItemForItemtype($itemtype);
+            if (!$item || !$item::canView()) {
+                continue;
+            }
+
+            $table = $itemtype::getTable();
+
+            if (!$DB->fieldExists($table, $user_criteria['field_user'])) {
+                continue;
+            }
+
+            $query = [
+                'COUNT' => 'cpt',
+                'FROM'  => $table,
+                'LEFT JOIN' => [
+                    Group_Item::getTable() => [
+                        'FKEY' => [
+                            $table => 'id',
+                            Group_Item::getTable() => 'items_id',
+                            [
+                                'AND' => [
+                                    Group_Item::getTable() . '.itemtype' => $itemtype,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'WHERE' => $user_criteria['criteria'],
+            ];
+
+            if ($item->maybeTemplate()) {
+                $query['WHERE']['is_template'] = 0;
+            }
+
+            if ($item->maybeDeleted()) {
+                $query['WHERE']['is_deleted'] = 0;
+            }
+
+            $count += $DB->request($query)->current()['cpt'];
+        }
+
+        return $count;
+    }
+
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
         switch ($item::class) {
             case self::class:
-                $ong    = [];
-                $ong[1] = self::createTabEntry(__('Used items'), 0, $item::class, 'ti ti-package');
-                $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::class, 'ti ti-package');
+                $nb_used = 0;
+                $nb_managed = 0;
+
+                if ($_SESSION['glpishow_count_on_tabs']) {
+                    $nb_used = self::countItemsForUser($item->getID(), false);
+                    $nb_managed = self::countItemsForUser($item->getID(), true);
+                }
+
+                $ong = [];
+                $ong[1] = self::createTabEntry(__('Used items'), $nb_used, $item::class, 'ti ti-package');
+                $ong[2] = self::createTabEntry(__('Managed items'), $nb_managed, $item::class, 'ti ti-augmented-reality-2');
 
                 if (
                     $item->fields['authtype'] === Auth::LDAP
@@ -4991,51 +5118,25 @@ HTML;
             'users'       => [],
         ];
 
-        if ($tech) {
-            $field_user  = 'users_id_tech';
-        } else {
-            $field_user  = 'users_id';
-        }
+        $user_criteria = self::getItemsForUserCriteria($ID, $tech);
+        $field_user = $user_criteria['field_user'];
+        $criteria = $user_criteria['criteria'];
 
-        $groups      = [];
+        $groups = [];
 
-        $iterator = $DB->request([
-            'SELECT'    => [
-                'glpi_groups.id',
-                'glpi_groups.name',
-            ],
-            'FROM'      => 'glpi_groups',
-            'LEFT JOIN' => [
-                'glpi_groups_users' => [
-                    'FKEY' => [
-                        'glpi_groups_users'  => 'groups_id',
-                        'glpi_groups'        => 'id',
-                    ],
-                ],
-            ],
-            'WHERE'     => ['glpi_groups_users.users_id' => $ID],
-        ]);
-        $number = 0;
+        if (count($user_criteria['groups_ids']) > 0) {
+            $groups_iterator = $DB->request([
+                'SELECT' => ['id', 'name'],
+                'FROM'   => 'glpi_groups',
+                'WHERE'  => ['id' => $user_criteria['groups_ids']],
+            ]);
 
-        $criteria = [
-            $field_user => $ID,
-        ];
-        if ($iterator->count() > 0) {
-            $groups_ids = [];
-            foreach ($iterator as $data) {
-                $groups_ids[] = $data['id'];
-                $groups[$data["id"]] = $data["name"];
+            foreach ($groups_iterator as $data) {
+                $groups[$data['id']] = $data['name'];
             }
-            $criteria = [
-                'OR' => [
-                    $criteria,
-                    [
-                        Group_Item::getTable() . '.groups_id' => $groups_ids,
-                        Group_Item::getTable() . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL,
-                    ],
-                ],
-            ];
         }
+
+        $number = 0;
 
         $group_choices = [];
         foreach (getAllDataFromTable('glpi_groups') as $g_id => $row) {
