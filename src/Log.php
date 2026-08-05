@@ -181,7 +181,10 @@ class Log extends CommonDBTM
                     // Linkfield or standard field not massive action enable
                     $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
-                    if ($val2['table'] == $item->getTable()) {
+                    if (
+                        $val2['table'] == $item->getTable()
+                        || ($item->getType() == 'Infocom' && $val2['linkfield'] == $key)
+                    ) {
                         $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     } else {
                         // other cases; link field -> get data from dropdown
