@@ -287,90 +287,111 @@ final class DbUtils
         if (isset($CFG_GLPI['glpiitemtypetables'][$table])) {
             return $CFG_GLPI['glpiitemtypetables'][$table];
         } else {
-            $inittable = $table;
-            $table     = str_replace("glpi_", "", $table);
-            $prefix    = "";
-            $pref2     = NS_GLPI;
-            $is_plugin = false;
-
-            $matches = [];
-            if (preg_match('/^plugin_([a-z0-9]+)_/', $table, $matches)) {
-                $table  = preg_replace('/^plugin_[a-z0-9]+_/', '', $table);
-                $prefix = "Plugin" . Toolbox::ucfirst($matches[1]);
-                $pref2  = NS_PLUG . ucfirst($matches[1]) . '\\';
-                $is_plugin = true;
-            }
-
-            if (strstr($table, '_')) {
-                $split = explode('_', $table);
-
-                foreach ($split as $key => $part) {
-                    $split[$key] = Toolbox::ucfirst($this->getSingular($part));
-                }
-                $table = implode('_', $split);
-            } else {
-                $table = Toolbox::ucfirst($this->getSingular($table));
-            }
-
-            $base_itemtype = $this->fixItemtypeCase($prefix . $table);
-
-            $itemtype = null;
-            if (class_exists($base_itemtype)) {
-                $class_file = (new ReflectionClass($base_itemtype))->getFileName();
-                $is_glpi_class = $class_file !== false && (
-                    str_starts_with(realpath($class_file), realpath(GLPI_ROOT))
-                    || str_starts_with(realpath($class_file), realpath(GLPI_MARKETPLACE_DIR))
-                    || str_starts_with(realpath($class_file), realpath(GLPI_PLUGIN_DOC_DIR))
-                );
-                if ($is_glpi_class) {
-                    $itemtype = $base_itemtype;
-                }
-            }
-
-            // Handle namespaces
+            $itemtype = $this->getExpectedItemTypeForTable($table);
             if ($itemtype === null) {
-                $namespaced_itemtype = $this->fixItemtypeCase($pref2 . str_replace('_', '\\', $table));
+                return null;
+            }
 
-                if (class_exists($namespaced_itemtype)) {
-                    $itemtype = $namespaced_itemtype;
-                } else {
-                    // Handle namespace + db relation
-                    // On the previous step we converted all '_' into '\'
-                    // However some '_' must be kept in case of an item relation
-                    // For example, with the `glpi_namespace1_namespace2_items_filters` table
-                    // the expected itemtype is Glpi\Namespace1\Namespace2\Item_Filter
-                    // NOT Glpi\Namespace1\Namespace2\Item\Filter
-                    // To avoid this, we can revert the last '_' and check if the itemtype exists
-                    $check_alternative = $is_plugin
-                        ? substr_count($table, '_') >= 1 // for plugin classes, always keep the first+second namespace levels (GlpiPlugin\\PluginName\\)
-                        : substr_count($table, '_') > 0 // for GLPI classes, always keep the first namespace level (Glpi\\)
-                    ;
-                    if ($check_alternative) {
-                        $last_backslash_position = strrpos($namespaced_itemtype, "\\");
-                        // Replace last '\' into '_'
-                        $alternative_namespaced_itemtype = substr_replace(
-                            $namespaced_itemtype,
-                            '_',
-                            $last_backslash_position,
-                            1
-                        );
-                        $alternative_namespaced_itemtype = $this->fixItemtypeCase($alternative_namespaced_itemtype);
+            $CFG_GLPI['glpiitemtypetables'][$table]     = $itemtype;
+            $CFG_GLPI['glpitablesitemtype'][$itemtype] = $table;
+            return $itemtype;
+        }
+    }
 
-                        if (class_exists($alternative_namespaced_itemtype)) {
-                            $itemtype = $alternative_namespaced_itemtype;
-                        }
+    /**
+     * Returns expected itemtype for a given table.
+     * /!\ This method will only compute the expected itemtype and will not take into account the
+     * itemtype/table mapping, in which the table may be attached to any of the classes sharing it
+     * (see `self::getTableForItemType()`).
+     *
+     * @param string $table
+     *
+     * @return class-string<CommonDBTM>|null
+     *      itemtype expected to own the table name parameter,
+     *      or null if no valid itemtype is attached to the table
+     */
+    public function getExpectedItemTypeForTable(string $table): ?string
+    {
+        $table     = str_replace("glpi_", "", $table);
+        $prefix    = "";
+        $pref2     = NS_GLPI;
+        $is_plugin = false;
+
+        $matches = [];
+        if (preg_match('/^plugin_([a-z0-9]+)_/', $table, $matches)) {
+            $table  = preg_replace('/^plugin_[a-z0-9]+_/', '', $table);
+            $prefix = "Plugin" . Toolbox::ucfirst($matches[1]);
+            $pref2  = NS_PLUG . ucfirst($matches[1]) . '\\';
+            $is_plugin = true;
+        }
+
+        if (strstr($table, '_')) {
+            $split = explode('_', $table);
+
+            foreach ($split as $key => $part) {
+                $split[$key] = Toolbox::ucfirst($this->getSingular($part));
+            }
+            $table = implode('_', $split);
+        } else {
+            $table = Toolbox::ucfirst($this->getSingular($table));
+        }
+
+        $base_itemtype = $this->fixItemtypeCase($prefix . $table);
+
+        $itemtype = null;
+        if (class_exists($base_itemtype)) {
+            $class_file = (new ReflectionClass($base_itemtype))->getFileName();
+            $is_glpi_class = $class_file !== false && (
+                str_starts_with(realpath($class_file), realpath(GLPI_ROOT))
+                || str_starts_with(realpath($class_file), realpath(GLPI_MARKETPLACE_DIR))
+                || str_starts_with(realpath($class_file), realpath(GLPI_PLUGIN_DOC_DIR))
+            );
+            if ($is_glpi_class) {
+                $itemtype = $base_itemtype;
+            }
+        }
+
+        // Handle namespaces
+        if ($itemtype === null) {
+            $namespaced_itemtype = $this->fixItemtypeCase($pref2 . str_replace('_', '\\', $table));
+
+            if (class_exists($namespaced_itemtype)) {
+                $itemtype = $namespaced_itemtype;
+            } else {
+                // Handle namespace + db relation
+                // On the previous step we converted all '_' into '\'
+                // However some '_' must be kept in case of an item relation
+                // For example, with the `glpi_namespace1_namespace2_items_filters` table
+                // the expected itemtype is Glpi\Namespace1\Namespace2\Item_Filter
+                // NOT Glpi\Namespace1\Namespace2\Item\Filter
+                // To avoid this, we can revert the last '_' and check if the itemtype exists
+                $check_alternative = $is_plugin
+                    ? substr_count($table, '_') >= 1 // for plugin classes, always keep the first+second namespace levels (GlpiPlugin\\PluginName\\)
+                    : substr_count($table, '_') > 0 // for GLPI classes, always keep the first namespace level (Glpi\\)
+                ;
+                if ($check_alternative) {
+                    $last_backslash_position = strrpos($namespaced_itemtype, "\\");
+                    // Replace last '\' into '_'
+                    $alternative_namespaced_itemtype = substr_replace(
+                        $namespaced_itemtype,
+                        '_',
+                        $last_backslash_position,
+                        1
+                    );
+                    $alternative_namespaced_itemtype = $this->fixItemtypeCase($alternative_namespaced_itemtype);
+
+                    if (class_exists($alternative_namespaced_itemtype)) {
+                        $itemtype = $alternative_namespaced_itemtype;
                     }
                 }
             }
-
-            if ($itemtype !== null && ($classname = $this->getClassForItemtype($itemtype)) !== null) {
-                $CFG_GLPI['glpiitemtypetables'][$inittable] = $classname;
-                $CFG_GLPI['glpitablesitemtype'][$classname] = $inittable;
-                return $itemtype;
-            }
-
-            return null;
         }
+
+        if ($itemtype !== null) {
+            return $this->getClassForItemtype($itemtype);
+        }
+
+        return null;
     }
 
     /**

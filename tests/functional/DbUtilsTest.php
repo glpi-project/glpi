@@ -244,6 +244,48 @@ class DbUtilsTest extends DbTestCase
     }
 
     #[DataProvider('dataTableType')]
+    public function testGetExpectedItemTypeForTable($table, $type, $is_valid_type)
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        require_once __DIR__ . '/../../tests/fixtures/another_test.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginbarabstractstuff.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginbarfoo.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoobar.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfooservice.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_search_item_filter.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_item_filter.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_search_a_b_c_d_e_f_g_bar.php';
+        require_once __DIR__ . '/../../tests/fixtures/test_a_b.php';
+
+        // The itemtype/table mapping must not be taken into account.
+        $CFG_GLPI['glpiitemtypetables'][$table] = \Computer::class;
+
+        $instance = new \DbUtils();
+        if ($is_valid_type) {
+            $this->assertSame($type, $instance->getExpectedItemTypeForTable($table));
+        } else {
+            $this->assertNull($instance->getExpectedItemTypeForTable($table));
+        }
+    }
+
+    public function testGetExpectedItemTypeForTableIgnoresClassesSharingTable()
+    {
+        $instance = new \DbUtils();
+
+        $this->assertSame('glpi_itemantiviruses', $instance->getTableForItemType(\ComputerAntivirus::class));
+        $this->assertSame(\ComputerAntivirus::class, $instance->getItemTypeForTable('glpi_itemantiviruses'));
+
+        $this->assertSame(\ItemAntivirus::class, $instance->getExpectedItemTypeForTable('glpi_itemantiviruses'));
+
+        $this->assertSame('glpi_rules', $instance->getTableForItemType(\RuleTicketCollection::class));
+        $this->assertSame(\RuleTicketCollection::class, $instance->getItemTypeForTable('glpi_rules'));
+
+        $this->assertSame(\Rule::class, $instance->getExpectedItemTypeForTable('glpi_rules'));
+    }
+
+    #[DataProvider('dataTableType')]
     public function testGetItemForTable($table, $type, $is_valid_type)
     {
         require_once __DIR__ . '/../../tests/fixtures/another_test.php';
