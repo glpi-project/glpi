@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Domain;
 use DomainRecord;
 use Glpi\Tests\DbTestCase;
 
@@ -94,5 +95,21 @@ class DomainRecordTest extends DbTestCase
         // A fresh (empty) item should reflect the real default ttl, not 0.
         $record->getEmpty();
         $this->assertSame(DomainRecord::DEFAULT_TTL, $record->fields['ttl']);
+    }
+
+    public function testGetDisplayName()
+    {
+        $domain = new Domain();
+        $domain->fields['name'] = 'Test';
+
+        // Record name only textually contains the domain name as a prefix,
+        // it must not be stripped down to its trailing suffix.
+        $this->assertSame('Test2', DomainRecord::getDisplayName($domain, 'Test2'));
+
+        // Record name equal to the domain name is the DNS root.
+        $this->assertSame('@', DomainRecord::getDisplayName($domain, 'Test'));
+
+        // Record name is a genuine FQDN suffixed by the domain name.
+        $this->assertSame('www', DomainRecord::getDisplayName($domain, 'www.Test'));
     }
 }
