@@ -10659,4 +10659,84 @@ HTML,
 
         $this->assertSame(255, mb_strlen($ticket->fields['name']));
     }
+
+    public function testGetAssociatedDocumentsOfPrivateTaskWithUnrelatedGroup(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $tech_user_id   = getItemByTypeName(User::class, 'tech', true);
+        $normal_user_id = getItemByTypeName(User::class, 'normal', true);
+
+        // Give the tech profile full visibility on private tasks (seeprivate)
+        // in addition to seeprivategroups
+        $tprofile_id = getItemByTypeName(Profile::class, 'Technician', true);
+        $profile_right = new ProfileRight();
+        $profile_right->getFromDBByCrit([
+            'profiles_id' => $tprofile_id,
+            'name'        => 'task',
+        ]);
+        $this->updateItem(
+            ProfileRight::class,
+            $profile_right->getID(),
+            [
+                'rights' => \CommonITILTask::SEEPUBLIC
+                    + \CommonITILTask::SEEPRIVATE
+                    + \CommonITILTask::SEEPRIVATEGROUPS,
+            ]
+        );
+
+        // Group with no relation at all to the ticket or its tasks
+        $unrelated_group = $this->createItem(Group::class, [
+            'name' => 'Unrelated group',
+        ]);
+        $this->createItem(Group_User::class, [
+            'groups_id' => $unrelated_group->getID(),
+            'users_id'  => $tech_user_id,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        // Private task neither authored by assigned to nor linked by group to the tech user
+        $task = $this->createItem(TicketTask::class, [
+            'tickets_id'    => $ticket->getID(),
+            'content'       => 'private task unrelated to tech user',
+            'is_private'    => 1,
+            'users_id'      => $normal_user_id,
+            'users_id_tech' => $normal_user_id,
+        ]);
+
+        $doc = $this->createItem(\Document::class, [
+            'name' => 'Doc linked to unrelated private task',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'     => $task->getID(),
+            'itemtype'     => TicketTask::class,
+            'documents_id' => $doc->getID(),
+        ]);
+
+        // Tech user has seeprivate but also belongs to an
+        // unrelated group with seeprivategroups enabled. Merely belonging to that
+        // group must not restrict access to documents they are otherwise allowed to see
+        $this->login('tech', 'tech');
+
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria();
+        $doc_items_iterator = $DB->request([
+            'SELECT' => ['documents_id'],
+            'FROM'   => \Document_Item::getTable(),
+            'WHERE'  => $doc_crit,
+        ]);
+        $found_docs = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs[] = $doc_item['documents_id'];
+        }
+
+        $this->assertContains($doc->getID(), $found_docs);
+    }
+
 }
