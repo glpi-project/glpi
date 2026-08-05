@@ -829,7 +829,7 @@ final class QueryBuilder implements SearchInputInterface
             if (!isset($params[$key])) {
                 if (
                     $usesession
-                    && ($key == 'is_deleted' || $key == 'as_map' || $key == 'browse' || $key === 'unpublished' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
+                    && ($key == 'is_deleted' || $key == 'as_map' || $key == 'browse' || $key === 'unpublished' || $key === 'sort' || $key === 'order' || !isset($saved_params['criteria'])) // retrieve session only if not a new request
                     && isset($_SESSION['glpisearch'][$itemtype][$key])
                 ) {
                     $params[$key] = $_SESSION['glpisearch'][$itemtype][$key];
