@@ -595,6 +595,9 @@ abstract class MainAsset extends InventoryAsset
                     $this->setEntityRecursive($dataEntity['is_recursive']);
                 }
 
+                Plugin::doHookFunction('post_process_import_entity_rules', (object) ["mainAssetObj" => $this, "rulesTargetEntity" => $dataEntity]);
+                $input['entities_id'] = $this->entities_id;
+
                 // get data from rules (like locations_id, states_id, groups_id_tech, etc)
                 // we don't want virtual action (prefixed by _)
                 $ruleentity_actions = $ruleEntity->getRuleClass()->getAllActions();
