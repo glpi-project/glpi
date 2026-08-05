@@ -5777,22 +5777,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         if (!$this->isNotSolved()) {
             echo "<tr class='tab_bg_2'><td>" . __s('Resolution') . "</td><td>";
-
-            if ($this->fields['solve_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['solve_delay_stat'], false, false));
-            } else {
-                echo '&nbsp;';
-            }
+            // solve_delay_stat may legitimately be 0 (e.g. ticket resolved outside
+            // the calendar's working hours), so always display it if the ticket is solved.
+            echo htmlescape(Html::timestampToString($this->fields['solve_delay_stat'], false, false));
             echo "</td></tr>";
         }
 
         if (in_array($this->fields['status'], static::getClosedStatusArray())) {
             echo "<tr class='tab_bg_2'><td>" . __s('Closure') . "</td><td>";
-            if ($this->fields['close_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['close_delay_stat'], true, false));
-            } else {
-                echo '&nbsp;';
-            }
+            // close_delay_stat may legitimately be 0 (e.g. ticket closed outside
+            // the calendar's working hours), so always display it if the ticket is closed.
+            echo htmlescape(Html::timestampToString($this->fields['close_delay_stat'], true, false));
             echo "</td></tr>";
         }
 
@@ -6966,7 +6961,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 $solvedelay_column = "";
                 // Show only for solved tickets
-                if ($item->fields['solve_delay_stat'] > 0) {
+                if (!empty($item->fields['solvedate'])) {
                     $solvedelay_column = htmlescape(Html::timestampToString($item->fields['solve_delay_stat']));
                 }
                 echo $output::showItem($solvedelay_column, $item_num, $p['row_num'], $align_desc . " width='150'");
