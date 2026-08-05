@@ -5787,7 +5787,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             echo "<tr class='tab_bg_2'><td>" . __s('Closure') . "</td><td>";
             // close_delay_stat may legitimately be 0 (e.g. ticket closed outside
             // the calendar's working hours), so always display it if the ticket is closed.
-            echo htmlescape(Html::timestampToString($this->fields['close_delay_stat'], true, false));
+            echo htmlescape(Html::timestampToString($this->fields['close_delay_stat'], false, false));
             echo "</td></tr>";
         }
 
