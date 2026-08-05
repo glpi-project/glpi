@@ -1264,7 +1264,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
             if ($this->canComment()) {
                 $actions[] = new EditorAction(
-                    label: "Comments",
+                    label: __("Comments"),
                     icon: "ti ti-message-circle",
                     type: EditorActionType::LOAD_SIDE_PANEL,
                     params: [
@@ -1278,7 +1278,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             }
 
             $actions[] = new EditorAction(
-                label: "Service catalog",
+                label: __("Service catalog"),
                 icon: "ti ti-library",
                 type: EditorActionType::OPEN_MODAL,
                 params: [
