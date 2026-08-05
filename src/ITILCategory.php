@@ -73,8 +73,8 @@ class ITILCategory extends CommonTreeDropdown
                 'list'      => true,
             ],
             [
-                'name'      => 'knowbaseitemcategories_id',
-                'label'     => KnowbaseItemCategory::getTypeName(1),
+                'name'      => 'knowbaseitems_id',
+                'label'     => KnowbaseItem::getTypeName(1),
                 'type'      => 'dropdownValue',
                 'list'      => true,
             ],
@@ -294,8 +294,9 @@ class ITILCategory extends CommonTreeDropdown
 
         $tab[] = [
             'id'                 => '79',
-            'table'              => 'glpi_knowbaseitemcategories',
-            'field'              => 'completename',
+            'table'              => 'glpi_knowbaseitems',
+            'field'              => 'name',
+            'linkfield'          => 'knowbaseitems_id',
             'name'               => __('Knowledge base'),
             'datatype'           => 'dropdown',
         ];

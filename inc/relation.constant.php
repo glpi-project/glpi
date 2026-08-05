@@ -629,7 +629,6 @@ $RELATION = [
         'glpi_itilcategories'              => 'entities_id',
         'glpi_itilfollowuptemplates'       => 'entities_id',
         'glpi_itilvalidationtemplates'     => 'entities_id',
-        'glpi_knowbaseitemcategories'      => 'entities_id',
         'glpi_knowbaseitems'               => 'entities_id',
         'glpi_knowbaseitems_profiles'      => 'entities_id',
         'glpi_lineoperators'               => 'entities_id',
@@ -826,24 +825,19 @@ $RELATION = [
         'glpi_changevalidations' => 'itils_validationsteps_id',
     ],
 
-    'glpi_knowbaseitemcategories' => [
-        'glpi_itilcategories'            => 'knowbaseitemcategories_id',
-        'glpi_knowbaseitemcategories'    => 'knowbaseitemcategories_id',
-        '_glpi_knowbaseitems_knowbaseitemcategories' => 'knowbaseitemcategories_id',
-        'glpi_taskcategories'            => 'knowbaseitemcategories_id',
-    ],
-
     'glpi_knowbaseitems' => [
         '_glpi_entities_knowbaseitems'        => 'knowbaseitems_id',
         '_glpi_groups_knowbaseitems'          => 'knowbaseitems_id',
         '_glpi_knowbaseitems_comments'        => 'knowbaseitems_id',
         '_glpi_knowbaseitems_favorites'       => 'knowbaseitems_id',
         '_glpi_knowbaseitems_items'           => 'knowbaseitems_id',
+        '_glpi_knowbaseitems_knowbaseitems'   => ['knowbaseitems_id', 'knowbaseitems_id_parent'],
         '_glpi_knowbaseitems_profiles'        => 'knowbaseitems_id',
         '_glpi_knowbaseitems_revisions'       => 'knowbaseitems_id',
         '_glpi_knowbaseitems_users'           => 'knowbaseitems_id',
         '_glpi_knowbaseitemtranslations'      => 'knowbaseitems_id',
-        '_glpi_knowbaseitems_knowbaseitemcategories' => 'knowbaseitems_id',
+        'glpi_itilcategories'                 => 'knowbaseitems_id',
+        'glpi_taskcategories'                 => 'knowbaseitems_id',
     ],
 
     'glpi_knowbaseitems_comments' => [

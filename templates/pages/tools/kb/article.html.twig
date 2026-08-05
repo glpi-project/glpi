@@ -37,8 +37,8 @@
     data-glpi-knowbase-article
     data-glpi-kb-item-id="{{ item_id }}"
     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}"
-    {% if prefilled_category is defined %}
-        data-glpi-kb-prefilled-category-id="{{ prefilled_category.id }}"
+    {% if prefilled_parent is defined %}
+        data-glpi-kb-prefilled-parent-id="{{ prefilled_parent.id }}"
     {% endif %}
     {% if mode == 'edit' %}
         data-glpi-kb-default-language="{{ default_language }}"

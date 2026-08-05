@@ -49,10 +49,10 @@ use Group_KnowbaseItem;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
 use KnowbaseItem_Item;
+use KnowbaseItem_KnowbaseItem;
 use KnowbaseItem_Profile;
 use KnowbaseItem_Revision;
 use KnowbaseItem_User;
-use KnowbaseItemCategory;
 use KnowbaseItemTranslation;
 use Profile;
 use User;
@@ -101,19 +101,19 @@ class KnowbaseController extends AbstractController
                         'format' => Doc\Schema::FORMAT_STRING_HTML,
                         'x-field' => 'answer',
                     ],
-                    'categories' => [
+                    'parents' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'items' => [
                             'type' => Doc\Schema::TYPE_OBJECT,
-                            'x-full-schema' => 'KBCategory',
+                            'x-full-schema' => 'KBArticle',
                             'x-join' => [
-                                'table' => KnowbaseItemCategory::getTable(),
-                                'fkey' => KnowbaseItemCategory::getForeignKeyField(),
+                                'table' => KnowbaseItem::getTable(),
+                                'fkey' => 'knowbaseitems_id_parent',
                                 'field' => 'id',
                                 'ref-join' => [
-                                    'table' => \KnowbaseItem_KnowbaseItemCategory::getTable(),
+                                    'table' => KnowbaseItem_KnowbaseItem::getTable(),
                                     'fkey' => 'id',
-                                    'field' => KnowbaseItem::getForeignKeyField(),
+                                    'field' => 'knowbaseitems_id',
                                 ],
                             ],
                             'properties' => [
@@ -217,31 +217,6 @@ class KnowbaseController extends AbstractController
                             ],
                         ],
                     ],
-                ],
-            ],
-            'KBCategory' => [
-                'x-version-introduced' => '2.2.0',
-                'x-itemtype' => KnowbaseItemCategory::class,
-                'type' => Doc\Schema::TYPE_OBJECT,
-                'properties' => [
-                    'id' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
-                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'readOnly' => true,
-                    ],
-                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
-                    'completename' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
-                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
-                    'parent' => self::getDropdownTypeSchema(class: KnowbaseItemCategory::class, full_schema: 'KBCategory'),
-                    'level' => [
-                        'type' => Doc\Schema::TYPE_INTEGER,
-                        'description' => 'Level',
-                        'readOnly' => true,
-                    ],
-                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
             ],
             'KBArticleComment' => [
@@ -466,50 +441,6 @@ class KnowbaseController extends AbstractController
     {
         $request->setAttribute('id', $request->getAttribute('article_id'));
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('KBArticle', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Category', methods: ['POST'])]
-    #[RouteVersion(introduced: '2.2')]
-    #[Doc\CreateRoute(schema_name: 'KBCategory')]
-    public function createKBCategory(Request $request): Response
-    {
-        return ResourceAccessor::createBySchema(
-            $this->getKnownSchema('KBCategory', $this->getAPIVersion($request)),
-            $request->getParameters(),
-            [self::class, 'getKBCategory'],
-        );
-    }
-
-    #[Route(path: '/Category', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[RouteVersion(introduced: '2.2')]
-    #[Doc\SearchRoute(schema_name: 'KBCategory')]
-    public function searchKBCategory(Request $request): Response
-    {
-        return ResourceAccessor::searchBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getParameters());
-    }
-
-    #[Route(path: '/Category/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[RouteVersion(introduced: '2.2')]
-    #[Doc\GetRoute(schema_name: 'KBCategory')]
-    public function getKBCategory(Request $request): Response
-    {
-        return ResourceAccessor::getOneBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Category/{id}', methods: ['PATCH'])]
-    #[RouteVersion(introduced: '2.2')]
-    #[Doc\UpdateRoute('KBCategory')]
-    public function updateKBCategory(Request $request): Response
-    {
-        return ResourceAccessor::updateBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Category/{id}', methods: ['DELETE'])]
-    #[RouteVersion(introduced: '2.2')]
-    #[Doc\DeleteRoute('KBCategory')]
-    public function deleteKBCategory(Request $request): Response
-    {
-        return ResourceAccessor::deleteBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Article/{article_id}/Comment', methods: ['POST'])]

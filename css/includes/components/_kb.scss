@@ -1181,8 +1181,13 @@
             }
         }
 
-        &:hover .dropdown,
-        &:focus-within .dropdown,
+        // Scoped to `.article-line` (the row itself, not `&` = `.article`):
+        // an article can now nest child articles inside its own `<li>`
+        // (recursive tree), and `.article-line` never contains that nested
+        // `<ul>`, so this cannot bleed hover/focus into a descendant row's
+        // kebab menu.
+        .article-line:hover .dropdown,
+        .article-line:focus-within .dropdown,
         .dropdown:has([aria-expanded="true"]) {
             opacity: 1;
         }
@@ -1271,9 +1276,7 @@
 
             > li {
                 position: relative;
-
-                // Use padding (not margin) so the ::after connector covers the gap
-                padding-bottom: 0.5rem;
+                padding-bottom: 0;
                 margin-bottom: 0;
 
                 // L-shaped connector: starts $gap below the top edge so the
@@ -1289,7 +1292,7 @@
                         1rem - #{$gap}
                     ); // leave a small gap before the content
 
-                    height: 0.625rem; // half of the 20px illustration = 10px
+                    height: 0.825rem; // half of the 20px illustration = 10px
                     border-left: 1px solid var(--tblr-border-color);
                     border-bottom: 1px solid var(--tblr-border-color);
                 }
@@ -1298,9 +1301,10 @@
                     content: "";
                     position: absolute;
                     left: -1rem;
-                    top: 0.625rem;
+                    top: 0.825rem;
                     bottom: 0;
                     width: 1px;
+                    height: 20px;
                     background-color: var(--tblr-border-color);
                 }
             }
@@ -1403,7 +1407,9 @@
 
             // visibility (not opacity) keeps the closed overlay out of the tab order.
             visibility: hidden;
-            transition: transform 0.3s ease, visibility 0.3s ease;
+            transition:
+                transform 0.3s ease,
+                visibility 0.3s ease;
             overflow-y: auto;
             z-index: 1045;
         }
@@ -1425,5 +1431,46 @@
 @media (prefers-reduced-motion: reduce) {
     [data-main-page-aside="knowbaseitem"] [data-glpi-kb-aside-body] {
         transition: none;
+    }
+}
+
+// KB aside: drag and drop reparenting.
+.kb-drag-ghost {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1080;
+    max-width: 240px;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--tblr-border-radius);
+    background: var(--tblr-bg-surface);
+    box-shadow: var(--tblr-box-shadow);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+}
+
+body.kb-drag-active {
+    cursor: grabbing;
+    user-select: none;
+}
+
+[data-glpi-kb-aside-tree] {
+    [data-glpi-kb-drag-source] > .article-line {
+        opacity: 0.4;
+    }
+
+    [data-glpi-kb-drop-target] > .article-line {
+        outline: 2px solid var(--tblr-primary);
+        outline-offset: 2px;
+        border-radius: var(--tblr-border-radius);
+    }
+
+    ul.kb-tree[data-glpi-kb-drop-target] {
+        outline: 2px dashed var(--tblr-primary);
+        outline-offset: 4px;
+        border-radius: var(--tblr-border-radius);
     }
 }

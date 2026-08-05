@@ -192,8 +192,6 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
             '/front/itilfollowuptemplate.php' => \ITILFollowupTemplate::class,
             '/front/itilvalidationtemplate.form.php' => \ITILValidationTemplate::class,
             '/front/itilvalidationtemplate.php' => \ITILValidationTemplate::class,
-            '/front/knowbaseitemcategory.form.php' => \KnowbaseItemCategory::class,
-            '/front/knowbaseitemcategory.php' => \KnowbaseItemCategory::class,
             '/front/line.php' => \Line::class,
             '/front/lineoperator.form.php' => \LineOperator::class,
             '/front/lineoperator.php' => \LineOperator::class,

@@ -444,7 +444,7 @@ class Dropdown
 
             // KB links
             if (
-                $item->isField('knowbaseitemcategories_id') && Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])
+                $item->isField('knowbaseitems_id') && Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])
                 && method_exists($item, 'getLinks')
             ) {
                 // With the self-service profile, $item (whose itemtype = ITILCategory) is empty,
@@ -1345,10 +1345,6 @@ HTML;
                     'DocumentType' => null,
                     'BusinessCriticity' => null,
                     'DatabaseInstanceCategory' => null,
-                ],
-
-                __('Tools') => [
-                    'KnowbaseItemCategory' => null,
                 ],
 
                 _n('Calendar', 'Calendars', Session::getPluralNumber()) => [
