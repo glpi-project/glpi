@@ -15,8 +15,8 @@
 # Hongbin <wanghongbin@outlook.com>, 2026
 # 李赋 <fu792659@163.com>, 2026
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
-# DWXXX, 2026
 # Cédric Anne, 2026
+# DWXXX, 2026
 # 
 #, fuzzy
 msgid ""
@@ -25,7 +25,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-04 11:25+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: Cédric Anne, 2026\n"
+"Last-Translator: DWXXX, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/glpi/teams/1637/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -282,7 +282,7 @@ msgstr "认证码"
 #: templates/twig_components/Mfa/CodeInput.html.twig
 #, php-format
 msgid "Digit %1$s of %2$s"
-msgstr ""
+msgstr "数字 %1$s 之 %2$s"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
@@ -1251,7 +1251,7 @@ msgstr "设置"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "All articles"
-msgstr ""
+msgstr "所有文章"
 
 #: templates/layout/parts/context_links.html.twig
 #: templates/pages/admin/form/import/step1_index.html.twig
@@ -4334,11 +4334,11 @@ msgstr "解决时间"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "OLA TTO is mandatory"
-msgstr ""
+msgstr "OLA TTO 是必填"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "OLA TTR is mandatory"
-msgstr ""
+msgstr "OLA TTR 是必填"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/RuleTicket.php:260 src/RuleTicket.php:348 src/OLA.php:179
@@ -4352,17 +4352,17 @@ msgstr "OLA"
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
 msgid "%s completed"
-msgstr ""
+msgstr "%s 完成"
 
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
 msgid "%s is late"
-msgstr ""
+msgstr "%s 延迟"
 
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
 msgid "%s not completed"
-msgstr ""
+msgstr "%s 未完成"
 
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
@@ -4378,7 +4378,7 @@ msgstr[0] "提升等级"
 #: templates/components/itilobject/service_levels.html.twig
 #, php-format
 msgid "Ola group: %s"
-msgstr ""
+msgstr "Ola 组: %s"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: templates/pages/service-levels/levelagreement.html.twig src/Group.php:64
@@ -5864,7 +5864,7 @@ msgstr "回复"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Show articles list"
-msgstr ""
+msgstr "显示文章列表"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Articles"
@@ -5872,7 +5872,7 @@ msgstr "文章"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Collapse articles list"
-msgstr ""
+msgstr "折叠文章列表"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Search..."
@@ -5901,16 +5901,16 @@ msgstr "未发现文章。"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Create an article in this category"
-msgstr ""
+msgstr "在此分类内创建文章"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Create an uncategorized article"
-msgstr ""
+msgstr "创建一个未分类的文章"
 
 #: templates/pages/tools/kb/aside.html.twig
 #, php-format
 msgid "Create an article in %s"
-msgstr ""
+msgstr "在 %s 创建文章"
 
 #: templates/pages/tools/kb/document_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:700
@@ -5991,24 +5991,24 @@ msgstr[0] "目标"
 
 #: templates/pages/tools/kb/share_popover.html.twig
 msgid "Publish to web"
-msgstr ""
+msgstr "发布到网络"
 
 #: templates/pages/tools/kb/share_popover.html.twig
 msgid "Anyone with the link can view this article"
-msgstr ""
+msgstr "任何人拥有此链接能够访问此文章"
 
 #: templates/pages/tools/kb/share_popover.html.twig
 msgid "Public link"
-msgstr ""
+msgstr "公开链接"
 
 #: templates/pages/tools/kb/share_popover.html.twig
 msgid "Copy link"
-msgstr ""
+msgstr "复制链接"
 
 #: templates/pages/tools/kb/share_popover.html.twig
 #: js/modules/Knowbase/SharePopoverController.js:126
 msgid "Regenerate link"
-msgstr ""
+msgstr "重新生成链接"
 
 #: templates/pages/tools/kb/related_item_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:745
@@ -6249,7 +6249,7 @@ msgstr "请输入你的认证APP上的代码"
 
 #: templates/pages/reauth/prompt.html.twig
 msgid "Re-authentication required"
-msgstr ""
+msgstr "必须重新认证"
 
 #: templates/pages/reauth/prompt.html.twig
 #: templates/pages/2fa/macros.html.twig
@@ -6260,11 +6260,11 @@ msgstr "验证"
 #: templates/pages/reauth/password_form.html.twig
 #: templates/pages/reauth/ldap_form.html.twig
 msgid "Please enter your password to confirm your identity"
-msgstr ""
+msgstr "请输入你的密码来确认你的身份"
 
 #: templates/pages/reauth/fallback_form.html.twig
 msgid "Please confirm that you want to perform this sensitive action."
-msgstr ""
+msgstr "请确认你要执行此敏感操作。"
 
 #: templates/pages/self-service/service_catalog.html.twig
 #: src/Glpi/Form/Category.php:57
@@ -6299,7 +6299,7 @@ msgstr "表格"
 
 #: templates/pages/redirect_post.html.twig
 msgid "Redirecting..."
-msgstr ""
+msgstr "重定向..."
 
 #: templates/pages/form_renderer.html.twig
 msgid "Untitled section"
@@ -6487,11 +6487,11 @@ msgstr[0] "授权"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "Session list"
-msgstr ""
+msgstr "会话列表"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "Revoke all active sessions"
-msgstr ""
+msgstr "撤销所有活动会话"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 #: src/Glpi/Security/SessionTracker.php:595
@@ -6524,7 +6524,7 @@ msgstr "过滤"
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 #: src/Glpi/Console/Security/SessionListCommand.php:79
 msgid "Last activity"
-msgstr ""
+msgstr "最新活动"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
@@ -6535,7 +6535,7 @@ msgstr "操作"
 msgid ""
 "Are you sure you want to revoke all active sessions (excluding the current "
 "session)?"
-msgstr ""
+msgstr "是否确认要撤销所有活动会话（包括当前会话）？"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 #: src/Glpi/Security/SessionTracker.php:648
@@ -6545,7 +6545,7 @@ msgstr "撤消"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "Are you sure you want to revoke this session?"
-msgstr ""
+msgstr "是否确认要撤销此会话？"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:117
 msgid "Log connections"
@@ -6862,7 +6862,7 @@ msgstr ""
 
 #: templates/pages/setup/crontask/crontask.html.twig
 msgid "Aborted"
-msgstr ""
+msgstr "已取消"
 
 #: templates/pages/setup/crontask/crontask.html.twig
 msgid ""
@@ -7521,7 +7521,7 @@ msgstr "在几分钟内自动刷新数据（工单列表，项目看板）。"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Applies to Tickets, Changes, and Problems"
-msgstr ""
+msgstr "应用到工单，变更和故障"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Pre-select me as a technician for new ITIL items"
@@ -10214,7 +10214,7 @@ msgstr "导入进程已结束。"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Inventory files import results"
-msgstr ""
+msgstr "资产文件导入结果"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Filename"
@@ -10236,7 +10236,7 @@ msgstr "导入被拒绝(无日志)"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "No file imported"
-msgstr ""
+msgstr "没有文件导入"
 
 #: templates/pages/admin/ldap.users.html.twig
 msgid "Bulk import users from a LDAP directory"
@@ -17934,7 +17934,7 @@ msgstr "YiB"
 
 #: src/Toolbox.php:981 src/Toolbox.php:994
 msgid "Unable to fetch GLPI releases data."
-msgstr ""
+msgstr "无法获取GLPI发布数据。"
 
 #: src/Toolbox.php:1001
 msgid "You have the latest available version"
@@ -18910,7 +18910,7 @@ msgstr "OLA中定义的升级将在此新日期之前触发。"
 
 #: src/OLA.php:240
 msgid "You must select a group to associate with the OLA."
-msgstr ""
+msgstr "你必须选择一个组关联到此OLA。"
 
 #: src/OLA.php:250
 #, php-format
@@ -19216,7 +19216,7 @@ msgstr "问题: %s"
 
 #: src/Glpi/Form/Tag/FullFormTagProvider.php:95
 msgid "Full form (all questions and answers)"
-msgstr ""
+msgstr "全部表(所有问题及答案)"
 
 #: src/Glpi/Form/Tag/FormTagProvider.php:91
 #, php-format
@@ -20947,7 +20947,7 @@ msgstr "文件 %1$s %2$s 未被移除"
 #: src/Glpi/Inventory/Conf.php:217 src/Glpi/Inventory/Conf.php:231
 #, php-format
 msgid "File `%s` has not been imported."
-msgstr ""
+msgstr "文件 `%s` 没有被导入。"
 
 #: src/Glpi/Inventory/Conf.php:291
 #, php-format
@@ -21198,11 +21198,11 @@ msgstr "持续时间单位"
 
 #: src/Glpi/ContentTemplates/Parameters/TicketParameters.php:87
 msgid "OLA TTO"
-msgstr ""
+msgstr "OLA TTO"
 
 #: src/Glpi/ContentTemplates/Parameters/TicketParameters.php:88
 msgid "OLA TTR"
-msgstr ""
+msgstr "OLA TTR"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: src/Glpi/ContentTemplates/Parameters/SupplierParameters.php:74
@@ -21496,11 +21496,11 @@ msgstr "品项名称"
 
 #: src/Glpi/Security/ReAuth/FallbackReAuthStrategy.php:70
 msgid "Confirmation"
-msgstr ""
+msgstr "确认"
 
 #: src/Glpi/Security/ReAuth/TOTPReAuthStrategy.php:68
 msgid "Two-factor authentication"
-msgstr ""
+msgstr "双因子认证"
 
 #: src/Glpi/Security/SecurityConfig.php:47
 #: src/Glpi/Security/SecurityConfig.php:64
@@ -21524,16 +21524,16 @@ msgstr "太多失败MFA尝试。请稍后重试。"
 
 #: src/Glpi/Security/SessionTracker.php:317
 msgid "Invalid IP address filter"
-msgstr ""
+msgstr "无效的IP地址过滤器"
 
 #: src/Glpi/Security/SessionTracker.php:619
 msgid "Current session"
-msgstr ""
+msgstr "当前会话"
 
 #: src/Glpi/Security/SessionTracker.php:627
 msgctxt "logout_reason"
 msgid "User logout"
-msgstr ""
+msgstr "用户退出"
 
 #: src/Glpi/Security/SessionTracker.php:628
 msgctxt "logout_reason"
@@ -21543,12 +21543,12 @@ msgstr ""
 #: src/Glpi/Security/SessionTracker.php:629
 msgctxt "logout_reason"
 msgid "Session expired"
-msgstr ""
+msgstr "会话超期"
 
 #: src/Glpi/Security/SessionTracker.php:641
 #, php-format
 msgid "Expires at %s"
-msgstr ""
+msgstr "超期于 %s"
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:340
 #: src/Glpi/CustomObject/AbstractDefinition.php:376
@@ -23414,7 +23414,7 @@ msgstr "无效的上下文 \"%s\"。"
 
 #: src/Glpi/Console/Security/SessionListCommand.php:51
 msgid "List active sessions"
-msgstr ""
+msgstr "列出活动会话"
 
 #: src/Glpi/Console/Security/SessionListCommand.php:52
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:55
@@ -23431,20 +23431,20 @@ msgstr "未发现用户 %s"
 
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:53
 msgid "Revoke login sessions"
-msgstr ""
+msgstr "撤销登录会话"
 
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:57
 msgid "Revoke all sessions"
-msgstr ""
+msgstr "撤销所有会话"
 
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:59
 msgid "Session ID to revoke"
-msgstr ""
+msgstr "会话ID以撤销"
 
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:83
 #, php-format
 msgid "Session %s has been revoked."
-msgstr ""
+msgstr "会话 %s 已经被撤销。"
 
 #: src/Glpi/Console/Security/SessionRevokeCommand.php:95
 #, php-format
@@ -24178,11 +24178,11 @@ msgstr ""
 
 #: src/Glpi/Console/Database/IsUpToDateCommand.php:62
 msgid "The database is not up to date."
-msgstr ""
+msgstr "数据库不是最新的。"
 
 #: src/Glpi/Console/Database/IsUpToDateCommand.php:68
 msgid "The database is up to date."
-msgstr ""
+msgstr "数据库是最新的。"
 
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:108
 msgid ""
@@ -24506,7 +24506,7 @@ msgstr "无法连接到 IMAP 服务器"
 #, php-format
 msgctxt "glpi_status"
 msgid "RUNNING: %d, STUCK: %d, ERRORED: %d, TOTAL: %d"
-msgstr ""
+msgstr "运行中: %d, 卡住的: %d, 错误的: %d, 全部的: %d"
 
 #: src/Glpi/System/Status/StatusChecker.php:555
 #, php-format
@@ -25222,7 +25222,7 @@ msgstr "创建分享连接失败"
 
 #: src/Glpi/Controller/ShareTokenController.php:165
 msgid "Failed to regenerate share link"
-msgstr ""
+msgstr "重新生成共享链接失败"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:227
 #, php-format
@@ -25255,13 +25255,13 @@ msgstr "%1$s > %2$s"
 #: src/Glpi/Search/Output/Spreadsheet.php:465
 #, php-format
 msgid "%1$s <= %2$s"
-msgstr ""
+msgstr "%1$s <= %2$s"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:319
 #: src/Glpi/Search/Output/Spreadsheet.php:473
 #, php-format
 msgid "%1$s >= %2$s"
-msgstr ""
+msgstr "%1$s >= %2$s"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:342
 #: src/Glpi/Search/Output/Spreadsheet.php:501
@@ -28494,27 +28494,27 @@ msgstr "升级到更高一级"
 
 #: src/Ticket.php:2679 src/Ticket.php:2700 src/Ticket.php:2717
 msgid "time to own"
-msgstr ""
+msgstr "预计分配"
 
 #: src/Ticket.php:2700 src/Ticket.php:2771 src/Ticket.php:5432
 msgid "due time"
-msgstr ""
+msgstr "预计完成"
 
 #: src/Ticket.php:2717 src/Ticket.php:2788
 msgid "due time + progress"
-msgstr ""
+msgstr "预计完成 + 处理"
 
 #: src/Ticket.php:2733
 msgid "time to own exceeded"
-msgstr ""
+msgstr "预计分配超时"
 
 #: src/Ticket.php:2750 src/Ticket.php:2771 src/Ticket.php:2788
 msgid "time to resolve"
-msgstr ""
+msgstr "预计解决"
 
 #: src/Ticket.php:2804
 msgid "time to resolve exceeded"
-msgstr ""
+msgstr "预计解决超时"
 
 #: src/Ticket.php:2865
 msgid "Take into account time"
@@ -33448,11 +33448,11 @@ msgstr[0] "没有回复的工单将会在  %s 天后自动关闭"
 
 #: src/NotificationTargetTicket.php:603 src/NotificationTargetTicket.php:611
 msgid "OLA name"
-msgstr ""
+msgstr "OLA 名称"
 
 #: src/NotificationTargetTicket.php:604 src/NotificationTargetTicket.php:612
 msgid "OLA comment"
-msgstr ""
+msgstr "OLA 评价"
 
 #: src/NotificationTargetTicket.php:605 src/NotificationTargetTicket.php:613
 msgid "Group assigned to OLA"
@@ -34878,7 +34878,7 @@ msgstr "或只是通过删除此实例来添加异常？"
 #: js/src/vue/Planning/usePlanningScheduler.js:385
 #: js/src/vue/Planning/usePlanningScheduler.js:409
 msgid "Series"
-msgstr ""
+msgstr "系列"
 
 #: js/src/vue/Planning/usePlanningScheduler.js:302
 #: js/src/vue/Planning/usePlanningScheduler.js:388
@@ -35282,7 +35282,7 @@ msgstr "失败"
 
 #: js/modules/Knowbase/AsideController.js:305
 msgid "New article..."
-msgstr ""
+msgstr "新文章..."
 
 #: js/modules/Knowbase/AsideController.js:631
 #: js/modules/Knowbase/RevisionsPanelController.js:238
@@ -35410,11 +35410,11 @@ msgstr "%d 文档关联成功"
 
 #: js/modules/Knowbase/SharePopoverController.js:127
 msgid "The current link will stop working. Continue?"
-msgstr ""
+msgstr "当前链接将停止工作。继续操作？"
 
 #: js/modules/Knowbase/SharePopoverController.js:201
 msgid "Public link copied to clipboard"
-msgstr ""
+msgstr "公共链接复制到剪贴板"
 
 #: js/modules/Knowbase/ArticleController.js:256
 #: js/modules/Knowbase/ArticleController.js:272
@@ -35679,40 +35679,40 @@ msgstr "图片"
 #: js/modules/TipTap/TableGripsExtension.js:181
 #, javascript-format
 msgid "Select column %s"
-msgstr ""
+msgstr "选择列 %s"
 
 #: js/modules/TipTap/TableGripsExtension.js:187
 #: js/modules/TipTap/TableGripsExtension.js:193
 #, javascript-format
 msgid "Insert column at position %s"
-msgstr ""
+msgstr "在位置 %s 处插入列"
 
 #: js/modules/TipTap/TableGripsExtension.js:204
 msgid "Select table"
-msgstr ""
+msgstr "选择表"
 
 #: js/modules/TipTap/TableGripsExtension.js:208
 #: js/modules/TipTap/TableGripsExtension.js:218
 #, javascript-format
 msgid "Insert row at position %s"
-msgstr ""
+msgstr "在位置 %s 处插入行"
 
 #: js/modules/TipTap/TableGripsExtension.js:213
 #, javascript-format
 msgid "Select row %s"
-msgstr ""
+msgstr "选择行 %s"
 
 #: js/modules/TipTap/TableContextMenu.js:56
 msgid "Delete column"
-msgstr ""
+msgstr "删除列"
 
 #: js/modules/TipTap/TableContextMenu.js:59
 msgid "Delete row"
-msgstr ""
+msgstr "删除行"
 
 #: js/modules/TipTap/TableContextMenu.js:61
 msgid "Delete table"
-msgstr ""
+msgstr "删除表"
 
 #: js/glpi_dialog.js:363
 msgid "Are you sure?"
@@ -35771,7 +35771,7 @@ msgstr "选择此实体及其所有子项"
 
 #: js/src/vue/FullCalendar/BaseFullCalendar.vue:49
 msgid "Resources"
-msgstr ""
+msgstr "资源"
 
 #: js/src/vue/FuzzySearch/Modal.vue:10
 msgid "Go to menu"
