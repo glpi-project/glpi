@@ -63,6 +63,8 @@
                      data-bs-target="#new-{{ default_action_data.class }}-block"
                      type="button"
                      aria-label="{{ default_action_data.label }}"
+                     aria-expanded="false"
+                     aria-controls="new-{{ default_action_data.class }}-block"
                   >
                      <i class="{{ default_action_data.icon }}"></i>
                      <span>{{ default_action_data.label }}</span>
@@ -72,7 +74,7 @@
                      {% if timeline_btn_layout == constant('Config::TIMELINE_ACTION_BTN_SPLITTED') %}
                         {% for action, timeline_itemtype in main_actions_itemtypes %}
                         {% if loop.index0 > 0 %}
-                              <button class="btn btn-primary answer-action action-{{ action }}" data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                              <button class="btn btn-primary answer-action action-{{ action }}" data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block" aria-expanded="false" aria-controls="new-{{ timeline_itemtype.class }}-block">
                                  <i class="{{ timeline_itemtype.icon }}"></i>
                                  <span>{{ timeline_itemtype.short_label }}</span>
                               </button>
@@ -91,7 +93,7 @@
                               {% for action, timeline_itemtype in main_actions_itemtypes %}
                                  {% if loop.index0 > 0 %}
                                  <li aria-label="{{ timeline_itemtype.label }}"><a class="dropdown-item action-{{ action }} answer-action" href="#"
-                                    data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
+                                    data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block" aria-expanded="false" aria-controls="new-{{ timeline_itemtype.class }}-block">
                                     <i class="{{ timeline_itemtype.icon }}"></i>
                                     <span>{{ timeline_itemtype.label }}</span>
                                  </a></li>
