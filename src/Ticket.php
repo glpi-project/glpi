@@ -6066,16 +6066,19 @@ JAVASCRIPT;
                             });
                             foreach ($users as $user) {
                                 $user['tickets_id'] = $merge_target_id;
+                                $user['_disablenotif'] = true;
                                 unset($user['id']);
                                 $tu->add($user);
                             }
                             foreach ($groups as $group) {
                                 $group['tickets_id'] = $merge_target_id;
+                                $group['_disablenotif'] = true;
                                 unset($group['id']);
                                 $gt->add($group);
                             }
                             foreach ($suppliers as $supplier) {
                                 $supplier['tickets_id'] = $merge_target_id;
+                                $supplier['_disablenotif'] = true;
                                 unset($supplier['id']);
                                 $st->add($supplier);
                             }
