@@ -5466,7 +5466,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (isset($this->fields['takeintoaccount_delay_stat'])) {
             echo "<tr class='tab_bg_2'><td>" . __('Take into account') . "</td><td>";
             if ($this->fields['takeintoaccount_delay_stat'] > 0) {
-                echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], 0, false);
+                echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false);
             } else {
                 echo '&nbsp;';
             }
@@ -5485,13 +5485,13 @@ abstract class CommonITILObject extends CommonDBTM
             echo "<tr class='tab_bg_2'><td>" . __('Closure') . "</td><td>";
             // close_delay_stat may legitimately be 0 (e.g. ticket closed outside
             // the calendar's working hours), so always display it if the ticket is closed.
-            echo Html::timestampToString($this->fields['close_delay_stat'], true, false);
+            echo Html::timestampToString($this->fields['close_delay_stat'], false, false);
             echo "</td></tr>";
         }
 
         echo "<tr class='tab_bg_2'><td>" . __('Pending') . "</td><td>";
         if ($this->fields['waiting_duration'] > 0) {
-            echo Html::timestampToString($this->fields['waiting_duration'], 0, false);
+            echo Html::timestampToString($this->fields['waiting_duration'], false, false);
         } else {
             echo '&nbsp;';
         }
