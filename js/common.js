@@ -1524,8 +1524,11 @@ $(() => {
         } else {
             navigator.clipboard.writeText(text);
             glpi_toast_info(__("Copied to clipboard"));
+            flashIconButton($(this), $(this).attr('class'), 'ti ti-check', 1500);
         }
     });
+
+
 });
 
 /**
@@ -1605,7 +1608,7 @@ function showDisclosablePasswordField(item) {
  */
 function hideDisclosablePasswordField(item) {
     $("#" + CSS.escape(item)).prop("type", "password");
-}
+};
 
 /**
  * Copies the password from a disclosable password field to the clipboard
@@ -1624,6 +1627,8 @@ function copyDisclosablePasswordFieldToClipboard(item) {
     field.select();
     try {
         document.execCommand("copy");
+        const btn = $("#" + CSS.escape(item)).closest('.btn-group').find('.ti-clipboard-copy').closest('button');
+        flashIconButton(btn, btn.attr('class'), 'ti ti-check', 1500);
     } catch {
         alert("Copy to clipboard failed");
     }
