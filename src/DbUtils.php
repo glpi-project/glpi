@@ -306,7 +306,7 @@ final class DbUtils
      *
      * @param string $table
      *
-     * @return class-string<CommonDBTM>|null
+     * @return class-string<CommonGLPI>|null
      *      itemtype expected to own the table name parameter,
      *      or null if no valid itemtype is attached to the table
      */
