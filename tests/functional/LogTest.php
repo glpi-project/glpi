@@ -988,18 +988,18 @@ class LogTest extends DbTestCase
         $computer = $this->createComputer();
 
         $infocom = new \Infocom();
-        if (!$infocom->getFromDBforDevice('Computer', $computer->getID())) {
+        if (!$infocom->getFromDBforDevice(\Computer::class, $computer->getID())) {
             $this->assertGreaterThan(
                 0,
                 $infocom->add([
-                    'itemtype' => 'Computer',
+                    'itemtype' => \Computer::class,
                     'items_id' => $computer->getID(),
                 ])
             );
         }
 
         // Update a plain Infocom field that match for logging purpose a search option of the linked item (Computer)
-        $this->updateItem('Infocom', $infocom->getID(), [
+        $this->updateItem(Infocom::class, $infocom->getID(), [
             'date_creation' => '2020-01-09 11:49:15',
         ]);
 
@@ -1008,7 +1008,7 @@ class LogTest extends DbTestCase
             'FROM'  => Log::getTable(),
             'WHERE' => [
                 'items_id'         => $computer->getID(),
-                'itemtype'         => 'Computer',
+                'itemtype'         => \Computer::class,
                 'id_search_option' => 121, // date_creation
             ],
             'ORDER' => 'id DESC',

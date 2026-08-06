@@ -183,7 +183,7 @@ class Log extends CommonDBTM
 
                     if (
                         $val2['table'] == $item->getTable()
-                        || ($item->getType() == 'Infocom' && $val2['linkfield'] == $key)
+                        || ($item->getType() == Infocom::class && $val2['linkfield'] == $key)
                     ) {
                         $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     } else {
