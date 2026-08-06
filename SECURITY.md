@@ -15,7 +15,7 @@ Incomplete reports are returned once and **closed** if not completed within seve
 
 > [!IMPORTANT]
 > We receive a lot of security reports and we need to validate each one - please be patient ;)
-> Please provide us all information, scripts, etc so we can easily reproduce and test.
+> Also, please provide us all information, scripts, etc so we can easily reproduce and test.
 > 
 > Thank you!
 
