@@ -876,10 +876,13 @@ class Inventory
         $conf = new Conf();
         $temp_files = glob(GLPI_INVENTORY_DIR . '/*.{' . implode(',', $conf->knownInventoryExtensions()) . '}', GLOB_BRACE);
 
+        // Files created by `tempnam()` while an inventory is being processed (see `Inventory::setData()`).
+        $temp_files = array_merge($temp_files, glob(GLPI_INVENTORY_DIR . '/{xml_,json_}*', GLOB_BRACE));
+
         $time_limit = 60 * 60 * 12;//12 hours
         foreach ($temp_files as $temp_file) {
             //drop only inventory files that have been created more than 12 hours ago
-            if (time() - filemtime($temp_file) >= $time_limit) {
+            if (is_file($temp_file) && time() - filemtime($temp_file) >= $time_limit) {
                 unlink($temp_file);
                 $message = sprintf(__('File %1$s has been removed'), $temp_file);
                 if ($task) {
