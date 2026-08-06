@@ -203,7 +203,14 @@ TWIG, $twig_params);
                 );
             }
             $entry['duration'] = $duration;
-
+            $entry['expiration'] = Infocom::getWarrantyExpir(
+                $contract->fields["begin_date"],
+                $contract->fields["duration"],
+                0,
+                true,
+                $contract->fields["renewal"] == 1,
+                $contract->fields["periodicity"]
+            );
             $entries[] = $entry;
         }
 
@@ -217,13 +224,13 @@ TWIG, $twig_params);
                 'type' => _n('Type', 'Types', 1),
                 'supplier' => Supplier::getTypeName(1),
                 'begin_date' => __('Start date'),
-                'duration' => __('Initial contract period'),
+                'expiration' => __('Expiration'),
             ],
             'formatters' => [
                 'name' => 'raw_html',
                 'supplier' => 'raw_html',
                 'begin_date' => 'date',
-                'duration' => 'raw_html',
+                'expiration' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
