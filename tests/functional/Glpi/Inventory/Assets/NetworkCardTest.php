@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Inventory\Asset;
 use Glpi\Inventory\Asset\NetworkCard;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
+use Glpi\Inventory\MainAsset\Computer;
 use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -975,5 +976,167 @@ class NetworkCardTest extends AbstractInventoryAsset
         $this->assertEquals('1', $network_port->fields['ifinternalstatus']);
         // but the connection is down
         $this->assertEquals('2', $network_port->fields['ifstatus']);
+    }
+
+    public function testComputerNetworkPortMetrics()
+    {
+        $networkport = new \NetworkPort();
+        $networkmetric = new \NetworkPortMetrics();
+
+        $ifinbytes    = 3559673658;
+        $ifoutbytes   = 3257789612;
+        $ifouterrors  = 2316546841;
+        $ifinerrors   = 8974561231;
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <NETWORKS>
+              <DESCRIPTION>Ethernet</DESCRIPTION>
+              <MACADDR>00:24:13:ea:a7:01</MACADDR>
+              <STATUS>Up</STATUS>
+              <TYPE>ethernet</TYPE>
+              <IFINERRORS>$ifinerrors</IFINERRORS>
+              <IFINBYTES>$ifinbytes</IFINBYTES>
+              <IFOUTERRORS>$ifouterrors</IFOUTERRORS>
+              <IFOUTBYTES>$ifoutbytes</IFOUTBYTES>
+            </NETWORKS>
+            <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1</VERSIONCLIENT>
+          </CONTENT>
+          <DEVICEID>foo-computer</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $computer_id = $computer->fields['id'];
+        $this->assertGreaterThan(0, $computer_id);
+
+        $converter = new Converter();
+        $data = $converter->convert($xml_source);
+        $json = json_decode($data);
+
+        $conf = new Conf();
+
+        $cardAsset = new NetworkCard($computer, $json->content->networks);
+        $cardAsset->setExtraData((array) $json->content);
+        $cardAsset->checkConf($conf);
+        $cardAsset->prepare();
+
+        // Simulate the MainAsset flow: collect NetworkCard ports and create them via handlePorts()
+        // on the Computer main asset, which calls portCreated() → handlePortMetrics().
+        $mainAsset = new Computer($computer, []);
+        $mainAsset->checkConf($conf);
+        $mainAsset->addNetworkPorts($cardAsset->getNetworkPorts());
+        $mainAsset->handlePorts($computer::class, $computer_id);
+
+        //get networkport
+        $this->assertTrue(
+            $networkport->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer_id, 'instantiation_type' => 'NetworkPortEthernet', 'mac' => '00:24:13:ea:a7:01'])
+        );
+
+        //get networkport metric
+        $this->assertTrue($networkmetric->getFromDbByCrit(['networkports_id' => $networkport->fields['id']]));
+
+        $db_input = $networkmetric->fields;
+        unset($db_input['date_creation']);
+        unset($db_input['date_mod']);
+        unset($db_input['id']);
+
+        $expected_input = [
+            "date"            => date('Y-m-d'),
+            "ifinbytes"       => $ifinbytes,
+            "ifinerrors"      => $ifinerrors,
+            "ifoutbytes"      => $ifoutbytes,
+            "ifouterrors"     => $ifouterrors,
+            "networkports_id" => $networkport->fields['id'],
+        ];
+        $this->assertSame($expected_input, $db_input);
+    }
+
+    public function testWifiNetworkPortMTUSpeed()
+    {
+        $networkport = new \NetworkPort();
+        $networkport_wifi = new \NetworkPortWifi();
+
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <NETWORKS>
+              <DESCRIPTION>Wi-Fi</DESCRIPTION>
+              <MACADDR>12:dd:31:e6:c3:d7</MACADDR>
+              <STATUS>up</STATUS>
+              <TYPE>wifi</TYPE>
+              <SPEED>258</SPEED>
+              <MTU>1500</MTU>
+            </NETWORKS>
+          </CONTENT>
+          <DEVICEID>foo-computer</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $computer_id = $computer->fields['id'];
+        $this->assertGreaterThan(0, $computer_id);
+
+        $converter = new Converter();
+        $data = $converter->convert($xml_source);
+        $json = json_decode($data);
+
+        $conf = new Conf();
+
+        $cardAsset = new NetworkCard($computer, $json->content->networks);
+        $cardAsset->setExtraData((array) $json->content);
+        $cardAsset->checkConf($conf);
+        $cardAsset->prepare();
+
+        $mainAsset = new Computer($computer, []);
+        $mainAsset->checkConf($conf);
+        $mainAsset->addNetworkPorts($cardAsset->getNetworkPorts());
+        $mainAsset->handlePorts($computer::class, $computer_id);
+
+        //get networkport
+        $this->assertTrue(
+            $networkport->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer_id, 'instantiation_type' => 'NetworkPortWifi', 'mac' => '12:dd:31:e6:c3:d7'])
+        );
+
+        $this->assertSame(1500, $networkport->fields['ifmtu']);
+        $this->assertSame(258000000, $networkport->fields['ifspeed']);
+
+        // Test update of existing port (this was failing before we added ifmtu/ifspeed to $np_dyn_props)
+        $xml_source2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <NETWORKS>
+              <DESCRIPTION>Wi-Fi</DESCRIPTION>
+              <MACADDR>12:dd:31:e6:c3:d7</MACADDR>
+              <STATUS>up</STATUS>
+              <TYPE>wifi</TYPE>
+              <SPEED>300</SPEED>
+              <MTU>9000</MTU>
+            </NETWORKS>
+          </CONTENT>
+          <DEVICEID>foo-computer</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $data2 = $converter->convert($xml_source2);
+        $json2 = json_decode($data2);
+
+        $cardAsset2 = new NetworkCard($computer, $json2->content->networks);
+        $cardAsset2->setExtraData((array) $json2->content);
+        $cardAsset2->checkConf($conf);
+        $cardAsset2->prepare();
+
+        $mainAsset2 = new Computer($computer, []);
+        $mainAsset2->checkConf($conf);
+        $mainAsset2->addNetworkPorts($cardAsset2->getNetworkPorts());
+        $mainAsset2->handlePorts($computer::class, $computer_id);
+
+        $this->assertTrue(
+            $networkport->getFromDbByCrit(['itemtype' => 'Computer', 'items_id' => $computer_id, 'instantiation_type' => 'NetworkPortWifi', 'mac' => '12:dd:31:e6:c3:d7'])
+        );
+
+        $this->assertSame(9000, $networkport->fields['ifmtu']);
+        $this->assertSame(300000000, $networkport->fields['ifspeed']);
     }
 }

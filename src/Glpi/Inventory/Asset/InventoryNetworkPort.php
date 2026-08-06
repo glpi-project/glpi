@@ -284,6 +284,10 @@ trait InventoryNetworkPort
             $input['trunk'] = 0;
         }
 
+        if (!isset($input['ifspeed']) && isset($input['speed'])) {
+            $input['ifspeed'] = $input['speed'] * 1000000;
+        }
+
         $netports_id = $networkport->add($input);
         return $netports_id;
     }
@@ -352,7 +356,7 @@ trait InventoryNetworkPort
         $db_ports = [];
         $networkport = new NetworkPort();
 
-        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias', 'is_dynamic'];
+        $np_dyn_props = ['logical_number', 'ifstatus', 'ifinternalstatus', 'ifalias', 'is_dynamic', 'ifmtu', 'ifspeed'];
         $iterator = $DB->request([
             'SELECT' => array_merge(['id', 'name', 'mac', 'instantiation_type'], $np_dyn_props),
             'FROM'   => 'glpi_networkports',
@@ -407,6 +411,13 @@ trait InventoryNetworkPort
                 foreach ($np_dyn_props as $k) {
                     if (property_exists($data, $k) && $data->$k != $dbdata_copy[$k]) {
                         $criteria[$k] = $data->$k;
+                    }
+                }
+
+                if (!isset($criteria['ifspeed']) && !property_exists($data, 'ifspeed') && property_exists($data, 'speed')) {
+                    $computed_ifspeed = $data->speed * 1000000;
+                    if ($computed_ifspeed != $dbdata_copy['ifspeed']) {
+                        $criteria['ifspeed'] = $computed_ifspeed;
                     }
                 }
 
