@@ -39,6 +39,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Config\ConfigContainer;
+use Glpi\Config\DataAndPrivacyConfig;
 use Glpi\Console\Application;
 use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profile as DebugProfile;
@@ -913,7 +914,7 @@ TWIG,
                 'types' => [
                     AssetDefinition::class,
                     CommonDropdown::class, CommonDevice::class, Notification::class, Webhook::class,
-                    SLM::class, Config::class, SecurityConfig::class, FieldUnicity::class, CronTask::class, Auth::class,
+                    SLM::class, Config::class, SecurityConfig::class, DataAndPrivacyConfig::class, FieldUnicity::class, CronTask::class, Auth::class,
                     OAuthClient::class, MailCollector::class, Link::class, Plugin::class,
                 ],
                 'icon'  => 'ti ti-settings',
