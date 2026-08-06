@@ -194,18 +194,7 @@ abstract class AbstractRequest
      */
     public function handleHeaders()
     {
-        $req_headers = [];
-        if (!function_exists('getallheaders')) {
-            foreach ($_SERVER as $name => $value) {
-                /* RFC2616 (HTTP/1.1) defines header fields as case-insensitive entities. */
-                if (strtolower(substr($name, 0, 5)) == 'http_') {
-                    $req_headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
-                }
-            }
-        } else {
-            $req_headers = getallheaders();
-        }
-
+        $req_headers = getallheaders();
         $this->headers->setHeaders($req_headers);
     }
 

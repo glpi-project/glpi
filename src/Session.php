@@ -51,6 +51,12 @@ class Session
 
 
     /**
+     * @var bool $bypass_right_checks
+     * @internal
+     */
+    private static bool $bypass_right_checks = false;
+
+    /**
      * Destroy the current session
      *
      * @return void
@@ -1385,7 +1391,7 @@ class Session
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (Session::isInventory()) {
+        if (self::isRightChecksDisabled() || Session::isInventory() || Session::isCron()) {
             return true;
         }
 
@@ -2199,5 +2205,33 @@ class Session
     {
         // TODO (10.1 refactoring): replace references to $_SESSION['glpi_currenttime'] by a call to this function
         return $_SESSION['glpi_currenttime'] ?? null;
+    }
+
+    /**
+     * Runs a callable with the right checks disabled.
+     * @return mixed|void The return value of the callable.
+     * @throws Throwable Any throwable that was caught from the callable if any.
+     */
+    public static function callAsSystem(callable $fn)
+    {
+        $caught_throwable = null;
+        try {
+            self::$bypass_right_checks = true;
+            return $fn();
+        } catch (Throwable $e) {
+            $caught_throwable = $e;
+        } finally {
+            self::$bypass_right_checks = false;
+        }
+        throw $caught_throwable;
+    }
+
+    /**
+     * @return bool Whether the right checks are disabled.
+     * @internal No backwards compatibility promise.
+     */
+    public static function isRightChecksDisabled(): bool
+    {
+        return self::$bypass_right_checks;
     }
 }

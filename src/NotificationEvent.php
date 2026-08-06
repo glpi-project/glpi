@@ -134,11 +134,17 @@ class NotificationEvent extends CommonDBTM
 
             $processed = []; // targets list
             foreach ($notifications as $data) {
+                // Check notification filter
+                $notification = Notification::getById($data['id']);
+                if (!$notification->itemMatchFilter($item)) {
+                    continue;
+                }
+
                 $notificationtarget->clearAddressesList();
                 $notificationtarget->setMode($data['mode']);
                 $notificationtarget->setAllowResponse($data['allow_response']);
 
-                //Get template's information
+                // Get template's information
                 $template = new NotificationTemplate();
                 $template->getFromDB($data['notificationtemplates_id']);
                 $template->resetComputedTemplates();

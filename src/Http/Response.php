@@ -40,7 +40,7 @@ use Toolbox;
 /**
  * @since 10.0.0
  */
-class Response
+class Response extends \GuzzleHttp\Psr7\Response
 {
     /**
      * "application/json" content type.
@@ -85,5 +85,30 @@ class Response
         Toolbox::logDebug($message);
 
         die($output);
+    }
+
+    public function sendHeaders(): Response
+    {
+        if (headers_sent()) {
+            return $this;
+        }
+        $headers = $this->getHeaders();
+        foreach ($headers as $name => $values) {
+            header(sprintf('%s: %s', $name, implode(', ', $values)), true);
+        }
+        http_response_code($this->getStatusCode());
+        return $this;
+    }
+
+    public function sendContent(): Response
+    {
+        echo $this->getBody();
+        return $this;
+    }
+
+    public function send(): Response
+    {
+        return $this->sendHeaders()
+            ->sendContent();
     }
 }

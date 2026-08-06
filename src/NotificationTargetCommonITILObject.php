@@ -90,6 +90,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return true;
     }
 
+    protected function canNotificationBeDisabled(string $event): bool
+    {
+        // Notifications on ITIL objects are relying on `use_notification` property of actors.
+        return false;
+    }
+
     /**
      * Get notification subject prefix
      *
@@ -138,6 +144,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'update_followup'   => __('Update of a followup'),
             'delete_followup'   => __('Deletion of a followup'),
             'user_mention'      => __('User mentioned'),
+            'pendingreason_add' => __('Pending reason added'),
+            'pendingreason_del' => __('Pending reason removed'),
+            'pendingreason_close' => __('Pending reason auto close'),
         ];
 
         asort($events);

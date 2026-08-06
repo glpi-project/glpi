@@ -376,7 +376,7 @@ abstract class CommonITILObject extends CommonDBTM
                         $fn_add_actor('User', $users_id_default, [
                             'text'              => $name,
                             'title'             => $name,
-                            'use_notification'  => $email === '' ? false : $default_use_notif,
+                            'use_notification' => $email === '' ? false : ($default_use_notif && $userobj->isUserNotificationEnable()),
                             'default_email'     => $email,
                             'alternative_email' => '',
                         ]);
@@ -414,7 +414,7 @@ abstract class CommonITILObject extends CommonDBTM
                         $fn_add_actor('User', $users_id, [
                             'text'              => $name,
                             'title'             => $name,
-                            'use_notification'  => $email === '' ? false : $default_use_notif,
+                            'use_notification' => $email === '' ? false : ($default_use_notif && $userobj->isUserNotificationEnable()),
                             'default_email'     => $email,
                             'alternative_email' => '',
                         ]);
@@ -1101,13 +1101,22 @@ abstract class CommonITILObject extends CommonDBTM
     public function canSolve()
     {
 
-        return ((Session::haveRight(static::$rightname, UPDATE)
-               || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-               || (isset($_SESSION["glpigroups"])
-                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
-              && static::isAllowedStatus($this->fields['status'], self::SOLVED)
-              // No edition on closed status
-              && !in_array($this->fields['status'], $this->getClosedStatusArray()));
+        return (
+            (
+                Session::haveRight(static::$rightname, UPDATE)
+                || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+                || (
+                    isset($_SESSION["glpigroups"])
+                    && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])
+                )
+            )
+            && (
+                (Session::isCron() && $_SESSION["glpicronuserrunning"] == 'cron_closeticket')
+                || static::isAllowedStatus($this->fields['status'], self::SOLVED)
+            )
+            // No edition on closed status
+            && !in_array($this->fields['status'], $this->getClosedStatusArray())
+        );
     }
 
     /**
@@ -3564,7 +3573,8 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if (
-            array_key_exists(
+            is_array($_SESSION['glpiactiveprofile'])
+            && array_key_exists(
                 static::STATUS_MATRIX_FIELD,
                 $_SESSION['glpiactiveprofile']
             )

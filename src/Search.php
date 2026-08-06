@@ -447,8 +447,12 @@ class Search
     {
 
         $data = self::prepareDatasForSearch($itemtype, $params, $forcedisplay);
-        self::constructSQL($data);
-        self::constructData($data);
+        $execute_search = $data['display_type'] !== self::HTML_OUTPUT || ($params['execute_search'] ?? true);
+
+        if ($execute_search) {
+            self::constructSQL($data);
+            self::constructData($data);
+        }
 
         return $data;
     }
@@ -474,7 +478,7 @@ class Search
         // Default values of parameters
         $p['criteria']            = [];
         $p['metacriteria']        = [];
-        $p['sort']                = ['1'];
+        $p['sort']                = [0];
         $p['order']               = ['ASC'];
         $p['start']               = 0;//
         $p['is_deleted']          = 0;
@@ -572,16 +576,16 @@ class Search
         /// Get the items to display
         // Add searched items
 
-        $forcetoview = false;
-        if (is_array($forcedisplay) && count($forcedisplay)) {
-            $forcetoview = true;
-        }
+        $forcetoview = (is_array($forcedisplay) && count($forcedisplay)) || isset($p['forcetoview']);
         $data['search']['all_search']  = false;
         $data['search']['view_search'] = false;
         // If no research limit research to display item and compute number of item using simple request
         $data['search']['no_search']   = true;
 
         $data['toview'] = self::addDefaultToView($itemtype, $params);
+        if ($p['sort'] === [0]) {
+            $p['sort'] = [array_values($data['toview'])[0]];
+        }
         $data['meta_toview'] = [];
         if (!$forcetoview) {
             // Add items to display depending of personal prefs
@@ -592,7 +596,7 @@ class Search
                 }
             }
         } else {
-            $data['toview'] = array_merge($data['toview'], $forcedisplay);
+            $data['toview'] = array_merge($data['toview'], ($p['forcetoview'] ?? []), $forcedisplay);
         }
 
         if (count($p['criteria']) > 0) {
@@ -646,7 +650,10 @@ class Search
 
         // Special case for CommonITILObjects : put ID in front
         if (is_a($itemtype, CommonITILObject::class, true)) {
-            array_unshift($data['toview'], 2);
+            $id_opt = self::getOptionNumber($itemtype, 'id');
+            if ($id_opt > 0) {
+                array_unshift($data['toview'], $id_opt);
+            }
         }
 
         $limitsearchopt   = self::getCleanedOptions($itemtype);
@@ -1222,13 +1229,15 @@ class Search
                     $LINK = $tmplink;
                 }
 
-                if (isset($criterion['criteria']) && count($criterion['criteria'])) {
-                    $sub_sql = self::constructCriteriaSQL($criterion['criteria'], $data, $meta_searchopt, $is_having);
-                    if (strlen($sub_sql)) {
-                        if ($NOT) {
-                            $sql .= "$LINK NOT($sub_sql)";
-                        } else {
-                            $sql .= "$LINK ($sub_sql)";
+                if (isset($criterion['criteria'])) {
+                    if (count($criterion['criteria'])) {
+                        $sub_sql = self::constructCriteriaSQL($criterion['criteria'], $data, $meta_searchopt, $is_having);
+                        if (strlen($sub_sql)) {
+                            if ($NOT) {
+                                $sql .= "$LINK NOT($sub_sql)";
+                            } else {
+                                $sql .= "$LINK ($sub_sql)";
+                            }
                         }
                     }
                 } elseif (
@@ -1766,7 +1775,7 @@ class Search
      *
      * @return void
      **/
-    public static function displayData(array $data)
+    public static function displayData(array $data, array $params = [])
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -1834,7 +1843,9 @@ class Search
             'href'                => $href,
             'prehref'             => $prehref,
             'posthref'            => $globallinkto,
-            'showmassiveactions'  => ($search['showmassiveactions'] ?? true)
+            'push_history'        => $params['push_history'] ?? true,
+            'hide_controls'       => $params['hide_controls'] ?? false,
+            'showmassiveactions'  => ($params['showmassiveactions'] ?? $search['showmassiveactions'] ?? true)
                                   && $data['display_type'] != self::GLOBAL_SEARCH
                                   && (
                                       $itemtype == AllAssets::getType()
@@ -2387,6 +2398,19 @@ class Search
                 continue;
             }
 
+            if ($key === 'itil_types') {
+                if (is_a($item, \CommonITILTask::class) || is_a($item, \CommonITILValidation::class)) {
+                    $linked[] = $item->getItilObjectItemType();
+                } else {
+                    $timeline_types = [\ITILFollowup::class, \ITILSolution::class];
+                    foreach ($timeline_types as $timeline_type) {
+                        if (is_a($item, $timeline_type)) {
+                            $linked = [...$linked, ...$values];
+                        }
+                    }
+                }
+            }
+
             foreach (self::getMetaParentItemtypesForTypesConfig($key) as $config_itemtype) {
                 if ($itemtype === $config_itemtype::getType()) {
                     // List is related to source itemtype, all types of list are so linked
@@ -2567,15 +2591,19 @@ class Search
         } else {
             $p['target']       = Toolbox::getItemTypeSearchURL($itemtype);
         }
-        $p['showreset']    = true;
-        $p['showbookmark'] = true;
-        $p['showfolding']  = true;
-        $p['mainform']     = true;
-        $p['prefix_crit']  = '';
-        $p['addhidden']    = [];
-        $p['showaction']   = true;
-        $p['actionname']   = 'search';
-        $p['actionvalue']  = _sx('button', 'Search');
+        $p['showreset']                     = true;
+        $p['showbookmark']                  = true;
+        $p['showfolding']                   = true;
+        $p['mainform']                      = true;
+        $p['prefix_crit']                   = '';
+        $p['addhidden']                     = [];
+        $p['showaction']                    = true;
+        $p['actionname']                    = 'search';
+        $p['actionvalue']                   = _sx('button', 'Search');
+        $p['unpublished']                   = 1;
+        $p['hide_controls']                 = false;
+        $p['showmassiveactions']            = true;
+        $p['extra_actions_templates']       = [];
 
         foreach ($params as $key => $val) {
             $p[$key] = $val;
@@ -2583,7 +2611,7 @@ class Search
         $p['target'] = URL::sanitizeURL($p['target']);
 
         // Itemtype name used in JS function names, etc
-        $normalized_itemtype = strtolower(str_replace('\\', '', $itemtype));
+        $normalized_itemtype = Toolbox::getNormalizedItemtype($itemtype);
         $rand_criteria = mt_rand();
         $main_block_class = '';
         $card_class = 'search-form card card-sm mb-4';
@@ -2593,7 +2621,7 @@ class Search
             $main_block_class = "sub_criteria";
             $card_class = 'border d-inline-block ms-1';
         }
-        $display = $_SESSION['glpifold_search'] ? 'style="display: none;"' : '';
+        $display = ($_SESSION['glpifold_search'] && !$p['hide_controls']) ? 'style="display: none;"' : '';
         echo "<div class='$card_class' $display>";
 
         echo "<div id='searchcriteria$rand_criteria' class='$main_block_class' >";
@@ -2630,6 +2658,9 @@ class Search
             ]);
         }
 
+        echo "<input type='hidden' name='params[hide_controls]' value='" . ($p['hide_controls'] ? "1" : "0") . "' />";
+        echo "<input type='hidden' name='params[showmassiveactions]' value='" . ($p['showmassiveactions'] ? "1" : "0") . "' />";
+
         echo "<div class='card-footer d-flex search_actions'>";
         $linked = self::getMetaItemtypeAvailable($itemtype);
         echo "<button id='addsearchcriteria$rand_criteria' class='btn btn-sm btn-outline-secondary me-1' type='button'>
@@ -2651,7 +2682,7 @@ class Search
         if ($p['mainform']) {
             if ($p['showaction']) {
                 // Display submit button
-                echo '<button class="btn btn-sm btn-primary me-1" type="submit" name="' . htmlspecialchars($p['actionname']) . '">
+                echo '<button class="btn btn-sm btn-primary me-1" type="button" name="' . htmlspecialchars($p['actionname']) . '">
                 <i class="ti ti-list-search"></i>
                 <span class="d-none d-sm-block">' . $p['actionvalue'] . '</span>
                 </button>';
@@ -2675,6 +2706,9 @@ class Search
                   ><i class='ti ti-circle-x'></i></a>";
                 }
             }
+        }
+        foreach ($p['extra_actions_templates'] as $template => $template_params) {
+            TemplateRenderer::getInstance()->display($template, $template_params);
         }
         echo "</div>"; //.search_actions
 
@@ -2808,7 +2842,7 @@ JAVASCRIPT;
         $p           = $request['p'];
         $options     = self::getCleanedOptions($request["itemtype"]);
         $randrow     = mt_rand();
-        $normalized_itemtype = strtolower(str_replace('\\', '', $request["itemtype"]));
+        $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
         $rowid       = 'searchrow' . $normalized_itemtype . $randrow;
         $addclass    = $num == 0 ? ' headerRow' : '';
         $prefix      = isset($p['prefix_crit']) ? htmlspecialchars($p['prefix_crit'], ENT_QUOTES) : '';
@@ -3302,7 +3336,7 @@ JAVASCRIPT;
         }
 
         $rands = -1;
-        $normalized_itemtype = strtolower(str_replace('\\', '', $request["itemtype"]));
+        $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
         $dropdownname = Html::cleanId("spansearchtype$fieldname" .
                                     $normalized_itemtype .
                                     $prefix .
@@ -3874,28 +3908,65 @@ JAVASCRIPT;
         $item   = null;
         $entity_check = true;
 
-        if ($itemtype != AllAssets::getType()) {
+        if ($itemtype !== \AllAssets::getType()) {
             $item = getItemForItemtype($itemtype);
             $entity_check = $item->isEntityAssign();
         }
-        // Add first element (name)
-        array_push($toview, 1);
 
-        if (isset($params['as_map']) && $params['as_map'] == 1) {
-            // Add location name when map mode
-            array_push($toview, ($itemtype == 'Location' ? 1 : ($itemtype == 'Ticket' ? 83 : 3)));
+        if ($itemtype !== \AllAssets::getType()) {
+            // Add the related search option for the 'name' OR 'id' field. If none is found, add the search option 1 (how it was handled before).
+            // Since not all itemtypes have ID set to 1, it used to add other, heavier search options like content in the case of Followups.
+            $options = array_filter(self::getOptions($itemtype, false), static fn($o) => is_numeric($o), ARRAY_FILTER_USE_KEY);
+            $id_field = array_filter($options, static function ($option) use ($itemtype) {
+                return $option['field'] === 'id' && $option['table'] === $itemtype::getTable();
+            });
+            $name_field = array_filter($options, static function ($option) use ($itemtype) {
+                return $option['field'] === 'name' && $option['table'] === $itemtype::getTable();
+            });
+        } else {
+            $id_field = [];
+            $name_field = [];
+        }
+
+        if (count($name_field) > 0) {
+            $toview[] = array_keys($name_field)[0];
+        } elseif (count($id_field) > 0) {
+            $toview[] = array_keys($id_field)[0];
+        } else {
+            // Fallback to whatever option is ID 1
+            $toview[] = 1;
+        }
+
+        if (isset($params['as_map']) && (int)$params['as_map'] === 1) {
+            if ($itemtype !== \AllAssets::getType()) {
+                // Add location name when map mode
+                $loc_opt = self::getOptionNumber($itemtype, 'completename', 'Location');
+                if ($loc_opt > 0) {
+                    $toview[] = $loc_opt;
+                }
+            } else {
+                $toview[] = 3;
+            }
         }
 
         // Add entity view :
         if (
-            Session::isMultiEntitiesMode()
+            \Session::isMultiEntitiesMode()
             && $entity_check
             && (isset($CFG_GLPI["union_search_type"][$itemtype])
-              || ($item && $item->maybeRecursive())
-              || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))
+                || ($item && $item->maybeRecursive())
+                || isset($_SESSION['glpiactiveentities']) && (count($_SESSION["glpiactiveentities"]) > 1))
         ) {
-            array_push($toview, 80);
+            if ($itemtype !== \AllAssets::getType()) {
+                $entity_opt = self::getOptionNumber($itemtype, 'completename', 'Entity');
+                if ($entity_opt > 0) {
+                    $toview[] = $entity_opt;
+                }
+            } else {
+                $toview[] = 80;
+            }
         }
+
         return $toview;
     }
 
@@ -7977,7 +8048,7 @@ HTML;
 
         $default_values["start"]       = 0;
         $default_values["order"]       = "ASC";
-        $default_values["sort"]        = 1;
+        $default_values["sort"]        = 0;
         $default_values["is_deleted"]  = 0;
         $default_values["as_map"]      = 0;
         $default_values["browse"]      = 0;
@@ -8216,15 +8287,16 @@ HTML;
      *
      * Get an option number in the SEARCH_OPTION array
      *
-     * @param class-string<CommonDBTM> $itemtype  Item type
-     * @param string $field     Name
+     * @param class-string<\CommonDBTM> $itemtype Item type the search option belongs to
+     * @param string $field Name of the field
+     * @param class-string<\CommonDBTM>|null $meta_itemtype If specified, the itemtype that provides the search option. This affects the table used to match the search option.
      *
      * @return integer
      **/
-    public static function getOptionNumber($itemtype, $field)
+    public static function getOptionNumber($itemtype, $field, $meta_itemtype = null)
     {
-
-        $table = $itemtype::getTable();
+        $meta_itemtype ??= $itemtype;
+        $table = $meta_itemtype::getTable();
         $opts  = self::getOptions($itemtype);
 
         foreach ($opts as $num => $opt) {

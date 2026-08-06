@@ -2763,8 +2763,6 @@ class Ticket extends CommonITILObject
                 Problem::dropdown([
                     'name'      => 'problems_id',
                     'condition' => Problem::getOpenCriteria(),
-                    'entity'      => $_SESSION['glpiactive_entity'],
-                    'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
                 ]);
                 echo '<br><br>';
                 echo Html::submit(_x('button', 'Link'), [
@@ -2941,37 +2939,7 @@ JAVASCRIPT;
                 }
 
                 $em = new Problem_Ticket();
-                $problem_entity    = $problem->getEntityID();
-                $problem_recursive = (bool) $problem->fields['is_recursive'];
-
                 foreach ($ids as $id) {
-                    $ticket_to_check = new Ticket();
-                    if (!$ticket_to_check->getFromDB($id)) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                        continue;
-                    }
-
-                    $ticket_entity = $ticket_to_check->getEntityID();
-
-                    // A problem is compatible with a ticket when:
-                    // - both are in the same entity, OR
-                    // - the problem is in a parent entity and is recursive
-                    $ancestors      = getAncestorsOf('glpi_entities', (string) $ticket_entity);
-                    $is_compatible  = ($problem_entity === $ticket_entity)
-                        || ($problem_recursive && in_array($problem_entity, $ancestors));
-
-                    if (!$is_compatible) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                        $ma->addMessage(
-                            sprintf(
-                                __('Ticket %d and the selected problem do not belong to compatible entities.'),
-                                $id
-                            )
-                        );
-                        continue;
-                    }
-
                     // Add new link
                     $res = $em->add([
                         'problems_id' => $input['problems_id'],
@@ -3112,6 +3080,14 @@ JAVASCRIPT;
         $tab = [];
 
         $tab = array_merge($tab, $this->getSearchOptionsMain());
+
+        $tab[] = [
+            'id'                 => '87',
+            'table'              => $this->getTable(),
+            'field'              => 'externalid',
+            'datatype'           => 'string',
+            'name'               =>  __('External ID'),
+        ];
 
         $tab[] = [
             'id'                 => '155',
@@ -4175,16 +4151,22 @@ JAVASCRIPT;
         if (is_numeric(Session::getLoginUserID(false))) {
             $users_id_requester = Session::getLoginUserID();
             $users_id_assign    = Session::getLoginUserID();
+            $requester_notification_enable = $_SESSION['glpiis_notif_enable_default'];
+            $assignee_notification_enable  = $_SESSION['glpiis_notif_enable_default'];
             // No default requester if own ticket right = tech and update_ticket right to update requester
             if (Session::haveRightsOr(self::$rightname, [UPDATE, self::OWN]) && !$_SESSION['glpiset_default_requester']) {
                 $users_id_requester = 0;
+                $requester_notification_enable = 1; // no default requester reset to true
             }
             if (!Session::haveRight(self::$rightname, self::OWN) || !$_SESSION['glpiset_default_tech']) {
                 $users_id_assign = 0;
+                $assignee_notification_enable = 1; // no default assign reset to true
             }
             $entity      = $_SESSION['glpiactive_entity'];
             $requesttype = $_SESSION['glpidefault_requesttypes_id'];
         } else {
+            $requester_notification_enable = 1;
+            $assignee_notification_enable = 1;
             $users_id_requester = 0;
             $users_id_assign    = 0;
             $requesttype        = $CFG_GLPI['default_requesttypes_id'];
@@ -4196,12 +4178,12 @@ JAVASCRIPT;
 
         // Set default values...
         return  ['_users_id_requester'       => $users_id_requester,
-            '_users_id_requester_notif' => ['use_notification'  => [$default_use_notif],
+            '_users_id_requester_notif' => ['use_notification' => [(string) ($default_use_notif & $requester_notification_enable)],
                 'alternative_email' => [''],
             ],
             '_groups_id_requester'      => 0,
             '_users_id_assign'          =>  $users_id_assign,
-            '_users_id_assign_notif'    => ['use_notification'  => [$default_use_notif],
+            '_users_id_assign_notif' => ['use_notification' => [(string) ($default_use_notif & $assignee_notification_enable)],
                 'alternative_email' => [''],
             ],
             '_groups_id_assign'         => 0,

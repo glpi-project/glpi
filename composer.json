@@ -177,8 +177,6 @@
             "bin/console dependencies install"
         ],
         "patch": [
-            "VENDOR_DIR='vendor/atoum/atoum/' PATCH_FILE='tools/patches/atoum-atoum-4.1.0...4.2.0-php8.4-php8.5.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
-            "VENDOR_DIR='vendor/atoum/stubs/' PATCH_FILE='tools/patches/atoum-stubs-php8.4-compat.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
             "VENDOR_DIR='vendor/firebase/php-jwt/' PATCH_FILE='tools/patches/firebase-php-jwt-v6.10.0-to-v7.0.2.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
             "VENDOR_DIR='vendor/friendsoftwig/twigcs/' PATCH_FILE='tools/patches/friendsoftwig-twigcs-php8.4-compat.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
             "VENDOR_DIR='vendor/guzzlehttp/guzzle/' PATCH_FILE='tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",

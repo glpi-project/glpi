@@ -259,7 +259,7 @@ class ItemtypeExtension extends AbstractExtension
             return null;
         }
 
-        if ($item instanceof CommonDBTM && ($id === null || $item->fields[$item->getIndexName()] === $id)) {
+        if ($item instanceof CommonDBTM && ($id === null || (isset($item->fields[$item->getIndexName()]) && $item->fields[$item->getIndexName()] === $id))) {
             return $item;
         }
 

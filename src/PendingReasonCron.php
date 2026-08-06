@@ -190,6 +190,7 @@ class PendingReasonCron extends CommonDBTM
                     'users_id'         => $config['system_user'],
                 ]);
                 $task->addVolume(1);
+                NotificationEvent::raiseEvent('pendingreason_close', $item);
             }
         }
 

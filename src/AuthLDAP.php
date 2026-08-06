@@ -369,14 +369,6 @@ class AuthLDAP extends CommonDBTM
                         // Is recursive is in the main form and thus, don't pass through
                         // zero_on_empty mechanism inside massive action form ...
                         $is_recursive = (empty($input['ldap_import_recursive'][$id]) ? 0 : 1);
-
-                        $common_input = ['entities_id'  => $entity, 'is_recursive' => $is_recursive];
-                        if (!$group->can(-1, CREATE, $common_input)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
-                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-                            continue;
-                        }
-
                         $options      = ['authldaps_id' => $_SESSION['ldap_server'],
                             'entities_id'  => $entity,
                             'is_recursive' => $is_recursive,
@@ -2949,7 +2941,7 @@ class AuthLDAP extends CommonDBTM
                             //In case user id has changed : get id by dn (Used to check if restoration is needed)
                             $user_found = $searched_user->getFromDBbyDn(Sanitizer::sanitize($user_dn));
                         }
-                        if ($user_found && ($searched_user->fields['is_deleted_ldap'] || !$searched_user->fields['is_active']) && $searched_user->fields['user_dn']) {
+                        if ($user_found && $searched_user->fields['is_deleted_ldap'] && $searched_user->fields['user_dn']) {
                             User::manageRestoredUserInLdap($searched_user->fields['id']);
                             return ['action' => self::USER_RESTORED_LDAP,
                                 'id' => $searched_user->fields['id'],
@@ -4164,7 +4156,7 @@ class AuthLDAP extends CommonDBTM
                         $value = substr($value, $begin, $length - $end - $begin);
                     }
                     $counter++;
-                    $filter .= '(' . $authldap->fields[$criteria] . '=' . ($begin ? '' : '*') . ldap_escape($value, '', LDAP_ESCAPE_FILTER) . ($end ? '' : '*') . ')';
+                    $filter .= '(' . $authldap->fields[$criteria] . '=' . ($begin ? '' : '*') . $value . ($end ? '' : '*') . ')';
                 }
             }
         } else {

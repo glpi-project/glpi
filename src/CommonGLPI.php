@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\Search\CriteriaFilter;
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -35,6 +37,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Plugin\Hooks;
+use Glpi\Search\FilterableInterface;
 use Glpi\Toolbox\Sanitizer;
 
 /**
@@ -303,6 +306,10 @@ class CommonGLPI implements CommonGLPIInterface
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
+
+        if ($this instanceof FilterableInterface) {
+            $this->addStandardTab(CriteriaFilter::class, $ong, $options);
+        }
 
         return $ong;
     }

@@ -1284,6 +1284,7 @@ JAVASCRIPT;
                 __('Others') => [
                     'USBVendor' => null,
                     'PCIVendor' => null,
+                    WebhookCategory::class => null,
                 ],
 
             ]; //end $opt
@@ -2701,12 +2702,13 @@ JAVASCRIPT;
             $post['permit_select_parent'] = false;
         }
 
-        $condition = [];
         if (isset($post['condition']) && !empty($post['condition']) && !is_array($post['condition'])) {
             // Retreive conditions from SESSION using its key
             $key = $post['condition'];
             if (isset($_SESSION['glpicondition']) && isset($_SESSION['glpicondition'][$key])) {
-                $condition = $_SESSION['glpicondition'][$key];
+                $post['condition'] = $_SESSION['glpicondition'][$key];
+            } else {
+                $post['condition'] = [];
             }
         }
 
@@ -2747,15 +2749,15 @@ JAVASCRIPT;
 
         $ljoin = [];
 
-        if (!empty($condition)) {
-            if (isset($condition['LEFT JOIN'])) {
-                $ljoin = $condition['LEFT JOIN'];
-                unset($condition['LEFT JOIN']);
+        if (isset($post['condition']) && !empty($post['condition'])) {
+            if (isset($post['condition']['LEFT JOIN'])) {
+                $ljoin = $post['condition']['LEFT JOIN'];
+                unset($post['condition']['LEFT JOIN']);
             }
-            if (isset($condition['WHERE'])) {
-                $where = array_merge($where, $condition['WHERE']);
+            if (isset($post['condition']['WHERE'])) {
+                $where = array_merge($where, $post['condition']['WHERE']);
             } else {
-                $where = array_merge($where, $condition);
+                $where = array_merge($where, $post['condition']);
             }
         }
 
@@ -2785,6 +2787,15 @@ JAVASCRIPT;
                         ["$table.completename" => ['LIKE', $raw_search]],
                         ["$table.completename" => ['LIKE', $encoded_search]],
                     ];
+                    if ($item->isField('code')) {
+                        $swhere[] = ["$table.code" => ['LIKE', $raw_search]];
+                        $swhere[] = ["$table.code" => ['LIKE', $encoded_search]];
+                    }
+                    if ($item->isField('alias')) {
+                        $swhere[] = ["$table.alias" => ['LIKE', $raw_search]];
+                        $swhere[] = ["$table.alias" => ['LIKE', $encoded_search]];
+                    }
+
                     if (Session::haveTranslations($post['itemtype'], 'completename')) {
                         $swhere[] = ["namet.value" => ['LIKE', $raw_search]];
                         $swhere[] = ["namet.value" => ['LIKE', $encoded_search]];

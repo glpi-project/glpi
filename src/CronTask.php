@@ -1008,6 +1008,9 @@ class CronTask extends CommonDBTM
                 );
                 if ($crontask->getNeedToRun($mode, $name)) {
                     $_SESSION["glpicronuserrunning"] = "cron_" . $crontask->fields['name'];
+                    Session::loadEntity(0, true);
+                    $_SESSION["glpigroups"]          = [];
+                    $_SESSION["glpiname"]            = "cron";
 
                     $function = sprintf('%s::cron%s', $crontask->fields['itemtype'], $crontask->fields['name']);
 
@@ -1074,7 +1077,7 @@ class CronTask extends CommonDBTM
                     Toolbox::logInFile('cron', $msgcron . "\n");
                 }
             }
-            $_SESSION["glpicronuserrunning"] = '';
+
             self::release_lock();
         } else {
             Toolbox::logInFile('cron', __("Can't get DB lock") . "\n");
@@ -1092,6 +1095,7 @@ class CronTask extends CommonDBTM
      * @param integer $frequency execution frequency
      * @param array   $options   optional options
      *       (state, mode, allowmode, hourmin, hourmax, logs_lifetime, param, comment)
+     * @phpstan-param array{state: CronTask::STATE_*, mode: CronTask::MODE_*, allowmode: int, hourmin: int, hourmax: int, logs_lifetime: int, param: int, comment: string} $options
      *
      * @return boolean
      **/

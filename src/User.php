@@ -886,10 +886,6 @@ class User extends CommonDBTM
             }
         }
 
-        if (isset($input['use_mode']) && !Config::canUpdate()) {
-            unset($input['use_mode']);
-        }
-
         return $input;
     }
 
@@ -1002,7 +998,6 @@ class User extends CommonDBTM
                 }
                 if (!str_starts_with($fullpath, realpath(GLPI_TMP_DIR))) {
                     trigger_error(sprintf('Invalid picture path `%s`', $input["_picture"]), E_USER_WARNING);
-                    return false;
                 }
                 if (Document::isImage($fullpath)) {
                     // Unlink old picture (clean on changing format)
@@ -1144,17 +1139,13 @@ class User extends CommonDBTM
             }
         }
 
-        if (isset($input['authtype'])) {
-            if (
-                Session::getLoginUserID() !== false // always allow update from backend routines
-                && !Session::haveRight(self::$rightname, self::UPDATEAUTHENT)
-            ) {
-                // prevent unexpected authentication type change
-                unset($input['authtype']);
-            } elseif ($input['authtype'] != $this->fields['authtype'] && $input['authtype'] != Auth::DB_GLPI) {
-                // blank password when authtype changes
-                $input['password'] = '';
-            }
+        // blank password when authtype changes
+        if (
+            isset($input["authtype"])
+            && $input["authtype"] != Auth::DB_GLPI
+            && $input["authtype"] != $this->getField('authtype')
+        ) {
+            $input["password"] = "";
         }
 
         // Update User in the database
@@ -1224,10 +1215,6 @@ class User extends CommonDBTM
         }
 
         // Manage preferences fields
-        if (isset($input['use_mode']) && !Config::canUpdate()) {
-            unset($input['use_mode']);
-        }
-
         if (Session::getLoginUserID() == $input['id']) {
             if (
                 isset($input['use_mode'])
@@ -3748,17 +3735,10 @@ HTML;
                     return;
                 }
                 if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-                    foreach ($ids as $id) {
-                        $user = new User();
-                        if (!$user->can($id, UPDATE)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
-                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-                            continue;
-                        } elseif (User::changeAuthMethod([$id], $input["authtype"], $input["auths_id"])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                        } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                        }
+                    if (User::changeAuthMethod($ids, $input["authtype"], $input["auths_id"])) {
+                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
+                    } else {
+                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                     }
                 } else {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
@@ -5003,6 +4983,10 @@ HTML;
         /** @var \DBmysql $DB */
         global $DB;
 
+        if (!Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
+            return false;
+        }
+
         if (
             !empty($IDs)
             && in_array($authtype, [Auth::DB_GLPI, Auth::LDAP, Auth::MAIL, Auth::EXTERNAL])
@@ -5496,12 +5480,12 @@ HTML;
         $myuser = new self();
         if (
             !$myuser->getFromDB($users_id) // invalid user
-            || ($myuser->fields['is_deleted_ldap'] == 0 && $myuser->fields['is_active'] == 1) // already active, nothing to restore
+            || $myuser->fields['is_deleted_ldap'] == 0 // user already considered as restored from LDAP
         ) {
             return;
         }
 
-        //User is present in DB and in the directory but was inactive or flagged as LDAP-deleted: restore it
+        //User is present in DB and in the directory but 'is_ldap_deleted' was true : it's been restored in LDAP
         $tmp = [
             'id'              => $users_id,
             'is_deleted_ldap' => 0,
@@ -7031,6 +7015,23 @@ HTML;
             count($users_ids) == 1 // Only one super admin auth
             && $users_ids[0] == $this->fields['id'] // Id match our user
         ;
+    }
+
+    /**
+     * Check if this User notification is enable
+     * @return bool
+     */
+    final public function isUserNotificationEnable(): bool
+    {
+        global $CFG_GLPI;
+
+        $user_pref = $this->fields['is_notif_enable_default'];
+        //load default conf if needed
+        if (is_null($user_pref)) {
+            $user_pref = $CFG_GLPI['is_notif_enable_default'];
+        }
+
+        return $user_pref;
     }
 
     public function willProcessRuleRight(): void
