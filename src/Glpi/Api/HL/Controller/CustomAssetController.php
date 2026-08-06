@@ -73,7 +73,7 @@ use User;
 )]
 final class CustomAssetController extends AbstractController
 {
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         global $DB;
 
@@ -112,7 +112,7 @@ final class CustomAssetController extends AbstractController
                     'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
                     'contact' => ['type' => Doc\Schema::TYPE_STRING],
                     'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
-                    'user' => self::getDropdownTypeSchema(class: User::class, field: 'users_id', full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'group' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'items' => [
@@ -142,7 +142,7 @@ final class CustomAssetController extends AbstractController
                             ],
                         ],
                     ],
-                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', name_field: ['name', 'username'], full_schema: 'User'),
                     'group_tech' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'items' => [

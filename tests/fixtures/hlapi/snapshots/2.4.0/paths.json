@@ -9329,47 +9329,6 @@
         }
     },
     "/Assets/SoftwareLicense/{asset_id}/SoftwareInstallation": {
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/SoftwareInstallation"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
         "get": {
             "responses": {
                 "200": {
@@ -10123,47 +10082,6 @@
                     ]
                 }
             ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/SoftwareInstallation"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/SoftwareInstallation"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
         }
     },
     "/Assets/Certificate/{asset_id}/SoftwareInstallation/{id}": {
@@ -10869,47 +10787,6 @@
         }
     },
     "/Assets/SoftwareLicense/{asset_id}/Antivirus": {
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Antivirus"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
         "get": {
             "responses": {
                 "200": {
@@ -11663,47 +11540,6 @@
                     ]
                 }
             ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Antivirus"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Antivirus"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
         }
     },
     "/Assets/Certificate/{asset_id}/Antivirus/{id}": {
@@ -12409,47 +12245,6 @@
         }
     },
     "/Assets/SoftwareLicense/{asset_id}/VirtualMachine": {
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/VirtualMachine"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
         "get": {
             "responses": {
                 "200": {
@@ -13203,47 +12998,6 @@
                     ]
                 }
             ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/VirtualMachine"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/VirtualMachine"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
         }
     },
     "/Assets/Certificate/{asset_id}/VirtualMachine/{id}": {
@@ -13949,47 +13703,6 @@
         }
     },
     "/Assets/SoftwareLicense/{asset_id}/PeripheralConnection": {
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/PeripheralConnection"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
         "get": {
             "responses": {
                 "200": {
@@ -14743,47 +14456,6 @@
                     ]
                 }
             ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PeripheralConnection"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/PeripheralConnection"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
         }
     },
     "/Assets/Certificate/{asset_id}/PeripheralConnection/{id}": {
@@ -15489,47 +15161,6 @@
         }
     },
     "/Assets/SoftwareLicense/{asset_id}/RemoteManagement": {
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/RemoteManagement"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
         "get": {
             "responses": {
                 "200": {
@@ -16283,47 +15914,6 @@
                     ]
                 }
             ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/RemoteManagement"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/RemoteManagement"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
-            "parameters": [],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
         }
     },
     "/Assets/Certificate/{asset_id}/RemoteManagement/{id}": {
@@ -16806,49 +16396,6 @@
             ]
         }
     },
-    "/Assets/SoftwareLicense/{asset_id}/Appliance": {
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Appliance_Item"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        }
-    },
     "/Assets/Certificate/{asset_id}/Appliance": {
         "post": {
             "responses": {
@@ -17243,17 +16790,6 @@
         }
     },
     "/Assets/SoftwareLicense/{asset_id}/Appliance/{id}": {
-        "delete": {
-            "responses": [],
-            "parameters": [],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
         "get": {
             "responses": {
                 "200": {
@@ -50876,59 +50412,6 @@
                     ]
                 }
             ]
-        },
-        "post": {
-            "responses": {
-                "201": {
-                    "headers": [],
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "id": {
-                                        "type": "integer",
-                                        "format": "int64",
-                                        "readOnly": true
-                                    },
-                                    "href": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "asset_id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Volume"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
         }
     },
     "/Assets/Certificate/{asset_id}/Volume": {
@@ -52151,91 +51634,6 @@
                     }
                 }
             },
-            "parameters": [
-                {
-                    "name": "asset_id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                },
-                {
-                    "name": "id",
-                    "description": "",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "patch": {
-            "responses": {
-                "200": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/Volume"
-                            }
-                        }
-                    }
-                }
-            },
-            "parameters": [
-                {
-                    "name": "asset_id",
-                    "description": "The ID of the Asset",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "format": "int32",
-                        "pattern": "\\d+"
-                    }
-                },
-                {
-                    "name": "id",
-                    "description": "",
-                    "in": "path",
-                    "required": true,
-                    "schema": {
-                        "type": "integer",
-                        "pattern": "\\d+"
-                    }
-                }
-            ],
-            "requestBody": {
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/Volume"
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "oauth": [
-                        "api"
-                    ]
-                }
-            ]
-        },
-        "delete": {
-            "responses": [],
             "parameters": [
                 {
                     "name": "asset_id",

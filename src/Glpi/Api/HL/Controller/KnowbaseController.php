@@ -81,7 +81,7 @@ use User;
 )]
 class KnowbaseController extends AbstractController
 {
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         $schemas = [
             'KBArticle' => [
@@ -129,7 +129,7 @@ class KnowbaseController extends AbstractController
                     'is_faq' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                     'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'views' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
@@ -255,7 +255,7 @@ class KnowbaseController extends AbstractController
                         'readOnly' => true,
                     ],
                     'kbarticle' => self::getDropdownTypeSchema(class: KnowbaseItem::class, full_schema: 'KBArticle'),
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'language' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Language code (POSIX compliant format e.g. en_US or fr_FR)',
@@ -305,7 +305,7 @@ class KnowbaseController extends AbstractController
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Language code (POSIX compliant format e.g. en_US or fr_FR)',
                     ],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'date' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
             ],
@@ -330,7 +330,7 @@ class KnowbaseController extends AbstractController
                         'format' => Doc\Schema::FORMAT_STRING_HTML,
                         'x-field' => 'answer',
                     ],
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
@@ -395,7 +395,7 @@ class KnowbaseController extends AbstractController
                         'readOnly' => true,
                     ],
                     'kbarticle' => self::getDropdownTypeSchema(class: KnowbaseItem::class, full_schema: 'KBArticle'),
-                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, name_field: ['name', 'username'], full_schema: 'User'),
                 ],
             ],
             'KBArticle_Item' => [
