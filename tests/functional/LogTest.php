@@ -40,6 +40,7 @@ use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Infocom;
 use Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 
