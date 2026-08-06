@@ -988,11 +988,11 @@ class LogTest extends DbTestCase
         $computer = $this->createComputer();
 
         $infocom = new \Infocom();
-        if (!$infocom->getFromDBforDevice(\Computer::class, $computer->getID())) {
+        if (!$infocom->getFromDBforDevice(Computer::class, $computer->getID())) {
             $this->assertGreaterThan(
                 0,
                 $infocom->add([
-                    'itemtype' => \Computer::class,
+                    'itemtype' => Computer::class,
                     'items_id' => $computer->getID(),
                 ])
             );
@@ -1008,7 +1008,7 @@ class LogTest extends DbTestCase
             'FROM'  => Log::getTable(),
             'WHERE' => [
                 'items_id'         => $computer->getID(),
-                'itemtype'         => \Computer::class,
+                'itemtype'         => Computer::class,
                 'id_search_option' => 121, // date_creation
             ],
             'ORDER' => 'id DESC',
