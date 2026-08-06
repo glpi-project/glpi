@@ -5466,7 +5466,7 @@ abstract class CommonITILObject extends CommonDBTM
         if (isset($this->fields['takeintoaccount_delay_stat'])) {
             echo "<tr class='tab_bg_2'><td>" . __('Take into account') . "</td><td>";
             if ($this->fields['takeintoaccount_delay_stat'] > 0) {
-                echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], 0, false);
+                echo Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false);
             } else {
                 echo '&nbsp;';
             }
@@ -5475,28 +5475,23 @@ abstract class CommonITILObject extends CommonDBTM
 
         if (!$this->isNotSolved()) {
             echo "<tr class='tab_bg_2'><td>" . __('Resolution') . "</td><td>";
-
-            if ($this->fields['solve_delay_stat'] > 0) {
-                echo Html::timestampToString($this->fields['solve_delay_stat'], 0, false);
-            } else {
-                echo '&nbsp;';
-            }
+            // solve_delay_stat may legitimately be 0 (e.g. ticket resolved outside
+            // the calendar's working hours), so always display it if the ticket is solved.
+            echo Html::timestampToString($this->fields['solve_delay_stat'], false, false);
             echo "</td></tr>";
         }
 
         if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
             echo "<tr class='tab_bg_2'><td>" . __('Closure') . "</td><td>";
-            if ($this->fields['close_delay_stat'] > 0) {
-                echo Html::timestampToString($this->fields['close_delay_stat'], true, false);
-            } else {
-                echo '&nbsp;';
-            }
+            // close_delay_stat may legitimately be 0 (e.g. ticket closed outside
+            // the calendar's working hours), so always display it if the ticket is closed.
+            echo Html::timestampToString($this->fields['close_delay_stat'], false, false);
             echo "</td></tr>";
         }
 
         echo "<tr class='tab_bg_2'><td>" . __('Pending') . "</td><td>";
         if ($this->fields['waiting_duration'] > 0) {
-            echo Html::timestampToString($this->fields['waiting_duration'], 0, false);
+            echo Html::timestampToString($this->fields['waiting_duration'], false, false);
         } else {
             echo '&nbsp;';
         }
@@ -6715,7 +6710,7 @@ abstract class CommonITILObject extends CommonDBTM
 
                 $solvedelay_column = "";
                 // Show only for solved tickets
-                if ($item->fields['solve_delay_stat'] > 0) {
+                if (!empty($item->fields['solvedate'])) {
                     $solvedelay_column = Html::timestampToString($item->fields['solve_delay_stat']);
                 }
                 echo Search::showItem($p['output_type'], $solvedelay_column, $item_num, $p['row_num'], $align_desc . " width='150'");
