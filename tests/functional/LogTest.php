@@ -988,7 +988,7 @@ class LogTest extends DbTestCase
 
         $computer = $this->createComputer();
 
-        $infocom = new \Infocom();
+        $infocom = new Infocom();
         if (!$infocom->getFromDBforDevice(Computer::class, $computer->getID())) {
             $this->assertGreaterThan(
                 0,
