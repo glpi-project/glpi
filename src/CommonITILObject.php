@@ -10936,18 +10936,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
-     * @param string $name
-     * @return array{description: string, parameter?: string}
-     */
-    public static function cronInfo($name)
-    {
-        return match ($name) {
-            'createinquest' => ['description' => __('Generation of satisfaction surveys')],
-            default => [],
-        };
-    }
-
-    /**
      * Cron for automatically creating surveys for ITIL Objects
      *
      * @param CronTask $task

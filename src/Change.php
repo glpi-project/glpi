@@ -1632,4 +1632,32 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             echo "<td colspan='6' ><i>" . __s('No change found.') . "</i></td></tr>";
         }
     }
+
+    /**
+     * Give cron information
+     *
+     * @param string $name  Task's name
+     *
+     * @return array{description?: string}
+     **/
+    public static function cronInfo($name)
+    {
+        switch ($name) {
+            case 'createinquestchange':
+                return ['description' => __('Generation of changes satisfaction surveys')];
+        }
+        return [];
+    }
+
+    /**
+     * Cron for automatically creating changes satisfaction surveys
+     *
+     * @param CronTask $task
+     *
+     * @return int (0 : nothing done - 1 : done)
+     **/
+    public static function cronCreateInquestChange($task)
+    {
+        return parent::cronCreateInquest($task);
+    }
 }
