@@ -52,22 +52,6 @@ use function Safe\strtotime;
 
 class SynchronizeUsersCommand extends AbstractCommand
 {
-    /**
-     * Error code returned if LDAP connection failed.
-     *
-     * @var int
-     * @FIXME Remove in GLPI 11.0.
-     */
-    public const ERROR_LDAP_CONNECTION_FAILED = 1;
-
-    /**
-     * Error code returned if LDAP limit exceeded.
-     *
-     * @var int
-     * @FIXME Remove in GLPI 11.0.
-     */
-    public const ERROR_LDAP_LIMIT_EXCEEDED = 2;
-
     protected function configure()
     {
 

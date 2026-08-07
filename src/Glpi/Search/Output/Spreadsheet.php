@@ -53,10 +53,6 @@ abstract class Spreadsheet extends ExportSearchOutput
 {
     protected \PhpOffice\PhpSpreadsheet\Spreadsheet $spread;
     protected BaseWriter|IWriter $writer;
-    /**
-     * FIXME: remove in GLPI 12, seems not used
-     */
-    protected int $count;
 
     public function __construct()
     {

@@ -3501,7 +3501,7 @@ JAVASCRIPT
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $additional_info (string will be added to HTML source)
      *
-     * @TODO Deprecate $additional_info, $display and $additional_params params in GLPI 12.0, they are not used.
+     * @TODO Deprecate $additional_info, $display and $additional_params params, they are not used.
      **/
     public static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true, $additional_params = '')
     {
@@ -3666,7 +3666,7 @@ JAVASCRIPT
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $additional_info (string will be added to HTML source)
      *
-     * @TODO Deprecate $additional_info param in GLPI 12.0, it is not used.
+     * @TODO Deprecate $additional_info param, it is not used.
      * @TODO Accept an array of key/values in the $parameters param to ease its usage/escaping.
      */
     public static function printPager(
@@ -4016,7 +4016,7 @@ JAVASCRIPT
      *
      * @return string
      *
-     * @TODO In GLPI 12.0 (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
+     * @TODO (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
      *       `templateResult`, `templateSelection`.
      */
     public static function jsAdaptDropdown($id, $params = [])
@@ -4083,7 +4083,7 @@ JS;
      *
      * @return string
      *
-     * @TODO In GLPI 12.0 (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
+     * @TODO (BC-break), allow only values that matches the `^\w+$` pattern (i.e. a function name) for the following parameters:
      *        `on_change`, `templateResult`, `templateSelection`.
      **/
     public static function jsAjaxDropdown($name, $field_id, $url, $params = [])
@@ -4333,10 +4333,11 @@ JS;
      *     - `confirmaction` optional action to do on confirmation
      * @return string an `a` element.
      *
-     * @TODO Deprecate this method in GLPI 12.0, it is not used anymore in GLPI itself.
+     * @deprecated 12.0.0
      **/
     public static function link($text, $url, $options = [])
     {
+        Toolbox::deprecated();
 
         if (isset($options['confirm'])) {
             if (!empty($options['confirm'])) {

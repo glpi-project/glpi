@@ -68,7 +68,6 @@ abstract class CommonDevice extends CommonDropdown
      **/
     public static function getDeviceTypes(bool $grouped = false)
     {
-        //TODO After GLPI 11.0, make this always return grouped values
         global $CFG_GLPI;
 
         $valid_types = [

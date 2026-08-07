@@ -1203,7 +1203,6 @@ HTML;
      **/
     public static function getDeviceItemTypes(bool $grouped = false)
     {
-        //TODO After GLPI 11.0, make this always return grouped values
         if (!Session::haveRight('device', READ)) {
             return [];
         }
