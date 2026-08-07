@@ -9528,7 +9528,7 @@ HTML,
             Ticket::class,
             [
                 'name'        => 'ITILsolution Title',
-                'content'     => '',
+                'content'     => 'content',
                 'entities_id' => 0,
                 '_actors'     => [
                     'requester' => [
