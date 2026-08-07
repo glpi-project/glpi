@@ -60,6 +60,17 @@ const StencilEditor = function (container, rand, zones_definition) {
             const cropper = new window.Cropper(img);
             croppers.push(cropper);
             img.cropper = cropper;
+
+            const setAspectRatio = () => {
+                if (img.naturalWidth > 0) {
+                    $(img).closest('.cropper-container').css('aspect-ratio', `${img.naturalWidth} / ${img.naturalHeight}`);
+                }
+            };
+            if (img.complete) {
+                setAspectRatio();
+            } else {
+                img.addEventListener('load', setAspectRatio);
+            }
         });
 
         // set default state of croppers objects
@@ -73,18 +84,27 @@ const StencilEditor = function (container, rand, zones_definition) {
 
                 const cr_image = cropper.getCropperImage();
                 cr_image.$ready(() => {
-                    // center image (by stretching y axis to max)
-                    cr_image.$center('cover');
-
-                    // adapt canvas to have the same height as the image
-                    const img_rect = cr_image.getBoundingClientRect();
                     const cr_canvas = cropper.getCropperCanvas();
-                    $(container).find(cr_canvas).css('height', img_rect.height);
+                    $(cr_canvas).css({
+                        'width': '100%',
+                        'height': '100%'
+                    });
+                    cr_image.$center('contain');
 
-                    // re-center image (after heigh adjust of container, the image is off on top)
-                    cr_image.$center();
+                    const observer = new MutationObserver(() => {
+                        if (typeof _this.updateZonesPosition === 'function') {
+                            _this.updateZonesPosition();
+                        }
+                    });
+                    observer.observe(cr_image, { attributes: true, attributeFilter: ['style'] });
                 });
             });
+        });
+
+        window.addEventListener('resize', () => {
+            if (typeof _this.updateZonesPosition === 'function') {
+                _this.updateZonesPosition();
+            }
         });
 
         // global events
@@ -202,16 +222,25 @@ const StencilEditor = function (container, rand, zones_definition) {
             // load existing data
             if (Object.keys(zone).length > 1 && side == zone['side']) {
                 // set image in the state it was saved
-                cropper.getCropperImage().$setTransform(zone['image']);
+                const cr_image = cropper.getCropperImage();
+                cr_image.$setTransform(zone['image']);
 
-                // restore the selection
-                const data_sel = zone['selection'];
-                cropper.getCropperSelection().$change(
-                    data_sel['x'],
-                    data_sel['y'],
-                    data_sel['width'],
-                    data_sel['height']
-                );
+                // restore the selection using saved percentages to adapt to current canvas size
+                const cr_canvas = cropper.getCropperCanvas();
+                const can_rect = cr_canvas.getBoundingClientRect();
+                const img_rect = cr_image.getBoundingClientRect();
+
+                const img_x = img_rect.left - can_rect.left;
+                const img_y = img_rect.top - can_rect.top;
+                const img_w = img_rect.width;
+                const img_h = img_rect.height;
+
+                const sel_x = img_x + (zone['x_percent'] * img_w / 100);
+                const sel_y = img_y + (zone['y_percent'] * img_h / 100);
+                const sel_w = zone['width_percent'] * img_w / 100;
+                const sel_h = zone['height_percent'] * img_h / 100;
+
+                cropper.getCropperSelection().$change(sel_x, sel_y, sel_w, sel_h);
             }
         });
     };
@@ -368,6 +397,47 @@ const StencilEditor = function (container, rand, zones_definition) {
 
         // Enable tooltips
         $(container).find('a.defined-zone[data-bs-toggle="tooltip"]').tooltip('enable');
+        if (typeof _this.updateZonesPosition === 'function') {
+            _this.updateZonesPosition();
+        }
+    };
+
+    _this.updateZonesPosition = function () {
+        croppers.forEach((cropper) => {
+            const cr_image = cropper.getCropperImage();
+            const cr_canvas = cropper.getCropperCanvas();
+            if (!cr_image || !cr_canvas) return;
+
+            const can_rect = cr_canvas.getBoundingClientRect();
+            const img_rect = cr_image.getBoundingClientRect();
+
+            if (can_rect.width === 0 || img_rect.width === 0) return;
+
+            const img_x = img_rect.left - can_rect.left;
+            const img_y = img_rect.top - can_rect.top;
+            const img_w = img_rect.width;
+            const img_h = img_rect.height;
+            const can_w = can_rect.width;
+            const can_h = can_rect.height;
+
+            $(cropper.container).closest('.cropper-container').find(".defined-zone").each(function () {
+                const zoneIndex = $(this).data('zone-index');
+                const zone = zones[zoneIndex];
+                if (zone) {
+                    const left = (img_x + (zone['x_percent'] * img_w / 100)) / can_w * 100;
+                    const top = (img_y + (zone['y_percent'] * img_h / 100)) / can_h * 100;
+                    const width = (zone['width_percent'] * img_w / 100) / can_w * 100;
+                    const height = (zone['height_percent'] * img_h / 100) / can_h * 100;
+
+                    $(this).css({
+                        left: `${left}%`,
+                        top: `${top}%`,
+                        width: `${width}%`,
+                        height: `${height}%`
+                    });
+                }
+            });
+        });
     };
 
     // add a new zone
