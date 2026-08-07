@@ -10589,4 +10589,591 @@ HTML,
 
         $this->assertSame(255, mb_strlen($ticket->fields['name']));
     }
+
+    /**
+     * Data provider for testShowCentralListRights
+     * Provides different scenarios with ticket statuses, user rights, and expected tickets to be shown in the central list.
+     */
+    public static function showCentralListRightsProvider(): iterable
+    {
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['waiting_assign'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['waiting_assign'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'waiting',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['waiting_assign'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['waiting_group_assign'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['waiting_group_assign'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'waiting',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'waiting',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => [],
+            'showgrouptickets'  => true,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['assign'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['assign'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['group_assign'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => ['group_assign'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'process',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['solved_requestbyself'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => ['solved_requestbyself'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'toapprove',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['solved_requestbyself'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['solved_group_requester'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => ['solved_group_requester'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'toapprove',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'toapprove',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => [],
+            'showgrouptickets'  => true,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['incoming_requestbyself', 'waiting_requestbyself'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => ['incoming_requestbyself', 'waiting_requestbyself'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'requestbyself',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['incoming_requestbyself', 'waiting_requestbyself'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['incoming_group_requester', 'waiting_group_requester'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => ['incoming_group_requester', 'waiting_group_requester'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'requestbyself',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'requestbyself',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => [],
+            'showgrouptickets'  => true,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['incoming_observed', 'waiting_observed'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => ['incoming_observed', 'waiting_observed'],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => [],
+            'showgrouptickets' => false,
+        ];
+
+        yield [
+            'status'            => 'observed',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => ['incoming_observed', 'waiting_observed'],
+            'showgrouptickets'  => false,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READALL],
+            'expected_tickets' => ['incoming_group_observed', 'waiting_group_observed'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READGROUP],
+            'expected_tickets' => ['incoming_group_observed', 'waiting_group_observed'],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READASSIGN],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'           => 'observed',
+            'rights'           => [Ticket::READMY],
+            'expected_tickets' => [],
+            'showgrouptickets' => true,
+        ];
+
+        yield [
+            'status'            => 'observed',
+            'rights'            => [],
+            'validation_rights' => [TicketValidation::VALIDATEINCIDENT],
+            'expected_tickets'  => [],
+            'showgrouptickets'  => true,
+        ];
+    }
+
+    /**
+     * Test that the central list of tickets shows the correct tickets based on user rights.
+     */
+    #[DataProvider('showCentralListRightsProvider')]
+    public function testShowCentralListRights(
+            string $status,
+            array $rights,
+            array $expected_tickets,
+            bool $showgrouptickets,
+            array $validation_rights = [],
+    ): void {
+        $this->login();
+
+        // Create a test user and assign rights
+        $user = $this->createItem(User::class, [
+            'name' => 'testShowCentralListRights_user',
+            'password' => 'testShowCentralListRights_password',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'testShowCentralListRights profile',
+        ]);
+
+        $this->createItem(Profile_User::class, [
+            'profiles_id'  => $profile->getID(),
+            'users_id'     => $user->getID(),
+            'entities_id'  => $this->getTestRootEntity(true),
+            'is_recursive' => 0,
+        ]);
+
+        foreach ($rights as $right) {
+            $this->addRightToProfile($profile->fields['name'], Ticket::$rightname, $right);
+        }
+
+        foreach ($validation_rights as $right) {
+            $this->addRightToProfile($profile->fields['name'], TicketValidation::$rightname, $right);
+        }
+
+        $group = $this->createItem(Group::class, [
+            'name' => 'testShowCentralListRights group',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $this->createItem(Group_User::class, [
+            'groups_id' => $group->getID(),
+            'users_id'  => $user->getID(),
+        ]);
+
+        $entities_id = $this->getTestRootEntity(true);
+
+        // Create tickets with various statuses and assignments
+        [
+            $requester, $observer, $assign, $group_requester, $group_observer,
+            $group_assign, $waiting_requester, $waiting_observer, $waiting_assign,
+            $waiting_group_requester, $waiting_group_observer, $waiting_group_assign,
+            $solved_requestbyself, $solved_group_requester,
+        ] = $this->createItems(Ticket::class, [
+                [
+                    'name' => 'incoming_requestbyself',
+                    'content' => 'incoming requester ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_observed',
+                    'content' => 'observer ticket content',
+                    '_users_id_observer' => $user->getID(),
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_assign',
+                    'content' => 'assign ticket content',
+                    '_users_id_assign' => $user->getID(),
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_group_requester',
+                    'content' => 'group requester ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_group_observed',
+                    'content' => 'group observer ticket content',
+                    '_groups_id_observer' => $group->getID(),
+                    'status' => Ticket::INCOMING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'incoming_group_assign',
+                    'content' => 'group assign ticket content',
+                    '_groups_id_assign' => $group->getID(),
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_requestbyself',
+                    'content' => 'waiting requester ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_observed',
+                    'content' => 'waiting observer ticket content',
+                    '_users_id_observer' => $user->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_assign',
+                    'content' => 'waiting assign ticket content',
+                    '_users_id_assign' => $user->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_group_requester',
+                    'content' => 'waiting group requester ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_group_observed',
+                    'content' => 'waiting group observer ticket content',
+                    '_groups_id_observer' => $group->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'waiting_group_assign',
+                    'content' => 'waiting group assign ticket content',
+                    '_groups_id_assign' => $group->getID(),
+                    'status' => Ticket::WAITING,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'solved_requestbyself',
+                    'content' => 'solved requester ticket content',
+                    '_users_id_requester' => $user->getID(),
+                    'status' => Ticket::SOLVED,
+                    'entities_id' => $entities_id,
+                ],
+                [
+                    'name' => 'solved_group_requester',
+                    'content' => 'solved group requester ticket content',
+                    '_groups_id_requester' => $group->getID(),
+                    'status' => Ticket::SOLVED,
+                    'entities_id' => $entities_id,
+                ],
+            ]
+        );
+
+        $this->updateItem(Ticket::class, $assign->getID(), [
+            'status' => Ticket::INCOMING,
+        ]);
+        $this->updateItem(Ticket::class, $group_assign->getID(), [
+            'status' => Ticket::INCOMING,
+        ]);
+
+        // Log in as the test user and change to the created profile
+        $this->login($user->fields['name'], 'testShowCentralListRights_password');
+
+        Session::changeProfile($profile->getID());
+
+        // Show the central list of tickets and capture the output
+        $output = Ticket::showCentralList(0, $status, $showgrouptickets, false);
+
+        $all_tickets = [
+            'incoming_requestbyself'    => $requester,
+            'incoming_observed'         => $observer,
+            'incoming_group_requester'  => $group_requester,
+            'incoming_group_observed'   => $group_observer,
+            'assign'                    => $assign,
+            'group_assign'              => $group_assign,
+            'waiting_requestbyself'     => $waiting_requester,
+            'waiting_observed'          => $waiting_observer,
+            'waiting_assign'            => $waiting_assign,
+            'waiting_group_requester'   => $waiting_group_requester,
+            'waiting_group_observed'    => $waiting_group_observer,
+            'waiting_group_assign'      => $waiting_group_assign,
+            'solved_requestbyself'      => $solved_requestbyself,
+            'solved_group_requester'    => $solved_group_requester,
+        ];
+
+        // Extract ticket IDs from the output using regex
+        preg_match_all('/ticket\.form\.php\?id=(\d+)/', (string) $output, $matches);
+        $found_ids = array_map('intval', $matches[1]);
+
+        // Assert that the number of found tickets matches the expected count
+        $this->assertCount(
+            count($expected_tickets),
+            $found_ids,
+        );
+
+        // Assert that each expected ticket is present in the found IDs
+        foreach ($all_tickets as $name => $ticket) {
+            $this->assertSame(
+                in_array($name, $expected_tickets, true),
+                in_array($ticket->getID(), $found_ids, true),
+            );
+        }
+    }
 }
