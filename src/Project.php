@@ -1821,7 +1821,7 @@ TWIG, $twig_params);
             ];
         }
         $criteria = [];
-        if (!empty($column_ids)) {
+        if (!empty($column_ids) && !$get_default) {
             $criteria = [
                 'projectstates_id'   => $column_ids,
             ];
