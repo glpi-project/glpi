@@ -36,9 +36,9 @@
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Event;
 use Glpi\Features\Clonable;
+use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\preg_match;
 
@@ -676,6 +676,12 @@ class MassiveAction
             Line::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Infocom::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
 
+            global $CFG_GLPI;
+            if ($canupdate && in_array($itemtype, $CFG_GLPI['assignable_types'], true)) {
+                $actions[$self_pref . 'associate_group'] = "<i class='ti-users-group'></i>" . _sx('button', 'Associate group');
+                $actions[$self_pref . 'dissociate_group'] = "<i class='ti-users-group'></i>" . _sx('button', 'Dissociate group');
+            }
+
             CommonDBConnexity::getMassiveActionsForItemtype(
                 $actions,
                 $itemtype,
@@ -845,6 +851,25 @@ class MassiveAction
         global $DB;
 
         switch ($ma->getAction()) {
+            case 'associate_group':
+            case 'dissociate_group':
+                $values = [
+                    'groups_id'      => Group::getTypeName(1),
+                    'groups_id_tech' => __('Group in charge'),
+                ];
+                Dropdown::showFromArray('fieldname', $values);
+
+                echo '<br>';
+                Group::dropdown([
+                    'name'     => 'selected_group[]',
+                    'multiple' => true,
+                ]);
+                echo '<br>';
+                echo Html::submit(_x('button', 'Post'), [
+                    'name'  => 'massiveaction',
+                ]);
+                return true;
+
             case 'update':
                 if (!isset($ma->POST['id_field'])) {
                     $itemtypes        = array_keys($ma->items);
@@ -1738,6 +1763,54 @@ class MassiveAction
                 }
 
                 break;
+
+            case 'associate_group':
+            case 'dissociate_group':
+                $input      = $ma->getInput();
+
+                $groups_ids = array_map('intval', (array) ($input['selected_group'] ?? []));
+                $field_name = $input['fieldname'] ?? 'groups_id';
+
+                if (!in_array($field_name, ['groups_id', 'groups_id_tech'], true)) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->addMessage(__s('Invalid field name.'));
+                    return;
+                }
+
+                if ($groups_ids === []) {
+                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
+                    return;
+                }
+
+                foreach ($ids as $id) {
+                    if (!$item->can($id, UPDATE)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                        continue;
+                    }
+
+                    if (!$item->getFromDB($id)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        continue;
+                    }
+
+                    $existing = array_map('intval', $item->fields[$field_name] ?? []);
+
+                    if ($action === 'associate_group') {
+                        $new_groups = array_values(array_unique(array_merge($existing, $groups_ids)));
+                    } else {
+                        $new_groups = array_values(array_diff($existing, $groups_ids));
+                    }
+
+                    if ($item->update(['id' => $id, $field_name => $new_groups])) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                    }
+                }
+                break;
         }
     }
 
@@ -1788,6 +1861,9 @@ class MassiveAction
      **/
     public function itemDone($itemtype, $id, $result)
     {
+        /** @var Kernel $kernel */
+        global $kernel;
+
         $this->current_itemtype = (string) $itemtype;
 
         if (!isset($this->done[$itemtype])) {
@@ -1831,7 +1907,7 @@ class MassiveAction
         // Reload every X seconds to refresh the progress bar
         $refresh_delay = 5;
         if ((microtime(true) - $this->start_time) > $refresh_delay) {
-            $request = Request::createFromGlobals();
+            $request = $kernel->getMainRequest();
             Html::redirect($request->getBasePath() . $request->getPathInfo() . '?identifier=' . $this->identifier);
         }
     }

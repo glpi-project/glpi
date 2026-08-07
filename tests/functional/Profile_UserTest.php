@@ -36,6 +36,13 @@ namespace tests\units;
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
+use Profile_User;
+use User;
+
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 /**
  * Tests for Profile_User class
@@ -54,7 +61,7 @@ class Profile_UserTest extends DbTestCase
         $this->assertTrue($super_admin->isLastSuperAdminProfile());
 
         // Default: 4 super admin account authorizations
-        $authorizations = (new \Profile_User())->find([
+        $authorizations = (new Profile_User())->find([
             'profiles_id' => $super_admin->fields['id'],
         ]);
         $this->assertCount(4, $authorizations);
@@ -76,26 +83,26 @@ class Profile_UserTest extends DbTestCase
 
         // Delete 2 authorizations
         $this->login('glpi', 'glpi');
-        $this->assertTrue(\Profile_User::getById($authorizations_by_user_id[$tu_users_id])->canPurgeItem());
-        $this->assertTrue((new \Profile_User())->delete(['id' => $authorizations_by_user_id[$tu_users_id]], 1));
-        $this->assertTrue(\Profile_User::getById($authorizations_by_user_id[$jsmith_users_id])->canPurgeItem());
-        $this->assertTrue((new \Profile_User())->delete(['id' => $authorizations_by_user_id[$jsmith_users_id]], 1));
-        $this->assertTrue(\Profile_User::getById($authorizations_by_user_id[$e2e_tests_users_id])->canPurgeItem());
-        $this->assertTrue((new \Profile_User())->delete(['id' => $authorizations_by_user_id[$e2e_tests_users_id]], 1));
+        $this->assertTrue(Profile_User::getById($authorizations_by_user_id[$tu_users_id])->canPurgeItem());
+        $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$tu_users_id]], 1));
+        $this->assertTrue(Profile_User::getById($authorizations_by_user_id[$jsmith_users_id])->canPurgeItem());
+        $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$jsmith_users_id]], 1));
+        $this->assertTrue(Profile_User::getById($authorizations_by_user_id[$e2e_tests_users_id])->canPurgeItem());
+        $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$e2e_tests_users_id]], 1));
 
         // Last user, can't be purged
-        $this->assertFalse(\Profile_User::getById($authorizations_by_user_id[$glpi_users_id])->canPurgeItem());
+        $this->assertFalse(Profile_User::getById($authorizations_by_user_id[$glpi_users_id])->canPurgeItem());
         // Can still be purged by calling delete, maybe it should not be possible ?
-        $this->assertTrue((new \Profile_User())->delete(['id' => $authorizations_by_user_id[$glpi_users_id]], 1));
+        $this->assertTrue((new Profile_User())->delete(['id' => $authorizations_by_user_id[$glpi_users_id]], 1));
     }
 
     public function testLogOperationOnAddAndDelete(): void
     {
         global $DB;
 
-        $user     = getItemByTypeName(\User::class, 'glpi');
-        $profile1 = getItemByTypeName(\Profile::class, 'Self-Service');
-        $profile2 = getItemByTypeName(\Profile::class, 'Observer');
+        $user     = getItemByTypeName(User::class, 'glpi');
+        $profile1 = getItemByTypeName(Profile::class, 'Self-Service');
+        $profile2 = getItemByTypeName(Profile::class, 'Observer');
         $entity1  = getItemByTypeName(\Entity::class, '_test_root_entity');
         $entity2  = getItemByTypeName(\Entity::class, '_test_child_1');
 
@@ -123,15 +130,15 @@ class Profile_UserTest extends DbTestCase
             'is_dynamic'   => 1,
             'is_recursive' => 1,
         ];
-        $this->createItems(\Profile_User::class, [$input1, $input2, $input3]);
+        $this->createItems(Profile_User::class, [$input1, $input2, $input3]);
 
         // Check created log entries
         $expected_entries = [
             // Log entries for first profile
             [
-                'itemtype'      => \User::class,
+                'itemtype'      => User::class,
                 'items_id'      => $user->getId(),
-                'itemtype_link' => \Profile::class,
+                'itemtype_link' => Profile::class,
                 'linked_action' => \Log::HISTORY_ADD_SUBITEM,
                 'old_value'     => '',
                 'new_value'     => sprintf(
@@ -143,9 +150,9 @@ class Profile_UserTest extends DbTestCase
                 ),
             ],
             [
-                'itemtype'      => \Profile::class,
+                'itemtype'      => Profile::class,
                 'items_id'      => $profile1->getId(),
-                'itemtype_link' => \User::class,
+                'itemtype_link' => User::class,
                 'linked_action' => \Log::HISTORY_ADD_SUBITEM,
                 'old_value'     => '',
                 'new_value'     => sprintf(
@@ -159,7 +166,7 @@ class Profile_UserTest extends DbTestCase
             [
                 'itemtype'      => \Entity::class,
                 'items_id'      => $entity1->getId(),
-                'itemtype_link' => \User::class,
+                'itemtype_link' => User::class,
                 'linked_action' => \Log::HISTORY_ADD_SUBITEM,
                 'old_value'     => '',
                 'new_value'     => sprintf(
@@ -172,9 +179,9 @@ class Profile_UserTest extends DbTestCase
             ],
             // Log entries for second profile
             [
-                'itemtype'      => \User::class,
+                'itemtype'      => User::class,
                 'items_id'      => $user->getId(),
-                'itemtype_link' => \Profile::class,
+                'itemtype_link' => Profile::class,
                 'linked_action' => \Log::HISTORY_ADD_SUBITEM,
                 'old_value'     => '',
                 'new_value'     => sprintf(
@@ -186,9 +193,9 @@ class Profile_UserTest extends DbTestCase
                 ),
             ],
             [
-                'itemtype'      => \Profile::class,
+                'itemtype'      => Profile::class,
                 'items_id'      => $profile1->getId(),
-                'itemtype_link' => \User::class,
+                'itemtype_link' => User::class,
                 'linked_action' => \Log::HISTORY_ADD_SUBITEM,
                 'old_value'     => '',
                 'new_value'     => sprintf(
@@ -202,7 +209,7 @@ class Profile_UserTest extends DbTestCase
             [
                 'itemtype'      => \Entity::class,
                 'items_id'      => $entity2->getId(),
-                'itemtype_link' => \User::class,
+                'itemtype_link' => User::class,
                 'linked_action' => \Log::HISTORY_ADD_SUBITEM,
                 'old_value'     => '',
                 'new_value'     => sprintf(
@@ -215,9 +222,9 @@ class Profile_UserTest extends DbTestCase
             ],
             // Log entries for third profile
             [
-                'itemtype'      => \User::class,
+                'itemtype'      => User::class,
                 'items_id'      => $user->getId(),
-                'itemtype_link' => \Profile::class,
+                'itemtype_link' => Profile::class,
                 'linked_action' => \Log::HISTORY_ADD_SUBITEM,
                 'old_value'     => '',
                 'new_value'     => sprintf(
@@ -229,9 +236,9 @@ class Profile_UserTest extends DbTestCase
                 ),
             ],
             [
-                'itemtype'      => \Profile::class,
+                'itemtype'      => Profile::class,
                 'items_id'      => $profile2->getId(),
-                'itemtype_link' => \User::class,
+                'itemtype_link' => User::class,
                 'linked_action' => \Log::HISTORY_ADD_SUBITEM,
                 'old_value'     => '',
                 'new_value'     => sprintf(
@@ -245,7 +252,7 @@ class Profile_UserTest extends DbTestCase
             [
                 'itemtype'      => \Entity::class,
                 'items_id'      => $entity2->getId(),
-                'itemtype_link' => \User::class,
+                'itemtype_link' => User::class,
                 'linked_action' => \Log::HISTORY_ADD_SUBITEM,
                 'old_value'     => '',
                 'new_value'     => sprintf(
@@ -267,7 +274,7 @@ class Profile_UserTest extends DbTestCase
         // Delete items
         $DB->delete(\Log::getTable(), [new QueryExpression('true')]);
 
-        $profile_user = new \Profile_User();
+        $profile_user = new Profile_User();
         $this->assertTrue($profile_user->deleteByCriteria($input1));
         $this->assertTrue($profile_user->deleteByCriteria($input2));
         $this->assertTrue($profile_user->deleteByCriteria($input3));
@@ -276,9 +283,9 @@ class Profile_UserTest extends DbTestCase
         $expected_entries = [
             // Log entries for first profile
             [
-                'itemtype'      => \User::class,
+                'itemtype'      => User::class,
                 'items_id'      => $user->getId(),
-                'itemtype_link' => \Profile::class,
+                'itemtype_link' => Profile::class,
                 'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
                 'old_value'     => sprintf(
                     '%s (%s), %s (%s)',
@@ -290,9 +297,9 @@ class Profile_UserTest extends DbTestCase
                 'new_value'     => '',
             ],
             [
-                'itemtype'      => \Profile::class,
+                'itemtype'      => Profile::class,
                 'items_id'      => $profile1->getId(),
-                'itemtype_link' => \User::class,
+                'itemtype_link' => User::class,
                 'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
                 'old_value'     => sprintf(
                     '%s (%s), %s (%s)',
@@ -306,7 +313,7 @@ class Profile_UserTest extends DbTestCase
             [
                 'itemtype'      => \Entity::class,
                 'items_id'      => $entity1->getId(),
-                'itemtype_link' => \User::class,
+                'itemtype_link' => User::class,
                 'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
                 'old_value'     => sprintf(
                     '%s (%s), %s (%s)',
@@ -319,9 +326,9 @@ class Profile_UserTest extends DbTestCase
             ],
             // Log entries for second profile
             [
-                'itemtype'      => \User::class,
+                'itemtype'      => User::class,
                 'items_id'      => $user->getId(),
-                'itemtype_link' => \Profile::class,
+                'itemtype_link' => Profile::class,
                 'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
                 'old_value'     => sprintf(
                     '%s (%s), %s (%s) (R)',
@@ -333,9 +340,9 @@ class Profile_UserTest extends DbTestCase
                 'new_value'     => '',
             ],
             [
-                'itemtype'      => \Profile::class,
+                'itemtype'      => Profile::class,
                 'items_id'      => $profile1->getId(),
-                'itemtype_link' => \User::class,
+                'itemtype_link' => User::class,
                 'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
                 'old_value'     => sprintf(
                     '%s (%s), %s (%s) (R)',
@@ -349,7 +356,7 @@ class Profile_UserTest extends DbTestCase
             [
                 'itemtype'      => \Entity::class,
                 'items_id'      => $entity2->getId(),
-                'itemtype_link' => \User::class,
+                'itemtype_link' => User::class,
                 'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
                 'old_value'     => sprintf(
                     '%s (%s), %s (%s) (R)',
@@ -362,9 +369,9 @@ class Profile_UserTest extends DbTestCase
             ],
             // Log entries for third profile
             [
-                'itemtype'      => \User::class,
+                'itemtype'      => User::class,
                 'items_id'      => $user->getId(),
-                'itemtype_link' => \Profile::class,
+                'itemtype_link' => Profile::class,
                 'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
                 'old_value'     => sprintf(
                     '%s (%s), %s (%s) (D, R)',
@@ -376,9 +383,9 @@ class Profile_UserTest extends DbTestCase
                 'new_value'     => '',
             ],
             [
-                'itemtype'      => \Profile::class,
+                'itemtype'      => Profile::class,
                 'items_id'      => $profile2->getId(),
-                'itemtype_link' => \User::class,
+                'itemtype_link' => User::class,
                 'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
                 'old_value'     => sprintf(
                     '%s (%s), %s (%s) (D, R)',
@@ -392,7 +399,7 @@ class Profile_UserTest extends DbTestCase
             [
                 'itemtype'      => \Entity::class,
                 'items_id'      => $entity2->getId(),
-                'itemtype_link' => \User::class,
+                'itemtype_link' => User::class,
                 'linked_action' => \Log::HISTORY_DELETE_SUBITEM,
                 'old_value'     => sprintf(
                     '%s (%s), %s (%s) (D, R)',
@@ -410,5 +417,161 @@ class Profile_UserTest extends DbTestCase
         foreach ($expected_entries as $expected_entry) {
             $this->assertEquals(1, countElementsInTable(\Log::getTable(), $expected_entry));
         }
+    }
+
+    public function testTabOnProfilesCount()
+    {
+        // The tab counter for the Users tab of a profile should not count deleted users
+        $this->login();
+        $_SESSION['glpishow_count_on_tabs'] = 1;
+        $profile = getItemByTypeName(Profile::class, 'Self-Service');
+        $profile_user = new Profile_User();
+        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">2</span>', $profile_user->getTabNameForItem($profile));
+        $this->createItem(User::class, [
+            'name' => __FUNCTION__ . '_deleted',
+            '_profiles_id' => $profile->getId(),
+            '_entities_id' => $this->getTestRootEntity(true),
+            'is_deleted' => 1,
+        ]);
+        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">2</span>', $profile_user->getTabNameForItem($profile));
+        $this->createItem(User::class, [
+            'name' => __FUNCTION__ . '_not_deleted',
+            '_profiles_id' => $profile->getId(),
+            '_entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertStringContainsString('<span class="badge glpi-badge" data-testid="tab-count-badge">3</span>', $profile_user->getTabNameForItem($profile));
+
+    }
+
+    public function testDeleteProfileUserWhenIsTheDefaultProfile(): void
+    {
+        // When a Profile_User entry is deleted and it corresponds to the default profile of the user, the default profile should be set to 0
+        $this->login();
+        $profile = getItemByTypeName(Profile::class, 'Technician');
+        $user = getItemByTypeName(User::class, 'glpi');
+
+        // Set the profile for the user and add it as default profile
+        $this->assertNotFalse((new Profile_User())->add([
+            'users_id' => $user->getId(),
+            'profiles_id' => $profile->getId(),
+            'entities_id' => getItemByTypeName(\Entity::class, '_test_root_entity', true),
+        ]));
+        $user->update([
+            'id' => $user->getId(),
+            'profiles_id' => $profile->getId(),
+        ]);
+
+        $this->assertEquals($profile->getId(), $user->fields['profiles_id']);
+
+        $profile_user = new Profile_User();
+        $this->assertTrue($profile_user->deleteByCriteria([
+            'users_id' => $user->getId(),
+            'profiles_id' => $profile->getId(),
+        ]));
+
+        //Check that the Profile_User entry has been deleted
+        $this->assertEquals(0, countElementsInTable($profile_user->getTable(), [
+            'users_id' => $user->getId(),
+            'profiles_id' => $profile->getId(),
+        ]));
+
+        //Check that the default profile of the user has been set to 0
+        $user->getFromDB($user->getId());
+        $this->assertEquals(0, $user->fields['profiles_id']);
+    }
+
+    public static function massiveActionTargetsLinkIdProvider(): iterable
+    {
+        yield 'users tab of a profile' => ['show_method' => 'showForProfile', 'target' => 'profile'];
+        yield 'users tab of an entity' => ['show_method' => 'showForEntity', 'target' => 'entity'];
+    }
+
+    #[DataProvider('massiveActionTargetsLinkIdProvider')]
+    public function testMassiveActionTargetsLinkId(string $show_method, string $target): void
+    {
+        // Massive action must target the Profile_User link id, not the user id
+        $this->login();
+
+        $profile = getItemByTypeName(Profile::class, 'Self-Service');
+        $entity  = getItemByTypeName(\Entity::class, '_test_root_entity');
+
+        $user = $this->createItem(User::class, [
+            'name'         => $this->getUniqueString(),
+            '_profiles_id' => $profile->getId(),
+            '_entities_id' => $entity->getId(),
+        ]);
+
+        $links = (new Profile_User())->find([
+            'users_id'    => $user->getId(),
+            'profiles_id' => $profile->getId(),
+            'entities_id' => $entity->getId(),
+        ]);
+        $this->assertCount(1, $links);
+        $link_id = array_key_first($links);
+        $this->assertNotEquals($user->getId(), $link_id);
+
+        ob_start();
+        Profile_User::$show_method($target === 'profile' ? $profile : $entity);
+        $html = ob_get_clean();
+
+        $this->assertStringContainsString(
+            sprintf('name="item[Profile_User][%d]"', $link_id),
+            $html
+        );
+        $this->assertStringNotContainsString(
+            sprintf('name="item[Profile_User][%d]"', $user->getId()),
+            $html
+        );
+    }
+
+    public function testShowForUserColumnSorting(): void
+    {
+        // Sorting the habilitations tab by a column must build a valid
+        // ORDER BY clause (no sql error) and actually sort the result
+        $this->login();
+
+        $entity     = getItemByTypeName(\Entity::class, '_test_root_entity');
+        $admin      = getItemByTypeName(Profile::class, 'Admin');
+        $technician = getItemByTypeName(Profile::class, 'Technician');
+
+        $user = $this->createItem(User::class, [
+            'name'         => $this->getUniqueString(),
+            '_profiles_id' => $admin->getId(),
+            '_entities_id' => $entity->getId(),
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id'    => $user->getId(),
+            'profiles_id' => $technician->getId(),
+            'entities_id' => $entity->getId(),
+        ]);
+
+        $admin_links = (new Profile_User())->find([
+            'users_id'    => $user->getId(),
+            'profiles_id' => $admin->getId(),
+        ]);
+        $tech_links = (new Profile_User())->find([
+            'users_id'    => $user->getId(),
+            'profiles_id' => $technician->getId(),
+        ]);
+        $admin_link_id = sprintf('name="item[Profile_User][%d]"', array_key_first($admin_links));
+        $tech_link_id  = sprintf('name="item[Profile_User][%d]"', array_key_first($tech_links));
+
+        // Ascending order by profile name: admin must come before technician
+        $_GET['sort']  = 'profile';
+        $_GET['order'] = 'ASC';
+        ob_start();
+        Profile_User::showForUser($user);
+        $html_asc = ob_get_clean();
+
+        // Descending order by profile name: technician must come before admin
+        $_GET['order'] = 'DESC';
+        ob_start();
+        Profile_User::showForUser($user);
+        $html_desc = ob_get_clean();
+
+        unset($_GET['sort'], $_GET['order']);
+
+        $this->assertLessThan(strpos($html_asc, $tech_link_id), strpos($html_asc, $admin_link_id));
+        $this->assertLessThan(strpos($html_desc, $admin_link_id), strpos($html_desc, $tech_link_id));
     }
 }

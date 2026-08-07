@@ -68,6 +68,27 @@ class GLPIMailerTest extends DbTestCase
             ["test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.dot", false],
             ["test@aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", false],
             ["abcd'efgh@example.com", true],
+
+            // Test UTF-8 characters (RFC 6531)
+            ["josé@example.com", true],
+            ["françois@example.fr", true],
+            ["müller@example.de", true],
+            ["andré.garcía@example.es", true],
+            ["jürgen_øvergård@example.no", true],
+            ["andré+tag@example.com", true],
+            ["user@josé.example.com", true],
+            ["user@münchen.de", true],
+            ["user@café.fr", true],
+            ["test@ñoño.es", true],
+            ["naïve@example.com", true],
+            ["søren@example.dk", true],
+            ["björk@example.is", true],
+            ["déjà-vu@example.com", true],
+            ["user_123@mötörhead.com", true],
+            ["用户@example.com", true],
+            ["тест@example.ru", true],
+            ["משתמש@example.com", true],
+            ["user@例え.jp", true],
         ];
     }
 

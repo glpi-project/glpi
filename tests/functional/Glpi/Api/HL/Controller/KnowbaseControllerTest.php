@@ -34,10 +34,13 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Budget;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use KnowbaseItem;
 use KnowbaseItemTranslation;
+use Project;
+use Ticket;
 
 class KnowbaseControllerTest extends HLAPITestCase
 {
@@ -90,7 +93,6 @@ class KnowbaseControllerTest extends HLAPITestCase
 
         $last_revision_id = null;
         $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $kbi->getID() . '/Revision'), function ($call) use (&$last_revision_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use (&$last_revision_id) {
@@ -100,7 +102,6 @@ class KnowbaseControllerTest extends HLAPITestCase
         });
         // Get last revision
         $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $kbi->getID() . '/Revision/' . $last_revision_id), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -127,7 +128,6 @@ class KnowbaseControllerTest extends HLAPITestCase
 
         $last_revision_id = null;
         $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $kbi->getID() . '/fr_FR/Revision'), function ($call) use (&$last_revision_id) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use (&$last_revision_id) {
@@ -137,12 +137,57 @@ class KnowbaseControllerTest extends HLAPITestCase
         });
         // Get last revision
         $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $kbi->getID() . '/fr_FR/Revision/' . $last_revision_id), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
                     $this->assertEquals('Contenu mis à jour', $content['content']);
                 });
         });
+    }
+
+    public function testCRUDKBArticleLink()
+    {
+        $this->loginWeb();
+        $computers_id = getItemByTypeName(\Computer::class, '_test_pc01', true);
+        $article_id = $this->createItem(KnowbaseItem::class, [
+            'name' => 'test_kb_article_link',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+        $budget_id = getItemByTypeName(Budget::class, '_budget01', true);
+        $ticket_id = getItemByTypeName(Ticket::class, '_ticket01', true);
+        $entity_id = $this->getTestRootEntity(true);
+        $project_id = getItemByTypeName(Project::class, '_project01', true);
+
+        $this->login();
+
+        $this->api->autoTestCRUD('/Assets/Computer/' . $computers_id . '/KBArticle', [
+            'kbarticle' => $article_id,
+        ], [
+            'date_creation' => '2026-03-01T10:00:00+00:00',
+        ]);
+
+        $this->api->autoTestCRUD('/Management/Budget/' . $budget_id . '/KBArticle', [
+            'kbarticle' => $article_id,
+        ], [
+            'date_creation' => '2026-03-01T10:00:00+00:00',
+        ]);
+
+        $this->api->autoTestCRUD('/Assistance/Ticket/' . $ticket_id . '/KBArticle', [
+            'kbarticle' => $article_id,
+        ], [
+            'date_creation' => '2026-03-01T10:00:00+00:00',
+        ]);
+
+        $this->api->autoTestCRUD('/Administration/Entity/' . $entity_id . '/KBArticle', [
+            'kbarticle' => $article_id,
+        ], [
+            'date_creation' => '2026-03-01T10:00:00+00:00',
+        ]);
+
+        $this->api->autoTestCRUD('/Project/Project/' . $project_id . '/KBArticle', [
+            'kbarticle' => $article_id,
+        ], [
+            'date_creation' => '2026-03-01T10:00:00+00:00',
+        ]);
     }
 }

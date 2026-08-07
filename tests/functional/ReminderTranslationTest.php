@@ -36,11 +36,6 @@ namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
 
-/* Test for inc/ReminderTranslation.class.php */
-
-/**
- * @engine isolate
- */
 class ReminderTranslationTest extends DbTestCase
 {
     public function testGetTranslationForReminder()

@@ -207,7 +207,11 @@ final class AnswersHandler
             $DB->commit();
             return $answers_set;
         } catch (Throwable $e) {
-            $DB->rollback();
+            try {
+                $DB->rollback();
+            } catch (Throwable $rollback_e) {
+                // Catch rollback failures so the original exception is propagated
+            }
 
             // Propagate the exception
             throw $e;

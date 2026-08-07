@@ -1,0 +1,107 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 1,
+            "uuid": "d1e2f3a4-b5c6-7890-abcd-dep200000001",
+            "name": "Comment used in conditions",
+            "header": null,
+            "description": null,
+            "entity_name": "Root entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "always_visible",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 1,
+                    "uuid": "d1e2f3a4-b5c6-7890-abcd-dep200000010",
+                    "name": "First section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
+                }
+            ],
+            "comments": [
+                {
+                    "id": 1,
+                    "uuid": "d1e2f3a4-b5c6-7890-abcd-dep200000300",
+                    "name": "My comment",
+                    "description": "",
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
+                }
+            ],
+            "questions": [
+                {
+                    "id": 1,
+                    "uuid": "d1e2f3a4-b5c6-7890-abcd-dep200000100",
+                    "name": "My question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 1,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "visible_if",
+                    "validation_strategy": "no_validation",
+                    "conditions": [
+                        {
+                            "item_uuid": "d1e2f3a4-b5c6-7890-abcd-dep200000300",
+                            "item_type": "comment",
+                            "value_operator": "visible",
+                            "logic_operator": "and",
+                            "value": null
+                        }
+                    ],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": ["all"],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                },
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess",
+                    "config": {
+                        "token": "dep2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                        "allow_unauthenticated": false
+                    },
+                    "is_active": false
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 1,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
+        }
+    ]
+}

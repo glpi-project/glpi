@@ -45,7 +45,9 @@ use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
 
+use function Safe\parse_url;
 use function Safe\preg_match;
+use function Safe\preg_match_all;
 use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
 
@@ -244,7 +246,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                         $ong[2] = self::createTabEntry(
                             _n('Target', 'Targets', Session::getPluralNumber()),
                             $nb,
-                            $item::getType()
+                            $item::getType(),
+                            'ti ti-target-arrow'
                         );
                         $ong[3] = self::createTabEntry(__('Edit'), 0, $item::class, 'ti ti-pencil');
                     }
@@ -300,10 +303,21 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             ]
         );
 
+        $answer = $this->relinkEmbeddedDocumentsFromLinkedItemContext($this->fields['answer'] ?? null);
+        if ($answer !== null && $answer !== ($this->fields['answer'] ?? null)) {
+            $this->fields['answer'] = $answer;
+            $this->input['answer'] = $answer;
+            $this->updateInDB(['answer']);
+        }
+
         if (isset($this->input["_visibility"]['_type']) && !empty($this->input["_visibility"]["_type"])) {
             $this->input["_visibility"]['knowbaseitems_id'] = $this->getID();
             $item                                           = null;
-
+            if (isset($this->input["_visibility"]['entities_id']) && $this->input["_visibility"]['entities_id'] == -1) {
+                // "No restriction" value selected
+                $this->input["_visibility"]['entities_id'] = null;
+                $this->input["_visibility"]['no_entity_restriction'] = 1;
+            }
             switch ($this->input["_visibility"]['_type']) {
                 case 'User':
                     if (
@@ -371,6 +385,129 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $this->update1NTableData(KnowbaseItem_KnowbaseItemCategory::class, "_categories");
 
         NotificationEvent::raiseEvent('new', $this);
+    }
+
+    /**
+     * Recontextualize embedded document URLs from source item to current KnowbaseItem.
+     *
+     * @param ?string $answer
+     *
+     * @return ?string
+     */
+    private function relinkEmbeddedDocumentsFromLinkedItemContext(?string $answer): ?string
+    {
+        global $DB;
+
+        if ($answer === null || $answer === '') {
+            return $answer;
+        }
+
+        $source_itemtype = $this->input['_itemtype'] ?? null;
+        $source_items_id = $this->input['_items_id'] ?? null;
+        if (
+            !is_string($source_itemtype)
+            || !is_a($source_itemtype, CommonDBTM::class, true)
+            || !is_numeric($source_items_id)
+            || (int) $source_items_id <= 0
+        ) {
+            return $answer;
+        }
+        $source_items_id = (int) $source_items_id;
+
+        $matches = [];
+        preg_match_all('/(?:https?:\/\/[^"\'\s<>]+)?\/front\/document\.send\.php\?[^"\'\s<>]+/i', $answer, $matches);
+        if (count($matches[0]) === 0) {
+            return $answer;
+        }
+
+        $document_item = new Document_Item();
+        foreach (array_unique($matches[0]) as $document_url) {
+            if (!is_string($document_url) || $document_url === '') {
+                continue;
+            }
+
+            $decoded_url = html_entity_decode($document_url, ENT_QUOTES | ENT_HTML5);
+            $query = parse_url($decoded_url, PHP_URL_QUERY);
+            if (!is_string($query)) {
+                continue;
+            }
+
+            parse_str($query, $params);
+            $document_id = (int) ($params['docid'] ?? 0);
+            if (
+                $document_id <= 0
+                || ($params['itemtype'] ?? null) !== $source_itemtype
+                || (int) ($params['items_id'] ?? 0) !== $source_items_id
+            ) {
+                continue;
+            }
+
+            if (!$this->canRelinkEmbeddedDocumentFromSourceContext($document_id, $source_itemtype, $source_items_id)) {
+                continue;
+            }
+
+            $target_link = [
+                'documents_id' => $document_id,
+                'itemtype'     => self::class,
+                'items_id'     => $this->getID(),
+            ];
+            if (!$document_item->alreadyExists($target_link)) {
+                $document_item->add($target_link);
+            }
+
+            $params['itemtype'] = self::class;
+            $params['items_id'] = $this->getID();
+            $base_url = strtok($decoded_url, '?');
+            if ($base_url === false) {
+                continue;
+            }
+            $updated_url = htmlescape($base_url . '?' . http_build_query($params, '', '&amp;', PHP_QUERY_RFC3986));
+            $answer = str_replace($document_url, $updated_url, $answer);
+        }
+
+        return $answer;
+    }
+
+    /**
+     * Ensure a document can be safely re-linked from a source context.
+     *
+     * @param int    $document_id
+     * @param string $source_itemtype
+     * @param int    $source_items_id
+     *
+     * @return bool
+     */
+    private function canRelinkEmbeddedDocumentFromSourceContext(
+        int $document_id,
+        string $source_itemtype,
+        int $source_items_id
+    ): bool {
+        global $DB;
+
+        $source_link = $DB->request([
+            'FROM'  => Document_Item::getTable(),
+            'COUNT' => 'cpt',
+            'WHERE' => [
+                'documents_id' => $document_id,
+                'itemtype'     => $source_itemtype,
+                'items_id'     => $source_items_id,
+            ],
+            'LIMIT' => 1,
+        ])->current();
+
+        if (
+            (int) ($source_link['cpt'] ?? 0) <= 0
+            && !is_a($source_itemtype, CommonITILObject::class, true)
+        ) {
+            return false;
+        }
+
+        $document = new Document();
+        return $document->getFromDB($document_id)
+            && $document->canViewFile([
+                'itemtype' => $source_itemtype,
+                'items_id' => $source_items_id,
+            ]);
     }
 
     public function post_getFromDB()
@@ -2210,9 +2347,13 @@ TWIG, $twig_params);
     #[Override]
     public function getServiceCatalogItemDescription(): string
     {
-        // Fallback to answer when using the home page search results as the
-        // service catalog data may not be specified in this case.
-        return $this->fields['description'] ?? $this->fields['answer'] ?? "";
+        if (!empty($this->fields['description'])) {
+            return $this->fields['description'];
+        }
+
+        // No description: fall back to a plain-text excerpt of the answer, not the raw HTML.
+        $answer = RichText::getTextFromHtml($this->fields['answer'] ?? '', false, true);
+        return Html::resume_text($answer, 200);
     }
 
     #[Override]
@@ -2233,5 +2374,58 @@ TWIG, $twig_params);
     public function getServiceCatalogLink(): string
     {
         return $this->getLinkURL();
+    }
+
+    public static function normalizeKbRevisionDiffHtml(string $html): string
+    {
+        if ($html === '') {
+            return $html;
+        }
+
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $previous_libxml_errors = libxml_use_internal_errors(true);
+        $dom->loadHTML('<html><head><meta charset="UTF-8"></head><body>' . $html . '</body></html>');
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous_libxml_errors);
+
+        $xpath = new DOMXPath($dom);
+
+        $doms = $xpath->query('//table | //td | //th');
+        if ($doms !== false) {
+            foreach ($doms as $node) {
+                /** @var DOMElement $node */
+                $node->removeAttribute('width');
+                $style = $node->getAttribute('style');
+                $style = preg_replace('/(?<![a-zA-Z-])(?:(?:min|max)-)?width\s*:[^;]+;?\s*/i', '', $style);
+                if ($node->tagName === 'table') {
+                    $style = rtrim($style, '; ') . '; max-width: 100%; box-sizing: border-box;';
+                }
+                $node->setAttribute('style', ltrim($style, '; '));
+            }
+        }
+
+        $imgs = $xpath->query('//img');
+        if ($imgs !== false) {
+            foreach ($imgs as $img) {
+                /** @var DOMElement $img */
+                $img->removeAttribute('width');
+                $img->removeAttribute('height');
+                $style = $img->getAttribute('style');
+                $style = preg_replace('/(?<![a-zA-Z-])(?:(?:min|max)-)?width\s*:[^;]+;?\s*/i', '', $style);
+                $style = rtrim($style, '; ') . '; max-width: 100%; height: auto;';
+                $img->setAttribute('style', ltrim($style, '; '));
+            }
+        }
+
+        $body = $dom->getElementsByTagName('body')->item(0);
+        if (!($body instanceof DOMElement)) {
+            return $html;
+        }
+
+        $result = '';
+        foreach ($body->childNodes as $node) {
+            $result .= $dom->saveHTML($node);
+        }
+        return $result;
     }
 }

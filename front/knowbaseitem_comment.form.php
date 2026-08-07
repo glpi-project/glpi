@@ -36,18 +36,12 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
 $comment = new KnowbaseItem_Comment();
 if (!isset($_POST['knowbaseitems_id'])) {
     Session::addMessageAfterRedirect(__s('Mandatory fields are not filled!'), false, ERROR);
     Html::back();
-}
-$kbitem = new KnowbaseItem();
-$kbitem->getFromDB($_POST['knowbaseitems_id']);
-if (!$kbitem->canComment()) {
-    throw new AccessDeniedHttpException();
 }
 
 if (isset($_POST["add"])) {
@@ -56,6 +50,7 @@ if (isset($_POST["add"])) {
         Html::back();
     }
 
+    $comment->check(-1, CREATE, $_POST);
     if ($newid = $comment->add($_POST)) {
         Event::log(
             $_POST["knowbaseitems_id"],
@@ -80,6 +75,8 @@ if (isset($_POST["edit"])) {
     }
 
     $comment->getFromDB($_POST['id']);
+    $comment->check($_POST['id'], UPDATE, $_POST);
+
     $data = array_merge($comment->fields, $_POST);
     if ($comment->update($data)) {
         Event::log(

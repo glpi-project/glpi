@@ -42,6 +42,7 @@ use Glpi\Controller\ServiceCatalog\IndexController;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Category;
 use Glpi\Form\Form;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Helpdesk\HomePageTabs;
 use Glpi\Tests\DbTestCase;
@@ -705,6 +706,91 @@ class EntityTest extends DbTestCase
         $this->assertEquals($expected_result, call_user_func_array([Entity::class, 'getUsedConfig'], $params));
     }
 
+    public static function getInheritedValueBadgeProvider(): iterable
+    {
+        // Numeric sentinel (CONFIG_PARENT = -2): auto_assign_mode
+        yield 'numeric: not inheriting returns null' => [
+            'root_values'       => ['auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY],
+            'child_values'      => ['auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE],
+            'grandchild_values' => ['auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE],
+            'field'             => 'auto_assign_mode',
+            'expected_result'     => null,
+            'inherit_parent_value' => Entity::CONFIG_PARENT,
+        ];
+        yield 'numeric: inherits from direct parent' => [
+            'root_values'       => ['auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY],
+            'child_values'      => ['auto_assign_mode' => Entity::AUTO_ASSIGN_CATEGORY_HARDWARE],
+            'grandchild_values' => ['auto_assign_mode' => Entity::CONFIG_PARENT],
+            'field'             => 'auto_assign_mode',
+            'expected_result'   => 'Based on the category then the item',
+            'inherit_parent_value' => Entity::CONFIG_PARENT,
+        ];
+        yield 'numeric: inherits from grandparent when parent also inherits' => [
+            'root_values'       => ['auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY],
+            'child_values'      => ['auto_assign_mode' => Entity::CONFIG_PARENT],
+            'grandchild_values' => ['auto_assign_mode' => Entity::CONFIG_PARENT],
+            'field'             => 'auto_assign_mode',
+            'expected_result'   => 'Based on the item then the category',
+            'inherit_parent_value' => Entity::CONFIG_PARENT,
+        ];
+
+        // Null sentinel (text fields): admin_email
+        yield 'text: not inheriting returns null' => [
+            'root_values'          => ['admin_email' => 'root@example.com'],
+            'child_values'         => ['admin_email' => 'child@example.com'],
+            'grandchild_values'    => ['admin_email' => 'grand@example.com'],
+            'field'                => 'admin_email',
+            'expected_result'      => null,
+            'inherit_parent_value' => null,
+        ];
+        yield 'text: inherits from direct parent' => [
+            'root_values'          => ['admin_email' => 'root@example.com'],
+            'child_values'         => ['admin_email' => 'child@example.com'],
+            'grandchild_values'    => ['admin_email' => null],
+            'field'                => 'admin_email',
+            'expected_result'      => 'child@example.com',
+            'inherit_parent_value' => null,
+        ];
+        yield 'text: inherits from grandparent when parent also inherits' => [
+            'root_values'       => ['admin_email' => 'root@example.com'],
+            'child_values'      => ['admin_email' => null],
+            'grandchild_values' => ['admin_email' => null],
+            'field'             => 'admin_email',
+            'expected_result' => 'root@example.com',
+            'inherit_parent_value' => null,
+        ];
+    }
+
+    #[DataProvider('getInheritedValueBadgeProvider')]
+    public function testGetInheritedValueBadge(
+        array $root_values,
+        array $child_values,
+        array $grandchild_values,
+        string $field,
+        ?string $expected_result,
+        ?int $inherit_parent_value,
+    ): void {
+        $this->login();
+
+        $root_id       = getItemByTypeName('Entity', 'Root entity', true);
+        $child_id      = getItemByTypeName('Entity', '_test_root_entity', true);
+        $grandchild_id = getItemByTypeName('Entity', '_test_child_1', true);
+
+        $entity = new Entity();
+        $this->assertTrue($entity->update(['id' => $root_id] + $root_values));
+        $this->assertTrue($entity->update(['id' => $child_id] + $child_values));
+        $this->assertTrue($entity->update(['id' => $grandchild_id] + $grandchild_values));
+
+        $this->assertTrue($entity->getFromDB($grandchild_id));
+        $badge = $entity->getInheritedValueBadge(field: $field, inherit_parent_value: $inherit_parent_value);
+
+        if ($expected_result === null) {
+            $this->assertNull($badge);
+        } else {
+            $this->assertNotNull($badge);
+            $this->assertStringContainsString($expected_result, $badge);
+        }
+    }
 
     public static function customCssProvider()
     {
@@ -1299,7 +1385,7 @@ class EntityTest extends DbTestCase
     {
         $this->login();
 
-        $old_entity = $this->createItem(
+        $this->createItem(
             'Entity',
             [
                 'name'        => 'Existing entity',
@@ -1462,12 +1548,10 @@ class EntityTest extends DbTestCase
 
         $this->login();
 
-        $fn_get_current_entities = static function () use ($DB) {
-            return iterator_to_array($DB->request([
-                'SELECT' => ['id', 'name', 'entities_id'],
-                'FROM' => 'glpi_entities',
-            ]));
-        };
+        $fn_get_current_entities = (static fn() => iterator_to_array($DB->request([
+            'SELECT' => ['id', 'name', 'entities_id'],
+            'FROM' => 'glpi_entities',
+        ])));
 
         $fn_find_entities_in_selector = static function ($selector, $entities, $parent_id = 0, &$found = []) use (&$fn_find_entities_in_selector) {
             foreach ($selector as $item) {
@@ -2076,5 +2160,182 @@ class EntityTest extends DbTestCase
             $should_be_expanded ? 1 : 0,
             $request_form
         );
+    }
+
+    public static function serviceCatalogDefaultSortStrategyProvider(): iterable
+    {
+        yield 'Entity without config inherits popularity from root' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => '-2'],
+            ],
+            'entity' => 'entity_a',
+            'expected_strategy' => SortStrategyEnum::POPULARITY,
+        ];
+
+        yield 'Entity with explicit alphabetical value' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'alphabetical'],
+            ],
+            'entity' => 'entity_a',
+            'expected_strategy' => SortStrategyEnum::ALPHABETICAL,
+        ];
+
+        yield 'Entity with explicit reverse_alphabetical value' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'reverse_alphabetical'],
+            ],
+            'entity' => 'entity_a',
+            'expected_strategy' => SortStrategyEnum::REVERSE_ALPHABETICAL,
+        ];
+
+        yield 'Entity inherits alphabetical from parent' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'alphabetical'],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => '-2'],
+            ],
+            'entity' => 'entity_aa',
+            'expected_strategy' => SortStrategyEnum::ALPHABETICAL,
+        ];
+
+        yield 'Child overrides parent alphabetical with popularity' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'alphabetical'],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => 'popularity'],
+            ],
+            'entity' => 'entity_aa',
+            'expected_strategy' => SortStrategyEnum::POPULARITY,
+        ];
+
+        yield 'Invalid stored value falls back to default' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'unknown_value'],
+            ],
+            'entity' => 'entity_a',
+            'expected_strategy' => SortStrategyEnum::POPULARITY,
+        ];
+    }
+
+    #[DataProvider('serviceCatalogDefaultSortStrategyProvider')]
+    public function testServiceCatalogDefaultSortStrategy(
+        array $entities,
+        string $entity,
+        SortStrategyEnum $expected_strategy,
+    ): void {
+        $this->login();
+
+        // Arrange: create requested entities
+        $root = $this->getTestRootEntity(only_id: true);
+        foreach ($entities as $to_create) {
+            if (isset($to_create['parent'])) {
+                $parent = getItemByTypeName(
+                    Entity::class,
+                    $to_create['parent'],
+                    onlyid: true,
+                );
+            } else {
+                $parent = $root;
+            }
+
+            $this->createItem(Entity::class, [
+                'name'                                  => $to_create['name'],
+                'entities_id'                           => $parent,
+                'service_catalog_default_sort_strategy' => $to_create['config'],
+            ]);
+        }
+
+        // Act
+        $entity = getItemByTypeName(Entity::class, $entity);
+        $actual_strategy = $entity->getServiceCatalogDefaultSortStrategy();
+
+        // Assert
+        $this->assertEquals($expected_strategy, $actual_strategy);
+    }
+
+    /** @return iterable<string, array{inquest_config: int, inquest_rate: int, inquest_delay: int, inquest_URL: string|null, contains: array<string>, not_contains: array<string>}> */
+    public static function inquestConfigDisplayProvider(): iterable
+    {
+        yield 'CONFIG_PARENT shows inheritance label' => [
+            'inquest_config' => Entity::CONFIG_PARENT,
+            'inquest_rate'   => 0,
+            'inquest_delay'  => 0,
+            'inquest_URL'    => null,
+            'contains'       => ['Inheritance of the parent entity'],
+            'not_contains'   => [],
+        ];
+
+        yield 'internal survey, rate disabled' => [
+            'inquest_config' => \CommonITILSatisfaction::TYPE_INTERNAL,
+            'inquest_rate'   => 0,
+            'inquest_delay'  => 0,
+            'inquest_URL'    => null,
+            'contains'       => ['Disabled'],
+            'not_contains'   => ['-2'],
+        ];
+
+        yield 'internal survey, rate set' => [
+            'inquest_config' => \CommonITILSatisfaction::TYPE_INTERNAL,
+            'inquest_rate'   => 50,
+            'inquest_delay'  => 3,
+            'inquest_URL'    => null,
+            'contains'       => ['Internal survey', '3', '50%'],
+            'not_contains'   => ['-2'],
+        ];
+
+        yield 'external survey with URL' => [
+            'inquest_config' => \CommonITILSatisfaction::TYPE_EXTERNAL,
+            'inquest_rate'   => 100,
+            'inquest_delay'  => 1,
+            'inquest_URL'    => 'https://example.com/survey',
+            'contains'       => ['External survey', 'https://example.com/survey', '<a href='],
+            'not_contains'   => ['-2'],
+        ];
+
+        yield 'external survey without URL shows no -2' => [
+            'inquest_config' => \CommonITILSatisfaction::TYPE_EXTERNAL,
+            'inquest_rate'   => 100,
+            'inquest_delay'  => 1,
+            'inquest_URL'    => null,
+            'contains'       => ['External survey'],
+            'not_contains'   => ['-2', '<a href='],
+        ];
+    }
+
+    /**
+     * @param array<string> $contains
+     * @param array<string> $not_contains
+     */
+    #[DataProvider('inquestConfigDisplayProvider')]
+    public function testInquestConfigSpecificValueToDisplay(
+        int $inquest_config,
+        int $inquest_rate,
+        int $inquest_delay,
+        ?string $inquest_URL,
+        array $contains,
+        array $not_contains
+    ): void {
+        $this->login();
+
+        $entity = $this->createItem(Entity::class, [
+            'name'           => 'Test inquest display',
+            'entities_id'    => getItemByTypeName('Entity', '_test_root_entity', true),
+            'inquest_config' => $inquest_config,
+            'inquest_rate'   => $inquest_rate,
+            'inquest_delay'  => $inquest_delay,
+            'inquest_URL'    => $inquest_URL ?? '',
+        ]);
+
+        $result = Entity::getSpecificValueToDisplay(
+            'inquest_config',
+            ['inquest_config' => $inquest_config, 'id' => $entity->getID()],
+            ['html' => true]
+        );
+
+        foreach ($contains as $expected) {
+            $this->assertStringContainsString($expected, $result);
+        }
+
+        foreach ($not_contains as $unexpected) {
+            $this->assertStringNotContainsString($unexpected, $result);
+        }
     }
 }

@@ -58,8 +58,12 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
     /** @return class-string<SLMFieldConfig> */
     abstract public function getConfigClass(): string;
     abstract protected function getFieldNameToConvertSpecificSLMID(): string;
+    protected bool $support_only_dates = false;
 
-    final public function __construct() {}
+    final public function __construct(bool $support_only_dates = false)
+    {
+        $this->support_only_dates = $support_only_dates;
+    }
 
     #[Override]
     public function renderConfigForm(
@@ -162,6 +166,10 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
     #[Override]
     public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
     {
+        if (!isset($rawData['sla_rule'])) {
+            return $this->getDefaultConfig($form);
+        }
+
         switch ($rawData['sla_rule']) {
             case 1: // PluginFormcreatorAbstractItilTarget::SLA_RULE_NONE
                 return $this->getConfig($form, [$this->getKey() => [
@@ -181,6 +189,9 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
     {
         $values = [];
         foreach (SLMFieldStrategy::cases() as $strategies) {
+            if ($this->support_only_dates && !$strategies->isDateComputation()) {
+                continue;
+            }
             $values[$strategies->value] = $strategies->getLabel($this);
         }
         return $values;

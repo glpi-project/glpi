@@ -35,34 +35,19 @@
 namespace tests\units;
 
 use Change;
+use Change_User;
+use CommonITILActor;
 use CommonITILObject;
+use Computer;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
+use User;
 
 /* Test for inc/change.class.php */
 
 class ChangeTest extends DbTestCase
 {
-    public function testAddFromItem()
-    {
-        // add change from a computer
-        $computer   = getItemByTypeName('Computer', '_test_pc01');
-        $change     = new Change();
-        $changes_id = $change->add([
-            'name'           => "test add from computer \'_test_pc01\'",
-            'content'        => "test add from computer \'_test_pc01\'",
-            '_add_from_item' => true,
-            '_from_itemtype' => 'Computer',
-            '_from_items_id' => $computer->getID(),
-        ]);
-        $this->assertGreaterThan(0, $changes_id);
-        $this->assertTrue($change->getFromDB($changes_id));
-
-        // check relation
-        $change_item = new \Change_Item();
-        $this->assertTrue($change_item->getFromDBForItems($change, $computer));
-    }
-
     public function testAssignFromCategory()
     {
         $this->login('glpi', 'glpi');
@@ -80,7 +65,7 @@ class ChangeTest extends DbTestCase
 
         // Login again to acess the new entity
         $this->login('glpi', 'glpi');
-        $success = \Session::changeActiveEntities($entity->getID(), true);
+        $success = Session::changeActiveEntities($entity->getID(), true);
         $this->assertTrue($success);
 
         $group = new \Group();
@@ -109,16 +94,16 @@ class ChangeTest extends DbTestCase
         ]);
         $this->assertFalse($change->isNewItem());
         $change->getFromDB($change->getID());
-        $changeUser = new \Change_User();
+        $changeUser = new Change_User();
         $changeGroup = new \Change_Group();
         $rows = $changeUser->find([
             'changes_id' => $change->getID(),
-            'type'       => \CommonITILActor::ASSIGN,
+            'type'       => CommonITILActor::ASSIGN,
         ]);
         $this->assertCount(0, $rows);
         $rows = $changeGroup->find([
             'changes_id' => $change->getID(),
-            'type'       => \CommonITILActor::ASSIGN,
+            'type'       => CommonITILActor::ASSIGN,
         ]);
 
         // check Entity::AUTO_ASSIGN_HARDWARE_CATEGORY assignment
@@ -135,18 +120,18 @@ class ChangeTest extends DbTestCase
         ]);
         $this->assertFalse($change->isNewItem());
         $change->getFromDB($change->getID());
-        $changeUser = new \Change_User();
+        $changeUser = new Change_User();
         $changeGroup = new \Change_Group();
         $rows = $changeUser->find([
             'changes_id' => $change->getID(),
             'users_id'   => 4, // Tech
-            'type'       => \CommonITILActor::ASSIGN,
+            'type'       => CommonITILActor::ASSIGN,
         ]);
         $this->assertCount(0, $rows);
         $rows = $changeGroup->find([
             'changes_id' => $change->getID(),
             'groups_id'  => $group->getID(),
-            'type'       => \CommonITILActor::ASSIGN,
+            'type'       => CommonITILActor::ASSIGN,
         ]);
 
         // check Entity::AUTO_ASSIGN_CATEGORY_HARDWARE assignment
@@ -163,18 +148,18 @@ class ChangeTest extends DbTestCase
         ]);
         $this->assertFalse($change->isNewItem());
         $change->getFromDB($change->getID());
-        $changeUser = new \Change_User();
+        $changeUser = new Change_User();
         $changeGroup = new \Change_Group();
         $rows = $changeUser->find([
             'changes_id' => $change->getID(),
             'users_id'   => 4, // Tech
-            'type'       => \CommonITILActor::ASSIGN,
+            'type'       => CommonITILActor::ASSIGN,
         ]);
         $this->assertCount(0, $rows);
         $rows = $changeGroup->find([
             'changes_id' => $change->getID(),
             'groups_id'  => $group->getID(),
-            'type'       => \CommonITILActor::ASSIGN,
+            'type'       => CommonITILActor::ASSIGN,
         ]);
         $this->assertCount(0, $rows);
     }
@@ -182,9 +167,9 @@ class ChangeTest extends DbTestCase
     public function testGetTeamRoles(): void
     {
         $roles = Change::getTeamRoles();
-        $this->assertContains(\CommonITILActor::ASSIGN, $roles);
-        $this->assertContains(\CommonITILActor::OBSERVER, $roles);
-        $this->assertContains(\CommonITILActor::REQUESTER, $roles);
+        $this->assertContains(CommonITILActor::ASSIGN, $roles);
+        $this->assertContains(CommonITILActor::OBSERVER, $roles);
+        $this->assertContains(CommonITILActor::REQUESTER, $roles);
     }
 
     public function testGetTeamRoleName(): void
@@ -221,7 +206,7 @@ class ChangeTest extends DbTestCase
 
         // Verify user was assigned and status doesn't change
         $change->loadActors();
-        $this->assertSame(1, $change->countUsers(\CommonITILActor::ASSIGN));
+        $this->assertSame(1, $change->countUsers(CommonITILActor::ASSIGN));
         $this->assertSame(CommonITILObject::INCOMING, $change->fields['status']);
 
         // Change status to accepted
@@ -230,14 +215,14 @@ class ChangeTest extends DbTestCase
             'status' => CommonITILObject::ACCEPTED,
         ]);
         // Unassign change and expect the status to stay accepted
-        $change_user = new \Change_User();
+        $change_user = new Change_User();
         $change_user->deleteByCriteria([
             'changes_id' => $changes_id,
-            'type' => \CommonITILActor::ASSIGN,
+            'type' => CommonITILActor::ASSIGN,
             'users_id' => getItemByTypeName('User', TU_USER, true),
         ]);
         $change->getFromDB($changes_id);
-        $this->assertSame(0, $change->countUsers(\CommonITILActor::ASSIGN));
+        $this->assertSame(0, $change->countUsers(CommonITILActor::ASSIGN));
         $this->assertSame(CommonITILObject::ACCEPTED, $change->fields['status']);
     }
 
@@ -450,7 +435,7 @@ class ChangeTest extends DbTestCase
         $this->createItem('ChangeValidation', [
             'changes_id'        => $change->getID(),
             'items_id_target'   => $users_id,
-            'itemtype_target'   => \User::class,
+            'itemtype_target'   => User::class,
         ]);
 
         ob_start();
@@ -482,6 +467,76 @@ class ChangeTest extends DbTestCase
 
         // Assert: make sure some html was generated
         $this->assertNotEmpty($html);
+    }
+
+    public function testShowFormFromItemUsesItemEntity(): void
+    {
+        // Arrange: an asset in a sub-entity, while the current (default)
+        // session entity is its parent entity
+        $this->login('glpi', 'glpi');
+
+        $root_entity = $this->getTestRootEntity(only_id: true);
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer used to create a change from item',
+            'entities_id' => $item_entity,
+        ]);
+
+        // Active entity is the parent entity (with access to its sub-entities),
+        // which is not the same as the asset's own entity
+        $this->assertTrue(Session::changeActiveEntities($root_entity, true));
+
+        $change = new Change();
+        $change->getEmpty();
+
+        // Act: render form for a new change created from the asset
+        ob_start();
+        $change->showForm($change->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the change entity follows the asset entity, not the
+        // currently active session entity
+        $this->assertEquals($item_entity, (int) $change->fields['entities_id']);
+        $this->assertNotEquals($root_entity, (int) $change->fields['entities_id']);
+    }
+
+    public function testShowFormFromItemIgnoresInaccessibleItemEntity(): void
+    {
+        // Arrange: an asset in an entity the current session has no access to
+        $this->login('glpi', 'glpi');
+
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer in an entity the session cannot access',
+            'entities_id' => $item_entity,
+        ]);
+
+        $active_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        // Restrict the active session to a sibling entity only (no access to
+        // the asset's entity, even though the user's profile is recursive
+        // from a common ancestor)
+        $this->assertTrue(Session::changeActiveEntities($active_entity, false));
+
+        $change = new Change();
+        $change->getEmpty();
+
+        // Act: render form for a new change created from the (inaccessible) asset
+        ob_start();
+        $change->showForm($change->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the change falls back to the active session entity, the
+        // asset entity is NOT used since the session has no access to it
+        $this->assertEquals($active_entity, (int) $change->fields['entities_id']);
+        $this->assertNotEquals($item_entity, (int) $change->fields['entities_id']);
     }
 
     public function testShowFormClosedItem(): void
@@ -595,7 +650,7 @@ class ChangeTest extends DbTestCase
                 'requester' => [
                     [
                         'itemtype'  => 'User',
-                        'items_id'  => \Session::getLoginUserID(),
+                        'items_id'  => Session::getLoginUserID(),
                     ],
                 ],
             ],
@@ -604,5 +659,142 @@ class ChangeTest extends DbTestCase
         $input = ['itemtype' => Change::class, 'items_id' => $change->getID()];
         $doc = new \Document();
         $this->assertEquals($expected, $doc->can(-1, CREATE, $input));
+    }
+
+    // test with param _users_id_requester e.g in user profile
+    // The user must be the requester
+    public function testCreateChangeFromUser()
+    {
+        $this->login();
+
+        $user_id = getItemByTypeName(User::class, 'glpi', true);
+
+        $changes_id = $this->createItem(Change::class, [
+            'name'        => 'Change created from the user profile',
+            'content'     => 'Hello world',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user_id,
+        ])->getID();
+
+        $change = new Change();
+        $this->assertTrue($change->getFromDB($changes_id));
+
+        $changes_user = new Change_User();
+        $found = $changes_user->find([
+            'changes_id' => $changes_id,
+            'users_id'   => $user_id,
+            'type'       => CommonITILActor::REQUESTER, // user is _users_id_requester
+        ]);
+
+        $this->assertCount(1, $found);
+    }
+
+    public function testCreateChangeFromTicket()
+    {
+        // ensure change created from ticket displays
+        // ticket information
+        $options = [
+            "tickets_id" => "1",
+            "_target" => "/front/change.form.php",
+            "id" => "0",
+            "withtemplate" => 0,
+        ];
+        $change = new Change();
+        $change->getEmpty();
+
+        $this->login();
+        ob_start();
+        $change->showForm($change->getID(), $options);
+        $html = ob_get_clean();
+
+        $this->assertNotEmpty($html);
+        $this->assertStringContainsString("_ticket01", $html);
+        $this->assertStringContainsString("Content for ticket _ticket01", $html);
+    }
+
+    public function testCreateChangeFromProblem()
+    {
+        // ensure change created from problem displays
+        // problem information
+        $options = [
+            "problems_id" => "1",
+            "_target" => "/front/change.form.php",
+            "id" => "0",
+            "withtemplate" => 0,
+        ];
+        $change = new Change();
+        $change->getEmpty();
+
+        $this->login();
+        ob_start();
+        $change->showForm($change->getID(), $options);
+        $html = ob_get_clean();
+
+        $this->assertNotEmpty($html);
+        $this->assertStringContainsString("_problem01", $html);
+        $this->assertStringContainsString("Content for problem _problem01", $html);
+
+    }
+
+    public function testChangeFromTicketSetCatecory()
+    {
+        $options = [
+            "tickets_id" => "1",
+            "_target" => "/front/change.form.php",
+            "id" => "0",
+            "withtemplate" => 0,
+        ];
+        $change = new Change();
+        $change->getEmpty();
+
+        $this->login();
+        // User input done before changing catecory or other page reload
+        $_SESSION["saveInput"][Change::class]['content'] = "New test content";
+        ob_start();
+        $change->showForm($change->getID(), $options);
+        $html = ob_get_clean();
+
+        $this->assertNotEmpty($html);
+        $this->assertStringContainsString("_ticket01", $html);
+        $this->assertStringContainsString("New test content", $html);
+    }
+
+    public function testChangeFromProblemCatecoryReload(): void
+    {
+        $options = [
+            "problems_id" => "1",
+            "_target" => "/front/change.form.php",
+            "id" => "0",
+            "withtemplate" => 0,
+        ];
+        $change = new Change();
+        $change->getEmpty();
+
+        $this->login();
+        ob_start();
+        // User input done before changing catecory or other page reload
+        $_SESSION["saveInput"][Change::class]['content'] = "New test content";
+        $change->showForm($change->getID(), $options);
+        $html = ob_get_clean();
+
+        $this->assertNotEmpty($html);
+        $this->assertStringContainsString("_problem01", $html);
+        $this->assertStringNotContainsString("Content for problem _problem01", $html);
+        $this->assertStringContainsString("New test content", $html);
+    }
+
+
+
+    public function testTitleIsTruncatedTo255Characters(): void
+    {
+        $this->login();
+
+        $change = $this->createItem(Change::class, [
+            'name'        => str_repeat('a', 300),
+            'content'     => 'Hello world',
+            'entities_id' => $this->getTestRootEntity(true),
+        ], ['name']);
+
+        $this->assertSame(255, mb_strlen($change->fields['name']));
     }
 }

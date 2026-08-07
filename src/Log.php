@@ -37,7 +37,9 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryParam;
 use Glpi\RichText\RichText;
 use Glpi\Search\SearchOption;
+use Safe\Exceptions\JsonException;
 
+use function Safe\json_decode;
 use function Safe\preg_match;
 
 /**
@@ -221,8 +223,8 @@ class Log extends CommonDBTM
      * @param int $items_id
      * @param class-string<CommonDBTM> $itemtype
      * @param array $changes
-     * @param int|string $itemtype_link   (default '')
-     * @param int $linked_action   (default 0)
+     * @param int|string $itemtype_link (default '')
+     * @param int $linked_action (default 0)
      *
      * @return bool success
      */
@@ -243,13 +245,30 @@ class Log extends CommonDBTM
         $new_id           = $changes[4] ?? null;
 
         // Remove json values
-        $decoded_old_value = json_decode($old_value); //@phpstan-ignore theCodingMachineSafe.function
-        $decoded_new_value = json_decode($new_value); //@phpstan-ignore theCodingMachineSafe.function
-        if (is_array($decoded_old_value) || is_object($decoded_old_value)) {
+        if (is_array($old_value) || is_object($old_value)) {
             $old_value = '';
+        } elseif (is_string($old_value)) {
+            try {
+                $decoded_old_value = json_decode($old_value);
+            } catch (JsonException $e) {
+                $decoded_old_value = null;
+            }
+            if (is_array($decoded_old_value) || is_object($decoded_old_value)) {
+                $old_value = '';
+            }
         }
-        if (is_array($decoded_new_value) || is_object($decoded_new_value)) {
+
+        if (is_array($new_value) || is_object($new_value)) {
             $new_value = '';
+        } elseif (is_string($new_value)) {
+            try {
+                $decoded_new_value = json_decode($new_value);
+            } catch (JsonException $e) {
+                $decoded_new_value = null;
+            }
+            if (is_array($decoded_new_value) || is_object($decoded_new_value)) {
+                $new_value = '';
+            }
         }
 
         if ($uid = Session::getLoginUserID(false)) {
@@ -1349,17 +1368,30 @@ class Log extends CommonDBTM
         if (isset($filters['affected_fields']) && !empty($filters['affected_fields'])) {
             $affected_field_crit = [];
             foreach ($filters['affected_fields'] as $index => $affected_field) {
+                $index = (int) $index;
                 $affected_field_crit[$index] = [];
                 foreach (explode(";", $affected_field) as $var) {
                     if (1 === preg_match('/^(?P<key>.+):(?P<operator>.*):(?P<values>.+)$/', $var, $matches)) {
                         $key = $matches['key'];
+                        $allowed_keys = ['linked_action', 'id_search_option', 'itemtype_link'];
+                        if (!in_array($key, $allowed_keys, true)) {
+                            continue;
+                        }
                         $operator = $matches['operator'];
+                        if (!empty($operator) && $operator != 'NOT') {
+                            throw new RuntimeException('Invalid operator: ' . $operator);
+                        }
                         // Each field can have multiple values for a given filter
                         $values = explode(',', $matches['values']);
 
                         // linked_action and id_search_option are stored as integers
                         if (in_array($key, ['linked_action', 'id_search_option'])) {
                             $values = array_map('intval', $values);
+                        } elseif ($key === 'itemtype_link') {
+                            $values = array_filter(
+                                $values,
+                                fn($val) => getItemForItemtype($val) !== false
+                            );
                         }
 
                         if (!empty($operator)) {
@@ -1369,10 +1401,15 @@ class Log extends CommonDBTM
                         }
                     }
                 }
+                if (empty($affected_field_crit[$index])) {
+                    unset($affected_field_crit[$index]);
+                }
             }
-            $sql_filters[] = [
-                'OR' => $affected_field_crit,
-            ];
+            if ($affected_field_crit !== []) {
+                $sql_filters[] = [
+                    'OR' => $affected_field_crit,
+                ];
+            }
         }
 
         if (isset($filters['date']) && !empty($filters['date'])) {

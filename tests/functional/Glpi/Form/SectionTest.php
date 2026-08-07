@@ -164,6 +164,54 @@ class SectionTest extends DbTestCase
         $this->assertNotEmpty($name);
     }
 
+    /**
+     * Non-regression test for a crash when blocks have mixed solo/horizontal layout at the same vertical rank.
+     * Triggered by corrupted data after plugin migration (e.g. Fields plugin 1.24.x → GLPI 11).
+     */
+    public function testGetBlocksDoesNotCrashWithMixedLayoutAtSameVerticalRank(): void
+    {
+        $this->login();
+
+        $form = $this->createForm(
+            (new FormBuilder())->addSection('Section 1')
+        );
+        $section_id = $this->getSectionId($form, 'Section 1');
+
+        // Q1 at (vr=0, hr=0): horizontal group — sets explicit key 0, PHP auto-inc becomes 1
+        // Q2 at (vr=1, hr=null): solo block — buggy code assigns PHP auto-inc key 1
+        // Q3 at (vr=1, hr=0): horizontal at vr=1 — buggy code crashes: $groupedBlocks[1] is a Question, not an array
+        $this->createItem(Question::class, [
+            'forms_sections_id' => $section_id,
+            'name'              => 'Q1',
+            'type'              => QuestionTypeShortText::class,
+            'vertical_rank'     => 0,
+            'horizontal_rank'   => 0,
+        ]);
+        $this->createItem(Question::class, [
+            'forms_sections_id' => $section_id,
+            'name'              => 'Q2',
+            'type'              => QuestionTypeShortText::class,
+            'vertical_rank'     => 1,
+            'horizontal_rank'   => null,
+        ], ['horizontal_rank']);
+        $this->createItem(Question::class, [
+            'forms_sections_id' => $section_id,
+            'name'              => 'Q3',
+            'type'              => QuestionTypeShortText::class,
+            'vertical_rank'     => 1,
+            'horizontal_rank'   => 0,
+        ]);
+
+        $section = Section::getById($section_id);
+        $blocks = $section->getBlocks();
+
+        $this->assertCount(2, $blocks);
+        $this->assertIsArray($blocks[0]);
+        $this->assertCount(1, $blocks[0]);
+        $this->assertIsArray($blocks[1]);
+        $this->assertCount(2, $blocks[1]);
+    }
+
     private function checkGetQuestions(
         Section $section,
         array $expected_questions_names

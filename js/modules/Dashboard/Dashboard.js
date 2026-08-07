@@ -33,7 +33,7 @@
 
 /* eslint prefer-template: 0 */
 /* global GridStack, GoInFullscreen, GoOutFullscreen, EasyMDE, getUuidV4, _, sortable */
-/* global glpi_ajax_dialog, glpi_close_all_dialogs */
+/* global glpi_ajax_dialog, glpi_close_all_dialogs, glpi_toast_info, glpi_toast_error */
 
 window.GLPI = window.GLPI || {};
 window.GLPI.Dashboard = {
@@ -70,9 +70,12 @@ window.GLPI.Dashboard = {
  * @property {string|null} [token] Token
  * @property {number|null} [entities_id] Entities ID
  * @property {number|boolean|null} [is_recursive] Recursive
+ * @property {number|null} [profiles_id] Profile ID of the user who shared the dashboard
+ * @property {number|null} [users_id] User ID of the user who shared the dashboard
  * @property {{}[]} [all_cards] All cards
  * @property {string} [context] Dashboard context
  * @property {string} [current] Current dashboard
+ * @property {boolean} [mini] Whether the dashboard is in mini mode (for ticket search page)
  */
 
 class GLPIDashboard {
@@ -120,6 +123,8 @@ class GLPIDashboard {
             token:       null,
             entities_id: null,
             is_recursive:null,
+            profiles_id: null,
+            users_id:    null,
             ajax_cards:  true,
             all_cards:   [],
             context:     "core"
@@ -130,11 +135,13 @@ class GLPIDashboard {
         this.elem_id      = "#dashboard-" + this.rand;
         this.element      = $(this.elem_id);
         this.elem_dom     = this.element[0];
-        this.current_name = $(`${this.elem_id} .dashboard-select`).val() || options.current;
+        this.current_name = $(`${this.elem_id} .dashboard_select`).val() || options.current;
         this.embed        = options.embed;
         this.token        = options.token;
         this.entities_id  = options.entities_id;
         this.is_recursive = options.is_recursive;
+        this.profiles_id  = options.profiles_id;
+        this.users_id     = options.users_id;
         this.ajax_cards   = options.ajax_cards;
         this.all_cards    = options.all_cards;
         this.all_widgets  = options.all_widgets;
@@ -149,7 +156,7 @@ class GLPIDashboard {
         const elem_domRect = this.elem_dom.getBoundingClientRect();
         const width_offset = elem_domRect.left + (window.innerWidth - elem_domRect.right) + 0.02;
 
-        this.grid = GridStack.init({
+        const gridstack_options = {
             column: options.cols,
             maxRow: (options.rows + 1), // +1 for a hidden item at bottom (to fix height)
             margin : this.cell_margin,
@@ -161,7 +168,8 @@ class GLPIDashboard {
             // columnOpts is intentionally NOT used: GridStack v12 triggers GridStackEngine._fixCollisions
             // during the column change, which causes infinite recursion (moveNode <-> _fixCollisions)
             // when float:true is enabled. Mobile layout is managed manually via this.switchColumnLayout().
-        }, `#grid-stack-${options.rand}`);
+        };
+        this.grid = GridStack.init(gridstack_options, `#grid-stack-${options.rand}`);
 
         // set grid in static to prevent edition (unless user click on edit button)
         // previously in option, but current version of gridstack has a bug with one column mode (responsive)
@@ -469,6 +477,41 @@ class GLPIDashboard {
                 .show('fade').delay(2000).hide('fade');
         });
 
+        // reset dashboard
+        $(document).on('click', 'button.reset-dashboard ', (event) => {
+            event.preventDefault();
+            this.resetDashboard();
+        });
+        $(document).on('click', 'button[name="confirm-reset-dashboard"]', (event) => {
+            event.preventDefault();
+            const btn = $(event.target);
+            const selected_dashboard = btn
+                .closest('.dashboard-reset-container')
+                .find('select[name="default_dashboard_key"]');
+            $.ajax({
+                url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
+                method: 'POST',
+                data: {
+                    action: 'reset',
+                    dashboard: this.current_name,
+                    default_dashboard_key: selected_dashboard.val(),
+                }
+            }).then(() => {
+                glpi_toast_info(__('Dashboard has been reset to default'));
+                if (window.reloadTab !== undefined) {
+                    window.glpi_close_all_dialogs();
+                    window.reloadTab();
+                } else {
+                    this.initFilters();
+                    this.refreshDashboard();
+                    window.glpi_close_all_dialogs();
+                }
+            }, () => {
+                glpi_toast_error(__('An error occurred while resetting the dashboard'));
+                glpi_close_all_dialogs();
+            });
+        });
+
         // display widget types after selecting a card
         $(document).on('select2:select', '.display-widget-form select[name=card_id]', (event) => {
             const select2_data      = event.params.data;
@@ -683,6 +726,9 @@ class GLPIDashboard {
 
     refreshDashboard() {
         const gridstack = $(this.elem_id+" .grid-stack");
+        document.querySelectorAll('div[_echarts_instance_]').forEach((el) => {
+            window.echarts.getInstanceByDom(el)?.dispose();
+        });
         this.grid.removeAll();
 
         const data = {
@@ -694,6 +740,8 @@ class GLPIDashboard {
             data.token        = this.token;
             data.entities_id  = this.entities_id;
             data.is_recursive = this.is_recursive;
+            data.profiles_id  = this.profiles_id;
+            data.users_id     = this.users_id;
         }
 
         $.get({
@@ -789,6 +837,17 @@ class GLPIDashboard {
         }).then(() => {
             if (force_refresh) {
                 this.refreshDashboard();
+            }
+        });
+    }
+
+    resetDashboard() {
+        glpi_ajax_dialog({
+            title: __("Reset to default"),
+            url: `${CFG_GLPI.root_doc}/ajax/dashboard.php`,
+            params: {
+                action: 'prepare_reset',
+                dashboard: this.current_name,
             }
         });
     }
@@ -1137,6 +1196,8 @@ class GLPIDashboard {
                     data.token        = this.token;
                     data.entities_id  = this.entities_id;
                     data.is_recursive = this.is_recursive;
+                    data.profiles_id  = this.profiles_id;
+                    data.users_id     = this.users_id;
                 }
 
                 promises.push($.get(CFG_GLPI.root_doc+"/ajax/dashboard.php", data).then((html) => {
@@ -1164,6 +1225,8 @@ class GLPIDashboard {
                 data.token        = this.token;
                 data.entities_id  = this.entities_id;
                 data.is_recursive = this.is_recursive;
+                data.profiles_id  = this.profiles_id;
+                data.users_id     = this.users_id;
             }
 
             return $.ajax({

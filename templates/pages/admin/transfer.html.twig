@@ -60,7 +60,7 @@
          {{ fields.textField('name', item.fields['name'], __('Name')) }}
          {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
          {% set displayed_last_update = item.fields['date_mod'] ? item.fields['date_mod']|formatted_datetime : __('Never') %}
-         {{ fields.htmlField('date_mod', displayed_last_update, __('Last update')) }}
+         {{ fields.htmlField('date_mod', displayed_last_update|e, __('Last update')) }}
       {% endif %}
 
       {% set keep_options = {

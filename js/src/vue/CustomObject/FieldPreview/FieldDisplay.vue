@@ -306,7 +306,7 @@
         <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
             <div class="row flex-row align-items-start flex-grow-1 d-flex">
                 <div class="col">
-                    <div class="user-select-none row flex-row p-2" id="sortable-fields" style="min-height: 50px">
+                    <div class="user-select-none row flex-row p-2" id="sortable-fields" data-testid="sortable-fields" style="min-height: 50px">
                         <Field v-for="sortable_field of active_fields" :key="sortable_field.key"
                                :field_key="sortable_field.key" :customfields_id="sortable_field.customfields_id" :field_options="sortable_field.field_options"
                                :is_active="sortable_field.is_active">

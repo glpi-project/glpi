@@ -77,6 +77,9 @@ abstract class Spreadsheet extends ExportSearchOutput
         $spread = $this->getSpreasheet();
         $writer = $this->getWriter();
 
+        // Set custom value binder to prevent values starting with "=" to be interpreted as formulas
+        $spread->setValueBinder(new SpreadsheetValueBinder());
+
         //set styles
         $style = $spread->getDefaultStyle();
         $font = $style->getFont();

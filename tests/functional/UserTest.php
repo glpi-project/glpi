@@ -34,15 +34,22 @@
 
 namespace tests\units;
 
+use AuthLDAP;
 use DateInterval;
 use DateTime;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Tests\DbTestCase;
+use Group;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use Profile_User;
 use Psr\Log\LogLevel;
 use User;
+use UserCategory;
+
+use function Safe\json_decode;
+use function Safe\strtotime;
 
 class UserTest extends DbTestCase
 {
@@ -743,6 +750,35 @@ class UserTest extends DbTestCase
         }
     }
 
+    public function testPrepareInputForUpdateAuthTypeWithSession(): void
+    {
+        $this->login();
+
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+
+        // Check with right to update auth method
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT + User::UPDATEAUTHENT;
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
+        $this->assertArrayHasKey('authtype', $output);
+        $this->assertEquals(\Auth::EXTERNAL, $output['authtype']);
+
+        // Check without right to update auth method
+        $_SESSION['glpiactiveprofile']['user'] = \ALLSTANDARDRIGHT;
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
+        $this->assertArrayNotHasKey('authtype', $output);
+    }
+
+    public function testPrepareInputForUpdateAuthTypeAsSystemRoutine(): void
+    {
+        $target_user = \getItemByTypeName(User::class, 'glpi');
+
+        // Check without right to update auth method
+        $_SESSION['glpiactiveprofile']['user'] = 0;
+        $output = $target_user->prepareInputForUpdate(['id' => $target_user->getID(), 'authtype' => \Auth::EXTERNAL]);
+        $this->assertArrayHasKey('authtype', $output);
+        $this->assertEquals(\Auth::EXTERNAL, $output['authtype']);
+    }
+
     public function testPost_addItem()
     {
         $this->login();
@@ -911,6 +947,34 @@ class UserTest extends DbTestCase
                 'is_dynamic'    => $row['is_dynamic'],
             ]));
         }
+    }
+
+    public function testCloneDoesNotCopyLdapFields(): void
+    {
+        $this->login();
+
+        $user = new User();
+        $uid = $user->add([
+            'name'       => 'ldap_user_to_clone',
+            'user_dn'    => 'uid=ldap_user_to_clone,ou=people,dc=example,dc=com',
+            'sync_field' => 'ldap_user_to_clone',
+        ]);
+        $this->assertGreaterThan(0, $uid);
+        $this->assertTrue($user->getFromDB($uid));
+
+        $this->assertNotEmpty($user->fields['user_dn']);
+        $this->assertNotEmpty($user->fields['user_dn_hash']);
+        $this->assertNotEmpty($user->fields['sync_field']);
+
+        $cloned_id = $user->clone();
+        $this->assertGreaterThan(0, (int) $cloned_id);
+
+        $cloned_user = new User();
+        $this->assertTrue($cloned_user->getFromDB($cloned_id));
+
+        $this->assertEmpty($cloned_user->fields['user_dn']);
+        $this->assertEmpty($cloned_user->fields['user_dn_hash']);
+        $this->assertEmpty($cloned_user->fields['sync_field']);
     }
 
     public function testGetFromDBbyDn()
@@ -2149,7 +2213,7 @@ class UserTest extends DbTestCase
         $user->getFromDB($_SESSION['glpiID']);
 
         // Create a group that will be used to add a profile
-        $group = new \Group();
+        $group = new Group();
         $groups_id = $group->add([
             'name' => __FUNCTION__,
             'entities_id' => $entities_id,
@@ -2505,5 +2569,294 @@ class UserTest extends DbTestCase
 
         $this->assertEquals("0", $user->fields["_ldap_rules"]["rules_entities_rights"][0][0]); // entities_id
         $this->assertEquals($admin_profile_id, $user->fields["_ldap_rules"]["rules_entities_rights"][0][1]); // profiles_id
+    }
+
+    /**
+     * Non-regression: willProcessRuleRight() must be called after processAllRules() in getFromSSO()
+     * so that Profile_User records are actually created after the Auth::login() update cycle.
+     */
+    public function testGetFromSSOAppliesRightRulesOnUpdate(): void
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $root_entity_id = $this->getTestRootEntity(true);
+
+        // Minimal SSO config: expose at least the login field via a server variable.
+        $original_sso_config = $CFG_GLPI['name_ssofield'] ?? '';
+        $CFG_GLPI['name_ssofield'] = 'HTTP_SSO_LOGIN';
+
+        // Rule: TYPE = EXTERNAL → assign Super-Admin profile on root entity.
+        $rule = $this->createItem(\RuleRight::class, [
+            'name'      => __FUNCTION__,
+            'is_active' => 1,
+            'sub_type'  => 'RuleRight',
+            'match'     => 'AND',
+            'condition' => 0,
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rule->getID(),
+            'criteria'  => 'TYPE',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => \Auth::EXTERNAL,
+        ]);
+
+        $profile_id = getItemByTypeName(\Profile::class, 'Super-Admin', true);
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'profiles_id',
+            'value'       => $profile_id,
+        ]);
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rule->getID(),
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => $root_entity_id,
+        ]);
+
+        // Create the user as an external (SSO) user.
+        $user = $this->createItem(User::class, [
+            'name'     => $this->getUniqueString(),
+            'authtype' => \Auth::EXTERNAL,
+        ]);
+
+        // Simulate the SSO server variable so getFromSSO() can populate user fields.
+        $_SERVER['HTTP_SSO_LOGIN'] = $user->fields['name'];
+
+        $user->getFromSSO();
+
+        // _ldap_rules must be set so that applyRightRules() will run.
+        $this->assertArrayHasKey('_ldap_rules', $user->fields, '_ldap_rules not set by processAllRules()');
+        $this->assertNotEmpty($user->fields['_ldap_rules']['rules_entities_rights']);
+
+        // Simulate Auth::login() update cycle (copies fields, calls update).
+        $input = $user->fields;
+        unset($input['api_token'], $input['cookie_token'], $input['password_forget_token'], $input['personal_token']);
+        $user->update($input);
+
+        // The profile must now be assigned in Profile_User.
+        $profile_users = Profile_User::getUserProfiles($user->getID());
+        $this->assertArrayHasKey($profile_id, $profile_users, 'Profile_User record not created after SSO login rule processing');
+
+        // Cleanup: restore SSO config.
+        $CFG_GLPI['name_ssofield'] = $original_sso_config;
+        unset($_SERVER['HTTP_SSO_LOGIN']);
+    }
+
+    /**
+     * The TreeBrowse list is available for users, but user categories are not hierarchical.
+     * This test ensures results can be fetched properly even for flat results.
+     * @return void
+     */
+    public function testGetTreeCategoryList()
+    {
+        $this->login();
+
+        $cat1 = $this->createItem(UserCategory::class, [
+            'name' => __FUNCTION__ . '_1',
+        ]);
+        $cat2 = $this->createItem(UserCategory::class, [
+            'name' => __FUNCTION__ . '_2',
+        ]);
+
+        $this->createItem(User::class, [
+            'name' => __FUNCTION__ . '_cat1',
+            'usercategories_id' => $cat1->getID(),
+        ]);
+        $this->createItem(User::class, [
+            'name' => __FUNCTION__ . '_cat2',
+            'usercategories_id' => $cat2->getID(),
+        ]);
+
+        $tree = User::getTreeCategoryList(User::class, [
+            'itemtype' => User::class,
+            'browse' => 1,
+            'export_all' => true,
+        ]);
+        $this->assertCount(3, $tree);
+        $this->assertStringStartsWith(__FUNCTION__ . '_1', $tree[1]['title']);
+        $this->assertStringStartsWith(__FUNCTION__ . '_2', $tree[0]['title']);
+    }
+
+    /**
+     * Verify that getFromLDAPGroupDiscret() routes to the cached path only when
+     * batch mode is enabled and the LDAP_MATCHING_RULE_IN_CHAIN OID is present.
+     *
+     * The cached path queries GLPI groups from DB (no LDAP call when DB is empty)
+     * and returns true, while the standard path returns false when
+     * group_member_field is empty.
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testGetFromLDAPGroupDiscretChainOidRouting(): void
+    {
+        $this->login();
+
+        // Create an AuthLDAP entry to get a real, unique auth_id so the static
+        // cache inside getFromLDAPGroupDiscretCached stays isolated per test run.
+        $auth = $this->createItem(AuthLDAP::class, [
+            'name'    => $this->getUniqueString(),
+            'host'    => '127.0.0.1',
+            'basedn'  => 'dc=example,dc=com',
+        ]);
+
+        $ldap_method_base = [
+            'id'               => $auth->getID(),
+            'basedn'           => 'dc=example,dc=com',
+            'condition'        => '',
+            'pagesize'         => 0,
+            'group_field'      => 'member',
+            'use_dn'           => 1,
+            'group_condition'  => '',
+            'login_field'      => 'uid',
+        ];
+
+        $user = new User();
+
+        // Empty group_member_field → early false (no LDAP server needed).
+        $result = $this->callPrivateMethod(
+            $user,
+            'getFromLDAPGroupDiscret',
+            null,
+            array_merge($ldap_method_base, ['group_member_field' => '']),
+            'uid=testuser,dc=example,dc=com',
+            'testuser'
+        );
+        $this->assertFalse($result);
+
+        // CHAIN OID present + batch mode + group_field set → cached path → true.
+        // No groups with ldap_group_dn exist in DB, so no ldap_search is fired.
+        $result = $this->callPrivateMethod(
+            $user,
+            'getFromLDAPGroupDiscret',
+            null,
+            array_merge($ldap_method_base, [
+                'group_member_field' => 'member:' . AuthLDAP::MATCHING_RULE_IN_CHAIN_OID,
+            ]),
+            'uid=testuser,dc=example,dc=com',
+            'testuser',
+            true
+        );
+        $this->assertTrue($result);
+        $this->assertEmpty($user->fields['_groups'] ?? []);
+    }
+
+    /**
+     * Verify that getFromLDAPGroupDiscretCached() reads group assignments from
+     * its static cache on subsequent calls, skipping DB and LDAP queries.
+     *
+     * Strategy: pre-seed the cache via the first call (DB empty → no ldap_search),
+     * then add a group to DB and call again — the cached path must ignore the new
+     * DB row and still return no groups, proving the static cache is effective.
+     */
+    #[RequiresPhpExtension('ldap')]
+    public function testGetFromLDAPGroupDiscretCachedUsesStaticCache(): void
+    {
+        $this->login();
+
+        $auth = $this->createItem(AuthLDAP::class, [
+            'name'    => $this->getUniqueString(),
+            'host'    => '127.0.0.1',
+            'basedn'  => 'dc=example,dc=com',
+        ]);
+
+        $ldap_method = [
+            'id'               => $auth->getID(),
+            'basedn'           => 'dc=example,dc=com',
+            'condition'        => '',
+            'pagesize'         => 0,
+            'group_field'      => 'member',
+            'group_member_field' => 'member:' . AuthLDAP::MATCHING_RULE_IN_CHAIN_OID,
+            'use_dn'           => 1,
+            'group_condition'  => '',
+            'login_field'      => 'uid',
+        ];
+
+        $userdn = 'uid=cachetest,dc=example,dc=com';
+
+        $user1 = new User();
+
+        // First call — DB has no groups with ldap_group_dn, cache is primed as empty.
+        $result = $this->callPrivateMethod(
+            $user1,
+            'getFromLDAPGroupDiscret',
+            null,
+            $ldap_method,
+            $userdn,
+            'cachetest',
+            true
+        );
+        $this->assertTrue($result);
+        $this->assertEmpty($user1->fields['_groups'] ?? []);
+
+        // Add a group to DB between the two calls.
+        $this->createItem(Group::class, [
+            'name'          => $this->getUniqueString(),
+            'entities_id'   => $this->getTestRootEntity(true),
+            'ldap_group_dn' => 'cn=admins,dc=example,dc=com',
+        ]);
+
+        $user2 = new User();
+
+        // Second call with same auth_id — cache hit, DB group is NOT picked up.
+        $result = $this->callPrivateMethod(
+            $user2,
+            'getFromLDAPGroupDiscret',
+            null,
+            $ldap_method,
+            $userdn,
+            'cachetest',
+            true
+        );
+        $this->assertTrue($result);
+        $this->assertEmpty($user2->fields['_groups'] ?? []);
+    }
+
+    public function testIsValidUserForEntity(): void
+    {
+        $this->login();
+
+        $root_entity_id   = $this->getTestRootEntity(true);
+        $child1_entity_id = getItemByTypeName('Entity', '_test_child_1', true);
+        $child2_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+        $profile_id       = getItemByTypeName('Profile', 'Self-Service', true);
+
+        // Active user with profile in root entity
+        $valid_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            '_profiles_id'  => $profile_id,
+            '_entities_id'  => $root_entity_id,
+        ]);
+        $this->assertTrue(User::isValidUserForEntity($valid_user->getID(), $root_entity_id));
+
+        // Inactive user with profile in root entity
+        $inactive_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            'is_active'     => 0,
+            '_profiles_id'  => $profile_id,
+            '_entities_id'  => $root_entity_id,
+        ]);
+        $this->assertFalse(User::isValidUserForEntity($inactive_user->getID(), $root_entity_id));
+
+        // User with profile in child_1 only: valid for child_1, not for child_2
+        $child1_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            '_profiles_id'  => $profile_id,
+            '_entities_id'  => $child1_entity_id,
+        ]);
+        $this->assertTrue(User::isValidUserForEntity($child1_user->getID(), $child1_entity_id));
+        $this->assertFalse(User::isValidUserForEntity($child1_user->getID(), $child2_entity_id));
+
+        // User with recursive profile in root entity: valid for child entities
+        $recursive_user = $this->createItem(User::class, [
+            'name'          => $this->getUniqueString(),
+            '_profiles_id'  => $profile_id,
+            '_entities_id'  => $root_entity_id,
+            '_is_recursive' => 1,
+        ]);
+        $this->assertTrue(User::isValidUserForEntity($recursive_user->getID(), $child1_entity_id));
     }
 }

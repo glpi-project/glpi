@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Form\Tag;
 
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
+use Glpi\Form\Section;
 use Glpi\Form\Tag\SectionTagProvider;
 use Glpi\Form\Tag\Tag;
 use Glpi\Tests\DbTestCase;
@@ -92,6 +93,35 @@ final class SectionTagProviderTest extends DbTestCase
             $this->getSectionId($form, 'Professional information'),
             'Professional information'
         );
+    }
+
+    public function testGetTagContentForValueUsingTranslation(): void
+    {
+        $form = $this->getFormWithSections();
+        $section = Section::getById($this->getSectionId($form, 'Personal information'));
+        $this->addTranslationToForm(
+            $section,
+            'fr_FR',
+            Section::TRANSLATION_KEY_NAME,
+            'Informations personnelles'
+        );
+
+        $original_language = $_SESSION['glpilanguage'];
+        try {
+            $_SESSION['glpilanguage'] = 'fr_FR';
+            $this->checkGetTagContentForValue(
+                $this->getSectionId($form, 'Personal information'),
+                'Informations personnelles'
+            );
+
+            $_SESSION['glpilanguage'] = 'de_DE'; // No translation, falls back to original
+            $this->checkGetTagContentForValue(
+                $this->getSectionId($form, 'Personal information'),
+                'Personal information'
+            );
+        } finally {
+            $_SESSION['glpilanguage'] = $original_language;
+        }
     }
 
     private function checkGetTagContentForValue(

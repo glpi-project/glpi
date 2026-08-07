@@ -287,7 +287,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
         $DB->update(
             'glpi_cartridges',
             [
-                'printers_id' => 'NULL',
+                'printers_id' => 0,
             ],
             [
                 'printers_id' => $this->fields['id'],

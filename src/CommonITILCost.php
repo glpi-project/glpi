@@ -573,7 +573,7 @@ TWIG, $twig_params);
             $entry = [
                 'itemtype' => static::getType(),
                 'id'       => $data['id'],
-                'name'     => sprintf(__s('%1$s %2$s'), htmlescape($name), Html::showToolTip($data['comment'], ['display' => false])),
+                'name'     => sprintf(__s('%1$s %2$s'), htmlescape($name), Html::showToolTip(htmlescape($data['comment']), ['display' => false])),
                 'begin_date' => $data['begin_date'],
                 'end_date' => $data['end_date'],
                 'budget' => $budget_links[$data['budgets_id']],
@@ -656,7 +656,7 @@ TWIG, $twig_params);
                     $('#datatable_costs{$ID}{$rand}').on('click', 'tbody tr', (e) => {
                         const cost_id = $(e.currentTarget).data('id');
                         if (cost_id) {
-                            $('#viewcost{$ID}_{$rand}').load('/ajax/viewsubitem.php',{
+                            $('#viewcost{$ID}_{$rand}').load(CFG_GLPI.root_doc + '/ajax/viewsubitem.php',{
                                 type: '" . jsescape($cost_class) . "',
                                 parenttype: '" . jsescape($parent_class) . "',
                                 '" . jsescape($items_id_field) . "': $ID,

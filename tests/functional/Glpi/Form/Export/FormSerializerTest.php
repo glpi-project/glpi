@@ -123,7 +123,10 @@ use PHPUnit\Framework\Attributes\Group;
 use Ramsey\Uuid\Uuid;
 use Session;
 
+use function Safe\copy;
+use function Safe\json_decode;
 use function Safe\json_encode;
+use function Safe\unlink;
 
 final class FormSerializerTest extends DbTestCase
 {
@@ -1964,6 +1967,53 @@ final class FormSerializerTest extends DbTestCase
             'itemtype' => Computer::class,
             'items_id' => 'My computer',
         ], $data['forms'][0]['destinations'][0]['conditions'][0]['value']);
+    }
+
+    public function testExportAndImportQuestionConditionWithEmptyItemsId(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a condition referencing an item
+        // question, but with no item selected (items_id = 0)
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "My item question",
+            type: QuestionTypeItem::class,
+            extra_data: json_encode(new QuestionTypeItemExtraDataConfig(
+                itemtype: Computer::class
+            )),
+        );
+        $builder->addQuestion("My other question", QuestionTypeShortText::class);
+        $builder->setQuestionVisibility(
+            question_name: "My other question",
+            strategy: VisibilityStrategy::VISIBLE_IF,
+            conditions: [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My item question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => [
+                        'itemtype' => Computer::class,
+                        'items_id' => 0,
+                    ],
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: import must not fail, and items_id must stay at 0
+        $questions = $form_copy->getQuestions();
+        next($questions);
+        $question = current($questions);
+        $condition_value = $question->getConfiguredConditionsData()[0]->getValue();
+        $this->assertEquals([
+            'itemtype' => Computer::class,
+            'items_id' => 0,
+        ], $condition_value);
     }
 
     public function testDeletedCategoryInDestinationIsExportedAsZero(): void

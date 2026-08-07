@@ -410,6 +410,7 @@ class DBmysql
         $start_time = microtime(true);
 
         $this->checkForDeprecatedTableOptions($query);
+        $this->checkForDDLInsideTransaction($query);
 
         $res = $this->dbh->query($query);
         if (!$res) {
@@ -1850,7 +1851,19 @@ class DBmysql
         if ($success) {
             $this->transaction_level--;
         } else {
-            throw new RuntimeException("Failed to commit transaction.");
+            $exception = new RuntimeException("Failed to commit transaction.");
+            ;
+
+            // Error is logged here since it is likely to caught and silented by the caller.
+            // It may result in being logged twice, but it is probalby preferable than risking having it not logged
+            // at all for a few specific cases.
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                'An error occurred during DB transaction commit.',
+                ['exception' => $exception]
+            );
+
+            throw $exception;
         }
     }
 
@@ -1866,18 +1879,29 @@ class DBmysql
         if (!$this->isInNestedTransaction()) {
             // A simple transaction is underway, roll it back.
             $success = $this->dbh->rollback();
+            if ($success) {
+                $this->transaction_level--;
+            } else {
+                $exception = new RuntimeException("Failed to rollback transaction.");
+
+                // Error is logged here since it is likely to caught and silented by the caller.
+                // It may result in being logged twice, but it is probalby preferable than risking having it not logged
+                // at all for a few specific cases.
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    'An error occurred during DB transaction rollback.',
+                    ['exception' => $exception]
+                );
+
+                throw $exception;
+            }
         } else {
-            // A nested transaction is already underway, roolback to current savepoint.
+            // A nested transaction is already underway, rollback to current savepoint.
             $savepoint = $this->formatAndQuoteSavePointName(
                 $this->transaction_level
             );
-            $success = $this->doQuery("ROLLBACK TO $savepoint");
-        }
-
-        if ($success) {
+            $this->doQuery("ROLLBACK TO $savepoint");
             $this->transaction_level--;
-        } else {
-            throw new RuntimeException("Failed to rollback transaction.");
         }
     }
 
@@ -1908,36 +1932,46 @@ class DBmysql
      */
     public function getTimezones()
     {
+        global $GLPI_CACHE;
+
         $list = [];
 
-        $timezones = DateTimeZone::listIdentifiers();
-        $results_queries = [];
-        foreach ($timezones as $index => $timezone) {
-            $results_queries[] =  new QuerySubQuery([
-                'SELECT' => ['name', 'value'],
-                'FROM' => new QueryExpression(
-                    sprintf(
-                        '(SELECT %1$s as %2$s, CONVERT_TZ(%3$s, %4$s, %5$s) as %6$s) as %7$s',
-                        self::quoteValue($timezone),
-                        self::quoteName('name'),
-                        self::quoteValue('2000-01-01 00:00:00'),
-                        self::quoteValue('GMT'),
-                        self::quoteValue($timezone),
-                        self::quoteName('value'),
-                        self::quoteName(sprintf('timezone_%d', $index)),
-                    )
-                ),
-                'WHERE' => [
-                    ['NOT' => ['value' => null]],
-                ],
-            ]);
-        }
+        if (!$GLPI_CACHE->has('timezones')) {
+            $timezones = DateTimeZone::listIdentifiers();
+            $results_queries = [];
+            foreach ($timezones as $index => $timezone) {
+                $results_queries[] =  new QuerySubQuery([
+                    'SELECT' => ['name', 'value'],
+                    'FROM' => new QueryExpression(
+                        sprintf(
+                            '(SELECT %1$s as %2$s, CONVERT_TZ(%3$s, %4$s, %5$s) as %6$s) as %7$s',
+                            self::quoteValue($timezone),
+                            self::quoteName('name'),
+                            self::quoteValue('2000-01-01 00:00:00'),
+                            self::quoteValue('GMT'),
+                            self::quoteValue($timezone),
+                            self::quoteName('value'),
+                            self::quoteName(sprintf('timezone_%d', $index)),
+                        )
+                    ),
+                    'WHERE' => [
+                        ['NOT' => ['value' => null]],
+                    ],
+                ]);
+            }
 
-        $iterator = $this->request(['FROM' => new QueryUnion($results_queries)]);
-        foreach ($iterator as $row) {
-            $now = new DateTime();
-            $now->setTimezone(new DateTimeZone($row['name']));
-            $list[$row['name']] = $row['name'] . $now->format(" (T P)");
+            $iterator = $this->request(['FROM' => new QueryUnion($results_queries)]);
+            foreach ($iterator as $row) {
+                $now = new DateTime();
+                $now->setTimezone(new DateTimeZone($row['name']));
+                $list[$row['name']] = $row['name'] . $now->format(" (T P)");
+            }
+            if ($list !== []) {
+                // Only cache if there are some timezones. This method may be called before timezones are properly setup, and we don't want to cache an empty list.
+                $GLPI_CACHE->set('timezones', $list);
+            }
+        } else {
+            $list = $GLPI_CACHE->get('timezones');
         }
 
         return $list;
@@ -2245,6 +2279,29 @@ class DBmysql
                     $field_matches['field']
                 ),
                 E_USER_WARNING
+            );
+        }
+    }
+
+    /**
+     * Block DDL statement execution inside an active transaction.
+     *
+     * DDL statements (ALTER, CREATE, DROP, RENAME, TRUNCATE) cause an implicit
+     * commit in MySQL/MariaDB, which silently invalidates all open savepoints.
+     * Running such a statement inside a transaction is almost certainly a bug.
+     */
+    private function checkForDDLInsideTransaction(string $query): void
+    {
+        if (!$this->isInTransaction()) {
+            return;
+        }
+
+        if (preg_match('/^\s*(ALTER|CREATE|DROP|RENAME|TRUNCATE)\s+/i', $query)) {
+            throw new RuntimeException(
+                sprintf(
+                    'DDL statement executed inside a transaction will cause an implicit commit: "%s".',
+                    substr($query, 0, 200)
+                )
             );
         }
     }

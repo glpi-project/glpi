@@ -196,7 +196,16 @@
             {# Form reference #}
             <input type="hidden" name="forms_id" value="{{ form.fields.id }}">
 
-            <div class="d-flex justify-content-end mb-3" data-glpi-form-renderer-actions>
+            <div
+                class="d-flex justify-content-end mb-3"
+                data-glpi-form-renderer-actions
+                {% if unauthenticated_user %}
+                    data-glpi-form-renderer-altcha
+                    {% if not visibility_engine_output.isFormVisible() %}
+                        data-glpi-form-renderer-hidden-by-condition
+                    {% endif %}
+                {% endif %}
+            >
                 {# Altcha #}
                 {% if unauthenticated_user %}
                     {{ include(

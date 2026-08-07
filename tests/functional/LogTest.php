@@ -578,14 +578,14 @@ class LogTest extends DbTestCase
             ],
             [
                 [
-                    'affected_fields' => ['linked_action::1,5,42;itemtype_link::SomeItem;'],
+                    'affected_fields' => ['linked_action::1,5,42;itemtype_link::Computer;'],
                 ],
                 [
                     [
                         'OR' => [
                             [
                                 'linked_action' => [1, 5, 42],
-                                'itemtype_link' => ['SomeItem'],
+                                'itemtype_link' => ['Computer'],
                             ],
                         ],
                     ],
@@ -593,7 +593,7 @@ class LogTest extends DbTestCase
             ],
             [
                 [
-                    'affected_fields' => ['id_search_option::24;', 'linked_action:NOT:35;itemtype_link::SomeItem;'],
+                    'affected_fields' => ['id_search_option::24;', 'linked_action:NOT:35;itemtype_link::Monitor;'],
                 ],
                 [
                     [
@@ -605,7 +605,7 @@ class LogTest extends DbTestCase
                                 'NOT' => [
                                     'linked_action' => [35],
                                 ],
-                                'itemtype_link' => ['SomeItem'],
+                                'itemtype_link' => ['Monitor'],
                             ],
                         ],
                     ],
@@ -691,7 +691,7 @@ class LogTest extends DbTestCase
             ],
             [
                 [
-                    'affected_fields' => ['id_search_option::5;', 'linked_action:NOT:1,3,4;itemtype_link::SomeItem;'],
+                    'affected_fields' => ['id_search_option::5;', 'linked_action:NOT:1,3,4;itemtype_link::Ticket;'],
                     'date' => '2018-04-22',
                     'linked_actions' => [3, 26, 'other'],
                     'users_names' => ['user1'],
@@ -706,7 +706,7 @@ class LogTest extends DbTestCase
                                 'NOT' => [
                                     'linked_action' => [1, 3, 4],
                                 ],
-                                'itemtype_link' => ['SomeItem'],
+                                'itemtype_link' => ['Ticket'],
                             ],
                         ],
                     ],
@@ -1022,5 +1022,77 @@ class LogTest extends DbTestCase
         $this->assertNotNull($log_entry);
         $this->assertEquals(255, mb_strlen($log_entry['old_value']));
         $this->assertEquals(255, mb_strlen($log_entry['new_value']));
+    }
+
+    /**
+     * Verify that Log::history can handle values in the form of arrays without generating a TypeError
+     * This occurs when fields with multiple values are passed as arrays
+     */
+    public function testHistoryWithArrayValues()
+    {
+        global $DB;
+
+        $computer_id = getItemByTypeName(Computer::class, '_test_pc01', true);
+
+        $test_cases = [
+            'arrays in both values' => [
+                'input_old_value' => ['value1', 'value2'],
+                'input_new_value' => ['value3', 'value4'],
+                'expected_old_value' => '',
+                'expected_new_value' => '',
+            ],
+            'objects in both values' => [
+                'input_old_value' => (object) ['key1' => 'value1', 'key2' => 'value2'],
+                'input_new_value' => (object) ['key3' => 'value3', 'key4' => 'value4'],
+                'expected_old_value' => '',
+                'expected_new_value' => '',
+            ],
+            'json encoded object in old value' => [
+                'input_old_value' => json_encode(['key1' => 'value1']),
+                'input_new_value' => 'string_value',
+                'expected_old_value' => '',
+                'expected_new_value' => 'string_value',
+            ],
+            'array in old value string in new value' => [
+                'input_old_value' => ['value1', 'value2'],
+                'input_new_value' => 'string_value',
+                'expected_old_value' => '',
+                'expected_new_value' => 'string_value',
+            ],
+            'string in old value and array in new value' => [
+                'input_old_value' => 'string_value',
+                'input_new_value' => ['value3', 'value4'],
+                'expected_old_value' => 'string_value',
+                'expected_new_value' => '',
+            ],
+            'string values' => [
+                'input_old_value' => 'simple string',
+                'input_new_value' => 'another string',
+                'expected_old_value' => 'simple string',
+                'expected_new_value' => 'another string',
+            ],
+        ];
+
+        foreach ($test_cases as $case_name => $test_data) {
+            Log::history(
+                $computer_id,
+                Computer::class,
+                [0, $test_data['input_old_value'], $test_data['input_new_value']]
+            );
+
+            $log_entry = $DB->request([
+                'FROM'   => Log::getTable(),
+                'WHERE'  => [
+                    'itemtype'  => Computer::class,
+                    'items_id'  => $computer_id,
+                ],
+                'ORDER'  => 'id DESC',
+                'LIMIT'  => 1,
+            ])->current();
+
+            $this->assertNotNull($log_entry, "Log entry should exist for case: $case_name");
+            $this->assertEquals($test_data['expected_old_value'], $log_entry['old_value'], "Old value mismatch for case: $case_name");
+            $this->assertEquals($test_data['expected_new_value'], $log_entry['new_value'], "New value mismatch for case: $case_name");
+        }
     }
 }

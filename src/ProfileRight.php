@@ -36,6 +36,7 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Exception\Database\StatementException;
 
 /**
  * Profile class
@@ -247,7 +248,17 @@ class ProfileRight extends CommonDBChild
         );
         $stmt = $DB->prepare($query);
         foreach ($iterator as $right) {
-            $DB->executeStatement($stmt, [$profiles_id, $right['NAME']]);
+            try {
+                $DB->executeStatement($stmt, [$profiles_id, $right['NAME']]);
+            } catch (StatementException $e) {
+                // Ignore duplicate entry errors (code 1062): a concurrent
+                // request may have inserted the same right for this profile
+                // between our `NOT EXISTS` check and the insert. The row we
+                // wanted already exists, which is the desired end state.
+                if ($e->getCode() !== 1062) {
+                    throw $e;
+                }
+            }
         }
     }
 
@@ -280,7 +291,22 @@ class ProfileRight extends CommonDBChild
                         'name'        => $name,
                         'rights'      => $right,
                     ];
-                    $me->add($input);
+                    try {
+                        $me->add($input);
+                    } catch (RuntimeException $e) {
+                        // A concurrent request may have inserted this
+                        // (profiles_id, name) between our check above and this
+                        // insert (e.g. through fillProfileRights(), which only
+                        // sets the default rights). Recover from the duplicate
+                        // entry error by updating the existing row so it ends up
+                        // with the rights value we intended.
+                        if (!str_contains($e->getMessage(), '(1062)')) {
+                            throw $e;
+                        }
+                        if ($me->getFromDBByCrit(['profiles_id' => $profiles_id, 'name' => $name])) {
+                            $me->update(['id' => $me->getID(), 'rights' => $right]);
+                        }
+                    }
                 }
             }
         }

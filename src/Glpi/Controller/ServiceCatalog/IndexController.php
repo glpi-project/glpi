@@ -92,6 +92,7 @@ final class IndexController extends AbstractController
         $item_request = new ItemRequest(
             access_parameters: $parameters,
             category_id: 0,
+            sort_strategy: $entity->getServiceCatalogDefaultSortStrategy(),
         );
         $items = $this->service_catalog_manager->getItems($item_request);
 
@@ -102,7 +103,7 @@ final class IndexController extends AbstractController
                 : ["create_ticket"],
             'items' => $items,
             'sort_strategies' => SortStrategyEnum::getAvailableStrategies(),
-            'default_sort_strategy' => SortStrategyEnum::getDefault()->value,
+            'default_sort_strategy' => $entity->getServiceCatalogDefaultSortStrategy()->value,
             'expand_categories' => $entity->shouldExpandCategoriesInServiceCatalog(),
         ]);
     }

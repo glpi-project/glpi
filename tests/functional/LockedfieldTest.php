@@ -798,7 +798,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertGreaterThan(0, $global_lockedfield_id);
 
         $this->assertTrue($computer->getFromDB($cid));
-        $this->assertSame(['manufacturers_id' => null, 'otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertSame(['otherserial' => null, 'manufacturers_id' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
 
         // change to child entity
         $entities_id_child = getItemByTypeName(\Entity::class, '_test_child_1', true);

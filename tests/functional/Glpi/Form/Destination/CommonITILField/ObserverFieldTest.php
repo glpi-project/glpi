@@ -215,6 +215,32 @@ final class ObserverFieldTest extends AbstractActorFieldTest
         );
     }
 
+    public function testSpecificActorsExcludesUnauthorizedGroups(): void
+    {
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $authorized_group = $this->createItem(Group::class, [
+            'name'       => 'testSpecificActorsExcludesUnauthorizedGroups Authorized',
+            'is_watcher' => 1,
+        ]);
+        $unauthorized_group = $this->createItem(Group::class, [
+            'name'       => 'testSpecificActorsExcludesUnauthorizedGroups Unauthorized',
+            'is_watcher' => 0,
+        ]);
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    Group::getForeignKeyField() . '-' . $authorized_group->getID(),
+                    Group::getForeignKeyField() . '-' . $unauthorized_group->getID(),
+                ]
+            ),
+            answers: [],
+            expected_actors: [['items_id' => $authorized_group->getID()]]
+        );
+    }
+
     public function testActorsFromSpecificQuestions(): void
     {
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
@@ -630,10 +656,14 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 2, // Observer
                     'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
-            'field_config' => fn($migration, $form) => (new ObserverField())->getDefaultConfig($form),
+            'field_config' => new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER],
+            ),
         ];
 
         yield 'Tech group from an object' => [
@@ -642,10 +672,50 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 2, // Observer
                     'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
-            'field_config' => fn($migration, $form) => (new ObserverField())->getDefaultConfig($form),
+            'field_config' => new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+            ),
+        ];
+
+        yield 'Group from an object with question' => [
+            'field_key'     => ObserverField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 2, // Observer
+                    'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    'actor_value' => 74, // Computer question
+                ],
+            ],
+            'field_config' => fn($migration, $form) => new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 74)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                ]
+            ),
+        ];
+
+        yield 'Tech group from an object with question' => [
+            'field_key'     => ObserverField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 2, // Observer
+                    'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    'actor_value' => 74, // Computer question
+                ],
+            ],
+            'field_config' => fn($migration, $form) => new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 74)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                ]
+            ),
         ];
 
         yield 'Form author\'s supervisor' => [

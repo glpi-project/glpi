@@ -492,8 +492,14 @@ class ITILFollowup extends CommonDBChild
 
         $itemtype = $input['itemtype'];
 
-        if ($itemtype == Ticket::class && $_SESSION['glpiset_followup_tech'] && !$input['is_private']) {
-            Ticket::assignToMe($this->input["items_id"], $input["users_id"]);
+        if ($itemtype == Ticket::class && !$input['is_private'] && $input["users_id"] > 0) {
+            $followup_author = new User();
+            if ($followup_author->getFromDB((int) $input["users_id"])) {
+                $followup_author->computePreferences();
+                if ($followup_author->fields['set_followup_tech']) {
+                    Ticket::assignToMe($this->input["items_id"], $input["users_id"]);
+                }
+            }
         }
 
         // Only calculate timeline_position if not already specified in the input
@@ -1090,8 +1096,8 @@ class ITILFollowup extends CommonDBChild
         // We need to do some specific checks for tickets
         if ($itemtype == Ticket::class) {
             // Default condition
-            $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
-            return $condition . Ticket::buildCanViewCondition("items_id") . ")) ";
+            $condition = "(`$itilfup_table`.`itemtype` = '$itemtype' AND (0 = 1 ";
+            return $condition . Ticket::buildCanViewCondition("items_id", $itilfup_table) . ")) ";
         } else {
             if (Session::haveRight($rightname, $itemtype::READMY)) {
                 // Subquery for affected/assigned/observer user

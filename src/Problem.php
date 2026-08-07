@@ -317,7 +317,8 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
             // Read again problem to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
-            NotificationEvent::raiseEvent($mailtype, $this);
+            $trigger = $this->input['_trigger'] ?? null;
+            NotificationEvent::raiseEvent($mailtype, $this, [], $trigger);
         }
     }
 
@@ -409,19 +410,6 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         $this->handleNewItemNotifications();
-
-        if (
-            isset($this->input['_from_items_id'])
-            && isset($this->input['_from_itemtype'])
-        ) {
-            $item_problem = new Item_Problem();
-            $item_problem->add([
-                'items_id'      => (int) $this->input['_from_items_id'],
-                'itemtype'      => $this->input['_from_itemtype'],
-                'problems_id'   => $this->fields['id'],
-                '_disablenotif' => true,
-            ]);
-        }
     }
 
     #[Override]
@@ -445,6 +433,20 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     public function getSpecificMassiveActions($checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
+
+        if (Session::getCurrentInterface() === 'central') {
+            if (Item_Problem::canCreate()) {
+                $actions['Item_Problem' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
+                = "<i class='ti ti-plus'></i>"
+                 . _sx('button', 'Add an item');
+            }
+
+            if (Item_Problem::canDelete()) {
+                $actions['Item_Problem' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_item']
+                = _sx('button', 'Remove an item');
+            }
+        }
+
         if (ProblemTask::canCreate()) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task'] = __s('Add a new task');
         }

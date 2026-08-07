@@ -135,6 +135,11 @@ class IPAddress extends CommonDBChild
         return _n('IP address', 'IP addresses', $nb);
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-network';
+    }
+
     /**
      * @param array $input
      *
@@ -283,11 +288,15 @@ class IPAddress extends CommonDBChild
         $networkport = new NetworkPort();
         $networkname = new NetworkName();
         foreach ($it as $data) {
-            if (!array_key_exists($data['item_type'], $item_objs)) {
-                $item_objs[$data['item_type']] = getItemForItemtype($data['item_type']);
+            $item_link = '';
+            if ($data['item_type'] !== null) {
+                if (!array_key_exists($data['item_type'], $item_objs)) {
+                    $item_objs[$data['item_type']] = getItemForItemtype($data['item_type']);
+                }
+                $linked_item = $item_objs[$data['item_type']];
+                $linked_item->getFromDB($data['item_id']);
+                $item_link = $linked_item->getLink();
             }
-            $linked_item = $item_objs[$data['item_type']];
-            $linked_item->getFromDB($data['item_id']);
             $networkport->getFromDB($data['port_id']);
             $networkname->getFromDB($data['name_id']);
 
@@ -295,7 +304,7 @@ class IPAddress extends CommonDBChild
                 'itemtype' => self::class,
                 'id'       => $data['id'],
                 'ipaddress' => $data['ip'],
-                'item' => $linked_item->getLink(),
+                'item' => $item_link,
                 'port_id' => $networkport->getLink(),
                 'name_id' => $networkname->getLink(),
                 'entity' => $data['entity'],

@@ -49,6 +49,7 @@ use NetworkEquipment;
 use Override;
 use Printer;
 use RuleImportAsset;
+use RuleMatchedLog;
 use Session;
 
 class IsInventoriableCapacity extends AbstractCapacity
@@ -132,7 +133,9 @@ class IsInventoriableCapacity extends AbstractCapacity
     public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('inventory_types', $classname);
-        $this->registerToTypeConfig('agent_types', $classname);
+        if (!is_a($config->getValue('inventory_mainasset') ?? '', \Glpi\Inventory\MainAsset\NetworkEquipment::class, true)) {
+            $this->registerToTypeConfig('agent_types', $classname);
+        }
         $this->registerToTypeConfig('environment_types', $classname);
         $this->registerToTypeConfig('process_types', $classname);
         $this->registerToTypeConfig('ruleimportasset_types', $classname);
@@ -143,6 +146,7 @@ class IsInventoriableCapacity extends AbstractCapacity
 
         CommonGLPI::registerStandardTab($classname, Item_Environment::class, 85);
         CommonGLPI::registerStandardTab($classname, Item_Process::class, 85);
+        CommonGLPI::registerStandardTab($classname, RuleMatchedLog::class, 90);
     }
 
     public function onCapacityEnabled(string $classname, CapacityConfig $config): void
@@ -156,7 +160,9 @@ class IsInventoriableCapacity extends AbstractCapacity
     {
         global $DB;
         $this->unregisterFromTypeConfig('inventory_types', $classname);
-        $this->unregisterFromTypeConfig('agent_types', $classname);
+        if (!is_a($config->getValue('inventory_mainasset') ?? '', \Glpi\Inventory\MainAsset\NetworkEquipment::class, true)) {
+            $this->unregisterFromTypeConfig('agent_types', $classname);
+        }
         $this->unregisterFromTypeConfig('environment_types', $classname);
         $this->unregisterFromTypeConfig('process_types', $classname);
         $this->unregisterFromTypeConfig('ruleimportasset_types', $classname);

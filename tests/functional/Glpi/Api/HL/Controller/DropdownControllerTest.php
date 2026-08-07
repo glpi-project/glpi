@@ -41,8 +41,10 @@ use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use Holiday;
 use Location;
+use NetworkPortType;
 use PCIVendor;
 use Session;
+use State;
 use USBVendor;
 use ValidationStep;
 
@@ -52,7 +54,6 @@ class DropdownControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('GET', '/Dropdowns'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -78,6 +79,7 @@ class DropdownControllerTest extends HLAPITestCase
                 'date_begin' => '2024-01-01 10:00:00',
                 'date_end' => '2024-12-31 18:00:00',
                 'min_required_approval_percent' => 100,
+                'iftype' => 9999,
             ],
             [
                 'name' => 'testAutoSearch_2',
@@ -86,6 +88,7 @@ class DropdownControllerTest extends HLAPITestCase
                 'date_begin' => '2024-01-01 10:00:00',
                 'date_end' => '2024-12-31 18:00:00',
                 'min_required_approval_percent' => 100,
+                'iftype' => 9999,
             ],
             [
                 'name' => 'testAutoSearch_3',
@@ -94,10 +97,10 @@ class DropdownControllerTest extends HLAPITestCase
                 'date_begin' => '2024-01-01 10:00:00',
                 'date_end' => '2024-12-31 18:00:00',
                 'min_required_approval_percent' => 100,
+                'iftype' => 9999,
             ],
         ];
         $this->api->call(new Request('GET', '/Dropdowns'), function ($call) use ($dataset) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($dataset) {
@@ -113,7 +116,6 @@ class DropdownControllerTest extends HLAPITestCase
     {
         $this->login();
         $this->api->call(new Request('GET', '/Dropdowns'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -127,6 +129,8 @@ class DropdownControllerTest extends HLAPITestCase
                             $params['vendorid'] = 'TST';
                         } elseif ($dropdown['itemtype'] === ValidationStep::class) {
                             $params['min_required_approval_percent'] = 100;
+                        } elseif ($dropdown['itemtype'] === NetworkPortType::class) {
+                            $params['iftype'] = 9999;
                         }
                         $this->api->autoTestCRUD($dropdown['href'], $params);
                     }
@@ -140,7 +144,6 @@ class DropdownControllerTest extends HLAPITestCase
         $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
 
         $this->api->call(new Request('GET', '/Dropdowns'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -156,11 +159,12 @@ class DropdownControllerTest extends HLAPITestCase
                             $create_request->setParameter('vendorid', 'TST');
                         } elseif ($dropdown['itemtype'] === ValidationStep::class) {
                             $create_request->setParameter('min_required_approval_percent', 100);
+                        } elseif ($dropdown['itemtype'] === NetworkPortType::class) {
+                            $create_request->setParameter('iftype', 9999);
                         }
                         $new_location = null;
                         $new_items_id = null;
                         $this->api->call($create_request, function ($call) use (&$new_location, &$new_items_id) {
-                            /** @var \HLAPICallAsserter $call */
                             $call->response
                                 ->isOK()
                                 ->headers(function ($headers) use (&$new_location) {
@@ -186,7 +190,11 @@ class DropdownControllerTest extends HLAPITestCase
                             $this->api->autoTestCRUDNoRights(
                                 endpoint: $dropdown['href'],
                                 itemtype: $dropdown['itemtype'],
-                                items_id: (int) $new_items_id
+                                items_id: (int) $new_items_id,
+                                create_params: [
+                                    'name' => __FUNCTION__,
+                                    'iftype' => 0,
+                                ]
                             );
                         }
                     }
@@ -207,7 +215,6 @@ class DropdownControllerTest extends HLAPITestCase
         $this->api->call(new Request('GET', '/Dropdowns/Location', [
             'GLPI-Entity' => getItemByTypeName('Entity', '_test_child_1', true),
         ]), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
@@ -220,6 +227,51 @@ class DropdownControllerTest extends HLAPITestCase
                         }
                     }
                     $this->assertTrue($found, 'Item from parent entity not found in dropdown results');
+                });
+        });
+    }
+
+    public function testWriteStateVisibilities()
+    {
+        $state = $this->createItem(State::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_visible_computer' => 1,
+            'is_visible_monitor' => 0,
+            'is_visible_phone' => 1,
+            'is_visible_printer' => 1,
+        ]);
+
+        $this->login();
+
+        $this->api->call(new Request('GET', '/Dropdowns/State/' . $state->getID()), function ($call) {
+            $call->response->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertTrue($content['visibilities']['computer']);
+                    $this->assertFalse($content['visibilities']['monitor']);
+                    $this->assertTrue($content['visibilities']['phone']);
+                    $this->assertTrue($content['visibilities']['printer']);
+                });
+        });
+
+        $update_request = new Request('PATCH', '/Dropdowns/State/' . $state->getID());
+        $update_request->setParameter('visibilities', [
+            'computer' => false,
+            'monitor' => true,
+            'phone' => false,
+            'printer' => false,
+        ]);
+        $this->api->call($update_request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $this->api->call(new Request('GET', '/Dropdowns/State/' . $state->getID()), function ($call) {
+            $call->response->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertFalse($content['visibilities']['computer']);
+                    $this->assertTrue($content['visibilities']['monitor']);
+                    $this->assertFalse($content['visibilities']['phone']);
+                    $this->assertFalse($content['visibilities']['printer']);
                 });
         });
     }

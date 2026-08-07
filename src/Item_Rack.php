@@ -178,7 +178,10 @@ class Item_Rack extends CommonDBRelation
         $canedit = $rack->canEdit($rack->getID());
         $link = new self();
 
-        $data = [];
+        $data = [
+            Rack::FRONT => [],
+            Rack::REAR  => [],
+        ];
         //all rows; empty
         for ($i = (int) $rack->fields['number_units']; $i > 0; --$i) {
             $data[Rack::FRONT][$i] = false;

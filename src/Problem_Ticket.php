@@ -118,34 +118,32 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
         switch ($ma->getAction()) {
             case 'add_task':
                 $task = new TicketTask();
-                $ticket = new Ticket();
-                $field = $ticket::getForeignKeyField();
+                $field = Ticket::getForeignKeyField();
 
                 $input = $ma->getInput();
 
                 foreach ($ids as $id) {
                     if ($item->can($id, READ)) {
-                        if ($ticket->getFromDB($item->fields['tickets_id'])) {
-                            $input2 = [$field              => $item->fields['tickets_id'],
-                                'taskcategories_id' => $input['taskcategories_id'],
-                                'actiontime'        => $input['actiontime'],
-                                'content'           => $input['content'],
-                            ];
-                            if ($task->can(-1, CREATE, $input2)) {
-                                if ($task->add($input2)) {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                                } else {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                                    $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                                }
+                        $input2 = [
+                            $field              => $item->getID(),
+                            'taskcategories_id' => $input['taskcategories_id'],
+                            'actiontime'        => $input['actiontime'],
+                            'content'           => $input['content'],
+                        ];
+                        if ($task->can(-1, CREATE, $input2)) {
+                            if ($task->add($input2)) {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
-                                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
+                    } else {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
                 return;
@@ -254,11 +252,16 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
                 'specific_actions' => [
-                    'purge' => _sx('button', 'Delete permanently'),
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlink' => _sx('button', 'Unlink'),
                     self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'solveticket' => __s('Solve tickets'),
                     self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task' => __s('Add a new task'),
                 ],
-                'extraparams'      => ['problems_id' => $problem->getID()],
+                'extraparams'      => [
+                    'source_itemtype'       => Problem::class,
+                    'source_items_id'       => $problem->getID(),
+                    'problems_id'           => $problem->getID(),
+                    'massive_action_fields' => ['source_itemtype', 'source_items_id', 'problems_id'],
+                ],
             ],
         ]);
     }
@@ -331,6 +334,14 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
+                'specific_actions' => [
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlink' => _sx('button', 'Unlink'),
+                ],
+                'extraparams'      => [
+                    'source_itemtype'       => Ticket::class,
+                    'source_items_id'       => $ticket->getID(),
+                    'massive_action_fields' => ['source_itemtype', 'source_items_id'],
+                ],
             ],
         ]);
     }

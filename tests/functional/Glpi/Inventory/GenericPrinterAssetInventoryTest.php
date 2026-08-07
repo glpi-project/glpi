@@ -93,17 +93,9 @@ class GenericPrinterAssetInventoryTest extends InventoryTestCase
         $this->assertNull($metadata['port']);
         $this->assertSame('netinventory', $metadata['action']);
 
-        //check created agent
-        $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
+        //check no agent created
         $agents = $DB->request(['FROM' => \Agent::getTable()]);
-        $this->assertCount(1, $agents);
-        $agent = $agents->current();
-        $this->assertIsArray($agent);
-        $this->assertSame('a-printer-deviceid', $agent['deviceid']);
-        $this->assertSame('a-printer-deviceid', $agent['name']);
-        $this->assertSame($classname, $agent['itemtype']);
-        $this->assertSame($agenttype['id'], $agent['agenttypes_id']);
-        $this->assertGreaterThan(0, $agent['items_id']);
+        $this->assertCount(0, $agents);
 
         //get model, manufacturer, ...
         $autoupdatesystems = $DB->request(['FROM' => \AutoupdateSystem::getTable(), 'WHERE' => ['name' => 'GLPI Native Inventory']])->current();

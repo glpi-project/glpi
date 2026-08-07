@@ -39,6 +39,7 @@ use Glpi\Form\AnswersSet;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeItem;
+use GLPIMailer;
 use Group;
 use Session;
 use Ticket;
@@ -129,6 +130,7 @@ enum ITILActorFieldStrategy: string
 
         if (
             $delegation->users_id !== null
+            && $delegation->users_id !== (int) $user_id
             && Ticket::canDelegateeCreateTicket($delegation->users_id)
         ) {
             return [
@@ -256,7 +258,7 @@ enum ITILActorFieldStrategy: string
             }, []);
         } elseif ($answer->getType() instanceof QuestionTypeEmail) {
             $value = $answer->getRawAnswer();
-            if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            if (GLPIMailer::validateAddress($value)) {
                 return [
                     [
                         'itemtype' => User::class,
@@ -374,6 +376,12 @@ enum ITILActorFieldStrategy: string
         $actors_ids = $item->fields[$fk_field];
         if (!is_array($actors_ids)) {
             $actors_ids = [$actors_ids];
+        }
+
+        // 0 means unset, not an actor with id 0.
+        $actors_ids = array_filter($actors_ids, fn($actor_id) => (int) $actor_id > 0);
+        if ($actors_ids === []) {
+            return null;
         }
 
         $itemtype = getItemtypeForForeignKeyField(str_replace('_tech', '', $fk_field));

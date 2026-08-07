@@ -61,7 +61,8 @@ if (!$rule = getItemForItemtype($sub_type)) {
 }
 $rule->checkGlobal(READ);
 
-Html::popHeader(__('Setup'));
+$in_modal = isset($_REQUEST['_in_modal']) ? (bool) $_REQUEST['_in_modal'] : false;
+Html::popHeader(__('Setup'), '', $in_modal);
 
 $rule->showRulePreviewCriteriasForm($rules_id);
 

@@ -292,12 +292,6 @@
       actor.use_notification = use_notif;
       actor.alternative_email = alt_email;
 
-      // update notif setting icon for actor
-      var fa_class = "far";
-      if (use_notif) {
-         fa_class = "fas";
-      }
-
       var actor_entry = $('.actor_entry[data-itemtype='+CSS.escape(actor.itemtype)+'][data-items-id='+parseInt(actor.items_id)+'][data-actortype='+CSS.escape(actortype)+']')
          .filter(function() {
             if(actor.items_id == 0 && actor.itemtype == "User") {
@@ -308,8 +302,8 @@
 
       // toggle notify icon
       actor_entry.find('.notify-icon')
-         .removeClass('fas far')
-         .addClass(fa_class);
+          .toggleClass('ti-bell-filled', use_notif === 1)
+          .toggleClass('ti-bell', use_notif === 0);
 
       // toggle text for direct email
       if (actor.itemtype == "User" && parseInt(actor.items_id) == 0) {

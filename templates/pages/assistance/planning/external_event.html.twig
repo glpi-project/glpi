@@ -188,6 +188,7 @@
 
     {{ fields.htmlField('', call('PlanningExternalEvent::showRepetitionForm', [item.fields['rrule']|default(''), {
         rand: rand_rrule,
+        begin: item.fields['begin'],
     }]), __('Repeat'), {
         full_width: true,
         label_class: 'col-2'

@@ -308,7 +308,7 @@ class UserEmail extends CommonDBChild
 
     public function prepareInputForUpdate($input)
     {
-        if (!$this->checkInputEmailValidity($input)) {
+        if (array_key_exists('email', $input) && !$this->checkInputEmailValidity($input)) {
             return false;
         }
 

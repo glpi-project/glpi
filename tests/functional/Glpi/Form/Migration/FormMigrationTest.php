@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Migration;
 use AbstractRightsDropdown;
 use Change;
 use Computer;
+use Dropdown;
 use Entity;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\AccessControl\ControlType\AllowList;
@@ -2353,6 +2354,110 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
+    public function testFormMigrationVisibilityConditionsWithCommentAsCriteria(): void
+    {
+        global $DB;
+
+        // Create a form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => 'Test form migration condition with comment as criteria',
+            ]
+        ));
+        $form_id = $DB->insertId();
+
+        // Insert a section
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'plugin_formcreator_forms_id' => $form_id,
+            ]
+        ));
+        $section_id = $DB->insertId();
+
+        // Insert a description block (future Comment A): this is the CRITERIA source of the condition
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => 'Test form migration condition with comment as criteria - Criteria comment',
+                'plugin_formcreator_sections_id' => $section_id,
+                'fieldtype'                      => 'description',
+                'row'                            => 0,
+                'col'                            => 0,
+            ]
+        ));
+        $criteria_comment_id = $DB->insertId();
+
+        // Insert a regular question (future Question B) with show_rule=2 (visible_if):
+        // this is the TARGET of the condition (visible when Comment A is visible)
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => 'Test form migration condition with comment as criteria - Target question',
+                'plugin_formcreator_sections_id' => $section_id,
+                'fieldtype'                      => 'text',
+                'row'                            => 1,
+                'col'                            => 0,
+                'show_rule'                      => 2, // visible_if
+            ]
+        ));
+        $target_question_id = $DB->insertId();
+
+        // Insert condition: question B is visible when description A (→Comment A) is visible
+        // show_condition = 7 means VISIBLE in formcreator
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_conditions',
+            [
+                'itemtype'                        => 'PluginFormcreatorQuestion',
+                'items_id'                        => $target_question_id,
+                'plugin_formcreator_questions_id' => $criteria_comment_id,
+                'show_condition'                  => 7, // VISIBLE
+                'show_value'                      => '',
+                'show_logic'                      => 1,
+            ]
+        ));
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        /** @var Form $form */
+        $form = getItemByTypeName(Form::class, 'Test form migration condition with comment as criteria');
+        $this->assertNotFalse($form);
+        $this->assertCount(1, $form->getSections());
+        $this->assertCount(1, $form->getQuestions());
+        $this->assertCount(1, $form->getFormComments());
+
+        /** @var Question $target_question */
+        $target_question = getItemByTypeName(Question::class, 'Test form migration condition with comment as criteria - Target question');
+        $this->assertNotFalse($target_question);
+        $this->assertEquals(VisibilityStrategy::VISIBLE_IF, $target_question->getConfiguredVisibilityStrategy());
+
+        /** @var Comment $criteria_comment */
+        $criteria_comment = getItemByTypeName(Comment::class, 'Test form migration condition with comment as criteria - Criteria comment');
+        $this->assertNotFalse($criteria_comment);
+
+        $this->assertEquals(
+            [
+                [
+                    'value_operator' => ValueOperator::VISIBLE,
+                    'value'          => '',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+            array_map(
+                fn(ConditionData $condition) => [
+                    'value_operator' => $condition->getValueOperator(),
+                    'value'          => $condition->getValue(),
+                    'logic_operator' => $condition->getLogicOperator(),
+                ],
+                $target_question->getConfiguredConditionsData()
+            )
+        );
+    }
+
     public static function provideFormMigrationVisibilityConditionsForDestinations(): iterable
     {
         $creation_strategies = [
@@ -3658,6 +3763,54 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
+    public function testFormWithDropdownQuestionReferencingGenericObjectDropdown(): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Arrange: create a form with a "dropdown" question referencing a GenericObject
+        // custom dropdown type (PluginGenericobjectSmartphoneModel -> Glpi\CustomAsset\smartphoneAssetModel)
+        $this->createSimpleFormcreatorForm("With generic object custom dropdown", [
+            [
+                'name'      => 'Generic object dropdown',
+                'fieldtype' => 'dropdown',
+                'itemtype'  => 'PluginGenericobjectSmartphoneModel',
+                'values'    => json_encode([
+                    'show_ticket_categories' => '',
+                    'show_tree_depth'        => '0',
+                    'show_tree_root'         => '0',
+                    'selectable_tree_root'   => '0',
+                ]),
+            ],
+        ]);
+
+        // Run GenericObject migration first so that DropdownDefinition for "smartphoneAssetModel" is created
+        // and itemtype references should be updated
+        $asset_migration = new GenericobjectPluginMigration($DB);
+        $asset_migration->execute();
+
+        // Arrange: Reset the dropdown itemtypes static cache
+        Dropdown::resetItemtypesStaticCache();
+
+        // Act: run form migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $migration->execute();
+
+        // Assert: the question should have been migrated with the correct migrated itemtype
+        $form = getItemByTypeName(Form::class, "With generic object custom dropdown");
+        $question_id = $this->getQuestionId($form, "Generic object dropdown");
+        $question = Question::getById($question_id);
+
+        $config = $question->getExtraDataConfig();
+        if (!$config instanceof QuestionTypeItemDropdownExtraDataConfig) {
+            $this->fail("Unexpected config class: " . get_class($config));
+        }
+        $this->assertEquals(
+            "Glpi\\CustomAsset\\smartphoneAssetModel",
+            $config->getItemtype()
+        );
+    }
+
     public function testNonVisiblePrivateFormMigration(): void
     {
         /** @var \DBmysql $DB */
@@ -3910,5 +4063,57 @@ final class FormMigrationTest extends DbTestCase
 
         // Assert: migration should be done without error
         $this->assertTrue($result->isFullyProcessed());
+    }
+
+    public function testFormMigrationActorsWithEmptyDefaultValue(): void
+    {
+        global $DB;
+
+        // Arrange: create a form with an actor question with an empty default value
+        $this->createSimpleFormcreatorForm('Actor test with empty default value', [
+            [
+                'name'           => 'Actor',
+                'fieldtype'      => 'actor',
+                'default_values' => '',
+            ],
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: migration should be done without error
+        $this->assertTrue($result->isFullyProcessed());
+    }
+
+    public function testFormMigrationDropdownQuestionWithSLAItemtype(): void
+    {
+        global $DB;
+
+        // Arrange: create a form with a dropdown question with SLA itemtype
+        $this->createSimpleFormcreatorForm('Dropdown with SLA itemtype', [
+            [
+                'name'      => 'SLA dropdown',
+                'fieldtype' => 'dropdown',
+                'itemtype'  => 'SLA',
+                'values'    => json_encode([
+                    'show_service_level_types' => '0',
+                    'entity_restrict'          => '2',
+                ]),
+            ],
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: migration should be done without error and the question should be migrated with the correct itemtype
+        $this->assertTrue($result->isFullyProcessed());
+        $question = getItemByTypeName(Question::class, 'SLA dropdown');
+        $config = $question->getExtraDataConfig();
+        if (!$config instanceof QuestionTypeItemDropdownExtraDataConfig) {
+            throw new LogicException('Config should be of type QuestionTypeItemDropdownExtraDataConfig');
+        }
+        $this->assertEquals('SLA', $config->getItemtype());
     }
 }

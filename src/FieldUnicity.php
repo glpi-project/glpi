@@ -542,6 +542,7 @@ class FieldUnicity extends CommonDropdown
                 $where_field => ['<>', getTableNameForForeignKeyField($where_field) ? 0 : ''],
             ];
         }
+        $where += $item::getSystemSQLCriteria();
         $item_table = $item::getTable();
 
         $iterator = $DB->request([

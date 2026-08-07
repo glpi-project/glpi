@@ -972,6 +972,119 @@ final class EngineTest extends DbTestCase
         ];
     }
 
+    public static function conditionsWithMixedAndOrOperators(): iterable
+    {
+        // Verifies AND-over-OR operator precedence, matching legacy formcreator behavior.
+        // Expression: Q1=a AND Q2=b OR Q3=c AND Q4=d
+        // Correct evaluation (AND binds tighter): (Q1=a AND Q2=b) OR (Q3=c AND Q4=d)
+        // Broken left-fold evaluation: ((Q1=a AND Q2=b) OR Q3=c) AND Q4=d
+        $form = new FormBuilder();
+        $form->addQuestion("Question 1", QuestionTypeShortText::class);
+        $form->addQuestion("Question 2", QuestionTypeShortText::class);
+        $form->addQuestion("Question 3", QuestionTypeShortText::class);
+        $form->addQuestion("Question 4", QuestionTypeShortText::class);
+        $form->addQuestion("Target Question", QuestionTypeShortText::class);
+        $form->setQuestionVisibility(
+            "Target Question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND, // first condition: operator ignored
+                    'item_name'      => "Question 1",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "a",
+                ],
+                [
+                    'logic_operator' => LogicOperator::AND, // Q1=a AND Q2=b
+                    'item_name'      => "Question 2",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "b",
+                ],
+                [
+                    'logic_operator' => LogicOperator::OR, // (Q1=a AND Q2=b) OR (...)
+                    'item_name'      => "Question 3",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "c",
+                ],
+                [
+                    'logic_operator' => LogicOperator::AND, // Q3=c AND Q4=d
+                    'item_name'      => "Question 4",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "d",
+                ],
+            ]
+        );
+
+        // First AND-group matches: (T AND T) OR (F AND F) = TRUE
+        // Broken left-fold: ((T AND T) OR F) AND F = FALSE
+        yield 'first AND group matches' => [
+            'form'  => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "a",
+                    'Question 2' => "b",
+                    'Question 3' => "wrong",
+                    'Question 4' => "wrong",
+                ],
+            ],
+            'expected_output' => [
+                'questions' => ['Target Question' => true],
+            ],
+        ];
+
+        // Second AND-group matches: (F AND F) OR (T AND T) = TRUE
+        yield 'second AND group matches' => [
+            'form'  => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "wrong",
+                    'Question 2' => "wrong",
+                    'Question 3' => "c",
+                    'Question 4' => "d",
+                ],
+            ],
+            'expected_output' => [
+                'questions' => ['Target Question' => true],
+            ],
+        ];
+
+        // Neither group matches: (F AND F) OR (F AND F) = FALSE
+        yield 'neither AND group matches' => [
+            'form'  => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "wrong",
+                    'Question 2' => "wrong",
+                    'Question 3' => "wrong",
+                    'Question 4' => "wrong",
+                ],
+            ],
+            'expected_output' => [
+                'questions' => ['Target Question' => false],
+            ],
+        ];
+
+        // Partial first group match: (T AND F) OR (F AND F) = FALSE
+        yield 'partial first AND group match' => [
+            'form'  => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => "a",
+                    'Question 2' => "wrong",
+                    'Question 3' => "wrong",
+                    'Question 4' => "wrong",
+                ],
+            ],
+            'expected_output' => [
+                'questions' => ['Target Question' => false],
+            ],
+        ];
+    }
+
     #[DataProvider('conditionsOnForm')]
     #[DataProvider('conditionsOnQuestions')]
     #[DataProvider('conditionsOnComments')]
@@ -982,6 +1095,7 @@ final class EngineTest extends DbTestCase
     #[DataProvider('conditionsWithEmptyOperatorOnNullAnswer')]
     #[DataProvider('conditionsWithEmptyOperatorOnNotVisibleQuestionAsSource')]
     #[DataProvider('conditionsOnChildBlocksWithParentSectionHidden')]
+    #[DataProvider('conditionsWithMixedAndOrOperators')]
     public function testComputation(
         FormBuilder $form,
         array $input,

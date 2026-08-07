@@ -353,4 +353,29 @@ class DashboardTest extends DbTestCase
         $_SESSION['glpigroups'] = [];
         $this->assertFalse(Dashboard::checkRights($rights));
     }
+
+    public function testCanViewCurrentForSharedUser(): void
+    {
+        $this->login();
+        $owner_id = (int) \Session::getLoginUserID();
+
+        $shared_user_id = getItemByTypeName(\User::class, 'jsmith123', true);
+
+        // Dashboard with a non-zero users_id is "owned" (private to its owner)
+        $this->createItem(Dashboard::class, [
+            'key'      => 'test_view_current_shared',
+            'name'     => __FUNCTION__,
+            'users_id' => $owner_id,
+        ]);
+        $owned_dashboard = new Dashboard('test_view_current_shared');
+        $owned_dashboard->saveRights(['users_id' => [$shared_user_id]]);
+
+        // Log in as the shared user and restrict to view-only dashboard right
+        $this->login('jsmith123');
+        $_SESSION['glpiactiveprofile']['dashboard'] = READ;
+
+        $dashboard_as_shared = new Dashboard('test_view_current_shared');
+        $this->assertTrue($dashboard_as_shared->canViewCurrent());
+        $this->assertFalse($dashboard_as_shared->canUpdateCurrent());
+    }
 }

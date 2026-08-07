@@ -66,7 +66,7 @@ abstract class RuleDictionaryTypeCollection extends RuleDictionnaryDropdownColle
     public function __construct()
     {
         $this->item_table  = static::getDefinition()->getAssetTypeClassName()::getTable();
-        $this->menu_option = sprintf('model.%s', static::getDefinition()->fields['system_name']);
+        $this->menu_option = sprintf('type.%s', static::getDefinition()->fields['system_name']);
     }
 
     public function getTitle()

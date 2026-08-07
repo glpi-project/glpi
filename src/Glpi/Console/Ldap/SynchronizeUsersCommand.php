@@ -424,7 +424,9 @@ class SynchronizeUsersCommand extends AbstractCommand
                             'user_field'       => $user_field,
                         ],
                         $action,
-                        $server_id
+                        $server_id,
+                        false,
+                        true
                     );
 
                     if (false !== $result) {

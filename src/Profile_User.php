@@ -149,10 +149,15 @@ class Profile_User extends CommonDBRelation
         $start       = (int) ($_GET["start"] ?? 0);
         $limit       = $_SESSION["glpilist_limit"];
         $sort        = $_GET["sort"] ?? "";
-        $order       = strtoupper($_GET["order"] ?? "");
+        $order       = strtoupper($_GET["order"] ?? "") === 'DESC' ? 'DESC' : 'ASC';
+        // Map the displayed column keys to their actual SQL columns.
+        $sort_columns = [
+            'entity'  => 'glpi_entities.completename',
+            'profile' => 'glpi_profiles.name',
+        ];
         $sort_params = [];
-        if ($sort !== '') {
-            $sort_params = [$sort => $order === 'DESC' ? 'DESC' : 'ASC'];
+        if (isset($sort_columns[$sort])) {
+            $sort_params = [$sort_columns[$sort] . ' ' . $order];
         }
         $iterator = self::getListForItem($user, $start, $limit, $sort_params);
         $total_num = self::countForItem($user);
@@ -390,7 +395,7 @@ TWIG, $avatar_params) . $username;
 
             $entries[] = [
                 'itemtype' => self::class,
-                'id' => $data['id'],
+                'id' => $data['linkid'],
                 'name' => $username,
                 'profile' => $data['pname'],
             ];
@@ -515,7 +520,7 @@ TWIG, $avatar_params) . $username;
             'WHERE'           => [
                 "$putable.profiles_id"  => $ID,
                 "$utable.is_deleted"    => 0,
-            ] + getEntitiesRestrictCriteria($putable, 'entities_id', $_SESSION['glpiactiveentities'], true),
+            ] + getEntitiesRestrictCriteria($putable, 'entities_id', '', true),
             'ORDER'         => $sort_params,
             'START'         => $start,
             'LIMIT'         => $limit,
@@ -576,7 +581,7 @@ TWIG, $avatar_params) . $username;
 TWIG, $avatar_params) . $username;
             $entries[] = [
                 'itemtype' => self::class,
-                'id' => $data['id'],
+                'id' => $data['linkid'],
                 'name' => $username,
                 'entity' => $entity_names[$data['entity']],
             ];
@@ -1045,7 +1050,23 @@ TWIG, $avatar_params) . $username;
                 case Profile::class:
                     if (Session::haveRight('user', READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = self::countForItem($item);
+                            $count = $DB->request([
+                                'COUNT'     => 'cpt',
+                                'FROM'      => self::getTable(),
+                                'LEFT JOIN' => [
+                                    User::getTable() => [
+                                        'FKEY' => [
+                                            self::getTable() => 'users_id',
+                                            User::getTable()  => 'id',
+                                        ],
+                                    ],
+                                ],
+                                'WHERE'     => [
+                                    User::getTable() . '.is_deleted'    => 0,
+                                    self::getTable() . '.profiles_id'  => $item->getID(),
+                                ],
+                            ])->current();
+                            $nb        = $count['cpt'];
                         }
                         return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
@@ -1097,6 +1118,7 @@ TWIG, $avatar_params) . $username;
 
         $specificities['dropdown_method_2']       = 'dropdownUnder';
         $specificities['can_remove_all_at_once']  = false;
+        $specificities['can_link_several_times']  = true;
 
         return $specificities;
     }
@@ -1213,6 +1235,15 @@ TWIG, $avatar_params) . $username;
 
     public function post_deleteFromDB()
     {
+        $selected_user = User::getById($this->fields['users_id']);
+
+        if ($selected_user instanceof User && $selected_user->fields['profiles_id'] == $this->fields['profiles_id']) {
+            $user = new User();
+            $user->update([
+                'id' => $this->fields['users_id'],
+                'profiles_id' => 0,
+            ]);
+        }
         $this->logOperation('delete');
     }
 

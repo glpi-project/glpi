@@ -38,6 +38,7 @@ namespace Glpi\Form\QuestionType;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionValueTransformerInterface;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Glpi\ItemTranslation\Context\TranslationHandler;
@@ -515,10 +516,13 @@ TWIG;
             $answer = [$answer];
         }
 
-        // Replace uuids by labels
+        // Replace uuids by translated labels
         $options = $this->getOptions($question);
         $answer = array_map(
-            fn($uuid) => $options[$uuid] ?? '',
+            function ($uuid) use ($question, $options) {
+                $key = sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid);
+                return FormTranslation::translate($question, $key) ?? ($options[$uuid] ?? '');
+            },
             $answer
         );
 

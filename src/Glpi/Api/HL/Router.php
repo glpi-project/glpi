@@ -48,10 +48,12 @@ use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\DashboardController;
 use Glpi\Api\HL\Controller\DropdownController;
 use Glpi\Api\HL\Controller\GraphQLController;
+use Glpi\Api\HL\Controller\InventoryController;
 use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\KnowbaseController;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Api\HL\Controller\NotepadController;
+use Glpi\Api\HL\Controller\NotificationController;
 use Glpi\Api\HL\Controller\ProjectController;
 use Glpi\Api\HL\Controller\ReportController;
 use Glpi\Api\HL\Controller\RuleController;
@@ -93,7 +95,7 @@ use function Safe\preg_match;
 class Router
 {
     /** @var string */
-    public const API_VERSION = '2.2.0';
+    public const API_VERSION = '2.3.0';
 
     /**
      * @var AbstractController[]
@@ -167,16 +169,24 @@ EOT;
                 'api_version' => '2',
                 'version' => '2.0.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.0',
+                'deprecated' => true,
             ],
             [
                 'api_version' => '2',
                 'version' => '2.1.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.1',
+                'deprecated' => true,
             ],
             [
                 'api_version' => '2',
                 'version' => '2.2.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.2',
+                'deprecated' => true,
+            ],
+            [
+                'api_version' => '2',
+                'version' => '2.3.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.3',
             ],
         ];
     }
@@ -249,6 +259,8 @@ EOT;
             self::$instance->registerController(new NotepadController());
             self::$instance->registerController(new DashboardController());
             self::$instance->registerController(new KnowbaseController());
+            self::$instance->registerController(new InventoryController());
+            self::$instance->registerController(new NotificationController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {
@@ -606,6 +618,9 @@ EOT;
     {
         global $CFG_GLPI;
 
+        // Reset client state so each request starts with a clean slate
+        $this->current_client = null;
+
         // Start an output buffer to capture any potential debug errors
         $current_output_buffer_level = ob_get_level();
         ob_start();
@@ -623,8 +638,9 @@ EOT;
         $request = $request->withQueryParams(array_merge($request->getQueryParams(), $_GET));
 
         // Handle potential JSON request body
-        $content_types = $request->getHeader('Content-Type');
-        if (in_array('application/json', $content_types, true)) {
+        $content_type = $request->getHeaderLine('Content-Type');
+        $content_type = explode(';', $content_type)[0];
+        if ($content_type === 'application/json') {
             $body = $request->getBody()->getContents();
             try {
                 $body = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
@@ -706,7 +722,7 @@ EOT;
                     $params = $matched_route->getRouteDoc($request->getMethod())?->getParameters() ?? [];
                     $missing_params = [];
                     foreach ($params as $param) {
-                        if ($param->getRequired() && !$request->hasParameter($param->getName())) {
+                        if (($param['required'] ?? false) && !$request->hasParameter($param->getName())) {
                             $missing_params[] = $param->getName();
                         }
                     }

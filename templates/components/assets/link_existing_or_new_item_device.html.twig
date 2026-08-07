@@ -34,7 +34,7 @@
 
 <div class="d-flex col-12">
     {% if devices|length == 0 %}
-        {{ fields.htmlField(linktype|itemtype_foreign_key, __('No unaffected device!'), __('Choose an existing device')) }}
+        {{ fields.htmlField(linktype|itemtype_foreign_key, __('No unaffected device!')|e, __('Choose an existing device')) }}
     {% else %}
         {{ fields.dropdownArrayField(linktype|itemtype_foreign_key, '', devices, __('Choose an existing device'), {
             helper: label_pattern,

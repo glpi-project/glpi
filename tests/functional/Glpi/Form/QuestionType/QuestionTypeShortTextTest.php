@@ -34,7 +34,10 @@
 
 namespace tests\units\Glpi\Form\QuestionType;
 
+use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
+use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -57,5 +60,28 @@ final class QuestionTypeShortTextTest extends DbTestCase
             "1) First name: John",
             strip_tags($ticket->fields['content']),
         );
+    }
+
+    public function testLongAnswerUsedAsTitleIsTruncatedTo255Characters(): void
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion("Title", QuestionTypeShortText::class);
+        $form = $this->createForm($builder);
+        $question = current($form->getQuestions());
+
+        // Configure the ticket title to be sourced from the form answer
+        $this->setDestinationFieldConfig(
+            form: $form,
+            key: TitleField::getKey(),
+            config: new SimpleValueConfig((new AnswerTagProvider())->getTagForQuestion($question)->html)
+        );
+
+        // Submit with an answer exceeding VARCHAR(255) — used to throw a DB exception
+        $long_answer = str_repeat('a', 300);
+        $ticket = $this->sendFormAndGetCreatedTicket($form, [
+            "Title" => $long_answer,
+        ]);
+
+        $this->assertSame(255, mb_strlen($ticket->fields['name']));
     }
 }

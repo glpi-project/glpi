@@ -94,7 +94,7 @@
    }
 ) }}
 {% if connect_string is not empty %}
-   {{ fields.htmlField('', connect_string, __('Connection string'), {
+   {{ fields.htmlField('', connect_string|e, __('Connection string'), {
       add_field_class: 'fw-bold',
       full_width: true,
    }) }}

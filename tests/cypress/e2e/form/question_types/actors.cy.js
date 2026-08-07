@@ -80,7 +80,7 @@ describe('Actor form question type', () => {
         cy.reload();
 
         // Check the default value
-        cy.getDropdownByLabelText('Select an actor...').should('have.text', 'e2e_tests');
+        cy.getDropdownByLabelText('Select an actor...').should('have.text', '×e2e_tests');
     });
 
     it('should be able to define multiple actors as default value', () => {
@@ -119,7 +119,7 @@ describe('Actor form question type', () => {
         cy.reload();
 
         // Check the default value
-        cy.getDropdownByLabelText('Select an actor...').should('have.text', 'e2e_tests');
+        cy.getDropdownByLabelText('Select an actor...').should('have.text', '×e2e_tests');
 
         // Focus on the question
         cy.findByRole('option', { name: 'Test actor question' })

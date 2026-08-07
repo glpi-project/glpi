@@ -34,16 +34,25 @@
 
 namespace tests\units;
 
+use Computer;
+use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Asset\CapacityConfig;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
+use Glpi\Inventory\MainAsset\GenericNetworkAsset;
+use Glpi\Inventory\MainAsset\GenericPrinterAsset;
 use Glpi\Tests\DbTestCase;
+use NetworkEquipment;
+
+use function Safe\json_decode;
 
 class AgentTest extends DbTestCase
 {
     public const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
-    public function testDefineTabs()
+    public function testDefineTabs(): void
     {
         $expected = [
             'Agent$main'       => "Agent",
@@ -55,7 +64,7 @@ class AgentTest extends DbTestCase
         $this->assertSame($expected, $tabs);
     }
 
-    public function testHandleAgent()
+    public function testHandleAgent(): void
     {
         $metadata = [
             'deviceid'  => 'glpixps-2018-07-09-09-07-13',
@@ -100,7 +109,7 @@ class AgentTest extends DbTestCase
         $this->assertSame(0, $agent->fields['use_module_collect_data']);
     }
 
-    public function testHandleAgentWOType()
+    public function testHandleAgentWOType(): void
     {
         global $DB;
 
@@ -117,7 +126,7 @@ class AgentTest extends DbTestCase
         $this->testHandleAgent();
     }
 
-    public function testHandleAgentOnUpdate()
+    public function testHandleAgentOnUpdate(): void
     {
         $metadata = [
             'deviceid'  => 'glpixps-2018-07-09-09-07-13',
@@ -162,7 +171,7 @@ class AgentTest extends DbTestCase
         $this->assertSame(1, $agent->fields['use_module_collect_data']);
     }
 
-    public function testAgentFeaturesFromItem()
+    public function testAgentFeaturesFromItem(): void
     {
         //run an inventory
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
@@ -203,7 +212,7 @@ class AgentTest extends DbTestCase
         $this->assertTrue($agent->getFromDB($current_agent['id']));
 
         $item = $agent->getLinkedItem();
-        $this->assertInstanceOf(\Computer::class, $item);
+        $this->assertInstanceOf(Computer::class, $item);
 
         $this->assertSame(
             [
@@ -266,7 +275,7 @@ class AgentTest extends DbTestCase
         );
     }
 
-    public function testAgentHasChanged()
+    public function testAgentHasChanged(): void
     {
         //run an inventory
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
@@ -309,7 +318,7 @@ class AgentTest extends DbTestCase
         $this->assertTrue($agent->getFromDB($current_agent['id']));
 
         $item = $agent->getLinkedItem();
-        $this->assertInstanceOf(\Computer::class, $item);
+        $this->assertInstanceOf(Computer::class, $item);
 
         //play an update with changes
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
@@ -346,7 +355,7 @@ class AgentTest extends DbTestCase
         $this->assertFalse($current_agent->getFromDB($old_agents_id), 'Old Agent still exists!');
     }
 
-    public function testTagFromXML()
+    public function testTagFromXML(): void
     {
         //run an inventory
         $xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -403,7 +412,7 @@ class AgentTest extends DbTestCase
         $this->assertSame($agenttype['id'], $agent['agenttypes_id']);
     }
 
-    public function testStaleActions()
+    public function testStaleActions(): void
     {
         //run an inventory
         $json = json_decode(file_get_contents(self::INV_FIXTURES . 'computer_1.json'));
@@ -446,7 +455,7 @@ class AgentTest extends DbTestCase
         $this->assertTrue($agent->getFromDB($current_agent['id']));
 
         $item = $agent->getLinkedItem();
-        $this->assertInstanceOf(\Computer::class, $item);
+        $this->assertInstanceOf(Computer::class, $item);
 
         //check default status
         $this->assertSame(0, $item->fields['states_id']);
@@ -602,5 +611,172 @@ class AgentTest extends DbTestCase
         $this->assertTrue($item->getFromDB($item->fields['id']));
         $this->assertSame(1, $item->fields['is_deleted']);
         $this->assertSame($states_id3, $item->fields['states_id']);
+    }
+
+    public function testAgentStayLinkedToComputer(): void
+    {
+        global $DB;
+
+        $deviceid = 'computer-deviceid';
+
+        //computer inventory
+        $json_str = <<<JSON
+{
+   "action": "inventory",
+   "content": {
+      "hardware": {
+         "name": "computer",
+         "uuid": "12345-67890-ABCDEF"
+      },
+      "versionclient": "GLPI-Agent"
+   },
+   "deviceid": "$deviceid",
+   "itemtype": "Computer"
+}
+JSON;
+        $json = json_decode($json_str);
+        $inventory = new Inventory($json);
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        //check computer has been created and linked to agent
+        $computer = new Computer();
+        $this->assertTrue($computer->getFromDBByCrit(['name' => 'computer']));
+
+        //check inventory metadata
+        $metadata = $inventory->getMetadata();
+        $this->assertGreaterThan(0, count($metadata));
+        $this->assertSame($deviceid, $metadata['deviceid']);
+        $this->assertSame(Computer::class, $metadata['itemtype']);
+
+        //check created agent
+        $agents = $DB->request(['FROM' => \Agent::getTable()]);
+        $this->assertCount(1, $agents);
+        $current_agent = $agents->current();
+        $this->assertSame($deviceid, $current_agent['deviceid']);
+        $this->assertSame($deviceid, $current_agent['name']);
+        $this->assertSame(Computer::class, $current_agent['itemtype']);
+
+        $agent = new \Agent();
+        $this->assertTrue($agent->getFromDB($current_agent['id']));
+
+        $item = $agent->getLinkedItem();
+        $this->assertEquals($computer, $item);
+
+        //standard network inventory with computer deviceid
+        $netinv_xml_source = <<<XML
+<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <COMMENTS>Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00</COMMENTS>
+        <CONTACT>noc@glpi-project.org</CONTACT>
+        <NAME>abc6248up-cluster-pa3-B</NAME>
+        <SERIAL>SSI1912014B</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+      </INFO>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>$deviceid</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>
+XML;
+
+        $converter = new Converter();
+        $netinv_json = json_decode($converter->convert($netinv_xml_source));
+        $inventory = new Inventory($netinv_json);
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        $item = $inventory->getItem();
+        $this->assertInstanceOf(NetworkEquipment::class, $item);
+
+        //check agent is still linked to computer
+        $this->assertTrue($agent->getFromDB($agent->getID()));
+        $this->assertSame(Computer::class, $agent->fields['itemtype']);
+        $this->assertSame($computer->getID(), $agent->fields['items_id']);
+
+        //create custom asset with inventory capacity configured as a network device
+        $definition = $this->initAssetDefinition(
+            system_name: 'SpecificNetworkEquipment' . $this->getUniqueString(),
+            capacities: [
+                new Capacity(
+                    name: IsInventoriableCapacity::class,
+                    config: new CapacityConfig([
+                        'inventory_mainasset' => GenericNetworkAsset::class,
+                    ])
+                ),
+            ]
+        );
+        $classname  = $definition->getAssetClassName();
+
+        //custom asset inventory with computer deviceid
+        $netinv_json->itemtype = $classname;
+        $inventory = new Inventory($netinv_json);
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        $item = $inventory->getItem();
+        $this->assertInstanceOf($classname, $item);
+
+        //check agent is still linked to computer
+        $this->assertTrue($agent->getFromDB($agent->getID()));
+        $this->assertSame(Computer::class, $agent->fields['itemtype']);
+        $this->assertSame($computer->getID(), $agent->fields['items_id']);
+
+        //create custom asset with inventory capacity configured as a printer
+        $definition = $this->initAssetDefinition(
+            system_name: 'SpecificNetworkEquipment' . $this->getUniqueString(),
+            capacities: [
+                new Capacity(
+                    name: IsInventoriableCapacity::class,
+                    config: new CapacityConfig([
+                        'inventory_mainasset' => GenericPrinterAsset::class,
+                    ])
+                ),
+            ]
+        );
+        $classname  = $definition->getAssetClassName();
+
+        //custom asset inventory with computer deviceid
+        $netinv_json->itemtype = $classname;
+        $inventory = new Inventory($netinv_json);
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        $item = $inventory->getItem();
+        $this->assertInstanceOf($classname, $item);
+
+        //check agent is still linked to computer
+        $this->assertTrue($agent->getFromDB($agent->getID()));
+        $this->assertSame(Computer::class, $agent->fields['itemtype']);
+        $this->assertSame($computer->getID(), $agent->fields['items_id']);
     }
 }

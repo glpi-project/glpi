@@ -179,12 +179,17 @@ final class TilesManager
      */
     public function getAllTiles(): array
     {
+        global $DB;
+
         // Load all tiles from the database
         $tiles = [];
-        $item_tile = new Item_Tile();
-        $item_tiles = $item_tile->find([], ['itemtype_item', 'items_id_item', 'rank']);
+        $it = $DB->request([
+            'SELECT' => ['itemtype_tile', 'items_id_tile'],
+            'FROM'   => Item_Tile::getTable(),
+            'ORDER' => ['itemtype_item', 'items_id_item', 'rank'],
+        ]);
 
-        foreach ($item_tiles as $row) {
+        foreach ($it as $row) {
             // Validate tile itemtype
             $itemtype = $row['itemtype_tile'];
             /** @var CommonDBTM $tile */
@@ -195,7 +200,7 @@ final class TilesManager
 
             // Try to load tile from database
             try {
-                if (!$tile->getFromDb($row['items_id_tile'])) {
+                if (!$tile->getFromDB($row['items_id_tile'])) {
                     continue;
                 }
             } catch (InvalidTileException $e) {
@@ -226,25 +231,29 @@ final class TilesManager
             throw new InvalidArgumentException();
         }
 
+        // The holder is passed through the tile input: the tile links itself to
+        // it (see TileRightTrait::post_addItem()), so the created link always
+        // matches the holder the rights were checked against.
         $tile = new $tile_class();
-        $id = $tile->add($params);
-        if (!$id) {
+        $tile_id = $tile->add($params + [
+            '_itemtype_item' => $item::class,
+            '_items_id_item' => $item->getID(),
+        ]);
+        if (!$tile_id) {
             throw new RuntimeException("Failed to create tile");
         }
 
         $item_tile = new Item_Tile();
-        $id = $item_tile->add([
-            'items_id_item' => $item->getID(),
-            'itemtype_item' => $item::class,
-            'items_id_tile' => $id,
-            'itemtype_tile' => $tile_class,
-            'rank'          => $this->getMaxUsedRankForItem($item) + 1,
-        ]);
-        if (!$id) {
+        if (
+            !$item_tile->getFromDBByCrit([
+                'itemtype_tile' => $tile_class,
+                'items_id_tile' => $tile_id,
+            ])
+        ) {
             throw new RuntimeException("Failed to link tile to item");
         }
 
-        return $id;
+        return $item_tile->getID();
     }
 
     public function getItemTileForTile(TileInterface $tile): Item_Tile

@@ -153,4 +153,9 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
 
         return true;
     }
+
+    public static function getIcon()
+    {
+        return "fas fa-expand";
+    }
 }

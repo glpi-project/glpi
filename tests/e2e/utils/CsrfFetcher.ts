@@ -43,10 +43,21 @@ export class CsrfFetcher
 
     private cache: WorkerSessionCache;
 
+    private static readonly REFRESH_INTERVAL = 50;
+
     public constructor(request: APIRequestContext, cache: WorkerSessionCache)
     {
         this.request = request;
         this.cache = cache;
+
+        // Refresh the token every 50 tests.
+        // This is needed because GLPI only save 500 tokens per session
+        // so our cached token might end up being invalidated by the new tokens
+        // generated on each pages.
+        this.cache.incrementCsrfTokenTestCount();
+        if (this.cache.getCsrfTokenTestCount() > CsrfFetcher.REFRESH_INTERVAL) {
+            this.cache.invalidateCsrfToken();
+        }
     }
 
     public async get(): Promise<string>

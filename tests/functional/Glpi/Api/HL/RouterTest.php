@@ -279,6 +279,13 @@ class RouterTest extends GLPITestCase
         $this->assertArrayHasKey('field1', $schema['properties']);
         $this->assertArrayHasKey('field2', $schema['properties']);
     }
+
+    public function testContentTypeWithCharset()
+    {
+        $router = TestRouter::getInstance();
+        $router->handleRequest(new Request('POST', '/test', ['Content-Type' => 'application/json; charset=utf-8'], json_encode(['test' => 'value'])));
+        $this->assertEquals('value', $router->getOriginalRequest()->getParameter('test'));
+    }
 }
 
 // @codingStandardsIgnoreStart

@@ -44,6 +44,7 @@ final class Csv extends Spreadsheet
         $this->writer
             ->setDelimiter($_SESSION["glpicsv_delimiter"])
             ->setEnclosure('"')
+            ->setUseBOM(true)
             ->setLineEnding("\r\n")
             ->setSheetIndex(0);
     }

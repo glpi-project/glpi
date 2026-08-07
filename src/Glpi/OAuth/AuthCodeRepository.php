@@ -79,6 +79,20 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
     }
 
     /**
+     * Revoke all authorization codes issued for the given client.
+     *
+     * @param string $clientIdentifier
+     *
+     * @return void
+     */
+    public function revokeByClient(string $clientIdentifier): void
+    {
+        global $DB;
+
+        $DB->delete('glpi_oauth_auth_codes', ['client' => $clientIdentifier]);
+    }
+
+    /**
      * @param string $codeId
      *
      * @return bool

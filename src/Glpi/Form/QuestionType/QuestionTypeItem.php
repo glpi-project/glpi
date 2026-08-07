@@ -36,9 +36,11 @@
 namespace Glpi\Form\QuestionType;
 
 use CartridgeItem;
+use Cluster;
 use CommonDBTM;
 use CommonTreeDropdown;
 use ConsumableItem;
+use Datacenter;
 use DbUtils;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
@@ -59,6 +61,7 @@ use LogicException;
 use Override;
 use PassiveDCEquipment;
 use PDU;
+use Rack;
 use Session;
 use Software;
 use TicketRecurrent;
@@ -81,6 +84,16 @@ class QuestionTypeItem extends AbstractQuestionType implements
 
         $this->itemtype_aria_label = __('Select an itemtype');
         $this->items_id_aria_label = __('Select an item');
+    }
+
+    #[Override]
+    public function formatPredefinedValue(string $value): ?string
+    {
+        if (!ctype_digit($value) || (int) $value <= 0) {
+            return null;
+        }
+
+        return json_encode(new QuestionTypeItemDefaultValueConfig((int) $value));
     }
 
     #[Override]
@@ -168,6 +181,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
                     Line::class,
                     PassiveDCEquipment::class,
                     PDU::class,
+                    Rack::class,
                 ]
             ),
             __('Assistance') => array_merge(
@@ -176,7 +190,13 @@ class QuestionTypeItem extends AbstractQuestionType implements
                     TicketRecurrent::class,
                 ]
             ),
-            __('Management') => $CFG_GLPI['management_types'],
+            __('Management') => array_merge(
+                $CFG_GLPI['management_types'],
+                [
+                    Cluster::class,
+                    Datacenter::class,
+                ],
+            ),
             __('Tools') => $CFG_GLPI['tools_types'],
             __('Administration') => $CFG_GLPI['admin_types'],
         ];
@@ -308,6 +328,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
     #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
+        $default_itemtype = $this->getDefaultValueItemtype($question);
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
             'pages/admin/form/question_type/item/administration_template.html.twig',
@@ -315,11 +336,12 @@ class QuestionTypeItem extends AbstractQuestionType implements
                 'init'             => $question != null,
                 'question'         => $question,
                 'question_type'    => $this::class,
-                'default_itemtype' => $this->getDefaultValueItemtype($question),
+                'default_itemtype' => $default_itemtype,
                 'default_items_id' => $this->getDefaultValueItemId($question),
                 'itemtypes'        => $this->getAllowedItemtypes(),
                 'aria_label'       => $this->items_id_aria_label,
                 'advanced_config'  => $this->renderAdvancedConfigurationTemplate($question),
+                'displaywith'      => Dropdown::getDisplayWith($default_itemtype),
             ]
         );
     }
@@ -358,31 +380,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
     #[Override]
     public function renderEndUserTemplate(Question $question): string
     {
-        global $CFG_GLPI;
-
         $itemtype = $this->getDefaultValueItemtype($question) ?? '0';
-        $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types']);
-        $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
-
-        $displaywith = [];
-        if ($is_itil_type && !$id_already_visible) {
-            $displaywith[] = 'id';
-        }
-
-        if (in_array($itemtype, $CFG_GLPI['asset_types'])) {
-            $item = getItemForItemtype($itemtype);
-            if ($item) {
-                if ($item->isField('serial')) {
-                    $displaywith[] = 'serial';
-                }
-                if ($item->isField('otherserial')) {
-                    $displaywith[] = 'otherserial';
-                }
-                if ($item->isField('users_id')) {
-                    $displaywith[] = 'users_id';
-                }
-            }
-        }
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
@@ -394,7 +392,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
                 'aria_label'                  => $question->fields['name'],
                 'sub_types'                   => $this->getSubTypes(),
                 'dropdown_restriction_params' => $this->getDropdownRestrictionParams($question),
-                'displaywith'                 => $displaywith,
+                'displaywith'                 => Dropdown::getDisplayWith($itemtype),
             ]
         );
     }
@@ -402,6 +400,8 @@ class QuestionTypeItem extends AbstractQuestionType implements
     #[Override]
     public function formatRawAnswer(mixed $answer, Question $question): string
     {
+        global $CFG_GLPI;
+
         $item = $answer['itemtype']::getById($answer['items_id']);
         if (!$item) {
             return '';
@@ -412,7 +412,42 @@ class QuestionTypeItem extends AbstractQuestionType implements
             return $item->getFriendlyName();
         }
 
-        return $item->fields['name'];
+        $name = $item instanceof CommonTreeDropdown
+            ? $item->fields['completename']
+            : $item->getFriendlyName();
+
+        // Append additional fields to match what is displayed in renderEndUserTemplate.
+        $itemtype = $answer['itemtype'];
+        $extra_parts = [];
+
+        // For ITIL types, append the numeric ID when it is not already embedded in the name.
+        $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types']);
+        $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
+        if ($is_itil_type && !$id_already_visible) {
+            $extra_parts[] = $item->fields['id'];
+        }
+
+        // For asset types, append serial, otherserial and the linked user when present.
+        if (in_array($itemtype, $CFG_GLPI['asset_types'])) {
+            if ($item->isField('serial') && !empty($item->fields['serial'])) {
+                $extra_parts[] = $item->fields['serial'];
+            }
+            if ($item->isField('otherserial') && !empty($item->fields['otherserial'])) {
+                $extra_parts[] = $item->fields['otherserial'];
+            }
+            if ($item->isField('users_id') && $item->fields['users_id'] > 0) {
+                $user = User::getById($item->fields['users_id']);
+                if ($user) {
+                    $extra_parts[] = $user->getFriendlyName();
+                }
+            }
+        }
+
+        if (!empty($extra_parts)) {
+            $name .= ' - ' . implode(' - ', $extra_parts);
+        }
+
+        return $name;
     }
 
     #[Override]
@@ -508,6 +543,9 @@ class QuestionTypeItem extends AbstractQuestionType implements
 
         $item = getItemForItemtype($question_config->getItemtype());
         if ($item && $item->getfromDB($config->getItemsId())) {
+            if ($item instanceof CommonTreeDropdown) {
+                return $item->fields['completename'];
+            }
             return $item->getName();
         }
 

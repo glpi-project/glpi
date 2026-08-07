@@ -34,10 +34,12 @@
 
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
+use CommonITILObject;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\SLATTRField;
 use Glpi\Form\Destination\CommonITILField\SLATTRFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
+use Glpi\Form\Destination\FormDestinationChange;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeDateTime;
 use Glpi\Form\QuestionType\QuestionTypeDateTimeExtraDataConfig;
@@ -161,18 +163,24 @@ final class SLATTRFieldTest extends AbstractDestinationFieldTest
 
         $this->setCurrentTime('2026-01-01 10:00:00');
 
-        $form = $this->createAndGetFormWithTicketDestination();
-        $this->checkSLATTRFieldConfiguration(
-            form: $form,
-            config: new SLATTRFieldConfig(
-                strategy: SLMFieldStrategy::SPECIFIC_DATE_ANSWER,
-                question_id: $this->getQuestionId($form, 'Date Question')
-            ),
-            answers: [
-                $this->getQuestionId($form, 'Date Question') => '2026-01-02',
-            ],
-            expected_ttr_date: '2026-01-02 00:00:00'
-        );
+        $forms = [
+            $this->createAndGetFormWithTicketDestination(),
+            $this->createAndGetFormWithChangeDestination(),
+            $this->createAndGetFormWithProblemDestination(),
+        ];
+        foreach ($forms as $form) {
+            $this->checkSLATTRFieldConfiguration(
+                form: $form,
+                config: new SLATTRFieldConfig(
+                    strategy: SLMFieldStrategy::SPECIFIC_DATE_ANSWER,
+                    question_id: $this->getQuestionId($form, 'Date Question')
+                ),
+                answers: [
+                    $this->getQuestionId($form, 'Date Question') => '2026-01-02',
+                ],
+                expected_ttr_date: '2026-01-02 00:00:00'
+            );
+        }
     }
 
     public function testSpecificDateTimeAnswer(): void
@@ -181,18 +189,24 @@ final class SLATTRFieldTest extends AbstractDestinationFieldTest
 
         $this->setCurrentTime('2026-01-01 10:00:00');
 
-        $form = $this->createAndGetFormWithTicketDestination();
-        $this->checkSLATTRFieldConfiguration(
-            form: $form,
-            config: new SLATTRFieldConfig(
-                strategy: SLMFieldStrategy::SPECIFIC_DATE_ANSWER,
-                question_id: $this->getQuestionId($form, 'Date and Time Question')
-            ),
-            answers: [
-                $this->getQuestionId($form, 'Date and Time Question') => '2026-01-02 12:34:56',
-            ],
-            expected_ttr_date: '2026-01-02 12:34:56'
-        );
+        $forms = [
+            $this->createAndGetFormWithTicketDestination(),
+            $this->createAndGetFormWithChangeDestination(),
+            $this->createAndGetFormWithProblemDestination(),
+        ];
+        foreach ($forms as $form) {
+            $this->checkSLATTRFieldConfiguration(
+                form: $form,
+                config: new SLATTRFieldConfig(
+                    strategy: SLMFieldStrategy::SPECIFIC_DATE_ANSWER,
+                    question_id: $this->getQuestionId($form, 'Date and Time Question')
+                ),
+                answers: [
+                    $this->getQuestionId($form, 'Date and Time Question') => '2026-01-02 12:34:56',
+                ],
+                expected_ttr_date: '2026-01-02 12:34:56'
+            );
+        }
     }
 
     public function testComputedDateFromFormSubmission(): void
@@ -201,16 +215,22 @@ final class SLATTRFieldTest extends AbstractDestinationFieldTest
 
         $this->setCurrentTime('2026-01-01 10:00:00');
 
-        $form = $this->createAndGetFormWithTicketDestination();
-        $this->checkSLATTRFieldConfiguration(
-            form: $form,
-            config: new SLATTRFieldConfig(
-                strategy: SLMFieldStrategy::COMPUTED_DATE_FROM_FORM_SUBMISSION,
-                time_offset: 2,
-                time_definition: 'day'
-            ),
-            expected_ttr_date: '2026-01-03 10:00:00'
-        );
+        $forms = [
+            $this->createAndGetFormWithTicketDestination(),
+            $this->createAndGetFormWithChangeDestination(),
+            $this->createAndGetFormWithProblemDestination(),
+        ];
+        foreach ($forms as $form) {
+            $this->checkSLATTRFieldConfiguration(
+                form: $form,
+                config: new SLATTRFieldConfig(
+                    strategy: SLMFieldStrategy::COMPUTED_DATE_FROM_FORM_SUBMISSION,
+                    time_offset: 2,
+                    time_definition: 'day'
+                ),
+                expected_ttr_date: '2026-01-03 10:00:00'
+            );
+        }
     }
 
     public function testComputedDateFromSpecificDateAnswer(): void
@@ -219,20 +239,26 @@ final class SLATTRFieldTest extends AbstractDestinationFieldTest
 
         $this->setCurrentTime('2026-01-01 10:00:00');
 
-        $form = $this->createAndGetFormWithTicketDestination();
-        $this->checkSLATTRFieldConfiguration(
-            form: $form,
-            config: new SLATTRFieldConfig(
-                strategy: SLMFieldStrategy::COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER,
-                question_id: $this->getQuestionId($form, 'Date Question'),
-                time_offset: 3,
-                time_definition: 'day'
-            ),
-            answers: [
-                $this->getQuestionId($form, 'Date Question') => '2026-01-05',
-            ],
-            expected_ttr_date: '2026-01-08 00:00:00'
-        );
+        $forms = [
+            $this->createAndGetFormWithTicketDestination(),
+            $this->createAndGetFormWithChangeDestination(),
+            $this->createAndGetFormWithProblemDestination(),
+        ];
+        foreach ($forms as $form) {
+            $this->checkSLATTRFieldConfiguration(
+                form: $form,
+                config: new SLATTRFieldConfig(
+                    strategy: SLMFieldStrategy::COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER,
+                    question_id: $this->getQuestionId($form, 'Date Question'),
+                    time_offset: 3,
+                    time_definition: 'day'
+                ),
+                answers: [
+                    $this->getQuestionId($form, 'Date Question') => '2026-01-05',
+                ],
+                expected_ttr_date: '2026-01-08 00:00:00'
+            );
+        }
     }
 
     public function testComputedDateFromSpecificDateTimeAnswer(): void
@@ -241,20 +267,26 @@ final class SLATTRFieldTest extends AbstractDestinationFieldTest
 
         $this->setCurrentTime('2026-01-01 10:00:00');
 
-        $form = $this->createAndGetFormWithTicketDestination();
-        $this->checkSLATTRFieldConfiguration(
-            form: $form,
-            config: new SLATTRFieldConfig(
-                strategy: SLMFieldStrategy::COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER,
-                question_id: $this->getQuestionId($form, 'Date and Time Question'),
-                time_offset: 4,
-                time_definition: 'day'
-            ),
-            answers: [
-                $this->getQuestionId($form, 'Date and Time Question') => '2026-01-05 15:30:00',
-            ],
-            expected_ttr_date: '2026-01-09 15:30:00'
-        );
+        $forms = [
+            $this->createAndGetFormWithTicketDestination(),
+            $this->createAndGetFormWithChangeDestination(),
+            $this->createAndGetFormWithProblemDestination(),
+        ];
+        foreach ($forms as $form) {
+            $this->checkSLATTRFieldConfiguration(
+                form: $form,
+                config: new SLATTRFieldConfig(
+                    strategy: SLMFieldStrategy::COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER,
+                    question_id: $this->getQuestionId($form, 'Date and Time Question'),
+                    time_offset: 4,
+                    time_definition: 'day'
+                ),
+                answers: [
+                    $this->getQuestionId($form, 'Date and Time Question') => '2026-01-05 15:30:00',
+                ],
+                expected_ttr_date: '2026-01-09 15:30:00'
+            );
+        }
     }
 
     private function checkSLATTRFieldConfiguration(
@@ -263,7 +295,7 @@ final class SLATTRFieldTest extends AbstractDestinationFieldTest
         array $answers = [],
         int $expected_slas_ttr_id = 0,
         ?string $expected_ttr_date = null,
-    ): Ticket {
+    ): CommonITILObject {
         // Insert config
         $destinations = $form->getDestinations();
         $this->assertCount(1, $destinations);
@@ -286,18 +318,20 @@ final class SLATTRFieldTest extends AbstractDestinationFieldTest
         // Get created ticket
         $created_items = $answers->getCreatedItems();
         $this->assertCount(1, $created_items);
-        $ticket = current($created_items);
+        $itil = current($created_items);
 
         // Check sla_id_ttr field
-        $this->assertEquals($expected_slas_ttr_id, $ticket->fields['slas_id_ttr']);
+        if (isset($itil->fields['slas_id_ttr'])) {
+            $this->assertEquals($expected_slas_ttr_id, $itil->fields['slas_id_ttr']);
+        }
 
         // Check time_to_resolve field
         if ($expected_ttr_date !== null) {
-            $this->assertEquals($expected_ttr_date, $ticket->fields['time_to_resolve']);
+            $this->assertEquals($expected_ttr_date, $itil->fields['time_to_resolve']);
         }
 
         // Return the created ticket to be able to check other fields
-        return $ticket;
+        return $itil;
     }
 
     private function createAndGetFormWithTicketDestination(): Form
@@ -319,6 +353,54 @@ final class SLATTRFieldTest extends AbstractDestinationFieldTest
                 is_time_enabled: true
             ))
         );
+        return $this->createForm($builder);
+    }
+
+    private function createAndGetFormWithChangeDestination(): Form
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: 'Date Question',
+            type: QuestionTypeDateTime::class,
+            extra_data: json_encode(new QuestionTypeDateTimeExtraDataConfig(
+                is_date_enabled: true,
+                is_time_enabled: false
+            ))
+        );
+        $builder->addQuestion(
+            name: 'Date and Time Question',
+            type: QuestionTypeDateTime::class,
+            extra_data: json_encode(new QuestionTypeDateTimeExtraDataConfig(
+                is_date_enabled: true,
+                is_time_enabled: true
+            ))
+        );
+        $builder->setShouldInitDestinations(false);
+        $builder->addDestination(FormDestinationChange::class, "Change");
+        return $this->createForm($builder);
+    }
+
+    private function createAndGetFormWithProblemDestination(): Form
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: 'Date Question',
+            type: QuestionTypeDateTime::class,
+            extra_data: json_encode(new QuestionTypeDateTimeExtraDataConfig(
+                is_date_enabled: true,
+                is_time_enabled: false
+            ))
+        );
+        $builder->addQuestion(
+            name: 'Date and Time Question',
+            type: QuestionTypeDateTime::class,
+            extra_data: json_encode(new QuestionTypeDateTimeExtraDataConfig(
+                is_date_enabled: true,
+                is_time_enabled: true
+            ))
+        );
+        $builder->setShouldInitDestinations(false);
+        $builder->addDestination(FormDestinationChange::class, "Problem");
         return $this->createForm($builder);
     }
 

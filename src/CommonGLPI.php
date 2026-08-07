@@ -37,10 +37,10 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\FilterableInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\parse_url;
 
@@ -338,7 +338,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         $onglets = [];
         // Tabs known by the object
-        if ($this->isNewItem()) {
+        if ($this->isNewItem() || (isset($options['withtemplate']) && $options['withtemplate'] == 2)) {
             $this->addDefaultFormTab($onglets);
         } else {
             $onglets = $this->defineTabs($options);
@@ -709,27 +709,6 @@ class CommonGLPI implements CommonGLPIInterface
                     return $ret;
                 }
 
-                // Check if we're creating an object from template and this is not the main tab
-                if ($withtemplate == 2 && $tabnum != 'main' && $item instanceof CommonDBTM) {
-                    // Display generic message for template creation
-                    $template = <<<HTML
-                    <div class="alert alert-warning d-flex">
-                        <div class="me-2">
-                            <i class="ti ti-info-circle"></i>
-                        </div>
-                        <div>
-                            <strong>%s</strong><br>
-                            %s
-                        </div>
-                    </div>
-                    HTML;
-                    echo sprintf(
-                        $template,
-                        __s('Creating from template'),
-                        __s('You are currently creating an object from a template. You need to save it, in the main tab, before editing data in other tabs.')
-                    );
-                }
-
                 if ($obj = getItemForItemtype($itemtype)) {
                     $options['tabnum'] = $tabnum;
                     $options['itemtype'] = $itemtype;
@@ -803,7 +782,7 @@ class CommonGLPI implements CommonGLPIInterface
         $counter_html = '';
         if ($nb > 0) {
             $badge_content = $total_nb !== null ? "$nb/$total_nb" : "$nb";
-            $counter_html = sprintf(' <span class="badge glpi-badge">%s</span>', htmlescape($badge_content));
+            $counter_html = sprintf(' <span class="badge glpi-badge" data-testid="tab-count-badge">%s</span>', htmlescape($badge_content));
         }
 
         return sprintf(
@@ -949,6 +928,9 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function showTabsContent($options = [])
     {
+        /** @var Kernel $kernel */
+        global $kernel;
+
         // for objects not in table like central
         if (isset($this->fields['id'])) {
             $ID = $this->fields['id'];
@@ -963,7 +945,7 @@ class CommonGLPI implements CommonGLPIInterface
         $cleaned_options = $options;
         unset($cleaned_options['id'], $cleaned_options['stock_image']);
 
-        $request        = Request::createFromGlobals();
+        $request        = $kernel->getMainRequest();
         $target         = $request->getBasePath() . $request->getPathInfo();
         $withtemplate   = "";
 
@@ -1062,6 +1044,9 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function showNavigationHeader($options = [])
     {
+        /** @var Kernel $kernel */
+        global $kernel;
+
         // for objects not in table like central
         if (isset($this->fields['id'])) {
             $ID = $this->fields['id'];
@@ -1073,7 +1058,7 @@ class CommonGLPI implements CommonGLPIInterface
             }
         }
 
-        $request        = Request::createFromGlobals();
+        $request        = $kernel->getMainRequest();
         $target         = $request->getBasePath() . $request->getPathInfo();
         $extraparamhtml = "";
 
@@ -1397,6 +1382,7 @@ class CommonGLPI implements CommonGLPIInterface
         ]);
 
         $found_kbitem = [];
+        $kbitem_ids = [];
         foreach ($iterator as $line) {
             $found_kbitem[$line['id']] = $line;
             $kbitem_ids[$line['id']] = $line['id'];
@@ -1410,7 +1396,7 @@ class CommonGLPI implements CommonGLPIInterface
             $ret .= "<label for='display_faq_chkbox$rand'>";
             $ret .= "<i class='ti ti-zoom-question cursor-pointer'></i>";
             $ret .= "</label>";
-            $ret .= "<input type='checkbox'  class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
+            $ret .= "<input type='checkbox' class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
             $ret .= "<div class='faqadd_entries' style='position:relative;'>";
             if (count($found_kbitem) == 1) {
                 $ret .= "<div class='faqadd_block_content' id='faqadd_block_content$rand'>";

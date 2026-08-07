@@ -531,6 +531,9 @@ class UploadHandler
 
             case 'image_resize':
                 return __('Failed to resize image');
+
+            case 'invalid_file_type':
+                return __('Invalid file type');
         }
 
         return false;
@@ -692,7 +695,7 @@ class UploadHandler
     {
         return preg_replace_callback(
             '/(?:(?: \(([\d]+)\))?(\.[^.]+))?$/',
-            [$this, 'upcount_name_callback'],
+            $this->upcount_name_callback(...),
             $name,
             1
         );

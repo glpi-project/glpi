@@ -120,6 +120,7 @@
                             <span
                                 class="badge bg-secondary-lt"
                                 data-glpi-form-editor-section-block-badge
+                                data-testid="section-block-badge"
                             >
                                 {% set count_blocks = (section ? section.getBlocks()|length : 1) %}
                                 {{ _n('%d element', '%d elements', count_blocks)|format(count_blocks) }}
@@ -151,6 +152,7 @@
                                     aria-expanded="false"
                                     role="button"
                                     title="{{ __('More actions') }}"
+                                    aria-label="{{ __('More actions') }}"
                                     data-glpi-form-editor-state-action
                                 ></i>
                                 <ul class="dropdown-menu" data-bs-popper="none">
@@ -203,6 +205,7 @@
                                         <button
                                             type="button"
                                             class="dropdown-item"
+                                            aria-label="{{ __('Configure visibility') }}"
                                             data-glpi-form-editor-on-click="show-visibility-dropdown"
                                         >
                                             <i class="ti ti-eye-cog me-2"></i>

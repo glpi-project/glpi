@@ -1,0 +1,156 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 1,
+            "uuid": "f1a2b3c4-d5e6-7890-abcd-ef1234567890",
+            "name": "Question conditions applied",
+            "header": null,
+            "description": null,
+            "entity_name": "Root entity",
+            "is_recursive": true,
+            "is_active": true,
+            "submit_button_visibility_strategy": "always_visible",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 1,
+                    "uuid": "a1b2c3d4-0001-0001-0001-000000000001",
+                    "name": "First section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 1,
+                    "uuid": "b1b2c3d4-0001-0001-0001-000000000001",
+                    "name": "My question used as a criteria",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 2,
+                    "uuid": "b1b2c3d4-0001-0001-0001-000000000002",
+                    "name": "My question that is always visible",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 1,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 3,
+                    "uuid": "b1b2c3d4-0001-0001-0001-000000000003",
+                    "name": "My question that is visible if some criteria are met",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 2,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "visible_if",
+                    "validation_strategy": "no_validation",
+                    "conditions": [
+                        {
+                            "item_uuid": "b1b2c3d4-0001-0001-0001-000000000001",
+                            "item_type": "question",
+                            "value_operator": "equals",
+                            "logic_operator": "and",
+                            "value": "Expected answer 1"
+                        }
+                    ],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 4,
+                    "uuid": "b1b2c3d4-0001-0001-0001-000000000004",
+                    "name": "My question that is hidden if some criteria are met",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 3,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 1,
+                    "visibility_strategy": "hidden_if",
+                    "validation_strategy": "no_validation",
+                    "conditions": [
+                        {
+                            "item_uuid": "b1b2c3d4-0001-0001-0001-000000000001",
+                            "item_type": "question",
+                            "value_operator": "equals",
+                            "logic_operator": "and",
+                            "value": "Expected answer 2"
+                        }
+                    ],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                },
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\DirectAccess",
+                    "config": {
+                        "token": "6QBh8Y32hHwvuRZWj1wS4YCISshSck5h0Dmi3TVb",
+                        "allow_unauthenticated": false
+                    },
+                    "is_active": false
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 1,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
+        }
+    ]
+}

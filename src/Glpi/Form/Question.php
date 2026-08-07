@@ -290,6 +290,9 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     {
         $uuid = $this->fields['uuid'];
 
+        // UUIDs can contain dots, PHP replaces them by underscores in GET parameters, so we need to do the reverse transformation to find the right parameter
+        $uuid = str_replace('.', '_', $uuid);
+
         // Apply value if defined
         if (isset($get[$uuid])) {
             $type = $this->getQuestionType();

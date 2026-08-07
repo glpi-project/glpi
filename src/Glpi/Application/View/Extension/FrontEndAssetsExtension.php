@@ -334,6 +334,11 @@ class FrontEndAssetsExtension extends AbstractExtension
             $cfg_glpi += Config::getSafeConfig(true);
         }
 
+        // Add flatpickr locale for i18n
+        $locale = \Locale::parseLocale($_SESSION['glpilanguage'] ?? 'en_GB');
+        $cfg_glpi['flatpickr_lang'] = $locale['language'] ?? 'en';
+        $cfg_glpi['flatpickr_region'] = $locale['region'] ?? '';
+
         $plugins_path = \array_combine(
             Plugin::getPlugins(),
             \array_map(fn(string $plugin_key) => "/plugins/{$plugin_key}", Plugin::getPlugins())

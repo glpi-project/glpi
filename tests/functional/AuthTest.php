@@ -328,4 +328,63 @@ class AuthTest extends DbTestCase
         $this->assertTrue($user->getFromDB($user->getID()));
         $this->assertNotNull($user->fields['last_login']);
     }
+
+    /**
+     * Non-regression test: when logging in via external auth (e.g. OAuth SSO),
+     * the login() method receives an empty $login_name because the actual username
+     * is resolved inside validateLogin(). The event log must still record the
+     * resolved login name instead of an empty string.
+     *
+     */
+    public function testExternalAuthLoginNameInEventLog(): void
+    {
+        global $CFG_GLPI, $DB;
+
+        $this->login();
+
+        $username = 'sso_test_' . mt_rand();
+        $this->createItem(
+            User::class,
+            [
+                'name'         => $username,
+                '_profiles_id' => 1,
+                'authtype'     => Auth::EXTERNAL,
+            ]
+        );
+
+        $ssovariable_row = $DB->request([
+            'FROM'  => 'glpi_ssovariables',
+            'WHERE' => ['name' => 'HTTP_AUTH_USER'],
+        ])->current();
+        $this->assertNotEmpty($ssovariable_row);
+
+        $cfg_backup = $CFG_GLPI;
+        $CFG_GLPI['ssovariables_id'] = $ssovariable_row['id'];
+        $CFG_GLPI['existing_auth_server_field_clean_domain'] = 0;
+
+        // Simulate what the oauthsso plugin (or any external auth) does:
+        // it sets the SSO server variable and calls login() with an empty login_name.
+        $_SERVER['HTTP_AUTH_USER'] = $username;
+
+        $auth = new Auth();
+        $logged_in = $auth->login('', '', false);
+
+        $CFG_GLPI = $cfg_backup;
+        unset($_SERVER['HTTP_AUTH_USER']);
+
+        $this->assertTrue($logged_in);
+
+        $events = getAllDataFromTable('glpi_events', [
+            'service'  => 'login',
+            'type'     => 'system',
+            'items_id' => 0,
+        ]);
+        $this->assertNotEmpty(
+            array_filter(
+                $events,
+                static fn($event) => str_starts_with($event['message'], "{$username} log in from IP ")
+            ),
+            "Event log must contain the resolved login name '{$username}', not an empty string"
+        );
+    }
 }

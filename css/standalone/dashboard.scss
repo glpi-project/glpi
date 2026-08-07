@@ -67,6 +67,12 @@ $break_tablet: 1400px;
     }
 }
 
+@container mini-dashboard-grid (min-width: 100px) {
+    .grid-stack {
+        min-height: calc((100cqw / var(--gs-col-count)) * (var(--gs-row-count) + 1));
+    }
+}
+
 .dashboard {
     --glpi-dashboard-soft-border: rgb(color-mix(in srgb, var(--tblr-light), var(--tblr-dark) 64%), 0.24);
 
@@ -84,6 +90,8 @@ $break_tablet: 1400px;
         margin-bottom: -45px !important;
         z-index: 1;
         box-sizing: content-box;
+        container-name: mini-dashboard-grid;
+        container-type: inline-size;
 
         & + .search_page {
             z-index: 2;

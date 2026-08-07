@@ -37,7 +37,6 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 
-use function Safe\preg_replace;
 use function Safe\preg_split;
 
 /**
@@ -72,11 +71,14 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
     /**
      * Current pointer position.
-     * @var int
+     * @var ?int
      */
     private ?int $position = null;
 
-    //Known query operators
+    /**
+     * Known query operators
+     * @var string[]
+     */
     private array $allowed_operators = [
         '=',
         '!=',
@@ -112,7 +114,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Executes the query
      *
-     * @param array   $criteria Query criteria
+     * @param array<string, mixed> $criteria Query criteria
      *
      * @return DBmysqlIterator
      *
@@ -132,7 +134,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Builds the query
      *
-     * @param array   $criteria Query criteria
+     * @param array<string, mixed> $criteria Query criteria
      *
      * @return void
      *
@@ -142,7 +144,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         $criteria = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
 
-        $this->sql = null;
         $this->res = false;
 
         $table = $criteria['FROM'] ?? null;
@@ -340,7 +341,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Handle "ORDER BY" SQL clause
      *
-     * @param string|array $clause Clause parameters
+     * @param string|QueryExpression|array<int, string|QueryExpression> $clause Clause parameters
      *
      * @return string
      */
@@ -378,8 +379,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Handle LIMIT and OFFSET
      *
-     * @param int $limit  SQL LIMIT
-     * @param int $offset Start OFFSET (defaults to null)
+     * @param int  $limit  SQL LIMIT
+     * @param ?int $offset Start OFFSET (defaults to null)
      *
      * @return string
      */
@@ -398,14 +399,18 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Handle fields
      *
-     * @param int|string $t Table name or function
-     * @param array|string   $f Field(s) name(s)
+     * @param int|string                                    $t Table name or function
+     * @param string[]|string|QueryExpression|AbstractQuery $f Field(s) name(s)
      *
      * @return string
      */
-    private function handleFields($t, $f)
+    private function handleFields(int|string $t, array|string|QueryExpression|AbstractQuery $f): string
     {
         if (is_numeric($t)) {
+            if (is_array($f)) {
+                throw new RuntimeException("Invalid field, array not allowed.");
+            }
+
             if ($f instanceof AbstractQuery) {
                 return $f->getQuery();
             } elseif ($f instanceof QueryExpression) {
@@ -465,7 +470,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function handleFieldsAlias($t, $f, $suffix = '')
+    private function handleFieldsAlias(string $t, string $f, string $suffix = ''): string
     {
         $names = preg_split('/\s+AS\s+/i', $f);
         $expr  = "$t(" . $this->handleFields(0, $names[0]) . "$suffix)";
@@ -485,7 +490,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     public function getSql()
     {
-        return preg_replace('/ +/', ' ', $this->sql);
+        return $this->sql ?? '';
     }
 
     /**
@@ -503,8 +508,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Generate the SQL statement for a array of criteria
      *
-     * @param array|string $crit Criteria
-     * @param string   $bool Boolean operator (default AND)
+     * @param array<int|string,mixed>|string $crit Criteria
+     * @param string $bool Boolean operator (default AND)
      *
      * @return string
      */
@@ -583,7 +588,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
-     * analyse a criterion
+     * Analyze a criterion
      *
      * @since 9.3.1
      *
@@ -591,7 +596,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function analyseCriterion($value)
+    private function analyseCriterion($value): string
     {
         $criterion = null;
 
@@ -639,7 +644,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function getCriterionValue($value)
+    private function getCriterionValue($value): string
     {
         return match (true) {
             $value instanceof AbstractQuery => $value->getQuery(),
@@ -670,11 +675,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
-     * analyse an array of joins criteria
+     * Analyze an array of joins criteria
      *
      * @since 9.4.0
      *
-     * @param array $joinarray Array of joins to analyse
+     * @param array<string,array<string,mixed>> $joinarray Array of joins to analyze
      *       [jointype => [table => criteria]]
      *
      * @return string
@@ -723,13 +728,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
-     * Analyse foreign keys
+     * Analyze foreign keys
      *
      * @param mixed $values Values for Foreign keys
      *
      * @return string
      */
-    private function analyseFkey($values)
+    private function analyseFkey($values): string
     {
         if (is_array($values)) {
             $keys = array_keys($values);
@@ -919,8 +924,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * from old signature to new signature.
      * For security reasons, an exception is thrown whenever the arguments contains a direct raw query.
      *
-     * @param array $args
-     * @return array
+     * @param array<int, mixed> $args
+     * @return array<string, mixed>
      */
     private function convertOldRequestArgsToCriteria(array $args, string $method): array
     {

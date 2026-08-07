@@ -37,6 +37,8 @@ namespace tests\units;
 use Glpi\Team\Team;
 use Glpi\Tests\DbTestCase;
 use Project;
+use ProjectTask;
+use ProjectTaskTeam;
 
 /* Test for inc/projecttask.class.php */
 
@@ -49,7 +51,7 @@ class ProjectTaskTest extends DbTestCase
         $user = getItemByTypeName('User', 'tech');
         $users_id = (int) $user->fields['id'];
 
-        $ptask = new \ProjectTask();
+        $ptask = new ProjectTask();
         $this->assertSame(
             0,
             (int) $ptask->add([
@@ -78,7 +80,7 @@ class ProjectTaskTest extends DbTestCase
         $this->hasNoSessionMessages([ERROR, WARNING]);
         $task_id = $ptask->fields['id'];
 
-        $team = new \ProjectTaskTeam();
+        $team = new ProjectTaskTeam();
         $tid = (int) $team->add([
             'projecttasks_id' => $ptask->fields['id'],
             'itemtype'        => \User::getType(),
@@ -99,7 +101,7 @@ class ProjectTaskTest extends DbTestCase
         );
         $this->hasNoSessionMessages([ERROR, WARNING]);
 
-        $team = new \ProjectTaskTeam();
+        $team = new ProjectTaskTeam();
         $tid = (int) $team->add([
             'projecttasks_id' => $ptask->fields['id'],
             'itemtype'        => \User::getType(),
@@ -129,7 +131,7 @@ class ProjectTaskTest extends DbTestCase
         );
         $this->hasNoSessionMessages([ERROR, WARNING]);
 
-        $team = new \ProjectTaskTeam();
+        $team = new ProjectTaskTeam();
         $tid = (int) $team->add([
             'projecttasks_id' => $ptask->fields['id'],
             'itemtype'        => \User::getType(),
@@ -194,16 +196,16 @@ class ProjectTaskTest extends DbTestCase
 
     public function testGetTeamRoles(): void
     {
-        $roles = \ProjectTask::getTeamRoles();
+        $roles = ProjectTask::getTeamRoles();
         $this->assertContains(Team::ROLE_OWNER, $roles);
         $this->assertContains(Team::ROLE_MEMBER, $roles);
     }
 
     public function testGetTeamRoleName(): void
     {
-        $roles = \ProjectTask::getTeamRoles();
+        $roles = ProjectTask::getTeamRoles();
         foreach ($roles as $role) {
-            $this->assertNotEmpty(\ProjectTask::getTeamRoleName($role));
+            $this->assertNotEmpty(ProjectTask::getTeamRoleName($role));
         }
     }
 
@@ -213,7 +215,7 @@ class ProjectTaskTest extends DbTestCase
     public function testTeamManagement(): void
     {
         $this->login();
-        $project_task = new \ProjectTask();
+        $project_task = new ProjectTask();
 
         $project = new Project();
         $projects_id = $project->add([
@@ -397,14 +399,14 @@ class ProjectTaskTest extends DbTestCase
 
         // Clone the task
         $clonedTaskId = $task->clone();
-        $clonedTask = \ProjectTask::getById($clonedTaskId);
+        $clonedTask = ProjectTask::getById($clonedTaskId);
 
         // Check if the cloned task is in the same project with the same name
         $this->assertEquals($project->getID(), $clonedTask->fields['projects_id']);
         $this->assertEquals($task->fields['name'] . ' (copy)', $clonedTask->fields['name']);
 
         // Load task team
-        $project_task_team = new \ProjectTaskTeam();
+        $project_task_team = new ProjectTaskTeam();
         $team = [];
         foreach ($project_task_team->find(['projecttasks_id' => $task->fields['id']]) as $row) {
             $team[] = [
@@ -426,7 +428,7 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEquals($team, $team_clone);
 
         // Check if the subtask has been cloned
-        $clonedSubtask = new \ProjectTask();
+        $clonedSubtask = new ProjectTask();
         $clonedSubtask->getFromDBByCrit([
             'projects_id'     => $project->getID(),
             'projecttasks_id' => $clonedTaskId,
@@ -437,7 +439,7 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEquals($subtask->fields['name'] . ' (copy)', $clonedSubtask->fields['name']);
 
         // Check if the subtask of the subtask has been cloned
-        $clonedSubtask2 = new \ProjectTask();
+        $clonedSubtask2 = new ProjectTask();
         $clonedSubtask2->getFromDBByCrit([
             'projects_id'     => $project->getID(),
             'projecttasks_id' => $clonedSubtask->getID(),
@@ -447,6 +449,163 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEquals($project->getID(), $clonedSubtask2->fields['projects_id']);
         $this->assertEquals($subtask2->fields['name'] . ' (copy)', $clonedSubtask2->fields['name']);
     }
+
+    public function testCloneProjectTaskClonesSubTreeOnce()
+    {
+        $project = $this->createItem('Project', [
+            'name' => __FUNCTION__,
+        ]);
+
+        // Task to be cloned, with two children, one of them having a child itself
+        $task = $this->createItem('ProjectTask', [
+            'projects_id' => $project->getID(),
+            'name'        => 'Task A',
+        ]);
+        $child1 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'projecttasks_id' => $task->getID(),
+            'name'            => 'Task A.1',
+        ]);
+        $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'projecttasks_id' => $child1->getID(),
+            'name'            => 'Task A.1.1',
+        ]);
+        $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'projecttasks_id' => $task->getID(),
+            'name'            => 'Task A.2',
+        ]);
+
+        // Unrelated task, it must not be impacted by the clone
+        $this->createItem('ProjectTask', [
+            'projects_id' => $project->getID(),
+            'name'        => 'Task B',
+        ]);
+
+        $clone_id = $task->clone();
+        $this->assertGreaterThan(0, $clone_id);
+
+        // 5 original tasks + the 4 tasks of the cloned sub-tree
+        $tasks = getAllDataFromTable(ProjectTask::getTable(), ['projects_id' => $project->getID()]);
+        $this->assertCount(9, $tasks);
+
+        // Check the hierarchy, `name => parent name` (0 when the task has no parent)
+        $names = array_column($tasks, 'name', 'id');
+        $hierarchy = [];
+        foreach ($tasks as $row) {
+            $hierarchy[$row['name']] = $row['projecttasks_id'] === 0
+                ? 0
+                : ($names[$row['projecttasks_id']] ?? 'unknown');
+        }
+        $this->assertEquals(
+            [
+                // original tasks, untouched
+                'Task A'              => 0,
+                'Task A.1'            => 'Task A',
+                'Task A.1.1'          => 'Task A.1',
+                'Task A.2'            => 'Task A',
+                'Task B'              => 0,
+                // cloned sub-tree
+                'Task A (copy)'       => 0,
+                'Task A.1 (copy)'     => 'Task A (copy)',
+                'Task A.1.1 (copy)'   => 'Task A.1 (copy)',
+                'Task A.2 (copy)'     => 'Task A (copy)',
+            ],
+            $hierarchy
+        );
+    }
+
+    public function testCloneProjectTaskInTemplate()
+    {
+        $template = $this->createItem('Project', [
+            'name'          => __FUNCTION__,
+            'is_template'   => 1,
+            'template_name' => __FUNCTION__,
+        ]);
+
+        $task = $this->createItem('ProjectTask', [
+            'projects_id' => $template->getID(),
+            'name'        => 'Task A',
+        ]);
+        $this->createItem('ProjectTask', [
+            'projects_id'     => $template->getID(),
+            'projecttasks_id' => $task->getID(),
+            'name'            => 'Task A.1',
+        ]);
+
+        $clone_id = $task->clone();
+        $this->assertGreaterThan(0, $clone_id);
+
+        $child_clone = new ProjectTask();
+        $this->assertTrue($child_clone->getFromDBByCrit(['projecttasks_id' => $clone_id]));
+        $this->assertEquals('Task A.1 (copy)', $child_clone->fields['name']);
+        $this->assertEquals($template->getID(), $child_clone->fields['projects_id']);
+
+        // 2 original tasks + the 2 cloned ones
+        $this->assertEquals(
+            4,
+            countElementsInTable(ProjectTask::getTable(), ['projects_id' => $template->getID()])
+        );
+    }
+
+    public function testCloneProjectTaskIntoAnotherProject()
+    {
+        $source_project = $this->createItem('Project', [
+            'name' => __FUNCTION__ . ' source',
+        ]);
+        $target_project = $this->createItem('Project', [
+            'name' => __FUNCTION__ . ' target',
+        ]);
+
+        $task = $this->createItem('ProjectTask', [
+            'projects_id' => $source_project->getID(),
+            'name'        => 'Task A',
+        ]);
+        $child = $this->createItem('ProjectTask', [
+            'projects_id'     => $source_project->getID(),
+            'projecttasks_id' => $task->getID(),
+            'name'            => 'Task A.1',
+        ]);
+        $this->createItem('ProjectTask', [
+            'projects_id'     => $source_project->getID(),
+            'projecttasks_id' => $child->getID(),
+            'name'            => 'Task A.1.1',
+        ]);
+
+        $clone_id = $task->clone(['projects_id' => $target_project->getID()]);
+        $this->assertGreaterThan(0, $clone_id);
+
+        // Source project is left with its 3 original tasks
+        $this->assertEquals(
+            3,
+            countElementsInTable(ProjectTask::getTable(), ['projects_id' => $source_project->getID()])
+        );
+
+        // The whole sub-tree has been cloned into the target project
+        $cloned_tasks = getAllDataFromTable(
+            ProjectTask::getTable(),
+            ['projects_id' => $target_project->getID()]
+        );
+        $this->assertCount(3, $cloned_tasks);
+
+        $names = array_column($cloned_tasks, 'name', 'id');
+        $hierarchy = [];
+        foreach ($cloned_tasks as $row) {
+            $hierarchy[$row['name']] = $row['projecttasks_id'] === 0
+                ? 0
+                : ($names[$row['projecttasks_id']] ?? 'unknown');
+        }
+        $this->assertEquals(
+            [
+                'Task A (copy)'     => 0,
+                'Task A.1 (copy)'   => 'Task A (copy)',
+                'Task A.1.1 (copy)' => 'Task A.1 (copy)',
+            ],
+            $hierarchy
+        );
+    }
+
     protected function testAutochangeStateProvider()
     {
         $config = new \Config();
@@ -810,14 +969,14 @@ class ProjectTaskTest extends DbTestCase
                 'name' => 'Project 1',
             ]);
 
-            $task = $this->createItem(\ProjectTask::class, ['projects_id' => $project->getId()]);
+            $task = $this->createItem(ProjectTask::class, ['projects_id' => $project->getId()]);
 
             // Force initial fields (bypass prepareInputForAdd)
-            $DB->update(\ProjectTask::getTable(), $fields, ['id' => $task->getID()]);
+            $DB->update(ProjectTask::getTable(), $fields, ['id' => $task->getID()]);
 
-            $this->updateItem(\ProjectTask::class, $task->getID(), $input);
+            $this->updateItem(ProjectTask::class, $task->getID(), $input);
 
-            $ptask = new \ProjectTask();
+            $ptask = new ProjectTask();
             $this->assertTrue($ptask->getFromDB($task->getID()));
 
             foreach ($result as $field => $value) {
@@ -835,7 +994,7 @@ class ProjectTaskTest extends DbTestCase
         $user = $this->createItem(\User::getType(), ['name' => __FUNCTION__ . 'user']);
 
         // Check if a user with no project returns an empty array
-        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
+        $this->assertEmpty(ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
 
         // Create project
         $project = $this->createItem(Project::getType(), [
@@ -844,19 +1003,19 @@ class ProjectTaskTest extends DbTestCase
         ]);
 
         // Check if a user with a project with no tasks returns an empty array
-        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
+        $this->assertEmpty(ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
 
         // Create project task
-        $project_task = $this->createItem(\ProjectTask::getType(), [
+        $project_task = $this->createItem(ProjectTask::getType(), [
             'projects_id' => $project->getID(),
             'name'        => 'project task',
         ]);
 
         // Check if a user with a project with tasks, where the user is not a member of the team, returns an empty array
-        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
+        $this->assertEmpty(ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
 
         // Create user team
-        $user_team = $this->createItem(\ProjectTaskTeam::getType(), [
+        $user_team = $this->createItem(ProjectTaskTeam::getType(), [
             'projecttasks_id' => $project_task->getID(),
             'itemtype'        => \User::class,
             'items_id'        => $user->getID(),
@@ -865,7 +1024,7 @@ class ProjectTaskTest extends DbTestCase
         // Check if a user with a project with tasks, where the user is a member of the team, returns an array with the task ID
         $this->assertEquals(
             [['id' => $project_task->getID()]],
-            \ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()])
+            ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()])
         );
 
         // Create group
@@ -875,23 +1034,23 @@ class ProjectTaskTest extends DbTestCase
         $this->createItem(\Group_User::getType(), ['groups_id' => $group->getID(), 'users_id' => $user->getID()]);
 
         // Create group team
-        $this->createItem(\ProjectTaskTeam::getType(), [
+        $this->createItem(ProjectTaskTeam::getType(), [
             'projecttasks_id' => $project_task->getID(),
             'itemtype'        => \Group::class,
             'items_id'        => $group->getID(),
         ]);
 
         // Remove user team
-        $this->deleteItem(\ProjectTaskTeam::getType(), $user_team->getID());
+        $this->deleteItem(ProjectTaskTeam::getType(), $user_team->getID());
 
         // Check if a user with a project with tasks, where the user is a member of the group and the group is a member of the team, returns an array with the task ID if $search_in_groups is true
         $this->assertEquals(
             [['id' => $project_task->getID()]],
-            \ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()])
+            ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()])
         );
 
         // Check if a user with a project with tasks, where the user is a member of the group and the group is a member of the team, returns an empty array if $search_in_groups is false
-        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()], false));
+        $this->assertEmpty(ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()], false));
 
         // Templates should be excluded
         $project = $this->updateItem(
@@ -899,7 +1058,7 @@ class ProjectTaskTest extends DbTestCase
             $project->getID(),
             ['is_template' => true]
         );
-        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
+        $this->assertEmpty(ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
     }
 
     public function testGetActiveProjectTaskIDsForGroup(): void
@@ -911,7 +1070,7 @@ class ProjectTaskTest extends DbTestCase
         $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . 'group']);
 
         // Check if a group with no project returns an empty array
-        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
+        $this->assertEmpty(ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
 
         // Create project
         $project = $this->createItem(Project::getType(), [
@@ -921,19 +1080,19 @@ class ProjectTaskTest extends DbTestCase
         ]);
 
         // Check if a group with a project with no tasks returns an empty array
-        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
+        $this->assertEmpty(ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
 
         // Create project task
-        $project_task = $this->createItem(\ProjectTask::getType(), [
+        $project_task = $this->createItem(ProjectTask::getType(), [
             'projects_id' => $project->getID(),
             'name'        => 'project task',
         ]);
 
         // Check if a group with a project with tasks, where the group is not a member of the team, returns an empty array
-        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
+        $this->assertEmpty(ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
 
         // Create group team
-        $this->createItem(\ProjectTaskTeam::getType(), [
+        $this->createItem(ProjectTaskTeam::getType(), [
             'projecttasks_id' => $project_task->getID(),
             'itemtype'        => \Group::class,
             'items_id'        => $group->getID(),
@@ -942,7 +1101,7 @@ class ProjectTaskTest extends DbTestCase
         // Check if a group with a project with tasks, where the group is a member of the team, returns an array with the task ID
         $this->assertEquals(
             [['id' => $project_task->getID()]],
-            \ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()])
+            ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()])
         );
 
         // Templates should be excluded
@@ -951,6 +1110,117 @@ class ProjectTaskTest extends DbTestCase
             $project->getID(),
             ['is_template' => true]
         );
-        $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
+        $this->assertEmpty(ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
+    }
+
+    /**
+     * Verify that real_end_date is saved and that effective_duration is calculated
+     */
+    public function testAutoSetDate(): void
+    {
+        $_SESSION['glpi_currenttime'] = '2024-03-15 10:30:00';
+
+        $project = $this->createItem(Project::class, [
+            'name' => 'Project 1',
+        ]);
+
+        $task = $this->createItem(ProjectTask::class, [
+            'projects_id' => $project->getID(),
+            'name' => 'Test Task',
+            'percent_done' => 0,
+        ]);
+
+        // 1. When percent_done = 100, real_end_date should be set automatically
+        $input = ['percent_done' => 100];
+        $result = $task->autoSetDate($input);
+        $this->assertEquals('2024-03-15 10:30:00', $result['real_start_date']);
+        $this->assertEquals('2024-03-15 10:30:00', $result['real_end_date']);
+
+        // 2. When using manual dates, effective_duration must be calculated
+        $input = [
+            'percent_done' => 100,
+            'real_start_date' => '2024-03-10 08:00:00',
+            'real_end_date' => '2024-03-12 18:00:00',
+        ];
+        $result = $task->autoSetDate($input);
+        $this->assertArrayHasKey('effective_duration', $result);
+        $expected_duration = (new \DateTime('2024-03-12 18:00:00'))->getTimestamp()
+                           - (new \DateTime('2024-03-10 08:00:00'))->getTimestamp();
+        $this->assertEquals($expected_duration, $result['effective_duration']);
+
+        // 3. When percent_done drops below 100%, real_end_date must be reset
+        $task2 = $this->createItem(ProjectTask::class, [
+            'projects_id' => $project->getID(),
+            'name' => 'task 2',
+            'percent_done' => 100,
+            'real_start_date' => '2024-03-10 08:00:00',
+            'real_end_date' => '2024-03-12 18:00:00',
+        ]);
+
+        $input = ['percent_done' => 50];
+        $result = $task2->autoSetDate($input);
+        $this->assertNull($result['real_end_date']);
+    }
+
+    public function testAffectAndUnaffectTeamMember(): void
+    {
+        $this->login();
+
+        $project = $this->createItem(Project::class, ['name' => __FUNCTION__]);
+        $task    = $this->createItem(ProjectTask::class, [
+            'name'        => __FUNCTION__,
+            'projects_id' => $project->getID(),
+        ]);
+        $group = getItemByTypeName('Group', '_test_group_1');
+
+        $criteria = [
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'Group',
+            'items_id'        => $group->getID(),
+        ];
+
+        // Ajout d'un membre
+        $team_entry = $this->createItem(ProjectTaskTeam::class, $criteria);
+        $this->assertSame(1, countElementsInTable(ProjectTaskTeam::getTable(), $criteria));
+
+        // Vérification via getTeamFor
+        $team = ProjectTaskTeam::getTeamFor($task->getID());
+        $this->assertCount(1, $team['Group']);
+        $this->assertSame($group->getID(), $team['Group'][0]['items_id']);
+
+        // Suppression du membre
+        $this->deleteItem(ProjectTaskTeam::class, $team_entry->getID());
+        $this->assertSame(0, countElementsInTable(ProjectTaskTeam::getTable(), $criteria));
+
+        $team = ProjectTaskTeam::getTeamFor($task->getID());
+        $this->assertCount(0, $team['Group']);
+    }
+
+    public function testAffectTeamMemberDuplicatePrevented(): void
+    {
+        $this->login();
+
+        $project = $this->createItem(Project::class, ['name' => __FUNCTION__]);
+        $task    = $this->createItem(ProjectTask::class, [
+            'name'        => __FUNCTION__,
+            'projects_id' => $project->getID(),
+        ]);
+        $group = getItemByTypeName('Group', '_test_group_1');
+
+        $criteria = [
+            'projecttasks_id' => $task->getID(),
+            'itemtype'        => 'Group',
+            'items_id'        => $group->getID(),
+        ];
+
+        $this->createItem(ProjectTaskTeam::class, $criteria);
+        $this->assertSame(1, countElementsInTable(ProjectTaskTeam::getTable(), $criteria));
+
+        // Le doublon est détecté par countElementsInTable avant tout INSERT
+        $already_exists = countElementsInTable(ProjectTaskTeam::getTable(), $criteria) > 0;
+        $this->assertTrue($already_exists);
+
+        // Toujours une seule entrée en base
+        $this->assertSame(1, countElementsInTable(ProjectTaskTeam::getTable(), $criteria));
     }
 }

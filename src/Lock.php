@@ -283,7 +283,7 @@ TWIG;
                     $related_object = new $default_itemtype();
                     $related_object->getFromDB($object->fields[$default_items_id]);
                     $name = htmlescape($related_object->getName());
-                    $default_object_link = "<a href='" . htmlescape($object->getLinkURL()) . "'" . $name . ">" . $name . "</a>";
+                    $default_object_link = "<a href='" . htmlescape($object->getLinkURL()) . "'>" . $name . "</a>";
                 }
 
                 $entries[] = [

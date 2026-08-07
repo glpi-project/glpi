@@ -139,14 +139,16 @@ class ToolboxTest extends DbTestCase
     public static function dataGetSize()
     {
         return [
-            [1,                                  '1 B'],
-            [1025,                               '1 KiB'],
-            [1100000,                            '1.05 MiB'],
-            [1100000000,                         '1.02 GiB'],
-            [1100000000000,                      '1 TiB'],
-            [1100000000000 * 1024,               '1 PiB'],
-            [1100000000000 * 1024 * 1024,        '1 EiB'],
-            [1100000000000 * 1024 * 1024 * 1024, '1 ZiB'],
+            [1,                                                '1 B'],
+            [1025,                                             '1 KiB'],
+            [1100000,                                          '1.05 MiB'],
+            [1100000000,                                       '1.02 GiB'],
+            [1100000000000,                                    '1 TiB'],
+            [1100000000000 * 1024,                             '1 PiB'],
+            [1100000000000 * 1024 * 1024,                      '1 EiB'],
+            [1100000000000 * 1024 * 1024 * 1024,               '1 ZiB'],
+            [1100000000000 * 1024 * 1024 * 1024 * 1024,        '1 YiB'],
+            [1100000000000 * 1024 * 1024 * 1024 * 1024 * 1024, '1024.45 YiB'],
         ];
     }
 
@@ -243,28 +245,44 @@ class ToolboxTest extends DbTestCase
             [
                 '{"validJson":true}',
                 true,
-            ], [
+            ],
+            [
                 '{"invalidJson":true',
                 false,
-            ], [
+            ],
+            [
                 '"valid"',
                 true,
-            ], [
+            ],
+            [
                 'null',
                 true,
-            ], [
+            ],
+            [
+                'true',
+                true,
+            ],
+            [
+                'false',
+                true,
+            ],
+            [
                 1000,
                 true,
-            ], [
+            ],
+            [
                 [1, 2, 3],
                 false,
-            ], [
+            ],
+            [
                 (object) ['json' => true],
                 false,
-            ], [
+            ],
+            [
                 '{ bad content',
                 false,
-            ], [
+            ],
+            [
                 file_get_contents(GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/computer_1.json'),
                 true,
             ],

@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryFunction;
+use Glpi\Toolbox\URL;
 
 /**
  * @template T of CommonITILObject
@@ -953,25 +954,29 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
             $this->addTarget(Notification::RECIPIENT, __('Writer'));
         } elseif ($event != 'alertnotclosed') {
+            $item_type_name = $this->obj instanceof CommonITILObject
+                ? $this->obj->getTypeName(1)
+                : _n('Item', 'Items', 1);
+
             $this->addTarget(Notification::RECIPIENT, __('Writer'));
             $this->addTarget(Notification::SUPPLIER, Supplier::getTypeName(1));
             $this->addTarget(
                 Notification::SUPERVISOR_ASSIGN_GROUP,
-                __('Manager of the group in charge of the ticket')
+                sprintf(__('Manager of the group in charge of the %s'), $item_type_name)
             );
             $this->addTarget(
                 Notification::ASSIGN_GROUP_WITHOUT_SUPERVISOR,
-                __("Group in charge of the ticket except manager users")
+                sprintf(__("Group in charge of the %s except manager users"), $item_type_name)
             );
             $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP, __('Requester group manager'));
             $this->addTarget(
                 Notification::REQUESTER_GROUP_WITHOUT_SUPERVISOR,
                 __("Requester group except manager users")
             );
-            $this->addTarget(Notification::ASSIGN_TECH, __('Technician in charge of the ticket'));
+            $this->addTarget(Notification::ASSIGN_TECH, sprintf(__('Technician in charge of the %s'), $item_type_name));
             $this->addTarget(Notification::REQUESTER_GROUP, _n('Requester group', 'Requester groups', 1));
             $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
-            $this->addTarget(Notification::ASSIGN_GROUP, __('Group in charge of the ticket'));
+            $this->addTarget(Notification::ASSIGN_GROUP, sprintf(__('Group in charge of the %s'), $item_type_name));
             $this->addTarget(Notification::OBSERVER_GROUP, _n('Observer group', 'Observer groups', 1));
             $this->addTarget(Notification::OBSERVER, _n('Observer', 'Observers', 1));
             $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP, __('Observer group manager'));
@@ -1251,7 +1256,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["##$objettype.shortentity##"]     = $entity->getField('name');
             $data["##$objettype.entity.phone##"]    = $entity->getField('phonenumber');
             $data["##$objettype.entity.fax##"]      = $entity->getField('fax');
-            $data["##$objettype.entity.website##"]  = $entity->getField('website');
+            $data["##$objettype.entity.website##"]  = URL::sanitizeURL(
+                Toolbox::formatOutputWebLink(
+                    $entity->fields['website']
+                )
+            ) ?: NOT_AVAILABLE;
             $data["##$objettype.entity.email##"]    = $entity->getField('email');
             $data["##$objettype.entity.address##"]  = $entity->getField('address');
             $data["##$objettype.entity.postcode##"] = $entity->getField('postcode');
@@ -1540,6 +1549,33 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data['##ticket.numberoflinkedchanges##'] = count($data['linkedchanges']);
             $data['##ticket.numberoflinkedproblems##'] = count($data['linkedproblems']);
 
+            $data['linkedprojects'] = [];
+            $itil_project = new Itil_Project();
+            $linked_projects = $itil_project->find([
+                'itemtype' => $item->getType(),
+                'items_id' => $item->getField('id'),
+            ]);
+            foreach ($linked_projects as $linked_project) {
+                $project = new Project();
+                if ($project->getFromDB($linked_project['projects_id'])) {
+                    $data['linkedprojects'][] = [
+                        '##linkedproject.id##'      => $linked_project['projects_id'],
+                        '##linkedproject.url##'     => $this->formatURL(
+                            $options['additionnaloption']['usertype'],
+                            'project_' . $linked_project['projects_id']
+                        ),
+                        '##linkedproject.name##'   => $project->getField('name'),
+                        '##linkedproject.content##' => $project->getField('content'),
+                        '##linkedproject.code##' => $project->getField('code'),
+                        '##linkedproject.planstartdate##' => Html::convDateTime($project->getField('plan_start_date')),
+                        '##linkedproject.planenddate##' => Html::convDateTime($project->getField('plan_end_date')),
+                        '##linkedproject.realstartdate##' => Html::convDateTime($project->getField('real_start_date')),
+                        '##linkedproject.realenddate##' => Html::convDateTime($project->getField('real_end_date')),
+                    ];
+                }
+            }
+            $data['##' . strtolower($item->getType()) . '.numberoflinkedprojects##'] = count($data['linkedprojects']);
+
             $show_private = $options['additionnaloption']['show_private'] ?? false;
             $followup_restrict = [];
             $followup_restrict['items_id'] = $item->getField('id');
@@ -1664,8 +1700,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $tmp                      = [];
                 $tmp['##document.id##']   = $row['id'];
                 $tmp['##document.name##'] = $row['name'];
-                $tmp['##document.weblink##']
-                                       = $row['link'];
+                $tmp['##document.weblink##'] = URL::sanitizeURL($row['link']);
 
                 $tmp['##document.url##']  = $this->formatURL(
                     $options['additionnaloption']['usertype'],
@@ -1952,7 +1987,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $data[sprintf('##%s.email##', $key_prefix)]      = $actor->getField('email');
                 $data[sprintf('##%s.phone##', $key_prefix)]      = $actor->getField('phonenumber');
                 $data[sprintf('##%s.fax##', $key_prefix)]        = $actor->getField('fax');
-                $data[sprintf('##%s.website##', $key_prefix)]    = $actor->getField('website');
+                $data[sprintf('##%s.website##', $key_prefix)]    = URL::sanitizeURL(
+                    Toolbox::formatOutputWebLink(
+                        $actor->fields['website']
+                    )
+                ) ?: NOT_AVAILABLE;
                 $data[sprintf('##%s.address##', $key_prefix)]    = $actor->getField('address');
                 $data[sprintf('##%s.postcode##', $key_prefix)]   = $actor->getField('postcode');
                 $data[sprintf('##%s.town##', $key_prefix)]       = $actor->getField('town');
@@ -2219,6 +2258,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $objettype . '.numberoflinkedtickets' => _x('quantity', 'Number of linked tickets'),
             $objettype . '.numberoflinkedchanges' => _x('quantity', 'Number of linked changes'),
             $objettype . '.numberoflinkedproblems' => _x('quantity', 'Number of linked problems'),
+            $objettype . '.numberoflinkedprojects' => _x('quantity', 'Number of linked projects'),
             $objettype . '.reminder.bumpcounter' => __('Number of sent reminders since status is pending'),
             $objettype . '.reminder.bumpremaining' => __('Number of remaining reminders before automatic resolution'),
             $objettype . '.reminder.bumptotal'  => __('Total number of reminders before automatic resolution'),
@@ -2247,6 +2287,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'linkedtickets' => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
             'linkedchanges' => _n('Linked change', 'Linked changes', Session::getPluralNumber()),
             'linkedproblems' => _n('Linked problem', 'Linked problems', Session::getPluralNumber()),
+            'linkedprojects' => _n('Linked project', 'Linked projects', Session::getPluralNumber()),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -2270,6 +2311,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $objettype . '.linkedtickets'       => _n('Linked ticket', 'Linked tickets', Session::getPluralNumber()),
             $objettype . '.linkedchanges'       => _n('Linked change', 'Linked changes', Session::getPluralNumber()),
             $objettype . '.linkedproblems'      => _n('Linked problem', 'Linked problems', Session::getPluralNumber()),
+            $objettype . '.linkedprojects'      => _n('Linked project', 'Linked projects', Session::getPluralNumber()),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -2431,6 +2473,51 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 __('%1$s: %2$s'),
                 _n('Linked problem', 'Linked problems', 1),
                 __('Description')
+            ),
+            'linkedproject.id'        => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('ID')
+            ),
+            'linkedproject.url'       => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('URL')
+            ),
+            'linkedproject.name'     => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Name')
+            ),
+            'linkedproject.content'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Description')
+            ),
+            'linkedproject.code'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Code')
+            ),
+            'linkedproject.planstartdate'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Planned start date')
+            ),
+            'linkedproject.planenddate'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Planned end date')
+            ),
+            'linkedproject.realstartdate'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Real start date')
+            ),
+            'linkedproject.realenddate'   => sprintf(
+                __('%1$s: %2$s'),
+                _n('Linked project', 'Linked projects', 1),
+                __('Real start date')
             ),
         ];
 

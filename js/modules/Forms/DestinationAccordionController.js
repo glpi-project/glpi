@@ -67,5 +67,7 @@ export class GlpiFormDestinationAccordionController
             // We trigger the watcher
             this.triggerWatchers();
         });
+
+        accordionWrapper.classList.remove('pe-none');
     }
 }

@@ -258,7 +258,7 @@ class Domain_Item extends CommonDBRelation
                             }) }}
                         </div>
                         <div class="d-flex flex-row-reverse pe-3">
-                            {{ inputs.submit('additem', btn_msg, 'btn-primary') }}
+                            {{ inputs.submit('additem', btn_msg, 'btn-primary', {'icon': 'ti ti-link'}) }}
                         </div>
                     </form>
                 </div>
@@ -575,7 +575,7 @@ TWIG, $twig_params);
                             }) }}
                         </div>
                         <div class="d-flex flex-row-reverse pe-3">
-                            {{ inputs.submit('additem', btn_msg, 'btn-primary') }}
+                            {{ inputs.submit('additem', btn_msg, 'btn-primary', {'icon': 'ti ti-link'}) }}
                         </div>
                     </form>
                 </div>

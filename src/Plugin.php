@@ -1096,7 +1096,7 @@ class Plugin extends CommonDBTM
      *
      * @return array
      */
-    public function getList(array $fields = [], array $order = ['name', 'directory'])
+    public function getList(array $fields = [], array $order = ['directory'])
     {
         global $DB;
 
@@ -3352,6 +3352,9 @@ class Plugin extends CommonDBTM
             // and `Hooks::DASHBOARD_FILTERS`.
             $to_clear[] = Grid::getAllDashboardCardsCacheKey($language);
         }
+
+        // FIXME Try to separate template cache for each Twig namespace, in order to be able to reset only the plugin Twig templates cache.
+        (new CacheManager())->resetCompiledTemplates();
 
         return $GLPI_CACHE->deleteMultiple($to_clear);
     }

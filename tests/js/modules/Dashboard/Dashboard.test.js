@@ -95,6 +95,16 @@ describe('Dashboard', () => {
         expect(window.GLPIDashboard).toBeDefined();
     });
 
+    test('current_name reads the actually selected dashboard from the DOM on init', () => {
+        // The select's selected option ('current_dashboard') differs from the PHP-provided
+        // 'current' option, reproducing the case where the two can get out of sync on first load.
+        const dashboard = new GLPIDashboard({
+            'rand': '12345',
+            'current': 'stale_dashboard_from_php',
+        });
+        expect(dashboard.current_name).toBe('current_dashboard');
+    });
+
     test('saveMarkdown', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         $('body').find('.grid-stack-item').first().append(`<textarea name="markdown">test</textarea>`);
@@ -526,6 +536,8 @@ describe('Dashboard', () => {
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
         dashboard.is_recursive = 1;
+        dashboard.profiles_id = 4;
+        dashboard.users_id = 5;
         dashboard.grid.removeAll = jest.fn().mockImplementation(() => {});
         dashboard.grid.makeWidget = jest.fn().mockImplementation(() => {});
         dashboard.getCardsAjax = jest.fn().mockImplementation(() => {});
@@ -539,6 +551,8 @@ describe('Dashboard', () => {
             token: 'mytoken',
             entities_id: 3,
             is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
         }, () => {
             return `
                 <div class="grid-stack-item" gs-id="4"><div class="card"></div></div>
@@ -1090,6 +1104,8 @@ describe('Dashboard', () => {
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
         dashboard.is_recursive = 1;
+        dashboard.profiles_id = 4;
+        dashboard.users_id = 5;
         dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
@@ -1109,6 +1125,8 @@ describe('Dashboard', () => {
             token: 'mytoken',
             entities_id: 3,
             is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
             card_id: 1
         }, () => {return true;}));
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
@@ -1117,6 +1135,8 @@ describe('Dashboard', () => {
             token: 'mytoken',
             entities_id: 3,
             is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
             card_id: 2
         }, () => {return true;}));
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'GET', {
@@ -1125,6 +1145,8 @@ describe('Dashboard', () => {
             token: 'mytoken',
             entities_id: 3,
             is_recursive: 1,
+            profiles_id: 4,
+            users_id: 5,
             card_id: 3
         }, () => {return true;}));
 
@@ -1211,6 +1233,8 @@ describe('Dashboard', () => {
         dashboard.token = 'mytoken';
         dashboard.entities_id = 3;
         dashboard.is_recursive = 1;
+        dashboard.profiles_id = 4;
+        dashboard.users_id = 5;
         dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
             return {
                 'filter1': 'value1',
@@ -1235,7 +1259,9 @@ describe('Dashboard', () => {
             "embed": 1,
             "token": "mytoken",
             "entities_id": 3,
-            "is_recursive": 1
+            "is_recursive": 1,
+            "profiles_id": 4,
+            "users_id": 5
         };
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/dashboard.php', 'POST', {
             action: 'get_cards',

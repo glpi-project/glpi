@@ -256,12 +256,28 @@ abstract class CommonITILRecurrent extends CommonDropdown
     /**
      * Display periodicity field
      * The displayed dropdown offer the following options:
-     *    1 to 24 hours
+     *    1 to 23 hours
      *    1 to 30 days
      *    1 to 11 months
      *    1 to 10 years
      */
     public function displayPeriodicityInput(): void
+    {
+        Dropdown::showFromArray('periodicity', static::getPeriodicityPossibleValues(), [
+            'value' => $this->fields['periodicity'],
+        ]);
+    }
+
+    /**
+     * Get all possible periodicity values:
+     *    1 to 23 hours
+     *    1 to 30 days
+     *    1 to 11 months
+     *    1 to 10 years
+     *
+     * @return array<int|string, string>
+     */
+    public static function getPeriodicityPossibleValues(): array
     {
         $possible_values = [];
 
@@ -285,9 +301,20 @@ abstract class CommonITILRecurrent extends CommonDropdown
             $possible_values[$i . 'YEAR'] = sprintf(_n('%d year', '%d years', $i), $i);
         }
 
-        Dropdown::showFromArray('periodicity', $possible_values, [
-            'value' => $this->fields['periodicity'],
-        ]);
+        return $possible_values;
+    }
+
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+        $options['display'] = false;
+        if ($field === 'periodicity') {
+            $options['value'] = $values[$field];
+            return (string) Dropdown::showFromArray($name, static::getPeriodicityPossibleValues(), $options);
+        }
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
     public function rawSearchOptions()
@@ -340,6 +367,8 @@ abstract class CommonITILRecurrent extends CommonDropdown
             'field'    => 'create_before',
             'name'     => __('Preliminary creation'),
             'datatype' => 'timestamp',
+            'max'      => 2 * WEEK_TIMESTAMP,
+            'step'     => HOUR_TIMESTAMP,
         ];
 
         $tab[] = [

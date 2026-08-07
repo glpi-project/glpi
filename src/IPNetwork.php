@@ -190,6 +190,11 @@ class IPNetwork extends CommonImplicitTreeDropdown
     }
 
 
+    public function post_getEmpty()
+    {
+        $this->fields['network'] = '';
+    }
+
     /**
      * When we load the object, we fill the "network" field with the correct address/netmask values
      **/

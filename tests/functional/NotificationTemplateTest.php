@@ -199,4 +199,123 @@ HTML,
         $this->assertStringContainsString('Opening date : 2025-07-22 22:00', $notification_data['content_text']);
         $this->assertStringContainsString('[2025-07-23 21:00]', $notification_data['content_text']);
     }
+
+    public static function signatureSeparatorProvider(): iterable
+    {
+        yield 'no separator when signature is empty' => [
+            'signature' => '',
+            'expect_separator' => false,
+        ];
+        yield 'no separator when signature is whitespace only' => [
+            'signature' => "  \n  ",
+            'expect_separator' => false,
+        ];
+        yield 'separator present when signature is set' => [
+            'signature' => 'GLPI Helpdesk',
+            'expect_separator' => true,
+        ];
+    }
+
+    #[DataProvider('signatureSeparatorProvider')]
+    public function testSignatureSeparatorOmittedWhenEmpty(
+        string $signature,
+        bool $expect_separator
+    ): void {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Test ticket for notification signature',
+            'content'     => 'Test content',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $template = getItemByTypeName(NotificationTemplate::class, 'Tickets');
+        $this->assertInstanceOf(NotificationTemplate::class, $template);
+
+        $target = NotificationTarget::getInstance($ticket, 'new');
+        $this->assertInstanceOf(NotificationTarget::class, $target);
+
+        $infos = [
+            'language'          => 'en_GB',
+            'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER],
+        ];
+
+        $template->resetComputedTemplates();
+        $template->setSignature($signature);
+        $tid = $template->getTemplateByLanguage($target, $infos, 'new');
+        $this->assertNotFalse($tid);
+
+        $data = $template->templates_by_languages[$tid];
+
+        if ($expect_separator) {
+            $this->assertStringContainsString("\n-- \n", $data['content_text']);
+            $this->assertStringContainsString("<br><br>-- ", $data['content_html']);
+        } else {
+            $this->assertStringNotContainsString("\n-- \n", $data['content_text']);
+            $this->assertStringNotContainsString("<br><br>-- ", $data['content_html']);
+        }
+    }
+
+    public static function processIfProvider(): iterable
+    {
+        yield 'condition with an apostrophe' => [
+            'template' => "##IFproblem.action=Mise à jour d'une tâche##UPDATED##ENDIFproblem.action##",
+            'data'     => ['##problem.action##' => htmlspecialchars("Mise à jour d'une tâche")],
+            'expected' => 'UPDATED',
+        ];
+
+        yield 'condition without special characters' => [
+            'template' => '##IFproblem.action=Nouvelle tâche##CREATED##ENDIFproblem.action##',
+            'data'     => ['##problem.action##' => htmlspecialchars('Nouvelle tâche')],
+            'expected' => 'CREATED',
+        ];
+
+        yield 'condition with an ampersand' => [
+            'template' => '##IFcategory.name=R&D##MATCH##ENDIFcategory.name##',
+            'data'     => ['##category.name##' => htmlspecialchars('R&D')],
+            'expected' => 'MATCH',
+        ];
+
+        yield 'condition with angle brackets' => [
+            'template' => '##IFticket.title=<urgent>##MATCH##ENDIFticket.title##',
+            'data'     => ['##ticket.title##' => htmlspecialchars('<urgent>')],
+            'expected' => 'MATCH',
+        ];
+
+        yield 'non-matching condition' => [
+            'template' => "##IFproblem.action=Mise à jour d'une tâche##UPDATED##ENDIFproblem.action##",
+            'data'     => ['##problem.action##' => htmlspecialchars('Nouvelle tâche')],
+            'expected' => '',
+        ];
+
+        yield 'IF/ELSE block with an apostrophe' => [
+            'template' => "##IFproblem.action=Mise à jour d'une tâche##UPDATED##ENDIFproblem.action####ELSEproblem.action##OTHER##ENDELSEproblem.action##",
+            'data'     => ['##problem.action##' => htmlspecialchars('Nouvelle tâche')],
+            'expected' => 'OTHER',
+        ];
+
+        yield 'several IF blocks' => [
+            'template' => "##IFproblem.action=Nouvelle tâche##CREATED##ENDIFproblem.action####IFproblem.action=Mise à jour d'une tâche##UPDATED##ENDIFproblem.action##",
+            'data'     => ['##problem.action##' => htmlspecialchars("Mise à jour d'une tâche")],
+            'expected' => 'UPDATED',
+        ];
+
+        yield 'existence check' => [
+            'template' => '##IFticket.category##HAS-CATEGORY##ENDIFticket.category##',
+            'data'     => ['##ticket.category##' => htmlspecialchars('Hardware')],
+            'expected' => 'HAS-CATEGORY',
+        ];
+
+        yield 'existence check with an empty value' => [
+            'template' => '##IFticket.category##HAS-CATEGORY##ENDIFticket.category##',
+            'data'     => ['##ticket.category##' => ''],
+            'expected' => '',
+        ];
+    }
+
+    #[DataProvider('processIfProvider')]
+    public function testProcessIf(string $template, array $data, string $expected): void
+    {
+        $this->assertEquals($expected, NotificationTemplate::processIf($template, $data));
+    }
 }

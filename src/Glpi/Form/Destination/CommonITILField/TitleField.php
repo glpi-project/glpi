@@ -88,6 +88,7 @@ final class TitleField extends AbstractConfigField implements DestinationFieldCo
                 options|merge({
                     'field_class'      : '',
                     'no_label'         : true,
+                    'aria_label'       : __('Title'),
                     'enable_richtext'  : true,
                     'enable_images'    : false,
                     'enable_form_tags' : true,
@@ -133,10 +134,13 @@ TWIG;
         }
 
         $tag_manager = new FormTagsManager();
-        $input['name'] = $tag_manager->insertTagsContent(
+
+        $title = $tag_manager->insertTagsContent(
             $config->getValue(),
             $answers_set
         );
+
+        $input['name'] = html_entity_decode(strip_tags($title));
 
         return $input;
     }

@@ -1421,6 +1421,11 @@ TWIG, $twig_params);
     public static function cloneEvent(array $event = [])
     {
         $item = getItemForItemtype($event['old_itemtype']);
+
+        if (!$item->can((int) $event['old_items_id'], READ)) {
+            return false;
+        }
+
         $item->getFromDB((int) $event['old_items_id']);
 
         $input = array_merge($item->fields, [
@@ -1453,6 +1458,10 @@ TWIG, $twig_params);
             $input[$key] = $event['actor']['items_id'];
         }
 
+        if (!$item->can(-1, CREATE, $input)) {
+            return false;
+        }
+
         $new_items_id = $item->add($input);
 
         // manage all assigments for ProjectTask
@@ -1479,7 +1488,19 @@ TWIG, $twig_params);
      */
     public static function deleteEvent(array $event = []): bool
     {
+        global $CFG_GLPI;
+
+        // Validate itemtype is a planning type
+        if (!in_array($event['itemtype'], $CFG_GLPI['planning_types'])) {
+            return false;
+        }
+
         $item = getItemForItemtype($event['itemtype']);
+
+        $required_right = ($item instanceof CommonITILTask) ? UPDATE : ($item->maybeDeleted() ? DELETE : PURGE);
+        if (!$item->can((int) $event['items_id'], $required_right)) {
+            return false;
+        }
 
         if (
             isset($event['day'], $event['instance'])
@@ -1487,6 +1508,12 @@ TWIG, $twig_params);
             && method_exists($item, "deleteInstance")
         ) {
             return $item->deleteInstance((int) $event['items_id'], $event['day']);
+        }
+
+        // For tasks linked to tickets/changes/problems, only unschedule (clear planning
+        // dates) instead of deleting the task record entirely.
+        if ($item instanceof CommonITILTask) {
+            return $item->unplan();
         }
 
         return $item->delete([

@@ -187,7 +187,8 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
                 $error_msg = sprintf(__('An error occurred during connection to cache system: "%s"'), $e->getMessage());
                 throw new EarlyExitException(
                     '<error>' . $error_msg . '</error>',
-                    self::ERROR_UNABLE_TO_WRITE_CONFIG
+                    self::ERROR_UNABLE_TO_WRITE_CONFIG,
+                    $e
                 );
             }
         }

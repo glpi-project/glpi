@@ -172,6 +172,7 @@ abstract class CommonDevice extends CommonDropdown
                         $menu['options'][$key] = [
                             'title' => $val,
                             'page'  => $tmp::getSearchURL(false),
+                            'icon'  => $tmp::getIcon(),
                             'links' => [
                                 'search' => $tmp::getSearchURL(false),
                             ],
@@ -196,6 +197,7 @@ abstract class CommonDevice extends CommonDropdown
                             $menu['options'][$item_device_key] = [
                                 'title' => $itemTypeName,
                                 'page'  => $item_device_search_url,
+                                'icon'  => $itemClass::getIcon(),
                                 'links' => [
                                     'search' => $item_device_search_url,
                                 ],
@@ -420,7 +422,9 @@ abstract class CommonDevice extends CommonDropdown
         }
 
         $linktype = static::getItem_DeviceType();
-        if (in_array($itemtype, $linktype::itemAffinity()) || in_array('*', $linktype::itemAffinity())) {
+        $affinity = $linktype::itemAffinity();
+
+        if (in_array($itemtype, $affinity, true) || in_array('*', $affinity, true)) {
             $column = $base->addHeader('device', $content, $super, $father);
             $column->setItemType(
                 static::class,
@@ -662,5 +666,11 @@ abstract class CommonDevice extends CommonDropdown
     public static function getIcon()
     {
         return "ti ti-components";
+    }
+
+    public static function displayFullPageForItem($id, ?array $menus = null, array $options = []): void
+    {
+        $options['itemtype'] = static::class;
+        parent::displayFullPageForItem($id, $menus, $options);
     }
 }

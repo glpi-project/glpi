@@ -276,7 +276,7 @@ final class StatusChecker
                             }
                         } catch (RuntimeException $e) {
                             // May be missing LDAP extension (Probably test environment)
-                            $status['servers'][$method['name']] = [
+                            $status['servers'][$display_name] = [
                                 'status' => self::STATUS_PROBLEM,
                             ];
                             $total_error++;

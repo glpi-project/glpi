@@ -59,6 +59,11 @@
    }
 }
 
+#page:focus-visible {
+   outline: 2px solid var(--tblr-primary-fg);
+   outline-offset: 2px;
+}
+
 /* Apply legacy styles to main content (#page) and elements that are inserted directly in body (modals, tooltips, ...) */
 #page, .qtip, .modal .modal-body {
    img {
@@ -474,8 +479,15 @@
    }
 
    .kb {
+      display: flex;
+      align-items: center;
+      gap: 4px;
       text-align: left;
       padding-top: 5px;
+   }
+
+   .search-results .kb {
+      padding-top: 0;
    }
 
    .kb_resume {
@@ -839,6 +851,21 @@
       /** Ensure no event message is displayed well */
       &::before, &::after {
          min-height: 1em;
+      }
+   }
+
+   /* Prop open the FullCalendar scroller (the gray box) so the empty message doesn't overflow */
+   .planning_on_central .fc-view-container .fc-scroller {
+      min-height: 2em; 
+   }
+
+   /* Apply the height safely to the empty wrappers and text */
+   .planning_on_central .fc-view-container .fc-list-empty-wrap2,
+   .planning_on_central .fc-view-container .fc-list-empty-wrap2 * {
+      min-height: 2em;
+
+      &::before, &::after {
+         min-height: 2em;
       }
    }
 

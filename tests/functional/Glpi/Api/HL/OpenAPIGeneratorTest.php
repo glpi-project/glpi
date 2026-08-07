@@ -92,7 +92,7 @@ class OpenAPIGeneratorTest extends HLAPITestCase
         $openapi = $generator->getSchema();
 
         foreach ($to_check as $endpoint) {
-            $this->assertEmpty(array_filter($openapi['paths'][$endpoint['path']]['get']['parameters'], static fn($v) => $v['name'] === $endpoint['placeholder']));
+            $this->assertEmpty(array_filter($openapi['paths'][$endpoint['path']]['get']['parameters'], static fn($v) => isset($v['name']) && $v['name'] === $endpoint['placeholder']));
         }
     }
 
@@ -101,8 +101,8 @@ class OpenAPIGeneratorTest extends HLAPITestCase
         // Compare OpenAPI route paths and return differences
         $differences = [];
         // ignore "/Assets/Custom' paths
-        $snapshot_paths = array_filter($snapshot['paths'] ?? [], static fn($p) => !str_starts_with($p, '/Assets/Custom'), ARRAY_FILTER_USE_KEY);
-        $schema_paths = array_filter($schema['paths'] ?? [], static fn($p) => !str_starts_with($p, '/Assets/Custom'), ARRAY_FILTER_USE_KEY);
+        $snapshot_paths = array_filter($snapshot ?? [], static fn($p) => !str_starts_with($p, '/Assets/Custom'), ARRAY_FILTER_USE_KEY);
+        $schema_paths = array_filter($schema ?? [], static fn($p) => !str_starts_with($p, '/Assets/Custom'), ARRAY_FILTER_USE_KEY);
         $common_paths = array_intersect(array_keys($snapshot_paths), array_keys($schema_paths));
 
         if (count($common_paths) < count($snapshot_paths) || count($common_paths) < count($schema_paths)) {
@@ -129,16 +129,39 @@ class OpenAPIGeneratorTest extends HLAPITestCase
                     $differences[] = "Method '$method' for path '$path' is missing in the schema";
                     continue;
                 }
-                unset($snapshot_method['description'], $schema_method['description'], $snapshot_method['tags'], $schema_method['tags']);
-                foreach ($snapshot_method['parameters'] ?? [] as $i => $param) {
-                    unset($snapshot_method['parameters'][$i]['description']);
-                }
-                foreach ($schema_method['parameters'] ?? [] as $i => $param) {
-                    unset($schema_method['parameters'][$i]['description']);
-                }
                 if ($snapshot_method !== $schema_method) {
-                    $differences[] = "Method '$method' for path '$path' differs between snapshot and schema";
+                    $differences[] = "Method '$method' for path '$path' differs between snapshot and schema:\n"
+                        . implode("\n", $this->getArrayDiffRecursive($snapshot_method, $schema_method, "paths.$path.$method"));
                 }
+            }
+        }
+        return $differences;
+    }
+
+    /**
+     * @param array $array1
+     * @param array $array2
+     * @param string $path
+     * @return string[] Array of differences (example: Key 'foo.bar.baz' missing in second array, value for key 'foo.bar.qux' differs)
+     */
+    private function getArrayDiffRecursive($array1, $array2, $path = '')
+    {
+        $differences = [];
+        foreach ($array1 as $key => $value) {
+            $current_path = $path === '' ? $key : $path . '.' . $key;
+            if (!array_key_exists($key, $array2)) {
+                $differences[] = "Key '$current_path' missing in second array";
+            } elseif (is_array($value) && is_array($array2[$key])) {
+                $nested_diffs = $this->getArrayDiffRecursive($value, $array2[$key], $current_path);
+                $differences = array_merge($differences, $nested_diffs);
+            } elseif ($value !== $array2[$key]) {
+                $differences[] = "Value for key '$current_path' differs";
+            }
+        }
+        foreach ($array2 as $key => $value) {
+            $current_path = $path === '' ? $key : $path . '.' . $key;
+            if (!array_key_exists($key, $array1)) {
+                $differences[] = "Key '$current_path' missing in first array";
             }
         }
         return $differences;
@@ -167,7 +190,6 @@ class OpenAPIGeneratorTest extends HLAPITestCase
         foreach ($common_props as $prop_name) {
             $snapshot_prop = $snapshot_props[$prop_name];
             $schema_prop = $schema_props[$prop_name];
-            unset($snapshot_prop['description'], $schema_prop['description']);
 
             if (in_array($parent_path . $prop_name, ['Dashboard.context', 'DashboardCard.widget', 'UserPreferences.timezone'], true)) {
                 // May differ between production and test env. ignore.
@@ -190,7 +212,7 @@ class OpenAPIGeneratorTest extends HLAPITestCase
                 );
                 $differences = array_merge($differences, $nested_diffs);
             } elseif ($snapshot_prop != $schema_prop) {
-                $differences[] = "Property '$parent_path$prop_name' differs between snapshot and schema";
+                $differences[] = "Property '$parent_path$prop_name' differs between snapshot and schema\n" . implode("\n\t", $this->getArrayDiffRecursive($snapshot_prop, $schema_prop));
             }
         }
 
@@ -202,8 +224,8 @@ class OpenAPIGeneratorTest extends HLAPITestCase
         // Compare OpenAPI component schemas and return differences
         $differences = [];
         // Ignore custom assets
-        $snapshot_schemas = array_filter($snapshot['components']['schemas'] ?? [], static fn($k) => !str_starts_with($k, 'Custom'), ARRAY_FILTER_USE_KEY);
-        $schema_schemas = array_filter($schema['components']['schemas'] ?? [], static fn($k) => !str_starts_with($k, 'Custom'), ARRAY_FILTER_USE_KEY);
+        $snapshot_schemas = array_filter($snapshot['schemas'] ?? [], static fn($k) => !str_starts_with($k, 'Custom'), ARRAY_FILTER_USE_KEY);
+        $schema_schemas = array_filter($schema['schemas'] ?? [], static fn($k) => !str_starts_with($k, 'Custom'), ARRAY_FILTER_USE_KEY);
         $common_schemas = array_intersect(array_keys($snapshot_schemas), array_keys($schema_schemas));
 
         if (count($common_schemas) < count($snapshot_schemas) || count($common_schemas) < count($schema_schemas)) {
@@ -232,22 +254,13 @@ class OpenAPIGeneratorTest extends HLAPITestCase
                 $differences = array_merge($differences, $prop_diffs);
             }
             unset($snapshot_schema['properties'], $schema_schema['properties']);
+            sort($snapshot_schema);
+            sort($schema_schema);
             if ($snapshot_schema !== $schema_schema) {
                 $differences[] = "Component schema '$schema_name' differs between snapshot and schema";
             }
         }
         return $differences;
-    }
-
-    private function assertSchemaMatchesSnapshot(array $snapshot, array $schema)
-    {
-        $path_differences = $this->diffSchemaPaths($snapshot, $schema);
-        $component_differences = $this->diffComponentSchemas($snapshot, $schema);
-
-        if (!empty($path_differences) || !empty($component_differences)) {
-            $version = $schema['info']['version'];
-            $this->fail("Schema for v{$version} does not match snapshot:\n" . implode("\n", $path_differences + $component_differences));
-        }
     }
 
     /**
@@ -257,9 +270,6 @@ class OpenAPIGeneratorTest extends HLAPITestCase
     public function testSchemaSnapshot()
     {
         $this->login();
-
-        $snapshot_dir = __DIR__ . '/../../../../fixtures/hlapi/snapshots';
-        $this->assertDirectoryExists($snapshot_dir, "Snapshot directory does not exist: $snapshot_dir");
 
         $router = Router::getInstance();
         $api_versions = $router::getAPIVersions();
@@ -276,12 +286,26 @@ class OpenAPIGeneratorTest extends HLAPITestCase
         }
 
         foreach ($initial_minor_versions as $version) {
+            $snapshot_dir = __DIR__ . '/../../../../fixtures/hlapi/snapshots/' . $version;
+            $this->assertDirectoryExists($snapshot_dir);
             $openapi_generator = new OpenAPIGenerator($router, $version);
-            $schema = $openapi_generator->getSchema();
-            $snapshot_file = $snapshot_dir . '/v' . str_replace('.', '_', $version) . '.json';
-            $this->assertFileExists($snapshot_file, "Snapshot file does not exist for version $version: $snapshot_file");
-            $expected_schema = json_decode(file_get_contents($snapshot_file), true);
-            $this->assertSchemaMatchesSnapshot($expected_schema, $schema);
+
+            $path_snapshot_file = $snapshot_dir . '/paths.json';
+            $this->assertFileExists($path_snapshot_file, "Snapshot paths file does not exist for version $version: $path_snapshot_file");
+            $path_snapshot = json_decode(file_get_contents($path_snapshot_file), true);
+            $path_differences = $this->diffSchemaPaths($path_snapshot, $openapi_generator->generatePathSnapshot());
+            unset($path_snapshot);
+
+            $component_snapshot_file = $snapshot_dir . '/components.json';
+            $this->assertFileExists($component_snapshot_file, "Snapshot components file does not exist for version $version: $component_snapshot_file");
+            $component_snapshot = json_decode(file_get_contents($component_snapshot_file), true);
+            $component_differences = $this->diffComponentSchemas($component_snapshot, ['schemas' => $openapi_generator->generateComponentsSnapshot()]);
+            unset($component_snapshot);
+            gc_collect_cycles();
+
+            if (!empty($path_differences) || !empty($component_differences)) {
+                $this->fail("Schema for v{$version} does not match snapshot:\n" . implode("\n", $path_differences + $component_differences));
+            }
         }
     }
 }

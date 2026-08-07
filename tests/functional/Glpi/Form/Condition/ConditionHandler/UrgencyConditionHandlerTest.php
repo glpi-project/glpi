@@ -34,6 +34,8 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use CommonITILObject;
+use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Tests\AbstractConditionHandlerTest;
@@ -189,5 +191,31 @@ final class UrgencyConditionHandlerTest extends AbstractConditionHandlerTest
             'submitted_answer'   => Urgency::MEDIUM->value,
             'expected_result'    => true,
         ];
+    }
+
+    public function testGetTemplateParametersFiltersDisabledUrgencies(): void
+    {
+        global $CFG_GLPI;
+
+        $original_mask = $CFG_GLPI['urgency_mask'];
+
+        try {
+            $CFG_GLPI['urgency_mask'] = (1 << 1) | (1 << 2) | (1 << 3);
+
+            $handler = new UrgencyConditionHandler();
+            $condition = new ConditionData('', '', null, null);
+            $params = $handler->getTemplateParameters($condition);
+
+            $this->assertEquals(
+                [
+                    1 => CommonITILObject::getUrgencyName(1),
+                    2 => CommonITILObject::getUrgencyName(2),
+                    3 => CommonITILObject::getUrgencyName(3),
+                ],
+                $params['values']
+            );
+        } finally {
+            $CFG_GLPI['urgency_mask'] = $original_mask;
+        }
     }
 }

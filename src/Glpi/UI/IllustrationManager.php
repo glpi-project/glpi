@@ -219,12 +219,22 @@ final class IllustrationManager
 
     public function saveCustomIllustration(string $id, string $path): void
     {
-        rename($path, self::CUSTOM_ILLUSTRATION_DIR . "/$id");
+        $dest = self::CUSTOM_ILLUSTRATION_DIR . "/$id";
+        $real_dest = realpath(dirname($dest)) . DIRECTORY_SEPARATOR . basename($dest);
+        if (!str_starts_with($real_dest, realpath(self::CUSTOM_ILLUSTRATION_DIR) . DIRECTORY_SEPARATOR)) {
+            throw new RuntimeException("Illustration path traversal detected: $id");
+        }
+        rename($path, $dest);
     }
 
     public function saveCustomScene(string $id, string $path): void
     {
-        rename($path, self::CUSTOM_SCENES_DIR . "/$id");
+        $dest = self::CUSTOM_SCENES_DIR . "/$id";
+        $real_dest = realpath(dirname($dest)) . DIRECTORY_SEPARATOR . basename($dest);
+        if (!str_starts_with($real_dest, realpath(self::CUSTOM_SCENES_DIR) . DIRECTORY_SEPARATOR)) {
+            throw new RuntimeException("Scene path traversal detected: $id");
+        }
+        rename($path, $dest);
     }
 
     public function getCustomIllustrationFile(string $id): ?string

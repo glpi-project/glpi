@@ -854,18 +854,15 @@ class NetworkPort extends InventoryAsset
             $bkp_ports = $this->ports;
             $stack_id = $mainasset->getStackId();
             $need_increment_index = false;
-            $count_char = 0;
             foreach ($this->ports as $k => $val) {
                 $matches = [];
                 if (
-                    preg_match('@[\w\s+]*(\d+)[/:][\w]@', $val->name ?? '', $matches)
+                    preg_match('@[a-zA-Z0-9+\-]*(\d+)[/:][\w]@', $val->name ?? '', $matches)
                 ) {
-                    //reset increment when name length differ
-                    //Gi0/0 then Gi0/0/1, Gi0/0/2, Gi0/0/3
-                    if ($count_char && $count_char != strlen($val->name)) {
-                        $need_increment_index = false;
+                    // move upstream ports to next stack
+                    if ($val->name == 'Gi0/0') {
+                        $matches[1]++;
                     }
-                    $count_char = strlen($val->name);
 
                     //in case when port is related to chassis index 0 (stack_id)
                     //ex : GigabitEthernet 0/1    Gi0/0/1

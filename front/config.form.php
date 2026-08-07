@@ -40,6 +40,7 @@ use Glpi\Cache\CacheManager;
 Session::checkRight("config", READ);
 
 if (isset($_GET['check_version'])) {
+    Session::checkRight("config", UPDATE);
     Session::addMessageAfterRedirect(
         htmlescape(Toolbox::checkNewVersionAvailable())
     );
@@ -49,11 +50,18 @@ if (isset($_GET['check_version'])) {
 $config = new Config();
 $_POST['id'] = Config::getConfigIDForContext('core');
 if (!empty($_POST["update_auth"])) {
+    Session::checkRight("config", UPDATE);
     $config->update($_POST);
     Html::back();
 }
 if (!empty($_POST["update"])) {
+    Session::checkRight("config", UPDATE);
     $config->update($_POST);
+    Html::redirect(Toolbox::getItemTypeFormURL('Config'));
+}
+if (!empty($_POST['reset_registration_key'])) {
+    $config->checkGlobal(UPDATE);
+    Config::setConfigurationValues('core', ['glpinetwork_registration_key' => '']);
     Html::redirect(Toolbox::getItemTypeFormURL('Config'));
 }
 if (!empty($_POST['reset_opcache'])) {

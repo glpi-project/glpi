@@ -38,7 +38,9 @@ use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasKnowbaseCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
+use KnowbaseItem;
 use KnowbaseItem_Item;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Toolbox;
 
 class KnowbaseItem_ItemTest extends DbTestCase
@@ -227,7 +229,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
     {
         $this->login();
         $kb_item = new KnowbaseItem_Item();
-        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kb_item->getTabNameForItem($kb1);
@@ -249,5 +251,83 @@ class KnowbaseItem_ItemTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kb_item->getTabNameForItem($ticket3);
         $this->assertSame("Knowledge base", strip_tags($name));
+    }
+    public static function normalizeForDisplayProvider(): iterable
+    {
+        yield 'empty string is returned as-is' => [
+            'html'     => '',
+            'expected' => '',
+        ];
+
+        yield 'table width attribute is removed and max-width style is added' => [
+            'html'     => '<table width="600"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+
+        yield 'table width in style is replaced by max-width' => [
+            'html'     => '<table style="width: 800px;"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+
+        yield 'td width attribute is removed' => [
+            'html'     => '<table><tr><td width="200">Cell</td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+
+        yield 'img gets max-width and height style' => [
+            'html'     => '<p><img src="/img.png" alt="test" /></p>',
+            'expected' => '<p><img src="/img.png" alt="test" style="max-width: 100%; height: auto;"></p>',
+        ];
+
+        yield 'table border-width is preserved' => [
+            'html'     => '<table style="border-width: 2px; width: 600px;"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="border-width: 2px; max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+        yield 'img min-width in style is stripped' => [
+            'html'     => '<p><img src="/img.png" style="min-width: 800px;" /></p>',
+            'expected' => '<p><img src="/img.png" style="max-width: 100%; height: auto;"></p>',
+        ];
+        yield 'table min-width in style is replaced by max-width' => [
+            'html'     => '<table style="min-width: 600px; color: red;"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="color: red; max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+        yield 'th width attribute is removed' => [
+            'html'     => '<table><tr><th width="150">Header</th></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><th style="">Header</th></tr></table>',
+        ];
+        yield 'img width in style is stripped' => [
+            'html'     => '<p><img src="/img.png" style="width: 800px;" /></p>',
+            'expected' => '<p><img src="/img.png" style="max-width: 100%; height: auto;"></p>',
+        ];
+        yield 'table with existing max-width gets it replaced (no duplicate)' => [
+            'html'     => '<table style="max-width: 500px;"><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+        yield 'img width HTML attribute is removed' => [
+            'html'     => '<p><img src="/img.png" width="200"></p>',
+            'expected' => '<p><img src="/img.png" style="max-width: 100%; height: auto;"></p>',
+        ];
+        yield 'table with no width or style still gets max-width' => [
+            'html'     => '<table><tr><td>Cell</td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Cell</td></tr></table>',
+        ];
+        yield 'nested tables both receive max-width' => [
+            'html'     => '<table width="100%"><tr><td><table width="50%"><tr><td>Inner</td></tr></table></td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style=""><table style="max-width: 100%; box-sizing: border-box;"><tr><td style="">Inner</td></tr></table></td></tr></table>',
+        ];
+        yield 'html with no tables or images is returned unchanged' => [
+            'html'     => '<p>Hello <strong>world</strong></p>',
+            'expected' => '<p>Hello <strong>world</strong></p>',
+        ];
+        yield 'td with multiple styles preserves non-width properties' => [
+            'html'     => '<table><tr><td style="color: red; width: 200px; padding: 4px;">Cell</td></tr></table>',
+            'expected' => '<table style="max-width: 100%; box-sizing: border-box;"><tr><td style="color: red; padding: 4px;">Cell</td></tr></table>',
+        ];
+    }
+
+    #[DataProvider('normalizeForDisplayProvider')]
+    public function testNormalizeForDisplay(string $html, string $expected): void
+    {
+        $this->assertEquals($expected, KnowbaseItem::normalizeKbRevisionDiffHtml($html));
     }
 }

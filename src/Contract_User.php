@@ -145,7 +145,7 @@ class Contract_User extends CommonDBRelation
                                 expired: false,
                             }) }}
                             {% set btn %}
-                                <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus me-1"></i>{{ btn_label }}</button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -223,6 +223,7 @@ TWIG, $twig_params);
                 'name' => 'raw_html',
                 'supplier' => 'raw_html',
                 'begin_date' => 'date',
+                'duration' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),

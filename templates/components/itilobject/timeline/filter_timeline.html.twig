@@ -122,7 +122,9 @@
    {% if get_current_interface() == 'central' %}
       <div class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View TODO list') }}">
          <button type="button"
-               class="btn btn-icon btn-ghost-secondary view-timeline-todo-list me-1">
+               class="btn btn-icon btn-ghost-secondary view-timeline-todo-list me-1"
+               aria-label="{{ __('View TODO list') }}"
+               data-testid="view-todo-list">
             <i class="ti ti-list-check"></i>
          </button>
       </div>

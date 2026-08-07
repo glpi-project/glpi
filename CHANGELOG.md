@@ -3,13 +3,95 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [11.0.6] unreleased
+## [11.0.9] unreleased
+
+### Added
+
+### Changed
+- Fixed searching values with multiple concurrent spaces.
+- Fixed import of exported forms containing a condition on an item dropdown with no item selected.
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+- Duplicate spaces in some SQL queries, including values, (usually ones that used subqueries) no longer removed.
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.8] 2026-06-24
 
 ### Added
 
 ### Changed
 
 ### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.7] 2026-04-29
+
+### Added
+- Dashboards can now be reset to the state it would have after a clean install. This is only available for dashboards added by GLPI itself.
+- CLI command `security:change_oauth_key` to (re)generate the OAuth keys. This can be used to change keys or to create them in the case they fail to be created during the installation/update process.
+
+### Changed
+- The Planning widget on the homepage now only shows events +/- 1 year from the current date instead of 5 to improve performance.
+  Future versions may reduce this even more to only show relevant events.
+- The planning widget on the homepage no longer shows completed events to improve performance and relevance.
+  Previously, it would display completed events if that filter was enabled in the calendar view.
+
+### Deprecated
+
+### Removed
+- "Associate to an appliance" and "Remove from a rack" actions removed for templates.
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.6] 2026-03-03
+
+### Added
+- New schemas/endpoints for over 25 types and models in High-Level API v2.3.
+- New schemas/endpoints for antivirus, virtual machine, connections, remote management, and many more types related to assets in High-Level API v2.3.
+- New schemas/endpoints for Email authentication servers, ldap replicates, email collectors, field unicity, and automatic actions in High-Level API v2.3.
+- New schemas/endpoints for Project and Project Task teams in High-Level API v2.3.
+- Added more properties to Project Task schema in High-Level API v2.3.
+
+### Changed
+- State visiblity data is now writable in the High-Level API. **This change affects all API versions**.
+
+### Deprecated
+- v2.0, v2.1, and v2.2 of the High-Level API. 
+These versions will still be available but will show a warning in the documentation indicating they are deprecated and will be removed in a future major version.
+If you have anything pinned to specific v2 versions, please try to pin to the latest version (v2.3) if possible to avoid future issues when the older versions are removed.
 
 ### Removed
 
@@ -813,7 +895,70 @@ The present file will list all changes made to the project; according to the
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.24] unreleased
+## [10.0.27] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.26] 2026-06-24
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.25] 2026-04-29
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.24] 2026-03-03
 
 ### Added
 

@@ -250,7 +250,7 @@ export class GlpiFormRendererController
                     targetElement = inputFields.parent();
                 }
 
-                const content = `<span id="${_.escape(errorId)}" class="invalid-tooltip ${extra_class}">${_.escape(error.message)}</span>`;
+                const content = `<span id="${_.escape(errorId)}" class="invalid-tooltip ${extra_class}" data-testid="validation-error-message">${_.escape(error.message)}</span>`;
                 if (position === "append") {
                     targetElement.append(content);
                 } else {
@@ -497,6 +497,15 @@ export class GlpiFormRendererController
         );
         if (submit_button !== null) {
             this.#applyVisibilityToItem(submit_button, results.form_visibility);
+        }
+
+        // Altcha widget must follow the same visibility as the submit button,
+        // as it has no purpose when the form cannot be submitted.
+        const altcha = container.querySelector(
+            '[data-glpi-form-renderer-altcha]'
+        );
+        if (altcha !== null) {
+            this.#applyVisibilityToItem(altcha, results.form_visibility);
         }
 
         // Apply sections visibility

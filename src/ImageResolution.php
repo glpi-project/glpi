@@ -42,6 +42,11 @@ class ImageResolution extends CommonDropdown
         return _nx('image', 'Resolution', 'Resolutions', $nb);
     }
 
+    public static function getIcon()
+    {
+        return "fas fa-expand";
+    }
+
     public function cleanDBonPurge()
     {
         $this->deleteChildrenAndRelationsFromDb([

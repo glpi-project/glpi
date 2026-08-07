@@ -73,6 +73,8 @@ use Glpi\Inventory\Asset\VirtualMachine;
 use Glpi\Inventory\Asset\Volume;
 use Glpi\Inventory\MainAsset\Itemtype;
 use Glpi\Inventory\MainAsset\MainAsset;
+use Glpi\Inventory\MainAsset\NetworkEquipment;
+use Glpi\Inventory\MainAsset\Unmanaged;
 use Lockedfield;
 use Log;
 use RecursiveDirectoryIterator;
@@ -228,7 +230,7 @@ class Inventory
             }
             return false;
         } finally {
-            $this->raw_data = $data;
+            $this->raw_data = $this->getCleanedObject($data);
         }
 
         if ($this->inventory_tmpfile !== false) {
@@ -469,8 +471,14 @@ class Inventory
             }
         } catch (Throwable $e) {
             if (!defined('TU_USER')) {
-                $DB->rollback();
+                try {
+                    $DB->rollback();
+                } catch (Throwable $rollback_e) {
+                    // Catch rollback failures so the original exception is propagated
+                }
             }
+
+            // Propagate the exception
             throw $e;
         } finally {
             unset($_SESSION['glpiinventoryuserrunning']);
@@ -848,6 +856,14 @@ class Inventory
             $this->mainasset->setExtraData($this->data);
             $this->mainasset->setAssets($this->assets);
             $item_start = microtime(true);
+            //cleanup tag
+            if (
+                ($agent = $this->mainasset?->getAgent()) instanceof Agent
+                && !($this->mainasset instanceof NetworkEquipment || $this->mainasset instanceof Unmanaged)
+                && !isset($this->metadata['tag'])
+            ) {
+                $agent->update(['tag' => '', 'id' => $agent->getID()]);
+            }
             $this->mainasset->handle();
             $this->item = $this->mainasset->getItem();
             $this->addBench($this->item->getType(), 'handle', $item_start);
@@ -1050,10 +1066,15 @@ class Inventory
         $existing_types = glob(GLPI_INVENTORY_DIR . '/*', GLOB_ONLYDIR);
 
         foreach ($existing_types as $existing_type) {
-            /** @var class-string<CommonDBTM> $itemtype */
             $itemtype = str_replace(GLPI_INVENTORY_DIR . '/', '', $existing_type);
             // use `getItemForItemtype` to fix classname case (i.e. `refusedequipement` -> `RefusedEquipement`)
-            $itemtype = getItemForItemtype($itemtype)::getType();
+            $item = getItemForItemtype($itemtype);
+            if ($item === false) {
+                // Class might not exist if it refer to a deleted custom asset type
+                continue;
+            }
+            /** @var class-string<CommonDBTM> $itemtype */
+            $itemtype = $item::getType();
             $inventory_files = new RegexIterator(
                 new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($existing_type)
@@ -1157,5 +1178,29 @@ class Inventory
             }
         }
         return $itemtypes;
+    }
+
+    private function getCleanedObject(stdClass $data): stdClass
+    {
+        $cleaned = new stdClass();
+        // @phpstan-ignore foreach.nonIterable
+        foreach ($data as $key => $value) {
+            $cleaned->$key = $this->getCleanedValue($value);
+        }
+        return $cleaned;
+    }
+
+    private function getCleanedValue(mixed $value): mixed
+    {
+        if ($value instanceof stdClass) {
+            return $this->getCleanedObject($value);
+        }
+        if (is_array($value)) {
+            return \array_map($this->getCleanedValue(...), $value);
+        }
+        if (\is_string($value)) {
+            return strip_tags($value);
+        }
+        return $value;
     }
 }

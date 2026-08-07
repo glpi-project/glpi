@@ -37,14 +37,14 @@ namespace Glpi\Api\HL\Middleware;
 
 use Glpi\Api\HL\RoutePath;
 use Glpi\Http\Request;
-use Glpi\Http\Response;
+use Psr\Http\Message\ResponseInterface;
 
 final class MiddlewareInput
 {
     public function __construct(
         public Request $request,
         public RoutePath $route_path,
-        public ?Response $response,
+        public ?ResponseInterface $response,
         public ?array $client = null,
     ) {}
 }

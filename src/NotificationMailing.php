@@ -116,7 +116,13 @@ class NotificationMailing implements NotificationInterface
         $mail->getHeaders()->addTextHeader('X-Auto-Response-Suppress', 'OOF, DR, NDR, RN, NRN');
         $mail->from(new Address($sender['email'], $sender['name'] ?? ''));
 
-        $text = __('This is a test email.') . "\n-- \n" . $CFG_GLPI["mailing_signature"];
+        $text = __('This is a test email.');
+
+        $signature = trim($CFG_GLPI["mailing_signature"]);
+        if (!empty($signature)) {
+            $text .= "\n-- \n" . $signature;
+        }
+
         $recipient = $CFG_GLPI['admin_email'];
         if (defined('GLPI_FORCE_MAIL')) {
             Toolbox::deprecated('Usage of the `GLPI_FORCE_MAIL` constant is deprecated. Please use a mail catcher service instead.');

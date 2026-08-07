@@ -93,6 +93,8 @@
 {% endblock content_title %}
 
 {% block content_body %}
+    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::DISPLAY_SERVICE_CATALOG')) }}
+
     <section
         aria-label="{{ __("Forms") }}"
         class="row mb-5"
@@ -109,6 +111,7 @@
                 'items_per_page': constant('Glpi\\Form\\ServiceCatalog\\ServiceCatalogManager::ITEMS_PER_PAGE'),
                 'is_default_search': true,
                 'expand_categories': expand_categories,
+                'default_sort_strategy': default_sort_strategy,
             },
             with_context = false
         ) }}
@@ -122,7 +125,7 @@
             {% for key, icon in icons %}
                 icons["{{ key|escape('js') }}"] = "{{ icon|escape('js') }}";
             {% endfor %}
-            window.GlpiServiceCatalog = new module.GlpiFormServiceCatalogController(icons);
+            window.GlpiServiceCatalog = new module.GlpiFormServiceCatalogController(icons, "{{ default_sort_strategy|escape('js') }}");
         })();
     </script>
 {% endblock content_body %}

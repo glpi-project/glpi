@@ -295,6 +295,15 @@ class Calendar extends CommonDropdown
             return 0;
         }
 
+        // `$start` and/or `$end` may be the `'NULL'` SQL sentinel string (for
+        // instance, reopening a solved/closed ITIL object resets `solvedate` and
+        // `closedate` to `'NULL'`) or be empty. These are not parseable dates:
+        // return early instead of letting `Safe\strtotime()` (used below) throw an
+        // uncaught `DatetimeException`.
+        if (empty($start) || empty($end) || $start === 'NULL' || $end === 'NULL') {
+            return 0;
+        }
+
         if ($end < $start) {
             return 0;
         }

@@ -201,6 +201,24 @@ class MailCollector extends CommonDBTM
      */
     public function prepareInput(array $input, $mode = 'add')
     {
+        if (
+            $mode === 'add'
+            && !array_key_exists('mail_server', $input)
+            && !array_key_exists('server_type', $input)
+            && isset($input['host'])
+        ) {
+            $config = Toolbox::parseMailServerConnectString($input['host']);
+            $input['mail_server'] = $config['address'];
+            $input['server_port'] = $config['port'];
+            $input['server_mailbox'] = $config['mailbox'];
+            $input['server_type'] = $config['type'] ? '/' . $config['type'] : '';
+            $input['server_tls']         = $config['tls'] ? '/tls' : '';
+            $input['server_ssl']         = $config['ssl'] ? '/ssl' : '';
+            $input['server_cert'] = $config['validate-cert'] ? '/validate-cert' : '/novalidate-cert';
+            $input['server_rsh']    = $config['norsh'] ? '/norsh' : '';
+            $input['server_secure'] = $config['secure'] ? '/secure' : '';
+            $input['server_debug']  = $config['debug'] ? '/debug' : '';
+        }
         $missing_fields = [];
         if (($mode === 'add' || array_key_exists('mail_server', $input)) && empty($input['mail_server'])) {
             $missing_fields[] = __('Server');
@@ -1641,6 +1659,17 @@ class MailCollector extends CommonDBTM
             }
 
             $contents = $this->getDecodedContent($part);
+
+            // Restore CRLF line endings for message/rfc822 (embedded email) attachments.
+            // The Laminas MIME parser strips all \r characters when splitting multipart
+            // boundaries (see Laminas\Mime\Decode::splitMime), which produces LF-only
+            // line endings. RFC 2822 requires CRLF, and without them, Quoted-Printable
+            // soft line breaks (=\r\n) become invalid (=\n), making the extracted EML
+            // unreadable in strict clients such as Outlook.
+            if (strtolower($content_type) === 'message/rfc822') {
+                $contents = preg_replace('/(?<!\r)\n/', "\r\n", $contents);
+            }
+
             if (file_put_contents($path . $filename, $contents)) {
                 $this->files[$filename] = $filename;
 
@@ -1722,25 +1751,55 @@ class MailCollector extends CommonDBTM
                 $content = '';
 
                 // Extract everything located prior to doctype/html declaration
-                $pre_content_matches = [];
-                if (preg_match('/^(?<pre_content>.*?)(?:<!doctype|<html)/is', $raw_content, $pre_content_matches)) {
-                    $content .= trim($pre_content_matches['pre_content']);
+                $html_opening_matches = [];
+                if (preg_match('/(<!doctype|<html)/uis', $raw_content, $html_opening_matches, PREG_OFFSET_CAPTURE) === 1) {
+                    // Regex offset is in bytes, not in chars, and must be converted for unicode support
+                    $html_opening_pos = mb_strlen(substr($raw_content, 0, $html_opening_matches[1][1] ?? 0));
+
+                    $content .= mb_substr(
+                        $raw_content,
+                        0,
+                        $html_opening_pos
+                    );
                 }
 
                 // Extract everything located inside the body
-                $body_matches = [];
-                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $raw_content, $body_matches)) {
-                    $content .= $body_matches['body'];
+                $body_opening_matches = [];
+                $body_closing_matches = [];
+                if (
+                    preg_match('/(<body[^>]*>)/uis', $raw_content, $body_opening_matches, PREG_OFFSET_CAPTURE) === 1
+                    && preg_match('/(<\/body>)/uis', $raw_content, $body_closing_matches, PREG_OFFSET_CAPTURE) === 1
+                    && ($body_closing_matches[1][1] ?? 0) > ($body_opening_matches[1][1] ?? 0)
+                ) {
+                    // Regex offset is in bytes, not in chars, and must be converted for unicode support
+                    $body_opening_pos = mb_strlen(substr($raw_content, 0, $body_opening_matches[1][1] ?? 0));
+                    $body_closing_pos = mb_strlen(substr($raw_content, 0, $body_closing_matches[1][1] ?? 0));
+
+                    $body_content_start_pos = $body_opening_pos + mb_strlen($body_opening_matches[1][0] ?? '');
+                    $body_content_end_pos   = $body_closing_pos;
+
+                    $content .= mb_substr(
+                        $raw_content,
+                        $body_content_start_pos,
+                        $body_content_end_pos - $body_content_start_pos
+                    );
                 }
 
                 // Extract everything located after the html closing tag
-                $post_content_matches = [];
-                if (preg_match('/(?:<\/html>)(?<post_content>.*?)$/is', $raw_content, $post_content_matches)) {
-                    $content .= trim($post_content_matches['post_content']);
+                $html_closing_matches = [];
+                if (preg_match('/(<\/html>)/uis', $raw_content, $html_closing_matches, PREG_OFFSET_CAPTURE) === 1) {
+                    // Regex offset is in bytes, not in chars, and must be converted for unicode support
+                    $html_closing_pos = mb_strlen(substr($raw_content, 0, $html_closing_matches[1][1] ?? 0));
+
+                    $content .= mb_substr(
+                        $raw_content,
+                        $html_closing_pos + mb_strlen($html_closing_matches[1][0] ?? ''),
+                        null
+                    );
                 }
 
                 // If we have extracted content, use it, otherwise fallback to original
-                if ($content === '') {
+                if (trim($content) === '') {
                     $content = $raw_content;
                 }
 
@@ -2004,10 +2063,13 @@ class MailCollector extends CommonDBTM
         $mail->to($to);
         // Normalized header, no translation
         $mail->subject('Re: ' . $subject);
+
+        $signature = trim($CFG_GLPI["mailing_signature"]);
         $mail->text(
             __("Your email could not be processed.\nIf the problem persists, contact the administrator")
-             . "\n-- \n" . $CFG_GLPI["mailing_signature"]
+             . (!empty($signature) ? "\n-- \n" . $signature : '')
         );
+
         $mmail->send();
     }
 
@@ -2256,7 +2318,7 @@ class MailCollector extends CommonDBTM
         $new_pattern = '/'
             . 'GLPI'
             . '_(?<uuid>[a-z0-9]+)' // uuid
-            . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
+            . '(-(?<itemtype>[a-z\-]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
             . '\/(?<event>[a-z_]+)' // event
             . '(\.[0-9]+\.[0-9]+)?' // optional time + rand (only when NOT related to an item OR when event is not the reference one)
             . '@.+'     // uname
@@ -2265,7 +2327,7 @@ class MailCollector extends CommonDBTM
         if (preg_match($new_pattern, $header, $values) === 1) {
             return [
                 'uuid'     => $values['uuid'],
-                'itemtype' => !empty($values['itemtype']) ? $values['itemtype'] : null,
+                'itemtype' => !empty($values['itemtype']) ? str_replace('-', '\\', $values['itemtype']) : null, // restore backslashes in namespaced classes
                 'items_id' => !empty($values['items_id']) ? (int) $values['items_id'] : null,
                 'event'    => $values['event'],
             ];

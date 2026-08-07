@@ -224,18 +224,10 @@ abstract class AbstractRequest
     }
 
     /**
-     * Handle agent request
-     *
-     * @param mixed $data Sent data
-     *
-     * @return bool
+     * Auhenticate request if required by configuration
      */
-    public function handleRequest(mixed $data): bool
+    public function authenticateRequest(): bool
     {
-        $base_mode = $this->mode;
-        $guess_mode = ($base_mode === null);
-        $this->setMode(self::JSON_MODE);
-
         $auth_required = false;
         if (!$this->isLocal()) {
             $auth_required = Config::getConfigurationValue('inventory', 'auth_required');
@@ -267,17 +259,23 @@ abstract class AbstractRequest
             } else {
                 $allowed = false;
                 // if Authorization start with 'Basic'
+                $matches = [];
                 if (preg_match('/^Basic\s+(.*)$/i', $authorization_header, $matches)) {
-                    $inventory_login = Config::getConfigurationValue('inventory', 'basic_auth_login');
-                    $inventory_password = (new GLPIKey())
-                        ->decrypt(Config::getConfigurationValue('inventory', 'basic_auth_password'));
-                    $agent_credential = base64_decode($matches[1]);
-                    [$agent_login, $agent_password] = explode(':', $agent_credential, 2);
+                    $agent_credentials = explode(':', base64_decode($matches[1]), 2);
                     if (
-                        $inventory_login == $agent_login
-                        && $inventory_password == $agent_password
+                        count($agent_credentials) !== 2
+                        || $agent_credentials[0] === ''
+                        || $agent_credentials[1] === ''
                     ) {
-                        $allowed = true;
+                        // Login and/or password is missing or empty
+                        $allowed = false;
+                    } else {
+                        $expected_login = Config::getConfigurationValue('inventory', 'basic_auth_login');
+                        $expected_password = (new GLPIKey())
+                            ->decrypt(Config::getConfigurationValue('inventory', 'basic_auth_password'));
+
+                        $allowed = $agent_credentials[0] === $expected_login
+                            && $agent_credentials[1] === $expected_password;
                     }
                 }
                 if (!$allowed) {
@@ -286,6 +284,26 @@ abstract class AbstractRequest
                     return false;
                 }
             }
+        }
+
+        return true;
+    }
+
+    /**
+     * Handle agent request
+     *
+     * @param mixed $data Sent data
+     *
+     * @return bool
+     */
+    public function handleRequest(mixed $data): bool
+    {
+        $base_mode = $this->mode;
+        $guess_mode = ($base_mode === null);
+        $this->setMode(self::JSON_MODE);
+
+        if (!$this->authenticateRequest()) {
+            return false;
         }
 
         // Some network inventories may request may contain lots of information.
@@ -423,7 +441,7 @@ abstract class AbstractRequest
 
         $jdata = json_decode($data);
 
-        $this->deviceid = $jdata->deviceid ?? null;
+        $this->deviceid = $jdata->deviceid ?? '';
         $action = self::INVENT_ACTION;
         if (property_exists($jdata, 'action')) {
             $action = $jdata->action;

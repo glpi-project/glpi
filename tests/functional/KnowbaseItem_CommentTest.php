@@ -40,11 +40,6 @@ use KnowbaseItem_Comment;
 use KnowbaseItem_User;
 use Session;
 
-/* Test for inc/knowbaseitem_comment.class.php */
-
-/**
- * @engine isolate
- */
 class KnowbaseItem_CommentTest extends DbTestCase
 {
     public function testGetTypeName()

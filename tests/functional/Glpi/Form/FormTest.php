@@ -41,6 +41,7 @@ use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Category;
 use Glpi\Form\Comment;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
@@ -885,5 +886,36 @@ class FormTest extends DbTestCase
 
         // Assert: the conditions should be deleted
         $this->assertEmpty($form->getConfiguredConditionsData());
+    }
+
+    public function testTabCountExcludeDrafts(): void
+    {
+        // Arrange: create 3 forms in a category (one is a draft)
+        $category = $this->createItem(Category::class, [
+            'name' => 'My category',
+        ]);
+        $this->createItem(Form::class, [
+            'name'                => 'Draft form',
+            'is_draft'            => 1,
+            'forms_categories_id' => $category->getID(),
+        ]);
+        $this->createItem(Form::class, [
+            'name'                => 'Normal form 1',
+            'is_draft'            => 0,
+            'forms_categories_id' => $category->getID(),
+        ]);
+        $this->createItem(Form::class, [
+            'name'                => 'Normal form 2',
+            'is_draft'            => 0,
+            'forms_categories_id' => $category->getID(),
+        ]);
+
+        // Act: get tab names for this category
+        $form = new Form();
+        $name = $form->getTabNameForItem($category);
+
+        // Assert: tab count should only indicate two items
+        $name = strip_tags($name);
+        $this->assertEquals("Forms 2", $name);
     }
 }

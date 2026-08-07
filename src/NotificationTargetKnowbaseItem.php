@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Toolbox\URL;
+
 /**
  * @extends NotificationTarget<KnowbaseItem>
  */
@@ -169,7 +171,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                 '##document.downloadurl##'             => $document->getDownloadLink(),
                 '##document.url##'                     => $document->getLink(),
                 '##document.filename##'                => $document->fields['filename'],
-                '##document.weblink##'                 => $document->fields['link'],
+                '##document.weblink##'                 => URL::sanitizeURL($document->fields['link']),
                 '##document.id##'                      => $document->getID(),
                 '##document.heading##'                 => $document->fields['name'],
                 '##document.name##'                    => $document->fields['name'],

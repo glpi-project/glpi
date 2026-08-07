@@ -37,6 +37,7 @@ namespace tests\units;
 use Glpi\Tests\DbTestCase;
 use MassiveAction;
 use SavedSearch;
+use Ticket;
 
 /* Test for inc/savedsearch.class.php */
 
@@ -286,5 +287,161 @@ class SavedSearchTest extends DbTestCase
             'Change visibility',
             'Change entity',
         ], array_values($actions));
+    }
+
+    public function testCannotChangeVisibilityMA()
+    {
+        $this->login();
+        $private_savedsearch = $this->createItem(SavedSearch::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+            'users_id' => $_SESSION['glpiID'],
+            'itemtype' => Ticket::class,
+            'is_private' => 1,
+            'type' => 1,
+            'url' => '/front/ticket.php',
+        ], ['url']);
+
+        $ma = new MassiveAction([
+            'is_private' => 0,
+            'action' => 'change_visibility',
+            'action_name' => 'change_visibility',
+            'processor' => 'SavedSearch',
+            'initial_item' => [
+                'SavedSearch' => [$private_savedsearch->getID() => $private_savedsearch->getID()],
+            ],
+            'items' => [
+                'SavedSearch' => [$private_savedsearch->getID() => $private_savedsearch->getID()],
+            ],
+        ], [
+            '_single_item' => [
+                'itemtype' => SavedSearch::class,
+                'id' => 1,
+            ],
+        ], 'process', null);
+        SavedSearch::processMassiveActionsForOneItemtype($ma, new SavedSearch(), [$private_savedsearch->getID()]);
+        $this->assertEquals(0, $ma->results['noright']);
+        $this->assertEquals(1, $ma->results['ok']);
+
+        $_SESSION['glpiactiveprofile'][SavedSearch::$rightname] = 0;
+
+        $actions = MassiveAction::getAllMassiveActions(SavedSearch::class);
+        $this->assertNotContains('Change visibility', $actions);
+
+        $ma = new MassiveAction([
+            'is_private' => 0,
+            'action' => 'change_visibility',
+            'action_name' => 'change_visibility',
+            'processor' => 'SavedSearch',
+            'initial_item' => [
+                'SavedSearch' => [$private_savedsearch->getID() => $private_savedsearch->getID()],
+            ],
+            'items' => [
+                'SavedSearch' => [$private_savedsearch->getID() => $private_savedsearch->getID()],
+            ],
+        ], [
+            '_single_item' => [
+                'itemtype' => SavedSearch::class,
+                'id' => 1,
+            ],
+        ], 'process', null);
+        SavedSearch::processMassiveActionsForOneItemtype($ma, new SavedSearch(), [$private_savedsearch->getID()]);
+        $this->assertEquals(1, $ma->results['noright']);
+        $this->assertEquals(0, $ma->results['ok']);
+    }
+
+    public function testPrepareInputAdd()
+    {
+        $this->login();
+
+        $saved_search = new SavedSearch();
+        // URL and type must both be provided
+        $this->assertFalse($saved_search->prepareInputForAdd([
+            'type' => 1,
+        ]));
+        $this->assertFalse($saved_search->prepareInputForAdd([
+            'url' => 'https://glpi-project.org?test=1',
+        ]));
+        $this->assertEquals([
+            'type' => 1,
+            'url' => 'https://glpi-project.org?test=1',
+            'query' => 'test=1',
+        ], $saved_search->prepareInputForAdd([
+            'type' => 1,
+            'url' => 'https://glpi-project.org?test=1',
+        ]));
+        $this->assertEquals([
+            'type' => 1,
+            'url' => 'https://glpi-project.org',
+            'is_private' => 0,
+            'query' => '',
+        ], $saved_search->prepareInputForAdd([
+            'type' => 1,
+            'url' => 'https://glpi-project.org',
+            'is_private' => 0,
+        ]));
+
+        // Remove permissions to only allow private saved searches
+        $_SESSION['glpiactiveprofile'][SavedSearch::$rightname] = 0;
+
+        $this->assertFalse($saved_search->prepareInputForAdd([
+            'type' => 1,
+            'url' => 'https://glpi-project.org',
+            'is_private' => 0,
+        ]));
+        $this->assertEquals([
+            'type' => 1,
+            'url' => 'https://glpi-project.org',
+            'is_private' => 1,
+            'query' => '',
+        ], $saved_search->prepareInputForAdd([
+            'type' => 1,
+            'url' => 'https://glpi-project.org',
+            'is_private' => 1,
+        ]));
+        // is_private defaults to 1 in the DB
+        $this->assertEquals([
+            'type' => 1,
+            'url' => 'https://glpi-project.org',
+            'query' => '',
+        ], $saved_search->prepareInputForAdd([
+            'type' => 1,
+            'url' => 'https://glpi-project.org',
+        ]));
+    }
+
+    public function testPrepateInputUpdate()
+    {
+        $this->login();
+
+        $saved_search = new SavedSearch();
+        $saved_search->fields = [
+            'id' => 999,
+            'type' => 1,
+            'url' => 'https://glpi-project.org',
+            'is_private' => 1,
+        ];
+        $this->assertEquals([
+            'is_private' => 0,
+        ], $saved_search->prepareInputForUpdate([
+            'is_private' => 0,
+        ]));
+        $this->assertEquals([
+            'is_private' => 1,
+        ], $saved_search->prepareInputForUpdate([
+            'is_private' => 1,
+        ]));
+
+        // Remove permissions to only allow private saved searches
+        $_SESSION['glpiactiveprofile'][SavedSearch::$rightname] = 0;
+
+        $this->assertFalse($saved_search->prepareInputForUpdate([
+            'is_private' => 0,
+        ]));
+        $this->assertEquals([
+            'is_private' => 1,
+        ], $saved_search->prepareInputForUpdate([
+            'is_private' => 1,
+        ]));
     }
 }

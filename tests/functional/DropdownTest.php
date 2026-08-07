@@ -77,6 +77,11 @@ use Toolbox;
 use User;
 use UserTitle;
 
+use function Safe\json_decode;
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+use function Safe\preg_match;
+
 /* Test for inc/dropdown.class.php */
 
 class DropdownTest extends DbTestCase
@@ -1743,60 +1748,22 @@ HTML;
             array_keys((array) $values['results'][0])
         );
 
-        //use a array condition
-        $post = [
-            'itemtype'              => $location::getType(),
-            'condition'             => ['name' => ['LIKE', "%3%"]],
-            'display_emptychoice'   => true,
-            'entity_restrict'       => 0,
-            'page'                  => 1,
-            'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]]),
-        ];
-        $values = Dropdown::getDropdownValue($post);
-        $values = (array) json_decode($values);
-
-        $this->assertEquals(3, $values['count']);
-        $this->assertCount(2, $values['results']);
-
-        //use a WHERE array condition
-        $post = [
-            'itemtype'              => $location::getType(),
-            'condition'             => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]],
-            'display_emptychoice'   => true,
-            'entity_restrict'       => 0,
-            'page'                  => 1,
-            'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]),
-        ];
-        $values = Dropdown::getDropdownValue($post);
-        $values = (array) json_decode($values);
-
-        $this->assertEquals(3, $values['count']);
-        $this->assertCount(2, $values['results']);
-
-        //use a "multiple" WHERE array condition
-        $post = [
-            'itemtype'              => $location::getType(),
-            'condition'             => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]],
-            'display_emptychoice'   => true,
-            'entity_restrict'       => 0,
-            'page'                  => 1,
-            'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]]),
-        ];
-        $values = Dropdown::getDropdownValue($post);
-        $values = (array) json_decode($values);
-
-        $this->assertEquals(3, $values['count']);
-        $this->assertCount(2, $values['results']);
-
         //use a string condition
         // Put condition in session and post its key
-        $condition_key = sha1(serialize($post['condition']));
-        $_SESSION['glpicondition'][$condition_key] = $post['condition'];
-        $post['condition']   = $condition_key;
-        $post['_idor_token'] = Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]);
+        $condition = ['name' => ['LIKE', "%3%"]];
+        $condition_key = sha1(serialize($condition));
+        $_SESSION['glpicondition'][$condition_key] = $condition;
+
+        $post = [
+            'itemtype'              => $location::getType(),
+            'condition'             => $condition_key,
+            'display_emptychoice'   => true,
+            'entity_restrict'       => 0,
+            'page'                  => 1,
+            'page_limit'            => 10,
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]),
+        ];
+
         $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
 
@@ -1804,14 +1771,15 @@ HTML;
         $this->assertCount(2, $values['results']);
 
         //use a condition that does not exist in session
+        $condition_key = 'not_in_session';
         $post = [
             'itemtype'              => $location::getType(),
-            'condition'             => '`name` LIKE "%4%"',
+            'condition'             => $condition_key,
             'display_emptychoice'   => true,
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"']),
+            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]),
         ];
         $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
@@ -2704,6 +2672,15 @@ HTML;
             'serial' => 'LAP456',
             'otherserial' => 'INV789',
         ]);
+        // Assigned directly to user and group, should be visible only once
+        $computer_3 = $this->createItem(Computer::class, [
+            'name' => 'Test user and group Laptop',
+            'users_id' => $user_id,
+            'groups_id' => [$group_id],
+            'entities_id' => $entity_id,
+            'serial' => 'LAP789',
+            'otherserial' => 'INV999',
+        ]);
 
         $monitor_1 = $this->createItem(Monitor::class, [
             'name' => 'Test Monitor 24"',
@@ -2779,6 +2756,12 @@ HTML;
                             'itemtype' => Computer::class,
                             'items_id' => $computer_1->getID(),
                         ],
+                        [
+                            'id'       => Computer::class . '_' . $computer_3->getID(),
+                            'text'     => 'Test user and group Laptop - LAP789 - INV999',
+                            'itemtype' => Computer::class,
+                            'items_id' => $computer_3->getID(),
+                        ],
                     ],
                 ],
                 [
@@ -2838,6 +2821,12 @@ HTML;
                             'text'     => 'Test Laptop - LAP123 - INV456',
                             'itemtype' => Computer::class,
                             'items_id' => $computer_1->getID(),
+                        ],
+                        [
+                            'id'       => Computer::class . '_' . $computer_3->getID(),
+                            'text'     => 'Test user and group Laptop - LAP789 - INV999',
+                            'itemtype' => Computer::class,
+                            'items_id' => $computer_3->getID(),
                         ],
                         [
                             'id'       => Computer::class . '_' . $computer_2->getID(),
@@ -2994,12 +2983,16 @@ HTML;
             'projects_id' => $project->getID(),
         ]);
 
+        $condition = ['NOT' => ['glpi_projecttasks.name' => ['Task excluded by condition']]];
+        $condition_key = sha1(serialize($condition));
+        $_SESSION['glpicondition'][$condition_key] = $condition;
+
         $params = [
             'itemtype' => ProjectTask::class,
             'display_emptychoice' => false,
             'entity_restrict' => 0,
             'used' => [$task_used->getID() => $task_used->getID()],
-            'condition' => ['NOT' => ['glpi_projecttasks.name' => ['Task excluded by condition']]],
+            'condition' => $condition_key,
         ];
         $params['_idor_token'] = Session::getNewIDORToken(ProjectTask::class, $params);
 
@@ -3049,11 +3042,15 @@ HTML;
         $this->assertNotContains($project->getID(), $ids);
 
         // Ensure deleted project is present if the condition is overriden
+        $condition = ['is_deleted' => 1];
+        $condition_key = sha1(serialize($condition));
+        $_SESSION['glpicondition'][$condition_key] = $condition;
+
         $params = [
             'itemtype'            => Project::class,
             'display_emptychoice' => false,
             'entity_restrict'     => $root_entity_id,
-            'condition' => ['is_deleted' => 1],
+            'condition' => $condition_key,
         ];
         $params['_idor_token'] = Session::getNewIDORToken(Project::class, $params);
 
@@ -3067,5 +3064,114 @@ HTML;
         }
 
         $this->assertContains($project->getID(), $ids);
+    }
+
+    public function testDropdownAllItemsEntityRestrictIsStringInJsConfig(): void
+    {
+        $this->login();
+
+        // A JS array causes jQuery to expand entity_restrict into N POST params, exhausting
+        // max_input_vars and silently truncating _idor_token.
+        $_POST['idtable']             = 'Ticket';
+        $_POST['name']                = 'items_id_2';
+        $_POST['display_emptychoice'] = 1;
+        $_POST['entity_restrict']     = [0, 1, 2];
+
+        ob_start();
+        include GLPI_ROOT . '/ajax/dropdownAllItems.php';
+        $output = ob_get_clean();
+
+        unset($_POST['idtable'], $_POST['name'], $_POST['display_emptychoice'], $_POST['entity_restrict']);
+
+        $this->assertMatchesRegularExpression(
+            '/"entity_restrict"\s*:\s*"[^"]*"/',
+            $output,
+            'entity_restrict must be a JSON string in the Select2 config, not a JS array'
+        );
+        $this->assertDoesNotMatchRegularExpression(
+            '/"entity_restrict"\s*:\s*\[/',
+            $output,
+            'entity_restrict must not be a JS array (would cause N POST params per entity)'
+        );
+    }
+
+    public function testDropdownAllItemsEntityRestrictIsStringInShowItemSpecificity(): void
+    {
+        $this->login();
+
+        // Same array-expansion risk as testDropdownAllItemsEntityRestrictIsStringInJsConfig,
+        // but on the showItemSpecificity ajax call params.
+        $_POST['idtable']             = 'Ticket';
+        $_POST['name']                = 'items_id_2';
+        $_POST['display_emptychoice'] = 1;
+        $_POST['entity_restrict']     = [0, 1, 2];
+        $_POST['showItemSpecificity'] = 'ajax/dummy.php';
+
+        ob_start();
+        include GLPI_ROOT . '/ajax/dropdownAllItems.php';
+        $output = ob_get_clean();
+
+        unset(
+            $_POST['idtable'],
+            $_POST['name'],
+            $_POST['display_emptychoice'],
+            $_POST['entity_restrict'],
+            $_POST['showItemSpecificity']
+        );
+
+        $this->assertMatchesRegularExpression(
+            '/entity_restrict:"[^"]*"/',
+            $output,
+            'entity_restrict must be a JSON string in the showItemSpecificity call, not a JS array'
+        );
+        $this->assertDoesNotMatchRegularExpression(
+            '/entity_restrict:\[/',
+            $output,
+            'entity_restrict must not be a JS array (would cause N POST params per entity)'
+        );
+    }
+
+    public function testSearchByContactField(): void
+    {
+        $this->login();
+
+        $computer = new Computer();
+        $computer_with_contact_id = $computer->add([
+            'name'        => 'PC-ContactSearch-Found',
+            'contact'     => 'Jean Dupont',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertGreaterThan(0, $computer_with_contact_id);
+
+        $other_computer_id = $computer->add([
+            'name'        => 'PC-ContactSearch-Other',
+            'contact'     => 'Marie Martin',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->assertGreaterThan(0, $other_computer_id);
+
+        $displaywith = Dropdown::getDisplayWith(Computer::class);
+        $this->assertContains('contact', $displaywith);
+
+        $params = [
+            'itemtype'            => Computer::class,
+            'display_emptychoice' => false,
+            'entity_restrict'     => $this->getTestRootEntity(true),
+            'searchText'          => 'Jean',
+            'displaywith'         => $displaywith,
+        ];
+        $params['_idor_token'] = Session::getNewIDORToken(Computer::class, $params);
+
+        $result = Dropdown::getDropdownValue($params, false);
+
+        $ids = [];
+        foreach ($result['results'] as $group) {
+            foreach ($group['children'] ?? [$group] as $item) {
+                $ids[] = $item['id'];
+            }
+        }
+
+        $this->assertContains($computer_with_contact_id, $ids);
+        $this->assertNotContains($other_computer_id, $ids);
     }
 }

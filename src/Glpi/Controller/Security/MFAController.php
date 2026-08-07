@@ -45,6 +45,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class MFAController extends AbstractController
@@ -59,9 +60,16 @@ final class MFAController extends AbstractController
         if (!isset($_SESSION['mfa_pre_auth'])) {
             return new RedirectResponse($request->getBasePath() . '/front/login.php');
         }
-        return new StreamedResponse(static function () {
-            $totp = new TOTPManager();
-            $totp->showTOTPSetupForm((int) $_SESSION['mfa_pre_auth']['user_id']);
+
+        $user_id = (int) $_SESSION['mfa_pre_auth']['user_id'];
+
+        $totp = new TOTPManager();
+        if ($totp->is2FAEnabled($user_id)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        return new StreamedResponse(static function () use ($totp, $user_id) {
+            $totp->showTOTPSetupForm($user_id);
         });
     }
 
@@ -107,6 +115,8 @@ final class MFAController extends AbstractController
         $query_params = isset($pre_auth_data['redirect']) ? sprintf('redirect=%s', $pre_auth_data['redirect']) : '';
 
         if (!($in_grace_period && $request->request->has('skip_mfa'))) {
+            $totp->checkMFARateLimit($users_id);
+
             if (
                 !(
                     (isset($backup_code) && $totp->verifyBackupCodeForUser($backup_code, $users_id))
@@ -130,6 +140,7 @@ final class MFAController extends AbstractController
                 Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
                 return new RedirectResponse($from_login ? ($request->getBasePath() . '/MFA/Prompt') : Html::getBackUrl());
             }
+            $totp->clearMFAFailures($users_id);
             $_SESSION['mfa_success'] = true;
             if ($from_login) {
                 // If backup codes already generated, continue the login. Otherwise show/generate them.
@@ -141,7 +152,7 @@ final class MFAController extends AbstractController
         } else {
             // 2FA is not set up yet, the user is in a grace period, and the user chose to skip it
             $_SESSION['mfa_exploit_grace_period'] = true;
-            $next_page = '/front/login.php?' . $query_params;
+            $next_page = $request->getBasePath() . '/front/login.php?' . $query_params;
         }
 
         return new RedirectResponse($next_page);

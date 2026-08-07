@@ -43,11 +43,14 @@
 } %}
 
 {% block form_fields %}
+    {% set date = item.isNewItem() ? session('glpi_currenttime') : item.fields['date'] %}
+    {{ fields.datetimeField('date', date, __('Creation date'), field_options) }}
     {% if not item.isNewItem() and not is_template %}
-        {{ fields.datetimeField('date', item.fields['date'], __('Creation date'), field_options) }}
-        {{ fields.htmlField('date_mod', item.fields['date_mod']|formatted_datetime, __('Last update')) }}
+        {{ fields.htmlField('date_mod', item.fields['date_mod']|formatted_datetime|e, __('Last update')) }}
     {% elseif is_template and not item.isNewItem() and no_header %}
         {{ fields.autoNameField('template_name', item, __('Template name'), 0, field_options) }}
+        {{ fields.nullField() }}
+    {% elseif item.isNewItem() %}
         {{ fields.nullField() }}
     {% endif %}
     {{ fields.autoNameField('name', item, __('Name'), withtemplate, field_options) }}
@@ -117,10 +120,10 @@
     {{ fields.datetimeField('real_start_date', item.fields['real_start_date'], __('Real start date'), field_options|merge({clearable: true})) }}
     {{ fields.datetimeField('plan_end_date', item.fields['plan_end_date'], __('Planned end date'), field_options|merge({clearable: true})) }}
     {{ fields.datetimeField('real_end_date', item.fields['real_end_date'], __('Real end date'), field_options|merge({clearable: true})) }}
-    {{ fields.htmlField('planned_duration', planned_duration|formatted_duration(false), __('Planned duration'), field_options|merge({
+    {{ fields.htmlField('planned_duration', planned_duration|formatted_duration(false)|e, __('Planned duration'), field_options|merge({
         helper: __('Sum of planned durations of tasks')
     })) }}
-    {{ fields.htmlField('effective_duration', effective_duration|formatted_duration(false), __('Effective duration'), field_options|merge({
+    {{ fields.htmlField('effective_duration', effective_duration|formatted_duration(false)|e, __('Effective duration'), field_options|merge({
         helper: __('Sum of total effective durations of tasks')
     })) }}
 

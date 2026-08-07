@@ -280,6 +280,9 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             unset($output[$action->fields["field"] . '_notif']);
 
                             if ($action->fields["value"] === 'requester_manager') {
+                                if (!is_array($input['_users_id_requester'])) {
+                                    $input['_users_id_requester'] = [$input['_users_id_requester']];
+                                }
                                 foreach ($input['_users_id_requester'] as $user_id) {
                                     $user = new User();
                                     $user->getFromDB($user_id);
@@ -360,6 +363,9 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             )
                             && $action->fields["value"] === 'requester_manager'
                         ) {
+                            if (!is_array($input['_users_id_requester'])) {
+                                $input['_users_id_requester'] = [$input['_users_id_requester']];
+                            }
                             foreach ($input['_users_id_requester'] as $user_id) {
                                 $user = new User();
                                 $user->getFromDB($user_id);
@@ -654,11 +660,14 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
 
     public function getCriterias()
     {
-        static $criterias = [];
+        static $criterias_by_class = [];
 
-        if (count($criterias)) {
-            return $criterias;
+        $rule_class = static::class;
+        if (isset($criterias_by_class[$rule_class])) {
+            return $criterias_by_class[$rule_class];
         }
+
+        $criterias = [];
 
         $itemtype = static::getItemtype();
         $itil_table = $itemtype::getTable();
@@ -812,7 +821,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
             $criterias['global_validation']['type'] = 'dropdown_validation_status';
 
             // validation step name
-            $criterias['_validationsteps_id']['name'] = ValidationStep::getTypeName(1) . ' debug';
+            $criterias['_validationsteps_id']['name'] = ValidationStep::getTypeName(1);
             $criterias['_validationsteps_id']['type'] = 'dropdown';
             $criterias['_validationsteps_id']['table'] = ValidationStep::getTable();
             $criterias['_validationsteps_id']['field'] = 'name';
@@ -825,6 +834,8 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
             'linkfield'       => '_date_creation_calendars_id',
             'type'            => 'dropdown',
         ];
+
+        $criterias_by_class[$rule_class] = $criterias;
 
         return $criterias;
     }

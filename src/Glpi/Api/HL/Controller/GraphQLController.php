@@ -37,12 +37,12 @@ namespace Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\GraphQL;
-use Glpi\Api\HL\GraphQLGenerator;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use GraphQL\Utils\SchemaPrinter;
 
 #[Route(path: '/GraphQL', priority: 1, tags: ['GraphQL'])]
 final class GraphQLController extends AbstractController
@@ -52,7 +52,27 @@ final class GraphQLController extends AbstractController
     #[Doc\Route(description: 'GraphQL API')]
     public function index(Request $request): Response
     {
-        return new JSONResponse(GraphQL::processRequest($request));
+        $result = GraphQL::processRequest($request);
+        if ($result === []) {
+            return new JSONResponse([]);
+        }
+        $response_data = $result['result']->toArray();
+        $headers = [];
+        if (isset($result['context']->pagination)) {
+            // Backwards compatibility handling, but this was never correct. GraphQL requests may contain multiple queries, and each query may have its own pagination.
+            if (count($result['context']->pagination) === 1) {
+                $pagination = reset($result['context']->pagination);
+                $headers['Content-Range'] = sprintf(
+                    '%d-%d/%d',
+                    $pagination['start'],
+                    max($pagination['start'] + $pagination['limit'] - 1, 0),
+                    $pagination['total_count']
+                );
+            }
+            // More correct handling of paginations is adding a "pagination" field to the "extensions" part of the response, which is designed for this kind of metadata.
+            $response_data['extensions']['pagination'] = $result['context']->pagination;
+        }
+        return new JSONResponse($response_data, 200, $headers);
     }
 
     #[Route(path: '/Schema', methods: ['GET'], security_level: Route::SECURITY_AUTHENTICATED, scopes: ['graphql'])]
@@ -60,7 +80,7 @@ final class GraphQLController extends AbstractController
     #[Doc\Route(description: 'GraphQL API Schema')]
     public function getSchema(Request $request): Response
     {
-        $graphql_generator = new GraphQLGenerator($this->getAPIVersion($request));
-        return new Response(200, [], $graphql_generator->getSchema());
+        $schema_generator = new GraphQL\SchemaGenerator($this->getAPIVersion($request));
+        return new Response(200, [], SchemaPrinter::doPrint($schema_generator->getSchema()));
     }
 }

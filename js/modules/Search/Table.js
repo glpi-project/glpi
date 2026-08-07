@@ -168,6 +168,16 @@ window.GLPI.Search.Table = class Table extends GenericView {
 
     onPageChange(target) {
         const page_link = $(target);
+
+        if (typeof bootstrap !== 'undefined' && bootstrap.Tooltip) {
+            page_link.closest('.pagination').find('[data-bs-toggle="tooltip"]').each((index, node) => {
+                const tooltip = bootstrap.Tooltip.getInstance(node);
+                if (tooltip !== null) {
+                    tooltip.dispose();
+                }
+            });
+        }
+
         page_link.closest('.pagination').find('.page-item').removeClass('selected');
         page_link.closest('.page-item').addClass('selected');
 

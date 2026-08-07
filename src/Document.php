@@ -224,10 +224,11 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     {
         global $CFG_GLPI;
 
-        // security (don't accept filename from $_REQUEST)
-        if (array_key_exists('filename', $_REQUEST)) {
-            unset($input['filename']);
-        }
+        $input = $this->filterFields($input);
+
+        // current_filename is not necessary (item is new, current_filename should not exist
+        // but used for display can lead to wrong file deletion in moveDocument() and moveUploadedDocument()
+        $input['current_filename'] = '';
 
         if ($uid = Session::getLoginUserID()) {
             $input["users_id"] = Session::getLoginUserID();
@@ -248,9 +249,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         } elseif (!empty($input["upload_file"])) {
             // Move doc from upload dir
             $upload_ok = $this->moveUploadedDocument($input, $input["upload_file"]);
-        } elseif (isset($input['filepath']) && file_exists(GLPI_DOC_DIR . '/' . $input['filepath'])) {
-            // Document is created using an existing document file
-            $upload_ok = true;
         }
 
         // Tag
@@ -336,12 +334,13 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
     public function prepareInputForUpdate($input)
     {
-        // security (don't accept filename from $_REQUEST)
-        if (array_key_exists('filename', $_REQUEST)) {
-            unset($input['filename']);
-        }
+        $input = $this->filterFields($input);
 
         if (isset($input['current_filepath'])) {
+            // Always use the values stored in DB to prevent arbitrary file deletion
+            $input['current_filepath'] = $this->fields['filepath'];
+            $input['current_filename'] = $this->fields['filename'];
+
             if (!empty($input["_filename"])) {
                 self::moveDocument($input, array_shift($input["_filename"]));
             } elseif (!empty($input["upload_file"])) {
@@ -795,8 +794,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     private function canViewFileFromItem($itemtype, $items_id): bool
     {
-        global $DB;
-
         if (!is_a($itemtype, CommonDBTM::class, true)) {
             return false;
         }
@@ -813,22 +810,24 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             return false;
         }
 
+        return $this->hasLinkedItem($itemtype, $items_id);
+    }
+
+    private function hasLinkedItem(string $itemtype, int $items_id): bool
+    {
+        global $DB;
+
         $result = $DB->request([
             'FROM'  => Document_Item::getTable(),
-            'COUNT' => 'cpt',
+            'COUNT' => 'nb_of_linked_documents',
             'WHERE' => [
                 'itemtype'     => $itemtype,
                 'items_id'     => $items_id,
                 'documents_id' => $this->getID(),
             ],
-            'LIMIT' => 1, // Only need to see one result
         ])->current();
 
-        if ($result['cpt'] === 0) {
-            return false;
-        }
-
-        return true;
+        return $result['nb_of_linked_documents'] > 0;
     }
 
     /**
@@ -1623,6 +1622,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     public static function getResizedImagePath(string $path, int $width, int $height): string
     {
+        if ($width <= 0 || $height <= 0) {
+            return $path;
+        }
+
         // let's see if original image needs resize
         $img_infos  = getimagesize($path);
         if ($img_infos[0] <= $width && $img_infos[1] <= $height) {
@@ -1765,6 +1768,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
     private function canViewFileFromForm(string $itemtype, int $items_id): bool
     {
+        if (!$this->hasLinkedItem($itemtype, $items_id)) {
+            return false;
+        }
+
         if ($itemtype === Form::class) {
             $form = Form::getById($items_id);
             if (!$form) {
@@ -1800,5 +1807,22 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             url_parameters: [],
         );
         return $control_manager->canAnswerForm($form, $parameters);
+    }
+
+    /**
+     * Remove $input fields that should not be provided by user input
+     *
+     * @param  array<string, mixed> $input
+     * @return array<string, mixed>
+     */
+    private function filterFields(array $input): array
+    {
+        // security (don't accept filename from $_REQUEST)
+        if (array_key_exists('filename', $_REQUEST)) {
+            unset($input['filename']);
+        }
+
+        $blacklisted = ['filepath', 'sha1sum'];
+        return array_filter($input, static fn($v, $k) => !in_array($k, $blacklisted), ARRAY_FILTER_USE_BOTH);
     }
 }

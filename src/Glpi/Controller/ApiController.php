@@ -37,6 +37,7 @@ namespace Glpi\Controller;
 use Glpi\Api\APIRest;
 use Glpi\Api\HL\Controller\AbstractController as ApiAbstractController;
 use Glpi\Api\HL\Router;
+use Glpi\Api\HL\StreamedResponseWrapper;
 use Glpi\Error\ErrorHandler;
 use Glpi\Http\HeaderlessStreamedResponse;
 use Glpi\Http\JSONResponse;
@@ -107,6 +108,10 @@ final class ApiController extends AbstractController
         } catch (Throwable $e) {
             ErrorHandler::logCaughtException($e);
             $response = new JSONResponse(null, 500);
+        }
+
+        if ($response instanceof StreamedResponseWrapper) {
+            return $response->getSymfonyResponse();
         }
 
         return new SymfonyResponse(

@@ -142,4 +142,10 @@
         add_field_html: data_field_helper,
         id: 'data' ~ rand
     }) }}
+
+    {{ fields.textareaField(
+        'comment',
+        item.fields['comment'],
+        _n('Comment', 'Comments', get_plural_number())
+    ) }}
 {% endblock %}

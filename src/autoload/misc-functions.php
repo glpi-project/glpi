@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Kernel\Kernel;
 use Twig\Runtime\EscaperRuntime;
 
 use function Safe\preg_match;
@@ -42,9 +43,11 @@ use function Safe\preg_match;
  *
  * @return bool
  */
-function isCommandLine()
+function isCommandLine(): bool
 {
-    return (PHP_SAPI == 'cli');
+    /** @var bool|null $GLPI_IS_COMMAND_LINE */
+    global $GLPI_IS_COMMAND_LINE;
+    return $GLPI_IS_COMMAND_LINE ?? (PHP_SAPI === 'cli');
 }
 
 /**
@@ -54,15 +57,12 @@ function isCommandLine()
  */
 function isAPI()
 {
-    $script = $_SERVER['REQUEST_URI'] ?? '';
-    if (str_contains($script, 'api.php')) {
-        return true;
-    }
-    if (str_contains($script, 'apirest.php')) {
-        return true;
-    }
+    /** @var Kernel $kernel */
+    global $kernel;
 
-    return false;
+    $path = $kernel->getMainRequest()->getPathInfo();
+
+    return str_starts_with($path, '/api.php') || str_starts_with($path, '/apirest.php');
 }
 
 /**

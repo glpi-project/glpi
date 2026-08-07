@@ -55,16 +55,18 @@
         {% set options = options|merge({'readonly': true}) %}
     {% endif %}
 
-   {% if (options.is_disclosable or options.is_copyable) and options.id is null %}
-      {% set options = options|merge({
-         id: name|safe_dom_id ~ '_' ~ random()
-      }) %}
-   {% endif %}
+    {% set has_addons = options.is_disclosable or options.is_copyable %}
+
+    {% if has_addons and options.id is null %}
+        {% set options = options|merge({
+            id: name|safe_dom_id ~ '_' ~ random()
+        }) %}
+    {% endif %}
 
     {% set input %}
         <input type="{{ options.type }}" {{ options.id != null ? 'id=' ~ options.id : '' }}
         {% if options.with_class %}
-               class="form-control {{ options.input_addclass }}"
+               class="form-control {{ options.input_addclass }} {{ has_addons ? 'rounded-end-0' : '' }}"
         {% endif %}
                name="{{ name }}" value="{{ value }}"
             {% for attr, value in options.additional_attributes %}
@@ -83,22 +85,22 @@
 
     {% set more_html %}
         {% if options.is_disclosable %}
-            <div class="btn btn-outline-secondary"
+            <button type="button" class="btn btn-outline-secondary"
                  onmousedown="showDisclosablePasswordField('{{ options.id|e('js') }}')"
                  onmouseup="hideDisclosablePasswordField('{{ options.id|e('js') }}')"
                  onmouseout="hideDisclosablePasswordField('{{ options.id|e('js') }}')">
                 <i class="ti ti-eye disclose"></i>
-            </div>
+            </button>
         {% endif %}
 
         {% if options.is_copyable %}
-            <div class="btn btn-outline-secondary" onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id|e('js') }}')">
+            <button type="button" class="btn btn-outline-secondary" onclick="copyDisclosablePasswordFieldToClipboard('{{ options.id|e('js') }}')">
                 <i class="ti ti-clipboard-copy disclose"></i>
-            </div>
+            </button>
         {% endif %}
     {% endset %}
 
-    {% if more_html|trim|length > 0 %}
+    {% if has_addons %}
         {% set input %}
             <div class="btn-group btn-group-sm d-flex">
                 {{ input }}
@@ -110,12 +112,12 @@
     {{ input }}
 
     {% if options.clearable %}
-        <span class="d-inline-flex">
-            <input type="checkbox" name="_blank_{{ name }}" id="_blank_{{ name }}" class="ms-1">
-            <label for="_blank_{{ name }}" class="ms-1">
+        <div class="d-flex align-items-center gap-1 mt-1">
+            <input type="checkbox" name="_blank_{{ name }}" id="_blank_{{ name }}" class="form-check-input">
+            <label for="_blank_{{ name }}" class="form-check-label">
                 {{ __('Clear') }}
             </label>
-        </span>
+        </div>
     {% endif %}
 {% endmacro %}
 

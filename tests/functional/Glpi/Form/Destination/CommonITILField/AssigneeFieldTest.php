@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form\Destination\CommonITILField;
 
 use CommonITILActor;
+use Entity;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
@@ -52,6 +53,8 @@ use Glpi\Tests\FormBuilder;
 use Group;
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
+use Profile_User;
 use Session;
 use Supplier;
 use Ticket;
@@ -158,7 +161,11 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
         // Login is required to assign actors
         $this->login();
 
-        $supervisor = $this->createItem(User::class, ['name' => 'testAssigneeFormFillerSupervisor Supervisor']);
+        $technician_profiles_id = getItemByTypeName(Profile::class, 'Technician', true);
+        $supervisor = $this->createItem(User::class, [
+            'name' => 'testAssigneeFormFillerSupervisor Supervisor',
+            '_profiles_id' => $technician_profiles_id,
+        ]);
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $form_filler_supervisor_config = new AssigneeFieldConfig(
             [ITILActorFieldStrategy::FORM_FILLER_SUPERVISOR]
@@ -198,8 +205,15 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
         $this->login();
 
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
-        $user = $this->createItem(User::class, ['name' => 'testSpecificActors User']);
-        $group = $this->createItem(Group::class, ['name' => 'testSpecificActors Group']);
+        $technician_profiles_id = getItemByTypeName(Profile::class, 'Technician', true);
+        $user = $this->createItem(User::class, [
+            'name' => 'testSpecificActors User',
+            '_profiles_id' => $technician_profiles_id,
+        ]);
+        $group = $this->createItem(Group::class, [
+            'name' => 'testSpecificActors Group',
+            'is_assign' => 1,
+        ]);
         $supplier = $this->createItem(Supplier::class, [
             'name' => 'testSpecificActors Supplier',
             'entities_id' => $this->getTestRootEntity(true),
@@ -245,6 +259,114 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             ),
             answers: [],
             expected_actors: [['items_id' => $user->getID()], ['items_id' => $group->getID()], ['items_id' => $supplier->getID()]]
+        );
+    }
+
+    public function testSpecificActorsExcludesUnauthorizedActors(): void
+    {
+        // The ticket's entity defaults to the active entity of whoever
+        // submits the form (see EntityFieldStrategy::FORM_FILLER). Without a
+        // logged in user, it would fall back to the root entity, unrelated
+        // to the entity used below for the authorized actors.
+        $this->login();
+
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $entities_id = $this->getTestRootEntity(only_id: true);
+        $authorized_user = $this->createItem(User::class, [
+            'name' => 'testSpecificActorsExcludesUnauthorizedActors Authorized user',
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id'    => $authorized_user->getID(),
+            'profiles_id' => getItemByTypeName(Profile::class, 'Technician', true),
+            'entities_id' => $entities_id,
+        ]);
+        $unauthorized_user = $this->createItem(User::class, [
+            'name' => 'testSpecificActorsExcludesUnauthorizedActors Unauthorized user',
+        ]);
+        $authorized_group = $this->createItem(Group::class, [
+            'name'      => 'testSpecificActorsExcludesUnauthorizedActors Authorized group',
+            'is_assign' => 1,
+        ]);
+        $unauthorized_group = $this->createItem(Group::class, [
+            'name'      => 'testSpecificActorsExcludesUnauthorizedActors Unauthorized group',
+            'is_assign' => 0,
+        ]);
+        $supplier = $this->createItem(Supplier::class, [
+            'name'       => 'testSpecificActorsExcludesUnauthorizedActors Supplier',
+            'entities_id' => $entities_id,
+        ]);
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    User::getForeignKeyField() . '-' . $authorized_user->getID(),
+                    User::getForeignKeyField() . '-' . $unauthorized_user->getID(),
+                    Group::getForeignKeyField() . '-' . $authorized_group->getID(),
+                    Group::getForeignKeyField() . '-' . $unauthorized_group->getID(),
+                    Supplier::getForeignKeyField() . '-' . $supplier->getID(),
+                ]
+            ),
+            answers: [],
+            expected_actors: [
+                ['items_id' => $authorized_user->getID()],
+                ['items_id' => $authorized_group->getID()],
+                ['items_id' => $supplier->getID()],
+            ]
+        );
+    }
+
+    public function testSpecificActorsFollowResolvedEntityWhenDifferentFromForm(): void
+    {
+        $this->login();
+
+        // Form lives in the test root entity, but its destination's entity
+        // is resolved from an answered "Entity" question, pointing to a
+        // different, unrelated entity.
+        $builder = new FormBuilder();
+        $builder->setEntitiesId($this->getTestRootEntity(only_id: true));
+        $builder->addQuestion("Entity", QuestionTypeItem::class, 0, json_encode([
+            'itemtype'             => Entity::getType(),
+            'root_items_id'        => 0,
+            'subtree_depth'        => 0,
+            'selectable_tree_root' => false,
+        ]));
+        $builder->addQuestion("Assignee", QuestionTypeAssignee::class, '');
+        $form = $this->createForm($builder);
+
+        $other_entity = $this->createItem(Entity::class, [
+            'name'        => 'testSpecificActorsFollowResolvedEntityWhenDifferentFromForm Entity',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // This user only has assignment rights on that other entity, not on
+        // the form's own entity.
+        $user = $this->createItem(User::class, [
+            'name' => 'testSpecificActorsFollowResolvedEntityWhenDifferentFromForm User',
+        ]);
+        $this->createItem(Profile_User::class, [
+            'users_id'    => $user->getID(),
+            'profiles_id' => getItemByTypeName(Profile::class, 'Technician', true),
+            'entities_id' => $other_entity->getID(),
+        ]);
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [$this->getQuestionId($form, "Assignee")]
+            ),
+            answers: [
+                "Entity" => [
+                    'itemtype' => Entity::getType(),
+                    'items_id' => $other_entity->getID(),
+                ],
+                "Assignee" => ["users_id-{$user->getID()}"],
+            ],
+            expected_actors: [
+                ['items_id' => $user->getID()],
+            ]
         );
     }
 
@@ -529,9 +651,19 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
         $this->login();
 
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
-        $user1 = $this->createItem(User::class, ['name' => 'testMultipleStrategies User 1']);
-        $user2 = $this->createItem(User::class, ['name' => 'testMultipleStrategies User 2']);
-        $group = $this->createItem(Group::class, ['name' => 'testMultipleStrategies Group']);
+        $technician_profiles_id = getItemByTypeName(Profile::class, 'Technician', true);
+        $user1 = $this->createItem(User::class, [
+            'name' => 'testMultipleStrategies User 1',
+            '_profiles_id' => $technician_profiles_id,
+        ]);
+        $user2 = $this->createItem(User::class, [
+            'name' => 'testMultipleStrategies User 2',
+            '_profiles_id' => $technician_profiles_id,
+        ]);
+        $group = $this->createItem(Group::class, [
+            'name' => 'testMultipleStrategies Group',
+            'is_assign' => 1,
+        ]);
         $supplier = $this->createItem(Supplier::class, [
             'name' => 'testMultipleStrategies Supplier',
             'entities_id' => $this->getTestRootEntity(true),
@@ -699,10 +831,14 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 3, // Assignee
                     'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
-            'field_config' => fn($migration, $form) => (new AssigneeField())->getDefaultConfig($form),
+            'field_config' => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER],
+            ),
         ];
 
         yield 'Tech group from an object' => [
@@ -711,10 +847,50 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 3, // Assignee
                     'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
-            'field_config' => fn($migration, $form) => (new AssigneeField())->getDefaultConfig($form),
+            'field_config' => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+            ),
+        ];
+
+        yield 'Group from an object with question' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3, // Assignee
+                    'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    'actor_value' => 74, // Computer question
+                ],
+            ],
+            'field_config' => fn($migration, $form) => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 74)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                ]
+            ),
+        ];
+
+        yield 'Tech group from an object with question' => [
+            'field_key'     => AssigneeField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 3, // Assignee
+                    'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    'actor_value' => 74, // Computer question
+                ],
+            ],
+            'field_config' => fn($migration, $form) => new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 74)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                ]
+            ),
         ];
 
         yield 'Form author\'s supervisor' => [
@@ -864,8 +1040,10 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
 
         // Check actors
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->assertSameSize($expected_actors, $actors);
         foreach ($expected_actors as $expected_actor) {
             $actor = array_shift($actors);
+            $this->assertIsArray($actor);
             $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
                 $expected_actor,
                 $actor,

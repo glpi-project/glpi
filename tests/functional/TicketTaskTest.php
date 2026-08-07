@@ -38,6 +38,7 @@ use Glpi\Search\SearchEngine;
 use Glpi\Tests\CommonITILTaskTestCase;
 use Override;
 use TicketTask;
+use User;
 
 final class TicketTaskTest extends CommonITILTaskTestCase
 {
@@ -838,6 +839,62 @@ final class TicketTaskTest extends CommonITILTaskTestCase
         );
     }
 
+    /**
+     * An empty duration (selecting ‘----’ from the duration drop-down menu sends the value ‘0’)
+     * must not replace an end date that has been entered.
+     * Otherwise, the "end" will coincide with the "start"
+     * and the error : "the start date is later than the end date" will be generated incorrectly
+     *
+     * @return void
+     */
+    public function testEmptyActiontimeDoesNotOverrideEndDate()
+    {
+        $this->login();
+        $ticketId = $this->getNewTicket();
+        $uid = getItemByTypeName('User', TU_USER, true);
+
+        $date_begin = new \DateTime(); // ==> now
+        $date_begin_string = $date_begin->format('Y-m-d H:i:s');
+
+        $date_end = clone $date_begin;
+        $date_end->add(new \DateInterval('PT1H')); // ==> +1 hour
+        $date_end_string = $date_end->format('Y-m-d H:i:s');
+
+        // Create a task with a duration that is not one of the duration dropdown steps (12 min)
+        // Such a value makes the dropdown fall back to its empty choice, which submits "0"
+        $task = new TicketTask();
+        $task_id = $task->add([
+            'state'              => \Planning::TODO,
+            'tickets_id'         => $ticketId,
+            'tasktemplates_id'   => '0',
+            'taskcategories_id'  => '0',
+            'content'            => "Task with non-standard duration",
+            'users_id_tech'      => $uid,
+            'actiontime'         => 720,
+        ]);
+        $this->assertGreaterThan(0, $task_id);
+        $this->assertEquals(720, $task->fields['actiontime']);
+
+        // Schedule the task with an explicit end date while the duration dropdown submits "0".
+        $this->assertTrue(
+            $task->update([
+                'id'                 => $task_id,
+                'tickets_id'         => $ticketId,
+                'users_id_tech'      => $uid,
+                'actiontime'         => '0',
+                'plan'               => [
+                    'begin'        => $date_begin_string,
+                    'end'          => $date_end_string,
+                ],
+            ])
+        );
+
+        // The explicitly entered end date must be preserved and the duration recomputed from it.
+        $this->assertEquals($date_begin_string, $task->fields['begin']);
+        $this->assertEquals($date_end_string, $task->fields['end']);
+        $this->assertEquals(3600, $task->fields['actiontime']);
+    }
+
     public function testParentMetaSearchOptions()
     {
         $this->login();
@@ -1035,5 +1092,30 @@ final class TicketTaskTest extends CommonITILTaskTestCase
                 'tickets_id' => $ticket->getID(),
             ])
         );
+    }
+
+    /**
+     * Non-regression: buildParentCondition() must qualify column names to avoid MySQL 1052
+     * when the search engine JOINs polymorphic tables that share the same column name.
+     */
+    public function testBuildParentConditionReturnsQualifiedColumns(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $selfservice_user = $this->createItem(User::class, [
+            'name'         => 'selfservice_' . $this->getUniqueString(),
+            'password'     => 'testpassword',
+            'password2'    => 'testpassword',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => $entity_id,
+        ], ['password', 'password2']);
+        $this->login($selfservice_user->fields['name']);
+
+        $condition = TicketTask::buildParentCondition();
+        $table = TicketTask::getTable();
+
+        $this->assertStringContainsString("OR `$table`.`tickets_id` IN", $condition);
+        $this->assertStringNotContainsString('OR `tickets_id` IN', $condition);
     }
 }

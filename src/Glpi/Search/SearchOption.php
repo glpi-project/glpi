@@ -253,6 +253,19 @@ final class SearchOption implements ArrayAccess
                 $search[$itemtype][71]['table']         = 'glpi_groups';
                 $search[$itemtype][71]['field']         = 'completename';
                 $search[$itemtype][71]['name']          = Group::getTypeName(1);
+                $search[$itemtype][71]['condition']     = ['is_itemgroup' => 1];
+                $search[$itemtype][71]['joinparams']    = [
+                    'beforejoin'         => [
+                        'table'              => 'glpi_groups_items',
+                        'joinparams'         => [
+                            'jointype'           => 'itemtype_item',
+                            'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
+                        ],
+                    ],
+                ];
+                $search[$itemtype][71]['forcegroupby']  = true;
+                $search[$itemtype][71]['massiveaction'] = false;
+                $search[$itemtype][71]['datatype']      = 'dropdown';
 
                 $search[$itemtype][19]['table']         = 'asset_types';
                 $search[$itemtype][19]['field']         = 'date_mod';
@@ -806,7 +819,7 @@ final class SearchOption implements ArrayAccess
      * If no itemtype is specified, you may need to clear the needed class-level caches manually.
      * @param string|null $itemtype The itemtype to clear the cache for, or null to clear all caches.
      * @return void
-     * @see \CommonDBTM::clearSearchOptionCache()
+     * @see CommonDBTM::clearSearchOptionCache()
      */
     public static function clearSearchOptionCache(?string $itemtype = null): void
     {

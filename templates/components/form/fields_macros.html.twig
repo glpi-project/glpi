@@ -98,6 +98,18 @@
       'id': '%id%'
    }|merge(options) %}
 
+   {% if name in ['name'] %}
+        {% set current_attrs = options.additional_attributes|default({}) %}
+
+         {% if current_attrs.autocomplete is not defined %}
+            {% set options = options|merge({
+                  'additional_attributes': current_attrs|merge({
+                     'autocomplete': 'off'
+                  })
+            }) %}
+         {% endif %}
+   {% endif %}
+
    {% set field %}
         {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
         {{ _inputs.text(name, value, options) }}
@@ -316,7 +328,9 @@
    {# Add checkbox if needed to regenerate password (controler side) #}
    {% if options.can_regenerate %}
       {% set regenerate_chk %}
-         <input type="checkbox" name="_regenerate_{{ name }}" id="_regenerate_{{ name }}">&nbsp;<label for="_regenerate_{{ name }}">{{ __('Regenerate') }}</label>
+         <div class="d-flex align-items-center gap-1 mt-1">
+             <input class="form-check-input" type="checkbox" name="_regenerate_{{ name }}" id="_regenerate_{{ name }}"><label class="form-check-label" for="_regenerate_{{ name }}">{{ __('Regenerate') }}</label>
+         </div>
       {% endset %}
       {% set field = field ~ regenerate_chk %}
    {% endif %}
@@ -938,7 +952,7 @@
       {% set container_id = '' %}
    {% endif %}
 
-   <div class="form-field row align-items-center {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
+   <div class="form-field row align-items-center {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }} {% if options.name is defined and options.name is not empty %}data-testid="form-field-{{ options.name }}"{% endif %}>
       {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
       {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class ~ ' ' ~ options.add_label_class) }}
       {% set flex_class = options.center ? 'd-flex align-items-center' : (options.inline_add_field_html ? 'd-flex' : '') %}
@@ -974,7 +988,7 @@
       {% set extra_attribs = '' %}
    {% endif %}
 
-   <div class="form-field {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }}>
+   <div class="form-field {{ options.field_class }} {{ options.add_field_class }} {{ options.mb }}" {{ extra_attribs|raw }} {% if options.name is defined and options.name is not empty %}data-testid="form-field-{{ options.name }}"{% endif %}>
       {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
       <div class="d-flex align-items-center">
          {{ _inputs.label(label, id, options, 'col-form-label ' ~ options.label_class) }}
@@ -1065,6 +1079,7 @@
                     <div
                         {% if is_custom_file %}
                             data-glpi-icon-picker-value-preview-custom
+                            data-testid="illustration-custom-preview"
                         {% else %}
                             data-glpi-icon-picker-value-preview-native
                         {% endif %}
@@ -1086,6 +1101,7 @@
                         <div
                             class="d-none"
                             data-glpi-icon-picker-value-preview-custom
+                            data-testid="illustration-custom-preview"
                         >
                            {{ render_illustration(custom_icon_prefix, 100) }}
                         </div>

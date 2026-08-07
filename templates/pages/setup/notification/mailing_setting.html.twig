@@ -120,7 +120,12 @@
                 field_options
             ) }}
 
-            {{ fields.nullField() }}
+            {{ fields.dropdownYesNo(
+                "attach_documents_to_notifications_for_anonymous",
+                config('attach_documents_to_notifications_for_anonymous'),
+                __('Add documents into notifications sent to anonymous users'),
+                field_options
+            ) }}
 
             {{ fields.textareaField(
                 'mailing_signature',

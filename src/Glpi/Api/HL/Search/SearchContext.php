@@ -58,11 +58,21 @@ final class SearchContext
 
     public function __construct(array $schema, array $request_params)
     {
-        $this->schema = $schema;
         $this->request_params = $request_params;
+        $this->updateSchema($schema);
+    }
+
+    /**
+     * @param array<string, mixed> $schema
+     * @return void
+     */
+    public function updateSchema(array $schema): void
+    {
+        $this->schema = $schema;
         $this->flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
         $this->joins = Doc\Schema::getJoins($schema['properties']);
         $this->union_table_schemas = $this->getUnionTables();
+        $this->clearFkeyTablesCache();
     }
 
     public function clearFkeyTablesCache(): void

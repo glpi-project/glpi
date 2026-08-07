@@ -307,7 +307,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                 $input['date_creation'] = 'NULL';
             }
 
-            if (empty($input['ttl'])) {
+            if (!isset($input['ttl']) || $input['ttl'] === '') {
                 $input['ttl'] = self::DEFAULT_TTL;
             }
         }
@@ -379,6 +379,13 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
             $this->fields['data_obj'] = 'NULL';
             $this->updates[]          = 'data_obj';
         }
+    }
+
+    public function post_getEmpty()
+    {
+        // Reflect the actual default applied on add, so the form does not
+        // display "0" for a value that will really be saved as DEFAULT_TTL.
+        $this->fields['ttl'] = self::DEFAULT_TTL;
     }
 
     public function showForm($ID, array $options = [])
@@ -459,7 +466,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                             {{ fields.dropdownField('DomainRecord', 'domainrecords_id', 0, label, {
                                 'condition': condition
                             }) }}
-                            {{ fields.htmlField('', inputs.submit('addrecord', add_btn_msg, 1), null, {
+                            {{ fields.htmlField('', inputs.submit('addrecord', add_btn_msg, 1, {'icon': 'ti ti-link'}), null, {
                                 no_label: true,
                                 mb: '',
                                 wrapper_class: 'ms-2'
@@ -476,7 +483,8 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                     </div>
                     <div class="mt-4 text-center">
                         <button type="button" class="btn btn-primary" id="add_new_record_btn{{ rand }}">
-                            {{ add_new_btn_msg }}
+                            <i class="ti ti-plus"></i>
+                            <span>{{ add_new_btn_msg }}</span>
                         </button>
                         <script>
                             $('#add_new_record_btn{{ rand }}').on('click', function() {

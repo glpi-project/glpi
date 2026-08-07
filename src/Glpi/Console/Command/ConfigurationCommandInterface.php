@@ -45,7 +45,7 @@ interface ConfigurationCommandInterface
      *
      * @param InputInterface $input
      *
-     * @return array
+     * @return string[]
      */
     public function getConfigurationFilesToUpdate(InputInterface $input): array;
 }

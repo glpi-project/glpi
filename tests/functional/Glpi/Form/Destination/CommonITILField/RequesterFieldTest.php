@@ -37,6 +37,8 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use CommonITILActor;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\DelegationData;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\RequesterField;
@@ -50,6 +52,7 @@ use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Tests\AbstractActorFieldTest;
 use Glpi\Tests\FormBuilder;
 use Group;
+use Group_User;
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Ticket;
@@ -57,12 +60,21 @@ use TicketTemplate;
 use TicketTemplatePredefinedField;
 use User;
 
+use function Safe\json_encode;
+
 final class RequesterFieldTest extends AbstractActorFieldTest
 {
     #[Override]
     public function getFieldClass(): string
     {
         return RequesterField::class;
+    }
+
+    #[Override]
+    protected function getExpectedNoMatchActors(): array
+    {
+        // Fallback: the form filler.
+        return [['itemtype' => User::class, 'items_id' => getItemByTypeName(User::class, TU_USER, true)]];
     }
 
     public function testRequesterFromTemplate(): void
@@ -138,6 +150,83 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'use_notification' => 1,
                 ],
             ]
+        );
+    }
+
+    public function testGetItilRequesterForFormFiller(): void
+    {
+        //delegated user
+        $delegated_user = $this->createItem(
+            User::class,
+            ['name' => 'testRequesterFormFillerWithDelegation Delegated']
+        );
+
+        //Form filler and delegatee
+        $post_only_id = getItemByTypeName(User::class, 'post-only', true);
+
+        //create the shared group
+        $shared_group = $this->createItem(Group::class, [
+            'name' => 'testRequesterFormFillerWithDelegation Shared Group',
+        ]);
+
+        //add the form filler as delegatee and the delegated user in the shared group
+        $this->createItem(Group_User::class, [
+            'groups_id' => $shared_group->getID(),
+            'users_id'  => $post_only_id,
+            'is_userdelegate' => 1,
+        ]);
+
+        $this->createItem(Group_User::class, [
+            'groups_id' => $shared_group->getID(),
+            'users_id'  => $delegated_user->getID(),
+        ]);
+
+        $field = new RequesterField();
+        $config = new RequesterFieldConfig([ITILActorFieldStrategy::FORM_FILLER]);
+
+        //logging in as the form filler
+        $this->login('post-only', 'postonly');
+
+        $answers_set = new AnswersSet();
+        //without delegation: the form filler should be returned.
+        $answers_set->setDelegation(new DelegationData());
+
+        $actors = ITILActorFieldStrategy::FORM_FILLER->getITILActors($field, $config, $answers_set);
+        $this->assertCount(1, $actors);
+        $this->assertSame(
+            [
+                'itemtype'          => User::class,
+                'items_id'          => $post_only_id,
+            ],
+            $actors[0]
+        );
+
+        //with delegation and notifications enabled
+        $answers_set->setDelegation(new DelegationData($delegated_user->getID(), true, 'delegatee@test.com'));
+        $actors = ITILActorFieldStrategy::FORM_FILLER->getITILActors($field, $config, $answers_set);
+        $this->assertCount(1, $actors);
+        $this->assertSame(
+            [
+                'itemtype'          => User::class,
+                'items_id'          => $delegated_user->getID(),
+                'use_notification'  => true,
+                'alternative_email' => 'delegatee@test.com',
+            ],
+            $actors[0]
+        );
+
+        //with delegation and notifications disabled
+        $answers_set->setDelegation(new DelegationData($delegated_user->getID(), false, 'delegatee@test.com'));
+        $actors = ITILActorFieldStrategy::FORM_FILLER->getITILActors($field, $config, $answers_set);
+        $this->assertCount(1, $actors);
+        $this->assertSame(
+            [
+                'itemtype'          => User::class,
+                'items_id'          => $delegated_user->getID(),
+                'use_notification'  => false,
+                'alternative_email' => 'delegatee@test.com',
+            ],
+            $actors[0]
         );
     }
 
@@ -218,6 +307,32 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             ),
             answers: [],
             expected_actors: [['items_id' => $user->getID()], ['items_id' => $group->getID()]]
+        );
+    }
+
+    public function testSpecificActorsExcludesUnauthorizedGroups(): void
+    {
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+        $authorized_group = $this->createItem(Group::class, [
+            'name'         => 'testSpecificActorsExcludesUnauthorizedGroups Authorized',
+            'is_requester' => 1,
+        ]);
+        $unauthorized_group = $this->createItem(Group::class, [
+            'name'         => 'testSpecificActorsExcludesUnauthorizedGroups Unauthorized',
+            'is_requester' => 0,
+        ]);
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                specific_itilactors_ids: [
+                    Group::getForeignKeyField() . '-' . $authorized_group->getID(),
+                    Group::getForeignKeyField() . '-' . $unauthorized_group->getID(),
+                ]
+            ),
+            answers: [],
+            expected_actors: [['items_id' => $authorized_group->getID()]]
         );
     }
 
@@ -339,6 +454,24 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 ['items_id' => $user1->getID()],
                 ['items_id' => $user2->getID()],
             ]
+        );
+    }
+
+    public function testFallbackToFormFillerWhenSpecificAnswerQuestionIsUnanswered(): void
+    {
+        // Sub-question never answered, must fall back to the form filler.
+        $form = $this->createAndGetFormWithMultipleActorsQuestions();
+
+        $auth = $this->login();
+
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [$this->getQuestionId($form, "Requester 1")]
+            ),
+            answers: [],
+            expected_actors: [['items_id' => $auth->getUser()->getID()]]
         );
     }
 
@@ -636,10 +769,14 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
-            'field_config' => fn($migration, $form) => (new RequesterField())->getDefaultConfig($form),
+            'field_config' => new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER],
+            ),
         ];
 
         yield 'Tech group from an object' => [
@@ -648,10 +785,50 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 [
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    // actor_value = 0 represents an incomplete/degenerate FormCreator config where no question is linked;
+                    // valid configurations of types 10 and 11 always reference a real question ID.
                     'actor_value' => 0,
                 ],
             ],
-            'field_config' => fn($migration, $form) => (new RequesterField())->getDefaultConfig($form),
+            'field_config' => new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+            ),
+        ];
+
+        yield 'Group from an object with question' => [
+            'field_key'     => RequesterField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
+                    'actor_value' => 74, // Computer question
+                ],
+            ],
+            'field_config' => fn($migration, $form) => new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::GROUP_FROM_OBJECT_ANSWER],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 74)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                ]
+            ),
+        ];
+
+        yield 'Tech group from an object with question' => [
+            'field_key'     => RequesterField::getKey(),
+            'fields_to_set' => [
+                [
+                    'actor_role'  => 1, // Requester
+                    'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
+                    'actor_value' => 74, // Computer question
+                ],
+            ],
+            'field_config' => fn($migration, $form) => new RequesterFieldConfig(
+                strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+                specific_question_ids: [
+                    $migration->getMappedItemTarget('PluginFormcreatorQuestion', 74)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                ]
+            ),
         ];
 
         yield 'Form author\'s supervisor' => [
@@ -744,6 +921,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
 
         // Check actors
         $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $this->assertCount(count($expected_actors), $actors);
         foreach ($expected_actors as $expected_actor) {
             $actor = array_shift($actors);
             $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(

@@ -1052,6 +1052,11 @@ class Auth extends CommonGLPI
                 $this->denied_by_rule = true;
             }
 
+            // Capture restore need before clearing the flag (original DB state still in fields).
+            $needs_ldap_restore = $this->user_present
+                && ($this->user->fields['authtype'] ?? 0) == self::LDAP
+                && ($this->user->fields['is_deleted_ldap'] || !$this->user->fields['is_active']);
+
             //Set user an not deleted from LDAP
             $this->user->fields['is_deleted_ldap'] = 0;
 
@@ -1078,6 +1083,10 @@ class Auth extends CommonGLPI
                     unset($input['api_token'], $input['cookie_token'], $input['password_forget_token'], $input['personal_token']);
 
                     $this->user->update($input);
+
+                    if ($needs_ldap_restore) {
+                        User::manageRestoredUserInLdap($this->user->fields['id']);
+                    }
                 } elseif ($CFG_GLPI["is_users_auto_add"]) {
                     // Auto add user
                     $input = $this->user->fields;
@@ -1128,6 +1137,12 @@ class Auth extends CommonGLPI
         if (!$DB->isSlave()) {
             // GET THE IP OF THE CLIENT
             $ip = getenv("HTTP_X_FORWARDED_FOR") ?: getenv("REMOTE_ADDR");
+
+            // For external auth (e.g. OAuth SSO), $login_name is empty because
+            // it is resolved inside validateLogin(). Use the resolved user name.
+            if (empty($login_name) && !empty($this->user->fields['name'])) {
+                $login_name = $this->user->fields['name'];
+            }
 
             if ($this->auth_succeded) {
                 //TRANS: %1$s is the login of the user and %2$s its IP address
@@ -1596,7 +1611,7 @@ class Auth extends CommonGLPI
      */
     public static function showSynchronizationForm(User $user)
     {
-        if (Session::haveRight("user", User::UPDATEAUTHENT)) {
+        if (Session::haveRight("user", User::UPDATEAUTHENT) && $user->can($user->getID(), READ)) {
             TemplateRenderer::getInstance()->display('pages/setup/authentication/sync.html.twig', [
                 'user' => $user,
             ]);

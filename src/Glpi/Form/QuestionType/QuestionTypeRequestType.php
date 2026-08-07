@@ -38,13 +38,14 @@ namespace Glpi\Form\QuestionType;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionHandler\RequestTypeConditionHandler;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 use Ticket;
 
-final class QuestionTypeRequestType extends AbstractQuestionType implements UsedAsCriteriaInterface, FormQuestionDataConverterInterface
+final class QuestionTypeRequestType extends AbstractQuestionType implements UsedAsCriteriaInterface, FormQuestionDataConverterInterface, ConditionValueTransformerInterface
 {
     /**
      * Retrieve the default value for the request type question type
@@ -183,4 +184,14 @@ TWIG;
 
     #[Override]
     public function beforeConversion(array $rawData): void {}
+
+    #[Override]
+    public function transformConditionValueForComparisons(mixed $value, ?JsonFieldInterface $question_config): string
+    {
+        if ($value == 0) {
+            return '';
+        }
+
+        return $value;
+    }
 }

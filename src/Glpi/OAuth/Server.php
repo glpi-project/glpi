@@ -227,25 +227,35 @@ final class Server
 
         return false;
     }
-    public static function generateKeys(): bool
+
+    /**
+     * Generate a new pair of public/private keys for OAuth.
+     *
+     * @param bool $force If true, will force the generation of new keys even if they already exist.
+     * @return bool Returns true if new keys were generated, false if keys already exist and force is not set to true.
+     * @throws RuntimeException
+     */
+    public static function generateKeys(bool $force = false): bool
     {
-        if (self::checkKeys()) {
+        if (!$force && self::checkKeys()) {
             // Keys are already generated
             return false;
         }
 
-        // Partial data: unsure how to proceed, let the user review the files.
-        if (
-            file_exists(self::PRIVATE_KEY_PATH)
-            && !file_exists(self::PUBLIC_KEY_PATH)
-        ) {
-            throw new RuntimeException("Mising file: " . self::PUBLIC_KEY_PATH);
-        }
-        if (
-            file_exists(self::PUBLIC_KEY_PATH)
-            && !file_exists(self::PRIVATE_KEY_PATH)
-        ) {
-            throw new RuntimeException("Mising file: " . self::PRIVATE_KEY_PATH);
+        if (!$force) {
+            // Partial data: unsure how to proceed, let the user review the files.
+            if (
+                file_exists(self::PRIVATE_KEY_PATH)
+                && !file_exists(self::PUBLIC_KEY_PATH)
+            ) {
+                throw new RuntimeException("Mising file: " . self::PUBLIC_KEY_PATH);
+            }
+            if (
+                file_exists(self::PUBLIC_KEY_PATH)
+                && !file_exists(self::PRIVATE_KEY_PATH)
+            ) {
+                throw new RuntimeException("Mising file: " . self::PRIVATE_KEY_PATH);
+            }
         }
 
         // If we reach this point, both file are missing and must be generated

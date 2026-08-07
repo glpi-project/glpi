@@ -57,6 +57,10 @@ trait ArrayConditionHandlerTrait
             return false;
         }
 
+        // HTML forms might produce default empty values for optional inputs like
+        // checkboxes, we'll need to remove them
+        $a = array_filter($a, fn($v) => $v !== "");
+
         // Normalize values
         $a = array_values($a);
         $b = array_values($b);

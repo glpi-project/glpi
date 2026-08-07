@@ -55,7 +55,7 @@ $(document).ready(function() {
 
         icon
             .removeClass()
-            .addClass('spinner-border');
+            .addClass('spinner-border spinner-border-sm');
 
         const executeAction = function () {
             if (action === 'download_plugin'

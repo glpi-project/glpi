@@ -46,6 +46,9 @@ $extevent = new PlanningExternalEvent();
 
 if ($_REQUEST["action"] == "get_events") {
     header("Content-Type: application/json; charset=UTF-8");
+    if (isset($_REQUEST['state_done'])) {
+        $_REQUEST['state_done'] = filter_var($_REQUEST['state_done'], FILTER_VALIDATE_BOOLEAN);
+    }
     echo json_encode(Planning::constructEventsArray($_REQUEST));
     return;
 }
@@ -67,8 +70,9 @@ if (($_POST["action"] ?? null) == "clone_event") {
 }
 
 if (($_POST["action"] ?? null) == "delete_event") {
-    $extevent->check(-1, DELETE);
-    echo Planning::deleteEvent($_POST['event']);
+    $event = $_POST['event'];
+    // rights check is done inside `Planning::deleteEvent()`, depending on the event itemtype
+    echo Planning::deleteEvent($event);
     return;
 }
 

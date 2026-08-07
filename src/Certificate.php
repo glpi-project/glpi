@@ -103,22 +103,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
 
     public function rawSearchOptions()
     {
-
-        $tab = [];
-
-        $tab[] = [
-            'id'                 => 'common',
-            'name'               => __('Characteristics'),
-        ];
-
-        $tab[] = [
-            'id'                 => '1',
-            'table'              => $this->getTable(),
-            'field'              => 'name',
-            'name'               => __('Name'),
-            'datatype'           => 'itemlink',
-            'massiveaction'      => false, // implicit key==1
-        ];
+        $tab = parent::rawSearchOptions();
 
         $tab[] = [
             'id'                 => '2',
@@ -366,14 +351,6 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         ];
 
         $tab[] = [
-            'id'                 => '86',
-            'table'              => $this->getTable(),
-            'field'              => 'is_recursive',
-            'name'               => __('Child entities'),
-            'datatype'           => 'bool',
-        ];
-
-        $tab[] = [
             'id'                 => '121',
             'table'              => $this->getTable(),
             'field'              => 'date_creation',
@@ -382,8 +359,6 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
             'massiveaction'      => false,
         ];
 
-        // add objectlock search options
-        $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         return $tab;

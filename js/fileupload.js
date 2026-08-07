@@ -38,6 +38,43 @@ var insertIntoEditor = []; // contains flags that indicate if uploaded file (ima
 
 var uploaded_images = []; // Mapping between random identifier and image filename
 
+/**
+ * Remove a failed upload image from the TinyMCE editor to prevent base64 data in DB.
+ *
+ * @param {Object} options
+ * @param {string|null} options.filename   - The filename to look up in uploaded_images
+ * @param {string|null} options.upload_id  - The upload_id to target directly
+ * @param {string|null} options.editor_id  - The TinyMCE editor id
+ */
+function removeFailedUploadImage({filename = null, upload_id = null, editor_id = null} = {}) {
+    let editor = null;
+    if (editor_id && typeof tinyMCE !== 'undefined') {
+        editor = tinyMCE.get(editor_id);
+    }
+    if (!editor) {
+        return;
+    }
+
+    let target_upload_id = upload_id;
+    if (!target_upload_id && filename) {
+        const entry = uploaded_images.find((e) => e.filename === filename);
+        if (entry) {
+            target_upload_id = entry.upload_id;
+        }
+    }
+
+    if (target_upload_id) {
+        const img = editor.dom.select(`img[data-upload_id="${CSS.escape(target_upload_id)}"]`);
+        if (img.length > 0) {
+            editor.dom.remove(img);
+        }
+        const idx = uploaded_images.findIndex((e) => e.upload_id === target_upload_id);
+        if (idx !== -1) {
+            uploaded_images.splice(idx, 1);
+        }
+    }
+}
+
 function uploadFile(file, editor) {
     insertIntoEditor[file.name] = isImage(file);
 
@@ -61,60 +98,67 @@ function uploadFile(file, editor) {
 }
 
 var handleUploadedFile = function (files, files_data, input_name, container, editor_id) {
-    $.ajax(
-        {
-            type: 'POST',
-            url: `${CFG_GLPI.root_doc}/ajax/getFileTag.php`,
-            data: {data: files_data},
-            dataType: 'JSON',
-            success: function(tags) {
-                $.each(
-                    files,
-                    (index, file) => {
-                        if ((files_data[index].error ?? false) !== false) {
-                            container.parent().find('.uploadbar')
-                                .text(files_data[index].error)
-                                .css('width', '100%');
-                            return;
-                        }
-
-                        var tag_data = tags[index];
-
-                        var editor = null;
-                        if (editor_id) {
-                            editor = tinyMCE.get(editor_id);
-                            const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
-                            const matching_image = uploaded_image !== undefined
-                                ? editor.dom.select(`img[data-upload_id="${CSS.escape(uploaded_image.upload_id)}"]`)
-                                : [];
-                            if (matching_image.length > 0) {
-                                editor.dom.setAttrib(matching_image, 'id', tag_data.tag.replace(/#/g, ''));
+    return new Promise((resolve) => {
+        $.ajax(
+            {
+                type: 'POST',
+                url: `${CFG_GLPI.root_doc}/ajax/getFileTag.php`,
+                data: {data: files_data},
+                dataType: 'JSON',
+                success: function(tags) {
+                    $.each(
+                        files,
+                        (index, file) => {
+                            if ((files_data[index].error ?? false) !== false) {
+                                container.parent().find('.uploadbar')
+                                    .text(files_data[index].error)
+                                    .css('width', '100%');
+                                removeFailedUploadImage({filename: file.name, editor_id: editor_id});
+                                return;
                             }
+
+                            var tag_data = tags[index];
+
+                            var editor = null;
+                            if (editor_id) {
+                                editor = tinyMCE.get(editor_id);
+                                const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
+                                const matching_image = uploaded_image !== undefined
+                                    ? editor.dom.select(`img[data-upload_id="${CSS.escape(uploaded_image.upload_id)}"]`)
+                                    : [];
+                                if (matching_image.length > 0) {
+                                    editor.dom.setAttrib(matching_image, 'id', tag_data.tag.replace(/#/g, ''));
+                                }
+                            }
+
+                            displayUploadedFile(files_data[index], tag_data, editor, input_name, container);
+
+                            container.parent().find('.uploadbar')
+                                .text(__('Upload successful'))
+                                .css('width', '100%')
+                                .delay(2000)
+                                .fadeOut('slow');
                         }
-
-                        displayUploadedFile(files_data[index], tag_data, editor, input_name, container);
-
-                        container.parent().find('.uploadbar')
-                            .text(__('Upload successful'))
-                            .css('width', '100%')
-                            .delay(2000)
-                            .fadeOut('slow');
-                    }
-                );
-            },
-            error: function (request) {
-                console.warn(request.responseText);
-            },
-            complete: function () {
-                $.each(
-                    files,
-                    (index, file) => {
-                        delete(insertIntoEditor[file.name]);
-                    }
-                );
+                    );
+                },
+                error: function (request) {
+                    console.warn(request.responseText);
+                    $.each(files, (index, file) => {
+                        removeFailedUploadImage({filename: file.name, editor_id: editor_id});
+                    });
+                },
+                complete: function () {
+                    $.each(
+                        files,
+                        (index, file) => {
+                            delete(insertIntoEditor[file.name]);
+                        }
+                    );
+                    resolve();
+                }
             }
-        }
-    );
+        );
+    });
 };
 
 /**
@@ -155,7 +199,7 @@ var displayUploadedFile = function(file, tag, editor, input_name, filecontainer)
 
     // Delete button
     var elementsIdToRemove = {0:file.id, 1:`${file.id}2`};
-    $('<span class="ti ti-circle-x pointer remove_file_upload"></span>').on('click', () => {
+    $('<span class="ti ti-circle-x pointer remove_file_upload"></span>').attr('title', __('Delete')).on('click', () => {
         deleteImagePasted(elementsIdToRemove, tag.tag, editor);
 
         // Trigger an event to notify that an image has been removed
@@ -216,12 +260,23 @@ const setRichTextEditorContent = function(editor_id, content) {
 if (typeof tinyMCE != 'undefined') {
     tinyMCE.PluginManager.add('glpi_upload_doc', (editor) => {
         let last_paste_content = null;
+        let last_paste_image_files = [];
         const rtf_img_types = {
             'pngblip': 'image/png',
             'jpegblip': 'image/jpeg',
         };
         editor.on('paste', (e) => {
             last_paste_content = e.clipboardData;
+            // Collect all image files from clipboard items so PastePreProcess can
+            // use the binary data instead of any URL the pasted HTML may contain.
+            last_paste_image_files = [];
+            if (last_paste_content && last_paste_content.items) {
+                for (const item of last_paste_content.items) {
+                    if (item.kind === 'file' && isImage(item)) {
+                        last_paste_image_files.push(item.getAsFile());
+                    }
+                }
+            }
         });
         editor.on('PastePreProcess', (event) => {
             const base64_img_contents = [];
@@ -258,6 +313,12 @@ if (typeof tinyMCE != 'undefined') {
                     const rtf_content = base64_img_contents.shift();
                     src = `data:${rtf_content['type']};base64,${rtf_content['content']}`;
                     image.attr('src', src);
+                } else if (last_paste_image_files.length > 0) {
+                    // If the clipboard carries binary image data, prefer it over whatever
+                    // src the pasted HTML contains by converting it to a blob URL — the
+                    // upload flow below then handles it identically to a directly pasted image.
+                    src = URL.createObjectURL(last_paste_image_files.shift());
+                    image.attr('src', src);
                 }
                 if (src.match(new RegExp('^(data|blob):')) !== null) {
                     const upload_id = Math.random().toString();
@@ -286,6 +347,8 @@ if (typeof tinyMCE != 'undefined') {
                             }
                         );
                         uploadFile(file, editor);
+                    }).catch(() => {
+                        removeFailedUploadImage({upload_id: upload_id, editor_id: editor.id});
                     });
                 }
             });

@@ -68,6 +68,7 @@ use Safe\Exceptions\PcreException;
 use Safe\Exceptions\UrlException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 use function Safe\base64_decode;
@@ -79,10 +80,9 @@ use function Safe\curl_getinfo;
 use function Safe\curl_init;
 use function Safe\error_log;
 use function Safe\fclose;
-use function Safe\file_get_contents;
 use function Safe\filemtime;
-use function Safe\finfo_open;
 use function Safe\fopen;
+use function Safe\fread;
 use function Safe\fwrite;
 use function Safe\getimagesize;
 use function Safe\gzcompress;
@@ -123,6 +123,13 @@ use function Safe\unpack;
  **/
 class Toolbox
 {
+    /**
+     * Regular expression pattern for validating email addresses in ITIL actor fields.
+     * Supports UTF-8 characters and special characters as per RFC 6531.
+     * @var string
+     */
+    public const ACTOR_EMAIL_VALIDATION_REGEX = '/^[\p{L}\p{N}\p{M}._%+\'-]+@([\p{L}\p{N}\p{M}._-]+\.)+[\p{L}\p{N}]{2,63}$/u';
+
     /**
      * Wrapper for max_input_vars
      *
@@ -595,22 +602,22 @@ class Toolbox
 
         // if $mime is defined, ignore mime type by extension
         if ($mime === null && preg_match('/\.(...)$/', $path)) {
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mime = finfo_file($finfo, $path);
-            unset($finfo);
+            $mime = self::getMime($path);
         }
 
         $can_be_inlined = false;
-        if (
-            str_starts_with(strtolower($mime), 'image/')
-            && strtolower($mime) !== 'image/svg+xml'
-        ) {
-            // images files can be inlined
-            // except for svg (vector of attack, see https://github.com/glpi-project/glpi/issues/3873)
-            $can_be_inlined = true;
-        } elseif (strtolower($mime) === 'application/pdf') {
-            // PDF files can be inlined
-            $can_be_inlined = true;
+        if ($mime !== null) {
+            if (
+                str_starts_with(strtolower($mime), 'image/')
+                && strtolower($mime) !== 'image/svg+xml'
+            ) {
+                // images files can be inlined
+                // except for svg (vector of attack, see https://github.com/glpi-project/glpi/issues/3873)
+                $can_be_inlined = true;
+            } elseif (strtolower($mime) === 'application/pdf') {
+                // PDF files can be inlined
+                $can_be_inlined = true;
+            }
         }
         $attachment = $can_be_inlined === false ? ' attachment;' : '';
 
@@ -654,14 +661,18 @@ class Toolbox
             );
         }
 
-        try {
-            $content = file_get_contents($path);
-        } catch (FilesystemException $e) {
-            throw new HttpException(500, $e->getMessage(), $e);
-        }
+        return new StreamedResponse(
+            function () use ($path) {
+                $file_stream = fopen($path, 'r');
 
-        return new Response(
-            content: $content,
+                // Flush the response into small chunks to prevent loading the whole file contents into the memory.
+                // This is mandatory to prevent memory exhaustion when sending huge files.
+                while (!feof($file_stream)) {
+                    echo fread($file_stream, 8192);
+                    flush();
+                }
+                fclose($file_stream);
+            },
             status: 200,
             headers: $headers
         );
@@ -867,15 +878,15 @@ class Toolbox
             _x('size', 'ZiB'),
             _x('size', 'YiB'),
         ];
-        foreach ($bytes as $val) {
-            if ($size > 1024) {
+        foreach ($bytes as $key => $val) {
+            if ($size > 1024 && isset($bytes[$key + 1])) {
                 $size /= 1024;
             } else {
                 break;
             }
         }
         //TRANS: %1$s is a number maybe float or string and %2$s the unit
-        return sprintf(__('%1$s %2$s'), round($size, 2), $val);
+        return sprintf(__('%1$s %2$s'), round((float) $size, 2), $val);
     }
 
 
@@ -914,7 +925,7 @@ class Toolbox
 
     /**
      * Resize a picture to the new size
-     * Always produce a JPG file!
+     * The output format matches the source image format when supported.
      *
      * @since 0.85
      *
@@ -969,6 +980,8 @@ class Toolbox
             $new_width  = $max_size;
             $new_height = ceil($max_size / $source_aspect_ratio);
         }
+        $new_width = max((int) $new_width, 1);
+        $new_height = max((int) $new_height, 1);
 
         $img_type = $img_infos[2];
 
@@ -1108,7 +1121,9 @@ class Toolbox
      * @return int
      *   0: OK,
      *   1: delete error,
-     *   2: creation error
+     *   2: creation error,
+     *   3: directory deletion error,
+     *   4: directory creation error
      **/
     public static function testWriteAccessToDirectory($dir)
     {
@@ -1826,9 +1841,9 @@ class Toolbox
         if ($forceport && empty($tab['port'])) {
             if ($tab['type'] == 'pop') {
                 if ($tab['ssl']) {
-                    $tab['port'] = 110;
-                } else {
                     $tab['port'] = 995;
+                } else {
+                    $tab['port'] = 110;
                 }
             }
             if ($tab['type'] == 'imap') {
@@ -1950,9 +1965,9 @@ class Toolbox
             return $protocols;
         }
 
-        $additionnal_protocols = Plugin::doHookFunction(Hooks::MAIL_SERVER_PROTOCOLS, []);
-        if (is_array($additionnal_protocols)) {
-            foreach ($additionnal_protocols as $key => $additionnal_protocol) {
+        $additional_protocols = Plugin::doHookFunction(Hooks::MAIL_SERVER_PROTOCOLS, []);
+        if (is_array($additional_protocols)) {
+            foreach ($additional_protocols as $key => $additional_protocol) {
                 if (array_key_exists($key, $protocols)) {
                     trigger_error(
                         sprintf('Protocol "%s" is already defined and cannot be overwritten.', $key),
@@ -1962,9 +1977,9 @@ class Toolbox
                 }
 
                 if (
-                    !array_key_exists('label', $additionnal_protocol)
-                    || !array_key_exists('protocol', $additionnal_protocol)
-                    || !array_key_exists('storage', $additionnal_protocol)
+                    !array_key_exists('label', $additional_protocol)
+                    || !array_key_exists('protocol', $additional_protocol)
+                    || !array_key_exists('storage', $additional_protocol)
                 ) {
                     trigger_error(
                         sprintf('Invalid specs for protocol "%s".', $key),
@@ -1972,7 +1987,7 @@ class Toolbox
                     );
                     continue;
                 }
-                $protocols[$key] = $additionnal_protocol;
+                $protocols[$key] = $additional_protocol;
             }
         } else {
             trigger_error(
@@ -2409,10 +2424,10 @@ class Toolbox
      * @since 0.85.5
      *
      * @param string         $file  path of the file
-     * @param bool|string $type  check if $file is the correct type
+     * @param false|string $type  check if $file is the correct type (only matches with the first part of the mime like "image" for "image/png)
      *
      * @return bool|string (if $type not given) else boolean
-     *
+     * @phpstan-return ($type is false ? string : bool)
      **/
     public static function getMime($file, $type = false)
     {
@@ -2759,11 +2774,8 @@ class Toolbox
         }
 
         // "true" and "false" are valid JSON strings.
-        if ('true' === $json) {
+        if (in_array($json, ['true', 'false'], true)) {
             return true;
-        }
-        if ('false' === $json) {
-            return false;
         }
 
         // Any other JSON string has to be wrapped in {}, [] or "".
@@ -2904,12 +2916,16 @@ class Toolbox
     /**
      * Format a web link adding http:// if missing
      *
-     * @param string $link link to format
+     * @param ?string $link link to format
      *
      * @return string formatted link.
      **/
     public static function formatOutputWebLink($link)
     {
+        if (empty($link)) {
+            return (string) $link;
+        }
+
         if (!preg_match("/^https?/", $link)) {
             return "http://" . $link;
         }
@@ -3106,9 +3122,7 @@ class Toolbox
 
         if ($html) {
             $formatted = '
-                <span "
-                      class="formatted-number"
-                      data-precision="' . htmlescape($precision) . '">
+                <span class="formatted-number" data-precision="' . htmlescape($precision) . '">
                     <span class="number">' . htmlescape($formatted) . '</span>
                     <span class="suffix">' . htmlescape($suffix) . '</span>
                 </span>

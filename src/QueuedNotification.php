@@ -62,13 +62,6 @@ class QueuedNotification extends CommonDBTM
     }
 
     #[Override]
-    public static function canCreate(): bool
-    {
-        // Everybody can create : human and cron
-        return Session::getLoginUserID(false);
-    }
-
-    #[Override]
     public static function unsetUndisclosedFields(&$fields)
     {
         parent::unsetUndisclosedFields($fields);

@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Form\QuestionType;
 
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Tests\DbTestCase;
@@ -94,5 +95,78 @@ final class QuestionTypeDropdownTest extends DbTestCase
             "1) Your favorite colors: Red, Yellow",
             strip_tags($ticket->fields['content']),
         );
+    }
+
+    public function testMultipleDropdownWithMoreThan50OptionsRendersSelectWithArrayName(): void
+    {
+        $question = $this->createDropdownQuestion(
+            option_count: 51,
+            is_multiple: true,
+        );
+
+        $html = (new QuestionTypeDropdown())->renderEndUserTemplate($question);
+
+        $input_name = $question->getEndUserInputName();
+        $this->assertStringContainsString(
+            sprintf('name="%s[]"', $input_name),
+            $html,
+            'Multiple dropdown with >50 options must use array name (answers_X[]) so all selected values are submitted and the condition engine receives an array'
+        );
+        $this->assertMatchesRegularExpression('/<select[^>]+\bmultiple\b/', $html);
+        $this->assertStringContainsString('DropdownValues', $html, 'Should use the AJAX template');
+    }
+
+    public function testSingleDropdownWithMoreThan50OptionsRendersSelectWithoutArrayName(): void
+    {
+        $question = $this->createDropdownQuestion(
+            option_count: 51,
+            is_multiple: false,
+        );
+
+        $html = (new QuestionTypeDropdown())->renderEndUserTemplate($question);
+
+        $input_name = $question->getEndUserInputName();
+        $this->assertStringContainsString(
+            sprintf('name="%s"', $input_name),
+            $html,
+        );
+        $this->assertStringNotContainsString(
+            sprintf('name="%s[]"', $input_name),
+            $html,
+        );
+        $this->assertStringContainsString('DropdownValues', $html, 'Should use the AJAX template');
+    }
+
+    public function testDropdownWithAtMost50OptionsRendersStandardTemplate(): void
+    {
+        $question = $this->createDropdownQuestion(
+            option_count: 50,
+            is_multiple: true,
+        );
+
+        $html = (new QuestionTypeDropdown())->renderEndUserTemplate($question);
+
+        $this->assertStringNotContainsString('DropdownValues', $html, 'Should use the standard template, not AJAX');
+    }
+
+    private function createDropdownQuestion(int $option_count, bool $is_multiple): Question
+    {
+        $options = [];
+        for ($i = 1; $i <= $option_count; $i++) {
+            $options["option_$i"] = "Option $i";
+        }
+
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Pick options",
+            type: QuestionTypeDropdown::class,
+            extra_data: json_encode(new QuestionTypeDropdownExtraDataConfig(
+                options: $options,
+                is_multiple_dropdown: $is_multiple,
+            ))
+        );
+        $form = $this->createForm($builder);
+
+        return Question::getById($this->getQuestionId($form, "Pick options"));
     }
 }

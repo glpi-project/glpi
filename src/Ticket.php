@@ -168,8 +168,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     {
 
         if (
-            isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
-            || isset($this->fields['status']) && in_array($this->fields['status'], static::getClosedStatusArray())
+            $this->isDeletedOrClosed()
         ) {
             return false;
         }
@@ -178,6 +177,40 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                   && ($this->countUsers(CommonITILActor::ASSIGN) == 0)));
     }
 
+
+    /**
+     * Check whether a specific user has the right to assign themselves to this ticket,
+     * based on their own profile rights rather than the current session.
+     *
+     * @since 11.0.8
+     * @param int $user_id
+     *
+     * @return bool
+     */
+    public function canAssignToUser(int $user_id): bool
+    {
+        if (
+            $this->isDeletedOrClosed()
+        ) {
+            return false;
+        }
+
+        $entity_id = $this->fields['entities_id'] ?? 0;
+
+        return (
+            Profile::haveUserRight($user_id, self::$rightname, self::STEAL, $entity_id)
+            || (
+                Profile::haveUserRight($user_id, self::$rightname, self::OWN, $entity_id)
+                && $this->countUsers(CommonITILActor::ASSIGN) == 0
+            )
+        );
+    }
+
+    private function isDeletedOrClosed(): bool
+    {
+        return (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
+            || isset($this->fields['status']) && in_array($this->fields['status'], static::getClosedStatusArray()));
+    }
 
     /**
      * @param int $ticket_id
@@ -194,7 +227,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 'tickets_id' => $ticket_id,
                 'users_id'   => $user_id,
             ]);
-            if (!count($ticket_user) && $ticket->canAssignToMe()) {
+            if (!count($ticket_user) && $ticket->canAssignToUser($user_id)) {
                 $ticket->update([
                     'id' => $ticket_id,
                     '_users_id_assign' => $user_id,
@@ -797,14 +830,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         if ($item instanceof self) {
             $ong    = [];
 
-            // enquete si statut clos
-            $satisfaction = new TicketSatisfaction();
-            if (
-                $satisfaction->getFromDB($item->getID())
-                && $item->fields['status'] == self::CLOSED
-            ) {
-                $ong[3] = TicketSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
-            }
             if ($item->canView()) {
                 $ong[4] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
             }
@@ -821,10 +846,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         switch (get_class($item)) {
             case self::class:
                 switch ($tabnum) {
-                    case 3:
-                        self::showSatisfactionTabContent($item);
-                        break;
-
                     case 4:
                         $item->showStats();
                         break;
@@ -899,6 +920,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public function cleanDBonPurge()
     {
+        global $DB;
 
         // OlaLevel_Ticket does not extends CommonDBConnexity
         $olaLevel_ticket = new OlaLevel_Ticket();
@@ -917,6 +939,28 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         // CommonITILTask does not extends CommonDBConnexity
         $tt = new TicketTask();
         $tt->deleteByCriteria(['tickets_id' => $this->fields['id']]);
+
+        // sourceof_items_id / sourceitems_id are not named properly for foreign keys so they cannot be handled by relation.constant.php
+        $DB->update(
+            ITILFollowup::getTable(),
+            ['sourceof_items_id' => 0],
+            ['sourceof_items_id' => $this->fields['id']]
+        );
+        $DB->update(
+            ITILFollowup::getTable(),
+            ['sourceitems_id' => 0],
+            ['sourceitems_id' => $this->fields['id']]
+        );
+        $DB->update(
+            TicketTask::getTable(),
+            ['sourceof_items_id' => 0],
+            ['sourceof_items_id' => $this->fields['id']]
+        );
+        $DB->update(
+            TicketTask::getTable(),
+            ['sourceitems_id' => 0],
+            ['sourceitems_id' => $this->fields['id']]
+        );
 
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -1276,7 +1320,12 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         $slalevels_id = SlaLevel::getFirstSlaLevel($slas_id);
 
         $sla = new SLA();
-        if ($sla->getFromDB($slas_id)) {
+        $in_db = $sla->getFromDB($slas_id);
+        if (!$in_db) {
+            return;
+        }
+
+        if (!in_array($this->fields['status'], static::getReopenableStatusArray())) {
             $sla->clearInvalidLevels($this->fields['id']);
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
@@ -1306,7 +1355,12 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         $olalevels_id = OlaLevel::getFirstOlaLevel($slas_id);
 
         $ola = new OLA();
-        if ($ola->getFromDB($slas_id)) {
+        $in_db = $ola->getFromDB($slas_id);
+        if (!$in_db) {
+            return;
+        }
+
+        if (!in_array($this->fields['status'], static::getReopenableStatusArray())) {
             $ola->clearInvalidLevels($this->fields['id']);
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
@@ -1501,7 +1555,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
             // Read again ticket to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
-            NotificationEvent::raiseEvent($mailtype, $this);
+            $trigger = $this->input['_trigger'] ?? null;
+            NotificationEvent::raiseEvent($mailtype, $this, [], $trigger);
         }
 
         $this->handleSatisfactionSurveyOnUpdate();
@@ -1571,9 +1626,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                                  'glpi_businesscriticities',
                                  $infocom->fields['businesscriticities_id']
                              );
-                        }
-                        if (isset($item->fields['groups_id'])) {
-                            $input['_groups_id_of_item'] = $item->fields['groups_id'];
                         }
                         break(2);
                     }
@@ -2276,6 +2328,8 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 Problem::dropdown([
                     'name'      => 'problems_id',
                     'condition' => Problem::getOpenCriteria(),
+                    'entity'      => $_SESSION['glpiactive_entity'],
+                    'entity_sons' => $_SESSION['glpiactive_entity_recursive'],
                 ]);
                 echo '<br><br>';
                 echo Html::submit(_x('button', 'Link'), [
@@ -2450,7 +2504,37 @@ JAVASCRIPT;
                 }
 
                 $em = new Problem_Ticket();
+                $problem_entity    = $problem->getEntityID();
+                $problem_recursive = (bool) $problem->fields['is_recursive'];
+
                 foreach ($ids as $id) {
+                    $ticket_to_check = new Ticket();
+                    if (!$ticket_to_check->getFromDB($id)) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                        continue;
+                    }
+
+                    $ticket_entity = $ticket_to_check->getEntityID();
+
+                    // A problem is compatible with a ticket when:
+                    // - both are in the same entity, OR
+                    // - the problem is in a parent entity and is recursive
+                    $ancestors      = getAncestorsOf('glpi_entities', $ticket_entity);
+                    $is_compatible  = ($problem_entity === $ticket_entity)
+                        || ($problem_recursive && in_array($problem_entity, $ancestors));
+
+                    if (!$is_compatible) {
+                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->addMessage(
+                            sprintf(
+                                __s('Ticket %d and the selected problem do not belong to compatible entities.'),
+                                $id
+                            )
+                        );
+                        continue;
+                    }
+
                     // Add new link
                     $res = $em->add([
                         'problems_id' => $input['problems_id'],
@@ -3596,10 +3680,9 @@ JAVASCRIPT;
             return false;
         }
 
-        if (isset($options['_add_fromitem']) && isset($options['itemtype']) && is_a($options['itemtype'], CommonDBTM::class, true)) {
-            $item = new $options['itemtype']();
-            $item->getFromDB($options['items_id'][$options['itemtype']][0]);
-            $options['entities_id'] = $item->fields['entities_id'];
+        $entities_id = $this->getEntitiesIdFromAddFromItemOptions($options);
+        if ($entities_id !== null) {
+            $options['entities_id'] = $entities_id;
         }
 
         $this->restoreInputAndDefaults($ID, $options, null, true);
@@ -3811,7 +3894,7 @@ JAVASCRIPT;
                 'show_tickets_properties_on_helpdesk',
                 Session::getActiveEntity(),
             ),
-            'survey'                    => $this->getSatisfactionSurveyForHelpdesk(),
+            'survey'                    => $this->getSatisfactionSurvey(),
         ]);
 
         return true;
@@ -4298,7 +4381,7 @@ JAVASCRIPT;
                         $options['criteria'][3]['searchtype'] = 'equals';
                         $options['criteria'][3]['value']      = CommonITILValidation::WAITING;
                         $options['criteria'][3]['link']       = 'AND';
-                        $forcetab                         = 'TicketValidation$1';
+                        $forcetab                             = 'Ticket$main';
 
                         $main_header = "<a href=\"" . htmlescape(Ticket::getSearchURL() . "?" . Toolbox::append_params($options)) . "\">"
                             . Html::makeTitle(__('Your tickets to approve'), $displayed_row_count, $total_row_count) . "</a>";
@@ -5600,10 +5683,11 @@ JAVASCRIPT;
      * Build parent condition for search
      *
      * @param string $fieldID field used in the condition: tickets_id, items_id
+     * @param string $table   table name to qualify column references; prevents MySQL 1052 when JOINed tables share the same column name
      *
      * @return string
      */
-    public static function buildCanViewCondition($fieldID)
+    public static function buildCanViewCondition(string $fieldID, string $table = '')
     {
 
         $condition = "";
@@ -5619,19 +5703,21 @@ JAVASCRIPT;
             $groups = '-1';
         }
 
+        $field_ref = $table ? "`$table`.`$fieldID`" : "`$fieldID`";
+
         if (Session::haveRight("ticket", Ticket::READMY)) {
             // Add tickets where the users is requester, observer or recipient
             // Subquery for requester/observer user
             $user_query = "SELECT `tickets_id`
             FROM `glpi_tickets_users`
             WHERE `users_id` = '$user' AND type IN ($requester, $obs)";
-            $condition .= "OR `$fieldID` IN ($user_query) ";
+            $condition .= "OR $field_ref IN ($user_query) ";
 
             // Subquery for recipient
             $recipient_query = "SELECT `id`
             FROM `glpi_tickets`
             WHERE `users_id_recipient` = '$user'";
-            $condition .= "OR `$fieldID` IN ($recipient_query) ";
+            $condition .= "OR $field_ref IN ($recipient_query) ";
         }
 
         if (Session::haveRight("ticket", Ticket::READGROUP)) {
@@ -5640,7 +5726,7 @@ JAVASCRIPT;
             $group_query = "SELECT `tickets_id`
             FROM `glpi_groups_tickets`
             WHERE `groups_id` IN ($groups) AND type IN ($requester, $obs)";
-            $condition .= "OR `$fieldID` IN ($group_query) ";
+            $condition .= "OR $field_ref IN ($group_query) ";
         }
 
         if (
@@ -5654,7 +5740,7 @@ JAVASCRIPT;
             $user_query = "SELECT `tickets_id`
             FROM `glpi_tickets_users`
             WHERE `users_id` = '$user' AND type = $assign";
-            $condition .= "OR `$fieldID` IN ($user_query) ";
+            $condition .= "OR $field_ref IN ($user_query) ";
         }
 
         if (Session::haveRight("ticket", Ticket::READASSIGN)) {
@@ -5663,14 +5749,14 @@ JAVASCRIPT;
             $group_query = "SELECT `tickets_id`
             FROM `glpi_groups_tickets`
             WHERE `groups_id` IN ($groups) AND type = $assign";
-            $condition .= "OR `$fieldID` IN ($group_query) ";
+            $condition .= "OR $field_ref IN ($group_query) ";
 
             if (Session::haveRight('ticket', Ticket::READNEWTICKET)) {
                 // Add new tickets
                 $tickets_query = "SELECT `id`
                FROM `glpi_tickets`
                WHERE `status` = '" . CommonITILObject::INCOMING . "'";
-                $condition .= "OR `$fieldID` IN ($tickets_query) ";
+                $condition .= "OR $field_ref IN ($tickets_query) ";
             }
         }
 
@@ -5686,7 +5772,7 @@ JAVASCRIPT;
             FROM `glpi_ticketvalidations`
             WHERE (`itemtype_target` = 'User' AND `items_id_target` = '$user')
                 OR (`itemtype_target` = 'Group' AND `items_id_target` IN (SELECT `glpi_groups_users`.`groups_id` FROM `glpi_groups_users` WHERE `glpi_groups_users`.`users_id` = '$user'))";
-            $condition .= "OR `$fieldID` IN ($validation_query) ";
+            $condition .= "OR $field_ref IN ($validation_query) ";
         }
 
         return $condition;
@@ -5819,6 +5905,7 @@ JAVASCRIPT;
                         'date_mod'        => $ticket->fields['date_mod'],
                         'date'            => $ticket->fields['date_creation'],
                         'sourceitems_id'  => $ticket->getID(),
+                        '_disablenotif'   => true,
                     ];
                     if (!$fup->add($input)) {
                         //Cannot add followup. Abort/fail the merge
@@ -5834,6 +5921,7 @@ JAVASCRIPT;
                             $fup2['items_id'] = $merge_target_id;
                             $fup2['sourceitems_id'] = $id;
                             $fup2['content'] = $fup2['content'];
+                            $fup2['_disablenotif'] = true;
                             unset($fup2['id']);
                             if (!$fup->add($fup2)) {
                                 // Cannot add followup. Abort/fail the merge
@@ -5854,6 +5942,7 @@ JAVASCRIPT;
                             $task2['tickets_id'] = $merge_target_id;
                             $task2['sourceitems_id'] = $id;
                             $task2['content'] = $task2['content'];
+                            $task2['_disablenotif'] = true;
                             unset($task2['id']);
                             unset($task2['uuid']);
                             if (!$task->add($task2)) {
@@ -5976,16 +6065,19 @@ JAVASCRIPT;
                             });
                             foreach ($users as $user) {
                                 $user['tickets_id'] = $merge_target_id;
+                                $user['_disablenotif'] = true;
                                 unset($user['id']);
                                 $tu->add($user);
                             }
                             foreach ($groups as $group) {
                                 $group['tickets_id'] = $merge_target_id;
+                                $group['_disablenotif'] = true;
                                 unset($group['id']);
                                 $gt->add($group);
                             }
                             foreach ($suppliers as $supplier) {
                                 $supplier['tickets_id'] = $merge_target_id;
+                                $supplier['_disablenotif'] = true;
                                 unset($supplier['id']);
                                 $st->add($supplier);
                             }
@@ -6044,16 +6136,25 @@ JAVASCRIPT;
     {
         global $DB;
 
-        //look for merged tickets
+        //look for merged tickets (only when the source ticket is deleted, i.e. actually merged)
         $merged = [];
         $iterator = $DB->request(
             [
                 'FROM' => Ticket_Ticket::getTable(),
-                'SELECT' => ['tickets_id_2'],
+                'SELECT' => [Ticket_Ticket::getTable() . '.tickets_id_2'],
                 'DISTINCT' => true,
+                'INNER JOIN' => [
+                    Ticket::getTable() => [
+                        'ON' => [
+                            Ticket_Ticket::getTable() => 'tickets_id_1',
+                            Ticket::getTable()        => 'id',
+                        ],
+                    ],
+                ],
                 'WHERE' => [
-                    'tickets_id_1' => $id,
-                    'link'        => Ticket_Ticket::SON_OF,
+                    Ticket_Ticket::getTable() . '.tickets_id_1' => $id,
+                    Ticket_Ticket::getTable() . '.link'         => Ticket_Ticket::SON_OF,
+                    Ticket::getTable() . '.is_deleted'          => 1,
                 ],
             ]
         );
@@ -6371,23 +6472,4 @@ JAVASCRIPT;
         return $restrict;
     }
 
-    private function getSatisfactionSurveyForHelpdesk(): ?TicketSatisfaction
-    {
-        // On the "central" interface, the survey will be available in a
-        // dedicated tab
-        if (Session::getCurrentInterface() !== "helpdesk") {
-            return null;
-        }
-
-        // Try to find a satisfaction survey for this ticket
-        $satisfaction = static::getSatisfactionClassInstance();
-        if (!$satisfaction instanceof TicketSatisfaction) {
-            return null; // Can't happen
-        }
-        $survey_exist = $satisfaction->getFromDBByCrit([
-            self::getForeignKeyField() => $this->getID(),
-        ]);
-
-        return $survey_exist ? $satisfaction : null;
-    }
 }

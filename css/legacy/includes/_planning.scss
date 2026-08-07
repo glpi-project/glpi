@@ -227,6 +227,19 @@
 
       }
 
+      .fc-button-primary {
+         background-color: var(--tblr-secondary) !important;
+         border-color: var(--tblr-secondary) !important;
+         color: var(--tblr-secondary-fg, #fff) !important;
+
+         &:not(:disabled):active,
+         &:not(:disabled).fc-button-active {
+            background-color: var(--tblr-primary) !important;
+            border-color: var(--tblr-primary) !important;
+            color: var(--tblr-primary-fg, #fff) !important;
+         }
+      }
+
       .event_today {
          background: #fcf8e3;
       }
@@ -309,6 +322,12 @@
 
       .fc-list-empty-wrap2 {
          position: initial;
+      }
+
+      .fc-scroller:has(.fc-list-empty) {
+         display: flex;
+         align-items: center;
+         justify-content: center;
       }
    }
 

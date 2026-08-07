@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Calendar;
 use CalendarSegment;
+use Change;
 use CommonITILActor;
 use CommonITILObject;
 use CommonITILSatisfaction;
@@ -54,7 +55,10 @@ use Group_Ticket;
 use Group_User;
 use ITILCategory;
 use ITILFollowup;
+use ITILReminder;
 use ITILSolution;
+use Laminas\Mail\Storage\Message as MailMessage;
+use MailCollector;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Profile_User;
@@ -72,10 +76,12 @@ use Ticket;
 use Ticket_Contract;
 use Ticket_User;
 use TicketSatisfaction;
+use TicketTask;
 use TicketTemplate;
 use TicketTemplateMandatoryField;
 use TicketValidation;
 use User;
+use UserEmail;
 
 /* Test for inc/ticket.class.php */
 
@@ -594,7 +600,7 @@ class TicketTest extends DbTestCase
             'date'       => '2015-02-01 00:00:00',
         ]);
 
-        $task = new \TicketTask();
+        $task = new TicketTask();
         $this->assertGreaterThan(
             0,
             (int) $task->add([
@@ -1078,7 +1084,7 @@ class TicketTest extends DbTestCase
         $this->assertFalse($ticket->isNewItem());
 
         // 6 - check creation of the tasks
-        $tickettask = new \TicketTask();
+        $tickettask = new TicketTask();
         $found_tasks = $tickettask->find(['tickets_id' => $tickets_id], "id ASC");
 
         // 6.1 -> check first task
@@ -1710,6 +1716,76 @@ class TicketTest extends DbTestCase
         $ticket = getItemByTypeName('Ticket', '_ticket01');
 
         $this->checkFormOutput($ticket);
+    }
+
+    public function testShowFormFromItemUsesItemEntity(): void
+    {
+        // Arrange: an asset in a sub-entity, while the current (default)
+        // session entity is its parent entity
+        $this->login('glpi', 'glpi');
+
+        $root_entity = $this->getTestRootEntity(only_id: true);
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer used to create a ticket from item',
+            'entities_id' => $item_entity,
+        ]);
+
+        // Active entity is the parent entity (with access to its sub-entities),
+        // which is not the same as the asset's own entity
+        $this->assertTrue(Session::changeActiveEntities($root_entity, true));
+
+        $ticket = new Ticket();
+        $ticket->getEmpty();
+
+        // Act: render form for a new ticket created from the asset
+        ob_start();
+        $ticket->showForm($ticket->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the ticket entity follows the asset entity, not the
+        // currently active session entity
+        $this->assertEquals($item_entity, (int) $ticket->fields['entities_id']);
+        $this->assertNotEquals($root_entity, (int) $ticket->fields['entities_id']);
+    }
+
+    public function testShowFormFromItemIgnoresInaccessibleItemEntity(): void
+    {
+        // Arrange: an asset in an entity the current session has no access to
+        $this->login('glpi', 'glpi');
+
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer in an entity the session cannot access',
+            'entities_id' => $item_entity,
+        ]);
+
+        $active_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        // Restrict the active session to a sibling entity only (no access to
+        // the asset's entity, even though the user's profile is recursive
+        // from a common ancestor)
+        $this->assertTrue(Session::changeActiveEntities($active_entity, false));
+
+        $ticket = new Ticket();
+        $ticket->getEmpty();
+
+        // Act: render form for a new ticket created from the (inaccessible) asset
+        ob_start();
+        $ticket->showForm($ticket->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the ticket falls back to the active session entity, the
+        // asset entity is NOT used since the session has no access to it
+        $this->assertEquals($active_entity, (int) $ticket->fields['entities_id']);
+        $this->assertNotEquals($item_entity, (int) $ticket->fields['entities_id']);
     }
 
     public function testFormPostOnly()
@@ -2367,7 +2443,7 @@ class TicketTest extends DbTestCase
             'content' => 'Ticket to check cloning',
         ]);
         $this->assertGreaterThan(0, $ticket_id);
-        $task = new \TicketTask();
+        $task = new TicketTask();
         $this->assertGreaterThan(
             0,
             (int) $task->add([
@@ -2612,7 +2688,7 @@ class TicketTest extends DbTestCase
             );
 
             // TicketTask
-            $task = new \TicketTask();
+            $task = new TicketTask();
             $this->assertGreaterThan(
                 0,
                 (int) $task->add([
@@ -4008,7 +4084,7 @@ class TicketTest extends DbTestCase
             'status'      => CommonITILObject::INCOMING,
         ]);
 
-        $task = new \TicketTask();
+        $task = new TicketTask();
         $fup = new ITILFollowup();
         $task->add([
             'tickets_id'   => $ticket2,
@@ -4295,7 +4371,7 @@ class TicketTest extends DbTestCase
         ]));
 
         // Add a task to the child ticket
-        $task = new \TicketTask();
+        $task = new TicketTask();
         $this->assertGreaterThan(
             0,
             $task->add([
@@ -4336,6 +4412,177 @@ class TicketTest extends DbTestCase
         $this->assertNotEmpty($document_item->find([
             'itemtype' => 'Ticket',
             'items_id' => $ticket1,
+            'documents_id' => $documents_id,
+        ]));
+    }
+
+    public function testMergeDoesNotTriggerNotifications(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $_SESSION['glpiactiveprofile']['interface'] = '';
+        $this->setEntity('Root entity', true);
+
+        $user = getItemByTypeName(User::class, 'tech');
+        $this->createItem(UserEmail::class, [
+            'users_id'    => $user->getID(),
+            'is_default'  => 1,
+            'email'       => 'tech@tech.tech',
+        ]);
+
+        $ticket1 = $this->createItem(Ticket::class, [
+            'name'        => 'merge notif target',
+            'content'     => 'merge notif target',
+            'entities_id' => 0,
+            'status'      => CommonITILObject::INCOMING,
+            '_actors'     => [
+                'requester' => [
+                    ['itemtype' => 'User', 'items_id' => $user->getID(), 'use_notification' => 1],
+                ],
+            ],
+        ])->getID();
+        $ticket2 = $this->createItem(Ticket::class, [
+            'name'        => 'merge notif source',
+            'content'     => 'merge notif source',
+            'entities_id' => 0,
+            'status'      => CommonITILObject::INCOMING,
+        ])->getID();
+
+        $fup = new ITILFollowup();
+        $fup->add([
+            'itemtype'  => 'Ticket',
+            'items_id'  => $ticket2,
+            'content'   => 'source ticket followup',
+        ]);
+
+        $task = new TicketTask();
+        $task->add([
+            'tickets_id' => $ticket2,
+            'content'    => 'source ticket task',
+        ]);
+
+        $status = [];
+        Ticket::merge($ticket1, [$ticket2], $status, [
+            'linktypes'  => ['ITILFollowup', 'TicketTask'],
+            'link_type'  => \CommonITILObject_CommonITILObject::SON_OF,
+        ]);
+        $this->assertSame([$ticket2 => 0], $status);
+
+        // Merging must not queue any "add_followup"/"add_task" notification for the merged-in content
+        $queue = new \QueuedNotification();
+        $this->assertFalse($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket1,
+            'event'    => 'add_followup',
+        ]));
+        $this->assertFalse($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket1,
+            'event'    => 'add_task',
+        ]));
+    }
+
+    /**
+     * When two tickets have a SON_OF link but the child is NOT deleted (not actually merged),
+     * responses added to the child must NOT be propagated to the parent.
+     */
+    public function testResponsesNotPropagatedWhenChildNotDeleted(): void
+    {
+        $this->login();
+        $_SESSION['glpiactiveprofile']['interface'] = '';
+        $this->setEntity('Root entity', true);
+
+        $parent_id = $this->createItem(
+            Ticket::class,
+            [
+                'name'        => 'Parent ticket',
+                'content'     => 'Parent ticket',
+                'entities_id' => 0,
+                'status'      => CommonITILObject::INCOMING,
+            ]
+        )->getID();
+
+        $child_id = $this->createItem(
+            Ticket::class,
+            [
+                'name'        => 'Child ticket',
+                'content'     => 'Child ticket',
+                'entities_id' => 0,
+                'status'      => CommonITILObject::INCOMING,
+            ]
+        )->getID();
+
+        // Create a SON_OF link WITHOUT merging (child is not deleted)
+        $this->createItem(
+            \Ticket_Ticket::class,
+            [
+                'link'         => \Ticket_Ticket::SON_OF,
+                'tickets_id_1' => $child_id,
+                'tickets_id_2' => $parent_id,
+            ]
+        );
+
+        // Add a followup to the child ticket
+        $followup = $this->createItem(
+            ITILFollowup::class,
+            [
+                'itemtype' => 'Ticket',
+                'items_id' => $child_id,
+                'content'  => 'Followup on non-deleted child',
+            ]
+        );
+
+        // The followup must NOT have been copied to the parent
+        $this->assertEmpty($followup->find([
+            'itemtype'       => 'Ticket',
+            'items_id'       => $parent_id,
+            'sourceitems_id' => $child_id,
+        ]));
+
+        // Add a task to the child ticket
+        $task = $this->createItem(
+            TicketTask::class,
+            [
+                'tickets_id' => $child_id,
+                'content'    => 'Task on non-deleted child',
+            ]
+        );
+
+        // The task must NOT have been copied to the parent
+        $this->assertEmpty($task->find([
+            'tickets_id'     => $parent_id,
+            'sourceitems_id' => $child_id,
+        ]));
+
+        // Add a document to the child ticket
+        $documents_id = $this->createItem(
+            \Document::class,
+            [
+                'name'     => 'Child ticket document',
+                'filename' => 'doc.xls',
+                'users_id' => Session::getLoginUserID(),
+            ]
+        )->getID();
+
+        $document_item = $this->createItem(
+            \Document_Item::class,
+            [
+                'itemtype'     => 'Ticket',
+                'items_id'     => $child_id,
+                'documents_id' => $documents_id,
+                'entities_id'  => '0',
+                'is_recursive' => 0,
+            ]
+        );
+
+        // The document must NOT have been copied to the parent
+        $this->assertEmpty($document_item->find([
+            'itemtype'     => 'Ticket',
+            'items_id'     => $parent_id,
             'documents_id' => $documents_id,
         ]));
     }
@@ -6989,29 +7236,29 @@ HTML,
         $entity_id = 0;
 
         $ticket = new Ticket();
-        $fup = new ITILFollowup();
-        $sol = new ITILSolution();
 
         //create a ticket
-        $ticket_id = $ticket->add([
+        $ticket = $this->createItem(Ticket::class, [
             'name'                  => __METHOD__,
             'content'               => __METHOD__,
             'entities_id'           => $entity_id,
             '_skip_auto_assign'     => true,
             '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
         ]);
-        $this->assertGreaterThan(0, $ticket_id);
+        $ticket_id = $ticket->getID();
 
         //add a followup to the ticket without assigning to me (tech)
         $this->login('tech', 'tech');
-        $_SESSION['glpiset_followup_tech'] = 0;
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 0]);
+        $tech_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
-            ])
+                'users_id'  => $tech_user->getID(),
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
@@ -7019,15 +7266,17 @@ HTML,
         $this->assertCount(0, $actors);
 
         //add a private followup to the ticket and NOT assign to me (tech)
-        $_SESSION['glpiset_followup_tech'] = 1;
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
+        $tech_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'      => 'Ticket',
                 'items_id'      => $ticket_id,
                 'content'       => 'A simple followup',
                 'is_private'    => 1,
-            ])
+                'users_id'      => $tech_user->getID(),
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
@@ -7035,97 +7284,118 @@ HTML,
         $this->assertCount(0, $actors);
 
         //add a followup to the ticket and assign to me (tech)
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
-            ])
+                'users_id'  => $tech_user->getID(),
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount(1, $actors);
+        $this->assertSame(User::class, array_values($actors)[0]['itemtype']);
+        $this->assertSame($tech_user->getID(), (int) array_values($actors)[0]['items_id']);
 
         //add a solution to the ticket and assign to me
         $this->login('glpi', 'glpi');
-        $_SESSION['glpiset_solution_tech'] = 1;
-        $this->assertGreaterThan(
-            0,
-            (int) $sol->add([
+        $glpi_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_solution_tech' => 1]);
+        $glpi_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILSolution::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple solution',
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount(2, $actors);
+        $this->assertSame(User::class, array_values($actors)[1]['itemtype']);
+        $this->assertSame($glpi_user->getID(), (int) array_values($actors)[1]['items_id']);
 
         //create a new ticket
-        $ticket_id = $ticket->add([
-            'name'                  => __METHOD__,
-            'content'               => __METHOD__,
-            'entities_id'           => $entity_id,
-            '_skip_auto_assign'     => true,
-            '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
-        ]);
-        $this->assertGreaterThan(0, $ticket_id);
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name'                  => __METHOD__,
+                'content'               => __METHOD__,
+                'entities_id'           => $entity_id,
+                '_skip_auto_assign'     => true,
+                '_users_id_requester'   => getItemByTypeName('User', 'normal', true),
+            ]
+        );
+        $ticket_id = $ticket->getID();
 
         //add a solution to the ticket without assigning to me
         $this->login('tech', 'tech');
-        $_SESSION['glpiset_solution_tech'] = 0;
-        $this->assertGreaterThan(
-            0,
-            (int) $sol->add([
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_solution_tech' => 0]);
+        $tech_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILSolution::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple solution',
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount(0, $actors);
 
+        $requester_id = getItemByTypeName('User', 'glpi', true);
+
         //create a new ticket
-        $ticket_id = $ticket->add([
-            'name'                  => __METHOD__,
-            'content'               => __METHOD__,
-            'entities_id'           => $entity_id,
-            '_skip_auto_assign'     => true,
-            '_users_id_requester'   => getItemByTypeName('User', 'glpi', true),
-            '_users_id_observer'    => getItemByTypeName('User', 'tech', true),
-        ]);
-        $this->assertGreaterThan(0, $ticket_id);
-        $ticket->getFromDB($ticket_id);
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name'                  => __METHOD__,
+                'content'               => __METHOD__,
+                'entities_id'           => $entity_id,
+                '_skip_auto_assign'     => true,
+                '_users_id_requester'   => $requester_id,
+                '_users_id_observer'    => getItemByTypeName('User', 'tech', true),
+            ]
+        );
+        $ticket_id = $ticket->getID();
+
         $actors = $ticket->getActorsForType(CommonITILActor::REQUESTER);
         $this->assertCount(1, $actors);
+        $this->assertSame(User::class, array_values($actors)[0]['itemtype']);
+        $this->assertSame($requester_id, (int) array_values($actors)[0]['items_id']);
 
         //add a followup to the ticket without assigning to me
         $this->login('glpi', 'glpi');
-        $_SESSION['glpiset_followup_tech'] = 1;
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $glpi_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
+        $glpi_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
-            ])
+                'users_id'  => $glpi_user->getID(),
+            ]
         );
 
         //add a followup to the ticket without assigning to me
         $this->login('tech', 'tech');
-        $_SESSION['glpiset_followup_tech'] = 1;
-        $this->assertGreaterThan(
-            0,
-            (int) $fup->add([
+        $tech_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
+        $tech_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILFollowup::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple followup',
-            ])
+                'users_id'  => $tech_user->getID(),
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
@@ -7134,19 +7404,120 @@ HTML,
 
         //add a solution to the ticket without assigning to me
         $this->login('glpi', 'glpi');
-        $_SESSION['glpiset_solution_tech'] = 1;
-        $this->assertGreaterThan(
-            0,
-            (int) $sol->add([
+        $glpi_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_solution_tech' => 1]);
+        $glpi_user->loadPreferencesInSession();
+        $this->createItem(
+            ITILSolution::class,
+            [
                 'itemtype'  => 'Ticket',
                 'items_id'  => $ticket_id,
                 'content'   => 'A simple solution',
-            ])
+            ]
         );
 
         $ticket->getFromDB($ticket_id);
         $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
         $this->assertCount(0, $actors);
+    }
+
+    public static function mailCollectorFollowupSetAssigneeProvider(): array
+    {
+        return [
+            'self_service_user_has_no_tech_rights' => [
+                'from_user'        => 'post-only',
+                'set_followup_tech' => 1,
+                'expected_actors_count' => 0,
+            ],
+            'tech_user_disabled_preference' => [
+                'from_user'        => 'tech',
+                'set_followup_tech' => 0,
+                'expected_actors_count' => 0,
+            ],
+            'tech_user_enabled_preference' => [
+                'from_user'        => 'tech',
+                'set_followup_tech' => 1,
+                'expected_actors_count' => 1,
+            ],
+        ];
+    }
+
+    #[DataProvider('mailCollectorFollowupSetAssigneeProvider')]
+    public function testMailCollectorFollowupSetAssignee(string $from_user, int $set_followup_tech, int $expected_actors_count): void
+    {
+        // Log in as glpi and enable "assign me" preference to simulate the mail collector's
+        // own session
+        $this->login();
+        $glpi_user = $this->updateItem(User::class, Session::getLoginUserID(), ['set_followup_tech' => 1]);
+        $glpi_user->loadPreferencesInSession();
+
+        // Set the followup author's own preference in the database
+        $from_user_id = getItemByTypeName('User', $from_user, true);
+        $this->updateItem(User::class, $from_user_id, ['set_followup_tech' => $set_followup_tech]);
+
+        // Associate an email address with the sender so MailCollector can resolve them
+        $sender_email = $from_user . '@test.glpi.com';
+        $this->createItem(
+            UserEmail::class,
+            ['users_id' => $from_user_id, 'is_default' => 1, 'email' => $sender_email]
+        );
+
+        $collector = $this->createItem(
+            MailCollector::class,
+            [
+                'name'             => 'test-collector',
+                'is_active'        => 1,
+                'filesize_max'     => 2097152,
+                'requester_field'  => MailCollector::REQUESTER_FIELD_FROM,
+                'mail_server'      => 'imap.test.glpi.com',
+                'server_type'      => '/imap',
+            ],
+            ['mail_server', 'server_type']
+        );
+        $mailgate_id = $collector->getID();
+
+        // Create a ticket with no assignee
+        $ticket = $this->createItem(Ticket::class, [
+            'name'              => __METHOD__,
+            'content'           => __METHOD__,
+            'entities_id'       => 0,
+            '_skip_auto_assign' => true,
+        ]);
+        $ticket_id = $ticket->getID();
+
+        // Build a raw email from the sender replying to the ticket (linked via subject line)
+        $raw = implode("\r\n", [
+            "From: {$from_user} <{$sender_email}>",
+            "To: helpdesk@glpi.com",
+            "Subject: Re: [GLPI #{$ticket_id}]",
+            "Message-ID: <test-{$from_user}-followup@glpi-test.com>",
+            "Date: Mon, 01 Jan 2024 12:00:00 +0000",
+            "",
+            "This is a test followup sent via email.",
+        ]);
+        $message = new MailMessage(['raw' => $raw]);
+
+        $tkt = $collector->buildTicket(1, $message, ['mailgates_id' => $mailgate_id, 'play_rules' => false]);
+
+        $this->assertFalse($tkt['_blacklisted']);
+        $this->assertArrayHasKey('tickets_id', $tkt);
+        $this->assertSame($ticket_id, $tkt['tickets_id']);
+        $this->assertSame($from_user_id, $tkt['users_id']);
+
+        // Replicate the followup-creation logic from MailCollector::collect()
+        $fup_input             = $tkt;
+        $fup_input['itemtype'] = Ticket::class;
+        $fup_input['items_id'] = $fup_input['tickets_id'];
+        unset($fup_input['tickets_id']);
+
+        $this->createItem(ITILFollowup::class, $fup_input, ['name', 'add_reopen']);
+
+        $ticket->getFromDB($ticket_id);
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        $this->assertCount($expected_actors_count, $actors);
+        if ($expected_actors_count > 0) {
+            $this->assertSame(User::class, array_values($actors)[0]['itemtype']);
+            $this->assertSame($from_user_id, (int) array_values($actors)[0]['items_id']);
+        }
     }
 
     public function testNotificationDisabled()
@@ -7413,7 +7784,7 @@ HTML,
         );
 
         $task1 = $this->createItem(
-            \TicketTask::class,
+            TicketTask::class,
             [
                 'tickets_id'    => $ticket->getID(),
                 'content'       => 'public task',
@@ -7422,7 +7793,7 @@ HTML,
         );
 
         $task2 = $this->createItem(
-            \TicketTask::class,
+            TicketTask::class,
             [
                 'tickets_id'    => $ticket->getID(),
                 'content'       => 'private task of tech user',
@@ -7433,7 +7804,7 @@ HTML,
         );
 
         $task3 = $this->createItem(
-            \TicketTask::class,
+            TicketTask::class,
             [
                 'tickets_id'    => $ticket->getID(),
                 'content'       => 'private task of normal user',
@@ -7444,7 +7815,7 @@ HTML,
         );
 
         $task4 = $this->createItem(
-            \TicketTask::class,
+            TicketTask::class,
             [
                 'tickets_id'    => $ticket->getID(),
                 'content'       => 'private task assigned to normal user',
@@ -7455,7 +7826,7 @@ HTML,
         );
 
         $task5 = $this->createItem(
-            \TicketTask::class,
+            TicketTask::class,
             [
                 'tickets_id'        => $ticket->getID(),
                 'content'           => 'private task assigned to see group',
@@ -7466,7 +7837,7 @@ HTML,
         );
 
         $task6 = $this->createItem(
-            \TicketTask::class,
+            TicketTask::class,
             [
                 'tickets_id'    => $ticket->getID(),
                 'content'       => 'private task assign to tech user',
@@ -7492,32 +7863,32 @@ HTML,
                 [
                     'documents_id'   => $document->getID(),
                     'items_id'       => $task1->getID(),
-                    'itemtype'       => \TicketTask::class,
+                    'itemtype'       => TicketTask::class,
                 ],
                 [
                     'documents_id'   => $document->getID(),
                     'items_id'       => $task2->getID(),
-                    'itemtype'       => \TicketTask::class,
+                    'itemtype'       => TicketTask::class,
                 ],
                 [
                     'documents_id'   => $document->getID(),
                     'items_id'       => $task3->getID(),
-                    'itemtype'       => \TicketTask::class,
+                    'itemtype'       => TicketTask::class,
                 ],
                 [
                     'documents_id'   => $document->getID(),
                     'items_id'       => $task4->getID(),
-                    'itemtype'       => \TicketTask::class,
+                    'itemtype'       => TicketTask::class,
                 ],
                 [
                     'documents_id'   => $document->getID(),
                     'items_id'       => $task5->getID(),
-                    'itemtype'       => \TicketTask::class,
+                    'itemtype'       => TicketTask::class,
                 ],
                 [
                     'documents_id'   => $document->getID(),
                     'items_id'       => $task6->getID(),
-                    'itemtype'       => \TicketTask::class,
+                    'itemtype'       => TicketTask::class,
                 ],
                 [
                     'documents_id'   => $weblink_document->getID(),
@@ -7680,7 +8051,7 @@ HTML,
                 array_values(
                     array_filter(
                         $timeline,
-                        fn($entry) => $entry['type'] === \TicketTask::class
+                        fn($entry) => $entry['type'] === TicketTask::class
                     )
                 ),
             );
@@ -7689,7 +8060,7 @@ HTML,
             $has_weblink = false;
             foreach ($timeline as $entry) {
                 if (
-                    $entry['type'] === \TicketTask::class
+                    $entry['type'] === TicketTask::class
                     && isset($entry['item']['content'])
                     && $entry['item']['content'] !== 'private task assigned to normal user'
                 ) {
@@ -7702,6 +8073,41 @@ HTML,
             }
             $this->assertTrue($has_weblink);
         }
+    }
+
+    public function testGetTimelineItemsAutoReminder()
+    {
+        global $DB;
+
+        $this->login();
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name' => __FUNCTION__,
+                'content' => __FUNCTION__,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ],
+        );
+        $DB->insert(ITILReminder::getTable(), [
+            'itemtype' => Change::class,
+            'items_id' => $ticket->getID(),
+            'name' => 'Right ID, wrong itemtype',
+            'content' => 'Test',
+        ]);
+
+        $timeline_items = $ticket->getTimelineItems();
+        $reminder_items = array_filter($timeline_items, static fn($entry) => $entry['type'] === ITILReminder::class);
+        $this->assertCount(0, $reminder_items);
+
+        $DB->insert(ITILReminder::getTable(), [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'name' => 'Right ID, right itemtype',
+            'content' => 'Test',
+        ]);
+        $timeline_items = $ticket->getTimelineItems();
+        $reminder_items = array_filter($timeline_items, static fn($entry) => $entry['type'] === ITILReminder::class);
+        $this->assertCount(1, $reminder_items);
     }
 
     /**
@@ -7723,7 +8129,7 @@ HTML,
             ])
         );
 
-        $task = new \TicketTask();
+        $task = new TicketTask();
         $date = date('Y-m-d H:i:s');
         // Create one task with a different creation date after the others
         $this->assertGreaterThan(
@@ -7758,7 +8164,7 @@ HTML,
         $timeline_items = $ticket->getTimelineItems();
 
         // Ensure that the tasks are ordered by creation date. And, if they have the same creation date, by ID
-        $tasks = array_values(array_filter($timeline_items, static fn($entry) => $entry['type'] === \TicketTask::class));
+        $tasks = array_values(array_filter($timeline_items, static fn($entry) => $entry['type'] === TicketTask::class));
         // Check tasks are in order of creation date
         $creation_dates = array_map(static fn($entry) => $entry['item']['date_creation'], $tasks);
         $sorted_dates = $creation_dates;
@@ -7773,7 +8179,7 @@ HTML,
 
         // Check reverse timeline order
         $timeline_items = $ticket->getTimelineItems(['sort_by_date_desc' => true]);
-        $tasks = array_values(array_filter($timeline_items, static fn($entry) => $entry['type'] === \TicketTask::class));
+        $tasks = array_values(array_filter($timeline_items, static fn($entry) => $entry['type'] === TicketTask::class));
         $creation_dates = array_map(static fn($entry) => $entry['item']['date_creation'], $tasks);
         $sorted_dates = $creation_dates;
         sort($sorted_dates);
@@ -8968,15 +9374,14 @@ HTML,
             'expected' => false,
         ];
 
-        // TODO: this case doesn't work anymore after the test was fixed in #23012.
-        // yield [
-        //     'profilerights' => [
-        //         'followup' => 0,
-        //         'ticket'   => 0,
-        //         'document' => CREATE,
-        //     ],
-        //     'expected' => true, // requester can always add docs if the ticket is not modified
-        // ];
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'ticket'   => 0,
+                'document' => CREATE,
+            ],
+            'expected' => false,
+        ];
 
         yield [
             'profilerights' => [
@@ -8996,15 +9401,14 @@ HTML,
             'expected' => true,
         ];
 
-        // TODO: this case doesn't work anymore after the test was fixed in #23012.
-        // yield [
-        //     'profilerights' => [
-        //         'followup' => 0,
-        //         'ticket'   => CREATE,
-        //         'document' => CREATE,
-        //     ],
-        //     'expected' => true, // requester can always add docs if the ticket is not modified
-        // ];
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'ticket'   => CREATE,
+                'document' => CREATE,
+            ],
+            'expected' => false,
+        ];
     }
 
     #[DataProvider('canAddDocumentProvider')]
@@ -9113,7 +9517,7 @@ HTML,
             'pattern' => 'ITILsolution',
         ]);
 
-        $this->createItem(\UserEmail::class, [
+        $this->createItem(UserEmail::class, [
             'users_id' => $user->getID(),
             'is_default' => 1,
             'email' => 'tech@tech.tech',
@@ -9657,7 +10061,7 @@ HTML,
         $this->assertNotContains($doc3->getID(), $found_docs);
 
         // Anonymous user can't see documents linked to private followups
-        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, new User());
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria(false, null, true);
         $doc_crit[] = [
             'timeline_position' => ['>', CommonITILObject::NO_TIMELINE],
         ];
@@ -9913,7 +10317,7 @@ HTML,
      */
     public static function associatedDocumentsWithoutSessionProvider(): iterable
     {
-        foreach ([Ticket::class, \Change::class, \Problem::class] as $itil_itemtype) {
+        foreach ([Ticket::class, Change::class, \Problem::class] as $itil_itemtype) {
 
             yield [
                 'parent_itil_itemtype' => $itil_itemtype,
@@ -9984,16 +10388,53 @@ HTML,
         ];
         yield [
             'parent_itil_itemtype' => Ticket::class,
-            'timeline_item_type' => \TicketTask::class,
+            'timeline_item_type' => TicketTask::class,
             'is_private' => true,
             'test_user' => 'post-only',
             'expected' => false,
         ];
         yield [
             'parent_itil_itemtype' => Ticket::class,
-            'timeline_item_type' => \TicketTask::class,
+            'timeline_item_type' => TicketTask::class,
             'is_private' => false,
             'test_user' => 'post-only',
+            'expected' => true,
+        ];
+
+        // Tests for anonymous user (no GLPI account)
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => ITILFollowup::class,
+            'is_private' => false,
+            'test_user' => null, // anonymous
+            'expected' => true,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => ITILFollowup::class,
+            'is_private' => true,
+            'test_user' => null, // anonymous
+            'expected' => false,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => TicketTask::class,
+            'is_private' => false,
+            'test_user' => null, // anonymous
+            'expected' => true,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => TicketTask::class,
+            'is_private' => true,
+            'test_user' => null, // anonymous
+            'expected' => false,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => ITILSolution::class,
+            'is_private' => false,
+            'test_user' => null, // anonymous
             'expected' => true,
         ];
     }
@@ -10002,28 +10443,28 @@ HTML,
      * Test that documents attached to followups, tasks and solutions are included
      * in notification emails, even when there is no active session (cron context).
      * Tests various scenarios with different timeline item types, visibility, and user rights.
-     *
-     * @dataProvider associatedDocumentsWithoutSessionProvider
      */
+    #[DataProvider('associatedDocumentsWithoutSessionProvider')]
     public function testGetAssociatedDocumentsWithoutActiveSession(
         string $parent_itil_itemtype,
         string $timeline_item_type,
         bool $is_private,
-        string $test_user,
+        ?string $test_user,
         bool $expected
     ): void {
         global $DB;
 
         $this->login();
 
-        // Get the test user
-        $user = getItemByTypeName(User::class, $test_user, false);
+        // Get the test user (or anonymous)
+        $user = $test_user !== null ? getItemByTypeName(User::class, $test_user, false) : null;
+        $is_anonymous = ($test_user === null);
 
         $parent_item = $this->createItem($parent_itil_itemtype, [
             'name'               => 'ITIL Object test',
             'content'            => 'test',
             'entities_id'        => $this->getTestRootEntity(true),
-            '_users_id_requester' => $user->getID(),
+            '_users_id_requester' => $is_anonymous ? 0 : $user->getID(),
         ]);
 
         // Create a document linked directly to the parent item (ticket/change/problem)
@@ -10076,7 +10517,7 @@ HTML,
                 $fk_field            => $parent_item->getID(),
                 'comment_submission' => 'Validation request with document',
                 'itemtype_target'    => User::class,
-                'items_id_target'    => $user->getID(),
+                'items_id_target'    => $is_anonymous ? Session::getLoginUserID() : $user->getID(),
             ]);
             $doc_timeline = $this->createItem(\Document::class, [
                 'name' => 'Doc: linked to ticket validation',
@@ -10092,7 +10533,7 @@ HTML,
         ]);
 
         // First verify with active session
-        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $user);
+        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $is_anonymous ? null : $user, $is_anonymous);
         $doc_items_iterator = $DB->request([
             'SELECT' => ['documents_id'],
             'FROM'   => \Document_Item::getTable(),
@@ -10130,7 +10571,7 @@ HTML,
         $parent_item->getFromDB($parent_item->getID());
 
         // Test that documents visibility is consistent without session
-        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $user);
+        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $is_anonymous ? null : $user, $is_anonymous);
         $doc_items_iterator = $DB->request([
             'SELECT' => ['documents_id'],
             'FROM'   => \Document_Item::getTable(),
@@ -10193,6 +10634,179 @@ HTML,
         ]);
 
         $this->checkActors($ticket, []);
+    }
+
+    /**
+     * Test that sourceof_items_id / sourceitems_id references in followups and tasks are cleaned when a ticket is purged
+     * @return void
+     */
+    public function testSourceOfSourceItemCleanup(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'Ticket with source item',
+            'content' => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $ticket2 = $this->createItem(Ticket::class, [
+            'name' => 'Another ticket',
+            'content' => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $followup = $this->createItem(ITILFollowup::class, [
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket2->getID(),
+            'content' => 'Followup content',
+        ]);
+
+        $task = $this->createItem(TicketTask::class, [
+            'tickets_id' => $ticket2->getID(),
+            'content' => 'Task content',
+        ]);
+
+        $followup->update([
+            'id' => $followup->getID(),
+            'sourceof_items_id' => $ticket->getID(),
+            'sourceitems_id' => $ticket->getID(),
+        ]);
+        $task->update([
+            'id' => $task->getID(),
+            'sourceof_items_id' => $ticket->getID(),
+            'sourceitems_id' => $ticket->getID(),
+        ]);
+
+        $this->assertTrue($ticket->delete(['id' => $ticket->getID()], true));
+
+        $this->assertTrue($followup->getFromDB($followup->getID()));
+        $task->getFromDB($task->getID());
+
+        $this->assertEquals(0, $followup->fields['sourceof_items_id']);
+        $this->assertEquals(0, $task->fields['sourceof_items_id']);
+        $this->assertEquals(0, $followup->fields['sourceitems_id']);
+        $this->assertEquals(0, $task->fields['sourceitems_id']);
+    }
+
+    // test with param _users_id_requester e.g in user profile
+    // The user must be the requester
+    public function testCreateTicketFromUser()
+    {
+        $this->login();
+
+        $user_id = getItemByTypeName(User::class, 'glpi', true);
+
+        $ticket_id = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket created from the user profile',
+            'content'     => 'Hello world',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user_id,
+        ])->getID();
+
+        $ticket = new Ticket();
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+
+        $ticket_user = new Ticket_User();
+        $found = $ticket_user->find([
+            'tickets_id' => $ticket_id,
+            'users_id'   => $user_id,
+            'type'       => CommonITILActor::REQUESTER, // user is _users_id_requester
+        ]);
+
+        $this->assertCount(1, $found);
+    }
+
+    public function testTitleIsTruncatedTo255Characters(): void
+    {
+        $this->login();
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => str_repeat('a', 300),
+            'content'     => 'Hello world',
+            'entities_id' => $this->getTestRootEntity(true),
+        ], ['name']);
+
+        $this->assertSame(255, mb_strlen($ticket->fields['name']));
+    }
+
+    public function testGetAssociatedDocumentsOfPrivateTaskWithUnrelatedGroup(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $tech_user_id   = getItemByTypeName(User::class, 'tech', true);
+        $normal_user_id = getItemByTypeName(User::class, 'normal', true);
+
+        // Give the tech profile full visibility on private tasks (seeprivate)
+        // in addition to seeprivategroups
+        $tprofile_id = getItemByTypeName(Profile::class, 'Technician', true);
+        $profile_right = new ProfileRight();
+        $profile_right->getFromDBByCrit([
+            'profiles_id' => $tprofile_id,
+            'name'        => 'task',
+        ]);
+        $this->updateItem(
+            ProfileRight::class,
+            $profile_right->getID(),
+            [
+                'rights' => \CommonITILTask::SEEPUBLIC
+                    + \CommonITILTask::SEEPRIVATE
+                    + \CommonITILTask::SEEPRIVATEGROUPS,
+            ]
+        );
+
+        // Group with no relation at all to the ticket or its tasks
+        $unrelated_group = $this->createItem(Group::class, [
+            'name' => 'Unrelated group',
+        ]);
+        $this->createItem(Group_User::class, [
+            'groups_id' => $unrelated_group->getID(),
+            'users_id'  => $tech_user_id,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        // Private task neither authored by assigned to nor linked by group to the tech user
+        $task = $this->createItem(TicketTask::class, [
+            'tickets_id'    => $ticket->getID(),
+            'content'       => 'private task unrelated to tech user',
+            'is_private'    => 1,
+            'users_id'      => $normal_user_id,
+            'users_id_tech' => $normal_user_id,
+        ]);
+
+        $doc = $this->createItem(\Document::class, [
+            'name' => 'Doc linked to unrelated private task',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'     => $task->getID(),
+            'itemtype'     => TicketTask::class,
+            'documents_id' => $doc->getID(),
+        ]);
+
+        // Tech user has seeprivate but also belongs to an
+        // unrelated group with seeprivategroups enabled. Merely belonging to that
+        // group must not restrict access to documents they are otherwise allowed to see
+        $this->login('tech', 'tech');
+
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria();
+        $doc_items_iterator = $DB->request([
+            'SELECT' => ['documents_id'],
+            'FROM'   => \Document_Item::getTable(),
+            'WHERE'  => $doc_crit,
+        ]);
+        $found_docs = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs[] = $doc_item['documents_id'];
+        }
+
+        $this->assertContains($doc->getID(), $found_docs);
     }
 
 }

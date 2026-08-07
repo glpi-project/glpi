@@ -36,13 +36,17 @@ namespace Glpi\Tests;
 
 use Computer;
 use Glpi\Asset\AssetDefinition;
+use Glpi\Form\Destination\CommonITILField\AssigneeField;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Group;
+use Profile;
 use User;
+
+use function Safe\json_encode;
 
 abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
 {
@@ -57,6 +61,16 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
 
     abstract public function getFieldClass(): string;
 
+    /**
+     * Expected actors when no strategy matches; overridden by fields with a fallback.
+     *
+     * @return array<array{itemtype?: class-string<\CommonDBTM>, items_id: int}>
+     */
+    protected function getExpectedNoMatchActors(): array
+    {
+        return [];
+    }
+
     public function testUserActorsFromSpecificItemQuestions(): void
     {
         // Login is required to assign actors
@@ -70,9 +84,13 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             strategies: [ITILActorFieldStrategy::USER_FROM_OBJECT_ANSWER],
             specific_question_ids: [$this->getQuestionId($form, "Computer question")]
         );
+        $user_data = ['name' => 'testUserActorsFromSpecificItemQuestions User'];
+        if ($this->getFieldClass() === AssigneeField::class) {
+            $user_data['_profiles_id'] = getItemByTypeName(Profile::class, 'Technician', true);
+        }
         $users = $this->createItems(User::class, [
-            ['name' => 'testUserActorsFromSpecificItemQuestions User 1'],
-            ['name' => 'testUserActorsFromSpecificItemQuestions User 2'],
+            array_merge($user_data, ['name' => 'testUserActorsFromSpecificItemQuestions User 1']),
+            array_merge($user_data, ['name' => 'testUserActorsFromSpecificItemQuestions User 2']),
         ]);
         $computers = $this->createItems(Computer::class, [
             [
@@ -92,7 +110,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first computer
@@ -105,7 +123,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[0]->getID(),
                 ],
             ],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with second computer
@@ -135,9 +153,13 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             strategies: [ITILActorFieldStrategy::TECH_USER_FROM_OBJECT_ANSWER],
             specific_question_ids: [$this->getQuestionId($form, "Computer question")]
         );
+        $user_data = ['name' => 'testTechUserActorsFromSpecificItemQuestions User'];
+        if ($this->getFieldClass() === AssigneeField::class) {
+            $user_data['_profiles_id'] = getItemByTypeName(Profile::class, 'Technician', true);
+        }
         $users = $this->createItems(User::class, [
-            ['name' => 'testTechUserActorsFromSpecificItemQuestions User 1'],
-            ['name' => 'testTechUserActorsFromSpecificItemQuestions User 2'],
+            array_merge($user_data, ['name' => 'testTechUserActorsFromSpecificItemQuestions User 1']),
+            array_merge($user_data, ['name' => 'testTechUserActorsFromSpecificItemQuestions User 2']),
         ]);
         $computers = $this->createItems(Computer::class, [
             [
@@ -157,7 +179,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first computer
@@ -183,7 +205,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
     }
 
@@ -222,7 +244,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first computer
@@ -248,7 +270,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
     }
 
@@ -287,7 +309,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first computer
@@ -300,7 +322,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[0]->getID(),
                 ],
             ],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with second computer
@@ -346,9 +368,13 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             specific_question_ids: [$this->getQuestionId($form, "Custom asset question")]
         );
 
+        $user_data = ['name' => 'testTechUserActorsFromCustomAssetItemQuestions User'];
+        if ($this->getFieldClass() === AssigneeField::class) {
+            $user_data['_profiles_id'] = getItemByTypeName(Profile::class, 'Technician', true);
+        }
         $users = $this->createItems(User::class, [
-            ['name' => 'testTechUserActorsFromCustomAssetItemQuestions User 1'],
-            ['name' => 'testTechUserActorsFromCustomAssetItemQuestions User 2'],
+            array_merge($user_data, ['name' => 'testTechUserActorsFromCustomAssetItemQuestions User 1']),
+            array_merge($user_data, ['name' => 'testTechUserActorsFromCustomAssetItemQuestions User 2']),
         ]);
 
         $assets = $this->createItems($asset_class, [
@@ -369,7 +395,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first custom asset
@@ -451,7 +477,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors: []
+            expected_actors: $this->getExpectedNoMatchActors()
         );
 
         // Answer with first custom asset

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * NotImportedEmail Class
  **/
@@ -46,6 +48,10 @@ class NotImportedEmail extends CommonDBTM
     public const FAILED_INSERT     = self::FAILED_OPERATION;
     public const NOT_ENOUGH_RIGHTS = 3;
 
+    public static function canPurge(): bool
+    {
+        return self::canUpdate();
+    }
 
     public function getForbiddenStandardMassiveAction()
     {
@@ -210,7 +216,7 @@ class NotImportedEmail extends CommonDBTM
     {
         global $DB;
 
-        $DB->delete('glpi_notimportedemails', [1]);
+        $DB->delete('glpi_notimportedemails', [new QueryExpression('true')]);
     }
 
 

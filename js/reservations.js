@@ -93,6 +93,7 @@ var Reservations = function() {
                 return _newheight;
             },
             resourceAreaWidth: '15%',
+            resourceLabelText: __('Resources'),
             plugins: ['dayGrid', 'interaction', 'list', 'timeGrid', 'resourceTimeline'],
             header: {
                 left:   'prev,next,today',
@@ -268,7 +269,7 @@ var Reservations = function() {
         my.calendar.render();
 
         // load language
-        var loadedLocales = Object.keys(FullCalendarLocales);
+        var loadedLocales = typeof FullCalendarLocales !== 'undefined' ? Object.keys(FullCalendarLocales) : [];
         if (loadedLocales.length === 1) {
             my.calendar.setOption('locale', loadedLocales[0]);
         }

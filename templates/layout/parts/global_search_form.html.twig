@@ -32,8 +32,9 @@
 
 {% if get_current_interface() == 'central' and config('allow_search_global') %}
 <form action="{{ path('front/search.php') }}" role="search" method="get" data-submit-once>
+   <label for="global-search" class="visually-hidden">{{ __('Search…') }}</label>
    <div class="input-group input-group-flat">
-      <input type="text" class="form-control" name="globalsearch" placeholder="{{ __('Search…') }}" />
+      <input type="text" id="global-search" class="form-control" name="globalsearch" placeholder="{{ __('Search…') }}" />
       <span class="input-group-text p-0">
          <button type="submit" class="btn btn-link p-0 m-0" title="{{ __('Search…') }}">
             <span class="ti ti-search" aria-hidden="true"></span>

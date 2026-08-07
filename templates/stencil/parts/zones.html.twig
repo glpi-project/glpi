@@ -45,7 +45,6 @@
         {% endif %}
 
         <a href="#{{ params.anchor_id ?? 'zone_id_' }}{{ zone['number'] ?? zone_number }}"
-           tabindex="{{ zone_number }}"
            class="defined-zone set-zone-data d-inline-flex align-items-center justify-content-center"
            data-zone-index="{{ zone_number }}"
            {{ popover_attrs ?? tooltip_attrs }}

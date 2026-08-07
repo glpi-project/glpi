@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\ServiceCatalog\Provider;
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Category;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\FuzzyMatcher\FuzzyMatcher;
@@ -57,7 +58,7 @@ final class CategoryProvider implements CompositeProviderInterface
         $category_id = $item_request->getCategoryID();
         $filter = $item_request->getFilter();
 
-        $category_restriction = [];
+        $category_restriction = [new QueryExpression('true')];
         if ($category_id !== null) {
             $category_restriction = [
                 'forms_categories_id' => $category_id,
@@ -103,14 +104,14 @@ final class CategoryProvider implements CompositeProviderInterface
         $categories = [];
         $current_category = [
             'id' => $category->getID(),
-            'name' => $category->fields['name'],
+            'name' => $category->getServiceCatalogItemTitle(),
         ];
 
         /** @var Category $ancestor */
         foreach ($category->getAncestors() as $ancestor) {
             $categories[] = [
                 'id' => $ancestor->getID(),
-                'name' => $ancestor->fields['name'],
+                'name' => $ancestor->getServiceCatalogItemTitle(),
             ];
         }
 

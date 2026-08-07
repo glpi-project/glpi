@@ -105,7 +105,7 @@ describe('Reservations', () => {
 
         function checkOctober2024() {
             cy.get('.fc-header-toolbar .fc-center').contains('October 2024').should('exist');
-            cy.url().should('match', /(month=10(&|$))|(tab_params%5Bmonth%5D=10(&|$))/);
+            cy.url().should('match', /(defaultDate=2024-10-\d{2}(&|$))|(tab_params%5BdefaultDate%5D=2024-10-\d{2}(&|$))/);
         }
 
         function addReservation() {

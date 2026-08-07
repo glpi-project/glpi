@@ -209,6 +209,18 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 
+        if (Session::getCurrentInterface() === 'central') {
+            if (Change_Item::canCreate()) {
+                $actions['Change_Item' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
+                = "<i class='ti ti-plus'></i>"
+                 . _sx('button', 'Add an item');
+            }
+
+            if (Change_Item::canDelete()) {
+                $actions['Change_Item' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete_item']
+                = _sx('button', 'Remove an item');
+            }
+        }
         if ($this->canAdminActors()) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = __s('Add an actor');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif']
@@ -228,13 +240,6 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                     $ong = [];
                     if ($item->canUpdate()) {
                         $ong[1] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
-                    }
-                    $satisfaction = new ChangeSatisfaction();
-                    if (
-                        $satisfaction->getFromDB($item->getID())
-                        && in_array($item->fields['status'], self::getClosedStatusArray())
-                    ) {
-                        $ong[3] = ChangeSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
                     }
 
                     return $ong;
@@ -282,9 +287,6 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                 switch ($tabnum) {
                     case 1:
                         $item->showStats();
-                        break;
-                    case 3:
-                        self::showSatisfactionTabContent($item);
                         break;
                 }
                 break;
@@ -387,7 +389,8 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
             // Read again change to be sure that all data are up to date
             $this->getFromDB($this->fields['id']);
-            NotificationEvent::raiseEvent($mailtype, $this);
+            $trigger = $this->input['_trigger'] ?? null;
+            NotificationEvent::raiseEvent($mailtype, $this, [], $trigger);
         }
 
         $this->handleSatisfactionSurveyOnUpdate();
@@ -459,19 +462,6 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         $this->handleNewItemNotifications();
-
-        if (
-            isset($this->input['_from_items_id'])
-            && isset($this->input['_from_itemtype'])
-        ) {
-            $change_item = new Change_Item();
-            $change_item->add([
-                'items_id'      => (int) $this->input['_from_items_id'],
-                'itemtype'      => $this->input['_from_itemtype'],
-                'changes_id'    => $this->fields['id'],
-                '_disablenotif' => true,
-            ]);
-        }
     }
 
     #[Override]

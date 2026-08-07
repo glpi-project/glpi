@@ -44,6 +44,7 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
+use Glpi\Api\HL\StreamedResponseWrapper;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -52,6 +53,7 @@ use Session;
 
 /**
  * @property HLAPIHelper $api
+ * @property GraphQLHelper $graphql
  */
 class HLAPITestCase extends DbTestCase
 {
@@ -154,6 +156,8 @@ class HLAPITestCase extends DbTestCase
     {
         if ($name === 'api') {
             return new HLAPIHelper(Router::getInstance(), $this);
+        } elseif ($name === 'graphql') {
+            return new GraphQLHelper(Router::getInstance(), $this);
         }
     }
 }
@@ -299,6 +303,13 @@ final class HLAPIHelper
         }
         $request = $request->withHeader('GLPI-API-Version', $this->api_version);
         $response = $this->router->handleRequest($request);
+        if ($response instanceof StreamedResponseWrapper) {
+            $symfony_response = $response->getSymfonyResponse();
+            ob_start();
+            $symfony_response->sendContent();
+            $content = ob_get_clean();
+            $response = new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
+        }
         $fn(new HLAPICallAsserter($this->test, $this->router, $response));
         return $this;
     }
@@ -386,7 +397,9 @@ final class HLAPIHelper
         $this->call($request, function ($call) use ($extra_options, &$new_item_location, $endpoint) {
             /** @var HLAPICallAsserter $call */
             $call->response
-                ->isOK()
+                ->status(function ($status) use ($endpoint) {
+                    $this->test->assertEquals(201, $status, 'The POST route path of endpoint "' . $endpoint . '" does not return a 201 status code');
+                })
                 ->jsonContent(function ($content) use ($extra_options, $endpoint) {
                     $this->test->assertArrayHasKey('id', $content, 'The response for the POST route path of endpoint "' . $endpoint . '" does not have an "id" field');
                     $this->test->assertGreaterThan(0, $content['id'], 'The response for the POST route path of endpoint "' . $endpoint . '" has an "id" field that is not valid');
@@ -549,7 +562,10 @@ final class HLAPIHelper
         ?callable $deny_update = null,
         ?callable $deny_delete = null,
         ?callable $deny_purge = null,
-        ?callable $deny_restore = null
+        ?callable $deny_restore = null,
+        ?array $create_params = null,
+        ?array $update_params = null,
+        ?array $extra_options = []
     ): self {
         $this->test->loginWeb();
         $this->router->registerAuthMiddleware(new InternalAuthMiddleware());
@@ -586,22 +602,37 @@ final class HLAPIHelper
             $call->response->isNotOK();
         }, false);
 
-        $deny_create();
-        // No CREATE = Access denied
-        $this->call(new Request('POST', $endpoint), function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response->isAccessDenied();
-        }, false);
+        if (!($extra_options['skip_create_test'] ?? false)) {
+            $deny_create();
+            // No CREATE = Access denied
+            $create_request = new Request('POST', $endpoint);
+            if ($create_params !== null) {
+                foreach ($create_params as $key => $value) {
+                    $create_request->setParameter($key, $value);
+                }
+            }
+            $this->call($create_request, function ($call) {
+                /** @var HLAPICallAsserter $call */
+                $call->response->isAccessDenied();
+            }, false);
+        }
 
-        $deny_update();
-        $update_request = new Request('PATCH', $endpoint . '/' . $items_id);
-        // Property does not need to exist, but we try to act like a real update
-        $update_request->setParameter('name', 'updated');
-        // No UPDATE = Access denied
-        $this->call($update_request, function ($call) {
-            /** @var HLAPICallAsserter $call */
-            $call->response->isAccessDenied();
-        }, false);
+        if (!($extra_options['skip_update_test'] ?? false)) {
+            $deny_update();
+            $update_request = new Request('PATCH', $endpoint . '/' . $items_id);
+            // Property does not need to exist, but we try to act like a real update
+            $update_request->setParameter('name', 'updated');
+            if ($update_params !== null) {
+                foreach ($update_params as $key => $value) {
+                    $update_request->setParameter($key, $value);
+                }
+            }
+            // No UPDATE = Access denied
+            $this->call($update_request, function ($call) {
+                /** @var HLAPICallAsserter $call */
+                $call->response->isAccessDenied();
+            }, false);
+        }
 
         if ($item->maybeDeleted()) {
             $deny_delete();
@@ -1178,5 +1209,224 @@ final class HLAPIRouteAsserter
     public function get(): RoutePath
     {
         return $this->routePath;
+    }
+}
+
+// @codingStandardsIgnoreStart
+final class GraphQLHelper
+{
+    private Router $router;
+    private HLAPITestCase $test;
+    private string $api_version;
+
+    // @codingStandardsIgnoreEnd
+
+    /**
+     * @param Router $router
+     * @param HLAPITestCase $test
+     * @param string|null $api_version The API version to use. Cannot be specified or overridden by the request URL. Defaults to the current API version.
+     */
+    public function __construct(Router $router, HLAPITestCase $test, ?string $api_version = null)
+    {
+        $this->router = $router;
+        $this->test = $test;
+        $this->api_version = $api_version ?? $router::API_VERSION;
+    }
+
+    public function withVersion(string $api_version): self
+    {
+        return new self($this->router, $this->test, $api_version);
+    }
+
+    public function getRouter(): Router
+    {
+        return $this->router;
+    }
+
+    /**
+     * @param string $query The GraphQL query string to send in the request body.
+     * @param callable(GraphQLCallAsserter): void $fn
+     * @return self
+     */
+    public function call(string $query, callable $fn, bool $auto_auth_header = true): self
+    {
+        $request = new Request('POST', '/GraphQL', [], $query);
+        if ($auto_auth_header && $this->test->getCurrentBearerToken() !== null) {
+            $request = $request->withHeader('Authorization', 'Bearer ' . $this->test->getCurrentBearerToken());
+        }
+        $request = $request->withHeader('GLPI-API-Version', $this->api_version);
+        $response = $this->router->handleRequest($request);
+        if ($response instanceof StreamedResponseWrapper) {
+            $symfony_response = $response->getSymfonyResponse();
+            ob_start();
+            $symfony_response->sendContent();
+            $content = ob_get_clean();
+            $response = new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
+        }
+        $fn(new GraphQLCallAsserter($this->test, $this->router, $response));
+        return $this;
+    }
+}
+
+// @codingStandardsIgnoreStart
+/**
+ * @property GraphQLResponseAsserter $response
+ */
+final class GraphQLCallAsserter
+{
+    // @codingStandardsIgnoreEnd
+    public function __construct(
+        public HLAPITestCase $test,
+        private Router $router,
+        private Response $response
+    ) {}
+
+    public function __get(string $name)
+    {
+        return match ($name) {
+            'response' => new GraphQLResponseAsserter($this, $this->response, $this->router->getOriginalRequest()->getHeaderLine('GLPI-API-Version') ?: $this->router::API_VERSION),
+            default => null,
+        };
+    }
+}
+
+// @codingStandardsIgnoreStart
+final class GraphQLResponseAsserter
+{
+    private array $decoded_content;
+
+    // @codingStandardsIgnoreEnd
+    public function __construct(
+        private GraphQLCallAsserter $call_asserter,
+        private Response $response,
+        private string $api_version,
+    ) {
+        $this->decoded_content = json_decode((string) $this->response->getBody(), true);
+    }
+
+    public function status(callable $fn): self
+    {
+        $fn($this->response->getStatusCode());
+        return $this;
+    }
+
+    public function headers(callable $fn): self
+    {
+        $headers = $this->response->getHeaders();
+        $headers = array_map(static function ($header) {
+            if (is_array($header) && count($header) === 1) {
+                return $header[0];
+            }
+            return $header;
+        }, $headers);
+        $fn($headers);
+        return $this;
+    }
+
+    /**
+     * @param string $field
+     * @param callable $fn
+     * @phpstan-param callable(array): void $fn
+     * @return $this
+     */
+    public function data(string $field, callable $fn): self
+    {
+        $this->call_asserter->test->assertArrayHasKey($field, $this->decoded_content['data'], 'GraphQL response does not contain field "' . $field . '"');
+        $fn($this->decoded_content['data'][$field]);
+        return $this;
+    }
+
+    /**
+     * @param callable $fn
+     * @phpstan-param callable(array): void $fn
+     * @return $this
+     */
+    public function extensions(callable $fn): self
+    {
+        $this->call_asserter->test->assertArrayHasKey('extensions', $this->decoded_content, 'GraphQL response does not contain "extensions" property');
+        $fn($this->decoded_content['extensions']);
+        return $this;
+    }
+
+    /**
+     * @param callable $fn
+     * @phpstan-param callable(array<int, array{message: string, locations: array<int, array{line: int, column: int}>, path: string[]}>): void $fn
+     * @return $this
+     */
+    public function errors(callable $fn): self
+    {
+        $fn($this->decoded_content['errors']);
+        return $this;
+    }
+
+    /**
+     * Asserts that the GraphQL response has a 200 status code and does not contain any errors.
+     * @return $this
+     */
+    public function isOK(): self
+    {
+        $this->call_asserter->test->assertEquals(200, $this->response->getStatusCode());
+        $this->call_asserter->test->assertArrayNotHasKey('errors', $this->decoded_content);
+        return $this;
+    }
+
+    /**
+     * Asserts that the GraphQL response has a 200 status code and contains errors, and does not contain any data.
+     * @return $this
+     */
+    public function isCompletelyError(): self
+    {
+        // Even a GraphQL error will return a 200 status. If some other code is returned, a more severe error occured which needs fixed in the code.
+        $this->call_asserter->test->assertEquals(200, $this->response->getStatusCode());
+        $this->call_asserter->test->assertArrayHasKey('errors', $this->decoded_content);
+        // Even if every part of the query fails, GraphQL will still return a data property. It may or may not contain properties for each requested field, but they should be null.
+        $has_data = false;
+        if (isset($this->decoded_content['data']) && is_array($this->decoded_content['data'])) {
+            foreach ($this->decoded_content['data'] as $value) {
+                if ($value !== null) {
+                    $has_data = true;
+                    break;
+                }
+            }
+        }
+        $this->call_asserter->test->assertFalse($has_data, 'GraphQL response contains data when it should not');
+        return $this;
+    }
+
+    /**
+     * Asserts that the GraphQL response has a 200 status code and contains errors, and contains data.
+     * @return $this
+     */
+    public function isPartialError(): self
+    {
+        // Even a GraphQL error will return a 200 status. If some other code is returned, a more severe error occured which needs fixed in the code.
+        $this->call_asserter->test->assertEquals(200, $this->response->getStatusCode());
+        $this->call_asserter->test->assertArrayHasKey('errors', $this->decoded_content);
+        // Verify data is returned when there is a partial error
+        $has_data = false;
+        if (isset($this->decoded_content['data']) && is_array($this->decoded_content['data'])) {
+            foreach ($this->decoded_content['data'] as $value) {
+                if ($value !== null) {
+                    $has_data = true;
+                    break;
+                }
+            }
+        }
+        $this->call_asserter->test->assertTrue($has_data, 'GraphQL response does not contain data when it should');
+        return $this;
+    }
+
+    public function hasErrorWithMessage(string $message): self
+    {
+        $this->call_asserter->test->assertArrayHasKey('errors', $this->decoded_content, 'GraphQL response does not contain errors');
+        $found = false;
+        foreach ($this->decoded_content['errors'] as $error) {
+            if (isset($error['message']) && $error['message'] === $message) {
+                $found = true;
+                break;
+            }
+        }
+        $this->call_asserter->test->assertTrue($found, 'GraphQL response does not contain an error with message "' . $message . '"');
+        return $this;
     }
 }

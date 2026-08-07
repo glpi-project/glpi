@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 use function Safe\json_encode;
 use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * Ajax Class
@@ -189,7 +190,7 @@ class Ajax
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                            <h3>' . htmlescape($param['title']) . '</h3>
+                            <h3 class="modal-title">' . htmlescape($param['title']) . '</h3>
                         </div>
                         <div class="modal-body">
                             <iframe id="iframe' . htmlescape($domid) . '" class="iframe hidden"
@@ -228,11 +229,26 @@ class Ajax
             ';
         }
         $js .= '
-                document.getElementById("iframe' . $domid . '").onload = function() {
-                    var h = ' . ((int) $param['height']) . ';
+                var iframeEl' . $rand . ' = document.getElementById("iframe' . $domid . '");
+
+                var resizeIframe' . $rand . ' = function() {
+                    try {
+                        var doc = iframeEl' . $rand . '.contentWindow.document;
+                        // Set height to content height, BUT cap it at the screen height
+                        var h = Math.min(doc.documentElement.scrollHeight, doc.body.scrollHeight) || ' . ((int) $param['height']) . ';
+                    } catch(e) {
+                        var h = ' . ((int) $param['height']) . ';
+                    }
+                    $("#iframe' . $domid . '").height(h);
+
+                    // reajust height to content
+                    myModal' . $rand . '.handleUpdate();
+                };
+
+                iframeEl' . $rand . '.onload = function() {
                     var w = ' . ((int) $param['width']) . ';
 
-                    $("#iframe' . $domid . '").height(h);
+                    resizeIframe' . $rand . '();
 
                     if (w >= 700) {
                         $("#' . $domid . ' .modal-dialog").addClass("modal-xl");
@@ -241,10 +257,9 @@ class Ajax
                     } else if (w <= 300) {
                         $("#' . $domid . ' .modal-dialog").addClass("modal-sm");
                     }
-
-                    // reajust height to content
-                    myModal' . $rand . '.handleUpdate()
                 };
+
+                $(window).on("resize.iframemodal' . $rand . '", resizeIframe' . $rand . ');
             });
         ';
 
@@ -347,7 +362,10 @@ class Ajax
                 $tab_content_url = $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '');
                 $selected = $active_id == $target ? 'selected' : '';
                 $title = $val['title'];
-                $title_clean = strip_tags($title);
+
+                // Format the badge with parentheses before stripping tags for option and aria-label
+                $title_clean = preg_replace('/<span[^>]*class="[^"]*\bbadge\b[^"]*"[^>]*>(.*?)<\/span>/', '($1)', $title);
+                $title_clean = strip_tags($title_clean);
 
                 // Compute direct link that user can reach in a new tab using
                 // middle mouse click.
@@ -375,7 +393,7 @@ class Ajax
                             >{$title}</a>
                         </li>
                     ";
-                    $html_sele .= "<option value='$i' {$selected}>{$title}</option>";
+                    $html_sele .= "<option value='$i' {$selected}>{$title_clean}</option>";
                 } else {
                     // All tabs
                     $html_tabs .= <<<HTML
@@ -384,7 +402,7 @@ class Ajax
                                 href='#' data-show-all-tabs="true">{$title}</a>
                         </li>
 HTML;
-                    $html_sele .= "<option value='$i' {$selected}>{$title}</option>";
+                    $html_sele .= "<option value='$i' {$selected}>{$title_clean}</option>";
                 }
                 $i++;
             }

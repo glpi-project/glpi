@@ -47,6 +47,9 @@ use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
+use Glpi\Form\Form;
 use Glpi\Tests\DbTestCase;
 use Group;
 use Group_Item;
@@ -59,11 +62,11 @@ use TaskCategory;
 use Ticket;
 use User;
 
-/* Test for inc/search.class.php */
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+use function Safe\preg_match;
+use function Safe\strtotime;
 
-/**
- * @engine isolate
- */
 class SearchTest extends DbTestCase
 {
     private function doSearch($itemtype, $params, array $forcedisplay = [])
@@ -442,6 +445,7 @@ class SearchTest extends DbTestCase
         ];
 
         $data = $this->doSearch('Computer', $search_params);
+        $sql  = $this->cleanSQL($data['sql']['search']);
 
         $regexps = [
             // join parts
@@ -459,7 +463,7 @@ class SearchTest extends DbTestCase
         foreach ($regexps as $regexp) {
             $this->assertMatchesRegularExpression(
                 $regexp,
-                $data['sql']['search']
+                $sql
             );
         }
 
@@ -480,7 +484,7 @@ class SearchTest extends DbTestCase
         foreach ($contains as $contain) {
             $this->assertStringContainsString(
                 $contain,
-                $data['sql']['search']
+                $sql
             );
         }
     }
@@ -506,6 +510,7 @@ class SearchTest extends DbTestCase
                 ],
             ],
         ]);
+        $sql = $this->cleanSQL($data['sql']['search']);
 
         $default_charset = DBConnection::getDefaultCharset();
 
@@ -519,7 +524,7 @@ class SearchTest extends DbTestCase
         foreach ($contains as $contain) {
             $this->assertStringContainsString(
                 $contain,
-                $data['sql']['search']
+                $sql
             );
         }
 
@@ -537,13 +542,13 @@ class SearchTest extends DbTestCase
         foreach ($regexps as $regexp) {
             $this->assertMatchesRegularExpression(
                 $regexp,
-                $data['sql']['search']
+                $sql
             );
         }
 
         $this->assertDoesNotMatchRegularExpression(
             "/OR\s*\(CONVERT\(`glpi_computers`\.`date_mod` USING {$default_charset}\)\s*LIKE '%test%'\s*\)\)/",
-            $data['sql']['search']
+            $sql
         );
     }
 
@@ -1534,7 +1539,10 @@ class SearchTest extends DbTestCase
             ])
         );
 
-        $search = \Search::manageParams('Ticket', ['reset' => 1], true, false);
+        // SavedSearch::load() sets this session flag before redirecting to the search page
+        $_SESSION['glpi_loaded_savedsearch'] = $bk_id;
+
+        $search = \Search::manageParams('Ticket', ['reset' => 1, 'savedsearches_id' => $bk_id], true, false);
         $this->assertEquals(
             [
                 'reset'        => 1,
@@ -1558,6 +1566,39 @@ class SearchTest extends DbTestCase
             ],
             $search
         );
+
+        // no stale 'reset' flag must remain in session after loading a saved search
+        $this->assertEquals($bk_id, $_SESSION['glpi_loaded_savedsearch']);
+        $this->assertArrayNotHasKey('reset', $_SESSION['glpisearch']['Ticket']);
+
+        // Simulate a page refresh where only the URL is taken into account, and not the “sort”/“order” criteria.
+        // The sort order of the saved search must still be restored from the session and not replaced by the default
+        // sort order for that item type
+        $search = \Search::manageParams('Ticket', [
+            'criteria' => [
+                [
+                    'field' => '5',
+                    'searchtype' => 'equals',
+                    'value' => $uid,
+                ],
+            ],
+        ], true, false);
+        $this->assertEquals([2], $search['sort']);
+        $this->assertEquals(['DESC'], $search['order']);
+
+        // saved search criteria must survive a subsequent unrelated request (sort/pagination)
+        \Search::manageParams('Ticket', ['sort' => 6, 'order' => 'ASC'], true, false);
+        $this->assertEquals(
+            [
+                0 => [
+                    'field' => '5',
+                    'searchtype' => 'equals',
+                    'value' => $uid,
+                ],
+            ],
+            $_SESSION['glpisearch']['Ticket']['criteria']
+        );
+        $this->assertEquals($bk_id, $_SESSION['glpi_loaded_savedsearch']);
 
         // let's test for Computers
         $search = \Search::manageParams('Computer', ['reset' => 1], false, false);
@@ -1610,7 +1651,10 @@ class SearchTest extends DbTestCase
             ])
         );
 
-        $search = \Search::manageParams('Computer', ['reset' => 1], true, false);
+        // SavedSearch::load() sets this session flag before redirecting to the search page
+        $_SESSION['glpi_loaded_savedsearch'] = $bk_id;
+
+        $search = \Search::manageParams('Computer', ['reset' => 1, 'savedsearches_id' => $bk_id], true, false);
         $this->assertEquals(
             [
                 'reset'        => 1,
@@ -1635,6 +1679,24 @@ class SearchTest extends DbTestCase
             ],
             $search
         );
+
+        // no stale 'reset' flag must remain in session after loading a saved search
+        $this->assertEquals($bk_id, $_SESSION['glpi_loaded_savedsearch']);
+        $this->assertArrayNotHasKey('reset', $_SESSION['glpisearch']['Computer']);
+
+        // saved search criteria must survive a subsequent unrelated request (sort/pagination)
+        \Search::manageParams('Computer', ['sort' => 1, 'order' => 'ASC'], true, false);
+        $this->assertEquals(
+            [
+                0 => [
+                    'field' => 'view',
+                    'searchtype' => 'contains',
+                    'value' => 'test',
+                ],
+            ],
+            $_SESSION['glpisearch']['Computer']['criteria']
+        );
+        $this->assertEquals($bk_id, $_SESSION['glpi_loaded_savedsearch']);
     }
 
     public static function addSelectProvider()
@@ -2306,20 +2368,6 @@ class SearchTest extends DbTestCase
         }
     }
 
-    private function cleanSQL($sql)
-    {
-        // Clean whitespaces
-        $sql = preg_replace('/\s+/', ' ', $sql);
-
-        // Remove whitespaces around parenthesis
-        $sql = preg_replace('/\(\s+/', '(', $sql);
-        $sql = preg_replace('/\s+\)/', ')', $sql);
-
-        $sql = trim($sql);
-
-        return $sql;
-    }
-
     public function testAllAssetsFields()
     {
         global $CFG_GLPI, $DB;
@@ -2730,7 +2778,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '>100',
                 'meta' => false,
-                'expected' => "AND `glpi_items_disks`.`freesize` > 100",
+                'expected' => "AND `glpi_items_disks`.`freesize` > '100'",
             ],
             [
                 'link' => ' AND ',
@@ -2740,7 +2788,7 @@ class SearchTest extends DbTestCase
                 'searchtype' => 'contains',
                 'val' => '<10000',
                 'meta' => false,
-                'expected' => "AND `glpi_items_disks`.`freesize` < 10000",
+                'expected' => "AND `glpi_items_disks`.`freesize` < '10000'",
             ],
             [
                 'link' => ' AND ',
@@ -2911,14 +2959,15 @@ class SearchTest extends DbTestCase
             ],
         ];
         $data = $this->doSearch('AllAssets', $search_params);
+        $sql = $this->cleanSQL($data['sql']['search']);
 
         $this->assertMatchesRegularExpression(
             "/OR\s*\(`glpi_entities`\.`completename`\s*LIKE '%test%'\s*\)/",
-            $data['sql']['search']
+            $sql
         );
         $this->assertMatchesRegularExpression(
             "/OR\s*\(`glpi_states`\.`completename`\s*LIKE '%test%'\s*\)/",
-            $data['sql']['search']
+            $sql
         );
 
         $types = [
@@ -2933,23 +2982,23 @@ class SearchTest extends DbTestCase
         foreach ($types as $type) {
             $this->assertStringContainsString(
                 "`$type`.`is_deleted` = 0",
-                $data['sql']['search']
+                $sql
             );
             $this->assertStringContainsString(
                 "AND `$type`.`is_template` = 0",
-                $data['sql']['search']
+                $sql
             );
             $this->assertStringContainsString(
                 "`$type`.`entities_id` IN ('$test_root', '$test_child_1', '$test_child_2', '$test_child_3')",
-                $data['sql']['search']
+                $sql
             );
             $this->assertStringContainsString(
                 "OR (`$type`.`is_recursive`='1' AND `$type`.`entities_id` IN (0))",
-                $data['sql']['search']
+                $sql
             );
             $this->assertMatchesRegularExpression(
                 "/`$type`\.`name` LIKE '%test%'/m",
-                $data['sql']['search']
+                $sql
             );
         }
 
@@ -4301,13 +4350,13 @@ class SearchTest extends DbTestCase
             foreach ([15, 2.3, 1.125] as $value) {
                 $searched_values = [
                     // positive values, with or without spaces
-                    "{$operator}{$value}"       => "{$value}",
-                    " {$operator}  {$value} "   => "{$value}",
+                    "{$operator}{$value}"       => "'{$value}'",
+                    " {$operator}  {$value} "   => "'{$value}'",
 
                     // negative values, with or without spaces
-                    "{$operator}-{$value}"      => "-{$value}",
-                    " {$operator} -{$value} "   => "-{$value}",
-                    "{$operator} - {$value} "   => "-{$value}",
+                    "{$operator}-{$value}"      => "'-{$value}'",
+                    " {$operator} -{$value} "   => "'-{$value}'",
+                    "{$operator} - {$value} "   => "'-{$value}'",
                 ];
                 $not_operator   = str_contains($operator, '>') ? str_replace('>', '<', $operator) : str_replace('<', '>', $operator);
 
@@ -4335,8 +4384,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Computer::class,
                         'search_option'     => 115, // harddrive capacity
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Computer_115` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Computer_115` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Computer_115` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Computer_115` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=decimal
@@ -4353,8 +4402,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => \Contract::class,
                         'search_option'     => 11, // totalcost
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Contract_11` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Contract_11` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Contract_11` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Contract_11` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=count (usehaving=true)
@@ -4362,8 +4411,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Ticket::class,
                         'search_option'     => 27, // number of followups
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Ticket_27` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Ticket_27` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Ticket_27` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Ticket_27` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=mio (usehaving=true)
@@ -4371,17 +4420,19 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Computer::class,
                         'search_option'     => 111, // memory size
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Computer_111` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Computer_111` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Computer_111` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Computer_111` {$not_operator} {$signed_value}",
                     ];
 
                     // datatype=progressbar (with computation)
+                    // progressbar: unquote the value to avoid lexicographic comparison with LPAD() output.
+                    $signed_value_unquoted = trim($signed_value, "'");
                     yield [
                         'itemtype'          => Computer::class,
                         'search_option'     => 152, // harddrive freepercent
                         'value'             => $searched_value,
-                        'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$operator} {$signed_value})",
-                        'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$not_operator} {$signed_value})",
+                        'expected_and'      => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$operator} {$signed_value_unquoted})",
+                        'expected_and_not'  => "(LPAD(ROUND(100*`glpi_items_disks`.freesize/NULLIF(`glpi_items_disks`.`totalsize`, 0), 0), 3, '0') {$not_operator} {$signed_value_unquoted})",
                     ];
 
                     // datatype=timestamp
@@ -4398,8 +4449,8 @@ class SearchTest extends DbTestCase
                         'itemtype'          => Ticket::class,
                         'search_option'     => 49, // actiontime
                         'value'             => $searched_value,
-                        'expected_and'      => "`ITEM_Ticket_49` {$operator} '{$signed_value}'",
-                        'expected_and_not'  => "`ITEM_Ticket_49` {$not_operator} '{$signed_value}'",
+                        'expected_and'      => "`ITEM_Ticket_49` {$operator} {$signed_value}",
+                        'expected_and_not'  => "`ITEM_Ticket_49` {$not_operator} {$signed_value}",
                     ];
                 }
             }
@@ -6665,6 +6716,367 @@ class SearchTest extends DbTestCase
 
         // we just check that the search did not failed with an exception
         $this->assertTrue(isset($result['data']['totalcount']));
+    }
+
+    public function testMetaTicketForm()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        // Create a form
+        $form = $this->createItem(Form::class, [
+            'name'        => '_test_form_for_meta_search',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'is_active'   => true,
+        ]);
+
+        // Create a ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => '_test_ticket_for_meta_search',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Create an AnswersSet linked to the form
+        $answers_set = $this->createItem(AnswersSet::class, [
+            'forms_forms_id' => $form->getID(),
+            'entities_id'    => $this->getTestRootEntity(only_id: true),
+            'name'           => '_test_answerset_for_meta_search',
+            'answers'        => '{}',
+        ]);
+
+        // Link the ticket to the form via AnswersSet_FormDestinationItem
+        $this->createItem(AnswersSet_FormDestinationItem::class, [
+            'forms_answerssets_id' => $answers_set->getID(),
+            'itemtype'             => Ticket::class,
+            'items_id'             => $ticket->getID(),
+        ]);
+
+        // Search tickets with meta-criteria on Form ID
+        $search_params = [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                0 => [
+                    'field'      => '12',
+                    'searchtype' => 'equals',
+                    'value'      => 'all',
+                    'link'       => 'AND',
+                ],
+            ],
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'AND',
+                    'itemtype'   => Form::class,
+                    'field'      => 2, // ID
+                    'searchtype' => 'equals',
+                    'value'      => $form->getID(),
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch('Ticket', $search_params);
+
+        // Validate generated SQL contains the expected JOINs
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_destinations_answerssets_formdestinationitems/im',
+            $data['sql']['search']
+        );
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_answerssets/im',
+            $data['sql']['search']
+        );
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_forms/im',
+            $data['sql']['search']
+        );
+
+        // Validate the search found the linked ticket
+        $this->assertSame(1, $data['data']['totalcount']);
+
+        // Search with a non-existing form ID should return no result
+        $search_params['metacriteria'][0]['value'] = 99999999;
+        $data = $this->doSearch('Ticket', $search_params);
+        $this->assertSame(0, $data['data']['totalcount']);
+    }
+
+    public function testMetaFormTicket()
+    {
+        $this->login();
+        $this->setEntity('_test_root_entity', true);
+
+        // Create a form
+        $form = $this->createItem(Form::class, [
+            'name'        => '_test_form_for_meta_search_reverse',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'is_active'   => true,
+        ]);
+
+        // Create a ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => '_test_ticket_for_meta_search_reverse',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Create an AnswersSet linked to the form
+        $answers_set = $this->createItem(AnswersSet::class, [
+            'forms_forms_id' => $form->getID(),
+            'entities_id'    => $this->getTestRootEntity(only_id: true),
+            'name'           => '_test_answerset_for_meta_search_reverse',
+            'answers'        => '{}',
+        ]);
+
+        // Link the ticket to the form via AnswersSet_FormDestinationItem
+        $this->createItem(AnswersSet_FormDestinationItem::class, [
+            'forms_answerssets_id' => $answers_set->getID(),
+            'itemtype'             => Ticket::class,
+            'items_id'             => $ticket->getID(),
+        ]);
+
+        // Search forms with meta-criteria on Ticket ID
+        $search_params = [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                0 => [
+                    'field'      => 'view',
+                    'searchtype' => 'contains',
+                    'value'      => '',
+                ],
+            ],
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'AND',
+                    'itemtype'   => Ticket::class,
+                    'field'      => 2, // ID
+                    'searchtype' => 'equals',
+                    'value'      => $ticket->getID(),
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch(Form::class, $search_params);
+
+        // Validate generated SQL contains the expected JOINs
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_answerssets/im',
+            $data['sql']['search']
+        );
+        $this->assertMatchesRegularExpression(
+            '/LEFT\s*JOIN.*glpi_forms_destinations_answerssets_formdestinationitems/im',
+            $data['sql']['search']
+        );
+
+        // Validate the search found the linked form
+        $this->assertSame(1, $data['data']['totalcount']);
+
+        // Search with a non-existing ticket ID should return no result
+        $search_params['metacriteria'][0]['value'] = 99999999;
+        $data = $this->doSearch(Form::class, $search_params);
+        $this->assertSame(0, $data['data']['totalcount']);
+    }
+
+    /**
+     * Regression test: numeric operators (< > <= >=) on progressbar fields (e.g. "Free percentage")
+     * must produce a numeric SQL comparison, not a lexicographic one.
+     *
+     * Without the fix, LPAD() returns a zero-padded string such as '067'.
+     * Comparing '067' < '20' lexicographically is TRUE (because '0' < '2'), so every
+     * computer would wrongly match a "< 20" filter regardless of its actual free space.
+     */
+    public function testProgressbarNumericOperatorSearch(): void
+    {
+        $this->login();
+
+        $unique     = uniqid('freepct-', true);
+
+        $entity_id  = $this->getTestRootEntity(true);
+
+        $computer_low = $this->createItem(Computer::class, [
+            'name'        => $unique . '-low',
+            'entities_id' => $entity_id,
+        ]);
+        $computer_high = $this->createItem(Computer::class, [
+            'name'        => $unique . '-high',
+            'entities_id' => $entity_id,
+        ]);
+
+        // 10% free space  (freesize / totalsize = 10/100)
+        $this->createItem(\Item_Disk::class, [
+            'itemtype'   => Computer::class,
+            'items_id'   => $computer_low->getID(),
+            'name'       => 'disk-low',
+            'mountpoint' => '/',
+            'totalsize'  => 100,
+            'freesize'   => 10,
+        ]);
+
+        // 67% free space  (freesize / totalsize = 67/100)
+        $this->createItem(\Item_Disk::class, [
+            'itemtype'   => Computer::class,
+            'items_id'   => $computer_high->getID(),
+            'name'       => 'disk-high',
+            'mountpoint' => '/',
+            'totalsize'  => 100,
+            'freesize'   => 67,
+        ]);
+
+        $search_field = 152; // Volumes - Free percentage
+
+        // "contains < 20": only the 10%-free computer must match (name filter isolates our fixtures)
+        $data = $this->doSearch(Computer::class, [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                [
+                    'field'      => 1, // name
+                    'searchtype' => 'contains',
+                    'value'      => $unique,
+                ],
+                [
+                    'link'       => 'AND',
+                    'field'      => $search_field,
+                    'searchtype' => 'contains',
+                    'value'      => '< 20',
+                ],
+            ],
+        ]);
+
+        $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertContains($computer_low->getID(), $ids_found, 'Computer with 10% free space should match "< 20"');
+        $this->assertNotContains($computer_high->getID(), $ids_found, 'Computer with 67% free space must NOT match "< 20"');
+
+        // "contains >= 67": only the 67%-free computer must match
+        $data = $this->doSearch(Computer::class, [
+            'is_deleted' => 0,
+            'start'      => 0,
+            'criteria'   => [
+                [
+                    'field'      => 1, // name
+                    'searchtype' => 'contains',
+                    'value'      => $unique,
+                ],
+                [
+                    'link'       => 'AND',
+                    'field'      => $search_field,
+                    'searchtype' => 'contains',
+                    'value'      => '>= 67',
+                ],
+            ],
+        ]);
+
+        $ids_found = array_column(array_column($data['data']['rows'], 'raw'), 'id');
+        $this->assertContains($computer_high->getID(), $ids_found, 'Computer with 67% free space should match ">= 67"');
+        $this->assertNotContains($computer_low->getID(), $ids_found, 'Computer with 10% free space must NOT match ">= 67"');
+    }
+
+    public function testCertificateRawSearchOptionsInheritance(): void
+    {
+        $item = new \Certificate();
+        $so = $item->rawSearchOptions();
+        $ids = array_column($so, 'id');
+
+        // No duplicate numeric IDs — would indicate parent options being re-added manually
+        $numeric_ids = array_values(array_filter($ids, 'is_numeric'));
+        $this->assertCount(count($numeric_ids), array_unique($numeric_ids), 'Certificate::rawSearchOptions() contains duplicate numeric IDs');
+
+        // assert that inherited options are present
+        $this->assertContains(1, $ids);
+        $this->assertContains(86, $ids);
+    }
+
+    public function testSoftwareLicenseRawSearchOptionsInheritance(): void
+    {
+        $item = new \SoftwareLicense();
+        $so = $item->rawSearchOptions();
+        $ids = array_column($so, 'id');
+
+        // No duplicate numeric IDs — would indicate parent options being re-added manually
+        $numeric_ids = array_values(array_filter($ids, 'is_numeric'));
+        $this->assertCount(count($numeric_ids), array_unique($numeric_ids), 'SoftwareLicense::rawSearchOptions() contains duplicate numeric IDs');
+
+        // assert that inherited options are present
+        $this->assertContains('1', $ids);
+        $this->assertContains('2', $ids);
+        $this->assertContains('13', $ids);
+        $this->assertContains('14', $ids);
+        $this->assertContains('19', $ids);
+        $this->assertContains('16', $ids);
+        $this->assertContains('121', $ids);
+        $this->assertContains('80', $ids);
+        $this->assertContains('86', $ids);
+    }
+
+    public function testTypeHasAssetUrlSearchOption(): void
+    {
+        global $CFG_GLPI;
+
+        foreach ($CFG_GLPI["asset_types"] as $itemtype) {
+            $item = new $itemtype();
+            $options = $item->rawSearchOptions();
+
+            $filtered_options = array_filter($options, function ($option) {
+                return isset($option['id']) && $option['id'] === 290
+                    && isset($option['field']) && $option['field'] === 'asset_url';
+            });
+
+            $this->assertEquals(
+                1,
+                count($filtered_options),
+                "Itemtype $itemtype does not have the asset_url search option (id=290)"
+            );
+        }
+    }
+
+    public function testSearchByAssetUrl(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $computer = $this->createItem(Computer::class, [
+            'name'        => '_test_computer_for_asset_url_search',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $expected_url = $CFG_GLPI['url_base'] . Computer::getFormURL(false) . '?id=' . $computer->getID();
+
+        //search for the computer by its asset URL
+        $result = \Search::getDatas(
+            Computer::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => 290,
+                        'searchtype' => 'contains',
+                        'value'      => $expected_url,
+                    ],
+                ],
+                'forcetoview' => [1, 290],
+            ]
+        );
+
+        $this->assertArrayHasKey('data', $result);
+        $this->assertEquals(1, $result['data']['totalcount']);
+        $this->assertEquals($computer->getID(), $result['data']['rows'][0]['raw']['id']);
+
+        //sreach for a non-existing asset URL
+        $result = \Search::getDatas(
+            Computer::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => 290,
+                        'searchtype' => 'contains',
+                        'value'      => Computer::getFormURL(false) . '?id=99999999',
+                    ],
+                ],
+                'forcetoview' => [1, 290],
+            ]
+        );
+
+        $this->assertArrayHasKey('data', $result);
+        $this->assertEquals(0, $result['data']['totalcount'], 'Should find no computer for a non-existing asset URL');
     }
 }
 

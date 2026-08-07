@@ -30,9 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-// Eslint does not see enum usages correctly.
-/* eslint-disable no-unused-vars */
-
 export enum EntityPageTabs
 {
     Notes = "Notepad$1",

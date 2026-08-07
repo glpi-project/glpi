@@ -80,6 +80,9 @@ class AuthLDAP extends CommonDBTM
     public const GROUP_SEARCH_GROUP   = 1;
     public const GROUP_SEARCH_BOTH    = 2;
 
+    /** OID for the LDAP_MATCHING_RULE_IN_CHAIN extended match rule (AD nested groups). */
+    public const MATCHING_RULE_IN_CHAIN_OID = '1.2.840.113556.1.4.1941';
+
     /**
      * Deleted user strategy: preserve user.
      * @var int
@@ -218,7 +221,7 @@ class AuthLDAP extends CommonDBTM
 
     public function post_getEmpty()
     {
-        $this->fields['port']                        = '389';
+        $this->fields['port']                        = 389;
         $this->fields['condition']                   = '';
         $this->fields['login_field']                 = 'uid';
         $this->fields['sync_field']                  = null;
@@ -261,7 +264,7 @@ class AuthLDAP extends CommonDBTM
     {
         switch ($type) {
             case 'AD':
-                $this->fields['port']                      = "389";
+                $this->fields['port']                      = 389;
                 $this->fields['condition']
                  = '(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
                 $this->fields['login_field']               = 'samaccountname';
@@ -286,14 +289,14 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['title_field']               = 'title';
                 $this->fields['use_dn']                    = 1;
                 $this->fields['can_support_pagesize']      = 1;
-                $this->fields['pagesize']                  = '1000';
+                $this->fields['pagesize']                  = 1000;
                 $this->fields['picture_field']             = '';
                 $this->fields['responsible_field']         = 'manager';
                 $this->fields['begin_date_field']          = 'whenCreated';
                 $this->fields['end_date_field']            = 'accountExpires';
                 break;
             case 'OpenLDAP':
-                $this->fields['port']                      = "389";
+                $this->fields['port']                      = 389;
                 $this->fields['condition']                 = '(objectClass=inetOrgPerson)';
                 $this->fields['login_field']               = 'uid';
                 $this->fields['sync_field']                = 'entryuuid';
@@ -316,7 +319,7 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['title_field']               = 'title';
                 $this->fields['use_dn']                    = 1;
                 $this->fields['can_support_pagesize']      = 1;
-                $this->fields['pagesize']                  = '1000';
+                $this->fields['pagesize']                  = 1000;
                 $this->fields['picture_field']             = 'jpegphoto';
                 $this->fields['responsible_field']         = 'manager';
                 $this->fields['category_field']            = 'businesscategory';
@@ -430,8 +433,16 @@ class AuthLDAP extends CommonDBTM
                         // Is recursive is in the main form and thus, don't pass through
                         // zero_on_empty mechanism inside massive action form ...
                         $is_recursive = (empty($input['ldap_import_recursive'][$id]) ? 0 : 1);
+
+                        $common_input = ['entities_id'  => $entity, 'is_recursive' => $is_recursive];
+                        if (!$group->can(-1, CREATE, $common_input)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        }
+
                         $options      = [
-                            'authldaps_id' => $_REQUEST['authldaps_id'],
+                            'authldaps_id' => (int) ($input['authldaps_id'] ?? 0),
                             'entities_id'  => $entity,
                             'is_recursive' => $is_recursive,
                             'type'         => $input['ldap_import_type'][$id],
@@ -455,14 +466,17 @@ class AuthLDAP extends CommonDBTM
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
+                $mode         = (int) ($input['mode'] ?? self::ACTION_IMPORT);
+                $authldaps_id = (int) ($input['authldaps_id'] ?? 0);
                 foreach ($ids as $id) {
                     if (
                         self::ldapImportUserByServerId(
                             ['method' => self::IDENTIFIER_LOGIN,
                                 'value'  => $id,
                             ],
-                            (int) $_REQUEST['mode'],
-                            $_REQUEST['authldaps_id'],
+                            $mode,
+                            $authldaps_id,
+                            true,
                             true
                         )
                     ) {
@@ -600,24 +614,25 @@ TWIG, $twig_params);
 TWIG, ['msg' => _x('button', 'Test')]);
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <script>
-                    $(() => {
-                        $('button[name="test_ldap_replicate"]').on('click', (e) => {
-                            const replicate_id = $(e.target).closest('tr').data('id');
-                            $(e.target).prepend(`<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`);
-                            $(e.target).prop('disabled', true);
-                            $.post(
-                                '{{ path('ajax/ldap.php')|e('js') }}',
-                                {
-                                    id: '{{ authldaps_id|e('js') }}',
-                                    ldap_replicate_id: replicate_id,
-                                    action: 'test_ldap_replicate'
-                                }
-                            ).then(() => {
-                                displaySessionMessages();
-                                $(e.target).find('.spinner-border').remove();
-                                $(e.target).prop('disabled', false);
-                            });
+                <script type="module">
+                    $('button[name="test_ldap_replicate"]').on('click', (e) => {
+                        const replicate_id = $(e.target).closest('tr').data('id');
+                        $(e.target).prepend(`<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>`);
+                        $(e.target).prop('disabled', true);
+                        const testUrl = '{{ path('/AuthLDAP/')|e('js') }}{{ authldaps_id }}/Replica/' + replicate_id + '/Test';
+                        $.post(
+                            testUrl,
+                            {
+                                authldaps_id: '{{ authldaps_id|e('js') }}',
+                                authldapreplicates_id: replicate_id,
+                            }
+                        ).then(() => {
+                            glpi_toast_success('{{ __("Test successful")|e('js') }}');
+                        }, () => {
+                            glpi_toast_error('{{ __("Test failed")|e('js') }}');
+                        }).always(() => {
+                            $(e.target).find('.spinner-border').remove();
+                            $(e.target).prop('disabled', false);
                         });
                     });
                 </script>
@@ -1706,6 +1721,8 @@ TWIG, $twig_params);
             'nosort' => true,
             'start' => $values['start'],
             'limit' => $_SESSION['glpilist_limit'],
+            // preserve all existing parameters in the URL except start and order which are managed by the datatable component
+            'additional_params' => http_build_query(array_filter($values, static fn($key) => !in_array($key, ['start', 'order']), ARRAY_FILTER_USE_KEY)),
             'columns' => $columns,
             'formatters' => [
                 'user' => 'raw_html',
@@ -2131,7 +2148,7 @@ TWIG, $twig_params);
     ) {
         $limitexceeded = false;
         $ldap_groups   = self::getAllGroups(
-            $_REQUEST['authldaps_id'],
+            (int) $_REQUEST['authldaps_id'],
             $filter,
             $filter2,
             $entity,
@@ -2233,7 +2250,7 @@ TWIG, $twig_params);
                     self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'import_group' => _sx('button', 'Import'),
                 ],
                 'extraparams' => [
-                    'authldaps_id' => $_REQUEST['authldaps_id'],
+                    'authldaps_id' => (int) $_REQUEST['authldaps_id'],
                     'massive_action_fields' => [
                         'authldaps_id',
                         'dn',
@@ -2623,6 +2640,8 @@ TWIG, $twig_params);
      * @param int $action synchronize (self::ACTION_SYNCHRONIZE) or import (self::ACTION_IMPORT)
      * @param int $ldap_server ID of the LDAP server to use
      * @param bool $display display message information on redirect (false by default)
+     * @param bool $batch_mode True when called from a loop importing/syncing many users
+     *                         (massive action or CLI sync), enabling the per-group query cache.
      *
      * @return array|bool  with state, else false
      * @throws SodiumException
@@ -2631,7 +2650,8 @@ TWIG, $twig_params);
         array $params,
         $action,
         $ldap_server,
-        $display = false
+        $display = false,
+        bool $batch_mode = false
     ) {
         global $DB;
 
@@ -2701,7 +2721,8 @@ TWIG, $twig_params);
                             $config_ldap->fields,
                             $user_dn,
                             $login,
-                            ($action === self::ACTION_IMPORT)
+                            ($action === self::ACTION_IMPORT),
+                            $batch_mode
                         )
                     ) {
                         //Get the ID by sync field (Used to check if restoration is needed)
@@ -2711,7 +2732,7 @@ TWIG, $twig_params);
                             //In case user id has changed : get id by dn (Used to check if restoration is needed)
                             $user_found = $searched_user->getFromDBbyDn($user_dn);
                         }
-                        if ($user_found && $searched_user->fields['is_deleted_ldap'] && $searched_user->fields['user_dn']) {
+                        if ($user_found && ($searched_user->fields['is_deleted_ldap'] || !$searched_user->fields['is_active']) && $searched_user->fields['user_dn']) {
                             User::manageRestoredUserInLdap($searched_user->fields['id']);
                             return ['action' => self::USER_RESTORED_LDAP,
                                 'id' => $searched_user->fields['id'],
@@ -3613,6 +3634,9 @@ TWIG, $twig_params);
         $_REQUEST['mode'] = (int) ($_REQUEST['mode'] ?? self::ACTION_IMPORT);
 
         $_REQUEST['entities_id'] ??= $_SESSION['glpiactive_entity'];
+
+        unset($_REQUEST['entity_filter']); //Not meant to be set from request; this is calculated later
+
         if (isset($_REQUEST['toprocess'])) {
             $_REQUEST['action'] = 'process';
         }
@@ -3654,13 +3678,12 @@ TWIG, $twig_params);
                 $entity->getFromDB($_REQUEST['entities_id'])
                 && $entity->fields['authldaps_id'] > 0
             ) {
-                $authldap->getFromDB($_REQUEST['authldaps_id']);
-
                 if ($_REQUEST['authldaps_id'] === 0) {
                     // authldaps_id wasn't submitted by the user -> take entity config
                     $_REQUEST['authldaps_id'] = $entity->fields['authldaps_id'];
                 }
 
+                $authldap->getFromDB($_REQUEST['authldaps_id']);
                 $_REQUEST['basedn']       = $entity->fields['ldap_dn'];
 
                 // No dn specified in entity : use standard one
@@ -3679,7 +3702,7 @@ TWIG, $twig_params);
                 }
 
                 if ($_REQUEST['authldaps_id'] > 0) {
-                    $authldap->getFromDB($_REQUEST['authldaps_id']);
+                    $authldap->getFromDB((int) $_REQUEST['authldaps_id']);
                     $_REQUEST['basedn'] = $authldap->fields['basedn'];
                 }
             }
@@ -3719,11 +3742,11 @@ TWIG, $twig_params);
         // If there is still no LDAP selected, use the first active one
         $servers = array_values(self::getLdapServers(true));
         if (
-            $_REQUEST['authldaps_id'] <= 0
+            (int) $_REQUEST['authldaps_id'] <= 0
             && count($servers) > 0
         ) {
             $_REQUEST['authldaps_id'] = $servers[0]['id'];
-            $authldap->getFromDB($_REQUEST['authldaps_id']);
+            $authldap->getFromDB((int) $_REQUEST['authldaps_id']);
             $_REQUEST['basedn']      = $authldap->fields['basedn'];
             if (($_REQUEST['ldap_filter'] ?? '') === '') {
                 $_REQUEST['ldap_filter'] = self::buildLdapFilter($authldap);
@@ -3741,7 +3764,7 @@ TWIG, $twig_params);
     public static function showUserImportForm(AuthLDAP $authldap)
     {
         // Get data related to entity (directory and ldap filter)
-        $authldap->getFromDB($_REQUEST['authldaps_id']);
+        $authldap->getFromDB((int) $_REQUEST['authldaps_id']);
         TemplateRenderer::getInstance()->display('pages/admin/ldap.user_criteria.html.twig', [
             'has_multiple_servers' => self::getNumberOfServers() > 1,
             'authldap'             => $authldap,
@@ -3760,7 +3783,7 @@ TWIG, $twig_params);
     public static function showGroupImportForm(AuthLDAP $authldap)
     {
         // Get data related to entity (directory and ldap filter)
-        $authldap->getFromDB($_REQUEST['authldaps_id']);
+        $authldap->getFromDB((int) $_REQUEST['authldaps_id']);
 
         TemplateRenderer::getInstance()->display('pages/admin/ldap.group_criteria.html.twig', [
             'has_multiple_servers' => self::getNumberOfServers() > 1,
@@ -3810,7 +3833,7 @@ TWIG, $twig_params);
                         // no Toolbox::substr, to be consistent with strlen result
                         $value = substr($value, $begin, $length - $end - $begin);
                     }
-                    $filter .= '(' . $authldap->fields[$criteria] . '=' . ($begin ? '' : '*') . $value . ($end ? '' : '*') . ')';
+                    $filter .= '(' . $authldap->fields[$criteria] . '=' . ($begin ? '' : '*') . ldap_escape($value, '', LDAP_ESCAPE_FILTER) . ($end ? '' : '*') . ')';
                 }
             }
         } else {
@@ -4021,9 +4044,13 @@ TWIG, $twig_params);
             $ong     = [];
             $ong[1]  = self::createTabEntry(_x('button', 'Test'), 0, $item::class, "ti ti-stethoscope"); // test connexion
             $ong[2]  = self::createTabEntry(User::getTypeName(Session::getPluralNumber()), 0, $item::class, User::getIcon());
-            $ong[3]  = self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), 0, $item::class, User::getIcon());
+            $ong[3]  = self::createTabEntry(Group::getTypeName(Session::getPluralNumber()), 0, $item::class, Group::getIcon());
             $ong[5]  = self::createTabEntry(__('Advanced information'));   // params for entity advanced config
-            $ong[6]  = self::createTabEntry(_n('Replicate', 'Replicates', Session::getPluralNumber()));
+            $count = 0;
+            if ($_SESSION['glpishow_count_on_tabs']) {
+                $count = countElementsInTable('glpi_authldapreplicates', ['authldaps_id' => $item->getID()]);
+            }
+            $ong[6]  = self::createTabEntry(_n('Replicate', 'Replicates', Session::getPluralNumber()), $count);
 
             return $ong;
         }

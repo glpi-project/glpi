@@ -99,7 +99,19 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     }
 
     $id = isset($_REQUEST['id']) && (int) $_REQUEST['id'] > 0 ? $_REQUEST['id'] : null;
-    if (!$item->can($id, READ)) {
+    if ($id === null) {
+        // New sub-item: check CREATE, passing the parent link so canCreateItem() can resolve it.
+        $foreignKey = $parent::getForeignKeyField();
+        $parent_id  = (int) ($_REQUEST[$foreignKey] ?? 0);
+        $create_input = [
+            'itemtype'  => $parent->getType(),
+            'items_id'  => $parent_id,
+            $foreignKey => $parent_id,
+        ];
+        if (!$item->can(-1, CREATE, $create_input)) {
+            throw new AccessDeniedHttpException();
+        }
+    } elseif (!$item->can($id, READ)) {
         throw new AccessDeniedHttpException();
     }
 
@@ -130,7 +142,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         $template = 'form_task';
     } elseif (is_subclass_of($_REQUEST['type'], CommonITILValidation::class)) {
         $template = 'form_validation';
-        $params['form_mode'] = $_REQUEST['item_action'] === 'validation-answer' ? 'answer' : 'request';
+        $params['form_mode'] = ($_REQUEST['item_action'] ?? '') === 'validation-answer' ? 'answer' : 'request';
     } elseif ($id !== null && $parent->getID() >= 0) {
         $ol = ObjectLock::isLocked($_REQUEST['parenttype'], $parent->getID());
         if ($ol && (Session::getLoginUserID() != $ol->fields['users_id'])) {

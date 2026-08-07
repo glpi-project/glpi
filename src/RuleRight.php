@@ -142,6 +142,18 @@ class RuleRight extends Rule
                                     $continue = false;
                                 }
                                 break;
+                            case "specific_groups_id":
+                                foreach ($this->regex_results as $regex_result) {
+                                    $res = RuleAction::getRegexResultById(
+                                        $action->fields["value"],
+                                        $regex_result
+                                    );
+                                    $group = new Group();
+                                    $groups = $group->find(['name' => $res]);
+                                    foreach ($groups as $group) {
+                                        $output["_ldap_rules"]['groups_id'][] = $group['id'];
+                                    }
+                                }
                         }
                         break;
                 }
@@ -235,7 +247,7 @@ class RuleRight extends Rule
 
     public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
     {
-        if ($criteria['field'] === 'type') {
+        if (($criteria['field'] ?? '') === 'type') {
             Auth::dropdown([
                 'name'  => $name,
                 'value' => $value,
@@ -307,6 +319,7 @@ class RuleRight extends Rule
         $actions['specific_groups_id']['name'] = Group::getTypeName(Session::getPluralNumber());
         $actions['specific_groups_id']['type'] = 'dropdown';
         $actions['specific_groups_id']['table'] = 'glpi_groups';
+        $actions['specific_groups_id']['force_actions'] = ['assign', 'regex_result'];
 
         $actions['groups_id']['table']                        = 'glpi_groups';
         $actions['groups_id']['field']                        = 'name';

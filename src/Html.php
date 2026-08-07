@@ -50,6 +50,7 @@ use Glpi\Exception\RedirectException;
 use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Inventory\Inventory;
+use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\System\Log\LogViewer;
 use Glpi\Toolbox\FrontEnd;
@@ -58,7 +59,6 @@ use Glpi\UI\ThemeManager;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
 use ScssPhp\ScssPhp\Compiler;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\file_get_contents;
 use function Safe\filesize;
@@ -1000,7 +1000,7 @@ HTML;
 
         return TemplateRenderer::getInstance()->renderFromStringTemplate(
             <<<TWIG
-              <div class="progress" style="height: 15px; min-width: 50px;">
+              <div class="progress" style="height: 15px; min-width: 50px;" title="{{ label }}" data-bs-toggle="tooltip">
                  <div class="progress-bar bg-info" role="progressbar" style="width: {{ percentage }}%;"
                     aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ label }}</div>
               </div>
@@ -1686,8 +1686,9 @@ TWIG,
     {
         /**
          * @var bool $FOOTER_LOADED
+         * @var Kernel $kernel
          */
-        global $CFG_GLPI, $FOOTER_LOADED;
+        global $CFG_GLPI, $FOOTER_LOADED, $kernel;
 
         // If in modal : display popFooter
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
@@ -1751,7 +1752,7 @@ TWIG,
         Profiler::getInstance()->stopAll();
         if (
             $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
-            && !str_starts_with(Request::createFromGlobals()->getPathInfo(), '/install/')
+            && !str_starts_with($kernel->getMainRequest()->getPathInfo(), '/install/')
         ) {
             $tpl_vars['debug_info'] = DebugProfile::getCurrent()->getDebugInfo();
         }
@@ -2499,7 +2500,7 @@ TWIG,
                 if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
                     $out .= Html::showToolTip(
                         __s('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.'),
-                        ['display' => false, 'awesome-class' => 'btn btn-sm border-danger text-danger me-1 fa-info']
+                        ['display' => false, 'link_class' => 'btn btn-sm border-danger text-danger me-1']
                     );
                 }
             }
@@ -2659,7 +2660,7 @@ TWIG,
         $placeholder = htmlescape($p['placeholder']);
 
         $output = <<<HTML
-      <div class="button-group flex-grow-1 flatpickr d-flex align-items-center" id="showdate{$rand}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{$calendar_tooltip}">
+      <div class="btn-group flex-grow-1 flatpickr" id="showdate{$rand}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{$calendar_tooltip}">
          <input type="text" name="{$name}" size="{$size}"
                 {$required} {$disabled} data-input placeholder="{$placeholder}" class="form-control rounded-start ps-2">
          $calendar_btn
@@ -2951,7 +2952,7 @@ JS;
         if (empty($value)) {
             $value = 'NOW';
         }
-        $specific_value = date("Y-m-d H:i:s");
+        $specific_value = date("Y-m-d");
 
         if (preg_match("/\d{4}-\d{2}-\d{2}.*/", $value)) {
             $specific_value = $value;
@@ -2977,7 +2978,7 @@ JS;
 
         $params     = ['value'         => '__VALUE__',
             'name'          => $element,
-            'withtime'      => $p['with_time'],
+            'withtime'      => false,
             'specificvalue' => $specific_value,
         ];
 
@@ -3329,6 +3330,7 @@ JS;
      *   link?: string,          // link on the displayed icon if contentid is empty
      *   linkid?: string,        // HTML id of the link
      *   linktarget?: string,    // link target
+     *   link_class?: string,    // class of the wrapper element (the <a>, or the <span> when there is no link)
      *   awesome-class?: string, // class of the icon to display (default 'fa-info')
      *   popup?: string,         // popup action
      *   img?: string,           // URL of a specific image
@@ -3385,17 +3387,22 @@ JS;
         }
 
         if (empty($param['applyto'])) {
-            if (!empty($param['link'])) {
-                $out .= "<a id='" . (!empty($param['linkid']) ? htmlescape($param['linkid']) : "tooltiplink$rand") . "'
+            // Keep wrapper classes (e.g. btn) off the icon element, since they can clash with fas/fa-* on font-family and hide the glyph.
+            $has_wrapper = !empty($param['link']) || !empty($param['link_class']);
+            $wrapper_tag = !empty($param['link']) ? 'a' : 'span';
+            if ($has_wrapper) {
+                $out .= "<{$wrapper_tag} id='" . (!empty($param['linkid']) ? htmlescape($param['linkid']) : "tooltiplink$rand") . "'
                         class='dropdown_tooltip " . htmlescape($param['link_class']) . "'";
 
-                if (!empty($param['linktarget'])) {
-                    $out .= " target='" . htmlescape($param['linktarget']) . "' ";
-                }
-                $out .= " href='" . htmlescape($param['link']) . "'";
+                if (!empty($param['link'])) {
+                    if (!empty($param['linktarget'])) {
+                        $out .= " target='" . htmlescape($param['linktarget']) . "' ";
+                    }
+                    $out .= " href='" . htmlescape($param['link']) . "'";
 
-                if (!empty($param['popup'])) {
-                    $out .= " data-bs-toggle='modal' data-bs-target='#tooltippopup$rand' ";
+                    if (!empty($param['popup'])) {
+                        $out .= " data-bs-toggle='modal' data-bs-target='#tooltippopup$rand' ";
+                    }
                 }
                 $out .= '>';
             }
@@ -3407,11 +3414,11 @@ JS;
                 $out .= "<span id='tooltip$rand' class='fas {$class} fa-fw'></span>";
             }
 
-            if (!empty($param['link'])) {
-                $out .= "</a>";
+            if ($has_wrapper) {
+                $out .= "</{$wrapper_tag}>";
             }
 
-            $param['applyto'] = (!empty($param['link']) && !empty($param['linkid'])) ? $param['linkid'] : "tooltip$rand";
+            $param['applyto'] = (!empty($param['linkid']) && $has_wrapper) ? $param['linkid'] : "tooltip$rand";
         }
 
         if (empty($param['contentid'])) {
@@ -3514,13 +3521,35 @@ JS;
         global $CFG_GLPI, $DB;
 
         $language = $_SESSION['glpilanguage'];
-        if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
-            $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
-            if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs6/$language.js")) {
+        if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs7/$language.js")) {
+            // Some GLPI language codes don't match tinymce-i18n file names.
+            // Use a dedicated mapping to find the correct tinymce language file.
+            $tinymce_lang_map = [
+                'fr_FR'  => 'fr_FR',
+                'fr_CA'  => 'fr_FR',
+                'fr_BE'  => 'fr_FR',
+                'he_IL'  => 'he_IL',
+                'nb_NO'  => 'nb_NO',
+                'nn_NO'  => 'nb_NO',
+                'pt_BR'  => 'pt_BR',
+                'pt_PT'  => 'pt_PT',
+                'ro_RO'  => 'ro',
+                'uk_UA'  => 'uk',
+                'zh_CN'  => 'zh_CN',
+                'zh_TW'  => 'zh_TW',
+                'zh_HK'  => 'zh_HK',
+                'is_IS'  => 'is_IS',
+            ];
+            if (isset($tinymce_lang_map[$_SESSION['glpilanguage']])) {
+                $language = $tinymce_lang_map[$_SESSION['glpilanguage']];
+            } else {
+                $language = $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2];
+            }
+            if (!file_exists(GLPI_ROOT . "/public/lib/tinymce-i18n/langs7/$language.js")) {
                 $language = "en_GB";
             }
         }
-        $language_url = $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs6/' . $language . '.js';
+        $language_url = $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs7/' . $language . '.js';
 
         // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
@@ -3780,6 +3809,16 @@ JS;
                                     const fileupload_config = fileupload_configs[el.id];
                                     setupFileUpload(fileupload_config);
                                 });
+                        });
+
+                        // Close TinyMCE toolbar dropdowns and blur active buttons when clicking outside editor UI elements
+                        $(document).on('click', function(e) {
+                            const target = $(e.target);
+                            const isEditorElementClicked = target.closest('[class*="tox-"]').length > 0;
+
+                            if (!isEditorElementClicked) {
+                                $('.tox-tbtn.tox-tbtn--enabled[data-mce-name="overflow-button"]').trigger('click').trigger('blur');
+                            }
                         });
                     }
                 }, {$language_opts});
@@ -5376,11 +5415,12 @@ HTML;
         $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
                       class='form-control'
                       $required
+                      data-testid='file-upload-" . htmlescape($p['name']) . "'
                       data-uploader-name=\"" . htmlescape($p['name']) . "\"
                       data-url='" . htmlescape($CFG_GLPI["root_doc"]) . "/ajax/fileupload.php'
                       data-form-data='{\"name\": \"_uploader_{$name}\", \"showfilesize\": " . ($p['showfilesize'] ? 'true' : 'false') . "}'"
                       . ($p['multiple'] ? " multiple='multiple'" : "")
-                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
+                      . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg,.bmp,.webp'" : "") . ">";
 
         $display .= "<div id='progress{$rand_id}' style='display:none'>"
                 . "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
@@ -5392,7 +5432,7 @@ HTML;
             ? "$('#" . jsescape($p['dropZone']) . "')"
             : "false";
         $acceptFileTypes = $p['onlyimages']
-            ? "/(\.|\/)(gif|jpe?g|png)$/i"
+            ? "/(\.|\/)(gif|jpe?g|png|bmp|webp)$/i"
             : DocumentType::getUploadableFilePattern();
         $messages = json_encode([
             'acceptFileTypes' => __('Filetype not allowed'),
@@ -5538,11 +5578,17 @@ JS;
         $display = "<div id='" . htmlescape($p['filecontainer']) . "' class='fileupload_info'>";
         if (isset($p['uploads']['_' . $p['name']])) {
             foreach ($p['uploads']['_' . $p['name']] as $uploadId => $upload) {
+                $filepath = GLPI_TMP_DIR . '/' . $upload;
+                if (!file_exists($filepath)) {
+                    trigger_error(sprintf('Uploaded temp file %s not found, skipping.', $filepath), E_USER_WARNING);
+                    continue;
+                }
+
                 $prefix  = substr($upload, 0, 23);
                 $displayName = substr($upload, 23);
 
                 // get the extension icon
-                $extension = pathinfo(GLPI_TMP_DIR . '/' . $upload, PATHINFO_EXTENSION);
+                $extension = pathinfo($filepath, PATHINFO_EXTENSION);
                 $extensionIcon = '/pics/icones/' . $extension . '-dist.png';
                 if (!is_readable(GLPI_ROOT . $extensionIcon)) {
                     $extensionIcon = '/pics/icones/defaut-dist.png';
@@ -5554,7 +5600,7 @@ JS;
                     'name'    => $upload,
                     'id'      => 'doc' . $p['name'] . mt_rand(),
                     'display' => $displayName,
-                    'size'    => filesize(GLPI_TMP_DIR . '/' . $upload),
+                    'size'    => filesize($filepath),
                     'prefix'  => $prefix,
                 ];
                 $tag = $p['uploads']['_tag_' . $p['name']][$uploadId];

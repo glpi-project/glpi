@@ -102,6 +102,45 @@ class QuestionTest extends DbTestCase
         yield [$question, null];
     }
 
+    public static function setDefaultValueFromParametersProvider(): iterable
+    {
+        yield 'Standard UUID without dots applies value' => [
+            'uuid'           => 'abcd1234-ef56-7890-ab12-cd3456789012',
+            'get'            => ['abcd1234-ef56-7890-ab12-cd3456789012' => 'my value'],
+            'expected_value' => 'my value',
+        ];
+
+        yield 'UUID with dot: PHP replaces dots with underscores in GET params' => [
+            'uuid'           => 'abcd.1234',
+            'get'            => ['abcd_1234' => 'my value'],
+            'expected_value' => 'my value',
+        ];
+
+        yield 'UUID not present in GET params does not change default value' => [
+            'uuid'           => 'abcd1234',
+            'get'            => ['other_param' => 'my value'],
+            'expected_value' => 'initial value',
+        ];
+    }
+
+    #[DataProvider('setDefaultValueFromParametersProvider')]
+    public function testSetDefaultValueFromParameters(
+        string $uuid,
+        array $get,
+        string $expected_value,
+    ): void {
+        $question = new Question();
+        $question->fields = [
+            'uuid'          => $uuid,
+            'type'          => QuestionTypeShortText::class,
+            'default_value' => 'initial value',
+        ];
+
+        $question->setDefaultValueFromParameters($get);
+
+        $this->assertEquals($expected_value, $question->fields['default_value']);
+    }
+
     #[DataProvider('getQuestionTypeProvider')]
     public function testGetQuestionType(Question $question, $expected): void
     {

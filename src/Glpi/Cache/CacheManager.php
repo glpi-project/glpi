@@ -326,7 +326,20 @@ class CacheManager
         // Clear Symfony cache
         $this->clearSymfonyCache();
 
-        // Clear compiled templates
+        $success = $this->resetCompiledTemplates() && $success;
+
+        return $success;
+    }
+
+    /**
+     * Reset compiled Twig templates cache.
+     *
+     * @return bool
+     */
+    public function resetCompiledTemplates(): bool
+    {
+        $success = true;
+
         $tpl_cache_dir = $this->cache_dir . '/templates';
         if (file_exists($tpl_cache_dir)) {
             $tpl_files = glob($tpl_cache_dir . '/**/*.php');
@@ -594,19 +607,12 @@ PHP;
      */
     private function clearSymfonyCache(): void
     {
-        /** @var Kernel|null $kernel */
+        /** @var Kernel $kernel */
         global $kernel;
-
-        $localKernel = $kernel;
-
-        if (!$localKernel instanceof Kernel) {
-            // This must be usable in non-kernel contexts, env vars will get the proper Kernel env.
-            $localKernel = new Kernel();
-        }
 
         // Execute the `cache:clear` command provided by Symfony itself, not our own `cache:clear` command.
         // This command will clear the Symfony cache gracefully.
-        $app = new Application($localKernel);
+        $app = new Application($kernel);
         $app->setAutoExit(false);
         $app->run(new ArrayInput(['command' => 'cache:clear']), new NullOutput());
     }

@@ -36,13 +36,12 @@ namespace tests\units;
 
 use Change;
 use CommonITILActor;
-use Glpi\DBAL\QueryExpression;
+use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchEngine;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup as CoreITILFollowup;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
-use Search;
 use Ticket;
 use Ticket_User;
 use User;
@@ -733,23 +732,84 @@ HTML,
         $results = $DB->request([
             'COUNT' => 'number_of_followups',
             'FROM' => CoreITILFollowup::getTable(),
-            'JOIN' => [
-                new QueryExpression(
-                    Search::addDefaultJoin(
-                        CoreITILFollowup::class,
-                        CoreITILFollowup::getTable(),
-                        $already_linked_tables
-                    )
-                ),
-            ],
-            'WHERE' => [
-                new QueryExpression(
-                    Search::addDefaultWhere(CoreITILFollowup::class)
-                ),
-            ],
+            'JOIN' => SQLProvider::getDefaultJoinCriteria(
+                CoreITILFollowup::class,
+                CoreITILFollowup::getTable(),
+                $already_linked_tables
+            )['LEFT JOIN'],
+            'WHERE' => SQLProvider::getDefaultWhereCriteria(CoreITILFollowup::class),
         ]);
 
         return (int) iterator_to_array($results)[0]['number_of_followups'];
+    }
+
+    /**
+     * Non-regression: buildParentCondition() must qualify column names to avoid MySQL 1052
+     * when the search engine JOINs polymorphic tables (plugin Fields, glpi_logs).
+     */
+    public function testBuildParentConditionReturnsQualifiedColumnsForSelfServiceUser(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $selfservice_user = $this->createItem(User::class, [
+            'name'         => 'selfservice_' . $this->getUniqueString(),
+            'password'     => 'testpassword',
+            'password2'    => 'testpassword',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => $entity_id,
+        ], ['password', 'password2']);
+        $this->login($selfservice_user->fields['name']);
+
+        $condition = CoreITILFollowup::buildParentCondition(Ticket::class);
+        $table = CoreITILFollowup::getTable();
+
+        $this->assertStringContainsString("`$table`.`itemtype`", $condition);
+        $this->assertStringNotContainsString('(`itemtype` = ', $condition);
+        $this->assertStringNotContainsString('OR `items_id` IN', $condition);
+        $this->assertStringContainsString("OR `$table`.`items_id` IN", $condition);
+    }
+
+    /**
+     * Non-regression: buildParentCondition() output must be valid SQL when JOINed with
+     * a polymorphic table (glpi_logs reproduces the same 'itemtype' column ambiguity as
+     * plugin Fields tables). Without the fix: MySQL 1052 "Column 'itemtype' is ambiguous".
+     */
+    public function testBuildParentConditionDoesNotCauseAmbiguousColumnWhenJoined(): void
+    {
+        global $DB;
+
+        $entity_id = $this->getTestRootEntity(only_id: true);
+
+        $this->login();
+        $selfservice_user = $this->createItem(User::class, [
+            'name'         => 'selfservice_' . $this->getUniqueString(),
+            'password'     => 'testpassword',
+            'password2'    => 'testpassword',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => $entity_id,
+        ], ['password', 'password2']);
+        $this->login($selfservice_user->fields['name']);
+
+        $table     = CoreITILFollowup::getTable();
+        $condition = CoreITILFollowup::buildParentCondition(Ticket::class);
+
+        $threw = false;
+        try {
+            $DB->doQuery(
+                "SELECT `{$table}`.`id` FROM `{$table}`"
+                . " LEFT JOIN `glpi_logs` ON (`glpi_logs`.`items_id` = `{$table}`.`id`)"
+                . " WHERE {$condition}"
+                . " LIMIT 1"
+            );
+        } catch (\RuntimeException $e) {
+            if (str_contains($e->getMessage(), '1052')) {
+                $threw = true;
+            } else {
+                throw $e;
+            }
+        }
+        $this->assertFalse($threw, 'buildParentCondition() must not generate ambiguous column references');
     }
 
     private function createFollowupInEntityForType(

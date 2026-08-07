@@ -139,3 +139,45 @@ for (const language of language_to_test) {
         );
     });
 }
+
+test('Can translate a form with many inputs', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const form_translation = new FormTranslationPage(page);
+
+    // Create form and get its default section
+    const form_id = await api.createItem('Glpi\\Form\\Form', {
+        name: `Test many inputs - ${randomUUID()}`,
+        entities_id: getWorkerEntityId(),
+    });
+    const sections = await api.getSubItems(
+        'Glpi\\Form\\Form', form_id, 'Glpi\\Form\\Section'
+    );
+    const section_id = sections[0].id;
+
+    // Create 20 questions with Radio type and  via API
+    for (let i = 0; i < 20; i++) {
+        await api.createItem('Glpi\\Form\\Question', {
+            name: `Question ${i}`,
+            type: 'Glpi\\Form\\QuestionType\\QuestionTypeRadio',
+            vertical_rank: i,
+            forms_sections_id: section_id,
+            extra_data: JSON.stringify({
+                options: Object.assign({}, ...Array.from({ length: 20 }, (_, j) => ({ [randomUUID()]: `Option ${j}` })))
+            }),
+        });
+    }
+
+    // Visit the form translation page
+    await form_translation.goto(form_id);
+
+    // Add a language
+    await form_translation.addLanguage('Français');
+    await form_translation.expectLanguageDropdownOpened('Français');
+
+    // Save the translation (large form with many fields, allow more time for processing)
+    await form_translation.saveTranslation();
+    await expect(page.getByRole('alert')).toContainText(
+        'Item successfully updated: Français',
+        { timeout: 30000 }
+    );
+});

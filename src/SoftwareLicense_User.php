@@ -186,11 +186,11 @@ class SoftwareLicense_User extends CommonDBRelation
                         <input type="hidden" name="items_id" value="{{ item.getID() }}">
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
-                            {{ fields.dropdownField('SoftwareLicense', 'softwarelicenses_id', 0, null, {
+                            {{ fields.dropdownField('SoftwareLicense', 'softwarelicenses_id', 0, __('Add a licence'), {
                                 used: used,
                             }) }}
                             {% set btn %}
-                                <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>

@@ -56,18 +56,18 @@
         {% if can_update %}
             class="cursor-pointer flex-shrink-1" title="{{ __('Change picture') }}" role="button" data-bs-toggle="modal" data-bs-target="#modal_picture_{{ rand_field }}"
         {% endif %}>
-        <div data-current-avatar>{{ avatar }}</div>
-        <div data-default-avatar class="d-none">{{ avatar_initials }}</div>
-        <div class="avatar avatar-xl rounded d-none" data-preview-avatar>
+        <div data-current-avatar data-testid="current-avatar-container">{{ avatar }}</div>
+        <div data-default-avatar data-testid="default-avatar" class="d-none">{{ avatar_initials }}</div>
+        <div class="avatar avatar-xl rounded d-none" data-preview-avatar data-testid="preview-avatar">
             <img src="" alt="{{ __('Preview') }}" class="img-fluid" />
         </div>
     </div>
     {% if can_update %}
         {% set modal_content %}
             <div class="text-center">
-                <div data-current-avatar>{{ avatar }}</div>
-                <div data-default-avatar class="d-none">{{ avatar_initials }}</div>
-                <div class="avatar avatar-xl rounded d-none" data-preview-avatar>
+                <div data-current-avatar data-testid="current-avatar">{{ avatar }}</div>
+                <div data-default-avatar data-testid="default-avatar" class="d-none">{{ avatar_initials }}</div>
+                <div class="avatar avatar-xl rounded d-none" data-preview-avatar data-testid="preview-avatar">
                     <img src="" alt="{{ __('Preview') }}" class="img-fluid" />
                 </div>
                 {{ inputs.file('picture', null, {

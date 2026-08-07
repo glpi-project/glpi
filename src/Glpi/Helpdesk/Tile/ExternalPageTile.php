@@ -44,6 +44,8 @@ use Override;
 
 final class ExternalPageTile extends CommonDBTM implements TileInterface, ProvideTranslationsInterface
 {
+    use TileRightTrait;
+
     public static $rightname = 'config';
 
     public const TRANSLATION_KEY_TITLE = 'title';
@@ -59,18 +61,6 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface, Provid
     public function getLabel(): string
     {
         return __("External page");
-    }
-
-    #[Override]
-    public static function canCreate(): bool
-    {
-        return self::canUpdate();
-    }
-
-    #[Override]
-    public static function canPurge(): bool
-    {
-        return self::canUpdate();
     }
 
     #[Override]

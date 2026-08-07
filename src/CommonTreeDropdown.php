@@ -563,7 +563,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                                 {% endif %}
                             </div>
                             <div class="d-flex flex-row-reverse pe-2">
-                                <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
                             </div>
                         </div>
                     </form>
@@ -628,7 +628,7 @@ TWIG, $twig_params);
                     case 'dropdownValue':
                         if (!isset($values_cache[$field['name']][$data[$field['name']]])) {
                             $values_cache[$field['name']][$data[$field['name']]] = Dropdown::getDropdownName(
-                                $field['name'],
+                                getTableNameForForeignKeyField($field['name']),
                                 $data[$field['name']]
                             );
                         }
@@ -868,6 +868,9 @@ TWIG, $twig_params);
 
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
+
+        // Add asset URL search option for asset types
+        $tab = array_merge($tab, BarcodeManager::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
     }

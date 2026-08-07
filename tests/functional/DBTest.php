@@ -176,7 +176,7 @@ class DBTest extends GLPITestCase
     public function testBuildInsert($table, $values, $expected)
     {
         $instance = new \DB();
-        $this->assertSame($expected, $instance->buildInsert($table, $values));
+        $this->assertSame($expected, $this->cleanSQL($instance->buildInsert($table, $values)));
     }
 
     public static function dataUpdate()

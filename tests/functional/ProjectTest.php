@@ -454,6 +454,92 @@ class ProjectTest extends DbTestCase
         $this->assertEquals($expected, $tasks_clone);
     }
 
+    public function testCreateFromTemplateDoesNotAlterTemplateTasks()
+    {
+        $this->login();
+
+        // Create a project template with a tasks hierarchy
+        $template = $this->createItem('Project', [
+            'name'          => __FUNCTION__,
+            'is_template'   => 1,
+            'template_name' => __FUNCTION__,
+        ]);
+        $templates_id = $template->getID();
+
+        $parent_a = $this->createItem('ProjectTask', [
+            'projects_id' => $templates_id,
+            'name'        => 'Parent task A',
+        ]);
+        $this->createItem('ProjectTask', [
+            'projects_id'     => $templates_id,
+            'name'            => 'Child task A.1',
+            'projecttasks_id' => $parent_a->getID(),
+        ]);
+        $child_a2 = $this->createItem('ProjectTask', [
+            'projects_id'     => $templates_id,
+            'name'            => 'Child task A.2',
+            'projecttasks_id' => $parent_a->getID(),
+        ]);
+        // Third level, to be sure that the recursion is not partially applied
+        $this->createItem('ProjectTask', [
+            'projects_id'     => $templates_id,
+            'name'            => 'Child task A.2.1',
+            'projecttasks_id' => $child_a2->getID(),
+        ]);
+        $parent_b = $this->createItem('ProjectTask', [
+            'projects_id' => $templates_id,
+            'name'        => 'Parent task B',
+        ]);
+        $this->createItem('ProjectTask', [
+            'projects_id'     => $templates_id,
+            'name'            => 'Child task B.1',
+            'projecttasks_id' => $parent_b->getID(),
+        ]);
+
+        $template_tasks = getAllDataFromTable(ProjectTask::getTable(), ['projects_id' => $templates_id]);
+        $this->assertCount(6, $template_tasks);
+
+        // Create a project from this template
+        $project = new \Project();
+        $projects_id = $project->add([
+            'name'   => 'Project from ' . __FUNCTION__,
+            '_oldID' => $templates_id,
+        ]);
+        $this->assertGreaterThan(0, $projects_id);
+
+        // The template tasks must be left untouched (no additional "(copy)" tasks)
+        $template_tasks_after = getAllDataFromTable(ProjectTask::getTable(), ['projects_id' => $templates_id]);
+        $this->assertEquals(
+            array_column($template_tasks, 'name', 'id'),
+            array_column($template_tasks_after, 'name', 'id')
+        );
+
+        // The new project must contain the whole tasks hierarchy, exactly once
+        $new_tasks = getAllDataFromTable(ProjectTask::getTable(), ['projects_id' => $projects_id]);
+        $this->assertCount(6, $new_tasks);
+
+        $new_tasks_by_name = array_column($new_tasks, null, 'name');
+        $this->assertEquals(
+            [
+                'Parent task A'    => 0,
+                'Child task A.1'   => 'Parent task A',
+                'Child task A.2'   => 'Parent task A',
+                'Child task A.2.1' => 'Child task A.2',
+                'Parent task B'    => 0,
+                'Child task B.1'   => 'Parent task B',
+            ],
+            array_map(
+                static function (array $task) use ($new_tasks) {
+                    if ($task['projecttasks_id'] === 0) {
+                        return 0;
+                    }
+                    return array_column($new_tasks, 'name', 'id')[$task['projecttasks_id']] ?? 'unknown';
+                },
+                $new_tasks_by_name
+            )
+        );
+    }
+
     public function testCloneWithOverridenInput()
     {
         $project = $this->createItem(
@@ -773,6 +859,74 @@ PLAINTEXT;
         $this->assertStringContainsString('Test note content', $html);
         $this->assertStringContainsString('class="accordion"', $html);
         $this->assertStringContainsString('toggle-all-notes', $html);
+    }
+
+    public function testGetKanbanColumnsReturnsTasksWhenNoStateIsSaved(): void
+    {
+        $this->login();
+
+        $state = $this->createItem(ProjectState::class, [
+            'name'        => 'In progress',
+            'color'       => '#ff0000',
+            'is_finished' => 0,
+        ]);
+
+        $project = $this->createItem(\Project::class, [
+            'name'       => 'Kanban Test Project',
+            'entities_id' => 0,
+        ]);
+
+        $this->createItem(ProjectTask::class, [
+            'name'                   => 'Task 1',
+            'projects_id'            => $project->getID(),
+            'projectstates_id'       => $state->getID(),
+            'projecttasktemplates_id' => 0,
+        ]);
+
+        // Simulate first load with no saved state: $column_ids = [], $get_default = true
+        $columns = \Project::getKanbanColumns($project->getID(), 'projectstates_id', [], true);
+
+        $this->assertArrayHasKey($state->getID(), $columns);
+        $this->assertCount(1, $columns[$state->getID()]['items']);
+
+        // Normal filtering ($get_default = false): only the requested column is returned.
+        $columns_filtered = \Project::getKanbanColumns($project->getID(), 'projectstates_id', [$state->getID()], false);
+        $this->assertArrayHasKey($state->getID(), $columns_filtered);
+        $this->assertCount(1, $columns_filtered[$state->getID()]['items']);
+
+        // Requesting only column 0 must exclude the task's state column.
+        $columns_no_status = \Project::getKanbanColumns($project->getID(), 'projectstates_id', [0], false);
+        $this->assertArrayNotHasKey($state->getID(), $columns_no_status);
+    }
+
+    public function testGetKanbanColumnsReturnsTasksWhenSavedStateIsStale(): void
+    {
+        $this->login();
+
+        $state = $this->createItem(ProjectState::class, [
+            'name'        => 'In progress',
+            'color'       => '#ff0000',
+            'is_finished' => 0,
+        ]);
+
+        $project = $this->createItem(\Project::class, [
+            'name'       => 'Kanban Test Project',
+            'entities_id' => 0,
+        ]);
+
+        $this->createItem(ProjectTask::class, [
+            'name'                   => 'Task 1',
+            'projects_id'            => $project->getID(),
+            'projectstates_id'       => $state->getID(),
+            'projecttasktemplates_id' => 0,
+        ]);
+
+        // Simulate a refresh with a previously saved Kanban state that does not
+        // include the task's state (e.g. added after the state was last saved).
+        $columns = \Project::getKanbanColumns($project->getID(), 'projectstates_id', [0], true);
+
+        $this->assertArrayHasKey($state->getID(), $columns);
+        $this->assertCount(1, $columns[$state->getID()]['items']);
     }
 
     public function testNotepadDisplayWithUpdateRights()

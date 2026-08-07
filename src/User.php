@@ -44,13 +44,14 @@ use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
+use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Security\TOTPManager;
 use LDAP\Connection;
+use LDAP\Result;
 use Sabre\VObject\Component\VCard;
 use Safe\DateTime;
 use Safe\Exceptions\FilesystemException;
-use Symfony\Component\HttpFoundation\Request;
 
 use function Safe\fclose;
 use function Safe\fopen;
@@ -130,6 +131,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
         unset($input['api_token_date']);
         unset($input['cookie_token']);
         unset($input['cookie_token_date']);
+        unset($input['user_dn_hash']);
+        unset($input['user_dn']);
+        unset($input['sync_field']);
         return $input;
     }
 
@@ -985,6 +989,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
         }
 
+        if (isset($input['use_mode']) && !Config::canUpdate()) {
+            unset($input['use_mode']);
+        }
+
         return $input;
     }
 
@@ -1105,6 +1113,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 }
                 if (!str_starts_with($fullpath, realpath(GLPI_TMP_DIR))) {
                     trigger_error(sprintf('Invalid picture path `%s`', $input["_picture"]), E_USER_WARNING);
+                    return false;
                 }
                 if (Document::isImage($fullpath)) {
                     // Unlink old picture (clean on changing format)
@@ -1267,13 +1276,17 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
         }
 
-        // blank password when authtype changes
-        if (
-            isset($input["authtype"])
-            && $input["authtype"] != Auth::DB_GLPI
-            && $input["authtype"] != $this->getField('authtype')
-        ) {
-            $input["password"] = "";
+        if (isset($input['authtype'])) {
+            if (
+                Session::getLoginUserID() !== false // always allow update from backend routines
+                && !Session::haveRight(self::$rightname, self::UPDATEAUTHENT)
+            ) {
+                // prevent unexpected authentication type change
+                unset($input['authtype']);
+            } elseif ($input['authtype'] != $this->fields['authtype'] && $input['authtype'] != Auth::DB_GLPI) {
+                // blank password when authtype changes
+                $input['password'] = '';
+            }
         }
 
         // Update User in the database
@@ -1293,18 +1306,51 @@ class User extends CommonDBTM implements TreeBrowseInterface
             $_SESSION["glpidefault_entity"] = $input["entities_id"];
         }
 
-        // Security on default profile update
-        if (isset($input['profiles_id'])) {
-            if (!in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))) {
-                unset($input['profiles_id']);
+        // Prepare default profiles and entities for security checks
+        $default_profile_ids = [];
+        $default_entity_id = [];
+
+        // Check if LDAP rules are set in input
+        if ($this->must_process_ruleright === true && isset($input['_ldap_rules'])) {
+            // Check if LDAP rules contain entity and profile affectations
+            if (isset($input['_ldap_rules']['rules_entities_rights'])) {
+                foreach ($input['_ldap_rules']['rules_entities_rights'] as $rule) {
+                    $default_entity_id[] = $rule[0];
+                    $default_profile_ids[] = $rule[1];
+                }
             }
+
+            // Check if LDAP rules contain entity affectations
+            if (isset($input['_ldap_rules']['rules_entities'])) {
+                foreach ($input['_ldap_rules']['rules_entities'] as $rule) {
+                    $default_entity_id[] = $rule[0];
+                }
+            }
+
+            // Check if LDAP rules contain profile affectations. One entity is required to be able to apply profile affectation.
+            if (isset($input['_ldap_rules']['rules_rights']) && count($default_entity_id) > 0) {
+                foreach ($input['_ldap_rules']['rules_rights'] as $rule) {
+                    $default_profile_ids[] = $rule;
+                }
+            }
+        }
+
+        // Security on default profile update
+        if (
+            isset($input['profiles_id'])
+            && !in_array($input['profiles_id'], Profile_User::getUserProfiles($input['id']))
+            && $input['profiles_id'] != 0
+            && !in_array($input['profiles_id'], $default_profile_ids)
+        ) {
+            unset($input['profiles_id']);
         }
 
         // Security on default entity  update
         if (isset($input['entities_id'])) {
             if (
-                ($input['entities_id'] > 0)
-                && (!in_array($input['entities_id'], Profile_User::getUserEntities($input['id'])))
+                $input['entities_id'] > 0
+                && !in_array($input['entities_id'], Profile_User::getUserEntities($input['id']))
+                && !in_array($input['entities_id'], $default_entity_id)
             ) {
                 unset($input['entities_id']);
             } elseif ($input['entities_id'] == -1) {
@@ -1347,6 +1393,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
 
         // Manage preferences fields
+        if (isset($input['use_mode']) && !Config::canUpdate()) {
+            unset($input['use_mode']);
+        }
+
         if (Session::getLoginUserID() == $input['id']) {
             if (
                 isset($input['use_mode'])
@@ -1448,6 +1498,35 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
     /**
+     * Rebuild a LDAP connection from the user's recorded auths_id/user_dn, so RuleRight
+     * LDAP-attribute criteria can be evaluated outside of an actual LDAP authentication.
+     *
+     * @return array<string, mixed> Empty if no LDAP connection could be established.
+     */
+    private function getLdapConnectionForRules(): array
+    {
+        if (empty($this->fields['auths_id']) || empty($this->fields['user_dn'])) {
+            return [];
+        }
+
+        $config_ldap = new AuthLDAP();
+        if (!$config_ldap->getFromDB($this->fields['auths_id'])) {
+            return [];
+        }
+
+        $connection = $config_ldap->connect();
+        if (!$connection) {
+            return [];
+        }
+
+        return [
+            'connection'  => $connection,
+            'userdn'      => $this->fields['user_dn'],
+            'ldap_server' => $this->fields['auths_id'],
+        ];
+    }
+
+    /**
      * Force authorization assignment rules to be processed for this user
      * @return void
      */
@@ -1460,11 +1539,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
         $result = $rules->processAllRules(
             $groups_id,
             $this->fields,
-            [
-                'type' => $this->fields['authtype'],
-                'login' => $this->fields['name'],
-                'email' => UserEmail::getDefaultForUser($this->getID()),
-            ]
+            array_merge(
+                [
+                    'type' => $this->fields['authtype'],
+                    'login' => $this->fields['name'],
+                    'email' => UserEmail::getDefaultForUser($this->getID()),
+                ],
+                $this->getLdapConnectionForRules()
+            )
         );
 
         $this->input = $result;
@@ -2135,16 +2217,31 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param array    $ldap_method        LDAP method
      * @param string   $userdn             Basedn of the user
      * @param string   $login              User login
+     * @param bool     $batch_mode         True when called from a loop importing/syncing many users
+     *                                     (massive action or CLI sync), enabling the per-group query cache.
      *
      * @return bool true if search is applicable, false otherwise
      */
-    private function getFromLDAPGroupDiscret($ldap_connection, array $ldap_method, $userdn, $login)
+    private function getFromLDAPGroupDiscret($ldap_connection, array $ldap_method, $userdn, $login, bool $batch_mode = false)
     {
         global $DB;
 
         // No group_member_field : unable to get group
         if (empty($ldap_method["group_member_field"])) {
             return false;
+        }
+
+        // Only use M-queries-per-group cache in batch mode: it only pays off when reused across many users in the same loop.
+        if (
+            $batch_mode
+            && str_contains($ldap_method["group_member_field"], AuthLDAP::MATCHING_RULE_IN_CHAIN_OID)
+            && !empty($ldap_method["group_field"])
+        ) {
+            return $this->getFromLDAPGroupDiscretCached(
+                $ldap_connection,
+                $ldap_method,
+                $userdn
+            );
         }
 
         if ($ldap_method["use_dn"]) {
@@ -2185,6 +2282,121 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
 
     /**
+     * Variant of getFromLDAPGroupDiscret() for MATCHING_RULE_IN_CHAIN (AD nested groups).
+     * Fetches members per group (M queries) and caches results for subsequent users.
+     *
+     * @param Connection $ldap_connection LDAP connection
+     * @param array<string, mixed> $ldap_method LDAP method config
+     * @param string $userdn DN of the user to resolve
+     *
+     * @return bool true if groups were resolved, false on LDAP error
+     */
+    private function getFromLDAPGroupDiscretCached(
+        $ldap_connection,
+        array $ldap_method,
+        string $userdn
+    ): bool {
+        global $DB;
+
+        $auth_id = (int) ($ldap_method['id'] ?? 0);
+
+        // Keyed by auth_id then lowercase user DN; populated once per process.
+        static $cache = [];
+
+        if (!array_key_exists($auth_id, $cache)) {
+            $cache[$auth_id] = [];
+
+            // Keep the OID suffix from group_member_field (e.g. ':1.2.840.113556.1.4.1941').
+            $chain_suffix = '';
+            if (($colon = strpos($ldap_method['group_member_field'], ':')) !== false) {
+                $chain_suffix = substr($ldap_method['group_member_field'], $colon);
+            }
+
+            $user_group_attr = $ldap_method['group_field'] . $chain_suffix;
+
+            $condition = !empty($ldap_method['condition'])
+                ? $ldap_method['condition']
+                : '(objectClass=*)';
+
+            $groups_iterator = $DB->request([
+                'SELECT' => ['id', 'ldap_group_dn'],
+                'FROM'   => 'glpi_groups',
+                'WHERE'  => ['NOT' => ['ldap_group_dn' => '']],
+            ]);
+
+            $ldap_error = false;
+
+            foreach ($groups_iterator as $group_row) {
+                $group_id = (int) $group_row['id'];
+                $group_dn = $group_row['ldap_group_dn'];
+                $escaped  = ldap_escape($group_dn, '', LDAP_ESCAPE_FILTER);
+                $filter   = "(& $condition ($user_group_attr=$escaped))";
+                $cookie   = '';
+
+                do {
+                    if (!empty($ldap_method['pagesize'])) {
+                        $controls = [[
+                            'oid'        => LDAP_CONTROL_PAGEDRESULTS,
+                            'iscritical' => true,
+                            'value'      => ['size' => (int) $ldap_method['pagesize'], 'cookie' => $cookie],
+                        ]];
+                        $sr = @ldap_search(
+                            $ldap_connection,
+                            $ldap_method['basedn'],
+                            $filter,
+                            ['dn'],
+                            0,
+                            -1,
+                            -1,
+                            LDAP_DEREF_NEVER,
+                            $controls
+                        );
+                        if (
+                            $sr instanceof Result
+                            && @ldap_parse_result($ldap_connection, $sr, $errcode, $matcheddn, $errmsg, $referrals, $controls) !== false // @phpstan-ignore theCodingMachineSafe.function
+                            && isset($controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'])
+                        ) {
+                            $cookie = $controls[LDAP_CONTROL_PAGEDRESULTS]['value']['cookie'];
+                        } else {
+                            $cookie = '';
+                        }
+                    } else {
+                        $sr     = @ldap_search($ldap_connection, $ldap_method['basedn'], $filter, ['dn']);
+                        $cookie = '';
+                    }
+
+                    if ($sr === false) {
+                        $ldap_error = true;
+                        break 2;
+                    }
+
+                    /** @var Result $sr */
+                    $info = AuthLDAP::get_entries_clean($ldap_connection, $sr);
+                    for ($i = 0; $i < ($info['count'] ?? 0); $i++) {
+                        if (!empty($info[$i]['dn'])) {
+                            $member_key = strtolower($info[$i]['dn']);
+                            $cache[$auth_id][$member_key][] = $group_id;
+                        }
+                    }
+                } while ($cookie !== '');
+            }
+
+            if ($ldap_error) {
+                unset($cache[$auth_id]);
+                return false;
+            }
+        }
+
+        $user_key = strtolower($userdn);
+        foreach ($cache[$auth_id][$user_key] ?? [] as $group_id) {
+            $this->fields["_groups"][] = $group_id;
+        }
+
+        return true;
+    }
+
+
+    /**
      * Function that tries to load the user information from LDAP.
      *
      * @param Connection $ldap_connection LDAP connection
@@ -2192,10 +2404,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param string   $userdn          Basedn of the user
      * @param string   $login           User Login
      * @param bool  $import          true for import, false for update
+     * @param bool  $batch_mode      True when called from a loop importing/syncing many users
+     *                               (massive action or CLI sync), enabling the per-group query cache.
      *
      * @return bool true if found / false if not
      */
-    public function getFromLDAP($ldap_connection, array $ldap_method, $userdn, $login, $import = true)
+    public function getFromLDAP($ldap_connection, array $ldap_method, $userdn, $login, $import = true, bool $batch_mode = false)
     {
         global $CFG_GLPI, $DB;
 
@@ -2330,7 +2544,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 ($ldap_method["group_search_type"] == 1)
                 || ($ldap_method["group_search_type"] == 2)
             ) {
-                $this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login);
+                $this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login, $batch_mode);
             }
 
             ///Only process rules if working on the master database
@@ -2611,7 +2825,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
         if (count($a_field) == 0) {
             return true;
         }
-        $this->willProcessRuleRight();
         foreach ($a_field as $field => $key) {
             $value = $_SERVER[$key] ?? null;
             if (empty($value)) {
@@ -2679,11 +2892,16 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 $groups_id = array_column($groups, 'id');
             }
 
-            $this->fields = $rule->processAllRules($groups_id, $this->fields, [
-                'type'   => Auth::EXTERNAL,
-                'email'  => $this->fields["_emails"] ?? [],
-                'login'  => $this->fields["name"],
-            ]);
+            $this->fields = $rule->processAllRules($groups_id, $this->fields, array_merge(
+                [
+                    'type'   => Auth::EXTERNAL,
+                    'email'  => $this->fields["_emails"] ?? [],
+                    'login'  => $this->fields["name"],
+                ],
+                $this->getLdapConnectionForRules()
+            ));
+
+            $this->willProcessRuleRight();
 
             //If rule  action is ignore import
             if (isset($this->fields["_stop_import"])) {
@@ -2936,7 +3154,8 @@ HTML;
 
     public function pre_updateInDB()
     {
-        global $DB;
+        /** @var Kernel $kernel */
+        global $DB, $kernel;
 
         if (($key = array_search('name', $this->updates)) !== false) {
             /// Check if user does not exists
@@ -2981,7 +3200,7 @@ HTML;
         if (
             Session::getLoginUserID() === (int) $this->input['id']
             && !Session::haveRight("user", UPDATE)
-            && !str_starts_with(Request::createFromGlobals()->getPathInfo(), "/front/login.php")
+            && !str_starts_with($kernel->getMainRequest()->getPathInfo(), "/front/login.php")
             && isset($this->fields["authtype"])
         ) {
             // extauth ldap case
@@ -3145,10 +3364,17 @@ HTML;
                     return;
                 }
                 if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-                    if (User::changeAuthMethod($ids, $input["authtype"], $input["auths_id"])) {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_OK);
-                    } else {
-                        $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    foreach ($ids as $id) {
+                        $user = new User();
+                        if (!$user->can($id, UPDATE)) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            continue;
+                        } elseif (User::changeAuthMethod([$id], $input["authtype"], $input["auths_id"])) {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                        } else {
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                        }
                     }
                 } else {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
@@ -3656,6 +3882,15 @@ HTML;
             'datatype'          => 'specific',
             'additionalfields'  => ['2fa'],
             'nosearch'          => true, // Searching virtual fields is not supported currently
+            'nosort'            => true, // Same as above
+        ];
+
+        $tab[] = [
+            'id'                => 133,
+            'table'             => 'glpi_users',
+            'field'             => 'notification_to_myself',
+            'name'              => __('Notifications to myself'),
+            'datatype'          => 'bool',
         ];
 
         // add objectlock search options
@@ -4168,6 +4403,63 @@ HTML;
         return $DB->request($criteria);
     }
 
+    /**
+     * Check if a user is valid (active, not deleted, in entity) without loading all users.
+     *
+     * @param int              $user_id           User ID to check
+     * @param int|int[]        $entity_restrict   Entity ID or list of entity IDs
+     */
+    public static function isValidUserForEntity(int $user_id, int|array $entity_restrict): bool
+    {
+        global $DB;
+
+        if (!is_array($entity_restrict) && $entity_restrict < 0) {
+            $entity_restrict = $_SESSION["glpiactiveentities"];
+        }
+
+        $config = Config::getConfigurationValues('core');
+
+        $where = [
+            'glpi_users.id'         => $user_id,
+            'glpi_users.is_deleted' => 0,
+            'glpi_users.is_active'  => 1,
+            [
+                'OR' => [
+                    ['glpi_users.begin_date' => null],
+                    ['glpi_users.begin_date' => ['<', QueryFunction::now()]],
+                ],
+            ],
+            [
+                'OR' => [
+                    ['glpi_users.end_date' => null],
+                    ['glpi_users.end_date' => ['>', QueryFunction::now()]],
+                ],
+            ],
+            [
+                'NOT' => ['glpi_users.id' => $config['system_user']],
+            ],
+        ];
+
+        $entity_criteria = getEntitiesRestrictCriteria('glpi_profiles_users', '', $entity_restrict, true);
+        if (!empty($entity_criteria)) {
+            $where['OR'] = $entity_criteria;
+        }
+
+        return $DB->request([
+            'COUNT'    => 'cpt',
+            'FROM'     => 'glpi_users',
+            'LEFT JOIN' => [
+                'glpi_profiles_users' => [
+                    'ON' => [
+                        'glpi_profiles_users' => 'users_id',
+                        'glpi_users'          => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => $where,
+        ])->current()['cpt'] > 0;
+    }
+
 
     /**
      * Make a select box with all glpi users where select key = name
@@ -4525,10 +4817,6 @@ HTML;
     {
         global $DB;
 
-        if (!Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-            return false;
-        }
-
         if (
             $IDs !== []
             && in_array($authtype, [Auth::DB_GLPI, Auth::LDAP, Auth::MAIL, Auth::EXTERNAL])
@@ -4640,8 +4928,59 @@ HTML;
         global $CFG_GLPI, $DB;
 
         $ID = $this->getField('id');
-
         $start       = intval($_GET["start"] ?? 0);
+        $get_filters   = $_GET["filters"] ?? [];
+
+        $sortable_columns = ['type', 'entity', 'name', 'serial', 'otherserial', 'states', 'group', 'users'];
+        $sort = $_GET['sort'] ?? 'name';
+        if (!in_array($sort, $sortable_columns, true)) {
+            $sort = 'name';
+        }
+        $order = $_GET['order'] ?? 'ASC';
+        $order = is_string($order) ? strtoupper($order) : 'ASC';
+        if (!in_array($order, ['ASC', 'DESC'], true)) {
+            $order = 'ASC';
+        }
+
+        $type_choices = [];
+        foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
+            if ($item = getItemForItemtype($itemtype)) {
+                if (!$item::canView()) {
+                    continue;
+                }
+                $type_choices[$itemtype] = $item::getTypeName(1);
+            }
+        }
+        asort($type_choices);
+
+        $entity_choices = [];
+        foreach ($this->getEntities() as $entity_id) {
+            if (Session::haveAccessToEntity($entity_id)) {
+                $entity_choices[$entity_id] = Dropdown::getDropdownName("glpi_entities", $entity_id);
+            }
+        }
+        asort($entity_choices);
+
+        $state_choices = [];
+        $state_iterator = $DB->request([
+            'SELECT' => ['id', 'completename'],
+            'FROM'   => 'glpi_states',
+        ]);
+        foreach ($state_iterator as $row) {
+            $state_choices[$row['id']] = $row['completename'];
+        }
+        asort($state_choices);
+
+        $filters = [
+            'type'        => [],
+            'entity'      => [],
+            'name'        => '',
+            'serial'      => '',
+            'otherserial' => '',
+            'states'      => [],
+            'group'       => [],
+            'users'       => [],
+        ];
 
         if ($tech) {
             $field_user  = 'users_id_tech';
@@ -4689,17 +5028,99 @@ HTML;
             ];
         }
 
+        $group_choices = [];
+        foreach (getAllDataFromTable('glpi_groups') as $g_id => $row) {
+            $group_choices[$g_id] = $row['completename'];
+        }
+        asort($group_choices);
+
+        $user_choices = [];
+        foreach (self::getSqlSearchResult(false, 'all') as $row) {
+            $user_choices[$row['id']] = formatUserName($row['id'], $row['name'], $row['realname'], $row['firstname']);
+        }
+
+        $array_filters_choices = [
+            'type'     => $type_choices,
+            'entity'   => $entity_choices,
+            'states'   => $state_choices,
+            'group'    => $group_choices,
+            'users'    => $user_choices,
+        ];
+
+        foreach ($get_filters as $f => $value) {
+            if (!empty($value)) {
+                if (isset($array_filters_choices[$f])) {
+                    foreach ((array) $value as $v) {
+                        if (isset($array_filters_choices[$f][$v])) {
+                            $filters[$f][] = $v;
+                        }
+                    }
+                } elseif (in_array($f, ['name', 'serial', 'otherserial'], true)) {
+                    $filters[$f] = is_array($value) ? (string) $value[0] : (string) $value;
+                }
+            }
+        }
+
         $entries = [];
 
         foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
+            if (!empty($filters['type']) && !in_array($itemtype, $filters['type'])) {
+                continue;
+            }
             if (!($item = getItemForItemtype($itemtype))) {
                 continue;
             }
             if ($item::canView()) {
                 $itemtable = getTableForItemType($itemtype);
                 $relation_table = Group_Item::getTable();
+
+                $item_criteria = [];
+                $item_criteria[$itemtable . '.' . $item->getNameField()] = ['LIKE', '%' . $filters['name'] . '%'];
+                if ($filters['serial'] !== '' && $DB->fieldExists($itemtable, 'serial')) {
+                    $item_criteria[$itemtable . '.serial'] = ['LIKE', '%' . $filters['serial'] . '%'];
+                }
+                if ($filters['otherserial'] !== '' && $DB->fieldExists($itemtable, 'otherserial')) {
+                    $item_criteria[$itemtable . '.otherserial'] = ['LIKE', '%' . $filters['otherserial'] . '%'];
+                }
+                if (count($filters['states']) > 0 && $DB->fieldExists($itemtable, 'states_id')) {
+                    $item_criteria[$itemtable . '.states_id'] = $filters['states'];
+                }
+                if (count($filters['group']) > 0) {
+                    $group_criteria = [];
+                    foreach ($filters['group'] as $group_id) {
+                        $group_criteria[] = [
+                            $relation_table . '.groups_id' => (int) $group_id,
+                            $relation_table . '.type' => $tech ? Group_Item::GROUP_TYPE_TECH : Group_Item::GROUP_TYPE_NORMAL,
+                        ];
+                    }
+                    $item_criteria[] = ['OR' => $group_criteria];
+                }
+                if (count($filters['users']) > 0) {
+                    $item_criteria[$itemtable . '.' . $field_user] = $filters['users'];
+                }
+
+                foreach ($filters['entity'] as $entity_id) {
+                    if (!Session::haveAccessToEntity($entity_id)) {
+                        $filters['entity'] = array_filter(
+                            $filters['entity'],
+                            fn($value) => $value != $entity_id
+                        );
+                    }
+                }
+
+                $target_entities = count($filters['entity']) > 0 ? $filters['entity'] : $this->getEntities();
+
+                $where = ['entities_id' => $target_entities] + $criteria + $item::getSystemSQLCriteria();
+                if (count($item_criteria) > 0) {
+                    $where[] = $item_criteria;
+                }
+
                 $iterator_params = [
-                    'SELECT'  => ["$itemtable.*", "$relation_table.groups_id"],
+                    'SELECT'  => [
+                        "$itemtable.*",
+                        new QueryExpression('GROUP_CONCAT(DISTINCT ' . $DB->quoteName($relation_table . '.groups_id') . ') AS ' . $DB->quoteName('groups_ids')),
+                        new QueryExpression($DB::quoteValue($itemtype), 'itemtype'),
+                    ],
                     'FROM'    => $itemtable,
                     'LEFT JOIN' => [
                         Group_Item::getTable() => [
@@ -4713,7 +5134,7 @@ HTML;
                             ],
                         ],
                     ],
-                    'WHERE'   => ['entities_id' => $this->getEntities()] + $criteria + $item::getSystemSQLCriteria(),
+                    'WHERE'   => $where,
                     'GROUPBY' => "$itemtable.id",
                 ];
 
@@ -4726,11 +5147,12 @@ HTML;
 
                 $item_iterator = $DB->request($iterator_params);
 
-                $type_name = $item->getTypeName();
+                $type_name = $item->getTypeName(1);
 
                 foreach ($item_iterator as $data) {
-                    $cansee = $item->can($data["id"], READ);
-                    $link   = $data[$item->getNameField()];
+                    $cansee   = $item->can($data["id"], READ);
+                    $raw_name = $data[$item->getNameField()] ?? '';
+                    $link     = $raw_name;
                     if ($cansee) {
                         $link_item = $item::getFormURLWithID($data['id']);
                         if ($_SESSION["glpiis_ids_visible"] || empty($link)) {
@@ -4738,55 +5160,96 @@ HTML;
                         }
                         $link = "<a href='" . $link_item . "'>" . $link . "</a>";
                     }
-                    $linktypes = [];
-                    if ($data[$field_user] == $ID) {
-                        $linktypes[] = self::getTypeName(1);
+
+                    $group_names = [];
+                    foreach (explode(',', $data['groups_ids'] ?? '') as $group_id) {
+                        if (empty($group_id)) {
+                            continue;
+                        }
+                        if (!isset($group_choices[$group_id])) {
+                            $group_choices[$group_id] = Dropdown::getDropdownName("glpi_groups", (int) $group_id);
+                        }
+                        $group_names[] = htmlescape($group_choices[$group_id]);
                     }
-                    if (isset($groups[$data['groups_id']])) {
-                        $linktypes[] = sprintf(
-                            __('%1$s = %2$s'),
-                            Group::getTypeName(1),
-                            $groups[$data['groups_id']]
-                        );
+                    $user_id = (int) ($data[$field_user] ?? 0);
+                    if ($user_id > 0 && !isset($user_choices[$user_id])) {
+                        $user_choices[$user_id] = getUserName($user_id);
                     }
-                    if ($number >= $start && $number < $start + $_SESSION['glpilist_limit']) {
-                        $entries[] = [
-                            'itemtype'      => $itemtype,
-                            'id'            => $data["id"],
-                            'type'          => $type_name,
-                            'entity'        => Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
-                            'name'          => $link,
-                            'serial'        => $data["serial"] ?? '',
-                            'otherserial'   => $data["otherserial"] ?? '',
-                            'states'        => !empty($data['states_id'])
-                                ? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, '')
-                                : '',
-                            'linktype'      => implode(', ', $linktypes),
-                        ];
-                    }
+
+                    $entries[] = [
+                        'itemtype'      => $itemtype,
+                        'id'            => $data["id"],
+                        'type'          => $type_name,
+                        'entity'        => $entity_choices[$data["entities_id"]] ?? Dropdown::getDropdownName("glpi_entities", $data["entities_id"]),
+                        'name'          => $link,
+                        'name_sort'     => $raw_name,
+                        'serial'        => $data["serial"] ?? '',
+                        'otherserial'   => $data["otherserial"] ?? '',
+                        'states'        => !empty($data['states_id'])
+                            ? ($state_choices[$data['states_id']] ?? Dropdown::getDropdownName("glpi_states", $data['states_id'], false, true, false, ''))
+                            : '',
+                        'group'         => implode('<br>', array_filter($group_names)),
+                        'users'         => $user_id > 0 ? ($user_choices[$user_id] ?? '') : '',
+                    ];
                     $number++;
                 }
             }
         }
 
+        $sort_key = $sort === 'name' ? 'name_sort' : $sort;
+        usort($entries, function ($a, $b) use ($sort_key, $order) {
+            $cmp = strnatcasecmp((string) ($a[$sort_key] ?? ''), (string) ($b[$sort_key] ?? ''));
+            return $order === 'DESC' ? -$cmp : $cmp;
+        });
+
+        $paged_entries = array_slice($entries, $start, (int) $_SESSION['glpilist_limit']);
+
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start'                 => $start,
+            'sort'                  => $sort,
+            'order'                 => $order,
             'is_tab'                => true,
+            'limit'                 => $_SESSION['glpilist_limit'],
             'items_id'              => $ID,
-            'nofilter'              => true,
             'columns'               => [
-                'type'          => _n('Type', 'Types', 1),
-                'entity'        => Entity::getTypeName(1),
+                'type'          => [
+                    'label'            => _n('Type', 'Types', 1),
+                    'filter_formatter' => 'array',
+                ],
+                'entity'        => [
+                    'label'            => Entity::getTypeName(1),
+                    'filter_formatter' => 'array',
+                ],
                 'name'          => __('Name'),
                 'serial'        => __('Serial number'),
                 'otherserial'   => __('Inventory number'),
-                'states'        => __('Status'),
-                'linktype'      => '',
+                'states'        => [
+                    'label'            => __('Status'),
+                    'filter_formatter' => 'array',
+                ],
+                'group'         => [
+                    'label'            => Group::getTypeName(Session::getPluralNumber()),
+                    'filter_formatter' => 'array',
+                ],
+                'users'         => [
+                    'label'            => self::getTypeName(Session::getPluralNumber()),
+                    'filter_formatter' => 'array',
+                ],
             ],
+            'columns_values'        => [
+                'type'      => $type_choices,
+                'entity'    => $entity_choices,
+                'states'    => $state_choices,
+                'group'     => $group_choices,
+                'users'     => $user_choices,
+            ],
+            'filters' => $filters,
+            'additional_params'     => http_build_query(['filters' => $filters]),
             'formatters' => [
-                'name'          => 'raw_html',
+                'name'   => 'raw_html',
+                'group'  => 'raw_html',
             ],
-            'entries'               => $entries,
+            'entries'               => $paged_entries,
             'total_number'          => $number,
             'filtered_number'       => $number,
             'showmassiveactions'    => true,
@@ -4970,12 +5433,12 @@ HTML;
         $myuser = new self();
         if (
             !$myuser->getFromDB($users_id) // invalid user
-            || $myuser->fields['is_deleted_ldap'] == 0 // user already considered as restored from LDAP
+            || ($myuser->fields['is_deleted_ldap'] == 0 && $myuser->fields['is_active'] == 1) // already active, nothing to restore
         ) {
             return;
         }
 
-        //User is present in DB and in the directory but 'is_ldap_deleted' was true : it's been restored in LDAP
+        //User is present in DB and in the directory but was inactive or flagged as LDAP-deleted: restore it
         $tmp = [
             'id'              => $users_id,
             'is_deleted_ldap' => 0,
@@ -5089,6 +5552,7 @@ HTML;
     {
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'title'    => __('Password Initialization'),
+            'type'     => 'init',
             'token'    => $token,
             'token_ok' => User::getUserByForgottenPasswordToken($token) !== null,
         ]);
@@ -5116,6 +5580,7 @@ HTML;
     {
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'title' => __('Password initialization'),
+            'type'  => 'init',
         ]);
     }
 
@@ -6174,20 +6639,26 @@ HTML;
     public function applyGroupsRules()
     {
         if (!isset($this->input["_ldap_rules"]['groups_id'])) {
-            if (isset($this->input["_ldap_rules"]) && isset($this->input['id'])) {
+            // Only remove previously auto-assigned dynamic groups when a fresh LDAP group fetch just
+            // happened (syncLdapGroups() sets this session key from a live directory read). Without
+            // fresh data, we have nothing reliable to compare against, so existing dynamic groups
+            // (e.g. from an earlier sync) are left as-is.
+            if (
+                isset($this->input["_ldap_rules"])
+                && isset($this->input['id'])
+                && isset($_SESSION['_ldap_groups'])
+            ) {
                 $group_user = new Group_User();
                 $groups = $group_user->find([
                     'users_id' => $this->input['id'],
                     'is_dynamic' => true,
                 ]);
                 foreach ($groups as $group) {
-                    if (!isset($_SESSION['_ldap_groups']) || !in_array($group['groups_id'], $_SESSION['_ldap_groups'])) {
+                    if (!in_array($group['groups_id'], $_SESSION['_ldap_groups'])) {
                         $group_user->delete($group);
                     }
                 }
-                if (isset($_SESSION['_ldap_groups'])) {
-                    unset($_SESSION['_ldap_groups']);
-                }
+                unset($_SESSION['_ldap_groups']);
             }
             return;
         }
@@ -6339,11 +6810,12 @@ HTML;
     /**
      * Get user link.
      *
-     * @param bool $enable_anonymization
+     * @param bool  $enable_anonymization
+     * @param array<string, mixed> $options
      *
      * @return string
      */
-    public function getUserLink(bool $enable_anonymization = false): string
+    public function getUserLink(bool $enable_anonymization = false, $options = []): string
     {
         if (
             $enable_anonymization
@@ -6355,7 +6827,7 @@ HTML;
             return $anon;
         }
 
-        return $this->getLink();
+        return $this->getLink($options);
     }
 
     /**

@@ -59,6 +59,7 @@
                 <div
                     class="{{ display_class }} align-items-center"
                     data-glpi-editor-visibility-badge="{{ strategy.value }}"
+                    data-testid="active-visibility-setting"
                 >
                     <i class="{{ strategy.getIcon() }} me-1"></i>
                     <span>{{ strategy.getLabel() }}</span>
@@ -82,6 +83,11 @@
                         <i class="ti ti-circuit-changeover me-2"></i>
                         {{ __('Conditional visibility') }}
                     </h3>
+                    {% if allow_unauthenticated_access is defined and allow_unauthenticated_access %}
+                    <p class="text-muted small mb-3">
+                        {{ __('For anonymous forms, the ALTCHA anti-bot widget will follow this same visibility.') }}
+                    </p>
+                    {% endif %}
 
                     {# Parent properties #}
                     {% set strategies = 'Glpi\\Form\\Condition\\VisibilityStrategy' %}

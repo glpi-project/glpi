@@ -311,11 +311,16 @@ export class GlpiFormEditorController
 
         // Handle conditions count changes
         document.addEventListener('conditions_count_changed', (e) => {
+            const is_validation = $(e.detail.container).closest(
+                '[data-glpi-form-editor-validation-dropdown-container]'
+            ).length > 0;
+
             this.#updateConditionsCount(
                 $(e.detail.container).closest(
                     '[data-glpi-form-editor-block],[data-glpi-form-editor-section-details],[data-glpi-form-editor-container]'
                 ),
-                e.detail.conditions_count
+                e.detail.conditions_count,
+                is_validation ? 'validation' : 'visibility',
             );
         });
 
@@ -1908,7 +1913,8 @@ export class GlpiFormEditorController
                     'opacity': '0.7',
                     'pointer-events': 'none'
                 })
-                .attr('data-glpi-loading', 'true');
+                .attr('data-glpi-loading', 'true')
+                .attr('data-testid', 'question-loading');
         } else {
             // Remove loading overlay
             specificContent.find('.glpi-form-editor-loading-overlay').remove();
@@ -1919,7 +1925,8 @@ export class GlpiFormEditorController
                     'pointer-events': '',
                     'position': ''
                 })
-                .removeAttr('data-glpi-loading');
+                .removeAttr('data-glpi-loading')
+                .removeAttr('data-testid');
         }
     }
 
@@ -2982,8 +2989,8 @@ export class GlpiFormEditorController
             .addClass('d-flex');
     }
 
-    #updateConditionsCount(container, value) {
-        container.find('[data-glpi-editor-validation-conditions-count-badge], [data-glpi-editor-visibility-conditions-count-badge]')
+    #updateConditionsCount(container, value, type) {
+        container.find(`[data-glpi-editor-${CSS.escape(type)}-conditions-count-badge]`)
             .html(value);
     }
 
@@ -3046,6 +3053,7 @@ export class GlpiFormEditorController
                     'name': this.#getItemInput($(question), "name"),
                     'type': this.#getItemInput($(question), "type"),
                     'extra_data': this.#getQuestionExtraData(question),
+                    'forms_sections_uuid': this.#getItemInput($(question), "forms_sections_uuid"),
                 });
             })
         ;
@@ -3070,6 +3078,7 @@ export class GlpiFormEditorController
                 comments.push({
                     'uuid': this.#getItemInput($(comment), "uuid"),
                     'name': this.#getItemInput($(comment), "name"),
+                    'forms_sections_uuid': this.#getItemInput($(comment), "forms_sections_uuid"),
                 });
             })
         ;

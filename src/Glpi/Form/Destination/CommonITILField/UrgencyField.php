@@ -34,7 +34,6 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
@@ -47,6 +46,7 @@ use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Urgency;
 use InvalidArgumentException;
 use Override;
 
@@ -96,7 +96,7 @@ final class UrgencyField extends AbstractConfigField implements DestinationField
                 'empty_label'     => __("Select an urgency level..."),
                 'value'           => $config->getSpecificUrgency(),
                 'input_name'      => $input_name . "[" . UrgencyFieldConfig::SPECIFIC_URGENCY_VALUE . "]",
-                'possible_values' => $this->getUrgencyLevels(),
+                'possible_values' => Urgency::getEnabledUrgencyValuesForDropdown(),
             ],
 
             // Specific additional config for SPECIFIC_ANSWER strategy
@@ -126,7 +126,7 @@ final class UrgencyField extends AbstractConfigField implements DestinationField
         $urgency = $strategy->computeUrgency($config, $answers_set);
 
         // Do not edit input if invalid value was found
-        $valid_values = array_keys($this->getUrgencyLevels());
+        $valid_values = array_keys(Urgency::getEnabledUrgencyValuesForDropdown());
         if (!in_array($urgency, $valid_values)) {
             return $input;
         }
@@ -172,31 +172,6 @@ final class UrgencyField extends AbstractConfigField implements DestinationField
         }
 
         return $this->getDefaultConfig($form);
-    }
-
-    /**
-     * Retrieve available urgency levels
-     *
-     * @return array
-     */
-    private function getUrgencyLevels(): array
-    {
-        global $CFG_GLPI;
-
-        // Get the urgency levels
-        $urgency_levels = array_combine(
-            range(1, 5),
-            array_map(fn($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
-        );
-
-        // Filter out the urgency levels that are not enabled
-        $urgency_levels = array_filter(
-            $urgency_levels,
-            fn($key) => (($CFG_GLPI['urgency_mask'] & (1 << $key)) > 0),
-            ARRAY_FILTER_USE_KEY
-        );
-
-        return $urgency_levels;
     }
 
     public function getStrategiesForDropdown(): array

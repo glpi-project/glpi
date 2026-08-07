@@ -28,6 +28,9 @@ PSALM_BIN      = $(shell test -f vendor/bin/psalm        && echo vendor/bin/psal
 PHPCSFIXER_BIN = $(shell test -f vendor/bin/php-cs-fixer && echo vendor/bin/php-cs-fixer || echo ../../vendor/bin/php-cs-fixer)
 PARALLEL-LINT_BIN = $(shell test -f vendor/bin/parallel-lint && echo vendor/bin/parallel-lint || echo ../../vendor/bin/parallel-lint)
 
+# Path to GLPI's core, where the root Makefile lives.
+GLPI_DIR = ../..
+
 ##
 ##This Makefile is used for *local development* only.
 ##Production or deployment should be handled following GLPI's documentation.
@@ -77,6 +80,15 @@ test-setup: ## Setup the plugin for tests
 	@$(CONSOLE) plugin:enable --env=testing $(PLUGIN_DIR)
 .PHONY: test-setup
 
+test-uninstall: ## Uninstall the plugin in test env
+	@$(CONSOLE) plugin:uninstall --env=testing $(PLUGIN_DIR) -q
+.PHONY: uninstall
+
+test-e2e-setup: ## Setup the plugin for end-to-end tests
+	@$(CONSOLE) plugin:install --env=e2e_testing $(PLUGIN_DIR) -u glpi --force
+	@$(CONSOLE) plugin:enable --env=e2e_testing $(PLUGIN_DIR)
+.PHONY: test-e2e-setup
+
 locales-extract: ## Extract locales
 	@$(CONSOLE) tools:locales:extract --plugin=$(PLUGIN_DIR)
 .PHONY: locales-extract
@@ -95,9 +107,9 @@ license-headers-check: ## Verify that the license headers is present all files
 	@$(CONSOLE) tools:licence_headers_check --plugin=$(PLUGIN_DIR)
 .PHONY: license-headers-check
 
-license-headers-fix: ## Add the missing license headers in all files
+license-headers: ## Add the missing license headers in all files
 	@$(CONSOLE) tools:licence_headers_check --fix --plugin=$(PLUGIN_DIR)
-.PHONY: license-headers-fix
+.PHONY: license-headers
 
 ##—— Dependencies ——————————————————————————————————————————————————————————————
 vendor: ## Install dependencies
@@ -121,10 +133,10 @@ npm: ## Run a npm command, example: make npm c='install mypackage/package'
 
 ##—— Testing and static analysis ———————————————————————————————————————————————
 test:  ## Run all our lints/tests/static analysis
-	@$(call run_if_exists, tools/HEADER, license-headers-check)
+	@$(call run_if_exists, tools/HEADER, license-headers)
 	@$(call run_always, parallel-lint)
-	@$(call run_if_exists, .php-cs-fixer.php, phpcsfixer-check)
-	@$(call run_if_exists, rector.php, rector-check)
+	@$(call run_if_exists, .php-cs-fixer.php, phpcsfixer)
+	@$(call run_if_exists, rector.php, rector)
 	@$(call run_if_exists, phpstan.neon, phpstan)
 	@$(call run_if_exists, psalm.xml, psalm)
 	@$(call run_if_exists, phpunit.xml, phpunit)
@@ -134,6 +146,11 @@ phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/M
 	@$(eval c ?=)
 	@$(PLUGIN) php $(PHPUNIT_BIN) $(c)
 .PHONY: phpunit
+
+playwright: ## Run the plugin's playwright tests, example: make playwright c='--headed'
+	@$(eval c ?=)
+	@$(MAKE) -C $(GLPI_DIR) playwright c='--project=plugin:$(PLUGIN_DIR) $(c)'
+.PHONY: playwright
 
 phpstan: ## Run phpstan
 	@$(eval c ?=)
@@ -161,16 +178,16 @@ rector-check: ## Run rector with dry run
 	@$(PLUGIN) php $(RECTOR_BIN) --dry-run $(c)
 .PHONY: rector
 
-rector-apply: ## Run rector
+rector: ## Run rector
 	@$(eval c ?=)
 	@$(PLUGIN) php $(RECTOR_BIN) $(c)
-.PHONY: rector-apply
+.PHONY: rector
 
 ##—— Coding standards ——————————————————————————————————————————————————————————
 phpcsfixer-check: ## Check for php coding standards issues
 	@$(PLUGIN) $(PHPCSFIXER_BIN) check --diff -vvv
 .PHONY: phpcsfixer-check
 
-phpcsfixer-fix: ## Fix php coding standards issues
+phpcsfixer: ## Fix php coding standards issues
 	@$(PLUGIN) $(PHPCSFIXER_BIN) fix
-.PHONY: phpcsfixer-fix
+.PHONY: phpcsfixer

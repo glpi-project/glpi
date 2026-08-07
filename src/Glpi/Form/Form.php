@@ -220,6 +220,7 @@ final class Form extends CommonDBTM implements
         if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = countElementsInTable(self::getTable(), [
                 'forms_categories_id' => $item->getID(),
+                'is_draft' => 0,
             ]);
         }
 
@@ -398,6 +399,17 @@ final class Form extends CommonDBTM implements
             // Update questions and sections
             $this->updateExtraFormData();
             $DB->commit();
+
+            // The form was saved successfully. Make sure the confirmation message is
+            // always shown, even when only sub-items (questions, sections, …) changed and
+            // the form record itself had no modified field, which happens when two saves
+            // occur within the same second, as `date_mod` only has a one-second granularity.
+            // `check_once` avoids duplicating the message CommonDBTM::update() already adds.
+            Session::addMessageAfterRedirect(
+                msg: $this->formatSessionMessageAfterAction(__('Item successfully updated')),
+                check_once: true, // Prevent duplicates
+                message_type: INFO
+            );
         } catch (Throwable $e) {
             // Delete the "Item sucessfully updated" message if it exist
             Session::deleteMessageAfterRedirect(
@@ -405,7 +417,11 @@ final class Form extends CommonDBTM implements
             );
 
             // Do not keep half updated data
-            $DB->rollback();
+            try {
+                $DB->rollback();
+            } catch (Throwable $rollback_e) {
+                // Catch rollback failures so the original exception is propagated
+            }
 
             // Propagate exception to ensure the server return an error code
             throw $e;

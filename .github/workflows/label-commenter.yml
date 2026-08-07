@@ -5,9 +5,9 @@ permissions:
 
 on:
   issues:
-    types:
-      - "labeled"
-      - "unlabeled"
+    types: [labeled, unlabeled]
+  pull_request_target:
+    types: [labeled, unlabeled]
 
 jobs:
   comment:
@@ -17,7 +17,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout"
-        uses: "actions/checkout@v6"
+        uses: "actions/checkout@v7"
 
       - name: "Label commenter"
         uses: "peaceiris/actions-label-commenter@v1"

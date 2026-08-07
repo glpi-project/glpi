@@ -44,7 +44,6 @@ class ReportControllerTest extends HLAPITestCase
         $this->login();
 
         $this->api->call(new Request('GET', '/Assistance/Stat'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->matchesSchema('StatReport[]')
@@ -85,7 +84,6 @@ class ReportControllerTest extends HLAPITestCase
         $itil_types = ['Ticket', 'Change', 'Problem'];
         foreach ($itil_types as $itil_type) {
             $this->api->call(new Request('GET', "/Assistance/Stat/$itil_type/Global"), function ($call) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->matchesSchema('GlobalStats');
@@ -99,7 +97,6 @@ class ReportControllerTest extends HLAPITestCase
         $itil_types = ['Ticket', 'Change', 'Problem'];
         foreach ($itil_types as $itil_type) {
             $this->api->call(new Request('GET', "/Assistance/Stat/$itil_type/Characteristics"), function ($call) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->status(fn($status) => $status === 400)
                     ->jsonContent(fn($content) => $this->assertEquals([
@@ -117,7 +114,6 @@ class ReportControllerTest extends HLAPITestCase
             $request = new Request('GET', "/Assistance/Stat/$itil_type/Characteristics");
             $request->setParameter('field', 'user');
             $this->api->call($request, function ($call) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->matchesSchema('ITILStats[]');
@@ -131,7 +127,6 @@ class ReportControllerTest extends HLAPITestCase
         $itil_types = ['Ticket', 'Change', 'Problem'];
         foreach ($itil_types as $itil_type) {
             $this->api->call(new Request('GET', "/Assistance/Stat/$itil_type/Asset"), function ($call) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->matchesSchema('AssetStats[]');
@@ -145,7 +140,6 @@ class ReportControllerTest extends HLAPITestCase
         $itil_types = ['Ticket', 'Change', 'Problem'];
         foreach ($itil_types as $itil_type) {
             $this->api->call(new Request('GET', "/Assistance/Stat/$itil_type/AssetCharacteristics"), function ($call) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->status(fn($status) => $status === 400)
                     ->jsonContent(fn($content) => $this->assertEquals([
@@ -163,7 +157,6 @@ class ReportControllerTest extends HLAPITestCase
             $request = new Request('GET', "/Assistance/Stat/$itil_type/AssetCharacteristics");
             $request->setParameter('field', 'user');
             $this->api->call($request, function ($call) {
-                /** @var \HLAPICallAsserter $call */
                 $call->response
                     ->isOK()
                     ->matchesSchema('AssetCharacteristicsStats[]');
