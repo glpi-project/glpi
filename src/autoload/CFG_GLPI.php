@@ -270,7 +270,17 @@ $CFG_GLPI['itemdeviceharddrive_types']    = [Computer::class, Peripheral::class,
 
 $CFG_GLPI['itemdevicebattery_types']      = [Computer::class, Peripheral::class, Phone::class, Printer::class];
 
-$CFG_GLPI['itemdevicefirmware_types']     = [Computer::class, Peripheral::class, Phone::class, NetworkEquipment::class, Printer::class];
+$CFG_GLPI['itemdevicefirmware_types']     = [
+    Computer::class,
+    Peripheral::class,
+    Phone::class,
+    NetworkEquipment::class,
+    Printer::class,
+    Item_DeviceHardDrive::class,
+    Item_DeviceNetworkCard::class,
+    Item_DevicePowerSupply::class,
+    Item_DeviceGraphicCard::class,
+];
 
 $CFG_GLPI['itemdevicesimcard_types']      = [Computer::class, Peripheral::class, Phone::class, NetworkEquipment::class, Printer::class];
 
