@@ -899,6 +899,36 @@ PLAINTEXT;
         $this->assertArrayNotHasKey($state->getID(), $columns_no_status);
     }
 
+    public function testGetKanbanColumnsReturnsTasksWhenSavedStateIsStale(): void
+    {
+        $this->login();
+
+        $state = $this->createItem(ProjectState::class, [
+            'name'        => 'In progress',
+            'color'       => '#ff0000',
+            'is_finished' => 0,
+        ]);
+
+        $project = $this->createItem(\Project::class, [
+            'name'       => 'Kanban Test Project',
+            'entities_id' => 0,
+        ]);
+
+        $this->createItem(ProjectTask::class, [
+            'name'                   => 'Task 1',
+            'projects_id'            => $project->getID(),
+            'projectstates_id'       => $state->getID(),
+            'projecttasktemplates_id' => 0,
+        ]);
+
+        // Simulate a refresh with a previously saved Kanban state that does not
+        // include the task's state (e.g. added after the state was last saved).
+        $columns = \Project::getKanbanColumns($project->getID(), 'projectstates_id', [0], true);
+
+        $this->assertArrayHasKey($state->getID(), $columns);
+        $this->assertCount(1, $columns[$state->getID()]['items']);
+    }
+
     public function testNotepadDisplayWithUpdateRights()
     {
         $this->login();
