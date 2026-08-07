@@ -132,13 +132,22 @@ class NotificationEvent extends CommonDBTM
                 $notificationtarget->getEntity()
             );
 
+            // When the event was raised by a specific followup (e.g. add_followup,
+            // update_followup), scope any "Followups - *" filter criterion to that
+            // exact followup instead of matching any followup of the parent item.
+            $followup_id = $options['followup_id'] ?? null;
+            if ($followup_id !== null) {
+                ITILFollowup::setFilterContextId((int) $followup_id);
+            }
+
             $processed = []; // targets list
-            foreach ($notifications as $data) {
-                // Check notification filter
-                $notification = Notification::getById($data['id']);
-                if (!$notification->itemMatchFilter($item)) {
-                    continue;
-                }
+            try {
+                foreach ($notifications as $data) {
+                    // Check notification filter
+                    $notification = Notification::getById($data['id']);
+                    if (!$notification->itemMatchFilter($item)) {
+                        continue;
+                    }
 
                 $notificationtarget->clearAddressesList();
                 $notificationtarget->setMode($data['mode']);
@@ -212,6 +221,11 @@ class NotificationEvent extends CommonDBTM
                         true,
                         ERROR
                     );
+                }
+                }
+            } finally {
+                if ($followup_id !== null) {
+                    ITILFollowup::setFilterContextId(null);
                 }
             }
         }

@@ -69,6 +69,31 @@ class ITILFollowup extends CommonDBChild
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
 
+    /**
+     * When set, restricts any search joining glpi_itilfollowups (i.e. the
+     * "Followups - *" search options exposed on the parent ITIL object) to
+     * this single followup ID.
+     *
+     * @see rawSearchOptionsToAdd()
+     * @see setFilterContextId()
+     *
+     * @var int|null
+     */
+    private static $filter_context_id = null;
+
+    /**
+     * Restrict, or stop restricting, joins on glpi_itilfollowups to a single
+     * followup. Used by NotificationEvent::raiseEvent() to evaluate a
+     * notification's filter against the exact followup that raised the
+     * event, instead of any followup belonging to the same parent item.
+     *
+     * @param int|null $id Followup ID to restrict to, or null to clear the restriction
+     */
+    public static function setFilterContextId(?int $id): void
+    {
+        self::$filter_context_id = $id;
+    }
+
 
     public function getItilObjectItemType()
     {
@@ -685,15 +710,28 @@ class ITILFollowup extends CommonDBChild
             'name'               => _n('Followup', 'Followups', Session::getPluralNumber()),
         ];
 
-        $followup_condition = '';
+        $followup_condition = [];
         if (!Session::haveRight('followup', self::SEEPRIVATE)) {
-            $followup_condition = [
+            $followup_condition[] = [
                 'OR' => [
                     'NEWTABLE.is_private'   => 0,
                     'NEWTABLE.users_id'     => Session::getLoginUserID(),
                 ],
             ];
         }
+        // Restrict the join to a single followup instance when evaluating a
+        // notification filter for the event raised by that specific followup
+        // (see NotificationEvent::raiseEvent()). Without this, a criterion like
+        // "Followups - Private followup" matches as soon as ANY followup of the
+        // ticket satisfies it, instead of the one that triggered the event.
+        if (self::$filter_context_id !== null) {
+            $followup_condition[] = ['NEWTABLE.id' => self::$filter_context_id];
+        }
+        $followup_condition = match (count($followup_condition)) {
+            0       => '',
+            1       => $followup_condition[0],
+            default => ['AND' => $followup_condition],
+        };
 
         $tab[] = [
             'id'                 => '25',
