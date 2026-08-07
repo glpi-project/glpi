@@ -53,6 +53,9 @@ const reply_textarea_selector = "[data-glpi-reply-textarea]";
 const reply_cancel_selector = "[data-glpi-reply-cancel]";
 const reply_submit_selector = "[data-glpi-reply-submit]";
 const comment_thread_selector = "[data-glpi-comment-thread]";
+const pending_anchor_preview_selector = "[data-glpi-pending-anchor-preview]";
+const pending_anchor_quote_selector   = "[data-glpi-pending-anchor-quote]";
+const pending_anchor_cancel_selector  = "[data-glpi-pending-anchor-cancel]";
 
 export class GlpiKnowbaseCommentsPanelController
 {
@@ -61,10 +64,19 @@ export class GlpiKnowbaseCommentsPanelController
      */
     #container;
 
+    /**
+     * @type {{prefix: string, exact: string, suffix: string, occurrence: number}|null}
+     */
+    #pending_anchor = null;
+
     constructor(container)
     {
         this.#container = container;
         this.#initEventListeners();
+
+        this.#container.addEventListener('glpi:kb:set-pending-comment-anchor', (e) => {
+            this.#setPendingAnchor(e.detail.anchor);
+        });
     }
 
     #initEventListeners()
@@ -116,6 +128,12 @@ export class GlpiKnowbaseCommentsPanelController
             const reply_submit_btn = e.target.closest(reply_submit_selector);
             if (reply_submit_btn) {
                 this.#submitReply(reply_submit_btn);
+            }
+
+            // Cancel commenting on the current selection
+            const pending_cancel_btn = e.target.closest(pending_anchor_cancel_selector);
+            if (pending_cancel_btn) {
+                this.#clearPendingAnchor();
             }
         });
 
@@ -174,25 +192,54 @@ export class GlpiKnowbaseCommentsPanelController
         const textarea     = form.querySelector(comment_edit_textarea_selector);
         const content      = comment_card.querySelector(comment_content_selector);
 
-        // Show loading state
-        submit_btn.classList.add('pointer-events-none');
-        submit_btn.querySelector('[data-glpi-loading]').classList.remove('d-none');
-        submit_btn.querySelector('[data-glpi-icon]').classList.add('d-none');
+        this.#setButtonLoading(submit_btn, true);
 
-        const response = await post(`Knowbase/UpdateComment/${comment_id}`, {
-            'content': textarea.value,
-        });
-        const result = await response.json();
-
-        // Reset loading state
-        submit_btn.classList.remove('pointer-events-none');
-        submit_btn.querySelector('[data-glpi-icon]').classList.remove('d-none');
-        submit_btn.querySelector('[data-glpi-loading]').classList.add('d-none');
+        let result;
+        try {
+            const response = await post(`Knowbase/UpdateComment/${comment_id}`, {
+                'content': textarea.value,
+            });
+            result = await response.json();
+        } finally {
+            this.#setButtonLoading(submit_btn, false);
+        }
 
         // Update content and hide form
-        content.innerHTML = result.comment.replace(/\n/g, '<br>');
+        this.#renderCommentContent(content, result.comment);
         form.classList.add('d-none');
         content.classList.remove('d-none');
+    }
+
+    /**
+     * Reset this in a `finally`: a failed request must not leave a stuck spinner.
+     *
+     * @param {HTMLElement} button
+     * @param {boolean} is_loading
+     */
+    #setButtonLoading(button, is_loading)
+    {
+        button.classList.toggle('pointer-events-none', is_loading);
+        button.querySelector('[data-glpi-loading]').classList.toggle('d-none', !is_loading);
+        button.querySelector('[data-glpi-icon]').classList.toggle('d-none', is_loading);
+    }
+
+    /**
+     * Mirrors the server-side `{{ comment|nl2br }}` rendering (comment.html.twig)
+     * using DOM APIs, so edited content can never be interpreted as HTML.
+     *
+     * @param {HTMLElement} content
+     * @param {string} text
+     */
+    #renderCommentContent(content, text)
+    {
+        content.replaceChildren();
+        const lines = text.split('\n');
+        lines.forEach((line, index) => {
+            content.append(document.createTextNode(line));
+            if (index < lines.length - 1) {
+                content.append(document.createElement('br'));
+            }
+        });
     }
 
     async #deleteComment(delete_btn)
@@ -219,7 +266,17 @@ export class GlpiKnowbaseCommentsPanelController
 
         if (comments.length === 1) {
             // This is the only comment in this thread, delete the whole thread
+            const anchor_id = parent_thread.dataset.glpiCommentAnchor
+                ? parent_thread.dataset.glpiCommentThread
+                : null;
             parent_thread.remove();
+
+            if (anchor_id !== null) {
+                // Dispatched on `document` for the same reason as glpi:kb:comment-anchored.
+                document.dispatchEvent(new CustomEvent('glpi:kb:comment-unanchored', {
+                    detail: { id: anchor_id },
+                }));
+            }
         } else {
             // Delete the comment
             comment_card.remove();
@@ -235,36 +292,28 @@ export class GlpiKnowbaseCommentsPanelController
             return;
         }
 
-        // Show loading state
-        this.#getSubmitButton().classList.add('pointer-events-none');
-        this.#getSubmitButton()
-            .querySelector('[data-glpi-loading]')
-            .classList
-            .remove('d-none')
-        ;
-        this.#getSubmitButton()
-            .querySelector('[data-glpi-icon]')
-            .classList
-            .add('d-none')
-        ;
+        this.#setButtonLoading(this.#getSubmitButton(), true);
 
-        const response = await post(`Knowbase/${this.#getKbId()}/AddComment`, {
-            'content': this.#getContentTextarea().value,
-        });
+        const pending_anchor = this.#pending_anchor;
+        const body = { 'content': this.#getContentTextarea().value };
+        if (pending_anchor) {
+            body.anchor_prefix     = pending_anchor.prefix;
+            body.anchor_exact      = pending_anchor.exact;
+            body.anchor_suffix     = pending_anchor.suffix;
+            body.anchor_occurrence = pending_anchor.occurrence;
+        }
 
-        // Clear input/UI
+        let response;
+        try {
+            response = await post(`Knowbase/${this.#getKbId()}/AddComment`, body);
+        } finally {
+            // Always clear the pending anchor, even if the POST fails, so a
+            // stale anchor can never leak into a later, unrelated submission.
+            this.#clearPendingAnchor();
+            this.#setButtonLoading(this.#getSubmitButton(), false);
+        }
+
         this.#getContentTextarea().value = "";
-        this.#getSubmitButton().classList.remove('pointer-events-none');
-        this.#getSubmitButton()
-            .querySelector('[data-glpi-icon]')
-            .classList
-            .remove('d-none')
-        ;
-        this.#getSubmitButton()
-            .querySelector('[data-glpi-loading]')
-            .classList
-            .add('d-none')
-        ;
 
         // Insert new comment
         const html = await response.text();
@@ -272,11 +321,50 @@ export class GlpiKnowbaseCommentsPanelController
         this.#updateCounter(1);
         this.#hideEmptyState();
         this.#getCommentsDiv().lastElementChild.scrollIntoView();
+
+        if (pending_anchor) {
+            const inserted = this.#getCommentsDiv().lastElementChild;
+            const raw = inserted?.dataset.glpiCommentAnchor;
+            if (raw) {
+                // Dispatched on `document`, not the container: the offcanvas panel
+                // sits outside the article container, so bubbling wouldn't reach it.
+                document.dispatchEvent(new CustomEvent('glpi:kb:comment-anchored', {
+                    detail: { anchor: JSON.parse(raw) },
+                }));
+            }
+        }
     }
 
     #getContentTextarea()
     {
         return this.#container.querySelector(content_selector);
+    }
+
+    /**
+     * @param {{prefix: string, exact: string, suffix: string, occurrence: number}} anchor
+     */
+    #setPendingAnchor(anchor)
+    {
+        this.#pending_anchor = anchor;
+
+        const preview = this.#container.querySelector(pending_anchor_preview_selector);
+        const quote   = this.#container.querySelector(pending_anchor_quote_selector);
+        if (preview && quote) {
+            quote.textContent = anchor.exact;
+            preview.classList.remove('d-none');
+        }
+
+        this.#getContentTextarea().focus();
+    }
+
+    #clearPendingAnchor()
+    {
+        this.#pending_anchor = null;
+
+        const preview = this.#container.querySelector(pending_anchor_preview_selector);
+        if (preview) {
+            preview.classList.add('d-none');
+        }
     }
 
     #getSubmitButton()
@@ -372,20 +460,17 @@ export class GlpiKnowbaseCommentsPanelController
             return;
         }
 
-        // Show loading state
-        submit_btn.classList.add('pointer-events-none');
-        submit_btn.querySelector('[data-glpi-loading]').classList.remove('d-none');
-        submit_btn.querySelector('[data-glpi-icon]').classList.add('d-none');
+        this.#setButtonLoading(submit_btn, true);
 
-        const response = await post(`Knowbase/${this.#getKbId()}/AddComment`, {
-            content : content,
-            parent_comment_id : parent_comment_id,
-        });
-
-        // Reset loading state
-        submit_btn.classList.remove('pointer-events-none');
-        submit_btn.querySelector('[data-glpi-icon]').classList.remove('d-none');
-        submit_btn.querySelector('[data-glpi-loading]').classList.add('d-none');
+        let response;
+        try {
+            response = await post(`Knowbase/${this.#getKbId()}/AddComment`, {
+                content : content,
+                parent_comment_id : parent_comment_id,
+            });
+        } finally {
+            this.#setButtonLoading(submit_btn, false);
+        }
 
         // Insert new comment before the reply button
         const trigger = thread.querySelector(reply_trigger_selector);

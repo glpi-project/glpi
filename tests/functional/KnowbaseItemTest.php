@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
 use KnowbaseItem;
+use KnowbaseItem_Comment;
 use KnowbaseItem_User;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -84,7 +85,7 @@ class KnowbaseItemTest extends DbTestCase
         );
 
         //add some comments
-        $comment = new \KnowbaseItem_Comment();
+        $comment = new KnowbaseItem_Comment();
         $input = [
             'knowbaseitems_id' => $kb->getID(),
             'users_id'         => $users_id,
@@ -1006,6 +1007,34 @@ HTML,
             'data-glpi-kb-prefilled-category-id="' . $cat_id . '"',
             $html
         );
+    }
+
+    public function testShowFullExposesCommentAnchors(): void
+    {
+        $this->login();
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Anchors in showFull ' . $this->getUniqueString(),
+            'answer' => '<p>Some content to anchor on</p>',
+        ]);
+
+        $comment = new KnowbaseItem_Comment();
+        $comment->add([
+            'knowbaseitems_id'  => $kb->getID(),
+            'comment'           => 'Anchored comment',
+            'anchor_prefix'     => 'Some ',
+            'anchor_exact'      => 'content',
+            'anchor_suffix'     => ' to anchor',
+            'anchor_occurrence' => 0,
+        ]);
+
+        $html = $kb->showFull(['display' => false]);
+        $crawler = new Crawler($html);
+
+        $raw = $crawler->filter('[data-glpi-comment-anchors]')->attr('data-glpi-comment-anchors');
+        $anchors = json_decode($raw, true);
+
+        $this->assertCount(1, $anchors);
+        $this->assertSame('content', $anchors[0]['exact']);
     }
 
     protected function testGetVisibilityCriteriaProvider(): iterable

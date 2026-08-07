@@ -37,6 +37,7 @@ import { TipTapEditorHelper } from "../utils/TipTapEditorHelper";
 import { SlashMenuHelper } from "../utils/SlashMenuHelper";
 import { BubbleMenuHelper } from "../utils/BubbleMenuHelper";
 import { TableEditorHelper } from "../utils/TableEditorHelper";
+import { ReadModeCommentBubbleHelper } from "../utils/ReadModeCommentBubbleHelper";
 
 export class KnowbaseItemPage extends GlpiPage
 {
@@ -44,6 +45,7 @@ export class KnowbaseItemPage extends GlpiPage
     private _slashMenuHelper: SlashMenuHelper | null = null;
     private _bubbleMenuHelper: BubbleMenuHelper | null = null;
     private _tableEditorHelper: TableEditorHelper | null = null;
+    private _readModeCommentBubbleHelper: ReadModeCommentBubbleHelper | null = null;
 
     public constructor(page: Page)
     {
@@ -80,6 +82,14 @@ export class KnowbaseItemPage extends GlpiPage
             this._tableEditorHelper = new TableEditorHelper(this.page, this.editor);
         }
         return this._tableEditorHelper;
+    }
+
+    public get readModeCommentBubble(): ReadModeCommentBubbleHelper
+    {
+        if (!this._readModeCommentBubbleHelper) {
+            this._readModeCommentBubbleHelper = new ReadModeCommentBubbleHelper(this.page);
+        }
+        return this._readModeCommentBubbleHelper;
     }
 
     public get imageDialog(): Locator
@@ -127,15 +137,15 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * The article header's dots menu trigger. Scoped to the article content so
-     * it is not confused with the per-row "More actions" menus that the aside
-     * tree renders on every article.
+     * The article header's dots menu trigger, scoped to avoid other "More
+     * actions" menus (aside rows, comments); `.first()` picks the header's.
      */
     public get articleActionsMenu(): Locator
     {
         return this.page
             .getByTestId('kb-article')
-            .getByRole('button', { name: 'More actions' });
+            .getByRole('button', { name: 'More actions' })
+            .first();
     }
 
     public async doToggleFaqStatus(): Promise<void>
@@ -322,6 +332,16 @@ export class KnowbaseItemPage extends GlpiPage
         await this.getButton('Comments').click();
     }
 
+    /**
+     * Wait for ArticleController's init, including highlight marks (same
+     * `pe-none` readiness signal as doToggleChildEntities/waitForAsideReady).
+     */
+    public async waitForArticleReady(): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- no semantic alternative for article container
+        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
+    }
+
     public getCommentByContent(content: string): Locator
     {
         return this.page.getByText(content).filter({
@@ -344,6 +364,136 @@ export class KnowbaseItemPage extends GlpiPage
         return this.page.getByTestId('comment').filter({
             hasText: content
         });
+    }
+
+    /**
+     * Select `text` in the read-only article content (outside edit mode) to
+     * trigger the ReadModeSelectionBubble. Uses a scripted Range instead of a
+     * triple-click, which doesn't reliably confine to one paragraph.
+     */
+    public async selectTextInReadMode(text: string): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- same container TipTapEditorHelper uses
+        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
+        await this.page.evaluate((needle) => {
+            const container = document.querySelector('[data-glpi-kb-content]');
+            if (!container) {
+                return;
+            }
+            const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+            let node = walker.nextNode();
+            while (node) {
+                const idx = (node.nodeValue ?? '').indexOf(needle);
+                if (idx !== -1) {
+                    const range = document.createRange();
+                    range.setStart(node, idx);
+                    range.setEnd(node, idx + needle.length);
+                    const selection = window.getSelection();
+                    if (!selection) {
+                        return;
+                    }
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    document.dispatchEvent(new Event('selectionchange'));
+                    return;
+                }
+                node = walker.nextNode();
+            }
+        }, text);
+    }
+
+    /**
+     * Select `text` inside the editor so the next keystroke replaces exactly that
+     * run. Lets a test edit within a comment's quoted passage the way a user does,
+     * instead of replacing the whole document through setContent().
+     */
+    public async selectTextInEditMode(text: string): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- ProseMirror's own root, as TipTapEditorHelper uses
+        const editor = this.page.locator('.ProseMirror[contenteditable="true"]');
+        await editor.waitFor();
+        await editor.focus();
+        await this.page.evaluate((needle) => {
+            const container = document.querySelector('.ProseMirror[contenteditable="true"]');
+            if (!container) {
+                return;
+            }
+            const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+            let node = walker.nextNode();
+            while (node) {
+                const idx = (node.nodeValue ?? '').indexOf(needle);
+                if (idx !== -1) {
+                    const range = document.createRange();
+                    range.setStart(node, idx);
+                    range.setEnd(node, idx + needle.length);
+                    const selection = window.getSelection();
+                    if (!selection) {
+                        return;
+                    }
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    return;
+                }
+                node = walker.nextNode();
+            }
+        }, text);
+    }
+
+    /**
+     * Select the paragraph containing `text` the way a triple-click does, with
+     * Range boundaries on the element instead of on a text node.
+     */
+    public async selectWholeParagraphInReadMode(text: string): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- same container TipTapEditorHelper uses
+        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
+        await this.page.evaluate((needle) => {
+            const paragraph = [...document.querySelectorAll('[data-glpi-kb-content] p')]
+                .find((candidate) => (candidate.textContent ?? '').includes(needle));
+            const selection = window.getSelection();
+            if (!paragraph || !selection) {
+                return;
+            }
+            const range = document.createRange();
+            range.selectNodeContents(paragraph);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.dispatchEvent(new Event('selectionchange'));
+        }, text);
+    }
+
+    /**
+     * All comment-anchor highlights currently rendered in the article content.
+     */
+    public getCommentHighlights(): Locator
+    {
+        return this.page.getByRole('article').getByRole('button', { name: 'View comment' });
+    }
+
+    public getCommentHighlightByText(text: string): Locator
+    {
+        return this.getCommentHighlights().filter({ hasText: text });
+    }
+
+    /**
+     * Anchor quotes currently displayed on comment threads in the side panel.
+     */
+    public getCommentAnchorQuotes(): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute used by CommentsPanelController.js, not a test ID
+        return this.page.locator('[data-glpi-comments]')
+            .getByRole('blockquote')
+            .filter({ visible: true });
+    }
+
+    public getPendingAnchorQuote(): Locator
+    {
+        return this.page.getByTestId('pending-anchor-quote').filter({ visible: true });
+    }
+
+    public getCommentThread(comment_id: number): Locator
+    {
+        return this.page.getByTestId(`comment-thread-${comment_id}`).filter({ visible: true });
     }
 
     public getNewCommentTextarea(): Locator

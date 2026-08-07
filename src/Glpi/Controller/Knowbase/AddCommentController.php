@@ -77,11 +77,25 @@ final class AddCommentController extends AbstractController
         // Parse optional parent comment id
         $parent_comment_id = $data['parent_comment_id'] ?? null;
 
-        $comment = $this->add(KnowbaseItem_Comment::class, [
+        $input = [
             'knowbaseitems_id'  => $id,
             'comment'           => $content,
             'parent_comment_id' => $parent_comment_id,
-        ]);
+        ];
+
+        // Anchors only apply to a new thread, never a reply.
+        if ($parent_comment_id === null && !empty($data['anchor_exact'])) {
+            $input['anchor_prefix']     = (string) ($data['anchor_prefix'] ?? '');
+            $input['anchor_exact']      = (string) $data['anchor_exact'];
+            $input['anchor_suffix']     = (string) ($data['anchor_suffix'] ?? '');
+            $input['anchor_occurrence'] = (int) ($data['anchor_occurrence'] ?? 0);
+
+            if (!(new KnowbaseItem_Comment())->hasValidAnchorLengths($input)) {
+                throw new BadRequestHttpException();
+            }
+        }
+
+        $comment = $this->add(KnowbaseItem_Comment::class, $input);
 
         if ($parent_comment_id === null) {
             // Comment has no parent, render a new thread

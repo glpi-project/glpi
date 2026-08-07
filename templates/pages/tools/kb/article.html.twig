@@ -295,6 +295,8 @@
             id="kb-tiptap-editor"
             class="rich_text_container article-container mt-4"
             data-glpi-kb-content
+            data-glpi-comment-anchors="{{ (comment_anchors ?? [])|json_encode|e('html_attr') }}"
+            data-glpi-comment-anchor-max-length="{{ comment_anchor_max_length ?? 0 }}"
             data-testid="content"
         >
             {{ answer|enhanced_html({text_maxsize: 0}) }}

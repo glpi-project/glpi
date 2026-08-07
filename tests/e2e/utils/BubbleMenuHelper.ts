@@ -45,7 +45,8 @@ export type BubbleMenuCommand =
     | 'Numbered List'
     | 'Quote'
     | 'Link'
-    | 'Remove link';
+    | 'Remove link'
+    | 'Comment';
 
 export class BubbleMenuHelper {
     private readonly page: Page;
@@ -95,6 +96,16 @@ export class BubbleMenuHelper {
         const menu = await this.assertVisible();
         const button = menu.getByTitle(command, { exact: true });
         await expect(button).not.toHaveClass(/is-active/);
+    }
+
+    async assertButtonDisabled(command: BubbleMenuCommand): Promise<void> {
+        const menu = await this.assertVisible();
+        await expect(menu.getByTitle(command, { exact: true })).toBeDisabled();
+    }
+
+    async assertButtonEnabled(command: BubbleMenuCommand): Promise<void> {
+        const menu = await this.assertVisible();
+        await expect(menu.getByTitle(command, { exact: true })).toBeEnabled();
     }
 
     async assertButtonVisible(command: BubbleMenuCommand): Promise<void> {
