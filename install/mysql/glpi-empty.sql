@@ -8555,6 +8555,8 @@ CREATE TABLE `glpi_dcrooms` (
   `vis_rows` int DEFAULT NULL,
   `vis_cell_width` int NOT NULL DEFAULT '40',
   `vis_cell_height` int NOT NULL DEFAULT '40',
+  `column_labels` text,
+  `row_labels` text,
   `blueprint` text,
   `datacenters_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',
