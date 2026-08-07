@@ -3912,42 +3912,31 @@ JAVASCRIPT;
     {
         global $DB;
 
-        if (
-            !Session::haveRightsOr(self::$rightname, [CREATE, self::READALL, self::READASSIGN])
-            && !Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())
-        ) {
+        $ticket_validation_rights = Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights());
+
+        if (!Session::haveRightsOr(self::$rightname, [self::READALL, self::READASSIGN, self::READGROUP, self::READMY]) && !$ticket_validation_rights) {
             return false;
         }
 
+        $search_users_id = [0];
+        $search_assign = [0];
+        $search_observer = [0];
         $SELECT = ['glpi_tickets.id', 'glpi_tickets.date_mod'];
         $JOINS = [];
         $WHERE = [
             'glpi_tickets.is_deleted' => 0,
         ];
-        $search_users_id = [
-            'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-            'glpi_tickets_users.type'     => CommonITILActor::REQUESTER,
-        ];
-        $search_assign = [
-            'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-            'glpi_tickets_users.type'     => CommonITILActor::ASSIGN,
-        ];
-        $search_observer = [
-            'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-            'glpi_tickets_users.type'     => CommonITILActor::OBSERVER,
-        ];
 
         if ($showgrouptickets) {
-            $search_users_id  = [0];
-            $search_assign = [0];
-
             if (count($_SESSION['glpigroups'])) {
-                $search_assign = [
-                    'glpi_groups_tickets.groups_id'  => $_SESSION['glpigroups'],
-                    'glpi_groups_tickets.type'       => CommonITILActor::ASSIGN,
-                ];
+                if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READASSIGN])) {
+                    $search_assign = [
+                        'glpi_groups_tickets.groups_id'  => $_SESSION['glpigroups'],
+                        'glpi_groups_tickets.type'       => CommonITILActor::ASSIGN,
+                    ];
+                }
 
-                if (Session::haveRight(self::$rightname, self::READGROUP)) {
+               if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READGROUP])) {
                     $search_users_id = [
                         'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
                         'glpi_groups_tickets.type'      => CommonITILActor::REQUESTER,
@@ -3957,6 +3946,23 @@ JAVASCRIPT;
                         'glpi_groups_tickets.type'      => CommonITILActor::OBSERVER,
                     ];
                 }
+            }
+        } else {
+            if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]) || $ticket_validation_rights) {
+                $search_users_id = [
+                    'glpi_tickets_users.users_id' => Session::getLoginUserID(),
+                    'glpi_tickets_users.type'     => CommonITILActor::REQUESTER,
+                ];
+                $search_observer = [
+                    'glpi_tickets_users.users_id' => Session::getLoginUserID(),
+                    'glpi_tickets_users.type'     => CommonITILActor::OBSERVER,
+                ];
+            }
+            if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READASSIGN]) || $ticket_validation_rights) {
+                $search_assign = [
+                    'glpi_tickets_users.users_id' => Session::getLoginUserID(),
+                    'glpi_tickets_users.type'     => CommonITILActor::ASSIGN,
+                ];
             }
         }
 
