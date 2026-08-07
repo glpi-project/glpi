@@ -523,7 +523,11 @@ $(function() {
 var reloadCategory = function() {
     var type = $('[name=type]').val();
 
-    $('#category_block_{{ rand }} .field-container').load(
+    // Only target the category's own field container. When the category is linked to a
+    // knowledge base category, the injected FAQ article contains its own `.field-container`
+    // elements; loading into several elements at once prevents jQuery from executing the
+    // response scripts, so the category select2 is never (re)initialized (empty dropdown).
+    $('#category_block_{{ rand }} .field-container').first().load(
         '{{ path("ajax/dropdownTicketCategories.php") }}',
         {
             'type': type,
