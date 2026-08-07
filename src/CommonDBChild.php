@@ -1024,11 +1024,15 @@ abstract class CommonDBChild extends CommonDBConnexity
 
     final public static function getItemField($itemtype): string
     {
+        if (!is_subclass_of($itemtype, CommonDBTM::class)) {
+            throw new RuntimeException(sprintf('%s has to be a CommonDBTM to guess its field on %s', $itemtype, static::class));
+        }
+
         if (is_subclass_of($itemtype, 'Rule') && !is_subclass_of($itemtype, 'LevelAgreementLevel')) {
             $itemtype = Rule::class;
         }
 
-        if (getItemtypeForForeignKeyField(static::$items_id) == $itemtype) {
+        if (getTableNameForForeignKeyField(static::$items_id) === getTableForItemType($itemtype)) {
             return static::$items_id;
         }
 

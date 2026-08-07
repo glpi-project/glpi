@@ -924,7 +924,9 @@ class CommonDBTM extends CommonGLPI
                     continue;
                 }
 
-                $itemtype = getItemTypeForTable($tablename);
+                // Use the itemtype expected to own the table, and not the one returned by
+                // `getItemTypeForTable()`, as the latter may be any of the classes sharing the table.
+                $itemtype = (new DbUtils())->getExpectedItemTypeForTable($tablename);
                 if (!is_a($itemtype, self::class, true)) {
                     trigger_error(
                         sprintf('Unable to update relations between %s and %s tables.', static::getTable(), $tablename),
@@ -932,6 +934,11 @@ class CommonDBTM extends CommonGLPI
                     );
                     continue;
                 }
+
+                // An abstract itemtype can only be used if it is able to instanciate a concrete class
+                // by itself (see `Glpi\CustomObject\CustomObjectTrait::getById()`).
+                $is_instanciable = !(new ReflectionClass($itemtype))->isAbstract()
+                    || (new ReflectionMethod($itemtype, 'getById'))->class !== self::class;
 
                 $id_field = $itemtype::getIndexName();
 
@@ -975,7 +982,15 @@ class CommonDBTM extends CommonGLPI
                         ]
                     );
                     foreach ($result as $data) {
-                        $item = $itemtype::getById($data[$id_field]);
+                        $item = $is_instanciable ? $itemtype::getById($data[$id_field]) : false;
+                        if (!($item instanceof self)) {
+                            trigger_error(
+                                sprintf('Unable to update relations between %s and %s tables.', static::getTable(), $tablename),
+                                E_USER_WARNING
+                            );
+                            continue 3; // nothing can be done for this table
+                        }
+
                         $input =  [
                             $id_field       => $data[$id_field],
                             '_disablenotif' => true,
