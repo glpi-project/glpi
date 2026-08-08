@@ -1209,7 +1209,7 @@ class GLPIDashboard {
                     this.fitNumbers(card);
                     this.animateNumbers(card);
                 }, () => {
-                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
+                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
                 }));
             });
 
@@ -1251,13 +1251,13 @@ class GLPIDashboard {
                         }
                     });
                     if (!has_result) {
-                        card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
+                        card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
                     }
                 });
             }, () => {
                 $.each(requested_cards, (i2, crd) => {
                     const card = crd.card_el;
-                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
+                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle' aria-hidden='true'></i></div>");
                 });
             });
         }

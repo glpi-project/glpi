@@ -452,7 +452,7 @@ class PDU_Rack extends CommonDBRelation
 
                     echo "<td>";
                     if ($pdu_m->getFromDB($pdu->fields['pdumodels_id'])) {
-                        echo "<i class='ti ti-bolt'></i>";
+                        echo "<i class='ti ti-bolt' aria-hidden='true'></i>";
                         echo htmlescape($pdu_m->fields['max_power']) . "W";
                     }
                     echo "</td>";
@@ -462,7 +462,7 @@ class PDU_Rack extends CommonDBRelation
             echo "</table>";
         }
         echo "<a id='add_pdu' class='btn btn-sm btn-ghost-secondary ms-auto mt-2'>";
-        echo "<i class='ti ti-plus'></i>";
+        echo "<i class='ti ti-plus' aria-hidden='true'></i>";
         echo "<span>" . _sx('button', "Add") . "</span>";
         echo "</a>";
         echo "</div>";
@@ -625,7 +625,7 @@ JAVASCRIPT;
                        gs-x='0' gs-y='$y'
                        style='background-color: " . htmlescape($bg_color) . "; color: " . htmlescape($fg_color) . ";'>
                   <div class='grid-stack-item-content' style='color: " . htmlescape($fg_color) . ";'>
-                     <i class='item_rack_icon ti ti-plug fa-rotate-270'></i>
+                     <i class='item_rack_icon ti ti-plug fa-rotate-270' aria-hidden='true'></i>
                      <span class='rotated_text'>
                         <a href='" . htmlescape($pdu->getLinkURL()) . "'
                            class='itemrack_name'

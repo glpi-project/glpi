@@ -96,7 +96,7 @@
     <li :id="id" :class="`kanban-item card shadow-none ${read_only ? 'readonly' : ''} ${is_deleted ? 'deleted' : ''}`">
         <div class="kanban-item-header d-flex justify-content-between">
             <span class="kanban-item-title d-flex align-items-center">
-                <i :class="icon"></i>
+                <i :class="icon" aria-hidden="true"></i>
                 <span class="cursor-pointer" v-text="title" @click="emit('kanban:card_show_details')"></span>
             </span>
             <div class="dropdown">
@@ -107,19 +107,19 @@
                 <ul ref="card_overflow_dropdown" class="kanban-dropdown dropdown-menu" role="menu">
                     <li class="kanban-item-goto dropdown-item" v-if="form_link">
                         <a :href="form_link" class="w-100">
-                            <i class="ti ti-share-3"></i>{{ __('Go to') }}
+                            <i class="ti ti-share-3" aria-hidden="true"></i>{{ __('Go to') }}
                         </a>
                     </li>
                     <li class="kanban-item-restore dropdown-item cursor-pointer" v-if="rights.canDeleteItem() && is_deleted"
                         @click="emit('kanban:card_restore')">
                         <span>
-                            <i class="ti ti-trash-off"></i>{{ __('Restore') }}
+                            <i class="ti ti-trash-off" aria-hidden="true"></i>{{ __('Restore') }}
                         </span>
                     </li>
                     <li class="kanban-item-remove dropdown-item cursor-pointer" v-if="rights.canDeleteItem()"
                         @click="emit('kanban:card_delete')">
                         <span>
-                            <i class="ti ti-trash"></i>{{ is_deleted ? __('Purge') : __('Delete') }}
+                            <i class="ti ti-trash" aria-hidden="true"></i>{{ is_deleted ? __('Purge') : __('Delete') }}
                         </span>
                     </li>
                 </ul>
@@ -136,7 +136,7 @@
             </div>
             <div class="align-self-center kanban-item-due-date">
                 <span v-if="due_date" :title="__('Planned end date')">
-                    <i class="ti ti-calendar"></i>
+                    <i class="ti ti-calendar" aria-hidden="true"></i>
                     <span v-text="due_date"></span>
                 </span>
             </div>

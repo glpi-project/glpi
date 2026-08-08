@@ -69,7 +69,7 @@
                     class="glpi-form-editor-question-handle ti ti-grip-horizontal cursor-grab ms-auto me-auto mt-n3 mb-n2"
                     data-glpi-form-editor-question-handle
                     draggable="true"
-                    data-glpi-form-editor-state-action
+                    data-glpi-form-editor-state-action aria-hidden="true"
                 ></i>
             </div>
             {# Display comment's title #}
@@ -138,7 +138,7 @@
                                 aria-label="{{ __('Configure visibility') }}"
                                 data-glpi-form-editor-on-click="show-visibility-dropdown"
                             >
-                                <i class="ti ti-eye-cog me-2"></i>
+                                <i class="ti ti-eye-cog me-2" aria-hidden="true"></i>
                                 <span>{{ __("Configure visibility") }}</span>
                             </button>
                         </li>

@@ -54,7 +54,7 @@
       <aside class="navbar navbar-vertical navbar-expand-lg sticky-lg-top sidebar" data-testid="sidebar" aria-label="{{ __('Sidebar') }}">
          <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-label="{{ __('Toggle navigation') }}">
-               <span class="navbar-toggler-icon"></span>
+               <span class="navbar-toggler-icon" aria-hidden="true"></span>
             </button>
 
             <a href="{{ index_path() }}" accesskey="1" title="{{ __('Home') }}"
@@ -106,7 +106,7 @@
 
             {% elseif is_horizontal %}
                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-label="{{ __('Toggle navigation') }}">
-                  <span class="navbar-toggler-icon"></span>
+                  <span class="navbar-toggler-icon" aria-hidden="true"></span>
                </button>
 
                <a href="{{ index_path() }}" accesskey="1" title="{{ __('Home') }}"

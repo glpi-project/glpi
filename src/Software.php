@@ -248,7 +248,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleSoftwareCategory']) > 0)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'compute_software_category']
-            = "<i class='ti ti-calculator'></i>"
+            = "<i class='ti ti-calculator' aria-hidden='true'></i>"
               . __s('Recalculate the category');
         }
 
@@ -257,7 +257,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleDictionnarySoftware']) > 0)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'replay_dictionnary']
-            = "<i class='ti ti-arrow-back-up'></i>"
+            = "<i class='ti ti-arrow-back-up' aria-hidden='true'></i>"
               . __s('Replay the dictionary rules');
         }
 

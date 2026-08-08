@@ -77,7 +77,7 @@
     <li :class="`${event_type} ${expanded ? 'expanded' : ''}`" class="p-1 pe-0 d-flex flex-wrap align-items-center">
         <input type="checkbox" :id="filter_key" name="filters[]" class="form-check-input" :value="filter_key"
                :checked="filter_data.filter_data.display" @change="$emit('toggleFilter', props.filter_key, event_type, $event.target.checked, parent_filter_key)"/>
-        <i v-if="event_type !== 'event_filter'" :class="`ms-1 pb-1 actor_icon ti ti-${event_type.split('_')[0] === 'group' ? 'users' : 'user'}`"></i>
+        <i v-if="event_type !== 'event_filter'" :class="`ms-1 pb-1 actor_icon ti ti-${event_type.split('_')[0] === 'group' ? 'users' : 'user'}`" aria-hidden="true"></i>
         <label :for="filter_key" class="ps-1 overflow-hidden d-inline-block text-nowrap">
             {{ label_title }}
         </label>
@@ -92,7 +92,7 @@
             </button>
             <div v-if="event_type !== 'event_filter'" class="filter_option dropstart d-inline-block position-relative m-1">
                 <button class="btn btn-sm btn-ghost-secondary btn-icon" data-bs-toggle="dropdown" :title="_n('Action', 'Actions', 5)" :aria-label="_n('Action', 'Actions', 5)">
-                    <i class="ti ti-dots"></i>
+                    <i class="ti ti-dots" aria-hidden="true"></i>
                 </button>
                 <ul class="dropdown-menu p-0">
                     <li v-if="filter_data.params.show_delete" class="dropdown-item p-0">

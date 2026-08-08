@@ -73,7 +73,7 @@
                         data-bs-html="true"
                         data-bs-custom-class="validation-messages"
                         data-bs-content="{{ requirement.getValidationMessages()|join('<br />') }}">
-                     <i class="{{ requirement.isValidated() ? 'ti ti-check' : (requirement.isOptional() ? 'ti ti-alert-triangle' : 'ti ti-x') }}"></i>
+                     <i class="{{ requirement.isValidated() ? 'ti ti-check' : (requirement.isOptional() ? 'ti ti-alert-triangle' : 'ti ti-x') }}" aria-hidden="true"></i>
                   </span>
                </td>
             </tr>

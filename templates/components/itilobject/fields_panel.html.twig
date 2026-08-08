@@ -48,7 +48,7 @@
    <section class="accordion-item" aria-label="{{ item.getTypeName(1) }}">
       <div class="accordion-header" id="heading-main-item">
          <button class="accordion-button {{ main_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#item-main" aria-expanded="true" aria-controls="ticket-main">
-            <i class="ti ti-alert-circle item-icon"></i>
+            <i class="ti ti-alert-circle item-icon" aria-hidden="true"></i>
             <span class='status-recall'>
                 {{ item.getStatusIcon(item.fields['status'])|raw }}
             </span>
@@ -272,7 +272,7 @@
    <section class="accordion-item" aria-label="{{ __('Actors') }}">
       <div class="accordion-header" id="heading-actor" title="{{ __('Actors') }}" data-bs-toggle="tooltip">
          <button class="accordion-button {{ actors_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#actors" aria-expanded="true" aria-controls="actors">
-            <i class="ti ti-users"></i>
+            <i class="ti ti-users" aria-hidden="true"></i>
             <span class="item-title">
                 {{ __('Actors') }}
             </span>
@@ -298,7 +298,7 @@
           <section class="accordion-item" aria-label="{{ __('Notes') }}">
              <div class="accordion-header" id="notes-heading" title="{{ __('Notes') }}" data-bs-toggle="tooltip">
                 <button class="accordion-button {{ notes_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#notes" aria-expanded="true" aria-controls="notes">
-                   <i class="ti ti-notes"></i>
+                   <i class="ti ti-notes" aria-hidden="true"></i>
                    <span class="item-title">
                       {{ __('Entity notes') }}
                    </span>
@@ -328,7 +328,7 @@
       <section class="accordion-item" aria-label="{{ _n('Item', 'Items', get_plural_number()) }}">
          <div class="accordion-header" id="items-heading" title="{{ _n('Item', 'Items', get_plural_number()) }}" data-bs-toggle="tooltip">
             <button class="accordion-button {{ items_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#items" aria-expanded="true" aria-controls="items">
-               <i class="ti ti-package"></i>
+               <i class="ti ti-package" aria-hidden="true"></i>
                <span class="item-title">
                     {{ _n('Item', 'Items', get_plural_number()) }}
                 </span>
@@ -357,7 +357,7 @@
          <section class="accordion-item" aria-label="{{ _n('Service level', 'Service levels', get_plural_number()) }}">
             <div class="accordion-header" id="service-levels-heading" title="{{ _n('Service level', 'Service levels', get_plural_number()) }}" data-bs-toggle="tooltip">
                <button class="accordion-button {{ servicelevels_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#service-levels" aria-expanded="true" aria-controls="service-levels">
-                  <i class="ti ti-alarm"></i>
+                  <i class="ti ti-alarm" aria-hidden="true"></i>
                   <span class="item-title">
                      {{ _n('Service level', 'Service levels', get_plural_number()) }}
                   </span>
@@ -393,7 +393,7 @@
       <section class="accordion-item" aria-label="{{ __('Analysis') }}">
          <div class="accordion-header" id="analysis-heading" title="{{ __("Analysis") }}" data-bs-toggle="tooltip">
             <button class="accordion-button {{ analysis_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#analysis" aria-expanded="true" aria-controls="analysis">
-               <i class="ti ti-eyeglass"></i>
+               <i class="ti ti-eyeglass" aria-hidden="true"></i>
                <span class="item-title">
                     {{ __("Analysis") }}
                </span>
@@ -440,7 +440,7 @@
       <section class="accordion-item" aria-label="{{ __('Plans') }}">
          <div class="accordion-header" id="plans-heading" title="{{ __("Plans") }}" data-bs-toggle="tooltip">
             <button class="accordion-button {{ plans_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#plans" aria-expanded="true" aria-controls="plans">
-               <i class="ti ti-checkup-list"></i>
+               <i class="ti ti-checkup-list" aria-hidden="true"></i>
                <span class="item-title">
                     {{ __("Plans") }}
                </span>
@@ -474,7 +474,7 @@
    <section class="accordion-item" aria-label="{{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}">
       <div class="accordion-header" id="linked_itilobjects-heading" title="{{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}" data-bs-toggle="tooltip">
          <button class="accordion-button {{ linked_itilobjects_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#linked_itilobjects" aria-expanded="true" aria-controls="linked_itilobjects">
-            <i class="ti ti-link"></i>
+            <i class="ti ti-link" aria-hidden="true"></i>
             {% if item.isNewItem() and (params['_link']['items_id_2'] ?? 0) > 0 %}
                {% set nb_linked_itilobjects = 1 %}
             {% endif %}

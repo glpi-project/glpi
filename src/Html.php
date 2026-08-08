@@ -2063,7 +2063,7 @@ TWIG,
                 || (isset($p['forcecreate']) && $p['forcecreate'])
             ) {
                 $out .= "<span class='btn btn-sm border-danger text-danger me-1'>
-                            <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;'></i>"
+                            <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;' aria-hidden='true'></i>"
                             . __s('Selection too large, massive action disabled.')
                         . "</span>";
                 if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
@@ -2118,7 +2118,7 @@ TWIG,
             }
             $out .= " href='#modal_massaction_content$identifier' title=\"" . htmlescape($p['title']) . "\">";
             if ($p['display_arrow']) {
-                $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;'></i>";
+                $out .= "<i class='ti ti-corner-left-" . ($p['ontop'] ? 'down' : 'up') . " mt-1' style='margin-left: -2px;' aria-hidden='true'></i>";
             }
             $out .= "<span>" . htmlescape($p['title']) . "</span>";
             $out .= "</a>";
@@ -2209,13 +2209,13 @@ TWIG,
         $calendar_tooltip = __s('Enter or select a date');
         $calendar_btn = $p['calendar_btn']
          ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle>
-                <i class='ti ti-calendar'></i>
+                <i class='ti ti-calendar' aria-hidden='true'></i>
                 <span class='visually-hidden'>" . $calendar_tooltip . "</span>
             </button>"
          : "";
         $clear_btn = $p['clear_btn'] && $p['maybeempty'] && $p['canedit']
          ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle data-clear title='" . __s('Clear') . "'>
-                    <i class='ti ti-circle-x'></i>
+                    <i class='ti ti-circle-x' aria-hidden='true'></i>
                 </button>"
          : "";
 
@@ -2405,7 +2405,7 @@ JS;
         $disabled = !$p['canedit'] ? " disabled='disabled'" : "";
         $clear    = $p['maybeempty'] && $p['canedit']
          ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='" . __s('Clear') . "'>
-                    <i class='ti ti-circle-x' data-clear></i>
+                    <i class='ti ti-circle-x' data-clear aria-hidden='true'></i>
                 </button>"
          : "";
 
@@ -2980,7 +2980,7 @@ JS;
                 $out .= "<img id='tooltip$rand' src='" . htmlescape($param['img']) . "'>";
             } else {
                 $class = htmlescape($param['awesome-class']);
-                $out .= "<span id='tooltip$rand' class='fas {$class} fa-fw'></span>";
+                $out .= "<span id='tooltip$rand' class='fas {$class} fa-fw' aria-hidden='true'></span>";
             }
 
             if ($has_wrapper) {
@@ -3447,7 +3447,7 @@ JAVASCRIPT
         $link =  $CFG_GLPI['root_doc'] . $url;
 
         echo sprintf(
-            '<a href="%1$s" %2$s target="_blank" style="margin-top:6px; display: block">%3$s <i class="ti ti-help"></i></a>',
+            '<a href="%1$s" %2$s target="_blank" style="margin-top:6px; display: block">%3$s <i class="ti ti-help" aria-hidden="true"></i></a>',
             htmlescape($link),
             !is_null($link_id) ? sprintf('id="%s"', htmlescape($link_id)) : '',
             __s('Available variables')
@@ -3726,11 +3726,11 @@ JAVASCRIPT
             echo "<th class='left'>";
             echo "<a href='" . htmlescape($fulltarget) . "&amp;start=0' class='btn btn-sm btn-ghost-secondary me-2'
                   title=\"" . __s('Start') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
-            echo "<i class='ti ti-chevrons-left'></i>";
+            echo "<i class='ti ti-chevrons-left' aria-hidden='true'></i>";
             echo "</a>";
             echo "<a href='" . htmlescape($fulltarget) . "&amp;start=$back' class='btn btn-sm btn-ghost-secondary me-2'
                   title=\"" . __s('Previous') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
-            echo "<i class='ti ti-chevron-left'></i>";
+            echo "<i class='ti ti-chevron-left' aria-hidden='true'></i>";
             echo "</a></th>";
         }
 
@@ -3791,11 +3791,11 @@ JAVASCRIPT
             echo "<th class='right'>";
             echo "<a href='" . htmlescape($fulltarget) . "&amp;start=$forward' class='btn btn-sm btn-ghost-secondary'
                   title=\"" . __s('Next') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>
-               <i class='ti ti-chevron-right'></i>";
+               <i class='ti ti-chevron-right' aria-hidden='true'></i>";
             echo "</a>";
             echo "<a href='" . htmlescape($fulltarget) . "&amp;start=$end' class='btn btn-sm btn-ghost-secondary'
                   title=\"" . __s('End') . "\" data-bs-toggle='tooltip' data-bs-placement='top'>";
-            echo "<i class='ti ti-chevrons-right'></i>";
+            echo "<i class='ti ti-chevrons-right' aria-hidden='true'></i>";
             echo "</a>";
             echo "</th>";
         }
@@ -4538,7 +4538,7 @@ JS;
 
         $icon = "";
         if (isset($options['icon'])) {
-            $icon = sprintf('<i class="%s"></i>&nbsp;', htmlescape($options['icon']));
+            $icon = sprintf('<i class="%s" aria-hidden="true"></i>&nbsp;', htmlescape($options['icon']));
             unset($options['icon']);
         }
 

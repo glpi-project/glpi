@@ -71,7 +71,7 @@
 <div class="d-flex gap-2 w-full">
     <div id="select_range_dropdown" class="dropdown">
         <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="ti ti-calendar me-2"></i>
+            <i class="ti ti-calendar me-2" aria-hidden="true"></i>
             {{ start_date and end_date ? __('Custom range') ~ ': ' ~ start_date|split('T')[0] ~ ' - ' ~ end_date|split('T')[0] : timerange_presets[interval] }}
         </button>
         <ul class="dropdown-menu">
@@ -83,7 +83,7 @@
             <li><hr class="dropdown-divider"></li>
             <li id="show_custom_range" class="d-flex align-items-center">
                 <span class="dropdown-item {{ start_date and end_date ? 'active' }}" href="#">
-                    <i class="ti ti-plus {{ start_date and end_date ? 'rotate-45' : 'rotate-90' }}"></i>
+                    <i class="ti ti-plus {{ start_date and end_date ? 'rotate-45' : 'rotate-90' }}" aria-hidden="true"></i>
                     {{ __('Custom range') }}
                 </span>
             </li>
@@ -99,7 +99,7 @@
     </div>
     <div id="select_format_dropdown" class="dropdown">
         <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="ti ti-chart-dots-3 me-2"></i>
+        <i class="ti ti-chart-dots-3 me-2" aria-hidden="true"></i>
             {{ format_presets[format] }}
         </button>
         <ul class="dropdown-menu">
@@ -112,7 +112,7 @@
     </div>
     <div id="compare_printers_dropdown" class="dropdown">
         <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-        <i class="ti ti-git-compare me-2"></i>
+        <i class="ti ti-git-compare me-2" aria-hidden="true"></i>
             {{ __('Compare') }}
         </button>
         <ul class="dropdown-menu">
@@ -136,7 +136,7 @@
         </ul>
     </div>
     <a href="{{ path(export_url) }}" target="_blank" class="btn btn-sm btn-icon btn-ghost-secondary me-0 me-sm-1 px-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Export to CSV') }}">
-         <i class="ti fs-2 ti-file-download"></i>
+         <i class="ti fs-2 ti-file-download" aria-hidden="true"></i>
       </a>
 </div>
 

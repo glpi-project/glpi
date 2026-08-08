@@ -173,12 +173,12 @@
         <button v-show="current_view !== 'listFull'" ref="date_picker" class="btn btn-sm btn-ghost-secondary"
                 :title="_n('Calendar', 'Calendars', 1)"
                 :aria-label="_n('Calendar', 'Calendars', 1)">
-            <i class="ti ti-calendar"></i>
+            <i class="ti ti-calendar" aria-hidden="true"></i>
         </button>
     </Teleport>
     <Teleport v-if="full_view" defer to=".fc-toolbar-title">
         <button class="btn btn-sm btn-ghost-secondary" :title="__('Refresh')" :aria-label="__('Refresh')" @click="refresh">
-            <i class="ti ti-refresh"></i>
+            <i class="ti ti-refresh" aria-hidden="true"></i>
         </button>
     </Teleport>
     <Teleport v-if="full_view && (can_create || can_delete)" to="body">
@@ -186,13 +186,13 @@
             <ul class="list-group list-group-flush list-group-hoverable">
                 <li v-if="can_create" class="list-group-item p-0">
                     <button class="btn btn-ghost-secondary p-2 w-100 border-radius-0" @click="() => cloneEvent(event_context_menu.dataset.event_defid)">
-                        <i class="ti ti-copy"></i>
+                        <i class="ti ti-copy" aria-hidden="true"></i>
                         {{ __('Clone') }}
                     </button>
                 </li>
                 <li v-if="can_delete" class="list-group-item p-0">
                     <button class="btn btn-ghost-secondary p-2 w-100 border-radius-0" @click="() => deleteEvent(event_context_menu.dataset.event_defid)">
-                        <i class="ti ti-trash"></i>
+                        <i class="ti ti-trash" aria-hidden="true"></i>
                         {{ __('Delete') }}
                     </button>
                 </li>

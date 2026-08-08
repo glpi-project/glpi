@@ -55,7 +55,7 @@
          data-bs-toggle="dropdown"
          data-testid="sidebar-menu-toggle"
          aria-expanded="{{ firstlevel_shown ? 'true' : 'false' }}">
-         <i class="{{ firstlevel['icon'] ?? '' }}"></i>
+         <i class="{{ firstlevel['icon'] ?? '' }}" aria-hidden="true"></i>
          <span class="menu-label">{{ firstlevel['title'] }}</span>
       </button>
       <div class="dropdown-menu {{ firstlevel_active and is_vertical != false ? '' : 'animate__animated' }} {{ is_vertical ? 'animate__fadeInLeft' : 'animate__zoomIn' }} {{ firstlevel_shown ? 'show' : '' }}">
@@ -66,7 +66,7 @@
             {% if has_dashboard %}
                <a class="dropdown-item"
                   href="{{ path(firstlevel['default_dashboard']) }}">
-                  <i class="{{ call('Glpi\\Dashboard\\Dashboard::getIcon') }}"></i>
+                  <i class="{{ call('Glpi\\Dashboard\\Dashboard::getIcon') }}" aria-hidden="true"></i>
                   {{ __('Dashboard') }}
                </a>
             {% endif %}
@@ -76,7 +76,7 @@
                   href="{{ path(sublevel['page']) }}"
                   aria-label="{{ sublevel['title'] }}"
                   accesskey="{{ sublevel['shortcut'] ?? '' }}">
-                  <i class="{{ sublevel['icon'] ?? '' }}"></i>
+                  <i class="{{ sublevel['icon'] ?? '' }}" aria-hidden="true"></i>
                   <span class='text-wrap'>
                      {{ sublevel['title']|shortcut(sublevel['shortcut'] ?? '') }}
                   </span>
@@ -96,7 +96,7 @@
    {% elseif firstlevel['default'] is defined and (firstlevel['display'] ?? true) != false %}
       <li class="nav-item dropdown {{ firstlevel_active ? 'active' : '' }}">
          <a class="nav-link" href="{{ path(firstlevel['default']) }}">
-            <i class="{{ firstlevel['icon'] ?? '' }}"></i>
+            <i class="{{ firstlevel['icon'] ?? '' }}" aria-hidden="true"></i>
             <span class="menu-label">{{ firstlevel['title'] }}</span>
          </a>
       <li>

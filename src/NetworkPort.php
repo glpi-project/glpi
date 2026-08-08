@@ -725,7 +725,7 @@ class NetworkPort extends CommonDBChild
 
             echo "<div class='col-auto'>";
             echo "<button type='submit' name='add' value='1' class='btn btn-primary ms-1'>";
-            echo "<i class='ti ti-link'></i><span>" . _sx('button', 'Add') . "</span>";
+            echo "<i class='ti ti-link' aria-hidden='true'></i><span>" . _sx('button', 'Add') . "</span>";
             echo "</button>";
             echo "</div>";
 
@@ -1335,7 +1335,7 @@ class NetworkPort extends CommonDBChild
             $link = $asset->getLink();
         } else {
             $link = sprintf(
-                '<i class="%1$s"></i> %2$s </i>',
+                '<i class="%1$s" aria-hidden="true"></i> %2$s </i>',
                 htmlescape($asset->getIcon()),
                 $asset->getLink(),
             );
@@ -1842,7 +1842,7 @@ class NetworkPort extends CommonDBChild
 
         if ($equipment && $equipment->getFromDB($this->fields['items_id'])) {
             return sprintf(
-                '<i class="%1$s"></i> %2$s > <i class="%3$s"></i> %4$s',
+                '<i class="%1$s" aria-hidden="true"></i> %2$s > <i class="%3$s" aria-hidden="true"></i> %4$s',
                 htmlescape($equipment::getIcon()),
                 $equipment->getLink(),
                 htmlescape(self::getIcon()),

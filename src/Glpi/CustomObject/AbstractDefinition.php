@@ -819,7 +819,7 @@ abstract class AbstractDefinition extends CommonDBTM
         switch ($field) {
             case 'icon':
                 $value = htmlescape($values[$field]);
-                return sprintf('<i class="ti %s"></i>', $value);
+                return sprintf('<i class="ti %s" aria-hidden="true"></i>', $value);
             case 'translations':
                 $translations = json_decode($values[$field], associative: true);
 

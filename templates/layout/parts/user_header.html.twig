@@ -70,7 +70,7 @@
                      <a href="{{ path('/ajax/switchdebug.php') }}"
                         class="dropdown-item {% if is_debug_active %}bg-red-lt{% endif %}"
                         title="{{ __('Change mode') }}">
-                        <i class="ti ti-bug debug"></i>
+                        <i class="ti ti-bug debug" aria-hidden="true"></i>
                         {{ is_debug_active ? __('Debug mode enabled') : __('Debug mode disabled') }}
                      </a>
                   {% endif %}
@@ -79,14 +79,14 @@
                {# @TODO Saved searches panel #}
 
                <div class="dropdown-item">
-                  <i class="ti ti-language"></i>
+                  <i class="ti ti-language" aria-hidden="true"></i>
                   {{ call('User::showSwitchLangForm')|raw }}
                </div>
 
                <div class="dropdown-divider"></div>
 
                <a href="{{ help_url }}" class="dropdown-item" title="{{ __('Help') }}">
-                  <i class="ti ti-help"></i>
+                  <i class="ti ti-help" aria-hidden="true"></i>
                   {{ __('Help') }}
                </a>
 
@@ -94,7 +94,7 @@
                <a href="#" class="dropdown-item" title="{{ __('About') }}"
                   id="show_about_modal_{{ rand_header }}"
                   data-testid="about-link">
-                  <i class="ti ti-info-circle"></i>
+                  <i class="ti ti-info-circle" aria-hidden="true"></i>
                   {{ __('About') }}
                   {% if found_new_version is not null %}
                      <span class="badge bg-info text-dark ms-2">
@@ -107,11 +107,11 @@
                <div class="dropdown-divider"></div>
 
                <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
-                  <i class="ti ti-user-cog"></i>
+                  <i class="ti ti-user-cog" aria-hidden="true"></i>
                   {{ __('My settings') }}
                </a>
                <a href="{{ path('/front/logout.php' ~ ((session('glpiextauth') ?: false) ? '?noAUTO=1' : '')) }}" class="dropdown-item" title="{{ __('Logout') }}">
-                  <i class="ti ti-logout"></i>
+                  <i class="ti ti-logout" aria-hidden="true"></i>
                   {{ __('Logout') }}
                </a>
             </div>

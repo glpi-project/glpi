@@ -2085,34 +2085,34 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         if (Session::getCurrentInterface() === 'central') {
             if (Ticket::canUpdate() && Ticket::canDelete()) {
                 $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'merge_as_followup']
-                 = "<i class='ti ti-git-merge'></i>"
+                 = "<i class='ti ti-git-merge' aria-hidden='true'></i>"
                  . __s('Merge as Followup');
             }
 
             if (Item_Ticket::canCreate()) {
                 $actions['Item_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                = "<i class='ti ti-plus'></i>"
+                = "<i class='ti ti-plus' aria-hidden='true'></i>"
                  . _sx('button', 'Add an item');
             }
 
             if (ITILFollowup::canCreate()) {
                 $icon = ITILFollowup::getIcon();
                 $actions['ITILFollowup' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_followup']
-                = "<i class='" . htmlescape($icon) . "'></i>"
+                = "<i class='" . htmlescape($icon) . "' aria-hidden='true'></i>"
                  . __s('Add a new followup');
             }
 
             if (TicketTask::canCreate()) {
                 $icon = TicketTask::getIcon();
                 $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task']
-                = "<i class='" . htmlescape($icon) . "'></i>"
+                = "<i class='" . htmlescape($icon) . "' aria-hidden='true'></i>"
                  . __s('Add a new task');
             }
 
             if (TicketValidation::canCreate()) {
                 $icon = TicketValidation::getIcon();
                 $actions['TicketValidation' . MassiveAction::CLASS_ACTION_SEPARATOR . 'submit_validation']
-                = "<i class='" . htmlescape($icon) . "'></i>"
+                = "<i class='" . htmlescape($icon) . "' aria-hidden='true'></i>"
                  . __s('Approval request');
             }
 
@@ -2122,16 +2122,16 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
 
             if (Session::haveRight(self::$rightname, UPDATE)) {
-                $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = "<i class='ti ti-user'></i>" . __s('Add an actor');
+                $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_actor'] = "<i class='ti ti-user' aria-hidden='true'></i>" . __s('Add an actor');
                 $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'update_notif'] = __s('Set notifications for all actors');
                 if (ProjectTask_Ticket::canCreate()) {
                     $actions['ProjectTask_Ticket' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                        = "<i class='ti ti-link'></i>"
+                        = "<i class='ti ti-link' aria-hidden='true'></i>"
                         . _sx('button', 'Link project task');
                 }
                 if (Ticket_Contract::canCreate()) {
                     $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_contract']
-                        = "<i class='" . Contract::getIcon() . "'></i>"
+                        = "<i class='" . Contract::getIcon() . "' aria-hidden='true'></i>"
                         . _sx('button', 'Add contract');
                 }
 
@@ -2140,7 +2140,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
             if (self::canUpdate()) {
                 $actions[static::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
-                = "<i class='ti ti-check'></i>"
+                = "<i class='ti ti-check' aria-hidden='true'></i>"
                 . __s("Resolve selected tickets");
             }
         }
@@ -4457,11 +4457,11 @@ JAVASCRIPT;
                         ) {
                             foreach ($job->users[CommonITILActor::REQUESTER] as $d) {
                                 if ($d["users_id"] > 0) {
-                                    $name = '<i class="fs-4 ti ti-user text-muted me-1"></i>'
+                                    $name = '<i class="fs-4 ti ti-user text-muted me-1" aria-hidden="true"></i>'
                                         . htmlescape(getUserName($d["users_id"]));
                                     $requesters[] = $name;
                                 } else {
-                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1"></i>'
+                                    $requesters[] = '<i class="fs-4 ti ti-mail text-muted me-1" aria-hidden="true"></i>'
                                         . htmlescape($d['alternative_email']);
                                 }
                             }
@@ -4472,7 +4472,7 @@ JAVASCRIPT;
                             && count($job->groups[CommonITILActor::REQUESTER])
                         ) {
                             foreach ($job->groups[CommonITILActor::REQUESTER] as $d) {
-                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1"></i>'
+                                $requesters[] = '<i class="fs-4 ti ti-users text-muted me-1" aria-hidden="true"></i>'
                                     . htmlescape(Dropdown::getDropdownName("glpi_groups", $d["groups_id"]));
                             }
                         }

@@ -336,7 +336,7 @@ class Planning extends CommonGLPI
                     break;
 
             }
-            return $('<span><i class="itilstatus ' + classes + '"></i> ' + _.escape(option.text) + '</span>');
+            return $('<span><i class="itilstatus ' + classes + '" aria-hidden="true"></i> ' + _.escape(option.text) + '</span>');
         }
 JAVASCRIPT;
 
@@ -1140,7 +1140,7 @@ TWIG, $twig_params);
 
             echo "<div class='center'>";
             echo "<a href='" . htmlescape($url) . "' class='btn btn-outline-secondary'>"
-                . "<i class='ti ti-eye'></i>"
+                . "<i class='ti ti-eye' aria-hidden='true'></i>"
                 . "<span>" . __s("View this item in its context") . "</span>"
             . "</a>";
             echo "</div>";
@@ -1439,7 +1439,7 @@ TWIG, $twig_params);
         if (count($append_params) > 1) {
             $rand = mt_rand();
             echo "<a href='#' title=\"" . __s('Availability') . "\" data-bs-toggle='modal' data-bs-target='#planningcheck$rand'>";
-            echo "<i class='ti ti-calendar'></i>";
+            echo "<i class='ti ti-calendar' aria-hidden='true'></i>";
             echo "<span class='visually-hidden'>" . __s('Availability') . "</span>";
             echo "</a>";
             Ajax::createIframeModalWindow(

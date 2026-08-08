@@ -178,7 +178,7 @@
             disabled="true"
             aria-label="{{ __('Clear search') }}"
         >
-            <span class="ti ti-search" data-glpi-kb-aside-search-icon></span>
+            <span class="ti ti-search" data-glpi-kb-aside-search-icon aria-hidden="true"></span>
         </button>
     </div>
 </div>
@@ -190,7 +190,7 @@
     {{ hide_favorites ? 'data-glpi-kb-aside-favorites-hidden' : '' }}
 >
     <h4 class="card-title fw-bold fs-4">
-        <i class="ti ti-star-filled me-1 fs-5 text-yellow"></i>
+        <i class="ti ti-star-filled me-1 fs-5 text-yellow" aria-hidden="true"></i>
         {{ __("Favorites") }}
     </h4>
         <ul class="kb-tree ps-0">

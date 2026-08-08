@@ -399,12 +399,12 @@ export class FileUploader
             const isSuccess = entry.status === 'success';
             const errorClass = isError ? 'border-danger bg-danger bg-opacity-10' : '';
             const statusIcon = isSuccess
-                ? '<i class="ti ti-check text-success ms-2"></i>'
+                ? '<i class="ti ti-check text-success ms-2" aria-hidden="true"></i>'
                 : '';
 
             return `
             <div class="file-uploader-item d-flex align-items-center p-2 border rounded mb-2 ${errorClass}" role="listitem" data-file-index="${_.escape(index)}">
-                <i class="ti ${_.escape(this.#getFileIcon(file.name))} me-2 text-muted"></i>
+                <i class="ti ${_.escape(this.#getFileIcon(file.name))} me-2 text-muted" aria-hidden="true"></i>
                 <div class="flex-grow-1 min-width-0">
                     <div class="fw-medium text-truncate">${_.escape(file.name)}</div>
                     <small class="text-muted">${_.escape(this.#formatFileSize(file.size))}</small>
@@ -415,7 +415,7 @@ export class FileUploader
                         class="btn btn-sm btn-ghost-danger file-uploader-remove ms-2"
                         data-index="${_.escape(index)}"
                         title="${__('Remove')}">
-                    <i class="ti ti-x"></i>
+                    <i class="ti ti-x" aria-hidden="true"></i>
                 </button>
             </div>
         `;

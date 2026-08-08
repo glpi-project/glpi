@@ -64,7 +64,7 @@
                      type="button"
                      aria-label="{{ default_action_data.label }}"
                   >
-                     <i class="{{ default_action_data.icon }}"></i>
+                     <i class="{{ default_action_data.icon }}" aria-hidden="true"></i>
                      <span>{{ default_action_data.label }}</span>
                   </button>
 
@@ -73,7 +73,7 @@
                         {% for action, timeline_itemtype in main_actions_itemtypes %}
                         {% if loop.index0 > 0 %}
                               <button class="btn btn-primary answer-action action-{{ action }}" data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
-                                 <i class="{{ timeline_itemtype.icon }}"></i>
+                                 <i class="{{ timeline_itemtype.icon }}" aria-hidden="true"></i>
                                  <span>{{ timeline_itemtype.short_label }}</span>
                               </button>
                               {% endif %}
@@ -92,7 +92,7 @@
                                  {% if loop.index0 > 0 %}
                                  <li aria-label="{{ timeline_itemtype.label }}"><a class="dropdown-item action-{{ action }} answer-action" href="#"
                                     data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
-                                    <i class="{{ timeline_itemtype.icon }}"></i>
+                                    <i class="{{ timeline_itemtype.icon }}" aria-hidden="true"></i>
                                     <span>{{ timeline_itemtype.label }}</span>
                                  </a></li>
                                  {% endif %}
@@ -117,7 +117,7 @@
 
             {% if item.canDeleteItem() and is_helpdesk %}
                <button class="btn btn-ghost-danger me-2" type="submit" name="delete" form="itil-form">
-                  <i class="ti ti-trash me-1"></i>
+                  <i class="ti ti-trash me-1" aria-hidden="true"></i>
                   <span>{{ __("Cancel ticket") }}</span>
                </button>
             {% endif %}
@@ -150,7 +150,7 @@
                   title="{{ _x('button', 'Add') }}"
                   aria-label="{{ _x('button', 'Add') }}"
                >
-                  <i class="ti ti-plus"></i>
+                  <i class="ti ti-plus" aria-hidden="true"></i>
                   <span class="d-none d-lg-block">{{ _x('button', 'Add') }}</span>
                </button>
             {% else %}
@@ -170,7 +170,7 @@
                         title="{{ _x('button', 'Save') }}"
                         aria-label="{{ _x('button', 'Save') }}"
                      >
-                        <i class="ti ti-device-floppy"></i>
+                        <i class="ti ti-device-floppy" aria-hidden="true"></i>
                         <span class="d-none d-xl-block">{{ _x('button', 'Save') }}</span>
                      </button>
                   {% endif %}
@@ -185,21 +185,21 @@
                      {% if item.isDeleted() %}
                         <button class="btn btn-outline-secondary btn-square" type="submit" name="restore" form="itil-form"
                               title="{{ _x('button', 'Restore') }}">
-                           <i class="ti ti-trash-off"></i>
+                           <i class="ti ti-trash-off" aria-hidden="true"></i>
                            <span class="d-none d-lg-block">{{ _x('button', 'Restore') }}</span>
                         </button>
 
                         <button class="btn btn-outline-danger btn-square" type="submit" name="purge" form="itil-form"
                               title="{{ _x('button', 'Delete permanently') }}"
                               onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
-                           <i class="ti ti-trash"></i>
+                           <i class="ti ti-trash" aria-hidden="true"></i>
                            <span class="d-none d-lg-block">{{ _x('button', 'Delete permanently') }}</span>
                         </button>
                      {% else %}
                         <button class="btn btn-outline-danger btn-square" type="submit" name="delete" form="itil-form"
                               title="{{ _x('button', 'Put in trashbin') }}"
                                 data-bs-toggle="tooltip" data-bs-placement="top">
-                           <i class="ti ti-trash"></i>
+                           <i class="ti ti-trash" aria-hidden="true"></i>
                         </button>
                      {% endif %}
                   {% endif %}

@@ -333,10 +333,10 @@ HTML;
                 $rename = "<div class='edit-dashboard-properties'>
                <input type='text' class='dashboard-name form-control' value='{$dashboard_title}' size='1'>
                <button class='btn btn-ghost-secondary btn-icon btn-sm fs-2 ms-1 save-dashboard-name' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$save_label}'>
-                   <i class='ti ti-device-floppy' ></i>
+                   <i class='ti ti-device-floppy' aria-hidden='true' ></i>
                </button>
                <button class='btn btn-ghost-danger btn-icon btn-sm fs-2 ms-1 reset-dashboard' data-bs-toggle='tooltip' data-bs-placement='bottom' title='{$reset_label}'>
-                   <i class='ti ti-refresh' ></i>
+                   <i class='ti ti-refresh' aria-hidden='true' ></i>
                </button>
                <span class='display-message'></span>
             </div>";
@@ -345,7 +345,7 @@ HTML;
                 $rename = <<<HTML
                     <div class='edit-dashboard-properties'>
                         <button class='btn btn-ghost-danger btn-icon btn-sm fs-2 ms-1 reset-dashboard' title='{$reset_label}'>
-                           <i class='ti ti-refresh' ></i>
+                           <i class='ti ti-refresh' aria-hidden='true' ></i>
                        </button>
                     </div>
 HTML;
@@ -379,7 +379,7 @@ HTML;
                     <div class="toolbar left-toolbar mb-3 position-relative">
                         <div class='edit-dashboard-properties'>
                             <button class='btn btn-ghost-danger btn-sm ms-1 reset-dashboard'>
-                               <i class='ti ti-refresh' ></i>
+                               <i class='ti ti-refresh' aria-hidden='true' ></i>
                                {$reset_label}
                            </button>
                         </div>
@@ -428,12 +428,12 @@ HTML;
                 <div class='placeholder_info {{ is_placeholder ? "" : "d-none" }}' style="background-color: transparent; color: var(--tblr-body-color); font-size: var(--tblr-body-font-size)">
                     <div class="alert alert-info">
                         <div class="d-flex">
-                            <i class="ti ti-info-circle fs-2x me-3"></i>
+                            <i class="ti ti-info-circle fs-2x me-3" aria-hidden="true"></i>
                             <div>
                                 <h4 class="alert-title">{{ messages['placeholder_main'] }}</h4>
                                 <div class="mt-2">
                                     <button class="btn btn-info btn-sm disable-dashboard-demo me-2 {{ can_disable_demo ? '' : 'd-none' }}" type="button">
-                                        <i class="ti ti-presentation-off"></i>
+                                        <i class="ti ti-presentation-off" aria-hidden="true"></i>
                                         <span>{{ messages['disable_demo_msg'] }}</span>
                                     </button>
                                     <script>
@@ -1122,7 +1122,7 @@ HTML;
         echo "</div>";
 
         echo "<a href='#' class='btn btn-primary save_rights'>
-         <i class='ti ti-device-floppy'></i>
+         <i class='ti ti-device-floppy' aria-hidden='true'></i>
          <span>" . __s("Save") . "</span>
       </a>";
 
@@ -1152,11 +1152,11 @@ HTML;
 
         // retrieve card
         $notfound_html = "<div class='empty-card card-warning '>
-         <i class='ti ti-alert-triangle'></i>"
+         <i class='ti ti-alert-triangle' aria-hidden='true'></i>"
          . __s('empty card!') . "
       </div>";
         $render_error_html = "<div class='empty-card card-error '>
-         <i class='ti ti-alert-triangle'></i>"
+         <i class='ti ti-alert-triangle' aria-hidden='true'></i>"
          . __s('Error rendering card!')
             . "</br>"
             . \htmlescape($card_id)

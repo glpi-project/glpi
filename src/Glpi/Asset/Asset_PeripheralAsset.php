@@ -265,8 +265,8 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
 
         if (in_array($itemtype, $CFG_GLPI['directconnect_types'], true)) {
-            $actions[$action_prefix . 'add']    = "<i class='ti ti-plug'></i>" . _sx('button', 'Connect');
-            $actions[$action_prefix . 'remove'] = "<i class='ti ti-plug-off'></i>" . _sx('button', 'Disconnect');
+            $actions[$action_prefix . 'add']    = "<i class='ti ti-plug' aria-hidden='true'></i>" . _sx('button', 'Connect');
+            $actions[$action_prefix . 'remove'] = "<i class='ti ti-plug-off' aria-hidden='true'></i>" . _sx('button', 'Disconnect');
         }
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
     }
@@ -378,7 +378,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
             }
             $link = $itemtype::getFormURLWithID($data["id"]);
-            $label = sprintf('<i class="%s"></i> %s', htmlescape($itemtype::getIcon()), htmlescape($linkname));
+            $label = sprintf('<i class="%s" aria-hidden="true"></i> %s', htmlescape($itemtype::getIcon()), htmlescape($linkname));
             $name = '<a href="' . htmlescape($link) . '">' . $label . '</a>';
             $entry['name'] = $name;
 
@@ -505,7 +505,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                         {{ fields.hiddenField('itemtype_peripheral', peripheral.getType()) }}
                         {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
                         <div class="d-flex flex-row-reverse">
-                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
+                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                         </div>
                     </form>
                 </div>

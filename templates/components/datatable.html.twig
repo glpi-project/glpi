@@ -180,7 +180,7 @@
                             <th scope="col">
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
                                     <a href="{{ sort_href }}">
-                                    <i class="{{ sort_icon }}"></i>
+                                    <i class="{{ sort_icon }}" aria-hidden="true"></i>
                                 {% endif %}
                                 <span>{{ raw_header ? column_label|raw : column_label }}</span>
                                 {% if not nosort and not (column is array and column['nosort'] is defined) %}
@@ -194,13 +194,13 @@
                                <span class="float-end log-toolbar mb-0">
                                    {% if nofilter is not defined %}
                                        <button class="btn btn-sm show_filters {{ filters|length > 0 ? 'btn-secondary active' : 'btn-outline-secondary' }}">
-                                           <i class="ti ti-filter"></i>
+                                           <i class="ti ti-filter" aria-hidden="true"></i>
                                            <span class="d-none d-xl-block">{{ __('Filter') }}</span>
                                        </button>
                                    {% endif %}
                                    {% if csv_url|length %}
                                        <a href="{{ csv_url }}" class="btn btn-sm text-capitalize btn-outline-secondary">
-                                           <i class="ti ti-download"></i>
+                                           <i class="ti ti-download" aria-hidden="true"></i>
                                            <span class="d-none d-xl-block">{{ __('Export') }}</span>
                                        </a>
                                    {% endif %}
@@ -366,7 +366,7 @@
                                             {% endif %}
                                         {% elseif formatter == 'yesno' %}
                                             {% if entry[colkey] == 1 %}
-                                                <div aria-label="{{ __('Yes') }}"><i class="ti ti-circle-check"></i></div>
+                                                <div aria-label="{{ __('Yes') }}"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
                                             {% else %}
                                                 <div aria-label="{{ __('No') }}"></div>
                                             {% endif %}

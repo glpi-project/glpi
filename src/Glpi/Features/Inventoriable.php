@@ -152,13 +152,13 @@ trait Inventoriable
                                 data-bs-toggle="tooltip" data-bs-placement="top"
                                 style="float: right;margin-right: .5em;"
                                 formaction="{$url}">
-                           <i class="ti ti-reload"></i>
+                           <i class="ti ti-reload" aria-hidden="true"></i>
                         </button>
 HTML;
             }
         } else {
             echo sprintf(
-                "<span style='float: right;'><i class='ti ti-ban'></i> <span class='visually-hidden'>%s</span></span>",
+                "<span style='float: right;'><i class='ti ti-ban' aria-hidden='true'></i> <span class='visually-hidden'>%s</span></span>",
                 __s('Inventory file missing')
             );
         }

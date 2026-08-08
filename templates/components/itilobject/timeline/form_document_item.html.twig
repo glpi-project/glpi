@@ -60,13 +60,13 @@
                         <div class="d-inline" role="group" aria-labelledby="upload_source_label">
                             {% if can_screenshot %}
                                 <button class="btn btn-sm btn-secondary me-2 d-none" type="button" name="add_screenshot">
-                                    <i class="ti ti-photo"></i>
+                                    <i class="ti ti-photo" aria-hidden="true"></i>
                                     <span>{{ __('Screenshot') }}</span>
                                 </button>
                             {% endif %}
                             {% if can_screenrecord %}
                                 <button class="btn btn-sm btn-secondary me-2 d-none" type="button" name="add_screenrecording">
-                                    <i class="ti ti-camera"></i>
+                                    <i class="ti ti-camera" aria-hidden="true"></i>
                                     <span>{{ __('Screen recording') }}</span>
                                 </button>
                             {% endif %}
@@ -129,7 +129,7 @@
                     {% if (subitem.fields['id'] ?? 0) <= 0 %}
                         <div class="input-group">
                             <button class="btn btn-primary" type="submit" name="add">
-                                <i class="ti ti-file-plus"></i>
+                                <i class="ti ti-file-plus" aria-hidden="true"></i>
                                 <span>{{ _x('button', 'Add a new file') }}</span>
                             </button>
                         </div>

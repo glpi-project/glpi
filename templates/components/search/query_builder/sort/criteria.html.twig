@@ -49,9 +49,9 @@
 
         let container = document.createElement('span');
         if (option.id === 'ASC') {
-            container.innerHTML = '<i class="ti ti-sort-ascending me-1"></i>' + _.escape(option.text);
+            container.innerHTML = '<i class="ti ti-sort-ascending me-1" aria-hidden="true"></i>' + _.escape(option.text);
         } else if (option.id === 'DESC') {
-            container.innerHTML = '<i class="ti ti-sort-descending me-1"></i>' + _.escape(option.text);
+            container.innerHTML = '<i class="ti ti-sort-descending me-1" aria-hidden="true"></i>' + _.escape(option.text);
         }
 
         return container;

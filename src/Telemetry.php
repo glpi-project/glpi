@@ -491,7 +491,7 @@ class Telemetry extends CommonGLPI
                 "
                     <a href='" . htmlescape(GLPI_TELEMETRY_URI . "/reference?showmodal&uuid=" . self::getRegistrationUuid()) . "'
                        class='btn btn-sm btn-info' target='_blank'>
-                        <i class='ti ti-writing-sign me-1'></i>
+                        <i class='ti ti-writing-sign me-1' aria-hidden='true'></i>
                         %s
                     </a>
                 ",

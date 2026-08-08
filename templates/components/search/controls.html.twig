@@ -72,14 +72,14 @@
                     <button type="button" class="btn btn-icon btn-sm p-1 {{ active_savedsearch_class }} btn-ghost-secondary show-saved-searches"
                         data-itemtype="{{ itemtype }}"
                         title="{{ __('Show saved searches') }}"  data-bs-toggle="tooltip" data-bs-placement="top">
-                        <i class="ti ti-bookmarks"></i>
+                        <i class="ti ti-bookmarks" aria-hidden="true"></i>
                     </button>
                     {% if not user_pref('show_search_form') %}
                         {% set active_filter_class = is_filter_active ? "btn-active-search" : "btn-ghost-secondary" %}
                         <button class="btn btn-sm py-1 show-search-filters {{ active_filter_class }} btn-ghost-secondary dropdown-toggle" type="button"
                                 data-bs-toggle="dropdown" data-bs-auto-close="outside"
                                 data-testid="search-filters-button">
-                            <i class="ti ti-list-search"></i>
+                            <i class="ti ti-list-search" aria-hidden="true"></i>
                             {% if active_search_name|length %}
                                 <span class="d-none d-xl-inline-block text-truncate" style="max-width: 250px" title="{{ active_search_name }}" data-bs-toggle="tooltip" data-bs-placement="top">
                                     {{ active_search_name }}
@@ -100,7 +100,7 @@
                     <button class="btn btn-sm py-1 show-search-sorts {{ active_sort_class }} btn-ghost-secondary dropdown-toggle me-1 me-xl-2" type="button"
                                 data-bs-toggle="dropdown" data-bs-auto-close="outside"
                                 data-testid="search-sorts-button">
-                        <i class="ti ti-arrows-sort"></i>
+                        <i class="ti ti-arrows-sort" aria-hidden="true"></i>
                         {% set sort_names = (active_sort_name|length ? active_sort_name : __("Sort")) %}
                         <span class="d-none d-xl-inline-block text-truncate" style="max-width: 250px" title="{{ sort_names }}" data-bs-toggle="tooltip" data-bs-placement="top">
                             {{ sort_names }}
@@ -152,7 +152,7 @@
                             <label class="btn btn-icon btn-sm btn-pill px-2 py-1 {{ table_class }}" title="{{ __('Show as table') }}"
                                 for="show_as_table"
                                 data-bs-toggle="tooltip" data-bs-placement="top">
-                                <i class="ti ti-table"></i>
+                                <i class="ti ti-table" aria-hidden="true"></i>
                             </label >
 
                         {% set located_class = (data['search']['as_map'] == 1 ? "btn-ghost-info" : "") %}
@@ -169,7 +169,7 @@
                         <label class="btn btn-icon btn-sm btn-pill px-2 py-1 {{ located_class }}" title="{{ __('Show as map') }}"
                             for="show_as_map"
                             data-bs-toggle="tooltip" data-bs-placement="top">
-                            <i class="ti ti-map-2"></i>
+                            <i class="ti ti-map-2" aria-hidden="true"></i>
                         </label >
                     </div>
                 {% endif %}
@@ -183,9 +183,9 @@
                         data-bs-placement="top"
                         onclick="toogle('browse','','',''); {{ submit_search_form }};"
                     >
-                        <i class="ti {{ data['search']['browse']|default(false) == 1 ? "ti-checkbox" : "ti-square" }}"></i>
+                        <i class="ti {{ data['search']['browse']|default(false) == 1 ? "ti-checkbox" : "ti-square" }}" aria-hidden="true"></i>
                         <span class="d-flex align-bottom">
-                            <i class="ti ti-subtask"></i>
+                            <i class="ti ti-subtask" aria-hidden="true"></i>
                         </span>
                     </button>
                 {% endif %}
@@ -199,9 +199,9 @@
                         data-bs-placement="top"
                         onclick="toogle('is_deleted','','',''); {{ submit_search_form }};"
                     >
-                        <i class="ti {{ data['search']['is_deleted'] == 1 ? "ti-checkbox" : "ti-square" }}"></i>
+                        <i class="ti {{ data['search']['is_deleted'] == 1 ? "ti-checkbox" : "ti-square" }}" aria-hidden="true"></i>
                         <span class="d-flex align-bottom">
-                            <i class="ti ti-trash"></i>
+                            <i class="ti ti-trash" aria-hidden="true"></i>
                         </span>
                     </button>
                 {% endif %}
@@ -218,10 +218,10 @@
                     >
                         <i
                             class="ti {{ show_unpublished ? "ti-checkbox" : "ti-square" }}"
-                            data-testid="unpublished-{{ show_unpublished ? "on" : "off" }}"
+                            data-testid="unpublished-{{ show_unpublished ? "on" : "off" }}" aria-hidden="true"
                         ></i>
                         <span class="d-flex align-bottom">
-                            <i class="ti ti-eye-off"></i>
+                            <i class="ti ti-eye-off" aria-hidden="true"></i>
                         </span>
                     </button>
                 {% endif %}
@@ -232,7 +232,7 @@
                         type="button"
                         title="{{ __('Select default items to show') }}"
                         data-bs-toggle="tooltip" data-bs-placement="top">
-                        <i class="ti ti-table-row"></i>
+                        <i class="ti ti-table-row" aria-hidden="true"></i>
                     </button>
                     <template id="displaypreference_modal_template{{ rand }}">
                         {{ include('components/search/displaypreference_modal.html.twig', {
@@ -245,7 +245,7 @@
                 {% if not user_pref('show_search_form') %}
                     <button type="button" class="btn btn-icon btn-sm p-1 btn-ghost-secondary refresh-search"
                         title="{{ __('Refresh') }}"  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-trigger="hover">
-                        <i class="ti ti-refresh"></i>
+                        <i class="ti ti-refresh" aria-hidden="true"></i>
                     </button>
                 {% endif %}
 
@@ -253,7 +253,7 @@
                     <button class="dropdown-toggle btn btn-sm btn-ghost-secondary" type="button" name="export" id="dropdown-export-{{ rand }}"
                             data-bs-toggle="dropdown" aria-expanded="false" data-bs-popper-config='{"strategy":"fixed"}'>
                         <span title="{{ __("Export") }}" data-bs-toggle="tooltip" data-bs-placement="top">
-                            <i id="export_dropdown_icon" class="ti ti-download"></i>
+                            <i id="export_dropdown_icon" class="ti ti-download" aria-hidden="true"></i>
                         </span>
                     </button>
                     {% set exporthref = path('/front/report.dynamic.php') ~ "?" ~ {
@@ -265,52 +265,52 @@
                     <div class="dropdown-menu" style="z-index: 10001" aria-labelledby="dropdown-export-{{ rand }}" role="menu">
                         <div role="separator"><h6 class="dropdown-header">{{ __("Current page") }}</h6></div>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}" role="menuitem">
-                            <i class="ti ti-file-type-pdf"></i>
+                            <i class="ti ti-file-type-pdf" aria-hidden="true"></i>
                             {{- __('Landscape PDF') -}}
                         </a>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}" role="menuitem">
-                            <i class="ti ti-file-type-pdf"></i>
+                            <i class="ti ti-file-type-pdf" aria-hidden="true"></i>
                             {{ __('Portrait PDF') }}
                         </a>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::CSV_OUTPUT') }}" role="menuitem">
-                            <i class="ti ti-file-type-csv"></i>
+                            <i class="ti ti-file-type-csv" aria-hidden="true"></i>
                             {{ __('CSV') }}
                         </a>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::ODS_OUTPUT') }}" role="menuitem">
-                            <i class="ti ti-file-spreadsheet"></i>
+                            <i class="ti ti-file-spreadsheet" aria-hidden="true"></i>
                             {{ __('Spreadsheet (%s)')|format('ODS') }}
                         </a>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::XLSX_OUTPUT') }}" role="menuitem">
-                            <i class="ti ti-file-spreadsheet"></i>
+                            <i class="ti ti-file-spreadsheet" aria-hidden="true"></i>
                             {{ __('Spreadsheet (%s)')|format('XLSX') }}
                         </a>
                         <hr class="dropdown-divider">
                         <div role="separator"><h6 class="dropdown-header">{{ __("All pages") }}</h6></div>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_LANDSCAPE') }}" role="menuitem">
-                            <i class="ti ti-file-type-pdf"></i>
+                            <i class="ti ti-file-type-pdf" aria-hidden="true"></i>
                             {{ __('Landscape PDF') }}
                         </a>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::PDF_OUTPUT_PORTRAIT') }}" role="menuitem">
-                            <i class="ti ti-file-type-pdf"></i>
+                            <i class="ti ti-file-type-pdf" aria-hidden="true"></i>
                             {{ __('Portrait PDF') }}
                         </a>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::CSV_OUTPUT') }}" role="menuitem">
-                            <i class="ti ti-file-type-csv"></i>
+                            <i class="ti ti-file-type-csv" aria-hidden="true"></i>
                             {{ __('CSV') }}
                         </a>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::ODS_OUTPUT') }}" role="menuitem">
-                            <i class="ti ti-file-spreadsheet"></i>
+                            <i class="ti ti-file-spreadsheet" aria-hidden="true"></i>
                             {{ __('Spreadsheet (%s)')|format('ODS') }}
                         </a>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::XLSX_OUTPUT') }}" role="menuitem">
-                            <i class="ti ti-file-spreadsheet"></i>
+                            <i class="ti ti-file-spreadsheet" aria-hidden="true"></i>
                             {{ __('Spreadsheet (%s)')|format('XLSX') }}
                         </a>
                         {% if itemtype != 'Stat' %}
                         <hr class="dropdown-divider">
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::NAMES_OUTPUT') }}"
                            id="copy_names_to_clipboard" role="menuitem">
-                            <i class="ti ti-copy"></i>
+                            <i class="ti ti-copy" aria-hidden="true"></i>
                             {{ __('Copy names to clipboard') }}
                         </a>
                         {% endif %}

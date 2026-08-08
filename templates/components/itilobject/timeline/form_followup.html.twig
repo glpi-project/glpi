@@ -57,14 +57,14 @@
          <div class="timeline-badges">
             {% if entry_i['requesttypes_id'] %}
                <span class="badge bg-blue-lt" title="{{ __('Source of followup') }}">
-                  <i class="ti ti-inbox me-1"></i>
+                  <i class="ti ti-inbox me-1" aria-hidden="true"></i>
                   {{ get_item_name('RequestType', entry_i['requesttypes_id']) }}
                </span>
             {% endif %}
 
             {% if entry_i['sourceitems_id'] %}
                <span class="badge bg-blue-lt">
-                  <i class="ti ti-git-merge me-1"></i>
+                  <i class="ti ti-git-merge me-1" aria-hidden="true"></i>
                   {% set merged_badge %}
                      <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceitems_id']) }}
@@ -76,7 +76,7 @@
 
             {% if entry_i['sourceof_items_id'] %}
                <span class="badge bg-blue-lt">
-                  <i class="ti ti-git-merge me-1"></i>
+                  <i class="ti ti-git-merge me-1" aria-hidden="true"></i>
                   {% set promoted_badge %}
                      <span class="badge">
                         {{ get_item_link('Ticket', entry_i['sourceof_items_id']) }}
@@ -219,7 +219,7 @@
                      >
                         <span class="d-inline-flex align-items-center" title="{{ __("Set the status to pending") }}"
                               data-bs-toggle="tooltip" data-bs-placement="top" role="button">
-                           <i class="ti ti-player-pause-filled me-2"></i>
+                           <i class="ti ti-player-pause-filled me-2" aria-hidden="true"></i>
                            <label class="form-check form-switch mt-2">
                               <input type="hidden"   name="pending" value="0" />
                               <input type="checkbox" name="pending" value="1" class="form-check-input"
@@ -251,7 +251,7 @@
                         name="add"
                         aria-label="{{ _x('button', 'Add') }}"
                      >
-                        <i class="ti ti-plus"></i>
+                        <i class="ti ti-plus" aria-hidden="true"></i>
                         <span>{{ _x('button', 'Add') }}</span>
                      </button>
                     {{ pending_reasons|raw }}
@@ -260,14 +260,14 @@
                {% else %}
                   <input type="hidden" name="id" value="{{ subitem.fields['id'] }}" />
                   <button class="btn btn-primary me-2" type="submit" name="update">
-                     <i class="ti ti-device-floppy"></i>
+                     <i class="ti ti-device-floppy" aria-hidden="true"></i>
                      <span>{{ _x('button', 'Save') }}</span>
                   </button>
 
                   {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
                      <button class="btn btn-outline-danger me-2" type="submit" name="purge"
                              onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
-                        <i class="ti ti-trash"></i>
+                        <i class="ti ti-trash" aria-hidden="true"></i>
                         <span>{{ _x('button', 'Delete permanently') }}</span>
                      </button>
                   {% endif %}

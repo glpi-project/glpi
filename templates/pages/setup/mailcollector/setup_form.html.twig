@@ -118,12 +118,12 @@
         {% set get_imap_folder_btn %}
             <div class="btn btn-outline-secondary get-imap-folder cursor-pointer{% if item.isNewItem() %} disabled{% endif %}"
                  {% if item.isNewItem() %}style="pointer-events: none;"{% endif %}>
-                <i class="ti ti-list"></i>
+                <i class="ti ti-list" aria-hidden="true"></i>
             </div>
         {% endset %}
         {# warning message when config is changed, choosing imap/folder is disabled #}
         <div class="alert alert-warning{% if not item.isNewItem() %} d-none{% endif %}" id="server-changed-warning">
-            <i class="ti ti-info-circle"></i>
+            <i class="ti ti-info-circle" aria-hidden="true"></i>
             {{ __('Server configuration has changed. Please save the collector before browsing folders.') }}
         </div>
         {{ fields.textField(

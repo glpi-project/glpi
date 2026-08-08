@@ -2152,7 +2152,7 @@ HTML;
             Infocom::canApplyOn($itemtype)
             && static::canCreate()
         ) {
-            $actions[$action_name] = "<i class='" . htmlescape(self::getIcon()) . "'></i>"
+            $actions[$action_name] = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>"
                                   . __s('Enable the financial and administrative information');
         }
     }

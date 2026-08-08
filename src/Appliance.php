@@ -513,8 +513,8 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
 
         if ($isadmin) {
             $prefix                    = 'Appliance_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']    = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
-            $actions[$prefix . 'remove'] = "<i class='ti ti-package-off'></i>" . _sx('button', 'Remove an item');
+            $actions[$prefix . 'add']    = "<i class='ti ti-package' aria-hidden='true'></i>" . _sx('button', 'Add an item');
+            $actions[$prefix . 'remove'] = "<i class='ti ti-package-off' aria-hidden='true'></i>" . _sx('button', 'Remove an item');
         }
 
         KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);

@@ -34,19 +34,19 @@
     <span class="misc-right">
         <span class="license">
             {% if plugin['license'] is not empty %}
-                <i class="ti ti-license"></i>
+                <i class="ti ti-license" aria-hidden="true"></i>
                 {{ plugin['license']|html_to_text }}
             {% endif %}
         </span>
         <span class="authors">
             {% if plugin['authors'] is not empty %}
-                <i class="ti ti-users"></i>
+                <i class="ti ti-users" aria-hidden="true"></i>
                 {{ plugin['authors']|join(', ')|html_to_text }}
             {% endif %}
         </span>
         <span class="version">
             {% if plugin['version'] is not empty %}
-                <i class="ti ti-git-branch"></i>
+                <i class="ti ti-git-branch" aria-hidden="true"></i>
                 {{ plugin['version']|html_to_text }}
             {% endif %}
         </span>

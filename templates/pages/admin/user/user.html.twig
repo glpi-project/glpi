@@ -277,7 +277,7 @@
                                     {% set change_pw_field %}
                                         {% if is_preference_form %}
                                             <a role="button" class="btn btn-outline-secondary btn-sm" href="{{ path('/front/updatepassword.php') }}">
-                                                <i class="ti ti-lock"></i>
+                                                <i class="ti ti-lock" aria-hidden="true"></i>
                                                 {{ __('Change password') }}
                                             </a>
                                         {% else %}
@@ -299,7 +299,7 @@
                                                 data-bs-target="#modal_password_{{ rand_field }}"
                                                 aria-label="{{ __('Change password') }}"
                                             >
-                                                <i class="ti ti-lock"></i>
+                                                <i class="ti ti-lock" aria-hidden="true"></i>
                                                 {{ __('Change password') }}
                                             </button>
                                             <div class="text-warning d-none" data-password-change-pending>
@@ -344,7 +344,7 @@
             {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
             <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
                 <button class="btn btn-primary me-2" type="submit" name="update" value="1">
-                    <i class="ti ti-device-floppy"></i>
+                    <i class="ti ti-device-floppy" aria-hidden="true"></i>
                     <span>{{ _x('button', 'Save') }}</span>
                 </button>
             </div>

@@ -911,7 +911,7 @@ class Item_Rack extends CommonDBRelation
         }
 
         if (!empty($icon)) {
-            $icon = "<i class='item_rack_icon " . htmlescape($icon) . "'></i>";
+            $icon = "<i class='item_rack_icon " . htmlescape($icon) . "' aria-hidden='true'></i>";
         }
 
         return "";

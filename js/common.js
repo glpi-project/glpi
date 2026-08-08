@@ -964,7 +964,7 @@ var templateItilStatus = function(option) {
             break;
     }
 
-    return $(`<span><i class="itilstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
+    return $(`<span><i class="itilstatus ${classes}" aria-hidden="true"></i> ${_.escape(option.text)}</span>`);
 };
 
 var templateValidation = function(option) {
@@ -988,7 +988,7 @@ var templateValidation = function(option) {
             break;
     }
 
-    return $(`<span><i class="validationstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
+    return $(`<span><i class="validationstatus ${classes}" aria-hidden="true"></i> ${_.escape(option.text)}</span>`);
 };
 
 var templateItilPriority = function(option) {
@@ -1002,7 +1002,7 @@ var templateItilPriority = function(option) {
     var color_badge = "";
 
     if (priority_color.length > 0) {
-        color_badge += `<i class='ti ti-circle-filled' style='color: ${_.escape(priority_color)}'></i>`;
+        color_badge += `<i class='ti ti-circle-filled' style='color: ${_.escape(priority_color)}' aria-hidden='true'></i>`;
     }
 
     return $(`<span>${color_badge}&nbsp;${_.escape(option.text)}</span>`);
@@ -1652,7 +1652,7 @@ function initSortableTable(element_id) {
         const sort_icon = col.find('i');
         if (sort_icon.length === 0) {
             // Add sort icon
-            col.eq(0).append(`<i class="ti ti-caret-${new_order}-filled"></i>`);
+            col.eq(0).append(`<i class="ti ti-caret-${new_order}-filled" aria-hidden="true"></i>`);
         } else {
             sort_icon.addClass(new_order === 'up' ? 'ti-caret-up-filled' : 'ti-caret-down-filled');
         }
