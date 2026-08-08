@@ -336,13 +336,11 @@ class Dropdown
             && !isset($_REQUEST['_in_modal'])
             && $params['addicon']
         ) {
+            $add_label = htmlescape(sprintf(__('Add a new %s'), $item::getTypeName(1)));
             $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
             $add_item_icon .= '<button type="button" class="btn btn-outline-secondary"
-                           title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . htmlescape($field_id) . '">';
-            $add_item_icon .= "<span data-bs-toggle='tooltip'>
-              <i class='ti ti-plus'></i>
-              <span class='visually-hidden'>" . __s('Add') . "</span>
-                </span>";
+                           title="' . $add_label . '" data-bs-toggle="modal" data-bs-target="#add_' . htmlescape($field_id) . '">';
+            $add_item_icon .= "<i class='ti ti-plus'></i><span class='visually-hidden'>" . $add_label . "</span>";
             $add_item_icon .= '</button>';
         }
 
