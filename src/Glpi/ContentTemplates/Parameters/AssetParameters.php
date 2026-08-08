@@ -39,6 +39,7 @@ use CommonDBTM;
 use Entity;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
+use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 
 /**
  * Parameters for "Assets" items (Computer, Monitor, ...).
@@ -72,6 +73,7 @@ class AssetParameters extends AbstractParameters
             new AttributeParameter("serial", __('Serial number')),
             new AttributeParameter("comment", __('Comments')),
             new ObjectParameter(new EntityParameters()),
+            new ArrayParameter('created_tickets', new TicketCrParameters(), __('Created tickets')),
         ];
     }
 
@@ -92,6 +94,21 @@ class AssetParameters extends AbstractParameters
             $entity_parameters = new EntityParameters();
             $values['entity'] = $entity_parameters->getValues($entity);
         }
+
+        // Add Tickets created with the Asset
+		$values['created_tickets'] = [];
+		$it = new \Item_Ticket();
+		$links = $it->find([
+			'items_id' => $asset->fields['id'],
+			'itemtype' => $asset->getType()
+		]);
+		foreach ($links as $link) {
+			$ticket = new \Ticket();
+			if ($ticket->getFromDB($link['tickets_id'])) {
+			$ticket_parameters = new TicketCrParameters();
+			$values['created_tickets'][] = $ticket_parameters->getValues($ticket);
+			}
+		}
 
         return $values;
     }

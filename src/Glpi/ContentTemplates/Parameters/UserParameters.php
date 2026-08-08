@@ -84,6 +84,7 @@ class UserParameters extends AbstractParameters
             new ObjectParameter(new UserTitleParameters()),
             new ObjectParameter(new UserCategoryParameters()),
             new ArrayParameter('used_items', new AssetParameters(), "Used items"),
+            new ArrayParameter('created_tickets', new TicketCrParameters(), __('Created tickets')),
         ];
     }
 
@@ -140,6 +141,23 @@ class UserParameters extends AbstractParameters
                 }
             }
         }
+
+        // Add Tickets created by Requester
+		$values['created_tickets'] = [];
+
+		$tu = new \Ticket_User();
+		$links = $tu->find([
+			'users_id' => $fields['id'],
+			'type'     => \CommonITILActor::REQUESTER
+		]);
+
+		foreach ($links as $link) {
+			$ticket = new \Ticket();
+			if ($ticket->getFromDB($link['tickets_id'])) {
+				$ticket_parameters = new TicketCrParameters();
+				$values['created_tickets'][] = $ticket_parameters->getValues($ticket);
+			}
+		}
 
         return $values;
     }
