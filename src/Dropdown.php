@@ -340,7 +340,7 @@ class Dropdown
             $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
             $add_item_icon .= '<button type="button" class="btn btn-outline-secondary"
                            title="' . $add_label . '" data-bs-toggle="modal" data-bs-target="#add_' . htmlescape($field_id) . '">';
-            $add_item_icon .= "<i class='ti ti-plus'></i><span class='visually-hidden'>" . $add_label . "</span>";
+            $add_item_icon .= "<i class='ti ti-plus' aria-hidden='true'></i><span class='visually-hidden'>" . $add_label . "</span>";
             $add_item_icon .= '</button>';
         }
 
