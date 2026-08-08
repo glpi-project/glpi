@@ -31223,7 +31223,7 @@ msgstr "Variáveis disponíveis (%s)"
 
 #: src/Glpi/ContentTemplates/TemplateDocumentation.php:127
 msgid "Variable"
-msgstr "variável"
+msgstr "Variáve"
 
 #: src/Glpi/ContentTemplates/TemplateDocumentation.php:129
 msgid "Usage"
