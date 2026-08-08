@@ -60,6 +60,7 @@ use function Safe\json_decode;
 use function Safe\parse_url;
 use function Safe\session_id;
 use function Safe\session_save_path;
+use function Safe\strtotime;
 use function Safe\unlink;
 
 /**
@@ -736,7 +737,7 @@ final class SessionTracker
             'type' => $_GET['type'] ?? 'all',
             'authtype' => $_GET['authtype'] ?? 'all',
             'ip' => $_GET['ip'] ?? '',
-            'date' => $_GET['date'] ?? ''
+            'date' => $_GET['date'] ?? '',
         ];
         $start = (int) ($_GET['start'] ?? 0);
         try {
