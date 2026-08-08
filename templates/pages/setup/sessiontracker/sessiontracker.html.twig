@@ -36,7 +36,9 @@
 {% set user_filter_id = 'filter_user' ~ rand %}
 {% set status_filter_id = 'filter_status' ~ rand %}
 {% set type_filter_id = 'filter_type' ~ rand %}
+{% set authtype_filter_id = 'filter_authtype' ~ rand %}
 {% set ip_filter_id = 'filter_ip' ~ rand %}
+{% set date_filter_id = 'filter_date' ~ rand %}
 {% set filters_popover_id = 'filters-popover-' ~ rand %}
 {% set datatable_id = 'sessions-datatable-' ~ rand %}
 
@@ -119,10 +121,23 @@
                     id: type_filter_id,
                     rand: rand,
                 }) }}
+                {{ fields.dropdownArrayField('filter_authtype', filters['authtype'], {
+                    all: __('All'),
+                } + call('Auth::getAuthSources', [true]), __('Authentication'), {
+                    is_horizontal: false,
+                    id: authtype_filter_id,
+                    rand: rand,
+                }) }}
                 {{ fields.textField('filter_ip', filters['ip'], _n('IP address', 'IP addresses', 1), {
                     is_horizontal: false,
                     id: ip_filter_id,
                     helper: __('CIDR notation and comma separated values are supported.'),
+                    rand: rand,
+                }) }}
+                {{ fields.datetimeField('filter_date', '', __('Date range'), {
+                    is_horizontal: false,
+                    mode: 'range',
+                    id: date_filter_id,
                     rand: rand,
                 }) }}
                 <div style="grid-column: 5; grid-row: 2" class="d-flex align-self-center gap-2 session-actions">
@@ -197,7 +212,9 @@
         const user_filter = document.getElementById('{{ user_filter_id|e('js') }}');
         const status_filter = document.getElementById('dropdown_{{ status_filter_id|e('js') }}');
         const type_filter = document.getElementById('dropdown_{{ type_filter_id|e('js') }}');
+        const authtype_filter = document.getElementById('dropdown_{{ authtype_filter_id|e('js') }}');
         const ip_filter = document.getElementById('{{ ip_filter_id|e('js') }}');
+        const date_filter = document.getElementById('{{ date_filter_id|e('js') }}');
         const filters_popover = document.getElementById('{{ filters_popover_id|e('js') }}');
         const ipv4_pattern = /^(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d{2}|[1-9]?\d)){3}$/;
         const ipv6_pattern = /^(([0-9a-fA-F]{1,4}:){7}([0-9a-fA-F]{1,4}|:))|(([0-9a-fA-F]{1,4}:){1,7}:)|(([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4})|(([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2})|(([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3})|(([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4})|(([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5})|([0-9a-fA-F]{1,4}:)((:[0-9a-fA-F]{1,4}){1,6})|(:)((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}$/;
@@ -225,7 +242,20 @@
                 }
             }
 
+            date_filter._flatpickr.setDate({{ filters['date']|json_encode|raw }}, false);
+            // The default onClose handler added by the twig templates is unwanted (forces value to apply even when unchanged)
+            date_filter._flatpickr.config.onClose = [];
+            date_filter._flatpickr.config.onChange.push((selectedDates) => {
+                if (selectedDates.length === 2) {
+                    date_filter._flatpickr.close();
+                    reloadWithFilters();
+                }
+            });
+
             $(type_filter).on('change', () => {
+                reloadWithFilters();
+            });
+            $(authtype_filter).on('change',  ()  => {
                 reloadWithFilters();
             });
             $(status_filter).on('change', () => {
@@ -249,7 +279,9 @@
                     'user': user_filter.value.trim(),
                     'status': status_filter.value,
                     'type': type_filter.value,
+                    'authtype': authtype_filter.value,
                     'ip': ip_filter.value.trim(),
+                    'date': JSON.stringify(date_filter._flatpickr.selectedDates),
                 };
             {% else %}
                 return {};
@@ -313,13 +345,17 @@
                 const user_filter_value = user_filter.value.trim();
                 const status_filter_value = status_filter.value;
                 const type_filter_value = type_filter.value;
+                const authtype_filter_value = authtype_filter.value;
                 const ip_filter_value = ip_filter.value.trim();
+                const date_filter_value = JSON.stringify(date_filter._flatpickr.selectedDates);
 
                 applyFilters({
                     'user': user_filter_value,
                     'status': status_filter_value,
                     'type': type_filter_value,
+                    'authtype': authtype_filter_value,
                     'ip': ip_filter_value,
+                    'date': date_filter_value,
                 });
             });
         });
@@ -330,7 +366,9 @@
                 user_filter.value = '';
                 status_filter.value = 'active';
                 type_filter.value = 'all';
+                authtype_filter.value = 'all';
                 ip_filter.value = '';
+                date_filter._flatpickr.clear();
                 reloadWithFilters();
             });
         });

@@ -249,6 +249,7 @@
         'disabled': false,
         'maybeempty': false,
         'addCalendarButton': true,
+        'mode': 'single',
     }|merge(options) %}
 
     {% set editable = not options.readonly and not options.disabled %}
@@ -335,6 +336,7 @@
                     noCalendar: {{ options.noCalendar ? "true" : "false" }},
                     weekNumbers: true,
                     time_24hr: true,
+                    mode: '{{ options.mode|e('js') }}',
                     allowInput: {{ options.readonly ? 'false' : 'true' }},
                     clickOpens: {{ options.readonly ? 'false' : 'true' }},
                     locale: getFlatPickerLocale("{{ locale['language']|e('js') }}", "{{ locale['region']|e('js') }}"),
