@@ -62,7 +62,6 @@
                      data-bs-toggle="collapse"
                      data-bs-target="#new-{{ default_action_data.class }}-block"
                      type="button"
-                     aria-label="{{ default_action_data.label }}"
                   >
                      <i class="{{ default_action_data.icon }}"></i>
                      <span>{{ default_action_data.label }}</span>
@@ -90,7 +89,7 @@
                         <ul class="dropdown-menu">
                               {% for action, timeline_itemtype in main_actions_itemtypes %}
                                  {% if loop.index0 > 0 %}
-                                 <li aria-label="{{ timeline_itemtype.label }}"><a class="dropdown-item action-{{ action }} answer-action" href="#"
+                                 <li><a class="dropdown-item action-{{ action }} answer-action" href="#"
                                     data-bs-toggle="collapse" data-bs-target="#new-{{ timeline_itemtype.class }}-block">
                                     <i class="{{ timeline_itemtype.icon }}"></i>
                                     <span>{{ timeline_itemtype.label }}</span>
