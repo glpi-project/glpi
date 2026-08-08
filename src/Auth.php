@@ -1186,7 +1186,7 @@ class Auth extends CommonGLPI
     }
 
     /**
-     * @return array
+     * @return array<int, string>
      */
     public static function getAuthSources(bool $force_all = false): array
     {
