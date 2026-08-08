@@ -27,7 +27,7 @@ class TicketCrParameters extends AbstractParameters
         return [
             new AttributeParameter("id", __('ID')),
 			new AttributeParameter("link", _n('Link', 'Links', 1), "raw"),
-			new AttributeParameter("url", __('URL').', '. __('internal')),
+			new AttributeParameter("url", __('URL')),
 			new AttributeParameter("name", __('Title')),
 			new AttributeParameter("content", __('Description'), "raw"),
 			new AttributeParameter("status", __('Status')),
@@ -36,8 +36,8 @@ class TicketCrParameters extends AbstractParameters
 
     protected function defineValues(CommonDBTM $ticket): array
     {
-	$fields = $ticket->fields;
-    $values= [
+	    $fields = $ticket->fields;
+        $values= [
             'id'        => $fields['id'],
             'ref'       => "#" . $fields['id'],
             'link'      => $ticket->getLink(),
@@ -45,7 +45,7 @@ class TicketCrParameters extends AbstractParameters
 			'name'      => $fields['name'],
 			'content'   => $fields['content'],
 			'status'    => $ticket::getStatus($fields['status']),
-			];
+		];
 
     return $values;
     }
