@@ -26,7 +26,6 @@ class TicketCrParameters extends AbstractParameters
     {
         return [
             new AttributeParameter("id", __('ID')),
-			new AttributeParameter("ref", __("Reference (# + id)")),
 			new AttributeParameter("link", _n('Link', 'Links', 1), "raw"),
 			new AttributeParameter("url", __('URL').', '. __('internal')),
 			new AttributeParameter("name", __('Title')),
