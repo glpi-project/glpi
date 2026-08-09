@@ -69,7 +69,9 @@ class TicketCrParameters extends AbstractParameters
 			new AttributeParameter("status", __('Status')),
         ];
     }
-
+    /**
+    * @return array<string, mixed>
+    */
     protected function defineValues(CommonDBTM $ticket): array
     {
         /** @var Ticket $ticket */
