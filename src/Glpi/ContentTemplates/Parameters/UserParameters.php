@@ -143,21 +143,21 @@ class UserParameters extends AbstractParameters
         }
 
         // Add Tickets created by Requester
-		$values['created_tickets'] = [];
+        $values['created_tickets'] = [];
 
-		$tu = new \Ticket_User();
-		$links = $tu->find([
-			'users_id' => $fields['id'],
-			'type'     => \CommonITILActor::REQUESTER
-		]);
+        $tu = new \Ticket_User();
+        $links = $tu->find([
+            'users_id' => $fields['id'],
+            'type'     => \CommonITILActor::REQUESTER,
+        ]);
 
-		foreach ($links as $link) {
-			$ticket = new \Ticket();
-			if ($ticket->getFromDB($link['tickets_id'])) {
-				$ticket_parameters = new TicketCrParameters();
-				$values['created_tickets'][] = $ticket_parameters->getValues($ticket);
-			}
-		}
+        foreach ($links as $link) {
+            $ticket = new \Ticket();
+            if ($ticket->getFromDB($link['tickets_id'])) {
+                $ticket_parameters = new TicketCrParameters();
+                $values['created_tickets'][] = $ticket_parameters->getValues($ticket);
+            }
+        }
 
         return $values;
     }
