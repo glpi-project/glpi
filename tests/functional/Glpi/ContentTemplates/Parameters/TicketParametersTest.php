@@ -173,7 +173,7 @@ class TicketParametersTest extends AbstractParametersTest
                             'firstname'  => null,
                             'realname'   => null,
                             'used_items' => [],
-                            'created_tickets' => []
+                            'created_tickets' => [],
                         ],
                         [
                             'id'         => $observer_users_id2,
@@ -186,7 +186,7 @@ class TicketParametersTest extends AbstractParametersTest
                             'firstname'  => null,
                             'realname'   => null,
                             'used_items' => [],
-                            'created_tickets' => []
+                            'created_tickets' => [],
                         ],
                     ],
                     'groups' => [],
