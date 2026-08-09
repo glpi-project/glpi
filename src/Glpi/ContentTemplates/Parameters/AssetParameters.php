@@ -37,9 +37,9 @@ namespace Glpi\ContentTemplates\Parameters;
 
 use CommonDBTM;
 use Entity;
+use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
-use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 
 /**
  * Parameters for "Assets" items (Computer, Monitor, ...).
@@ -96,19 +96,19 @@ class AssetParameters extends AbstractParameters
         }
 
         // Add Tickets created with the Asset
-		$values['created_tickets'] = [];
-		$it = new \Item_Ticket();
-		$links = $it->find([
-			'items_id' => $asset->fields['id'],
-			'itemtype' => $asset->getType()
-		]);
-		foreach ($links as $link) {
-			$ticket = new \Ticket();
-			if ($ticket->getFromDB($link['tickets_id'])) {
-			$ticket_parameters = new TicketCrParameters();
-			$values['created_tickets'][] = $ticket_parameters->getValues($ticket);
-			}
-		}
+        $values['created_tickets'] = [];
+        $it = new \Item_Ticket();
+        $links = $it->find([
+            'items_id' => $asset->fields['id'],
+            'itemtype' => $asset->getType(),
+        ]);
+        foreach ($links as $link) {
+            $ticket = new \Ticket();
+            if ($ticket->getFromDB($link['tickets_id'])) {
+                $ticket_parameters = new TicketCrParameters();
+                $values['created_tickets'][] = $ticket_parameters->getValues($ticket);
+            }
+        }
 
         return $values;
     }
