@@ -51,8 +51,8 @@ class TicketCrParameters extends AbstractParameters
         return __('Created tickets');
     }
     /**
-	* @return array<class-string<CommonDBTM>>
-	*/
+    * @return array<class-string<CommonDBTM>>
+    */
     protected function getTargetClasses(): array
     {
         return [Ticket::class];
@@ -62,11 +62,11 @@ class TicketCrParameters extends AbstractParameters
     {
         return [
             new AttributeParameter("id", __('ID')),
-			new AttributeParameter("link", _n('Link', 'Links', 1), "raw"),
-			new AttributeParameter("url", __('URL')),
-			new AttributeParameter("name", __('Title')),
-			new AttributeParameter("content", __('Description'), "raw"),
-			new AttributeParameter("status", __('Status')),
+            new AttributeParameter("link", _n('Link', 'Links', 1), "raw"),
+            new AttributeParameter("url", __('URL')),
+            new AttributeParameter("name", __('Title')),
+            new AttributeParameter("content", __('Description'), "raw"),
+            new AttributeParameter("status", __('Status')),
         ];
     }
     /**
@@ -75,16 +75,16 @@ class TicketCrParameters extends AbstractParameters
     protected function defineValues(CommonDBTM $ticket): array
     {
         /** @var Ticket $ticket */
-	    $fields = $ticket->fields;
-        $values= [
+        $fields = $ticket->fields;
+        $values = [
             'id'        => $fields['id'],
             'link'      => $ticket->getLink(),
-			'url'	    => ltrim($ticket->getLinkURL(), '/'),
-			'name'      => $fields['name'],
-			'content'   => $fields['content'],
-			'status'    => $ticket::getStatus($fields['status']),
-		];
+            'url'	    => ltrim($ticket->getLinkURL(), '/'),
+            'name'      => $fields['name'],
+            'content'   => $fields['content'],
+            'status'    => $ticket::getStatus($fields['status']),
+        ];
 
-    return $values;
+        return $values;
     }
 }
