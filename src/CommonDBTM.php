@@ -1678,6 +1678,15 @@ class CommonDBTM extends CommonGLPI
         Plugin::doHook(Hooks::PRE_ITEM_UPDATE, $this);
         if ($this->input && is_array($this->input)) {
             $this->input = $this->prepareInputForUpdate($this->input);
+        }
+
+        if ($this->input && is_array($this->input)) {
+            // Call the plugin hook - $this->input can be altered
+            // This hook get the data altered by the object method
+            Plugin::doHook(Hooks::POST_PREPAREUPDATE, $this);
+        }
+
+        if ($this->input && is_array($this->input)) {
             $this->filterValues(!isCommandLine());
         }
 
