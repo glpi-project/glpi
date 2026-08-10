@@ -66,7 +66,7 @@ final class DataAndPrivacyConfig extends Config
         $menu = [];
         if (self::canView()) {
             $menu['title'] = self::getTypeName();
-            $menu['page'] = self::getFormURL(false);
+            $menu['page'] = self::getFormURL();
             $menu['icon'] = self::getIcon();
         }
         if (count($menu)) {
@@ -128,7 +128,7 @@ final class DataAndPrivacyConfig extends Config
         $logspurge_crontask = new CronTask();
         $logspurge_crontask->getFromDBbyName(PurgeLogs::class, 'PurgeLogs');
         TemplateRenderer::getInstance()->display('pages/setup/general/logs_setup.html.twig', [
-            'form_path' => self::getFormURL(false),
+            'form_path' => self::getFormURL(),
             'config' => $CFG_GLPI,
             'canedit' => self::canUpdate(),
             'logspurge_crontask' => $logspurge_crontask,
@@ -149,7 +149,7 @@ final class DataAndPrivacyConfig extends Config
         $crontask = new CronTask();
         $crontask->getFromDBbyName(self::class, 'purgesessionhistory');
         TemplateRenderer::getInstance()->display('pages/setup/data_privacy/session_retention.html.twig', [
-            'form_path' => self::getFormURL(false),
+            'form_path' => self::getFormURL(),
             'config' => $CFG_GLPI,
             'canedit' => self::canUpdate(),
             'crontask' => $crontask,
