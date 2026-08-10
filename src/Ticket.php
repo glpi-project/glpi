@@ -3936,7 +3936,7 @@ JAVASCRIPT;
                     ];
                 }
 
-               if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READGROUP])) {
+                if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READGROUP])) {
                     $search_users_id = [
                         'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
                         'glpi_groups_tickets.type'      => CommonITILActor::REQUESTER,

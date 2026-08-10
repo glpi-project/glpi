@@ -11193,11 +11193,11 @@ HTML,
      */
     #[DataProvider('showCentralListRightsProvider')]
     public function testShowCentralListRights(
-            string $status,
-            array $rights,
-            array $expected_tickets,
-            bool $showgrouptickets,
-            array $validation_rights = [],
+        string $status,
+        array $rights,
+        array $expected_tickets,
+        bool $showgrouptickets,
+        array $validation_rights = [],
     ): void {
         $this->login();
 
@@ -11245,7 +11245,9 @@ HTML,
             $group_assign, $waiting_requester, $waiting_observer, $waiting_assign,
             $waiting_group_requester, $waiting_group_observer, $waiting_group_assign,
             $solved_requestbyself, $solved_group_requester,
-        ] = $this->createItems(Ticket::class, [
+        ] = $this->createItems(
+            Ticket::class,
+            [
                 [
                     'name' => 'incoming_requestbyself',
                     'content' => 'incoming requester ticket content',
