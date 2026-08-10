@@ -100,7 +100,7 @@ class Asset_PeripheralAssetTest extends DbTestCase
     public function testDeletePeripheralDoesNotCallCleanRelationData(): void
     {
         $computer = $this->createItem(
-            \Computer::getType(),
+            \Computer::class,
             [
                 'name'   => 'Le PC',
                 'serial' => 'qqzder45',
