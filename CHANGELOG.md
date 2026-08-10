@@ -83,6 +83,8 @@ The present file will list all changes made to the project; according to the
 - `csrf_token()` Twig function: remove all `_glpi_csrf_token` hidden fields from forms; they are no longer required.
 - `getAjaxCsrfToken()` JavaScript function: remove all `X-Glpi-Csrf-Token` request headers from AJAX calls; they are no longer required.
 - `fields.csrfField()` Twig macro in `fields_macros.html.twig`.
+- `escapeMarkupText()` javascript function.
+- `Html::link()`
 
 #### Removed
 
@@ -103,6 +105,7 @@ The present file will list all changes made to the project; according to the
 - `AuthLDAP::DELETED_USER_DISABLE`
 - `AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO`
 - `AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS`
+- `CommonITILObject::assign()`
 - `CommonITILObject::showSatisfactionTabContent()`
 - `ComputerAntivirus` class
 - `ComputerVirtualMachine` class
@@ -115,14 +118,16 @@ The present file will list all changes made to the project; according to the
 - `DBConnection::getDBSlaveConf()`
 - `DBConnection::isDBSlaveActive()`
 - `DBConnection::saveDBSlaveConf()`
+- `DBmysql::doQueryOrDie()`
+- `DBmysql::deleteOrDie()`
+- `DBmysql::guessTimezone()`
+- `DBmysql::insertOrDie()`
 - `DBmysql::query()`
 - `DBmysql::queryOrDie()`
-- `DBmysql::doQueryOrDie()`
-- `DBmysql::insertOrDie()`
 - `DBmysql::updateOrDie()`
-- `DBmysql::deleteOrDie()`
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
+- `DbUtils::getEntitiesRestrictRequest()`
 - `Document::send()`
 - `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
 - `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`

@@ -1927,9 +1927,6 @@ class APIRestTest extends TestCase
         $headers = $res->getHeaders(false);
         $this->assertArrayHasKey('content-type', $headers);
         $this->assertSame('text/html; charset=UTF-8', $headers['content-type'][0]);
-
-        // FIXME Remove this when deprecation notices will be fixed on michelf/php-markdown side
-        $file_updated = file_put_contents($this->getLogFilePath(), "");
     }
 
     public function initSessionCredentials()

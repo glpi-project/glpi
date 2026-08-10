@@ -10418,12 +10418,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Migration/AbstractPluginMigration.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Migration/AbstractPluginMigration.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemFromArray\\(\\) expects string, string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,

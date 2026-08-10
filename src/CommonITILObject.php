@@ -1281,7 +1281,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      **/
-    // FIXME add params typehint in GLPI 11.0
     public function isGroup($type, $groups_id): bool
     {
         if (isset($this->groups[$type])) {
@@ -2100,7 +2099,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $do_not_compute_takeintoaccount = $this->isTakeIntoAccountComputationBlocked($input);
 
         if (isset($input['_itil_requester'])) {
-            // FIXME Deprecate this input key in GLPI 11.0.
+            // FIXME Deprecate this input key.
             if (isset($input['_itil_requester']['_type'])) {
                 $input['_itil_requester'] = [
                     'type'                            => CommonITILActor::REQUESTER,
@@ -2171,7 +2170,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if (isset($input['_itil_observer'])) {
-            // FIXME Deprecate this input key in GLPI 11.0.
+            // FIXME Deprecate this input key.
             if (isset($input['_itil_observer']['_type'])) {
                 $input['_itil_observer'] = [
                     'type'                            => CommonITILActor::OBSERVER,
@@ -2241,7 +2240,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if (isset($input['_itil_assign'])) {
-            // FIXME Deprecate this input key in GLPI 11.0.
+            // FIXME Deprecate this input key.
             if (isset($input['_itil_assign']['_type'])) {
                 $input['_itil_assign'] = [
                     'type'                            => CommonITILActor::ASSIGN,
@@ -8391,7 +8390,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @return ITILTemplate|null
      *
      * @since 11.0.2
-     * @TODO Make this method private in GLPI 12.
+     * @TODO Make this method private.
      */
     public function getITILTemplateFromInput(array $input = [], $existing_object = null): ?ITILTemplate
     {
@@ -9752,36 +9751,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             ) {
                 $input['_groups_id_assign'] = $item->fields['groups_id_tech'];
             }
-        }
-
-        return $input;
-    }
-
-    /**
-     * Replay setting auto assign if set in rules engine or by auto_assign_mode
-     * Do not force status if status has been set by rules
-     *
-     * @param array $input
-     *
-     * @return array
-     */
-    protected function assign(array $input)
-    {
-        // FIXME Deprecate this method in GLPI 11.0.
-        if (!in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))) {
-            return $input;
-        }
-
-        if (
-            (
-                $this->hasValidActorInInput($input, User::class, CommonITILActor::ASSIGN)
-                || $this->hasValidActorInInput($input, Group::class, CommonITILActor::ASSIGN)
-                || $this->hasValidActorInInput($input, Supplier::class, CommonITILActor::ASSIGN)
-            )
-            && (in_array($input['status'], static::getNewStatusArray()))
-            && !$this->isStatusComputationBlocked($input)
-        ) {
-            $input["status"] = self::ASSIGNED;
         }
 
         return $input;
@@ -11300,7 +11269,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         foreach ($usertypes as $k => $t) {
             //handle new input
             if (isset($input['_itil_' . $t]) && isset($input['_itil_' . $t]['_type'])) {
-                // FIXME Deprecate these keys in GLPI 11.0.
+                // FIXME Deprecate these keys.
                 $field = $input['_itil_' . $t]['_type'] . 's_id';
                 if (
                     isset($input['_itil_' . $t][$field])

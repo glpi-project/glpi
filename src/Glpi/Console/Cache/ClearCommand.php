@@ -58,13 +58,6 @@ class ClearCommand extends Command
         parent::configure();
 
         $this->setName('cache:clear');
-        $this->setAliases(
-            [
-                // Old command alias
-                // FIXME Remove it in GLPI 11.0.
-                'system:clear_cache',
-            ]
-        );
         $this->setDescription('Clear GLPI cache.');
 
         $this->addOption(

@@ -327,51 +327,6 @@ class DBmysql
     }
 
     /**
-     * Guess timezone
-     *
-     * Will  check for an existing loaded timezone from user,
-     * then will check in preferences and finally will fallback to system one.
-     *
-     * @return string
-     *
-     * @since 9.5.0
-     *
-     * @TODO Remove this method in GLPI 12.0
-     */
-    public function guessTimezone()
-    {
-        if ($this->use_timezones) {
-            if (isset($_SESSION['glpitimezone'])) {
-                $zone = $_SESSION['glpitimezone'];
-                if ($zone === '0') {
-                    // '0' is for 'Use server configuration'
-                    $zone = date_default_timezone_get();
-                }
-            } else {
-                $conf_tz = ['value' => null];
-                if (
-                    $this->tableExists(Config::getTable())
-                    && $this->fieldExists(Config::getTable(), 'value')
-                ) {
-                    $conf_tz = $this->request([
-                        'SELECT' => 'value',
-                        'FROM'   => Config::getTable(),
-                        'WHERE'  => [
-                            'context'   => 'core',
-                            'name'      => 'timezone',
-                        ],
-                    ])->current();
-                }
-                $zone = !empty($conf_tz['value']) ? $conf_tz['value'] : date_default_timezone_get();
-            }
-        } else {
-            $zone = date_default_timezone_get();
-        }
-
-        return $zone;
-    }
-
-    /**
      * Escapes special characters in a string for use in an SQL statement,
      * taking into account the current charset of the connection
      *

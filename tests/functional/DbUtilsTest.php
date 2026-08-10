@@ -670,7 +670,7 @@ class DbUtilsTest extends DbTestCase
         // See all, really all
         $_SESSION['glpishowallentities'] = 1; // will be restored by setEntity call
 
-        $this->assertEmpty($instance->getEntitiesRestrictRequest('AND', 'glpi_computers'));
+        $this->assertEmpty(@$instance->getEntitiesRestrictRequest('AND', 'glpi_computers'));
 
         $it = new \DBmysqlIterator(null);
 
@@ -678,7 +678,7 @@ class DbUtilsTest extends DbTestCase
         $this->assertSame('SELECT * FROM `glpi_computers` WHERE true', $it->getSql());
 
         //keep testing old method from db.function
-        $this->assertEmpty(getEntitiesRestrictRequest('AND', 'glpi_computers'));
+        $this->assertEmpty(@getEntitiesRestrictRequest('AND', 'glpi_computers'));
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame('SELECT * FROM `glpi_computers` WHERE (true)', $it->getSql());
 
@@ -687,7 +687,7 @@ class DbUtilsTest extends DbTestCase
 
         $this->assertSame(
             "WHERE ( `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3')  ) ",
-            $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
+            @$instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
@@ -702,7 +702,7 @@ class DbUtilsTest extends DbTestCase
         //keep testing old method from db.function
         $this->assertSame(
             "WHERE ( `glpi_computers`.`entities_id` IN ('$root', '$child1', '$child2', '$child3')  ) ",
-            getEntitiesRestrictRequest('WHERE', 'glpi_computers')
+            @getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
 
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
@@ -720,7 +720,7 @@ class DbUtilsTest extends DbTestCase
 
         $this->assertSame(
             "WHERE ( `glpi_computers`.`entities_id` IN ('$root')  ) ",
-            $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
+            @$instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
@@ -736,7 +736,7 @@ class DbUtilsTest extends DbTestCase
         //keep testing old method from db.function
         $this->assertSame(
             "WHERE ( `glpi_computers`.`entities_id` IN ('$root')  ) ",
-            getEntitiesRestrictRequest('WHERE', 'glpi_computers')
+            @getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
 
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
@@ -754,7 +754,7 @@ class DbUtilsTest extends DbTestCase
 
         $this->assertSame(
             "WHERE ( `glpi_computers`.`entities_id` IN ('$child1')  ) ",
-            $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
+            @$instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
@@ -769,7 +769,7 @@ class DbUtilsTest extends DbTestCase
         //keep testing old method from db.function
         $this->assertSame(
             "WHERE ( `glpi_computers`.`entities_id` IN ('$child1')  ) ",
-            getEntitiesRestrictRequest('WHERE', 'glpi_computers')
+            @getEntitiesRestrictRequest('WHERE', 'glpi_computers')
         );
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
         $this->assertSame(
@@ -784,7 +784,7 @@ class DbUtilsTest extends DbTestCase
         // Child without table
         $this->assertSame(
             "WHERE ( `entities_id` IN ('$child1')  ) ",
-            $instance->getEntitiesRestrictRequest('WHERE')
+            @$instance->getEntitiesRestrictRequest('WHERE')
         );
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria()]);
         $this->assertSame(
@@ -799,7 +799,7 @@ class DbUtilsTest extends DbTestCase
         //keep testing old method from db.function
         $this->assertSame(
             "WHERE ( `entities_id` IN ('$child1')  ) ",
-            getEntitiesRestrictRequest('WHERE')
+            @getEntitiesRestrictRequest('WHERE')
         );
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria()]);
         $this->assertSame(
@@ -816,7 +816,7 @@ class DbUtilsTest extends DbTestCase
 
         $this->assertSame(
             "WHERE ( `glpi_computers`.`entities_id` IN ('$child2')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0, $root)) ) ",
-            $instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true)
+            @$instance->getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true)
         );
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers', '', '', true)]);
         $this->assertSame(
@@ -831,7 +831,7 @@ class DbUtilsTest extends DbTestCase
         //keep testing old method from db.function
         $this->assertSame(
             "WHERE ( `glpi_computers`.`entities_id` IN ('$child2')  OR (`glpi_computers`.`is_recursive`='1' AND `glpi_computers`.`entities_id` IN (0, $root)) ) ",
-            getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true)
+            @getEntitiesRestrictRequest('WHERE', 'glpi_computers', '', '', true)
         );
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers', '', '', true)]);
         $this->assertSame(
@@ -890,7 +890,7 @@ class DbUtilsTest extends DbTestCase
         // Child + parent without table
         $this->assertSame(
             "WHERE ( `entities_id` IN ('$child2')  OR (`is_recursive`='1' AND `entities_id` IN (0, $root)) ) ",
-            $instance->getEntitiesRestrictRequest('WHERE', '', '', '', true)
+            @$instance->getEntitiesRestrictRequest('WHERE', '', '', '', true)
         );
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('', '', '', true)]);
         $this->assertSame(
@@ -925,7 +925,7 @@ class DbUtilsTest extends DbTestCase
         //keep testing old method from db.function
         $this->assertSame(
             "WHERE ( `entities_id` IN ('$child2')  OR (`is_recursive`='1' AND `entities_id` IN (0, $root)) ) ",
-            getEntitiesRestrictRequest('WHERE', '', '', '', true)
+            @getEntitiesRestrictRequest('WHERE', '', '', '', true)
         );
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('', '', '', true)]);
         $this->assertSame(
