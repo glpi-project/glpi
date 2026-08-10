@@ -645,7 +645,7 @@ class ProjectTaskTest extends DbTestCase
 
         $tasks = getAllDataFromTable(ProjectTask::getTable(), ['projects_id' => $project->getID(), 'ORDER' => 'id ASC'] );
 
-        // Sort tasks by planned start date
+        // Sort tasks by hierarchy
         $sorted_tasks = ProjectTask::sortProjectTasksByHierarchy($tasks);
 
         // Check the order of the sorted tasks

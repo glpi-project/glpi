@@ -707,7 +707,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @param int $ID ID of the project
      *
-     * @return array of tasks ordered by dates
+     * @return array of tasks ordered by dates or by hierarchical order if no start dates are set
      **/
     public static function getAllForProject($ID)
     {
@@ -741,7 +741,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      * @since 9.5.0
      * @param int $ID ID of the project task
      *
-     * @return array of tasks ordered by dates
+     * @return array of tasks ordered by dates or by hierarchical order if no start dates are set
      **/
     public static function getAllForProjectTask($ID)
     {
