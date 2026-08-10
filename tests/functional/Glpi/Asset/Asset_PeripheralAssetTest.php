@@ -95,4 +95,52 @@ class Asset_PeripheralAssetTest extends DbTestCase
         $this->assertIsBool($result);
         $this->assertTrue($result);
     }
+
+    public function testDeletePeripheralDoesNotCallCleanRelationData(): void
+    {
+        $computer = new \Computer();
+        $relation = new Asset_PeripheralAsset();
+        $peripheralMock = $this->getMockBuilder(\Peripheral::class)
+            ->onlyMethods(['cleanRelationData'])
+            ->getMock();
+
+        $peripheralMock
+            ->expects($this->never())
+            ->method('cleanRelationData');
+
+
+        $computers_id = $computer->add(
+            [
+                'name'   => 'Le PC',
+                'serial' => 'qqzder45',
+                'entities_id' => 0,
+            ]
+        );
+        $this->assertGreaterThan(0, $computers_id);
+
+        $periph_id = $peripheralMock->add(
+            [
+                'name' => 'La Souris',
+                'serial' => '12345',
+                'entities_id'  => 0,
+            ]
+        );
+        $this->assertGreaterThan(0, $periph_id);
+
+        $relation_id = $relation->add(
+            [
+                'itemtype_asset' => 'Computer',
+                'items_id_asset' => $computers_id,
+                'itemtype_peripheral' => 'Peripheral',
+                'items_id_peripheral' => $periph_id,
+            ]
+        );
+        $this->assertGreaterThan(0, $relation_id);
+
+        $peripheralMock->delete(
+            [
+                'id' => $periph_id
+            ]
+        );
+    }
 }
