@@ -1967,7 +1967,7 @@ TWIG, $twig_params);
 
         $active = $this->fields['is_active'];
         $data['is_active'] = sprintf(
-            '<i class="ti ti-circle-filled %s" title="%s"></i>',
+            '<i class="ti ti-circle-filled %1$s" title="%2$s" aria-hidden="true"></i><span class="visually-hidden">%2$s</span>',
             $active ? 'text-success' : 'text-danger',
             $active ? __s('Rule is active') : __s('Rule is inactive'),
         );

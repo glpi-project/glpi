@@ -66,7 +66,10 @@
         <span class="fc-time me-1 text-nowrap">{{ time_hour }}</span>
         <span class="fc-title">
             {{ event_info.event.title }}
-            <i v-if="icon_class" :class="icon_class" :title="icon_alt" :aria-label="icon_alt" class="ms-1"></i>
+            <template v-if="icon_class">
+                <i :class="icon_class" :title="icon_alt" class="ms-1" aria-hidden="true"></i>
+                <span class="visually-hidden">{{ icon_alt }}</span>
+            </template>
         </span>
     </div>
     <span class="event_type"></span>

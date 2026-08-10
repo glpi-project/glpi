@@ -596,8 +596,10 @@ class Inventory
         ];
         $links = [];
         foreach ($classes as $class) {
-            $entry = "<i class=\"" . \htmlescape($class::getIcon()) . " pointer\" title=\"" . \htmlescape($class::getTypeName(Session::getPluralNumber()))
-            . "\"></i><span class=\"d-none d-xxl-block\">" . \htmlescape($class::getTypeName(Session::getPluralNumber())) . "</span>";
+            $label = \htmlescape($class::getTypeName(Session::getPluralNumber()));
+            $entry = "<i class=\"" . \htmlescape($class::getIcon()) . " pointer\" title=\"$label\" aria-hidden=\"true\"></i>"
+            . "<span class=\"d-none d-xxl-block\" aria-hidden=\"true\">$label</span>"
+            . "<span class=\"visually-hidden\">$label</span>";
             $links[$entry] = $class::getSearchURL(false);
         }
 
@@ -629,7 +631,9 @@ class Inventory
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
                 'page'  => Lockedfield::getSearchURL(false),
                 'links' => [
-                    "<i class=\"ti ti-plus\" title=\"" . __s('Add global lock') . "\"></i><span class='d-none d-xxl-block'>" . __s('Add global lock') . "</span>" => Lockedfield::getFormURL(false),
+                    "<i class=\"ti ti-plus\" title=\"" . __s('Add global lock') . "\" aria-hidden=\"true\"></i>"
+                    . "<span class=\"d-none d-xxl-block\" aria-hidden=\"true\">" . __s('Add global lock') . "</span>"
+                    . "<span class=\"visually-hidden\">" . __s('Add global lock') . "</span>" => Lockedfield::getFormURL(false),
                 ] + $links,
                 'lists_itemtype' => Lockedfield::class,
             ];

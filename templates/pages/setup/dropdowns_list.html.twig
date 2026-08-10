@@ -62,7 +62,8 @@
                                  {% if is_entity_assign %}
                                     <i class="{{ 'Entity'|itemtype_icon }} fs-4"
                                        data-bs-toggle="tooltip"
-                                       title="{{ __('Entity management') }}"></i>
+                                       title="{{ __('Entity management') }}" aria-hidden="true"></i>
+                                    <span class="visually-hidden">{{ __('Entity management') }}</span>
                                  {% endif %}
                               </div>
                            </div>

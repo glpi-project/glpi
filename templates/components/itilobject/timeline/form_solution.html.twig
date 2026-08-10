@@ -130,7 +130,8 @@
 
                         {% set sol_template_lbl %}
                            <i class="{{ 'SolutionTemplate'|itemtype_icon }} me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ _n('Solution template', 'Solution templates', get_plural_number()) }}"></i>
+                              title="{{ _n('Solution template', 'Solution templates', get_plural_number()) }}" aria-hidden="true"></i>
+                           <span class="visually-hidden">{{ _n('Solution template', 'Solution templates', get_plural_number()) }}</span>
                         {% endset %}
                         {{ fields.dropdownField(
                            'SolutionTemplate',
@@ -151,7 +152,8 @@
 
                      {% set sol_type_lbl %}
                         <i class="ti ti-tag me-1" title="{{ 'SolutionType'|itemtype_name }}"
-                           data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                           data-bs-toggle="tooltip" data-bs-placement="top" aria-hidden="true"></i>
+                        <span class="visually-hidden">{{ 'SolutionType'|itemtype_name }}</span>
                      {% endset %}
                      {% set sol_search = {} %}
                      {% if item.getType() == 'Ticket' %}
@@ -182,7 +184,8 @@
 
                     {% set link_kb_lbl %}
                         <i class="ti ti-link me-1" data-bs-toggle="tooltip" data-bs-placement="top"
-                           title="{{ __('Link to knowledge base entry #%id')|replace({'%id': ''}) }}"></i>
+                           title="{{ __('Link to knowledge base entry #%id')|replace({'%id': ''}) }}" aria-hidden="true"></i>
+                        <span class="visually-hidden">{{ __('Link to knowledge base entry #%id')|replace({'%id': ''}) }}</span>
                     {% endset %}
                     {{ fields.sliderField(
                        'kb_linked_id',
@@ -201,7 +204,8 @@
                      {% if candedit and can_update_kb and not nokb %}
                         {% set sol_to_kb_lbl %}
                            <i class="ti ti-device-floppy me-1" title="{{ __('Save and add to the knowledge base') }}"
-                              data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                              data-bs-toggle="tooltip" data-bs-placement="top" aria-hidden="true"></i>
+                           <span class="visually-hidden">{{ __('Save and add to the knowledge base') }}</span>
                         {% endset %}
                         {{ fields.sliderField(
                            '_sol_to_kb',

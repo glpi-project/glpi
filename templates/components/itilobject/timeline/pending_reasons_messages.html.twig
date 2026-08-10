@@ -74,13 +74,15 @@
             {% if next_bump %}
 
                 <i class="ti ti-clock ms-2" title="{{ __("Next automatic follow-up scheduled on %s")|format(next_bump|formatted_date) }}"
-                   data-bs-toggle="tooltip"></i>
+                   data-bs-toggle="tooltip" aria-hidden="true"></i>
+                <span class="visually-hidden">{{ __("Next automatic follow-up scheduled on %s")|format(next_bump|formatted_date) }}</span>
             {% endif %}
 
          {% set resolve = pending_reason_item_parent.getAutoResolvedate() %}
          {% if resolve %}
             <i class="ti ti-player-stop-filled ms-2" title="{{ __("Automatic resolution scheduled on %s")|format(resolve|formatted_date) }}"
-               data-bs-toggle="tooltip"></i>
+               data-bs-toggle="tooltip" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ __("Automatic resolution scheduled on %s")|format(resolve|formatted_date) }}</span>
         {% endif %}
         {% endif %}
    </span>

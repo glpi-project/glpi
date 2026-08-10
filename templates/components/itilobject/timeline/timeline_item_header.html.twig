@@ -103,7 +103,9 @@
       {% if is_private %}
          <span class="is-private ms-2" title="{{ __('This entry is "internal" (visible only to technicians)') }}" data-testid="private-followup-hint"
                data-bs-toggle="tooltip" data-bs-placement="bottom">
-            <i class="ti ti-eye-off" aria-label="{{ __('Private') }}"></i>
+            {# aria-label is not exposed on a generic element, the label needs to be real text. #}
+            <i class="ti ti-eye-off" aria-hidden="true"></i>
+            <span class="visually-hidden">{{ __('Private') }}</span>
          </span>
       {% endif %}
    </div>

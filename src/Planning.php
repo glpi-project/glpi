@@ -267,7 +267,7 @@ class Planning extends CommonGLPI
         }
         $class = self::getStatusClass($status);
         $color = self::getStatusColor($status);
-        return "<i class='itilstatus $class $color me-1' title='$label' data-bs-toggle='tooltip'></i><span>" . $label . "</span>";
+        return "<i class='itilstatus $class $color me-1' title='$label' data-bs-toggle='tooltip' aria-hidden='true'></i><span>" . $label . "</span>";
     }
 
     /**
