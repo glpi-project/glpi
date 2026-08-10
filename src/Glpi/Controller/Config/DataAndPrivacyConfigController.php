@@ -90,6 +90,10 @@ final class DataAndPrivacyConfigController extends AbstractController
         }
         $config = new DataAndPrivacyConfig();
 
+        if (!$config->can($config_id, UPDATE)) {
+            throw new AccessDeniedHttpException();
+        }
+
         $update_input = $request->request->all();
         $update_input['id'] = $config_id;
         $config->update($update_input);
