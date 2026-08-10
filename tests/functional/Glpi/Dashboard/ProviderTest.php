@@ -664,10 +664,10 @@ class ProviderTest extends DbTestCase
     {
         $this->login();
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $data = [
             Provider::bigNumberItem($item),
-            call_user_func(['\\Glpi\\Dashboard\\Provider', "bigNumber$itemtype"]),
+            call_user_func([\Glpi\Dashboard\Provider::class, "bigNumber$itemtype"]),
         ];
 
         foreach ($data as $result) {
@@ -675,7 +675,7 @@ class ProviderTest extends DbTestCase
             $this->assertArrayHasKey('url', $result);
             $this->assertArrayHasKey('label', $result);
             $this->assertArrayHasKey('icon', $result);
-            if ($item::getType() !== 'Item_DeviceSimcard') {
+            if ($item::class !== 'Item_DeviceSimcard') {
                 // Ignore count for simcards. None are added in Bootstrap process and is here for regression testing only.
                 $this->assertGreaterThan(0, $result['number']);
             }
@@ -757,6 +757,46 @@ class ProviderTest extends DbTestCase
             $this->assertIsString($data['label']);
             $this->assertStringContainsString($item::getSearchURL(), $data['url']);
         }
+    }
+
+
+    public function testTicketsByStatus()
+    {
+        $this->login();
+
+        // Testing with incoming : to make sure there is at least one ticket
+        $ticket = new \Ticket();
+        $ticket->add([
+            'name'    => "test dashboard card tickets by status",
+            'content' => 'foo',
+            'status'  => \Ticket::INCOMING,
+        ]);
+        $this->assertFalse($ticket->isNewItem());
+
+        // verify existing key data/label/icon
+        $result = Provider::ticketsByStatus();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+
+        $nb_items = 0;
+        foreach ($result['data'] as $key => $data) {
+            if ($key === 'nodata') {
+                continue;
+            }
+            // checks that each item has a number, a label, and a URL containing Ticket::getSearchURL
+            $this->assertArrayHasKey('number', $data);
+            $this->assertArrayHasKey('label', $data);
+            $this->assertArrayHasKey('url', $data);
+
+            $this->assertGreaterThan(0, $data['number']);
+            $this->assertIsString($data['label']);
+            $this->assertStringContainsString(\Ticket::getSearchURL(), $data['url']);
+
+            $nb_items++;
+        }
+
+        $this->assertGreaterThan(0, $nb_items);
     }
 
 
@@ -902,7 +942,7 @@ class ProviderTest extends DbTestCase
 
         // Change author to someone else
         $tech = getItemByTypeName(User::class, 'tech');
-        $this->updateItem($reminder::getType(), $reminder->getID(), [
+        $this->updateItem($reminder::class, $reminder->getID(), [
             'users_id'  => $tech->getID(),
         ]);
         yield ['expected' => 0];

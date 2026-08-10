@@ -1074,7 +1074,6 @@ class Provider
         ];
     }
 
-
     /**
      * Get a list of article for an compatible item (with date,name,text fields)
      *
