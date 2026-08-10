@@ -643,7 +643,7 @@ class ProjectTaskTest extends DbTestCase
             'projecttasks_id' => $task_B1->getID(),
         ]);
 
-        $tasks = getAllDataFromTable(ProjectTask::getTable(), ['projects_id' => $project->getID(), 'ORDER' => 'id ASC'] );
+        $tasks = getAllDataFromTable(ProjectTask::getTable(), ['projects_id' => $project->getID(), 'ORDER' => 'id ASC']);
 
         // Sort tasks by hierarchy
         $sorted_tasks = ProjectTask::sortProjectTasksByHierarchy($tasks);

@@ -1488,8 +1488,13 @@ TWIG, $twig_params);
         }
 
         $ordered = [];
-        $visit = static function ($father_id) use (&$visit, &$children, &$by_id, &$ordered) {
+        $visited = [];
+        $visit = static function ($father_id) use (&$visit, &$children, &$by_id, &$ordered, &$visited) {
             foreach ($children[$father_id] ?? [] as $id) {
+                if (isset($visited[$id])) {
+                    continue;
+                }
+                $visited[$id] = true;
                 $ordered[] = $by_id[$id];
                 $visit($id);
             }
