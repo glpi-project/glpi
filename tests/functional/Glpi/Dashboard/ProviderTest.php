@@ -667,7 +667,7 @@ class ProviderTest extends DbTestCase
         $itemtype = $item::class;
         $data = [
             Provider::bigNumberItem($item),
-            call_user_func([\Glpi\Dashboard\Provider::class, "bigNumber$itemtype"]),
+            call_user_func([Provider::class, "bigNumber$itemtype"]),
         ];
 
         foreach ($data as $result) {
