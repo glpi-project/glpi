@@ -89,8 +89,8 @@
 
       {% if actions|length %}
          <div class="dropdown ms-2">
-            <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false">
-               <i class="ti ti-dots-vertical"></i>
+            <button class="btn btn-sm btn-ghost-secondary timeline-more-actions" type="button" id="more-actions-{{ entry_rand }}" data-bs-toggle="dropdown" aria-expanded="false" aria-label="{{ __('More actions') }}">
+               <i class="ti ti-dots-vertical" aria-hidden="true"></i>
             </button>
             <ul class="dropdown-menu" aria-labelledby="more-actions-{{ entry_rand }}">
                {% for action in actions %}
@@ -108,7 +108,7 @@
       {% endif %}
    </div>
 
-   <button class="btn btn-sm btn-ghost-secondary close-edit-content d-none ms-auto">
-      <i class="ti ti-x"></i>
+   <button class="btn btn-sm btn-ghost-secondary close-edit-content d-none ms-auto" aria-label="{{ _x('button', 'Close') }}">
+      <i class="ti ti-x" aria-hidden="true"></i>
    </button>
 </div>

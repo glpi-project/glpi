@@ -633,10 +633,10 @@ JAVASCRIPT;
                            style='color: " . htmlescape($fg_color) . ";'>" . htmlescape($pdu->getName()) . "
                         </a>
                      </span>
-                     <a href='" . htmlescape($rel->getLinkUrl()) . "' class='rel-link'>
+                     <a href='" . htmlescape($rel->getLinkUrl()) . "' class='rel-link'
+                        title='" . __s("Edit rack relation") . "'>
                         <i class='ti ti-pencil fa-rotate-270'
-                           style='color: " . htmlescape($fg_color) . ";'
-                           title='" . __s("Edit rack relation") . "'></i>
+                           style='color: " . htmlescape($fg_color) . ";' aria-hidden='true'></i>
                      </a>
                      $tip
                   </div>

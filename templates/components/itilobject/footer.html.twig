@@ -132,11 +132,13 @@
          <div class="form-buttons {{ form_btns_cls }} d-flex justify-content-between ms-auto ms-lg-0 my-n2 py-2 pe-3 card-footer border-top-0 position-relative">
             <span class="d-none d-lg-block ms-n3"
                   data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Toggle panels width') }}">
-               <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary px-0">
-                  <i class="{{ switch_btn_cls }}"></i>
+               <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary px-0"
+                       aria-label="{{ __('Toggle panels width') }}">
+                  <i class="{{ switch_btn_cls }}" aria-hidden="true"></i>
                </button>
-               <button type="button" class="collapse-panel btn btn-icon btn-ghost-secondary px-0 mr-1">
-                  <i class="ti ti-caret-right-filled"></i>
+               <button type="button" class="collapse-panel btn btn-icon btn-ghost-secondary px-0 mr-1"
+                       aria-label="{{ __('Collapse') }}">
+                  <i class="ti ti-caret-right-filled" aria-hidden="true"></i>
                </button>
             </span>
 
@@ -155,7 +157,7 @@
                </button>
             {% else %}
                {# Use style= instead of d-flex: utility classes add !important on display, breaking jQuery .hide() #}
-               <div class="btn-group flex-row-reverse" role="group" id="right-actions" style="display:flex">
+               <div class="btn-group flex-row-reverse" role="group" id="right-actions" data-testid="right-actions" style="display:flex">
                   {% set is_locked = params['locked'] is defined and params['locked'] %}
                   {% set display_save_btn = not is_locked and (canupdate or can_requester or canpriority or canassign or canassigntome) %}
 

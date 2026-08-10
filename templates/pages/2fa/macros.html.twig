@@ -54,8 +54,9 @@
                      <div>
                         <div class="btn-group d-flex">
                            <input class="form-control" alt="{{ __('2FA secret') }}" value="{{ secret }}" aria-label="{{ __('2FA secret') }}" />
-                           <button type="button" class="btn btn-icon flex-grow-0 flex-shrink-0" name="copy_secret" data-clipboard-text="{{ secret }}">
-                              <i class="ti ti-clipboard-copy"></i>
+                           <button type="button" class="btn btn-icon flex-grow-0 flex-shrink-0" name="copy_secret" data-clipboard-text="{{ secret }}"
+                                   aria-label="{{ __('Copy') }}">
+                              <i class="ti ti-clipboard-copy" aria-hidden="true"></i>
                            </button>
                            <script>
                               $(document).ready(function() {

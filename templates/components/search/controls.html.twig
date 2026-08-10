@@ -181,6 +181,7 @@
                         title="{{ __('Toggle browse') }}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
+                        aria-pressed="{{ data['search']['browse']|default(false) == 1 ? 'true' : 'false' }}"
                         onclick="toogle('browse','','',''); {{ submit_search_form }};"
                     >
                         <i class="ti {{ data['search']['browse']|default(false) == 1 ? "ti-checkbox" : "ti-square" }}" aria-hidden="true"></i>
@@ -197,6 +198,7 @@
                         title="{{ __('Show the trashbin') }}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
+                        aria-pressed="{{ data['search']['is_deleted'] == 1 ? 'true' : 'false' }}"
                         onclick="toogle('is_deleted','','',''); {{ submit_search_form }};"
                     >
                         <i class="ti {{ data['search']['is_deleted'] == 1 ? "ti-checkbox" : "ti-square" }}" aria-hidden="true"></i>
@@ -214,6 +216,7 @@
                         title="{{ __('Show unpublished') }}"
                         data-bs-toggle="tooltip"
                         data-bs-placement="top"
+                        aria-pressed="{{ show_unpublished ? 'true' : 'false' }}"
                         onclick="toogle('unpublished','','',''); {{ submit_search_form }};"
                     >
                         <i

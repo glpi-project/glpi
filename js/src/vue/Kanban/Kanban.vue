@@ -694,8 +694,8 @@
                         ${member_item}
                         ${_.escape(l.attr('data-name')) || `${_.escape(member_itemtype)} (${_.escape(member_items_id)})`}
                     </div>
-                    <button type="button" name="delete" class="btn btn-ghost-danger">
-                        <i class="ti ti-x" title="${__('Delete')}"></i>
+                    <button type="button" name="delete" class="btn btn-ghost-danger" title="${__('Delete')}" aria-label="${__('Delete')}">
+                        <i class="ti ti-x" aria-hidden="true"></i>
                     </button>
                 `);
             });

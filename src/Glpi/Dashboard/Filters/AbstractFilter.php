@@ -188,8 +188,8 @@ abstract class AbstractFilter
             <fieldset id="filter-' . $rand . '" class="filter ' . \htmlescape($class) . '" data-filter-id="' . \htmlescape($id) . '">
                 ' . $field . '
                 <legend>' . \htmlescape($label) . '</legend>
-                <button class="btn btn-sm btn-icon btn-ghost-secondary delete-filter">
-                    <i class="ti ti-trash"></i>
+                <button class="btn btn-sm btn-icon btn-ghost-secondary delete-filter" aria-label="' . __s('Delete') . '">
+                    <i class="ti ti-trash" aria-hidden="true"></i>
                 </button>
                 ' . $js . '
             </fieldset>

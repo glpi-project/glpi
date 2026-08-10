@@ -134,7 +134,7 @@ trait Inventoriable
             );
 
             echo sprintf(
-                "<a href='%s' style='float: right;' target='_blank'><i class='ti ti-download' title='%s'></i></a>",
+                "<a href='%s' style='float: right;' target='_blank' title='%s'><i class='ti ti-download' aria-hidden='true'></i></a>",
                 \htmlescape($href),
                 sprintf(
                     //TRANS: parameter is the name of the asset

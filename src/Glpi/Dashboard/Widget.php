@@ -1916,7 +1916,7 @@ HTML;
         }
 
         $view_all = strlen($p['url'])
-            ? "<a href='" . \htmlescape($p['url']) . "'><i class='ti ti-eye' title='" . __s("See all") . "'></i></a>"
+            ? "<a href='" . \htmlescape($p['url']) . "' title='" . __s("See all") . "'><i class='ti ti-eye' aria-hidden='true'></i></a>"
             : "";
 
         $rand = (int) $p['rand'];

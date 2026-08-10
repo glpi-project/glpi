@@ -2418,7 +2418,8 @@ JS;
             <input type="text" name="{$name}" value="{$value}"
                    {$required} {$disabled} data-input class="form-control rounded-start ps-2">
             <button type='button' class='btn btn-outline-secondary btn-sm' data-toggle>
-                <i class='ti ti-calendar-time'></i>
+                <i class='ti ti-calendar-time' aria-hidden='true'></i>
+                <span class='visually-hidden'>{$show_datepicker_label}</span>
             </button>
             $clear
          </div>
@@ -3545,10 +3546,12 @@ JAVASCRIPT
 
         // Back and fast backward button
         if (!$start == 0) {
-            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevrons-left' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Start') . "\"></i></a></th>";
-            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevron-left' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Previous') . "\"></i></a></th>";
+            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0" . htmlescape(jsescape($additional_params)) . "\");'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Start') . "\">
+                     <i class='ti ti-chevrons-left' aria-hidden='true'></i></a></th>";
+            $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$back" . htmlescape(jsescape($additional_params)) . "\");'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Previous') . "\">
+                     <i class='ti ti-chevron-left' aria-hidden='true'></i></a></th>";
         }
 
         $out .= "<td width='50%' class='tab_bg_2'>";
@@ -3567,10 +3570,12 @@ JAVASCRIPT
 
         // Forward and fast forward button
         if ($forward < $numrows) {
-            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevron-right' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Next') . "\"></i></a></th>";
-            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end" . htmlescape(jsescape($additional_params)) . "\");'>
-                     <i class='ti ti-chevrons-right' data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('End') . "\"></i></a></th>";
+            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward" . htmlescape(jsescape($additional_params)) . "\");'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('Next') . "\">
+                     <i class='ti ti-chevron-right' aria-hidden='true'></i></a></th>";
+            $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$end" . htmlescape(jsescape($additional_params)) . "\");'
+                     data-bs-toggle='tooltip' data-bs-placement='bottom' title=\"" . __s('End') . "\">
+                     <i class='ti ti-chevrons-right' aria-hidden='true'></i></a></th>";
         }
 
         // End pager

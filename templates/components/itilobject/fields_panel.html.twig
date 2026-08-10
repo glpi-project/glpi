@@ -496,8 +496,9 @@
    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITIL_INFO_SECTION'), {"item": item, 'options': params}) }}
 
     <span class="d-none d-md-block">
-        <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary position-absolute bottom-0 start-0 mb-2">
-            <i class="ti ti-caret-left-filled"></i>
+        <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary position-absolute bottom-0 start-0 mb-2"
+                aria-label="{{ __('Toggle panels width') }}">
+            <i class="ti ti-caret-left-filled" aria-hidden="true"></i>
         </button>
     </span>
 </div>

@@ -77,8 +77,9 @@
                                 </div>
 
                                 {% if configuration_form is not null %}
-                                    <button type="button" data-bs-toggle="modal" data-bs-target="#{{ get_class(capacity)|slug }}-modal" class="ms-1 btn btn-icon btn-sm btn-ghost-secondary">
-                                        <i class="ti ti-settings"></i>
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#{{ get_class(capacity)|slug }}-modal" class="ms-1 btn btn-icon btn-sm btn-ghost-secondary"
+                                            aria-label="{{ __('Configure') }} - {{ capacity.getLabel() }}">
+                                        <i class="ti ti-settings" aria-hidden="true"></i>
                                     </button>
                                 {% endif %}
                             </div>

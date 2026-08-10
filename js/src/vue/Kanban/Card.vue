@@ -101,8 +101,9 @@
             </span>
             <div class="dropdown">
                 <button type="button" class="kanban-item-overflow-actions cursor-pointer pt-0 b-0"
-                        data-bs-toggle="dropdown" data-bs-auto-close="outside">
-                    <i class="ti ti-dots" ref="btn_overflow"></i>
+                        data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                        :title="__('More actions')" :aria-label="__('More actions')">
+                    <i class="ti ti-dots" ref="btn_overflow" aria-hidden="true"></i>
                 </button>
                 <ul ref="card_overflow_dropdown" class="kanban-dropdown dropdown-menu" role="menu">
                     <li class="kanban-item-goto dropdown-item" v-if="form_link">
