@@ -1623,7 +1623,7 @@ HTML;
             $cards["report_computers_by_os"] = [
                 'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
                 'itemtype'   => "\\Computer",
-                'group'      => __('Reports'),
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
                 'label'      => __("Number of computers by operating system"),
                 'provider'   => "Glpi\\Dashboard\\Provider::computersByOperatingSystem",
                 'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
