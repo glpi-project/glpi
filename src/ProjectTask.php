@@ -725,6 +725,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         foreach ($iterator as $data) {
             $tasks[] = $data;
         }
+
+        if (
+            !array_filter($tasks, static fn($task) => !empty($task['plan_start_date']) || !empty($task['real_start_date']))
+        ) {
+            // If no task has plan dates, sort by hierarchy
+            $tasks = self::sortProjectTasksByHierarchy($tasks);
+        }
+
         return $tasks;
     }
 
@@ -751,6 +759,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         foreach ($iterator as $data) {
             $tasks[] = $data;
         }
+
+        if (
+            !array_filter($tasks, static fn($task) => !empty($task['plan_start_date']) || !empty($task['real_start_date']))
+        ) {
+            // If no task has plan dates, sort by hierarchy
+            $tasks = self::sortProjectTasksByHierarchy($tasks);
+        }
+
         return $tasks;
     }
 
@@ -1372,7 +1388,7 @@ TWIG, $twig_params);
                 'itemtype' => static::class,
                 'id' => $data['id'],
                 // Used to reorder entries hierarchically when there is no plan_start_date to sort on
-                '_father_id' => $data['projecttasks_id'],
+                'projecttasks_id' => $data['projecttasks_id'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                 'name' => $task->getLink(['comments' => true]),
                 'tname' => $data['transname2'] ?? $data['tname'],
@@ -1413,7 +1429,8 @@ TWIG, $twig_params);
             $_GET['sort'] === 'plan_start_date'
             && !array_filter($entries, static fn($entry) => !empty($entry['plan_start_date']))
         ) {
-            $entries = self::sortEntriesByHierarchy($entries);
+            $entries = self::sortProjectTasksByHierarchy($entries);
+            $order = 'none'; // No order to apply, as the order is already set by the hierarchy
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
@@ -1454,20 +1471,20 @@ TWIG, $twig_params);
      * sort an array task entries (as built by self::showFor())
      * using hierarchical order (father followed by its children, recursively)
      *
-     * Entries whose father (see '_father_id') is not part of the given list are considered roots;
+     * Entries whose father (see 'projecttasks_id') is not part of the given list are considered roots;
      * siblings keep their relative order from the input list.
      *
-     * @param list<array<string, mixed>> $entries Flat list of entries, each holding at least 'id' and '_father_id'
+     * @param list<array<string, mixed>> $entries Flat list of entries, each holding at least 'id' and 'projecttasks_id'
      *
      * @return list<array<string, mixed>> sorted entries
      **/
-    private static function sortEntriesByHierarchy(array $entries): array
+    public static function sortProjectTasksByHierarchy(array $entries): array
     {
         $by_id      = [];
         $children   = [];
         foreach ($entries as $entry) {
             $by_id[$entry['id']] = $entry;
-            $children[$entry['_father_id']][] = $entry['id'];
+            $children[$entry['projecttasks_id']][] = $entry['id'];
         }
 
         $ordered = [];

@@ -606,6 +606,62 @@ class ProjectTaskTest extends DbTestCase
         );
     }
 
+    public function testSortProjectTasksByHierarchy()
+    {
+        $project = $this->createItem('Project', [
+            'name' => __FUNCTION__,
+        ]);
+
+        $task_A = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task A',
+        ]);
+        $task_B = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task B',
+        ]);
+
+        $task_B1 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task B.1',
+            'projecttasks_id' => $task_B->getID(),
+        ]);
+        $task_A1 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task A.1',
+            'projecttasks_id' => $task_A->getID(),
+        ]);
+
+        $task_A2 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task A.2',
+            'projecttasks_id' => $task_A1->getID(),
+        ]);
+        $task_B2 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task B.2',
+            'projecttasks_id' => $task_B1->getID(),
+        ]);
+
+        $tasks = getAllDataFromTable(ProjectTask::getTable(), ['projects_id' => $project->getID(), 'ORDER' => 'id ASC'] );
+
+        // Sort tasks by planned start date
+        $sorted_tasks = ProjectTask::sortProjectTasksByHierarchy($tasks);
+
+        // Check the order of the sorted tasks
+        $this->assertEquals(
+            [
+                $task_A->fields,
+                $task_A1->fields,
+                $task_A2->fields,
+                $task_B->fields,
+                $task_B1->fields,
+                $task_B2->fields,
+            ],
+            $sorted_tasks
+        );
+    }
+
     protected function testAutochangeStateProvider()
     {
         $config = new \Config();
