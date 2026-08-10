@@ -40,6 +40,7 @@ use Glpi\Asset\Capacity\HasPeripheralAssetsCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
 use Monitor;
+use Peripheral;
 use Toolbox;
 
 class Asset_PeripheralAssetTest extends DbTestCase
@@ -98,49 +99,40 @@ class Asset_PeripheralAssetTest extends DbTestCase
 
     public function testDeletePeripheralDoesNotCallCleanRelationData(): void
     {
-        $computer = new \Computer();
-        $relation = new Asset_PeripheralAsset();
-        $peripheralMock = $this->getMockBuilder(\Peripheral::class)
-            ->onlyMethods(['cleanRelationData'])
-            ->getMock();
-
-        $peripheralMock
-            ->expects($this->never())
-            ->method('cleanRelationData');
-
-
-        $computers_id = $computer->add(
+        $computer = $this->createItem(
+            \Computer::getType(),
             [
                 'name'   => 'Le PC',
                 'serial' => 'qqzder45',
                 'entities_id' => 0,
             ]
         );
-        $this->assertGreaterThan(0, $computers_id);
 
-        $periph_id = $peripheralMock->add(
+        $periph = $this->createItem(
+            Peripheral::getType(),
             [
                 'name' => 'La Souris',
                 'serial' => '12345',
                 'entities_id'  => 0,
             ]
         );
-        $this->assertGreaterThan(0, $periph_id);
 
-        $relation_id = $relation->add(
+        $relation = $this->createItem(
+            Asset_PeripheralAsset::getType(),
             [
                 'itemtype_asset' => 'Computer',
-                'items_id_asset' => $computers_id,
+                'items_id_asset' => $computer->getID(),
                 'itemtype_peripheral' => 'Peripheral',
-                'items_id_peripheral' => $periph_id,
+                'items_id_peripheral' => $periph->getID(),
             ]
         );
-        $this->assertGreaterThan(0, $relation_id);
+        if (array_key_exists('MESSAGE_AFTER_REDIRECT', $_SESSION) && count($_SESSION['MESSAGE_AFTER_REDIRECT']) > 0) {
+            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+        }
 
-        $peripheralMock->delete(
-            [
-                'id' => $periph_id,
-            ]
-        );
+        $periph->delete(['id' => $periph->getID()], force: true);
+
+        $this->assertTrue($_SESSION['MESSAGE_AFTER_REDIRECT'] === []);
+
     }
 }
