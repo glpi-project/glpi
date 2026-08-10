@@ -109,7 +109,7 @@ class Asset_PeripheralAssetTest extends DbTestCase
         );
 
         $periph = $this->createItem(
-            Peripheral::getType(),
+            Peripheral::class,
             [
                 'name' => 'La Souris',
                 'serial' => '12345',
@@ -118,7 +118,7 @@ class Asset_PeripheralAssetTest extends DbTestCase
         );
 
         $relation = $this->createItem(
-            Asset_PeripheralAsset::getType(),
+            Asset_PeripheralAsset::class,
             [
                 'itemtype_asset' => 'Computer',
                 'items_id_asset' => $computer->getID(),
