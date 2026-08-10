@@ -74,6 +74,11 @@ var glpi_html_dialog = function({
     buttons     = [],
     bs_focus    = true,
 } = {}) {
+    // Remember the element that triggered the dialog so focus can be restored to it when the dialog closes.
+    // Bootstrap only restores focus for modals opened through data-bs-toggle,
+    // not for those shown programmatically like this one.
+    const previously_focused = document.activeElement;
+
     if (buttons.length > 0) {
         var buttons_html = "";
         buttons.forEach(button => {
@@ -143,6 +148,12 @@ var glpi_html_dialog = function({
         show(event);
     });
     myModalEl.addEventListener('hidden.bs.modal', (event) => {
+        // restore focus to the element that opened the dialog, before the close
+        // callback runs so a caller may still redirect focus if needed
+        if (previously_focused && typeof previously_focused.focus === 'function') {
+            previously_focused.focus();
+        }
+
         // call close event
         close(event);
 
