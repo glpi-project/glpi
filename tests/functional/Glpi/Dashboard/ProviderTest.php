@@ -664,10 +664,10 @@ class ProviderTest extends DbTestCase
     {
         $this->login();
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $data = [
             Provider::bigNumberItem($item),
-            call_user_func(['\\Glpi\\Dashboard\\Provider', "bigNumber$itemtype"]),
+            call_user_func([Provider::class, "bigNumber$itemtype"]),
         ];
 
         foreach ($data as $result) {
@@ -675,7 +675,7 @@ class ProviderTest extends DbTestCase
             $this->assertArrayHasKey('url', $result);
             $this->assertArrayHasKey('label', $result);
             $this->assertArrayHasKey('icon', $result);
-            if ($item::getType() !== 'Item_DeviceSimcard') {
+            if ($item::class !== 'Item_DeviceSimcard') {
                 // Ignore count for simcards. None are added in Bootstrap process and is here for regression testing only.
                 $this->assertGreaterThan(0, $result['number']);
             }
@@ -902,7 +902,7 @@ class ProviderTest extends DbTestCase
 
         // Change author to someone else
         $tech = getItemByTypeName(User::class, 'tech');
-        $this->updateItem($reminder::getType(), $reminder->getID(), [
+        $this->updateItem($reminder::class, $reminder->getID(), [
             'users_id'  => $tech->getID(),
         ]);
         yield ['expected' => 0];
@@ -945,5 +945,57 @@ class ProviderTest extends DbTestCase
 
         // Assert: just make sure this was executed without errors
         $this->assertNotEmpty($params);
+    }
+
+    public function testComputersByOperatingSystem()
+    {
+        $this->login();
+
+        $os = new \OperatingSystem();
+        $os_id = $os->add([
+            'name' => 'test dashboard OS',
+        ]);
+        $this->assertGreaterThan(0, $os_id);
+
+        $computer = new \Computer();
+        $computer_id = $computer->add([
+            'name'        => 'test dashboard computer by os',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $computer_id);
+
+        $link = new \Item_OperatingSystem();
+        $this->assertGreaterThan(
+            0,
+            $link->add([
+                'itemtype'            => \Computer::class,
+                'items_id'            => $computer_id,
+                'operatingsystems_id' => $os_id,
+            ])
+        );
+
+        $result = Provider::computersByOperatingSystem();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+
+        $nb_items = 0;
+        foreach ($result['data'] as $key => $data) {
+            if ($key === 'nodata') {
+                continue;
+            }
+
+            $this->assertArrayHasKey('number', $data);
+            $this->assertArrayHasKey('label', $data);
+            $this->assertArrayHasKey('url', $data);
+
+            $this->assertGreaterThan(0, $data['number']);
+            $this->assertIsString($data['label']);
+            $this->assertStringContainsString(\Computer::getSearchURL(), $data['url']);
+
+            $nb_items++;
+        }
+
+        $this->assertGreaterThan(0, $nb_items);
     }
 }
