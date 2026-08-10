@@ -994,6 +994,86 @@ class Provider
         ];
     }
 
+    /**
+     * Count number of tickets grouped by their current status.
+     *
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
+    public static function ticketsByStatus(array $params = []): array
+    {
+        $DB = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $t_table  = Ticket::getTable();
+        $statuses = Ticket::getAllStatusArray();
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'  => [
+                    "$t_table.status AS status",
+                    'COUNT DISTINCT' => "$t_table.id AS cpt",
+                ],
+                'FROM'    => $t_table,
+                'WHERE'   => [
+                    "$t_table.is_deleted" => 0,
+                ] + getEntitiesRestrictCriteria($t_table),
+                'GROUPBY' => "$t_table.status",
+                'ORDERBY' => "$t_table.status ASC",
+            ],
+            // limit count for profiles with limited rights
+            Ticket::getCriteriaFromProfile(),
+            self::getFiltersCriteria($t_table, $params['apply_filters'])
+        );
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+        $iterator = $DB->request($criteria);
+
+        $search_criteria = self::getSearchFiltersCriteria($t_table, $params['apply_filters'])['criteria'] ?? [];
+        $url = Ticket::getSearchURL();
+
+        $data = [];
+        foreach ($iterator as $result) {
+            $status = (int) $result['status'];
+
+            $result_criteria = $search_criteria;
+            $result_criteria[] = [
+                'link'       => 'AND',
+                'field'      => 12, // status
+                'searchtype' => 'equals',
+                'value'      => $status,
+            ];
+
+            $data[] = [
+                'number' => $result['cpt'],
+                'label'  => $statuses[$status] ?? $status,
+                'url'    => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+                    'criteria' => $result_criteria,
+                    'reset'    => 'reset',
+                ]),
+            ];
+        }
+
+        if (count($data) === 0) {
+            $data = [
+                'nodata' => true,
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
 
     /**
      * Get a list of article for an compatible item (with date,name,text fields)

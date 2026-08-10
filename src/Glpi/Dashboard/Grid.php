@@ -1620,6 +1620,15 @@ HTML;
                 ];
             }
 
+            $cards["report_ticket_by_status"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Reports'),
+                'label'      => __("Number of tickets by status"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],
                 'label'      => sprintf(__('List of %s'), Reminder::getTypeName(Session::getPluralNumber())),
