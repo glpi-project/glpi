@@ -1292,7 +1292,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if (empty($_GET["sort"]) || !isset($columns[$_GET["sort"]])) {
             $_GET['sort'] = 'plan_start_date';
         }
-        $criteria['ORDERBY'] = [$_GET["sort"] . " $order"];
+        $criteria['ORDERBY'] = [$_GET["sort"] . " $order", 'id ASC'];
 
         $canedit = $item::class === Project::class && $item->canEdit($ID);
 
@@ -1371,6 +1371,8 @@ TWIG, $twig_params);
             $entry = [
                 'itemtype' => static::class,
                 'id' => $data['id'],
+                // Used to reorder entries hierarchically when there is no plan_start_date to sort on
+                '_father_id' => $data['projecttasks_id'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                 'name' => $task->getLink(['comments' => true]),
                 'tname' => $data['transname2'] ?? $data['tname'],
@@ -1405,6 +1407,15 @@ TWIG, $twig_params);
             $entries[] = $entry;
         }
 
+        // If sorting on the planned start date but none of the displayed tasks have one set,
+        // sort using hierarchical order (father followed by its children, recursively)
+        if (
+            $_GET['sort'] === 'plan_start_date'
+            && !array_filter($entries, static fn($entry) => !empty($entry['plan_start_date']))
+        ) {
+            $entries = self::sortEntriesByHierarchy($entries);
+        }
+
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'nofilter' => true,
@@ -1437,6 +1448,45 @@ TWIG, $twig_params);
                 ],
             ],
         ]);
+    }
+
+    /**
+     * sort an array task entries (as built by self::showFor())
+     * using hierarchical order (father followed by its children, recursively)
+     *
+     * Entries whose father (see '_father_id') is not part of the given list are considered roots;
+     * siblings keep their relative order from the input list.
+     *
+     * @param list<array<string, mixed>> $entries Flat list of entries, each holding at least 'id' and '_father_id'
+     *
+     * @return list<array<string, mixed>> sorted entries
+     **/
+    private static function sortEntriesByHierarchy(array $entries): array
+    {
+        $by_id      = [];
+        $children   = [];
+        foreach ($entries as $entry) {
+            $by_id[$entry['id']] = $entry;
+            $children[$entry['_father_id']][] = $entry['id'];
+        }
+
+        $ordered = [];
+        $visit = static function ($father_id) use (&$visit, &$children, &$by_id, &$ordered) {
+            foreach ($children[$father_id] ?? [] as $id) {
+                $ordered[] = $by_id[$id];
+                $visit($id);
+            }
+        };
+
+        // Roots are the tasks whose father is not part of the current list
+        // (either they have no father, or their father is out of the displayed scope).
+        foreach (array_keys($children) as $father_id) {
+            if (!isset($by_id[$father_id])) {
+                $visit($father_id);
+            }
+        }
+
+        return $ordered;
     }
 
 
