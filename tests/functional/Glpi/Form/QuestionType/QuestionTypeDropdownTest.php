@@ -35,15 +35,20 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\AbstractQuestionTypeSelectable;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
-use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Form\QuestionType\AbstractQuestionTypeSelectableTest;
 use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
+use Override;
 
-final class QuestionTypeDropdownTest extends DbTestCase
+final class QuestionTypeDropdownTest extends AbstractQuestionTypeSelectableTest
 {
-    use FormTesterTrait;
+    #[Override]
+    protected function getQuestionType(): AbstractQuestionTypeSelectable
+    {
+        return new QuestionTypeDropdown();
+    }
 
     public function testSingleValueDropdownAnswerIsDisplayedInTicketDescription(): void
     {
@@ -149,8 +154,58 @@ final class QuestionTypeDropdownTest extends DbTestCase
         $this->assertStringNotContainsString('DropdownValues', $html, 'Should use the standard template, not AJAX');
     }
 
-    private function createDropdownQuestion(int $option_count, bool $is_multiple): Question
+    public function testMultiplePredefinedValuesAreIgnoredOnSingleDropdown(): void
     {
+        $question = $this->createDropdownQuestion(
+            option_count: 3,
+            is_multiple: false,
+            default_value: 'option_1',
+        );
+
+        $question->setDefaultValueFromParameters([
+            $question->fields['uuid'] => 'option_2,option_3',
+        ]);
+
+        // A single dropdown can only hold a single value: the ambiguous
+        // parameter must be discarded and the configured default preserved.
+        $this->assertEquals('option_1', $question->fields['default_value']);
+    }
+
+    public function testMultiplePredefinedValuesAreAppliedOnMultipleDropdown(): void
+    {
+        $question = $this->createDropdownQuestion(
+            option_count: 3,
+            is_multiple: true,
+            default_value: 'option_1',
+        );
+
+        $question->setDefaultValueFromParameters([
+            $question->fields['uuid'] => 'option_2,option_3',
+        ]);
+
+        $this->assertEquals('option_2,option_3', $question->fields['default_value']);
+    }
+
+    public function testSinglePredefinedValueIsAppliedOnSingleDropdown(): void
+    {
+        $question = $this->createDropdownQuestion(
+            option_count: 3,
+            is_multiple: false,
+            default_value: 'option_1',
+        );
+
+        $question->setDefaultValueFromParameters([
+            $question->fields['uuid'] => 'option_3',
+        ]);
+
+        $this->assertEquals('option_3', $question->fields['default_value']);
+    }
+
+    private function createDropdownQuestion(
+        int $option_count,
+        bool $is_multiple,
+        string $default_value = "",
+    ): Question {
         $options = [];
         for ($i = 1; $i <= $option_count; $i++) {
             $options["option_$i"] = "Option $i";
@@ -160,6 +215,7 @@ final class QuestionTypeDropdownTest extends DbTestCase
         $builder->addQuestion(
             name: "Pick options",
             type: QuestionTypeDropdown::class,
+            default_value: $default_value,
             extra_data: json_encode(new QuestionTypeDropdownExtraDataConfig(
                 options: $options,
                 is_multiple_dropdown: $is_multiple,
