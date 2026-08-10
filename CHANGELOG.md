@@ -13,6 +13,7 @@ The present file will list all changes made to the project; according to the
   If your GLPI instance is behind a reverse proxy, you should add its IP(s) the new `GLPI_TRUSTED_REVERSE_PROXIES` constant and modify the new `GLPI_REVERSE_PROXY_HEADERS` constant to include the headers your proxy uses to forward the client IP.
   Only the required HTTP headers should be listed for better security as any header not handled by the proxy could be spoofed by the client.
 - Remember me support for multiple devices at the same time.
+- High-Level API version 3.0.0.
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
@@ -57,6 +58,7 @@ The present file will list all changes made to the project; according to the
 - `User::getAuthToken()` cannot be used for `cookie_token` anymore.
 - Remember me cookie token no longer stored in the `glpi_users` table. It is now stored in the `glpi_user_tokens` table.
 - `Auth::setRememberMeCookie()` signature changed. It no longer accepts an empty value to trigger the removal of the cookie.
+- `Glpi\Api\HL\Controller\AbstractController::getRawKnownSchemas()` now has an optional `$api_version` parameter to accommodate complex schema differences between API versions.
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.

@@ -55,7 +55,7 @@ use Glpi\Dashboard;
 )]
 final class DashboardController extends AbstractController
 {
-    protected static function getRawKnownSchemas(): array
+    protected static function getRawKnownSchemas(string $api_version): array
     {
         global $DB;
 
@@ -80,7 +80,7 @@ final class DashboardController extends AbstractController
                 $all_widgets = array_merge($all_widgets, $card['widgettype']);
             }
         }
-        $all_widgets = array_unique(array_filter($all_widgets));
+        $all_widgets = array_values(array_unique(array_filter($all_widgets)));
 
         $known_filters = array_map(static fn($f) => $f::getId(), Dashboard\Filter::getRegisteredFilterClasses());
 
@@ -106,7 +106,7 @@ final class DashboardController extends AbstractController
                         'description' => 'Dashboard context which controls where it may be used',
                         'enum' => $known_contexts,
                     ],
-                    'user' => self::getDropdownTypeSchema(class: \User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: \User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'filters' => [
                         'x-version-introduced' => '2.3.0',
                         'type' => Doc\Schema::TYPE_ARRAY,
@@ -159,7 +159,7 @@ final class DashboardController extends AbstractController
                         'readOnly' => true,
                     ],
                     'dashboard' => self::getDropdownTypeSchema(class: Dashboard\Dashboard::class, full_schema: 'Dashboard'),
-                    'user' => self::getDropdownTypeSchema(class: \User::class, full_schema: 'User'),
+                    'user' => self::getDropdownTypeSchema(class: \User::class, name_field: ['name', 'username'], full_schema: 'User'),
                     'filter' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'JSON encoded filters',

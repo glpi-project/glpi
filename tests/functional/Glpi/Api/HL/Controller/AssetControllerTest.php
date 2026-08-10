@@ -39,7 +39,6 @@ use Computer;
 use DatabaseInstance;
 use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
-use Glpi\Asset\Asset;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
@@ -59,18 +58,11 @@ class AssetControllerTest extends HLAPITestCase
 {
     public function testIndex()
     {
-        global $CFG_GLPI;
-        $types = $CFG_GLPI['asset_types'];
-
-        // Ignore custom assets
-        $types = array_filter($types, static fn($t) => !is_subclass_of($t, Asset::class));
-
         $this->login();
-        $this->api->call(new Request('GET', '/Assets'), function ($call) use ($types) {
+        $this->api->call(new Request('GET', '/Assets'), function ($call) {
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) use ($types) {
-                    $this->assertGreaterThanOrEqual(count($types), count($content));
+                ->jsonContent(function ($content) {
                     foreach ($content as $asset) {
                         $this->assertNotEmpty($asset['itemtype']);
                         $this->assertNotEmpty($asset['name']);
@@ -108,7 +100,6 @@ class AssetControllerTest extends HLAPITestCase
             ['schema' => 'Peripheral', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
             ['schema' => 'Phone', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
             ['schema' => 'Printer', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
-            ['schema' => 'SoftwareLicense', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
         ];
     }
     #[DataProvider('searchProvider')]
@@ -150,7 +141,7 @@ class AssetControllerTest extends HLAPITestCase
                 ->jsonContent(function ($content) use ($dataset) {
                     $this->assertGreaterThanOrEqual(1, count($content));
                     foreach ($content as $asset) {
-                        $to_skip = ['SoftwareLicense', 'Unmanaged'];
+                        $to_skip = ['Unmanaged'];
                         if (in_array($asset['itemtype'], $to_skip, true)) {
                             continue;
                         }
@@ -169,7 +160,6 @@ class AssetControllerTest extends HLAPITestCase
             ['schema' => 'Peripheral', 'id' => getItemByTypeName('Peripheral', '_test_peripheral_1', true), 'expected' => ['fields' => ['name' => '_test_peripheral_1']]],
             ['schema' => 'Phone', 'id' => getItemByTypeName('Phone', '_test_phone_1', true), 'expected' => ['fields' => ['name' => '_test_phone_1']]],
             ['schema' => 'Printer', 'id' => getItemByTypeName('Printer', '_test_printer_all', true), 'expected' => ['fields' => ['name' => '_test_printer_all']]],
-            ['schema' => 'SoftwareLicense', 'id' => getItemByTypeName('SoftwareLicense', '_test_softlic_1', true), 'expected' => ['fields' => ['name' => '_test_softlic_1']]],
         ];
     }
 

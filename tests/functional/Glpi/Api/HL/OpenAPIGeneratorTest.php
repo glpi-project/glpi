@@ -191,7 +191,7 @@ class OpenAPIGeneratorTest extends HLAPITestCase
             $snapshot_prop = $snapshot_props[$prop_name];
             $schema_prop = $schema_props[$prop_name];
 
-            if (in_array($parent_path . $prop_name, ['Dashboard.context', 'DashboardCard.widget', 'UserPreferences.timezone'], true)) {
+            if (in_array($parent_path . $prop_name, ['Dashboard.context', 'DashboardCard.widget', 'UserPreferences.timezone', 'UserPreferences.pdf_font'], true)) {
                 // May differ between production and test env. ignore.
                 continue;
             }
