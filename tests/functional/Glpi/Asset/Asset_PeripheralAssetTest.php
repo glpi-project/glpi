@@ -139,7 +139,7 @@ class Asset_PeripheralAssetTest extends DbTestCase
 
         $peripheralMock->delete(
             [
-                'id' => $periph_id
+                'id' => $periph_id,
             ]
         );
     }
