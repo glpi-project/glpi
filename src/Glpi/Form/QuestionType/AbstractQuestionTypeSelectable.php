@@ -402,7 +402,7 @@ TWIG;
                     data-glpi-form-editor-question-extra-details
                     data-glpi-form-editor-question-option-remove
                 >
-                    <i class="ti ti-x"></i>
+                    <i class="ti ti-x" aria-hidden="true"></i>
                 </button>
             </div>
         {% endmacro %}

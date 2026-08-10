@@ -875,10 +875,10 @@ class Item_Rack extends CommonDBRelation
                . (!empty($gs_item['url'])
                   ? "<a href='" . htmlescape($gs_item['url']) . "' class='itemrack_name' style='" . htmlescape($fg_color_s) . "'>" . htmlescape($gs_item['name']) . "</a>"
                   : "<span class='itemrack_name'>" . htmlescape($gs_item['name']) . "</span>") . "
-               <a href='" . htmlescape($gs_item['rel_url']) . "' class='edit_rack_item'>
+               <a href='" . htmlescape($gs_item['rel_url']) . "' class='edit_rack_item'
+                  title='" . __s("Edit rack relation") . "'>
                   <i class='fa fa-pencil-alt rel-link'
-                     style='" . htmlescape($fg_color_s) . "'
-                     title='" . __s("Edit rack relation") . "'></i>
+                     style='" . htmlescape($fg_color_s) . "' aria-hidden='true'></i>
                </a>
                $tip
             </div>
@@ -911,7 +911,7 @@ class Item_Rack extends CommonDBRelation
         }
 
         if (!empty($icon)) {
-            $icon = "<i class='item_rack_icon " . htmlescape($icon) . "'></i>";
+            $icon = "<i class='item_rack_icon " . htmlescape($icon) . "' aria-hidden='true'></i>";
         }
 
         return "";

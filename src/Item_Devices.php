@@ -791,7 +791,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 ]);
             }
             echo "</td><td>";
-            echo "<button type='submit' class='btn btn-primary' name='add'><i class='ti ti-link'></i><span>" . _sx('button', 'Add') . "</span></button>";
+            echo "<button type='submit' class='btn btn-primary' name='add'><i class='ti ti-link' aria-hidden='true'></i><span>" . _sx('button', 'Add') . "</span></button>";
             echo "</td></tr></table>";
             Html::closeForm();
         }
@@ -808,7 +808,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         ]);
 
         if ($canedit) {
-            echo "<button type='submit' class='btn btn-primary' name='updateall'><i class='ti ti-device-floppy'></i><span>"
+            echo "<button type='submit' class='btn btn-primary' name='updateall'><i class='ti ti-device-floppy' aria-hidden='true'></i><span>"
                 . _sx('button', 'Save') . "</span></button>";
 
             Html::closeForm();

@@ -38,7 +38,7 @@
 <div class="card col-2 d-flex flex-column responsive-toggle {{ pinned ? 'pinned' : 'd-none' }} saved-searches-panel {{ clean_itemtype }}"
      id="saved-searches-panel-{{ rand }}">
    <div class="card-header d-flex flex-nowrap pe-0 align-items-center text-muted">
-      <i class="ti ti-star"></i>&nbsp;
+      <i class="ti ti-star" aria-hidden="true"></i>&nbsp;
       <span class="text-truncate">
          {{ _n('Saved search', 'Saved searches', 2) }}
       </span>
@@ -47,17 +47,17 @@
          <a href="{{ path('front/savedsearch.php') }}" class="btn btn-sm btn-icon btn-ghost-secondary"
             data-bs-toggle="tooltip" data-bs-placement="bottom"
             title="{{ __('Manage all saved searches') }}">
-            <i class="ti ti-settings"></i>
+            <i class="ti ti-settings" aria-hidden="true"></i>
          </a>
          <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 d-none d-md-block pin-saved-searches-panel"
                  data-bs-toggle="tooltip" data-bs-placement="bottom"
                  title="{{ __('Pin this panel for the current page') }}">
-            <i class="ti ti-pinned"></i>
+            <i class="ti ti-pinned" aria-hidden="true"></i>
          </button>
          <button class="btn btn-sm btn-icon btn-ghost-secondary ms-1 close-saved-searches-panel"
                  data-bs-toggle="tooltip" data-bs-placement="bottom"
                  title="{{ __('Close the panel') }}">
-            <i class="ti ti-x"></i>
+            <i class="ti ti-x" aria-hidden="true"></i>
          </button>
       </li>
    </div>
@@ -94,7 +94,7 @@
                 placeholder="{{ __('Filter list') }}" />
          <span class="input-group-text">
             <a href="#" class="link-secondary clear-text" role="button" title="Clear search">
-               <i class="ti ti-x fs-5"></i>
+               <i class="ti ti-x fs-5" aria-hidden="true"></i>
             </a>
          </span>
       </div>

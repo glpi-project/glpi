@@ -49,7 +49,7 @@
       {% endif %}
       {% set warranty_expiration %}
          <span title="{{ end_title|default('') }}" data-bs-toggle="tooltip">
-            <i class="ti ti-arrow-right"></i>
+            <i class="ti ti-arrow-right" aria-hidden="true"></i>
             {{ call('Infocom::getWarrantyExpir', [
                item.fields['begin_date'],
                item.fields['duration'],
@@ -74,7 +74,7 @@
    {% if item.fields['begin_date'] is not empty and item.fields['notice'] > 0 and item.fields['duration'] is not empty %}
       {% set notice_info %}
          <span title="{{ __('Start date of notice period') }}" data-bs-toggle="tooltip">
-            <i class="ti ti-arrow-right"></i>
+            <i class="ti ti-arrow-right" aria-hidden="true"></i>
             {{ call('Infocom::getWarrantyExpir', [
                item.fields['begin_date'],
                item.fields['duration'],

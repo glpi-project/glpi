@@ -42,7 +42,7 @@
         {% endif %}
 
                     <a role="button" class="btn btn-sm btn-ghost-secondary" id="select-all-itemtypes">
-                        <i class="ti ti-copy-check"></i>
+                        <i class="ti ti-copy-check" aria-hidden="true"></i>
                         <span>{{ __('Select/unselect all') }}</span>
                     </a>
 
@@ -62,7 +62,7 @@
                                     </span>
                                 {% endif %}
                                 <button type="button" class="btn btn-ghost-secondary p-0 btn-itemtype-pref overflow-hidden" data-itemtype="{{ pref['itemtype'] }}" title="{{ name }}">
-                                    <i class="{{ pref['itemtype']|itemtype_icon }} me-1"></i>
+                                    <i class="{{ pref['itemtype']|itemtype_icon }} me-1" aria-hidden="true"></i>
                                     <span class="text-truncate">
                                         {{ name }}
                                     </span>

@@ -603,7 +603,7 @@ class Event extends CommonDBTM
                 $icon = '';
             }
 
-            return '<i class="text-muted me-1 ' . \htmlescape($icon) . '"></i><span>' . \htmlescape($display_value) . '</span>';
+            return '<i class="text-muted me-1 ' . \htmlescape($icon) . '" aria-hidden="true"></i><span>' . \htmlescape($display_value) . '</span>';
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

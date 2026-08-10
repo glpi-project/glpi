@@ -97,17 +97,17 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unset_default']
-                     = "<i class='ti ti-star'></i>" . __s('Unset as default');
+                     = "<i class='ti ti-star' aria-hidden='true'></i>" . __s('Unset as default');
         $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_count_method']
-                     = "<i class='ti ti-adjustments-alt'></i>" . __s('Change count method');
+                     = "<i class='ti ti-adjustments-alt' aria-hidden='true'></i>" . __s('Change count method');
         if (Session::haveRight(self::$rightname, UPDATE)) {
             // Everyone can create/update a private search but only users with permission to update can change visibility to public
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_visibility']
-                = "<i class='ti ti-eye-search'></i>" . __s('Change visibility');
+                = "<i class='ti ti-eye-search' aria-hidden='true'></i>" . __s('Change visibility');
         }
         if (Session::haveRight('transfer', READ)) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
-                     = "<i class='ti ti-corner-right-up'></i>" . __s('Change entity');
+                     = "<i class='ti ti-corner-right-up' aria-hidden='true'></i>" . __s('Change entity');
         }
         return $actions;
     }

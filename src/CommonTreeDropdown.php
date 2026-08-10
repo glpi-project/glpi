@@ -561,7 +561,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                                 {% endif %}
                             </div>
                             <div class="d-flex flex-row-reverse pe-2">
-                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                             </div>
                         </div>
                     </form>
@@ -682,7 +682,7 @@ TWIG, $twig_params);
 
         if ($isadmin) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_under']
-                  = "<i class='ti ti-sitemap'></i>"
+                  = "<i class='ti ti-sitemap' aria-hidden='true'></i>"
                     . _sx('button', 'Move under');
         }
 

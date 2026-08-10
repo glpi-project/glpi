@@ -164,7 +164,7 @@
                                 aria-label="{{ __('Remove strategy') }}"
                                 data-glpi-itildestination-remove-field-config
                             >
-                                <i class="ti ti-x"></i>
+                                <i class="ti ti-x" aria-hidden="true"></i>
                             </button>
                         {% endif %}
                     </section>
@@ -176,7 +176,7 @@
                         aria-label="{{ __('Combine with another option') }}"
                         data-glpi-itildestination-add-field-config
                     >
-                        <i class="ti ti-plus me-2"></i>
+                        <i class="ti ti-plus me-2" aria-hidden="true"></i>
                         {{ __('Combine with another option') }}
                     </button>
                 {% endif %}
@@ -199,7 +199,7 @@
                         aria-label="{{ __('Combine with another option') }}"
                         data-glpi-itildestination-add-field-config
                     >
-                        <i class="ti ti-plus me-2"></i>
+                        <i class="ti ti-plus me-2" aria-hidden="true"></i>
                         {{ __('Combine with another option') }}
                     </button>
                 {% endif %}
@@ -255,7 +255,7 @@
                             aria-label="{{ __('Remove strategy') }}"
                             data-glpi-itildestination-remove-field-config
                         >
-                            <i class="ti ti-x"></i>
+                            <i class="ti ti-x" aria-hidden="true"></i>
                         </button>
                     </section>
                 {% else %}
@@ -377,7 +377,7 @@
                                 aria-controls="item-{{ rand }}-{{ loop.index }}"
                                 aria-label="{{ category.label }}"
                             >
-                                <i class="{{ category.icon }} item-icon"></i>
+                                <i class="{{ category.icon }} item-icon" aria-hidden="true"></i>
                                 <span class="item-title">{{ category.label }}</span>
                             </button>
                         </div>

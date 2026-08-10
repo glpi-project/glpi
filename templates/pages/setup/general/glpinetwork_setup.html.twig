@@ -56,13 +56,13 @@
         {% set registration_alert %}
             <div class="alert alert-info mb-0 d-inline-flex mt-3">
                 <div class="alert-icon">
-                    <i class="ti ti-shield-check"></i>
+                    <i class="ti ti-shield-check" aria-hidden="true"></i>
                 </div>
                 <div>
                     <h4 class="alert-heading">{{ __('A registration key is needed to use some advanced features (like the plugin marketplace) in GLPI') }}</h4>
                     <div class="alert-description">
                         <a href="{{ constant('GLPI_NETWORK_SERVICES') }}" class="btn btn-sm btn-outline-secondary me-1" target="_blank" rel="noopener noreferrer">
-                            <i class="ti ti-external-link"></i>
+                            <i class="ti ti-external-link" aria-hidden="true"></i>
                             <span>{{ __('Register on %1$s!')|format(__('GLPI Network')) }}</span>
                         </a>
                         {{ __("And retrieve your key to paste it below") }}
@@ -90,7 +90,7 @@
             {% set subscription_ok = informations['is_valid'] and informations['subscription']['is_running'] %}
             {% set alert_sub_ok %}
                 <span class="{{ subscription_ok ? 'text-success' : 'text-danger' }}">
-                    <i class="ti ti-info-circle"></i>
+                    <i class="ti ti-info-circle" aria-hidden="true"></i>
                     {{ informations['validation_message'] }}
                 </span>
             {% endset %}
@@ -115,7 +115,7 @@
 
         {% set clear_btn %}
             <button type="submit" name="reset_registration_key" value="1" class="ms-auto btn btn-outline-danger">
-                <i class="ti ti-x"></i>
+                <i class="ti ti-x" aria-hidden="true"></i>
                 <span>{{ __('Remove registration key') }}</span>
             </button>
         {% endset %}
@@ -147,7 +147,7 @@
 
     {% set btns_marketplace %}
         <a href="{{ path('/front/marketplace.php') }}" class="btn btn-outline-secondary btn-sm">
-            <i class="ti ti-arrow-narrow-right-dashed"></i>
+            <i class="ti ti-arrow-narrow-right-dashed" aria-hidden="true"></i>
             <span>{{ __('Access GLPI Network Marketplace') }}</span>
         </a>
     {% endset %}
@@ -159,7 +159,7 @@
     {% if canedit %}
         <div class="card-footer mx-n2 d-flex">
             <button type="submit" name="update" value="1" class="ms-auto btn btn-primary">
-                <i class="ti ti-device-floppy"></i>
+                <i class="ti ti-device-floppy" aria-hidden="true"></i>
                 <span>{{ _x('button', 'Save') }}</span>
             </button>
         </div>

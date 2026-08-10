@@ -4116,10 +4116,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 || Session::haveRight(Problem::$rightname, UPDATE);
             if ($can_update_itilobject) {
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                    = "<i class='ti ti-link'></i>"
+                    = "<i class='ti ti-link' aria-hidden='true'></i>"
                     . _sx('button', 'Link ITIL Object');
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
-                    = "<i class='ti ti-unlink'></i>"
+                    = "<i class='ti ti-unlink' aria-hidden='true'></i>"
                     . _sx('button', 'Unlink ITIL Object');
             }
         }
@@ -7776,7 +7776,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if (is_a($validation_row['itemtype_target'], CommonDBTM::class, true)) {
                     $validation_target = new $validation_row['itemtype_target']();
                     if ($validation_target->getFromDB($validation_row['items_id_target'])) {
-                        $content .= " <i class='ti ti-arrow-right'></i><i class='" . htmlescape($validation_target->getIcon()) . " text-muted me-1'></i>"
+                        $content .= " <i class='ti ti-arrow-right' aria-hidden='true'></i><i class='" . htmlescape($validation_target->getIcon()) . " text-muted me-1'></i>"
                             . $validation_target->getlink();
                     }
                 }
@@ -7953,7 +7953,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $pending_reason = $autoreminder_obj->getPendingReason();
             $content = sprintf(
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
-                '<i class="ti ti-refresh-alert text-warning me-1"></i>',
+                '<i class="ti ti-refresh-alert text-warning me-1" aria-hidden="true"></i>',
                 htmlescape(ITILReminder::getTypeName(1)),
                 htmlescape($autoreminder_obj->fields['content'] ?? ''),
                 htmlescape($autoreminder_obj->fields['name'])

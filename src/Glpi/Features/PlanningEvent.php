@@ -821,7 +821,7 @@ trait PlanningEvent
         $out .= "<a class='btn btn-primary'
                  title='" . __("Personalization") . "'
                  onclick='$(\"#advanced_repetition$rand\").toggle()'>
-                 <i class='ti ti-settings'></i>
+                 <i class='ti ti-settings' aria-hidden='true'></i>
               </a>";
         $out .= "<div id='advanced_repetition$rand' style='display: $display_ar; max-width: 23'>";
 

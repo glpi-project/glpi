@@ -57,7 +57,7 @@ Search::show('Plugin');
 echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
     <div class="text-center my-2">
         <a href="https://plugins.glpi-project.org" class="btn btn-primary" role="button">
-            <i class="ti ti-eye"></i>
+            <i class="ti ti-eye" aria-hidden="true"></i>
             <span>{{ label }}</span>
         </a>
     </div>

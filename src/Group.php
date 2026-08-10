@@ -239,7 +239,7 @@ class Group extends CommonTreeDropdown
             && Session::haveRight("user", User::IMPORTEXTAUTHUSERS)
             && static::canUpdate()
         ) {
-            $links['<i class="ti ti-settings"></i><span>' . __s('LDAP directory link') . '</span>'] = "/front/ldap.group.php";
+            $links['<i class="ti ti-settings" aria-hidden="true"></i><span>' . __s('LDAP directory link') . '</span>'] = "/front/ldap.group.php";
         }
         return $links;
     }
@@ -250,13 +250,13 @@ class Group extends CommonTreeDropdown
         $actions = parent::getSpecificMassiveActions($checkitem);
         if ($isadmin) {
             $prefix                            = 'Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']            = "<i class='ti ti-user-plus'></i>"
+            $actions[$prefix . 'add']            = "<i class='ti ti-user-plus' aria-hidden='true'></i>"
                                               . _sx('button', 'Add a user');
-            $actions[$prefix . 'add_supervisor'] = "<i class='ti ti-user-star'></i>"
+            $actions[$prefix . 'add_supervisor'] = "<i class='ti ti-user-star' aria-hidden='true'></i>"
                                               . _sx('button', 'Add a manager');
-            $actions[$prefix . 'add_delegatee']  = "<i class='fas fa-user-check'></i>"
+            $actions[$prefix . 'add_delegatee']  = "<i class='fas fa-user-check' aria-hidden='true'></i>"
                                               . _sx('button', 'Add a delegatee');
-            $actions[$prefix . 'remove']         = "<i class='ti ti-user-minus'></i>"
+            $actions[$prefix . 'remove']         = "<i class='ti ti-user-minus' aria-hidden='true'></i>"
                                               . _sx('button', 'Remove a user');
         }
 

@@ -43,37 +43,37 @@
         <div class="text-muted">
             {% if supplier['registration_number']|length > 0 %}
                 <div>
-                    <i class="ti ti-id-badge"></i>
+                    <i class="ti ti-id-badge" aria-hidden="true"></i>
                     {{ supplier['registration_number'] }}
                 </div>
             {% endif %}
             {% if supplier['comment']|length > 0 %}
                 <div>
-                    <i class="ti ti-notes"></i>
+                    <i class="ti ti-notes" aria-hidden="true"></i>
                     {{ supplier['comment'] }}
                 </div>
             {% endif %}
             {% if not supplier['phonenumber'] is empty %}
                 <div>
-                    <i class="ti ti-phone"></i>
+                    <i class="ti ti-phone" aria-hidden="true"></i>
                     <a href="tel:{{ supplier['phonenumber'] }}">{{ supplier['phonenumber'] }}</a>
                 </div>
             {% endif %}
             {% if not supplier['email'] is empty %}
                 <div>
-                    <i class="ti ti-mail"></i>
+                    <i class="ti ti-mail" aria-hidden="true"></i>
                     <a href="mailto:{{ supplier['email'] }}">{{ supplier['email'] }}</a>
                 </div>
             {% endif %}
             {% if not supplier['fax'] is empty %}
                 <div>
-                    <i class="ti ti-printer"></i>
+                    <i class="ti ti-printer" aria-hidden="true"></i>
                     {{ supplier['fax'] }}
                 </div>
             {% endif %}
             {% if not supplier['address'] is empty or not supplier['town'] is empty or not supplier['postcode'] is empty %}
                 <div>
-                    <i class="ti ti-home"></i>
+                    <i class="ti ti-home" aria-hidden="true"></i>
                     {% if not supplier['address'] is empty %}
                         {{ supplier['address'] }}
                     {% endif %}

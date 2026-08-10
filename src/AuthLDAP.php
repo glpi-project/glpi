@@ -507,7 +507,7 @@ class AuthLDAP extends CommonDBTM
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="text-center alert alert-danger">
-                    <i class="ti ti-alert-triangle alert-icon"></i>
+                    <i class="ti ti-alert-triangle alert-icon" aria-hidden="true"></i>
                     <div class="alert-text">
                         {{ missing_ext }}
                         <br>
@@ -1594,7 +1594,7 @@ TWIG, ['authldaps_id' => $ID]);
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="mb-3">
                     <div class="alert alert-warning" role="alert">
-                        <i class="alert-icon ti ti-alert-triangle"></i>
+                        <i class="alert-icon ti ti-alert-triangle" aria-hidden="true"></i>
                         <div class="alert-title">{{ warning }}</div>
                         <span class="text-secondary">{{ warning_long }}</span>
                 </div>

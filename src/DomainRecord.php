@@ -475,7 +475,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                     </div>
                     <div class="mt-4 text-center">
                         <button type="button" class="btn btn-primary" id="add_new_record_btn{{ rand }}">
-                            <i class="ti ti-plus"></i>
+                            <i class="ti ti-plus" aria-hidden="true"></i>
                             <span>{{ add_new_btn_msg }}</span>
                         </button>
                         <script>

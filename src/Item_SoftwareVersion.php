@@ -1016,7 +1016,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "</div>";
             echo "<div class='col-auto'>";
             echo "<button type='submit' name='add' class='btn btn-primary ms-1'>";
-            echo "<i class='ti ti-link'></i>" . _sx('button', 'Install');
+            echo "<i class='ti ti-link' aria-hidden='true'></i>" . _sx('button', 'Install');
             echo "</button>";
             echo "</div>";
             echo "</div>"; // d-flex
@@ -1107,7 +1107,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             $header_end .= "<th>" . __s('Valid license') . "</th>";
             $header_end .= "<th>
                 <button class='btn btn-sm show_filters " . ($is_filtered ? "btn-secondary" : "btn-outline-secondary") . "'>
-                    <i class='ti ti-filter'></i>
+                    <i class='ti ti-filter' aria-hidden='true'></i>
                     <span class='d-none d-xl-block'>" . __s('Filter') . "</span>
                 </button></th>";
             $header_end .= "</tr>";
@@ -1226,7 +1226,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             echo "</div>";
             echo "<div class='col-auto'>";
             echo "<button type='submit' name='add' class='btn btn-primary ms-1'>";
-            echo "<i class='ti ti-link'></i>" . _sx('button', 'Add');
+            echo "<i class='ti ti-link' aria-hidden='true'></i>" . _sx('button', 'Add');
             echo "</button>";
             echo "</div>";
             echo "</div>"; // d-flex

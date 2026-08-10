@@ -452,7 +452,7 @@ class Group_User extends CommonDBRelation
 
         if ($number != $all_groups) {
             echo "<div class='alert alert-primary d-flex align-items-center mb-4' role='alert'>";
-            echo "<i class='ti ti-info-circle fs-1'></i>";
+            echo "<i class='ti ti-info-circle fs-1' aria-hidden='true'></i>";
             echo "<span class='ms-2'>";
             echo __s("Some users are not listed as they are not visible from your current entity.");
             echo "</span>";

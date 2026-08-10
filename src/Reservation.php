@@ -550,7 +550,7 @@ class Reservation extends CommonDBChild
 
             $all = "<a class='btn btn-primary ms-2 view-all' href='reservation.php?reservationitems_id=0'>"
                . __s('View all items')
-               . "&nbsp;<i class='ti ti-eye'></i>"
+               . "&nbsp;<i class='ti ti-eye' aria-hidden='true'></i>"
             . "</a>";
         } else {
             $type = "";
@@ -1174,13 +1174,13 @@ HTML;
                 [$annee, $mois] = explode("-", $data["start_date"]);
                 $href = htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id={$data['id']}&month=$mois&year=$annee";
                 $entry['planning'] = "<a href='$href' title='" . __s('See planning') . "'>";
-                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
+                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "' aria-hidden='true'></i>";
                 $entry['planning'] .= "<span class='visually-hidden'>" . __s('See planning') . "</span>";
                 $entry['planning'] .= "</a>";
             } elseif ($item instanceof CommonDBTM) {
                 $href = htmlescape($item::getFormURLWithID($item->getID()) . "&forcetab=Reservation$1&tab_params[defaultDate]={$data['start_date']}");
                 $entry['planning'] = "<a href='$href' title=\"" . __s('See planning') . "\">";
-                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "'></i>";
+                $entry['planning'] .= "<i class='" . htmlescape(Planning::getIcon()) . "' aria-hidden='true'></i>";
                 $entry['planning'] .= "<span class='visually-hidden'>" . __s('See planning') . "</span>";
             }
             return $entry;
@@ -1279,16 +1279,16 @@ HTML;
                 }
             }
             if ($show_all || !$reservable) {
-                $actions[$action_prefix . 'enable'] = "<i class='" . htmlescape(self::getIcon()) . "'></i>" . __s('Authorize reservations');
+                $actions[$action_prefix . 'enable'] = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>" . __s('Authorize reservations');
             }
             if ($show_all || $reservable) {
-                $actions[$action_prefix . 'disable'] = "<i class='ti ti-calendar-off'></i>" . __s('Prohibit reservations');
+                $actions[$action_prefix . 'disable'] = "<i class='ti ti-calendar-off' aria-hidden='true'></i>" . __s('Prohibit reservations');
             }
             if ($show_all || ($reservable && !$available)) {
-                $actions[$action_prefix . 'available'] = "<i class='" . htmlescape(self::getIcon()) . "'></i>" . __s('Make available for reservations');
+                $actions[$action_prefix . 'available'] = "<i class='" . htmlescape(self::getIcon()) . "' aria-hidden='true'></i>" . __s('Make available for reservations');
             }
             if ($show_all || $available) {
-                $actions[$action_prefix . 'unavailable'] = "<i class='ti ti-calendar-off'></i>" . __s('Make unavailable for reservations');
+                $actions[$action_prefix . 'unavailable'] = "<i class='ti ti-calendar-off' aria-hidden='true'></i>" . __s('Make unavailable for reservations');
             }
         }
     }

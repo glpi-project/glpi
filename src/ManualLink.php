@@ -235,9 +235,9 @@ class ManualLink extends CommonDBChild
         if (str_starts_with($fields['icon'] ?? '', 'fa-')) {
             // Forces font family values to fallback on ".fab" family font if char is not available in ".fas" family.
             $html .= '<i class="fs-2 fa ' . htmlescape($fields['icon']) . '"'
-            . ' style="font-family:\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\';"></i>&nbsp;';
+            . ' style="font-family:\'Font Awesome 6 Free\', \'Font Awesome 6 Brands\';" aria-hidden="true"></i>&nbsp;';
         } elseif (str_starts_with($fields['icon'] ?? '', 'ti-')) {
-            $html .= '<i class="fs-2 ti ' . htmlescape($fields['icon']) . '"></i>&nbsp;';
+            $html .= '<i class="fs-2 ti ' . htmlescape($fields['icon']) . '" aria-hidden="true"></i>&nbsp;';
         }
         $html .= htmlescape(!empty($fields['name']) ? $fields['name'] : $fields['url']);
         $html .= '</a>';

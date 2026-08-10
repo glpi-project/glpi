@@ -2816,7 +2816,7 @@ class Plugin extends CommonDBTM
                     // Do not show actions if the plugins execution is suspended.
                     // These actions would require to load the plugin, we do not want this to happen.
                     return \sprintf(
-                        '<span class="text-info" data-bs-toggle="tooltip" title="%s"><i class="ti ti-info-circle-filled"></i></span>',
+                        '<span class="text-info" data-bs-toggle="tooltip" title="%s"><i class="ti ti-info-circle-filled" aria-hidden="true"></i></span>',
                         __s('The plugins maintenance actions are disabled when the plugins execution is suspended.')
                     );
                 }
@@ -2845,7 +2845,7 @@ class Plugin extends CommonDBTM
                     // Configuration button for activated or configurable plugins
                     $config_url = htmlescape("{$CFG_GLPI['root_doc']}/plugins/{$directory}/{$PLUGIN_HOOKS[Hooks::CONFIG_PAGE][$directory]}");
                     $output .= '<a href="' . $config_url . '" title="' . __s('Configure') . '">'
-                    . '<i class="ti ti-tool fs-2x"></i>'
+                    . '<i class="ti ti-tool fs-2x" aria-hidden="true"></i>'
                     . '<span class="visually-hidden">' . __s('Configure') . '</span>'
                     . '</a>'
                     . '&nbsp;';
@@ -3008,7 +3008,7 @@ class Plugin extends CommonDBTM
                 if (!empty($value)) {
                     $value = htmlescape($value);
                     return "<a href=\"" . $value . "\" target='_blank'>
-                     <i class='ti ti-external-link-alt fs-2x'></i><span class='visually-hidden'>$value</span>
+                     <i class='ti ti-external-link-alt fs-2x' aria-hidden='true'></i><span class='visually-hidden'>$value</span>
                   </a>";
                 }
                 return "&nbsp;";
@@ -3122,19 +3122,19 @@ class Plugin extends CommonDBTM
 
         if (Session::getCurrentInterface() === 'central' && Config::canUpdate()) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
-            = "<i class='ti ti-folder-plus'></i>"
+            = "<i class='ti ti-folder-plus' aria-hidden='true'></i>"
             . __s('Install');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
-            = "<i class='ti ti-folder-minus'></i>"
+            = "<i class='ti ti-folder-minus' aria-hidden='true'></i>"
             . __s('Uninstall');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'enable']
-            = "<i class='ti ti-toggle-right-filled'></i>"
+            = "<i class='ti ti-toggle-right-filled' aria-hidden='true'></i>"
             . __s('Enable');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'disable']
-            = "<i class='ti ti-toggle-left-filled'></i>"
+            = "<i class='ti ti-toggle-left-filled' aria-hidden='true'></i>"
             . __s('Disable');
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'clean']
-            = "<i class='ti ti-recycle'></i>"
+            = "<i class='ti ti-recycle' aria-hidden='true'></i>"
             . __s('Clean');
         }
 

@@ -200,7 +200,7 @@ class Itil_Project extends CommonDBRelation
                                     entity_restrict: entity_restrict
                                 }) }}
                                 <div>
-                                    <button class="btn btn-primary ms-3" type="submit" name="add" value=""><i class="ti ti-link"></i><span>{{ btn_msg }}</span></button>
+                                    <button class="btn btn-primary ms-3" type="submit" name="add" value=""><i class="ti ti-link" aria-hidden="true"></i><span>{{ btn_msg }}</span></button>
                                 </div>
                             </div>
                         </form>
@@ -340,7 +340,7 @@ TWIG, $twig_params);
                                 </div>
                                 <div class="col-auto">
                                     <button class="btn btn-primary ms-1" type="submit" name="add" value="">
-                                        <i class="ti ti-link"></i>
+                                        <i class="ti ti-link" aria-hidden="true"></i>
                                         {{ btn_msg }}
                                     </button>
                                 </div>

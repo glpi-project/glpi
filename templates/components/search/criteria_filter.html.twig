@@ -36,7 +36,7 @@
     <div class="col-12 search-container container">
         {# Info section detailling the purpose of the filter #}
         <div class="alert alert-info mt-1">
-            <h3 class="fw-normal"><i class="ti ti-info-circle me-1"></i>{{ info_title }}</h3>
+            <h3 class="fw-normal"><i class="ti ti-info-circle me-1" aria-hidden="true"></i>{{ info_title }}</h3>
             <p class="text-muted">{{ info_description }}</p>
         </div>
 
@@ -60,7 +60,7 @@
               <p class="empty-title">{{ __("No filter found") }}</p>
               <p class="empty-subtitle text-muted">{{ __("There is no filter defined yet for this item.") }}</p>
               <div class="empty-action">
-                <button id="enable_filter_action" type="button" class="btn btn-primary"><i class="ti ti-plus me-2"></i>{{ __("Create a filter") }}</button>
+                <button id="enable_filter_action" type="button" class="btn btn-primary"><i class="ti ti-plus me-2" aria-hidden="true"></i>{{ __("Create a filter") }}</button>
               </div>
             </div>
         </div>

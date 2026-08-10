@@ -145,7 +145,7 @@
                       this._div = L.DomUtil.create('div', 'fail_info');
                       const error_message = '{{ __('An error occurred loading data :(')|e('js') }}';
                       const reload_message = '{{ __('Reload')|e('js') }}'
-                      this._div.innerHTML = `${_.escape(error_message)}<br/><span id='reload_data'><i class='ti ti-refresh'></i>${_.escape(reload_message)}</span>`;
+                      this._div.innerHTML = `${_.escape(error_message)}<br/><span id='reload_data'><i class='ti ti-refresh' aria-hidden='true'></i>${_.escape(reload_message)}</span>`;
                       return this._div;
                   };
                   fail_info.addTo(map_elt);

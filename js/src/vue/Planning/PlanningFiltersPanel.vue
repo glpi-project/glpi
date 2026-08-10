@@ -77,7 +77,7 @@
                     <button class="btn btn-sm btn-icon btn-ghost-secondary me-1"
                             @click="showAddCalendar"
                             :title="__('Add a calendar')" :aria-label="__('Add a calendar')">
-                        <i class="ti ti-circle-plus"></i>
+                        <i class="ti ti-circle-plus" aria-hidden="true"></i>
                     </button>
                 </h3>
                 <PlanningFiltersList v-show="!filters_collapsed" :active_entity="active_entity" :filters="filters.plannings"

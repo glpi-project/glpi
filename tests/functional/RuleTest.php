@@ -186,7 +186,7 @@ class RuleTest extends DbTestCase
         $actions = $rule->getSpecificMassiveActions();
         $this->assertSame(
             [
-                'Rule:export'     => '<i class=\'ti ti-file-download\'></i>Export',
+                'Rule:export'     => '<i class=\'ti ti-file-download\' aria-hidden=\'true\'></i>Export',
             ],
             $actions
         );
@@ -196,8 +196,8 @@ class RuleTest extends DbTestCase
         $actions = $rule->getSpecificMassiveActions();
         $this->assertSame(
             [
-                'Rule:move_rule' => '<i class=\'ti ti-arrows-vertical\'></i>Move',
-                'Rule:export'     => '<i class=\'ti ti-file-download\'></i>Export',
+                'Rule:move_rule' => '<i class=\'ti ti-arrows-vertical\' aria-hidden=\'true\'></i>Move',
+                'Rule:export'     => '<i class=\'ti ti-file-download\' aria-hidden=\'true\'></i>Export',
             ],
             $actions
         );
@@ -207,7 +207,7 @@ class RuleTest extends DbTestCase
         $actions = $rule->getSpecificMassiveActions();
         $this->assertSame(
             [
-                'Rule:export'     => '<i class=\'ti ti-file-download\'></i>Export',
+                'Rule:export'     => '<i class=\'ti ti-file-download\' aria-hidden=\'true\'></i>Export',
             ],
             $actions
         );

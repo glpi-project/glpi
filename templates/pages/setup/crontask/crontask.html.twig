@@ -105,7 +105,7 @@
                                         no_label: true,
                                         field_class: ''
                                     }) }}
-                                    <i class="ti ti-arrow-right mb-3"></i>
+                                    <i class="ti ti-arrow-right mb-3" aria-hidden="true"></i>
                                     {{ fields.dropdownNumberField('hourmax', item.fields['hourmax'], null, {
                                         min: 0,
                                         max: 24,
@@ -144,7 +144,7 @@
                                         {% if can_execute %}
                                             {# ID field is defined in components/form/buttons.html.twig #}
                                             <button class="btn btn-icon border-0" type="submit" name="resetdate" title="{{ __('Blank') }}">
-                                                <i class="ti ti-circle-x me-1"></i>
+                                                <i class="ti ti-circle-x me-1" aria-hidden="true"></i>
                                             </button>
                                         {% endif %}
                                     {% endif %}
@@ -166,7 +166,7 @@
                                     {% elseif can_execute and launch %}
                                         {# ID is defined in components/form/buttons.html.twig #}
                                         <button class="btn btn-primary" type="submit" name="execute" value="{{ item.fields['name'] }}">
-                                            <i class="ti ti-player-play me-1"></i>
+                                            <i class="ti ti-player-play me-1" aria-hidden="true"></i>
                                             {{ __('Execute') }}
                                         </button>
                                     {% endif %}
@@ -174,7 +174,7 @@
                                     {% if can_execute and item.fields['state'] == constant('CronTask::STATE_RUNNING') %}
                                         {# ID field is defined in components/form/buttons.html.twig #}
                                         <button class="btn btn-primary" type="submit" name="resetstate">
-                                            <i class="ti ti-circle-x me-1"></i>
+                                            <i class="ti ti-circle-x me-1" aria-hidden="true"></i>
                                             {{ __('Blank') }}
                                         </button>
                                     {% endif %}

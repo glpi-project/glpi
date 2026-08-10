@@ -225,7 +225,7 @@
                         data-glpi-form-renderer-action="previous-section"
                         class="btn btn-ghost-secondary d-none d-flex align-items-end me-2 pointer-events-none"
                     >
-                        <i class="ti ti-arrow-narrow-left-dashed me-2"></i>
+                        <i class="ti ti-arrow-narrow-left-dashed me-2" aria-hidden="true"></i>
                         {{ __("Back") }}
                     </button>
 
@@ -234,7 +234,7 @@
                         data-glpi-form-renderer-action="next-section"
                         class="btn btn-primary pointer-events-none d-flex align-items-end"
                     >
-                        <i class="ti ti-arrow-narrow-right-dashed me-2"></i>
+                        <i class="ti ti-arrow-narrow-right-dashed me-2" aria-hidden="true"></i>
                         {{ __("Continue") }}
                     </button>
                 {% endif %}
@@ -249,7 +249,7 @@
                         data-glpi-form-renderer-hidden-by-condition
                     {% endif %}
                 >
-                    <i class="ti ti-check me-2"></i>
+                    <i class="ti ti-check me-2" aria-hidden="true"></i>
                     {{ __("Submit") }}
                 </button>
             </div>
@@ -286,19 +286,19 @@
                         <li class="me-2">
                             {% if get_current_interface() == 'central' %}
                                 <a class="btn btn-outline-secondary" href="{{ path('/ServiceCatalog') }}">
-                                    <i class="ti ti-library me-1"></i>
+                                    <i class="ti ti-library me-1" aria-hidden="true"></i>
                                     <span>{{ __("Go back to service catalog") }}</span>
                                 </a>
                             {% else %}
                                 <a class="btn btn-outline-secondary" href="{{ path('/Helpdesk') }}">
-                                    <i class="ti ti-home me-1"></i>
+                                    <i class="ti ti-home me-1" aria-hidden="true"></i>
                                     <span>{{ __("Take me home") }}</span>
                                 </a>
                             {% endif %}
                         </li>
                         <li>
                             <a class="btn btn-primary" href="{{ path('/front/ticket.php?' ~ my_tickets_url_param) }}">
-                                <i class="ti ti-article me-1"></i>
+                                <i class="ti ti-article me-1" aria-hidden="true"></i>
                                 <span>{{ __("See my tickets") }}</span>
                             </a>
                         </li>

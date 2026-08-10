@@ -583,7 +583,7 @@ class MassiveAction
             && !isAPI()
         ) {
             $actions[self::class . self::CLASS_ACTION_SEPARATOR . 'add_transfer_list']
-                  = "<i class='ti ti-corner-right-up'></i>"
+                  = "<i class='ti ti-corner-right-up' aria-hidden='true'></i>"
                     . _sx('button', 'Add to transfer list');
         }
     }
@@ -654,9 +654,9 @@ class MassiveAction
                 $actions[$self_pref . 'update'] = _sx('button', 'Update');
 
                 if ($cancreate && Toolbox::hasTrait($itemtype, Clonable::class)) {
-                    $actions[$self_pref . 'clone'] = "<i class='ti ti-copy'></i>" . _sx('button', 'Clone');
+                    $actions[$self_pref . 'clone'] = "<i class='ti ti-copy' aria-hidden='true'></i>" . _sx('button', 'Clone');
                     if ($item->maybeTemplate()) {
-                        $actions[$self_pref . 'create_template'] = "<i class='ti ti-copy'></i>" . _sx('button', 'Create template');
+                        $actions[$self_pref . 'create_template'] = "<i class='ti ti-copy' aria-hidden='true'></i>" . _sx('button', 'Create template');
                     }
                 }
             }
@@ -666,8 +666,8 @@ class MassiveAction
 
             global $CFG_GLPI;
             if ($canupdate && in_array($itemtype, $CFG_GLPI['assignable_types'], true)) {
-                $actions[$self_pref . 'associate_group'] = "<i class='ti-users-group'></i>" . _sx('button', 'Associate group');
-                $actions[$self_pref . 'dissociate_group'] = "<i class='ti-users-group'></i>" . _sx('button', 'Dissociate group');
+                $actions[$self_pref . 'associate_group'] = "<i class='ti-users-group' aria-hidden='true'></i>" . _sx('button', 'Associate group');
+                $actions[$self_pref . 'dissociate_group'] = "<i class='ti-users-group' aria-hidden='true'></i>" . _sx('button', 'Dissociate group');
             }
 
             CommonDBConnexity::getMassiveActionsForItemtype(
@@ -707,12 +707,12 @@ class MassiveAction
             // Amend comment for objects with a 'comment' field
             $item->getEmpty();
             if ($canupdate && isset($item->fields['comment'])) {
-                $actions[$self_pref . 'amend_comment'] = "<i class='ti ti-message-circle'></i>" . __s("Amend comment");
+                $actions[$self_pref . 'amend_comment'] = "<i class='ti ti-message-circle' aria-hidden='true'></i>" . __s("Amend comment");
             }
 
             // Add a note for objects with the UPDATENOTE rights
             if (Session::haveRight($item::$rightname, UPDATENOTE)) {
-                $actions[$self_pref . 'add_note'] = "<i class='ti ti-note'></i>" . __s("Add note");
+                $actions[$self_pref . 'add_note'] = "<i class='ti ti-note' aria-hidden='true'></i>" . __s("Add note");
             }
 
             // Plugin Specific actions

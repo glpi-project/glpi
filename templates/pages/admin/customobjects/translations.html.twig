@@ -57,7 +57,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" name="update">
-                        <i id="translation-modal-button-icon{{ rand }}"></i>
+                        <i id="translation-modal-button-icon{{ rand }}" aria-hidden="true"></i>
                         <span id="translation-modal-button-text{{ rand }}"></span>
                     </button>
                 </div>
@@ -68,7 +68,7 @@
 
 <div class="d-flex">
     <button type="button" class="btn btn-primary add-translation" data-bs-toggle="modal" data-bs-target="#TranslationModal{{ rand }}">
-        <i class="ti ti-plus"></i>
+        <i class="ti ti-plus" aria-hidden="true"></i>
         <span>{{ __("New translation") }}</span>
     </button>
 </div>
@@ -80,8 +80,8 @@
         <table class="table">
             <thead>
             <tr>
-                <th><i class="ti ti-forms me-1"></i>{{ __('Asset name / Field') }}</th>
-                <th><i class="ti ti-language me-1"></i>{{ __("Language") }}</th>
+                <th><i class="ti ti-forms me-1" aria-hidden="true"></i>{{ __('Asset name / Field') }}</th>
+                <th><i class="ti ti-language me-1" aria-hidden="true"></i>{{ __("Language") }}</th>
                 <th># {{ __("Translations") }}</th>
                 <th></th>
             </tr>
@@ -98,8 +98,9 @@
                         </td>
                         <td>
                             <div title="{{ __("Edit translation") }}" class="d-inline" data-bs-toggle="tooltip" data-bs-placement="top">
-                                <button type="button" class="btn btn-sm btn-icon btn-ghost-secondary edit-translation" data-bs-toggle="modal">
-                                    <i class="ti ti-pencil"></i>
+                                <button type="button" class="btn btn-sm btn-icon btn-ghost-secondary edit-translation" data-bs-toggle="modal"
+                                        aria-label="{{ __("Edit translation") }}">
+                                    <i class="ti ti-pencil" aria-hidden="true"></i>
                                 </button>
                             </div>
                             <div title="{{ __("Delete translation") }}" class="d-inline" data-bs-toggle="tooltip" data-bs-placement="top">
@@ -108,8 +109,9 @@
                                     <input type="hidden" name="_delete_translation" value="1" />
                                     <input type="hidden" name="field" value="{{ trans_data['id'] }}" />
                                     <input type="hidden" name="language" value="{{ trans_data['language'] }}" />
-                                    <button type="submit" name="update" class="btn btn-sm btn-icon btn-ghost-danger">
-                                        <i class="ti ti-trash-x"></i>
+                                    <button type="submit" name="update" class="btn btn-sm btn-icon btn-ghost-danger"
+                                            aria-label="{{ __("Delete translation") }}">
+                                        <i class="ti ti-trash-x" aria-hidden="true"></i>
                                     </button>
                                 </form>
                             </div>
@@ -195,7 +197,7 @@
                             ${pluralForm.id}
                             <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
                                   data-bs-content="${helper}">
-                                <i class="ti ti-help"></i>
+                                <i class="ti ti-help" aria-hidden="true"></i>
                             </span>
                         </label>
                         <input type="text" class="form-control" id="plural_${pluralForm.id}{{ rand }}" name="plurals[${pluralForm.id}]" value="${plural_value}">

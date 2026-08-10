@@ -38,11 +38,11 @@
                <i class="{{ itemtype|itemtype_icon }}" title="{{ itemtype|itemtype_name }}"></i>
                {{ item_fields.name }}
             </a>
-            <button type="button" class="btn-link"><i class="ti ti-x"></i></button>
+            <button type="button" class="btn-link" aria-label="{{ _x('button', 'Close') }}"><i class="ti ti-x" aria-hidden="true"></i></button>
          </h5>
          <h6 class="card-subtitle">
             {% if item_fields.is_milestone ?? false %}
-               <i class="ti ti-directions-filled me-2"></i>{{ __('Milestone') }}
+               <i class="ti ti-directions-filled me-2" aria-hidden="true"></i>{{ __('Milestone') }}
             {% endif %}
          </h6>
       </div>
@@ -68,7 +68,7 @@
 
          <h5 class="d-flex justify-content-between">
             <span>{{ __('Team') }}</span>
-            <button type="button" class="btn-link kanban-item-edit-team"><i class="ti ti-plus"></i></button>
+            <button type="button" class="btn-link kanban-item-edit-team" aria-label="{{ __('Add a team member') }}"><i class="ti ti-plus" aria-hidden="true"></i></button>
          </h5>
          {% if team is not empty %}
             {% set item = itemtype|itemtype_class %}

@@ -340,7 +340,7 @@ class Dropdown
                            title="' . __s('Add') . '" data-bs-toggle="modal" data-bs-target="#add_' . htmlescape($field_id) . '">';
             $add_item_icon .= Ajax::createIframeModalWindow('add_' . $field_id, $item->getFormURL(), ['display' => false]);
             $add_item_icon .= "<span data-bs-toggle='tooltip'>
-              <i class='ti ti-plus'></i>
+              <i class='ti ti-plus' aria-hidden='true'></i>
               <span class='visually-hidden'>" . __s('Add') . "</span>
                 </span>";
             $add_item_icon .= '</div>';
@@ -431,7 +431,7 @@ class Dropdown
             if ($itemtype === 'Location' && Location::canView()) {
                 $location_icon = "<div role='button' class='btn btn-outline-secondary' onclick='showMapForLocation(this)'
                                        data-fid='" . htmlescape($field_id) . "' title='" . __s('Display on map') . "' data-bs-toggle='tooltip' data-bs-placement='bottom'>";
-                $location_icon .= "<i class='ti ti-map'></i></div>";
+                $location_icon .= "<i class='ti ti-map' aria-hidden='true'></i></div>";
                 $icon_array[] = $location_icon;
             }
 
@@ -2810,7 +2810,7 @@ HTML;
         Dropdown::showFromArray('display_type', $values, ['rand' => $rand]);
         echo "<button type='submit' name='export' class='btn' "
              . " title=\"" . _sx('button', 'Export') . "\">"
-             . "<i class='ti ti-device-floppy'></i><span class='visually-hidden'>" . _sx('button', 'Export') . "<span>";
+             . "<i class='ti ti-device-floppy' aria-hidden='true'></i><span class='visually-hidden'>" . _sx('button', 'Export') . "<span>";
     }
 
 

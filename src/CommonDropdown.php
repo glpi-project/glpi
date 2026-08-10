@@ -987,7 +987,7 @@ abstract class CommonDropdown extends CommonDBTM
                 $kbitem->getFromDB(reset($found_kbitem)['id']);
                 $ret .= "<div class='faqadd_block'>";
                 $ret .= "<label for='display_faq_chkbox$rand'>";
-                $ret .= "<i class='ti ti-zoom-question'></i>";
+                $ret .= "<i class='ti ti-zoom-question' aria-hidden='true'></i>";
                 $ret .= "</label>";
                 $ret .= "<input type='checkbox'  class='display_faq_chkbox' id='display_faq_chkbox$rand'>";
                 $ret .= "<div class='faqadd_entries'>";

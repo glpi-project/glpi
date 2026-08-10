@@ -189,7 +189,7 @@ class SoftwareLicense_User extends CommonDBRelation
                                 used: used,
                             }) }}
                             {% set btn %}
-                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-link" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>

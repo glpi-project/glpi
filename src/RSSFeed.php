@@ -561,7 +561,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         if (Toolbox::testWriteAccessToDirectory(GLPI_RSS_DIR) > 0) {
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="alert alert-danger">
-                    <i class="alert-icon ti ti-alert-triangle"></i>
+                    <i class="alert-icon ti ti-alert-triangle" aria-hidden="true"></i>
                     <div class="alert-title">{{ msg }}</div>
                 </div>
 TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);

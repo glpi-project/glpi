@@ -1374,21 +1374,21 @@ var GLPIImpact = {
         return [
             {
                 id             : 'goTo',
-                content        : '<i class="ti ti-external-link me-2"></i>' + __("Go to"),
+                content        : '<i class="ti ti-external-link me-2" aria-hidden="true"></i>' + __("Go to"),
                 tooltipText    : _.unescape(__("Open this element in a new tab")),
                 selector       : 'node[link]',
                 onClickFunction: this.menuOnGoTo
             },
             {
                 id             : 'showOngoing',
-                content        : '<i class="ti ti-alert-circle me-2"></i>' + __("Show ongoing tickets"),
+                content        : '<i class="ti ti-alert-circle me-2" aria-hidden="true"></i>' + __("Show ongoing tickets"),
                 tooltipText    : _.unescape(__("Show ongoing tickets for this item")),
                 selector       : 'node[hasITILObjects=1]',
                 onClickFunction: this.menuOnShowOngoing
             },
             {
                 id             : 'editEdge',
-                content        : '<i class="ti ti-edit me-2"></i>' + __("Edge properties..."),
+                content        : '<i class="ti ti-edit me-2" aria-hidden="true"></i>' + __("Edge properties..."),
                 tooltipText    : _.unescape(__("Set name for this edge")),
                 selector       : 'edge',
                 onClickFunction: this.menuOnEditEdge,
@@ -1396,7 +1396,7 @@ var GLPIImpact = {
             },
             {
                 id             : 'editCompound',
-                content        : '<i class="ti ti-edit me-2"></i>' + __("Group properties..."),
+                content        : '<i class="ti ti-edit me-2" aria-hidden="true"></i>' + __("Group properties..."),
                 tooltipText    : _.unescape(__("Set name and/or color for this group")),
                 selector       : 'node:parent',
                 onClickFunction: this.menuOnEditCompound,
@@ -1404,7 +1404,7 @@ var GLPIImpact = {
             },
             {
                 id             : 'removeFromCompound',
-                content        : '<i class="ti ti-home-move me-2"></i>' + __("Remove from group"),
+                content        : '<i class="ti ti-home-move me-2" aria-hidden="true"></i>' + __("Remove from group"),
                 tooltipText    : _.unescape(__("Remove this asset from the group")),
                 selector       : 'node:child',
                 onClickFunction: this.menuOnRemoveFromCompound,
@@ -1412,7 +1412,7 @@ var GLPIImpact = {
             },
             {
                 id             : 'delete',
-                content        : '<i class="ti ti-trash me-2"></i>' + __("Delete"),
+                content        : '<i class="ti ti-trash me-2" aria-hidden="true"></i>' + __("Delete"),
                 tooltipText    : _.unescape(__("Delete element")),
                 selector       : 'node, edge',
                 onClickFunction: this.menuOnDelete,
@@ -3739,7 +3739,7 @@ var GLPIImpact = {
                     str += _.escape(value["name"]);
 
                     if (isHidden) {
-                        str += '<i class="ti ti-eye-off impact-res-hidden"></i>';
+                        str += '<i class="ti ti-eye-off impact-res-hidden" aria-hidden="true"></i>';
                     }
 
                     str += "</p>";
