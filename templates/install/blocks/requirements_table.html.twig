@@ -75,7 +75,7 @@
                         data-bs-content="{{ requirement.getValidationMessages()|join('<br />') }}">
                      <i class="{{ requirement.isValidated() ? 'ti ti-check' : (requirement.isOptional() ? 'ti ti-alert-triangle' : 'ti ti-x') }}" aria-hidden="true"></i>
                      <span class="visually-hidden">
-                        {{ requirement.isValidated() ? __('OK') : (requirement.isOptional() ? __('Warning') : __('Error')) }}
+                        {{ requirement.isValidated() ? __('OK') : (requirement.isOptional() ? __('Warning') : _n('Error', 'Errors', 1)) }}
                      </span>
                   </span>
                </td>
