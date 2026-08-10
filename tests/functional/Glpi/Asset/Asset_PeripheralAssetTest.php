@@ -133,6 +133,7 @@ class Asset_PeripheralAssetTest extends DbTestCase
         $periph->delete(['id' => $periph->getID()], force: true);
 
         $this->assertTrue($_SESSION['MESSAGE_AFTER_REDIRECT'] === []);
+        $this->assertFalse((new Asset_PeripheralAsset())->getFromDB($relation->getID()));
 
     }
 }
