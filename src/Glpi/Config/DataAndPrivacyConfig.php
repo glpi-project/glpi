@@ -156,9 +156,15 @@ final class DataAndPrivacyConfig extends Config
         ]);
     }
 
+    public static function cronInfo($name)
+    {
+        return ['description' => __("Purge session history")];
+    }
+
     /**
      * @param CronTask $task
      * @return int
+     * @used-by CronTask
      */
     public static function cronPurgeSessionHistory(CronTask $task): int
     {
