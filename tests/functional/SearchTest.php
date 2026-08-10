@@ -4645,6 +4645,43 @@ class SearchTest extends DbTestCase
     }
 
     /**
+     * The range boundaries must not be shifted by a DST transition of the server timezone,
+     * as the compared `datetime` column holds a naive value with no time offset.
+     */
+    public function testDateTimeEqualsCriterionOnDstTransition(): void
+    {
+        global $DB;
+
+        $original_tz = date_default_timezone_get();
+        // Hack to prevent the script tz from being changed by the DB access layer
+        $DB->use_timezones = true;
+        // Clocks jump from 02:00 to 03:00 in `Europe/Paris` on this date
+        date_default_timezone_set('Europe/Paris');
+
+        try {
+            $data = $this->doSearch(Ticket::class, [
+                'is_deleted' => 0,
+                'start'      => 0,
+                'criteria'   => [
+                    [
+                        'link'       => 'AND',
+                        'field'      => 15, // date
+                        'searchtype' => 'equals',
+                        'value'      => '2024-03-31 02',
+                    ],
+                ],
+            ]);
+        } finally {
+            date_default_timezone_set($original_tz);
+        }
+
+        $this->assertStringContainsString(
+            "(`glpi_tickets`.`date` >= '2024-03-31 02:00:00') AND (`glpi_tickets`.`date` < '2024-03-31 03:00:00')",
+            $this->cleanSQL($data['sql']['search'])
+        );
+    }
+
+    /**
      * A `contains` criterion on a date/time field is searched as a range, to use the column index.
      */
     public static function dateTimeContainsCriterionProvider(): iterable

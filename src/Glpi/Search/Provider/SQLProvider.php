@@ -50,6 +50,7 @@ use Consumable;
 use CronTask;
 use DateInterval;
 use DateTimeImmutable;
+use DateTimeZone;
 use DBConnection;
 use DBmysql;
 use DBmysqlIterator;
@@ -5496,8 +5497,8 @@ final class SQLProvider implements SearchProviderInterface
                 return null;
             }
 
-            // `!` resets unspecified fields to their "zero" value
-            $lower_bound = DateTimeImmutable::createFromFormat('!' . $format, $val);
+            // `!` resets unspecified fields to their "zero" value; force UTC as the value has no time offset.
+            $lower_bound = DateTimeImmutable::createFromFormat('!' . $format, $val, new DateTimeZone('UTC'));
             $errors      = DateTimeImmutable::getLastErrors();
             if ($lower_bound === false || ($errors !== false && ($errors['warning_count'] + $errors['error_count']) > 0)) {
                 // Out of range value, e.g. `2024-02-30`
