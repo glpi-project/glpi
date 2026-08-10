@@ -373,6 +373,19 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
     {
         $carries_a_name = preg_match('/\b(?:title|aria-label|aria-labelledby|alt)\s*=/i', $attrs) === 1;
 
+        // An icon that is the control itself is reported as such first: the name it carries is a
+        // consequence of that, not the problem to solve.
+        if (preg_match('/\b(?:onclick|href|tabindex|contenteditable|data-bs-toggle=(?![\'"]?tooltip)|v-on:click|@click)/i', $attrs) === 1) {
+            return 'is the interactive control itself, it should become a real button';
+        }
+
+        if (
+            preg_match('/\bclass\s*=\s*(?<quote>["\'])(?<value>.*?)\g{quote}/is', $attrs, $matches) === 1
+            && preg_match('/\b(?:btn|pointer|cursor-pointer)\b/', $matches['value']) === 1
+        ) {
+            return 'is styled as an interactive control, it should become a real button';
+        }
+
         if ($names_its_control) {
             return $carries_a_name
                 // Hiding the icon would drop its title too: an aria-hidden subtree contributes
@@ -382,18 +395,7 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
         }
 
         if ($carries_a_name) {
-            return 'carries a name of its own while its control is already named, check what the name adds';
-        }
-
-        if (preg_match('/\b(?:onclick|href|tabindex|contenteditable|data-bs-toggle|v-on:click|@click)/i', $attrs) === 1) {
-            return 'is the interactive control itself, it should become a real button';
-        }
-
-        if (
-            preg_match('/\bclass\s*=\s*(?<quote>["\'])(?<value>.*?)\g{quote}/is', $attrs, $matches) === 1
-            && preg_match('/\b(?:btn|pointer|cursor-pointer)\b/', $matches['value']) === 1
-        ) {
-            return 'is styled as an interactive control, it should become a real button';
+            return 'carries a name of its own, replace it with a visually hidden text if it carries meaning';
         }
 
         return null;
