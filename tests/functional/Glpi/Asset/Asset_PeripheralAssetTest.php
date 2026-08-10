@@ -126,9 +126,7 @@ class Asset_PeripheralAssetTest extends DbTestCase
                 'items_id_peripheral' => $periph->getID(),
             ]
         );
-        if (array_key_exists('MESSAGE_AFTER_REDIRECT', $_SESSION) && count($_SESSION['MESSAGE_AFTER_REDIRECT']) > 0) {
-            $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
-        }
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
 
         $this->assertTrue($periph->delete(['id' => $periph->getID()], force: true));
 
