@@ -1041,12 +1041,46 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $peer = null;
         }
 
-        $iterator = $DB->request($criteria);
+        $links = iterator_to_array($DB->request($criteria), false);
+        $firmwares_by_item = [];
+        if ($firmware_column !== null && $links !== []) {
+            $item_firmware_table = Item_DeviceFirmware::getTable();
+            $firmware_table = DeviceFirmware::getTable();
+            $firmware_iterator = $DB->request([
+                'SELECT' => [
+                    "$item_firmware_table.items_id AS item_device_id",
+                    "$firmware_table.*",
+                ],
+                'FROM' => $item_firmware_table,
+                'INNER JOIN' => [
+                    $firmware_table => [
+                        'FKEY' => [
+                            $item_firmware_table => 'devicefirmwares_id',
+                            $firmware_table      => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE' => [
+                    "$item_firmware_table.itemtype"   => static::class,
+                    "$item_firmware_table.items_id"   => array_column($links, 'id'),
+                    "$item_firmware_table.is_deleted" => 0,
+                ],
+            ]);
+            foreach ($firmware_iterator as $firmware_data) {
+                $item_device_id = $firmware_data['item_device_id'];
+                unset($firmware_data['item_device_id']);
+
+                $firmware = new DeviceFirmware();
+                $firmware->getFromResultSet($firmware_data);
+                $firmwares_by_item[$item_device_id][] = $firmware;
+            }
+        }
+
         // Will be loaded only if/when data is needed from the device model
         $device_type = static::getDeviceType();
         /** @var CommonDevice $device */
         $device = getItemForItemtype($device_type);
-        foreach ($iterator as $link) {
+        foreach ($links as $link) {
             Session::addToNavigateListItems(static::class, $link["id"]);
             $this->getFromDB($link['id']);
             $current_row  = $table_group->createRow();
@@ -1079,18 +1113,8 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             }
 
             if ($firmware_column !== null) {
-                $firmware_links = (new Item_DeviceFirmware())->find([
-                    'itemtype'   => static::class,
-                    'items_id'   => $link['id'],
-                    'is_deleted' => 0,
-                ]);
                 $firmware_versions = [];
-                $firmware = new DeviceFirmware();
-                foreach ($firmware_links as $firmware_link) {
-                    if (!$firmware->getFromDB($firmware_link['devicefirmwares_id'])) {
-                        continue;
-                    }
-
+                foreach ($firmwares_by_item[$link['id']] ?? [] as $firmware) {
                     $version = $firmware->fields['version'] ?: $firmware->getName();
                     if ($firmware->can($firmware->getID(), READ)) {
                         $firmware_versions[] = sprintf(

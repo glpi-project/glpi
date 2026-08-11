@@ -93,6 +93,11 @@ abstract class Device extends InventoryAsset
             $fk              = getForeignKeyFieldForTable($devicetable);
 
             $existing = $this->getExisting($itemdevicetable, $fk);
+            $supports_firmware = in_array(
+                Item_DeviceFirmware::class,
+                Item_Devices::getItemAffinities($itemdevice::class),
+                true
+            );
 
             foreach ($value as $val) {
                 if (!isset($val->designation) || $val->designation == '') {
@@ -109,11 +114,7 @@ abstract class Device extends InventoryAsset
                 $device_value = clone $val;
                 if (
                     property_exists($device_value, 'firmware')
-                    && in_array(
-                        Item_DeviceFirmware::class,
-                        Item_Devices::getItemAffinities($itemdevice::class),
-                        true
-                    )
+                    && $supports_firmware
                 ) {
                     unset($device_value->firmware);
                 }
@@ -203,7 +204,7 @@ abstract class Device extends InventoryAsset
                     $this->itemdeviceAdded($itemdevice, $val);
                 }
 
-                $this->itemdeviceHandled($itemdevice, $val, $device_input);
+                $this->itemdeviceHandled($itemdevice, $val, $device_input, $supports_firmware);
 
                 if (count($existing[$device_id] ?? []) == 0) {
                     unset($existing[$device_id]);
@@ -238,13 +239,19 @@ abstract class Device extends InventoryAsset
      * @param Item_Devices        $itemdevice
      * @param object              $val
      * @param array<string,mixed> $device_input
+     * @param bool                $supports_firmware
      *
      * @return void
      */
-    protected function itemdeviceHandled(Item_Devices $itemdevice, object $val, array $device_input): void
+    protected function itemdeviceHandled(
+        Item_Devices $itemdevice,
+        object $val,
+        array $device_input,
+        bool $supports_firmware
+    ): void
     {
         if (
-            !in_array(Item_DeviceFirmware::class, Item_Devices::getItemAffinities($itemdevice::class), true)
+            !$supports_firmware
             || !property_exists($val, 'firmware')
         ) {
             return;

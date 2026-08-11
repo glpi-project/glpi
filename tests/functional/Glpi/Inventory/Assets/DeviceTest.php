@@ -227,6 +227,21 @@ class DeviceTest extends AbstractInventoryAsset
         $this->assertSame('GHBOA900', $firmware_by_serial['131005TF0401Y11K4NNN']['version']);
         $initial_firmware_links = $firmware_by_serial;
 
+        $first_drive = reset($drives);
+        $static_firmware_id = $firmware->add([
+            'designation' => 'Manually managed firmware',
+            'version'     => 'STATIC-1.0',
+            'entities_id' => $computer->getEntityID(),
+        ]);
+        $this->assertGreaterThan(0, $static_firmware_id);
+        $static_firmware_link_id = $item_firmware->add([
+            'itemtype'           => \Item_DeviceHardDrive::class,
+            'items_id'           => $first_drive['id'],
+            'devicefirmwares_id' => $static_firmware_id,
+            'is_dynamic'         => 0,
+        ]);
+        $this->assertGreaterThan(0, $static_firmware_link_id);
+
         $data_to_check = [];
 
         $infocom_buy_date = '2020-10-21';
@@ -278,6 +293,10 @@ class DeviceTest extends AbstractInventoryAsset
             $initial_firmware_links['S29NNXAH146764']['relation_id'],
             $firmware_by_serial['S29NNXAH146764']['relation_id']
         );
+
+        $this->assertTrue($item_firmware->getFromDB($static_firmware_link_id));
+        $this->assertSame(0, $item_firmware->fields['is_dynamic']);
+        $this->assertSame($static_firmware_id, $item_firmware->fields['devicefirmwares_id']);
 
         //check item_device_drive is the same from first step
         foreach ($data_to_check as $data_value) {
