@@ -995,7 +995,6 @@ class Provider
     }
 
 
-
     /**
      * Count number of computers grouped by their operating system.
      *
@@ -1049,7 +1048,7 @@ class Provider
                 'WHERE'     => [
                     "$c_table.is_deleted"  => 0,
                     "$c_table.is_template" => 0,
-                ] + getEntitiesRestrictCriteria($c_table),
+                ] + getEntitiesRestrictCriteria($c_table, '', '', true),
                 'GROUPBY'   => "$os_table.id",
                 'ORDERBY'   => "cpt DESC",
             ],

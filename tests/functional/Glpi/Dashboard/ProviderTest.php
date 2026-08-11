@@ -951,28 +951,20 @@ class ProviderTest extends DbTestCase
     {
         $this->login();
 
-        $os = new \OperatingSystem();
-        $os_id = $os->add([
+        $os = $this->createItem(\OperatingSystem::class, [
             'name' => 'test dashboard OS',
         ]);
-        $this->assertGreaterThan(0, $os_id);
 
-        $computer = new \Computer();
-        $computer_id = $computer->add([
+        $computer = $this->createItem(\Computer::class, [
             'name'        => 'test dashboard computer by os',
             'entities_id' => 0,
         ]);
-        $this->assertGreaterThan(0, $computer_id);
 
-        $link = new \Item_OperatingSystem();
-        $this->assertGreaterThan(
-            0,
-            $link->add([
-                'itemtype'            => \Computer::class,
-                'items_id'            => $computer_id,
-                'operatingsystems_id' => $os_id,
-            ])
-        );
+        $this->createItem(\Item_OperatingSystem::class, [
+            'itemtype'            => \Computer::class,
+            'items_id'            => $computer->getID(),
+            'operatingsystems_id' => $os->getID(),
+        ]);
 
         $result = Provider::computersByOperatingSystem();
         $this->assertArrayHasKey('data', $result);
