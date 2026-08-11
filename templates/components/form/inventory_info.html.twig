@@ -97,26 +97,34 @@
          {% endif %}
 
          <div class="mb-3 col-12 col-sm-4">
-            <label class="form-label" >
+            <div class="form-label">
                {{ __('Agent status') }}
-               <i id="update-status" class="ti ti-refresh d-inline-block" role="button" data-bs-toggle="tooltip" title="{{ __('Ask agent about its current status') }}"></i>
-            </label>
-            <span id='agent_status'>{{ __('Unknown') }}</span>
+               <button type="button" id="update-status" class="btn btn-sm btn-icon btn-ghost-secondary"
+                       data-bs-toggle="tooltip" title="{{ __('Ask agent about its current status') }}">
+                  <i class="ti ti-refresh" aria-hidden="true"></i>
+                  <span class="visually-hidden">{{ __('Ask agent about its current status') }}</span>
+               </button>
+            </div>
+            <span id='agent_status' aria-live="polite">{{ __('Unknown') }}</span>
          </div>
 
          <div class="mb-3 col-12 col-sm-4">
-            <label class="form-label" >
+            <div class="form-label">
                {{ __('Request inventory') }}
-               <i id="update-inventory" class="ti ti-refresh d-inline-block" role="button" data-bs-toggle="tooltip" title="{{ __('Request agent to proceed an new inventory') }}"></i>
-            </label>
-            <span id='inventory_status'>{{ __('Unknown') }}</span>
+               <button type="button" id="update-inventory" class="btn btn-sm btn-icon btn-ghost-secondary"
+                       data-bs-toggle="tooltip" title="{{ __('Request agent to proceed an new inventory') }}">
+                  <i class="ti ti-refresh" aria-hidden="true"></i>
+                  <span class="visually-hidden">{{ __('Request agent to proceed an new inventory') }}</span>
+               </button>
+            </div>
+            <span id='inventory_status' aria-live="polite">{{ __('Unknown') }}</span>
          </div>
       </div>
 
       <script>
       $(function () {
          $('#update-status').on('click', function() {
-            var icon = $(this);
+            var icon = $(this).find('i');
             icon.addClass('icon-rotate');
             $.ajax({
                type: 'POST',
@@ -137,7 +145,7 @@
          });
 
          $('#update-inventory').on('click', function() {
-            var icon = $(this);
+            var icon = $(this).find('i');
             icon.addClass('icon-rotate');
             $.ajax({
                type: 'POST',
