@@ -621,6 +621,7 @@ class FormMigration extends AbstractPluginMigration
         $raw_forms = $this->db->request([
             'SELECT' => [
                 'id',
+                'uuid',
                 'description',
                 'content AS header',
                 'name',
@@ -639,6 +640,7 @@ class FormMigration extends AbstractPluginMigration
             $form = $this->importItem(
                 Form::class,
                 [
+                    'uuid'                  => $raw_form['uuid'],
                     'name'                  => $raw_form['name'],
                     'header'                => $raw_form['header'],
                     'description'           => $raw_form['description'],
@@ -654,12 +656,7 @@ class FormMigration extends AbstractPluginMigration
                     '_from_migration'       =>  true,
                 ],
                 [
-                    'name'                => $raw_form['name'],
-                    'entities_id'         => $raw_form['entities_id'],
-                    'forms_categories_id' => $this->getMappedItemTarget(
-                        'PluginFormcreatorCategory',
-                        $raw_form['plugin_formcreator_categories_id']
-                    )['items_id'] ?? 0,
+                    'uuid' => $raw_form['uuid'],
                 ]
             );
 
