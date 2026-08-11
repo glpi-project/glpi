@@ -32,24 +32,28 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Security;
+namespace Glpi\Config;
 
 use CommonGLPI;
 use Config;
+use CronTask;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
+use Glpi\Event;
 use Log;
+use PurgeLogs;
 use Session;
 
-final class SecurityConfig extends Config
+final class DataAndPrivacyConfig extends Config
 {
     public static function getTypeName($nb = 0)
     {
-        return _x('setup', 'Security');
+        return _x('setup', 'Data and Privacy');
     }
 
     public static function getIcon()
     {
-        return 'ti ti-shield-lock';
+        return 'ti ti-file-text-shield';
     }
 
     public static function getTable($classname = null)
@@ -61,9 +65,9 @@ final class SecurityConfig extends Config
     {
         $menu = [];
         if (self::canView()) {
-            $menu['title']   = _x('setup', 'Security');
-            $menu['page']    = self::getFormURL(false);
-            $menu['icon']    = self::getIcon();
+            $menu['title'] = self::getTypeName();
+            $menu['page'] = self::getFormURL();
+            $menu['icon'] = self::getIcon();
         }
         if (count($menu)) {
             return $menu;
@@ -86,27 +90,22 @@ final class SecurityConfig extends Config
         }
         if (Config::canUpdate()) {
             $tabs = [];
-            $tabs[0] = self::createTabEntry(__('Password Policy'), 0, $item::class, 'ti ti-shield-lock');
-            $tabs[1] = self::createTabEntry(__('Two-factor authentication (2FA)'), 0, $item::class, 'ti ti-shield-lock');
-            $tabs[2] = self::createTabEntry(_n('Login session', 'Login sessions', Session::getPluralNumber()), 0, $item::class, 'ti ti-user-shield');
+            $tabs[0] = self::createTabEntry(__('Historical logs'), 0, $item::class, Event::getIcon());
+            $tabs[1] = self::createTabEntry(_n('Login session', 'Login sessions', Session::getPluralNumber()), 0, $item::class, 'ti ti-user-shield');
             return $tabs;
         }
         return '';
     }
-
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof self) {
             switch ($tabnum) {
                 case 0:
-                    $item->showFormPasswordPolicy();
+                    $item->showFormLogs();
                     break;
                 case 1:
-                    $item->showFormMFA();
-                    break;
-                case 2:
-                    (new SessionTracker())->showSessionList();
+                    $item->showFormSessions();
                     break;
             }
         }
@@ -114,11 +113,11 @@ final class SecurityConfig extends Config
     }
 
     /**
-     * Password policy form
+     * Logs purge form
      *
-     * @return void|false (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      */
-    public function showFormPasswordPolicy()
+    private function showFormLogs()
     {
         global $CFG_GLPI;
 
@@ -126,19 +125,20 @@ final class SecurityConfig extends Config
             return false;
         }
 
-        TemplateRenderer::getInstance()->display('pages/setup/security/password_policy.html.twig', [
-            'canedit' => Session::haveRight(self::$rightname, UPDATE),
-            'config'  => $CFG_GLPI,
+        $logspurge_crontask = new CronTask();
+        $logspurge_crontask->getFromDBbyName(PurgeLogs::class, 'PurgeLogs');
+        TemplateRenderer::getInstance()->display('pages/setup/general/logs_setup.html.twig', [
             'form_path' => self::getFormURL(),
+            'config' => $CFG_GLPI,
+            'canedit' => self::canUpdate(),
+            'logspurge_crontask' => $logspurge_crontask,
         ]);
     }
 
     /**
-     * Password policy form
-     *
-     * @return void|false (display) Returns false if there is a rights error.
+     * @return false|void (display) Returns false if there is a rights error.
      */
-    public function showFormMFA()
+    private function showFormSessions()
     {
         global $CFG_GLPI;
 
@@ -146,10 +146,41 @@ final class SecurityConfig extends Config
             return false;
         }
 
-        TemplateRenderer::getInstance()->display('pages/setup/security/2fa.html.twig', [
-            'canedit' => Session::haveRight(self::$rightname, UPDATE),
-            'config'  => $CFG_GLPI,
+        $crontask = new CronTask();
+        $crontask->getFromDBbyName(self::class, 'purgesessionhistory');
+        TemplateRenderer::getInstance()->display('pages/setup/data_privacy/session_retention.html.twig', [
             'form_path' => self::getFormURL(),
+            'config' => $CFG_GLPI,
+            'canedit' => self::canUpdate(),
+            'crontask' => $crontask,
         ]);
+    }
+
+    /**
+     * @return array{description?: string, parameter?: string}
+     */
+    public static function cronInfo(string $name): array
+    {
+        return ['description' => __("Purge session history")];
+    }
+
+    public static function cronPurgeSessionHistory(CronTask $task): int
+    {
+        global $DB, $CFG_GLPI;
+
+        $retention_days = $CFG_GLPI['login_history_retention_days'] ?? null;
+
+        if ($retention_days === null) {
+            // Safe break
+            return 0;
+        }
+
+        $DB->delete('glpi_users_sessionhistories', [
+            'NOT' => ['logged_out_at' => null],
+            ['logged_out_at' => ['<=', QueryFunction::dateSub(QueryFunction::now(), (int) $retention_days, 'DAY')]],
+        ]);
+        $rows_deleted = $DB->getAffectedRows();
+        $task->addVolume($rows_deleted);
+        return 1;
     }
 }

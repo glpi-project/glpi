@@ -41,7 +41,6 @@ use Glpi\Config\ConfigContainer;
 use Glpi\Config\ProxyExclusion;
 use Glpi\Config\ProxyExclusions;
 use Glpi\Dashboard\Grid;
-use Glpi\Event;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Kernel\Kernel;
 use Glpi\Locale\LanguageRegistry;
@@ -1028,7 +1027,6 @@ class Config extends CommonDBTM
                     12 => self::createTabEntry(__('Management'), 0, $item::class, 'ti ti-wallet'),
                 ];
                 if (Config::canUpdate()) {
-                    $tabs[9]  = self::createTabEntry(__('Logs purge'), 0, $item::class, Event::getIcon());
                     $tabs[5]  = self::createTabEntry(__('System'));
                     $tabs[7]  = self::createTabEntry(__('Performance'), 0, $item::class, 'ti ti-dashboard');
                     $tabs[8]  = self::createTabEntry(__('API'), 0, $item::class, 'ti ti-api-app');
@@ -1103,10 +1101,6 @@ class Config extends CommonDBTM
 
                 case 8:
                     $item->showFormAPI();
-                    break;
-
-                case 9:
-                    $item->showFormLogs();
                     break;
 
                 case 11:
@@ -1617,26 +1611,6 @@ class Config extends CommonDBTM
             }
         }
         return $themes;
-    }
-
-    /**
-     * Logs purge form
-     *
-     * @since 9.3
-     *
-     * @return void|bool (display) Returns false if there is a rights error.
-     */
-    public function showFormLogs()
-    {
-        global $CFG_GLPI;
-
-        if (!static::canUpdate()) {
-            return false;
-        }
-        TemplateRenderer::getInstance()->display('pages/setup/general/logs_setup.html.twig', [
-            'config' => $CFG_GLPI,
-            'canedit' => static::canUpdate(),
-        ]);
     }
 
     /**

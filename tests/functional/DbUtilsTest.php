@@ -498,8 +498,8 @@ class DbUtilsTest extends DbTestCase
         $this->assertGreaterThan(0, $instance->countDistinctElementsInTable('glpi_configs', 'id'));
         $this->assertGreaterThan(0, $instance->countDistinctElementsInTable('glpi_configs', 'context'));
         $this->assertGreaterThanOrEqual(2, $instance->countDistinctElementsInTable('glpi_tickets', 'entities_id'));
-        $this->assertSame(21, $instance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']));
-        $this->assertSame(27, $instance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']));
+        $this->assertSame(22, $instance->countDistinctElementsInTable('glpi_crontasks', 'itemtype', ['frequency' => '86400']));
+        $this->assertSame(28, $instance->countDistinctElementsInTable('glpi_crontasks', 'id', ['frequency' => '86400']));
         $this->assertSame(1, $instance->countDistinctElementsInTable('glpi_configs', 'context', ['name' => 'version']));
         $this->assertSame(0, $instance->countDistinctElementsInTable('glpi_configs', 'id', ['context' => 'fakecontext']));
 
