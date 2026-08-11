@@ -4111,6 +4111,52 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
+    public function testFormMigrationWithCollidingFormUuids(): void
+    {
+        global $DB;
+
+        // Arrange: create two formcreator forms sharing the exact same UUID.
+        // Formcreator has no unique constraint on this column, so this can
+        // happen with real-world data (e.g. forms duplicated by a buggy tool).
+        $shared_uuid = (string) Uuid::uuid4();
+        $this->createSimpleFormcreatorForm(
+            name: 'Form with colliding uuid 1',
+            questions: [
+                ['name' => 'Question in first form', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => $shared_uuid,
+            ]
+        );
+        $this->createSimpleFormcreatorForm(
+            name: 'Form with colliding uuid 2',
+            questions: [
+                ['name' => 'Question in second form', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => $shared_uuid,
+            ]
+        );
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Assert: both forms must have been migrated as distinct GLPI forms,
+        // despite sharing the same source UUID.
+        $migrated_forms = $DB->request([
+            'SELECT' => ['id', 'name'],
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['name' => ['Form with colliding uuid 1', 'Form with colliding uuid 2']],
+        ]);
+        $this->assertEquals(
+            2,
+            $migrated_forms->count(),
+            'Two distinct forms should have been created, one per formcreator form, despite the UUID collision'
+        );
+    }
+
     public function testFormMigrationActorsWithEmptyDefaultValue(): void
     {
         global $DB;

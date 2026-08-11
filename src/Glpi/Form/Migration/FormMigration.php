@@ -85,6 +85,7 @@ use Item_Problem;
 use Item_Ticket;
 use LogicException;
 use Override;
+use Ramsey\Uuid\Uuid;
 use Throwable;
 
 use function Safe\json_decode;
@@ -104,6 +105,14 @@ class FormMigration extends AbstractPluginMigration
      * @var array<int, array>
      */
     private array $formcreator_raw_forms = [];
+
+    /**
+     * Store the form UUIDs already consumed during the current migration run,
+     * to detect duplicate UUIDs on the Formcreator side (which has no unique
+     * constraint on this column).
+     * @var array<string, true>
+     */
+    private array $seen_form_uuids = [];
 
     public function __construct(
         DBmysql $db,
@@ -453,7 +462,7 @@ class FormMigration extends AbstractPluginMigration
                 'id', 'name', 'plugin_formcreator_categories_id', 'level',
             ],
             'glpi_plugin_formcreator_forms' => [
-                'id', 'name', 'description', 'plugin_formcreator_categories_id', 'entities_id',
+                'id', 'uuid', 'name', 'description', 'plugin_formcreator_categories_id', 'entities_id',
                 'is_recursive', 'is_visible',
             ],
             'glpi_plugin_formcreator_sections' => [
@@ -637,10 +646,30 @@ class FormMigration extends AbstractPluginMigration
         ]);
 
         foreach ($raw_forms as $raw_form) {
+            $uuid = $raw_form['uuid'];
+
+            // Formcreator has no unique constraint on this column: an empty
+            // value or a duplicate found earlier in this same migration run
+            // would otherwise make unrelated forms reconcile together.
+            if (empty($uuid) || isset($this->seen_form_uuids[$uuid])) {
+                if (!empty($uuid)) {
+                    $this->result->addMessage(
+                        MessageType::Warning,
+                        sprintf(
+                            __('Form "%s" has a UUID ("%s") already used by another form in the Formcreator data. A new UUID has been generated to avoid merging them.'),
+                            $raw_form['name'],
+                            $uuid
+                        )
+                    );
+                }
+                $uuid = (string) Uuid::uuid4();
+            }
+            $this->seen_form_uuids[$uuid] = true;
+
             $form = $this->importItem(
                 Form::class,
                 [
-                    'uuid'                  => $raw_form['uuid'],
+                    'uuid'                  => $uuid,
                     'name'                  => $raw_form['name'],
                     'header'                => $raw_form['header'],
                     'description'           => $raw_form['description'],
@@ -656,7 +685,7 @@ class FormMigration extends AbstractPluginMigration
                     '_from_migration'       =>  true,
                 ],
                 [
-                    'uuid' => $raw_form['uuid'],
+                    'uuid' => $uuid,
                 ]
             );
 
