@@ -397,11 +397,17 @@ class NotificationEventMailing extends NotificationEventAbstract
                 if (!empty($current->fields['messageid'])) {
                     $mmail->MessageID = "<" . $current->fields['messageid'] . ">";
                 }
+
+                $sent = $mmail->Send();
             } catch (\Throwable $e) {
+                // Catches PHPMailer setup errors, but also exceptions thrown by
+                // Send() itself (e.g. SMTP OAuth token refresh failures), which
+                // PHPMailer does not catch as they are not its own Exception type.
                 self::handleFailedSend($current, $e->getMessage());
+                continue;
             }
 
-            if (!$mmail->Send()) {
+            if (!$sent) {
                 self::handleFailedSend($current, $mmail->ErrorInfo);
             } else {
                 //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
