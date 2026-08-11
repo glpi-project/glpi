@@ -1025,7 +1025,7 @@ class Provider
                 'FROM'    => $t_table,
                 'WHERE'   => [
                     "$t_table.is_deleted" => 0,
-                ] + getEntitiesRestrictCriteria($t_table),
+                ] + getEntitiesRestrictCriteria($t_table, '', '', true),
                 'GROUPBY' => "$t_table.status",
                 'ORDERBY' => "$t_table.status ASC",
             ],
