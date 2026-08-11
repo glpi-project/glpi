@@ -423,9 +423,10 @@ final class DropdownController extends AbstractController
                 'is_request_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_request', 'x-version-introduced' => '2.2.0'],
                 'is_change_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_change', 'x-version-introduced' => '2.2.0'],
                 'is_problem_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_problem', 'x-version-introduced' => '2.2.0'],
+                // BC: categories are now articles, so this points to the same field as `knowbase_article`
                 'knowbase_category' => self::getDropdownTypeSchema(
                     class: KnowbaseItem::class,
-                    field: 'knowbaseitemcategories_id',
+                    field: 'knowbaseitems_id',
                     full_schema: 'KBCategory'
                 ) + ['x-version-introduced' => '2.2.0', 'x-version-removed' => '3.0.0'],
                 'knowbase_article' => self::getDropdownTypeSchema(

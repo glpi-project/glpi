@@ -222,16 +222,18 @@ class KnowbaseController extends AbstractController
             'KBCategory' => [
                 'x-version-introduced' => '2.2.0',
                 'x-version-removed' => '3.0.0',
-                'x-itemtype' => KnowbaseItem::class,
+                // BC: categories are articles now. `x-table` is used instead of `x-itemtype` since the
+                // `KBArticle` schema is already the schema for the `KnowbaseItem` itemtype.
+                'x-table' => KnowbaseItem::getTable(),
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [
                     'read' // ensure only articles that are parents to other articles are returned as they are the closest representation to what categories were
                     => static fn() => [
                         'INNER JOIN' => [
-                            KnowbaseItem::getTable() . ' AS kc' => [
+                            KnowbaseItem_KnowbaseItem::getTable() . ' AS kc' => [
                                 'ON' => [
                                     '_' => 'id',
-                                    'kc' => KnowbaseItem::getForeignKeyField(),
+                                    'kc' => 'knowbaseitems_id_parent',
                                 ],
                             ],
                         ],
@@ -245,50 +247,59 @@ class KnowbaseController extends AbstractController
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
                     'completename' => [
-                        //BC: No completename for articles, so just using the name
+                        //BC: No completename for articles, so it is computed from the ancestors names
                         'type' => Doc\Schema::TYPE_STRING,
                         'readOnly' => true,
-                        //'x-field' => 'name',
                         'x-mapped-from' => 'id',
                         'x-mapper' => static function ($id) {
-                            // Slow BC (would be much better if there was a native completename field
-                            $kbi = new KnowbaseItem();
-                            $kbi->getFromDB($id);
-                            $completename = $kbi->getName();
-                            $parent_id = $kbi->fields['knowbaseitems_id'];
-                            while ($kbi->getFromDB($parent_id)) {
-                                $completename = $kbi->getName() . ' > ' . $completename;
-                                $parent_id = $kbi->fields['knowbaseitems_id'];
+                            // Slow BC (would be much better if there was a native completename field)
+                            $names = [];
+                            foreach ([(int) $id, ...self::getArticleAncestors((int) $id)] as $article_id) {
+                                $article = KnowbaseItem::getById($article_id);
+                                if ($article === false) {
+                                    continue;
+                                }
+                                array_unshift($names, $article->getName());
                             }
-                            return $completename;
+                            return implode(' > ', $names);
                         },
                     ],
                     'comment' => [
                         //BC: No comment for articles and the comment data from categories was not saved at all during the migration to articles
                         'type' => Doc\Schema::TYPE_STRING,
+                        'readOnly' => true,
                         'x-mapped-from' => 'id',
                         'x-mapper' => static fn($v) => '',
                     ],
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                     'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
-                    'parent' => self::getDropdownTypeSchema(class: KnowbaseItem::class, full_schema: 'KBCategory') + ['readOnly' => true],
+                    'parent' => [
+                        //BC: Articles may have multiple parents, so only the first one is exposed here
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'nullable' => true,
+                        'readOnly' => true,
+                        'x-full-schema' => 'KBCategory',
+                        'x-mapped-from' => 'id',
+                        'x-mapper' => static function ($id) {
+                            $parent_id = self::getArticleAncestors((int) $id)[0] ?? null;
+                            $parent = $parent_id !== null ? KnowbaseItem::getById($parent_id) : false;
+                            return $parent !== false ? ['id' => $parent->getID(), 'name' => $parent->getName()] : null;
+                        },
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                        ],
+                    ],
                     'level' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'Level',
                         'readOnly' => true,
                         'x-mapped-from' => 'id',
-                        'x-mapper' => static function ($id) {
-                            // Slow BC (would be much better if there was a native level field)
-                            $kbi = new KnowbaseItem();
-                            $kbi->getFromDB($id);
-                            $level = 0;
-                            $parent_id = $kbi->fields['knowbaseitems_id'];
-                            while ($kbi->getFromDB($parent_id)) {
-                                $level++;
-                                $parent_id = $kbi->fields['knowbaseitems_id'];
-                            }
-                            return $level;
-                        },
+                        // Tree dropdown levels were 1-based, so the level of an article without any parent is 1
+                        'x-mapper' => static fn($id) => count(self::getArticleAncestors((int) $id)) + 1,
                     ],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -468,6 +479,38 @@ class KnowbaseController extends AbstractController
         ];
 
         return $schemas;
+    }
+
+    /**
+     * Get the ancestors of an article, from the closest one to the root one.
+     *
+     * Only used to emulate the properties of the removed knowledge base categories.
+     * As an article may have multiple parents, only the first one is followed.
+     *
+     * @return list<int>
+     */
+    private static function getArticleAncestors(int $article_id): array
+    {
+        $ancestors = [];
+        $seen = [$article_id => true];
+        $relation = new KnowbaseItem_KnowbaseItem();
+
+        while (true) {
+            $links = $relation->find(['knowbaseitems_id' => $article_id], ['knowbaseitems_id_parent ASC'], 1);
+            $link = reset($links);
+            if ($link === false) {
+                break;
+            }
+            $article_id = (int) $link['knowbaseitems_id_parent'];
+            if (isset($seen[$article_id])) {
+                // Should not happen as cycles are rejected, but make sure we can't loop forever
+                break;
+            }
+            $seen[$article_id] = true;
+            $ancestors[] = $article_id;
+        }
+
+        return $ancestors;
     }
 
     #[Route(path: '/Article', methods: ['POST'])]

@@ -9737,7 +9737,7 @@
                 "is_problem_visible": {
                     "type": "boolean"
                 },
-                "knowbase_article": {
+                "knowbase_category": {
                     "type": "object",
                     "x-itemtype": "KnowbaseItem",
                     "properties": {
@@ -9750,7 +9750,7 @@
                             "readOnly": true
                         }
                     },
-                    "x-full-schema": "KBArticle"
+                    "x-full-schema": "KBCategory"
                 },
                 "date_creation": {
                     "type": "string",
@@ -10914,6 +10914,76 @@
                         }
                     },
                     "x-full-schema": "User"
+                }
+            }
+        },
+        "KBCategory": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "readOnly": true
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 255
+                },
+                "completename": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "comment": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "entity": {
+                    "type": "object",
+                    "x-itemtype": "Entity",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64",
+                            "readOnly": true
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "Entity"
+                },
+                "is_recursive": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "parent": {
+                    "type": "object",
+                    "nullable": true,
+                    "readOnly": true,
+                    "x-full-schema": "KBCategory",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    }
+                },
+                "level": {
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "date_creation": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "date_mod": {
+                    "type": "string",
+                    "format": "date-time"
                 }
             }
         },
@@ -21354,18 +21424,6 @@
                                         8192
                                     ],
                                     "x-label": "Knowledge base",
-                                    "x-right-scope": "entity"
-                                },
-                                "knowbasecategory": {
-                                    "type": "integer",
-                                    "description": "Knowledge base categories rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
-                                    "enum": [
-                                        1,
-                                        2,
-                                        4,
-                                        16
-                                    ],
-                                    "x-label": "Knowledge base categories",
                                     "x-right-scope": "entity"
                                 },
                                 "license": {
