@@ -765,13 +765,11 @@ class ProviderTest extends DbTestCase
         $this->login();
 
         // Testing with incoming : to make sure there is at least one ticket
-        $ticket = new \Ticket();
-        $ticket->add([
+        $this->createItem(\Ticket::class, [
             'name'    => "test dashboard card tickets by status",
             'content' => 'foo',
             'status'  => \Ticket::INCOMING,
         ]);
-        $this->assertFalse($ticket->isNewItem());
 
         // verify existing key data/label/icon
         $result = Provider::ticketsByStatus();
