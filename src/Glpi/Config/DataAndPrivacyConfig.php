@@ -161,11 +161,6 @@ final class DataAndPrivacyConfig extends Config
         return ['description' => __("Purge session history")];
     }
 
-    /**
-     * @param CronTask $task
-     * @return int
-     * @used-by CronTask
-     */
     public static function cronPurgeSessionHistory(CronTask $task): int
     {
         global $DB, $CFG_GLPI;
