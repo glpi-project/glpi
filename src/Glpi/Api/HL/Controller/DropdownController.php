@@ -423,11 +423,16 @@ final class DropdownController extends AbstractController
                 'is_request_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_request', 'x-version-introduced' => '2.2.0'],
                 'is_change_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_change', 'x-version-introduced' => '2.2.0'],
                 'is_problem_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_problem', 'x-version-introduced' => '2.2.0'],
+                'knowbase_category' => self::getDropdownTypeSchema(
+                    class: KnowbaseItem::class,
+                    field: 'knowbaseitemcategories_id',
+                    full_schema: 'KBCategory'
+                ) + ['x-version-introduced' => '2.2.0', 'x-version-removed' => '3.0.0'],
                 'knowbase_article' => self::getDropdownTypeSchema(
                     class: KnowbaseItem::class,
                     field: 'knowbaseitems_id',
                     full_schema: 'KBArticle'
-                ) + ['x-version-introduced' => '2.2.0'],
+                ) + ['x-version-introduced' => '3.0.0'],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
