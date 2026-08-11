@@ -156,7 +156,7 @@ final class DataAndPrivacyConfig extends Config
         ]);
     }
 
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return ['description' => __("Purge session history")];
     }
