@@ -37,6 +37,7 @@ namespace tests\functional\Tools\Command;
 use Glpi\Tests\GLPITestCase;
 use Glpi\Tools\Command\CheckDecorativeIconsCommand;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class CheckDecorativeIconsCommandTest extends GLPITestCase
@@ -197,13 +198,62 @@ class CheckDecorativeIconsCommandTest extends GLPITestCase
 
         $tester = new CommandTester(new CheckDecorativeIconsCommand());
         $tester->execute(['--directory' => $this->test_dir]);
-        $this->assertStringNotContainsString('manual decision', $tester->getDisplay());
+        $this->assertStringNotContainsString('[names-its-control]', $tester->getDisplay());
         $this->assertEquals(0, $tester->getStatusCode());
 
         $tester = new CommandTester(new CheckDecorativeIconsCommand());
-        $tester->execute(['--directory' => $this->test_dir, '--show-review' => true]);
-        $this->assertStringContainsString('manual decision', $tester->getDisplay());
+        $tester->execute(['--directory' => $this->test_dir, '--show-review' => null]);
+        $this->assertStringContainsString('[names-its-control]', $tester->getDisplay());
         $this->assertEquals(0, $tester->getStatusCode());
+    }
+
+    public function testReviewListCanBeFilteredByCategory(): void
+    {
+        file_put_contents(
+            $this->test_dir . '/template.html.twig',
+            '<button type="button"><i class="ti ti-plus" title="Add"></i></button>'
+            . '<i class="ti ti-x" onclick="close()"></i>'
+        );
+
+        $tester = new CommandTester(new CheckDecorativeIconsCommand());
+        $tester->execute(['--directory' => $this->test_dir, '--show-review' => 'interactive']);
+
+        $display = $tester->getDisplay();
+        $this->assertStringContainsString('[interactive]', $display);
+        $this->assertStringNotContainsString('[names-its-control]', $display);
+    }
+
+    public function testReviewCountsAreSummarisedAfterTheListing(): void
+    {
+        file_put_contents(
+            $this->test_dir . '/named.html.twig',
+            '<button type="button"><i class="ti ti-plus" title="Add"></i></button>'
+        );
+        file_put_contents(
+            $this->test_dir . '/clickable.html.twig',
+            '<i class="ti ti-x" onclick="close()"></i>'
+        );
+
+        $tester = new CommandTester(new CheckDecorativeIconsCommand());
+        $tester->execute(['--directory' => $this->test_dir, '--show-review' => 'interactive']);
+
+        $display = $tester->getDisplay();
+
+        // The counts cover every category, even the ones the filter left out.
+        $this->assertStringContainsString('2 icon(s) need a manual decision.', $display);
+        $this->assertStringContainsString('interactive: 1, names-its-control: 1', $display);
+        $this->assertGreaterThan(
+            strpos($display, '[interactive]'),
+            strpos($display, 'need a manual decision.')
+        );
+    }
+
+    public function testUnknownReviewCategoryIsRejected(): void
+    {
+        $tester = new CommandTester(new CheckDecorativeIconsCommand());
+
+        $this->expectException(InvalidOptionException::class);
+        $tester->execute(['--directory' => $this->test_dir, '--show-review' => 'not-a-category']);
     }
 
     public function testSuccessOnCleanDirectory(): void
