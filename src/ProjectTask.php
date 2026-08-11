@@ -1474,6 +1474,7 @@ TWIG, $twig_params);
      * Entries whose father (see 'projecttasks_id') is not part of the given list are considered roots;
      * siblings keep their relative order from the input list.
      *
+     *
      * @param list<array<string, mixed>> $entries Flat list of entries, each holding at least 'id' and 'projecttasks_id'
      *
      * @return list<array<string, mixed>> sorted entries
@@ -1489,8 +1490,8 @@ TWIG, $twig_params);
 
         $ordered = [];
         $visited = [];
-        $visit = static function ($father_id) use (&$visit, &$children, &$by_id, &$ordered, &$visited) {
-            foreach ($children[$father_id] ?? [] as $id) {
+        $visit = static function ($parent_id) use (&$visit, &$children, &$by_id, &$ordered, &$visited) {
+            foreach ($children[$parent_id] ?? [] as $id) {
                 if (isset($visited[$id])) {
                     continue;
                 }
@@ -1502,9 +1503,18 @@ TWIG, $twig_params);
 
         // Roots are the tasks whose father is not part of the current list
         // (either they have no father, or their father is out of the displayed scope).
-        foreach (array_keys($children) as $father_id) {
-            if (!isset($by_id[$father_id])) {
-                $visit($father_id);
+        foreach (array_keys($children) as $parent_id) {
+            if (!isset($by_id[$parent_id])) {
+                $visit($parent_id);
+            }
+        }
+
+        // Check for tasks that are still unvisited because they are not reachable from any root
+        foreach ($by_id as $id => $entry) {
+            if (!isset($visited[$id])) {
+                $visited[$id] = true;
+                $ordered[] = $entry;
+                $visit($id);
             }
         }
 

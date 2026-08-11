@@ -662,6 +662,35 @@ class ProjectTaskTest extends DbTestCase
         );
     }
 
+    public function testSortProjectTasksByHierarchyWithMutualCycle()
+    {
+        $task_a = ['id' => 10, 'projecttasks_id' => 20, 'name' => 'A'];
+        $task_b = ['id' => 20, 'projecttasks_id' => 10, 'name' => 'B'];
+
+        $sorted_tasks = ProjectTask::sortProjectTasksByHierarchy([$task_a, $task_b]);
+
+        $this->assertEquals([$task_a, $task_b], $sorted_tasks);
+    }
+
+    public function testSortProjectTasksByHierarchyWithCycleAndNormalTasks()
+    {
+        // A normal, well-formed root and child, alongside a corrupted cycle (A and B are each
+        // other's father) that itself has a well-formed child (C) hanging off of it.
+        $root       = ['id' => 1, 'projecttasks_id' => 0, 'name' => 'Root'];
+        $root_child = ['id' => 2, 'projecttasks_id' => 1, 'name' => 'Root child'];
+        $task_a     = ['id' => 10, 'projecttasks_id' => 20, 'name' => 'A'];
+        $task_b     = ['id' => 20, 'projecttasks_id' => 10, 'name' => 'B'];
+        $task_c     = ['id' => 30, 'projecttasks_id' => 10, 'name' => 'C (child of A)'];
+
+        $tasks = [$root, $root_child, $task_a, $task_b, $task_c];
+
+        $sorted_tasks = ProjectTask::sortProjectTasksByHierarchy($tasks);
+
+        // The normal tree is sorted as usual, and the cyclic tasks (plus whatever hangs off of
+        // them) are appended instead of being dropped; nothing is lost nor duplicated.
+        $this->assertEquals($tasks, $sorted_tasks);
+    }
+
     protected function testAutochangeStateProvider()
     {
         $config = new \Config();
