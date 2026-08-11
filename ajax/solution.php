@@ -85,6 +85,9 @@ if ($apply_twig) {
     if (!$parent->getFromDB($parents_id)) {
         Response::sendError(400, "Unable to load parent item: $parents_itemtype $parents_id");
     }
+    if (!$parent->can($parents_id, READ)) {
+        Response::sendError(403, 'Forbidden');
+    }
 
     // Render template content using twig
     $template->fields['content'] = $template->getRenderedContent($parent);
