@@ -1051,6 +1051,61 @@ class NetworkCardTest extends AbstractInventoryAsset
             "networkports_id" => $networkport->fields['id'],
         ];
         $this->assertSame($expected_input, $db_input);
+
+        // Test update path: new metric values
+        $ifinbytes2   = 4559673658;
+        $ifoutbytes2  = 4257789612;
+        $ifouterrors2 = 3316546841;
+        $ifinerrors2  = 9974561231;
+
+        $xml_source2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+          <CONTENT>
+            <NETWORKS>
+              <DESCRIPTION>Ethernet</DESCRIPTION>
+              <MACADDR>00:24:13:ea:a7:01</MACADDR>
+              <STATUS>Up</STATUS>
+              <TYPE>ethernet</TYPE>
+              <IFINERRORS>$ifinerrors2</IFINERRORS>
+              <IFINBYTES>$ifinbytes2</IFINBYTES>
+              <IFOUTERRORS>$ifouterrors2</IFOUTERRORS>
+              <IFOUTBYTES>$ifoutbytes2</IFOUTBYTES>
+            </NETWORKS>
+            <VERSIONCLIENT>FusionInventory-Inventory_v2.4.1</VERSIONCLIENT>
+          </CONTENT>
+          <DEVICEID>foo-computer</DEVICEID>
+          <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $data2 = $converter->convert($xml_source2);
+        $json2 = json_decode($data2);
+
+        $cardAsset2 = new NetworkCard($computer, $json2->content->networks);
+        $cardAsset2->setExtraData((array) $json2->content);
+        $cardAsset2->checkConf($conf);
+        $cardAsset2->prepare();
+
+        $mainAsset2 = new Computer($computer, []);
+        $mainAsset2->checkConf($conf);
+        $mainAsset2->addNetworkPorts($cardAsset2->getNetworkPorts());
+        $mainAsset2->handlePorts($computer::class, $computer_id);
+
+        $this->assertTrue($networkmetric->getFromDbByCrit(['networkports_id' => $networkport->fields['id']]));
+
+        $db_input2 = $networkmetric->fields;
+        unset($db_input2['date_creation']);
+        unset($db_input2['date_mod']);
+        unset($db_input2['id']);
+
+        $expected_input2 = [
+            "date"            => date('Y-m-d'),
+            "ifinbytes"       => $ifinbytes2,
+            "ifinerrors"      => $ifinerrors2,
+            "ifoutbytes"      => $ifoutbytes2,
+            "ifouterrors"     => $ifouterrors2,
+            "networkports_id" => $networkport->fields['id'],
+        ];
+        $this->assertSame($expected_input2, $db_input2);
     }
 
     public function testWifiNetworkPortMTUSpeed()

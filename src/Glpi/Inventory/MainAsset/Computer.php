@@ -52,10 +52,6 @@ class Computer extends MainAsset
         return ComputerType::getForeignKeyField();
     }
 
-    protected function portCreated(stdClass $port, int $netports_id): void
-    {
-        $this->handlePortMetrics($port, $netports_id);
-    }
 
     protected function portUpdated(stdClass $port, int $netports_id): void
     {
