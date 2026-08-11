@@ -1954,7 +1954,7 @@ class Provider
                 'WHERE'     => [
                     "$c_table.is_deleted"  => 0,
                     "$c_table.is_template" => 0,
-                ] + getEntitiesRestrictCriteria($c_table),
+                ] + getEntitiesRestrictCriteria($c_table, '', '', true),
                 'GROUPBY'   => 'age_bracket',
             ],
             self::getFiltersCriteria($c_table, $params['apply_filters'])

@@ -1632,7 +1632,7 @@ HTML;
             $cards["report_computers_by_age"] = [
                 'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
                 'itemtype'   => "\\Computer",
-                'group'      => __('Parc'),
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
                 'label'      => __("Number of computers by age"),
                 'provider'   => "Glpi\\Dashboard\\Provider::computersByAge",
                 'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
