@@ -1629,6 +1629,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
             ];
 
+            $cards["report_computers_by_age"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Computer",
+                'group'      => __('Parc'),
+                'label'      => __("Number of computers by age"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByAge",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],
                 'label'      => sprintf(__('List of %s'), Reminder::getTypeName(Session::getPluralNumber())),

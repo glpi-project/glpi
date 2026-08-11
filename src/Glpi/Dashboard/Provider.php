@@ -1894,6 +1894,103 @@ class Provider
         ];
     }
 
+    /**
+     * Count number of computers grouped by their age (based on the warranty
+     * start date declared on their financial and administrative information)
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function computersByAge(array $params = []): array
+    {
+        $DB = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => \Computer::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $c_table = \Computer::getTable();
+        $i_table = \Infocom::getTable();
+
+        $brackets = [
+            'lt1'       => __('< 1 year'),
+            'from1to3'  => __('1-3 years'),
+            'from3to5'  => __('3-5 years'),
+            'gt5'       => __('> 5 years'),
+            'undefined' => __('Undefined'),
+        ];
+
+        $bracket_case = "CASE
+            WHEN $i_table.warranty_date IS NULL THEN 'undefined'
+            WHEN $i_table.warranty_date > CURDATE() - INTERVAL 1 YEAR THEN 'lt1'
+            WHEN $i_table.warranty_date > CURDATE() - INTERVAL 3 YEAR THEN 'from1to3'
+            WHEN $i_table.warranty_date > CURDATE() - INTERVAL 5 YEAR THEN 'from3to5'
+            ELSE 'gt5'
+        END";
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    new QueryExpression("$bracket_case AS age_bracket"),
+                    'COUNT DISTINCT' => "$c_table.id AS cpt",
+                ],
+                'FROM'      => $c_table,
+                'LEFT JOIN' => [
+                    $i_table => [
+                        'ON' => [
+                            $i_table => 'items_id',
+                            $c_table => 'id',
+                            [
+                                'AND' => [
+                                    "$i_table.itemtype" => \Computer::class,
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    "$c_table.is_deleted"  => 0,
+                    "$c_table.is_template" => 0,
+                ] + getEntitiesRestrictCriteria($c_table),
+                'GROUPBY'   => 'age_bracket',
+            ],
+            self::getFiltersCriteria($c_table, $params['apply_filters'])
+        );
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+        $iterator = $DB->request($criteria);
+
+        $search_criteria = self::getSearchFiltersCriteria($c_table, $params['apply_filters'])['criteria'] ?? [];
+        $url = \Computer::getSearchURL();
+
+        $data = [];
+        foreach ($iterator as $result) {
+            $bracket = $result['age_bracket'];
+
+            $data[] = [
+                'number' => $result['cpt'],
+                'label'  => $brackets[$bracket] ?? $bracket,
+                'url'    => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+                    'criteria' => $search_criteria,
+                    'reset'    => 'reset',
+                ]),
+            ];
+        }
+
+        if (count($data) === 0) {
+            $data = [
+                'nodata' => true,
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
 
     public static function formatMonthyearDates(string $monthyear): array
     {
