@@ -4157,6 +4157,82 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
+    public function testFormMigrationSubstituteUuidIsDeterministicAcrossReplays(): void
+    {
+        global $DB;
+
+        // Arrange: a formcreator form with no UUID, forcing a substitute one to be generated.
+        $this->createSimpleFormcreatorForm(
+            name: 'Form without uuid replayed',
+            questions: [
+                ['name' => 'Question', 'fieldtype' => 'text'],
+            ],
+        );
+
+        // Act: run the migration twice, as a real replay of the console command would.
+        $first_migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($first_migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($first_migration, 'processMigration'));
+
+        $second_migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($second_migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($second_migration, 'processMigration'));
+
+        // Assert: the replay reconciled with the form created on the first run instead of duplicating it.
+        $migrated_forms = $DB->request([
+            'SELECT' => ['id', 'uuid'],
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['name' => 'Form without uuid replayed'],
+        ]);
+        $this->assertEquals(
+            1,
+            $migrated_forms->count(),
+            'The substitute UUID must be the same on both runs, so the replay must not create a duplicate'
+        );
+    }
+
+    public function testFormMigrationReconcilesFormsMigratedBeforeUuidReconciliation(): void
+    {
+        global $DB;
+
+        // Arrange: a formcreator form with a UUID, as if Formcreator was upgraded after a first migration.
+        $source_uuid = (string) Uuid::uuid4();
+        $this->createSimpleFormcreatorForm(
+            name: 'Form migrated before uuid reconciliation',
+            questions: [
+                ['name' => 'Question', 'fieldtype' => 'text'],
+            ],
+            properties: [
+                'uuid' => $source_uuid,
+            ]
+        );
+
+        // Arrange: a GLPI form matching it by name/entity/category, but with an unrelated UUID,
+        // as produced by a migration run before reconciliation switched from name to uuid.
+        $legacy_form = $this->createItem(Form::class, [
+            'name'        => 'Form migrated before uuid reconciliation',
+            'entities_id' => 0,
+            'uuid'        => (string) Uuid::uuid4(),
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Assert: the pre-existing form was adopted, not duplicated, and its uuid was upgraded.
+        $migrated_forms = $DB->request([
+            'SELECT' => ['id', 'uuid'],
+            'FROM'   => Form::getTable(),
+            'WHERE'  => ['name' => 'Form migrated before uuid reconciliation'],
+        ]);
+        $this->assertEquals(1, $migrated_forms->count());
+
+        $migrated_form = $migrated_forms->current();
+        $this->assertEquals($legacy_form->getID(), $migrated_form['id']);
+        $this->assertEquals($source_uuid, $migrated_form['uuid']);
+    }
+
     public function testFormMigrationActorsWithEmptyDefaultValue(): void
     {
         global $DB;
