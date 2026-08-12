@@ -101,21 +101,31 @@ class KnowbaseController extends AbstractController
                         'format' => Doc\Schema::FORMAT_STRING_HTML,
                         'x-field' => 'answer',
                     ],
+                    // BC: categories are articles now, so this exposes the same parent articles as the `parents` property
+                    'categories' => [
+                        'x-version-removed' => '3.0.0',
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'KBCategory',
+                            'x-join' => self::getParentArticlesJoin(),
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
+                                ],
+                                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                            ],
+                        ],
+                    ],
                     'parents' => [
+                        'x-version-introduced' => '3.0.0',
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'items' => [
                             'type' => Doc\Schema::TYPE_OBJECT,
                             'x-full-schema' => 'KBArticle',
-                            'x-join' => [
-                                'table' => KnowbaseItem::getTable(),
-                                'fkey' => 'knowbaseitems_id_parent',
-                                'field' => 'id',
-                                'ref-join' => [
-                                    'table' => KnowbaseItem_KnowbaseItem::getTable(),
-                                    'fkey' => 'id',
-                                    'field' => 'knowbaseitems_id',
-                                ],
-                            ],
+                            'x-join' => self::getParentArticlesJoin(),
                             'properties' => [
                                 'id' => [
                                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -479,6 +489,27 @@ class KnowbaseController extends AbstractController
         ];
 
         return $schemas;
+    }
+
+    /**
+     * Join definition used to expose the direct parents of an article.
+     *
+     * Shared by the `parents` property and its `categories` backward compatible counterpart.
+     *
+     * @return array{table: string, fkey: string, field: string, 'ref-join': array{table: string, fkey: string, field: string}}
+     */
+    private static function getParentArticlesJoin(): array
+    {
+        return [
+            'table' => KnowbaseItem::getTable(),
+            'fkey' => 'knowbaseitems_id_parent',
+            'field' => 'id',
+            'ref-join' => [
+                'table' => KnowbaseItem_KnowbaseItem::getTable(),
+                'fkey' => 'id',
+                'field' => 'knowbaseitems_id',
+            ],
+        ];
     }
 
     /**

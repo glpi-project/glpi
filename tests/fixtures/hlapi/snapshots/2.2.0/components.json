@@ -7463,11 +7463,11 @@
                     "type": "string",
                     "format": "html"
                 },
-                "parents": {
+                "categories": {
                     "type": "array",
                     "items": {
                         "type": "object",
-                        "x-full-schema": "KBArticle",
+                        "x-full-schema": "KBCategory",
                         "properties": {
                             "id": {
                                 "type": "integer",
