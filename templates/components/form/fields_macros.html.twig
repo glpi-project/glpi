@@ -273,15 +273,30 @@
                     }
                 };
 
-                const formatValue = (number) => Number(number.toFixed(6)).toString();
+                const formatCompactValue = (number) => Number(number.toFixed(2)).toString();
+                const formatFullValue = (number) => number.toString();
+                const syncFullValue = () => {
+                    const number = Number(canonical.value);
+                    const factor = Number(units[unit.value]);
+                    if (!Number.isFinite(number) || !Number.isFinite(factor)) {
+                        return null;
+                    }
+
+                    const fullValue = formatFullValue(number / factor);
+                    alternate.dataset.fullValue = fullValue;
+                    alternate.title = fullValue;
+
+                    return fullValue;
+                };
                 const updateCanonical = () => {
                     const number = Number(alternate.value.replace(',', '.'));
                     const factor = Number(units[unit.value]);
                     if (Number.isFinite(number) && number >= 0 && Number.isFinite(factor)) {
                         canonical.value = Math.round(number * factor).toString();
+                        syncFullValue();
                     }
                 };
-                const updateAlternate = (selectBestUnit = false) => {
+                const updateAlternate = (selectBestUnit = false, compact = true) => {
                     const number = Number(canonical.value);
                     if (!Number.isFinite(number)) {
                         return;
@@ -293,7 +308,12 @@
                         }, availableUnits[0]);
                         unit.value = bestUnit[0];
                     }
-                    alternate.value = formatValue(number / Number(units[unit.value]));
+                    const fullValue = syncFullValue();
+                    if (fullValue !== null) {
+                        alternate.value = compact
+                            ? formatCompactValue(Number(fullValue))
+                            : fullValue;
+                    }
                 };
                 const setAlternateMode = (enabled) => {
                     canonical.classList.toggle('d-none', enabled);
@@ -315,9 +335,22 @@
                 });
                 canonical.addEventListener('input', () => updateAlternate());
                 alternate.addEventListener('input', updateCanonical);
+                alternate.addEventListener('focus', () => updateAlternate(false, false));
+                alternate.addEventListener('blur', () => {
+                    updateCanonical();
+                    updateAlternate();
+                });
                 unit.addEventListener('change', () => {
                     updateAlternate();
                     storeUnit(unit.value);
+                });
+                root.closest('form')?.addEventListener('submit', () => {
+                    if (toggle.checked) {
+                        const fullValue = syncFullValue();
+                        if (fullValue !== null) {
+                            alternate.value = fullValue;
+                        }
+                    }
                 });
 
                 const storedUnit = getStoredUnit();
