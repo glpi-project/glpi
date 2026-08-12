@@ -794,16 +794,16 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     }
 
     /**
-     * Build an `id IN (WITH RECURSIVE ...)` condition that matches any article
+     * Build an `id IN (WITH RECURSIVE ...)` criterion that matches any article
      * whose set of ancestors (via glpi_knowbaseitems_knowbaseitems) includes a
      * directly-visible article. $direct_or is the set of direct-visibility OR
      * terms (must NOT already contain the inherited term).
      *
      * @param array<int, mixed> $direct_or Direct-visibility OR terms
      *
-     * @return QueryExpression
+     * @return array<string, mixed>
      */
-    private static function getInheritedVisibilityCondition(array $direct_or): QueryExpression
+    private static function getInheritedVisibilityCondition(array $direct_or): array
     {
         global $DB;
 
@@ -823,8 +823,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         $link = KnowbaseItem_KnowbaseItem::getTable();
         $sql
-            = $DB::quoteName(self::getTableField('id')) . ' IN ('
-            . 'WITH RECURSIVE kb_visible (id) AS ('
+            = '(WITH RECURSIVE kb_visible (id) AS ('
             . 'SELECT id FROM ' . $seed_sql . ' AS kb_seed'
             . ' UNION '
             . 'SELECT ' . $DB::quoteName($link . '.knowbaseitems_id')
@@ -833,7 +832,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             . $DB::quoteName($link . '.knowbaseitems_id_parent') . ' = kb_visible.id'
             . ') SELECT id FROM kb_visible)';
 
-        return new QueryExpression($sql, null, $seed_params);
+        return [
+            self::getTableField('id') => ['IN', new QueryExpression($sql, null, $seed_params)],
+        ];
     }
 
     /**

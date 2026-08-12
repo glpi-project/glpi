@@ -2300,6 +2300,55 @@ HTML,
         return $ids;
     }
 
+    /**
+     * The visibility criteria must keep working when the caller renames
+     * `glpi_knowbaseitems` to an alias, as the High Level API does (it maps the
+     * main table to `_`). Callers can only rewrite criteria *keys*, so no
+     * table-qualified column may be buried inside a raw `QueryExpression`.
+     *
+     * A KB admin sees every article through a short-circuit that skips the
+     * inherited-visibility term entirely, so this must run as a plain user.
+     */
+    public function testVisibilityCriteriaSupportMainTableAlias(): void
+    {
+        global $DB;
+
+        $this->login('normal', 'normal');
+
+        $criteria = KnowbaseItem::getVisibilityCriteria(true);
+
+        // Sanity check: the term that used to hardcode the table name is present.
+        $iterator = new \DBmysqlIterator($DB);
+        $iterator->buildQuery([
+            'SELECT'    => [KnowbaseItem::getTableField('id')],
+            'FROM'      => KnowbaseItem::getTable(),
+            'LEFT JOIN' => $criteria['LEFT JOIN'],
+            'WHERE'     => $criteria['WHERE'],
+        ]);
+        $this->assertStringContainsString('WITH RECURSIVE', $iterator->getSql());
+
+        // Rewrite the main table to `_` the same way `Glpi\Api\HL\Search` does,
+        // then make sure the resulting query is still valid SQL.
+        $rewrite = static function (array $crit) use (&$rewrite): array {
+            $out = [];
+            foreach ($crit as $key => $value) {
+                if ($key === KnowbaseItem::getTable() || str_starts_with((string) $key, KnowbaseItem::getTable() . '.')) {
+                    $key = str_replace(KnowbaseItem::getTable(), '_', (string) $key);
+                }
+                $out[$key] = is_array($value) ? $rewrite($value) : $value;
+            }
+            return $out;
+        };
+
+        $aliased = $DB->request([
+            'SELECT'    => ['_.id'],
+            'FROM'      => KnowbaseItem::getTable() . ' AS _',
+            'LEFT JOIN' => $rewrite($criteria['LEFT JOIN']),
+            'WHERE'     => $rewrite($criteria['WHERE']),
+        ]);
+        $this->assertGreaterThanOrEqual(0, $aliased->count());
+    }
+
     public function testShowListDoesNotLeakUnviewableParent(): void
     {
         // Parent + child authored by glpi, with no visibility grants.
