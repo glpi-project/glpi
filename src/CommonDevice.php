@@ -236,6 +236,41 @@ abstract class CommonDevice extends CommonDropdown
         ];
     }
 
+    /**
+     * Convert a value entered with an alternate display unit to the unit used
+     * by the database. Fields without alternate-unit metadata are untouched.
+     */
+    protected function prepareUnitAwareInput(array $input): array
+    {
+        $values = $input['_unit_value'] ?? [];
+        $units  = $input['_unit'] ?? [];
+
+        if (is_array($values) && is_array($units)) {
+            foreach ($this->getAdditionalFields() as $field) {
+                $name    = $field['name'] ?? null;
+                $factors = $field['unit_factors'] ?? null;
+                if (
+                    $name === null
+                    || !is_array($factors)
+                    || !array_key_exists($name, $values)
+                    || !array_key_exists($name, $units)
+                    || !array_key_exists($units[$name], $factors)
+                ) {
+                    continue;
+                }
+
+                $value = str_replace(',', '.', trim((string) $values[$name]));
+                if (is_numeric($value) && (float) $value >= 0) {
+                    $input[$name] = (int) round((float) $value * (float) $factors[$units[$name]]);
+                }
+            }
+        }
+
+        unset($input['_unit_value'], $input['_unit']);
+
+        return $input;
+    }
+
     public function canUnrecurs()
     {
         global $DB;

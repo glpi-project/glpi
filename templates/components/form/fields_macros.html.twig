@@ -205,6 +205,135 @@
     {{ _self.field(name, field, label, options) }}
 {% endmacro %}
 
+{% macro unitNumberField(name, value, label = '', units = {}, options = {}) %}
+    {% set rand = random() %}
+    {% set canonical_id = (name ~ '_canonical_' ~ rand)|safe_dom_id %}
+    {% set toggle_id = (name ~ '_unit_toggle_' ~ rand)|safe_dom_id %}
+    {% set alternate_id = (name ~ '_alternate_' ~ rand)|safe_dom_id %}
+    {% set unit_id = (name ~ '_unit_' ~ rand)|safe_dom_id %}
+
+    {% set field %}
+        {% import 'components/form/basic_inputs_macros.html.twig' as _inputs %}
+        <div class="input-group" data-glpi-unit-number-field data-units="{{ units|json_encode|e('html_attr') }}">
+            {{ _inputs.number(name, value, options|merge({
+                'id': canonical_id,
+                'input_addclass': (options.input_addclass ?? '') ~ ' rounded-end-0',
+                'additional_attributes': (options.additional_attributes ?? {})|merge({
+                    'data-glpi-canonical-input': ''
+                })
+            })) }}
+            <input type="text"
+                   class="form-control d-none"
+                   id="{{ alternate_id }}"
+                   name="_unit_value[{{ name }}]"
+                   inputmode="decimal"
+                   autocomplete="off"
+                   data-glpi-alternate-input
+                   disabled>
+            <select class="form-select flex-grow-0 w-auto d-none"
+                    id="{{ unit_id }}"
+                    name="_unit[{{ name }}]"
+                    data-glpi-unit-select
+                    disabled>
+                {% for unit, factor in units %}
+                    <option value="{{ unit }}">{{ unit }}</option>
+                {% endfor %}
+            </select>
+            <label class="input-group-text gap-2 text-nowrap" for="{{ toggle_id }}">
+                <input class="form-check-input mt-0" type="checkbox" id="{{ toggle_id }}">
+                <span>{{ __('Use another unit') }}</span>
+            </label>
+        </div>
+        <script>
+            (() => {
+                const root = document.getElementById('{{ toggle_id|e('js') }}').closest('[data-glpi-unit-number-field]');
+                const canonical = root.querySelector('[data-glpi-canonical-input]');
+                const alternate = document.getElementById('{{ alternate_id|e('js') }}');
+                const unit = document.getElementById('{{ unit_id|e('js') }}');
+                const toggle = document.getElementById('{{ toggle_id|e('js') }}');
+                const units = JSON.parse(root.dataset.units);
+                const storageKey = 'glpi.unit-number-field.{{ name|e('js') }}';
+
+                const getStoredUnit = () => {
+                    try {
+                        return window.localStorage.getItem(storageKey);
+                    } catch (e) {
+                        return null;
+                    }
+                };
+                const storeUnit = (value) => {
+                    try {
+                        if (value === null) {
+                            window.localStorage.removeItem(storageKey);
+                        } else {
+                            window.localStorage.setItem(storageKey, value);
+                        }
+                    } catch (e) {
+                        // Local storage may be unavailable in hardened browsers.
+                    }
+                };
+
+                const formatValue = (number) => Number(number.toFixed(6)).toString();
+                const updateCanonical = () => {
+                    const number = Number(alternate.value.replace(',', '.'));
+                    const factor = Number(units[unit.value]);
+                    if (Number.isFinite(number) && number >= 0 && Number.isFinite(factor)) {
+                        canonical.value = Math.round(number * factor).toString();
+                    }
+                };
+                const updateAlternate = (selectBestUnit = false) => {
+                    const number = Number(canonical.value);
+                    if (!Number.isFinite(number)) {
+                        return;
+                    }
+                    if (selectBestUnit) {
+                        const availableUnits = Object.entries(units);
+                        const bestUnit = availableUnits.reduce((best, current) => {
+                            return number / Number(current[1]) >= 1 ? current : best;
+                        }, availableUnits[0]);
+                        unit.value = bestUnit[0];
+                    }
+                    alternate.value = formatValue(number / Number(units[unit.value]));
+                };
+                const setAlternateMode = (enabled) => {
+                    canonical.classList.toggle('d-none', enabled);
+                    alternate.classList.toggle('d-none', !enabled);
+                    unit.classList.toggle('d-none', !enabled);
+                    alternate.disabled = !enabled;
+                    unit.disabled = !enabled;
+                };
+
+                toggle.addEventListener('change', () => {
+                    if (toggle.checked) {
+                        updateAlternate(true);
+                        storeUnit(unit.value);
+                    } else {
+                        updateCanonical();
+                        storeUnit(null);
+                    }
+                    setAlternateMode(toggle.checked);
+                });
+                canonical.addEventListener('input', () => updateAlternate());
+                alternate.addEventListener('input', updateCanonical);
+                unit.addEventListener('change', () => {
+                    updateAlternate();
+                    storeUnit(unit.value);
+                });
+
+                const storedUnit = getStoredUnit();
+                if (storedUnit !== null && Object.prototype.hasOwnProperty.call(units, storedUnit)) {
+                    unit.value = storedUnit;
+                    toggle.checked = true;
+                    updateAlternate();
+                    setAlternateMode(true);
+                }
+            })();
+        </script>
+    {% endset %}
+
+    {{ _self.field(name, field, label, options) }}
+{% endmacro %}
+
 
 {% macro readOnlyField(name, value, label = '', options = {}) %}
    {% set options = options|merge({'readonly': true}) %}
