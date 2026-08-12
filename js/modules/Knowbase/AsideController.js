@@ -124,19 +124,35 @@ export class GlpiKnowbaseAsideController
                 return;
             }
 
-            // Toggle collasped state
-            const is_collapsed = node.hasAttribute('data-glpi-kb-aside-category-collapsed');
-            const new_collapsed_state = !is_collapsed;
-            if (new_collapsed_state) {
-                node.setAttribute('data-glpi-kb-aside-category-collapsed', '');
-                toggle.setAttribute('aria-expanded', 'false');
-            } else {
-                node.removeAttribute('data-glpi-kb-aside-category-collapsed');
-                toggle.setAttribute('aria-expanded', 'true');
-            }
-
-            this.#persistArticleFold(node.dataset.glpiKbArticleId, new_collapsed_state);
+            // Toggle collapsed state
+            this.#setCollapsed(
+                node,
+                !node.hasAttribute('data-glpi-kb-aside-category-collapsed')
+            );
         });
+    }
+
+    /**
+     * Collapse or expand a tree node, keeping the DOM, the toggle's ARIA state
+     * and the persisted per-user fold state in sync.
+     *
+     * @param {HTMLElement} node
+     * @param {boolean} collapsed
+     */
+    #setCollapsed(node, collapsed)
+    {
+        node.toggleAttribute('data-glpi-kb-aside-category-collapsed', collapsed);
+
+        // `:scope >` on the header is required: without it we would reach the
+        // toggle of a nested article instead of this node's own one.
+        const toggle = node.querySelector(
+            ':scope > [data-glpi-kb-aside-category-header] [data-glpi-kb-aside-category-toggle]'
+        );
+        // A childless node has no toggle to update (it is still collapsible, so
+        // that a child created below lands in a visible list).
+        toggle?.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+
+        this.#persistArticleFold(node.dataset.glpiKbArticleId, collapsed);
     }
 
     #initToggle()
@@ -303,6 +319,16 @@ export class GlpiKnowbaseAsideController
         const node = header.closest('[data-glpi-kb-aside-category]');
         const list = node.querySelector(':scope > ul');
         const parent_id = Number(new URL(add_link.href).searchParams.get('knowbaseitems_id_parent')) || 0;
+
+        // The list is hidden while the node is collapsed, so the input below
+        // would be inserted into a `display: none` subtree: invisible, and
+        // impossible to focus. Expand first. This also persists the new fold
+        // state, which matters because a successful create navigates to the new
+        // article: were the parent still folded on that reload, the article the
+        // user just created would be hidden.
+        if (node.hasAttribute('data-glpi-kb-aside-category-collapsed')) {
+            this.#setCollapsed(node, false);
+        }
 
         // Only one inline input at a time across the whole tree.
         const existing = this.#aside.querySelector('[data-glpi-kb-aside-create-row]');

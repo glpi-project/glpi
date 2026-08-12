@@ -213,3 +213,61 @@ test('typing a title and pressing Enter creates the child article and navigates 
     await expect(article_row).toBeVisible();
     await expect(article_row).toHaveAttribute('aria-current', 'page');
 });
+
+test('the "+" on a folded article expands it, so the inline input is usable', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Folded Parent ${unique}`;
+    const child_name = `E2E Folded Child ${unique}`;
+    const article_title = `E2E Folded New ${unique}`;
+
+    // A parent with a child, so the parent gets a fold toggle.
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    await kb.goto(parent_id);
+    await kb.waitForAsideReady();
+
+    const parent_toggle = kb.getAsideCategoryToggle(parent_name);
+    const child_link = kb.getAsideCategoryArticle(parent_name, child_name);
+
+    // Fold the parent: its child list is now `display: none`.
+    await kb.doToggleAsideCategoryAndWaitForPersist(parent_name);
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(child_link).toBeHidden();
+
+    // The "+" must expand the node before inserting the inline input, else the
+    // input lands in a hidden subtree: invisible, and impossible to focus.
+    const add_link = kb.getAsideCategoryAddLink(parent_name);
+    await kb.getAsideArticleTitleLink(parent_name).hover();
+    await add_link.click();
+
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
+    const inline_input = kb.getAsideCategoryCreateInput(parent_name);
+    await expect(inline_input).toBeVisible();
+    await expect(inline_input).toBeFocused();
+
+    await inline_input.fill(article_title);
+    await inline_input.press('Enter');
+
+    // Creating navigates to the new article. The expanded state must have been
+    // persisted along the way, otherwise the parent renders folded again on
+    // this load and hides the article that was just created.
+    await expect(page).toHaveURL(/knowbaseitem\.form\.php\?id=\d+/);
+    await expect(page.getByTestId('subject')).toHaveText(article_title);
+
+    const new_id = Number(new URL(page.url()).searchParams.get('id'));
+    await expect(kb.getAsideTreeArticleRow(new_id)).toBeVisible();
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
+});
