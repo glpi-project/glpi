@@ -1628,7 +1628,7 @@ HTML;
                 'provider'   => "Glpi\\Dashboard\\Provider::ticketsByStatus",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
-          
+
             $cards["report_computers_by_os"] = [
                 'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
                 'itemtype'   => "\\Computer",
