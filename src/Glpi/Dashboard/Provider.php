@@ -41,6 +41,7 @@ use CommonITILActor;
 use CommonITILObject;
 use CommonITILValidation;
 use CommonTreeDropdown;
+use Computer;
 use Config;
 use DBConnection;
 use ExtraVisibilityCriteria;
@@ -56,6 +57,8 @@ use Glpi\Debug\Profiler;
 use Glpi\Search\Input\QueryBuilder;
 use Group;
 use Group_Ticket;
+use Item_OperatingSystem;
+use OperatingSystem;
 use Profile_User;
 use Session;
 use Stat;
@@ -1008,14 +1011,14 @@ class Provider
 
         $default_params = [
             'label'         => "",
-            'icon'          => \Computer::getIcon(),
+            'icon'          => Computer::getIcon(),
             'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
 
-        $c_table   = \Computer::getTable();
-        $ios_table = \Item_OperatingSystem::getTable();
-        $os_table  = \OperatingSystem::getTable();
+        $c_table   = Computer::getTable();
+        $ios_table = Item_OperatingSystem::getTable();
+        $os_table  = OperatingSystem::getTable();
 
         Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
         $criteria = array_merge_recursive(
@@ -1033,7 +1036,7 @@ class Provider
                             $c_table   => 'id',
                             [
                                 'AND' => [
-                                    "$ios_table.itemtype" => \Computer::class,
+                                    "$ios_table.itemtype" => Computer::class,
                                 ],
                             ],
                         ],
@@ -1058,7 +1061,7 @@ class Provider
         $iterator = $DB->request($criteria);
 
         $search_criteria = self::getSearchFiltersCriteria($c_table, $params['apply_filters'])['criteria'] ?? [];
-        $url = \Computer::getSearchURL();
+        $url = Computer::getSearchURL();
 
         $data = [];
         foreach ($iterator as $result) {

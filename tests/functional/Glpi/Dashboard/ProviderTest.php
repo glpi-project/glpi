@@ -38,6 +38,7 @@ use Glpi\CustomAsset\Test01Asset;
 use Glpi\CustomAsset\Test01AssetType;
 use Glpi\Dashboard\Provider;
 use Glpi\Tests\DbTestCase;
+use Item_DeviceSimcard;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Reminder;
 use Reminder_User;
@@ -655,7 +656,7 @@ class ProviderTest extends DbTestCase
         return [
             ['item' => new \Computer()],
             ['item' => new \Ticket()],
-            ['item' => new \Item_DeviceSimcard()],
+            ['item' => new Item_DeviceSimcard()],
         ];
     }
 
@@ -675,7 +676,7 @@ class ProviderTest extends DbTestCase
             $this->assertArrayHasKey('url', $result);
             $this->assertArrayHasKey('label', $result);
             $this->assertArrayHasKey('icon', $result);
-            if ($item::class !== 'Item_DeviceSimcard') {
+            if ($item::class !== Item_DeviceSimcard::class) {
                 // Ignore count for simcards. None are added in Bootstrap process and is here for regression testing only.
                 $this->assertGreaterThan(0, $result['number']);
             }
