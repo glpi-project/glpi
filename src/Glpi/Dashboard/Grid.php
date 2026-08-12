@@ -1620,6 +1620,15 @@ HTML;
                 ];
             }
 
+            $cards["report_computers_by_os"] = [
+                'widgettype' => ['pie', 'donut', 'halfpie', 'halfdonut', 'summaryNumbers', 'multipleNumber', 'bar', 'hbar'],
+                'itemtype'   => "\\Computer",
+                'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
+                'label'      => __("Number of computers by operating system"),
+                'provider'   => "Glpi\\Dashboard\\Provider::computersByOperatingSystem",
+                'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],
                 'label'      => sprintf(__('List of %s'), Reminder::getTypeName(Session::getPluralNumber())),

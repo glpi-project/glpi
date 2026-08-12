@@ -41,6 +41,7 @@ use CommonITILActor;
 use CommonITILObject;
 use CommonITILValidation;
 use CommonTreeDropdown;
+use Computer;
 use Config;
 use DBConnection;
 use ExtraVisibilityCriteria;
@@ -56,6 +57,8 @@ use Glpi\Debug\Profiler;
 use Glpi\Search\Input\QueryBuilder;
 use Group;
 use Group_Ticket;
+use Item_OperatingSystem;
+use OperatingSystem;
 use Profile_User;
 use Session;
 use Stat;
@@ -994,6 +997,104 @@ class Provider
         ];
     }
 
+
+    /**
+     * Count number of computers grouped by their operating system.
+     *
+     * @param array<string, mixed> $params
+     *
+     * @return array<string, mixed>
+     */
+    public static function computersByOperatingSystem(array $params = []): array
+    {
+        $DB = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Computer::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $c_table   = Computer::getTable();
+        $ios_table = Item_OperatingSystem::getTable();
+        $os_table  = OperatingSystem::getTable();
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    "$os_table.name AS os_name",
+                    "$os_table.id AS os_id",
+                    'COUNT DISTINCT' => "$c_table.id AS cpt",
+                ],
+                'FROM'      => $c_table,
+                'LEFT JOIN' => [
+                    $ios_table => [
+                        'ON' => [
+                            $ios_table => 'items_id',
+                            $c_table   => 'id',
+                            [
+                                'AND' => [
+                                    "$ios_table.itemtype" => Computer::class,
+                                ],
+                            ],
+                        ],
+                    ],
+                    $os_table => [
+                        'ON' => [
+                            $os_table  => 'id',
+                            $ios_table => 'operatingsystems_id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    "$c_table.is_deleted"  => 0,
+                    "$c_table.is_template" => 0,
+                ] + getEntitiesRestrictCriteria($c_table, '', '', true),
+                'GROUPBY'   => "$os_table.id",
+                'ORDERBY'   => "cpt DESC",
+            ],
+            self::getFiltersCriteria($c_table, $params['apply_filters'])
+        );
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+        $iterator = $DB->request($criteria);
+
+        $search_criteria = self::getSearchFiltersCriteria($c_table, $params['apply_filters'])['criteria'] ?? [];
+        $url = Computer::getSearchURL();
+
+        $data = [];
+        foreach ($iterator as $result) {
+            $result_criteria = $search_criteria;
+            $result_criteria[] = [
+                'link'       => 'AND',
+                'field'      => 45, // operating system name
+                'searchtype' => 'equals',
+                'value'      => $result['os_id'] ?? 0,
+            ];
+
+            $data[] = [
+                'number' => $result['cpt'],
+                'label'  => $result['os_name'] ?? __('without'),
+                'url'    => $url . (str_contains($url, '?') ? '&' : '?') . Toolbox::append_params([
+                    'criteria' => $result_criteria,
+                    'reset'    => 'reset',
+                ]),
+            ];
+        }
+
+        if (count($data) === 0) {
+            $data = [
+                'nodata' => true,
+            ];
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
 
     /**
      * Get a list of article for an compatible item (with date,name,text fields)
