@@ -239,6 +239,10 @@ abstract class CommonDevice extends CommonDropdown
     /**
      * Convert a value entered with an alternate display unit to the unit used
      * by the database. Fields without alternate-unit metadata are untouched.
+     *
+     * @param array<string, mixed> $input
+     *
+     * @return array<string, mixed>
      */
     protected function prepareUnitAwareInput(array $input): array
     {
