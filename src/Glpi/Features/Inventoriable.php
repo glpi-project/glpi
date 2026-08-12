@@ -134,7 +134,7 @@ trait Inventoriable
             );
 
             echo sprintf(
-                "<a href='%s' style='float: right;' target='_blank'><i class='ti ti-download' title='%s'></i></a>",
+                "<a href='%s' style='float: right;' target='_blank' title='%s'><i class='ti ti-download' aria-hidden='true'></i></a>",
                 \htmlescape($href),
                 sprintf(
                     //TRANS: parameter is the name of the asset
@@ -152,13 +152,13 @@ trait Inventoriable
                                 data-bs-toggle="tooltip" data-bs-placement="top"
                                 style="float: right;margin-right: .5em;"
                                 formaction="{$url}">
-                           <i class="ti ti-reload"></i>
+                           <i class="ti ti-reload" aria-hidden="true"></i>
                         </button>
 HTML;
             }
         } else {
             echo sprintf(
-                "<span style='float: right;'><i class='ti ti-ban'></i> <span class='visually-hidden'>%s</span></span>",
+                "<span style='float: right;'><i class='ti ti-ban' aria-hidden='true'></i> <span class='visually-hidden'>%s</span></span>",
                 __s('Inventory file missing')
             );
         }
@@ -214,12 +214,20 @@ HTML;
         echo '</tr>';
 
         echo '<tr class="tab_bg_1">';
+        $status_label = __s('Ask agent about its current status');
+        $inventory_label = __s('Request agent to proceed an new inventory');
         echo '<td>' . __s('Agent status');
-        echo "<i id='update-status' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Ask agent about its current status') . "'></i>";
+        echo "<button type='button' id='update-status' class='btn btn-sm btn-icon btn-ghost-secondary' style='float: right;' title='$status_label'>"
+            . "<i class='ti ti-refresh' aria-hidden='true'></i>"
+            . "<span class='visually-hidden'>$status_label</span>"
+            . "</button>";
         echo '</td>';
         echo '<td id="agent_status">' . __s('Unknown') . '</td>';
         echo '<td>' . __s('Request inventory');
-        echo "<i id='update-inventory' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Request agent to proceed an new inventory') . "'></i>";
+        echo "<button type='button' id='update-inventory' class='btn btn-sm btn-icon btn-ghost-secondary' style='float: right;' title='$inventory_label'>"
+            . "<i class='ti ti-refresh' aria-hidden='true'></i>"
+            . "<span class='visually-hidden'>$inventory_label</span>"
+            . "</button>";
         echo '</td>';
         echo '<td id="inventory_status">' . __s('None') . '</td>';
         echo '</tr>';

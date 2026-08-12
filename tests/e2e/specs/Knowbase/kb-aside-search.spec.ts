@@ -36,7 +36,7 @@ import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
-test('Matching articles are shown and non-matching are hidden across categories', async ({
+test('Matching articles are shown and non-matching are hidden across parent articles', async ({
     page,
     profile,
     api,
@@ -47,46 +47,48 @@ test('Matching articles are shown and non-matching are hidden across categories'
     // Use distinct tokens so searching for one cannot match the other
     const token_a = randomUUID().slice(0, 8);
     const token_b = randomUUID().slice(0, 8);
-    const category_a = `E2E Category A ${token_a}`;
-    const category_b = `E2E Category B ${token_b}`;
+    const parent_a  = `E2E Parent A ${token_a}`;
+    const parent_b  = `E2E Parent B ${token_b}`;
     const article_a  = `E2E Article A ${token_a}`;
     const article_b  = `E2E Article B ${token_b}`;
 
-    const category_a_id = await api.createItem('KnowbaseItemCategory', {
-        name: category_a,
+    const parent_a_id = await api.createItem('KnowbaseItem', {
+        name: parent_a,
+        answer: 'Test content',
         entities_id: getWorkerEntityId(),
     });
-    const category_b_id = await api.createItem('KnowbaseItemCategory', {
-        name: category_b,
+    const parent_b_id = await api.createItem('KnowbaseItem', {
+        name: parent_b,
+        answer: 'Test content',
         entities_id: getWorkerEntityId(),
     });
     const article_a_id = await api.createItem('KnowbaseItem', {
         name: article_a,
         answer: 'Test content',
         entities_id: getWorkerEntityId(),
-        _categories: [category_a_id],
+        _parents: [parent_a_id],
     });
     await api.createItem('KnowbaseItem', {
         name: article_b,
         answer: 'Test content',
         entities_id: getWorkerEntityId(),
-        _categories: [category_b_id],
+        _parents: [parent_b_id],
     });
 
     await kb.goto(article_a_id);
     await kb.doSearchAside(token_a);
 
-    // Category A and its article must be visible
-    await expect(kb.getAsideCategory(category_a)).toBeVisible();
-    await expect(kb.getAsideCategoryArticle(category_a, article_a)).toBeVisible();
+    // Parent A and its child article must be visible
+    await expect(kb.getAsideCategory(parent_a)).toBeVisible();
+    await expect(kb.getAsideCategoryArticle(parent_a, article_a)).toBeVisible();
 
-    // Category B and its article must be hidden
-    await expect(kb.getAsideCategory(category_b)).toBeHidden();
-    await expect(kb.getAsideCategoryArticle(category_b, article_b)).toBeHidden();
+    // Parent B and its child article must be hidden
+    await expect(kb.getAsideCategory(parent_b)).toBeHidden();
+    await expect(kb.getAsideCategoryArticle(parent_b, article_b)).toBeHidden();
 });
 
 
-test('Categories with at least one matching article remain visible', async ({
+test('Parent articles with at least one matching child remain visible', async ({
     page,
     profile,
     api,
@@ -96,36 +98,37 @@ test('Categories with at least one matching article remain visible', async ({
 
     const matching_token     = randomUUID().slice(0, 8);
     const non_matching_token = randomUUID().slice(0, 8);
-    const category_name      = `E2E Category ${matching_token}`;
+    const parent_name        = `E2E Parent ${matching_token}`;
     const matching_article   = `E2E Article ${matching_token}`;
     const other_article      = `E2E Article ${non_matching_token}`;
 
-    const category_id = await api.createItem('KnowbaseItemCategory', {
-        name: category_name,
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Test content',
         entities_id: getWorkerEntityId(),
     });
     const matching_id = await api.createItem('KnowbaseItem', {
         name: matching_article,
         answer: 'Test content',
         entities_id: getWorkerEntityId(),
-        _categories: [category_id],
+        _parents: [parent_id],
     });
     await api.createItem('KnowbaseItem', {
         name: other_article,
         answer: 'Test content',
         entities_id: getWorkerEntityId(),
-        _categories: [category_id],
+        _parents: [parent_id],
     });
 
     await kb.goto(matching_id);
     await kb.doSearchAside(matching_token);
 
-    // The category must stay visible because it has one matching article
-    await expect(kb.getAsideCategory(category_name)).toBeVisible();
-    await expect(kb.getAsideCategoryArticle(category_name, matching_article)).toBeVisible();
+    // The parent must stay visible because it has one matching child
+    await expect(kb.getAsideCategory(parent_name)).toBeVisible();
+    await expect(kb.getAsideCategoryArticle(parent_name, matching_article)).toBeVisible();
 
-    // The non-matching article in the same category must be hidden
-    await expect(kb.getAsideCategoryArticle(category_name, other_article)).toBeHidden();
+    // The non-matching sibling article must be hidden
+    await expect(kb.getAsideCategoryArticle(parent_name, other_article)).toBeHidden();
 });
 
 test('Clearing the search restores the full tree', async ({
@@ -138,29 +141,30 @@ test('Clearing the search restores the full tree', async ({
 
     const token           = randomUUID().slice(0, 8);
     const no_match_token  = randomUUID().slice(0, 8);
-    const category_name   = `E2E Category ${token}`;
+    const parent_name     = `E2E Parent ${token}`;
     const article_name    = `E2E Article ${token}`;
 
-    const category_id = await api.createItem('KnowbaseItemCategory', {
-        name: category_name,
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Test content',
         entities_id: getWorkerEntityId(),
     });
     const article_id = await api.createItem('KnowbaseItem', {
         name: article_name,
         answer: 'Test content',
         entities_id: getWorkerEntityId(),
-        _categories: [category_id],
+        _parents: [parent_id],
     });
 
     await kb.goto(article_id);
 
     // Filter the tree so the article is hidden
     await kb.doSearchAside(no_match_token);
-    await expect(kb.getAsideCategoryArticle(category_name, article_name)).toBeHidden();
+    await expect(kb.getAsideCategoryArticle(parent_name, article_name)).toBeHidden();
 
     // Clear the search manually, the tree must be fully restored
     await kb.doClearAsideSearch();
-    await expect(kb.getAsideCategoryArticle(category_name, article_name)).toBeVisible();
+    await expect(kb.getAsideCategoryArticle(parent_name, article_name)).toBeVisible();
 });
 
 test('Only matching favorites remain visible', async ({
@@ -242,18 +246,19 @@ test('"No articles found" message is shown when nothing matches and hidden when 
 
     const token          = randomUUID().slice(0, 8);
     const no_match_token = randomUUID().slice(0, 8);
-    const category_name  = `E2E Category ${token}`;
+    const parent_name    = `E2E Parent ${token}`;
     const article_name   = `E2E Article ${token}`;
 
-    const category_id = await api.createItem('KnowbaseItemCategory', {
-        name: category_name,
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Test content',
         entities_id: getWorkerEntityId(),
     });
     const article_id = await api.createItem('KnowbaseItem', {
         name: article_name,
         answer: 'Test content',
         entities_id: getWorkerEntityId(),
-        _categories: [category_id],
+        _parents: [parent_id],
     });
 
     await kb.goto(article_id);
@@ -277,18 +282,19 @@ test('Clear button appears when typing and clicking it restores the tree', async
 
     const token         = randomUUID().slice(0, 8);
     const no_match_token = randomUUID().slice(0, 8);
-    const category_name = `E2E Category ${token}`;
+    const parent_name   = `E2E Parent ${token}`;
     const article_name  = `E2E Article ${token}`;
 
-    const category_id = await api.createItem('KnowbaseItemCategory', {
-        name: category_name,
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Test content',
         entities_id: getWorkerEntityId(),
     });
     const article_id = await api.createItem('KnowbaseItem', {
         name: article_name,
         answer: 'Test content',
         entities_id: getWorkerEntityId(),
-        _categories: [category_id],
+        _parents: [parent_id],
     });
 
     await kb.goto(article_id);
@@ -299,10 +305,10 @@ test('Clear button appears when typing and clicking it restores the tree', async
     // Type a non-matching term, clear button must become interactive and article must be hidden
     await kb.doSearchAside(no_match_token);
     await expect(kb.asideSearchClearButton).toBeEnabled();
-    await expect(kb.getAsideCategoryArticle(category_name, article_name)).toBeHidden();
+    await expect(kb.getAsideCategoryArticle(parent_name, article_name)).toBeHidden();
 
     // Click the clear button, article must be restored
     await kb.doClickAsideSearchClear();
     await expect(kb.asideSearchClearButton).toBeDisabled();
-    await expect(kb.getAsideCategoryArticle(category_name, article_name)).toBeVisible();
+    await expect(kb.getAsideCategoryArticle(parent_name, article_name)).toBeVisible();
 });

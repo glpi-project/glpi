@@ -360,6 +360,7 @@ class HtmlTest extends DbTestCase
             'SLM',
             'Config',
             'Glpi\Security\SecurityConfig',
+            'Glpi\Config\DataAndPrivacyConfig',
             'FieldUnicity',
             'CronTask',
             'Auth',
@@ -789,17 +790,17 @@ class HtmlTest extends DbTestCase
         $url = 'mylink.php';
 
         $expected = '<a href="mylink.php" >My link</a>';
-        $this->assertSame($expected, \Html::link($text, $url));
+        $this->assertSame($expected, @\Html::link($text, $url));
 
         $options = [
             'confirm'   => 'U sure?',
         ];
         $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ ;return true;} else { return false;}">My link</a>';
-        $this->assertSame($expected, \Html::link($text, $url, $options));
+        $this->assertSame($expected, @\Html::link($text, $url, $options));
 
         $options['confirmaction'] = 'window.close();';
         $expected = '<a href="mylink.php" onclick="if (window.confirm(&quot;U sure?&quot;)){ window.close();return true;} else { return false;}">My link</a>';
-        $this->assertSame($expected, \Html::link($text, $url, $options));
+        $this->assertSame($expected, @\Html::link($text, $url, $options));
     }
 
     public function testHidden()
@@ -1003,8 +1004,7 @@ SCSS,
 
     public function testCompileScssForPlugin()
     {
-        // FIXME remove the `@` operator once `scssphp/scssphp` and `league/uri` PHP 8.5 deprecation fixes will be released
-        $compiled_scss = @\Html::compileScss(['file' => '/plugins/tester/css/styles.scss']);
+        $compiled_scss = \Html::compileScss(['file' => '/plugins/tester/css/styles.scss']);
 
         // Strip comments to ease comparison.
         $compiled_scss = preg_replace('~/\*.*\*/~s', '', $compiled_scss);

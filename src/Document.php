@@ -1615,16 +1615,16 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         if (self::canApplyOn($itemtype)) {
             if (self::canView()) {
-                $actions[$action_prefix . 'add']    = "<i class='ti ti-file-plus'></i>"
+                $actions[$action_prefix . 'add']    = "<i class='ti ti-file-plus' aria-hidden='true'></i>"
                                                 . _sx('button', 'Add a document');
-                $actions[$action_prefix . 'remove'] = "<i class='ti ti-file-minus'></i>"
+                $actions[$action_prefix . 'remove'] = "<i class='ti ti-file-minus' aria-hidden='true'></i>"
                                                 . _sx('button', 'Remove a document');
             }
         }
 
         if ((is_a($itemtype, self::class, true)) && (static::canUpdate())) {
-            $actions[$action_prefix . 'add_item']    = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
-            $actions[$action_prefix . 'remove_item'] = "<i class='ti ti-package-off'></i>" . _sx('button', 'Remove an item');
+            $actions[$action_prefix . 'add_item']    = "<i class='ti ti-package' aria-hidden='true'></i>" . _sx('button', 'Add an item');
+            $actions[$action_prefix . 'remove_item'] = "<i class='ti ti-package-off' aria-hidden='true'></i>" . _sx('button', 'Remove an item');
         }
     }
 

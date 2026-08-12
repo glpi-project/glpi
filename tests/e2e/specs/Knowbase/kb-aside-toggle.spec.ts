@@ -30,23 +30,15 @@
  * ---------------------------------------------------------------------
  */
 
-import { randomUUID } from 'crypto';
 import { expect, test } from '../../fixtures/glpi_fixture';
 import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
 import { Profiles } from '../../utils/Profiles';
-import { getWorkerEntityId } from '../../utils/WorkerEntities';
+import { getUniqueName } from '../../utils/Random';
 
 async function createArticle(api: any): Promise<number> {
-    const unique = randomUUID().slice(0, 8);
-    const category_id = await api.createItem('KnowbaseItemCategory', {
-        name: `E2E Toggle Cat ${unique}`,
-        entities_id: getWorkerEntityId(),
-    });
-    return api.createItem('KnowbaseItem', {
-        name: `E2E Toggle Article ${unique}`,
+    return api.knowbase.createArticle({
+        name: getUniqueName('E2E Toggle Article'),
         answer: 'Test content',
-        entities_id: getWorkerEntityId(),
-        _categories: [category_id],
     });
 }
 

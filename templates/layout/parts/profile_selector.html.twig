@@ -41,7 +41,7 @@
         aria-expanded="false"
         aria-label="{{ __("Change profile") }}"
     >
-        <i class="ti ti-user-check"></i>
+        <i class="ti ti-user-check" aria-hidden="true"></i>
         {{ (session('glpiactiveprofile')['name'] ?? '') }}
     </button>
     <div class="dropdown-menu" data-bs-popper="none">
@@ -53,7 +53,7 @@
                     class="dropdown-item {{ is_active ? 'active' : '' }}"
                     type="submit"
                 >
-                    <i class="ti ti-user-check"></i>
+                    <i class="ti ti-user-check" aria-hidden="true"></i>
                     {{ profile['name'] }}
                 </button>
                 <input type="hidden" name="id" value="{{ profile_id }}" />
@@ -69,7 +69,7 @@
 {% endif %}
 {% if not is_multi_entities_mode() %}
     <span class="dropdown-item dropdown-item-text" title="{{ current_entity }}">
-        <i class="ti ti-stack"></i>
+        <i class="ti ti-stack" aria-hidden="true"></i>
         {{ current_entity_short|u.truncate(35, '...') }}
     </span>
 {% else %}

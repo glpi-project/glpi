@@ -59,8 +59,8 @@ class TaskCategory extends CommonTreeDropdown
             'type'  => 'bool',
         ];
 
-        $tab[] = ['name'  => 'knowbaseitemcategories_id',
-            'label' => KnowbaseItemCategory::getTypeName(),
+        $tab[] = ['name'  => 'knowbaseitems_id',
+            'label' => KnowbaseItem::getTypeName(),
             'type'  => 'dropdownValue',
             'list'  => true,
         ];
@@ -79,6 +79,15 @@ class TaskCategory extends CommonTreeDropdown
             'field'              => 'is_active',
             'name'               => __('Active'),
             'datatype'           => 'bool',
+        ];
+
+        $tab[] = [
+            'id'                 => '9',
+            'table'              => 'glpi_knowbaseitems',
+            'field'              => 'name',
+            'linkfield'          => 'knowbaseitems_id',
+            'name'               => __('Knowledge base'),
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;

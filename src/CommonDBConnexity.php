@@ -532,8 +532,8 @@ abstract class CommonDBConnexity extends CommonDBTM
                 'unaffect' => ['unaffect'],
             ],
             'action_name'   => [
-                'affect'   => "<i class='ti ti-link'></i>" . _sx('button', 'Associate'),
-                'unaffect' => "<i class='ti ti-link-off'></i>" . _sx('button', 'Dissociate'),
+                'affect'   => "<i class='ti ti-link' aria-hidden='true'></i>" . _sx('button', 'Associate'),
+                'unaffect' => "<i class='ti ti-link-off' aria-hidden='true'></i>" . _sx('button', 'Dissociate'),
             ],
         ];
     }

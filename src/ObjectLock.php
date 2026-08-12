@@ -401,7 +401,7 @@ class ObjectLock extends CommonDBTM
                     {% set tooltip = is_locked ? locked_by_label|format(user_name, date) : text %}
 
                     <span class="badge {{ color }}" data-bs-toggle="tooltip" title="{{ tooltip }}">
-                        <i class="ti {{ icon }}"></i>
+                        <i class="ti {{ icon }}" aria-hidden="true"></i>
                         {{ text }}
                     </span>
 TWIG;

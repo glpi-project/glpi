@@ -488,8 +488,9 @@ class Database extends CommonDBChild
         $links = [];
         $label = htmlescape(DatabaseInstance::getTypeName(Session::getPluralNumber()));
         if (static::canView()) {
-            $insts = "<i class=\"ti ti-database-import\" title=\"$label\""
-            . "></i><span class='d-none d-xxl-block'>$label</span>";
+            $insts = "<i class=\"ti ti-database-import\" title=\"$label\" aria-hidden='true'></i>"
+            . "<span class='d-none d-xxl-block' aria-hidden='true'>$label</span>"
+            . "<span class='visually-hidden'>$label</span>";
             $links[$insts] = DatabaseInstance::getSearchURL(false);
         }
         if (count($links)) {

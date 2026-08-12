@@ -42,7 +42,7 @@
 
                {% if use_notifications and not has_active_mode %}
                   <div class="alert alert-important alert-warning m-3">
-                     <i class="ti ti-alert-triangle me-2"></i>
+                     <i class="ti ti-alert-triangle me-2" aria-hidden="true"></i>
                      {{ __('You must enable at least one notification mode.') }}
                   </div>
                {% endif %}
@@ -78,7 +78,7 @@
 
                <div class="card-footer">
                   <button type="submit" class="btn btn-primary">
-                     <i class="ti ti-device-floppy"></i>
+                     <i class="ti ti-device-floppy" aria-hidden="true"></i>
                      <span>{{ __('Save') }}</span>
                   </button>
                </div>
@@ -96,20 +96,20 @@
             <div class="list-group list-group-flush">
                {% if has_profile_right('config', constant('READ')) %}
                   <a href="{{ path('front/notificationtemplate.php') }}" class="list-group-item list-group-item-action">
-                     <i class="{{ 'NotificationTemplate'|itemtype_icon }}"></i>
+                     <i class="{{ 'NotificationTemplate'|itemtype_icon }}" aria-hidden="true"></i>
                      <span>{{ _n('Notification template', 'Notification templates', get_plural_number()) }}</span>
                   </a>
                {% endif %}
 
                {% if has_profile_right('notification', constant('READ')) %}
                   <a href="{{ path('front/notification.php') }}" class="list-group-item list-group-item-action">
-                     <i class="{{ 'Notification'|itemtype_icon }}"></i>
+                     <i class="{{ 'Notification'|itemtype_icon }}" aria-hidden="true"></i>
                      <span>{{ _n('Notification', 'Notifications', get_plural_number()) }}</span>
                   </a>
                {% else %}
                   <div class="list-group-item">
                      <div class="alert alert-important alert-warning m-3">
-                        <i class="ti ti-alert-triangle me-2"></i>
+                        <i class="ti ti-alert-triangle me-2" aria-hidden="true"></i>
                         {{ __('Unable to configure notifications: please configure at least one notification type using the above configuration.') }}
                      </div>
                   </div>
@@ -118,7 +118,7 @@
                {% for mode in modes %}
                   {% if can_update_config and mode['is_active'] %}
                      <a href="{{ mode['setting_url'] }}" class="list-group-item list-group-item-action">
-                        <i class="{{ mode['icon'] }}"></i>
+                        <i class="{{ mode['icon'] }}" aria-hidden="true"></i>
                         <span>{{ mode['label_settings'] }}</span>
                      </a>
                   {% endif %}

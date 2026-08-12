@@ -31,43 +31,65 @@
  */
 
 import { randomUUID } from 'crypto';
-import { test, expect } from '../../fixtures/glpi_fixture';
+import { expect, test } from '../../fixtures/glpi_fixture';
+import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
-test('tree browse selects category from URL parameter', async ({ page, profile, api }) => {
+test('visiting a nested article marks it (and only it) as current in the aside tree', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
 
     const unique = randomUUID().slice(0, 8);
-    const category_name = `E2E Cat ${unique}`;
-    const category_id = await api.createItem('KnowbaseItemCategory', {
-        name: category_name,
+    const parent_name = `E2E Browse Parent ${unique}`;
+    const child_name = `E2E Browse Child ${unique}`;
+
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
         entities_id: getWorkerEntityId(),
     });
-
-    await api.createItem('KnowbaseItem', {
-        name: `E2E KB Article ${unique}`,
-        answer: 'Test answer content',
-        is_faq: 0,
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
         entities_id: getWorkerEntityId(),
-        _categories: [category_id],
+        _parents: [parent_id],
     });
 
-    await page.goto(
-        `/front/knowbaseitem.php?knowbaseitemcategories_id=${category_id}&browse=1&forcetab=Knowbase$2`
-    );
+    await kb.goto(child_id);
 
-    // eslint-disable-next-line playwright/no-raw-locators
-    const active_node = page.locator('#tree_category .wb-row.wb-active .wb-title');
-    await expect(active_node).toContainText(category_name);
+    // The parent stays expanded by default, so the child is visible without
+    // any interaction, and is the one marked current.
+    await expect(kb.getAsideCategoryToggle(parent_name)).toHaveAttribute('aria-expanded', 'true');
+    await expect(kb.getAsideTreeArticleRow(child_id)).toHaveAttribute('aria-current', 'page');
+    await expect(kb.getAsideTreeArticleRow(parent_id)).not.toHaveAttribute('aria-current', 'page');
 });
 
-test('tree browse defaults to "Without Category" when no URL parameter', async ({ page, profile }) => {
+test('clicking a child article in the aside tree navigates to it', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
 
-    await page.goto('/front/knowbaseitem.php?browse=1&forcetab=Knowbase$2');
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Browse Nav Parent ${unique}`;
+    const child_name = `E2E Browse Nav Child ${unique}`;
 
-    // eslint-disable-next-line playwright/no-raw-locators
-    const active_node = page.locator('#tree_category .wb-row.wb-active .wb-title');
-    await expect(active_node).toContainText('Without Category');
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    // Start on the parent, then follow the child link from the aside tree.
+    await kb.goto(parent_id);
+    await kb.getAsideCategoryArticle(parent_name, child_name).click();
+
+    await expect(page).toHaveURL(new RegExp(`id=${child_id}\\b`));
+    await expect(page.getByTestId('subject')).toHaveText(child_name);
+    await expect(kb.getAsideTreeArticleRow(child_id)).toHaveAttribute('aria-current', 'page');
 });

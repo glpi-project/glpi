@@ -221,7 +221,7 @@
     <div ref="entity_selector">
         <a ref="entity_dropdown_toggle" href="#" class="dropdown-item dropdown-toggle entity-dropdown-toggle" data-bs-toggle="dropdown"
            data-bs-auto-close="outside" :title="current_entity" :aria-label="__('Select the desired entity')">
-            <i class="fa-fw ti ti-stack"></i>
+            <i class="fa-fw ti ti-stack" aria-hidden="true"></i>
             <span v-text="current_entity_short"></span>
         </a>
         <div class="dropdown-menu p-3" :aria-labelledby="header_id" role="dialog" data-testid="entity-menu-dropdown">
@@ -233,11 +233,11 @@
                 <button class="btn btn-icon btn-outline-secondary" :title="__('Clear search')" :aria-label="__('Clear search')"
                    data-bs-toggle="tooltip" data-bs-placement="top"
                    @click="search_filter = ''">
-                    <i class="ti ti-x"></i>
+                    <i class="ti ti-x" aria-hidden="true"></i>
                 </button>
                 <button class="btn btn-secondary" :title="__('Select all')" :aria-label="__('Select all')"
                         data-bs-toggle="tooltip" data-bs-placement="top" @click="changeFullStructure">
-                    <i class="ti ti-eye"></i>
+                    <i class="ti ti-eye" aria-hidden="true"></i>
                 </button>
             </div>
 
@@ -256,7 +256,7 @@
                                         class="btn btn-ghost-secondary btn-sm btn-icon p-1 cursor-pointer collapse-item"
                                         @click.prevent.stop="onExpandToggleClick(node)"
                                         tabindex="-1" aria-hidden="true">
-                                    <i :class="node.expanded ? 'ti ti-chevron-down' : 'ti ti-chevron-right'"></i>
+                                    <i :class="node.expanded ? 'ti ti-chevron-down' : 'ti ti-chevron-right'" aria-hidden="true"></i>
                                 </button>
                                 <div v-else style="width: 25px"></div>
                                 <div role="button" :class="selected_nodes.includes(node.key) ? 'fw-bold' : ''" @click.prevent.stop="changeEntity(node.key, false)" class="d-flex align-items-center">
@@ -269,7 +269,7 @@
                                         :aria-label="__('Select this entity and all its children')"
                                         @click.prevent.stop="changeEntity(node.key, true)" data-bs-toggle="tooltip" data-bs-placement="top"
                                         tabindex="-1" aria-hidden="true">
-                                    <i class="ti ti-chevrons-down"></i>
+                                    <i class="ti ti-chevrons-down" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </li>

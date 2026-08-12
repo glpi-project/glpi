@@ -55,7 +55,7 @@ function showImageDialog(editor, existing_attrs = null) {
 
     const title = document.createElement('div');
     title.className = 'image-dialog-header';
-    title.innerHTML = `<span>${__('Insert/Edit Image')}</span><button type="button" class="image-dialog-close" aria-label="${__('Close')}"><i class="ti ti-x"></i></button>`;
+    title.innerHTML = `<span>${__('Insert/Edit Image')}</span><button type="button" class="image-dialog-close" aria-label="${__('Close')}"><i class="ti ti-x" aria-hidden="true"></i></button>`;
     dialog.appendChild(title);
 
     const body = document.createElement('div');
@@ -82,12 +82,12 @@ function showImageDialog(editor, existing_attrs = null) {
     lock_btn.type = 'button';
     lock_btn.className = 'image-dialog-lock is-locked';
     lock_btn.title = __('Constrain proportions');
-    lock_btn.innerHTML = '<i class="ti ti-lock"></i>';
+    lock_btn.innerHTML = '<i class="ti ti-lock" aria-hidden="true"></i>';
     let ratio_locked = true;
     lock_btn.addEventListener('click', () => {
         ratio_locked = !ratio_locked;
         lock_btn.classList.toggle('is-locked', ratio_locked);
-        lock_btn.innerHTML = ratio_locked ? '<i class="ti ti-lock"></i>' : '<i class="ti ti-lock-open"></i>';
+        lock_btn.innerHTML = ratio_locked ? '<i class="ti ti-lock" aria-hidden="true"></i>' : '<i class="ti ti-lock-open" aria-hidden="true"></i>';
     });
 
     size_row.appendChild(width_group);

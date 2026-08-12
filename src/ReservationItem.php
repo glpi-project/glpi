@@ -339,7 +339,7 @@ class ReservationItem extends CommonDBChild
                 <input type="hidden" name="is_active" value="{{ reservable ? (toggle_state ? 0 : 1) : 1 }}">
                 {% if reservable %}
                     <button name="update" class="btn btn-{{ toggle_state ? 'danger' : 'primary' }} mx-1">
-                        <i class="{{ toggle_state ? 'ti ti-toggle-right' : 'ti ti-toggle-left' }} me-2"></i>
+                        <i class="{{ toggle_state ? 'ti ti-toggle-right' : 'ti ti-toggle-left' }} me-2" aria-hidden="true"></i>
                         {{ toggle_state_label }}
                     </button>
                     <input type="hidden" name="id" value="{{ id }}">
@@ -348,7 +348,7 @@ class ReservationItem extends CommonDBChild
                     </script>
                 {% endif %}
                 <button name="{{ toggle_reservable ? 'purge' : 'add' }}" class="btn btn-{{ toggle_reservable ? 'danger' : 'primary' }} mx-1">
-                    <i class="{{ toggle_reservable ? 'ti ti-ban' : 'ti ti-check' }} me-2"></i>
+                    <i class="{{ toggle_reservable ? 'ti ti-ban' : 'ti ti-check' }} me-2" aria-hidden="true"></i>
                     {{ toggle_reservable_label }}
                 </button>
             </form>
@@ -425,10 +425,10 @@ TWIG, $twig_params);
             {% if not reserve %}
                 <div id="makesearch" class="text-center mb-3">
                     <a class="btn btn-secondary" href="{{ path('front/reservation.php?reservationitems_id=0') }}">
-                        <i class="{{ 'Reservation'|itemtype_icon }} me-2"></i>{{ view_calendar_label }}
+                        <i class="{{ 'Reservation'|itemtype_icon }} me-2" aria-hidden="true"></i>{{ view_calendar_label }}
                     </a>
                     <button type="button" class="btn btn-secondary mw-100 d-inline-block text-truncate" onClick="$('#viewresasearch').toggleClass('d-none');$('#makesearch').toggleClass('d-none')">
-                        <i class="ti ti-search me-2"></i>{{ find_free_item_label }}
+                        <i class="ti ti-search me-2" aria-hidden="true"></i>{{ find_free_item_label }}
                     </button>
                 </div>
                 <div id="viewresasearch" class="d-none text-center">
@@ -677,7 +677,7 @@ TWIG, $twig_params);
         ]);
 
         if ($ok && Session::haveRight("reservation", self::RESERVEANITEM)) {
-            echo "<i class='ti ti-corner-left-up mx-3'></i>";
+            echo "<i class='ti ti-corner-left-up mx-3' aria-hidden='true'></i>";
             echo "<th colspan='" . ($showentity ? "5" : "4") . "'>";
             if (isset($_POST['reserve'])) {
                 echo Html::hidden('begin', ['value' => $_POST['reserve']["begin"]]);

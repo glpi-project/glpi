@@ -549,7 +549,7 @@ HTML;
                   this.ui.registerElement({
                      name: 'download',
                      isButton: true,
-                     html: '<a class="text-white" target="_blank" download=""><i class="fa-solid fa-download"></i></a>',
+                     html: '<a class="text-white" target="_blank" download="" aria-label=' + JSON.stringify({$download_title}) + '><i class="fa-solid fa-download" aria-hidden="true"></i></a>',
                      order: 8,
                      onInit: (el, pswp) => {
                         pswp.on('change', () => {

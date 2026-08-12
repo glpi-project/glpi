@@ -37,7 +37,7 @@
 >
     {# "Publish to web" toggle row #}
     <div class="d-flex align-items-start gap-2">
-        <i class="ti ti-world text-secondary mt-1"></i>
+        <i class="ti ti-world text-secondary mt-1" aria-hidden="true"></i>
         <div class="flex-grow-1">
             <label class="form-check-label fw-medium" for="share-publish-toggle-{{ id }}">
                 {{ __('Publish to web') }}
@@ -76,7 +76,7 @@
                         title="{{ __('Copy link') }}"
                         aria-label="{{ __('Copy link') }}"
                         data-bs-toggle="tooltip">
-                    <i class="ti ti-copy"></i>
+                    <i class="ti ti-copy" aria-hidden="true"></i>
                 </button>
                 {% if can_edit %}
                     <button type="button"
@@ -85,7 +85,7 @@
                             title="{{ __('Regenerate link') }}"
                             aria-label="{{ __('Regenerate link') }}"
                             data-bs-toggle="tooltip">
-                        <i class="ti ti-refresh"></i>
+                        <i class="ti ti-refresh" aria-hidden="true"></i>
                     </button>
                 {% endif %}
             </div>

@@ -179,7 +179,7 @@
                                 <code class="d-block cm-s-default border-0" v-html="colorized_queries.get(query.request_id + '-' + query.num)"></code>
                             </div>
                             <button type="button" @click="copyToClipboard($event)" class="ms-1 copy-code btn btn-sm btn-ghost-secondary" title="Copy query to clipboard">
-                                <i class="ti ti-clipboard-copy"></i>
+                                <i class="ti ti-clipboard-copy" aria-hidden="true"></i>
                             </button>
                         </div>
                     </td>

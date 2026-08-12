@@ -127,12 +127,12 @@
 
             <li class="page-item {% if is_first_page %}disabled{% endif %}">
                 <a class="page-link d-flex page-link-start" href="{{ href|replace({'%start%': 0}) }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Start') }}" data-start="0" {% if is_first_page %}aria-disabled="true"{% endif %}>
-                    <i class="ti ti-chevrons-left"></i>
+                    <i class="ti ti-chevrons-left" aria-hidden="true"></i>
                 </a>
             </li>
             <li class="page-item {% if is_first_page %}disabled{% endif %}">
                 <a class="page-link d-flex page-link-prev" href="{{ href|replace({'%start%': back}) }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Previous') }}" data-start="{{ back }}" {% if is_first_page %}aria-disabled="true"{% endif %}>
-                    <i class="ti ti-chevron-left"></i>
+                    <i class="ti ti-chevron-left" aria-hidden="true"></i>
                 </a>
             </li>
 
@@ -164,12 +164,12 @@
 
             <li class="page-item {% if is_last_page %}disabled{% endif %}">
                 <a class="page-link d-flex page-link-next" href="{{ href|replace({'%start%': forward}) }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Next') }}" data-start="{{ forward }}" {% if is_last_page %}aria-disabled="true"{% endif %}>
-                    <i class="ti ti-chevron-right"></i>
+                    <i class="ti ti-chevron-right" aria-hidden="true"></i>
                 </a>
             </li>
             <li class="page-item {% if is_last_page %}disabled{% endif %}">
                 <a class="page-link d-flex page-link-last" href="{{ href|replace({'%start%': end}) }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('End') }}" data-start="{{ end }}" {% if is_last_page %}aria-disabled="true"{% endif %}>
-                    <i class="ti ti-chevrons-right"></i>
+                    <i class="ti ti-chevrons-right" aria-hidden="true"></i>
                 </a>
             </li>
         {% endif %}

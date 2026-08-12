@@ -41,7 +41,6 @@ use Glpi\UI\IllustrationManager;
 use Group;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
-use KnowbaseItemCategory;
 use KnowbaseItemTranslation;
 use Log;
 use LogicException;
@@ -434,6 +433,9 @@ final class HistoryBuilder
     {
         global $DB;
 
+        // The `KnowbaseItemCategory` class no longer exists (KB categories were
+        // replaced by article hierarchy). Legacy logs referencing it are still
+        // read by string literal so old history entries remain visible.
         $logs = $DB->request([
             'SELECT' => [
                 'date_mod',
@@ -446,7 +448,7 @@ final class HistoryBuilder
             'WHERE' => [
                 'itemtype'      => KnowbaseItem::class,
                 'items_id'      => $this->kb->getID(),
-                'itemtype_link' => KnowbaseItemCategory::class,
+                'itemtype_link' => 'KnowbaseItemCategory',
                 'linked_action' => [
                     Log::HISTORY_ADD_RELATION,
                     Log::HISTORY_DEL_RELATION,

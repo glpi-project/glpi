@@ -198,7 +198,7 @@ final class QuestionTypesManager
             function(item) {
                 const icons = {$js_icons};
                 return $('<span class="d-flex flex-row-reverse align-items-center gap-2">'
-                    + '<i class="' + _.escape(icons[item.id]) + '"></i>'
+                    + '<i class="' + _.escape(icons[item.id]) + '" aria-hidden="true"></i>'
                     + _.escape(item.text)
                     + '</span>');
             }
@@ -220,7 +220,7 @@ JS;
                 }
                 const icons = {$js_icons};
                 return $('<span class="d-flex align-items-center gap-2">'
-                    + '<i class="' + _.escape(icons[item.id]) + '"></i>'
+                    + '<i class="' + _.escape(icons[item.id]) + '" aria-hidden="true"></i>'
                     + _.escape(item.text)
                     + '</span>');
             }
@@ -239,7 +239,7 @@ JS;
             function(item) {
                 const icons = {$js_icons};
                 return $('<span class="d-flex flex-row-reverse align-items-center gap-2">'
-                    + '<i class="' + _.escape(icons[item.id]) + '"></i>'
+                    + '<i class="' + _.escape(icons[item.id]) + '" aria-hidden="true"></i>'
                     + _.escape(item.text)
                     + '</span>');
             }
@@ -258,7 +258,7 @@ JS;
             function(item) {
                 const icons = {$js_icons};
                 return $('<span class="d-flex align-items-center gap-1">'
-                    + '<i class="' + _.escape(icons[item.id]) + '"></i>'
+                    + '<i class="' + _.escape(icons[item.id]) + '" aria-hidden="true"></i>'
                     + _.escape(item.text)
                     + '</span>');
             }

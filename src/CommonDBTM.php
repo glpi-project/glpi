@@ -1514,7 +1514,7 @@ class CommonDBTM extends CommonGLPI
         }
         if ($icon !== '') {
             $html .= sprintf(
-                '<i class="%s"></i> ',
+                '<i class="%s" aria-hidden="true"></i> ',
                 htmlescape($icon)
             );
         }
@@ -3890,7 +3890,7 @@ class CommonDBTM extends CommonGLPI
         $self = new static();
 
         foreach ($self->rawSearchOptions() as $opt) {
-            // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
+            // FIXME Trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             $missingFields = [];
             if (!isset($opt['id'])) {
@@ -4017,7 +4017,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         foreach ($classname::$method_name($itemtype) as $opt) {
-            // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
+            // FIXME Trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             if (!isset($opt['id'])) {
                 throw new Exception(static::class . ': invalid search option! ' . print_r($opt, true));
@@ -4211,12 +4211,12 @@ class CommonDBTM extends CommonGLPI
             if ($checkitem === null || $checkitem->isNewItem() || !$checkitem->isTemplate()) {
                 if (in_array(static::class, Appliance::getTypes(true))) {
                     $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
-                        = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
+                        = "<i class='" . htmlescape(Appliance::getIcon()) . "' aria-hidden='true'></i>" . _sx('button', 'Associate to an appliance');
                 }
 
                 if (in_array(static::class, $CFG_GLPI['rackable_types'])) {
                     $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
-                        = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+                        = "<i class='ti ti-server-off' aria-hidden='true'></i>" . _sx('button', 'Remove from a rack');
                 }
             }
         }
@@ -5789,7 +5789,10 @@ class CommonDBTM extends CommonGLPI
             }
         }
         if ($title !== null) {
-            $mark = "<i class='ti ti-wand' title='$title'></i>";
+            $mark = sprintf(
+                '<span><i class="ti ti-wand" title="%1$s" aria-hidden="true"></i><span class="visually-hidden">%1$s</span></span>',
+                $title
+            );
         }
         return $mark;
     }

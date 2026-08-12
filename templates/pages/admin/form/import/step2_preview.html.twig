@@ -62,7 +62,7 @@
                             <td class="w-50 px-4 align-middle">{{ form_name }}</td>
                             <td class="w-50 px-4 align-middle">
                                 <div class="d-flex align-items-center">
-                                    <i class="ti {{ status_icon }} me-2"></i>
+                                    <i class="ti {{ status_icon }} me-2" aria-hidden="true"></i>
                                     <div>
                                         {% for message in messages %}
                                             <span>{{ message }}</span>
@@ -83,7 +83,7 @@
                                                 title="{{ __('Remove this form from the import list') }}"
                                                 aria-label="{{ __('Remove form') }}"
                                             >
-                                                <i class="ti ti-trash"></i>
+                                                <i class="ti ti-trash" aria-hidden="true"></i>
                                             </button>
                                         {% endif %}
 

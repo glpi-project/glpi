@@ -34,7 +34,7 @@
    <ol class="breadcrumb breadcrumb-alternate pe-1 pe-sm-3">
       <li class="breadcrumb-item text-truncate">
       <a href="{{ index_path() }}" class="d-inline-flex align-items-center gap-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Home') }}">
-            <i class="ti ti-home-2"></i>
+            <i class="ti ti-home-2" aria-hidden="true"></i>
             {{ __('Home') }}
          </a>
       </li>
@@ -42,7 +42,7 @@
       {% if menu[sector] is defined %}
       <li class="breadcrumb-item text-truncate">
       <a href="{{ path(menu[sector]['default'] ?? '/front/central.php') }}" class="d-inline-flex align-items-center gap-1" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ menu[sector]['title'] }}">
-            <i class="{{ menu[sector]['icon'] ?? '' }}"></i>
+            <i class="{{ menu[sector]['icon'] ?? '' }}" aria-hidden="true"></i>
             {{ menu[sector]['title'] }}
          </a>
       </li>
@@ -57,7 +57,7 @@
             class="d-inline-flex align-items-center gap-1 {{ with_option ? '' : 'here' }}"
                data-bs-toggle="tooltip" data-bs-placement="bottom"
                title="{{ menu[sector]['content'][item]['title'] }}" >
-               <i class="{{ menu[sector]['content'][item]['icon'] ?? '' }}"></i>
+               <i class="{{ menu[sector]['content'][item]['icon'] ?? '' }}" aria-hidden="true"></i>
                {{ menu[sector]['content'][item]['title'] }}
             </a>
          </li>
@@ -69,7 +69,7 @@
                class="d-inline-flex align-items-center gap-1 here"
                data-bs-toggle="tooltip" data-bs-placement="bottom"
                title="{{ menu[sector]['content'][item]['options'][option]['title'] }}" >
-               <i class="{{ menu[sector]['content'][item]['options'][option]['icon'] ?? '' }}"></i>
+               <i class="{{ menu[sector]['content'][item]['options'][option]['icon'] ?? '' }}" aria-hidden="true"></i>
                {{ menu[sector]['content'][item]['options'][option]['title']|u.truncate(17, '...') }}
             </a>
          </li>

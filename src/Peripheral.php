@@ -198,7 +198,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
             Asset_PeripheralAsset::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-               => "<i class='ti ti-key'></i>"
+               => "<i class='ti ti-key' aria-hidden='true'></i>"
                   . _sx('button', 'Add a license'),
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, self::class, false, $checkitem);

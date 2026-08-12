@@ -4119,7 +4119,7 @@ CREATE TABLE `glpi_itilcategories` (
   `completename` text,
   `comment` text,
   `level` int NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
+  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
   `users_id` int unsigned NOT NULL DEFAULT '0',
   `groups_id` int unsigned NOT NULL DEFAULT '0',
   `code` varchar(255) DEFAULT NULL,
@@ -4140,7 +4140,7 @@ CREATE TABLE `glpi_itilcategories` (
   KEY `name` (`name`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
+  KEY `knowbaseitems_id` (`knowbaseitems_id`),
   KEY `users_id` (`users_id`),
   KEY `groups_id` (`groups_id`),
   KEY `is_helpdeskvisible` (`is_helpdeskvisible`),
@@ -4170,34 +4170,6 @@ CREATE TABLE `glpi_itils_projects` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`projects_id`),
   KEY `projects_id` (`projects_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
-
-### Dump table glpi_knowbaseitemcategories
-
-DROP TABLE IF EXISTS `glpi_knowbaseitemcategories`;
-CREATE TABLE `glpi_knowbaseitemcategories` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `entities_id` int unsigned NOT NULL DEFAULT '0',
-  `is_recursive` tinyint NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
-  `name` varchar(255) DEFAULT NULL,
-  `completename` text,
-  `comment` text,
-  `illustration` varchar(255) DEFAULT NULL,
-  `level` int NOT NULL DEFAULT '0',
-  `sons_cache` longtext,
-  `ancestors_cache` longtext,
-  `date_mod` timestamp NULL DEFAULT NULL,
-  `date_creation` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`entities_id`,`knowbaseitemcategories_id`,`name`),
-  KEY `name` (`name`),
-  KEY `is_recursive` (`is_recursive`),
-  KEY `date_mod` (`date_mod`),
-  KEY `date_creation` (`date_creation`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
-  KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -4238,16 +4210,16 @@ CREATE TABLE `glpi_knowbaseitems` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
-### Dump table glpi_knowbaseitems_knowbaseitemcategories
+### Dump table glpi_knowbaseitems_knowbaseitems
 
-DROP TABLE IF EXISTS `glpi_knowbaseitems_knowbaseitemcategories`;
-CREATE TABLE `glpi_knowbaseitems_knowbaseitemcategories` (
+DROP TABLE IF EXISTS `glpi_knowbaseitems_knowbaseitems`;
+CREATE TABLE `glpi_knowbaseitems_knowbaseitems` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
-  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
+  `knowbaseitems_id_parent` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `knowbaseitems_id` (`knowbaseitems_id`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`)
+  UNIQUE KEY `unicity` (`knowbaseitems_id`, `knowbaseitems_id_parent`),
+  KEY `knowbaseitems_id_parent` (`knowbaseitems_id_parent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 
@@ -7382,7 +7354,7 @@ CREATE TABLE `glpi_taskcategories` (
   `is_helpdeskvisible` tinyint NOT NULL DEFAULT '1',
   `date_mod` timestamp NULL DEFAULT NULL,
   `date_creation` timestamp NULL DEFAULT NULL,
-  `knowbaseitemcategories_id` int unsigned NOT NULL DEFAULT '0',
+  `knowbaseitems_id` int unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `taskcategories_id` (`taskcategories_id`),
@@ -7392,7 +7364,7 @@ CREATE TABLE `glpi_taskcategories` (
   KEY `is_helpdeskvisible` (`is_helpdeskvisible`),
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`),
-  KEY `knowbaseitemcategories_id` (`knowbaseitemcategories_id`),
+  KEY `knowbaseitems_id` (`knowbaseitems_id`),
   KEY `level` (`level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
@@ -8555,6 +8527,8 @@ CREATE TABLE `glpi_dcrooms` (
   `vis_rows` int DEFAULT NULL,
   `vis_cell_width` int NOT NULL DEFAULT '40',
   `vis_cell_height` int NOT NULL DEFAULT '40',
+  `column_labels` text,
+  `row_labels` text,
   `blueprint` text,
   `datacenters_id` int unsigned NOT NULL DEFAULT '0',
   `is_deleted` tinyint NOT NULL DEFAULT '0',

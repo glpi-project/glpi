@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\Environment;
+use Glpi\Config\DataAndPrivacyConfig;
 use Glpi\Dashboard\Dashboard;
 use Glpi\Event;
 use Glpi\Form\AnswersSet;
@@ -417,6 +418,7 @@ $empty_data_builder = new class {
             'glpi_11_form_migration' => 0,
             'glpi_11_assets_migration' => 0,
             'must_unsanitize_db_data' => 0,
+            'login_history_retention_days' => 90,
         ];
 
         $tables['glpi_configs'] = [];
@@ -1021,6 +1023,18 @@ $empty_data_builder = new class {
                 'param' => 3,
                 'state' => CronTask::STATE_WAITING,
                 'mode' => CronTask::MODE_INTERNAL,
+                'lastrun' => null,
+                'logs_lifetime' => 30,
+                'hourmin' => 0,
+                'hourmax' => 24,
+            ], [
+                'id' => 52,
+                'itemtype' => DataAndPrivacyConfig::class,
+                'name' => 'purgesessionhistory',
+                'frequency' => DAY_TIMESTAMP,
+                'param' => null,
+                'state' => CronTask::STATE_WAITING,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
@@ -6023,10 +6037,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'cable_management',
                 'rights' => self::RIGHT_NONE,
             ], [
-                'profiles_id' => self::PROFILE_SUPER_ADMIN,
-                'name' => 'knowbasecategory',
-                'rights' => READ | UPDATE | CREATE | PURGE,
-            ], [
                 'profiles_id' => self::PROFILE_HOTLINER,
                 'name' => 'itilcategory',
                 'rights' => self::RIGHT_NONE,
@@ -6326,10 +6336,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'cable_management',
                 'rights' => self::RIGHT_NONE,
-            ], [
-                'profiles_id' => self::PROFILE_ADMIN,
-                'name' => 'knowbasecategory',
-                'rights' => READ | UPDATE | CREATE | PURGE,
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'itilcategory',
@@ -6638,10 +6644,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Problem::READALL,
             ], [
-                'profiles_id' => self::PROFILE_OBSERVER,
-                'name' => 'knowbasecategory',
-                'rights' => self::RIGHT_NONE,
-            ], [
                 'profiles_id' => self::PROFILE_ADMIN,
                 'name' => 'itilcategory',
                 'rights' => READ | UPDATE | CREATE | PURGE,
@@ -6947,10 +6949,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Problem::READALL,
             ], [
-                'profiles_id' => self::PROFILE_SELF_SERVICE,
-                'name' => 'knowbasecategory',
-                'rights' => self::RIGHT_NONE,
-            ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'itilcategory',
                 'rights' => self::RIGHT_NONE,
@@ -7241,10 +7239,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => Problem::READALL,
             ], [
-                'profiles_id' => self::PROFILE_SUPERVISOR,
-                'name' => 'knowbasecategory',
-                'rights' => READ | UPDATE | CREATE | PURGE,
-            ], [
                 'profiles_id' => self::PROFILE_SELF_SERVICE,
                 'name' => 'itilcategory',
                 'rights' => self::RIGHT_NONE,
@@ -7532,10 +7526,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => ALLSTANDARDRIGHT | Problem::READMY | Problem::READALL | READNOTE | UPDATENOTE,
             ], [
-                'profiles_id' => self::PROFILE_TECHNICIAN,
-                'name' => 'knowbasecategory',
-                'rights' => self::RIGHT_NONE,
-            ], [
                 'profiles_id' => self::PROFILE_SUPERVISOR,
                 'name' => 'itilcategory',
                 'rights' => READ | UPDATE | CREATE | PURGE,
@@ -7819,10 +7809,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'name' => 'problem',
                 'rights' => ALLSTANDARDRIGHT | READNOTE | UPDATENOTE | Problem::READALL,
             ], [
-                'profiles_id' => self::PROFILE_HOTLINER,
-                'name' => 'knowbasecategory',
-                'rights' => self::RIGHT_NONE,
-            ], [
                 'profiles_id' => self::PROFILE_TECHNICIAN,
                 'name' => 'itilcategory',
                 'rights' => self::RIGHT_NONE,
@@ -7950,10 +7936,6 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;">
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'knowbase',
                 'rights' => READ | KnowbaseItem::READFAQ | KnowbaseItem::COMMENTS,
-            ], [
-                'profiles_id' => self::PROFILE_READ_ONLY,
-                'name' => 'knowbasecategory',
-                'rights' => READ,
             ], [
                 'profiles_id' => self::PROFILE_READ_ONLY,
                 'name' => 'link',

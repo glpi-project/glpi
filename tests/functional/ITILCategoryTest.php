@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use KnowbaseItem;
 
 class ITILCategoryTest extends DbTestCase
 {
@@ -210,5 +211,46 @@ class ITILCategoryTest extends DbTestCase
         $this->assertTrue($category->canUpdateItem(), "Should be able to update recursive category from its own entity");
         $this->assertTrue($category->canDeleteItem(), "Should be able to delete recursive category from its own entity");
         $this->assertTrue($category->canPurgeItem(), "Should be able to purge recursive category from its own entity");
+    }
+
+    /**
+     * The `knowbaseitems_id` field replaces the former `knowbaseitemcategories_id`
+     * FK: it links an ITIL category directly to a single KB article instead of a
+     * KB category. Search option 79 ("Knowledge base") must be reworked to point
+     * at `glpi_knowbaseitems` accordingly.
+     *
+     * NOTE: this only checks the PHP-side definitions (additional field +
+     * search option), not an actual DB round-trip: the `glpi_itilcategories`
+     * table column itself is still named `knowbaseitemcategories_id` in the
+     * fresh install schema until the accompanying migration task renames it.
+     */
+    public function testKnowledgeBaseArticleFieldDefinition(): void
+    {
+        $category = new \ITILCategory();
+
+        $fields = $category->getAdditionalFields();
+        $kb_field = null;
+        foreach ($fields as $field) {
+            if ($field['name'] === 'knowbaseitems_id') {
+                $kb_field = $field;
+                break;
+            }
+        }
+        $this->assertNotNull($kb_field, 'ITILCategory should expose a knowbaseitems_id additional field');
+        $this->assertSame(KnowbaseItem::getTypeName(1), $kb_field['label']);
+        $this->assertSame('dropdownValue', $kb_field['type']);
+
+        $search_options = $category->rawSearchOptions();
+        $kb_option = null;
+        foreach ($search_options as $option) {
+            if (($option['id'] ?? null) === '79') {
+                $kb_option = $option;
+                break;
+            }
+        }
+        $this->assertNotNull($kb_option, 'ITILCategory should expose search option 79 for the linked KB article');
+        $this->assertSame('glpi_knowbaseitems', $kb_option['table']);
+        $this->assertSame('name', $kb_option['field']);
+        $this->assertSame('knowbaseitems_id', $kb_option['linkfield']);
     }
 }

@@ -215,8 +215,9 @@
                                 <td :title="request.url"
                                     :data-truncated="urlNeedsTruncated(request.url)">{{ request.url.substring(0, REQUEST_PATH_LENGTH) }}<button
                                         v-if="urlNeedsTruncated(request.url)" class="ms-1 badge bg-secondary text-secondary-fg" name="show_full_url"
+                                        :aria-label="__('Show full URL')"
                                         @click="expandRequestURL($event)">
-                                        <i class="ti ti-dots"></i>
+                                        <i class="ti ti-dots" aria-hidden="true"></i>
                                     </button>
                                 </td>
                                 <td>{{ request.status }}</td>
@@ -258,7 +259,7 @@
                                 <div class="alert alert-danger">
                                     <span>No debug data was found for this request immediately after it finished. Some requests like /front/locale.php will never have data as they intentionally close the session.</span>
                                 </div>
-                                <button type="button" class="btn btn-primary" :data-request-id="current_request_id"><i class="ti ti-reload"></i>Retry</button>
+                                <button type="button" class="btn btn-primary" :data-request-id="current_request_id"><i class="ti ti-reload" aria-hidden="true"></i>Retry</button>
                             </div>
                         </div>
                     </div>

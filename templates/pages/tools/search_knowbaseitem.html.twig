@@ -53,7 +53,8 @@
                     {% for result in results %}
                         <div class="list-group-item d-flex" data-knowbaseitem-id="{{ result.id }}" role="listitem">
                             <div class="col-auto">
-                                <i class="{{ result.icon }}" title="{{ result.icon_title }}"></i>
+                                <i class="{{ result.icon }}" title="{{ result.icon_title }}" aria-hidden="true"></i>
+                                <span class="visually-hidden">{{ result.icon_title }}</span>
                             </div>
                             <div class="col">
                                 <div class="fs-2">{{ result.name }}</div>
@@ -61,10 +62,10 @@
                             </div>
                             <div class="col-auto">
                                 <button type="button" class="btn btn-ghost-secondary btn-sm btn-icon use-knowbaseitem pointer-events-none" title="{{ __('Use this entry') }}">
-                                    <i class="ti ti-check"></i>
+                                    <i class="ti ti-check" aria-hidden="true"></i>
                                 </button>
                                 <button type="button" class="btn btn-ghost-secondary btn-sm btn-icon view-knowbaseitem pointer-events-none" title="{{ __('Preview') }}">
-                                    <i class="ti ti-eye"></i>
+                                    <i class="ti ti-eye" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
@@ -83,11 +84,11 @@
         <div class="card preview-card border-0" style="display: none">
             <div class="d-flex">
                 <button type="button" class="btn btn-ghost-secondary back-to-results">
-                    <i class="ti ti-arrow-left"></i>
+                    <i class="ti ti-arrow-left" aria-hidden="true"></i>
                     {{ __('Back to results') }}
                 </button>
                 <button type="button" class="btn btn-primary use-knowbaseitem pointer-events-none ms-auto">
-                    <i class="ti ti-check"></i>
+                    <i class="ti ti-check" aria-hidden="true"></i>
                     {{ __('Use this entry') }}
                 </button>
             </div>

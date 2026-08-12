@@ -4923,20 +4923,12 @@ final class SQLProvider implements SearchProviderInterface
             }
 
             if ($data['itemtype'] == Entity::class) {
-                //$COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable);
                 $where_criteria = array_merge($where_criteria, getEntitiesRestrictCriteria($itemtable));
             } elseif (isset($CFG_GLPI["union_search_type"][$data['itemtype']])) {
                 // Will be replaced below in Union/Recursivity Hack
                 $ADDDEFAULTWHERE = true;
                 $ENTITYRESTRICT = true;
             } else {
-                /*$COMMONWHERE .= getEntitiesRestrictRequest(
-                    $LINK,
-                    $itemtable,
-                    '',
-                    '',
-                    $data['item']->maybeRecursive() && $data['item']->isField('is_recursive')
-                );*/
                 $where_criteria = array_merge(
                     $where_criteria,
                     getEntitiesRestrictCriteria(
@@ -7240,19 +7232,19 @@ final class SQLProvider implements SearchProviderInterface
                 case 'glpi_changes.status':
                     $status = Change::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
-                        . Change::getStatusIcon($data[$ID][0]['name']) . "&nbsp;" . \htmlescape($status)
+                        . Change::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_problems.status':
                     $status = Problem::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
-                        . Problem::getStatusIcon($data[$ID][0]['name']) . "&nbsp;" . \htmlescape($status)
+                        . Problem::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_tickets.status':
                     $status = Ticket::getStatus($data[$ID][0]['name']);
                     return "<span class='text-nowrap'>"
-                        . Ticket::getStatusIcon($data[$ID][0]['name']) . "&nbsp;" . \htmlescape($status)
+                        . Ticket::getStatusIcon($data[$ID][0]['name'], false) . "&nbsp;" . \htmlescape($status)
                         . "</span>";
 
                 case 'glpi_projectstates.name':
@@ -7447,7 +7439,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($data[$ID][0]['is_active']) {
                         return "<a href='reservation.php?reservationitems_id="
                             . \htmlescape($data["refID"]) . "' title=\"" . __s('See planning') . "\">"
-                            . "<i class='ti ti-calendar'></i><span class='visually-hidden'>" . __s('See planning') . "</span></a>";
+                            . "<i class='ti ti-calendar' aria-hidden='true'></i><span class='visually-hidden'>" . __s('See planning') . "</span></a>";
                     } else {
                         return '';
                     }
@@ -7523,7 +7515,10 @@ final class SQLProvider implements SearchProviderInterface
                         $icon_class = "ti ti-eye-off not-published";
                         $icon_title = __s("This item is not published yet");
                     }
-                    return "<div class='kb'> <i class='$icon_class' title='$icon_title'></i> <a href='" . \htmlescape($href) . "'>" . \htmlescape($name) . "</a></div>";
+                    $icon = $icon_title !== ''
+                        ? "<i class='$icon_class' title='$icon_title' aria-hidden='true'></i><span class='visually-hidden'>$icon_title</span> "
+                        : '';
+                    return "<div class='kb'> $icon<a href='" . \htmlescape($href) . "'>" . \htmlescape($name) . "</a></div>";
                 case "glpi_certificates.date_expiration":
                     if (
                         !in_array($orig_id, [151, 158, 181, 186])

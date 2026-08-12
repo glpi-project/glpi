@@ -83,8 +83,8 @@
                                class="btn {{ active_order ? "btn-outline-secondary" : "btn-ghost-secondary" }} btn-sm me-1"
                                title="{{ sort_control['label'] }}"
                                data-bs-toggle="tooltip" data-bs-placement="bottom">
-                                <i class="ti ti-sort-{{ curr_sort == 'asc' ? "ascending" : "descending" }}"></i>
-                                <i class="{{ sort_control['icon'] }}"></i>
+                                <i class="ti ti-sort-{{ curr_sort == 'asc' ? "ascending" : "descending" }}" aria-hidden="true"></i>
+                                <i class="{{ sort_control['icon'] }}" aria-hidden="true"></i>
                             </a>
                         {% endfor %}
                     </div>

@@ -646,10 +646,10 @@ class Rule extends CommonDBTM
             unset($actions[MassiveAction::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list']);
         }
         if ($isadmin) {
-            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='ti ti-arrows-vertical'></i>"
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'move_rule'] = "<i class='ti ti-arrows-vertical' aria-hidden='true'></i>"
                 . __s('Move');
         }
-        $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='ti ti-file-download'></i>"
+        $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'export'] = "<i class='ti ti-file-download' aria-hidden='true'></i>"
             . _sx('button', 'Export');
 
         return $actions;
@@ -1093,7 +1093,7 @@ class Rule extends CommonDBTM
                 <div id="viewaction{{ rules_id }}{{ rand }}"></div>
                 {% if can_add_new_action %}
                     <div class="center mt-1 mb-3">
-                        <button type="button" name="add_action" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
+                        <button type="button" name="add_action" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                         <script>
                             $('button[name="add_action"]').on('click', () => {
                                 $('#viewaction{{ rules_id }}{{ rand }}').load('{{ path('ajax/viewsubitem.php')|e('js') }}', {{ ajax_params|json_encode|raw }});
@@ -1212,7 +1212,7 @@ TWIG, $twig_params);
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div id="viewcriteria{{ rules_id }}{{ rand }}"></div>
                 <div class="center mt-1 mb-3">
-                    <button type="button" name="add_criterion" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
+                    <button type="button" name="add_criterion" class="btn btn-primary"><i class="ti ti-plus" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                     <script>
                         $('button[name="add_criterion"]').on('click', () => {
                             $('#viewcriteria{{ rules_id }}{{ rand }}').load('{{ path('ajax/viewsubitem.php')|e('js') }}', {{ ajax_params|json_encode|raw }});
@@ -1948,7 +1948,7 @@ TWIG, $twig_params);
             foreach ($RuleCriterias->getRuleCriterias($this->fields['id']) as $RuleCriteria) {
                 $to_display = $this->getMinimalCriteria($RuleCriteria->fields);
                 $data['criteria'] .= '<span class="glpi-badge mb-1">'
-                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlescape', $to_display))
+                    . implode('<i class="ti ti-caret-right-filled mx-1" aria-hidden="true"></i>', array_map('htmlescape', $to_display))
                     . '</span><br />';
             }
         }
@@ -1960,14 +1960,14 @@ TWIG, $twig_params);
             foreach ($RuleAction->getRuleActions($this->fields['id']) as $RuleAction) {
                 $to_display = $this->getMinimalAction($RuleAction->fields);
                 $data['actions'] .= '<span class="glpi-badge mb-1">'
-                    . implode('<i class="ti ti-caret-right-filled mx-1"></i>', array_map('htmlescape', $to_display))
+                    . implode('<i class="ti ti-caret-right-filled mx-1" aria-hidden="true"></i>', array_map('htmlescape', $to_display))
                     . '</span><br />';
             }
         }
 
         $active = $this->fields['is_active'];
         $data['is_active'] = sprintf(
-            '<i class="ti ti-circle-filled %s" title="%s"></i>',
+            '<i class="ti ti-circle-filled %1$s" title="%2$s" aria-hidden="true"></i><span class="visually-hidden">%2$s</span>',
             $active ? 'text-success' : 'text-danger',
             $active ? __s('Rule is active') : __s('Rule is inactive'),
         );
@@ -1984,7 +1984,7 @@ TWIG, $twig_params);
         }
 
         if ($can_edit) {
-            $data['sort'] = "<i class='ti ti-grip-horizontal grip-rule cursor-grab'></i>";
+            $data['sort'] = "<i class='ti ti-grip-horizontal grip-rule cursor-grab' aria-hidden='true'></i>";
         }
 
         return $data;

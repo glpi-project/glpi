@@ -50,7 +50,7 @@
                         data-glpi-kb-action-param-{{ key }}="{{ param }}"
                     {% endfor %}
                 >
-                    <i class="{{ action.icon }}"></i>
+                    <i class="{{ action.icon }}" aria-hidden="true"></i>
                     <span>{{ action.label }}</span>
 
                     {% if action.counter is not null %}

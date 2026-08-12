@@ -838,7 +838,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {
             $prefix                       = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add_item']  = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
+            $actions[$prefix . 'add_item']  = "<i class='ti ti-package' aria-hidden='true'></i>" . _sx('button', 'Add an item');
         }
 
         return $actions;

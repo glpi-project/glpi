@@ -59,7 +59,7 @@
       {% if user is not null %}
          {{ user.getUserInitials(enable_anonymization) }}
       {% else %}
-         <i class="ti ti-user"></i>
+         <i class="ti ti-user" aria-hidden="true"></i>
       {% endif %}
    {% endif %}
 </span>

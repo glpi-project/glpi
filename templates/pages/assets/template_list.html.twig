@@ -46,7 +46,7 @@
                         <input type="hidden" name="id" value="{{ template['id'] }}">
                         <button class="btn btn-danger me-2" type="submit" name="purge" value="1"
                                 onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
-                            <i class="ti ti-trash"></i>
+                            <i class="ti ti-trash" aria-hidden="true"></i>
                             <span>{{ _x('button', 'Delete permanently') }}</span>
                         </button>
                     {% endif %}

@@ -492,7 +492,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
             return htmlescape(NOT_AVAILABLE);
         }
 
-        $icon_tag = '<i class="fas %1$s me-1" title="%2$s" data-bs-toggle="tooltip"></i>%2$s';
+        $icon_tag = '<i class="fas %1$s me-1" title="%2$s" data-bs-toggle="tooltip" aria-hidden="true"></i>%2$s';
 
         $link_type = $link_types[$value];
         $resolved_value = $inverted && isset($link_type['inverse']) ? $link_types[$link_type['inverse']] : $link_type;

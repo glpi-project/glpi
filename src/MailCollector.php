@@ -171,7 +171,7 @@ class MailCollector extends CommonDBTM
     {
         $links = [];
         if (countElementsInTable(self::getTable()) > 0) {
-            $links["<i class='ti ti-list'></i>" . __s('Not imported emails')] = "/front/notimportedemail.php";
+            $links["<i class='ti ti-list' aria-hidden='true'></i>" . __s('Not imported emails')] = "/front/notimportedemail.php";
         }
         return $links;
     }

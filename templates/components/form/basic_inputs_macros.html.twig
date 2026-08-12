@@ -296,13 +296,13 @@
         {% if editable and options.addCalendarButton %}
             {% set calendar_icon = options.enableTime ? 'ti ti-calendar-time' : 'ti ti-calendar' %}
             <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle>
-                <i class="{{ calendar_icon }}"></i>
+                <i class="{{ calendar_icon }}" aria-hidden="true"></i>
                 <span class="visually-hidden">{{ __('Enter or select a date') }}</span>
             </button>
             {# maybeempty has no distinct purpose, but it was here first #}
             {% if options.clearable or options.maybeempty %}
                 <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="tooltip" data-bs-placement="bottom" data-clear title="{{ __('Clear') }}">
-                    <i class="ti ti-circle-x"></i>
+                    <i class="ti ti-circle-x" aria-hidden="true"></i>
                 </button>
             {% endif %}
         {% endif %}
@@ -494,15 +494,25 @@
         'additional_attributes': {},
     }|merge(options) %}
 
+    {# Check if button is not label-less #}
+    {% if label is empty and options.icon_title is empty %}
+        {% do call('trigger_error', [
+            'A button must be given either a `label` or an `icon_title` to be named.',
+            constant('E_USER_WARNING')
+        ]) %}
+    {% endif %}
+
     <button class="{{ options.class }}" type="{{ type }}" name="{{ name }}" value="{{ value }}"
         {% for attr, value in options.additional_attributes %}
             {{ attr }}="{{ value }}"
         {% endfor %}>
         {% if options.icon is not empty %}
-            <i class="{{ options.icon }}" title="{{ options.icon_title }}"></i>
+            <i class="{{ options.icon }}" title="{{ options.icon_title }}" aria-hidden="true"></i>
         {% endif %}
         {% if label is not empty %}
             <span>{{ label }}</span>
+        {% elseif options.icon_title is not empty %}
+            <span class="visually-hidden">{{ options.icon_title }}</span>
         {% endif %}
     </button>
 {% endmacro %}
@@ -552,7 +562,8 @@
             -
             {{ __('Last inventory value was:') ~ ' ' ~ options.locked_value }}{% endset %}
         {% endif %}
-        <i class="ti ti-lock" title="{{ locked_title }}" data-bs-toggle="tooltip"></i>
+        <i class="ti ti-lock" title="{{ locked_title }}" data-bs-toggle="tooltip" aria-hidden="true"></i>
+        <span class="visually-hidden">{{ locked_title }}</span>
         {% endset %}
     {% endif %}
 

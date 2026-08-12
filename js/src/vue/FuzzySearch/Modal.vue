@@ -100,14 +100,14 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        <i class="ti ti-arrow-big-right me-2"></i>
+                        <i class="ti ti-arrow-big-right me-2" aria-hidden="true"></i>
                         {{ header_message }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info d-flex" role="alert">
-                        <i class="ti ti-alert-circle-filled fa-2x me-2"></i>
+                        <i class="ti ti-alert-circle-filled fa-2x me-2" aria-hidden="true"></i>
                         <p v-html="shortcut_message"></p>
                     </div>
                     <div role="search">

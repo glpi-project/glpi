@@ -1015,7 +1015,7 @@ export class GlpiKnowbaseArticleController
             const end_date      = end_input.value || null;
             const original_html = apply_btn.innerHTML;
             apply_btn.disabled  = true;
-            apply_btn.innerHTML = `<i class="ti ti-loader me-1"></i>${__('Saving...')}`;
+            apply_btn.innerHTML = `<i class="ti ti-loader me-1" aria-hidden="true"></i>${__('Saving...')}`;
 
             try {
                 await post(`Knowbase/${this.#item_id}/UpdateVisibilityDates`, {
@@ -1161,7 +1161,7 @@ export class GlpiKnowbaseArticleController
 
         const original_button_html = save_button.innerHTML;
         save_button.disabled = true;
-        save_button.innerHTML = `<i class="ti ti-loader me-1"></i>${__("Saving...")}`;
+        save_button.innerHTML = `<i class="ti ti-loader me-1" aria-hidden="true"></i>${__("Saving...")}`;
 
         try {
             const body = {
@@ -1547,7 +1547,7 @@ export class GlpiKnowbaseArticleController
 
         const original_button_html = save_btn.innerHTML;
         save_btn.disabled = true;
-        save_btn.innerHTML = `<i class="ti ti-loader me-1"></i>${__("Saving...")}`;
+        save_btn.innerHTML = `<i class="ti ti-loader me-1" aria-hidden="true"></i>${__("Saving...")}`;
 
         if (this.#translation_language !== this.#default_language) {
             const body = {

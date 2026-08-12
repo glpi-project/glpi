@@ -89,7 +89,7 @@
                                 {% if invalid_questions|length %}
                                     <div class="alert alert-danger" role="alert">
                                         <div class="alert-icon">
-                                            <i class="ti ti-exclamation-circle"></i>
+                                            <i class="ti ti-exclamation-circle" aria-hidden="true"></i>
                                         </div>
                                         <div>
                                             <h4 class="alert-heading">{{ __("These questions have an unknown type and will be deleted the next time this form is saved:") }}</h4>
@@ -210,7 +210,7 @@
                                         aria-controls="item-properties" #}
                                         aria-label="Properties"
                                     >
-                                        <i class="ti ti-alert-circle item-icon"></i>
+                                        <i class="ti ti-alert-circle item-icon" aria-hidden="true"></i>
                                         <span class="item-title">{{ __('Form properties') }}</span>
                                     </button>
                                 </div>
@@ -220,7 +220,7 @@
                                             function renderLayoutTemplateResult(data) {
                                                 const icons = {{ enum('Glpi\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getIcon()})|reduce((carry, item) => carry|merge(item), {})|json_encode|raw }};
 
-                                                return $(`<span class="w-full d-flex align-items-center gap-2" title="${_.escape(data.text)}""><i class="${_.escape(icons[data.id])}"></i>${_.escape(data.text)}</span>`);
+                                                return $(`<span class="w-full d-flex align-items-center gap-2" title="${_.escape(data.text)}""><i class="${_.escape(icons[data.id])}" aria-hidden="true"></i>${_.escape(data.text)}</span>`);
                                             }
 
                                             function renderLayoutTemplateSelection(data) {
@@ -298,7 +298,7 @@
                 title="{{ __("Add") }}"
                 aria-label="{{ __("Add") }}"
             >
-                <i class="ti ti-plus me-1"></i>
+                <i class="ti ti-plus me-1" aria-hidden="true"></i>
                 <span class="d-block add-label">{{ __("Add") }}</span>
             </button>
         {% elseif can_update %}
@@ -311,7 +311,7 @@
                 title="{{ __("Save") }}"
                 aria-label="{{ __("Save") }}"
             >
-                <i class="ti ti-device-floppy me-1"></i>
+                <i class="ti ti-device-floppy me-1" aria-hidden="true"></i>
                 <span class="d-block save-label">{{ __("Save") }}</span>
             </button>
         {% endif %}
@@ -329,7 +329,7 @@
                 name="restore"
                 form="main-form"
             >
-                <i class="ti ti-trash-off me-1"></i>{{ __("Restore") }}
+                <i class="ti ti-trash-off me-1" aria-hidden="true"></i>{{ __("Restore") }}
             </button>
         {% endif %}
 
@@ -341,7 +341,7 @@
                 name="purge"
                 form="main-form"
             >
-                <i class="ti ti-trash me-1"></i>{{ _x("button", "Delete permanently") }}
+                <i class="ti ti-trash me-1" aria-hidden="true"></i>{{ _x("button", "Delete permanently") }}
             </button>
         {% endif %}
 
@@ -360,7 +360,7 @@
                 name="delete"
                 form="main-form"
             >
-                <i class="ti ti-trash me-1"></i>{{ __("Put in trashbin") }}
+                <i class="ti ti-trash me-1" aria-hidden="true"></i>{{ __("Put in trashbin") }}
             </button>
         {% endif %}
 
@@ -376,7 +376,7 @@
                 title="{{ __("Preview") }}"
                 data-glpi-form-editor-preview-action
             >
-                <i class="ti ti-eye me-1"></i>
+                <i class="ti ti-eye me-1" aria-hidden="true"></i>
                 <span class="d-none d-xl-block">{{ __("Preview") }}</span>
             </a>
             <button
@@ -389,7 +389,7 @@
                 data-glpi-form-editor-save-and-preview-action
                 data-glpi-form-editor-preview-url="{{ path('/Form/Render/' ~ item.fields.id) }}"
             >
-                <i class="ti ti-eye me-1"></i>
+                <i class="ti ti-eye me-1" aria-hidden="true"></i>
                 <span class="d-none d-xl-block">{{ __("Save and preview") }}</span>
             </button>
         </div>

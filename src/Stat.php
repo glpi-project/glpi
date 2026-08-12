@@ -637,7 +637,7 @@ class Stat extends CommonGLPI
                         ]
                     );
                     $link = "<a href='" . htmlescape($url) . "' title='" . __s('View graph') . "'>"
-                      . "<i class='ti ti-graph fs-1'></i>"
+                      . "<i class='ti ti-graph fs-1' aria-hidden='true'></i>"
                       . "</a>";
                 }
                 $html_output .= $output::showItem($link, $item_num, $row_num);

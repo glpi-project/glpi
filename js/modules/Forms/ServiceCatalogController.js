@@ -293,6 +293,6 @@ export class GlpiFormServiceCatalogController
 
     getTemplateForSortSelect(data) {
         const icon = this.sort_icons[data.id];
-        return $(`<span class="w-full" title="${_.escape(data.text)}" aria-label="${_.escape(data.text)}"><i class="${_.escape(icon)}"></i></span>`);
+        return $(`<span class="w-full" title="${_.escape(data.text)}" aria-label="${_.escape(data.text)}"><i class="${_.escape(icon)}" aria-hidden="true"></i></span>`);
     }
 }

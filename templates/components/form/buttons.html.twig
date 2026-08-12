@@ -51,7 +51,7 @@
                   value="1"
                   aria-label="{{ _x('button', 'Add') }}"
                >
-                  <i class="ti ti-plus"></i>
+                  <i class="ti ti-plus" aria-hidden="true"></i>
                   <span>{{ _x('button', 'Add') }}</span>
                </button>
             {% else %}
@@ -62,7 +62,7 @@
                   value="1"
                   aria-label="{{ _x('button', 'Save') }}"
                >
-                  <i class="ti ti-device-floppy"></i>
+                  <i class="ti ti-device-floppy" aria-hidden="true"></i>
                   <span>{{ _x('button', 'Save') }}</span>
                </button>
             {% endif %}
@@ -79,7 +79,7 @@
                   value="1"
                   aria-label="{{ _x('button', 'Save') }}"
                >
-                  <i class="ti ti-device-floppy"></i>
+                  <i class="ti ti-device-floppy" aria-hidden="true"></i>
                   <span>{{ _x('button', 'Save') }}</span>
                </button>
             {% endif %}
@@ -94,7 +94,7 @@
                         value="1"
                         aria-label="{{ _x('button', 'Restore') }}"
                      >
-                        <i class="ti ti-trash-off"></i>
+                        <i class="ti ti-trash-off" aria-hidden="true"></i>
                         <span>{{ _x('button', 'Restore') }}</span>
                      </button>
                   {% endif %}
@@ -117,7 +117,7 @@
                            onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
                            aria-label="{{ _x('button', 'Delete permanently') }}"
                         >
-                           <i class="ti ti-trash"></i>
+                           <i class="ti ti-trash" aria-hidden="true"></i>
                            <span>{{ _x('button', 'Delete permanently') }}</span>
                         </button>
                         {% if show_keep_devices %}
@@ -143,7 +143,7 @@
                            value="1"
                            aria-label="{{ _x('button', 'Delete permanently') }}"
                         >
-                           <i class="ti ti-trash"></i>
+                           <i class="ti ti-trash" aria-hidden="true"></i>
                            <span>{{ _x('button', 'Delete permanently') }}</span>
                         </button>
                      {% endif %}
@@ -155,7 +155,7 @@
                         value="1"
                         aria-label="{{ _x('button', 'Put in trashbin') }}"
                      >
-                        <i class="ti ti-trash"></i>
+                        <i class="ti ti-trash" aria-hidden="true"></i>
                         <span>{{ _x('button', 'Put in trashbin') }}</span>
                      </button>
                   {% endif %}
@@ -181,7 +181,7 @@
                <button class="btn {{ val.btn_class ?? 'btn-outline-secondary' }} me-2 {{ val.add_class ?? '' }}" type="{{ val.type ?? 'submit' }}" name="{{ key }}" value="1" title="{{ val.title ?? '' }}" onclick="{{ val.onclick ?? '' }}" {{ extra_attribs|raw }}>
                   {% if val is iterable %}
                      {% if val.icon is defined %}
-                        <i class="{{ val.icon }}"></i>
+                        <i class="{{ val.icon }}" aria-hidden="true"></i>
                      {% endif %}
                      <span>{{ val.text|default('') }}</span>
                   {% else %}

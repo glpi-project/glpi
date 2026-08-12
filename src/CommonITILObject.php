@@ -1281,7 +1281,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      **/
-    // FIXME add params typehint in GLPI 11.0
     public function isGroup($type, $groups_id): bool
     {
         if (isset($this->groups[$type])) {
@@ -2100,7 +2099,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $do_not_compute_takeintoaccount = $this->isTakeIntoAccountComputationBlocked($input);
 
         if (isset($input['_itil_requester'])) {
-            // FIXME Deprecate this input key in GLPI 11.0.
+            // FIXME Deprecate this input key.
             if (isset($input['_itil_requester']['_type'])) {
                 $input['_itil_requester'] = [
                     'type'                            => CommonITILActor::REQUESTER,
@@ -2171,7 +2170,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if (isset($input['_itil_observer'])) {
-            // FIXME Deprecate this input key in GLPI 11.0.
+            // FIXME Deprecate this input key.
             if (isset($input['_itil_observer']['_type'])) {
                 $input['_itil_observer'] = [
                     'type'                            => CommonITILActor::OBSERVER,
@@ -2241,7 +2240,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if (isset($input['_itil_assign'])) {
-            // FIXME Deprecate this input key in GLPI 11.0.
+            // FIXME Deprecate this input key.
             if (isset($input['_itil_assign']['_type'])) {
                 $input['_itil_assign'] = [
                     'type'                            => CommonITILActor::ASSIGN,
@@ -4117,10 +4116,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 || Session::haveRight(Problem::$rightname, UPDATE);
             if ($can_update_itilobject) {
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                    = "<i class='ti ti-link'></i>"
+                    = "<i class='ti ti-link' aria-hidden='true'></i>"
                     . _sx('button', 'Link ITIL Object');
                 $actions['CommonITILObject_CommonITILObject' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
-                    = "<i class='ti ti-unlink'></i>"
+                    = "<i class='ti ti-unlink' aria-hidden='true'></i>"
                     . _sx('button', 'Unlink ITIL Object');
             }
         }
@@ -5168,16 +5167,29 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Get status icon
      *
-     * @param int $status
+     * @param int  $status
+     * @param bool $with_name Expose the status name as a visually hidden text. Pass `false` when
+     *                        the caller already displays that name next to the icon, otherwise
+     *                        assistive technologies announce it twice.
      * @return string
      *
      * @since 9.3
      */
-    public static function getStatusIcon($status)
+    public static function getStatusIcon($status, bool $with_name = true)
     {
         $class = htmlescape(static::getStatusClass($status));
         $label = htmlescape(static::getStatus($status));
-        return "<i class='$class me-1' title='$label' data-bs-toggle='tooltip'></i>";
+        // An `<i>` maps to `role=generic`, which cannot carry an accessible name: the status is
+        // exposed through a visually hidden text instead.
+        $name = $with_name
+            ? sprintf('<span class="visually-hidden">%s</span>', $label)
+            : '';
+        return sprintf(
+            '<span><i class="%1$s me-1" title="%2$s" data-bs-toggle="tooltip" aria-hidden="true"></i>%3$s</span>',
+            $class,
+            $label,
+            $name
+        );
     }
 
     /**
@@ -7777,7 +7789,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if (is_a($validation_row['itemtype_target'], CommonDBTM::class, true)) {
                     $validation_target = new $validation_row['itemtype_target']();
                     if ($validation_target->getFromDB($validation_row['items_id_target'])) {
-                        $content .= " <i class='ti ti-arrow-right'></i><i class='" . htmlescape($validation_target->getIcon()) . " text-muted me-1'></i>"
+                        $content .= " <i class='ti ti-arrow-right' aria-hidden='true'></i><i class='" . htmlescape($validation_target->getIcon()) . " text-muted me-1'></i>"
                             . $validation_target->getlink();
                     }
                 }
@@ -7917,7 +7929,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if (((string) $log_row['field']) !== '') {
                     $content = sprintf(__s("%s: %s"), htmlescape($log_row['field']), $content);
                 }
-                $content = "<i class='ti ti-history me-1' title='" . __s("Log entry") . "' data-bs-toggle='tooltip'></i>" . $content;
+                $content = "<i class='ti ti-history me-1' title='" . __s("Log entry") . "' data-bs-toggle='tooltip' aria-hidden='true'></i>"
+                    . "<span class='visually-hidden'>" . __s("Log entry") . "</span>" . $content;
                 $user_id = 0;
                 // try to extract ID from "user_name" (which was created using User::getNameForLog)
                 if (preg_match('/ \((\d+)\)$/', $log_row["user_name"], $m)) {
@@ -7954,7 +7967,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $pending_reason = $autoreminder_obj->getPendingReason();
             $content = sprintf(
                 '<span>%1$s%2$s (<span data-bs-toggle="popover" data-bs-html="true" data-bs-sanitize="true" data-bs-content="%3$s"><u>%4$s</u></span>)</span>',
-                '<i class="ti ti-refresh-alert text-warning me-1"></i>',
+                '<i class="ti ti-refresh-alert text-warning me-1" aria-hidden="true"></i>',
                 htmlescape(ITILReminder::getTypeName(1)),
                 htmlescape($autoreminder_obj->fields['content'] ?? ''),
                 htmlescape($autoreminder_obj->fields['name'])
@@ -8391,7 +8404,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @return ITILTemplate|null
      *
      * @since 11.0.2
-     * @TODO Make this method private in GLPI 12.
+     * @TODO Make this method private.
      */
     public function getITILTemplateFromInput(array $input = [], $existing_object = null): ?ITILTemplate
     {
@@ -9752,36 +9765,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             ) {
                 $input['_groups_id_assign'] = $item->fields['groups_id_tech'];
             }
-        }
-
-        return $input;
-    }
-
-    /**
-     * Replay setting auto assign if set in rules engine or by auto_assign_mode
-     * Do not force status if status has been set by rules
-     *
-     * @param array $input
-     *
-     * @return array
-     */
-    protected function assign(array $input)
-    {
-        // FIXME Deprecate this method in GLPI 11.0.
-        if (!in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))) {
-            return $input;
-        }
-
-        if (
-            (
-                $this->hasValidActorInInput($input, User::class, CommonITILActor::ASSIGN)
-                || $this->hasValidActorInInput($input, Group::class, CommonITILActor::ASSIGN)
-                || $this->hasValidActorInInput($input, Supplier::class, CommonITILActor::ASSIGN)
-            )
-            && (in_array($input['status'], static::getNewStatusArray()))
-            && !$this->isStatusComputationBlocked($input)
-        ) {
-            $input["status"] = self::ASSIGNED;
         }
 
         return $input;
@@ -11300,7 +11283,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         foreach ($usertypes as $k => $t) {
             //handle new input
             if (isset($input['_itil_' . $t]) && isset($input['_itil_' . $t]['_type'])) {
-                // FIXME Deprecate these keys in GLPI 11.0.
+                // FIXME Deprecate these keys.
                 $field = $input['_itil_' . $t]['_type'] . 's_id';
                 if (
                     isset($input['_itil_' . $t][$field])

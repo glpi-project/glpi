@@ -69,7 +69,7 @@
                     aria-label="{{ strategy.getLabel() }}"
                     data-testid="strategy-label-{{ strategy.value }}"
                 >
-                    <i class="{{ strategy.getIcon() }} me-2"></i>
+                    <i class="{{ strategy.getIcon() }} me-2" aria-hidden="true"></i>
                     {{ strategy.getLabel() }}
                 </label>
             {% endfor %}

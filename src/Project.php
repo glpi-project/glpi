@@ -238,10 +238,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
             || Session::haveRight('projecttask', ProjectTask::READMY)
         ) {
             $pic_validate = '
-            <i class="ti ti-eye-check" title="' . __s('My tasks') . '"></i>
-            <span class="d-none d-xxl-block">
+            <i class="ti ti-eye-check" title="' . __s('My tasks') . '" aria-hidden="true"></i>
+            <span class="d-none d-xxl-block" aria-hidden="true">
                ' . __s('My tasks') . '
             </span>
+            <span class="visually-hidden">' . __s('My tasks') . '</span>
          ';
 
             $links[$pic_validate] = ProjectTask::getMyTasksURL(false);
@@ -1443,7 +1444,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                             {{ fields.dropdownItemsFromItemtypes('items_id', label, dropdown_params) }}
                         </div>
                         <div class="d-flex flex-row-reverse">
-                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-link"></i><span>{{ btn_label }}</span></button>
+                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-link" aria-hidden="true"></i><span>{{ btn_label }}</span></button>
                         </div>
                     </form>
                 </div>
@@ -1872,7 +1873,8 @@ TWIG, $twig_params);
                 $content .= htmlescape(reset($typematches)['name']) . '&nbsp;';
             }
             if (array_key_exists('is_milestone', $item) && $item['is_milestone']) {
-                $content .= "&nbsp;<i class='ti ti-directions-filled' title='" . __s('Milestone') . "'></i>&nbsp;";
+                $content .= "&nbsp;<i class='ti ti-directions-filled' title='" . __s('Milestone') . "' aria-hidden='true'></i>"
+                    . "<span class='visually-hidden'>" . __s('Milestone') . "</span>&nbsp;";
             }
             if (isset($item['_steps']) && count($item['_steps'])) {
                 $done = count(array_filter($item['_steps'], static fn($step) => (int) $step['percent_done'] === 100));

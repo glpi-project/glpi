@@ -114,7 +114,7 @@ test('Can add user permission', async ({ page, profile, api }) => {
         kb.getDropdownByLabel("User"),
         "glpi",
     );
-    await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
+    await page.getByRole('dialog').getByRole('button', { name: "Add", exact: true }).click();
 
     // Assert: a confirmation toast is shown and the user is added to the
     // permission list in place, without a full page reload.
@@ -142,7 +142,7 @@ test('Can add entity permission', async ({ page, profile, api }) => {
         kb.getDropdownByLabel("Child entities"),
         "No",
     );
-    await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
+    await page.getByRole('dialog').getByRole('button', { name: "Add", exact: true }).click();
 
     // Assert: entity should be added to the permission list
     const entry = page.getByTestId('permission-entry');
@@ -166,7 +166,7 @@ test('Can add entity permission (recursive)', async ({ page, profile, api }) => 
         kb.getDropdownByLabel("Add access for"),
         "Entity",
     );
-    await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
+    await page.getByRole('dialog').getByRole('button', { name: "Add", exact: true }).click();
 
     // Assert: entity should be added to the permission list
     const entry = page.getByTestId('permission-entry');
@@ -201,7 +201,7 @@ test('Can add group permission', async ({ page, profile, api }) => {
     );
     await expect(kb.getDropdownByLabel("Entity")).toBeHidden();
     await expect(kb.getDropdownByLabel("Child entities")).toBeHidden();
-    await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
+    await page.getByRole('dialog').getByRole('button', { name: "Add", exact: true }).click();
 
     // Assert: group should be added to the permission list
     const entry = page.getByTestId('permission-entry');
@@ -245,7 +245,7 @@ test('Can add group permission with recursive context', async ({
         kb.getDropdownByLabel("Child entities"),
         "Yes",
     );
-    await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
+    await page.getByRole('dialog').getByRole('button', { name: "Add", exact: true }).click();
 
     // Assert: group should be added to the permission list with context
     const entry = page.getByTestId('permission-entry');
@@ -287,7 +287,7 @@ test('Can add group permission with context', async ({ page, profile, api }) => 
         kb.getDropdownByLabel("Child entities"),
         "No",
     );
-    await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
+    await page.getByRole('dialog').getByRole('button', { name: "Add", exact: true }).click();
 
     // Assert: group should be added to the permission list with context
     const entry = page.getByTestId('permission-entry');
@@ -317,7 +317,7 @@ test('Can add profile permission', async ({ page, profile, api }) => {
     );
     await expect(kb.getDropdownByLabel("Entity")).toBeHidden();
     await expect(kb.getDropdownByLabel("Child entities")).toBeHidden();
-    await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
+    await page.getByRole('dialog').getByRole('button', { name: "Add", exact: true }).click();
 
     // Assert: profile should be added to the permission list
     const entry = page.getByTestId('permission-entry');
@@ -356,7 +356,7 @@ test('Can add profile permission with recursive context', async ({
         kb.getDropdownByLabel("Child entities"),
         "Yes",
     );
-    await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
+    await page.getByRole('dialog').getByRole('button', { name: "Add", exact: true }).click();
 
     // Assert: profile should be added to the permission list with context
     const entry = page.getByTestId('permission-entry');
@@ -393,7 +393,7 @@ test('Can add profile permission with context', async ({ page, profile, api }) =
         kb.getDropdownByLabel("Child entities"),
         "No",
     );
-    await page.getByRole('dialog').getByRole('button', { name: "Add " }).click();
+    await page.getByRole('dialog').getByRole('button', { name: "Add", exact: true }).click();
 
     // Assert: profile should be added to the permission list with context
     const entry = page.getByTestId('permission-entry');

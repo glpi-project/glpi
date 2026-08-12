@@ -182,10 +182,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
         if (Auth::useAuthExt() && Session::haveRight('user', self::IMPORTEXTAUTHUSERS)) {
             if (static::canCreate()) {
                 $ext_auth_label = __s('Add from an external source');
-                $links['<i class="ti ti-user-cog"></i><span>' . $ext_auth_label . '</span>'] = 'front/user.form.php?new=1&ext_auth=1';
+                $links['<i class="ti ti-user-cog" aria-hidden="true"></i><span>' . $ext_auth_label . '</span>'] = 'front/user.form.php?new=1&ext_auth=1';
             }
             if (static::canCreate() || static::canUpdate()) {
-                $links['<i class="ti ti-settings"></i><span>' . __s('LDAP directory link') . '</span>'] = "front/ldap.php";
+                $links['<i class="ti ti-settings" aria-hidden="true"></i><span>' . __s('LDAP directory link') . '</span>'] = "front/ldap.php";
             }
         }
         return $links;
@@ -2968,7 +2968,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                      class="btn btn-icon btn-sm btn-ghost-secondary"
                      title="{$vcard_lbl}"
                      data-bs-toggle="tooltip" data-bs-placement="bottom">
-               <i class="ti ti-id fs-2"></i>
+               <i class="ti ti-id fs-2" aria-hidden="true"></i>
             </a>
 HTML;
             $toolbar[] = $vcard_btn;
@@ -2984,7 +2984,7 @@ HTML;
                             class="btn btn-icon btn-sm btn-ghost-secondary btn-impersonate"
                             title="{$impersonate_lbl}"
                             data-bs-toggle="tooltip" data-bs-placement="bottom">
-                            <i class="ti ti-spy fs-2"></i>
+                            <i class="ti ti-spy fs-2" aria-hidden="true"></i>
                         </button>
                     </form>
 HTML;
@@ -3009,7 +3009,7 @@ JAVASCRIPT;
                        class="btn btn-icon btn-sm  btn-ghost-danger btn-impersonate"
                        title="{$error_message}"
                        data-bs-toggle="tooltip" data-bs-placement="bottom">
-                  <i class="ti ti-spy fs-2"></i>
+                  <i class="ti ti-spy fs-2" aria-hidden="true"></i>
                </button>
 HTML;
                 $toolbar[] = $impersonate_btn;
@@ -3260,34 +3260,34 @@ HTML;
 
         if ($isadmin) {
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                                                         = "<i class='ti ti-users-plus'></i>"
+                                                         = "<i class='ti ti-users-plus' aria-hidden='true'></i>"
                                                            . __s('Associate to a group');
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove']
-                                                         = "<i class='ti ti-users-minus'></i>"
+                                                         = "<i class='ti ti-users-minus' aria-hidden='true'></i>"
                                                            . __s('Dissociate from a group');
             $actions['Profile_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-                                                         = "<i class='ti ti-shield-plus'></i>"
+                                                         = "<i class='ti ti-shield-plus' aria-hidden='true'></i>"
                                                            . __s('Associate to a profile');
             $actions['Profile_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'remove']
-                                                         = "<i class='ti ti-shield-minus'></i>"
+                                                         = "<i class='ti ti-shield-minus' aria-hidden='true'></i>"
                                                            . __s('Dissociate from a profile');
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_group_user']
-                                                         = "<i class='ti ti-users-group'></i>"
+                                                         = "<i class='ti ti-users-group' aria-hidden='true'></i>"
                                                            . __s("Move to group");
             $actions["{$prefix}delete_emails"] = __s("Delete associated emails");
         }
 
         if (Session::haveRight(self::$rightname, self::UPDATEAUTHENT)) {
-            $actions[$prefix . 'change_authtype']        = "<i class='ti ti-user-cog'></i>"
+            $actions[$prefix . 'change_authtype']        = "<i class='ti ti-user-cog' aria-hidden='true'></i>"
                                                       . _sx('button', 'Change the authentication method');
-            $actions[$prefix . 'force_user_ldap_update'] = "<i class='ti ti-refresh'></i>"
+            $actions[$prefix . 'force_user_ldap_update'] = "<i class='ti ti-refresh' aria-hidden='true'></i>"
                                                       . __s('Force synchronization');
-            $actions[$prefix . 'clean_ldap_fields'] = "<i class='ti ti-recycle'></i>"
+            $actions[$prefix . 'clean_ldap_fields'] = "<i class='ti ti-recycle' aria-hidden='true'></i>"
                                                     . __s('Clean LDAP fields and force synchronisation');
-            $actions[$prefix . 'disable_2fa']           = "<i class='ti ti-shield-off'></i>"
+            $actions[$prefix . 'disable_2fa']           = "<i class='ti ti-shield-off' aria-hidden='true'></i>"
                                                       . __s('Disable 2FA');
-            $actions[$prefix . 'send_pw_reset'] = "<i class='ti ti-mail'></i>" . __s('Send password reset email');
-            $actions[$prefix . 'reapply_rights']            = "<i class='" . htmlescape(Profile::getIcon()) . "'></i>"
+            $actions[$prefix . 'send_pw_reset'] = "<i class='ti ti-mail' aria-hidden='true'></i>" . __s('Send password reset email');
+            $actions[$prefix . 'reapply_rights']            = "<i class='" . htmlescape(Profile::getIcon()) . "' aria-hidden='true'></i>"
                                                       . __s('Reapply authorization assignment rules');
         }
         return $actions;
@@ -4752,7 +4752,7 @@ HTML;
             );
             $icons .= "<span title=\"" . __s('Import a user') . "\""
             . " data-bs-toggle='modal' data-bs-target='#userimport{$rand}'>
-            <i class='ti ti-plus'></i>
+            <i class='ti ti-plus' aria-hidden='true'></i>
             <span class='visually-hidden'>" . __s('Import a user') . "</span>
          </span>";
             $icons .= '</div>';

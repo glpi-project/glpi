@@ -347,7 +347,7 @@
             <div class="debug-toolbar-badge d-flex">
                 <button type="button" class="btn btn-icon border-0 px-3 opacity-100 debug-logo" @click="show_toolbar = true" :disabled="show_toolbar"
                         title="Toggle debug bar" aria-label="Toggle debug bar">
-                    <i class="ti ti-bug"></i>
+                    <i class="ti ti-bug" aria-hidden="true"></i>
                 </button>
             </div>
             <div :class="'debug-toolbar-content w-100 justify-content-between align-items-center ' + (show_toolbar ? 'd-flex' : '')" v-show="show_toolbar">
@@ -360,10 +360,10 @@
                     <div class="debug-toolbar-control">
                         <button type="button" class="btn btn-icon border-0 p-1" name="toggle_content_area" @click="show_content_area = !show_content_area"
                                 title="Toggle debug content area" aria-label="Toggle debug content area">
-                            <i :class="show_content_area ? 'ti ti-square-arrow-up' : 'ti ti-square-arrow-down'"></i>
+                            <i :class="show_content_area ? 'ti ti-square-arrow-up' : 'ti ti-square-arrow-down'" aria-hidden="true"></i>
                         </button>
                         <button type="button" class="btn btn-icon border-0 p-1" title="Close" aria-label="Close" @click="show_toolbar = false">
-                            <i class="ti ti-square-x"></i>
+                            <i class="ti ti-square-x" aria-hidden="true"></i>
                         </button>
                     </div>
                 </div>

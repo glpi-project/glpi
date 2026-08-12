@@ -498,7 +498,7 @@ class CommonGLPI implements CommonGLPIInterface
         if (method_exists(static::class, 'getIcon')) {
             $icon = static::getIcon();
         }
-        $icon = $icon ? "<i class='" . htmlescape($icon) . " me-2'></i>" : '';
+        $icon = $icon ? "<i class='" . htmlescape($icon) . " me-2' aria-hidden='true'></i>" : '';
         $ong[static::class . '$main'] = '<span>' . $icon . htmlescape(static::getTypeName(1)) . '</span>';
         return $this;
     }
@@ -720,7 +720,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return bool
      *
-     * @TODO In GLPI 12.0, do something with the return value that is currently not used.
+     * @TODO Do something with the return value that is currently not used.
      */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
@@ -737,7 +737,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return bool
      *
-     * @TODO In GLPI 12.0, do something with the return value that is currently not used.
+     * @TODO Do something with the return value that is currently not used.
      */
     public static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = [])
     {
@@ -846,7 +846,7 @@ class CommonGLPI implements CommonGLPIInterface
             $icon = '';
         }
 
-        $icon_html = $icon !== '' ? sprintf('<i class="%s me-2"></i>', htmlescape($icon)) : '';
+        $icon_html = $icon !== '' ? sprintf('<i class="%s me-2" aria-hidden="true"></i>', htmlescape($icon)) : '';
         $counter_html = '';
         if ($nb > 0) {
             $badge_content = $total_nb !== null ? "$nb/$total_nb" : "$nb";
@@ -1196,7 +1196,7 @@ class CommonGLPI implements CommonGLPIInterface
             $list = "<a href='" . htmlescape($glpilisturl) . "' title=\"" . htmlescape($glpilisttitle) . "\"
                   class='btn btn-sm btn-icon btn-ghost-secondary me-2'
                   data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                  <i class='ti ti-list-search fs-2'></i>
+                  <i class='ti ti-list-search fs-2' aria-hidden='true'></i>
                </a>";
             $list_shown = false;
 
@@ -1208,7 +1208,7 @@ class CommonGLPI implements CommonGLPIInterface
             echo "<a href='" . htmlescape("$cleantarget?id=$first$extraparamhtml") . "'
                  class='btn btn-sm btn-icon btn-ghost-secondary me-2 " . ($first >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('First') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                 <i class='fs-2 ti ti-chevrons-left'></i>
+                 <i class='fs-2 ti ti-chevrons-left' aria-hidden='true'></i>
               </a>";
 
             if (!$list_shown && $prev < 0) {
@@ -1220,7 +1220,7 @@ class CommonGLPI implements CommonGLPIInterface
                  id='previouspage'
                  class='btn btn-sm btn-icon btn-ghost-secondary me-2 " . ($prev >= 0 ? '' : 'bs-invisible') . "' title=\"" . __s('Previous') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>
-                 <i class='fs-2 ti ti-chevron-left'></i>
+                 <i class='fs-2 ti ti-chevron-left' aria-hidden='true'></i>
               </a>";
             if ($prev >= 0) {
                 $js = '$("body").keydown(function(e) {
@@ -1255,7 +1255,7 @@ class CommonGLPI implements CommonGLPIInterface
                                 : __s('Deleted');
                     echo "<span class='mx-2 status rounded-1' title=\"" . $title . "\"
                         data-bs-toggle='tooltip'>
-                        <i class='ti ti-trash'></i>";
+                        <i class='ti ti-trash' aria-hidden='true'></i>";
                     echo __s('Deleted');
                     echo "</span>";
                 }
@@ -1280,7 +1280,7 @@ class CommonGLPI implements CommonGLPIInterface
                  class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($next >= 0 ? '' : 'bs-invisible') . "'
                  title=\"" . __s('Next') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>"
-            . "<i class='fs-2 ti ti-chevron-right'></i>
+            . "<i class='fs-2 ti ti-chevron-right' aria-hidden='true'></i>
                 </a>";
             if ($next >= 0) {
                 $js = '$("body").keydown(function(e) {
@@ -1297,7 +1297,7 @@ class CommonGLPI implements CommonGLPIInterface
                  class='btn btn-sm btn-icon btn-ghost-secondary ms-2 " . ($last >= 0 ? '' : 'bs-invisible') . "'
                  title=\"" . __s('Last') . "\"
                  data-bs-toggle='tooltip' data-bs-placement='bottom'>"
-            . "<i class='fs-2 ti ti-chevrons-right'></i></a>";
+            . "<i class='fs-2 ti ti-chevrons-right' aria-hidden='true'></i></a>";
 
             echo "</div>";
 

@@ -37,8 +37,8 @@
     data-glpi-knowbase-article
     data-glpi-kb-item-id="{{ item_id }}"
     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}"
-    {% if prefilled_category is defined %}
-        data-glpi-kb-prefilled-category-id="{{ prefilled_category.id }}"
+    {% if prefilled_parent is defined %}
+        data-glpi-kb-prefilled-parent-id="{{ prefilled_parent.id }}"
     {% endif %}
     {% if mode == 'edit' %}
         data-glpi-kb-default-language="{{ default_language }}"
@@ -56,7 +56,7 @@
             data-testid="translation-mode-alert"
             data-glpi-kb-translation-alert
         >
-            <i class="ti ti-language me-2 fs-3"></i>
+            <i class="ti ti-language me-2 fs-3" aria-hidden="true"></i>
             <span>{{ __("Translation mode enabled, currently editing") }}</span>
             <select
                 class="form-select form-select-sm d-inline-block w-auto ms-2 me-auto"
@@ -70,7 +70,7 @@
                 data-testid="translation-delete-btn"
                 data-glpi-kb-translation-delete title="{{ __('Delete this translation') }}"
             >
-                <i class="ti ti-trash"></i>
+                <i class="ti ti-trash" aria-hidden="true"></i>
             </button>
             <button
                 type="button"
@@ -78,7 +78,7 @@
                 data-testid="translation-save-btn"
                 data-glpi-kb-translation-save
             >
-                <i class="ti ti-device-floppy me-1"></i>{{ __('Save') }}
+                <i class="ti ti-device-floppy me-1" aria-hidden="true"></i>{{ __('Save') }}
             </button>
             <button
                 type="button"
@@ -127,7 +127,7 @@
                                 data-glpi-share-button
                                 data-glpi-itemtype="KnowbaseItem"
                                 data-glpi-items-id="{{ item_id }}">
-                            <i class="ti ti-share me-1"></i>{{ __('Share') }}
+                            <i class="ti ti-share me-1" aria-hidden="true"></i>{{ __('Share') }}
                         </button>
                         <div class="dropdown-menu dropdown-menu-end p-3"
                              style="min-width: 360px;"
@@ -146,7 +146,7 @@
                             data-action="toggle-edit"
                             data-testid="edit-button"
                         >
-                            <i class="ti ti-edit me-1"></i>{{ __('Edit') }}
+                            <i class="ti ti-edit me-1" aria-hidden="true"></i>{{ __('Edit') }}
                         </button>
                         <button
                             type="button"
@@ -154,7 +154,7 @@
                             data-action="save"
                             data-testid="save-button"
                         >
-                            <i class="ti ti-device-floppy me-1"></i>{{ __('Save') }}
+                            <i class="ti ti-device-floppy me-1" aria-hidden="true"></i>{{ __('Save') }}
                         </button>
                         <button
                             type="button"
@@ -176,7 +176,7 @@
             <div class="text-muted d-flex align-items-center gap-3">
                 {# Last update #}
                 <div class="d-flex align-items-center" data-testid="last-update">
-                    <i class="ti ti-clock me-1 fs-3"></i>
+                    <i class="ti ti-clock me-1 fs-3" aria-hidden="true"></i>
                     <span>
                         <span>{{ __("Updated:") }}</span>
                         <time
@@ -206,7 +206,7 @@
 
                 {# Views #}
                 <div class="d-flex align-items-center">
-                    <i class="ti ti-eye me-1 fs-3"></i>
+                    <i class="ti ti-eye me-1 fs-3" aria-hidden="true"></i>
                     <span data-testid="views">
                         {% if views == 0 %}
                             {{ __("No views") }}
@@ -218,7 +218,7 @@
 
                 {# Translations count #}
                 <div class="d-flex align-items-center">
-                    <i class="ti ti-language me-1 fs-3"></i>
+                    <i class="ti ti-language me-1 fs-3" aria-hidden="true"></i>
                     <a
                         href="#"
                         class="text-muted pointer-events-none"
@@ -231,14 +231,14 @@
 
                 {# Documents count #}
                 <div class="d-flex align-items-center {{ documents_count == 0 ? 'd-none' : '' }}" data-kb-documents-count-container>
-                    <i class="ti ti-paperclip me-1 fs-3"></i>
+                    <i class="ti ti-paperclip me-1 fs-3" aria-hidden="true"></i>
                     <a href="#kb-documents" class="text-muted" data-kb-documents-count  data-testid="documents-count">
                         {{ _n("%s document", "%s documents", documents_count)|format(documents_count) }}
                     </a>
                 </div>
 
                 <div class="d-flex align-items-center {{ related_items_count == 0 ? 'd-none' : '' }}" data-kb-related-items-count-container>
-                    <i class="ti ti-link me-1 fs-3"></i>
+                    <i class="ti ti-link me-1 fs-3" aria-hidden="true"></i>
                     <a href="#kb-documents" class="text-muted" data-kb-related-items-count data-testid="related-items-count">
                         {{ _n("%s related item", "%s related items", related_items_count)|format(related_items_count) }}
                     </a>
@@ -250,7 +250,7 @@
                         class="d-flex align-items-center {{ comments_count == 0 ? 'd-none' : '' }}"
                         data-glpi-comments-counter-container
                     >
-                        <i class="ti ti-message-circle me-1 fs-3"></i>
+                        <i class="ti ti-message-circle me-1 fs-3" aria-hidden="true"></i>
                         <button
                             type="button"
                             class="btn btn-link p-0 text-muted text-decoration-none border-0"
@@ -273,7 +273,7 @@
                         data-glpi-kb-visibility-dates-indicator
                         data-testid="visibility-dates-indicator"
                     >
-                        <i class="ti ti-calendar-clock me-1 fs-3"></i>
+                        <i class="ti ti-calendar-clock me-1 fs-3" aria-hidden="true"></i>
                         <a
                             href="#"
                             class="text-muted"
@@ -307,13 +307,13 @@
                 <ul class="nav nav-underline mb-3" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="kb-documents-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-documents-tab" type="button" role="tab">
-                            <i class="ti ti-paperclip me-1"></i>{{ __('Documents') }}
+                            <i class="ti ti-paperclip me-1" aria-hidden="true"></i>{{ __('Documents') }}
                             <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ documents_count }}</span>
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="kb-items-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-items-tab" type="button" role="tab">
-                            <i class="ti ti-link me-1"></i>{{ __('Related items') }}
+                            <i class="ti ti-link me-1" aria-hidden="true"></i>{{ __('Related items') }}
                             <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ related_items_count }}</span>
                         </button>
                     </li>
@@ -338,7 +338,7 @@
                                 data-bs-toggle="modal"
                                 data-bs-target="#kb-add-document-modal"
                             >
-                                <i class="ti ti-plus me-1"></i>{{ __('Add Document') }}
+                                <i class="ti ti-plus me-1" aria-hidden="true"></i>{{ __('Add Document') }}
                             </button>
 
                             {# Modal for document upload/linking #}
@@ -357,7 +357,7 @@
                                                         aria-controls="kb-modal-upload-pane"
                                                         aria-selected="true"
                                                     >
-                                                        <i class="ti ti-upload me-1"></i>{{ __('Upload a file') }}
+                                                        <i class="ti ti-upload me-1" aria-hidden="true"></i>{{ __('Upload a file') }}
                                                     </button>
                                                 </li>
                                                 {% if document_idor_token is defined %}
@@ -372,7 +372,7 @@
                                                         aria-controls="kb-modal-link-pane"
                                                         aria-selected="false"
                                                     >
-                                                        <i class="ti ti-link me-1"></i>{{ __('Link a document') }}
+                                                        <i class="ti ti-link me-1" aria-hidden="true"></i>{{ __('Link a document') }}
                                                     </button>
                                                 </li>
                                                 {% endif %}
@@ -425,7 +425,7 @@
                                                             </button>
                                                             <button type="submit" class="btn btn-primary"
                                                                     data-glpi-kb-upload-submit>
-                                                                <i class="ti ti-upload me-1"></i>
+                                                                <i class="ti ti-upload me-1" aria-hidden="true"></i>
                                                                 {{ __('Upload Documents') }}
                                                             </button>
                                                         </div>
@@ -470,7 +470,7 @@
                                                         </button>
                                                         <button type="button" class="btn btn-primary"
                                                                 data-glpi-kb-link-submit>
-                                                            <i class="ti ti-link me-1"></i>
+                                                            <i class="ti ti-link me-1" aria-hidden="true"></i>
                                                             {{ __('Link Documents') }}
                                                         </button>
                                                     </div>
@@ -502,7 +502,7 @@
                             data-glpi-kb-action-param-id="{{ item_id }}"
                             data-glpi-kb-action-param-key="LinkItemModal"
                             data-glpi-kb-action-param-title="{{ __('Link to another item') }}">
-                        <i class="ti ti-link me-1"></i>{{ __('Link to another item') }}
+                        <i class="ti ti-link me-1" aria-hidden="true"></i>{{ __('Link to another item') }}
                     </button>
                     {% endif %}
                 </div>
@@ -520,7 +520,7 @@
 {% if mode == 'add' %}
     <div class="px-4 mb-2 d-flex">
         <button class="btn btn-primary ms-auto" data-glpi-kb-add-article>
-            <i class="ti ti-plus me-2"></i>
+            <i class="ti ti-plus me-2" aria-hidden="true"></i>
             {{ __("Add article") }}
         </button>
     </div>

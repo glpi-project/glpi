@@ -197,7 +197,7 @@ class View extends CommonGLPI
 
         if (count($messages)) {
             echo "<div class='alert alert-important alert-warning d-flex'>";
-            echo "<i class='fs-3x ti ti-alert-triangle'></i>";
+            echo "<i class='fs-3x ti ti-alert-triangle' aria-hidden='true'></i>";
             echo "<ul><li>" . implode('</li><li>', $messages) . "</li></ul>";
             echo "</div>";
         }
@@ -367,7 +367,7 @@ class View extends CommonGLPI
                 // Not completely offline. Do not treat as fully offline.
                 $msg = sprintf(__('Plugin list may be truncated due to %s services website unavailability. Please try again later.'), 'GLPI Network');
             }
-            $messages = '<li class="warning"><i class="ti ti-alert-triangle fs-3x"></i>' . htmlescape($msg) . '</li>';
+            $messages = '<li class="warning"><i class="ti ti-alert-triangle fs-3x" aria-hidden="true"></i>' . htmlescape($msg) . '</li>';
         }
 
         $plugins_li = "";
@@ -379,7 +379,7 @@ class View extends CommonGLPI
         if (!$only_lis) {
             // check writable state
             if (!Controller::hasWriteAccess()) {
-                echo "<div class='alert alert-warning'><i class='ti ti-alert-triangle fs-5x'></i>"
+                echo "<div class='alert alert-warning'><i class='ti ti-alert-triangle fs-5x' aria-hidden='true'></i>"
                       . htmlescape(sprintf(__("We can't write on the markeplace directory (%s)."), GLPI_MARKETPLACE_DIR))
                       . "<br>"
                       . __s("If you want to ease the plugins download, please check permissions and ownership of this directory.")
@@ -481,7 +481,7 @@ HTML;
                         </ul>
                         $pagination
                         <a href="mailto:{$networkmail}" class="network-mail" target="_blank">
-                            $yourplugin&nbsp;<i class="ti ti-mail"></i>
+                            $yourplugin&nbsp;<i class="ti ti-mail" aria-hidden="true"></i>
                         </a>
                     </div>
                 </div>
@@ -506,7 +506,7 @@ HTML;
                     var element = option.element;
                     var icon = $(element).data('icon');
 
-                    return $("<span><i class='" + _.escape(icon) + "'></i>&nbsp;" + _.escape(option.text) + "</span>");
+                    return $("<span><i class='" + _.escape(icon) + "' aria-hidden='true'></i>&nbsp;" + _.escape(option.text) + "</span>");
                 };
 
                 $('.sort-control').select2({
@@ -576,11 +576,11 @@ JS;
         $stars = "";
         for ($i = 1; $i < 6; $i++) {
             if ($value >= $i) {
-                $stars .= "<i class='ti ti-star-filled'></i>";
+                $stars .= "<i class='ti ti-star-filled' aria-hidden='true'></i>";
             } elseif ($value + 0.5 == $i) {
-                $stars .= "<i class='ti ti-star-half-filled'></i>";
+                $stars .= "<i class='ti ti-star-half-filled' aria-hidden='true'></i>";
             } else {
-                $stars .= "<i class='ti ti-star'></i>";
+                $stars .= "<i class='ti ti-star' aria-hidden='true'></i>";
             }
         }
 
@@ -645,7 +645,7 @@ JS;
 
         if (strlen($error)) {
             $rand = mt_rand();
-            $buttons .= "<i class='ti ti-alert-triangle plugin-error' id='plugin-error-$rand'></i>";
+            $buttons .= "<i class='ti ti-alert-triangle plugin-error' id='plugin-error-$rand' aria-hidden='true'></i>";
             Html::showToolTip($error, [
                 'applyto' => "plugin-error-$rand",
             ]);
@@ -656,20 +656,20 @@ JS;
                 <button class='modify_plugin'
                         data-action='clean_plugin'
                         title='" . __s("Clean") . "'>
-                        <i class='ti ti-recycle'></i>
+                        <i class='ti ti-recycle' aria-hidden='true'></i>
                 </button>";
             if ($can_be_downloaded) {
                 $buttons .= "
                     <button class='modify_plugin'
                             data-action='download_plugin'
                             title='" . __s("Download again") . "'>
-                        <i class='ti ti-cloud-download'></i>
+                        <i class='ti ti-cloud-download' aria-hidden='true'></i>
                     </button>";
             }
         } elseif (!$is_available) {
             if (!$is_execution_suspended && !$can_run_local_install) {
                 $rand = mt_rand();
-                $buttons .= "<i class='ti ti-alert-triangle plugin-unavailable' id='plugin-tooltip-$rand'></i>";
+                $buttons .= "<i class='ti ti-alert-triangle plugin-unavailable' id='plugin-tooltip-$rand' aria-hidden='true'></i>";
                 Html::showToolTip(
                     __s('This plugin is not available for your GLPI version.'),
                     [
@@ -702,14 +702,14 @@ JS;
                         : $plugin_data['installation_url'];
 
                     $buttons .= "<a href='" . \htmlescape($download_url) . "' target='_blank'>
-                            <button title='$warning' class='add_tooltip download_manually'><i class='ti ti-archive'></i></button>
+                            <button title='$warning' class='add_tooltip download_manually'><i class='ti ti-archive' aria-hidden='true'></i></button>
                         </a>";
                 } else {
                     $warning = __s("The plugin has an available update but its local directory contains source versioning.") . "<br>";
                     $warning .= __s("To avoid overwriting a potential branch under development, downloading is disabled.");
 
                     $buttons .= "<button title='$warning' class='add_tooltip download_manually'>
-                        <i class='ti ti-ban'></i>
+                        <i class='ti ti-ban' aria-hidden='true'></i>
                     </button>";
                 }
             }
@@ -718,7 +718,7 @@ JS;
                 $buttons .= "<button class='modify_plugin'
                                      data-action='download_plugin'
                                      title='" . __s("Download") . "'>
-                        <i class='ti ti-cloud-download'></i>
+                        <i class='ti ti-cloud-download' aria-hidden='true'></i>
                     </button>";
             } elseif ($can_be_updated) {
                 $update_title = sprintf(
@@ -733,7 +733,7 @@ JS;
                     'open_btn' => '<button data-bs-toggle="modal"
                                            data-bs-target="#updateModal' . htmlescape($plugin_inst->getField('directory')) . '"
                                            title="' . $update_title . '">
-                                       <i class="ti ti-cloud-download"></i>
+                                       <i class="ti ti-cloud-download" aria-hidden="true"></i>
                                    </button>',
                     'update_btn' => '<a href="#" class="btn btn-danger w-100 modify_plugin"
                                            data-action="update_plugin"
@@ -752,7 +752,7 @@ JS;
 
             $buttons .= "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>
                     <button class='add_tooltip need_offers' title='$warning'>
-                        <i class='ti ti-alert-triangle'></i>
+                        <i class='ti ti-alert-triangle' aria-hidden='true'></i>
                     </button>
                 </a>";
         }
@@ -766,7 +766,7 @@ JS;
                     'open_btn' => '<button data-bs-toggle="modal"
                                            data-bs-target="#updateModal' . \htmlescape($plugin_inst->getField('directory')) . '"
                                            title="' . __s("Update") . '">
-                                       <i class="ti ti-caret-up"></i>
+                                       <i class="ti ti-caret-up" aria-hidden="true"></i>
                                    </button>',
                     'update_btn' => '<a href="#" class="btn btn-info w-100 modify_plugin"
                                            data-action="install_plugin"
@@ -778,7 +778,7 @@ JS;
                 $buttons .= "<button class='modify_plugin'
                                      data-action='install_plugin'
                                      title='" . __s("Install") . "'>
-                        <i class='ti ti-folder-plus'></i>
+                        <i class='ti ti-folder-plus' aria-hidden='true'></i>
                     </button>";
             }
         }
@@ -789,13 +789,13 @@ JS;
                     $buttons .= "<button class='modify_plugin'
                                          data-action='disable_plugin'
                                          title='" . __s("Disable") . "'>
-                            <i class='ti ti-toggle-right-filled'></i>
+                            <i class='ti ti-toggle-right-filled' aria-hidden='true'></i>
                         </button>";
                 } else {
                     $buttons .= "<button class='modify_plugin'
                                          data-action='enable_plugin'
                                          title='" . __s("Enable") . "'>
-                            <i class='ti ti-toggle-left-filled'></i>
+                            <i class='ti ti-toggle-left-filled' aria-hidden='true'></i>
                         </button>";
                 }
             }
@@ -804,7 +804,7 @@ JS;
                 <button class="add_tooltip" data-bs-toggle="modal"
                         data-bs-target="#uninstallModal' . htmlescape($plugin_inst->getField('directory')) . '"
                         title="' . __s("Uninstall") . '">
-                    <i class="ti ti-folder-x"></i>
+                    <i class="ti ti-folder-x" aria-hidden="true"></i>
                 </button>
             ';
 
@@ -825,7 +825,7 @@ JS;
                 $config_url = "{$CFG_GLPI['root_doc']}/plugins/{$plugin_key}/{$config_page}";
                 $buttons .= "<a href='" . htmlescape($config_url) . "'>
                         <button class='add_tooltip' title='" . __s("Configure") . "'>
-                            <i class='ti ti-tool'></i>
+                            <i class='ti ti-tool' aria-hidden='true'></i>
                         </button>
                     </a>";
             }
@@ -834,7 +834,7 @@ JS;
         if ($buttons === '' && $is_execution_suspended) {
             // Add a tooltip to indicate why no action is available.
             return \sprintf(
-                '<span class="text-info" data-bs-toggle="tooltip" title="%s"><i class="ti ti-info-circle-filled"></i></span>',
+                '<span class="text-info" data-bs-toggle="tooltip" title="%s"><i class="ti ti-info-circle-filled" aria-hidden="true"></i></span>',
                 __s('The plugins maintenance actions are disabled when the plugins execution is suspended.')
             );
         }
@@ -898,7 +898,7 @@ JS;
                     <a href='" . htmlescape(GLPI_NETWORK_SERVICES) . "' target='_blank'
                        class='badge glpi-network'
                        title='" . sprintf(__s("You must have a %s subscription to get this plugin"), 'GLPI Network') . "'>
-                        <i class='ti ti-star-filled'></i>GLPI Network
+                        <i class='ti ti-star-filled' aria-hidden='true'></i>GLPI Network
                     </a>
                     <a href='" . htmlescape(GLPI_NETWORK_SERVICES) . "' target='_blank'
                        class='badge bg-azure $offerkey'
@@ -982,7 +982,7 @@ JS;
         if (!$only_li) {
             $html .= "<ul class='pagination'>";
         }
-        $html .= "<li data-page='$prev' $p_cls><i class='ti ti-chevron-left'></i></li>";
+        $html .= "<li data-page='$prev' $p_cls><i class='ti ti-chevron-left' aria-hidden='true'></i></li>";
         $dots = false;
         for ($i = 1; $i <= $nb_pages; $i++) {
             if (
@@ -1004,7 +1004,7 @@ JS;
                 : "";
             $html .= "<li data-page='$i' $current>$i</li>";
         }
-        $html .= "<li data-page='$next' $n_cls><i class='ti ti-chevron-right'></i></li>";
+        $html .= "<li data-page='$next' $n_cls><i class='ti ti-chevron-right' aria-hidden='true'></i></li>";
         $html .= "<li class='nb_plugin'>" . sprintf(_sn("%s plugin", "%s plugins", $total), $total) . "</li>";
         if (!$only_li) {
             $html .= "</ul>";

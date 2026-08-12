@@ -104,3 +104,7 @@ if (!$DB->fieldExists('glpi_oauth_access_tokens', 'uuid')) {
     $migration->addField('glpi_oauth_access_tokens', 'uuid', 'varchar(255) NOT NULL', ['after' => 'identifier']);
     $migration->addKey('glpi_oauth_access_tokens', 'uuid', 'uuid', 'UNIQUE');
 }
+
+$migration->addConfig([
+    'login_history_retention_days' => 90,
+], 'core');
