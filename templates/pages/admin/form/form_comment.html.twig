@@ -95,41 +95,48 @@
                 }, with_context = false) }}
 
                 {# Duplicate comment #}
-                <i
-                    role="button"
-                    class="ti ti-copy ms-3 cursor-pointer"
+                <button
+                    type="button"
+                    class="btn btn-sm btn-icon btn-ghost-secondary ms-1"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="{{ __("Duplicate comment") }}"
                     data-glpi-form-editor-on-click="duplicate-comment"
                     data-glpi-form-editor-comment-extra-details
                     data-glpi-form-editor-state-action
-                ></i>
+                >
+                    <i class="ti ti-copy" aria-hidden="true"></i>
+                    <span class="visually-hidden">{{ __("Duplicate comment") }}</span>
+                </button>
 
                 {# Delete comment #}
-                <i
-                    role="button"
-                    class="ti ti-trash ms-3 cursor-pointer"
+                <button
+                    type="button"
+                    class="btn btn-sm btn-icon btn-ghost-secondary ms-1"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"
                     title="{{ __("Delete") }}"
-                    aria-label="{{ __("Delete") }}"
                     data-glpi-form-editor-on-click="delete-comment"
                     data-glpi-form-editor-comment-extra-details
                     data-glpi-form-editor-state-action
-                ></i>
+                >
+                    <i class="ti ti-trash" aria-hidden="true"></i>
+                    <span class="visually-hidden">{{ __("Delete") }}</span>
+                </button>
 
                 {# Extra actions #}
-                <div class="dropdown ms-3 cursor-pointer d-flex align-items-center">
-                    <i
-                        class="ti ti-dots-vertical show"
+                <div class="dropdown ms-1 d-flex align-items-center">
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-icon btn-ghost-secondary"
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
-                        role="button"
                         title="{{ __('More actions') }}"
-                        aria-label="{{ __('More actions') }}"
                         data-glpi-form-editor-state-action
-                    ></i>
+                    >
+                        <i class="ti ti-dots-vertical" aria-hidden="true"></i>
+                        <span class="visually-hidden">{{ __('More actions') }}</span>
+                    </button>
                     <ul class="dropdown-menu" data-bs-popper="none">
                         <li>
                             <button

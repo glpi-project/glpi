@@ -2809,6 +2809,11 @@ export class GlpiFormEditorController
         // Simple class toggle, hiding the correct parts is handled by CSS rules
         section.toggleClass("section-collapsed");
 
+        // Expose the collapsed state to assistive technologies
+        section
+            .find('[data-glpi-form-editor-on-click="collapse-section"]')
+            .attr("aria-expanded", section.hasClass("section-collapsed") ? "false" : "true");
+
         // Update the block count
         this.#updateSectionBlockCount(section);
     }
