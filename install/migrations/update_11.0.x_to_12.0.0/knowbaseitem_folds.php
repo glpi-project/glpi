@@ -36,7 +36,7 @@
  * @var Migration $migration
  */
 
-// Per-user list of KB aside categories the user has collapsed.
+// Per-user list of KB aside articles the user has collapsed (folded).
 $migration->addField(
     'glpi_users',
     'folded_knowbaseitems',

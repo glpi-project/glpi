@@ -341,7 +341,7 @@ HTML,
     }
 
     #[AllowMockObjectsWithoutExpectations]
-    public function testGetForCategory()
+    public function testGetChildrenArticlesFiltersUnviewableIds()
     {
         global $DB;
         $orig_db = clone $DB;
@@ -373,7 +373,7 @@ HTML,
         // Expected : [1, 3]
         // Replace global DB with mocked DB
         $DB = $m_db;
-        $result = KnowbaseItem::getForCategory(1, $m_kbi);
+        $result = KnowbaseItem::getChildrenArticles(1, $m_kbi);
         $DB = $orig_db;
         $this->assertCount(2, $result);
         $this->assertContains('1', $result);
@@ -382,10 +382,22 @@ HTML,
         // Expected : [-1]
         // Replace global DB with mocked DB
         $DB = $m_db;
-        $result = KnowbaseItem::getForCategory(1, $m_kbi);
+        $result = KnowbaseItem::getChildrenArticles(1, $m_kbi);
         $DB = $orig_db;
         $this->assertCount(1, $result);
         $this->assertContains(-1, $result);
+    }
+
+    public function testGetChildrenArticles(): void
+    {
+        $this->login();
+        $parent = new KnowbaseItem();
+        $parent_id = (int) $parent->add(['name' => 'Section', 'answer' => '']);
+        $child = new KnowbaseItem();
+        $child_id = (int) $child->add(['name' => 'Leaf', 'answer' => '', '_parents' => [$parent_id]]);
+
+        $children = KnowbaseItem::getChildrenArticles($parent_id);
+        $this->assertEquals([$child_id], array_map('intval', $children));
     }
 
     public static function fullTextSearchProvider(): iterable
@@ -555,7 +567,7 @@ HTML,
         return [
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+macintosh",
                     //Find rows that contain the word 'macintosh'
@@ -566,7 +578,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+apple",
                     //Find rows that contain the word 'apple'
@@ -577,7 +589,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "apple macintosh",
                     //Find rows that contain at least one of the two words.
@@ -588,7 +600,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "base entry _knowbaseitem02",
                     //Find rows that contain at least one of the three words.
@@ -599,7 +611,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "apple",
                     //Find rows that contain at least 'apple'
@@ -610,7 +622,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "macintosh",
                     //Find rows that contain at least 'macintosh'
@@ -621,7 +633,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "Knowledge",
                     //Find rows that contain at least 'macintosh'
@@ -632,7 +644,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+juice +macintosh",
                     //Find rows that contain both words.
@@ -643,7 +655,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+apple -macintosh",
                     //Find rows that contain the word “apple” but not “macintosh”.
@@ -654,7 +666,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+apple ~macintosh",
                     //Find rows that contain the word “apple”, but if the row also contains the word “macintosh”, rate it lower than if row does not.
@@ -665,7 +677,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+apple macintosh",
                     //Find rows that contain the word “apple”, but rank rows higher if they also contain “macintosh”.
@@ -676,7 +688,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+apple +(>macintosh <juice)",
                     //Find rows that contain the words “apple” and "juice", or “apple” and "macintosh" (in any order), but rank “apple macintosh" higher than “apple juice".
@@ -687,7 +699,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "Know*",
                     //Find rows that contain "Know" such as "Knowledge"
@@ -698,7 +710,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "turn*",
                     //Find rows that contain "turn" such as "turnover"
@@ -709,7 +721,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => '"macintosh strudel"',
                     //Find rows that contain the exact phrase “macintosh strudel”
@@ -720,7 +732,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => '"base entry _knowbaseitem02"',
                     //Find rows that contain the exact phrase “base entry _knowbaseitem02”
@@ -731,7 +743,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => ' ',
                     // Make sure no errors are triggered when sending this specific request
@@ -742,7 +754,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => '      ',
                     // Make sure no errors are triggered when sending this specific request
@@ -753,7 +765,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => '*',
                     // Make sure no errors are triggered when sending this specific request
@@ -764,7 +776,7 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitemcategories_id' => 0,
+                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => '%',
                     // Make sure no errors are triggered when sending this specific request
@@ -825,185 +837,191 @@ HTML,
         $this->assertStringContainsString('<a href="#title-1c">', $answer);
     }
 
-    /**
-     * To be deleted after 11.0 release
-     */
-    /*public function testCreateWithCategoriesDeprecated()
-    {
-        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
-
-        // Create a KB category
-        $category = $this->createItem(\KnowbaseItemCategory::class, [
-            'name' => __FUNCTION__ . '_1',
-            'comment' => __FUNCTION__ . '_1',
-            'entities_id' => $root_entity,
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
-        ]);
-
-        // Create KB item with category
-        $kb_item = @$this->createItem(\KnowbaseItem::class, [
-            'name' => __FUNCTION__ . '_1',
-            'answer' => __FUNCTION__ . '_1',
-            'knowbaseitemcategories_id' => $category->getID(),
-        ], ['knowbaseitemcategories_id']);
-
-        // Get categories linked to our kb_item
-        $linked_categories = (new \KnowbaseItem_KnowbaseItemCategory())->find([
-            'knowbaseitems_id' => $kb_item->getID(),
-        ]);
-
-        // We expect one category
-        $this->assertCount(1, $linked_categories);
-
-        // Check category id
-        $data = array_pop($linked_categories);
-        $this->assertEquals($category->getID(), $data['knowbaseitemcategories_id']);
-    }*/
-
-    public function testCreateWithCategories()
+    public function testCreateWithParents()
     {
         global $DB;
 
-        // Create 2 new KB categories
-        $kb_category = new \KnowbaseItemCategory();
-        $root_entity = getItemByTypeName('Entity', '_test_root_entity', true);
-        $kb_cat_id1 = $kb_category->add([
-            'name' => __FUNCTION__ . '_1',
-            'comment' => __FUNCTION__ . '_1',
-            'entities_id' => $root_entity,
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
-        ]);
-        $this->assertGreaterThan(0, $kb_cat_id1);
+        $this->login();
 
-        $kb_cat_id2 = $kb_category->add([
-            'name' => __FUNCTION__ . '_2',
-            'comment' => __FUNCTION__ . '_2',
-            'entities_id' => $root_entity,
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
+        // Create 2 new parent articles
+        $parent1 = $this->createItem(KnowbaseItem::class, [
+            'name' => __FUNCTION__ . '_1',
+            'answer' => __FUNCTION__ . '_1',
         ]);
-        $this->assertGreaterThan(0, $kb_cat_id2);
+        $parent2 = $this->createItem(KnowbaseItem::class, [
+            'name' => __FUNCTION__ . '_2',
+            'answer' => __FUNCTION__ . '_2',
+        ]);
 
         $kbitem = new KnowbaseItem();
-        // Create a new KB item with the first category
+        // Create a new KB item with the first parent
         $kbitems_id1 = $kbitem->add([
             'name' => __FUNCTION__ . '_1',
             'answer' => __FUNCTION__ . '_1',
-            '_categories' => [$kb_cat_id1],
+            '_parents' => [$parent1->getID()],
         ]);
         $this->assertGreaterThan(0, $kbitems_id1);
 
-        // Expect the KB item to have the first category
+        // Expect the KB item to have the first parent
         $iterator = $DB->request([
-            'FROM' => \KnowbaseItem_KnowbaseItemCategory::getTable(),
+            'FROM' => \KnowbaseItem_KnowbaseItem::getTable(),
             'WHERE' => [
                 'knowbaseitems_id' => $kbitems_id1,
             ],
         ]);
         $this->assertEquals(1, $iterator->count());
-        $this->assertEquals($kb_cat_id1, $iterator->current()['knowbaseitemcategories_id']);
+        $this->assertEquals($parent1->getID(), $iterator->current()['knowbaseitems_id_parent']);
 
-        // Create a new KB item with both categories
+        // Create a new KB item with both parents
         $kbitems_id2 = $kbitem->add([
             'name' => __FUNCTION__ . '_2',
             'answer' => __FUNCTION__ . '_2',
-            '_categories' => [$kb_cat_id1, $kb_cat_id2],
+            '_parents' => [$parent1->getID(), $parent2->getID()],
         ]);
         $this->assertGreaterThan(0, $kbitems_id2);
 
-        // Expect the KB item to have both categories
+        // Expect the KB item to have both parents
         $iterator = $DB->request([
-            'FROM' => \KnowbaseItem_KnowbaseItemCategory::getTable(),
+            'FROM' => \KnowbaseItem_KnowbaseItem::getTable(),
             'WHERE' => [
                 'knowbaseitems_id' => $kbitems_id2,
             ],
         ]);
         $this->assertEquals(2, $iterator->count());
-        $category_ids = [];
+        $parent_ids = [];
         foreach ($iterator as $row) {
-            $category_ids[] = $row['knowbaseitemcategories_id'];
+            $parent_ids[] = $row['knowbaseitems_id_parent'];
         }
-        $this->assertEqualsCanonicalizing([$kb_cat_id1, $kb_cat_id2], $category_ids);
+        $this->assertEqualsCanonicalizing([$parent1->getID(), $parent2->getID()], $parent_ids);
     }
 
-    public function testShowFullAddModeIgnoresUnknownCategory(): void
+    public function testSearchByParent(): void
+    {
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_parent',
+            'answer'      => __FUNCTION__ . '_parent',
+            'entities_id' => $entity,
+        ]);
+
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_child',
+            'answer'      => __FUNCTION__ . '_child',
+            'entities_id' => $entity,
+            '_parents'    => [$parent->getID()],
+        ]);
+
+        // Not a child of $parent, must never appear in the results below.
+        $unrelated = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_unrelated',
+            'answer'      => __FUNCTION__ . '_unrelated',
+            'entities_id' => $entity,
+        ]);
+
+        $data = \Search::getDatas(KnowbaseItem::class, [
+            'criteria' => [
+                [
+                    'field'      => 79,
+                    'searchtype' => 'equals',
+                    'value'      => $parent->getID(),
+                ],
+            ],
+            // These test articles have no visibility grants (closed by
+            // default). Ask the search to include unpublished articles too,
+            // same as testGetVisibilityCriteria() does, so this test is only
+            // exercising the option-79 filter itself.
+            'unpublished' => 1,
+        ]);
+
+        $names = [];
+        foreach ($data['data']['rows'] as $row) {
+            // Some names may be force-grouped so the actual name is in the first part before the SHORTSEP
+            $n = $row['raw']['ITEM_' . KnowbaseItem::class . '_1'];
+            $names[] = explode('$#$', $n)[0];
+        }
+
+        $this->assertContains($child->fields['name'], $names);
+        $this->assertNotContains($unrelated->fields['name'], $names);
+        $this->assertNotContains($parent->fields['name'], $names);
+    }
+
+    public function testShowFullAddModeIgnoresUnknownParent(): void
     {
         $this->login();
 
         $item = new KnowbaseItem();
         $item->getEmpty();
         $html = (string) $item->showFull([
-            'mode'                      => 'add',
-            'display'                   => false,
-            'knowbaseitemcategories_id' => 999999,
+            'mode'                    => 'add',
+            'display'                 => false,
+            'knowbaseitems_id_parent' => 999999,
         ]);
-        $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-parent-id', $html);
     }
 
-    public function testShowFullAddModeIgnoresNonNumericCategory(): void
+    public function testShowFullAddModeIgnoresNonNumericParent(): void
     {
         $this->login();
 
         $item = new KnowbaseItem();
         $item->getEmpty();
         $html = (string) $item->showFull([
-            'mode'                      => 'add',
-            'display'                   => false,
-            'knowbaseitemcategories_id' => 'abc',
+            'mode'                    => 'add',
+            'display'                 => false,
+            'knowbaseitems_id_parent' => 'abc',
         ]);
-        $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-parent-id', $html);
     }
 
-    public function testShowFullAddModeIgnoresCategoryFromUnreachableEntity(): void
+    public function testShowFullAddModeIgnoresParentWhenNotViewable(): void
     {
+        // Parent article authored by another user, with no visibility grants:
+        // not viewable by a non-admin session.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
         $this->login();
-
-        $sibling_entity_id = (int) getItemByTypeName('Entity', '_test_child_1', true);
-        $cat = $this->createItem(\KnowbaseItemCategory::class, [
-            'name'                      => __FUNCTION__,
-            'knowbaseitemcategories_id' => 0,
-            'entities_id'               => $sibling_entity_id,
-            'is_recursive'              => 0,
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => __FUNCTION__,
+            'answer'   => __FUNCTION__,
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
         ]);
-        $cat_id = $cat->getID();
+        $parent_id = $parent->getID();
 
-        // Restrict the active session to a sibling that cannot reach the category
-        $this->setEntity('_test_child_2', false);
+        // Log in as a user without KB admin rights and unrelated to the article
+        $this->login('post-only', 'postonly');
 
         $item = new KnowbaseItem();
         $item->getEmpty();
         $html = (string) $item->showFull([
-            'mode'                      => 'add',
-            'display'                   => false,
-            'knowbaseitemcategories_id' => $cat_id,
+            'mode'                    => 'add',
+            'display'                 => false,
+            'knowbaseitems_id_parent' => $parent_id,
         ]);
-        $this->assertStringNotContainsString('data-glpi-kb-prefilled-category-id', $html);
+        $this->assertStringNotContainsString('data-glpi-kb-prefilled-parent-id', $html);
     }
 
-    public function testShowFullAddModePrefillsCategoryFromOptions(): void
+    public function testShowFullAddModePrefillsParentFromOptions(): void
     {
         $this->login();
 
-        $cat = $this->createItem(\KnowbaseItemCategory::class, [
-            'name'                      => __FUNCTION__,
-            'knowbaseitemcategories_id' => 0,
-            'entities_id'               => $this->getTestRootEntity(only_id: true),
-            'is_recursive'              => 1,
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => __FUNCTION__,
         ]);
-        $cat_id = $cat->getID();
+        $parent_id = $parent->getID();
 
         $item = new KnowbaseItem();
         $item->getEmpty();
         $html = (string) $item->showFull([
-            'mode'                      => 'add',
-            'display'                   => false,
-            'knowbaseitemcategories_id' => $cat_id,
+            'mode'                    => 'add',
+            'display'                 => false,
+            'knowbaseitems_id_parent' => $parent_id,
         ]);
 
         $this->assertStringContainsString(
-            'data-glpi-kb-prefilled-category-id="' . $cat_id . '"',
+            'data-glpi-kb-prefilled-parent-id="' . $parent_id . '"',
             $html
         );
     }
@@ -1868,34 +1886,32 @@ HTML,
         $this->login();
         $kbi = getItemByTypeName('KnowbaseItem', '_knowbaseitem01', false);
 
-        $category = $this->createItem('KnowbaseItemCategory', [
-            'name' => __FUNCTION__,
-            'entities_id' => $this->getTestRootEntity(true),
-            'is_recursive' => 1,
-            'knowbaseitemcategories_id' => 0,
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => __FUNCTION__,
         ]);
 
         $kbi->update([
             'id' => $kbi->getID(),
-            '_categories' => [$category->getID()],
-            '__categories_defined' => 1,
+            '_parents' => [$parent->getID()],
+            '__parents_defined' => 1,
         ]);
         $this->assertEquals(
             1,
             countElementsInTable(
-                \KnowbaseItem_KnowbaseItemCategory::getTable(),
+                \KnowbaseItem_KnowbaseItem::getTable(),
                 ['knowbaseitems_id' => $kbi->getID()]
             )
         );
         $kbi->update([
             'id' => $kbi->getID(),
-            '_categories' => '',
-            '__categories_defined' => 1,
+            '_parents' => '',
+            '__parents_defined' => 1,
         ]);
         $this->assertEquals(
             0,
             countElementsInTable(
-                \KnowbaseItem_KnowbaseItemCategory::getTable(),
+                \KnowbaseItem_KnowbaseItem::getTable(),
                 ['knowbaseitems_id' => $kbi->getID()]
             )
         );
@@ -2158,31 +2174,28 @@ HTML,
         );
     }
 
-    public function testGetReadablePrefilledCategoryIdRejectsZeroOrUnreadableIds(): void
+    public function testGetReadablePrefilledParentIdRejectsZeroOrUnreadableIds(): void
     {
         $this->login();
-        $entity_id = $this->getTestRootEntity(only_id: true);
-        $cat = $this->createItem(\KnowbaseItemCategory::class, [
-            'name' => 'Public static test cat',
-            'knowbaseitemcategories_id' => 0,
-            'entities_id' => $entity_id,
-            'is_recursive' => 1,
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Public static test parent',
+            'answer' => 'Public static test parent',
         ]);
 
         $this->assertSame(
-            $cat->getID(),
-            KnowbaseItem::getReadablePrefilledCategoryId($cat->getID())
+            $parent->getID(),
+            KnowbaseItem::getReadablePrefilledParentId($parent->getID())
         );
-        $this->assertNull(KnowbaseItem::getReadablePrefilledCategoryId(0));
-        $this->assertNull(KnowbaseItem::getReadablePrefilledCategoryId(999999));
+        $this->assertNull(KnowbaseItem::getReadablePrefilledParentId(0));
+        $this->assertNull(KnowbaseItem::getReadablePrefilledParentId(999999));
     }
 
-    public function testGetFormOptionsFromUrlWhitelistsCategoryOnly(): void
+    public function testGetFormOptionsFromUrlWhitelistsParentOnly(): void
     {
         $item = new KnowbaseItem();
         $this->assertSame(
-            ['knowbaseitemcategories_id' => 5],
-            $item->getFormOptionsFromUrl(['knowbaseitemcategories_id' => 5, 'unrelated' => 'x'])
+            ['knowbaseitems_id_parent' => 5],
+            $item->getFormOptionsFromUrl(['knowbaseitems_id_parent' => 5, 'unrelated' => 'x'])
         );
         $this->assertSame([], $item->getFormOptionsFromUrl(['unrelated' => 'x']));
     }
@@ -2239,5 +2252,190 @@ HTML,
         ]);
 
         $this->assertEquals('Short answer', $kb->getServiceCatalogItemDescription());
+    }
+
+    public function testVisibilityInheritsFromAncestor(): void
+    {
+        // Non-admin central user
+        $this->login('normal', 'normal');
+        $entity = (int) $_SESSION['glpiactiveentities'][0];
+
+        // Author the articles as *another* user (glpi): otherwise the author
+        // bypass (`users_id => current user`) would make them directly visible
+        // to `normal` and inheritance would never be exercised.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+
+        $parent = new KnowbaseItem();
+        $parent_id = (int) $parent->add(['name' => 'Section', 'answer' => '', 'users_id' => $glpi_user]);
+        // grant the parent to the user's active entity
+        (new \Entity_KnowbaseItem())->add([
+            'knowbaseitems_id' => $parent_id, 'entities_id' => $entity, 'is_recursive' => 1,
+        ]);
+
+        // child has NO direct visibility, linked under the parent
+        $child = new KnowbaseItem();
+        $child_id = (int) $child->add(['name' => 'Nested', 'answer' => '', 'users_id' => $glpi_user, '_parents' => [$parent_id]]);
+
+        // browse list applies visibility criteria
+        $visible_ids = $this->listBrowseIds();
+        $this->assertContains($child_id, $visible_ids, 'child visible via ancestor');
+
+        // remove the parent grant -> child no longer visible
+        $ekb = new \Entity_KnowbaseItem();
+        $ekb->getFromDBByCrit(['knowbaseitems_id' => $parent_id]);
+        $ekb->delete(['id' => $ekb->getID()], true);
+
+        $visible_ids = $this->listBrowseIds();
+        $this->assertNotContains($child_id, $visible_ids, 'child hidden once ancestor grant removed');
+    }
+
+    /** @return int[] ids returned by a visibility-filtered browse list */
+    private function listBrowseIds(): array
+    {
+        global $DB;
+        $ids = [];
+        foreach ($DB->request(KnowbaseItem::getListRequest([], 'browse')) as $row) {
+            $ids[] = (int) $row['id'];
+        }
+        return $ids;
+    }
+
+    /**
+     * The visibility criteria must keep working when the caller renames
+     * `glpi_knowbaseitems` to an alias, as the High Level API does (it maps the
+     * main table to `_`). Callers can only rewrite criteria *keys*, so no
+     * table-qualified column may be buried inside a raw `QueryExpression`.
+     *
+     * A KB admin sees every article through a short-circuit that skips the
+     * inherited-visibility term entirely, so this must run as a plain user.
+     */
+    public function testVisibilityCriteriaSupportMainTableAlias(): void
+    {
+        global $DB;
+
+        $this->login('normal', 'normal');
+
+        $criteria = KnowbaseItem::getVisibilityCriteria(true);
+
+        // Sanity check: the term that used to hardcode the table name is present.
+        $iterator = new \DBmysqlIterator($DB);
+        $iterator->buildQuery([
+            'SELECT'    => [KnowbaseItem::getTableField('id')],
+            'FROM'      => KnowbaseItem::getTable(),
+            'LEFT JOIN' => $criteria['LEFT JOIN'],
+            'WHERE'     => $criteria['WHERE'],
+        ]);
+        $this->assertStringContainsString('WITH RECURSIVE', $iterator->getSql());
+
+        // Rewrite the main table to `_` the same way `Glpi\Api\HL\Search` does,
+        // then make sure the resulting query is still valid SQL.
+        $rewrite = static function (array $crit) use (&$rewrite): array {
+            $out = [];
+            foreach ($crit as $key => $value) {
+                if ($key === KnowbaseItem::getTable() || str_starts_with((string) $key, KnowbaseItem::getTable() . '.')) {
+                    $key = str_replace(KnowbaseItem::getTable(), '_', (string) $key);
+                }
+                $out[$key] = is_array($value) ? $rewrite($value) : $value;
+            }
+            return $out;
+        };
+
+        $aliased = $DB->request([
+            'SELECT'    => ['_.id'],
+            'FROM'      => KnowbaseItem::getTable() . ' AS _',
+            'LEFT JOIN' => $rewrite($criteria['LEFT JOIN']),
+            'WHERE'     => $rewrite($criteria['WHERE']),
+        ]);
+        $this->assertGreaterThanOrEqual(0, $aliased->count());
+    }
+
+    public function testShowListDoesNotLeakUnviewableParent(): void
+    {
+        // Parent + child authored by glpi, with no visibility grants.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Secret parent ' . __FUNCTION__,
+            'answer'   => '',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+        ]);
+        $parent_id = $parent->getID();
+
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Leaf child ' . __FUNCTION__,
+            'answer'   => '',
+            'is_faq'   => 0,
+            'users_id' => $glpi_user,
+            '_parents' => [$parent_id],
+        ]);
+        $child_id = $child->getID();
+
+        // Non-admin central user, unrelated to the articles.
+        $this->login('normal', 'normal');
+
+        // Grant the child directly to this user (so the child shows in the list),
+        // while the parent remains non-viewable.
+        (new KnowbaseItem_User())->add([
+            'knowbaseitems_id' => $child_id,
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        $child_obj = new KnowbaseItem();
+        $this->assertTrue($child_obj->getFromDB($child_id));
+        $this->assertTrue($child_obj->canViewItem(), 'child must be viewable for this test');
+        $parent_obj = new KnowbaseItem();
+        $this->assertTrue($parent_obj->getFromDB($parent_id));
+        $this->assertFalse($parent_obj->canViewItem(), 'parent must NOT be viewable for this test');
+
+        \ob_start();
+        KnowbaseItem::showList(['start' => 0], 'browse');
+        $output = (string) \ob_get_clean();
+
+        // The child (visible) is listed, but the unviewable parent must not leak.
+        $this->assertStringContainsString('Leaf child ' . __FUNCTION__, $output);
+        $this->assertStringNotContainsString('Secret parent ' . __FUNCTION__, $output);
+        $this->assertStringNotContainsString('kb-parent', $output);
+    }
+
+    /**
+     * A viewable parent is rendered as a link to the parent article itself.
+     *
+     * It must NOT point at the search list with a `knowbaseitems_id_parent`
+     * parameter: that parameter was only ever read by the tree-browse view,
+     * which `KnowbaseItem` no longer implements, so such a link would land on
+     * the unfiltered article list.
+     */
+    public function testShowListLinksParentToItsOwnForm(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Visible parent ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Visible child ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID()],
+        ]);
+
+        \ob_start();
+        KnowbaseItem::showList(['start' => 0], 'browse');
+        $output = (string) \ob_get_clean();
+
+        $this->assertStringContainsString('Visible child ' . __FUNCTION__, $output);
+        $this->assertStringContainsString(
+            "href='" . htmlescape(KnowbaseItem::getFormURLWithID($parent->getID())) . "'",
+            $output
+        );
+        $this->assertStringNotContainsString('knowbaseitems_id_parent=', $output);
+        $this->assertStringNotContainsString('forcetab=Knowbase', $output);
+        // Guard against the assertions above passing on an empty parent cell.
+        $this->assertStringContainsString(
+            "data-parent-id='" . $parent->getID() . "'",
+            $output
+        );
     }
 }

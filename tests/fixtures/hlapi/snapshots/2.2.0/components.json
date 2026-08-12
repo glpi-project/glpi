@@ -7186,7 +7186,7 @@
                 },
                 "knowbase_category": {
                     "type": "object",
-                    "x-itemtype": "KnowbaseItemCategory",
+                    "x-itemtype": "KnowbaseItem",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -8172,7 +8172,6 @@
             }
         },
         "KBCategory": {
-            "x-itemtype": "KnowbaseItemCategory",
             "type": "object",
             "properties": {
                 "id": {
@@ -8189,7 +8188,8 @@
                     "readOnly": true
                 },
                 "comment": {
-                    "type": "string"
+                    "type": "string",
+                    "readOnly": true
                 },
                 "entity": {
                     "type": "object",
@@ -8213,7 +8213,9 @@
                 },
                 "parent": {
                     "type": "object",
-                    "x-itemtype": "KnowbaseItemCategory",
+                    "nullable": true,
+                    "readOnly": true,
+                    "x-full-schema": "KBCategory",
                     "properties": {
                         "id": {
                             "type": "integer",
@@ -8223,8 +8225,7 @@
                             "type": "string",
                             "readOnly": true
                         }
-                    },
-                    "x-full-schema": "KBCategory"
+                    }
                 },
                 "level": {
                     "type": "integer",
@@ -15823,18 +15824,6 @@
                                         8192
                                     ],
                                     "x-label": "Knowledge base",
-                                    "x-right-scope": "entity"
-                                },
-                                "knowbasecategory": {
-                                    "type": "integer",
-                                    "description": "Knowledge base categories rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
-                                    "enum": [
-                                        1,
-                                        2,
-                                        4,
-                                        16
-                                    ],
-                                    "x-label": "Knowledge base categories",
                                     "x-right-scope": "entity"
                                 },
                                 "license": {

@@ -49,10 +49,10 @@ use Group_KnowbaseItem;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
 use KnowbaseItem_Item;
+use KnowbaseItem_KnowbaseItem;
 use KnowbaseItem_Profile;
 use KnowbaseItem_Revision;
 use KnowbaseItem_User;
-use KnowbaseItemCategory;
 use KnowbaseItemTranslation;
 use Profile;
 use User;
@@ -101,21 +101,31 @@ class KnowbaseController extends AbstractController
                         'format' => Doc\Schema::FORMAT_STRING_HTML,
                         'x-field' => 'answer',
                     ],
+                    // BC: categories are articles now, so this exposes the same parent articles as the `parents` property
                     'categories' => [
+                        'x-version-removed' => '3.0.0',
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'items' => [
                             'type' => Doc\Schema::TYPE_OBJECT,
                             'x-full-schema' => 'KBCategory',
-                            'x-join' => [
-                                'table' => KnowbaseItemCategory::getTable(),
-                                'fkey' => KnowbaseItemCategory::getForeignKeyField(),
-                                'field' => 'id',
-                                'ref-join' => [
-                                    'table' => \KnowbaseItem_KnowbaseItemCategory::getTable(),
-                                    'fkey' => 'id',
-                                    'field' => KnowbaseItem::getForeignKeyField(),
+                            'x-join' => self::getParentArticlesJoin(),
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
                                 ],
+                                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
                             ],
+                        ],
+                    ],
+                    'parents' => [
+                        'x-version-introduced' => '3.0.0',
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'KBArticle',
+                            'x-join' => self::getParentArticlesJoin(),
                             'properties' => [
                                 'id' => [
                                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -221,8 +231,24 @@ class KnowbaseController extends AbstractController
             ],
             'KBCategory' => [
                 'x-version-introduced' => '2.2.0',
-                'x-itemtype' => KnowbaseItemCategory::class,
+                'x-version-removed' => '3.0.0',
+                // BC: categories are articles now. `x-table` is used instead of `x-itemtype` since the
+                // `KBArticle` schema is already the schema for the `KnowbaseItem` itemtype.
+                'x-table' => KnowbaseItem::getTable(),
                 'type' => Doc\Schema::TYPE_OBJECT,
+                'x-rights-conditions' => [
+                    'read' // ensure only articles that are parents to other articles are returned as they are the closest representation to what categories were
+                    => static fn() => [
+                        'INNER JOIN' => [
+                            KnowbaseItem_KnowbaseItem::getTable() . ' AS kc' => [
+                                'ON' => [
+                                    '_' => 'id',
+                                    'kc' => 'knowbaseitems_id_parent',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
                 'properties' => [
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
@@ -230,15 +256,60 @@ class KnowbaseController extends AbstractController
                         'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
-                    'completename' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
-                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'completename' => [
+                        //BC: No completename for articles, so it is computed from the ancestors names
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'readOnly' => true,
+                        'x-mapped-from' => 'id',
+                        'x-mapper' => static function ($id) {
+                            // Slow BC (would be much better if there was a native completename field)
+                            $names = [];
+                            foreach ([(int) $id, ...self::getArticleAncestors((int) $id)] as $article_id) {
+                                $article = KnowbaseItem::getById($article_id);
+                                if ($article === false) {
+                                    continue;
+                                }
+                                array_unshift($names, $article->getName());
+                            }
+                            return implode(' > ', $names);
+                        },
+                    ],
+                    'comment' => [
+                        //BC: No comment for articles and the comment data from categories was not saved at all during the migration to articles
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'readOnly' => true,
+                        'x-mapped-from' => 'id',
+                        'x-mapper' => static fn($v) => '',
+                    ],
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                     'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
-                    'parent' => self::getDropdownTypeSchema(class: KnowbaseItemCategory::class, full_schema: 'KBCategory'),
+                    'parent' => [
+                        //BC: Articles may have multiple parents, so only the first one is exposed here
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'nullable' => true,
+                        'readOnly' => true,
+                        'x-full-schema' => 'KBCategory',
+                        'x-mapped-from' => 'id',
+                        'x-mapper' => static function ($id) {
+                            $parent_id = self::getArticleAncestors((int) $id)[0] ?? null;
+                            $parent = $parent_id !== null ? KnowbaseItem::getById($parent_id) : false;
+                            return $parent !== false ? ['id' => $parent->getID(), 'name' => $parent->getName()] : null;
+                        },
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                        ],
+                    ],
                     'level' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'Level',
                         'readOnly' => true,
+                        'x-mapped-from' => 'id',
+                        // Tree dropdown levels were 1-based, so the level of an article without any parent is 1
+                        'x-mapper' => static fn($id) => count(self::getArticleAncestors((int) $id)) + 1,
                     ],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -420,6 +491,59 @@ class KnowbaseController extends AbstractController
         return $schemas;
     }
 
+    /**
+     * Join definition used to expose the direct parents of an article.
+     *
+     * Shared by the `parents` property and its `categories` backward compatible counterpart.
+     *
+     * @return array{table: string, fkey: string, field: string, 'ref-join': array{table: string, fkey: string, field: string}}
+     */
+    private static function getParentArticlesJoin(): array
+    {
+        return [
+            'table' => KnowbaseItem::getTable(),
+            'fkey' => 'knowbaseitems_id_parent',
+            'field' => 'id',
+            'ref-join' => [
+                'table' => KnowbaseItem_KnowbaseItem::getTable(),
+                'fkey' => 'id',
+                'field' => 'knowbaseitems_id',
+            ],
+        ];
+    }
+
+    /**
+     * Get the ancestors of an article, from the closest one to the root one.
+     *
+     * Only used to emulate the properties of the removed knowledge base categories.
+     * As an article may have multiple parents, only the first one is followed.
+     *
+     * @return list<int>
+     */
+    private static function getArticleAncestors(int $article_id): array
+    {
+        $ancestors = [];
+        $seen = [$article_id => true];
+        $relation = new KnowbaseItem_KnowbaseItem();
+
+        while (true) {
+            $links = $relation->find(['knowbaseitems_id' => $article_id], ['knowbaseitems_id_parent ASC'], 1);
+            $link = reset($links);
+            if ($link === false) {
+                break;
+            }
+            $article_id = (int) $link['knowbaseitems_id_parent'];
+            if (isset($seen[$article_id])) {
+                // Should not happen as cycles are rejected, but make sure we can't loop forever
+                break;
+            }
+            $seen[$article_id] = true;
+            $ancestors[] = $article_id;
+        }
+
+        return $ancestors;
+    }
+
     #[Route(path: '/Article', methods: ['POST'])]
     #[RouteVersion(introduced: '2.2')]
     #[Doc\CreateRoute(schema_name: 'KBArticle')]
@@ -466,50 +590,6 @@ class KnowbaseController extends AbstractController
     {
         $request->setAttribute('id', $request->getAttribute('article_id'));
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('KBArticle', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Category', methods: ['POST'])]
-    #[RouteVersion(introduced: '2.2')]
-    #[Doc\CreateRoute(schema_name: 'KBCategory')]
-    public function createKBCategory(Request $request): Response
-    {
-        return ResourceAccessor::createBySchema(
-            $this->getKnownSchema('KBCategory', $this->getAPIVersion($request)),
-            $request->getParameters(),
-            [self::class, 'getKBCategory'],
-        );
-    }
-
-    #[Route(path: '/Category', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[RouteVersion(introduced: '2.2')]
-    #[Doc\SearchRoute(schema_name: 'KBCategory')]
-    public function searchKBCategory(Request $request): Response
-    {
-        return ResourceAccessor::searchBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getParameters());
-    }
-
-    #[Route(path: '/Category/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
-    #[RouteVersion(introduced: '2.2')]
-    #[Doc\GetRoute(schema_name: 'KBCategory')]
-    public function getKBCategory(Request $request): Response
-    {
-        return ResourceAccessor::getOneBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Category/{id}', methods: ['PATCH'])]
-    #[RouteVersion(introduced: '2.2')]
-    #[Doc\UpdateRoute('KBCategory')]
-    public function updateKBCategory(Request $request): Response
-    {
-        return ResourceAccessor::updateBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
-    }
-
-    #[Route(path: '/Category/{id}', methods: ['DELETE'])]
-    #[RouteVersion(introduced: '2.2')]
-    #[Doc\DeleteRoute('KBCategory')]
-    public function deleteKBCategory(Request $request): Response
-    {
-        return ResourceAccessor::deleteBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Article/{article_id}/Comment', methods: ['POST'])]
@@ -632,5 +712,49 @@ class KnowbaseController extends AbstractController
             $request->getParameters(),
             'revision'
         );
+    }
+
+    #[Route(path: '/Category', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.2', removed: '3.0.0')]
+    #[Doc\CreateRoute(schema_name: 'KBCategory')]
+    public function createKBCategory(Request $request): Response
+    {
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('KBCategory', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getKBCategory'],
+        );
+    }
+
+    #[Route(path: '/Category', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2', removed: '3.0.0')]
+    #[Doc\SearchRoute(schema_name: 'KBCategory')]
+    public function searchKBCategory(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/Category/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2', removed: '3.0.0')]
+    #[Doc\GetRoute(schema_name: 'KBCategory')]
+    public function getKBCategory(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Category/{id}', methods: ['PATCH'])]
+    #[RouteVersion(introduced: '2.2', removed: '3.0.0')]
+    #[Doc\UpdateRoute('KBCategory')]
+    public function updateKBCategory(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Category/{id}', methods: ['DELETE'])]
+    #[RouteVersion(introduced: '2.2', removed: '3.0.0')]
+    #[Doc\DeleteRoute('KBCategory')]
+    public function deleteKBCategory(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

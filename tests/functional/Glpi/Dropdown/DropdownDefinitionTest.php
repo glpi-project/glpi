@@ -322,7 +322,6 @@ class DropdownDefinitionTest extends DbTestCase
             'DocumentType',
             'BusinessCriticity',
             'DatabaseInstanceCategory',
-            'KnowbaseItemCategory',
             'Calendar',
             'Holiday',
             'OperatingSystem',

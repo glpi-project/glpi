@@ -120,8 +120,13 @@ test('Aside dots menu is reachable and operable with the keyboard', async ({ pag
 
     await kb.goto(viewed_id);
 
-    // Tabbing off the article link reaches the dots trigger...
+    // Tabbing off the article link walks the row's actions in visual order:
+    // the "create child article" (+) affordance first...
     await kb.getAsideTreeArticleRow(target_id).getByRole('link', { name: target_name }).focus();
+    await page.keyboard.press('Tab');
+    await expect(kb.getAsideArticleAddChildTrigger(target_id)).toBeFocused();
+
+    // ...then the dots trigger.
     await page.keyboard.press('Tab');
     await expect(kb.getAsideArticleMenuTrigger(target_id)).toBeFocused();
 

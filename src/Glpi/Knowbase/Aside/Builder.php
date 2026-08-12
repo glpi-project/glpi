@@ -35,58 +35,93 @@
 namespace Glpi\Knowbase\Aside;
 
 use KnowbaseItem;
-use KnowbaseItemCategory;
+use KnowbaseItem_KnowbaseItem;
 
+/**
+ * Builds the aside article tree from the set of articles the current user
+ * may see.
+ *
+ * The hierarchy is NOT a naive `knowbaseitems_id_parent` walk: an article
+ * visible to the user may have all of its parents invisible to them (e.g. a
+ * closed-by-default migrated category). Such an article must still surface
+ * somewhere in the tree, so it is "promoted" to the root level whenever none
+ * of its parents are themselves visible. An article with several visible
+ * parents appears under each of them.
+ */
 final class Builder
 {
     /** @var int[] */
-    private array $folded_category_ids = [];
+    private array $folded_ids = [];
 
     public function __construct(private readonly int $current_id = 0) {}
 
     public function buildTree(): Tree
     {
-        $this->folded_category_ids = KnowbaseItemCategory::getFoldedCategoryIdsForCurrentUser();
+        global $DB;
 
-        $tree = new Tree(
-            uncategorized_collapsed: in_array(0, $this->folded_category_ids, true),
-        );
-        $this->populateNode($tree, 0);
+        // Articles the current user has collapsed, restored on each render.
+        $this->folded_ids = KnowbaseItem::getFoldedIdsForCurrentUser();
+
+        // 1) All articles the current user may see (visibility applied).
+        $rows = $DB->request(KnowbaseItem::getListRequest([], 'browse'));
+        $data = [];              // id => row
+        foreach ($rows as $row) {
+            $data[(int) $row['id']] = $row;
+        }
+        if ($data === []) {
+            return new Tree();
+        }
+        $visible_ids = array_keys($data);
+
+        // 2) Visible parent -> [visible children] adjacency, and child -> has a visible parent?
+        $children_of         = [];     // parent_id => int[] child ids
+        $has_visible_parent  = [];     // child_id => true
+        foreach ($DB->request([
+            'FROM'  => KnowbaseItem_KnowbaseItem::getTable(),
+            'WHERE' => [
+                'knowbaseitems_id'        => $visible_ids,
+                'knowbaseitems_id_parent' => $visible_ids,
+            ],
+        ]) as $link) {
+            $child  = (int) $link['knowbaseitems_id'];
+            $parent = (int) $link['knowbaseitems_id_parent'];
+            $children_of[$parent][] = $child;
+            $has_visible_parent[$child] = true;
+        }
+
+        // 3) Roots = visible articles with no visible parent (promote-to-root).
+        $tree = new Tree();
+        foreach ($visible_ids as $id) {
+            if (!isset($has_visible_parent[$id])) {
+                $tree->addArticle($this->buildArticle($id, $data, $children_of, []));
+            }
+        }
         return $tree;
     }
 
-    private function populateNode(Node $node, int $category_id): void
+    /**
+     * @param array<int, array<string, mixed>> $data
+     * @param array<int,int[]> $children_of
+     * @param array<int,bool>  $ancestors  visited guard (DAG, but defensive)
+     */
+    private function buildArticle(int $id, array $data, array $children_of, array $ancestors): Article
     {
-        global $DB;
-
-        $articles = $DB->request(
-            KnowbaseItem::getListRequest(
-                ['knowbaseitemcategories_id' => $category_id],
-                'browse',
-            )
+        $row = $data[$id];
+        $article = new Article(
+            id: $id,
+            title: $row['name'] ?? '',
+            illustration: $row['illustration'] ?? '',
+            link: KnowbaseItem::getFormURLWithID($id),
+            is_current: $this->current_id > 0 && $id === $this->current_id,
+            collapsed: in_array($id, $this->folded_ids, true),
         );
-        foreach ($articles as $article_data) {
-            $node->addArticle(new Article(
-                id: (int) $article_data['id'],
-                title: $article_data['name'] ?? '',
-                illustration: $article_data['illustration'] ?? '',
-                link: KnowbaseItem::getFormURLWithID($article_data['id']),
-                is_current: $this->current_id > 0 && (int) $article_data['id'] === $this->current_id,
-            ));
+        $ancestors[$id] = true;
+        foreach ($children_of[$id] ?? [] as $child_id) {
+            if (isset($ancestors[$child_id])) {
+                continue; // defensive against cycles (writes forbid them)
+            }
+            $article->addChild($this->buildArticle($child_id, $data, $children_of, $ancestors));
         }
-
-        $categories = (new KnowbaseItemCategory())->find([
-            'knowbaseitemcategories_id' => $category_id,
-        ]);
-        foreach ($categories as $cat_data) {
-            $category = new Category(
-                id: (int) $cat_data['id'],
-                title: $cat_data['name'] ?? '',
-                illustration: $cat_data['illustration'] ?? '',
-                collapsed: in_array((int) $cat_data['id'], $this->folded_category_ids, true),
-            );
-            $this->populateNode($category, (int) $cat_data['id']);
-            $node->addCategory($category);
-        }
+        return $article;
     }
 }
