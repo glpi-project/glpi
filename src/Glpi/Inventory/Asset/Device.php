@@ -248,8 +248,7 @@ abstract class Device extends InventoryAsset
         object $val,
         array $device_input,
         bool $supports_firmware
-    ): void
-    {
+    ): void {
         if (
             !$supports_firmware
             || !property_exists($val, 'firmware')
