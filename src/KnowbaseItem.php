@@ -2070,8 +2070,11 @@ TWIG, $twig_params);
                     $icon_class = "ti-eye-off not-published";
                     $fa_title = __s("This item is not published yet");
                 }
+                $icon = $fa_title !== ''
+                    ? "<i class='ti $icon_class' title='$fa_title' aria-hidden='true'></i><span class='visually-hidden'>$fa_title</span> "
+                    : '';
                 echo $output::showItem(
-                    "<div class='kb'>$toadd <i class='ti $icon_class' title='$fa_title'></i> <a $href>" . Html::resume_text($name, 80) . "</a></div>
+                    "<div class='kb'>$toadd $icon<a $href>" . Html::resume_text($name, 80) . "</a></div>
                                    <div class='kb_resume'>" . Html::resume_text(RichText::getTextFromHtml($answer, false, false), 600) . "</div>",
                     $item_num,
                     $row_num
@@ -2262,7 +2265,8 @@ TWIG, $twig_params);
                                 <td class="text-start">
                                     <div class="kb">
                                         {% if data['is_faq'] %}
-                                            <i class="ti ti-help faq" title="{{ faq_tooltip }}"></i>
+                                            <i class="ti ti-help faq" title="{{ faq_tooltip }}" aria-hidden="true"></i>
+                                            <span class="visually-hidden">{{ faq_tooltip }}</span>
                                         {% endif %}
                                         <a href="{{ 'KnowbaseItem'|itemtype_form_path(data['id']) }}" class="{{ data['is_faq'] ? 'faq' : 'knowbase' }}"
                                            title="{{ name }}">{{ name|u.truncate(80, '(...)') }}</a>

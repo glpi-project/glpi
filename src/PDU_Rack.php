@@ -421,28 +421,39 @@ class PDU_Rack extends CommonDBRelation
                     echo "<tr style='background-color: " . htmlescape($bg_color) . "; color: " . htmlescape($fg_color) . ";'>";
                     echo "<td class='rack_position'>";
                     $current_pdu['position'] = (int) $current_pdu['position'];
+                    $icon_class = null;
+                    $icon_label = "";
+
                     if ($current_pdu['racked']) {
-                        echo "<i class='" . htmlescape(Rack::getIcon()) . "'
-                           title='" . __s("Racked") . " (" . $current_pdu['position'] . ")'></i>";
+                        $icon_class = htmlescape(Rack::getIcon());
+                        $icon_label = __s("Racked");
                     } else {
                         switch ($current_pdu['side']) {
                             case self::SIDE_LEFT:
-                                echo "<i class='ti ti-arrow-left'
-                                 title='" . __s("On left") . " (" . $current_pdu['position'] . ")'></i>";
+                                $icon_class = "ti ti-arrow-left";
+                                $icon_label = __s("On left");
                                 break;
                             case self::SIDE_RIGHT:
-                                echo "<i class='ti ti-arrow-right'
-                                 title='" . __s("On right") . " (" . $current_pdu['position'] . ")'></i>";
+                                $icon_class = "ti ti-arrow-right";
+                                $icon_label = __s("On right");
                                 break;
                             case self::SIDE_TOP:
-                                echo "<i class='ti ti-arrow-up'
-                                 title='" . __s("On top") . " (" . $current_pdu['position'] . ")'></i>";
+                                $icon_class = "ti ti-arrow-up";
+                                $icon_label = __s("On top");
                                 break;
                             case self::SIDE_BOTTOM:
-                                echo "<i class='ti ti-arrow-down'
-                                 title='" . __s("On bottom") . " (" . $current_pdu['position'] . ")'></i>";
+                                $icon_class = "ti ti-arrow-down";
+                                $icon_label = __s("On bottom");
                                 break;
                         }
+                    }
+                    if ($icon_class !== null) {
+                        $icon_label .= " ({$current_pdu['position']})";
+                        echo sprintf(
+                            '<i class="%1$s" title="%2$s" aria-hidden="true"></i><span class="visually-hidden">%2$s</span>',
+                            $icon_class,
+                            $icon_label
+                        );
                     }
                     echo "</td>";
 

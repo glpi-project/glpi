@@ -110,7 +110,9 @@
             {% if item.canSolve() and not item.checkRequiredFieldsFilled() %}
                <i class="ti ti-alert-triangle text-warning me-2 d-flex align-items-center"
                   data-bs-toggle="tooltip" data-bs-placement="top"
-                  title="{{ __('Solving this %s is not possible as one or more mandatory field is not filled')|format(item.getTypeName(1)) }}"></i>
+                  title="{{ __('Solving this %s is not possible as one or more mandatory field is not filled')|format(item.getTypeName(1)) }}"
+                  aria-hidden="true"></i>
+               <span class="visually-hidden">{{ __('Solving this %s is not possible as one or more mandatory field is not filled')|format(item.getTypeName(1)) }}</span>
             {% endif %}
 
             <div class="ms-auto"></div>

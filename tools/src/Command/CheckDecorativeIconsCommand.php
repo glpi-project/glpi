@@ -40,6 +40,7 @@ use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -79,6 +80,20 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
      */
     private const VERDICT_REVIEW = 'review';
 
+    /**
+     * Why an icon needs a human decision. Each entry is a follow-up of its own, hence the
+     * `--show-review` filter: they are not fixed by the same kind of change.
+     *
+     * @var array<string, string>
+     */
+    private const REVIEW_CATEGORIES = [
+        'interactive' => 'are the interactive control itself, they should become real buttons',
+        'styled-as-control' => 'are styled as an interactive control, they should become real buttons',
+        'names-its-control' => 'hold the only name of their control, that name must move up to the control itself',
+        'unnamed-control' => 'are the only content of a control that has no name at all, that control needs a label first',
+        'carries-a-name' => 'carry a name of their own, replace it with a visually hidden text if it carries meaning',
+    ];
+
     #[Override]
     protected function isPluginOptionAvailable(): bool
     {
@@ -110,8 +125,12 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
         $this->addOption(
             'show-review',
             null,
-            InputOption::VALUE_NONE,
-            'Also list the icons that cannot be fixed automatically'
+            InputOption::VALUE_OPTIONAL,
+            sprintf(
+                'Also list the icons that cannot be fixed automatically. You can filter on those categories: %s',
+                implode(', ', array_keys(self::REVIEW_CATEGORIES))
+            ),
+            false
         );
     }
 
@@ -131,6 +150,7 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
             );
 
         $fix = (bool) $input->getOption('fix');
+        $shown_categories = $this->getCategoriesToShow($input);
         $fixable_count = 0;
         $review = [];
         $failed_files = [];
@@ -149,12 +169,11 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
 
             foreach ($icons as $icon) {
                 if ($icon['verdict'] === self::VERDICT_REVIEW) {
-                    $review[] = sprintf(
-                        '%s:%d %s (%s)',
+                    $review[$icon['reason']][] = sprintf(
+                        '%s:%d %s',
                         $relative_path,
                         $icon['line'],
-                        trim($icon['tag']),
-                        $icon['reason']
+                        $this->flatten($icon['tag']),
                     );
                     continue;
                 }
@@ -165,7 +184,7 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
                         '<fg=red>%s:%d</> %s',
                         $relative_path,
                         $icon['line'],
-                        trim($icon['tag'])
+                        $this->flatten($icon['tag'])
                     ),
                     $fix ? OutputInterface::VERBOSITY_VERBOSE : OutputInterface::VERBOSITY_NORMAL
                 );
@@ -181,14 +200,23 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
             }
         }
 
-        if ($input->getOption('show-review') && $review !== []) {
-            $this->io->section(
-                sprintf('%d icon(s) need a manual decision (name carried by the icon, or interactive icon)', count($review))
-            );
-            foreach ($review as $line) {
+        foreach ($shown_categories as $category) {
+            $lines = $review[$category] ?? [];
+            if ($lines === []) {
+                continue;
+            }
+
+            $this->io->section(sprintf(
+                'Icons that %s [%s]',
+                self::REVIEW_CATEGORIES[$category],
+                $category
+            ));
+            foreach ($lines as $line) {
                 $this->io->writeln('<fg=yellow>‣ ' . $line . '</>');
             }
         }
+
+        $this->reportReviewSummary($shown_categories, $review);
 
         if ($fixable_count === 0) {
             $this->io->success('All decorative icons are hidden from assistive technologies.');
@@ -271,6 +299,78 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
         }
 
         return $icons;
+    }
+
+    /**
+     * Collapse a tag onto a single line, so that one reported icon stays one readable line.
+     */
+    private function flatten(string $tag): string
+    {
+        return trim((string) preg_replace('/\s+/', ' ', $tag));
+    }
+
+    /**
+     * Print full review summary
+     *
+     * @param list<string> $shown_categories
+     * @param array<string, list<string>> $review
+     */
+    private function reportReviewSummary(array $shown_categories, array $review): void
+    {
+        if ($shown_categories === [] || $review === []) {
+            return;
+        }
+
+        $total = array_sum(array_map('count', $review));
+
+        $per_category = [];
+        foreach (array_keys(self::REVIEW_CATEGORIES) as $category) {
+            if (($count = count($review[$category] ?? [])) > 0) {
+                $per_category[] = sprintf('%s: %d', $category, $count);
+            }
+        }
+
+        $this->io->newLine();
+        $this->io->writeln(sprintf('<fg=yellow>%d icon(s) need a manual decision.</>', $total));
+        $this->io->writeln('<fg=yellow>' . implode(', ', $per_category) . '</>');
+    }
+
+    /**
+     * Resolve `--show-review` into the list of categories to print.
+     *
+     * The option defaults to `false` so that "not given" stays distinguishable from "given without
+     * a value", which Symfony reports as `null`.
+     *
+     * @return list<string>
+     */
+    private function getCategoriesToShow(InputInterface $input): array
+    {
+        $requested = $input->getOption('show-review');
+
+        if ($requested === false) {
+            return [];
+        }
+
+        if ($requested === null || $requested === '') {
+            return array_keys(self::REVIEW_CATEGORIES);
+        }
+
+        $categories = array_filter(array_map('trim', explode(',', (string) $requested)));
+
+        $unknown = array_diff($categories, array_keys(self::REVIEW_CATEGORIES));
+        if ($unknown !== []) {
+            throw new InvalidOptionException(sprintf(
+                'Unknown review category "%s". Expected any of: %s.',
+                implode('", "', $unknown),
+                implode(', ', array_keys(self::REVIEW_CATEGORIES))
+            ));
+        }
+
+        // Keep the declaration order, so that the output does not depend on how the option is typed.
+        return array_values(array_filter(
+            array_keys(self::REVIEW_CATEGORIES),
+            static fn(string $category): bool => in_array($category, $categories, true)
+        ));
     }
 
     /**
@@ -367,7 +467,7 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
     }
 
     /**
-     * Return why the icon needs a human decision, or null when it can safely be hidden.
+     * Return the review category the icon falls into, or null when it can safely be hidden.
      */
     private function getReviewReason(string $attrs, bool $names_its_control): ?string
     {
@@ -376,26 +476,24 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
         // An icon that is the control itself is reported as such first: the name it carries is a
         // consequence of that, not the problem to solve.
         if (preg_match('/\b(?:onclick|href|tabindex|contenteditable|data-bs-toggle=(?![\'"]?tooltip)|v-on:click|@click)/i', $attrs) === 1) {
-            return 'is the interactive control itself, it should become a real button';
+            return 'interactive';
         }
 
         if (
             preg_match('/\bclass\s*=\s*(?<quote>["\'])(?<value>.*?)\g{quote}/is', $attrs, $matches) === 1
             && preg_match('/\b(?:btn|pointer|cursor-pointer)\b/', $matches['value']) === 1
         ) {
-            return 'is styled as an interactive control, it should become a real button';
+            return 'styled-as-control';
         }
 
         if ($names_its_control) {
-            return $carries_a_name
-                // Hiding the icon would drop its title too: an aria-hidden subtree contributes
-                // nothing to the accessible name computation.
-                ? 'holds the only name of its control, move that name up to the control itself'
-                : 'is the only content of a control that has no name at all, that control needs a label first';
+            // Hiding the icon would drop its title too: an aria-hidden subtree contributes nothing
+            // to the accessible name computation.
+            return $carries_a_name ? 'names-its-control' : 'unnamed-control';
         }
 
         if ($carries_a_name) {
-            return 'carries a name of its own, replace it with a visually hidden text if it carries meaning';
+            return 'carries-a-name';
         }
 
         return null;

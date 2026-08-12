@@ -134,10 +134,11 @@ describe('Planning/PlanningEvent Vue Component', () => {
         const popoverInstance = window.bootstrap.Popover.mock.results[0]?.value;
 
         expect(component.find('.fc-time').text()).toBe('10');
-        expect(component.find('.fc-title').text()).toBe('Test event');
+        expect(component.find('.fc-title').text()).toBe('Test event Event icon');
         expect(component.find('i.ti-calendar-event').exists()).toBe(true);
         expect(component.find('i.ti-calendar-event').attributes('title')).toBe('Event icon');
-        expect(component.find('i.ti-calendar-event').attributes('aria-label')).toBe('Event icon');
+        expect(component.find('i.ti-calendar-event').attributes('aria-hidden')).toBe('true');
+        expect(component.find('.fc-title .visually-hidden').text()).toBe('Event icon');
 
         // Unmount cleanup check
         component.unmount();

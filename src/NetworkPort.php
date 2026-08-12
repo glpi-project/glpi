@@ -1003,7 +1003,7 @@ class NetworkPort extends CommonDBChild
                                     break;
                             }
                             $output .= sprintf(
-                                '<i class="ti ti-circle-filled %s" title="%s"></i> <span class="visually-hidden">%s</span>',
+                                '<i class="ti ti-circle-filled %s" title="%s" aria-hidden="true"></i> <span class="visually-hidden">%s</span>',
                                 htmlescape($state_class),
                                 htmlescape($state_title),
                                 htmlescape($state_title)
@@ -1214,7 +1214,7 @@ class NetworkPort extends CommonDBChild
                                     break;
                             }
                             $output .= sprintf(
-                                '<i class="ti %s" title="%s"></i> <span class="visually-hidden">%s</span>',
+                                '<i class="ti %s" title="%s" aria-hidden="true"></i> <span class="visually-hidden">%s</span>',
                                 htmlescape($co_class),
                                 htmlescape($title),
                                 htmlescape($title)
@@ -1222,7 +1222,10 @@ class NetworkPort extends CommonDBChild
                             break;
                         case 41:
                             if ($port['ifstatus'] == 1) {
-                                $output .= sprintf("<i class='ti ti-circle-filled text-green' title='%s'></i>", __s('Connected'));
+                                $output .= sprintf(
+                                    "<i class='ti ti-circle-filled text-green' title='%1\$s' aria-hidden='true'></i><span class='visually-hidden'>%1\$s</span>",
+                                    __s('Connected')
+                                );
                             } elseif (!empty($port['lastup'])) {
                                 $time = strtotime(date('Y-m-d H:i:s')) - strtotime($port['lastup']);
                                 $output .= htmlescape(Html::timestampToString($time, false));

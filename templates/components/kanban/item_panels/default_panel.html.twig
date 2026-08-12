@@ -35,7 +35,7 @@
       <div class="card-header d-block">
          <h5 class="card-title d-flex justify-content-between w-100">
             <a href="{{ itemtype|itemtype_form_path(item_fields.id) }}">
-               <i class="{{ itemtype|itemtype_icon }}" title="{{ itemtype|itemtype_name }}"></i>
+               <i class="{{ itemtype|itemtype_icon }}" title="{{ itemtype|itemtype_name }}" aria-hidden="true"></i>
                {{ item_fields.name }}
             </a>
             <button type="button" class="btn-link" aria-label="{{ _x('button', 'Close') }}"><i class="ti ti-x" aria-hidden="true"></i></button>

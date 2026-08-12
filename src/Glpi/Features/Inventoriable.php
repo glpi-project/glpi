@@ -214,12 +214,20 @@ HTML;
         echo '</tr>';
 
         echo '<tr class="tab_bg_1">';
+        $status_label = __s('Ask agent about its current status');
+        $inventory_label = __s('Request agent to proceed an new inventory');
         echo '<td>' . __s('Agent status');
-        echo "<i id='update-status' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Ask agent about its current status') . "'></i>";
+        echo "<button type='button' id='update-status' class='btn btn-sm btn-icon btn-ghost-secondary' style='float: right;' title='$status_label'>"
+            . "<i class='ti ti-refresh' aria-hidden='true'></i>"
+            . "<span class='visually-hidden'>$status_label</span>"
+            . "</button>";
         echo '</td>';
         echo '<td id="agent_status">' . __s('Unknown') . '</td>';
         echo '<td>' . __s('Request inventory');
-        echo "<i id='update-inventory' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Request agent to proceed an new inventory') . "'></i>";
+        echo "<button type='button' id='update-inventory' class='btn btn-sm btn-icon btn-ghost-secondary' style='float: right;' title='$inventory_label'>"
+            . "<i class='ti ti-refresh' aria-hidden='true'></i>"
+            . "<span class='visually-hidden'>$inventory_label</span>"
+            . "</button>";
         echo '</td>';
         echo '<td id="inventory_status">' . __s('None') . '</td>';
         echo '</tr>';

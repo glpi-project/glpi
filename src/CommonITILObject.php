@@ -5167,16 +5167,29 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * Get status icon
      *
-     * @param int $status
+     * @param int  $status
+     * @param bool $with_name Expose the status name as a visually hidden text. Pass `false` when
+     *                        the caller already displays that name next to the icon, otherwise
+     *                        assistive technologies announce it twice.
      * @return string
      *
      * @since 9.3
      */
-    public static function getStatusIcon($status)
+    public static function getStatusIcon($status, bool $with_name = true)
     {
         $class = htmlescape(static::getStatusClass($status));
         $label = htmlescape(static::getStatus($status));
-        return "<i class='$class me-1' title='$label' data-bs-toggle='tooltip'></i>";
+        // An `<i>` maps to `role=generic`, which cannot carry an accessible name: the status is
+        // exposed through a visually hidden text instead.
+        $name = $with_name
+            ? sprintf('<span class="visually-hidden">%s</span>', $label)
+            : '';
+        return sprintf(
+            '<span><i class="%1$s me-1" title="%2$s" data-bs-toggle="tooltip" aria-hidden="true"></i>%3$s</span>',
+            $class,
+            $label,
+            $name
+        );
     }
 
     /**
@@ -7916,7 +7929,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if (((string) $log_row['field']) !== '') {
                     $content = sprintf(__s("%s: %s"), htmlescape($log_row['field']), $content);
                 }
-                $content = "<i class='ti ti-history me-1' title='" . __s("Log entry") . "' data-bs-toggle='tooltip'></i>" . $content;
+                $content = "<i class='ti ti-history me-1' title='" . __s("Log entry") . "' data-bs-toggle='tooltip' aria-hidden='true'></i>"
+                    . "<span class='visually-hidden'>" . __s("Log entry") . "</span>" . $content;
                 $user_id = 0;
                 // try to extract ID from "user_name" (which was created using User::getNameForLog)
                 if (preg_match('/ \((\d+)\)$/', $log_row["user_name"], $m)) {

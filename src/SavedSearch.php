@@ -747,7 +747,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
                 if ($error) {
                     $info_message = __s('A fatal error occurred while executing this saved search. It is not able to be used.');
-                    $count = "<span class='ti ti-alert-triangle-filled' title='$info_message'></span>";
+                    $count = "<span class='ti ti-alert-triangle-filled' title='$info_message' aria-hidden='true'></span>"
+                        . "<span class='visually-hidden'>$info_message</span>";
                 } elseif (isset($search_data['data']['totalcount'])) {
                     $count = $search_data['data']['totalcount'];
                 } else {
@@ -755,7 +756,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                                 ? __s('Count for this saved search has been disabled.')
                                 : __s('Counting this saved search would take too long, it has been skipped.');
                     // no count, just inform the user
-                    $count = "<span class='ti ti-info-circle' title='$info_message'></span>";
+                    $count = "<span class='ti ti-info-circle' title='$info_message' aria-hidden='true'></span>"
+                        . "<span class='visually-hidden'>$info_message</span>";
                 }
 
                 $data['count'] = $count;

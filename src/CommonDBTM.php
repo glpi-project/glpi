@@ -5789,7 +5789,10 @@ class CommonDBTM extends CommonGLPI
             }
         }
         if ($title !== null) {
-            $mark = "<i class='ti ti-wand' title='$title'></i>";
+            $mark = sprintf(
+                '<span><i class="ti ti-wand" title="%1$s" aria-hidden="true"></i><span class="visually-hidden">%1$s</span></span>',
+                $title
+            );
         }
         return $mark;
     }

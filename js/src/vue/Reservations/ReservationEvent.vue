@@ -47,7 +47,10 @@
         <span class="fc-time me-1 text-nowrap">{{ event_info.timeText.split(':')[0].padStart(2, 0) }}</span>
         <span class="fc-title">
             {{ event_info.event.title }}
-            <i v-if="icon_class" :class="icon_class" :title="icon_alt" :aria-label="icon_alt" class="ms-1 align-text-bottom"></i>
+            <template v-if="icon_class">
+                <i :class="icon_class" :title="icon_alt" class="ms-1 align-text-bottom" aria-hidden="true"></i>
+                <span class="visually-hidden">{{ icon_alt }}</span>
+            </template>
         </span>
     </div>
 </template>
