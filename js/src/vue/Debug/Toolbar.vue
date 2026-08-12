@@ -68,8 +68,9 @@
             refreshButton: (button) => {
                 const server_perf = props.initial_request.server_performance;
                 const memory_usage = +(server_perf.memory_usage / 1024 / 1024).toFixed(2);
+                const initial_execution_time = +server_perf.execution_time;
                 const total_execution_time = getTotalServerExecutionTime();
-                const server_performance_button_label = `${_.escape(total_execution_time)} <span class="text-muted"> ms using </span> ${_.escape(memory_usage)} <span class="text-muted"> MiB </span>`;
+                const server_performance_button_label = `${_.escape(initial_execution_time)}<span class="text-muted"> ms initial, </span>${_.escape(total_execution_time)}<span class="text-muted"> ms total using </span>${_.escape(memory_usage)}<span class="text-muted"> MiB </span>`;
                 button.find('.debug-text').html(server_performance_button_label);
             }
         },
@@ -281,7 +282,7 @@
         }));
     }
 
-    function exportDebugData() {
+    async function exportDebugData() {
         const requests = [
             {
                 url: window.location.href,
@@ -321,11 +322,22 @@
             requests: requests,
         };
 
-        const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json'});
+        const json_string = JSON.stringify(payload, null, 2);
+        let blob, filename;
+        if (typeof CompressionStream !== 'undefined') {
+            const compressed_stream = new Blob([json_string]).stream().pipeThrough(new CompressionStream('gzip'));
+            blob = await new Response(compressed_stream).blob();
+            filename = `glpi-debug-${Date.now()}.json.gz`;
+        } else {
+            // Fallback for browsers without the Compression Streams API
+            blob = new Blob([json_string], {type: 'application/json'});
+            filename = `glpi-debug-${Date.now()}.json`;
+        }
+
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `glpi-debug-${Date.now()}.json`;
+        link.download = filename;
         link.click();
         URL.revokeObjectURL(url);
     }
