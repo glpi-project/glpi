@@ -228,7 +228,7 @@ switch ($_REQUEST['action']) {
             throw new AccessDeniedHttpException();
         }
 
-        Session::writeClose();
+        // Session lock already released in `SessionStart::onPostBoot()` (read-only action).
         Profiler::getInstance()->start('Get card HTML');
         echo $grid->getCardHtml($_REQUEST['card_id'], $_REQUEST);
         Profiler::getInstance()->stop('Get card HTML');
@@ -241,7 +241,7 @@ switch ($_REQUEST['action']) {
             throw new AccessDeniedHttpException();
         }
 
-        Session::writeClose();
+        // Session lock already released in `SessionStart::onPostBoot()` (read-only action).
         $cards = $request_data['cards'];
         unset($request_data['cards']);
         $result = [];
