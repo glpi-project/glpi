@@ -83,6 +83,7 @@
             <input
                 class="h-full form-control"
                 placeholder="{{ __("Search for forms...") }}"
+                aria-label="{{ __("Search for forms...") }}"
                 data-glpi-service-catalog-filter-items
             >
             <span class="input-icon-addon" style="font-size: 18px;">
@@ -99,6 +100,7 @@
         aria-label="{{ __("Forms") }}"
         class="row mb-5"
         data-glpi-service-catalog-items
+        tabindex="-1"
     >
         {{ include(
             'components/helpdesk_forms/service_catalog_items.html.twig',

@@ -2048,6 +2048,7 @@ function setupFileUpload(config) {
                 $('#progress' + CSS.escape(config.rand_id) + ' .uploadbar')
                     .text(progress + '%')
                     .css('width', progress + '%')
+                    .attr('aria-valuenow', progress)
                     .show();
             }
         });

@@ -171,7 +171,8 @@
                                                 <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
                                                     {{ translate_form_item_key(form_block, constant('TRANSLATION_KEY_NAME', form_block))|default(form_block.getUntitledLabel()) }}
                                                     {% if form_block.fields.is_mandatory ?? false %}
-                                                        <span class="text-danger">*</span>
+                                                        <span class="text-danger" aria-hidden="true">*</span>
+                                                        <span class="visually-hidden">{{ __('Required') }}</span>
                                                     {% endif %}
                                                 </h3>
 
@@ -243,7 +244,6 @@
                     type="button"
                     data-glpi-form-renderer-action="submit"
                     class="btn btn-primary pointer-events-none d-flex align-items-end {{ use_step_by_step ? 'd-none' : '' }}"
-                    aria-label="{{ __("Submit") }}"
                     disabled
                     {% if not visibility_engine_output.isFormVisible() %}
                         data-glpi-form-renderer-hidden-by-condition
@@ -258,6 +258,7 @@
             <div
                 class="empty d-none mt-5"
                 data-glpi-form-renderer-success
+                tabindex="-1"
             >
                 <div class="empty-title d-flex align-items-center">
                     <svg
