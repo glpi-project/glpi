@@ -2398,4 +2398,44 @@ HTML,
         $this->assertStringNotContainsString('Secret parent ' . __FUNCTION__, $output);
         $this->assertStringNotContainsString('kb-parent', $output);
     }
+
+    /**
+     * A viewable parent is rendered as a link to the parent article itself.
+     *
+     * It must NOT point at the search list with a `knowbaseitems_id_parent`
+     * parameter: that parameter was only ever read by the tree-browse view,
+     * which `KnowbaseItem` no longer implements, so such a link would land on
+     * the unfiltered article list.
+     */
+    public function testShowListLinksParentToItsOwnForm(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Visible parent ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Visible child ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID()],
+        ]);
+
+        \ob_start();
+        KnowbaseItem::showList(['start' => 0], 'browse');
+        $output = (string) \ob_get_clean();
+
+        $this->assertStringContainsString('Visible child ' . __FUNCTION__, $output);
+        $this->assertStringContainsString(
+            "href='" . htmlescape(KnowbaseItem::getFormURLWithID($parent->getID())) . "'",
+            $output
+        );
+        $this->assertStringNotContainsString('knowbaseitems_id_parent=', $output);
+        $this->assertStringNotContainsString('forcetab=Knowbase', $output);
+        // Guard against the assertions above passing on an empty parent cell.
+        $this->assertStringContainsString(
+            "data-parent-id='" . $parent->getID() . "'",
+            $output
+        );
+    }
 }
