@@ -95,7 +95,7 @@
             </tbody>
         </table>
     {% endif %}
-    <div class="grid-room" style="width: {{ grid_w + 16 }}px; min-height: {{ grid_h + 16 }}px">
+    <div class="grid-room">
         <span class="racks_view_controls">
             {% if blueprint_url is not empty %}
                 <span class="mini_toggle active" id="toggle_blueprint">{{ __('Blueprint') }}</span>
@@ -103,22 +103,62 @@
             <span class="mini_toggle active" id="toggle_grid">{{ __('Grid') }}</span>
             <div class="clearfix"></div>
         </span>
-        <ul class="indexes indexes-x"></ul>
-        <ul class="indexes indexes-y"></ul>
-        {% if room.canCreate() %}
-            <div class="racks_add" style="width: {{ grid_w }}px"></div>
-        {% endif %}
-        <div class="grid-stack grid-stack-{{ cols }}" style="width: {{ grid_w }}px">
-            {% for cell in cells %}
-                {{ _self.get_cell(cell) }}
-            {% endfor %}
-            <div class="grid-stack-item lock-bottom" gs-no-resize="true" gs-no-move="true" gs-h="1"
-                 gs-w="{{ cols }}" gs-x="0" gs-y="{{ rows }}"></div>
+        <div class="dcroom-grid-layout">
+            <ul class="indexes indexes-x">
+                {% for axis_label in column_axis_labels %}
+                    <li class="dcroom-axis-label"
+                        data-axis="{{ constant('DCRoom::AXIS_COLUMN') }}"
+                        data-position="{{ axis_label.position }}"
+                        data-coordinate="{{ axis_label.coordinate }}"
+                        data-custom-label="{{ axis_label.custom_label }}">
+                        {% if can_edit_axis_labels %}
+                            <button type="button" class="dcroom-axis-label-button"
+                                    title="{{ axis_label.label }} ({{ __('Column') }}: {{ axis_label.coordinate }})"
+                                    aria-label="{{ __('Edit label for column %s')|format(axis_label.coordinate) }}">
+                                {{ axis_label.label }}
+                            </button>
+                        {% else %}
+                            <span title="{{ axis_label.label }} ({{ __('Column') }}: {{ axis_label.coordinate }})">{{ axis_label.label }}</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <ul class="indexes indexes-y">
+                {% for axis_label in row_axis_labels %}
+                    <li class="dcroom-axis-label"
+                        data-axis="{{ constant('DCRoom::AXIS_ROW') }}"
+                        data-position="{{ axis_label.position }}"
+                        data-coordinate="{{ axis_label.coordinate }}"
+                        data-custom-label="{{ axis_label.custom_label }}">
+                        {% if can_edit_axis_labels %}
+                            <button type="button" class="dcroom-axis-label-button"
+                                    title="{{ axis_label.label }} ({{ __('Row') }}: {{ axis_label.coordinate }})"
+                                    aria-label="{{ __('Edit label for row %s')|format(axis_label.coordinate) }}">
+                                {{ axis_label.label }}
+                            </button>
+                        {% else %}
+                            <span title="{{ axis_label.label }} ({{ __('Row') }}: {{ axis_label.coordinate }})">{{ axis_label.label }}</span>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <div class="dcroom-grid-canvas" style="width: {{ grid_w }}px; height: {{ grid_h }}px">
+                {% if blueprint_url is not empty %}
+                    <div class="blueprint"
+                         style="background: url('{{ blueprint_url }}') no-repeat top left/100% 100%; height: {{ grid_h }}px"></div>
+                {% endif %}
+                {% if room.canCreate() %}
+                    <div class="racks_add" style="width: {{ grid_w }}px; height: {{ grid_h }}px"></div>
+                {% endif %}
+                <div class="grid-stack grid-stack-{{ cols }}" style="width: {{ grid_w }}px">
+                    {% for cell in cells %}
+                        {{ _self.get_cell(cell) }}
+                    {% endfor %}
+                    <div class="grid-stack-item lock-bottom" gs-no-resize="true" gs-no-move="true" gs-h="1"
+                         gs-w="{{ cols }}" gs-x="0" gs-y="{{ rows }}"></div>
+                </div>
+            </div>
         </div>
-        {% if blueprint_url is not empty %}
-            <div class="blueprint"
-                 style="background: url('{{ blueprint_url }}') no-repeat top left/100% 100%; height: {{ grid_h }}px"></div>
-        {% endif %}
     </div>
 </div>
 
@@ -156,12 +196,92 @@
         disableResize: true,
     });
 
-    for (let x = 1; x <= {{ cols }}; x++) {
-        $('.indexes-x').append('<li>' + getBijectiveIndex(x) + '</li>');
-    }
-    for (let y = 1; y <= {{ rows }}; y++) {
-        $('.indexes-y').append('<li>' + y + '</li>');
-    }
+    {% if can_edit_axis_labels %}
+        const axis_labels_container = document.querySelector('#viewgraph .dcroom-grid-layout');
+        axis_labels_container.addEventListener('click', (event) => {
+            const button = event.target.closest('.dcroom-axis-label-button');
+            if (button === null) {
+                return;
+            }
+
+            const axis_label = button.closest('.dcroom-axis-label');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'dcroom-axis-label-input';
+            input.maxLength = {{ constant('DCRoom::AXIS_LABEL_MAX_LENGTH') }};
+            input.value = axis_label.dataset.customLabel;
+            input.placeholder = axis_label.dataset.coordinate;
+            input.setAttribute('aria-label', button.getAttribute('aria-label'));
+            button.replaceWith(input);
+            input.focus();
+            input.select();
+
+            let cancelled = false;
+            let saving = false;
+            const restore_button = (restore_focus = false) => {
+                if (input.isConnected) {
+                    input.replaceWith(button);
+                }
+                if (restore_focus) {
+                    button.focus();
+                }
+            };
+            const save = async (restore_focus = false) => {
+                if (cancelled || saving || !input.isConnected) {
+                    return;
+                }
+                const label = input.value.trim();
+                if (label === axis_label.dataset.customLabel) {
+                    restore_button(restore_focus);
+                    return;
+                }
+                saving = true;
+                input.disabled = true;
+
+                try {
+                    const response = await fetch('{{ path('glpi_dcroom_axis_label_update', {'id': room.getID()}) }}', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+                        },
+                        body: new URLSearchParams({
+                            axis: axis_label.dataset.axis,
+                            position: axis_label.dataset.position,
+                            label,
+                        }),
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    const data = await response.json();
+                    axis_label.dataset.customLabel = label;
+                    button.textContent = data.label;
+                    const coordinate_name = axis_label.dataset.axis === '{{ constant('DCRoom::AXIS_COLUMN') }}'
+                        ? '{{ __('Column')|e('js') }}'
+                        : '{{ __('Row')|e('js') }}';
+                    button.title = `${data.label} (${coordinate_name}: ${axis_label.dataset.coordinate})`;
+                    restore_button(restore_focus);
+                } catch {
+                    restore_button(restore_focus);
+                    glpi_toast_error('{{ __('Unable to save the room axis label.')|e('js') }}');
+                }
+            };
+
+            input.addEventListener('keydown', (key_event) => {
+                if (key_event.key === 'Enter') {
+                    key_event.preventDefault();
+                    save(true);
+                } else if (key_event.key === 'Escape') {
+                    key_event.preventDefault();
+                    cancelled = true;
+                    restore_button(true);
+                }
+            });
+            input.addEventListener('blur', () => save());
+        });
+    {% endif %}
+
     // append cells for adding racks
     for (let y = 1; y <= {{ rows }}; y++) {
         for (let x = 1; x <= {{ cols }}; x++) {
