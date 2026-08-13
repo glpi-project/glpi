@@ -8813,6 +8813,48 @@ HTML,
         $this->assertTrue($fn_dropdown_has_id($values['results'], $not_my_tickets_id));
     }
 
+    public function testDropdownValueOrderedByIdForLinkSearch()
+    {
+        $this->login();
+
+        // Names are chosen so that alphabetical order (Alpha, Mid, Zulu) differs
+        // from creation/id order, to distinguish the two sorting strategies.
+        $prefix = $this->getUniqueString();
+        $entities_id = $this->getTestRootEntity(true);
+        $first = $this->createItem(Ticket::class, [
+            'name'        => "$prefix Zulu",
+            'content'     => $prefix,
+            'entities_id' => $entities_id,
+        ]);
+        $second = $this->createItem(Ticket::class, [
+            'name'        => "$prefix Alpha",
+            'content'     => $prefix,
+            'entities_id' => $entities_id,
+        ]);
+        $third = $this->createItem(Ticket::class, [
+            'name'        => "$prefix Mid",
+            'content'     => $prefix,
+            'entities_id' => $entities_id,
+        ]);
+
+        $dropdown_params = [
+            'itemtype'         => Ticket::class,
+            'searchText'       => $prefix,
+            'entity_restrict'  => $entities_id,
+            'page_limit'       => 10,
+        ];
+        $idor = Session::getNewIDORToken(Ticket::class, $dropdown_params);
+        $values = \Dropdown::getDropdownValue($dropdown_params + ['_idor_token' => $idor], false);
+
+        $found_ids = array_column($values['results'], 'id');
+        // Only the 3 tickets created above are expected, sorted by id descending
+        // (most recent first), not alphabetically by name.
+        $this->assertEquals(
+            [$third->getID(), $second->getID(), $first->getID()],
+            $found_ids
+        );
+    }
+
     public function testGetCommonCriteria()
     {
         global $DB;
