@@ -8192,9 +8192,39 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$ifinbytes\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$ifinerrors\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$ifinternalstatus\\.$#',
 	'identifier' => 'property.notFound',
 	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$ifmtu\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$ifoutbytes\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$ifouterrors\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkCard.php',
 ];
 $ignoreErrors[] = [
@@ -8402,12 +8432,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method object\\:\\:getManagementPorts\\(\\)\\.$#',
-	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access constant class on Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset\\|null\\.$#',
 	'identifier' => 'classConstant.nonObject',
 	'count' => 4,
@@ -8471,24 +8495,6 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method fetch_object\\(\\) on mysqli_result\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 4,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getManagementPorts\\(\\) on object\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getStackId\\(\\) on object\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method isStackedSwitch\\(\\) on object\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
