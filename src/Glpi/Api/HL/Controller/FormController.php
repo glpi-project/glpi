@@ -105,12 +105,18 @@ final class FormController extends AbstractController
                                         '_' => 'id', [
                                             'AND' => [
                                                 FormAccessControl::getTable() . '.strategy' => AllowList::class,
+                                                FormAccessControl::getTable() . '.is_active' => 1,
                                             ],
                                         ],
                                     ],
                                 ],
                             ],
-                            'WHERE' => ['OR' => []],
+                            'WHERE' => [
+                                'OR' => [],
+                                '_.is_deleted' => 0,
+                                '_.is_draft' => 0,
+                                '_.is_active' => 1,
+                            ],
                         ];
                         // directly allowed - need to check if the current user's ID is in the "user_ids" array in the config JSON of the access control record
                         $user_ids = ['all', Session::getLoginUserID()];
