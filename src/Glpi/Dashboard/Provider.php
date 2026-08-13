@@ -1906,12 +1906,12 @@ class Provider
 
         $default_params = [
             'label'         => "",
-            'icon'          => \Computer::getIcon(),
+            'icon'          => Computer::getIcon(),
             'apply_filters' => [],
         ];
         $params = array_merge($default_params, $params);
 
-        $c_table = \Computer::getTable();
+        $c_table = Computer::getTable();
         $i_table = \Infocom::getTable();
 
         $brackets = [
@@ -1945,7 +1945,7 @@ class Provider
                             $c_table => 'id',
                             [
                                 'AND' => [
-                                    "$i_table.itemtype" => \Computer::class,
+                                    "$i_table.itemtype" => Computer::class,
                                 ],
                             ],
                         ],
@@ -1963,7 +1963,7 @@ class Provider
         $iterator = $DB->request($criteria);
 
         $search_criteria = self::getSearchFiltersCriteria($c_table, $params['apply_filters'])['criteria'] ?? [];
-        $url = \Computer::getSearchURL();
+        $url = Computer::getSearchURL();
 
         $data = [];
         foreach ($iterator as $result) {
