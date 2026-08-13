@@ -1647,6 +1647,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
             ];
 
+            $cards["ticket_by_group_and_status"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of opened and closed tickets by group"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByGroupAndStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["RemindersList"] = [
                 'widgettype' => ["articleList"],
                 'label'      => sprintf(__('List of %s'), Reminder::getTypeName(Session::getPluralNumber())),

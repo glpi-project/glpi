@@ -1068,4 +1068,57 @@ class ProviderTest extends DbTestCase
 
         $this->assertGreaterThan(0, $nb_items);
     }
+
+    public function testTicketsByGroupAndStatus()
+    {
+        $this->login();
+
+        $group = $this->createItem(\Group::class, [
+            'name' => 'test dashboard group for tickets by status',
+        ]);
+
+        $self = getItemByTypeName(User::class, TU_USER);
+        $this->createItem(\Group_User::class, [
+            'groups_id' => $group->getID(),
+            'users_id'  => $self->getID(),
+        ]);
+
+        $opened_ticket = $this->createItem(\Ticket::class, [
+            'name'    => 'test dashboard opened ticket by group',
+            'content' => 'blablabla',
+            'status'  => \Ticket::ASSIGNED,
+        ]);
+        $this->createItem(\Group_Ticket::class, [
+            'tickets_id' => $opened_ticket->getID(),
+            'groups_id'  => $group->getID(),
+            'type'       => \Group_Ticket::ASSIGN,
+        ]);
+
+        $closed_ticket = $this->createItem(\Ticket::class, [
+            'name'    => 'test dashboard closed ticket by group',
+            'content' => 'blablabla',
+            'status'  => \Ticket::CLOSED,
+        ]);
+        $this->createItem(\Group_Ticket::class, [
+            'tickets_id' => $closed_ticket->getID(),
+            'groups_id'  => $group->getID(),
+            'type'       => \Group_Ticket::ASSIGN,
+        ]);
+
+        $result = Provider::ticketsByGroupAndStatus();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+
+        $this->assertArrayHasKey('labels', $result['data']);
+        $this->assertArrayHasKey('series', $result['data']);
+        $this->assertCount(2, $result['data']['series']);
+
+        $group_index = array_search($group->fields['name'], $result['data']['labels'], true);
+        // ??? group pas dans la liste ?? ticket pas rattaché au groupe ?
+        $this->assertNotFalse($group_index);
+
+        $this->assertSame(1, $result['data']['series'][0]['data'][$group_index]);
+        $this->assertSame(1, $result['data']['series'][1]['data'][$group_index]);
+    }
 }

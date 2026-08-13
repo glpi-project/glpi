@@ -1176,6 +1176,114 @@ class Provider
     }
 
     /**
+     * count number of opened and closed tickets grouped by their assigned group
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByGroupAndStatus(array $params = []): array
+    {
+        $DB = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $ticket_table       = Ticket::getTable();
+        $group_ticket_table = Group_Ticket::getTable();
+        $group_table        = Group::getTable();
+
+
+        $buckets = [
+            'opened' => [Ticket::INCOMING, Ticket::ASSIGNED, Ticket::PLANNED, Ticket::WAITING],
+            'closed' => [Ticket::SOLVED, Ticket::CLOSED],
+        ];
+
+        // 2 separate queries, one for each “set” of statuses (open/close)
+        // in each we count the tickets grouped by assigned group
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $group_names = [];
+        $counts      = [];
+        foreach ($buckets as $bucket => $statuses) {
+            $criteria = array_merge_recursive(
+                [
+                    'SELECT'    => [
+                        "$group_table.name AS group_name",
+                        "$group_table.id AS group_id",
+                        'COUNT' => "$ticket_table.id AS cpt",
+                    ],
+                    'FROM'      => $ticket_table,
+                    'LEFT JOIN' => [
+                        $group_ticket_table => [
+                            'ON' => [
+                                $group_ticket_table => 'tickets_id',
+                                $ticket_table        => 'id',
+                                [
+                                    'AND' => [
+                                        "$group_ticket_table.type" => Group_Ticket::ASSIGN,
+                                    ],
+                                ],
+                            ],
+                        ],
+                        $group_table => [
+                            'ON' => [
+                                $group_table         => 'id',
+                                $group_ticket_table  => 'groups_id',
+                            ],
+                        ],
+                    ],
+                    'WHERE'     => [
+                        "$ticket_table.is_deleted" => 0,
+                        "$ticket_table.status"     => $statuses,
+                    ] + getEntitiesRestrictCriteria($ticket_table),
+                    'GROUPBY'   => "$group_table.id",
+                ],
+
+                Ticket::getCriteriaFromProfile(),
+                self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+            );
+
+            foreach ($DB->request($criteria) as $result) {
+                $group_id = $result['group_id'] ?? 0;
+                $group_name = $result['group_name'] ?? null;
+
+                if (!$group_name) {
+                    continue;
+                }
+
+                $group_names[$group_id] = $group_name;
+                $counts[$bucket][$group_id] = (int) $result['cpt'];
+            }
+        }
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        $data = [
+            'labels' => [],
+            'series' => [
+                ['name' => __('Opened'), 'data' => []],
+                ['name' => __('Closed'), 'data' => []],
+            ],
+        ];
+        foreach ($group_names as $group_id => $group_name) {
+            $data['labels'][] = $group_name;
+            $data['series'][0]['data'][] = $counts['opened'][$group_id] ?? 0;
+            $data['series'][1]['data'][] = $counts['closed'][$group_id] ?? 0;
+        }
+
+        if (count($data['labels']) === 0) {
+            $data['nodata'] = true;
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
      * Get a list of article for an compatible item (with date,name,text fields)
      *
      * @param CommonDBTM $item the itemtype to list
