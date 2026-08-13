@@ -60,6 +60,7 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use GraphQL\Type\Definition\ResolveInfo;
+use Group;
 use Session;
 use stdClass;
 use Throwable;
@@ -134,6 +135,17 @@ final class FormController extends AbstractController
                                 QueryFunction::jsonOverlaps(
                                     doc1: QueryFunction::jsonExtract([FormAccessControl::getTable() . '.config', new QueryExpression($DB::quoteValue('$.group_ids'))]),
                                     doc2: new QueryExpression($DB::quoteValue(json_encode($groups)))
+                                ),
+                            ];
+                            // allowed because the allow list allows at least one of the ancestors of the user's groups
+                            $criteria['LEFT JOIN'][Group::getTable() . ' AS group_ancestors'] = [
+                                'ON' => new QueryExpression($DB::quoteName('group_ancestors.id') . ' IN (' . implode(',', $groups) . ')'),
+                            ];
+                            $criteria['WHERE']['OR'][] = [
+                                // check overlaps with ancestors_cache JSON-encoded column in the group_ancestors joined table
+                                QueryFunction::jsonOverlaps(
+                                    doc1: QueryFunction::jsonExtract([FormAccessControl::getTable() . '.config', new QueryExpression($DB::quoteValue('$.group_ids'))]),
+                                    doc2: QueryFunction::jsonExtract([$DB::quoteName('group_ancestors') . '.' . $DB::quoteName('ancestors_cache'), new QueryExpression($DB::quoteValue('$.*'))])
                                 ),
                             ];
                         }
