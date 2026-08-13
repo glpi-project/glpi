@@ -323,21 +323,13 @@
         };
 
         const json_string = JSON.stringify(payload, null, 2);
-        let blob, filename;
-        if (typeof CompressionStream !== 'undefined') {
-            const compressed_stream = new Blob([json_string]).stream().pipeThrough(new CompressionStream('gzip'));
-            blob = await new Response(compressed_stream).blob();
-            filename = `glpi-debug-${Date.now()}.json.gz`;
-        } else {
-            // Fallback for browsers without the Compression Streams API
-            blob = new Blob([json_string], {type: 'application/json'});
-            filename = `glpi-debug-${Date.now()}.json`;
-        }
+        const compressed_stream = new Blob([json_string]).stream().pipeThrough(new CompressionStream('gzip'));
+        const blob = await new Response(compressed_stream).blob();
 
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = filename;
+        link.download = `glpi-debug-${Date.now()}.json.gz`;
         link.click();
         URL.revokeObjectURL(url);
     }
