@@ -940,6 +940,15 @@ class CommonDBTM extends CommonGLPI
                 $is_instanciable = !(new ReflectionClass($itemtype))->isAbstract()
                     || (new ReflectionMethod($itemtype, 'getById'))->class !== self::class;
 
+                if (!$is_instanciable) {
+                    // No row of this table can be handled.
+                    trigger_error(
+                        sprintf('Unable to update relations between %s and %s tables.', static::getTable(), $tablename),
+                        E_USER_WARNING
+                    );
+                    continue;
+                }
+
                 $id_field = $itemtype::getIndexName();
 
                 foreach ($fields as $field) {
@@ -982,13 +991,19 @@ class CommonDBTM extends CommonGLPI
                         ]
                     );
                     foreach ($result as $data) {
-                        $item = $is_instanciable ? $itemtype::getById($data[$id_field]) : false;
+                        $item = $itemtype::getById($data[$id_field]);
                         if (!($item instanceof self)) {
+                            // Only this row cannot be handled, keep processing the following ones.
                             trigger_error(
-                                sprintf('Unable to update relations between %s and %s tables.', static::getTable(), $tablename),
+                                sprintf(
+                                    'Unable to update relation between %s and %s tables for item %s.',
+                                    static::getTable(),
+                                    $tablename,
+                                    $data[$id_field]
+                                ),
                                 E_USER_WARNING
                             );
-                            continue 3; // nothing can be done for this table
+                            continue;
                         }
 
                         $input =  [
