@@ -707,7 +707,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @param int $ID ID of the project
      *
-     * @return array of tasks ordered by dates
+     * @return array of tasks ordered by dates or by hierarchical order if no start dates are set
      **/
     public static function getAllForProject($ID)
     {
@@ -719,12 +719,20 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'WHERE'  => [
                 'projects_id'  => $ID,
             ],
-            'ORDERBY'   => ['plan_start_date', 'real_start_date'],
+            'ORDERBY'   => ['plan_start_date', 'real_start_date', 'id'],
         ]);
 
         foreach ($iterator as $data) {
             $tasks[] = $data;
         }
+
+        if (
+            !array_filter($tasks, static fn($task) => !empty($task['plan_start_date']) || !empty($task['real_start_date']))
+        ) {
+            // If no task has plan dates, sort by hierarchy
+            $tasks = self::sortProjectTasksByHierarchy($tasks);
+        }
+
         return $tasks;
     }
 
@@ -733,7 +741,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      * @since 9.5.0
      * @param int $ID ID of the project task
      *
-     * @return array of tasks ordered by dates
+     * @return array of tasks ordered by dates or by hierarchical order if no start dates are set
      **/
     public static function getAllForProjectTask($ID)
     {
@@ -745,12 +753,20 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
             'WHERE'  => [
                 'projecttasks_id'  => $ID,
             ],
-            'ORDERBY'   => ['plan_start_date', 'real_start_date'],
+            'ORDERBY'   => ['plan_start_date', 'real_start_date', 'id'],
         ]);
 
         foreach ($iterator as $data) {
             $tasks[] = $data;
         }
+
+        if (
+            !array_filter($tasks, static fn($task) => !empty($task['plan_start_date']) || !empty($task['real_start_date']))
+        ) {
+            // If no task has plan dates, sort by hierarchy
+            $tasks = self::sortProjectTasksByHierarchy($tasks);
+        }
+
         return $tasks;
     }
 
@@ -1292,7 +1308,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         if (empty($_GET["sort"]) || !isset($columns[$_GET["sort"]])) {
             $_GET['sort'] = 'plan_start_date';
         }
-        $criteria['ORDERBY'] = [$_GET["sort"] . " $order"];
+        $criteria['ORDERBY'] = [$_GET["sort"] . " $order", 'id ASC'];
 
         $canedit = $item::class === Project::class && $item->canEdit($ID);
 
@@ -1371,6 +1387,8 @@ TWIG, $twig_params);
             $entry = [
                 'itemtype' => static::class,
                 'id' => $data['id'],
+                // Used to reorder entries hierarchically when there is no plan_start_date to sort on
+                'projecttasks_id' => $data['projecttasks_id'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                 'name' => $task->getLink(['comments' => true]),
                 'tname' => $data['transname2'] ?? $data['tname'],
@@ -1405,6 +1423,16 @@ TWIG, $twig_params);
             $entries[] = $entry;
         }
 
+        // If sorting on the planned start date but none of the displayed tasks have one set,
+        // sort using hierarchical order (father followed by its children, recursively)
+        if (
+            $_GET['sort'] === 'plan_start_date'
+            && !array_filter($entries, static fn($entry) => !empty($entry['plan_start_date']))
+        ) {
+            $entries = self::sortProjectTasksByHierarchy($entries);
+            $order = 'none'; // No order to apply, as the order is already set by the hierarchy
+        }
+
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'nofilter' => true,
@@ -1437,6 +1465,60 @@ TWIG, $twig_params);
                 ],
             ],
         ]);
+    }
+
+    /**
+     * sort an array task entries (as built by self::showFor())
+     * using hierarchical order (father followed by its children, recursively)
+     *
+     * Entries whose father (see 'projecttasks_id') is not part of the given list are considered roots;
+     * siblings keep their relative order from the input list.
+     *
+     *
+     * @param list<array<string, mixed>> $entries Flat list of entries, each holding at least 'id' and 'projecttasks_id'
+     *
+     * @return list<array<string, mixed>> sorted entries
+     **/
+    public static function sortProjectTasksByHierarchy(array $entries): array
+    {
+        $by_id      = [];
+        $children   = [];
+        foreach ($entries as $entry) {
+            $by_id[$entry['id']] = $entry;
+            $children[$entry['projecttasks_id']][] = $entry['id'];
+        }
+
+        $ordered = [];
+        $visited = [];
+        $visit = static function ($parent_id) use (&$visit, &$children, &$by_id, &$ordered, &$visited) {
+            foreach ($children[$parent_id] ?? [] as $id) {
+                if (isset($visited[$id])) {
+                    continue;
+                }
+                $visited[$id] = true;
+                $ordered[] = $by_id[$id];
+                $visit($id);
+            }
+        };
+
+        // Roots are the tasks whose father is not part of the current list
+        // (either they have no father, or their father is out of the displayed scope).
+        foreach (array_keys($children) as $parent_id) {
+            if (!isset($by_id[$parent_id])) {
+                $visit($parent_id);
+            }
+        }
+
+        // Check for tasks that are still unvisited because they are not reachable from any root
+        foreach ($by_id as $id => $entry) {
+            if (!isset($visited[$id])) {
+                $visited[$id] = true;
+                $ordered[] = $entry;
+                $visit($id);
+            }
+        }
+
+        return $ordered;
     }
 
 

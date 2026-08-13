@@ -606,6 +606,91 @@ class ProjectTaskTest extends DbTestCase
         );
     }
 
+    public function testSortProjectTasksByHierarchy()
+    {
+        $project = $this->createItem('Project', [
+            'name' => __FUNCTION__,
+        ]);
+
+        $task_A = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task A',
+        ]);
+        $task_B = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task B',
+        ]);
+
+        $task_B1 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task B.1',
+            'projecttasks_id' => $task_B->getID(),
+        ]);
+        $task_A1 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task A.1',
+            'projecttasks_id' => $task_A->getID(),
+        ]);
+
+        $task_A2 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task A.2',
+            'projecttasks_id' => $task_A1->getID(),
+        ]);
+        $task_B2 = $this->createItem('ProjectTask', [
+            'projects_id'     => $project->getID(),
+            'name'            => 'Task B.2',
+            'projecttasks_id' => $task_B1->getID(),
+        ]);
+
+        $tasks = getAllDataFromTable(ProjectTask::getTable(), ['projects_id' => $project->getID(), 'ORDER' => 'id ASC']);
+
+        // Sort tasks by hierarchy
+        $sorted_tasks = ProjectTask::sortProjectTasksByHierarchy($tasks);
+
+        // Check the order of the sorted tasks
+        $this->assertEquals(
+            [
+                $task_A->fields,
+                $task_A1->fields,
+                $task_A2->fields,
+                $task_B->fields,
+                $task_B1->fields,
+                $task_B2->fields,
+            ],
+            $sorted_tasks
+        );
+    }
+
+    public function testSortProjectTasksByHierarchyWithMutualCycle()
+    {
+        $task_a = ['id' => 10, 'projecttasks_id' => 20, 'name' => 'A'];
+        $task_b = ['id' => 20, 'projecttasks_id' => 10, 'name' => 'B'];
+
+        $sorted_tasks = ProjectTask::sortProjectTasksByHierarchy([$task_a, $task_b]);
+
+        $this->assertEquals([$task_a, $task_b], $sorted_tasks);
+    }
+
+    public function testSortProjectTasksByHierarchyWithCycleAndNormalTasks()
+    {
+        // A normal, well-formed root and child, alongside a corrupted cycle (A and B are each
+        // other's father) that itself has a well-formed child (C) hanging off of it.
+        $root       = ['id' => 1, 'projecttasks_id' => 0, 'name' => 'Root'];
+        $root_child = ['id' => 2, 'projecttasks_id' => 1, 'name' => 'Root child'];
+        $task_a     = ['id' => 10, 'projecttasks_id' => 20, 'name' => 'A'];
+        $task_b     = ['id' => 20, 'projecttasks_id' => 10, 'name' => 'B'];
+        $task_c     = ['id' => 30, 'projecttasks_id' => 10, 'name' => 'C (child of A)'];
+
+        $tasks = [$root, $root_child, $task_a, $task_b, $task_c];
+
+        $sorted_tasks = ProjectTask::sortProjectTasksByHierarchy($tasks);
+
+        // The normal tree is sorted as usual, and the cyclic tasks (plus whatever hangs off of
+        // them) are appended instead of being dropped; nothing is lost nor duplicated.
+        $this->assertEquals($tasks, $sorted_tasks);
+    }
+
     protected function testAutochangeStateProvider()
     {
         $config = new \Config();

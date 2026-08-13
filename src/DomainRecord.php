@@ -550,14 +550,20 @@ TWIG, $twig_params);
      */
     public static function getDisplayName(Domain $domain, $name)
     {
-        $name_txt = rtrim(
-            str_replace(
-                rtrim($domain->getCanonicalName(), '.'),
-                '',
-                $name
-            ),
-            '.'
-        );
+        $canonical = rtrim($domain->getCanonicalName(), '.');
+        $suffix = '.' . $canonical;
+
+        if ($name === $canonical) {
+            $name_txt = '';
+        } elseif (str_ends_with($name, $suffix)) {
+            // Only strip the domain name when it is a genuine trailing suffix,
+            // not when it merely appears as a substring of the record name.
+            $name_txt = substr($name, 0, -strlen($suffix));
+        } else {
+            $name_txt = $name;
+        }
+
+        $name_txt = rtrim($name_txt, '.');
         if (empty($name_txt)) {
             //dns root
             $name_txt = '@';

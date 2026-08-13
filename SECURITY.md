@@ -13,12 +13,19 @@ We do not accept GitHub Security Advisory direct submissions, and we will not cr
 
 Incomplete reports are returned once and **closed** if not completed within seven days.
 
+> [!IMPORTANT]
+> We receive a lot of security reports and we need to validate each one - please be patient ;)
+> Also, please provide us all information, scripts, etc so we can easily reproduce and test.
+> 
+> Thank you!
+
 1. Affected GLPI version (see below).
 2. What the attacker can do and what privilege level they need.
 3. Step-by-step reproduction from a clean install.
-4. Working proof of concept.
-5. Impact and preconditions.
-6. AI disclosure: which tools, if any, you used to find or draft the report.
+4. Scripts (Python, PHP, ...) to validate and reproduce the issue; and then make sure it gets fixed.
+5. Working proof of concept.
+6. Impact and preconditions.
+7. AI disclosure: which tools, if any, you used to find or draft the report.
 
 Group related findings into a single report. Multiple instances of the same vulnerability class — for example XSS across different fields, or missing capability checks on related endpoints — belong in one submission, not several.
 
