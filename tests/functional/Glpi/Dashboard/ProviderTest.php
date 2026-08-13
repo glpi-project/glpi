@@ -797,8 +797,6 @@ class ProviderTest extends DbTestCase
 
         $this->assertGreaterThan(0, $nb_items);
     }
-
-
     public function testTicketsOpened()
     {
         $result = Provider::ticketsOpened();
