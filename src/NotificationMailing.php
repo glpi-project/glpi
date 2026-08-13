@@ -119,20 +119,25 @@ class NotificationMailing implements NotificationInterface
         $mmail->Subject = "[GLPI] " . __('Mail test');
         $mmail->Body    = $text;
 
+        $error = null;
         try {
             // Send() can throw on failures that PHPMailer itself does not catch,
             // e.g. SMTP OAuth token refresh errors thrown by the OAuth provider.
             $sent = $mmail->Send();
+            if (!$sent) {
+                $error = $mmail->ErrorInfo;
+            }
         } catch (\Throwable $e) {
             $sent = false;
+            $error = $e->getMessage();
         }
 
         if (!$sent) {
-            Session::addMessageAfterRedirect(
-                __('Failed to send test email to administrator'),
-                false,
-                ERROR
-            );
+            $message = __('Failed to send test email to administrator');
+            if (!empty($error)) {
+                $message .= "<br/>" . $error;
+            }
+            Session::addMessageAfterRedirect($message, false, ERROR);
             GLPINetwork::addErrorMessageAfterRedirect();
             return false;
         } else {
