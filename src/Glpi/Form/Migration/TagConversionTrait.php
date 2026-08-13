@@ -35,6 +35,7 @@
 namespace Glpi\Form\Migration;
 
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\ItemPropertyTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
@@ -168,6 +169,10 @@ trait TagConversionTrait
         Question $question,
         string $property_name
     ): ?int {
+        if(!is_a($question->fields['type'], QuestionTypeItem::class, true)) {
+            return null;
+        }
+
         $itemtype = (new ($question->fields['type'])())->getDefaultValueItemtype($question);
         if ($itemtype === null) {
             return null;
