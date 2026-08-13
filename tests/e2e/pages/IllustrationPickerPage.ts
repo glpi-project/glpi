@@ -104,4 +104,13 @@ export class IllustrationPickerPage extends GlpiPage
     {
         return this.page.getByTestId('illustration-custom-preview');
     }
+
+    /**
+     * Custom illustrations are decorative (`alt=""`), so they are not exposed
+     * with the `img` role and must be located by their test id.
+     */
+    public getCustomPreviewImage(): Locator
+    {
+        return this.getCustomPreview().getByTestId('illustration-img');
+    }
 }

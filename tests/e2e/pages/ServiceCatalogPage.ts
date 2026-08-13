@@ -113,6 +113,16 @@ export class ServiceCatalogPage extends GlpiPage
         return this.page.getByRole('region', { name: 'Forms', exact: true });
     }
 
+    /**
+     * Titles of the items displayed in the forms region, in display order.
+     *
+     * Each item title is a heading that contains the item link.
+     */
+    public getFormsHeadings(): Locator
+    {
+        return this.getFormsRegion().getByRole('heading');
+    }
+
     public async assertBannerBreadcrumbs(): Promise<void>
     {
         const links = this.getBannerBreadcrumbs();

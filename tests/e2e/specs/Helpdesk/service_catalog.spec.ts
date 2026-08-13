@@ -221,27 +221,27 @@ test.describe('Service Catalog Page', () => {
 
         // Check the default sort order (most popular: B first, then alphabetical)
         await expect(page.getByRole('textbox', {name: 'Most popular'})).toBeVisible();
-        const links = service_catalog.getFormsRegion().getByRole('link');
-        await expect(links).toHaveCount(3);
-        await expect(links.nth(0).getByRole('heading')).toContainText(`B form ${uuid}`);
-        await expect(links.nth(1).getByRole('heading')).toContainText(`A form ${uuid}`);
-        await expect(links.nth(2).getByRole('heading')).toContainText(`C form ${uuid}`);
+        const headings = service_catalog.getFormsHeadings();
+        await expect(headings).toHaveCount(3);
+        await expect(headings.nth(0)).toContainText(`B form ${uuid}`);
+        await expect(headings.nth(1)).toContainText(`A form ${uuid}`);
+        await expect(headings.nth(2)).toContainText(`C form ${uuid}`);
 
         // Change sort order to "Alphabetical"
         await service_catalog.doChangeSortOrder('Alphabetical');
 
         await expect(page.getByRole('textbox', {name: 'Alphabetical'})).toBeVisible();
-        await expect(links.nth(0).getByRole('heading')).toContainText(`A form ${uuid}`);
-        await expect(links.nth(1).getByRole('heading')).toContainText(`B form ${uuid}`);
-        await expect(links.nth(2).getByRole('heading')).toContainText(`C form ${uuid}`);
+        await expect(headings.nth(0)).toContainText(`A form ${uuid}`);
+        await expect(headings.nth(1)).toContainText(`B form ${uuid}`);
+        await expect(headings.nth(2)).toContainText(`C form ${uuid}`);
 
         // Change sort order to "Reverse alphabetical"
         await service_catalog.doChangeSortOrder('Reverse alphabetical');
 
         await expect(page.getByRole('textbox', {name: 'Reverse alphabetical'})).toBeVisible();
-        await expect(links.nth(0).getByRole('heading')).toContainText(`C form ${uuid}`);
-        await expect(links.nth(1).getByRole('heading')).toContainText(`B form ${uuid}`);
-        await expect(links.nth(2).getByRole('heading')).toContainText(`A form ${uuid}`);
+        await expect(headings.nth(0)).toContainText(`C form ${uuid}`);
+        await expect(headings.nth(1)).toContainText(`B form ${uuid}`);
+        await expect(headings.nth(2)).toContainText(`A form ${uuid}`);
     });
 
     test(`Deleted forms are not displayed in the service catalog`, async ({page, profile, api}) => {
@@ -609,10 +609,10 @@ test.describe('Service Catalog Page - Isolated', () => {
 
         // Verify sort order is still reverse alphabetical after navigation
         await expect(page.getByRole('textbox', {name: 'Reverse alphabetical'})).toBeVisible();
-        const links = service_catalog.getFormsRegion().getByRole('link');
-        await expect(links.nth(0).getByRole('heading')).toContainText(`C form ${uuid}`);
-        await expect(links.nth(1).getByRole('heading')).toContainText(`B form ${uuid}`);
-        await expect(links.nth(2).getByRole('heading')).toContainText(`A form ${uuid}`);
+        const headings = service_catalog.getFormsHeadings();
+        await expect(headings.nth(0)).toContainText(`C form ${uuid}`);
+        await expect(headings.nth(1)).toContainText(`B form ${uuid}`);
+        await expect(headings.nth(2)).toContainText(`A form ${uuid}`);
     });
 
     test(`Changing sort order stays in the current subcategory`, async ({page, profile, api, entity}) => {
@@ -655,9 +655,9 @@ test.describe('Service Catalog Page - Isolated', () => {
         await expect(breadcrumb_nav.getByRole('link', {name: 'Service catalog'})).toBeVisible();
 
         // Verify items are sorted alphabetically inside the category
-        const links = service_catalog.getFormsRegion().getByRole('link');
-        await expect(links.nth(0).getByRole('heading')).toContainText(`A form ${uuid}`);
-        await expect(links.nth(1).getByRole('heading')).toContainText(`B form ${uuid}`);
-        await expect(links.nth(2).getByRole('heading')).toContainText(`C form ${uuid}`);
+        const headings = service_catalog.getFormsHeadings();
+        await expect(headings.nth(0)).toContainText(`A form ${uuid}`);
+        await expect(headings.nth(1)).toContainText(`B form ${uuid}`);
+        await expect(headings.nth(2)).toContainText(`C form ${uuid}`);
     });
 });
