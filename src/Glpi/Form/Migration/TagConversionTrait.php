@@ -169,12 +169,12 @@ trait TagConversionTrait
         Question $question,
         string $property_name
     ): ?int {
-        if(!is_a($question->fields['type'], QuestionTypeItem::class, true)) {
+        if (!is_a($question->fields['type'], QuestionTypeItem::class, true)) {
             return null;
         }
 
         $itemtype = (new ($question->fields['type'])())->getDefaultValueItemtype($question);
-        if ($itemtype === null) {
+        if ($itemtype === null || !is_a($itemtype, \CommonDBTM::class, true)) {
             return null;
         }
 
