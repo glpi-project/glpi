@@ -129,3 +129,54 @@ for (const questionType of ['Radio', 'Checkbox', 'Dropdown']) {
         await expect(savedOptions.nth(2)).toHaveValue('Option C');
     });
 }
+
+for (const questionType of ['Radio', 'Checkbox', 'Dropdown']) {
+    test(`Can copy an option's uuid to the clipboard for ${questionType} question`, async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+        const form = new FormPage(page);
+
+        // Create a form and navigate to its editor
+        const uuid = randomUUID();
+        const form_id = await api.createItem('Glpi\\Form\\Form', {
+            name: `Form - ${uuid}`,
+            entities_id: getWorkerEntityId(),
+        });
+        await form.goto(form_id);
+
+        const question = await form.addQuestion(`${questionType} question`);
+        await form.setQuestionType(question, questionType);
+
+        // Add an option to the question
+        const optionInput = question.getByRole('textbox', { name: 'Selectable option' }).first();
+        await question.getByRole('textbox', { name: 'Selectable option' }).last().fill('Option 1');
+
+        // The option's uuid is the last bracket key of its text input name
+        // (e.g. _questions[0][extra_data][options][<uuid>]), which is the value
+        // the button copies. This holds for every selectable type, unlike the
+        // default-value control (a hidden radio / a select2 for dropdowns).
+        const optionName = await optionInput.getAttribute('name');
+        const expectedUuid = optionName?.match(/\[([^\]]+)\]$/)?.[1];
+
+        const copyButton = question.getByRole('button', { name: 'Copy UUID' }).first();
+
+        // The button stays hidden until its option row is hovered
+        await page.mouse.move(0, 0);
+        await expect(copyButton).toHaveCSS('opacity', '0');
+        await optionInput.hover();
+        await expect(copyButton).toHaveCSS('opacity', '1');
+
+        // Click the option's "Copy UUID" button
+        await copyButton.click();
+
+        // Assert the generic clipboard handler confirmed the copy
+        await expect(
+            page.getByRole('alert').filter({ hasText: 'Copied to clipboard' })
+        ).toBeVisible();
+
+        // Assert the clipboard holds the option's (non-empty) uuid
+        const clipboardContent = await page.evaluate(() => navigator.clipboard.readText());
+        expect(clipboardContent).not.toBe('');
+        expect(clipboardContent).toBe(expectedUuid);
+    });
+}

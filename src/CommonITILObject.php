@@ -613,6 +613,34 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
+     * Resolve the entity to use for a new item created from an asset (via the
+     * "_add_fromitem"/"itemtype"/"items_id" form options), provided the
+     * current user has access to that entity.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return int|null The asset entity, or null if it cannot be determined or is not accessible.
+     */
+    protected function getEntitiesIdFromAddFromItemOptions(array $options): ?int
+    {
+        if (
+            !isset($options['_add_fromitem'], $options['itemtype'])
+            || !is_a($options['itemtype'], CommonDBTM::class, true)
+        ) {
+            return null;
+        }
+
+        $item = new $options['itemtype']();
+        $item->getFromDB($options['items_id'][$options['itemtype']][0]);
+
+        if (!Session::haveAccessToEntity($item->fields['entities_id'])) {
+            return null;
+        }
+
+        return $item->fields['entities_id'];
+    }
+
+    /**
      * @param $ID
      * @param $options   array
      **/
@@ -620,6 +648,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         if (!static::canView()) {
             return false;
+        }
+
+        $entities_id = $this->getEntitiesIdFromAddFromItemOptions($options);
+        if ($entities_id !== null) {
+            $options['entities_id'] = $entities_id;
         }
 
         $this->restoreInputAndDefaults($ID, $options);
@@ -5744,22 +5777,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         if (!$this->isNotSolved()) {
             echo "<tr class='tab_bg_2'><td>" . __s('Resolution') . "</td><td>";
-
-            if ($this->fields['solve_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['solve_delay_stat'], false, false));
-            } else {
-                echo '&nbsp;';
-            }
+            // solve_delay_stat may legitimately be 0 (e.g. ticket resolved outside
+            // the calendar's working hours), so always display it if the ticket is solved.
+            echo htmlescape(Html::timestampToString($this->fields['solve_delay_stat'], false, false));
             echo "</td></tr>";
         }
 
         if (in_array($this->fields['status'], static::getClosedStatusArray())) {
             echo "<tr class='tab_bg_2'><td>" . __s('Closure') . "</td><td>";
-            if ($this->fields['close_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['close_delay_stat'], true, false));
-            } else {
-                echo '&nbsp;';
-            }
+            // close_delay_stat may legitimately be 0 (e.g. ticket closed outside
+            // the calendar's working hours), so always display it if the ticket is closed.
+            echo htmlescape(Html::timestampToString($this->fields['close_delay_stat'], false, false));
             echo "</td></tr>";
         }
 
@@ -6933,7 +6961,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 $solvedelay_column = "";
                 // Show only for solved tickets
-                if ($item->fields['solve_delay_stat'] > 0) {
+                if (!empty($item->fields['solvedate'])) {
                     $solvedelay_column = htmlescape(Html::timestampToString($item->fields['solve_delay_stat']));
                 }
                 echo $output::showItem($solvedelay_column, $item_num, $p['row_num'], $align_desc . " width='150'");
@@ -8827,10 +8855,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             'users_id' => $user_id,
                             'users_id_tech' => $user_id,
                         ];
+
+                        if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {
+                            $private_task_crit['groups_id_tech'] = $_SESSION["glpigroups"];
+                        }
                     }
-                }
-                if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {
-                    $private_task_crit['groups_id_tech'] = $_SESSION["glpigroups"];
                 }
                 if (!empty($private_task_crit)) {
                     $tasks_crit[] = ['OR' => $private_task_crit];
@@ -9575,7 +9604,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         } else {
                             $actor_id = $actor;
                         }
-                        if (!is_numeric($actor_id)) {
+                        if (!is_numeric($actor_id) && $actor_id !== 'requester_manager') {
                             trigger_error(
                                 sprintf(
                                     'Invalid value "%s" found for additional actor in "%s".',

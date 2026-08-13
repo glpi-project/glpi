@@ -135,7 +135,7 @@ class GLPIDashboard {
         this.elem_id      = "#dashboard-" + this.rand;
         this.element      = $(this.elem_id);
         this.elem_dom     = this.element[0];
-        this.current_name = $(`${this.elem_id} .dashboard-select`).val() || options.current;
+        this.current_name = $(`${this.elem_id} .dashboard_select`).val() || options.current;
         this.embed        = options.embed;
         this.token        = options.token;
         this.entities_id  = options.entities_id;
