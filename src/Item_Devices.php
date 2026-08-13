@@ -598,9 +598,10 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         /** @var CommonDBTM $item */
         if ($item->canView()) {
             $nb = 0;
-            if (self::getItemAffinities($item::class) !== []) {
+            $affinities = self::getItemAffinities($item::class);
+            if ($affinities !== []) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    foreach (self::getItemAffinities($item::class) as $link_type) {
+                    foreach ($affinities as $link_type) {
                         $nb   += countElementsInTable(
                             $link_type::getTable(),
                             ['items_id'   => $item->getID(),
