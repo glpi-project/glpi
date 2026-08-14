@@ -35,6 +35,7 @@
 namespace Glpi\Tests;
 
 use CommonDBTM;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Helpdesk\Tile\Item_Tile;
 use Glpi\Helpdesk\Tile\TileInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
@@ -100,6 +101,12 @@ abstract class AbstractTileRightsTest extends DbTestCase
         // least one tile type (this is what gates the "Add tile" button
         // visibility).
         $this->assertTrue(TilesManager::getInstance()->canAddTile());
+
+        // ...and the "Add tile" button must actually be rendered.
+        $this->assertStringContainsString(
+            'data-glpi-helpdesk-config-action-new-tile',
+            $this->renderTilesTemplate(),
+        );
     }
 
     /**
@@ -145,6 +152,12 @@ abstract class AbstractTileRightsTest extends DbTestCase
         // ...and TilesManager must confirm this user is not allowed to add
         // any tile type.
         $this->assertFalse(TilesManager::getInstance()->canAddTile());
+
+        // ...and the "Add tile" button must not be rendered.
+        $this->assertStringNotContainsString(
+            'data-glpi-helpdesk-config-action-new-tile',
+            $this->renderTilesTemplate(),
+        );
     }
 
     /**
@@ -210,6 +223,21 @@ abstract class AbstractTileRightsTest extends DbTestCase
         $tile_id = $item_tile->fields['items_id_tile'];
 
         return [$tile_class, $tile_id];
+    }
+
+    /**
+     * Render the "Add tile" config template for the currently logged in user.
+     */
+    private function renderTilesTemplate(): string
+    {
+        return TemplateRenderer::getInstance()->render(
+            'pages/admin/helpdesk_home_config_tiles.html.twig',
+            [
+                'tiles_manager' => TilesManager::getInstance(),
+                'tiles'         => [],
+                'editable'      => true,
+            ]
+        );
     }
 
     /**
