@@ -110,7 +110,7 @@
                         'items_devicepowersupplies_id',
                         item.fields['items_devicepowersupplies_id']|default(0),
                         power_supplies,
-                        __('Power supply'),
+                        _n('Power supply', 'Power supplies', 1),
                         field_options|merge({
                             display_emptychoice: true,
                             required: power_supplies is not empty,
