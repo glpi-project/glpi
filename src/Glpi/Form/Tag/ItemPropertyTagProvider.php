@@ -117,16 +117,16 @@ final class ItemPropertyTagProvider implements TagProviderInterface, CompositeTa
         }
 
         $itemtype = $raw['itemtype'];
-        $field_vlaues = [];
+        $field_values = [];
         foreach ($raw['items_ids'] as $item_id) {
             $item = $itemtype::getById((int) $item_id);
             if (!$item) {
                 continue;
             }
-            $field_vlaues[] = $this->resolveProperty($item, $itemtype, $option_id);
+            $field_values[] = $this->resolveProperty($item, $itemtype, $option_id);
         }
 
-        return implode(', ', $field_vlaues);
+        return implode(', ', $field_values);
     }
 
     #[Override]
