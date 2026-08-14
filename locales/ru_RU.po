@@ -344,6 +344,10 @@ msgstr "Фамилия"
 msgid "First name"
 msgstr "Имя"
 
+#: templates/pages/admin/user/user.html.twig:100 src/User.php:3514
+msgid "Middle name / Patronymic"
+msgstr "Отчество"
+
 #: templates/generic_show_form.html.twig
 #: templates/components/form/header_content.html.twig
 #: templates/pages/tools/project.html.twig src/Software.php:447
@@ -620,6 +624,7 @@ msgstr "Факс"
 #: src/NotificationTargetCommonITILObject.php:2266
 #: src/Contact_Supplier.php:191 src/Plugin.php:2785 src/Supplier.php:236
 #: src/Contract_Supplier.php:334 src/Entity.php:924
+#: templates/pages/admin/user/user.html.twig:265 src/User.php:3578
 msgid "Website"
 msgstr "Web-сайт"
 

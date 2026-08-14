@@ -369,15 +369,19 @@ class AdministrationControllerTest extends HLAPITestCase
     {
         $this->api
             ->autoTestCRUD('/Administration/User', [
-                'username'  => 'testuser',
-                'password'  => 'testuser',
-                'password2' => 'testuser',
-                'firstname' => 'Test',
-                'realname'  => 'User',
+                'username'   => 'testuser',
+                'password'   => 'testuser',
+                'password2'  => 'testuser',
+                'firstname'  => 'Test',
+                'realname'   => 'User',
+                'middlename' => 'Middle',
+                'website'    => 'https://example.com/users/testuser',
             ], [
-                'username'  => 'testuser2',
-                'firstname' => 'Test2',
-                'realname'  => 'User2',
+                'username'   => 'testuser2',
+                'firstname'  => 'Test2',
+                'realname'   => 'User2',
+                'middlename' => 'Middle2',
+                'website'    => 'https://example.com/users/testuser2',
             ]);
     }
 

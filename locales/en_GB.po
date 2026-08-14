@@ -288,6 +288,10 @@ msgstr "Surname"
 msgid "First name"
 msgstr "First name"
 
+#: templates/pages/admin/user/user.html.twig:100 src/User.php:3514
+msgid "Middle name / Patronymic"
+msgstr "Middle name / Patronymic"
+
 #: templates/generic_show_form.html.twig
 #: templates/components/form/header_content.html.twig
 #: templates/pages/tools/project.html.twig src/Software.php:447 src/PDU.php:251
@@ -551,6 +555,7 @@ msgstr "Fax"
 #: src/NotificationTargetCommonITILObject.php:2170
 #: src/NotificationTargetCommonITILObject.php:2266 src/Contact_Supplier.php:191
 #: src/Plugin.php:2785 src/Supplier.php:236 src/Contract_Supplier.php:334
+#: templates/pages/admin/user/user.html.twig:265 src/User.php:3578
 #: src/Entity.php:924
 msgid "Website"
 msgstr "Website"
