@@ -37,12 +37,13 @@
       {% set shortcut = __('Option+Command+G') %}
    {% endif %}
 
-   <button class="btn btn-sm btn-ghost-secondary trigger-fuzzy justify-content-start mb-md-2"
+   <button type="button" class="btn btn-sm btn-ghost-secondary trigger-fuzzy justify-content-start mb-md-2"
            title="{{ shortcut }}"
            data-bs-toggle="tooltip"
            data-bs-placement="right">
       <i class="ti ti-arrow-big-right me-1" aria-hidden="true"></i>
-      <span class="menu-label {{ not is_vertical ? "d-block d-xl-none d-xxl-block" : "" }}">
+      <span class="visually-hidden">{{ __('Find menu') }}</span>
+      <span class="menu-label {{ not is_vertical ? "d-block d-xl-none d-xxl-block" : "" }}" aria-hidden="true">
          {{ __('Find menu') }}
       </span>
    </button>
