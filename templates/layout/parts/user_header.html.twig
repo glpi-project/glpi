@@ -90,17 +90,18 @@
                </a>
 
       {% if has_profile_right('config', constant('READ')) %}
-               <a href="#" class="dropdown-item" title="{{ __('About') }}"
+               <button type="button" class="dropdown-item"
                   id="show_about_modal_{{ rand_header }}"
                   data-testid="about-link">
                   <i class="ti ti-info-circle" aria-hidden="true"></i>
                   {{ __('About') }}
                   {% if found_new_version is not null %}
                      <span class="badge bg-info text-dark ms-2">
-                        1
+                        <span aria-hidden="true">1</span>
+                        <span class="visually-hidden">{{ __('A new version is available: %s.')|format(found_new_version) }}</span>
                      </span>
                   {% endif %}
-               </a>
+               </button>
       {% endif %}
 
                <div class="dropdown-divider"></div>
@@ -118,16 +119,17 @@
       </div>
 
       {% if has_profile_right('config', constant('READ')) %}
-      <div class="modal fade" id="about_modal_{{ rand_header }}" role="dialog">
+      <div class="modal fade" id="about_modal_{{ rand_header }}" tabindex="-1"
+           aria-labelledby="about_modal_title_{{ rand_header }}">
          <div class="modal-dialog">
             <div class="modal-content">
                <div class="modal-header">
-                  <h4 class="modal-title">{{ __('About') }}</h4>
+                  <h4 class="modal-title" id="about_modal_title_{{ rand_header }}">{{ __('About') }}</h4>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}" title="{{ __('Close') }}" data-bs-toggle="tooltip" data-bs-placement="left"></button>
                </div>
                <div class="modal-body text-center">
                   <p>
-                     <img src="{{ path('pics/logos/logo-GLPI-100-grey.png') }}" title="GLPI Logo" style="max-width:100px; height:auto;" />
+                     <img src="{{ path('pics/logos/logo-GLPI-100-grey.png') }}" alt="" style="max-width:100px; height:auto;" />
                   </p>
                   {% if not call('\\Glpi\\Toolbox\\VersionParser::isStableRelease', [constant('GLPI_VERSION')]) %}
                       <div class='alert alert-important alert-warning d-flex'>
@@ -135,7 +137,7 @@
                       </div>
                   {% endif %}
                   <p><a href="https://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
-                     <p>GLPI {{ constant('GLPI_VERSION') }}</p>
+                     <span class="d-block">GLPI {{ constant('GLPI_VERSION') }}</span>
                      Copyright (C) 2015-{{ constant('GLPI_YEAR') }} Teclib' and contributors
                   </a></p>
                   {% if found_new_version is not null %}
