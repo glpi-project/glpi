@@ -338,6 +338,17 @@
                     allowInput: {{ options.readonly ? 'false' : 'true' }},
                     clickOpens: {{ options.readonly ? 'false' : 'true' }},
                     locale: getFlatPickerLocale("{{ locale['language']|e('js') }}", "{{ locale['region']|e('js') }}"),
+                    onReady(dates, currentdatestring, picker) {
+                        // `altInput: true` hides the original input and exposes a substitute one
+                        if (picker.altInput) {
+                            // so copy all aria-* attributes from the original input to the altInput
+                            for (const attribute of picker.input.attributes) {
+                                if (attribute.name.startsWith('aria-')) {
+                                    picker.altInput.setAttribute(attribute.name, attribute.value);
+                                }
+                            }
+                        }
+                    },
                     onClose(dates, currentdatestring, picker) {
                         picker.setDate(picker.altInput.value, true, picker.config.altFormat)
                     },

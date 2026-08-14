@@ -103,15 +103,18 @@
         }
     ) }}
 
-    <i
+    <button
+        type="button"
         id="actors_settings_dropdown_{{ rand }}"
-        class="ms-2 ti ti-settings pointer"
+        class="ms-2 btn btn-sm btn-icon btn-ghost-secondary"
         data-glpi-form-editor-question-extra-details
         data-bs-auto-close="outside"
-        role="button"
         data-bs-toggle="dropdown"
-        aria-label="{{ __('Show more settings') }}"
-    ></i>
+        aria-expanded="false"
+    >
+        <i class="ti ti-settings" aria-hidden="true"></i>
+        <span class="visually-hidden">{{ __('Show more settings') }}</span>
+    </button>
     <div
         class="dropdown-menu dropdown-menu-card"
         aria-labelledby="actors_settings_dropdown_{{ rand }}"

@@ -30,7 +30,17 @@
  # ---------------------------------------------------------------------
  #}
 
-<svg role="img" width="{{ width }}" height="{{ height }}" class="flex-shrink-0">
-    <title>{{ title ?? '' }}</title>
+{% set title = title|default('') %}
+<svg
+    {% if title is not empty %}
+        role="img"
+    {% else %}
+        aria-hidden="true"
+    {% endif %}
+    width="{{ width }}" height="{{ height }}" class="flex-shrink-0"
+>
+    {% if title is not empty %}
+        <title>{{ title }}</title>
+    {% endif %}
     <use data-testid="illustration-use" xlink:href="{{ path(file_path) }}#{{ icon_id }}"/>
 </svg>

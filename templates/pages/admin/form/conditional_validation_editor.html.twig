@@ -115,12 +115,14 @@
                         {% endif %}
                     {% endif %}
 
-                    <i
-                        role="button"
-                        aria-label="{{ __("Delete criteria") }}"
-                        class="ti ti-trash text-danger cursor-pointer ms-auto"
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-icon btn-ghost-danger ms-auto"
                         data-glpi-condition-editor-delete-condition
-                    ></i>
+                    >
+                        <i class="ti ti-trash" aria-hidden="true"></i>
+                        <span class="visually-hidden">{{ __("Delete criteria") }}</span>
+                    </button>
                 </div>
             </div>
         </div>

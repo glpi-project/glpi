@@ -138,8 +138,7 @@ test.describe('Illustration picker', () => {
         await picker_page.doUploadCustomIllustration("uploads/bar.png");
 
         // Make sure the custom image is displayed and is valid
-        const custom_preview = picker_page.getCustomPreview();
-        const custom_img = custom_preview.getByRole('img');
+        const custom_img = picker_page.getCustomPreviewImage();
         await expect(custom_img).toBeVisible();
         const natural_width = await custom_img.evaluate(
             (img: HTMLImageElement) => img.naturalWidth
@@ -148,7 +147,7 @@ test.describe('Illustration picker', () => {
 
         // Save changes
         await page.getByRole('button', { name: 'Save changes' }).click();
-        await expect(custom_preview.getByRole('img')).toBeVisible();
+        await expect(picker_page.getCustomPreviewImage()).toBeVisible();
     });
 
     test('Can pick an image searchable by tag', async ({ profile, page }) => {

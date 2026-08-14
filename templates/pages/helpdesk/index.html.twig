@@ -61,6 +61,7 @@
                             value=""
                             class="form-control home-search"
                             placeholder="{{ __("Search for knowledge base entries or forms") }}"
+                            aria-label="{{ __("Search for knowledge base entries or forms") }}"
                             data-testid="home-search"
                         >
                         <section
@@ -109,10 +110,7 @@
                 <div class="row">
                     {% for tile in tiles %}
                         <div class="col-12 col-sm-6 col-md-4 d-flex">
-                            <a
-                                class="card mx-1 my-2 flex-grow-1"
-                                href="{{ tile.getTileUrl() }}"
-                            >
+                            <div class="card mx-1 my-2 flex-grow-1">
                                 <section class="card-body">
                                     <div class="d-flex">
                                         <div class="aspect-ratio-1">
@@ -120,7 +118,12 @@
                                         </div>
                                         <div class="ms-4">
                                             <h2 class="card-title mb-2 text-break">
-                                                {{ tile.getTitle() }}
+                                                <a
+                                                    class="stretched-link text-reset"
+                                                    href="{{ tile.getTileUrl() }}"
+                                                >
+                                                    {{ tile.getTitle() }}
+                                                </a>
                                             </h2>
                                             <div class="text-secondary remove-last-tinymce-margin">
                                                 {{ tile.getDescription()|safe_html }}
@@ -128,7 +131,7 @@
                                         </div>
                                     </div>
                                 </section>
-                            </a>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>

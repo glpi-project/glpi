@@ -163,5 +163,7 @@ test('Aside renders no svg for an article without illustration', async ({ page, 
         .getByRole('link', { name: article_name })
     ;
     await expect(aside_link).toBeVisible();
-    await expect(aside_link.getByRole('img')).toHaveCount(0);
+    // Located by test id: untitled illustrations are `aria-hidden`, so the
+    // `img` role would no longer match them even if one was rendered.
+    await expect(aside_link.getByTestId('illustration-use')).toHaveCount(0);
 });
