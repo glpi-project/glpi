@@ -378,6 +378,12 @@ body.in_modal .kb-article {
     }
 }
 
+// Reserve the height that the editor will take once tiptap is mounted, which
+// happens asynchronously. Prevent some height issues on chrome based browsers.
+.kb-editor-reserved {
+    min-height: 200px;
+}
+
 // Tiptap Editor styles for KB articles
 .kb-editor-wrapper {
     .ProseMirror {
