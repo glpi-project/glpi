@@ -36,7 +36,7 @@ namespace Glpi\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 
-use function Safe\ob_end_clean;
+use function Safe\ob_get_clean;
 use function Safe\ob_start;
 
 abstract class CommonITILTaskTestCase extends DbTestCase
@@ -463,7 +463,7 @@ abstract class CommonITILTaskTestCase extends DbTestCase
         $task = new $task_class();
         ob_start();
         $task->showMassiveActionAddTaskForm();
-        $output = ob_end_clean();
+        $output = ob_get_clean();
 
         // Assert: make sure the template was renderer without fatal errors
         $this->assertNotEmpty($output);
