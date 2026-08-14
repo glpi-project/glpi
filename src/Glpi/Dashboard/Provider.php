@@ -1195,68 +1195,48 @@ class Provider
         $group_ticket_table = Group_Ticket::getTable();
         $group_table        = Group::getTable();
 
+        $opened_statuses = implode(',', [Ticket::INCOMING, Ticket::ASSIGNED, Ticket::PLANNED, Ticket::WAITING]);
+        $closed_statuses = implode(',', [Ticket::SOLVED, Ticket::CLOSED]);
 
-        $buckets = [
-            'opened' => [Ticket::INCOMING, Ticket::ASSIGNED, Ticket::PLANNED, Ticket::WAITING],
-            'closed' => [Ticket::SOLVED, Ticket::CLOSED],
-        ];
-
-        // 2 separate queries, one for each “set” of statuses (open/close)
-        // in each we count the tickets grouped by assigned group
         Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
-        $group_names = [];
-        $counts      = [];
-        foreach ($buckets as $bucket => $statuses) {
-            $criteria = array_merge_recursive(
-                [
-                    'SELECT'    => [
-                        "$group_table.name AS group_name",
-                        "$group_table.id AS group_id",
-                        'COUNT' => "$ticket_table.id AS cpt",
-                    ],
-                    'FROM'      => $ticket_table,
-                    'LEFT JOIN' => [
-                        $group_ticket_table => [
-                            'ON' => [
-                                $group_ticket_table => 'tickets_id',
-                                $ticket_table        => 'id',
-                                [
-                                    'AND' => [
-                                        "$group_ticket_table.type" => Group_Ticket::ASSIGN,
-                                    ],
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    "$group_table.name AS group_name",
+                    "$group_table.id AS group_id",
+                    new QueryExpression("COUNT(CASE WHEN $ticket_table.status IN ($opened_statuses) THEN $ticket_table.id END) AS opened"),
+                    new QueryExpression("COUNT(CASE WHEN $ticket_table.status IN ($closed_statuses) THEN $ticket_table.id END) AS closed"),
+                ],
+                'FROM'      => $ticket_table,
+                'LEFT JOIN' => [
+                    $group_ticket_table => [
+                        'ON' => [
+                            $group_ticket_table => 'tickets_id',
+                            $ticket_table        => 'id',
+                            [
+                                'AND' => [
+                                    "$group_ticket_table.type" => Group_Ticket::ASSIGN,
                                 ],
                             ],
                         ],
-                        $group_table => [
-                            'ON' => [
-                                $group_table         => 'id',
-                                $group_ticket_table  => 'groups_id',
-                            ],
+                    ],
+                    $group_table => [
+                        'ON' => [
+                            $group_table         => 'id',
+                            $group_ticket_table  => 'groups_id',
                         ],
                     ],
-                    'WHERE'     => [
-                        "$ticket_table.is_deleted" => 0,
-                        "$ticket_table.status"     => $statuses,
-                    ] + getEntitiesRestrictCriteria($ticket_table),
-                    'GROUPBY'   => "$group_table.id",
                 ],
+                'WHERE'     => [
+                    "$ticket_table.is_deleted" => 0,
+                ] + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY'   => "$group_table.id",
+            ],
 
-                Ticket::getCriteriaFromProfile(),
-                self::getFiltersCriteria($ticket_table, $params['apply_filters'])
-            );
-
-            foreach ($DB->request($criteria) as $result) {
-                $group_id = $result['group_id'] ?? 0;
-                $group_name = $result['group_name'] ?? null;
-
-                if (!$group_name) {
-                    continue;
-                }
-
-                $group_names[$group_id] = $group_name;
-                $counts[$bucket][$group_id] = (int) $result['cpt'];
-            }
-        }
+            Ticket::getCriteriaFromProfile(),
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+        $iterator = $DB->request($criteria);
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
 
         $data = [
@@ -1266,10 +1246,16 @@ class Provider
                 ['name' => __('Closed'), 'data' => []],
             ],
         ];
-        foreach ($group_names as $group_id => $group_name) {
+        foreach ($iterator as $result) {
+            $group_name = $result['group_name'] ?? null;
+
+            if (!$group_name) {
+                continue;
+            }
+
             $data['labels'][] = $group_name;
-            $data['series'][0]['data'][] = $counts['opened'][$group_id] ?? 0;
-            $data['series'][1]['data'][] = $counts['closed'][$group_id] ?? 0;
+            $data['series'][0]['data'][] = (int) $result['opened'];
+            $data['series'][1]['data'][] = (int) $result['closed'];
         }
 
         if (count($data['labels']) === 0) {
