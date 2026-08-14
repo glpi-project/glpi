@@ -375,13 +375,11 @@ class AdministrationControllerTest extends HLAPITestCase
                 'firstname'  => 'Test',
                 'realname'   => 'User',
                 'middlename' => 'Middle',
-                'website'    => 'https://example.com/users/testuser',
             ], [
                 'username'   => 'testuser2',
                 'firstname'  => 'Test2',
                 'realname'   => 'User2',
                 'middlename' => 'Middle2',
-                'website'    => 'https://example.com/users/testuser2',
             ]);
     }
 

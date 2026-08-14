@@ -39,7 +39,4 @@
 $migration->addField('glpi_users', 'middlename', 'varchar(255)', [
     'after' => 'firstname',
 ]);
-$migration->addField('glpi_users', 'website', 'varchar(255)', [
-    'after' => 'middlename',
-]);
 $migration->addKey('glpi_users', 'middlename');

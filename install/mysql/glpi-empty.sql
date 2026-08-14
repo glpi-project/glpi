@@ -8023,7 +8023,6 @@ CREATE TABLE `glpi_users` (
   `realname` varchar(255) DEFAULT NULL,
   `firstname` varchar(255) DEFAULT NULL,
   `middlename` varchar(255) DEFAULT NULL,
-  `website` varchar(255) DEFAULT NULL,
   `locations_id` int unsigned NOT NULL DEFAULT '0',
   `language` char(10) DEFAULT NULL,
   `use_mode` int NOT NULL DEFAULT '0',

@@ -3572,14 +3572,6 @@ HTML;
         ];
 
         $tab[] = [
-            'id'                 => '123',
-            'table'              => $this->getTable(),
-            'field'              => 'website',
-            'name'               => __('Website'),
-            'datatype'           => 'weblink',
-        ];
-
-        $tab[] = [
             'id'                 => '13',
             'table'              => 'glpi_groups',
             'field'              => 'completename',
@@ -4399,7 +4391,6 @@ HTML;
                         'glpi_users.middlename'          => ['LIKE', $txt_search],
                         'glpi_users.phone'               => ['LIKE', $txt_search],
                         'glpi_users.registration_number' => ['LIKE', $txt_search],
-                        'glpi_users.website'             => ['LIKE', $txt_search],
                         'glpi_useremails.email'          => ['LIKE', $txt_search],
                         $concat,
                     ],
@@ -4929,9 +4920,6 @@ HTML;
         $vcard->add('TEL', $this->fields["phone"], ['type' => 'PREF;WORK;VOICE']);
         $vcard->add('TEL', $this->fields["phone2"], ['type' => 'HOME;VOICE']);
         $vcard->add('TEL', $this->fields["mobile"], ['type' => 'WORK;CELL']);
-        if (!empty($this->fields['website'])) {
-            $vcard->add('URL', $this->fields['website']);
-        }
 
         // Get more data from plugins such as an IM contact
         $data = Plugin::doHook(Hooks::VCARD_DATA, ['item' => $this, 'data' => []])['data'];

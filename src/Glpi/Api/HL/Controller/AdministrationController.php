@@ -133,11 +133,6 @@ final class AdministrationController extends AbstractController
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Mobile phone number',
                     ],
-                    'website' => [
-                        'type' => Doc\Schema::TYPE_STRING,
-                        'format' => Doc\Schema::FORMAT_STRING_URI,
-                        'description' => 'Website URL',
-                    ],
                     'emails' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
                         'description' => 'Email addresses',
