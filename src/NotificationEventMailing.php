@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Toolbox\Sanitizer;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -400,9 +401,8 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 $sent = $mmail->Send();
             } catch (\Throwable $e) {
-                // Catches PHPMailer setup errors, but also exceptions thrown by
-                // Send() itself (e.g. SMTP OAuth token refresh failures), which
-                // PHPMailer does not catch as they are not its own Exception type.
+                // handleFailedSend() below only keeps the exception message, log the full trace here.
+                ErrorHandler::getInstance()->handleException($e, true);
                 self::handleFailedSend($current, $e->getMessage());
                 continue;
             }
