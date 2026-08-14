@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\ErrorHandler;
 use Glpi\Toolbox\Sanitizer;
 use PHPMailer\PHPMailer\PHPMailer;
 
@@ -397,11 +398,16 @@ class NotificationEventMailing extends NotificationEventAbstract
                 if (!empty($current->fields['messageid'])) {
                     $mmail->MessageID = "<" . $current->fields['messageid'] . ">";
                 }
+
+                $sent = $mmail->Send();
             } catch (\Throwable $e) {
+                // handleFailedSend() below only keeps the exception message, log the full trace here.
+                ErrorHandler::getInstance()->handleException($e, true);
                 self::handleFailedSend($current, $e->getMessage());
+                continue;
             }
 
-            if (!$mmail->Send()) {
+            if (!$sent) {
                 self::handleFailedSend($current, $mmail->ErrorInfo);
             } else {
                 //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
