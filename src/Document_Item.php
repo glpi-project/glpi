@@ -994,6 +994,7 @@ class Document_Item extends CommonDBRelation
         CommonDBTM $item,
         array $ids
     ): void {
+        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($ma->getAction() !== 'add_transfer_list') {
