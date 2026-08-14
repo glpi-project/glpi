@@ -1013,6 +1013,22 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if (isset($query_params['knowbaseitems_id_parent'])) {
             $options['knowbaseitems_id_parent'] = $query_params['knowbaseitems_id_parent'];
         }
+
+        // Parameters set by the "Save and add to the knowledge base" actions of
+        // the ITIL objects timeline, see self::getFormURLWithParam().
+        $itil_params = [
+            'item_itemtype',
+            'item_items_id',
+            '_fup_to_kb',
+            '_task_to_kb',
+            '_sol_to_kb',
+        ];
+        foreach ($itil_params as $itil_param) {
+            if (isset($query_params[$itil_param])) {
+                $options[$itil_param] = $query_params[$itil_param];
+            }
+        }
+
         return $options;
     }
 
@@ -1028,8 +1044,58 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return false;
         }
 
+        $this->initFromItilObject($ID, $options);
+
         $this->showFull(['mode' => 'add'] + $options);
         return true;
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private function initFromItilObject(int $ID, array $options): void
+    {
+        if (
+            !self::isNewID($ID)
+            || empty($options['item_itemtype'])
+            || empty($options['item_items_id'])
+        ) {
+            return;
+        }
+
+        $item = getItemForItemtype($options['item_itemtype']);
+        if (
+            !($item instanceof CommonITILObject)
+            || !$item->getFromDB($options['item_items_id'])
+        ) {
+            return;
+        }
+
+        $this->fields['name'] = $item->getField('name');
+
+        if (isset($options['_fup_to_kb'])) {
+            $followup = ITILFollowup::getById($options['_fup_to_kb']);
+            if ($followup) {
+                $this->fields['answer'] = $followup->getField('content');
+            }
+        } elseif (isset($options['_task_to_kb'])) {
+            $task = $item->getTaskClassInstance();
+            if ($task->getFromDB($options['_task_to_kb'])) {
+                $this->fields['answer'] = $task->getField('content');
+            }
+        } elseif (isset($options['_sol_to_kb'])) {
+            // Unlike _fup_to_kb and _task_to_kb, _sol_to_kb does not contain
+            // the target solution it
+            $solution = new ITILSolution();
+            $found = $solution->getFromDBByCrit([
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+                ['NOT' => ['status' => CommonITILValidation::REFUSED]],
+            ]);
+            if ($found) {
+                $this->fields['answer'] = $solution->getField('content');
+            }
+        }
     }
 
     /**
