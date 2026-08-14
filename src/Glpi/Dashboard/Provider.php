@@ -1232,7 +1232,6 @@ class Provider
                 ] + getEntitiesRestrictCriteria($ticket_table),
                 'GROUPBY'   => "$group_table.id",
             ],
-
             Ticket::getCriteriaFromProfile(),
             self::getFiltersCriteria($ticket_table, $params['apply_filters'])
         );
