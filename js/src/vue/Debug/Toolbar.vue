@@ -68,7 +68,9 @@
             refreshButton: (button) => {
                 const server_perf = props.initial_request.server_performance;
                 const memory_usage = +(server_perf.memory_usage / 1024 / 1024).toFixed(2);
-                const server_performance_button_label = `${_.escape(server_perf.execution_time)} <span class="text-muted"> ms using </span> ${_.escape(memory_usage)} <span class="text-muted"> MiB </span>`;
+                const initial_execution_time = +server_perf.execution_time;
+                const total_execution_time = getTotalServerExecutionTime();
+                const server_performance_button_label = `${_.escape(initial_execution_time)}<span class="text-muted"> ms initial, </span>${_.escape(total_execution_time)}<span class="text-muted"> ms total using </span>${_.escape(memory_usage)}<span class="text-muted"> MiB </span>`;
                 button.find('.debug-text').html(server_performance_button_label);
             }
         },
@@ -240,6 +242,98 @@
         return widgets.filter((widget) => widget.main_widget);
     }
 
+    function getTotalServerExecutionTime() {
+        let total = +props.initial_request.server_performance.execution_time;
+        ajax_requests.value.forEach((request) => {
+            if (request.profile !== undefined && request.profile !== null) {
+                total += +request.profile.server_performance.execution_time;
+            }
+        });
+        return total;
+    }
+
+    function getSQLTime(queries) {
+        if (!queries) {
+            return null;
+        }
+        return +queries.reduce((total, query) => total + query.time, 0).toFixed(2);
+    }
+
+    function getSQLQueriesDetail(queries) {
+        if (!queries) {
+            return [];
+        }
+        return queries.map((query) => ({
+            query: query.query,
+            time_ms: +query.time.toFixed(2),
+            rows: query.rows,
+        })).sort((a, b) => b.time_ms - a.time_ms);
+    }
+
+    function getProfilerSections(profile) {
+        if (!profile?.profiler) {
+            return [];
+        }
+        return profile.profiler.map((section) => ({
+            category: section.category,
+            name: section.name,
+            parent_id: section.parent_id,
+            duration_ms: +(section.end - section.start).toFixed(2),
+        }));
+    }
+
+    async function exportDebugData() {
+        const requests = [
+            {
+                url: window.location.href,
+                type: 'GET',
+                status: 200,
+                duration_ms: +props.initial_request.server_performance.execution_time,
+                server_execution_time_ms: +props.initial_request.server_performance.execution_time,
+                sql_query_count: props.initial_request.sql.queries.length,
+                sql_time_ms: getSQLTime(props.initial_request.sql.queries),
+                sql_queries: getSQLQueriesDetail(props.initial_request.sql.queries),
+                profiler: getProfilerSections(props.initial_request),
+                start_offset_ms: 0,
+                end_offset_ms: +props.initial_request.server_performance.execution_time,
+            },
+            ...ajax_requests.value.map((request) => ({
+                url: request.url,
+                type: request.type,
+                status: request.status,
+                duration_ms: request.time ?? null,
+                server_execution_time_ms: request.profile?.server_performance?.execution_time !== undefined
+                    ? +request.profile.server_performance.execution_time
+                    : null,
+                sql_query_count: request.profile?.sql?.queries?.length ?? null,
+                sql_time_ms: getSQLTime(request.profile?.sql?.queries),
+                sql_queries: getSQLQueriesDetail(request.profile?.sql?.queries),
+                profiler: getProfilerSections(request.profile),
+                start_offset_ms: +(request.start - performance.timeOrigin).toFixed(2),
+                end_offset_ms: request.time !== undefined ? +(request.start - performance.timeOrigin + request.time).toFixed(2) : null,
+            })),
+        ];
+        requests.sort((a, b) => (b.duration_ms ?? 0) - (a.duration_ms ?? 0));
+
+        const payload = {
+            page_url: window.location.href,
+            exported_at: new Date().toISOString(),
+            total_execution_time_ms: getTotalServerExecutionTime(),
+            requests: requests,
+        };
+
+        const json_string = JSON.stringify(payload, null, 2);
+        const compressed_stream = new Blob([json_string]).stream().pipeThrough(new CompressionStream('gzip'));
+        const blob = await new Response(compressed_stream).blob();
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `glpi-debug-${Date.now()}.json.gz`;
+        link.click();
+        URL.revokeObjectURL(url);
+    }
+
     function getCombinedSQLData() {
         const sql_data = {
             total_requests: 0,
@@ -358,6 +452,9 @@
                 </ul>
                 <div class="debug-toolbar-controls">
                     <div class="debug-toolbar-control">
+                        <button type="button" class="btn btn-icon border-0 p-1" title="Export debug data" @click="exportDebugData">
+                            <i class="ti ti-download"></i>
+                        </button>
                         <button type="button" class="btn btn-icon border-0 p-1" name="toggle_content_area" @click="show_content_area = !show_content_area"
                                 title="Toggle debug content area">
                             <i :class="show_content_area ? 'ti ti-square-arrow-up' : 'ti ti-square-arrow-down'"></i>
