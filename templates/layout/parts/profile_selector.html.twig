@@ -39,9 +39,9 @@
         data-bs-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
-        aria-label="{{ __("Change profile") }}"
     >
         <i class="ti ti-user-check" aria-hidden="true"></i>
+        <span class="visually-hidden">{{ __("Change profile") }}</span>
         {{ (session('glpiactiveprofile')['name'] ?? '') }}
     </button>
     <div class="dropdown-menu" data-bs-popper="none">

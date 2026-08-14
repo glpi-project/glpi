@@ -38,15 +38,14 @@
          <div class="nav-item dropdown">
             <button type="button" class="nav-link d-flex lh-1 text-reset p-1 border-0 dropdown-toggle user-menu-dropdown-toggle {% if is_debug_active %}bg-red-lt{% else %}bg-transparent{% endif %}"
                data-bs-toggle="dropdown" data-bs-auto-close="outside"
-               aria-haspopup="true" aria-expanded="false"
-               aria-label="{{ __('User menu') }}">
+               aria-haspopup="true" aria-expanded="false">
+               <span class="visually-hidden">{{ __('User menu') }}</span>
                {% if not anonymous %}
                   <div class="pe-2 d-none d-xl-block">
                      <div>{{ (session('glpiactiveprofile')['name'] ?? '')|u.truncate(35, '...') }}</div>
                      {% set entity_completename = session('glpiactive_entity_name') %}
                      <div class="mt-1 small text-muted-menu" title="{{ entity_completename }}"
-                          data-testid="current-entity"
-                          data-bs-toggle="tooltip" data-bs-placement="bottom">
+                          data-testid="current-entity">
                         {{ entity_completename|truncate_left }}
                      </div>
                   </div>
@@ -59,7 +58,7 @@
                {% endif %}
             </button>
             <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight" data-testid="user-menu-dropdown">
-               <h6 class="dropdown-header">{{ get_item_name(user) }}</h6>
+               <span class="dropdown-header">{{ get_item_name(user) }}</span>
 
                {% if not anonymous %}
                   {{ include('layout/parts/profile_selector.html.twig') }}
@@ -85,7 +84,7 @@
 
                <div class="dropdown-divider"></div>
 
-               <a href="{{ help_url }}" class="dropdown-item" title="{{ __('Help') }}">
+               <a href="{{ help_url }}" class="dropdown-item">
                   <i class="ti ti-help" aria-hidden="true"></i>
                   {{ __('Help') }}
                </a>
@@ -106,11 +105,11 @@
 
                <div class="dropdown-divider"></div>
 
-               <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
+               <a href="{{ path('/front/preference.php') }}" class="dropdown-item">
                   <i class="ti ti-user-cog" aria-hidden="true"></i>
                   {{ __('My settings') }}
                </a>
-               <a href="{{ path('/front/logout.php' ~ ((session('glpiextauth') ?: false) ? '?noAUTO=1' : '')) }}" class="dropdown-item" title="{{ __('Logout') }}">
+               <a href="{{ path('/front/logout.php' ~ ((session('glpiextauth') ?: false) ? '?noAUTO=1' : '')) }}" class="dropdown-item">
                   <i class="ti ti-logout" aria-hidden="true"></i>
                   {{ __('Logout') }}
                </a>
