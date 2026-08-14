@@ -127,7 +127,7 @@ final class ServiceCatalogController extends AbstractController
                     'description' => ['type' => Doc\Schema::TYPE_STRING],
                     'illustration' => ['type' => Doc\Schema::TYPE_STRING],
                     'weight' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'form' => self::getDropdownTypeSchema(Form::class),
+                    'form' => self::getDropdownTypeSchema(class: Form::class, full_schema: 'Form'),
                 ],
             ],
             'ServiceCatalogInfo' => [
