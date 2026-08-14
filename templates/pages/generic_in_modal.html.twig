@@ -36,7 +36,7 @@
         object.getTypeName(1),
         '',
         true,
-    ]
+    ]|merge(call([object, 'getSectorizedDetails']))
 ) }}
 
 {% do object.showForm(id, form_options) %}
