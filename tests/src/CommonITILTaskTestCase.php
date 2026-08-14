@@ -36,6 +36,9 @@ namespace Glpi\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 
+use function Safe\ob_end_clean;
+use function Safe\ob_start;
+
 abstract class CommonITILTaskTestCase extends DbTestCase
 {
     /** @return class-string<\CommonITILTask> */
@@ -375,6 +378,79 @@ abstract class CommonITILTaskTestCase extends DbTestCase
         $this->login();
         $this->assertTrue($my_task->canUpdateItem());
         $this->assertFalse($tech_task->canUpdateItem());
+    }
+
+    /**
+     * Data provider for testIsParentAlreadyLoaded
+     *
+     * @return iterable
+     */
+    protected function testIsParentAlreadyLoadedProvider(): iterable
+    {
+        $this->login();
+        $entity = getItemByTypeName(\Entity::class, '_test_root_entity', true);
+
+        $task_class = static::getTaskClass();
+        $itil_class = $task_class::getItilObjectItemType();
+
+        // Obviously false, no data was loaded
+        $task = new $task_class();
+        yield [$task, false];
+
+        // Create two ITIL items of the expected type and a task
+        $parent_1 = $this->createItem($itil_class, [
+            'entities_id' => $entity,
+            'name'        => 'Test item 1',
+            'content'     => '',
+        ]);
+        $parent_2 = $this->createItem($itil_class, [
+            'entities_id' => $entity,
+            'name'        => 'Test item 2',
+            'content'     => '',
+        ]);
+        // Create an ITIL item of a different type, to test the itemtype check.
+        // Avoid Ticket when possible, its plugin hooks are noisy in tests.
+        $other_itil_class = $itil_class === \Problem::class ? \Change::class : \Problem::class;
+        $parent_3 = $this->createItem($other_itil_class, [
+            'entities_id' => $entity,
+            'name'        => 'Test item 3',
+            'content'     => '',
+        ]);
+
+        $itil_fkey = getForeignKeyFieldForItemType($itil_class);
+        $task = $this->createItem($task_class, [
+            $itil_fkey => $parent_1->getID(),
+            'content'  => 'Test task',
+        ]);
+
+        // Correct parent
+        $task->setParentItem($parent_1);
+        yield [$task, true];
+
+        // Invalid parent (wrong id)
+        $task->setParentItem($parent_2);
+        yield [$task, false];
+
+        // Invalid parent (wrong itemtype)
+        $task->setParentItem($parent_3);
+        yield [$task, false];
+    }
+
+    /**
+     * Tests for the isParentAlreadyLoaded method
+     *
+     * @return void
+     */
+    public function testIsParentAlreadyLoaded(): void
+    {
+        $provider = $this->testIsParentAlreadyLoadedProvider();
+        foreach ($provider as $row) {
+            [$task, $is_parent_loaded] = $row;
+            $this->assertEquals(
+                $is_parent_loaded,
+                $this->callPrivateMethod($task, 'isParentAlreadyLoaded')
+            );
+        }
     }
 
     public function testShowMassiveActionAddTaskForm(): void
