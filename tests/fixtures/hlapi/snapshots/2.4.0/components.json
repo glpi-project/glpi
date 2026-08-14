@@ -10792,8 +10792,8 @@
                 "render_layout": {
                     "type": "string",
                     "enum": [
-                        "step_by_step",
-                        "single_page"
+                        "single_page",
+                        "step_by_step"
                     ],
                     "default": "step_by_step"
                 },
@@ -10836,8 +10836,8 @@
                     "type": "string",
                     "enum": [
                         "always_visible",
-                        "visible_if",
-                        "hidden_if"
+                        "hidden_if",
+                        "visible_if"
                     ],
                     "default": "always_visible"
                 },
@@ -11060,8 +11060,8 @@
                     "type": "string",
                     "enum": [
                         "always_visible",
-                        "visible_if",
-                        "hidden_if"
+                        "hidden_if",
+                        "visible_if"
                     ],
                     "default": "always_visible"
                 },
@@ -11071,9 +11071,9 @@
                 "validation_strategy": {
                     "type": "string",
                     "enum": [
+                        "invalid_if",
                         "no_validation",
-                        "valid_if",
-                        "invalid_if"
+                        "valid_if"
                     ],
                     "default": "no_validation"
                 },
@@ -11128,8 +11128,8 @@
                     "type": "string",
                     "enum": [
                         "always_visible",
-                        "visible_if",
-                        "hidden_if"
+                        "hidden_if",
+                        "visible_if"
                     ],
                     "default": "always_visible"
                 },
@@ -11187,14 +11187,14 @@
                     "properties": {
                         "id": {
                             "type": "integer",
-                            "format": "int64",
-                            "readOnly": true
+                            "format": "int64"
                         },
                         "name": {
                             "type": "string",
                             "readOnly": true
                         }
-                    }
+                    },
+                    "x-full-schema": "Form"
                 }
             }
         },
