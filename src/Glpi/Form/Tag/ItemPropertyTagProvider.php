@@ -42,7 +42,7 @@ use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Search\SearchOption;
 use Override;
 
-final class ItemPropertyTagProvider implements TagProviderInterface, TagWithIdValueInterface, CompositeTagValueInterface
+final class ItemPropertyTagProvider implements TagProviderInterface, CompositeTagValueInterface
 {
     public const SEPARATOR = ':';
     public const USER_EMAILS_PSEUDO_ID = -1;
@@ -121,7 +121,7 @@ final class ItemPropertyTagProvider implements TagProviderInterface, TagWithIdVa
         foreach ($raw['items_ids'] as $item_id) {
             $item = $itemtype::getById((int) $item_id);
             if (!$item) {
-                return '';
+                continue;
             }
             $field_vlaues[] = $this->resolveProperty($item, $itemtype, $option_id);
         }

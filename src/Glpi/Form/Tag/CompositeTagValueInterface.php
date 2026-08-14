@@ -34,7 +34,7 @@
 
 namespace Glpi\Form\Tag;
 
-interface CompositeTagValueInterface
+interface CompositeTagValueInterface extends TagWithIdValueInterface
 {
     /**
      * Extracts the ID to be remapped from the composite value.

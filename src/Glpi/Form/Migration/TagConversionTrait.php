@@ -39,7 +39,6 @@ use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\ItemPropertyTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
-use Glpi\Form\Tag\Tag;
 use Glpi\Search\SearchOption;
 
 use function Safe\preg_match_all;
@@ -113,11 +112,11 @@ trait TagConversionTrait
                 }
 
                 $provider = new ItemPropertyTagProvider();
-                $new_tag = new Tag(
-                    label: sprintf(__('Answer: %1$s › %2$s'), $question->fields['name'], '...'),
-                    value: $question_id . ':' . $search_option_id,
-                    provider: $provider,
-                );
+                $new_tag = $provider->getTagFromRawValue($question_id . ':' . $search_option_id);
+                if ($new_tag === null) {
+                    continue;
+                }
+
                 $content = str_replace("##$tag##", $new_tag->html, $content);
                 continue;
             }
