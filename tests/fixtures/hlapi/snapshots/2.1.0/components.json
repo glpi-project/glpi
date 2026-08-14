@@ -14419,6 +14419,9 @@
                 "firstname": {
                     "type": "string"
                 },
+                "middlename": {
+                    "type": "string"
+                },
                 "phone": {
                     "type": "string"
                 },
@@ -14427,6 +14430,10 @@
                 },
                 "mobile": {
                     "type": "string"
+                },
+                "website": {
+                    "type": "string",
+                    "format": "uri"
                 },
                 "emails": {
                     "type": "array",
