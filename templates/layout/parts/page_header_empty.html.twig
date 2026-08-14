@@ -44,7 +44,9 @@
       <header class="navbar d-print-none sticky-lg-top shadow-sm topbar" role="banner">
          <div class="container-fluid">
             <a href="{{ index_path() }}" title="{{ __('Home') }}" class="navbar-brand">
+               {# The logo is a CSS background: without this the link has no accessible name of its own. #}
                <span class="glpi-logo"></span>
+               <span class="visually-hidden">{{ __('Home') }}</span>
             </a>
          </div>
       </header>
