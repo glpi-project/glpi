@@ -3927,41 +3927,61 @@ JAVASCRIPT;
             'glpi_tickets.is_deleted' => 0,
         ];
 
+        $table = $showgrouptickets ? Group_Ticket::getTable() : Ticket_User::getTable();
+        $reject_assign_user = [];
+        $reject_requester_or_assign_user = [];
+
         if ($showgrouptickets) {
             if (count($_SESSION['glpigroups'])) {
+                $reject_assign_user = [
+                    $table . '.groups_id' => $_SESSION['glpigroups'],
+                    $table . '.type'      => CommonITILActor::ASSIGN,
+                ];
+                $reject_requester_or_assign_user = [
+                    $table . '.groups_id' => $_SESSION['glpigroups'],
+                    $table . '.type'      => [CommonITILActor::ASSIGN, CommonITILActor::REQUESTER],
+                ];
                 if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READASSIGN])) {
                     $search_assign = [
-                        'glpi_groups_tickets.groups_id'  => $_SESSION['glpigroups'],
-                        'glpi_groups_tickets.type'       => CommonITILActor::ASSIGN,
+                        $table . '.groups_id'  => $_SESSION['glpigroups'],
+                        $table . '.type'       => CommonITILActor::ASSIGN,
                     ];
                 }
 
                 if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READGROUP])) {
                     $search_users_id = [
-                        'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
-                        'glpi_groups_tickets.type'      => CommonITILActor::REQUESTER,
+                        $table . '.groups_id' => $_SESSION['glpigroups'],
+                        $table . '.type'      => CommonITILActor::REQUESTER,
                     ];
                     $search_observer = [
-                        'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
-                        'glpi_groups_tickets.type'      => CommonITILActor::OBSERVER,
+                        $table . '.groups_id' => $_SESSION['glpigroups'],
+                        $table . '.type'      => CommonITILActor::OBSERVER,
                     ];
                 }
             }
         } else {
+            $reject_assign_user = [
+                $table . '.users_id' => Session::getLoginUserID(),
+                $table . '.type'     => CommonITILActor::ASSIGN,
+            ];
+            $reject_requester_or_assign_user = [
+                $table . '.users_id' => Session::getLoginUserID(),
+                $table . '.type'     => [CommonITILActor::ASSIGN, CommonITILActor::REQUESTER],
+            ];
             if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READMY]) || $ticket_validation_rights) {
                 $search_users_id = [
-                    'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-                    'glpi_tickets_users.type'     => CommonITILActor::REQUESTER,
+                    $table . '.users_id' => Session::getLoginUserID(),
+                    $table . '.type'     => CommonITILActor::REQUESTER,
                 ];
                 $search_observer = [
-                    'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-                    'glpi_tickets_users.type'     => CommonITILActor::OBSERVER,
+                    $table . '.users_id' => Session::getLoginUserID(),
+                    $table . '.type'     => CommonITILActor::OBSERVER,
                 ];
             }
             if (Session::haveRightsOr(self::$rightname, [self::READALL, self::READASSIGN]) || $ticket_validation_rights) {
                 $search_assign = [
-                    'glpi_tickets_users.users_id' => Session::getLoginUserID(),
-                    'glpi_tickets_users.type'     => CommonITILActor::ASSIGN,
+                    $table . '.users_id' => Session::getLoginUserID(),
+                    $table . '.type'     => CommonITILActor::ASSIGN,
                 ];
             }
         }
@@ -4062,15 +4082,21 @@ JAVASCRIPT;
                     $WHERE,
                     $search_observer,
                     [
-                        'glpi_tickets.status'   => [
+                        Ticket::getTable() . '.status'   => [
                             self::INCOMING,
                             self::PLANNED,
                             self::ASSIGNED,
                             self::WAITING,
                         ],
-                        'NOT'                   => [
-                            $search_assign,
-                            $search_users_id,
+                    ],
+                    [
+                        Ticket::getTable() . '.id' => [
+                            'NOT IN',
+                            new QuerySubQuery([
+                                'SELECT' => $table . '.tickets_id',
+                                'FROM'   => $table,
+                                'WHERE'  => $reject_requester_or_assign_user,
+                            ]),
                         ],
                     ]
                 );
@@ -4143,13 +4169,22 @@ JAVASCRIPT;
                     $WHERE,
                     $search_users_id,
                     [
-                        'glpi_tickets.status'   => [
+                        Ticket::getTable() . '.status'   => [
                             self::INCOMING,
                             self::PLANNED,
                             self::ASSIGNED,
                             self::WAITING,
                         ],
-                        'NOT' => $search_assign,
+                    ],
+                    [
+                        Ticket::getTable() . '.id' => [
+                            'NOT IN',
+                            new QuerySubQuery([
+                                'SELECT' => $table . '.tickets_id',
+                                'FROM'   => $table,
+                                'WHERE'  => $reject_assign_user,
+                            ]),
+                        ],
                     ]
                 );
         }
