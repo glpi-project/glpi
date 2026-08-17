@@ -1208,7 +1208,7 @@ class Provider
                     new QueryExpression("COUNT(CASE WHEN $ticket_table.status IN ($closed_statuses) THEN $ticket_table.id END) AS closed"),
                 ],
                 'FROM'      => $ticket_table,
-                'LEFT JOIN' => [
+                'INNER JOIN' => [
                     $group_ticket_table => [
                         'ON' => [
                             $group_ticket_table => 'tickets_id',
