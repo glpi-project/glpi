@@ -3054,7 +3054,7 @@ class AuthLdapTest extends DbTestCase
             $ldap->connect(),
             ['basedn' => $ldap->fields['basedn'], 'mode' => AuthLDAP::ACTION_SYNCHRONIZE],
             '(uid=ecuador0)',
-            ['uid'],
+            ['uid', 'modifyTimestamp'],
             $limitexceeded,
             $user_infos,
             $ldap_users,
@@ -3066,6 +3066,7 @@ class AuthLdapTest extends DbTestCase
             'ecuador0',
             $ldap_users_by_dn['uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org']['name'] ?? null
         );
+        $this->assertSame($user_infos['ecuador0']['timestamp'], $ldap_users['ecuador0']);
     }
 
     public static function searchForUsersErrorsProvider(): iterable

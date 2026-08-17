@@ -1887,14 +1887,7 @@ TWIG, $twig_params);
                         $ldap_users[$uid] = $uid;
                     } else {
                         //If ldap synchronisation
-                        if (isset($info[$ligne]['modifytimestamp'])) {
-                            $ldap_users[$uid] = self::ldapStamp2UnixStamp(
-                                $info[$ligne]['modifytimestamp'][0],
-                                $config_ldap->fields['time_offset']
-                            );
-                        } else {
-                            $ldap_users[$uid] = '';
-                        }
+                        $ldap_users[$uid] = $user_infos[$uid]["timestamp"];
                         $user_infos[$uid]["name"] = $info[$ligne][$login_field][0];
                         if ($ldap_users_by_dn !== null) {
                             $ldap_users_by_dn[$info[$ligne]['dn']] ??= $user_infos[$uid];
