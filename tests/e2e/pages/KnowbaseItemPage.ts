@@ -489,6 +489,15 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
+     * Read as a computed style: filtering on a class would need a raw locator.
+     */
+    public async getCommentHighlightThickness(text: string): Promise<string>
+    {
+        return this.getCommentHighlightByText(text)
+            .evaluate((el) => getComputedStyle(el).textDecorationThickness);
+    }
+
+    /**
      * Anchor quotes currently displayed on comment threads in the side panel.
      */
     public getCommentAnchorQuotes(): Locator
@@ -507,6 +516,16 @@ export class KnowbaseItemPage extends GlpiPage
     public getCommentThread(comment_id: number): Locator
     {
         return this.page.getByTestId(`comment-thread-${comment_id}`).filter({ visible: true });
+    }
+
+    /**
+     * Addressed by text because the comment id is not known to the test.
+     */
+    public getCommentThreadByContent(content: string): Locator
+    {
+        return this.page.getByTestId(/^comment-thread-/)
+            .filter({ hasText: content })
+            .filter({ visible: true });
     }
 
     public getNewCommentTextarea(): Locator

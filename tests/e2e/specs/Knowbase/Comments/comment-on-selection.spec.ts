@@ -523,4 +523,158 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await kb.editor.pressKey('Control+z');
         await expect(kb.getCommentHighlightByText(QUOTED_MIDDLE)).toBeVisible();
     });
+
+    test('Any comment can be focused by clicking it, receding the others', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test comment focus',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>A passage worth commenting on</p>',
+        });
+
+        await kb.goto(id);
+        await kb.doOpenCommentsPanel();
+
+        // Neither comment is anchored to a passage.
+        await kb.getNewCommentTextarea().fill('First plain comment');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('First plain comment')).toBeVisible();
+        await kb.getNewCommentTextarea().fill('Second plain comment');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Second plain comment')).toBeVisible();
+
+        const first  = kb.getCommentThreadByContent('First plain comment');
+        const second = kb.getCommentThreadByContent('Second plain comment');
+
+        await expect(first).toHaveCSS('opacity', '1');
+        await expect(second).toHaveCSS('opacity', '1');
+
+        await kb.getComment('First plain comment').click();
+
+        await expect(first).toHaveCSS('opacity', '1');
+        await expect(second).toHaveCSS('opacity', '0.65');
+    });
+
+    test('Escape clears the comment focus', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test focus cleared by Escape',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Some article body</p>',
+        });
+
+        await kb.goto(id);
+        await kb.doOpenCommentsPanel();
+
+        await kb.getNewCommentTextarea().fill('Focused then released');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Focused then released')).toBeVisible();
+        await kb.getNewCommentTextarea().fill('The other one');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('The other one')).toBeVisible();
+
+        const other = kb.getCommentThreadByContent('The other one');
+
+        await kb.getComment('Focused then released').click();
+        await expect(other).toHaveCSS('opacity', '0.65');
+
+        await page.keyboard.press('Escape');
+        await expect(other).toHaveCSS('opacity', '1');
+    });
+
+    test('Clicking a highlight focuses its thread and keeps it focused', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test highlight focuses thread',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Text with a targeted part inside</p>',
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode('targeted part');
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Anchored comment');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Anchored comment')).toBeVisible();
+
+        await kb.getNewCommentTextarea().fill('Unrelated comment');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Unrelated comment')).toBeVisible();
+
+        await page.reload();
+        await kb.waitForArticleReady();
+        await kb.getCommentHighlightByText('targeted part').click();
+
+        const anchored  = kb.getCommentThreadByContent('Anchored comment');
+        const unrelated = kb.getCommentThreadByContent('Unrelated comment');
+
+        // Persistent, unlike the former 2s flash.
+        await expect(anchored).toHaveCSS('opacity', '1');
+        await expect(unrelated).toHaveCSS('opacity', '0.65');
+    });
+
+    test('Focusing an anchored thread emphasises its passage in the article', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test reciprocal emphasis',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>An emphasised passage lives here</p>',
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode('emphasised passage');
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment driving the emphasis');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment driving the emphasis')).toBeVisible();
+
+        await page.reload();
+        await kb.waitForArticleReady();
+        await kb.doOpenCommentsPanel();
+
+        expect(await kb.getCommentHighlightThickness('emphasised passage')).toBe('2px');
+
+        await kb.getComment('Comment driving the emphasis').click();
+
+        await expect
+            .poll(() => kb.getCommentHighlightThickness('emphasised passage'))
+            .toBe('3px');
+    });
+
+    test('Clicking the article body clears the comment focus', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test focus cleared from the article',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Plain body text with nothing anchored</p>',
+        });
+
+        await kb.goto(id);
+        await kb.doOpenCommentsPanel();
+
+        await kb.getNewCommentTextarea().fill('Comment to be released');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment to be released')).toBeVisible();
+        await kb.getNewCommentTextarea().fill('Neighbour comment');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Neighbour comment')).toBeVisible();
+
+        const neighbour = kb.getCommentThreadByContent('Neighbour comment');
+
+        await kb.getComment('Comment to be released').click();
+        await expect(neighbour).toHaveCSS('opacity', '0.65');
+
+        await page.getByText('Plain body text with nothing anchored').click();
+        await expect(neighbour).toHaveCSS('opacity', '1');
+    });
 });

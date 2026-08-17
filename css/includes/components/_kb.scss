@@ -65,6 +65,12 @@
     }
 }
 
+// Same treatment as :hover, so a focused thread points at its passage.
+.kb-comment-highlight--focused {
+    text-decoration-thickness: 3px;
+    background-color: var(--tblr-warning-bg-subtle);
+}
+
 // Shared by editor and read view so a saved article renders as edited.
 .kb-editor-wrapper .ProseMirror table,
 .article-container table {
@@ -378,6 +384,8 @@ body.in_modal .kb-article {
 
 // KB comment thread reply trigger
 .kb-comment-thread {
+    transition: opacity 0.15s ease-in-out;
+
     .kb-reply-trigger {
         transition: opacity 0.15s ease-in-out;
     }
@@ -387,23 +395,19 @@ body.in_modal .kb-article {
     }
 }
 
-// Briefly outline the thread scrolled to from a clicked highlight or a
-// just-submitted anchored comment.
-.kb-comment-thread--focused {
-    outline: 2px solid var(--tblr-primary);
+// Recede the others rather than decorate the focused thread.
+[data-glpi-comments].kb-comments--has-focus
+    .kb-comment-thread:not(.kb-comment-thread--focused) {
+    opacity: 0.65;
 
-    // Offset, not padding: the threads are spaced with a flex gap, so any
-    // padding here would shift the layout when the outline appears.
-    outline-offset: 6px;
-    border-radius: var(--tblr-border-radius);
-
-    // Extra clearance for the outline's bottom edge.
-    margin-bottom: 0.5rem;
-    transition: outline-color 0.2s ease-in-out;
+    // A receded thread stays readable.
+    &:hover,
+    &:focus-within {
+        opacity: 1;
+    }
 }
 
-// Quoted inside the card, so a single line: the passage itself is one click away
-// in the article.
+// One line: the passage itself is one click away in the article.
 .kb-comment-anchor-quote {
     /* stylelint-disable-next-line value-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
     display: -webkit-box;
@@ -414,13 +418,11 @@ body.in_modal .kb-article {
     overflow: hidden;
     overflow-wrap: anywhere;
 
-    // Without this, blockquote's 1rem block padding widens the clip box and an
-    // extra line bleeds through under the ellipsis.
+    // Blockquote's block padding widens the clip box, bleeding an extra line.
     padding-block: 0;
 }
 
-// The pending preview is the only place the selection is verified before being
-// stored, so it keeps room to be read back.
+// The preview is the last chance to read the selection back before storing it.
 .kb-comment-anchor-quote--preview {
     /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
     -webkit-line-clamp: 3;

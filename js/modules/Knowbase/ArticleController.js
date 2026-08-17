@@ -1057,9 +1057,14 @@ export class GlpiKnowbaseArticleController
             this.#syncAnchorQuotes();
         });
 
+        document.addEventListener('glpi:kb:comment-focus-changed', (e) => {
+            this.#onCommentFocusChanged(e.detail.id, e.detail.source);
+        });
+
         content_el.addEventListener('click', (e) => {
             const mark = e.target.closest('.kb-comment-highlight');
             if (!mark) {
+                this.#side_panel?.focusComment(null);
                 return;
             }
             this.#onHighlightClick(mark.dataset.commentId);
@@ -1142,7 +1147,37 @@ export class GlpiKnowbaseArticleController
             return;
         }
         await this.#side_panel.load(this.#item_id, 'comments');
-        this.#side_panel.scrollToComment(comment_id);
+        this.#side_panel.focusComment(comment_id, 'article');
+    }
+
+    /**
+     * @param {string|null} comment_id
+     * @param {'panel'|'article'} source
+     */
+    #onCommentFocusChanged(comment_id, source)
+    {
+        // Edit-mode marks are ProseMirror decorations, rebuilt on every keystroke.
+        if (this.#editor) {
+            return;
+        }
+
+        const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+        if (!content_el) {
+            return;
+        }
+
+        let focused = null;
+        content_el.querySelectorAll('.kb-comment-highlight').forEach((mark) => {
+            const matches = comment_id !== null && mark.dataset.commentId === comment_id;
+            mark.classList.toggle('kb-comment-highlight--focused', matches);
+            if (matches && focused === null) {
+                focused = mark;
+            }
+        });
+
+        if (focused && source === 'panel') {
+            focused.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }
 
     #initScheduleVisibilityDialog(modal)

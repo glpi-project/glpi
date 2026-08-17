@@ -56,6 +56,8 @@ const comment_thread_selector = "[data-glpi-comment-thread]";
 const pending_anchor_preview_selector = "[data-glpi-pending-anchor-preview]";
 const pending_anchor_quote_selector   = "[data-glpi-pending-anchor-quote]";
 const pending_anchor_cancel_selector  = "[data-glpi-pending-anchor-cancel]";
+const comments_focus_class = "kb-comments--has-focus";
+const thread_focus_class   = "kb-comment-thread--focused";
 
 export class GlpiKnowbaseCommentsPanelController
 {
@@ -69,6 +71,11 @@ export class GlpiKnowbaseCommentsPanelController
      */
     #pending_anchor = null;
 
+    /**
+     * @type {string|null}
+     */
+    #focused_thread_id = null;
+
     constructor(container)
     {
         this.#container = container;
@@ -77,11 +84,22 @@ export class GlpiKnowbaseCommentsPanelController
         this.#container.addEventListener('glpi:kb:set-pending-comment-anchor', (e) => {
             this.#setPendingAnchor(e.detail.anchor);
         });
+
+        this.#container.addEventListener('glpi:kb:focus-comment', (e) => {
+            this.#focusThread(e.detail.id, e.detail.source);
+        });
+
+        // The panel DOM is replaced on reload, so the state goes with it.
+        this.#container.addEventListener('glpi:kb:panel-loaded', () => {
+            this.#focusThread(null, 'panel');
+        });
     }
 
     #initEventListeners()
     {
         this.#container.addEventListener('click', (e) => {
+            this.#focusFromEventTarget(e.target);
+
             // Submit new comment
             const submit = e.target.closest(submit_selector);
             if (submit) {
@@ -159,6 +177,18 @@ export class GlpiKnowbaseCommentsPanelController
                 }
             }
         }, true);
+
+        // Keyboard parity: role="button" on the card would wrap nested buttons.
+        this.#container.addEventListener('focusin', (e) => {
+            this.#focusFromEventTarget(e.target);
+        });
+
+        // On `document`: clicking a card leaves the DOM focus on <body>.
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.#focused_thread_id !== null) {
+                this.#focusThread(null, 'panel');
+            }
+        });
     }
 
     #showEditForm(edit_btn)
@@ -269,6 +299,11 @@ export class GlpiKnowbaseCommentsPanelController
             const anchor_id = parent_thread.dataset.glpiCommentAnchor
                 ? parent_thread.dataset.glpiCommentThread
                 : null;
+
+            // Otherwise the focus outlives its thread and the panel stays receded.
+            if (parent_thread.dataset.glpiCommentThread === this.#focused_thread_id) {
+                this.#focusThread(null, 'panel');
+            }
             parent_thread.remove();
 
             if (anchor_id !== null) {
@@ -365,6 +400,57 @@ export class GlpiKnowbaseCommentsPanelController
         if (preview) {
             preview.classList.add('d-none');
         }
+    }
+
+    /**
+     * @param {number|string|null} comment_id Root comment id, null to clear.
+     * @param {'panel'|'article'} source Origin; only the far side scrolls.
+     */
+    #focusThread(comment_id, source)
+    {
+        const id = comment_id === null ? null : String(comment_id);
+        if (id === this.#focused_thread_id) {
+            return;
+        }
+        this.#focused_thread_id = id;
+
+        const comments_div = this.#getCommentsDiv();
+        if (!comments_div) {
+            return;
+        }
+
+        comments_div.querySelectorAll(comment_thread_selector).forEach((thread) => {
+            thread.classList.toggle(
+                thread_focus_class,
+                id !== null && thread.dataset.glpiCommentThread === id
+            );
+        });
+        comments_div.classList.toggle(comments_focus_class, id !== null);
+
+        if (id !== null && source === 'article') {
+            comments_div
+                .querySelector(`[data-glpi-comment-thread="${CSS.escape(id)}"]`)
+                ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Dispatched on `document` for the same reason as glpi:kb:comment-anchored.
+        document.dispatchEvent(new CustomEvent('glpi:kb:comment-focus-changed', {
+            detail: { id, source },
+        }));
+    }
+
+    /**
+     * @param {EventTarget} target
+     */
+    #focusFromEventTarget(target)
+    {
+        const comments_div = this.#getCommentsDiv();
+        if (!comments_div || !comments_div.contains(target)) {
+            return;
+        }
+
+        const thread = target.closest(comment_thread_selector);
+        this.#focusThread(thread ? thread.dataset.glpiCommentThread : null, 'panel');
     }
 
     #getSubmitButton()

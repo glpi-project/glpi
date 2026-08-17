@@ -215,7 +215,7 @@ export class GlpiKnowbaseArticleSidePanelController
             selector: "[data-bs-toggle='tooltip']"
         });
 
-        // Callers measuring the panel (scrollToComment...) need the open
+        // Callers measuring the panel (focusComment...) need the open
         // animation done, so only resolve once the layout settled.
         await opened;
     }
@@ -262,22 +262,15 @@ export class GlpiKnowbaseArticleSidePanelController
     }
 
     /**
-     * Scroll the currently visible panel to the thread matching `comment_id`
-     * (its root comment's id) and briefly highlight it.
-     * @param {number|string} comment_id
+     * Focus a thread in the visible panel, or clear the focus when null.
+     * @param {number|string|null} comment_id Root comment id.
+     * @param {'panel'|'article'} source
      */
-    scrollToComment(comment_id)
+    focusComment(comment_id, source = 'article')
     {
-        const target = this.#isSmallScreen()
-            ? this.#offcanvas_container.querySelector('.offcanvas-body')
-            : this.#sidepanel_container;
-        const thread = target?.querySelector(`[data-glpi-comment-thread="${CSS.escape(String(comment_id))}"]`);
-        if (!thread) {
-            return;
-        }
-
-        thread.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        thread.classList.add('kb-comment-thread--focused');
-        setTimeout(() => thread.classList.remove('kb-comment-thread--focused'), 2000);
+        const target = this.#isSmallScreen() ? this.#offcanvas_container : this.#sidepanel_container;
+        target.dispatchEvent(new CustomEvent('glpi:kb:focus-comment', {
+            detail: { id: comment_id, source },
+        }));
     }
 }

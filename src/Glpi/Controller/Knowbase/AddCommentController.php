@@ -112,6 +112,7 @@ final class AddCommentController extends AbstractController
                 'comment'       => $comment->fields['comment'],
                 'can_edit'      => true,
                 'can_purge'     => true,
+                'anchor_quote'  => null,
             ]);
         }
     }
