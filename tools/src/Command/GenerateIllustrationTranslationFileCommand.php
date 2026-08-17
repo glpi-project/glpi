@@ -35,9 +35,12 @@
 namespace Glpi\Tools\Command;
 
 use Glpi\UI\IllustrationManager;
+use Override;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use function \Safe\file_put_contents;
 
 final class GenerateIllustrationTranslationFileCommand extends Command
 {
@@ -49,6 +52,8 @@ final class GenerateIllustrationTranslationFileCommand extends Command
         parent::configure();
 
         $this->setName('tools:generate_illustration_translations');
+        $this->setDescription('Generate a files Illustrations tags and title. It\'s required for translations generation - tools:locales:extract');
+        $this->setHidden();
     }
 
     #[Override]
