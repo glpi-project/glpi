@@ -277,3 +277,180 @@ test('A rejected move is reverted in the tree', async ({ page, profile, api }) =
     await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toBeVisible();
     await expect(kb.getAsideCategoryArticle(host_name, child_name)).toHaveCount(0);
 });
+
+test('Can drop on a root article top edge to promote a child to root', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Parent ${unique}`;
+    const child_name = `E2E Child ${unique}`;
+    const other_name = `E2E Other ${unique}`;
+
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+    await api.createItem('KnowbaseItem', {
+        name: other_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+
+    await kb.goto(child_id);
+    await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toBeVisible();
+
+    // The move is posted fire-and-forget: reloading before it lands would
+    // abort the request.
+    await Promise.all([
+        page.waitForResponse('**/Knowbase/Aside/Article/*/Move'),
+        kb.doDropOnBand(child_name, other_name, 'top'),
+    ]);
+
+    await kb.goto(child_id);
+    await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toHaveCount(0);
+    await expect(
+        kb.getAsideArticlesList().getByRole('link', { name: child_name, exact: true })
+    ).toBeVisible();
+});
+
+test('Can drop on a child bottom edge to become its sibling', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Parent ${unique}`;
+    const child_name = `E2E Child ${unique}`;
+    const moved_name = `E2E Moved ${unique}`;
+
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+    const moved_id = await api.createItem('KnowbaseItem', {
+        name: moved_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+
+    await kb.goto(moved_id);
+
+    await Promise.all([
+        page.waitForResponse('**/Knowbase/Aside/Article/*/Move'),
+        kb.doDropOnBand(moved_name, child_name, 'bottom'),
+    ]);
+
+    await kb.goto(moved_id);
+    // Sibling of the child, so a child of the parent, not a grandchild.
+    await expect(kb.getAsideCategoryArticle(parent_name, moved_name)).toBeVisible();
+    await expect(kb.getAsideCategoryArticle(child_name, moved_name)).toHaveCount(0);
+});
+
+test('Dropping back onto the current parent issues no move request', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Parent ${unique}`;
+    const child_name = `E2E Child ${unique}`;
+    const host_name = `E2E Host ${unique}`;
+
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+    const child_id = await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+    await api.createItem('KnowbaseItem', {
+        name: host_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+
+    await kb.goto(child_id);
+
+    let moves = 0;
+    page.on('request', (request) => {
+        if (request.url().includes('/Move')) {
+            moves++;
+        }
+    });
+
+    // Refused: the child already hangs from this parent.
+    await kb.doDropOnBand(child_name, parent_name, 'middle');
+
+    // Sentinel: a valid move whose response proves an earlier request, had one
+    // been issued, would already have been sent.
+    await Promise.all([
+        page.waitForResponse('**/Knowbase/Aside/Article/*/Move'),
+        kb.doDropOnBand(child_name, host_name, 'middle'),
+    ]);
+
+    expect(moves).toBe(1);
+});
+
+test('Dropping a parent onto its own child issues no move request', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `E2E Parent ${unique}`;
+    const child_name = `E2E Child ${unique}`;
+    const host_name = `E2E Host ${unique}`;
+
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+    await api.createItem('KnowbaseItem', {
+        name: host_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+
+    await kb.goto(parent_id);
+
+    let moves = 0;
+    page.on('request', (request) => {
+        if (request.url().includes('/Move')) {
+            moves++;
+        }
+    });
+
+    // Refused: the target sits inside the dragged subtree.
+    await kb.doDropOnBand(parent_name, child_name, 'middle');
+
+    // Sentinel, as above.
+    await Promise.all([
+        page.waitForResponse('**/Knowbase/Aside/Article/*/Move'),
+        kb.doDropOnBand(parent_name, host_name, 'middle'),
+    ]);
+
+    expect(moves).toBe(1);
+});
