@@ -74,6 +74,9 @@ $empty_data_builder = new class {
     public const USER_NORMAL          = 5;
     public const USER_SYSTEM          = 6;
 
+    /** @var int Root knowledge base article ID (the base of the KB tree) */
+    public const KB_ROOT_ARTICLE      = 1;
+
     /** @var int Value indicating no rights */
     public const RIGHT_NONE           = 0;
 
@@ -419,6 +422,7 @@ $empty_data_builder = new class {
             'glpi_11_assets_migration' => 0,
             'must_unsanitize_db_data' => 0,
             'login_history_retention_days' => 90,
+            'root_knowbaseitems_id' => self::KB_ROOT_ARTICLE,
         ];
 
         $tables['glpi_configs'] = [];
@@ -2724,6 +2728,23 @@ $empty_data_builder = new class {
             [
                 'id' => 8,
                 'name' => 'PCI-X',
+            ],
+        ];
+
+        // The root article, base of the knowledge base tree. Its id is stored in
+        // the `root_knowbaseitems_id` configuration.
+        // Existing installations get theirs from the 12.0.0 migration.
+        $tables['glpi_knowbaseitems'] = [
+            [
+                'id' => self::KB_ROOT_ARTICLE,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                'name' => __('Home'),
+                'answer' => '',
+                'is_faq' => 0,
+                'users_id' => 0,
+                'date_creation' => date('Y-m-d H:i:s'),
+                'date_mod' => date('Y-m-d H:i:s'),
             ],
         ];
 

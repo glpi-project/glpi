@@ -67,10 +67,11 @@ final class BuilderTest extends DbTestCase
 
         $tree = (new Builder())->buildTree();
 
-        // Root level: the two fixture articles, "Animals", "Plants" and "Root article"
-        // (order follows insertion/id order, not the order they were requested above).
+        // Root level: the two fixture articles, "Animals", "Plants", "Root article"
+        // and the installation's root article (ordered by name, not by the order
+        // they were requested above).
         $this->assertEquals(
-            ['_knowbaseitem01', '_knowbaseitem02', 'Animals', 'Plants', 'Root article'],
+            ['_knowbaseitem01', '_knowbaseitem02', 'Animals', 'Home', 'Plants', 'Root article'],
             array_column($tree->getArticles(), 'title'),
         );
 

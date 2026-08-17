@@ -197,6 +197,27 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $this->can($this->getID(), READ) && Session::haveRight(self::$rightname, self::COMMENTS);
     }
 
+    /**
+     * Id of the root article, which is the base of the knowledge base tree.
+     *
+     * The root article is created by the installation process, see
+     * `install/empty_data.php` and the 12.0.0 migration.
+     *
+     * @throws RuntimeException if the configuration value is missing, which can
+     *                          only happen on a corrupted installation.
+     */
+    public static function getRootId(): int
+    {
+        global $CFG_GLPI;
+
+        $root_id = (int) ($CFG_GLPI['root_knowbaseitems_id'] ?? 0);
+        if ($root_id <= 0) {
+            throw new RuntimeException('The knowledge base root article is not defined.');
+        }
+
+        return $root_id;
+    }
+
     public static function getSearchURL($full = true)
     {
         global $CFG_GLPI;

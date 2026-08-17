@@ -41,6 +41,7 @@ use KnowbaseItem;
 use KnowbaseItem_User;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
+use RuntimeException;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -801,12 +802,19 @@ HTML,
         // Check that the request is valid
         $iterator = $DB->request($criteria);
 
+        // Exclude the root article, which is created by the installation process
+        // and thus matches any parentless search.
+        $rows = array_filter(
+            iterator_to_array($iterator),
+            static fn(array $row): bool => (int) $row['id'] !== KnowbaseItem::getRootId(),
+        );
+
         //count KnowBaseItem found
-        $this->assertEquals($count, $iterator->numrows());
+        $this->assertCount($count, $rows);
 
         // check order if needed
         if ($sort != null) {
-            $names = array_column(iterator_to_array($iterator), 'name');
+            $names = array_column($rows, 'name');
             $this->assertEquals($sort, $names);
         }
     }
@@ -2437,5 +2445,31 @@ HTML,
             "data-parent-id='" . $parent->getID() . "'",
             $output
         );
+    }
+
+    public function testRootArticleExists(): void
+    {
+        // The root article is created by the installation process, thus the
+        // configured id must always point to an existing article.
+        $root_id = KnowbaseItem::getRootId();
+        $this->assertGreaterThan(0, $root_id);
+
+        $root = KnowbaseItem::getById($root_id);
+        $this->assertInstanceOf(KnowbaseItem::class, $root);
+
+        // It must be readable from any entity.
+        $this->assertEquals(0, $root->fields['entities_id']);
+        $this->assertEquals(1, $root->fields['is_recursive']);
+    }
+
+    public function testGetRootIdFailIfNotConfigured(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['root_knowbaseitems_id'] = 0;
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('The knowledge base root article is not defined.');
+        KnowbaseItem::getRootId();
     }
 }
