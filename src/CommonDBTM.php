@@ -5087,6 +5087,15 @@ class CommonDBTM extends CommonGLPI
                     return Dropdown::showNumber($name, $options);
 
                 case "decimal":
+                    $copytooption = ['min', 'max', 'step'];
+                    foreach ($copytooption as $key) {
+                        if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                            $options[$key] = $searchoptions[$key];
+                        }
+                    }
+                    $options['type'] = 'number';
+                    $options['value'] = $value;
+                    return Html::input($name, $options);
                 case "mac":
                 case "ip":
                 case "string":
