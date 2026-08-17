@@ -132,6 +132,19 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
         return $article_id;
     }
 
+    /** True if $parent_id is a direct parent of $child_id. */
+    public static function isParentOf(int $parent_id, int $child_id): bool
+    {
+        if ($parent_id <= 0 || $child_id <= 0) {
+            return false;
+        }
+
+        return countElementsInTable(self::getTable(), [
+            'knowbaseitems_id'        => $child_id,
+            'knowbaseitems_id_parent' => $parent_id,
+        ]) > 0;
+    }
+
     /** True if $ancestor_id is an ancestor of $node_id. */
     private static function isAncestor(int $ancestor_id, int $node_id): bool
     {

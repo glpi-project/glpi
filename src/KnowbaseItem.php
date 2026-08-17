@@ -1782,9 +1782,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      * Build the actions that will be available on the aside dots menu for
      * the loaded article.
      *
+     * @param bool $with_move Whether to offer "Move", which needs the occurrence
+     *                        context only an aside row provides.
+     *
      * @return array<EditorAction|EditorActionSeparator>
      */
-    public function getAsideActions(): array
+    public function getAsideActions(bool $with_move = false): array
     {
         $actions = [];
 
@@ -1816,11 +1819,22 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
         array_push($actions, ...$toggles);
 
+        $management = [];
+        if ($with_move && $this->can($this->fields['id'], UPDATE)) {
+            $management[] = new EditorAction(
+                label: __("Move"),
+                icon: "ti ti-file-symlink",
+                type: EditorActionType::OPEN_MODAL,
+                params: [
+                    'id'    => $this->fields['id'],
+                    'key'   => 'MoveModal',
+                    'title' => __("Move article"),
+                    'icon'  => 'ti ti-file-symlink',
+                ],
+            );
+        }
         if ($this->can($this->fields['id'], PURGE)) {
-            if ($toggles !== []) {
-                $actions[] = new EditorActionSeparator();
-            }
-            $actions[] = new EditorAction(
+            $management[] = new EditorAction(
                 label: __("Delete article"),
                 icon: "ti ti-trash",
                 type: EditorActionType::DELETE_ARTICLE,
@@ -1830,6 +1844,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 is_danger: true,
             );
         }
+
+        if ($management !== [] && $toggles !== []) {
+            $actions[] = new EditorActionSeparator();
+        }
+        array_push($actions, ...$management);
 
         return $actions;
     }

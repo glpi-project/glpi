@@ -30,9 +30,10 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, glpi_confirm_danger, glpi_toast_error */
+/* global _, glpi_ajax_dialog, glpi_confirm_danger, glpi_toast_error */
 
 import { get, post } from "/js/modules/Ajax.js";
+import { GlpiKnowbaseMoveModalController } from "/js/modules/Knowbase/MoveModalController.js";
 import {
     EditorActionType,
     extractParamsFromDataset,
@@ -822,7 +823,31 @@ export class GlpiKnowbaseAsideController
         for (const menu of this.#findEmptyMenus(id)) {
             menu.innerHTML = html;
             menu.setAttribute('data-glpi-kb-actions-loaded', '');
+
+            // Favorites rows are flat, so Move could not tell which parent to leave.
+            if (menu.closest('[data-glpi-kb-aside-favorites]')) {
+                this.#stripMoveFromFavoritesMenu(menu);
+            }
         }
+    }
+
+    /**
+     * Remove the "Move" entry from a kebab menu bound for the favorites
+     * section: favorites rows are flat (never nested in their real parent),
+     * so Move could not tell which parent to leave (see #openModal).
+     *
+     * @param {HTMLElement} menu
+     */
+    #stripMoveFromFavoritesMenu(menu)
+    {
+        const move_item = menu
+            .querySelector(`button[data-glpi-kb-action="${EditorActionType.OPEN_MODAL}"]`)
+            ?.closest('li');
+        // The group separator rides on the first item after it: hand it over.
+        if (move_item?.classList.contains('border-top')) {
+            move_item.nextElementSibling?.classList.add('border-top');
+        }
+        move_item?.remove();
     }
 
     /**
@@ -904,7 +929,43 @@ export class GlpiKnowbaseAsideController
             case EditorActionType.DELETE_ARTICLE:
                 this.#onDelete(id);
                 break;
+            case EditorActionType.OPEN_MODAL:
+                this.#openModal(button, id, params.key, params.title, params.icon ?? null);
+                break;
         }
+    }
+
+    /**
+     * Unlike the article header, an aside row knows which occurrence was acted
+     * on, so the origin parent is read from the row and passed along.
+     *
+     * @param {HTMLElement} button
+     * @param {number} id
+     * @param {string} key
+     * @param {string} title
+     * @param {string|null} icon
+     */
+    #openModal(button, id, key, title, icon = null)
+    {
+        const row = button.closest('li[data-glpi-kb-article-id]');
+        const from_parent_id = Number(
+            row?.parentElement?.closest('li[data-glpi-kb-article-id]')
+                ?.dataset.glpiKbArticleId ?? 0
+        );
+
+        glpi_ajax_dialog({
+            url: `${CFG_GLPI.root_doc}/Knowbase/${id}/${key}`
+                + `?from_parent_id=${encodeURIComponent(from_parent_id)}`,
+            // The helper posts by default; this route only renders, so it is GET-only.
+            method: 'get',
+            title: icon ? `<i class="${icon} me-2" aria-hidden="true"></i>${title}` : title,
+            dialogclass: 'modal-lg',
+            show: (e) => {
+                if (key === 'MoveModal') {
+                    new GlpiKnowbaseMoveModalController(e.target.closest('.modal'));
+                }
+            },
+        });
     }
 
     /**
@@ -1049,6 +1110,12 @@ export class GlpiKnowbaseAsideController
                     // The source row's dots menu is still open (the user just
                     // clicked a toggle inside it); close it in the clone.
                     this.#resetClonedDropdown(clone);
+                    // The clone can carry an already-populated menu — its own, or a
+                    // nested child's (a favorited node's children are cloned too) —
+                    // so #populateMenus's loaded-guard would never revisit it.
+                    for (const menu of clone.querySelectorAll('[data-glpi-kb-actions-menu][data-glpi-kb-actions-loaded]')) {
+                        this.#stripMoveFromFavoritesMenu(menu);
+                    }
                     list.appendChild(clone);
                 }
             }
