@@ -490,10 +490,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     {
         global $CFG_GLPI;
 
-        if (!in_array($itemtype, $CFG_GLPI['itemdevices_types'], true)) {
-            // Itemtype does not support devices.
-            return [];
-        }
+        $supports_devices = in_array($itemtype, $CFG_GLPI['itemdevices_types'], true);
 
         $result = [];
 
@@ -503,7 +500,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
             if (
                 in_array($itemtype, $item_device_affinities, true)
-                || in_array('*', $item_device_affinities, true)
+                || ($supports_devices && in_array('*', $item_device_affinities, true))
             ) {
                 $result[] = $item_device_class;
             }
@@ -528,7 +525,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
         $conf_param = str_replace('_', '', strtolower(static::class)) . '_types';
         if (isset($CFG_GLPI[$conf_param]) && !in_array('*', $CFG_GLPI[$conf_param])) {
-            $itemtypes = array_intersect($itemtypes, $CFG_GLPI[$conf_param]);
+            $itemtypes = $CFG_GLPI[$conf_param];
         }
 
         return $itemtypes;
@@ -601,9 +598,10 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         /** @var CommonDBTM $item */
         if ($item->canView()) {
             $nb = 0;
-            if (in_array($item::class, self::getConcernedItems())) {
+            $affinities = self::getItemAffinities($item::class);
+            if ($affinities !== []) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    foreach (self::getItemAffinities($item::class) as $link_type) {
+                    foreach ($affinities as $link_type) {
                         $nb   += countElementsInTable(
                             $link_type::getTable(),
                             ['items_id'   => $item->getID(),
@@ -970,6 +968,15 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             );
         }
 
+        $has_firmware = !$is_device && in_array(
+            Item_DeviceFirmware::class,
+            self::getItemAffinities(static::class),
+            true
+        );
+        $firmware_column = $has_firmware && $table_group instanceof HTMLTableGroup
+            ? $table_group->addHeader('firmware', _sn('Firmware', 'Firmware', 1), $common_column)
+            : null;
+
         $specificity_columns = [];
         $link_column         = $table_group->addHeader('spec_link', '', $specific_column);
         $spec_column         = $link_column;
@@ -1035,12 +1042,46 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $peer = null;
         }
 
-        $iterator = $DB->request($criteria);
+        $links = iterator_to_array($DB->request($criteria), false);
+        $firmwares_by_item = [];
+        if ($firmware_column !== null && $links !== []) {
+            $item_firmware_table = Item_DeviceFirmware::getTable();
+            $firmware_table = DeviceFirmware::getTable();
+            $firmware_iterator = $DB->request([
+                'SELECT' => [
+                    "$item_firmware_table.items_id AS item_device_id",
+                    "$firmware_table.*",
+                ],
+                'FROM' => $item_firmware_table,
+                'INNER JOIN' => [
+                    $firmware_table => [
+                        'FKEY' => [
+                            $item_firmware_table => 'devicefirmwares_id',
+                            $firmware_table      => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE' => [
+                    "$item_firmware_table.itemtype"   => static::class,
+                    "$item_firmware_table.items_id"   => array_column($links, 'id'),
+                    "$item_firmware_table.is_deleted" => 0,
+                ],
+            ]);
+            foreach ($firmware_iterator as $firmware_data) {
+                $item_device_id = $firmware_data['item_device_id'];
+                unset($firmware_data['item_device_id']);
+
+                $firmware = new DeviceFirmware();
+                $firmware->getFromResultSet($firmware_data);
+                $firmwares_by_item[$item_device_id][] = $firmware;
+            }
+        }
+
         // Will be loaded only if/when data is needed from the device model
         $device_type = static::getDeviceType();
         /** @var CommonDevice $device */
         $device = getItemForItemtype($device_type);
-        foreach ($iterator as $link) {
+        foreach ($links as $link) {
             Session::addToNavigateListItems(static::class, $link["id"]);
             $this->getFromDB($link['id']);
             $current_row  = $table_group->createRow();
@@ -1070,6 +1111,23 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 } elseif ($peer instanceof CommonDevice) {
                     $peer->getHTMLTableCellForItem($current_row, $item, null, $options);
                 }
+            }
+
+            if ($firmware_column !== null) {
+                $firmware_versions = [];
+                foreach ($firmwares_by_item[$link['id']] ?? [] as $firmware) {
+                    $version = $firmware->fields['version'] ?: $firmware->getName();
+                    if ($firmware->can($firmware->getID(), READ)) {
+                        $firmware_versions[] = sprintf(
+                            '<a href="%s">%s</a>',
+                            htmlescape($firmware->getLinkURL()),
+                            htmlescape($version)
+                        );
+                    } else {
+                        $firmware_versions[] = htmlescape($version);
+                    }
+                }
+                $current_row->addCell($firmware_column, implode('<br>', $firmware_versions));
             }
 
             if (Session::haveRight('device', UPDATE)) {
@@ -1487,8 +1545,21 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         $this->addStandardTab(Lock::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
         $this->addStandardTab(Contract_Item::class, $ong, $options);
+        if (self::getItemAffinities(static::class) !== []) {
+            $this->addStandardTab(self::class, $ong, $options);
+        }
 
         return $ong;
+    }
+
+    public function cleanDBonPurge()
+    {
+        $items_id = $this->getID();
+        if ($items_id > 0) {
+            self::cleanItemDeviceDBOnItemDelete(static::class, $items_id, false);
+        }
+
+        parent::cleanDBonPurge();
     }
 
     public function showForm($ID, array $options = [])
