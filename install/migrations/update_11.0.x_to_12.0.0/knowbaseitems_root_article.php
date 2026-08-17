@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QuerySubQuery;
+
 /**
  * @var DBmysql $DB
  * @var Migration $migration
@@ -43,7 +45,21 @@
 //
 // This file must run *after* `knowbaseitemcategory_to_article.php` (it does,
 // files are included in alphabetical order) so that the articles created from
-// the former categories are known when the tree is later reparented.
+// the former categories are attached to the root article too.
+$kb_links_table = 'glpi_knowbaseitems_knowbaseitems';
+
+// Drop the links that reference an article that no longer exists as a safety.
+$kb_existing_articles = new QuerySubQuery([
+    'SELECT' => 'id',
+    'FROM'   => 'glpi_knowbaseitems',
+]);
+$DB->delete($kb_links_table, [
+    'OR' => [
+        'knowbaseitems_id'        => ['NOT IN', $kb_existing_articles],
+        'knowbaseitems_id_parent' => ['NOT IN', $kb_existing_articles],
+    ],
+]);
+
 $root_config = $DB->request([
     'SELECT' => 'value',
     'FROM'   => 'glpi_configs',
@@ -86,4 +102,25 @@ if ($root_id === 0 || countElementsInTable('glpi_knowbaseitems', ['id' => $root_
             'name'    => 'root_knowbaseitems_id',
         ]
     );
+}
+
+// Attach every other top-level article, i.e. every article that has no parent,
+// to the root article so the knowledge base is a single tree.
+$migration->displayMessage("Attach top-level knowledge base articles to the root article");
+
+foreach ($DB->request([
+    'SELECT' => 'id',
+    'FROM'   => 'glpi_knowbaseitems',
+    'WHERE'  => [
+        ['NOT' => ['id' => $root_id]],
+        'id' => ['NOT IN', new QuerySubQuery([
+            'SELECT' => 'knowbaseitems_id',
+            'FROM'   => $kb_links_table,
+        ])],
+    ],
+]) as $article) {
+    $DB->insert($kb_links_table, [
+        'knowbaseitems_id'        => (int) $article['id'],
+        'knowbaseitems_id_parent' => $root_id,
+    ]);
 }
