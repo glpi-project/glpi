@@ -98,6 +98,12 @@
                     </div>
                 {% endif %}
             </div>
+            {% if anchor_quote is not empty %}
+                <blockquote
+                    class="kb-comment-anchor-quote text-muted fs-3 border-start border-2 ps-2 mb-1"
+                    data-glpi-comment-anchor-quote
+                >{{ anchor_quote }}</blockquote>
+            {% endif %}
             <div data-glpi-comment-content data-testid="comment-content">{{ comment|nl2br }}</div>
             <div class="d-none" data-glpi-comment-edit-form>
                 {% set lines_count = (comment|split('\n')|length) %}

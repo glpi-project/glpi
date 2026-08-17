@@ -402,21 +402,28 @@ body.in_modal .kb-article {
     transition: outline-color 0.2s ease-in-out;
 }
 
-// A selection can be arbitrarily long; truncate the quote at 3 lines rather
-// than let it drown the thread behind a scrollbar.
+// Quoted inside the card, so a single line: the passage itself is one click away
+// in the article.
 .kb-comment-anchor-quote {
     /* stylelint-disable-next-line value-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
     display: -webkit-box;
     /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 1;
     /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
     -webkit-box-orient: vertical;
     overflow: hidden;
     overflow-wrap: anywhere;
 
-    // Without this, blockquote's 1rem block padding widens the clip box and a
-    // 4th line bleeds through under the ellipsis.
+    // Without this, blockquote's 1rem block padding widens the clip box and an
+    // extra line bleeds through under the ellipsis.
     padding-block: 0;
+}
+
+// The pending preview is the only place the selection is verified before being
+// stored, so it keeps room to be read back.
+.kb-comment-anchor-quote--preview {
+    /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+    -webkit-line-clamp: 3;
 }
 
 // KB visibility dates

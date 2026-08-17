@@ -47,14 +47,6 @@
         }|json_encode|e('html_attr') }}"
     {% endif %}
 >
-    {% if root_comment.hasAnchor() %}
-        <blockquote
-            class="kb-comment-anchor-quote text-muted fs-3 border-start border-3 ps-2 mb-3"
-            data-glpi-comment-anchor-quote
-        >
-            {{ root_comment.fields.anchor_exact }}
-        </blockquote>
-    {% endif %}
     {% for comment in thread.getComments() %}
         {{ include('pages/tools/kb/sidepanel/comment.html.twig', {
             comment_id   : comment.fields.id,
@@ -63,6 +55,7 @@
             can_edit     : comment.can(comment.fields.id, constant('UPDATE')),
             can_purge    : comment.can(comment.fields.id, constant('PURGE')),
             user         : users[comment.fields.users_id] ?? null,
+            anchor_quote : loop.first and root_comment.hasAnchor() ? root_comment.fields.anchor_exact : null,
         }, with_context = false) }}
     {% endfor %}
 

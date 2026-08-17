@@ -122,6 +122,11 @@ final class CommentsRendererTest extends DbTestCase
         $thread = $comments->filter('[data-glpi-comment-thread]');
         $this->assertStringContainsString('the quoted passage', $thread->text());
 
+        // The quote belongs inside the root comment's card, not beside it.
+        $quote = $comments->filter('.kb-comment-card blockquote[data-glpi-comment-anchor-quote]');
+        $this->assertCount(1, $quote);
+        $this->assertSame('the quoted passage', trim($quote->text()));
+
         $anchor = json_decode($thread->attr('data-glpi-comment-anchor'), true);
         $this->assertSame('the quoted passage', $anchor['exact']);
         $this->assertSame('before ', $anchor['prefix']);
