@@ -991,4 +991,45 @@ class ProviderTest extends DbTestCase
 
         $this->assertGreaterThan(0, $nb_items);
     }
+
+    public function testComputersByAge()
+    {
+        $this->login();
+
+        // ensure at least one computer with a warranty date exists so the data loop is exercised
+        $computer = $this->createItem(\Computer::class, [
+            'name'        => 'test dashboard computer by age',
+            'entities_id' => 0,
+        ]);
+
+        $this->createItem(\Infocom::class, [
+            'itemtype'      => \Computer::class,
+            'items_id'      => $computer->getID(),
+            'warranty_date' => date('Y-m-d', strtotime('-2 years')),
+        ]);
+
+        $result = Provider::computersByAge();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+
+        $nb_items = 0;
+        foreach ($result['data'] as $key => $data) {
+            if ($key === 'nodata') {
+                continue;
+            }
+
+            $this->assertArrayHasKey('number', $data);
+            $this->assertArrayHasKey('label', $data);
+            $this->assertArrayHasKey('url', $data);
+
+            $this->assertGreaterThan(0, $data['number']);
+            $this->assertIsString($data['label']);
+            $this->assertStringContainsString(\Computer::getSearchURL(), $data['url']);
+
+            $nb_items++;
+        }
+
+        $this->assertGreaterThan(0, $nb_items);
+    }
 }
