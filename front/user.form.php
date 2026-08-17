@@ -36,7 +36,9 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Locale\LanguageRegistry;
 use Glpi\Security\TOTPManager;
 
 global $CFG_GLPI;
@@ -158,8 +160,12 @@ if (isset($_GET['getvcard'])) {
         User::changeAuthMethod([$_POST["id"]], $_POST["authtype"], $_POST["auths_id"]);
     }
     Html::back();
-} elseif (isset($_POST['language'])) {
-    $user->check($_POST['id'], UPDATE);
+} elseif (isset($_POST['language']) && Session::getLoginUserID()) {
+    // no right check, user can update he's own language (@see front/preference.php)
+    if (!is_string($_POST['language']) || !LanguageRegistry::has($_POST['language'])) {
+        throw new BadRequestHttpException();
+    }
+
     $user->update(
         [
             'id'        => Session::getLoginUserID(),
