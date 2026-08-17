@@ -193,7 +193,7 @@ class Ajax
                             <h3 class="modal-title">' . htmlescape($param['title']) . '</h3>
                         </div>
                         <div class="modal-body">
-                            <iframe id="iframe' . htmlescape($domid) . '" class="iframe hidden">
+                            <iframe id="iframe' . htmlescape($domid) . '" class="iframe hidden" data-testid="modal-iframe">
                             </iframe>
                         </div>
                     </div>

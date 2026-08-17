@@ -135,6 +135,11 @@
     }
 }
 
+body.in_modal .kb-article {
+    max-height: none;
+    overflow: visible;
+}
+
 .kb-article {
     position: relative;
     max-height: calc(100vh - 150px);
@@ -371,6 +376,12 @@
         border-bottom-right-radius: var(--tblr-border-radius) !important;
         border-bottom-width: 1px !important;
     }
+}
+
+// Reserve the height that the editor will take once tiptap is mounted, which
+// happens asynchronously. Prevent some height issues on chrome based browsers.
+.kb-editor-reserved {
+    min-height: 200px;
 }
 
 // Tiptap Editor styles for KB articles

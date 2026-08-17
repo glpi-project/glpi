@@ -293,7 +293,7 @@
         {# Tiptap editor container #}
         <div
             id="kb-tiptap-editor"
-            class="rich_text_container article-container mt-4"
+            class="rich_text_container article-container mt-4 {{ mode in ['add', 'edit'] ? 'kb-editor-reserved' }}"
             data-glpi-kb-content
             data-testid="content"
         >
