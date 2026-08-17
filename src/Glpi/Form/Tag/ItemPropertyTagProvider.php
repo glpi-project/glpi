@@ -142,6 +142,22 @@ final class ItemPropertyTagProvider implements TagProviderInterface, CompositeTa
         return $new_id . self::SEPARATOR . $parts[1];
     }
 
+    /**
+     * Returns the list of allowed data types for item properties that can be used in tags.
+     *
+     * @return array<int, string> */
+    public function getAllowedDataTypes(): array
+    {
+        return [
+            'string', 'text', 'longtext',
+            'integer', 'number', 'decimal', 'float',
+            'bool', 'itemlink',
+            'date', 'datetime',
+            'email', 'ip', 'mac', 'weblink',
+            'right',
+        ];
+    }
+
     // --- private helpers ---
 
     private function isItemQuestion(Question $question): bool
@@ -168,6 +184,7 @@ final class ItemPropertyTagProvider implements TagProviderInterface, CompositeTa
         }
 
         $options = SearchOption::getOptionsForItemtype($itemtype);
+        $allowed_types = $this->getAllowedDataTypes();
         $properties = [];
 
         foreach ($options as $id => $option) {
@@ -185,14 +202,6 @@ final class ItemPropertyTagProvider implements TagProviderInterface, CompositeTa
                 continue;
             }
 
-            $allowed_types = [
-                'string', 'text', 'longtext',
-                'integer', 'number', 'decimal', 'float',
-                'bool', 'itemlink',
-                'date', 'datetime',
-                'email', 'ip', 'mac', 'weblink',
-                'right',
-            ];
             if (isset($option['datatype']) && !in_array($option['datatype'], $allowed_types, true)) {
                 continue;
             }
@@ -220,6 +229,11 @@ final class ItemPropertyTagProvider implements TagProviderInterface, CompositeTa
         $options = SearchOption::getOptionsForItemtype($itemtype);
         $option = $options[$option_id] ?? null;
         if ($option === null) {
+            return '';
+        }
+
+        $allowed_types = $this->getAllowedDataTypes();
+        if (isset($option['datatype']) && !in_array($option['datatype'], $allowed_types, true)) {
             return '';
         }
 

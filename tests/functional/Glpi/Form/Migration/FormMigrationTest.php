@@ -96,6 +96,7 @@ use Group;
 use ITILCategory;
 use Location;
 use LogicException;
+use Monolog\Logger;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -1186,6 +1187,7 @@ final class FormMigrationTest extends DbTestCase
                                                 . '<b>1\) <span[^>]*>#Question: Question for tag tests 1<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 1<\/span><br>'
                                                 . '<b>2\) <span[^>]*>#Question: Question for tag tests 2<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 2<\/span><br>'
                                                 . '<b>3\) <span[^>]*>#Question: Question for tag tests 3<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 3<\/span><br>'
+                                                . '<b>4\) <span[^>]*>#Question: Question for tag tests 4<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 4<\/span><br>'
                                             . '<\/p>/',
         ];
 
@@ -1212,10 +1214,29 @@ final class FormMigrationTest extends DbTestCase
             'expectedPatternForTitle'   => '/Name: <span[^>]*>#Answer: Question for tag tests 3 › Name<\/span>/',
             'expectedPatternForContent' => '/Name: <span[^>]*>#Answer: Question for tag tests 3 › Name<\/span>/',
         ];
+
+        yield 'Property tag on a User question (simple field)' => [
+            'rawContent'                => 'Email: ##answer_9997.login##',
+            'expectedPatternForTitle'   => '/Email: <span[^>]*>#Answer: Question for tag tests 4 › Login<\/span>/',
+            'expectedPatternForContent' => '/Email: <span[^>]*>#Answer: Question for tag tests 4 › Login<\/span>/',
+        ];
+
+        yield 'Email tag on a User question' => [
+            'rawContent'                => 'Email: ##answer_9997.email##',
+            'expectedPatternForTitle'   => '/Email: <span[^>]*>#Answer: Question for tag tests 4 › Email addresses<\/span>/',
+            'expectedPatternForContent' => '/Email: <span[^>]*>#Answer: Question for tag tests 4 › Email addresses<\/span>/',
+        ];
+
+        yield 'Unknown property tag tag on a User question' => [
+            'rawContent'                => 'Unknown: ##answer_9997.unknown##',
+            'expectedPatternForTitle'   => '/^Unknown: ##answer_9997.unknown##$/',
+            'expectedPatternForContent' => '/^Unknown: ##answer_9997.unknown##$/',
+            'emptyLogs'                 => true,  // expect a log entry for this case, but we don't want to fail the test in GLPITestCase::tearDown()
+        ];
     }
 
     #[DataProvider('provideFormMigrationTagConversion')]
-    public function testFormMigrationTagConversion(string $rawContent, string $expectedPatternForTitle, string $expectedPatternForContent): void
+    public function testFormMigrationTagConversion(string $rawContent, string $expectedPatternForTitle, string $expectedPatternForContent, bool $emptyLogs = false): void
     {
         global $DB;
 
@@ -1258,7 +1279,7 @@ final class FormMigrationTest extends DbTestCase
             ]
         ));
 
-        // A "GLPI Object" question (fieldtype "glpiselect"), migrated into a
+        // "GLPI Object" questions (fieldtype "glpiselect"), migrated into a
         // `QuestionTypeItem` question so that its properties can be resolved.
         $this->assertTrue($DB->insert(
             'glpi_plugin_formcreator_questions',
@@ -1269,6 +1290,18 @@ final class FormMigrationTest extends DbTestCase
                 'fieldtype'                      => 'glpiselect',
                 'itemtype'                       => 'Computer',
                 'row'                            => 2,
+            ]
+        ));
+
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'id'                             => 9997,                         // Fixed ID to match our test tags
+                'plugin_formcreator_sections_id' => $section_id,
+                'name'                           => 'Question for tag tests 4',
+                'fieldtype'                      => 'glpiselect',
+                'itemtype'                       => 'User',
+                'row'                            => 3,
             ]
         ));
 
@@ -1308,6 +1341,12 @@ final class FormMigrationTest extends DbTestCase
             $expectedPatternForContent,
             $content_config->getValue()
         );
+
+        if ($emptyLogs) {
+            /** @var Logger $PHPLOGGER */
+            global $PHPLOGGER;
+            $PHPLOGGER->reset();
+        }
     }
 
     public function testFormMigrationWithRadioQuestion(): void

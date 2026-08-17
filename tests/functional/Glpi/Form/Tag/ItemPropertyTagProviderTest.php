@@ -114,11 +114,15 @@ final class ItemPropertyTagProviderTest extends DbTestCase
         );
         $question_id = $this->getQuestionId($form, 'Q1');
 
-        $tags = (new ItemPropertyTagProvider())->getTags($form);
+        $item_property_tag_provider = new ItemPropertyTagProvider();
+        $tags = $item_property_tag_provider->getTags($form);
         $this->assertNotEmpty($tags);
 
+        $allowed_type = $item_property_tag_provider->getAllowedDataTypes();
+
         // Every exposed property must belong to the main itemtype table,
-        // not to a joined table (ex: manufacturer name, location name, ...).
+        // not to a joined table (ex: manufacturer name, location name, ...),
+        // and must be an allowed data type (ex: no password, no image, ...).
         $options = SearchOption::getOptionsForItemtype($item_type);
         foreach ($tags as $tag) {
             $this->assertInstanceOf(Tag::class, $tag);
@@ -133,6 +137,7 @@ final class ItemPropertyTagProviderTest extends DbTestCase
             } else {
                 $this->assertArrayHasKey($option_id, $options);
                 $this->assertSame($item_type::getTable(), $options[$option_id]['table']);
+                $this->assertContains($options[$option_id]['datatype'] ?? 'string', $allowed_type);
             }
         }
 
@@ -161,7 +166,6 @@ final class ItemPropertyTagProviderTest extends DbTestCase
         $tag = $item_property_tag_provider->getTagFromRawValue('not-a-value');
         $this->assertNull($tag);
 
-
         $form = $this->createForm(
             (new FormBuilder())->addQuestion('Comments', QuestionTypeShortText::class)
         );
@@ -169,12 +173,10 @@ final class ItemPropertyTagProviderTest extends DbTestCase
         $tag = $item_property_tag_provider->getTagFromRawValue("$question_id:1");
         $this->assertNull($tag);
 
-        [, $question_id] = $this->createFormWithComputerQuestion('Asset');
+        [, $question_id] = $this->createFormWithQuestion(Computer::class, 'Asset');
         $tag = $item_property_tag_provider->getTagFromRawValue("$question_id:999999");
         $this->assertNull($tag);
 
-
-        [, $question_id] = $this->createFormWithComputerQuestion('Asset');
         $serial_option_id = $this->getSearchOptionId(Computer::class, 'serial');
         $tag = $item_property_tag_provider->getTagFromRawValue("$question_id:$serial_option_id");
 
@@ -182,12 +184,12 @@ final class ItemPropertyTagProviderTest extends DbTestCase
         $this->assertEquals("$question_id:$serial_option_id", $this->getTagValue($tag));
     }
 
-    public function testGetTagContentForValue(): void
+    public function testGetTagContentForValueWithSimpleQuestion(): void
     {
         $item_property_tag_provider = new ItemPropertyTagProvider();
 
         // Test with empty answer -> empty
-        [, $question_id] = $this->createFormWithComputerQuestion('Asset');
+        [$form, $question_id] = $this->createFormWithQuestion(Computer::class, 'Asset');
         $serial_option_id = $this->getSearchOptionId(Computer::class, 'serial');
         $this->assertEquals(
             '',
@@ -207,7 +209,6 @@ final class ItemPropertyTagProviderTest extends DbTestCase
         );
 
         // Test with valid tag value and answer
-        [$form, $question_id] = $this->createFormWithComputerQuestion('Asset');
         $computer = $this->createItem(Computer::class, [
             'name'        => 'My computer',
             'serial'      => 'SN-1234',
@@ -229,6 +230,11 @@ final class ItemPropertyTagProviderTest extends DbTestCase
                 $answers
             )
         );
+    }
+
+    public function testGetTagContentForValueWithMultipleItemsAnswer(): void
+    {
+        $item_property_tag_provider = new ItemPropertyTagProvider();
 
         // Test with a multiple items answer
         $form = $this->createForm(
@@ -271,24 +277,23 @@ final class ItemPropertyTagProviderTest extends DbTestCase
                 $answers
             )
         );
+    }
 
+    public function testGetTagContentForValueWithSpecialProperties(): void
+    {
+        $item_property_tag_provider = new ItemPropertyTagProvider();
 
         // Test with the special "email addresses" pseudo-property
-        $form = $this->createForm(
-            (new FormBuilder())->addQuestion(
-                name: 'Requester asset',
-                type: QuestionTypeItem::class,
-                extra_data: json_encode(
-                    (new QuestionTypeItemExtraDataConfig(itemtype: User::class))->jsonSerialize()
-                ),
-            )
-        );
-        $question_id = $this->getQuestionId($form, 'Requester asset');
+        [$form, $question_id] = $this->createFormWithQuestion(User::class, 'Requester asset');
 
         $user = $this->createItem(User::class, ['name' => 'tag_provider_test_user']);
         $this->createItem(UserEmail::class, [
             'users_id' => $user->getID(),
             'email'    => 'primary@example.org',
+        ]);
+        $this->createItem(UserEmail::class, [
+            'users_id' => $user->getID(),
+            'email'    => 'secondary@example.org',
         ]);
 
         $answers = AnswersHandler::getInstance()->saveAnswers($form, [
@@ -299,12 +304,29 @@ final class ItemPropertyTagProviderTest extends DbTestCase
         ], 0);
 
         $this->assertEquals(
-            'primary@example.org',
+            'primary@example.org, secondary@example.org',
             $item_property_tag_provider->getTagContentForValue(
                 "$question_id:" . ItemPropertyTagProvider::USER_EMAILS_PSEUDO_ID,
                 $answers
             )
         );
+
+        // Test with blacklisted properties
+        $allowed_types = $item_property_tag_provider->getAllowedDataTypes();
+        $black_listed_search_options = array_filter(
+            SearchOption::getOptionsForItemtype(User::class),
+            fn($option) => isset($option['datatype']) && !in_array($option['datatype'], $allowed_types, true)
+        );
+
+        foreach ($black_listed_search_options as $id => $option) {
+            $this->assertEquals(
+                '',
+                $item_property_tag_provider->getTagContentForValue(
+                    "$question_id:$id",
+                    $answers
+                )
+            );
+        }
     }
 
     public function testExtractItemIdFromValue(): void
@@ -321,14 +343,14 @@ final class ItemPropertyTagProviderTest extends DbTestCase
     }
 
     /** @return array{0: Form, 1: int} */
-    private function createFormWithComputerQuestion(string $question_name): array
+    private function createFormWithQuestion(string $answer_itemtype, string $question_name): array
     {
         $form = $this->createForm(
             (new FormBuilder())->addQuestion(
                 name: $question_name,
                 type: QuestionTypeItem::class,
                 extra_data: json_encode(
-                    (new QuestionTypeItemExtraDataConfig(itemtype: Computer::class))->jsonSerialize()
+                    (new QuestionTypeItemExtraDataConfig(itemtype: $answer_itemtype))->jsonSerialize()
                 ),
             )
         );
