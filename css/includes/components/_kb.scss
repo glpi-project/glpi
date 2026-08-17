@@ -53,7 +53,9 @@
     text-underline-offset: 3px;
     cursor: pointer;
 
-    &:hover {
+    // A focused thread points at its passage the same way hovering does.
+    &:hover,
+    &.kb-comment-highlight--focused {
         text-decoration-thickness: 3px;
         background-color: var(--tblr-warning-bg-subtle);
     }
@@ -63,12 +65,6 @@
     &::selection {
         background-color: rgb(var(--tblr-warning-rgb), 0.4);
     }
-}
-
-// Same treatment as :hover, so a focused thread points at its passage.
-.kb-comment-highlight--focused {
-    text-decoration-thickness: 3px;
-    background-color: var(--tblr-warning-bg-subtle);
 }
 
 // Shared by editor and read view so a saved article renders as edited.

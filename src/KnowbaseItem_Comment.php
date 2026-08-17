@@ -209,28 +209,20 @@ final class KnowbaseItem_Comment extends CommonDBTM
      */
     public function clearAnchorsForItem(KnowbaseItem $article, array $comment_ids): void
     {
+        $updates = [];
         foreach ($comment_ids as $comment_id) {
             if (!is_scalar($comment_id)) {
                 continue;
             }
-            $comment = new self();
-            if (!$comment->getFromDB((int) $comment_id)) {
-                continue;
-            }
-            if ((int) $comment->fields['knowbaseitems_id'] !== $article->getID()) {
-                continue;
-            }
-            if (!$comment->can($comment->getID(), UPDATE)) {
-                continue;
-            }
-            $comment->update([
-                'id'                => $comment->getID(),
+            $updates[(int) $comment_id] = [
                 'anchor_prefix'     => null,
                 'anchor_exact'      => null,
                 'anchor_suffix'     => null,
                 'anchor_occurrence' => null,
-            ]);
+            ];
         }
+
+        self::writeAnchors($article, $updates, only_anchored: false);
     }
 
     /**
@@ -243,6 +235,7 @@ final class KnowbaseItem_Comment extends CommonDBTM
      */
     public function refreshAnchorsForItem(KnowbaseItem $article, array $anchors): void
     {
+        $updates = [];
         foreach ($anchors as $anchor) {
             if (!is_array($anchor) || !is_scalar($anchor['id'] ?? null)) {
                 continue;
@@ -260,27 +253,45 @@ final class KnowbaseItem_Comment extends CommonDBTM
                 continue;
             }
 
-            $comment = new self();
-            if (!$comment->getFromDB((int) $anchor['id'])) {
-                continue;
-            }
-            if ((int) $comment->fields['knowbaseitems_id'] !== $article->getID()) {
-                continue;
-            }
-            if (!$comment->hasAnchor()) {
+            $updates[(int) $anchor['id']] = [
+                'anchor_prefix'     => (string) $prefix,
+                'anchor_exact'      => (string) $exact,
+                'anchor_suffix'     => (string) $suffix,
+                'anchor_occurrence' => (int) $occurrence,
+            ];
+        }
+
+        self::writeAnchors($article, $updates, only_anchored: true);
+    }
+
+    /**
+     * Apply anchor columns to the given comments, loaded in one query. Ids
+     * belonging to another article are ignored.
+     *
+     * @param array<int, array<string, string|int|null>> $updates Keyed by comment id.
+     * @param bool $only_anchored Skip comments that carry no anchor yet.
+     */
+    private static function writeAnchors(KnowbaseItem $article, array $updates, bool $only_anchored): void
+    {
+        if ($updates === []) {
+            return;
+        }
+
+        $comments = self::getSeveralFromDBByCrit([
+            'id'               => array_keys($updates),
+            'knowbaseitems_id' => $article->getID(),
+        ]);
+
+        foreach ($comments as $comment) {
+            if ($only_anchored && !$comment->hasAnchor()) {
                 continue;
             }
             if (!$comment->can($comment->getID(), UPDATE)) {
                 continue;
             }
-
-            $comment->update([
-                'id'                => $comment->getID(),
-                'anchor_prefix'     => (string) $prefix,
-                'anchor_exact'      => (string) $exact,
-                'anchor_suffix'     => (string) $suffix,
-                'anchor_occurrence' => (int) $occurrence,
-            ]);
+            $comment->update(
+                ['id' => $comment->getID()] + $updates[(int) $comment->fields['id']]
+            );
         }
     }
 

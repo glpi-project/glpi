@@ -386,33 +386,8 @@ export class KnowbaseItemPage extends GlpiPage
      */
     public async selectTextInReadMode(text: string): Promise<void>
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- same container TipTapEditorHelper uses
-        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
-        await this.page.evaluate((needle) => {
-            const container = document.querySelector('[data-glpi-kb-content]');
-            if (!container) {
-                return;
-            }
-            const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
-            let node = walker.nextNode();
-            while (node) {
-                const idx = (node.nodeValue ?? '').indexOf(needle);
-                if (idx !== -1) {
-                    const range = document.createRange();
-                    range.setStart(node, idx);
-                    range.setEnd(node, idx + needle.length);
-                    const selection = window.getSelection();
-                    if (!selection) {
-                        return;
-                    }
-                    selection.removeAllRanges();
-                    selection.addRange(range);
-                    document.dispatchEvent(new Event('selectionchange'));
-                    return;
-                }
-                node = walker.nextNode();
-            }
-        }, text);
+        await this.waitForArticleReady();
+        await this.selectTextIn('[data-glpi-kb-content]', text, true);
     }
 
     /**
@@ -426,8 +401,20 @@ export class KnowbaseItemPage extends GlpiPage
         const editor = this.page.locator('.ProseMirror[contenteditable="true"]');
         await editor.waitFor();
         await editor.focus();
-        await this.page.evaluate((needle) => {
-            const container = document.querySelector('.ProseMirror[contenteditable="true"]');
+        await this.selectTextIn('.ProseMirror[contenteditable="true"]', text, false);
+    }
+
+    /**
+     * Scripted Range shared by the read-mode and edit-mode selection helpers.
+     */
+    private async selectTextIn(
+        container_selector: string,
+        text: string,
+        dispatch_selectionchange: boolean,
+    ): Promise<void>
+    {
+        await this.page.evaluate(({ selector, needle, dispatch }) => {
+            const container = document.querySelector(selector);
             if (!container) {
                 return;
             }
@@ -445,11 +432,14 @@ export class KnowbaseItemPage extends GlpiPage
                     }
                     selection.removeAllRanges();
                     selection.addRange(range);
+                    if (dispatch) {
+                        document.dispatchEvent(new Event('selectionchange'));
+                    }
                     return;
                 }
                 node = walker.nextNode();
             }
-        }, text);
+        }, { selector: container_selector, needle: text, dispatch: dispatch_selectionchange });
     }
 
     /**
@@ -458,8 +448,7 @@ export class KnowbaseItemPage extends GlpiPage
      */
     public async selectWholeParagraphInReadMode(text: string): Promise<void>
     {
-        // eslint-disable-next-line playwright/no-raw-locators -- same container TipTapEditorHelper uses
-        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
+        await this.waitForArticleReady();
         await this.page.evaluate((needle) => {
             const paragraph = [...document.querySelectorAll('[data-glpi-kb-content] p')]
                 .find((candidate) => (candidate.textContent ?? '').includes(needle));
@@ -511,11 +500,6 @@ export class KnowbaseItemPage extends GlpiPage
     public getPendingAnchorQuote(): Locator
     {
         return this.page.getByTestId('pending-anchor-quote').filter({ visible: true });
-    }
-
-    public getCommentThread(comment_id: number): Locator
-    {
-        return this.page.getByTestId(`comment-thread-${comment_id}`).filter({ visible: true });
     }
 
     /**

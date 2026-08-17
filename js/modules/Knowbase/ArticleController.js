@@ -1166,17 +1166,17 @@ export class GlpiKnowbaseArticleController
             return;
         }
 
-        let focused = null;
         content_el.querySelectorAll('.kb-comment-highlight').forEach((mark) => {
-            const matches = comment_id !== null && mark.dataset.commentId === comment_id;
-            mark.classList.toggle('kb-comment-highlight--focused', matches);
-            if (matches && focused === null) {
-                focused = mark;
-            }
+            mark.classList.toggle(
+                'kb-comment-highlight--focused',
+                mark.dataset.commentId === comment_id
+            );
         });
 
-        if (focused && source === 'panel') {
-            focused.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (comment_id !== null && source === 'panel') {
+            content_el
+                .querySelector(`.kb-comment-highlight[data-comment-id="${CSS.escape(comment_id)}"]`)
+                ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
 

@@ -103,11 +103,6 @@ export class BubbleMenuHelper {
         await expect(menu.getByTitle(command, { exact: true })).toBeDisabled();
     }
 
-    async assertButtonEnabled(command: BubbleMenuCommand): Promise<void> {
-        const menu = await this.assertVisible();
-        await expect(menu.getByTitle(command, { exact: true })).toBeEnabled();
-    }
-
     async assertButtonVisible(command: BubbleMenuCommand): Promise<void> {
         const menu = await this.assertVisible();
         await expect(menu.getByTitle(command, { exact: true })).toBeVisible();
