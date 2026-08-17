@@ -117,6 +117,10 @@ final class AdministrationController extends AbstractController
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'First name',
                     ],
+                    'middlename' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'Middle name or patronymic',
+                    ],
                     'phone' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'description' => 'Phone number',

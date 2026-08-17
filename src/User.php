@@ -3508,6 +3508,14 @@ HTML;
         ];
 
         $tab[] = [
+            'id'                 => '122',
+            'table'              => $this->getTable(),
+            'field'              => 'middlename',
+            'name'               => __('Middle name / Patronymic'),
+            'datatype'           => 'string',
+        ];
+
+        $tab[] = [
             'id'                 => '5',
             'table'              => 'glpi_useremails',
             'field'              => 'email',
@@ -4380,6 +4388,7 @@ HTML;
                         'glpi_users.name'                => ['LIKE', $txt_search],
                         'glpi_users.realname'            => ['LIKE', $txt_search],
                         'glpi_users.firstname'           => ['LIKE', $txt_search],
+                        'glpi_users.middlename'          => ['LIKE', $txt_search],
                         'glpi_users.phone'               => ['LIKE', $txt_search],
                         'glpi_users.registration_number' => ['LIKE', $txt_search],
                         'glpi_useremails.email'          => ['LIKE', $txt_search],
@@ -4878,8 +4887,15 @@ HTML;
         if (
             !empty($this->fields["realname"])
             || !empty($this->fields["firstname"])
+            || !empty($this->fields["middlename"])
         ) {
-            $name = [$this->fields["realname"], $this->fields["firstname"], "", "", ""];
+            $name = [
+                $this->fields["realname"],
+                $this->fields["firstname"],
+                $this->fields["middlename"],
+                "",
+                "",
+            ];
         } else {
             $name = [$this->fields["name"], "", "", "", ""];
         }
