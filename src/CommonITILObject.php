@@ -7777,7 +7777,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             foreach ($tasks as $tasks_id => $task_row) {
                 // Safer to use a clean object to load our data
+                /** @var CommonITILTask $tltask */
                 $tltask = getItemForItemtype($taskClass);
+                $tltask->setParentItem($this);
                 $tltask->fields = $task_row;
                 $tltask->post_getFromDB();
 
@@ -7858,11 +7860,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 // Safer to use a clean object to load our data
                 /** @var CommonITILValidation $validation */
                 $validation = getItemForItemtype($validation_class);
+                $validation->setParentItem($this);
                 $validation->fields = $validation_row;
                 $validation->post_getFromDB();
 
-                $canedit = $validation_obj->can($validations_id, UPDATE);
-                $cananswer = $validation_obj->canAnswer()
+                // Use $validation (already loaded with this row's data) instead of $validation_obj,
+                // so that can() does not reload it from the DB.
+                $canedit = $validation->can($validations_id, UPDATE);
+                $cananswer = $validation->canAnswer()
                     && $validation_row['status'] == CommonITILValidation::WAITING
                     && !$this->isSolved(true);
                 $user = new User();

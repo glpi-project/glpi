@@ -51,6 +51,8 @@ abstract class CommonITILValidation extends CommonDBChild
     // From CommonDBTM
     public $auto_message_on_action    = false;
 
+    protected ?CommonITILObject $item = null;
+
     public static $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
     public static $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
     public static $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
@@ -86,6 +88,38 @@ abstract class CommonITILValidation extends CommonDBChild
         }
 
         return new $class();
+    }
+
+    /**
+     * Set the parent ITIL object, to avoid reloading it from the DB when it
+     * is already available (e.g. when building the ticket/change/problem timeline).
+     *
+     * @param CommonITILObject $parent Parent item
+     *
+     * @return void
+     */
+    final public function setParentItem(CommonITILObject $parent): void
+    {
+        $this->item = $parent;
+    }
+
+    /**
+     * Check if $this->item already contains the correct parent item and thus
+     * help us to avoid reloading it for no reason.
+     *
+     * @phpstan-assert-if-true !null $this->item
+     *
+     * @return bool
+     */
+    protected function isParentAlreadyLoaded(): bool
+    {
+        if (!isset($this->fields[static::$items_id])) {
+            return false;
+        }
+
+        return $this->item !== null
+            && $this->item->getType() === static::getItilObjectItemType()
+            && $this->item->getID() === $this->fields[static::$items_id];
     }
 
     /**
