@@ -1012,7 +1012,7 @@ class AuthLdapTest extends DbTestCase
         yield [
             'group_dn'            => 'cn=glpi2-group2,ou=groups,ou=\#1-test,ou=ldap2,dc=glpi,dc=org',
             'user_uid'            => 'specialchar1',
-            // openladap replaces `\#` by `\23` (23 is the ascii code for #)
+            // OpenLDAP replaces `\#` by `\23` (23 is the ascii code for #)
             'expected_group_dn'   => 'cn=glpi2-group2,ou=groups,ou=\231-test,ou=ldap2,dc=glpi,dc=org',
             'expected_group_name' => 'glpi2-group2',
         ];
