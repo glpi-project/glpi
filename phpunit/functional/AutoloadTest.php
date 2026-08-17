@@ -82,4 +82,71 @@ class AutoloadTest extends DbTestCase
     {
         $this->assertTrue(class_exists('Glpi\\Event'));
     }
+
+    public static function dataIsAPI(): iterable
+    {
+        yield 'apirest.php at server root' => [
+            'script_name'     => '/apirest.php',
+            'script_filename' => GLPI_ROOT . '/apirest.php',
+            'request_uri'     => '/apirest.php/initSession',
+            'expected'        => true,
+        ];
+        yield 'apirest.php under a directory prefix (alias, router or api/ rewrite)' => [
+            'script_name'     => '/glpi/apirest.php',
+            'script_filename' => GLPI_ROOT . '/apirest.php',
+            'request_uri'     => '/glpi/api/initSession',
+            'expected'        => true,
+        ];
+        yield 'apixmlrpc.php' => [
+            'script_name'     => '/apixmlrpc.php',
+            'script_filename' => GLPI_ROOT . '/apixmlrpc.php',
+            'request_uri'     => '/apixmlrpc.php',
+            'expected'        => true,
+        ];
+
+        // Non-API paths
+        yield 'front page' => [
+            'script_name'     => '/front/ticket.php',
+            'script_filename' => GLPI_ROOT . '/front/ticket.php',
+            'request_uri'     => '/front/ticket.php?redirect=apirest.php',
+            'expected'        => false,
+        ];
+        yield 'front script with apirest.php as PATH_INFO' => [
+            'script_name'     => '/front/central.php',
+            'script_filename' => GLPI_ROOT . '/front/central.php',
+            'request_uri'     => '/front/central.php/apirest.php/',
+            'expected'        => false,
+        ];
+        yield 'similarly named script' => [
+            'script_name'     => '/myapirest.php',
+            'script_filename' => GLPI_ROOT . '/myapirest.php',
+            'request_uri'     => '/myapirest.php',
+            'expected'        => false,
+        ];
+    }
+
+    /**
+     * @dataProvider dataIsAPI
+     */
+    public function testIsAPI(
+        ?string $script_name,
+        string $script_filename,
+        string $request_uri,
+        bool $expected
+    ) {
+        $original_server = $_SERVER;
+
+        if ($script_name === null) {
+            unset($_SERVER['SCRIPT_NAME']);
+        } else {
+            $_SERVER['SCRIPT_NAME'] = $script_name;
+        }
+        $_SERVER['SCRIPT_FILENAME'] = $script_filename;
+        $_SERVER['REQUEST_URI']     = $request_uri;
+
+        $this->assertSame($expected, isAPI());
+
+        // We restore $_SERVER for other tests
+        $_SERVER = $original_server;
+    }
 }

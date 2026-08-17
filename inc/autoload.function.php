@@ -57,29 +57,17 @@ function isCommandLine()
  */
 function isAPI()
 {
-    /** @var array $CFG_GLPI */
-    global $CFG_GLPI;
-
-    $called_url = (($_SERVER['HTTPS'] ?? "") !== 'off'
-                     ? 'https'
-                     : 'http') .
-                 '://' . ($_SERVER['HTTP_HOST'] ?? "") .
-                 ($_SERVER['REQUEST_URI'] ?? "");
-
-    $base_api_url = $CFG_GLPI['url_base_api'] ?? ""; // $CFG_GLPI may be not defined if DB is not available
-    if (!empty($base_api_url) && strpos($called_url, $base_api_url) !== false) {
-        return true;
-    }
-
-    $script = $_SERVER['SCRIPT_FILENAME'] ?? '';
-    if (strpos($script, 'apirest.php') !== false) {
-        return true;
-    }
-    if (strpos($script, 'apixmlrpc.php') !== false) {
-        return true;
-    }
-
-    return false;
+    // Only `$_SERVER['SCRIPT_NAME']` is used here. It is considered safe as it is either set by
+    // the web server, either set by the GLPI router (see `/public/index.php`), and it contains
+    // neither the `PATH_INFO` nor the query string.
+    // `$_SERVER['REQUEST_URI']` cannot be used as it is a raw value defined by the HTTP client:
+    // it may contain a `PATH_INFO` (e.g. `/front/central.php/apirest.php/`), a query string,
+    // or unnormalized path segments (e.g. `/apirest.php/../front/ticket.php`).
+    return in_array(
+        basename($_SERVER['SCRIPT_NAME'] ?? ''),
+        ['apirest.php', 'apixmlrpc.php'],
+        true
+    );
 }
 
 
