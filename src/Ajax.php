@@ -789,7 +789,8 @@ JS;
         $display = true
     ) {
 
-        $out = sprintf('$("#%s").load("%s"', jsescape($toupdate), jsescape($url));
+        $out = sprintf('try { $("#%s").find(".select2-hidden-accessible").select2("destroy"); } catch(e) {}', jsescape($toupdate));
+        $out .= sprintf('$("#%s").load("%s"', jsescape($toupdate), jsescape($url));
         if (count($parameters)) {
             $out .= ",{";
             $first = true;
