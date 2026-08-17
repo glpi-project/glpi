@@ -69,15 +69,6 @@ final class SessionVariables implements EventSubscriberInterface
 
         $request = $event->getRequest();
 
-        if (
-            \str_starts_with($request->getPathInfo(), '/ajax/dashboard.php')
-            && \in_array($request->get('action'), ['get_card', 'get_cards'], true)
-        ) {
-            // Dashboard cards only read session data and their session lock is released early
-            // (see `SessionStart::onPostBoot()`); any write made here would silently be lost.
-            return;
-        }
-
         // Manage force tab
         if ($request->query->has('forcetab')) {
             $itemtype = URL::extractItemtypeFromUrlPath($request->getPathInfo());

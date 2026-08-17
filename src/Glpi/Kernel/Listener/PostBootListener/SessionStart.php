@@ -100,18 +100,11 @@ class SessionStart implements EventSubscriberInterface
         } else {
             $request = $kernel->getMainRequest();
             $is_stateless = $this->session_manager->isResourceStateless($request);
-
-            if (!$is_stateless) {
-                Session::start();
-
-                if ($this->session_manager->isResourceReadOnly($request)) {
-                    // Release the session lock early so concurrent requests don't queue behind it.
-                    Session::writeClose();
-                }
-            }
         }
 
-        if ($is_stateless) {
+        if (!$is_stateless) {
+            Session::start();
+        } else {
             if ($this->php_sapi !== 'cli') {
                 // Stateless endpoints will often have to start their own PHP session (based on a token for instance).
                 // Be sure to not use cookies defined in the request or to send a cookie in the response.

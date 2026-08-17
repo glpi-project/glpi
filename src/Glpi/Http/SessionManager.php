@@ -162,23 +162,4 @@ class SessionManager
 
         return false;
     }
-
-    /**
-     * Compute whether the given resource only needs a read access to the session data,
-     * so its session file lock can be released early instead of held for the whole request.
-     */
-    public function isResourceReadOnly(Request $request): bool
-    {
-        $path = $this->normalizePath($request);
-
-        if (
-            \str_starts_with($path, '/ajax/dashboard.php')
-            && \in_array($request->get('action'), ['get_card', 'get_cards'], true)
-        ) {
-            // Cards only read session data (active entity, profile, ...), never write it.
-            return true;
-        }
-
-        return false;
-    }
 }
