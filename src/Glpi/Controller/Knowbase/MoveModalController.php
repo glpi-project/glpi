@@ -37,39 +37,48 @@ namespace Glpi\Controller\Knowbase;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Knowbase\Aside\MoveCandidates;
 use KnowbaseItem;
+use KnowbaseItem_KnowbaseItem;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * Returns the rendered kebab menu items (add to favorites, add to FAQ, delete)
- * for a single knowledge base article. Used by the aside tree, which renders
- * only the kebab trigger and lazy-loads the menu content on hover/open so it
- * never has to load every tree article up-front just to gate the actions.
+ * The "Move article" modal: a dropdown of legal parents, posting to the same
+ * endpoint the aside drag uses.
  */
-final class AsideActionsController extends AbstractController
+final class MoveModalController extends AbstractController
 {
     #[Route(
-        "/Knowbase/{id}/AsideActions",
-        name: "knowbase_aside_actions",
+        "/Knowbase/{id}/MoveModal",
+        name: "knowbase_move_modal",
         requirements: [
             'id' => '\d+',
         ],
         methods: 'GET',
     )]
-    public function __invoke(int $id): Response
+    public function __invoke(int $id, Request $request): Response
     {
         $item = new KnowbaseItem();
         if (!$item->getFromDB($id)) {
             throw new NotFoundHttpException();
         }
-
-        if (!$item->can($id, READ)) {
+        // READ is not enough: this modal exists only to move.
+        if (!$item->can($id, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
-        return $this->render('pages/tools/kb/aside_actions.html.twig', [
-            'actions' => $item->getAsideActions(with_move: true),
+        $hint       = $request->query->getInt('from_parent_id');
+        $candidates = (new MoveCandidates($id))->build();
+
+        return $this->render('pages/tools/kb/modal/move.html.twig', [
+            'id'             => $id,
+            // Verified, not trusted: kept only if it is a real edge AND an offered candidate.
+            'from_parent_id' => KnowbaseItem_KnowbaseItem::isParentOf($hint, $id) && array_key_exists($hint, $candidates)
+                ? $hint
+                : 0,
+            'candidates'     => $candidates,
         ]);
     }
 }

@@ -17,6 +17,7 @@ The present file will list all changes made to the project; according to the
 - New automatic action "purgesessionhistory" to automate deleting old login history data based on a retention period set in `Setup > Data and Privacy`.
 - A root article, base of the knowledge base tree, is now created on installation and on upgrade. Its id is stored in the `root_knowbaseitems_id` configuration. It can be edited like any other article but it cannot be deleted. **On upgrade, articles that have no parent (including the ones created from the former categories) become children of it.**
 - Knowledge base articles can be moved in the aside tree by dragging them: onto an article to become its child, or onto the top or bottom edge of an article to become its sibling. Dragging is mouse-only for now, and reorders nothing: only the parent changes.
+- Knowledge base articles can also be moved from the "Move" entry of an article's menu in the aside tree, which opens a searchable list of parent articles.
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
