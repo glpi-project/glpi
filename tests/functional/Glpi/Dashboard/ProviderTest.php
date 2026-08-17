@@ -761,6 +761,42 @@ class ProviderTest extends DbTestCase
     }
 
 
+    public function testTicketsByStatus()
+    {
+        $this->login();
+
+        // Testing with incoming : to make sure there is at least one ticket
+        $this->createItem(\Ticket::class, [
+            'name'    => "test dashboard card tickets by status",
+            'content' => 'foo',
+            'status'  => \Ticket::INCOMING,
+        ]);
+
+        // verify existing key data/label/icon
+        $result = Provider::ticketsByStatus();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+
+        $nb_items = 0;
+        foreach ($result['data'] as $key => $data) {
+            if ($key === 'nodata') {
+                continue;
+            }
+            // checks that each item has a number, a label, and a URL containing Ticket::getSearchURL
+            $this->assertArrayHasKey('number', $data);
+            $this->assertArrayHasKey('label', $data);
+            $this->assertArrayHasKey('url', $data);
+
+            $this->assertGreaterThan(0, $data['number']);
+            $this->assertIsString($data['label']);
+            $this->assertStringContainsString(\Ticket::getSearchURL(), $data['url']);
+
+            $nb_items++;
+        }
+
+        $this->assertGreaterThan(0, $nb_items);
+    }
     public function testTicketsOpened()
     {
         $result = Provider::ticketsOpened();
