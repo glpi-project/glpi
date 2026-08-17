@@ -187,6 +187,26 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                   && $this->haveVisibilityAccess()));
     }
 
+    public function canDeleteItem(): bool
+    {
+        // The root article is the base of the knowledge base tree, it must
+        // always exist.
+        if ($this->isRoot()) {
+            return false;
+        }
+
+        return parent::canDeleteItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        if ($this->isRoot()) {
+            return false;
+        }
+
+        return parent::canPurgeItem();
+    }
+
     /**
      * Check if current user can comment on KB entries
      *
@@ -208,14 +228,35 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     public static function getRootId(): int
     {
-        global $CFG_GLPI;
-
-        $root_id = (int) ($CFG_GLPI['root_knowbaseitems_id'] ?? 0);
+        $root_id = self::getConfiguredRootId();
         if ($root_id <= 0) {
             throw new RuntimeException('The knowledge base root article is not defined.');
         }
 
         return $root_id;
+    }
+
+    /**
+     * Whether the loaded article is the root article, see `getRootId()`.
+     */
+    public function isRoot(): bool
+    {
+        $id = (int) ($this->fields['id'] ?? 0);
+
+        // Compared to the raw configuration value instead of `getRootId()`: this
+        // method is called from rights checks, which must not fail on an
+        // installation that has no root article (no article is the root then).
+        return $id > 0 && $id === self::getConfiguredRootId();
+    }
+
+    /**
+     * Configured id of the root article, 0 if there is none.
+     */
+    private static function getConfiguredRootId(): int
+    {
+        global $CFG_GLPI;
+
+        return (int) ($CFG_GLPI['root_knowbaseitems_id'] ?? 0);
     }
 
     public static function getSearchURL($full = true)
@@ -572,6 +613,23 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         // Load parent articles
         $this->load1NTableData(KnowbaseItem_KnowbaseItem::class, '_parents');
+    }
+
+    public function pre_deleteItem()
+    {
+        // Last line of defense: `canDeleteItem()` and `canPurgeItem()` already
+        // forbid the action, but this hook is the single gate that every deletion
+        // goes through, including the code paths that do not check rights.
+        if ($this->isRoot()) {
+            Session::addMessageAfterRedirect(
+                msg: __s('The root article of the knowledge base cannot be deleted.'),
+                message_type: ERROR,
+            );
+
+            return false;
+        }
+
+        return parent::pre_deleteItem();
     }
 
     public function cleanDBonPurge()

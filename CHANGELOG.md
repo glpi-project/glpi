@@ -15,7 +15,7 @@ The present file will list all changes made to the project; according to the
 - Remember me support for multiple devices at the same time.
 - `Setup > Data and Privacy` menu item to centralize all data policies and privacy related settings.
 - New automatic action "purgesessionhistory" to automate deleting old login history data based on a retention period set in `Setup > Data and Privacy`.
-- A root article, base of the knowledge base tree, is now created on installation and on upgrade. Its id is stored in the `root_knowbaseitems_id` configuration.
+- A root article, base of the knowledge base tree, is now created on installation and on upgrade. Its id is stored in the `root_knowbaseitems_id` configuration. It can be edited like any other article but it cannot be deleted.
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.

@@ -35,6 +35,8 @@
 namespace test\units;
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\Knowbase\EditorAction;
+use Glpi\Knowbase\EditorActionType;
 use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
 use KnowbaseItem;
@@ -2460,6 +2462,84 @@ HTML,
         // It must be readable from any entity.
         $this->assertEquals(0, $root->fields['entities_id']);
         $this->assertEquals(1, $root->fields['is_recursive']);
+    }
+
+    public function testRootArticleCannotBeDeleted(): void
+    {
+        // The root article belongs to the root entity: work from there, else the
+        // entity check of `canDeleteItem()`/`canPurgeItem()` would be the one
+        // refusing the action.
+        $this->login();
+        $this->setEntity(0, true);
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+        $this->assertTrue($root->checkEntity());
+
+        // Sanity check: the current user is allowed to delete a regular article
+        // of the same entity.
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Article ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->assertTrue($other->can($other->getID(), DELETE));
+        $this->assertTrue($other->can($other->getID(), PURGE));
+
+        // Rights checks, on which every UI and API deletion path relies, refuse
+        // the action for the root article.
+        $this->assertFalse($root->canDeleteItem());
+        $this->assertFalse($root->canPurgeItem());
+        $this->assertFalse($root->can($root->getID(), DELETE));
+        $this->assertFalse($root->can($root->getID(), PURGE));
+
+        // The deletion itself is refused too, even when rights are not checked.
+        $this->assertFalse($root->delete(['id' => $root->getID()]));
+        $this->hasSessionMessages(ERROR, ['The root article of the knowledge base cannot be deleted.']);
+        $this->assertFalse($root->delete(['id' => $root->getID()], true));
+        $this->hasSessionMessages(ERROR, ['The root article of the knowledge base cannot be deleted.']);
+
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+    }
+
+    public function testRootArticleDeleteActionIsNotOffered(): void
+    {
+        $this->login();
+        $this->setEntity(0, true);
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+        $this->assertNotContains(
+            EditorActionType::DELETE_ARTICLE,
+            $this->getAsideActionTypes($root),
+        );
+
+        // Sanity check: the action is offered for a regular article.
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Article ' . __FUNCTION__,
+            'answer'       => '',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+        ]);
+        $this->assertContains(
+            EditorActionType::DELETE_ARTICLE,
+            $this->getAsideActionTypes($other),
+        );
+    }
+
+    /**
+     * @return EditorActionType[]
+     */
+    private function getAsideActionTypes(KnowbaseItem $article): array
+    {
+        return array_map(
+            static fn(EditorAction $action): EditorActionType => $action->type,
+            array_filter(
+                $article->getAsideActions(),
+                static fn(object $action): bool => $action instanceof EditorAction,
+            ),
+        );
     }
 
     public function testGetRootIdFailIfNotConfigured(): void
