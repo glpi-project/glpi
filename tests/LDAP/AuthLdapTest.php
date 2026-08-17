@@ -3043,6 +3043,31 @@ class AuthLdapTest extends DbTestCase
         );
     }
 
+    #[RequiresPhpExtension('ldap')]
+    public function testSearchForUsersIndexesUsersByDn(): void
+    {
+        $ldap = $this->ldap;
+        $limitexceeded = false;
+        $user_infos = $ldap_users = $ldap_users_by_dn = [];
+
+        AuthLDAP::searchForUsers(
+            $ldap->connect(),
+            ['basedn' => $ldap->fields['basedn'], 'mode' => AuthLDAP::ACTION_SYNCHRONIZE],
+            '(uid=ecuador0)',
+            ['uid'],
+            $limitexceeded,
+            $user_infos,
+            $ldap_users,
+            $ldap,
+            $ldap_users_by_dn
+        );
+
+        $this->assertSame(
+            'ecuador0',
+            $ldap_users_by_dn['uid=ecuador0,ou=people,ou=R&D,dc=glpi,dc=org']['name'] ?? null
+        );
+    }
+
     public static function searchForUsersErrorsProvider(): iterable
     {
         // error messages should be identical whether pagesize support is enabled or not
