@@ -1455,7 +1455,8 @@ body.in_modal .kb-article {
     padding: 0.25rem 0.5rem;
     border-radius: var(--tblr-border-radius);
     background: var(--tblr-bg-surface);
-    box-shadow: var(--tblr-box-shadow);
+    border: 1px solid var(--tblr-border-color);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
     font-size: 0.875rem;
     white-space: nowrap;
     overflow: hidden;
@@ -1468,20 +1469,47 @@ body.kb-drag-active {
     user-select: none;
 }
 
+body.kb-drag-refused {
+    cursor: no-drop;
+
+    .kb-drag-ghost {
+        opacity: 0.5;
+    }
+}
+
 [data-glpi-kb-aside-tree] {
+    // Containing block for the insertion line.
+    position: relative;
+
     [data-glpi-kb-drag-source] > .article-line {
         opacity: 0.4;
     }
 
+    // `outline-offset` gives the ring its breathing room without taking layout
+    // space, so the tree never shifts as the target changes.
     [data-glpi-kb-drop-target] > .article-line {
-        outline: 2px solid var(--tblr-primary);
-        outline-offset: 2px;
-        border-radius: var(--tblr-border-radius);
-    }
-
-    ul.kb-tree[data-glpi-kb-drop-target] {
-        outline: 2px dashed var(--tblr-primary);
+        outline: 2px solid var(--tblr-blue);
         outline-offset: 4px;
         border-radius: var(--tblr-border-radius);
+    }
+}
+
+.kb-drag-insert {
+    position: absolute;
+    height: 2px;
+    background: var(--tblr-blue);
+    border-radius: 1px;
+    pointer-events: none;
+
+    // Head dot: keeps a 2px rule legible.
+    &::before {
+        content: "";
+        position: absolute;
+        inset-block-start: -2px;
+        inset-inline-start: -3px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: inherit;
     }
 }
