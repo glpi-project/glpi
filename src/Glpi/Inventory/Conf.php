@@ -479,7 +479,7 @@ class Conf extends CommonGLPI
                 'url'   => Blacklist::getSearchURL(),
                 'label' => Blacklist::getTypeName($plural),
                 'icon'  => Blacklist::getIcon(),
-            ]
+            ],
         ];
 
         TemplateRenderer::getInstance()->display('pages/admin/inventory/conf/config_form.html.twig', [

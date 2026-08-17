@@ -53,7 +53,7 @@
     <div class="col-8 mx-auto mb-3">
         <div class="card">
             <div class="card-header d-flex align-items-center gap-2">
-                <i class="{{ call('ItemVirtualMachine::getIcon') }}" aria-hidden="true"></i>
+                <i class="{{ call('Glpi\\Inventory\\Conf::getIcon') }}" aria-hidden="true"></i>
                 <h3 class="card-title mb-0 fw-bold fs-1">{{ __('Inventory configuration') }}</h3>
             </div>
             <div class="card-body">
@@ -243,7 +243,6 @@
                             field_options|merge({
                                 multiple: true,
                                 values: stale_agents_action_values,
-                                on_change: 'changestatus();'
                             })) }}
 
                     </div>
