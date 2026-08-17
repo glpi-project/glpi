@@ -138,7 +138,7 @@ class PDUTest extends AbstractInventoryAsset
         return [
             [
                 'xml' => self::XML_TWO_PLUGS,
-                'expected' => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","is_deleted":0,"contact":"Schneider Electric Support","firmware":"6.9.6","ips":["192.168.1.50"],"location":"DataCenter_Room_01_Rack_A4","mac":"00:C0:B7:65:DE:01","manufacturer":"APC","model":"AP8853","name":"PDU-MASTER-RACK-A4","serial":"ZA133456789","type":"Pdu","uptime":"45:12:30.22","description":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdu":{"plugs":[{"name":"Server_Blade_01","type":"C15","plugtypes_id":"C15"},{"name":"Storage_SAN_Controller_B","type":"C14","plugtypes_id":"C14"}]},"sysdescr":"APC Rack PDU Switched, 2G, Metered-by-Outlet","locations_id":"DataCenter_Room_01_Rack_A4","pdumodels_id":"AP8853","pdutypes_id":"C13\/C19","manufacturers_id":"APC"}',
+                'expected' => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","is_deleted":0,"contact":"Schneider Electric Support","firmware":"6.9.6","ips":["192.168.1.50"],"location":"DataCenter_Room_01_Rack_A4","mac":"00:C0:B7:65:DE:01","manufacturer":"APC","model":"AP8853","name":"PDU-MASTER-RACK-A4","serial":"ZA133456789","type":"Pdu","uptime":"45:12:30.22","description":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdu":{"plugs":[{"name":"Server_Blade_01","plugtypes_id":"C15"},{"name":"Storage_SAN_Controller_B","plugtypes_id":"C14"}]},"sysdescr":"APC Rack PDU Switched, 2G, Metered-by-Outlet","locations_id":"DataCenter_Room_01_Rack_A4","pdumodels_id":"AP8853","pdutypes_id":"C13\/C19","manufacturers_id":"APC"}',
             ],
         ];
     }

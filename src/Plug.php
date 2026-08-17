@@ -130,7 +130,7 @@ class Plug extends CommonDBRelation
                 [
                     'itemtype_main' => $item::class,
                     'items_id_main' => $item->getID(),
-                    'is_deleted'    => false, // do not dcount deleted item
+                    'is_deleted'    => false, // do not count deleted items
                 ]
             );
         }

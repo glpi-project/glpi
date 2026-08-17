@@ -47,7 +47,7 @@ class Plug extends InventoryAsset
             foreach ($val as $plug_values) {
                 if (property_exists($plug_values, 'type')) {
                     $plug_values->plugtypes_id = $plug_values->type;
-                    unset($value->type);
+                    unset($plug_values->type);
                 }
                 $plug_list[] = $plug_values;
             }
@@ -65,7 +65,7 @@ class Plug extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return Plug::class;
+        return GlobalPlug::class;
     }
 
 
@@ -81,7 +81,7 @@ class Plug extends InventoryAsset
 
         // handle each plug from inventory
         foreach ($this->data as $val) {
-            $name = $val->name ?? $val->number ?? ''; // rely to number as Glpi-Agent
+            $name = (string) ($val->name ?? $val->number ?? ''); // rely to number as Glpi-Agent
             $val->is_dynamic              = 1;
             $val->autoupdatesystems_id    = $this->item->fields['autoupdatesystems_id'];
             $val->entities_id             = $this->item->fields['entities_id'];
