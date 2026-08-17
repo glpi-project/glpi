@@ -2570,6 +2570,64 @@ HTML,
         $this->assertContains($root_id, $this->getVisibleArticleIds());
     }
 
+    public function testRootArticleIsEditableWithoutVisibilityRules(): void
+    {
+        // A profile that can update the knowledge base but is not a KB admin.
+        $this->login('tech', 'tech');
+        $this->assertFalse(Session::haveRight('knowbase', KnowbaseItem::KNOWBASEADMIN));
+        $this->assertTrue(Session::haveRight('knowbase', UPDATE));
+
+        $root_id = KnowbaseItem::getRootId();
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+
+        $this->assertTrue($root->canUpdateItem());
+        $this->assertTrue($root->can($root_id, UPDATE));
+    }
+
+    public function testRootArticleHasNoVisibilityRelatedActions(): void
+    {
+        $this->login();
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+        $labels = $this->getEditorActionLabels($root);
+
+        // Visibility rules have no effect on the root article, and scheduling it
+        // out of sight would leave the article tree headless.
+        $this->assertNotContains('Permissions', $labels);
+        $this->assertNotContains('Schedule visibility', $labels);
+
+        // The other actions of the same block are untouched.
+        $this->assertContains('Service catalog', $labels);
+        $this->assertContains('History', $labels);
+
+        // Sanity check: a regular article offers both.
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Article ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $labels = $this->getEditorActionLabels($other);
+        $this->assertContains('Permissions', $labels);
+        $this->assertContains('Schedule visibility', $labels);
+    }
+
+    /**
+     * Labels of the actions offered by the article editor's dots menu.
+     *
+     * @return string[]
+     */
+    private function getEditorActionLabels(KnowbaseItem $article): array
+    {
+        return array_map(
+            static fn(EditorAction $action): string => $action->label,
+            array_filter(
+                $this->callPrivateMethod($article, 'getEditorActions'),
+                static fn(object $action): bool => $action instanceof EditorAction,
+            ),
+        );
+    }
+
     public function testRootArticleIsNotPartOfTheFaq(): void
     {
         // A self-service user, allowed to read the FAQ but not the knowledge base.

@@ -185,6 +185,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function canUpdateItem(): bool
     {
+        // The root article is the entry point of the knowledge base: everyone
+        // allowed to update the knowledge base can edit it, it has no visibility
+        // rules of its own (see `canViewItem()`).
+        if ($this->isRoot()) {
+            return Session::haveRightsOr(self::$rightname, [UPDATE, self::KNOWBASEADMIN]);
+        }
+
         // Personal knowbase or visibility and write access
         return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
               || (Session::getCurrentInterface() === "central"
@@ -1507,29 +1514,32 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
 
-            $label = __('Permissions');
-            $icon  = "ti ti-lock";
-            $actions[] = new EditorAction(
-                label: $label,
-                icon: $icon,
-                type: EditorActionType::OPEN_MODAL,
-                params: [
-                    'id'    => $this->fields['id'],
-                    'key'   => 'SidePanel/targets',
-                    'title' => $label,
-                    'icon'  => $icon,
-                ],
-            );
-            $actions[] = new EditorAction(
-                label: __('Schedule visibility'),
-                icon: 'ti ti-calendar-clock',
-                type: EditorActionType::OPEN_MODAL,
-                params: [
-                    'id'    => $this->fields['id'],
-                    'key'   => 'SidePanel/schedule-visibility',
-                    'title' => __('Schedule visibility'),
-                ],
-            );
+            // Neither of the two actions below applies to the root article.
+            if (!$this->isRoot()) {
+                $label = __('Permissions');
+                $icon  = "ti ti-lock";
+                $actions[] = new EditorAction(
+                    label: $label,
+                    icon: $icon,
+                    type: EditorActionType::OPEN_MODAL,
+                    params: [
+                        'id'    => $this->fields['id'],
+                        'key'   => 'SidePanel/targets',
+                        'title' => $label,
+                        'icon'  => $icon,
+                    ],
+                );
+                $actions[] = new EditorAction(
+                    label: __('Schedule visibility'),
+                    icon: 'ti ti-calendar-clock',
+                    type: EditorActionType::OPEN_MODAL,
+                    params: [
+                        'id'    => $this->fields['id'],
+                        'key'   => 'SidePanel/schedule-visibility',
+                        'title' => __('Schedule visibility'),
+                    ],
+                );
+            }
         }
 
         // Include base actions that are available for articles in the aside
