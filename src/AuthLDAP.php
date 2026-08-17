@@ -1760,7 +1760,8 @@ TWIG, $twig_params);
      * @param array    $user_infos    user information
      * @param array    $ldap_users    ldap users
      * @param object   $config_ldap   ldap configuration
-     * @param array<string, array<string, mixed>>|null $ldap_users_by_dn LDAP users indexed by DN
+     * @param array<mixed>|null $ldap_users_by_dn LDAP users indexed by DN
+     * @param-out array<mixed>|null $ldap_users_by_dn
      *
      * @return bool
      */
