@@ -188,6 +188,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             [
                 'itemtype'          => User::class,
                 'items_id'          => $post_only_id,
+                'use_notification'  => 1,
             ],
             $actors[0]
         );
