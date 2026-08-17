@@ -160,6 +160,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function canViewItem(): bool
     {
+        // The root article is the entry point of the knowledge base: everyone
+        // allowed to read the knowledge base can view it, it has no visibility
+        // rules of its own. FAQ-only readers are not concerned: the root article
+        // is not part of the FAQ, see `getVisibilityCriteriaFAQ()`.
+        if ($this->isRoot()) {
+            return Session::haveRight(self::$rightname, READ);
+        }
+
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
             return true;
         }
@@ -867,9 +875,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // Inherited visibility: an article is also visible if any of its
         // ancestors is directly visible. Build the inherited term from the
         // direct terms BEFORE appending it (it must not contain itself).
-        $inherited = self::getInheritedVisibilityCondition($direct_or);
+        $criteria = array_merge($direct_or, [self::getInheritedVisibilityCondition($direct_or)]);
 
-        return ['OR' => array_merge($direct_or, [$inherited])];
+        // The root article is the entry point of the knowledge base: everyone
+        // allowed to read the knowledge base sees it, it has no visibility rules
+        // of its own. Appended after the inherited term on purpose, see
+        // `getInheritedVisibilityCondition()` for why it must not seed it.
+        $root_id = self::getConfiguredRootId();
+        if ($root_id > 0) {
+            $criteria[] = [self::getTableField('id') => $root_id];
+        }
+
+        return ['OR' => $criteria];
     }
 
     /**
@@ -887,11 +904,23 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         global $DB;
 
         // Seed: ids of directly-visible articles (self-contained subquery).
+        $seed_where = ['OR' => $direct_or];
+
+        // The root article is the ancestor of every article: were it part of the
+        // seed, the whole knowledge base would inherit its visibility.
+        $root_id = self::getConfiguredRootId();
+        if ($root_id > 0) {
+            $seed_where = [
+                $seed_where,
+                ['NOT' => [self::getTableField('id') => $root_id]],
+            ];
+        }
+
         $seed = new QuerySubQuery([
             'SELECT'    => self::getTableField('id'),
             'FROM'      => self::getTable(),
             'LEFT JOIN' => self::getVisibilityCriteriaCommonJoin(true),
-            'WHERE'     => ['OR' => $direct_or],
+            'WHERE'     => $seed_where,
         ]);
 
         // GLPI's iterator emits `?` placeholders and keeps the bound values

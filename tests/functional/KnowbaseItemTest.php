@@ -2542,6 +2542,140 @@ HTML,
         );
     }
 
+    public function testRootArticleIsReadableWithoutVisibilityRules(): void
+    {
+        // A profile that can read the knowledge base but is not a KB admin, as
+        // admins bypass every visibility check.
+        $this->login('tech', 'tech');
+        $this->assertFalse(Session::haveRight('knowbase', KnowbaseItem::KNOWBASEADMIN));
+
+        $root_id = KnowbaseItem::getRootId();
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+
+        // Premise: the root article has no visibility rule whatsoever.
+        $visibility_tables = [
+            'glpi_entities_knowbaseitems',
+            'glpi_groups_knowbaseitems',
+            'glpi_knowbaseitems_profiles',
+            'glpi_knowbaseitems_users',
+        ];
+        foreach ($visibility_tables as $table) {
+            $this->assertEquals(0, countElementsInTable($table, ['knowbaseitems_id' => $root_id]));
+        }
+
+        // It is readable anyway, and listed among the visible articles.
+        $this->assertTrue($root->canViewItem());
+        $this->assertTrue($root->can($root_id, READ));
+        $this->assertContains($root_id, $this->getVisibleArticleIds());
+    }
+
+    public function testRootArticleIsNotPartOfTheFaq(): void
+    {
+        // A self-service user, allowed to read the FAQ but not the knowledge base.
+        $this->login('post-only', 'postonly');
+        $this->assertFalse(Session::haveRight('knowbase', READ));
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+
+        // The root article is the entry point of the knowledge base, not a FAQ
+        // article: it must not show up in the FAQ nor in the service catalog.
+        $this->assertFalse($root->canViewItem());
+        $this->assertNotContains(KnowbaseItem::getRootId(), $this->getVisibleArticleIds());
+    }
+
+    public function testRootArticleDoesNotMakeItsChildrenVisible(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        // Three articles authored by someone else and without any visibility rule
+        // of their own: only inheritance can make them visible.
+        $child_of_root = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child of root ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$root_id],
+        ]);
+        $visible_parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Visible parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$root_id],
+        ]);
+        $child_of_visible = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child of visible parent ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$visible_parent->getID()],
+        ]);
+
+        $this->login('tech', 'tech');
+        (new KnowbaseItem_User())->add([
+            'knowbaseitems_id' => $visible_parent->getID(),
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        $visible = $this->getVisibleArticleIds();
+        $this->assertContains($root_id, $visible);
+
+        // Inheriting from a regular ancestor still works...
+        $this->assertContains($child_of_visible->getID(), $visible);
+
+        // ... but the root article, being the ancestor of everything, never
+        // grants access to its descendants.
+        $this->assertNotContains($child_of_root->getID(), $visible);
+        $this->assertFalse((new KnowbaseItem())->can($child_of_root->getID(), READ));
+    }
+
+    public function testVisibilityRulesSetOnTheRootArticleDoNotCascade(): void
+    {
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $child_of_root = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child of root ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$root_id],
+        ]);
+
+        // An administrator may add visibility rules to the root article like to
+        // any other one. Doing so must not open the whole knowledge base.
+        $this->login('tech', 'tech');
+        (new KnowbaseItem_User())->add([
+            'knowbaseitems_id' => $root_id,
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        $visible = $this->getVisibleArticleIds();
+        $this->assertContains($root_id, $visible);
+        $this->assertNotContains($child_of_root->getID(), $visible);
+    }
+
+    /**
+     * Ids of the articles the current user is allowed to see.
+     *
+     * @return int[]
+     */
+    private function getVisibleArticleIds(): array
+    {
+        global $DB;
+
+        $criteria = array_merge(KnowbaseItem::getVisibilityCriteria(false), [
+            'SELECT' => KnowbaseItem::getTableField('id'),
+            'FROM'   => KnowbaseItem::getTable(),
+        ]);
+
+        return array_map(
+            'intval',
+            array_column(iterator_to_array($DB->request($criteria)), 'id'),
+        );
+    }
+
     public function testGetRootIdFailIfNotConfigured(): void
     {
         global $CFG_GLPI;

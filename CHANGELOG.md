@@ -30,7 +30,7 @@ The present file will list all changes made to the project; according to the
   If your monitoring relies on parsing this string, make sure it can handle the new format.
 - New `errored` property for the cronttask (automatic actions) service in the status checker to indicate the names of the errored actions requiring manual intervention.
 - "Logs purge" tab moved from `Setup > General` to `Setup > Data and Privacy` and renamed to "Historical logs".
-- Knowledge base article visibility now inherits down the tree: a user who can access an article, or any of its ancestors, can view it. **On upgrade, existing categories become invisible until access is granted to them** (which then cascades to their contents).
+- Knowledge base article visibility now inherits down the tree: a user who can access an article, or any of its ancestors, can view it. **On upgrade, existing categories become invisible until access is granted to them** (which then cascades to their contents). The root article is an exception: it is readable by anyone who can read the knowledge base, and it never grants access to its descendants.
 
 ### Deprecated
 
