@@ -45,6 +45,9 @@ export class GlpiKnowbaseAsideDragController
     /** Pointer travel before a drag is armed, so plain clicks still work. */
     static #THRESHOLD_PX = 5;
 
+    /** Share of a row's height, at each end, that means "sibling" not "child". */
+    static #EDGE_BAND_RATIO = 0.25;
+
     /** Distance to the scroll container edge that triggers autoscroll. */
     static #AUTOSCROLL_EDGE_PX = 40;
 
@@ -63,12 +66,14 @@ export class GlpiKnowbaseAsideDragController
     /** @type {HTMLElement|null} Floating label following the pointer. */
     #ghost = null;
 
+    /** @type {HTMLElement|null} Rule showing a sibling drop position. */
+    #insert_line = null;
+
     /**
-     * Current drop target: an article `<li>`, or the root `<ul>` for a drop at
-     * the root level. Null while the pointer is over an invalid target.
-     * @type {HTMLElement|null}
+     * What the current drop would do, or null when it would do nothing.
+     * @type {{row: HTMLElement, mode: 'into'|'before'|'after', to_parent_id: number}|null}
      */
-    #target = null;
+    #intent = null;
 
     /**
      * Article ids of the dragged subtree. Dropping onto any of them creates a
@@ -189,7 +194,7 @@ export class GlpiKnowbaseAsideDragController
         }
 
         this.#ghost.style.transform = `translate(${e.clientX + 8}px, ${e.clientY + 8}px)`;
-        this.#updateTarget(e.clientX, e.clientY);
+        this.#updateIntent(e.clientX, e.clientY);
         this.#updateAutoscroll(e.clientY);
     }
 
@@ -208,6 +213,11 @@ export class GlpiKnowbaseAsideDragController
         this.#ghost.className = 'kb-drag-ghost';
         this.#ghost.textContent = this.#titleOf(this.#dragged);
         document.body.append(this.#ghost);
+
+        this.#insert_line = document.createElement('div');
+        this.#insert_line.className = 'kb-drag-insert';
+        this.#insert_line.hidden = true;
+        this.#tree.append(this.#insert_line);
     }
 
     /**
@@ -242,41 +252,129 @@ export class GlpiKnowbaseAsideDragController
      * @param {number} x
      * @param {number} y
      */
-    #updateTarget(x, y)
+    #updateIntent(x, y)
     {
-        this.#clearTargetMark();
-        this.#target = this.#resolveTarget(x, y);
-        this.#target?.setAttribute('data-glpi-kb-drop-target', '');
+        this.#intent = this.#resolveIntent(x, y);
+        this.#renderIntent(this.#intent);
     }
 
     /**
+     * Null means "this drop changes nothing", whether the pointer sits on a
+     * refused position or outside the tree: both render the refused state.
+     *
      * @param {number} x
      * @param {number} y
-     * @returns {HTMLElement|null}
+     * @returns {{row: HTMLElement, mode: string, to_parent_id: number}|null}
      */
-    #resolveTarget(x, y)
+    #resolveIntent(x, y)
     {
         const element = document.elementFromPoint(x, y);
         if (!element || !this.#tree.contains(element)) {
             return null;
         }
 
-        const row = element.closest('li[data-glpi-kb-article-id]');
+        // Below the list: the empty area reads as "after the last root article".
+        const intent = y > this.#root_list.getBoundingClientRect().bottom
+            ? this.#rootIntent()
+            : this.#bandIntent(y);
 
-        // Inside the tree but on no row: the root drop zone.
-        if (!row) {
-            return this.#parentRowOf(this.#dragged) === null ? null : this.#root_list;
+        return this.#isEffective(intent) ? intent : null;
+    }
+
+    /**
+     * @returns {{row: HTMLElement, mode: string, to_parent_id: number}|null}
+     */
+    #rootIntent()
+    {
+        const last = this.#root_list.lastElementChild;
+        return last === null ? null : { row: last, mode: 'after', to_parent_id: 0 };
+    }
+
+    /**
+     * Rows are hit by vertical distance rather than by `closest()`: the 8px
+     * gaps between lines and the 24px indent gutter belong to the DOM of the
+     * row above, which would otherwise capture drops meant for its neighbour.
+     *
+     * @param {number} y
+     * @returns {{row: HTMLElement, mode: string, to_parent_id: number}|null}
+     */
+    #bandIntent(y)
+    {
+        let row = null;
+        let rect = null;
+        let best = Infinity;
+
+        for (const line of this.#visibleLines()) {
+            const bounds = line.getBoundingClientRect();
+            const distance = Math.max(bounds.top - y, y - bounds.bottom, 0);
+            if (distance < best) {
+                best = distance;
+                row = line.parentElement;
+                rect = bounds;
+            }
+            if (distance === 0) {
+                break;
+            }
         }
 
-        // Self or any article of the dragged subtree would create a cycle.
-        if (this.#forbidden_ids.has(row.dataset.glpiKbArticleId)) {
+        if (row === null) {
             return null;
         }
 
-        // Dropping back onto the parent we were grabbed from changes nothing.
-        // Compared by id, since that parent may be rendered several times.
-        const parent_id = this.#parentRowOf(this.#dragged)?.dataset.glpiKbArticleId ?? null;
-        return row.dataset.glpiKbArticleId === parent_id ? null : row;
+        const band = rect.height * GlpiKnowbaseAsideDragController.#EDGE_BAND_RATIO;
+        if (y < rect.top + band) {
+            return { row, mode: 'before', to_parent_id: this.#parentIdOf(row) };
+        }
+        if (y > rect.bottom - band) {
+            return { row, mode: 'after', to_parent_id: this.#parentIdOf(row) };
+        }
+        return { row, mode: 'into', to_parent_id: Number(row.dataset.glpiKbArticleId) };
+    }
+
+    /**
+     * Header lines of rows that are not hidden inside a collapsed ancestor.
+     *
+     * @returns {HTMLElement[]}
+     */
+    #visibleLines()
+    {
+        const lines = this.#tree.querySelectorAll(
+            'li[data-glpi-kb-article-id] > .article-line'
+        );
+        return [...lines].filter((line) => line.offsetParent !== null);
+    }
+
+    /**
+     * @param {{to_parent_id: number}|null} intent
+     * @returns {boolean}
+     */
+    #isEffective(intent)
+    {
+        if (intent === null) {
+            return false;
+        }
+        // A parent taken from the dragged subtree would close a cycle.
+        if (this.#forbidden_ids.has(String(intent.to_parent_id))) {
+            return false;
+        }
+        return intent.to_parent_id !== this.#currentParentId();
+    }
+
+    /**
+     * @returns {number}
+     */
+    #currentParentId()
+    {
+        return this.#parentIdOf(this.#dragged);
+    }
+
+    /**
+     * @param {HTMLElement} row
+     * @returns {number}
+     */
+    #parentIdOf(row)
+    {
+        return Number(this.#parentRowOf(row)?.dataset.glpiKbArticleId ?? 0);
     }
 
     /**
@@ -290,10 +388,54 @@ export class GlpiKnowbaseAsideDragController
         return row.parentElement?.closest('li[data-glpi-kb-article-id]') ?? null;
     }
 
-    #clearTargetMark()
+    /**
+     * @param {{row: HTMLElement, mode: string}|null} intent
+     */
+    #renderIntent(intent)
+    {
+        this.#clearIntentMarks();
+        document.body.classList.toggle('kb-drag-refused', intent === null);
+
+        if (intent === null) {
+            return;
+        }
+
+        if (intent.mode === 'into') {
+            intent.row.setAttribute('data-glpi-kb-drop-target', '');
+            return;
+        }
+
+        this.#placeInsertLine(intent);
+    }
+
+    /**
+     * The line is placed on the target's own header line, so its horizontal
+     * offset carries the destination level: 24px of indent per depth.
+     *
+     * @param {{row: HTMLElement, mode: string}} intent
+     */
+    #placeInsertLine(intent)
+    {
+        const line = intent.row.querySelector(':scope > .article-line');
+        const rect = line.getBoundingClientRect();
+        const tree_rect = this.#tree.getBoundingClientRect();
+        const edge = intent.mode === 'before' ? rect.top : rect.bottom;
+
+        this.#insert_line.hidden = false;
+        this.#insert_line.style.left =
+            `${rect.left - tree_rect.left + this.#tree.scrollLeft}px`;
+        this.#insert_line.style.width = `${rect.width}px`;
+        this.#insert_line.style.top =
+            `${edge - tree_rect.top + this.#tree.scrollTop}px`;
+    }
+
+    #clearIntentMarks()
     {
         for (const marked of this.#tree.querySelectorAll('[data-glpi-kb-drop-target]')) {
             marked.removeAttribute('data-glpi-kb-drop-target');
+        }
+        if (this.#insert_line !== null) {
+            this.#insert_line.hidden = true;
         }
     }
 
@@ -383,13 +525,13 @@ export class GlpiKnowbaseAsideDragController
 
         const was_dragging = this.#dragging;
         const dragged = this.#dragged;
-        const target = this.#target;
+        const intent = this.#intent;
 
         this.#suppress_next_click = was_dragging;
         this.#teardown(e.pointerId);
 
-        if (was_dragging && target) {
-            this.#commit(dragged, target);
+        if (was_dragging && intent) {
+            this.#commit(dragged, intent);
         }
     }
 
@@ -408,14 +550,17 @@ export class GlpiKnowbaseAsideDragController
             this.#dragged.releasePointerCapture(pointer_id);
         }
 
-        this.#clearTargetMark();
+        this.#clearIntentMarks();
         this.#dragged?.removeAttribute('data-glpi-kb-drag-source');
         this.#ghost?.remove();
+        this.#insert_line?.remove();
         document.body.classList.remove('kb-drag-active');
+        document.body.classList.remove('kb-drag-refused');
 
         this.#ghost = null;
+        this.#insert_line = null;
         this.#dragged = null;
-        this.#target = null;
+        this.#intent = null;
         this.#origin = null;
         this.#armed = false;
         this.#dragging = false;
@@ -427,39 +572,37 @@ export class GlpiKnowbaseAsideDragController
 
     /**
      * @param {HTMLElement} dragged
-     * @param {HTMLElement} target an article `<li>`, or the root `<ul>`
+     * @param {{row: HTMLElement, mode: string, to_parent_id: number}} intent
      */
-    async #commit(dragged, target)
+    async #commit(dragged, intent)
     {
         const id = dragged.dataset.glpiKbArticleId;
         const previous_parent_row = this.#parentRowOf(dragged);
         const from_parent_id = Number(previous_parent_row?.dataset.glpiKbArticleId ?? 0);
-        const to_parent_id = target === this.#root_list
-            ? 0
-            : Number(target.dataset.glpiKbArticleId);
 
         // Exact position to restore should the server refuse the move.
         const previous_list = dragged.parentElement;
         const previous_sibling = dragged.nextElementSibling;
 
-        // The destination row, which is also the new parent unless we dropped
-        // at the root. Read from the target rather than from the moved row,
-        // which may have been removed rather than moved.
-        const new_parent_row = target === this.#root_list ? null : target;
+        const new_parent_row = this.#newParentRowOf(intent);
 
         // Fold state to restore should the server refuse the move.
         const was_collapsed = new_parent_row
             ?.hasAttribute('data-glpi-kb-aside-category-collapsed') ?? false;
 
-        this.#moveInDom(dragged, target);
+        this.#moveInDom(dragged, intent);
         this.#refreshNodeState(previous_parent_row);
         this.#refreshNodeState(new_parent_row);
-        this.#setNodeCollapsed(new_parent_row, false);
+        // Only `into` can land inside a folded subtree; a sibling drop targets
+        // a level that is visible by construction.
+        if (intent.mode === 'into') {
+            this.#setNodeCollapsed(new_parent_row, false);
+        }
 
         try {
             await post(
                 `Knowbase/Aside/Article/${encodeURIComponent(id)}/Move`,
-                { from_parent_id, to_parent_id },
+                { from_parent_id, to_parent_id: intent.to_parent_id },
             );
         } catch {
             // `post()` already raised an error toast. Undo the optimistic move
@@ -468,50 +611,71 @@ export class GlpiKnowbaseAsideDragController
             previous_list.insertBefore(dragged, previous_sibling);
             this.#refreshNodeState(new_parent_row);
             this.#refreshNodeState(previous_parent_row);
-            this.#setNodeCollapsed(new_parent_row, was_collapsed);
+            if (intent.mode === 'into') {
+                this.#setNodeCollapsed(new_parent_row, was_collapsed);
+            }
         }
     }
 
     /**
-     * @param {HTMLElement} dragged
-     * @param {HTMLElement} target
+     * The row that becomes the parent, null at the root level.
+     *
+     * @param {{row: HTMLElement, mode: string}} intent
+     * @returns {HTMLElement|null}
      */
-    #moveInDom(dragged, target)
+    #newParentRowOf(intent)
     {
-        // Duplicate occurrence rule: an article is never rendered twice at the
-        // same place, so a drop that lands where it already shows only drops
-        // the grabbed occurrence. This covers the backend merge (the target
-        // edge already exists) and the root drop of a multi-parent article,
-        // which stays visible under its other parents instead of moving up.
-        if (this.#hasOtherOccurrence(dragged, target)) {
+        return intent.mode === 'into' ? intent.row : this.#parentRowOf(intent.row);
+    }
+
+    /**
+     * @param {HTMLElement} dragged
+     * @param {{row: HTMLElement, mode: string}} intent
+     */
+    #moveInDom(dragged, intent)
+    {
+        const parent_row = this.#newParentRowOf(intent);
+
+        // An article is never rendered twice at the same place, so a drop that
+        // lands where it already shows only drops the grabbed occurrence.
+        if (this.#hasOtherOccurrence(dragged, parent_row)) {
             dragged.remove();
             return;
         }
 
-        const list = target === this.#root_list ? this.#root_list : this.#childListOf(target);
-        list.append(dragged);
+        if (intent.mode === 'into') {
+            this.#childListOf(intent.row).append(dragged);
+            return;
+        }
+
+        intent.row.parentElement.insertBefore(
+            dragged,
+            intent.mode === 'before' ? intent.row : intent.row.nextElementSibling,
+        );
     }
 
     /**
-     * Whether the dragged article is already rendered at the destination: as a
-     * child of the target row, or anywhere else in the tree for a root drop.
+     * Whether the dragged article is already rendered under the destination
+     * parent. At the root the whole tree is scanned: the builder only promotes
+     * articles that have no remaining visible parent, so an occurrence left
+     * anywhere else means this one simply disappears.
      *
      * @param {HTMLElement} dragged
-     * @param {HTMLElement} target
+     * @param {HTMLElement|null} parent_row
      * @returns {boolean}
      */
-    #hasOtherOccurrence(dragged, target)
+    #hasOtherOccurrence(dragged, parent_row)
     {
         const id = dragged.dataset.glpiKbArticleId;
 
-        if (target === this.#root_list) {
+        if (parent_row === null) {
             const rows = this.#tree.querySelectorAll('li[data-glpi-kb-article-id]');
             return [...rows].some(
                 (row) => row.dataset.glpiKbArticleId === id && !dragged.contains(row),
             );
         }
 
-        const list = target.querySelector(':scope > ul');
+        const list = parent_row.querySelector(':scope > ul');
         return [...(list?.children ?? [])].some(
             (row) => row.dataset.glpiKbArticleId === id && row !== dragged,
         );
@@ -548,12 +712,17 @@ export class GlpiKnowbaseAsideDragController
 
     /**
      * The `<ul>` holding a row's children, created when the row was a leaf.
+     * A null row means the root list.
      *
-     * @param {HTMLElement} row
+     * @param {HTMLElement|null} row
      * @returns {HTMLElement}
      */
     #childListOf(row)
     {
+        if (row === null) {
+            return this.#root_list;
+        }
+
         let list = row.querySelector(':scope > ul');
         if (!list) {
             list = document.createElement('ul');
