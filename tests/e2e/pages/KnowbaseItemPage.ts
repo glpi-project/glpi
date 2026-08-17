@@ -854,6 +854,37 @@ export class KnowbaseItemPage extends GlpiPage
         });
     }
 
+    /**
+     * Drops an article on one of a target row's three bands: its edges mean
+     * "become its sibling", its middle "become its child".
+     *
+     * The row is 25.5px tall so each edge band is 6.4px, but the link is inset
+     * by ~2.15px, leaving 4.25px of usable depth: 2px in from the link's own
+     * edge sits in the middle of that margin.
+     */
+    public async doDropOnBand(
+        source_title: string,
+        target_title: string,
+        band: 'top' | 'middle' | 'bottom'
+    ): Promise<void> {
+        const target = this.getAsideArticleTitleLink(target_title);
+        await this.dragToPoint(this.getAsideArticleTitleLink(source_title), async () => {
+            await target.scrollIntoViewIfNeeded();
+            const to = await target.boundingBox();
+            if (to === null) {
+                throw new Error('Cannot drag: target is not visible');
+            }
+
+            const offset = {
+                top: 2,
+                middle: to.height / 2,
+                bottom: to.height - 2,
+            }[band];
+
+            return { x: to.x + to.width / 2, y: to.y + offset };
+        });
+    }
+
     private async dragTo(source: Locator, target: Locator): Promise<void>
     {
         await this.dragToPoint(source, async () => {
