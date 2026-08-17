@@ -59,11 +59,10 @@
             <div class="card-body">
                 <div class="row">
                     <div class="d-flex align-items-center gap-2">
-                        {{ fields.sliderField('enabled_inventory', config['enabled_inventory'], __('Inventory enabled'), 
+                    {{ fields.sliderField('enabled_inventory', config['enabled_inventory'], __('Inventory enabled'),
                         field_options|merge({
                             id: 'enabled_inventory_header',
-                        })
-                    ) }}
+                        })) }}
                     </div>
                 </div>
             </div>
@@ -82,8 +81,7 @@
                     {{ fields.dropdownArrayField('auth_required', config['auth_required'], auth_required_options, __('Authorization header'),
                         field_options|merge({
                             required: true,
-                        })
-                    ) }}
+                        })) }}
                 </div>
                 <div id="oauth_client_hint" class="row" style="display: none;">
                     <div class="col-11 mx-auto mb-3">
@@ -117,8 +115,7 @@
                     {{ fields.textField('basic_auth_login', config['basic_auth_login'], __('Login'),
                         field_options|merge({
                             required: true
-                        })
-                    ) }}
+                        })) }}
                     {{ fields.passwordField('basic_auth_password', basic_auth_password, __('Password'), field_options) }}
                 </div>
             </div>
@@ -153,13 +150,11 @@
                         {{ fields.dropdownField('State', 'states_id_default', config['states_id_default'], __('Default status'),
                             field_options|merge({
                                 toadd: {'-1': __('Do not change')}
-                            })
-                        ) }}
+                            })) }}
                         {{ fields.dropdownNumberField('inventory_frequency', config['inventory_frequency'], __('Inventory frequency (in hours)'),
                             field_options|merge({
                                 min: 1, max: 240
-                            })
-                        ) }}
+                            })) }}
                         {{ fields.dropdownField('Entity', 'entities_id_default', config['entities_id_default']|default(0), __('Default entity'), field_options) }}
                         {{ fields.sliderField('import_monitor_on_partial_sn', config['import_monitor_on_partial_sn'], __('Import monitor on serial partial match'), field_options) }}
                     </div>
@@ -202,14 +197,13 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        {{ fields.sliderField('import_vm', config['import_vm'], __('Import virtual machines'), field_options)}}
+                        {{ fields.sliderField('import_vm', config['import_vm'], __('Import virtual machines'), field_options) }}
                         {{ fields.dropdownField('ComputerType', 'vm_type', config['vm_type'], vm_type_label, field_options) }}
                         {{ fields.sliderField('vm_as_computer', config['vm_as_computer'], __('Create computer for virtual machines'), field_options) }}
                         {{ fields.sliderField('vm_components', config['vm_components'], __('Create components for virtual machines'),
                             field_options|merge({
                                 helper: __('Will attempt to create components from VM information sent from host, do not use if you plan to inventory any VM directly!')
-                            })
-                        )}}
+                            })) }}
                     </div>
                 </div>
             </div>
