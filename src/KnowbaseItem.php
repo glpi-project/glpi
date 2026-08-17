@@ -1066,7 +1066,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $item = getItemForItemtype($options['item_itemtype']);
         if (
             !($item instanceof CommonITILObject)
-            || !$item->getFromDB($options['item_items_id'])
+            || !$item->can($options['item_items_id'], READ)
         ) {
             return;
         }
@@ -1074,13 +1074,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $this->fields['name'] = $item->getField('name');
 
         if (isset($options['_fup_to_kb'])) {
-            $followup = ITILFollowup::getById($options['_fup_to_kb']);
-            if ($followup) {
+            $followup = new ITILFollowup();
+            if ($followup->can($options['_fup_to_kb'], READ)) {
                 $this->fields['answer'] = $followup->getField('content');
             }
         } elseif (isset($options['_task_to_kb'])) {
             $task = $item->getTaskClassInstance();
-            if ($task->getFromDB($options['_task_to_kb'])) {
+            if ($task->can($options['_task_to_kb'], READ)) {
                 $this->fields['answer'] = $task->getField('content');
             }
         } elseif (isset($options['_sol_to_kb'])) {
@@ -1092,7 +1092,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 'items_id' => $item->getID(),
                 ['NOT' => ['status' => CommonITILValidation::REFUSED]],
             ]);
-            if ($found) {
+            if ($found && $solution->can($solution->fields['id'], READ)) {
                 $this->fields['answer'] = $solution->getField('content');
             }
         }
