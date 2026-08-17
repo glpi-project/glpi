@@ -164,6 +164,7 @@
             {% set cat_params = field_options|merge({
                'entity': item.fields['entities_id'],
                'disabled': (not (canupdate or can_requester)),
+               'container_id': 'category_field_container' ~ rand,
             }) %}
             {% if item.isNewItem() %}
                {% set cat_params = cat_params|merge({
@@ -522,8 +523,8 @@ $(function() {
 
 var reloadCategory = function() {
     var type = $('[name=type]').val();
-
-    $('#category_block_{{ rand }} .field-container').load(
+   // Target only the category field to avoid conflicts with other field-container elements in the KB
+    $('#category_field_container{{ rand }}').load(
         '{{ path("ajax/dropdownTicketCategories.php") }}',
         {
             'type': type,

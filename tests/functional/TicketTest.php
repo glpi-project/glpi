@@ -1718,6 +1718,76 @@ class TicketTest extends DbTestCase
         $this->checkFormOutput($ticket);
     }
 
+    public function testShowFormFromItemUsesItemEntity(): void
+    {
+        // Arrange: an asset in a sub-entity, while the current (default)
+        // session entity is its parent entity
+        $this->login('glpi', 'glpi');
+
+        $root_entity = $this->getTestRootEntity(only_id: true);
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer used to create a ticket from item',
+            'entities_id' => $item_entity,
+        ]);
+
+        // Active entity is the parent entity (with access to its sub-entities),
+        // which is not the same as the asset's own entity
+        $this->assertTrue(Session::changeActiveEntities($root_entity, true));
+
+        $ticket = new Ticket();
+        $ticket->getEmpty();
+
+        // Act: render form for a new ticket created from the asset
+        ob_start();
+        $ticket->showForm($ticket->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the ticket entity follows the asset entity, not the
+        // currently active session entity
+        $this->assertEquals($item_entity, (int) $ticket->fields['entities_id']);
+        $this->assertNotEquals($root_entity, (int) $ticket->fields['entities_id']);
+    }
+
+    public function testShowFormFromItemIgnoresInaccessibleItemEntity(): void
+    {
+        // Arrange: an asset in an entity the current session has no access to
+        $this->login('glpi', 'glpi');
+
+        $item_entity = getItemByTypeName('Entity', '_test_child_2', true);
+        $computer = $this->createItem(Computer::class, [
+            'name'        => 'A computer in an entity the session cannot access',
+            'entities_id' => $item_entity,
+        ]);
+
+        $active_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        // Restrict the active session to a sibling entity only (no access to
+        // the asset's entity, even though the user's profile is recursive
+        // from a common ancestor)
+        $this->assertTrue(Session::changeActiveEntities($active_entity, false));
+
+        $ticket = new Ticket();
+        $ticket->getEmpty();
+
+        // Act: render form for a new ticket created from the (inaccessible) asset
+        ob_start();
+        $ticket->showForm($ticket->getID(), [
+            '_add_fromitem' => true,
+            'itemtype'      => Computer::class,
+            'items_id'      => [Computer::class => [$computer->getID()]],
+        ]);
+        ob_get_clean();
+
+        // Assert: the ticket falls back to the active session entity, the
+        // asset entity is NOT used since the session has no access to it
+        $this->assertEquals($active_entity, (int) $ticket->fields['entities_id']);
+        $this->assertNotEquals($item_entity, (int) $ticket->fields['entities_id']);
+    }
+
     public function testFormPostOnly()
     {
         $auth = new \Auth();
@@ -4343,6 +4413,76 @@ class TicketTest extends DbTestCase
             'itemtype' => 'Ticket',
             'items_id' => $ticket1,
             'documents_id' => $documents_id,
+        ]));
+    }
+
+    public function testMergeDoesNotTriggerNotifications(): void
+    {
+        global $CFG_GLPI;
+
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $_SESSION['glpiactiveprofile']['interface'] = '';
+        $this->setEntity('Root entity', true);
+
+        $user = getItemByTypeName(User::class, 'tech');
+        $this->createItem(UserEmail::class, [
+            'users_id'    => $user->getID(),
+            'is_default'  => 1,
+            'email'       => 'tech@tech.tech',
+        ]);
+
+        $ticket1 = $this->createItem(Ticket::class, [
+            'name'        => 'merge notif target',
+            'content'     => 'merge notif target',
+            'entities_id' => 0,
+            'status'      => CommonITILObject::INCOMING,
+            '_actors'     => [
+                'requester' => [
+                    ['itemtype' => 'User', 'items_id' => $user->getID(), 'use_notification' => 1],
+                ],
+            ],
+        ])->getID();
+        $ticket2 = $this->createItem(Ticket::class, [
+            'name'        => 'merge notif source',
+            'content'     => 'merge notif source',
+            'entities_id' => 0,
+            'status'      => CommonITILObject::INCOMING,
+        ])->getID();
+
+        $fup = new ITILFollowup();
+        $fup->add([
+            'itemtype'  => 'Ticket',
+            'items_id'  => $ticket2,
+            'content'   => 'source ticket followup',
+        ]);
+
+        $task = new TicketTask();
+        $task->add([
+            'tickets_id' => $ticket2,
+            'content'    => 'source ticket task',
+        ]);
+
+        $status = [];
+        Ticket::merge($ticket1, [$ticket2], $status, [
+            'linktypes'  => ['ITILFollowup', 'TicketTask'],
+            'link_type'  => \CommonITILObject_CommonITILObject::SON_OF,
+        ]);
+        $this->assertSame([$ticket2 => 0], $status);
+
+        // Merging must not queue any "add_followup"/"add_task" notification for the merged-in content
+        $queue = new \QueuedNotification();
+        $this->assertFalse($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket1,
+            'event'    => 'add_followup',
+        ]));
+        $this->assertFalse($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket1,
+            'event'    => 'add_task',
         ]));
     }
 
@@ -8673,6 +8813,48 @@ HTML,
         $this->assertTrue($fn_dropdown_has_id($values['results'], $not_my_tickets_id));
     }
 
+    public function testDropdownValueOrderedByIdForLinkSearch()
+    {
+        $this->login();
+
+        // Names are chosen so that alphabetical order (Alpha, Mid, Zulu) differs
+        // from creation/id order, to distinguish the two sorting strategies.
+        $prefix = $this->getUniqueString();
+        $entities_id = $this->getTestRootEntity(true);
+        $first = $this->createItem(Ticket::class, [
+            'name'        => "$prefix Zulu",
+            'content'     => $prefix,
+            'entities_id' => $entities_id,
+        ]);
+        $second = $this->createItem(Ticket::class, [
+            'name'        => "$prefix Alpha",
+            'content'     => $prefix,
+            'entities_id' => $entities_id,
+        ]);
+        $third = $this->createItem(Ticket::class, [
+            'name'        => "$prefix Mid",
+            'content'     => $prefix,
+            'entities_id' => $entities_id,
+        ]);
+
+        $dropdown_params = [
+            'itemtype'         => Ticket::class,
+            'searchText'       => $prefix,
+            'entity_restrict'  => $entities_id,
+            'page_limit'       => 10,
+        ];
+        $idor = Session::getNewIDORToken(Ticket::class, $dropdown_params);
+        $values = \Dropdown::getDropdownValue($dropdown_params + ['_idor_token' => $idor], false);
+
+        $found_ids = array_column($values['results'], 'id');
+        // Only the 3 tickets created above are expected, sorted by id descending
+        // (most recent first), not alphabetically by name.
+        $this->assertEquals(
+            [$third->getID(), $second->getID(), $first->getID()],
+            $found_ids
+        );
+    }
+
     public function testGetCommonCriteria()
     {
         global $DB;
@@ -10589,4 +10771,84 @@ HTML,
 
         $this->assertSame(255, mb_strlen($ticket->fields['name']));
     }
+
+    public function testGetAssociatedDocumentsOfPrivateTaskWithUnrelatedGroup(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $tech_user_id   = getItemByTypeName(User::class, 'tech', true);
+        $normal_user_id = getItemByTypeName(User::class, 'normal', true);
+
+        // Give the tech profile full visibility on private tasks (seeprivate)
+        // in addition to seeprivategroups
+        $tprofile_id = getItemByTypeName(Profile::class, 'Technician', true);
+        $profile_right = new ProfileRight();
+        $profile_right->getFromDBByCrit([
+            'profiles_id' => $tprofile_id,
+            'name'        => 'task',
+        ]);
+        $this->updateItem(
+            ProfileRight::class,
+            $profile_right->getID(),
+            [
+                'rights' => \CommonITILTask::SEEPUBLIC
+                    + \CommonITILTask::SEEPRIVATE
+                    + \CommonITILTask::SEEPRIVATEGROUPS,
+            ]
+        );
+
+        // Group with no relation at all to the ticket or its tasks
+        $unrelated_group = $this->createItem(Group::class, [
+            'name' => 'Unrelated group',
+        ]);
+        $this->createItem(Group_User::class, [
+            'groups_id' => $unrelated_group->getID(),
+            'users_id'  => $tech_user_id,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => __FUNCTION__,
+            'content'     => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        // Private task neither authored by assigned to nor linked by group to the tech user
+        $task = $this->createItem(TicketTask::class, [
+            'tickets_id'    => $ticket->getID(),
+            'content'       => 'private task unrelated to tech user',
+            'is_private'    => 1,
+            'users_id'      => $normal_user_id,
+            'users_id_tech' => $normal_user_id,
+        ]);
+
+        $doc = $this->createItem(\Document::class, [
+            'name' => 'Doc linked to unrelated private task',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'     => $task->getID(),
+            'itemtype'     => TicketTask::class,
+            'documents_id' => $doc->getID(),
+        ]);
+
+        // Tech user has seeprivate but also belongs to an
+        // unrelated group with seeprivategroups enabled. Merely belonging to that
+        // group must not restrict access to documents they are otherwise allowed to see
+        $this->login('tech', 'tech');
+
+        $doc_crit = $ticket->getAssociatedDocumentsCriteria();
+        $doc_items_iterator = $DB->request([
+            'SELECT' => ['documents_id'],
+            'FROM'   => \Document_Item::getTable(),
+            'WHERE'  => $doc_crit,
+        ]);
+        $found_docs = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs[] = $doc_item['documents_id'];
+        }
+
+        $this->assertContains($doc->getID(), $found_docs);
+    }
+
 }

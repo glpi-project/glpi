@@ -719,11 +719,68 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         ]);
         $this->assertGreaterThan(0, $tickets_id);
 
+        //Must ensure the rule will be applied with _users_id_requester being both an int and an array
+        $tickets_id_2 = $ticket->add([
+            'name'    => 'test manager number 2',
+            'content' => 'test manager number 2',
+            '_users_id_requester' => $user_id,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id_2);
+
         // check manager
         $ticket_user = new \Ticket_User();
         $this->assertTrue(
             $ticket_user->getFromDBByCrit([
                 'tickets_id'    => $tickets_id,
+                'users_id'      => $manager_id,
+                'type'          => \CommonITILActor::OBSERVER,
+            ])
+        );
+
+        $this->assertTrue(
+            $ticket_user->getFromDBByCrit([
+                'tickets_id'    => $tickets_id_2,
+                'users_id'      => $manager_id,
+                'type'          => \CommonITILActor::OBSERVER,
+            ])
+        );
+
+        // Now check with add action type
+        $ruleaction->delete(['id' => $action_id]);
+        $action_id_2 = $ruleaction->add($action_input = [
+            'rules_id'    => $ruletid,
+            'action_type' => 'append',
+            'field'       => '_users_id_observer',
+            'value'       => 'requester_manager',
+        ]);
+        $this->checkInput($ruleaction, $action_id_2, $action_input);
+
+        $tickets_id_3 = $ticket->add([
+            'name'    => 'test manager number 3',
+            'content' => 'test manager number 3',
+            '_users_id_requester' => $user_id,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id_3);
+
+        $tickets_id_4 = $ticket->add([
+            'name'    => 'test manager number 4',
+            'content' => 'test manager number 4',
+            '_users_id_requester' => [$user_id],
+        ]);
+        $this->assertGreaterThan(0, $tickets_id_4);
+
+        // check manager
+        $this->assertTrue(
+            $ticket_user->getFromDBByCrit([
+                'tickets_id'    => $tickets_id_3,
+                'users_id'      => $manager_id,
+                'type'          => \CommonITILActor::OBSERVER,
+            ])
+        );
+
+        $this->assertTrue(
+            $ticket_user->getFromDBByCrit([
+                'tickets_id'    => $tickets_id_4,
                 'users_id'      => $manager_id,
                 'type'          => \CommonITILActor::OBSERVER,
             ])

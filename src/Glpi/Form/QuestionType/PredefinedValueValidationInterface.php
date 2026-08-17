@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,40 +32,24 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Form\QuestionType;
+
+use Glpi\Form\Question;
+
 /**
- * Manage ComputerAntivirus.
- * @deprecated 11.0.0 Use ItemAntivirus
+ * Question types whose predefined values (set through GET parameters) depend on
+ * the question configuration must implement this interface.
+ *
+ * An invalid predefined value is discarded, leaving the default value that was
+ * configured in the form editor untouched.
  */
-class ComputerAntivirus extends ItemAntivirus
+interface PredefinedValueValidationInterface
 {
-    public static function getTable($classname = null)
-    {
-        return ItemAntivirus::getTable();
-    }
-
-    public function prepareInputForAdd($input)
-    {
-        //add missing itemtype, rename computers_id to items_id
-        $input['itemtype'] = 'Computer';
-        if (isset($input['computers_id'])) {
-            $input['items_id'] = $input['computers_id'];
-            unset($input['computers_id']);
-        }
-
-        return parent::prepareInputForAdd($input);
-    }
-
-    public function prepareInputForUpdate($input)
-    {
-        //add missing itemtype, rename computers_id to items_id
-        if (!isset($input['itemtype'])) {
-            $input['itemtype'] = 'Computer';
-        }
-        if (isset($input['computers_id'])) {
-            $input['items_id'] = $input['computers_id'];
-            unset($input['computers_id']);
-        }
-
-        return parent::prepareInputForUpdate($input);
-    }
+    /**
+     * Check whether a formatted predefined value can be applied to a question.
+     *
+     * @param string   $value    The value returned by `formatPredefinedValue()`
+     * @param Question $question The question the value would be applied to
+     */
+    public function isValidPredefinedValue(string $value, Question $question): bool;
 }

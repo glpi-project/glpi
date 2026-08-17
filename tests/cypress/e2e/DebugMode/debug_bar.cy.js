@@ -65,7 +65,7 @@ describe("Debug Bar", () => {
         cy.get('#debug-toolbar-applet').should('exist').within(() => {
             cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="server_performance"]')
                 .should('exist')
-                .invoke('text').should('match', /\d+\s+ms\s+using\s+[\d.]+\s+MiB/);
+                .invoke('text').should('match', /\d+\s+ms\s+initial,\s+\d+\s+ms\s+total\s+using\s+[\d.]+\s+MiB/);
             cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="server_performance"]').click();
             cy.get('#debug-toolbar-expanded-content').should('be.visible').within(() => {
                 cy.get('.datagrid-title').contains('Initial Execution Time').next().invoke('text').should('match', /\d+\s+ms/);

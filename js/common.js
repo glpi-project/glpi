@@ -1512,7 +1512,10 @@ $(() => {
     // General "copy to clipboard" handler.
     // TODO: refactorate existing code to use this unique handler.
     $(document).on('click', '[data-glpi-clipboard-text]', function() {
-        const text = $(this).data('glpi-clipboard-text');
+        // Read the attribute instead of `.data()`: the value may be updated
+        // dynamically (jQuery caches its data store on first read) and must not
+        // be type-casted (`.data()` would turn a numeric value into a Number).
+        const text = $(this).attr('data-glpi-clipboard-text');
         if (navigator.clipboard === undefined) {
             // The clipboard is not available in non secure environements.
             // See: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
@@ -1726,7 +1729,7 @@ function setupAjaxDropdown(config) {
             url: config.url,
             dataType: 'json',
             type: 'POST',
-            delay: 250,
+            delay: 500,
             data: function (params) {
                 query = params;
                 var data = $.extend({}, config.params, {

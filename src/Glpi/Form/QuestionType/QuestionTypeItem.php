@@ -414,7 +414,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
 
         $name = $item instanceof CommonTreeDropdown
             ? $item->fields['completename']
-            : $item->fields['name'];
+            : $item->getFriendlyName();
 
         // Append additional fields to match what is displayed in renderEndUserTemplate.
         $itemtype = $answer['itemtype'];

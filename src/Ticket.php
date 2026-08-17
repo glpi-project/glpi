@@ -3680,10 +3680,9 @@ JAVASCRIPT;
             return false;
         }
 
-        if (isset($options['_add_fromitem']) && isset($options['itemtype']) && is_a($options['itemtype'], CommonDBTM::class, true)) {
-            $item = new $options['itemtype']();
-            $item->getFromDB($options['items_id'][$options['itemtype']][0]);
-            $options['entities_id'] = $item->fields['entities_id'];
+        $entities_id = $this->getEntitiesIdFromAddFromItemOptions($options);
+        if ($entities_id !== null) {
+            $options['entities_id'] = $entities_id;
         }
 
         $this->restoreInputAndDefaults($ID, $options, null, true);
@@ -5906,6 +5905,7 @@ JAVASCRIPT;
                         'date_mod'        => $ticket->fields['date_mod'],
                         'date'            => $ticket->fields['date_creation'],
                         'sourceitems_id'  => $ticket->getID(),
+                        '_disablenotif'   => true,
                     ];
                     if (!$fup->add($input)) {
                         //Cannot add followup. Abort/fail the merge
@@ -5921,6 +5921,7 @@ JAVASCRIPT;
                             $fup2['items_id'] = $merge_target_id;
                             $fup2['sourceitems_id'] = $id;
                             $fup2['content'] = $fup2['content'];
+                            $fup2['_disablenotif'] = true;
                             unset($fup2['id']);
                             if (!$fup->add($fup2)) {
                                 // Cannot add followup. Abort/fail the merge
@@ -5941,6 +5942,7 @@ JAVASCRIPT;
                             $task2['tickets_id'] = $merge_target_id;
                             $task2['sourceitems_id'] = $id;
                             $task2['content'] = $task2['content'];
+                            $task2['_disablenotif'] = true;
                             unset($task2['id']);
                             unset($task2['uuid']);
                             if (!$task->add($task2)) {
@@ -6063,16 +6065,19 @@ JAVASCRIPT;
                             });
                             foreach ($users as $user) {
                                 $user['tickets_id'] = $merge_target_id;
+                                $user['_disablenotif'] = true;
                                 unset($user['id']);
                                 $tu->add($user);
                             }
                             foreach ($groups as $group) {
                                 $group['tickets_id'] = $merge_target_id;
+                                $group['_disablenotif'] = true;
                                 unset($group['id']);
                                 $gt->add($group);
                             }
                             foreach ($suppliers as $supplier) {
                                 $supplier['tickets_id'] = $merge_target_id;
+                                $supplier['_disablenotif'] = true;
                                 unset($supplier['id']);
                                 $st->add($supplier);
                             }

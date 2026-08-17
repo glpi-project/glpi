@@ -40,6 +40,7 @@ use Glpi\Asset\Capacity\HasPeripheralAssetsCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
 use Monitor;
+use Peripheral;
 use Toolbox;
 
 class Asset_PeripheralAssetTest extends DbTestCase
@@ -94,5 +95,43 @@ class Asset_PeripheralAssetTest extends DbTestCase
 
         $this->assertIsBool($result);
         $this->assertTrue($result);
+    }
+
+    public function testDeletePeripheralDoesNotCallCleanRelationData(): void
+    {
+        $computer = $this->createItem(
+            \Computer::class,
+            [
+                'name'   => 'Le PC',
+                'serial' => 'qqzder45',
+                'entities_id' => 0,
+            ]
+        );
+
+        $periph = $this->createItem(
+            Peripheral::class,
+            [
+                'name' => 'La Souris',
+                'serial' => '12345',
+                'entities_id'  => 0,
+            ]
+        );
+
+        $relation = $this->createItem(
+            Asset_PeripheralAsset::class,
+            [
+                'itemtype_asset' => 'Computer',
+                'items_id_asset' => $computer->getID(),
+                'itemtype_peripheral' => 'Peripheral',
+                'items_id_peripheral' => $periph->getID(),
+            ]
+        );
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+
+        $this->assertTrue($periph->delete(['id' => $periph->getID()], force: true));
+
+        $this->assertTrue($_SESSION['MESSAGE_AFTER_REDIRECT'] === []);
+        $this->assertFalse((new Asset_PeripheralAsset())->getFromDB($relation->getID()));
+
     }
 }

@@ -34,15 +34,21 @@
 
 namespace tests\units\Glpi\Form\QuestionType;
 
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\AbstractQuestionTypeSelectable;
 use Glpi\Form\QuestionType\QuestionTypeRadio;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
-use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Form\QuestionType\AbstractQuestionTypeSelectableTest;
 use Glpi\Tests\FormBuilder;
-use Glpi\Tests\FormTesterTrait;
+use Override;
 
-final class QuestionTypeRadioTest extends DbTestCase
+final class QuestionTypeRadioTest extends AbstractQuestionTypeSelectableTest
 {
-    use FormTesterTrait;
+    #[Override]
+    protected function getQuestionType(): AbstractQuestionTypeSelectable
+    {
+        return new QuestionTypeRadio();
+    }
 
     public function testRadioAnswerIsDisplayedInTicketDescription(): void
     {
@@ -66,5 +72,47 @@ final class QuestionTypeRadioTest extends DbTestCase
             "1) Your favorite software: GLPI again",
             strip_tags($ticket->fields['content']),
         );
+    }
+
+    public function testSinglePredefinedValueIsApplied(): void
+    {
+        $question = $this->createRadioQuestion(default_value: 'glpi');
+
+        $question->setDefaultValueFromParameters([
+            $question->fields['uuid'] => 'still_glpi',
+        ]);
+
+        $this->assertEquals('still_glpi', $question->fields['default_value']);
+    }
+
+    public function testMultiplePredefinedValuesAreIgnored(): void
+    {
+        $question = $this->createRadioQuestion(default_value: 'glpi');
+
+        $question->setDefaultValueFromParameters([
+            $question->fields['uuid'] => 'glpi_again,still_glpi',
+        ]);
+
+        // A radio question can only hold a single value: the ambiguous
+        // parameter must be discarded and the configured default preserved.
+        $this->assertEquals('glpi', $question->fields['default_value']);
+    }
+
+    private function createRadioQuestion(string $default_value): Question
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Your favorite software",
+            type: QuestionTypeRadio::class,
+            default_value: $default_value,
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'glpi'       => 'GLPI',
+                'glpi_again' => 'GLPI again',
+                'still_glpi' => 'Still GLPI',
+            ]))
+        );
+        $form = $this->createForm($builder);
+
+        return Question::getById($this->getQuestionId($form, "Your favorite software"));
     }
 }
