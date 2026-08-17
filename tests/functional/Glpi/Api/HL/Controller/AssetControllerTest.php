@@ -43,6 +43,7 @@ use Glpi\Asset\Asset;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Group;
 use Group_Item;
 use Item_RemoteManagement;
 use OperatingSystem;
@@ -845,5 +846,52 @@ class AssetControllerTest extends HLAPITestCase
         ], [
             'date_creation' => '2026-03-01T10:00:00+00:00',
         ]);
+    }
+
+    public function testComputerGroupUpdate(): void
+    {
+        $this->login();
+        $computers_id = getItemByTypeName(Computer::class, '_test_pc01', true);
+        $groups_id_1 = getItemByTypeName(Group::class, '_test_group_1', true);
+        $groups_id_2 = getItemByTypeName(Group::class, '_test_group_2', true);
+
+        // Test setting groups by an array of IDs
+        $request = new Request('PATCH', '/Assets/Computer/' . $computers_id);
+        $request->setParameter('group', [$groups_id_1]);
+        $request->setParameter('group_tech', [$groups_id_1]);
+        $this->api->call($request, function ($call) use ($groups_id_1) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function (array $content) use ($groups_id_1) {
+                    $this->assertEquals([$groups_id_1], array_column($content['group'], 'id'));
+                    $this->assertEquals([$groups_id_1], array_column($content['group_tech'], 'id'));
+                });
+        });
+
+        // Test setting groups by a single ID (not in array)
+        $request = new Request('PATCH', '/Assets/Computer/' . $computers_id);
+        $request->setParameter('group', $groups_id_2);
+        $request->setParameter('group_tech', $groups_id_2);
+        $this->api->call($request, function ($call) use ($groups_id_2) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function (array $content) use ($groups_id_2) {
+                    $this->assertEquals([$groups_id_2], array_column($content['group'], 'id'));
+                    $this->assertEquals([$groups_id_2], array_column($content['group_tech'], 'id'));
+                });
+        });
+
+        // Test setting multiple groups
+        $request = new Request('PATCH', '/Assets/Computer/' . $computers_id);
+        $request->setParameter('group', [$groups_id_1, $groups_id_2]);
+        $request->setParameter('group_tech', [$groups_id_1, $groups_id_2]);
+        $this->api->call($request, function ($call) use ($groups_id_1, $groups_id_2) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function (array $content) use ($groups_id_1, $groups_id_2) {
+                    $this->assertEquals([$groups_id_1, $groups_id_2], array_column($content['group'], 'id'));
+                    $this->assertEquals([$groups_id_1, $groups_id_2], array_column($content['group_tech'], 'id'));
+                });
+        });
     }
 }

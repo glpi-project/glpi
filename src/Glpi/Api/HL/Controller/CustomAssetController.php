@@ -115,6 +115,7 @@ final class CustomAssetController extends AbstractController
                     'user' => self::getDropdownTypeSchema(class: User::class, field: 'users_id', full_schema: 'User'),
                     'group' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-input-field' => 'groups_id',
                         'items' => [
                             'type' => Doc\Schema::TYPE_OBJECT,
                             'x-full-schema' => 'Group',
@@ -145,6 +146,7 @@ final class CustomAssetController extends AbstractController
                     'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
                     'group_tech' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-input-field' => 'groups_id_tech',
                         'items' => [
                             'type' => Doc\Schema::TYPE_OBJECT,
                             'x-full-schema' => 'Group',
