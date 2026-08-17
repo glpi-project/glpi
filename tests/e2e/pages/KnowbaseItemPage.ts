@@ -545,8 +545,7 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * The root-level container of the aside article tree. Doubles as the
-     * "node" for the root "+" affordance (see `aside.html.twig`).
+     * The root-level container of the aside article tree.
      */
     public get asideTree(): Locator
     {
@@ -561,19 +560,6 @@ export class KnowbaseItemPage extends GlpiPage
     {
         // eslint-disable-next-line playwright/no-raw-locators -- using scope
         return this.asideTree.locator(':scope > [data-glpi-kb-aside-category-header]');
-    }
-
-    /**
-     * The "+" link that creates a root-level article (no parent).
-     */
-    public get asideRootCreateLink(): Locator
-    {
-        return this.page.getByRole('link', { name: 'Create a root article' });
-    }
-
-    public get asideRootCreateInput(): Locator
-    {
-        return this.asideTree.getByPlaceholder('New article...');
     }
 
     public get asideSearchInput(): Locator

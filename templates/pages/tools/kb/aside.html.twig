@@ -209,30 +209,7 @@
     class="card-body"
     data-glpi-kb-aside-tree
     data-testid="aside-tree"
-    {% if can_create %}
-        {#- The tree container doubles as the "node" for the root-level "+"
-         # affordance below, reusing the same collapsible-node DOM contract as
-         # any other article (see AsideController.js `#openCreateInput`,
-         # which walks up to the closest `[data-glpi-kb-aside-category]` and
-         # looks for its direct child `<ul>`). -#}
-        data-glpi-kb-aside-category
-    {% endif %}
 >
-    {% if can_create %}
-        <div class="d-flex align-items-center mb-2" data-glpi-kb-aside-category-header>
-            {% set add_href = path('/front/knowbaseitem.form.php') %}
-            <a
-                href="{{ add_href }}"
-                class="d-flex align-items-center p-1 text-secondary pe-none"
-                data-glpi-kb-aside-category-add
-                aria-label="{{ __('Create a root article') }}"
-                title="{{ __('Create a root article') }}"
-            >
-                <i class="ti ti-plus" aria-hidden="true"></i>
-                <span class="ms-1">{{ __('Create a root article') }}</span>
-            </a>
-        </div>
-    {% endif %}
     <ul class="kb-tree ps-0">
         {% for article in tree.getArticles %}
             {{ macros.render_article(article, can_create, show_actions) }}

@@ -86,53 +86,6 @@ test('the aside "+" opens an inline input under a parent article; an empty submi
     await expect(kb.getAsideCategoryCreateInput(parent_name)).toBeHidden();
 });
 
-test('using the root-level "+" creates an article without a parent', async ({ page, profile, api }) => {
-    await profile.set(Profiles.SuperAdmin);
-    const kb = new KnowbaseItemPage(page);
-
-    const unique = randomUUID().slice(0, 8);
-    const article_title = `E2E Root Article ${unique}`;
-
-    const seed_id = await api.createItem('KnowbaseItem', {
-        name: `Seed ${unique}`,
-        answer: 'Seed content',
-        entities_id: getWorkerEntityId(),
-    });
-
-    await kb.goto(seed_id);
-
-    // The "+" click is intercepted by AsideController (a dynamically
-    // imported module), instead of being a plain <a href> navigation. Wait
-    // for the controller to finish initializing before clicking it, using
-    // the same readiness signal doSearchAside() relies on, otherwise the
-    // click can race the module load and fall through to the browser's
-    // default navigation.
-    await expect(kb.asideSearchInput).not.toHaveClass(/pe-none/);
-
-    await kb.asideRootHeader.hover();
-    await expect(kb.asideRootCreateLink).toBeVisible();
-    await kb.asideRootCreateLink.click();
-
-    // No navigation: the "+" now opens an inline input instead of a full page,
-    // so we are still on the seed article's page.
-    await expect(page).toHaveURL(new RegExp(`id=${seed_id}\\b`));
-    const inline_input = kb.asideRootCreateInput;
-    await expect(inline_input).toBeFocused();
-    await inline_input.fill(article_title);
-    await inline_input.press('Enter');
-
-    await expect(page).toHaveURL(/knowbaseitem\.form\.php\?id=\d+/);
-    await expect(page.getByTestId('subject')).toHaveText(article_title);
-
-    // The new article is visible at the root of the tree, and marked current.
-    // (Its <li> has `role="group"` since article creation is allowed here,
-    // overriding the implicit "listitem" role — locate it by id instead.)
-    const new_id = Number(new URL(page.url()).searchParams.get('id'));
-    const article_row = kb.getAsideTreeArticleRow(new_id);
-    await expect(article_row).toBeVisible();
-    await expect(article_row).toHaveAttribute('aria-current', 'page');
-});
-
 test('hovering a child article does not reveal its parent\'s add-article link', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
