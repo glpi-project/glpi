@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory;
 
+use Blacklist;
 use CommonDevice;
 use CommonGLPI;
 use ComputerType;
@@ -76,7 +77,6 @@ use Printer;
 use Rule;
 use Session;
 use Software;
-use State;
 use Throwable;
 use Toolbox;
 use Unmanaged;
@@ -428,32 +428,13 @@ class Conf extends CommonGLPI
             $action = $config['stale_agents_action'];
         }
 
-        // State dropdowns share a visibility condition computed from inventoried itemtypes.
-        // They are rendered here (instead of through the Twig field macros) to keep the exact
-        // field names expected by saveConf() and avoid extra "_defined" helper inputs.
-        $condition = [];
+        $stale_state_condition = [];
         foreach ($CFG_GLPI['inventory_types'] as $inv_type) {
             $inv_item = getItemForItemtype($inv_type);
             if ($inv_item instanceof StateInterface) {
-                $condition[] = $inv_item->getStateVisibilityCriteria();
+                $stale_state_condition[] = $inv_item->getStateVisibilityCriteria();
             }
         }
-        $stale_status_condition_dropdown = State::dropdown([
-            'name'      => 'stale_agents_status_condition[]',
-            'value'     => importArrayFromDB($config['stale_agents_status_condition'] ?? json_encode(['all'])),
-            'multiple'  => true,
-            'toadd'     => ['all' => __('All')],
-            'condition' => $condition,
-            'display'   => false,
-        ]);
-        $stale_status_dropdown = State::dropdown([
-            'name'      => 'stale_agents_status',
-            'value'     => $config['stale_agents_status'] ?? 0,
-            'entity'    => $_SESSION['glpiactive_entity'],
-            'toadd'     => [-1 => __('No change')],
-            'condition' => $condition,
-            'display'   => false,
-        ]);
 
         // Fields provided by plugins through the stale agent config hook
         $plugin_fields = [];
@@ -495,6 +476,11 @@ class Conf extends CommonGLPI
                 'label' => NetworkPortType::getTypeName($plural),
                 'icon'  => NetworkPort::getIcon(),
             ],
+            [
+                'url'   => Blacklist::getSearchURL(),
+                'label' => Blacklist::getTypeName($plural),
+                'icon'  => Blacklist::getIcon(),
+            ],
         ];
 
         TemplateRenderer::getInstance()->display('pages/admin/inventory/conf/config_form.html.twig', [
@@ -507,8 +493,9 @@ class Conf extends CommonGLPI
             'component_toggles'               => $component_toggles,
             'stale_agents_actions'            => self::getStaleAgentActions(),
             'stale_agents_action_values'      => importArrayFromDB($action),
-            'stale_status_condition_dropdown' => $stale_status_condition_dropdown,
-            'stale_status_dropdown'           => $stale_status_dropdown,
+            'stale_state_condition'                 => $stale_state_condition,
+            'stale_agents_status_value'             => $config['stale_agents_status'] ?? 0,
+            'stale_agents_status_condition_value'   => importArrayFromDB($config['stale_agents_status_condition'] ?? json_encode(['all'])),
             'plugin_fields'                   => $plugin_fields,
             'related_configs'                 => $related_configs,
             'oauth_client_form_url'           => OAuthClient::getFormURL(),
