@@ -71,7 +71,6 @@ use NetworkPort;
 use NetworkPortType;
 use OAuthClient;
 use Override;
-use PDU;
 use Peripheral;
 use Plugin;
 use Printer;

@@ -22898,12 +22898,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PDU.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method PDU\\:\\:getCloneRelations\\(\\) return type has no value type specified in iterable type array\\<mixed\\>\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/PDU.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method PDU\\:\\:getMostRecentAgent\\(\\) has parameter \\$conditions with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
