@@ -156,7 +156,7 @@ class Tag extends CommonDropdown
     }
 
     /**
-     * Check that no tag with the same name exists in a visible entity.
+     * Check that no tag with the same name exists, regardless of entity.
      *
      * @param array<string, mixed> $input
      * @return bool
@@ -167,16 +167,27 @@ class Tag extends CommonDropdown
             'name' => $input['name'],
             ['id'  => ['<>', $this->getID()]],
         ];
-        $criteria += getEntitiesRestrictCriteria(
-            $this->getTable(),
-            '',
-            $input['entities_id'],
-            $this->maybeRecursive()
-        );
-
         $tags = $this->find($criteria);
 
         return count($tags) === 0;
+    }
+
+    /**
+     * Get the tag with the given name.
+     *
+     * @param string $name
+     * @return Tag|null
+     */
+    public function getTagByName(string $name): ?Tag
+    {
+        $tag = new self();
+        $tag_found = $tag->getFromDBByCrit([
+            'name' => $name,
+        ]);
+        if (!$tag_found) {
+            return null;
+        }
+        return $tag;
     }
 
     /**
@@ -191,13 +202,13 @@ class Tag extends CommonDropdown
             return false;
         }
 
-        if (empty($input['entities_id'])) {
+        if (!isset($input['entities_id'])) {
             $input['entities_id'] = Session::getActiveEntity();
         }
 
         if (empty($input['name'])) {
             Session::addMessageAfterRedirect(
-                htmlescape(sprintf(__s('%1$s cannot be empty!'), static::getTypeName())),
+                __s('The tag name cannot be empty!'),
                 false,
                 ERROR
             );
@@ -205,8 +216,12 @@ class Tag extends CommonDropdown
         }
 
         if (!$this->isUnique($input)) {
+            $conflicting_tag = $this->getTagByName($input['name']);
             Session::addMessageAfterRedirect(
-                htmlescape(sprintf(__s('%1$s must be unique!'), static::getTypeName(1))),
+                htmlescape(sprintf(
+                    __('A tag with this name already exists in entity "%s"! Transfter the tag to another entity or change its name.'),
+                    Dropdown::getDropdownName(Entity::getTable(), $conflicting_tag->fields['entities_id'])
+                )),
                 false,
                 ERROR
             );
@@ -230,7 +245,7 @@ class Tag extends CommonDropdown
             return false;
         }
 
-        if (empty($input['entities_id'])) {
+        if (!isset($input['entities_id'])) {
             $input['entities_id'] = $this->fields['entities_id'];
         }
 
@@ -239,8 +254,12 @@ class Tag extends CommonDropdown
         }
 
         if (!$this->isUnique($input)) {
+            $conflicting_tag = $this->getTagByName($input['name']);
             Session::addMessageAfterRedirect(
-                htmlescape(sprintf(__s('%1$s must be unique!'), static::getTypeName(1))),
+                htmlescape(sprintf(
+                    __('A tag with this name already exists in entity "%s"! Transfter the tag to another entity or change its name.'),
+                    Dropdown::getDropdownName(Entity::getTable(), $conflicting_tag->fields['entities_id'])
+                )),
                 false,
                 ERROR
             );
@@ -314,6 +333,9 @@ class Tag extends CommonDropdown
      */
     public function showForm($ID, array $options = []): bool
     {
+        if ($this->isNewID($ID)) {
+            $options += $this->restoreInput();
+        }
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/setup/tag.html.twig', [
             'item' => $this,

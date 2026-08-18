@@ -39,6 +39,27 @@ class Tag_Itemtype extends CommonDBChild
     public static string $items_id = 'tags_id';
 
     /**
+     * @param array<string, mixed> $input
+     * @return false|array<string, mixed>
+     */
+    public function prepareInputForAdd($input)
+    {
+        global $CFG_GLPI;
+
+        $input = parent::prepareInputForAdd($input);
+
+        if (!is_array($input)) {
+            return false;
+        }
+
+        if (!isset($input['itemtype']) || !in_array($input['itemtype'], $CFG_GLPI['taggable_types'], true)) {
+            return false;
+        }
+
+        return $input;
+    }
+
+    /**
      * Get itemtypes for a given tag
      *
      * @param Tag $tag Tag for which itemtypes must be retrieved
@@ -66,14 +87,34 @@ class Tag_Itemtype extends CommonDBChild
     {
         global $DB;
 
-        $DB->delete(
-            self::getTable(),
-            [
+        $tag_itemtype = new self();
+        $legacy_prefix = 'Plugin' . ucfirst($plugin_directory);
+        $namespace_prefix = 'GlpiPlugin\\' . ucfirst($plugin_directory) . '\\';
+
+        $iterator = $DB->request([
+            'SELECT' => ['id', 'itemtype'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
                 'OR' => [
-                    ['itemtype'  => ['LIKE', "%Plugin$plugin_directory%"]],
+                    ['itemtype'  => ['LIKE', '%' . $legacy_prefix . '%']],
                     ['itemtype'  => ['LIKE', 'GlpiPlugin\\\\' . ucfirst($plugin_directory) . '\\\\%']],
                 ],
-            ]
-        );
+            ],
+        ]);
+
+        foreach ($iterator as $row) {
+            $itemtype = $row['itemtype'];
+
+            // Check if the itemtype is a legacy plugin class or a namespaced plugin class
+            $is_legacy_class = str_starts_with($itemtype, $legacy_prefix)
+                && ctype_upper($itemtype[strlen($legacy_prefix)]);
+            $is_namespace = str_starts_with($itemtype, $namespace_prefix);
+
+            if ($is_legacy_class || $is_namespace) {
+                $tag_itemtype->delete([
+                    'id' => $row['id'],
+                ], true);
+            }
+        }
     }
 }

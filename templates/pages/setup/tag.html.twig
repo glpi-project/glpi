@@ -33,7 +33,8 @@
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{% set generate_bg_color = item.generateBackgroundColor(random()) %}
+{% set generate_bg_color = params.bg_color ?? item.generateBackgroundColor(random()) %}
+{% set generate_color = params.color ?? item.generateTextColor(generate_bg_color) %}
 {% set preview_id = 'tag_preview_' ~ random() %}
 
 {% block more_fields %}
@@ -43,15 +44,15 @@
         values: item.getItemtypes(),
     }) }}
     {{ fields.colorField('bg_color', item.isNewItem() ? generate_bg_color : item.getBackgroundColor(), __('Background Color')) }}
-    {{ fields.colorField('color', item.isNewItem() ? item.generateTextColor(generate_bg_color) : item.getTextColor(), __('Color')) }}
+    {{ fields.colorField('color', item.isNewItem() ? generate_color : item.getTextColor(), __('Color')) }}
 
     {{ fields.smallTitle(__('Preview')) }}
 
     <div class="col-12 mt-2">
         <div class="card-body d-flex align-items-center justify-content-center py-4">
             <span id="{{ preview_id }}" class="badge fs-4 py-2 px-3"
-                    style="background-color: {{ item.isNewItem() ? generate_bg_color : item.getBackgroundColor() }}; color: {{ item.isNewItem() ? item.generateTextColor(generate_bg_color) : item.getTextColor() }};">
-                {{ item.isNewItem() ? __('Tag preview') : item.fields['name'] }}
+                    style="background-color: {{ item.isNewItem() ? generate_bg_color : item.getBackgroundColor() }}; color: {{ item.isNewItem() ? generate_color : item.getTextColor() }};">
+                {{ item.fields['name'] ? item.fields['name'] : __('Tag preview') }}
             </span>
         </div>
     </div>

@@ -2819,15 +2819,6 @@ class Toolbox
 
 
     /**
-     * Get a fixed hex color for a input string
-     * Inpsired by shahonseven/php-color-hash
-     * @since 9.5
-     *
-     * @param string $str
-     *
-     * @return string hex color (ex #FAFAFA)
-     */
-    /**
      * Check if the given string is a valid hexadecimal color code.
      * Accepts 3 or 6 digit hex colors.
      *
@@ -2842,6 +2833,15 @@ class Toolbox
         return preg_match('/^#[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?$/', $color) === 1;
     }
 
+    /**
+     * Get a fixed hex color for a input string
+     * Inpsired by shahonseven/php-color-hash
+     * @since 9.5
+     *
+     * @param string $str
+     *
+     * @return string hex color (ex #FAFAFA)
+     */
     public static function getColorForString(string $str = ""): string
     {
         $seed  = 131;

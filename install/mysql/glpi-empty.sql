@@ -10598,10 +10598,10 @@ CREATE TABLE `glpi_tags` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`entities_id`,`name`),
+  UNIQUE KEY `name` (`name`),
+  KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `is_active` (`is_active`),
-  KEY `name` (`name`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

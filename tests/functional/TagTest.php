@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Computer;
+use Dropdown;
 use Entity;
 use Glpi\Form\Category;
 use Glpi\SocketModel;
@@ -420,24 +421,34 @@ class TagTest extends DbTestCase
             'entities_id' => $root_entity_id,
         ]);
         $this->assertFalse($result);
-        $this->hasSessionMessages(ERROR, ['Tag must be unique!']);
+        $this->hasSessionMessages(ERROR, [htmlescape(sprintf(
+            'A tag with this name already exists in entity "%s"! Transfter the tag to another entity or change its name.',
+            Dropdown::getDropdownName(Entity::getTable(), $root_entity_id)
+        ))]);
 
         // Updating the tag with its own name must still be allowed
         $this->updateTag($tag, [
             'name'        => 'Unique Tag Name',
             'entities_id' => $root_entity_id,
         ]);
+        $this->deleteItem(Tag::class, $tag->getID());
 
         // Check if creating a tag with the same name in a child entity fails
-        $this->createTag([
+        $duplicate_tag =$this->createTag([
             'name'         => 'Duplicate Tag Name',
             'entities_id'  => $root_entity_id,
             'is_recursive' => 0,
         ]);
-        $this->createTag([
+        $result = $tag_duplicate->add([
             'name'        => 'Duplicate Tag Name',
             'entities_id' => $child_entity->getID(),
         ]);
+        $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, [htmlescape(sprintf(
+            'A tag with this name already exists in entity "%s"! Transfter the tag to another entity or change its name.',
+            Dropdown::getDropdownName(Entity::getTable(), $root_entity_id)
+        ))]);
+        $this->deleteItem(Tag::class, $duplicate_tag->getID());
 
         // Check if creating a tag with the same name in a child entity fails
         // when the parent tag is recursive
@@ -452,8 +463,10 @@ class TagTest extends DbTestCase
             'name'        => 'Recursive Tag Name',
             'entities_id' => $child_entity->getID(),
         ]));
-        $this->hasSessionMessages(ERROR, ['Tag must be unique!']);
-
+        $this->hasSessionMessages(ERROR, [htmlescape(sprintf(
+            'A tag with this name already exists in entity "%s"! Transfter the tag to another entity or change its name.',
+            Dropdown::getDropdownName(Entity::getTable(), $root_entity_id)
+        ))]);
         $this->deleteItem(Tag::class, $recursive_tag->getID());
     }
 
@@ -467,14 +480,20 @@ class TagTest extends DbTestCase
             '_itemtypes' => [Computer::class, TesterComputer::class],
         ]);
 
-        // Insert a legacy-style plugin class directly (bypasses taggable_types validation)
-        $this->createItem(Tag_Itemtype::class, [
+        // Insert legacy-style plugin classes directly in DB, since they are not
+        // part of taggable_types and would be rejected by prepareInputForAdd()
+        global $DB;
+        $DB->insert(Tag_Itemtype::getTable(), [
             'tags_id'  => $tag->getID(),
             'itemtype' => 'PluginTesterComputer',
         ]);
+        $DB->insert(Tag_Itemtype::getTable(), [
+            'tags_id'  => $tag->getID(),
+            'itemtype' => 'PluginTesterrComputer',
+        ]);
 
         $tag_itemtype = new Tag_Itemtype();
-        $this->assertCount(3, $tag_itemtype->find(['tags_id' => $tag->getID()]));
+        $this->assertCount(4, $tag_itemtype->find(['tags_id' => $tag->getID()]));
 
         // Simulate plugin uninstall
         Tag_Itemtype::deleteForItemtype('tester');
@@ -483,10 +502,11 @@ class TagTest extends DbTestCase
         $remaining           = $tag_itemtype->find(['tags_id' => $tag->getID()]);
         $remaining_itemtypes = array_column($remaining, 'itemtype');
 
-        $this->assertCount(1, $remaining);
+        $this->assertCount(2, $remaining);
         $this->assertContains(Computer::class, $remaining_itemtypes);
         $this->assertNotContains(TesterComputer::class, $remaining_itemtypes);
         $this->assertNotContains('PluginTesterComputer', $remaining_itemtypes);
+        $this->assertContains('PluginTesterrComputer', $remaining_itemtypes);
     }
 
     /**
