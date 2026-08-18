@@ -45,6 +45,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Safe\file_get_contents;
+
 final class LicenceHeadersCheckCommand extends AbstractCommand
 {
     /**

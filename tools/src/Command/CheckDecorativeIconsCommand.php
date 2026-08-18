@@ -45,6 +45,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Safe\file_get_contents;
+
 /**
  * Icon fonts expose their glyph through a CSS `::before { content: "\eXXX" }` rule. The accessible
  * name computation includes pseudo-element content, so a decorative icon placed inside an element
@@ -156,9 +158,7 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
         $failed_files = [];
 
         foreach ($this->getFilesToParse($directories) as $filename) {
-            if (($contents = file_get_contents($filename)) === false) {
-                throw new \RuntimeException(sprintf('Unable to read file "%s".', $filename));
-            }
+            $contents = file_get_contents($filename);
 
             $icons = $this->findIconsToReport($contents);
             if ($icons === []) {
