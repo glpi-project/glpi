@@ -256,8 +256,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      */
     public function isRoot(): bool
     {
-        $id = (int) ($this->fields['id'] ?? 0);
+        return self::isRootId((int) ($this->fields['id'] ?? 0));
+    }
 
+    /**
+     * Whether the given article id is the root article's one, see `getRootId()`.
+     */
+    public static function isRootId(int $id): bool
+    {
         // Compared to the raw configuration value instead of `getRootId()`: this
         // method is called from rights checks, which must not fail on an
         // installation that has no root article (no article is the root then).

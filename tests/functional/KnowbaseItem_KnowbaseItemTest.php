@@ -124,6 +124,25 @@ final class KnowbaseItem_KnowbaseItemTest extends DbTestCase
             'with_message' => "An article cannot be its own parent.",
         ];
 
+        // The root article is the base of the tree
+        yield "The root article cannot be given a parent" => [
+            'tree' => $tree,
+            'input' => [
+                'knowbaseitems_id' => KnowbaseItem::getRootId(),
+                'knowbaseitems_id_parent' => "Article A",
+            ],
+            'expected' => false,
+            'with_message' => "The root article of the knowledge base cannot have a parent.",
+        ];
+        yield "The root article can be a parent" => [
+            'tree' => $tree,
+            'input' => [
+                'knowbaseitems_id' => "Article A",
+                'knowbaseitems_id_parent' => KnowbaseItem::getRootId(),
+            ],
+            'expected' => true,
+        ];
+
         // Cyclic graph prevention
         yield "Can't link to direct parent" => [
             'tree' => $tree,
@@ -230,6 +249,17 @@ final class KnowbaseItem_KnowbaseItemTest extends DbTestCase
             ],
             'expected' => false,
             'with_message' => "An article cannot be its own parent.",
+        ];
+
+        // The root article is the base of the tree
+        yield "An existing link cannot be moved onto the root article" => [
+            'tree' => $tree,
+            'input' => [
+                'id' => 'Article A > Article A1',
+                'knowbaseitems_id' => KnowbaseItem::getRootId(),
+            ],
+            'expected' => false,
+            'with_message' => "The root article of the knowledge base cannot have a parent.",
         ];
 
         // Cyclic graph prevention
