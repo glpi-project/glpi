@@ -452,8 +452,16 @@ class Contract extends CommonDBTM implements StateInterface
             'renewal' => htmlescape(self::getContractRenewalName((int) $values[$field])),
             '_virtual_expiration' => Infocom::getWarrantyExpir(
                 $values['begin_date'],
-                $values['renewal'] == self::RENEWAL_EXPRESS ? $values['duration'] + $values['periodicity'] : $values['duration'],
+                $values['duration'],
                 0,
+                true,
+                (int) $values['renewal'] === self::RENEWAL_TACIT,
+                $values['periodicity']
+            ),
+            '_virtual_expire_notice' => Infocom::getWarrantyExpir(
+                $values['begin_date'],
+                $values['duration'],
+                $values['notice'],
                 true,
                 (int) $values['renewal'] === self::RENEWAL_TACIT,
                 $values['periodicity']
@@ -661,19 +669,21 @@ class Contract extends CommonDBTM implements StateInterface
         $tab[] = [
             'id'                 => '13',
             'table'              => static::getTable(),
-            'field'              => 'expire_notice',
-            'name'               => __('Expiration date + notice'),
-            'datatype'           => 'date_delay',
-            'datafields'         => [
-                '1'                  => 'begin_date',
-                '2'                  => 'duration',
-                '3'                  => 'notice',
+            'field'              => '_virtual_expire_notice', // virtual field
+            'additionalfields'   => [
+                'begin_date',
+                'duration',
+                'renewal',
+                'notice',
+                'periodicity',
             ],
-            'searchunit'         => 'DAY',
-            'delayunit'          => 'MONTH',
-            'maybefuture'        => true,
+            'name'               => __('Expiration date + notice'),
+            'datatype'           => 'specific',
+            'nosearch'           => true,
+            'nosort'             => true,
             'massiveaction'      => false,
         ];
+
 
         $tab[] = [
             'id'                 => '16',
@@ -721,6 +731,19 @@ class Contract extends CommonDBTM implements StateInterface
             'joinparams'         => [
                 'jointype'           => 'child',
             ],
+        ];
+
+
+        $tab[] = [
+            'id'            => '73',
+            'table'         =>  Contract_Item::getTable(),
+            'field'         => 'items_id',
+            'name'               => _n('Associated item', 'Associated items', 2),
+            'nosearch'           => true,
+            'massiveaction' => false,
+            'forcegroupby'  =>  true,
+            'additionalfields'   => ['itemtype'],
+            'joinparams'    => ['jointype' => 'child'],
         ];
 
         $tab[] = [
