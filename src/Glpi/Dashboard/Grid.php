@@ -1542,6 +1542,34 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            $cards["ticket_by_category_and_entity"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by category and entity"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryAndEntity",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            foreach (
+                [
+                    'open'  => __("Number of opened tickets by category and type"),
+                    'close' => __("Number of closed tickets by category and type"),
+                ] as $case => $label
+            ) {
+                $cards["ticket_by_category_and_type_$case"] = [
+                    'widgettype' => ['hBars', 'stackedHBars'],
+                    'itemtype'   => "\\Ticket",
+                    'group'      => __('Assistance'),
+                    'label'      => $label,
+                    'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryAndType",
+                    'args'       => [
+                        'case' => $case,
+                    ],
+                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                ];
+            }
+
             $cards["ticket_times"] = [
                 'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
                 'itemtype'   => "\\Ticket",

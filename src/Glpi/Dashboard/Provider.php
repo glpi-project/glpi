@@ -1176,6 +1176,199 @@ class Provider
     }
 
     /**
+     * Count number of tickets grouped by their category and their entity
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByCategoryAndEntity(array $params = []): array
+    {
+        $DB = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $ticket_table   = Ticket::getTable();
+        $entity_table   = \Entity::getTable();
+        $category_table = \ITILCategory::getTable();
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    "$entity_table.completename AS entity_name",
+                    "$entity_table.id AS entity_id",
+                    "$category_table.completename AS category_name",
+                    "$category_table.id AS category_id",
+                    'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                ],
+                'FROM'      => $ticket_table,
+                'LEFT JOIN' => [
+                    $entity_table => [
+                        'ON' => [
+                            $ticket_table => 'entities_id',
+                            $entity_table => 'id',
+                        ],
+                    ],
+                    $category_table => [
+                        'ON' => [
+                            $ticket_table   => 'itilcategories_id',
+                            $category_table => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    "$ticket_table.is_deleted" => 0,
+                ] + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY'   => ["$entity_table.id", "$category_table.id"],
+                'ORDERBY'   => ["$entity_table.completename", "$category_table.completename"],
+            ],
+            Ticket::getCriteriaFromProfile(),
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+        $iterator = $DB->request($criteria);
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        $matrix     = [];
+        $categories = [];
+        foreach ($iterator as $result) {
+            $entity_name   = $result['entity_name'] ?? __('Root entity');
+            $category_name = $result['category_name'] ?? __('None');
+
+            $matrix[$entity_name][$category_name] = (int) $result['cpt'];
+            $categories[$category_name]           = true;
+        }
+
+        $entities   = array_keys($matrix);
+        $categories = array_keys($categories);
+
+        $data = [
+            'labels' => $entities,
+            'series' => [],
+        ];
+        foreach ($categories as $category_name) {
+            $series_data = [];
+            foreach ($entities as $entity_name) {
+                $series_data[] = $matrix[$entity_name][$category_name] ?? 0;
+            }
+            $data['series'][] = [
+                'name' => $category_name,
+                'data' => $series_data,
+            ];
+        }
+
+        if (count($data['labels']) === 0) {
+            $data['nodata'] = true;
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+
+    /**
+     * Count number of tickets grouped by their category and their type restricted to either opened or closed tickets
+     * @param string $case 'open' or 'close'
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByCategoryAndType(string $case = 'open', array $params = []): array
+    {
+        $DB = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $statuses = $case === 'close'
+            ? [Ticket::SOLVED, Ticket::CLOSED]
+            : [Ticket::INCOMING, Ticket::ASSIGNED, Ticket::PLANNED, Ticket::WAITING];
+
+        $ticket_table   = Ticket::getTable();
+        $category_table = \ITILCategory::getTable();
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    "$category_table.completename AS category_name",
+                    "$category_table.id AS category_id",
+                    "$ticket_table.type AS ticket_type",
+                    'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                ],
+                'FROM'      => $ticket_table,
+                'LEFT JOIN' => [
+                    $category_table => [
+                        'ON' => [
+                            $ticket_table   => 'itilcategories_id',
+                            $category_table => 'id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    "$ticket_table.is_deleted" => 0,
+                    "$ticket_table.status"     => $statuses,
+                ] + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY'   => ["$category_table.id", "$ticket_table.type"],
+                'ORDERBY'   => "$category_table.completename",
+            ],
+            Ticket::getCriteriaFromProfile(),
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+        $iterator = $DB->request($criteria);
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        $matrix = [];
+        $types  = [];
+        foreach ($iterator as $result) {
+            $category_name = $result['category_name'] ?? __('None');
+            $type_name     = (int) $result['ticket_type'] > 0
+                ? Ticket::getTicketTypeName((int) $result['ticket_type'])
+                : __('Undefined');
+
+            $matrix[$category_name][$type_name] = (int) $result['cpt'];
+            $types[$type_name]                  = true;
+        }
+
+        $categories = array_keys($matrix);
+        $types      = array_keys($types);
+
+        $data = [
+            'labels' => $categories,
+            'series' => [],
+        ];
+        foreach ($types as $type_name) {
+            $series_data = [];
+            foreach ($categories as $category_name) {
+                $series_data[] = $matrix[$category_name][$type_name] ?? 0;
+            }
+            $data['series'][] = [
+                'name' => $type_name,
+                'data' => $series_data,
+            ];
+        }
+
+        if (count($data['labels']) === 0) {
+            $data['nodata'] = true;
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
      * Get a list of article for an compatible item (with date,name,text fields)
      *
      * @param CommonDBTM $item the itemtype to list
