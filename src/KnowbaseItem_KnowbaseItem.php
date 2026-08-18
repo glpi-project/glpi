@@ -166,4 +166,30 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
         }
         return false;
     }
+
+    /**
+     * Same rule as CommonDBRelation::canRelationItem(): entities must match, or the
+     * more specific side must be recursive over the other one's entity.
+     */
+    public static function areEntitiesCoherent(KnowbaseItem $child, KnowbaseItem $parent): bool
+    {
+        if (!$child->isEntityAssign() || !$parent->isEntityAssign()) {
+            return true;
+        }
+
+        $child_entity  = $child->getEntityID();
+        $parent_entity = $parent->getEntityID();
+
+        if ($child_entity == $parent_entity) {
+            return true;
+        }
+        if ($child->isRecursive() && in_array($child_entity, getAncestorsOf('glpi_entities', $parent_entity))) {
+            return true;
+        }
+        if ($parent->isRecursive() && in_array($parent_entity, getAncestorsOf('glpi_entities', $child_entity))) {
+            return true;
+        }
+
+        return false;
+    }
 }
