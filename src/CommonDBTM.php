@@ -924,21 +924,21 @@ class CommonDBTM extends CommonGLPI
                     continue;
                 }
 
-                // Use the itemtype expected to own the table, and not the one returned by
-                // `getItemTypeForTable()`, as the latter may be any of the classes sharing the table.
-                $itemtype = (new DbUtils())->getExpectedItemTypeForTable($tablename);
-                if (!is_a($itemtype, self::class, true)) {
+                $itemtype = getItemTypeForTable($tablename);
+                $is_clonable = $itemtype !== null
+                    && is_a($itemtype, self::class, true)
+                    && (
+                        !(new ReflectionClass($itemtype))->isAbstract()
+                        || (new ReflectionMethod($itemtype, 'getById'))->class !== self::class
+                    );
+
+                if (!$is_clonable) {
                     trigger_error(
                         sprintf('Unable to update relations between %s and %s tables.', static::getTable(), $tablename),
                         E_USER_WARNING
                     );
                     continue;
                 }
-
-                // An abstract itemtype can only be used if it is able to instanciate a concrete class
-                // by itself (see `Glpi\CustomObject\CustomObjectTrait::getById()`).
-                $is_instanciable = !(new ReflectionClass($itemtype))->isAbstract()
-                    || (new ReflectionMethod($itemtype, 'getById'))->class !== self::class;
 
                 $id_field = $itemtype::getIndexName();
 
@@ -982,30 +982,7 @@ class CommonDBTM extends CommonGLPI
                         ]
                     );
                     foreach ($result as $data) {
-                        if (!$is_instanciable) {
-                            // No row of this table can be handled.
-                            trigger_error(
-                                sprintf('Unable to update relations between %s and %s tables.', static::getTable(), $tablename),
-                                E_USER_WARNING
-                            );
-                            continue;
-                        }
-
                         $item = $itemtype::getById($data[$id_field]);
-                        if (!($item instanceof self)) {
-                            // Only this row cannot be handled, keep processing the following ones.
-                            trigger_error(
-                                sprintf(
-                                    'Unable to update relation between %s and %s tables for item %s.',
-                                    static::getTable(),
-                                    $tablename,
-                                    $data[$id_field]
-                                ),
-                                E_USER_WARNING
-                            );
-                            continue;
-                        }
-
                         $input =  [
                             $id_field       => $data[$id_field],
                             '_disablenotif' => true,

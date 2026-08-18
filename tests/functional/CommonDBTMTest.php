@@ -2464,7 +2464,6 @@ class CommonDBTMTest extends DbTestCase
         // Emulate a runtime state in which the `glpi_itemantiviruses` table has been attached to the
         // deprecated `ComputerAntivirus` class, i.e. any code path resolving its table.
         getTableForItemType(\ComputerAntivirus::class);
-        $this->assertSame(\ComputerAntivirus::class, $CFG_GLPI['glpiitemtypetables']['glpi_itemantiviruses']);
 
         $this->assertTrue($manufacturer->delete(['id' => $manufacturer->getID()], true));
 

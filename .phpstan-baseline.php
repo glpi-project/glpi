@@ -1966,7 +1966,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method update\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
@@ -2051,12 +2051,6 @@ $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 4,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonGLPI\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
@@ -3914,7 +3908,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method DbUtils\\:\\:getItemTypeForTable\\(\\) should return class\\-string\\<CommonDBTM\\>\\|null but returns class\\-string<CommonGLPI>\\.$#',
+	'message' => '#^Method DbUtils\\:\\:getItemTypeForTable\\(\\) should return class\\-string\\<CommonDBTM\\>\\|null but returns class\\-string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DbUtils.php',

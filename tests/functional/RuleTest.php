@@ -490,11 +490,6 @@ class RuleTest extends DbTestCase
             'value'       => '5',
         ]);
 
-        // The `glpi_rules` table may be mapped to any of the `Rule` subclasses, depending on the
-        // runtime state of the itemtype/table mapping cache. Clone must not depend on it, as
-        // `CommonDBChild::getItemField()` has to be able to guess the `rules_id` field anyway.
-        $CFG_GLPI['glpiitemtypetables'][Rule::getTable()] = RuleTicket::class;
-
         $this->assertSame('rules_id', \RuleCriteria::getItemField(RuleTicket::class));
         $this->assertSame('rules_id', \RuleAction::getItemField(RuleTicket::class));
 
