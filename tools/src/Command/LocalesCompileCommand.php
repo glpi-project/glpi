@@ -41,6 +41,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
+use function Safe\preg_replace;
+
 final class LocalesCompileCommand extends AbstractCommand
 {
     #[Override]

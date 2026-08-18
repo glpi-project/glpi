@@ -47,6 +47,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use function Safe\file_get_contents;
 use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * Icon fonts expose their glyph through a CSS `::before { content: "\eXXX" }` rule. The accessible
@@ -307,7 +308,7 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
      */
     private function flatten(string $tag): string
     {
-        return trim((string) preg_replace('/\s+/', ' ', $tag));
+        return trim(preg_replace('/\s+/', ' ', $tag));
     }
 
     /**

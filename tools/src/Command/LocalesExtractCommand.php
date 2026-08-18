@@ -53,6 +53,7 @@ use Twig\TwigFunction;
 use Twig\TwigTest;
 
 use function Safe\preg_match;
+use function Safe\preg_replace;
 
 final class LocalesExtractCommand extends AbstractCommand
 {

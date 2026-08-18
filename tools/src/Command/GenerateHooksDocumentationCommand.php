@@ -40,6 +40,9 @@ use ReflectionClass;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
+
 final class GenerateHooksDocumentationCommand extends AbstractCommand
 {
     protected bool $requires_db = false;
