@@ -34,6 +34,7 @@
 
 import { get, post } from "/js/modules/Ajax.js";
 import { GlpiKnowbaseMoveModalController } from "/js/modules/Knowbase/MoveModalController.js";
+import { parentIdOf } from "/js/modules/Knowbase/AsideTree.js";
 import {
     EditorActionType,
     extractParamsFromDataset,
@@ -828,10 +829,7 @@ export class GlpiKnowbaseAsideController
     #openModal(button, id, key, title, icon = null)
     {
         const row = button.closest('li[data-glpi-kb-article-id]');
-        const from_parent_id = Number(
-            row?.parentElement?.closest('li[data-glpi-kb-article-id]')
-                ?.dataset.glpiKbArticleId ?? 0
-        );
+        const from_parent_id = row === null ? 0 : parentIdOf(row);
 
         glpi_ajax_dialog({
             url: `${CFG_GLPI.root_doc}/Knowbase/${id}/${key}`

@@ -31,6 +31,8 @@
  */
 
 import { post } from "/js/modules/Ajax.js";
+import { GlpiKnowbaseAsideAutoscroll } from "/js/modules/Knowbase/AsideAutoscroll.js";
+import { parentIdOf, parentRowOf } from "/js/modules/Knowbase/AsideTree.js";
 
 /**
  * Pointer-driven reparenting of articles in the knowledge base aside tree.
@@ -47,12 +49,6 @@ export class GlpiKnowbaseAsideDragController
 
     /** Share of a row's height, at each end, that means "sibling" not "child". */
     static #EDGE_BAND_RATIO = 0.25;
-
-    /** Distance to the scroll container edge that triggers autoscroll. */
-    static #AUTOSCROLL_EDGE_PX = 40;
-
-    /** Pixels scrolled per frame while autoscrolling. */
-    static #AUTOSCROLL_STEP_PX = 8;
 
     /** @type {HTMLElement|null} */
     #tree = null;
@@ -78,7 +74,7 @@ export class GlpiKnowbaseAsideDragController
     /**
      * Article ids of the dragged subtree. Dropping onto any of them creates a
      * cycle, including onto another occurrence of the same article elsewhere.
-     * @type {Set<string>}
+     * @type {Set<number>}
      */
     #forbidden_ids = new Set();
 
@@ -87,6 +83,9 @@ export class GlpiKnowbaseAsideDragController
      * @type {HTMLElement[]}
      */
     #visible_lines = [];
+
+    /** @type {number|null} Pointer that owns the current gesture. */
+    #pointer_id = null;
 
     /** @type {{ x: number, y: number }|null} */
     #origin = null;
@@ -97,17 +96,8 @@ export class GlpiKnowbaseAsideDragController
     /** @type {boolean} */
     #suppress_next_click = false;
 
-    /** @type {number|null} */
-    #autoscroll_frame = null;
-
-    /** @type {number} -1 up, 1 down, 0 idle. */
-    #autoscroll_direction = 0;
-
-    /** @type {Element|null} Element actually scrolled while autoscrolling. */
-    #scroll_container = null;
-
-    /** @type {boolean} Whether that element has anything to scroll at all. */
-    #autoscroll_enabled = false;
+    /** @type {GlpiKnowbaseAsideAutoscroll} */
+    #autoscroll = new GlpiKnowbaseAsideAutoscroll();
 
     /**
      * @param {HTMLElement} aside
@@ -125,16 +115,15 @@ export class GlpiKnowbaseAsideDragController
     #initEventHandlers()
     {
         this.#tree.addEventListener('pointerdown', (e) => this.#onPointerDown(e));
-        this.#tree.addEventListener('pointermove', (e) => this.#onPointerMove(e));
-        this.#tree.addEventListener('pointerup', (e) => this.#onPointerUp(e));
-        this.#tree.addEventListener('pointercancel', () => this.#cancel());
+        // Before a drag arms there is no capture to catch a release outside the tree.
+        window.addEventListener('pointermove', (e) => this.#onPointerMove(e));
+        window.addEventListener('pointerup', (e) => this.#onPointerUp(e));
+        window.addEventListener('pointercancel', (e) => this.#onPointerCancel(e));
 
-        // Rows are grabbed by their link, and anchors are natively draggable:
-        // letting the browser start its own drag would cancel our pointer flow.
+        // Anchors are natively draggable; the browser's own drag would cancel ours.
         this.#tree.addEventListener('dragstart', (e) => e.preventDefault());
 
-        // Swallow the click that ends a real drag, or the article link would
-        // be followed on drop.
+        // Swallow the click that ends a real drag, or the drop would follow the link.
         this.#tree.addEventListener('click', (e) => {
             if (!this.#suppress_next_click) {
                 return;
@@ -150,8 +139,10 @@ export class GlpiKnowbaseAsideDragController
      */
     #onPointerDown(e)
     {
-        // Touch and pen are out of scope: arming them needs `touch-action:
-        // none`, which would kill scrolling of the aside.
+        // A row removed on drop fires no click: void it before it eats another.
+        this.#suppress_next_click = false;
+
+        // Touch and pen would need `touch-action: none`, killing aside scrolling.
         if (e.pointerType !== 'mouse' || e.button !== 0) {
             return;
         }
@@ -166,13 +157,12 @@ export class GlpiKnowbaseAsideDragController
             return;
         }
 
-        // Suppress native drag/text-selection here, before the browser's own
-        // drag-threshold can beat our pointermove-based one to it.
+        // Before the browser's own drag threshold beats our pointermove-based one.
         e.preventDefault();
 
         this.#dragged = row;
+        this.#pointer_id = e.pointerId;
         this.#origin = { x: e.clientX, y: e.clientY };
-        row.setPointerCapture(e.pointerId);
     }
 
     /**
@@ -180,11 +170,17 @@ export class GlpiKnowbaseAsideDragController
      */
     #onPointerMove(e)
     {
-        if (this.#dragged === null) {
+        if (this.#dragged === null || e.pointerId !== this.#pointer_id) {
             return;
         }
 
         if (!this.#dragging) {
+            // Released where we could not see it, e.g. outside the window.
+            if ((e.buttons & 1) === 0) {
+                this.#cancel();
+                return;
+            }
+
             const distance = Math.hypot(
                 e.clientX - this.#origin.x,
                 e.clientY - this.#origin.y,
@@ -192,23 +188,25 @@ export class GlpiKnowbaseAsideDragController
             if (distance < GlpiKnowbaseAsideDragController.#THRESHOLD_PX) {
                 return;
             }
-            this.#startDrag();
+            this.#startDrag(e.pointerId);
         }
 
         this.#ghost.style.transform = `translate(${e.clientX + 8}px, ${e.clientY + 8}px)`;
         this.#updateIntent(e.clientX, e.clientY);
-        this.#updateAutoscroll(e.clientY);
+        this.#autoscroll.update(e.clientY);
     }
 
-    #startDrag()
+    /**
+     * @param {number} pointer_id
+     */
+    #startDrag(pointer_id)
     {
         this.#dragging = true;
+        // Only now: a capture held during a plain press retargets its click.
+        this.#dragged.setPointerCapture(pointer_id);
         this.#forbidden_ids = this.#collectSubtreeIds(this.#dragged);
         this.#visible_lines = this.#collectVisibleLines();
-        this.#scroll_container = this.#resolveScrollContainer();
-        // Nothing to scroll: keep autoscroll idle instead of scrolling nowhere.
-        this.#autoscroll_enabled =
-            this.#scroll_container.scrollHeight > this.#scroll_container.clientHeight;
+        this.#autoscroll.start(this.#tree);
         this.#dragged.setAttribute('data-glpi-kb-drag-source', '');
         document.body.classList.add('kb-drag-active');
 
@@ -239,14 +237,17 @@ export class GlpiKnowbaseAsideDragController
      * also be rendered elsewhere under another parent, and dropping onto that
      * occurrence would create a cycle just the same.
      *
+     * Only what the tree renders: a descendant reachable solely through an
+     * article the user cannot see is missing here, and the endpoint refuses it.
+     *
      * @param {HTMLElement} row
-     * @returns {Set<string>}
+     * @returns {Set<number>}
      */
     #collectSubtreeIds(row)
     {
-        const ids = new Set([row.dataset.glpiKbArticleId]);
+        const ids = new Set([Number(row.dataset.glpiKbArticleId)]);
         for (const descendant of row.querySelectorAll('li[data-glpi-kb-article-id]')) {
-            ids.add(descendant.dataset.glpiKbArticleId);
+            ids.add(Number(descendant.dataset.glpiKbArticleId));
         }
         return ids;
     }
@@ -326,10 +327,10 @@ export class GlpiKnowbaseAsideDragController
 
         const band = rect.height * GlpiKnowbaseAsideDragController.#EDGE_BAND_RATIO;
         if (y < rect.top + band) {
-            return { row, mode: 'before', to_parent_id: this.#parentIdOf(row) };
+            return { row, mode: 'before', to_parent_id: parentIdOf(row) };
         }
         if (y > rect.bottom - band) {
-            return { row, mode: 'after', to_parent_id: this.#parentIdOf(row) };
+            return { row, mode: 'after', to_parent_id: parentIdOf(row) };
         }
         return { row, mode: 'into', to_parent_id: Number(row.dataset.glpiKbArticleId) };
     }
@@ -358,7 +359,7 @@ export class GlpiKnowbaseAsideDragController
             return false;
         }
         // A parent taken from the dragged subtree would close a cycle.
-        if (this.#forbidden_ids.has(String(intent.to_parent_id))) {
+        if (this.#forbidden_ids.has(intent.to_parent_id)) {
             return false;
         }
         return intent.to_parent_id !== this.#currentParentId();
@@ -369,28 +370,10 @@ export class GlpiKnowbaseAsideDragController
      */
     #currentParentId()
     {
-        return this.#parentIdOf(this.#dragged);
+        return parentIdOf(this.#dragged);
     }
 
-    /**
-     * @param {HTMLElement} row
-     * @returns {number}
-     */
-    #parentIdOf(row)
-    {
-        return Number(this.#parentRowOf(row)?.dataset.glpiKbArticleId ?? 0);
-    }
 
-    /**
-     * The `<li>` of the parent of an occurrence, null when it sits at the root.
-     *
-     * @param {HTMLElement} row
-     * @returns {HTMLElement|null}
-     */
-    #parentRowOf(row)
-    {
-        return row.parentElement?.closest('li[data-glpi-kb-article-id]') ?? null;
-    }
 
     /**
      * @param {{row: HTMLElement, mode: string}|null} intent
@@ -444,86 +427,11 @@ export class GlpiKnowbaseAsideDragController
     }
 
     /**
-     * @param {number} y
-     */
-    #updateAutoscroll(y)
-    {
-        if (!this.#autoscroll_enabled) {
-            return;
-        }
-
-        // Measured on the scrolled element, not on the tree: "near the edge"
-        // has to mean the edge of whatever the next step will actually scroll.
-        const bounds = this.#scrollBounds();
-        const edge = GlpiKnowbaseAsideDragController.#AUTOSCROLL_EDGE_PX;
-
-        if (y < bounds.top + edge) {
-            this.#autoscroll_direction = -1;
-        } else if (y > bounds.bottom - edge) {
-            this.#autoscroll_direction = 1;
-        } else {
-            this.#autoscroll_direction = 0;
-        }
-
-        if (this.#autoscroll_direction !== 0 && this.#autoscroll_frame === null) {
-            this.#autoscroll_frame = window.requestAnimationFrame(() => this.#autoscrollStep());
-        }
-    }
-
-    #autoscrollStep()
-    {
-        this.#autoscroll_frame = null;
-        if (!this.#dragging || this.#autoscroll_direction === 0) {
-            return;
-        }
-        this.#scroll_container.scrollTop += this.#autoscroll_direction
-            * GlpiKnowbaseAsideDragController.#AUTOSCROLL_STEP_PX;
-        this.#autoscroll_frame = window.requestAnimationFrame(() => this.#autoscrollStep());
-    }
-
-    /**
-     * Nearest scrollable ancestor of the tree: depending on the layout, the
-     * tree container itself is not always the element that scrolls.
-     *
-     * @returns {Element}
-     */
-    #resolveScrollContainer()
-    {
-        for (let node = this.#tree; node instanceof HTMLElement; node = node.parentElement) {
-            const overflow = window.getComputedStyle(node).overflowY;
-            if (
-                node.scrollHeight > node.clientHeight
-                && (overflow === 'auto' || overflow === 'scroll')
-            ) {
-                return node;
-            }
-        }
-        return document.scrollingElement ?? document.documentElement;
-    }
-
-    /**
-     * Viewport-space top and bottom edges of the scrolled element. The page
-     * scroller has no meaningful rect of its own: its edges are the viewport's.
-     *
-     * @returns {{ top: number, bottom: number }}
-     */
-    #scrollBounds()
-    {
-        const page_scroller = document.scrollingElement ?? document.documentElement;
-        if (this.#scroll_container === page_scroller || this.#scroll_container === document.body) {
-            return { top: 0, bottom: window.innerHeight };
-        }
-
-        const rect = this.#scroll_container.getBoundingClientRect();
-        return { top: rect.top, bottom: rect.bottom };
-    }
-
-    /**
      * @param {PointerEvent} e
      */
     #onPointerUp(e)
     {
-        if (this.#dragged === null) {
+        if (this.#dragged === null || e.pointerId !== this.#pointer_id) {
             return;
         }
 
@@ -532,26 +440,34 @@ export class GlpiKnowbaseAsideDragController
         const intent = this.#intent;
 
         this.#suppress_next_click = was_dragging;
-        this.#teardown(e.pointerId);
+        this.#teardown();
 
         if (was_dragging && intent) {
             this.#commit(dragged, intent);
         }
     }
 
+    /**
+     * @param {PointerEvent} e
+     */
+    #onPointerCancel(e)
+    {
+        if (this.#dragged === null || e.pointerId !== this.#pointer_id) {
+            return;
+        }
+        this.#cancel();
+    }
+
     #cancel()
     {
         this.#suppress_next_click = false;
-        this.#teardown(null);
+        this.#teardown();
     }
 
-    /**
-     * @param {number|null} pointer_id
-     */
-    #teardown(pointer_id)
+    #teardown()
     {
-        if (pointer_id !== null && this.#dragged?.hasPointerCapture(pointer_id)) {
-            this.#dragged.releasePointerCapture(pointer_id);
+        if (this.#dragged?.hasPointerCapture(this.#pointer_id)) {
+            this.#dragged.releasePointerCapture(this.#pointer_id);
         }
 
         this.#clearIntentMarks();
@@ -564,12 +480,11 @@ export class GlpiKnowbaseAsideDragController
         this.#ghost = null;
         this.#insert_line = null;
         this.#dragged = null;
+        this.#pointer_id = null;
         this.#intent = null;
         this.#origin = null;
         this.#dragging = false;
-        this.#autoscroll_direction = 0;
-        this.#scroll_container = null;
-        this.#autoscroll_enabled = false;
+        this.#autoscroll.stop();
         this.#forbidden_ids = new Set();
         this.#visible_lines = [];
     }
@@ -581,7 +496,7 @@ export class GlpiKnowbaseAsideDragController
     async #commit(dragged, intent)
     {
         const id = dragged.dataset.glpiKbArticleId;
-        const previous_parent_row = this.#parentRowOf(dragged);
+        const previous_parent_row = parentRowOf(dragged);
         const from_parent_id = Number(previous_parent_row?.dataset.glpiKbArticleId ?? 0);
 
         // Exact position to restore should the server refuse the move.
@@ -597,8 +512,7 @@ export class GlpiKnowbaseAsideDragController
         this.#moveInDom(dragged, intent);
         this.#refreshNodeState(previous_parent_row);
         this.#refreshNodeState(new_parent_row);
-        // Only `into` can land inside a folded subtree; a sibling drop targets
-        // a level that is visible by construction.
+        // Only `into` can land in a folded subtree; siblings target a visible level.
         if (intent.mode === 'into') {
             this.#setNodeCollapsed(new_parent_row, false);
         }
@@ -609,9 +523,7 @@ export class GlpiKnowbaseAsideDragController
                 { from_parent_id, to_parent_id: intent.to_parent_id },
             );
         } catch {
-            // `post()` already raised an error toast. Undo the optimistic move
-            // so the tree never shows a parent the server rejected. This also
-            // puts back a row that was removed as a duplicate occurrence.
+            // `post()` already toasted: undo the move, restoring a dropped duplicate too.
             previous_list.insertBefore(dragged, previous_sibling);
             this.#refreshNodeState(new_parent_row);
             this.#refreshNodeState(previous_parent_row);
@@ -629,7 +541,7 @@ export class GlpiKnowbaseAsideDragController
      */
     #newParentRowOf(intent)
     {
-        return intent.mode === 'into' ? intent.row : this.#parentRowOf(intent.row);
+        return intent.mode === 'into' ? intent.row : parentRowOf(intent.row);
     }
 
     /**
@@ -640,8 +552,7 @@ export class GlpiKnowbaseAsideDragController
     {
         const parent_row = this.#newParentRowOf(intent);
 
-        // An article is never rendered twice at the same place, so a drop that
-        // lands where it already shows only drops the grabbed occurrence.
+        // Never rendered twice at one place: drop the grabbed occurrence instead.
         if (this.#hasOtherOccurrence(dragged, parent_row)) {
             dragged.remove();
             return;
@@ -708,8 +619,7 @@ export class GlpiKnowbaseAsideDragController
             return;
         }
 
-        // Fire and forget, like AsideController `#persistArticleFold`: a lost
-        // fold state only means the node renders collapsed again on reload.
+        // Fire and forget: a lost fold state only means it renders collapsed on reload.
         post(`Knowbase/Aside/Article/${encodeURIComponent(id)}/Fold`, { collapsed })
             .catch(() => {});
     }
@@ -761,6 +671,11 @@ export class GlpiKnowbaseAsideDragController
             // Server-rendered nodes carry these; a leaf becoming one needs them too.
             row.setAttribute('data-glpi-kb-aside-category', '');
             row.setAttribute('role', 'group');
+            // Names the group, and `AsideController#setCollapsed` reaches the
+            // toggle only through the header attribute.
+            row.setAttribute('aria-label', this.#titleOf(row));
+            line.setAttribute('data-glpi-kb-aside-category-header', '');
+            line.classList.add('mb-2');
             line.prepend(this.#buildFoldToggle(row));
         } else if (!has_children && toggle) {
             toggle.remove();
