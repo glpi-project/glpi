@@ -93,7 +93,7 @@ final class MoveArticleController extends AbstractController
             if (!$target->can($to_parent_id, READ)) {
                 throw new AccessDeniedHttpException();
             }
-            if (!$this->areEntitiesCoherent($article, $target)) {
+            if (!KnowbaseItem_KnowbaseItem::areEntitiesCoherent($article, $target)) {
                 throw new AccessDeniedHttpException();
             }
         }
@@ -138,31 +138,5 @@ final class MoveArticleController extends AbstractController
         $DB->commit();
 
         return new Response(); // OK
-    }
-
-    /**
-     * Same rule as CommonDBRelation::canRelationItem(): entities must match, or the
-     * more specific side must be recursive over the other one's entity.
-     */
-    private function areEntitiesCoherent(KnowbaseItem $child, KnowbaseItem $parent): bool
-    {
-        if (!$child->isEntityAssign() || !$parent->isEntityAssign()) {
-            return true;
-        }
-
-        $child_entity  = $child->getEntityID();
-        $parent_entity = $parent->getEntityID();
-
-        if ($child_entity == $parent_entity) {
-            return true;
-        }
-        if ($child->isRecursive() && in_array($child_entity, getAncestorsOf('glpi_entities', $parent_entity))) {
-            return true;
-        }
-        if ($parent->isRecursive() && in_array($parent_entity, getAncestorsOf('glpi_entities', $child_entity))) {
-            return true;
-        }
-
-        return false;
     }
 }

@@ -34,10 +34,14 @@
 
 namespace Glpi\Knowbase\Aside;
 
+use KnowbaseItem;
+use KnowbaseItem_KnowbaseItem;
+
 /**
  * Parents an article may legally be moved under: everything the current user
- * can see, minus the article itself and its descendants, which would close a
- * cycle. Labels carry the full path so the flat dropdown still reads as a tree.
+ * can see, minus the article itself and its descendants (which would close a
+ * cycle), minus parents the move would refuse on entity coherence. Labels
+ * carry the full path so the flat dropdown still reads as a tree.
  */
 final class MoveCandidates
 {
@@ -47,7 +51,7 @@ final class MoveCandidates
     public function build(): array
     {
         $tree      = (new Builder())->buildTree();
-        $forbidden = $this->forbiddenIds($this->adjacency($tree));
+        $forbidden = $this->forbiddenIds();
 
         $candidates = [0 => __('Root level')];
 
@@ -71,47 +75,73 @@ final class MoveCandidates
             }
         }
 
-        return $candidates;
+        return $this->dropIncoherentEntities($candidates);
     }
 
     /**
-     * Parent id => child ids, unioned over every occurrence: the same article
-     * may be rendered under several parents, and a cycle closes through any of
-     * them.
+     * Real ancestry, walked breadth-first over the unfiltered relation table: the
+     * visible tree promotes an article to root when its parent is invisible, which
+     * would otherwise hide a genuine descendant from this forbidden set.
      *
-     * @return array<int, array<int, true>>
-     */
-    private function adjacency(Tree $tree): array
-    {
-        $children_of = [];
-        $stack       = $tree->getArticles();
-        while ($stack !== []) {
-            $article = array_pop($stack);
-            foreach ($article->getChildren() as $child) {
-                $children_of[$article->id][$child->id] = true;
-                $stack[] = $child;
-            }
-        }
-        return $children_of;
-    }
-
-    /**
-     * @param array<int, array<int, true>> $children_of
      * @return array<int, true>
      */
-    private function forbiddenIds(array $children_of): array
+    private function forbiddenIds(): array
     {
+        global $DB;
+
         $forbidden = [$this->article_id => true];
-        $queue     = [$this->article_id];
-        for ($i = 0; $i < count($queue); $i++) {
-            foreach (array_keys($children_of[$queue[$i]] ?? []) as $child_id) {
+        $frontier  = [$this->article_id];
+        while ($frontier !== []) {
+            $next = [];
+            foreach ($DB->request([
+                'SELECT' => 'knowbaseitems_id',
+                'FROM'   => KnowbaseItem_KnowbaseItem::getTable(),
+                'WHERE'  => ['knowbaseitems_id_parent' => $frontier],
+            ]) as $row) {
+                $child_id = (int) $row['knowbaseitems_id'];
                 if (isset($forbidden[$child_id])) {
                     continue;
                 }
                 $forbidden[$child_id] = true;
-                $queue[] = $child_id;
+                $next[] = $child_id;
             }
+            $frontier = $next;
         }
         return $forbidden;
+    }
+
+    /**
+     * @param array<int, string> $candidates
+     * @return array<int, string>
+     */
+    private function dropIncoherentEntities(array $candidates): array
+    {
+        global $DB;
+
+        $article = new KnowbaseItem();
+        if (!$article->getFromDB($this->article_id)) {
+            return $candidates;
+        }
+
+        // KB sharing (glpi_entities_knowbaseitems) is independent of entities_id/is_recursive coherence.
+        $ids = array_filter(array_keys($candidates), static fn (int $id): bool => $id !== 0);
+        if ($ids === []) {
+            return $candidates;
+        }
+
+        $rows = $DB->request([
+            'SELECT' => ['id', 'entities_id', 'is_recursive'],
+            'FROM'   => KnowbaseItem::getTable(),
+            'WHERE'  => ['id' => $ids],
+        ]);
+        foreach ($rows as $row) {
+            $parent = new KnowbaseItem();
+            $parent->getFromResultSet($row);
+            if (!KnowbaseItem_KnowbaseItem::areEntitiesCoherent($article, $parent)) {
+                unset($candidates[(int) $row['id']]);
+            }
+        }
+
+        return $candidates;
     }
 }

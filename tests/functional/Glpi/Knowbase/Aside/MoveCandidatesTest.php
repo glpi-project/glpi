@@ -34,6 +34,8 @@
 
 namespace tests\unit\Glpi\Knowbase\Aside;
 
+use Entity_KnowbaseItem;
+use Glpi\Knowbase\Aside\Builder;
 use Glpi\Knowbase\Aside\MoveCandidates;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
@@ -158,6 +160,84 @@ final class MoveCandidatesTest extends DbTestCase
         $candidates = (new MoveCandidates($moved->getID()))->build();
 
         $this->assertArrayNotHasKey($hidden->getID(), $candidates);
+    }
+
+    public function testAncestorThroughInvisibleIntermediateIsNotACandidate(): void
+    {
+        // Author every article as another user so the "author" visibility
+        // bypass never makes them directly visible to the restricted user.
+        $glpi_user = getItemByTypeName('User', 'glpi', true);
+        $this->login();
+
+        $moved = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Moved ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+        ]);
+        $hidden_child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Hidden child ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$moved->getID()],
+        ]);
+        $visible_grandchild = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Visible grandchild ' . __FUNCTION__,
+            'answer'   => '',
+            'users_id' => $glpi_user,
+            '_parents' => [$hidden_child->getID()],
+        ]);
+
+        $this->login('normal', 'normal');
+        // Granting moved too would make hidden_child visible by inheritance.
+        (new KnowbaseItem_User())->add([
+            'knowbaseitems_id' => $visible_grandchild->getID(),
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        // Visible and promoted to root, yet still a real descendant: that is the contrast.
+        $roots = array_map(static fn ($article) => $article->id, (new Builder())->buildTree()->getArticles());
+        $this->assertContains($visible_grandchild->getID(), $roots);
+
+        $candidates = (new MoveCandidates($moved->getID()))->build();
+
+        $this->assertArrayNotHasKey($visible_grandchild->getID(), $candidates);
+    }
+
+    public function testIncoherentEntityArticleIsNotACandidateEvenIfVisible(): void
+    {
+        $entity_1 = getItemByTypeName('Entity', '_test_child_1', true);
+        $entity_2 = getItemByTypeName('Entity', '_test_child_2', true);
+
+        $this->login();
+        $moved = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Moved ' . __FUNCTION__,
+            'answer'       => '<p>x</p>',
+            'entities_id'  => $entity_1,
+            'is_recursive' => 0,
+        ]);
+        $foreign = $this->createItem(KnowbaseItem::class, [
+            'name'         => 'Foreign ' . __FUNCTION__,
+            'answer'       => '<p>x</p>',
+            'entities_id'  => $entity_2,
+            'is_recursive' => 0,
+        ]);
+        // Share, independently of $foreign's own entities_id/is_recursive columns.
+        $this->createItem(Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $foreign->getID(),
+            'entities_id'      => $entity_1,
+            'is_recursive'     => 0,
+        ]);
+
+        $this->login('normal', 'normal');
+        $this->setEntity($entity_1, false);
+
+        // Not vacuous: the share really does make $foreign reach the tree.
+        $roots = array_map(static fn ($article) => $article->id, (new Builder())->buildTree()->getArticles());
+        $this->assertContains($foreign->getID(), $roots);
+
+        $candidates = (new MoveCandidates($moved->getID()))->build();
+
+        $this->assertArrayNotHasKey($foreign->getID(), $candidates);
     }
 
     /**
