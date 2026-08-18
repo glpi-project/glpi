@@ -149,12 +149,16 @@
 {# Static import: evaluated before DOMContentLoaded, so the server-rendered toggles never predate their listeners. #}
 <script type="module">
     import { GlpiKnowbaseAsideController } from "/js/modules/Knowbase/AsideController.js";
-    import { GlpiKnowbaseAsideDragController } from "/js/modules/Knowbase/AsideDragController.js";
 
     const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
     new GlpiKnowbaseAsideController(aside);
-    {# Without the update right every move would be refused server-side. #}
+    {# Without the update right every move would be refused server-side. Loaded
+     # dynamically: a drag cannot start before the user moves the pointer, so
+     # this one has no server-rendered state to reach in time. #}
     {% if can_update %}
+        const { GlpiKnowbaseAsideDragController } = await import(
+            "/js/modules/Knowbase/AsideDragController.js"
+        );
         new GlpiKnowbaseAsideDragController(aside);
     {% endif %}
 </script>

@@ -47,7 +47,12 @@ final class MoveCandidates
 {
     public function __construct(private readonly int $article_id) {}
 
-    /** @return array<int, string> id => label, keyed for Dropdown::showFromArray */
+    /**
+     * Loads the whole visible tree, then queries the relation and article
+     * tables: call once per request, never per candidate or in a loop.
+     *
+     * @return array<int, string> id => label, keyed for Dropdown::showFromArray
+     */
     public function build(): array
     {
         $tree      = (new Builder())->buildTree();
