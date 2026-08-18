@@ -39,7 +39,8 @@ describe ('Import forms', () => {
     it('can import forms whitout resolve issues', () => {
         // Step 1: file selection
         cy.visit('/front/form/form.php');
-        cy.findByRole('button', {'name': "Import forms"}).click();
+        // A link, not a button: the header action links used to carry a bogus `role="button"`.
+        cy.findByRole('link', {'name': "Import forms"}).click();
         cy.findByLabelText("Select your file").selectFile("fixtures/export-of-2-forms.json");
 
         // Step 2: preview
@@ -78,7 +79,7 @@ describe ('Import forms', () => {
     it('can import forms with resolve issues', () => {
         // Step 1: file selection
         cy.visit('/front/form/form.php');
-        cy.findByRole('button', {'name': "Import forms"}).click();
+        cy.findByRole('link', {'name': "Import forms"}).click();
         cy.findByLabelText("Select your file").selectFile("fixtures/export-of-2-forms.json");
 
         // Step 2: preview
@@ -150,7 +151,7 @@ describe ('Import forms', () => {
     it('can remove forms from the import list', () => {
         // Step 1: file selection
         cy.visit('/front/form/form.php');
-        cy.findByRole('button', {'name': "Import forms"}).click();
+        cy.findByRole('link', {'name': "Import forms"}).click();
         cy.findByLabelText("Select your file").selectFile("fixtures/export-of-2-forms.json");
 
         // Step 2: preview
@@ -185,7 +186,7 @@ describe ('Import forms', () => {
     it("can see errors on forms that can't be imported at all", () => {
         // Step 1: file selection
         cy.visit('/front/form/form.php');
-        cy.findByRole('button', {'name': "Import forms"}).click();
+        cy.findByRole('link', {'name': "Import forms"}).click();
         cy.findByLabelText("Select your file").selectFile(
             "fixtures/forms/form-with-hammer-asset.json"
         );
