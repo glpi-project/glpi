@@ -56,12 +56,17 @@ class VerifyUsersTokensCommand extends AbstractCommand
         $token_fields = ['api_token', "cookie_token"];
 
         foreach($token_fields as $token_field){
-            $tokens_in_error = $this->checkTokens($token_field);
-            if ($tokens_in_error === 0) {
-                return 0;
+            $token_name = explode("_", $token_field)[0];
+            $this->output->writeln(
+                '<info>'. sprintf(__('Checking %s tokens'), $token_name) .'</info>'
+            );
+            $tokens_in_error = $this->checkTokens($token_field, $token_name);
+            if (empty($tokens_in_error)) {
+                continue;
             }
+            $this->output->writeln('<comment>' . __('Asking for permission to fix the malformed tokens') . '</comment>');
             $this->askForConfirmation();
-            $outcome = $this->fixTokens($tokens_in_error);
+            $outcome = $this->fixTokens($tokens_in_error, $token_name);
             if ($outcome === 1) {
                 // If we encountered an error, we stop the process.
                 return $outcome;
@@ -70,7 +75,7 @@ class VerifyUsersTokensCommand extends AbstractCommand
         return 0;
     }
 
-    private function checkTokens(string $token_field): array
+    private function checkTokens(string $token_field, string $token_name): array
     {
         global $DB;
 
@@ -93,15 +98,18 @@ class VerifyUsersTokensCommand extends AbstractCommand
         }
 
         if (empty($tokens_in_error)){
-            $this->output->writeln('<info>' . __('No malformed token found, all good !') . '</info>');
+            $this->output->writeln(
+                '<info>' . sprintf(__('No malformed %s token found, all good !'), $token_name) . '</info>'
+            );
             return $tokens_in_error;
         }
 
         $count = count($tokens_in_error);
         $this->output->writeln(
             '<comment>' . sprintf(
-                _n('Found %d user with a malformed token.', 'Found %d users with a malformed token.', $count),
-                $count
+                _n('Found %d user with a malformed %s token.', 'Found %d users with a malformed %s token.', $count),
+                $count,
+                $token_name
             ) . '</comment>'
         );
 
@@ -115,7 +123,7 @@ class VerifyUsersTokensCommand extends AbstractCommand
         return $tokens_in_error;
     }
 
-    private function fixTokens(array $tokens_in_error): int
+    private function fixTokens(array $tokens_in_error, string $token_name): int
     {
         $failed = 0;
         $user = new User();
@@ -127,7 +135,7 @@ class VerifyUsersTokensCommand extends AbstractCommand
             ]);
             if (!$success) {
                 $this->outputMessage(
-                    '<error>' . sprintf(__('Failed to regenerate token for user %d.'), $row['id']) . '</error>',
+                    '<error>' . sprintf(__('Failed to regenerate %s token for user %d.'), $token_name, $row['id']) . '</error>',
                     OutputInterface::VERBOSITY_QUIET
                 );
                 $failed++;
@@ -136,13 +144,15 @@ class VerifyUsersTokensCommand extends AbstractCommand
 
         if ($failed > 0) {
             $this->output->writeln(
-                '<error>' . sprintf(_n('Failed to fix %d token.', 'Failed to fix %d tokens.', $failed), $failed) . '</error>',
+                '<error>' . sprintf(_n('Failed to fix %d %s token.', 'Failed to fix %d %s tokens.', $failed), $failed, $token_name) . '</error>',
                 OutputInterface::VERBOSITY_QUIET
             );
             return 1;
         }
 
-        $this->output->writeln('<info>' . __('All malformed tokens have been regenerated.') . '</info>');
+        $this->output->writeln(
+            '<info>' . sprintf(__('All malformed %s tokens have been regenerated.'), $token_name) . '</info>'
+        );
         return 0;
     }
 }
