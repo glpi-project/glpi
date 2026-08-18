@@ -220,24 +220,32 @@ final class ResourceAccessor
 
             $min = $prop['minimum'] ?? null;
             $max = $prop['maximum'] ?? null;
+            $multiple_of = $prop['multipleOf'] ?? null;
             if ($min !== null && $max !== null && is_numeric($value) && ($value < $min || $value > $max)) {
                 $errors[$key][] = [
                     'error' => 'range',
-                    'message' => "This field must be between {$prop['minimum']} and {$prop['maximum']}",
-                    'minimum' => $prop['minimum'] ?? null,
-                    'maximum' => $prop['maximum'] ?? null,
+                    'message' => "This field must be between $min and $max",
+                    'minimum' => $min,
+                    'maximum' => $max,
                 ];
             } elseif ($min !== null && is_numeric($value) && $value < $min) {
                 $errors[$key][] = [
                     'error' => 'minimum',
-                    'message' => "This field must be at least {$prop['minimum']}",
-                    'minimum' => $prop['minimum'] ?? null,
+                    'message' => "This field must be at least $min",
+                    'minimum' => $min,
                 ];
             } elseif ($max !== null && is_numeric($value) && $value > $max) {
                 $errors[$key][] = [
                     'error' => 'maximum',
-                    'message' => "This field must be at most {$prop['maximum']}",
-                    'maximum' => $prop['maximum'] ?? null,
+                    'message' => "This field must be at most $max",
+                    'maximum' => $max,
+                ];
+            }
+            if ($multiple_of !== null && is_numeric($value) && fmod((float) $value, (float) $multiple_of) !== 0.0) {
+                $errors[$key][] = [
+                    'error' => 'multipleOf',
+                    'message' => "This field must be a multiple of $multiple_of",
+                    'multipleOf' => $multiple_of,
                 ];
             }
             if (isset($prop['pattern']) && is_string($value) && !preg_match('/' . $prop['pattern'] . '/', $value)) {

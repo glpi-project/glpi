@@ -80,7 +80,7 @@ class ResourceAccessorTest extends GLPITestCase
                 'name' => ['type' => 'string', 'maxLength' => 32, 'required' => true],
                 'age' => ['type' => 'integer', 'minimum' => 0, 'maximum' => 120, 'required' => true],
                 'height' => ['type' => 'number', 'minimum' => 10, 'required' => true],
-                'weight' => ['type' => 'number', 'maximum' => 300, 'required' => true],
+                'weight' => ['type' => 'number', 'maximum' => 300, 'multipleOf' => 0.5, 'required' => true],
                 'eye_color' => ['type' => 'number', 'required' => true],
             ],
         ];
@@ -89,7 +89,7 @@ class ResourceAccessorTest extends GLPITestCase
             'name' => str_repeat('a', 40), // Exceeds maxLength
             'age' => -5, // Below minimum
             'height' => 5, // Below minimum
-            'weight' => 350, // Above maximum
+            'weight' => 349.8, // Above maximum and not multiple of 0.5
             // Missing required eye_color
         ];
 
@@ -127,6 +127,11 @@ class ResourceAccessorTest extends GLPITestCase
                 'error' => 'maximum',
                 'message' => 'This field must be at most 300',
                 'maximum' => 300,
+            ],
+            [
+                'error' => 'multipleOf',
+                'message' => 'This field must be a multiple of 0.5',
+                'multipleOf' => 0.5,
             ],
         ], $response_data['detail']['weight']);
         $this->assertArrayIsEqualIgnoringKeysOrder([
