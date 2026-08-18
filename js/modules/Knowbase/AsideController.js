@@ -685,9 +685,7 @@ export class GlpiKnowbaseAsideController
             return;
         }
 
-        const selector = `[data-glpi-kb-article-id="${CSS.escape(id)}"] `
-            + `[data-glpi-kb-actions-menu]:not([data-glpi-kb-actions-loaded])`;
-        if (this.#aside.querySelector(selector) === null) {
+        if (this.#findEmptyMenus(id).length === 0) {
             return; // Nothing left to populate for this id.
         }
 
@@ -700,10 +698,26 @@ export class GlpiKnowbaseAsideController
             return;
         }
 
-        for (const menu of this.#aside.querySelectorAll(selector)) {
+        for (const menu of this.#findEmptyMenus(id)) {
             menu.innerHTML = html;
             menu.setAttribute('data-glpi-kb-actions-loaded', '');
         }
+    }
+
+    /**
+     * @param {number} id
+     * @returns {HTMLElement[]}
+     */
+    #findEmptyMenus(id)
+    {
+        const menus = this.#aside.querySelectorAll(
+            `[data-glpi-kb-article-id="${CSS.escape(id)}"] `
+            + `[data-glpi-kb-actions-menu]:not([data-glpi-kb-actions-loaded])`,
+        );
+
+        return Array.from(menus).filter(
+            (menu) => menu.closest('[data-glpi-kb-article-id]')?.dataset.glpiKbArticleId === String(id),
+        );
     }
 
     /**
@@ -909,6 +923,7 @@ export class GlpiKnowbaseAsideController
                     const clone = source.cloneNode(true);
                     clone.classList.add('mb-2');
                     clone.removeAttribute('data-glpi-kb-search-hidden');
+                    this.#flattenClonedFavorite(clone);
                     // The source row's dots menu is still open (the user just
                     // clicked a toggle inside it); close it in the clone.
                     this.#resetClonedDropdown(clone);
@@ -924,6 +939,36 @@ export class GlpiKnowbaseAsideController
         }
 
         this.#refreshFavoritesVisibility(favorites);
+    }
+
+    /**
+     * @param {HTMLElement} clone
+     */
+    #flattenClonedFavorite(clone)
+    {
+        for (const children of clone.querySelectorAll(':scope > ul')) {
+            children.remove();
+        }
+
+        for (const affordance of clone.querySelectorAll(
+            '[data-glpi-kb-aside-category-toggle], [data-glpi-kb-aside-category-add]',
+        )) {
+            affordance.remove();
+        }
+
+        clone.classList.remove('node');
+        clone.removeAttribute('data-glpi-kb-aside-category');
+        clone.removeAttribute('data-glpi-kb-aside-category-collapsed');
+        // Node rows are groups labelled by their title; a flat entry is a plain
+        // list item again.
+        clone.removeAttribute('role');
+        clone.removeAttribute('aria-label');
+
+        const line = clone.querySelector(':scope > .article-line');
+        if (line) {
+            line.removeAttribute('data-glpi-kb-aside-category-header');
+            line.classList.remove('mb-2');
+        }
     }
 
     /**
