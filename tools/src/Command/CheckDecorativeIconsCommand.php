@@ -46,6 +46,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use function Safe\file_get_contents;
+use function Safe\preg_match;
 
 /**
  * Icon fonts expose their glyph through a CSS `::before { content: "\eXXX" }` rule. The accessible
@@ -457,7 +458,8 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
 
     private function hasIconClass(string $attrs): bool
     {
-        if (preg_match('/\bclass\s*=\s*(?<quote>["\'])(?<value>.*?)\g{quote}/is', $attrs, $matches) !== 1) {
+        preg_match('/\bclass\s*=\s*(?<quote>["\'])(?<value>.*?)\g{quote}/is', $attrs, $matches);
+        if (!isset($matches['value'])) {
             return false;
         }
 
@@ -479,8 +481,9 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
             return 'interactive';
         }
 
+        preg_match('/\bclass\s*=\s*(?<quote>["\'])(?<value>.*?)\g{quote}/is', $attrs, $matches);
         if (
-            preg_match('/\bclass\s*=\s*(?<quote>["\'])(?<value>.*?)\g{quote}/is', $attrs, $matches) === 1
+            isset($matches['value'])
             && preg_match('/\b(?:btn|pointer|cursor-pointer)\b/', $matches['value']) === 1
         ) {
             return 'styled-as-control';
@@ -513,7 +516,8 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
             $tag = $icon['tag'];
             // Reuse the quoting style already used in the tag: the markup often lives inside a PHP
             // or JS string literal, and the wrong quote would break it.
-            $quote = preg_match('/=\s*(?<quote>["\'])/', $tag, $matches) === 1 ? $matches['quote'] : '"';
+            preg_match('/=\s*(?<quote>["\'])/', $tag, $matches);
+            $quote = $matches['quote'] ?? '"';
 
             // Insert right after the last attribute, i.e. before the closing `>` and the `/` of a
             // self closing tag.

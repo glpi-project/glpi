@@ -52,6 +52,8 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
+use function Safe\preg_match;
+
 final class LocalesExtractCommand extends AbstractCommand
 {
     #[Override]

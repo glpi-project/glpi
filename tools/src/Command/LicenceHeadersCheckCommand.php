@@ -46,6 +46,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use function Safe\file_get_contents;
+use function Safe\preg_match;
 
 final class LicenceHeadersCheckCommand extends AbstractCommand
 {
@@ -569,8 +570,9 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
         $tag_pattern = $this->getTagPattern($line_prefix);
 
         foreach ($lines as $line) {
-            $tag = null;
-            if (preg_match($tag_pattern, $line, $tag)) {
+            $tag = [];
+            preg_match($tag_pattern, $line, $tag);
+            if (isset($tag['name'], $tag['value'])) {
                 $tag_name = $tag['name'];
                 $tag_value = $tag['value'];
 
@@ -678,7 +680,8 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
 
         foreach ($values as $value) {
             $dates_matches = [];
-            if (preg_match($copy_dates_pattern, $value, $dates_matches) !== 1) {
+            preg_match($copy_dates_pattern, $value, $dates_matches);
+            if (!isset($dates_matches['starting_date'])) {
                 continue;
             }
 
@@ -716,6 +719,9 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
             foreach ($similar_values as $similar_value) {
                 $similar_dates_matches = [];
                 preg_match($copy_dates_pattern, $similar_value, $similar_dates_matches);
+                if (!isset($similar_dates_matches['starting_date'])) {
+                    continue;
+                }
                 if ($similar_dates_matches['starting_date'] < $starting_date) {
                     $starting_date = $similar_dates_matches['starting_date'];
                 } elseif ($similar_dates_matches['starting_date'] > $ending_date) {

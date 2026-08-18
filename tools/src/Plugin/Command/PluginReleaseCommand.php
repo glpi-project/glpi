@@ -43,6 +43,8 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 
+use function Safe\preg_match;
+
 final class PluginReleaseCommand extends AbstractPluginCommand
 {
     private string $dist_dir;
