@@ -51,8 +51,8 @@ use GraphQL\Type\Definition\ResolveInfo;
 use Session;
 use stdClass;
 
-#[Route(path: '/ServiceCatalog', priority: 1, tags: ['ServiceCatalog'])]
-final class ServiceCatalogController extends AbstractController
+#[Route(path: '/Helpdesk', priority: 1, tags: ['Helpdesk'])]
+final class HelpdeskController extends AbstractController
 {
     protected static function getRawKnownSchemas(): array
     {
@@ -130,11 +130,11 @@ final class ServiceCatalogController extends AbstractController
                     'form' => self::getDropdownTypeSchema(Form::class),
                 ],
             ],
-            'ServiceCatalogInfo' => [
+            'HelpdeskTilesInfo' => [
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-version-introduced' => '2.4.0',
                 'readOnly' => true,
-                'x-graphql-resolver' => [self::class, 'graphQLResolveServiceCatalogInfo'],
+                'x-graphql-resolver' => [self::class, 'graphQLResolveHelpdeskTilesInfo'],
                 'x-singleton' => true,
                 'properties' => [
                     'helpdesk_home_title' => ['type' => Doc\Schema::TYPE_STRING],
@@ -199,7 +199,7 @@ final class ServiceCatalogController extends AbstractController
     /**
      * @return array{helpdesk_home_title?: string, helpdesk_home_search_enabled?: bool, tiles?: list<array<string, mixed>>}
      */
-    private static function getServiceCatalogInfoForCurrentUser(bool $include_tiles = true): array
+    private static function getHelpdeskTilesInfoForCurrentUser(bool $include_tiles = true): array
     {
         $session_info = Session::getCurrentSessionInfo();
         if ($session_info === null) {
@@ -226,25 +226,25 @@ final class ServiceCatalogController extends AbstractController
      * @param ResolveInfo $info
      * @return mixed
      */
-    public static function graphQLResolveServiceCatalogInfo(mixed $source, array $args, stdClass $context, ResolveInfo $info): mixed
+    public static function graphQLResolveHelpdeskTilesInfo(mixed $source, array $args, stdClass $context, ResolveInfo $info): mixed
     {
         if ($context->fullyResolved ?? false) {
             return $source[$info->fieldName];
         }
         $fields = $info->getFieldSelection();
-        $catalog_info = self::getServiceCatalogInfoForCurrentUser(include_tiles: array_key_exists('tiles', $fields));
+        $tiles_info = self::getHelpdeskTilesInfoForCurrentUser(include_tiles: array_key_exists('tiles', $fields));
         $context->fullyResolved = true;
-        return $catalog_info;
+        return $tiles_info;
     }
 
-    #[Route(path: '/My', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/TilesInfo/My', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.4')]
     #[Doc\GetRoute(
-        schema_name: 'ServiceCatalogInfo',
-        description: 'Get the service catalog information for the current user.',
+        schema_name: 'HelpdeskTilesInfo',
+        description: 'Get the helpdesk tiles information for the current user.',
     )]
     public function getServiceCatalog(Request $request): Response
     {
-        return new JSONResponse(self::getServiceCatalogInfoForCurrentUser());
+        return new JSONResponse(self::getHelpdeskTilesInfoForCurrentUser());
     }
 }
