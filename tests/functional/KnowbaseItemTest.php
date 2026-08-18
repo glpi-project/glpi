@@ -48,6 +48,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
+use User;
 
 use function Safe\file_get_contents;
 use function Safe\file_put_contents;
@@ -1467,7 +1468,7 @@ HTML,
                 '_visibility' => [
                     'entities_id' => -1,
                     'is_recursive' => 1,
-                    '_type' => \User::class,
+                    '_type' => User::class,
                     'users_id' => $tech_user,
                 ],
             ],
@@ -1481,7 +1482,7 @@ HTML,
                 '_visibility' => [
                     'entities_id' => -1,
                     'is_recursive' => 1,
-                    '_type' => \User::class,
+                    '_type' => User::class,
                     'users_id' => $normal_user,
                 ],
             ],
@@ -2128,7 +2129,7 @@ HTML,
             'ticket'    => 0,
         ]);
 
-        $user = $this->createItem(\User::class, [
+        $user = $this->createItem(User::class, [
             'name'         => __FUNCTION__,
             'password'     => 'testpassword',
             'password2'    => 'testpassword',
@@ -2444,6 +2445,32 @@ HTML,
         // It must be readable from any entity.
         $this->assertEquals(0, $root->fields['entities_id']);
         $this->assertEquals(1, $root->fields['is_recursive']);
+    }
+
+    public function testAllArticlesMenuLinkSkipsTheRootArticleRedirect(): void
+    {
+        // A bare `front/knowbaseitem.php` redirects to the root article, so the
+        // link to the article list has to carry a parameter.
+        $link = KnowbaseItem::getAdditionalMenuLinks()['all_articles'];
+
+        $this->assertStringStartsWith(KnowbaseItem::getSearchURL(false) . '?', $link);
+        $this->assertNotEmpty(parse_url($link, PHP_URL_QUERY));
+    }
+
+    public function testRootArticleIsAuthoredByTheSystemUser(): void
+    {
+        global $CFG_GLPI;
+
+        $this->login();
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+
+        // Created in the background: credited to the system user, else the
+        // history and the last update info would report a deleted user.
+        $this->assertSame((int) $CFG_GLPI['system_user'], (int) $root->fields['users_id']);
+        $this->assertInstanceOf(User::class, User::getById((int) $root->fields['users_id']));
+        $this->assertNotEquals(__('Deleted user'), $root->getLastUpdateInfo()->getAuthorName());
     }
 
     public function testRootArticleCannotBeDeleted(): void

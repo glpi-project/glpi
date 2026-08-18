@@ -71,6 +71,16 @@ $root_config = $DB->request([
 
 $root_id = (int) ($root_config['value'] ?? 0);
 
+$system_user_config = $DB->request([
+    'SELECT' => 'value',
+    'FROM'   => 'glpi_configs',
+    'WHERE'  => [
+        'context' => 'core',
+        'name'    => 'system_user',
+    ],
+])->current();
+$system_user_id = (int) ($system_user_config['value'] ?? 0);
+
 // Also recreate the article when the configuration points to an article that no
 // longer exists (interrupted migration, manual database surgery, ...), as the
 // whole feature relies on this id being valid.
@@ -84,7 +94,7 @@ if ($root_id === 0 || countElementsInTable('glpi_knowbaseitems', ['id' => $root_
         'name'          => __('Home'),
         'answer'        => '',
         'is_faq'        => 0,
-        'users_id'      => 0,
+        'users_id'      => $system_user_id,
         'date_creation' => $now,
         'date_mod'      => $now,
     ]);

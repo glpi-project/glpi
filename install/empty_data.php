@@ -2742,7 +2742,7 @@ $empty_data_builder = new class {
                 'name' => __('Home'),
                 'answer' => '',
                 'is_faq' => 0,
-                'users_id' => 0,
+                'users_id' => self::USER_SYSTEM,
                 'date_creation' => date('Y-m-d H:i:s'),
                 'date_mod' => date('Y-m-d H:i:s'),
             ],
