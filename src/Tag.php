@@ -217,14 +217,16 @@ class Tag extends CommonDropdown
 
         if (!$this->isUnique($input)) {
             $conflicting_tag = $this->getTagByName($input['name']);
-            Session::addMessageAfterRedirect(
-                htmlescape(sprintf(
-                    __('A tag with this name already exists in entity "%s"! Transfter the tag to another entity or change its name.'),
-                    Dropdown::getDropdownName(Entity::getTable(), $conflicting_tag->fields['entities_id'])
-                )),
-                false,
-                ERROR
-            );
+            if ($conflicting_tag !== null) {
+                Session::addMessageAfterRedirect(
+                    htmlescape(sprintf(
+                        __('A tag with this name already exists in entity "%s"! Transfter the tag to another entity or change its name.'),
+                        Dropdown::getDropdownName(Entity::getTable(), $conflicting_tag->fields['entities_id'])
+                    )),
+                    false,
+                    ERROR
+                );
+            }
             return false;
         }
 
@@ -255,14 +257,16 @@ class Tag extends CommonDropdown
 
         if (!$this->isUnique($input)) {
             $conflicting_tag = $this->getTagByName($input['name']);
-            Session::addMessageAfterRedirect(
-                htmlescape(sprintf(
-                    __('A tag with this name already exists in entity "%s"! Transfter the tag to another entity or change its name.'),
-                    Dropdown::getDropdownName(Entity::getTable(), $conflicting_tag->fields['entities_id'])
-                )),
-                false,
-                ERROR
-            );
+            if ($conflicting_tag !== null) {
+                Session::addMessageAfterRedirect(
+                    htmlescape(sprintf(
+                        __('A tag with this name already exists in entity "%s"! Transfter the tag to another entity or change its name.'),
+                        Dropdown::getDropdownName(Entity::getTable(), $conflicting_tag->fields['entities_id'])
+                    )),
+                    false,
+                    ERROR
+                );
+            }
             return false;
         }
         $input = $this->prepareItemtypes($input);

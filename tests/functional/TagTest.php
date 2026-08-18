@@ -434,7 +434,7 @@ class TagTest extends DbTestCase
         $this->deleteItem(Tag::class, $tag->getID());
 
         // Check if creating a tag with the same name in a child entity fails
-        $duplicate_tag =$this->createTag([
+        $duplicate_tag = $this->createTag([
             'name'         => 'Duplicate Tag Name',
             'entities_id'  => $root_entity_id,
             'is_recursive' => 0,
