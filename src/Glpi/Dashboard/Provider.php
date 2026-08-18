@@ -1200,9 +1200,7 @@ class Provider
             [
                 'SELECT'    => [
                     "$entity_table.completename AS entity_name",
-                    "$entity_table.id AS entity_id",
                     "$category_table.completename AS category_name",
-                    "$category_table.id AS category_id",
                     'COUNT DISTINCT' => "$ticket_table.id AS cpt",
                 ],
                 'FROM'      => $ticket_table,

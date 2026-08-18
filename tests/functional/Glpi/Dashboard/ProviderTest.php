@@ -1099,6 +1099,12 @@ class ProviderTest extends DbTestCase
             'entities_id'      => $entity_id,
             'itilcategories_id' => $category2->getID(),
         ]);
+        $this->createItem(\Ticket::class, [
+            'name'              => 'test dashboard ticket no category',
+            'content'           => 'blablabla',
+            'entities_id'       => $entity_id,
+            'itilcategories_id' => 0,
+        ]);
 
         $result = Provider::ticketsByCategoryAndEntity();
         $this->assertArrayHasKey('data', $result);
@@ -1118,10 +1124,11 @@ class ProviderTest extends DbTestCase
             $series_by_name[$serie['name']] = $serie['data'];
         }
 
-        $this->assertArrayHasKey($category1->fields['name'], $series_by_name);
-        $this->assertArrayHasKey($category2->fields['name'], $series_by_name);
-
-        $this->assertSame(2, $series_by_name[$category1->fields['name']][$entity_index], '2 tickets expected for category 1');
-        $this->assertSame(1, $series_by_name[$category2->fields['name']][$entity_index], '1 ticket expected for category 2');
+        $this->assertArrayHasKey($category1->fields['completename'], $series_by_name);
+        $this->assertArrayHasKey($category2->fields['completename'], $series_by_name);
+        $this->assertArrayHasKey(__('None'), $series_by_name, 'a "None" series is expected for the uncategorized ticket');
+        $this->assertSame(2, $series_by_name[$category1->fields['completename']][$entity_index], '2 tickets expected for category 1');
+        $this->assertSame(1, $series_by_name[$category2->fields['completename']][$entity_index], '1 ticket expected for category 2');
+        $this->assertGreaterThanOrEqual(1, $series_by_name[__('None')][$entity_index], 'at least 1 uncategorized ticket expected');
     }
 }
