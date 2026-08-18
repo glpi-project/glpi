@@ -437,6 +437,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                 }
             } catch (Throwable $e) {
                 self::handleFailedSend($current, $e->getMessage());
+                continue;
             }
 
             if (!$mmail->send()) {
