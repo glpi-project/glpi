@@ -36,7 +36,6 @@ namespace Glpi\Console\User;
 
 use Glpi\Console\AbstractCommand;
 use GLPIKey;
-use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
