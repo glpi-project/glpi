@@ -52,8 +52,15 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
+use function Safe\file_put_contents;
+use function Safe\ini_set;
+use function Safe\mkdir;
 use function Safe\preg_match;
 use function Safe\preg_replace;
+use function Safe\realpath;
+use function Safe\tempnam;
+use function Safe\touch;
+use function Safe\unlink;
 
 final class LocalesExtractCommand extends AbstractCommand
 {

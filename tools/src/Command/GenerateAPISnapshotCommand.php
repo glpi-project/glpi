@@ -44,6 +44,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
+use function Safe\file_put_contents;
+
 class GenerateAPISnapshotCommand extends AbstractCommand
 {
     protected function configure()

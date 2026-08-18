@@ -47,6 +47,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 use function Safe\file_get_contents;
 use function Safe\preg_match;
+use function Safe\preg_match_all;
 use function Safe\preg_replace;
 
 /**
@@ -442,7 +443,8 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
         $window_start = max(0, $before - 2000);
         $window = substr($contents, $window_start, $before - $window_start);
 
-        if (preg_match_all('/<' . $tag_name . '\b(?<attrs>[^>]*)>/i', $window, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER) === 0) {
+        preg_match_all('/<' . $tag_name . '\b(?<attrs>[^>]*)>/i', $window, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
+        if (empty($matches)) {
             return null;
         }
 

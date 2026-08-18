@@ -43,7 +43,11 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 
+use function Safe\file;
+use function Safe\getcwd;
+use function Safe\mkdir;
 use function Safe\preg_match;
+use function Safe\unlink;
 
 final class PluginReleaseCommand extends AbstractPluginCommand
 {
@@ -102,7 +106,7 @@ final class PluginReleaseCommand extends AbstractPluginCommand
         // Resolve relative paths based on plugin directory
         $fs = new Filesystem();
         if (!$fs->isAbsolutePath($dest)) {
-            $dest = \getcwd() . '/' . $dest;
+            $dest = getcwd() . '/' . $dest;
         }
 
         // Ensure parent directory exists
