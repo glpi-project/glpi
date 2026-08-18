@@ -624,7 +624,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                     $internetName = "(" . $line["id"] . ")";
                 }
                 $content  = htmlescape($internetName);
-                if (Session::haveRight('internet', READ)) {
+                if (Session::haveRight(self::$rightname, READ)) {
                     $content  = '<a href="' . htmlescape($address->getLinkURL()) . '">'
                         . htmlescape($internetName)
                         . '</a>';
@@ -680,7 +680,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
 
         if (
             ($item::class === NetworkPort::class)
-            && Session::haveRight('internet', UPDATE)
+            && Session::haveRight(self::$rightname, UPDATE)
             && $item->can($item->getID(), UPDATE)
         ) {
             $twig_params = [
@@ -749,7 +749,7 @@ TWIG, $twig_params);
 
             $canedit = false;
         } else {
-            $canedit = Session::haveRight('internet', UPDATE) && $item->can($item->getID(), UPDATE);
+            $canedit = Session::haveRight(self::$rightname, UPDATE) && $item->can($item->getID(), UPDATE);
         }
 
         $table_options['canedit']                  = false;

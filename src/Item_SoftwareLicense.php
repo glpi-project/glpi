@@ -607,7 +607,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             return false;
         }
 
-        $canedit         = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
+        $canedit         = Session::haveRightsOr(Software::$rightname, [CREATE, UPDATE, DELETE, PURGE]);
         $canshowitems  = [];
         $item_license_table = self::getTable(self::class);
 

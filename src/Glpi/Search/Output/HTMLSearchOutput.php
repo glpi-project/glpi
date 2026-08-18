@@ -242,7 +242,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
                 'is_deleted'    => $is_deleted,
                 'container'     => "massform" . \str_replace('\\', '', $itemtype) . $rand,
             ],
-            'can_config'          => Session::haveRightsOr('search_config', [
+            'can_config'          => Session::haveRightsOr(DisplayPreference::$rightname, [
                 DisplayPreference::PERSONAL,
                 DisplayPreference::GENERAL,
             ]),

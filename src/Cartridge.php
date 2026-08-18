@@ -1041,7 +1041,7 @@ TWIG, $twig_params);
         if (!self::canView()) {
             return false;
         }
-        $canedit = Session::haveRight("cartridge", UPDATE);
+        $canedit = Session::haveRight(Cartridge::$rightname, UPDATE);
         $rand    = mt_rand();
 
         $where = ['glpi_cartridges.printers_id' => $instID];

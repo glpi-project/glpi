@@ -675,7 +675,7 @@ class Config extends CommonDBTM
         $url       = Toolbox::getItemTypeFormURL(self::class);
 
         $canedit = static::canUpdate();
-        $canedituser = Session::haveRight('personalization', UPDATE);
+        $canedituser = Session::haveRight(Profile::HELPDESK_RIGHT_PERSONALIZATION, UPDATE);
         if (array_key_exists('last_login', $data)) {
             $userpref = true;
             if ($data["id"] === Session::getLoginUserID()) {

@@ -41,7 +41,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (!($_SESSION['telemetry_from_install'] ?? false)) {
-    Session::checkRight("config", READ);
+    Session::checkRight(Config::$rightname, READ);
     $hide_sensitive_data = false;
 } else {
     $hide_sensitive_data = true;

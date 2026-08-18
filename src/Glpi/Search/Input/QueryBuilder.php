@@ -109,7 +109,7 @@ final class QueryBuilder implements SearchInputInterface
         $normalized_itemtype = Toolbox::getNormalizedItemtype($itemtype);
         $linked = SearchEngine::getMetaItemtypeAvailable($itemtype);
 
-        $can_disablefilter = Session::haveRightsOr('search_config', [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
+        $can_disablefilter = Session::haveRightsOr(DisplayPreference::$rightname, [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
 
         $target_query  = parse_url($p['target'], PHP_URL_QUERY);
         $additional_params = [];
@@ -863,7 +863,7 @@ final class QueryBuilder implements SearchInputInterface
 
         if ($defaultfilter = DefaultFilter::getSearchCriteria($itemtype)) {
             $params['defaultfilter'] = $defaultfilter;
-            $can_disablefilter = Session::haveRightsOr('search_config', [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
+            $can_disablefilter = Session::haveRightsOr(DisplayPreference::$rightname, [DisplayPreference::PERSONAL, DisplayPreference::GENERAL]);
             if (!isset($params['nodefault']) || !$can_disablefilter) {
                 $defaultfilter['search_criteria']['_hidden'] = true;
                 $params['criteria'][] = $defaultfilter['search_criteria'];

@@ -164,7 +164,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public static function getAdditionalMenuOptions()
     {
 
-        if (Session::haveRight('user', self::IMPORTEXTAUTHUSERS)) {
+        if (Session::haveRight(User::$rightname, self::IMPORTEXTAUTHUSERS)) {
             return [
                 'ldap' => [
                     'icon'  => AuthLDAP::getIcon(),
@@ -179,7 +179,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public static function getAdditionalMenuLinks()
     {
         $links = [];
-        if (Auth::useAuthExt() && Session::haveRight('user', self::IMPORTEXTAUTHUSERS)) {
+        if (Auth::useAuthExt() && Session::haveRight(User::$rightname, self::IMPORTEXTAUTHUSERS)) {
             if (static::canCreate()) {
                 $ext_auth_label = __s('Add from an external source');
                 $links['<i class="ti ti-user-cog" aria-hidden="true"></i><span>' . $ext_auth_label . '</span>'] = 'front/user.form.php?new=1&ext_auth=1';
@@ -2089,7 +2089,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             }
         }
 
-        if (Session::haveRight('user', READ)) {
+        if (Session::haveRight(User::$rightname, READ)) {
             $user_params['login'] = $this->fields['name'];
         }
 
@@ -3037,7 +3037,7 @@ HTML;
         $ismyself = $ID == Session::getLoginUserID();
         $higherrights = $this->currentUserHaveMoreRightThan($ID);
         if ($ID) {
-            $caneditpassword = ($this->can($this->getID(), UPDATE) && $higherrights) || ($ismyself && Session::haveRight('password_update', 1));
+            $caneditpassword = ($this->can($this->getID(), UPDATE) && $higherrights) || ($ismyself && Session::haveRight(Profile::HELPDESK_RIGHT_PASSWORD_UPDATE, 1));
         } else {
             // can edit on creation form
             $caneditpassword = true;
@@ -3203,7 +3203,7 @@ HTML;
         // except on login action (which triggers synchronisation).
         if (
             Session::getLoginUserID() === (int) $this->input['id']
-            && !Session::haveRight("user", UPDATE)
+            && !Session::haveRight(User::$rightname, UPDATE)
             && !str_starts_with($kernel->getMainRequest()->getPathInfo(), "/front/login.php")
             && isset($this->fields["authtype"])
         ) {
@@ -4745,7 +4745,7 @@ HTML;
         }
 
         if (
-            Session::haveRight('user', self::IMPORTEXTAUTHUSERS)
+            Session::haveRight(User::$rightname, self::IMPORTEXTAUTHUSERS)
             && $p['ldap_import']
             && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])
         ) {
@@ -4790,7 +4790,7 @@ HTML;
     public static function showAddExtAuthForm()
     {
 
-        if (!Session::haveRight("user", self::IMPORTEXTAUTHUSERS)) {
+        if (!Session::haveRight(User::$rightname, self::IMPORTEXTAUTHUSERS)) {
             return false;
         }
 

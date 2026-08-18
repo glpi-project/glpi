@@ -129,7 +129,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public static function getMenuName()
     {
-        if (!Session::haveRight('knowbase', READ)) {
+        if (!Session::haveRight(KnowbaseItem::$rightname, READ)) {
             return __('FAQ');
         }
         return static::getTypeName(Session::getPluralNumber());
@@ -301,7 +301,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         if (
             Session::haveRight(self::$rightname, self::PUBLISHFAQ)
-            && !Session::haveRight("knowbase", UPDATE)
+            && !Session::haveRight(KnowbaseItem::$rightname, UPDATE)
         ) {
             $this->fields["is_faq"] = 1;
         }
@@ -2909,7 +2909,7 @@ TWIG, $twig_params);
                 'virtual'       => true,
                 'value'         => 2, // always false, to avoid any result
             ];
-        } elseif (!Session::haveRight('knowbase', READ)) {
+        } elseif (!Session::haveRight(KnowbaseItem::$rightname, READ)) {
             $params['criteria'][] = [
                 'link'          => "AND",
                 'field'         => '8', // is_faq

@@ -39,7 +39,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 
 global $CFG_GLPI;
 
-if (!Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])) {
+if (!Session::haveRightsOr(KnowbaseItem::$rightname, [READ, KnowbaseItem::READFAQ])) {
     throw new AccessDeniedHttpException();
 }
 if (isset($_GET["id"])) {

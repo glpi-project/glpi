@@ -41,7 +41,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
-Session::checkRight('queuednotification', READ);
+Session::checkRight(QueuedNotification::$rightname, READ);
 
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";

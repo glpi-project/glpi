@@ -376,7 +376,7 @@ class AuthLDAP extends CommonDBTM
             case 'import_group':
                 $group = new Group();
                 if (
-                    !Session::haveRight("user", User::UPDATEAUTHENT)
+                    !Session::haveRight(User::$rightname, User::UPDATEAUTHENT)
                     || !$group->canGlobal(UPDATE)
                 ) {
                     $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
@@ -422,7 +422,7 @@ class AuthLDAP extends CommonDBTM
 
             case 'import':
             case 'sync':
-                if (!Session::haveRight("user", User::IMPORTEXTAUTHUSERS)) {
+                if (!Session::haveRight(User::$rightname, User::IMPORTEXTAUTHUSERS)) {
                     $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;

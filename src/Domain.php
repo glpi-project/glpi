@@ -272,7 +272,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         $tab = [];
 
         if (in_array($itemtype, Domain::getTypes(true))) {
-            if (Session::haveRight("domain", READ)) {
+            if (Session::haveRight(Domain::$rightname, READ)) {
                 $tab[] = [
                     'id'                 => 'domain',
                     'name'               => self::getTypeName(Session::getPluralNumber()),
