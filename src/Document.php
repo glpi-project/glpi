@@ -1340,7 +1340,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         if (empty($dir)) {
             $message = __s('Unauthorized file type');
 
-            if (Session::haveRight('dropdown', READ)) {
+            if (Session::haveRight(DocumentType::$rightname, READ)) {
                 $message .= " <a target='_blank' href='" . htmlescape(DocumentType::getSearchURL()) . "' class='pointer'>
                          <i class='fa fa-info'</i><span class='visually-hidden'>" . __s('Manage document types') . "</span></a>";
             }

@@ -1201,7 +1201,7 @@ HTML;
      **/
     public static function getDeviceItemTypes(bool $grouped = false)
     {
-        if (!Session::haveRight('device', READ)) {
+        if (!Session::haveRight(CommonDevice::$rightname, READ)) {
             return [];
         }
 
@@ -4273,7 +4273,7 @@ HTML;
         }
 
         // My group items
-        if (Session::haveRight("show_group_hardware", 1)) {
+        if (Session::haveRight(Profile::HELPDESK_RIGHT_SHOW_GROUP_HARDWARE, 1)) {
             $iterator = $DB->request([
                 'SELECT'    => [
                     'glpi_groups_users.groups_id',

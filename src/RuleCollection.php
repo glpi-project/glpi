@@ -2109,7 +2109,7 @@ TWIG, $twig_params);
             ];
         }
 
-        if (Session::haveRight(Config::$rightname, READ)) {
+        if (Session::haveRight(Blacklist::$rightname, READ)) {
             $rules[] = [
                 'label'     => _n('Blacklist', 'Blacklists', Session::getPluralNumber()),
                 'link'      => Blacklist::getSearchURL(),

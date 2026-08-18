@@ -199,7 +199,7 @@ class Central extends CommonGLPI
 
         $lists = [];
 
-        if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
+        if (Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())) {
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'tovalidate',
@@ -263,7 +263,7 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRightsOr('changevalidation', ChangeValidation::getValidateRights())) {
+        if (Session::haveRightsOr(ChangeValidation::$rightname, ChangeValidation::getValidateRights())) {
             $lists[] = [
                 'itemtype'  => Change::class,
                 'status'    => 'tovalidate',
@@ -351,7 +351,7 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRight("projecttask", ProjectTask::READMY)) {
+        if (Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY)) {
             $idor = Session::getNewIDORToken(ProjectTask::class);
 
             $twig_params['cards'][] = [
@@ -514,7 +514,7 @@ class Central extends CommonGLPI
                 ],
             ];
         }
-        if (Session::haveRight("projecttask", ProjectTask::READMY)) {
+        if (Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY)) {
             $idor = Session::getNewIDORToken(ProjectTask::class);
             $twig_params['cards'][] = [
                 'itemtype'  => ProjectTask::class,

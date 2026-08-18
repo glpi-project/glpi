@@ -908,7 +908,7 @@ final class SQLProvider implements SearchProviderInterface
 
                     if (
                         Session::haveRightsOr(
-                            'ticketvalidation',
+                            TicketValidation::$rightname,
                             [
                                 TicketValidation::VALIDATEINCIDENT,
                                 TicketValidation::VALIDATEREQUEST,
@@ -2575,7 +2575,7 @@ final class SQLProvider implements SearchProviderInterface
 
                     if (
                         Session::haveRightsOr(
-                            'ticketvalidation',
+                            TicketValidation::$rightname,
                             [TicketValidation::VALIDATEINCIDENT,
                                 TicketValidation::VALIDATEREQUEST,
                             ]

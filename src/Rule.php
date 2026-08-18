@@ -239,7 +239,7 @@ class Rule extends CommonDBTM
 
         if (
             Session::haveRight(RuleRight::$rightname, READ)
-            || Session::haveRight("rule_import", READ)
+            || Session::haveRight(RuleImportAsset::$rightname, READ)
             || Session::haveRight(RuleLocation::$rightname, READ)
             || Session::haveRight(RuleTicket::$rightname, READ)
             || Session::haveRight(RuleChange::$rightname, READ)

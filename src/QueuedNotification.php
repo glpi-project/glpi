@@ -729,7 +729,7 @@ class QueuedNotification extends CommonDBTM
     #[Override]
     public function showForm($ID, array $options = [])
     {
-        if (!Session::haveRight("queuednotification", READ)) {
+        if (!Session::haveRight(self::$rightname, READ)) {
             return false;
         }
         $this->check($ID, READ);

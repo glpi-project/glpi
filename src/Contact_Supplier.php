@@ -65,20 +65,25 @@ class Contact_Supplier extends CommonDBRelation
             return '';
         }
 
-        if (!$withtemplate && Session::haveRight("contact_enterprise", READ)) {
+        if (!$withtemplate) {
             $nb = 0;
             switch ($item::class) {
                 case 'Supplier':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb =  self::countForItem($item);
+                    if (Session::haveRight(Contact::$rightname, READ)) {
+                        if ($_SESSION['glpishow_count_on_tabs']) {
+                            $nb =  self::countForItem($item);
+                        }
+                        return self::createTabEntry(Contact::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
-                    return self::createTabEntry(Contact::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
+                    // no break
                 case 'Contact':
-                    if ($_SESSION['glpishow_count_on_tabs']) {
-                        $nb = self::countForItem($item);
+                    if (Session::haveRight(Supplier::$rightname, READ)) {
+                        if ($_SESSION['glpishow_count_on_tabs']) {
+                            $nb = self::countForItem($item);
+                        }
+                        return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
-                    return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';

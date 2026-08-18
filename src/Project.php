@@ -207,7 +207,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         // No view to project by right on tasks add it
         if (
             !static::canView()
-            && Session::haveRight('projecttask', ProjectTask::READMY)
+            && Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY)
         ) {
             $menu['project']['title'] = self::getTypeName(Session::getPluralNumber());
             $menu['project']['page']  = ProjectTask::getMyTasksURL(false);
@@ -235,7 +235,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         $links = [];
         if (
             static::canView()
-            || Session::haveRight('projecttask', ProjectTask::READMY)
+            || Session::haveRight(ProjectTask::$rightname, ProjectTask::READMY)
         ) {
             $pic_validate = '
             <i class="ti ti-eye-check" title="' . __s('My tasks') . '" aria-hidden="true"></i>

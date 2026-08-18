@@ -273,7 +273,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 self::READNEWTICKET,
             ]
         )
-              || Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights()));
+              || Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights()));
     }
 
 
@@ -341,7 +341,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
         // Can validate tickets
         if (
-            Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())
+            Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())
             && TicketValidation::canValidate($this->fields["id"])
         ) {
             return true;
@@ -424,7 +424,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             return false;
         }
 
-        $canAddTask = Session::haveRight("task", CommonITILTask::ADDALLITEM);
+        $canAddTask = Session::haveRight(TicketTask::$rightname, CommonITILTask::ADDALLITEM);
         $canAddFollowup = Session::haveRightsOr(
             ITILFollowup::$rightname,
             [
@@ -2835,7 +2835,7 @@ JAVASCRIPT;
         $validation_options = TicketValidation::rawSearchOptionsToAdd();
         if (
             !Session::haveRightsOr(
-                'ticketvalidation',
+                TicketValidation::$rightname,
                 [
                     TicketValidation::CREATEINCIDENT,
                     TicketValidation::CREATEREQUEST,
@@ -3015,7 +3015,7 @@ JAVASCRIPT;
 
             $tab = array_merge($tab, $this->getSearchOptionsSolution());
 
-            if (Session::haveRight('ticketcost', READ)) {
+            if (Session::haveRight(TicketCost::$rightname, READ)) {
                 $tab = array_merge($tab, TicketCost::rawSearchOptionsToAdd());
             }
         }
@@ -3091,7 +3091,7 @@ JAVASCRIPT;
             $tokeep = ['common', 'requester','satisfaction'];
             if (
                 Session::haveRightsOr(
-                    'ticketvalidation',
+                    TicketValidation::$rightname,
                     array_merge(
                         TicketValidation::getValidateRights(),
                         TicketValidation::getCreateRights()
@@ -3765,7 +3765,7 @@ JAVASCRIPT;
 
         if (
             !Session::haveRightsOr(self::$rightname, [CREATE, self::READALL, self::READASSIGN])
-            && !Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())
+            && !Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())
         ) {
             return false;
         }
@@ -4636,7 +4636,7 @@ JAVASCRIPT;
             ];
         }
 
-        if (Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())) {
+        if (Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())) {
             $number_waitapproval = TicketValidation::getNumberToValidate(Session::getLoginUserID());
 
             $opt = [
@@ -5609,7 +5609,7 @@ JAVASCRIPT;
         }
 
         if (
-            Session::haveRightsOr('ticketvalidation', [
+            Session::haveRightsOr(TicketValidation::$rightname, [
                 TicketValidation::VALIDATEINCIDENT,
                 TicketValidation::VALIDATEREQUEST,
             ])
@@ -6090,7 +6090,7 @@ JAVASCRIPT;
         }
 
         if (
-            Session::haveRightsOr('ticketvalidation', [
+            Session::haveRightsOr(TicketValidation::$rightname, [
                 TicketValidation::VALIDATEINCIDENT,
                 TicketValidation::VALIDATEREQUEST,
             ])

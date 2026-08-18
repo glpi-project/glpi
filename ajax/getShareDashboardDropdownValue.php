@@ -1,7 +1,5 @@
 <?php
 
-use Glpi\Dashboard\Dashboard;
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -34,6 +32,8 @@ use Glpi\Dashboard\Dashboard;
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Dashboard\Dashboard;
 
 include(__DIR__ . '/getAbstractRightDropdownValue.php');
 

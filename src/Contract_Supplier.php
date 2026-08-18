@@ -76,7 +76,7 @@ class Contract_Supplier extends CommonDBRelation
                     break;
 
                 case Contract::class:
-                    if (Session::haveRight("contact_enterprise", READ)) {
+                    if (Session::haveRight(Supplier::$rightname, READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = self::countForItem($item);
                         }
@@ -241,7 +241,7 @@ TWIG, $twig_params);
 
         if (
             !$contract->can($instID, READ)
-            || !Session::haveRight("contact_enterprise", READ)
+            || !Session::haveRight(Supplier::$rightname, READ)
         ) {
             return;
         }

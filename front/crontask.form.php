@@ -41,12 +41,12 @@ use Glpi\Exception\Http\BadRequestHttpException;
  * Form to edit Cron Task
  */
 
-Session::checkRight(Config::$rightname, READ);
+Session::checkRight(CronTask::$rightname, READ);
 
 $crontask = new CronTask();
 
 if (isset($_POST['execute'])) {
-    Session::checkRight(Config::$rightname, UPDATE);
+    Session::checkRight(CronTask::$rightname, UPDATE);
     if (is_numeric($_POST['execute'])) {
         // Execute button from list.
         $name = CronTask::launch(CronTask::MODE_INTERNAL, intval($_POST['execute']));
@@ -60,14 +60,14 @@ if (isset($_POST['execute'])) {
     }
     Html::back();
 } elseif (isset($_POST["update"])) {
-    Session::checkRight(Config::$rightname, UPDATE);
+    Session::checkRight(CronTask::$rightname, UPDATE);
     $crontask->update($_POST);
     Html::back();
 } elseif (
     isset($_POST['resetdate'])
            && isset($_POST["id"])
 ) {
-    Session::checkRight(Config::$rightname, UPDATE);
+    Session::checkRight(CronTask::$rightname, UPDATE);
     if ($crontask->getFromDB($_POST["id"])) {
         $crontask->resetDate();
     }
@@ -76,7 +76,7 @@ if (isset($_POST['execute'])) {
     isset($_POST['resetstate'])
            && isset($_POST["id"])
 ) {
-    Session::checkRight(Config::$rightname, UPDATE);
+    Session::checkRight(CronTask::$rightname, UPDATE);
     if ($crontask->getFromDB($_POST["id"])) {
         $crontask->resetState();
     }

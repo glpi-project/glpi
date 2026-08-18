@@ -37,7 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use function Safe\strtotime;
 
-Session::checkRight(Planning::$rightname, READ);
+Session::checkRight(PlanningExternalEvent::$rightname, READ);
 
 if (empty($_GET["id"])) {
     $_GET["id"] = "";
