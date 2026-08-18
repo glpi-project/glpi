@@ -34,6 +34,7 @@
 
 namespace Glpi\Tools\Plugin\Command;
 
+use Safe\Exceptions\FilesystemException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -111,9 +112,13 @@ final class PluginReleaseCommand extends AbstractPluginCommand
 
         // Ensure parent directory exists
         $this->dist_dir = dirname($dest);
-        if (!is_dir($this->dist_dir) && !mkdir($this->dist_dir, 0o777, true)) {
-            $this->io->error(sprintf('Unable to create the `%s` directory.', $this->dist_dir));
-            return Command::FAILURE;
+        if (!is_dir($this->dist_dir)) {
+            try {
+                mkdir($this->dist_dir, 0o777, true);
+            } catch (FilesystemException) {
+                $this->io->error(sprintf('Unable to create the `%s` directory.', $this->dist_dir));
+                return Command::FAILURE;
+            }
         }
 
         if (!$input->getOption('force') && file_exists($dest)) {
@@ -140,7 +145,9 @@ final class PluginReleaseCommand extends AbstractPluginCommand
         if (is_dir($src_dir)) {
             $fs->remove($src_dir);
         }
-        if (!mkdir($src_subdir, 0o777, true)) {
+        try {
+            mkdir($src_subdir, 0o777, true);
+        } catch (FilesystemException) {
             $this->io->error(sprintf('Unable to create the `%s` directory.', $src_subdir));
             return Command::FAILURE;
         }

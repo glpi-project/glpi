@@ -38,6 +38,7 @@ use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Router;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Exception\EarlyExitException;
+use Safe\Exceptions\FilesystemException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -45,6 +46,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 
 use function Safe\file_put_contents;
+use function Safe\mkdir;
 
 class GenerateAPISnapshotCommand extends AbstractCommand
 {
@@ -93,8 +95,19 @@ class GenerateAPISnapshotCommand extends AbstractCommand
             $SNAPSHOT_DIR = GLPI_ROOT . "/tests/fixtures/hlapi/snapshots/{$version}";
             $PATHS_FILE = $SNAPSHOT_DIR . '/paths.json';
             $COMPONENTS_FILE = $SNAPSHOT_DIR . '/components.json';
-            if (!is_dir($SNAPSHOT_DIR) && !mkdir($SNAPSHOT_DIR, 0o755, true) && !is_dir($SNAPSHOT_DIR)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was missing and not able to be created', $SNAPSHOT_DIR));
+            if (!is_dir($SNAPSHOT_DIR)) {
+                try {
+                    mkdir($SNAPSHOT_DIR, 0o755, true);
+                } catch (FilesystemException $e) {
+                    // Tolerate a concurrent process having created the directory in between.
+                    if (!is_dir($SNAPSHOT_DIR)) {
+                        throw new \RuntimeException(
+                            sprintf('Directory "%s" was missing and not able to be created', $SNAPSHOT_DIR),
+                            $e->getCode(),
+                            $e
+                        );
+                    }
+                }
             }
 
             $paths = $oapi->generatePathSnapshot();

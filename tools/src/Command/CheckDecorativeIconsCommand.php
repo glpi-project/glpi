@@ -39,6 +39,7 @@ use Override;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Safe\Exceptions\FilesystemException;
 use SplFileInfo;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,6 +47,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use function Safe\file_get_contents;
+use function Safe\file_put_contents;
 use function Safe\preg_match;
 use function Safe\preg_match_all;
 use function Safe\preg_replace;
@@ -198,8 +200,12 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
             }
 
             $updated = $this->addAriaHidden($contents, $icons);
-            if ($updated !== $contents && file_put_contents($filename, $updated) === false) {
-                $failed_files[] = $relative_path;
+            if ($updated !== $contents) {
+                try {
+                    file_put_contents($filename, $updated);
+                } catch (FilesystemException) {
+                    $failed_files[] = $relative_path;
+                }
             }
         }
 

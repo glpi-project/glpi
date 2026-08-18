@@ -39,6 +39,7 @@ use RecursiveDirectoryIterator;
 use RecursiveFilterIterator;
 use RecursiveIterator;
 use RecursiveIteratorIterator;
+use Safe\Exceptions\FilesystemException;
 use SplFileInfo;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -150,8 +151,10 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
                 $this->io->text('<comment>' . sprintf('Processing "%s".', $filename) . '</comment>');
             }
 
-            if (($file_lines = file($filename)) === false) {
-                throw new \Exception(sprintf('Unable to read file "%s".', $filename));
+            try {
+                $file_lines = file($filename);
+            } catch (FilesystemException $e) {
+                throw new \Exception(sprintf('Unable to read file "%s".', $filename), $e->getCode(), $e);
             }
 
             $header_start_pattern   = null;
@@ -393,10 +396,11 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
         array $extra_tagged_data = []
     ): array {
         if ($this->header_lines === null) {
-            if (($lines = file($header_file_path)) === false) {
-                throw new \Exception('Unable to read header file.');
+            try {
+                $this->header_lines = file($header_file_path);
+            } catch (FilesystemException $e) {
+                throw new \Exception('Unable to read header file.', $e->getCode(), $e);
             }
-            $this->header_lines = $lines;
         }
 
         $lines = [];
