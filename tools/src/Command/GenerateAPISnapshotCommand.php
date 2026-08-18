@@ -38,11 +38,15 @@ use Glpi\Api\HL\OpenAPIGenerator;
 use Glpi\Api\HL\Router;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Exception\EarlyExitException;
+use Safe\Exceptions\FilesystemException;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+
+use function Safe\file_put_contents;
+use function Safe\mkdir;
 
 class GenerateAPISnapshotCommand extends AbstractCommand
 {
@@ -91,17 +95,28 @@ class GenerateAPISnapshotCommand extends AbstractCommand
             $SNAPSHOT_DIR = GLPI_ROOT . "/tests/fixtures/hlapi/snapshots/{$version}";
             $PATHS_FILE = $SNAPSHOT_DIR . '/paths.json';
             $COMPONENTS_FILE = $SNAPSHOT_DIR . '/components.json';
-            if (!is_dir($SNAPSHOT_DIR) && !mkdir($SNAPSHOT_DIR, 0o755, true) && !is_dir($SNAPSHOT_DIR)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was missing and not able to be created', $SNAPSHOT_DIR));
+            if (!is_dir($SNAPSHOT_DIR)) {
+                try {
+                    mkdir($SNAPSHOT_DIR, 0o755, true);
+                } catch (FilesystemException $e) {
+                    // Tolerate a concurrent process having created the directory in between.
+                    if (!is_dir($SNAPSHOT_DIR)) {
+                        throw new \RuntimeException(
+                            sprintf('Directory "%s" was missing and not able to be created', $SNAPSHOT_DIR),
+                            $e->getCode(),
+                            $e
+                        );
+                    }
+                }
             }
 
             $paths = $oapi->generatePathSnapshot();
             file_put_contents($PATHS_FILE, json_encode($paths, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-            unset($path_item, $paths);
+            unset($paths);
 
             $schema_components = $oapi->generateComponentsSnapshot();
             file_put_contents($COMPONENTS_FILE, json_encode(['schemas' => $schema_components], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-            unset($component_schema, $schema_components);
+            unset($schema_components);
         }
 
         return 0;
