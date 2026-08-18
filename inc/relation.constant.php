@@ -134,14 +134,14 @@ $RELATION = [
         'glpi_databaseinstances' => 'autoupdatesystems_id',
         'glpi_monitors'          => 'autoupdatesystems_id',
         'glpi_networkequipments' => 'autoupdatesystems_id',
+        'glpi_pdus'              => 'autoupdatesystems_id',
+        'glpi_plugs'             => 'autoupdatesystems_id',
         'glpi_peripherals'       => 'autoupdatesystems_id',
         'glpi_phones'            => 'autoupdatesystems_id',
         'glpi_printers'          => 'autoupdatesystems_id',
         'glpi_refusedequipments' => 'autoupdatesystems_id',
         'glpi_unmanageds'        => 'autoupdatesystems_id',
         'glpi_assets_assets'     => 'autoupdatesystems_id',
-        'glpi_pdus'              => 'autoupdatesystems_id',
-        'glpi_plugs'             => 'autoupdatesystems_id',
     ],
 
     'glpi_budgets' => [
@@ -656,6 +656,7 @@ $RELATION = [
         'glpi_planningexternalevents'      => 'entities_id',
         'glpi_planningexternaleventtemplates' => 'entities_id',
         'glpi_plugs'                       => 'entities_id',
+        'glpi_plugtypes'                   => 'entities_id',
         'glpi_printers'                    => 'entities_id',
         '_glpi_problemcosts'               => 'entities_id',
         'glpi_problems'                    => 'entities_id',
@@ -700,7 +701,7 @@ $RELATION = [
         'glpi_wifinetworks'                => 'entities_id',
         'glpi_webhooks'                    => 'entities_id',
         'glpi_queuedwebhooks'              => 'entities_id',
-        'glpi_plugtypes'                   => 'entities_id',
+
     ],
 
     'glpi_plugtypes' => [
@@ -1298,9 +1299,9 @@ $RELATION = [
 
     'glpi_snmpcredentials' => [
         'glpi_networkequipments' => 'snmpcredentials_id',
+        'glpi_pdus'              => 'snmpcredentials_id',
         'glpi_printers'          => 'snmpcredentials_id',
         'glpi_unmanageds'        => 'snmpcredentials_id',
-        'glpi_pdus'              => 'snmpcredentials_id',
     ],
 
     'glpi_socketmodels' => [
