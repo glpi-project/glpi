@@ -261,6 +261,122 @@ class OAuthAuthorizationTest extends DbTestCase
     }
 
     // -------------------------------------------------------------------------
+    // getTokenStatus()
+    // -------------------------------------------------------------------------
+
+    /**
+     * @param array<string, mixed> $fields
+     */
+    private function createAuthorizationWithFields(array $fields): OAuthAuthorization
+    {
+        $encrypted = array_values(array_intersect_key(
+            ['token' => 'token', 'refresh_token' => 'refresh_token'],
+            $fields
+        ));
+
+        /** @var OAuthAuthorization $authorization */
+        $authorization = $this->createItem(OAuthAuthorization::class, [
+            'oauth_applications_id' => $this->createApplication()->getID(),
+            'type'                  => OAuthAuthorization::TYPE_IMAP,
+            'email'                 => 'user@example.com',
+        ] + $fields, $encrypted);
+
+        return $authorization;
+    }
+
+    public function testGetTokenStatusWithoutToken(): void
+    {
+        $this->login();
+
+        $status = $this->createAuthorizationWithFields([])->getTokenStatus();
+
+        $this->assertSame(OAuthAuthorization::TOKEN_MISSING, $status['code']);
+        $this->assertSame('Not authorized', $status['label']);
+        $this->assertSame('ti ti-info-circle', $status['icon']);
+        $this->assertNull($status['expiration']);
+    }
+
+    public function testGetTokenStatusWithUnreadableToken(): void
+    {
+        $this->login();
+
+        $status = $this->createAuthorizationWithFields([
+            'token' => 'not-a-json-payload',
+        ])->getTokenStatus();
+
+        $this->assertSame(OAuthAuthorization::TOKEN_UNREADABLE, $status['code']);
+        $this->assertSame('Unreadable token', $status['label']);
+        $this->assertSame('ti ti-circle-x', $status['icon']);
+        $this->assertNull($status['expiration']);
+    }
+
+    public function testGetTokenStatusWithValidToken(): void
+    {
+        $this->login();
+
+        $expires = time() + 3600;
+        $token = new AccessToken(['access_token' => 'abc', 'expires' => $expires]);
+
+        $status = $this->createAuthorizationWithFields([
+            'token' => json_encode($token->jsonSerialize()),
+        ])->getTokenStatus();
+
+        $this->assertSame(OAuthAuthorization::TOKEN_VALID, $status['code']);
+        $this->assertSame('Authorized', $status['label']);
+        $this->assertSame('ti ti-circle-check', $status['icon']);
+        $this->assertSame(date('Y-m-d H:i:s', $expires), $status['expiration']);
+    }
+
+    public function testGetTokenStatusWithTokenWithoutExpirationDate(): void
+    {
+        $this->login();
+
+        $token = new AccessToken(['access_token' => 'abc']);
+
+        $status = $this->createAuthorizationWithFields([
+            'token' => json_encode($token->jsonSerialize()),
+        ])->getTokenStatus();
+
+        $this->assertSame(OAuthAuthorization::TOKEN_VALID, $status['code']);
+        $this->assertNull($status['expiration']);
+    }
+
+    public function testGetTokenStatusWithExpiredTokenAndARefreshToken(): void
+    {
+        $this->login();
+
+        $expires = time() - 100;
+        $token = new AccessToken(['access_token' => 'abc', 'expires' => $expires]);
+
+        $status = $this->createAuthorizationWithFields([
+            'token'         => json_encode($token->jsonSerialize()),
+            'refresh_token' => 'refresh-value',
+        ])->getTokenStatus();
+
+        $this->assertSame(OAuthAuthorization::TOKEN_RENEWABLE, $status['code']);
+        $this->assertSame('Renewable', $status['label']);
+        $this->assertSame('ti ti-alert-circle', $status['icon']);
+        $this->assertSame(date('Y-m-d H:i:s', $expires), $status['expiration']);
+    }
+
+    public function testGetTokenStatusWithExpiredTokenAndNoRefreshToken(): void
+    {
+        $this->login();
+
+        $expires = time() - 100;
+        $token = new AccessToken(['access_token' => 'abc', 'expires' => $expires]);
+
+        $status = $this->createAuthorizationWithFields([
+            'token' => json_encode($token->jsonSerialize()),
+        ])->getTokenStatus();
+
+        $this->assertSame(OAuthAuthorization::TOKEN_EXPIRED, $status['code']);
+        $this->assertSame('Expired', $status['label']);
+        $this->assertSame('ti ti-circle-x', $status['icon']);
+        $this->assertSame(date('Y-m-d H:i:s', $expires), $status['expiration']);
+    }
+
+    // -------------------------------------------------------------------------
     // refreshToken()
     // -------------------------------------------------------------------------
 
@@ -423,6 +539,34 @@ class OAuthAuthorizationTest extends DbTestCase
 
         $this->assertTrue($result['success']);
         $this->assertSame('refresh_token', $provider->last_grant);
+    }
+
+    public function testTestConnectionAcceptsATokenWithoutExpirationDate(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+
+        // A token whose lifetime the provider did not advertise must not be
+        // treated as an error: it is used as-is.
+        $token = new AccessToken(['access_token' => 'abc']);
+        /** @var OAuthAuthorization $authorization */
+        $authorization = $this->createItem(OAuthAuthorization::class, [
+            'oauth_applications_id' => $app->getID(),
+            'type'                  => OAuthAuthorization::TYPE_IMAP,
+            'email'                 => 'user@example.com',
+            'token'                 => json_encode($token->jsonSerialize()),
+        ], ['token']);
+
+        $provider = new FakeOauthProviderForTests();
+        $testable = TestableOAuthAuthorization::withProvider($provider);
+        $testable->getFromDB($authorization->getID());
+        $testable->probe_result = true;
+
+        $result = $testable->testConnection();
+
+        $this->assertTrue($result['success']);
+        $this->assertNull($provider->last_grant);
     }
 
     // -------------------------------------------------------------------------

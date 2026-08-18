@@ -48,6 +48,16 @@ class OAuthAuthorization extends CommonDBChild
     public const TYPE_SMTP = 'SMTP';
 
     /**
+     * Local states of the stored access token, as reported by
+     * getTokenStatus().
+     */
+    public const TOKEN_MISSING    = 'missing';
+    public const TOKEN_UNREADABLE = 'unreadable';
+    public const TOKEN_VALID      = 'valid';
+    public const TOKEN_RENEWABLE  = 'renewable';
+    public const TOKEN_EXPIRED    = 'expired';
+
+    /**
      * Timeout, in seconds, used when probing a mail server.
      */
     private const PROBE_TIMEOUT = 10;
@@ -154,13 +164,14 @@ class OAuthAuthorization extends CommonDBChild
             $authorization = new self();
             $authorization->getFromResultSet($row);
 
-            $has_token = !empty($row['token']);
+            $status = $authorization->getTokenStatus();
 
             $entries[] = [
-                'email'     => $row['email'],
-                'status'    => $has_token ? __('Authorized') : __('Not authorized'),
-                'date_mod'  => $row['date_mod'],
-                'actions'   => $this->getRowActionsHtml($authorization),
+                'email'      => $row['email'],
+                'status'     => $this->getStatusHtml($status),
+                'expiration' => $status['expiration'],
+                'date_mod'   => $row['date_mod'],
+                'actions'    => $this->getRowActionsHtml($authorization),
             ];
         }
 
@@ -171,6 +182,24 @@ class OAuthAuthorization extends CommonDBChild
             'total_number'    => count($entries),
             'filtered_number' => count($entries),
         ]);
+    }
+
+    /**
+     * Renders a token status as a badge prefixed with a colored round icon, so
+     * a healthy authorization can be told from a broken one at a glance.
+     *
+     * The icon only repeats what the label already says, hence aria-hidden.
+     *
+     * @param array{code: string, label: string, color: string, icon: string, expiration: ?string} $status
+     */
+    private function getStatusHtml(array $status): string
+    {
+        return sprintf(
+            '<span class="badge bg-%1$s-lt text-nowrap"><i class="%2$s me-1" aria-hidden="true"></i>%3$s</span>',
+            htmlescape($status['color']),
+            htmlescape($status['icon']),
+            htmlescape($status['label'])
+        );
     }
 
     private function getRowActionsHtml(self $authorization): string
@@ -300,6 +329,109 @@ class OAuthAuthorization extends CommonDBChild
     }
 
     /**
+     * Computes the state of the stored access token.
+     *
+     * This is a purely local check: it reads the stored token and the
+     * expiration date the provider advertised when it was issued, without
+     * contacting the provider. A token can therefore be reported as valid here
+     * and still be refused by the mail server (revoked application, missing
+     * API permission, ...); testConnection() is what answers that question.
+     *
+     * The color is a Tabler color name, and the icon a round Tabler icon, both
+     * meant to be rendered by getStatusHtml().
+     *
+     * @return array{code: string, label: string, color: string, icon: string, expiration: ?string}
+     */
+    public function getTokenStatus(): array
+    {
+        if (empty($this->fields['token'])) {
+            return self::buildTokenStatus(self::TOKEN_MISSING, null);
+        }
+
+        $token = $this->getAccessToken();
+        if ($token === null) {
+            return self::buildTokenStatus(self::TOKEN_UNREADABLE, null);
+        }
+
+        $expires = (int) $token->getExpires();
+        if ($expires <= 0) {
+            return self::buildTokenStatus(self::TOKEN_VALID, null);
+        }
+
+        $expiration = date('Y-m-d H:i:s', $expires);
+
+        if (!self::isTokenExpired($token)) {
+            return self::buildTokenStatus(self::TOKEN_VALID, $expiration);
+        }
+
+        return !empty($this->fields['refresh_token'])
+            ? self::buildTokenStatus(self::TOKEN_RENEWABLE, $expiration)
+            : self::buildTokenStatus(self::TOKEN_EXPIRED, $expiration);
+    }
+
+    /**
+     * Label, color and icon used to present each token status.
+     *
+     * @return array<string, array{label: string, color: string, icon: string}>
+     */
+    private static function getTokenStatusPresentations(): array
+    {
+        return [
+            self::TOKEN_VALID => [
+                'label' => __('Authorized'),
+                'color' => 'green',
+                'icon'  => 'ti ti-circle-check',
+            ],
+            self::TOKEN_RENEWABLE => [
+                'label' => __('Renewable'),
+                'color' => 'orange',
+                'icon'  => 'ti ti-alert-circle',
+            ],
+            self::TOKEN_EXPIRED => [
+                'label' => __('Expired'),
+                'color' => 'red',
+                'icon'  => 'ti ti-circle-x',
+            ],
+            self::TOKEN_UNREADABLE => [
+                'label' => __('Unreadable token'),
+                'color' => 'red',
+                'icon'  => 'ti ti-circle-x',
+            ],
+            self::TOKEN_MISSING => [
+                'label' => __('Not authorized'),
+                'color' => 'secondary',
+                'icon'  => 'ti ti-info-circle',
+            ],
+        ];
+    }
+
+    /**
+     * @return array{code: string, label: string, color: string, icon: string, expiration: ?string}
+     */
+    private static function buildTokenStatus(string $code, ?string $expiration): array
+    {
+        return [
+            'code'       => $code,
+            'expiration' => $expiration,
+        ] + self::getTokenStatusPresentations()[$code];
+    }
+
+    /**
+     * Tells whether a token is past its expiration date.
+     *
+     * AccessToken::hasExpired() throws when the provider did not advertise any
+     * expiration date, which cannot be treated as an error here: such a token
+     * is simply of unknown lifetime, so it is considered still usable and left
+     * to the mail server to accept or refuse.
+     */
+    private static function isTokenExpired(AccessToken $token): bool
+    {
+        $expires = (int) $token->getExpires();
+
+        return $expires > 0 && $expires < time();
+    }
+
+    /**
      * Returns the currently stored access token, if any.
      */
     public function getAccessToken(): ?AccessToken
@@ -372,7 +504,7 @@ class OAuthAuthorization extends CommonDBChild
     public function testConnection(): array
     {
         $token = $this->getAccessToken();
-        if ($token === null || $token->hasExpired()) {
+        if ($token === null || self::isTokenExpired($token)) {
             if (!$this->refreshToken()) {
                 return [
                     'success' => false,
