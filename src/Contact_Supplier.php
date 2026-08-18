@@ -76,7 +76,7 @@ class Contact_Supplier extends CommonDBRelation
                         return self::createTabEntry(Contact::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
 
-                    // no break
+                    break;
                 case 'Contact':
                     if (Session::haveRight(Supplier::$rightname, READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
@@ -84,6 +84,7 @@ class Contact_Supplier extends CommonDBRelation
                         }
                         return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
+                    break;
             }
         }
         return '';
