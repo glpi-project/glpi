@@ -95,7 +95,7 @@ final class CreateArticleControllerTest extends DbTestCase
         $this->assertSame(0, (int) $item->fields['is_recursive']);
     }
 
-    public function testCreatesRootArticleWhenNoParentGiven(): void
+    public function testCreatesArticleUnderRootWhenNoParentGiven(): void
     {
         $this->login();
 
@@ -104,10 +104,10 @@ final class CreateArticleControllerTest extends DbTestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
-        $links = (new \KnowbaseItem_KnowbaseItem())->find([
-            'knowbaseitems_id' => $data['id'],
-        ]);
-        $this->assertCount(0, $links);
+        $this->assertSame(
+            [KnowbaseItem::getRootId()],
+            $this->getParentIds((int) $data['id']),
+        );
     }
 
     public function testEmptyNameReturns400(): void
@@ -139,10 +139,25 @@ final class CreateArticleControllerTest extends DbTestCase
 
         $this->assertSame(200, $response->getStatusCode());
         $data = json_decode($response->getContent(), true);
+
+        // The unreadable parent is dropped, so the article falls back to the
+        // root article like any other parentless creation.
+        $this->assertSame(
+            [KnowbaseItem::getRootId()],
+            $this->getParentIds((int) $data['id']),
+        );
+    }
+
+    /**
+     * @return int[]
+     */
+    private function getParentIds(int $article_id): array
+    {
         $links = (new \KnowbaseItem_KnowbaseItem())->find([
-            'knowbaseitems_id' => $data['id'],
+            'knowbaseitems_id' => $article_id,
         ]);
-        $this->assertCount(0, $links);
+
+        return array_map('intval', array_column($links, 'knowbaseitems_id_parent'));
     }
 
     public function testUserWithoutCreateRightIsDenied(): void

@@ -489,7 +489,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $kb_item_item->add($params);
         }
 
-        // Handle parent articles
+        // Handle parent articles. Articles created without a parent are attached
+        // to the root article, so the knowledge base always is a single tree.
+        $root_id = self::getConfiguredRootId();
+        if (
+            empty($this->input['_parents'])
+            && !$this->isRoot()
+            && $root_id > 0
+            && self::getById($root_id) !== false
+        ) {
+            $this->input['_parents'] = [$root_id];
+        }
         $this->update1NTableData(KnowbaseItem_KnowbaseItem::class, "_parents");
 
         NotificationEvent::raiseEvent('new', $this);

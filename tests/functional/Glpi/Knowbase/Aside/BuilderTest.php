@@ -34,7 +34,9 @@
 
 namespace tests\unit\Glpi\Knowbase\Aside;
 
+use Glpi\Knowbase\Aside\Article;
 use Glpi\Knowbase\Aside\Builder;
+use Glpi\Knowbase\Aside\Tree;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_User;
@@ -46,7 +48,8 @@ final class BuilderTest extends DbTestCase
      * Builds a multi-level tree via `_parents` and asserts its recursive
      * structure:
      *
-     *  Root articles : _knowbaseitem01, _knowbaseitem02 (fixtures), "Root article"
+     *  Home (root)   : _knowbaseitem01, _knowbaseitem02 (fixtures), "Top level
+     *                  article", "Animals", "Plants"
      *  Animals       : "Cat article", "Dog article"
      *    └─ Birds    : "Eagle article"
      *  Plants        : "Rose article"
@@ -59,7 +62,7 @@ final class BuilderTest extends DbTestCase
         $birds   = $this->makeArticle('Birds', $animals->getID());
         $plants  = $this->makeArticle('Plants');
 
-        $this->makeArticle('Root article');
+        $this->makeArticle('Top level article');
         $this->makeArticle('Cat article', $animals->getID());
         $this->makeArticle('Dog article', $animals->getID());
         $this->makeArticle('Eagle article', $birds->getID());
@@ -67,15 +70,15 @@ final class BuilderTest extends DbTestCase
 
         $tree = (new Builder())->buildTree();
 
-        // Root level: the two fixture articles, "Animals", "Plants", "Root article"
-        // and the installation's root article (ordered by name, not by the order
-        // they were requested above).
-        $this->assertEquals(
-            ['_knowbaseitem01', '_knowbaseitem02', 'Animals', 'Home', 'Plants', 'Root article'],
-            array_column($tree->getArticles(), 'title'),
-        );
+        // The tree has a single root, the installation's root article, and every
+        // other article hangs under it.
+        $this->assertEquals(['Home'], array_column($tree->getArticles(), 'title'));
 
-        $by_title = array_column($tree->getArticles(), null, 'title');
+        $by_title = $this->getTopLevelArticles($tree);
+        $this->assertEqualsCanonicalizing(
+            ['_knowbaseitem01', '_knowbaseitem02', 'Animals', 'Plants', 'Top level article'],
+            array_keys($by_title),
+        );
 
         // Animals has three direct children: Birds (a nested article), Cat, Dog.
         $animals_node = $by_title['Animals'];
@@ -97,7 +100,7 @@ final class BuilderTest extends DbTestCase
         $this->assertEquals(['Rose article'], array_column($plants_node->getChildren(), 'title'));
 
         // Leaves have no children.
-        $this->assertFalse($by_title['Root article']->hasChildren());
+        $this->assertFalse($by_title['Top level article']->hasChildren());
         $cat_node = array_column($animals_node->getChildren(), null, 'title')['Cat article'];
         $this->assertFalse($cat_node->hasChildren());
     }
@@ -116,7 +119,7 @@ final class BuilderTest extends DbTestCase
         }
     }
 
-    public function testCurrentIdMarksMatchingRootArticle(): void
+    public function testCurrentIdMarksMatchingTopLevelArticle(): void
     {
         $this->login();
 
@@ -125,7 +128,7 @@ final class BuilderTest extends DbTestCase
 
         $tree = (new Builder($target->getID()))->buildTree();
 
-        $by_title = array_column($tree->getArticles(), null, 'title');
+        $by_title = $this->getTopLevelArticles($tree);
         $this->assertFalse($by_title['Other article']->is_current);
         $this->assertTrue($by_title['Target article']->is_current);
     }
@@ -135,13 +138,13 @@ final class BuilderTest extends DbTestCase
         $this->login();
 
         $parent = $this->makeArticle('Animals');
-        $this->makeArticle('Root article');
+        $this->makeArticle('Top level article');
         $nested = $this->makeArticle('Nested article', $parent->getID());
 
         $tree = (new Builder($nested->getID()))->buildTree();
 
-        $by_title = array_column($tree->getArticles(), null, 'title');
-        $this->assertFalse($by_title['Root article']->is_current);
+        $by_title = $this->getTopLevelArticles($tree);
+        $this->assertFalse($by_title['Top level article']->is_current);
 
         $animals_node = $by_title['Animals'];
         $nested_by_title = array_column($animals_node->getChildren(), null, 'title');
@@ -161,7 +164,7 @@ final class BuilderTest extends DbTestCase
 
         $tree = (new Builder())->buildTree();
 
-        $by_title = array_column($tree->getArticles(), null, 'title');
+        $by_title = $this->getTopLevelArticles($tree);
         $this->assertSame('antivirus', $by_title['With illustration']->illustration);
         $this->assertSame('', $by_title['Without illustration']->illustration);
     }
@@ -221,7 +224,7 @@ final class BuilderTest extends DbTestCase
         $this->makeArticle('Shared child ' . __FUNCTION__, [$parent1->getID(), $parent2->getID()]);
 
         $tree = (new Builder())->buildTree();
-        $by_title = array_column($tree->getArticles(), null, 'title');
+        $by_title = $this->getTopLevelArticles($tree);
 
         $this->assertEquals(
             ['Shared child ' . __FUNCTION__],
@@ -231,6 +234,24 @@ final class BuilderTest extends DbTestCase
             ['Shared child ' . __FUNCTION__],
             array_column($by_title['Parent two ' . __FUNCTION__]->getChildren(), 'title'),
         );
+    }
+
+    /**
+     * The articles of the top level, i.e. the children of the root article every
+     * article hangs under, keyed by title.
+     *
+     * @return array<string, Article>
+     */
+    private function getTopLevelArticles(Tree $tree): array
+    {
+        $root_id = KnowbaseItem::getRootId();
+        foreach ($tree->getArticles() as $article) {
+            if ($article->id === $root_id) {
+                return array_column($article->getChildren(), null, 'title');
+            }
+        }
+
+        $this->fail('The root article is missing from the tree');
     }
 
     /**

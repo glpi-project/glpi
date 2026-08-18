@@ -134,10 +134,12 @@ final class KnowbaseItem_KnowbaseItemTest extends DbTestCase
             'expected' => false,
             'with_message' => "The root article of the knowledge base cannot have a parent.",
         ];
+        // "Article A" already hangs under the root article, "Article A1" does
+        // not: an article may have several parents.
         yield "The root article can be a parent" => [
             'tree' => $tree,
             'input' => [
-                'knowbaseitems_id' => "Article A",
+                'knowbaseitems_id' => "Article A1",
                 'knowbaseitems_id_parent' => KnowbaseItem::getRootId(),
             ],
             'expected' => true,
@@ -304,17 +306,14 @@ final class KnowbaseItem_KnowbaseItemTest extends DbTestCase
     private function createTree(array $tree, int $parent_id = 0): void
     {
         foreach ($tree as $name => $children) {
+            // The parent is set at creation time: articles created without one
+            // are attached to the root article, which would leave every node of
+            // the tree with a second parent.
             $article = $this->createItem(KnowbaseItem::class, [
                 'name' => $name,
                 'answer' => '',
+                '_parents' => $parent_id > 0 ? [$parent_id] : [],
             ]);
-
-            if ($parent_id > 0) {
-                $this->createItem(KnowbaseItem_KnowbaseItem::class, [
-                    'knowbaseitems_id'        => $article->getID(),
-                    'knowbaseitems_id_parent' => $parent_id,
-                ]);
-            }
 
             $this->createTree($children, $article->getID());
         }

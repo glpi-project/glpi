@@ -35,11 +35,13 @@
 namespace test\units;
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionType;
 use Glpi\Tests\DbTestCase;
 use InvalidArgumentException;
 use KnowbaseItem;
+use KnowbaseItem_KnowbaseItem;
 use KnowbaseItem_User;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -570,7 +572,6 @@ HTML,
         return [
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+macintosh",
                     //Find rows that contain the word 'macintosh'
@@ -581,7 +582,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+apple",
                     //Find rows that contain the word 'apple'
@@ -592,7 +592,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "apple macintosh",
                     //Find rows that contain at least one of the two words.
@@ -603,7 +602,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "base entry _knowbaseitem02",
                     //Find rows that contain at least one of the three words.
@@ -614,7 +612,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "apple",
                     //Find rows that contain at least 'apple'
@@ -625,7 +622,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "macintosh",
                     //Find rows that contain at least 'macintosh'
@@ -636,7 +632,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "Knowledge",
                     //Find rows that contain at least 'macintosh'
@@ -647,7 +642,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+juice +macintosh",
                     //Find rows that contain both words.
@@ -658,7 +652,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+apple -macintosh",
                     //Find rows that contain the word “apple” but not “macintosh”.
@@ -669,7 +662,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+apple ~macintosh",
                     //Find rows that contain the word “apple”, but if the row also contains the word “macintosh”, rate it lower than if row does not.
@@ -680,7 +672,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+apple macintosh",
                     //Find rows that contain the word “apple”, but rank rows higher if they also contain “macintosh”.
@@ -691,7 +682,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "+apple +(>macintosh <juice)",
                     //Find rows that contain the words “apple” and "juice", or “apple” and "macintosh" (in any order), but rank “apple macintosh" higher than “apple juice".
@@ -702,7 +692,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "Know*",
                     //Find rows that contain "Know" such as "Knowledge"
@@ -713,7 +702,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => "turn*",
                     //Find rows that contain "turn" such as "turnover"
@@ -724,7 +712,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => '"macintosh strudel"',
                     //Find rows that contain the exact phrase “macintosh strudel”
@@ -735,7 +722,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => '"base entry _knowbaseitem02"',
                     //Find rows that contain the exact phrase “base entry _knowbaseitem02”
@@ -746,7 +732,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => ' ',
                     // Make sure no errors are triggered when sending this specific request
@@ -757,7 +742,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => '      ',
                     // Make sure no errors are triggered when sending this specific request
@@ -768,7 +752,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => '*',
                     // Make sure no errors are triggered when sending this specific request
@@ -779,7 +762,6 @@ HTML,
             ],
             [
                 'params' => [
-                    'knowbaseitems_id_parent' => 0,
                     'faq' => false,
                     'contains' => '%',
                     // Make sure no errors are triggered when sending this specific request
@@ -874,7 +856,7 @@ HTML,
 
         // Expect the KB item to have the first parent
         $iterator = $DB->request([
-            'FROM' => \KnowbaseItem_KnowbaseItem::getTable(),
+            'FROM' => KnowbaseItem_KnowbaseItem::getTable(),
             'WHERE' => [
                 'knowbaseitems_id' => $kbitems_id1,
             ],
@@ -892,7 +874,7 @@ HTML,
 
         // Expect the KB item to have both parents
         $iterator = $DB->request([
-            'FROM' => \KnowbaseItem_KnowbaseItem::getTable(),
+            'FROM' => KnowbaseItem_KnowbaseItem::getTable(),
             'WHERE' => [
                 'knowbaseitems_id' => $kbitems_id2,
             ],
@@ -1909,7 +1891,7 @@ HTML,
         $this->assertEquals(
             1,
             countElementsInTable(
-                \KnowbaseItem_KnowbaseItem::getTable(),
+                KnowbaseItem_KnowbaseItem::getTable(),
                 ['knowbaseitems_id' => $kbi->getID()]
             )
         );
@@ -1921,7 +1903,7 @@ HTML,
         $this->assertEquals(
             0,
             countElementsInTable(
-                \KnowbaseItem_KnowbaseItem::getTable(),
+                KnowbaseItem_KnowbaseItem::getTable(),
                 ['knowbaseitems_id' => $kbi->getID()]
             )
         );
@@ -2406,7 +2388,7 @@ HTML,
         // The child (visible) is listed, but the unviewable parent must not leak.
         $this->assertStringContainsString('Leaf child ' . __FUNCTION__, $output);
         $this->assertStringNotContainsString('Secret parent ' . __FUNCTION__, $output);
-        $this->assertStringNotContainsString('kb-parent', $output);
+        $this->assertStringNotContainsString("data-parent-id='" . $parent_id . "'", $output);
     }
 
     /**
@@ -2568,6 +2550,51 @@ HTML,
         $this->assertTrue($root->canViewItem());
         $this->assertTrue($root->can($root_id, READ));
         $this->assertContains($root_id, $this->getVisibleArticleIds());
+    }
+
+    public function testArticleCreatedWithoutParentIsAttachedToTheRoot(): void
+    {
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        // No parent given: the article joins the tree under the root article,
+        // so it does not become a second root.
+        $orphan = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Orphan ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $this->assertSame([$root_id], $this->getParentIds($orphan->getID()));
+
+        // An explicit parent is left alone.
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$orphan->getID()],
+        ]);
+        $this->assertSame([$orphan->getID()], $this->getParentIds($child->getID()));
+
+        // The root article is the only one left without a parent.
+        $parentless = (new KnowbaseItem())->find([
+            'NOT' => [
+                'id' => new QuerySubQuery([
+                    'SELECT' => 'knowbaseitems_id',
+                    'FROM'   => KnowbaseItem_KnowbaseItem::getTable(),
+                ]),
+            ],
+        ]);
+        $this->assertSame([$root_id], array_map('intval', array_column($parentless, 'id')));
+    }
+
+    /**
+     * @return int[]
+     */
+    private function getParentIds(int $article_id): array
+    {
+        $links = (new KnowbaseItem_KnowbaseItem())->find([
+            'knowbaseitems_id' => $article_id,
+        ]);
+
+        return array_map('intval', array_column($links, 'knowbaseitems_id_parent'));
     }
 
     public function testRootArticleIsEditableWithoutVisibilityRules(): void
