@@ -373,8 +373,6 @@ export class GlpiKnowbaseAsideDragController
         return parentIdOf(this.#dragged);
     }
 
-
-
     /**
      * @param {{row: HTMLElement, mode: string}|null} intent
      */

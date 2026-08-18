@@ -98,6 +98,18 @@ final class MoveArticleController extends AbstractController
             }
         }
 
+        // Same reason on the source: deleteByCriteria() checks no rights either, and
+        // reports success on zero rows, so an unreadable parent would sever silently.
+        if ($from_parent_id > 0) {
+            $source = new KnowbaseItem();
+            if (!$source->getFromDB($from_parent_id)) {
+                throw new NotFoundHttpException();
+            }
+            if (!$source->can($from_parent_id, READ)) {
+                throw new AccessDeniedHttpException();
+            }
+        }
+
         $link = new KnowbaseItem_KnowbaseItem();
 
         $DB->beginTransaction();

@@ -195,6 +195,17 @@ class MoveArticleControllerTest extends DbTestCase
         $this->callController($child, 0, 999999999);
     }
 
+    public function testDetachingFromAnUnresolvableParentIsDenied(): void
+    {
+        $this->login();
+        $child = $this->makeArticle();
+
+        // deleteByCriteria() reports success on zero rows, so the source needs
+        // its own check or an unreadable parent would be severed silently.
+        $this->expectException(NotFoundHttpException::class);
+        $this->callController($child, 999999999, 0);
+    }
+
     public function testMoveAcrossIncoherentEntitiesIsRejected(): void
     {
         $this->login();
