@@ -749,7 +749,14 @@ final class AssetController extends AbstractController
                     'readOnly' => true,
                 ],
                 'autoupdatesystem' => $autoupdatesystem_property,
-                'size' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT, 'minimum' => 0, 'x-version-introduced' => '2.3.0'],
+                'size' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'minimum' => 0,
+                    'maximum' => 999.99,
+                    'multipleOf' => 0.01,
+                    'x-version-introduced' => '2.3.0',
+                ],
                 'has_microphone' => [
                     'x-version-introduced' => '2.3.0',
                     'x-field' => 'have_micro',
