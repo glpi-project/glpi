@@ -35,6 +35,7 @@
 
 namespace Glpi\Tools\Command;
 
+use Override;
 use RecursiveDirectoryIterator;
 use RecursiveFilterIterator;
 use RecursiveIterator;

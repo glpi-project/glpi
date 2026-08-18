@@ -34,6 +34,7 @@
 
 namespace Glpi\Tools\Plugin\Command;
 
+use Override;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
