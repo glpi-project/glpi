@@ -59,7 +59,6 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Header lines.
      *
-     * @var array|null
      */
     private ?array $header_lines = null;
 
@@ -382,12 +381,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
      * Get licence header lines.
      *
      * @param string|null $header_file_path
-     * @param string $line_prefix
-     * @param string $prepend_line
-     * @param string $append_line
-     * @param array  $extra_tagged_data
      *
-     * @return array
      */
     private function getLicenceHeaderLines(
         string $header_file_path,
@@ -419,9 +413,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Return files to parse.
      *
-     * @param string $directory
      *
-     * @return array
      */
     private function getFilesToParse(string $directory): array
     {
@@ -493,9 +485,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Indicates if a line can/should be located before licence header.
      *
-     * @param string $line
      *
-     * @return bool
      */
     private function shouldLineBeLocatedBeforeHeader(string $line): bool
     {
@@ -526,11 +516,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Strip empty top/bottom lines from an array.
      *
-     * @param array $lines
-     * @param bool $strip_top_lines
-     * @param bool $strip_bottom_lines
      *
-     * @return array
      */
     private function stripEmptyLines(array $lines, bool $strip_top_lines, bool $strip_bottom_lines): array
     {
@@ -566,10 +552,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Extract tagged data from header lines.
      *
-     * @param array $lines
-     * @param string|null $line_prefix
      *
-     * @return array
      */
     private function extractTaggedData(array $lines, ?string $line_prefix = null): array
     {
@@ -598,11 +581,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Append tagged data to header lines.
      *
-     * @param array $lines
-     * @param array $data_to_append
-     * @param string|null $line_prefix
      *
-     * @return array
      */
     private function appendTaggedData(array $lines, array $data_to_append, ?string $line_prefix = null): array
     {
@@ -654,9 +633,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Get regex pattern used to detect/extract tagged data.
      *
-     * @param string $line_prefix
      *
-     * @return string
      */
     private function getTagPattern(?string $line_prefix = null): string
     {
@@ -672,9 +649,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Unduplicate copyright/copyleft tags values.
      *
-     * @param array $values
      *
-     * @return array
      */
     private function unduplicateCopyTag(array $values): array
     {
@@ -752,9 +727,7 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Get files exclusion pattern. All files matching this pattern will be excluded from checks.
      *
-     * @param string $directory
      *
-     * @return string
      */
     protected function getExclusionPattern(string $directory): ?string
     {

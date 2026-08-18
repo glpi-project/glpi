@@ -321,7 +321,7 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
     /**
      * Print full review summary
      *
-     * @param list<string> $shown_categories
+     * @param list<string>                $shown_categories
      * @param array<string, list<string>> $review
      */
     private function reportReviewSummary(array $shown_categories, array $review): void

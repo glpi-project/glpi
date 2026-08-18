@@ -104,7 +104,6 @@ abstract class AbstractCommand extends Command
 
     /**
      * Declare whether the command supports --plugin.
-     * @return bool
      */
     protected function isPluginOptionAvailable(): bool
     {
@@ -113,7 +112,6 @@ abstract class AbstractCommand extends Command
 
     /**
      * Declare the command supporting plugin and require it to be set.
-     * @return bool
      */
     protected function isRequiringPluginOption(): bool
     {

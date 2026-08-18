@@ -53,6 +53,7 @@ final class LocalesCompileCommand extends AbstractCommand
         return true;
     }
 
+    #[Override]
     protected function configure(): void
     {
         parent::configure();
@@ -94,7 +95,7 @@ final class LocalesCompileCommand extends AbstractCommand
         }
 
         $files = glob($locales_dir . '/*.po');
-        if (empty($files)) {
+        if ($files === []) {
             $this->io->error("No .po files found in $locales_dir");
             return false;
         }
