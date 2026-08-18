@@ -51,7 +51,7 @@ final class MoveCandidates
     public function build(): array
     {
         $tree      = (new Builder())->buildTree();
-        $forbidden = $this->forbiddenIds();
+        $forbidden = KnowbaseItem_KnowbaseItem::getDescendantIds($this->article_id);
 
         $candidates = [0 => __('Root level')];
 
@@ -60,7 +60,8 @@ final class MoveCandidates
         foreach ($tree->getArticles() as $article) {
             $queue[] = [$article, ''];
         }
-        for ($i = 0; $i < count($queue); $i++) {
+        // Bound stays dynamic: the loop body enqueues the children it discovers.
+        for ($i = 0; isset($queue[$i]); $i++) {
             [$article, $prefix] = $queue[$i];
             // A forbidden article's whole subtree is forbidden too.
             if (isset($forbidden[$article->id])) {
@@ -79,38 +80,6 @@ final class MoveCandidates
     }
 
     /**
-     * Real ancestry, walked breadth-first over the unfiltered relation table: the
-     * visible tree promotes an article to root when its parent is invisible, which
-     * would otherwise hide a genuine descendant from this forbidden set.
-     *
-     * @return array<int, true>
-     */
-    private function forbiddenIds(): array
-    {
-        global $DB;
-
-        $forbidden = [$this->article_id => true];
-        $frontier  = [$this->article_id];
-        while ($frontier !== []) {
-            $next = [];
-            foreach ($DB->request([
-                'SELECT' => 'knowbaseitems_id',
-                'FROM'   => KnowbaseItem_KnowbaseItem::getTable(),
-                'WHERE'  => ['knowbaseitems_id_parent' => $frontier],
-            ]) as $row) {
-                $child_id = (int) $row['knowbaseitems_id'];
-                if (isset($forbidden[$child_id])) {
-                    continue;
-                }
-                $forbidden[$child_id] = true;
-                $next[] = $child_id;
-            }
-            $frontier = $next;
-        }
-        return $forbidden;
-    }
-
-    /**
      * @param array<int, string> $candidates
      * @return array<int, string>
      */
@@ -124,7 +93,7 @@ final class MoveCandidates
         }
 
         // KB sharing (glpi_entities_knowbaseitems) is independent of entities_id/is_recursive coherence.
-        $ids = array_filter(array_keys($candidates), static fn (int $id): bool => $id !== 0);
+        $ids = array_filter(array_keys($candidates), static fn(int $id): bool => $id !== 0);
         if ($ids === []) {
             return $candidates;
         }

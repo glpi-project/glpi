@@ -82,11 +82,14 @@ export class GlpiKnowbaseAsideDragController
      */
     #forbidden_ids = new Set();
 
+    /**
+     * Header lines eligible as drop targets, frozen for the whole gesture.
+     * @type {HTMLElement[]}
+     */
+    #visible_lines = [];
+
     /** @type {{ x: number, y: number }|null} */
     #origin = null;
-
-    /** @type {boolean} */
-    #armed = false;
 
     /** @type {boolean} */
     #dragging = false;
@@ -169,7 +172,6 @@ export class GlpiKnowbaseAsideDragController
 
         this.#dragged = row;
         this.#origin = { x: e.clientX, y: e.clientY };
-        this.#armed = true;
         row.setPointerCapture(e.pointerId);
     }
 
@@ -178,7 +180,7 @@ export class GlpiKnowbaseAsideDragController
      */
     #onPointerMove(e)
     {
-        if (!this.#armed) {
+        if (this.#dragged === null) {
             return;
         }
 
@@ -202,6 +204,7 @@ export class GlpiKnowbaseAsideDragController
     {
         this.#dragging = true;
         this.#forbidden_ids = this.#collectSubtreeIds(this.#dragged);
+        this.#visible_lines = this.#collectVisibleLines();
         this.#scroll_container = this.#resolveScrollContainer();
         // Nothing to scroll: keep autoscroll idle instead of scrolling nowhere.
         this.#autoscroll_enabled =
@@ -304,7 +307,7 @@ export class GlpiKnowbaseAsideDragController
         let rect = null;
         let best = Infinity;
 
-        for (const line of this.#visibleLines()) {
+        for (const line of this.#visible_lines) {
             const bounds = line.getBoundingClientRect();
             const distance = Math.max(bounds.top - y, y - bounds.bottom, 0);
             if (distance < best) {
@@ -333,10 +336,11 @@ export class GlpiKnowbaseAsideDragController
 
     /**
      * Header lines of rows that are not hidden inside a collapsed ancestor.
+     * Collected once per gesture: folding only happens on drop.
      *
      * @returns {HTMLElement[]}
      */
-    #visibleLines()
+    #collectVisibleLines()
     {
         const lines = this.#tree.querySelectorAll(
             'li[data-glpi-kb-article-id] > .article-line'
@@ -519,7 +523,7 @@ export class GlpiKnowbaseAsideDragController
      */
     #onPointerUp(e)
     {
-        if (!this.#armed) {
+        if (this.#dragged === null) {
             return;
         }
 
@@ -562,12 +566,12 @@ export class GlpiKnowbaseAsideDragController
         this.#dragged = null;
         this.#intent = null;
         this.#origin = null;
-        this.#armed = false;
         this.#dragging = false;
         this.#autoscroll_direction = 0;
         this.#scroll_container = null;
         this.#autoscroll_enabled = false;
         this.#forbidden_ids = new Set();
+        this.#visible_lines = [];
     }
 
     /**
