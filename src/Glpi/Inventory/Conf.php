@@ -299,7 +299,6 @@ class Conf extends CommonGLPI
             $success = false;
             $message = sprintf(__('An error occurs during import: `%s`.'), $e->getMessage());
             $items   = $inventory_request->getInventory()->getItems();
-            Toolbox::logDebug($e->getTraceAsString());
         }
 
         return new ImportResult(
