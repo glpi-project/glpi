@@ -38,6 +38,7 @@ The present file will list all changes made to the project; according to the
 - CSRF protection is now handled via browser-native `Sec-Fetch-Site`/`Origin` header validation instead of per-request tokens. All `_glpi_csrf_token` hidden form fields and `X-Glpi-Csrf-Token` AJAX headers must be removed from plugins. See API changes below for the full list of removed methods and helpers.
 - The `KnowbaseItemCategory` itemtype and the `knowbasecategory` right have been removed. Knowledge base categories are now regular articles; hierarchy is expressed by linking child articles to parent articles.
 - Generic tree-browse (`TreeBrowse`) support for the knowledge base. The KB aside provides browsing.
+- The `Search` and `Browse` tabs of the knowledge base article list. The list is now a plain search page.
 
 ### API changes
 - Type declarations for some `CronTask` methods have been added.

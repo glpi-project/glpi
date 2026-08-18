@@ -66,8 +66,9 @@ test('the "All articles" button reaches the article list, not the root article',
     await page.getByRole('button', { name: 'All articles' }).click();
 
     // Still on the list: the button carries the parameter that skips the
-    // redirect, so no article is rendered.
+    // redirect, and the page is a standard search page.
     await expect(page).toHaveURL(/knowbaseitem\.php\?/);
+    await expect(page.getByTestId('search-page')).toBeVisible();
     await expect(page.getByTestId('kb-article')).toHaveCount(0);
 });
 
@@ -83,5 +84,6 @@ test('a search request is not redirected to the root article', async ({ page, pr
     );
 
     await expect(page).toHaveURL(/knowbaseitem\.php\?/);
+    await expect(page.getByTestId('search-page')).toBeVisible();
     await expect(page.getByTestId('kb-article')).toHaveCount(0);
 });

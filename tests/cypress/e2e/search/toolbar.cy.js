@@ -76,7 +76,7 @@ for (const [i, settings] of settings_presets.entries()) {
         it(`can toggle unpublished items`, () => {
             // Go to the a search page that support the "unpublished" feature,
             // should be toggled off by default.
-            cy.visit('/front/knowbaseitem.php?forcetab=Knowbase$2');
+            cy.visit('/front/knowbaseitem.php?list=1');
             cy.findByTestId('unpublished-on').should('be.visible');
             cy.findByTestId('unpublished-off').should('not.exist');
 
