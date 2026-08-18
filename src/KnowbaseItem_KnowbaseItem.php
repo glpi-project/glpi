@@ -132,6 +132,38 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
         return $article_id;
     }
 
+    /**
+     * The article and every article below it, walked breadth-first over the raw
+     * edges: a visibility-filtered tree promotes an article to root when its
+     * parent is invisible, which would hide a genuine descendant.
+     *
+     * @return array<int, true> keyed by id, for O(1) membership tests
+     */
+    public static function getDescendantIds(int $article_id): array
+    {
+        global $DB;
+
+        $descendants = [$article_id => true];
+        $frontier    = [$article_id];
+        while ($frontier !== []) {
+            $next = [];
+            foreach ($DB->request([
+                'SELECT' => 'knowbaseitems_id',
+                'FROM'   => self::getTable(),
+                'WHERE'  => ['knowbaseitems_id_parent' => $frontier],
+            ]) as $row) {
+                $child_id = (int) $row['knowbaseitems_id'];
+                if (isset($descendants[$child_id])) {
+                    continue;
+                }
+                $descendants[$child_id] = true;
+                $next[] = $child_id;
+            }
+            $frontier = $next;
+        }
+        return $descendants;
+    }
+
     /** True if $parent_id is a direct parent of $child_id. */
     public static function isParentOf(int $parent_id, int $child_id): bool
     {

@@ -195,7 +195,7 @@ final class MoveCandidatesTest extends DbTestCase
         ]);
 
         // Visible and promoted to root, yet still a real descendant: that is the contrast.
-        $roots = array_map(static fn ($article) => $article->id, (new Builder())->buildTree()->getArticles());
+        $roots = array_map(static fn($article) => $article->id, (new Builder())->buildTree()->getArticles());
         $this->assertContains($visible_grandchild->getID(), $roots);
 
         $candidates = (new MoveCandidates($moved->getID()))->build();
@@ -232,7 +232,7 @@ final class MoveCandidatesTest extends DbTestCase
         $this->setEntity($entity_1, false);
 
         // Not vacuous: the share really does make $foreign reach the tree.
-        $roots = array_map(static fn ($article) => $article->id, (new Builder())->buildTree()->getArticles());
+        $roots = array_map(static fn($article) => $article->id, (new Builder())->buildTree()->getArticles());
         $this->assertContains($foreign->getID(), $roots);
 
         $candidates = (new MoveCandidates($moved->getID()))->build();

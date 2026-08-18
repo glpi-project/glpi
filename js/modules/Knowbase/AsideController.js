@@ -719,8 +719,9 @@ export class GlpiKnowbaseAsideController
      */
     #stripMoveFromFavoritesMenu(menu)
     {
+        // Keyed on the modal, not on OPEN_MODAL: that type carries other actions.
         const move_item = menu
-            .querySelector(`button[data-glpi-kb-action="${EditorActionType.OPEN_MODAL}"]`)
+            .querySelector('button[data-glpi-kb-action-param-key="MoveModal"]')
             ?.closest('li');
         // The group separator rides on the first item after it: hand it over.
         if (move_item?.classList.contains('border-top')) {
