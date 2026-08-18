@@ -137,6 +137,8 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
      * edges: a visibility-filtered tree promotes an article to root when its
      * parent is invisible, which would hide a genuine descendant.
      *
+     * Not visibility-filtered on purpose: subtract these ids, never display them.
+     *
      * @return array<int, true> keyed by id, for O(1) membership tests
      */
     public static function getDescendantIds(int $article_id): array
