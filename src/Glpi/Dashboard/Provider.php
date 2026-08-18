@@ -1203,7 +1203,6 @@ class Provider
             [
                 'SELECT'    => [
                     "$group_table.name AS group_name",
-                    "$group_table.id AS group_id",
                     new QueryExpression("COUNT(CASE WHEN $ticket_table.status IN ($opened_statuses) THEN $ticket_table.id END) AS opened"),
                     new QueryExpression("COUNT(CASE WHEN $ticket_table.status IN ($closed_statuses) THEN $ticket_table.id END) AS closed"),
                 ],
@@ -1231,6 +1230,7 @@ class Provider
                     "$ticket_table.is_deleted" => 0,
                 ] + getEntitiesRestrictCriteria($ticket_table),
                 'GROUPBY'   => "$group_table.id",
+                'ORDERBY'   => "$group_table.name",
             ],
             Ticket::getCriteriaFromProfile(),
             self::getFiltersCriteria($ticket_table, $params['apply_filters'])
@@ -1246,13 +1246,7 @@ class Provider
             ],
         ];
         foreach ($iterator as $result) {
-            $group_name = $result['group_name'] ?? null;
-
-            if (!$group_name) {
-                continue;
-            }
-
-            $data['labels'][] = $group_name;
+            $data['labels'][] = $result['group_name'];
             $data['series'][0]['data'][] = (int) $result['opened'];
             $data['series'][1]['data'][] = (int) $result['closed'];
         }

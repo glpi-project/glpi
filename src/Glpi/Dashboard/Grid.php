@@ -1647,7 +1647,7 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
             ];
 
-            $cards["ticket_by_group_and_status"] = [
+            $cards["report_ticket_by_group_and_status"] = [
                 'widgettype' => ['hBars', 'stackedHBars'],
                 'itemtype'   => "\\Ticket",
                 'group'      => __('Assistance'),
