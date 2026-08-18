@@ -360,7 +360,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     {
 
         return ((($this->fields["users_id_recipient"] === Session::getLoginUserID())
-               &&  Session::haveRight('ticket', Ticket::SURVEY))
+               &&  Session::haveRight(Ticket::$rightname, Ticket::SURVEY))
               || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
@@ -426,7 +426,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
         $canAddTask = Session::haveRight("task", CommonITILTask::ADDALLITEM);
         $canAddFollowup = Session::haveRightsOr(
-            'followup',
+            ITILFollowup::$rightname,
             [
                 ITILFollowup::ADDALLITEM,
                 ITILFollowup::ADDMY,
@@ -644,7 +644,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      */
     public function canReopen()
     {
-        return Session::haveRight('followup', CREATE)
+        return Session::haveRight(ITILFollowup::$rightname, CREATE)
              && in_array($this->fields["status"], static::getClosedStatusArray())
              && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
                  || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
@@ -3020,14 +3020,14 @@ JAVASCRIPT;
             }
         }
 
-        if (Session::haveRight('problem', READ)) {
+        if (Session::haveRight(Problem::$rightname, READ)) {
             $tab = array_merge(
                 $tab,
                 Problem::rawSearchOptionsToAdd(self::class)
             );
         }
 
-        if (Session::haveRight('change', READ)) {
+        if (Session::haveRight(Change::$rightname, READ)) {
             $tab = array_merge($tab, Change::rawSearchOptionsToAdd(self::class));
         }
 
@@ -3697,9 +3697,9 @@ JAVASCRIPT;
         $tto_sla->getFromDB($this->fields['slas_id_tto']);
 
         if ($this->isNewItem()) {
-            $options['_canupdate'] = Session::haveRight('ticket', CREATE);
+            $options['_canupdate'] = Session::haveRight(Ticket::$rightname, CREATE);
         } else {
-            $options['_canupdate'] = Session::haveRight('ticket', UPDATE);
+            $options['_canupdate'] = Session::haveRight(Ticket::$rightname, UPDATE);
         }
 
         // If a link is specified in the old format, convert it to the new one
@@ -3739,7 +3739,7 @@ JAVASCRIPT;
             'canassigntome'             => $canassigntome,
             'userentities'              => $userentities,
             'cancreateuser'             => $cancreateuser,
-            'canreadnote'               => Session::haveRight('entity', READNOTE),
+            'canreadnote'               => Session::haveRight(Entity::$rightname, READNOTE),
             'has_pending_reason'        => PendingReason_Item::getForItem($this) !== false,
             'show_tickets_properties_on_helpdesk' => Entity::getUsedConfig(
                 'show_tickets_properties_on_helpdesk',
@@ -3831,7 +3831,7 @@ JAVASCRIPT;
 
             case "toapprove": //tickets waiting for approval
                 $ORWHERE = ['AND' => $search_users_id];
-                if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
+                if (!$showgrouptickets &&  Session::haveRight(Ticket::$rightname, Ticket::SURVEY)) {
                     $ORWHERE[] = ['glpi_tickets.users_id_recipient' => Session::getLoginUserID()];
                 }
                 $WHERE[] = ['OR' => $ORWHERE];
@@ -3940,7 +3940,7 @@ JAVASCRIPT;
                     ],
                 ];
                 $ORWHERE = ['AND' => $search_users_id];
-                if (!$showgrouptickets &&  Session::haveRight('ticket', Ticket::SURVEY)) {
+                if (!$showgrouptickets &&  Session::haveRight(Ticket::$rightname, Ticket::SURVEY)) {
                     $ORWHERE[] = ['glpi_tickets.users_id_recipient' => Session::getLoginUserID()];
                 }
                 $WHERE[] = ['OR' => $ORWHERE];
@@ -4353,7 +4353,7 @@ JAVASCRIPT;
                             ],
                         ];
 
-                        if (Session::haveRight('ticket', Ticket::SURVEY)) {
+                        if (Session::haveRight(Ticket::$rightname, Ticket::SURVEY)) {
                             $options['criteria'][] = [
                                 'link'     => 'AND',
                                 'criteria' => [
@@ -4434,7 +4434,7 @@ JAVASCRIPT;
                 ];
                 foreach ($results as $data) {
                     $showprivate = false;
-                    if (Session::haveRight('followup', ITILFollowup::SEEPRIVATE)) {
+                    if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
                         $showprivate = true;
                     }
 
@@ -4819,7 +4819,7 @@ JAVASCRIPT;
         // Print links or not in case of user view
         // Make new job object and fill it from database, if success, print it
         $showprivate = false;
-        if (Session::haveRight('followup', ITILFollowup::SEEPRIVATE)) {
+        if (Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
             $showprivate = true;
         }
 
@@ -5553,7 +5553,7 @@ JAVASCRIPT;
 
         $field_ref = $table ? "`$table`.`$fieldID`" : "`$fieldID`";
 
-        if (Session::haveRight("ticket", Ticket::READMY)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READMY)) {
             // Add tickets where the users is requester, observer or recipient
             // Subquery for requester/observer user
             $user_query = "SELECT `tickets_id`
@@ -5568,7 +5568,7 @@ JAVASCRIPT;
             $condition .= "OR $field_ref IN ($recipient_query) ";
         }
 
-        if (Session::haveRight("ticket", Ticket::READGROUP)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
             // Add tickets where the users is in a requester or observer group
             // Subquery for requester/observer group
             $group_query = "SELECT `tickets_id`
@@ -5578,7 +5578,7 @@ JAVASCRIPT;
         }
 
         if (
-            Session::haveRightsOr("ticket", [
+            Session::haveRightsOr(Ticket::$rightname, [
                 Ticket::OWN,
                 Ticket::READASSIGN,
             ])
@@ -5591,7 +5591,7 @@ JAVASCRIPT;
             $condition .= "OR $field_ref IN ($user_query) ";
         }
 
-        if (Session::haveRight("ticket", Ticket::READASSIGN)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)) {
             // Add tickets where the users is part of an assigned group
             // Subquery for assigned group
             $group_query = "SELECT `tickets_id`
@@ -5599,7 +5599,7 @@ JAVASCRIPT;
             WHERE `groups_id` IN ($groups) AND type = $assign";
             $condition .= "OR $field_ref IN ($group_query) ";
 
-            if (Session::haveRight('ticket', Ticket::READNEWTICKET)) {
+            if (Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)) {
                 // Add new tickets
                 $tickets_query = "SELECT `id`
                FROM `glpi_tickets`
@@ -6017,7 +6017,7 @@ JAVASCRIPT;
      */
     public static function getCriteriaFromProfile()
     {
-        if (Session::haveRight("ticket", Ticket::READALL)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
             return [];
         }
 
@@ -6026,7 +6026,7 @@ JAVASCRIPT;
         $valid  = false;
 
         $where_profile = [];
-        if (Session::haveRight("ticket", Ticket::READMY)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READMY)) {
             $users = true;
             $where_profile[] = [
                 'OR' => [
@@ -6042,7 +6042,7 @@ JAVASCRIPT;
             ];
         }
 
-        if (Session::haveRight("ticket", Ticket::READGROUP) && count($_SESSION['glpigroups'])) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP) && count($_SESSION['glpigroups'])) {
             $groups = true;
             $where_profile[] = [
                 'gt.groups_id' => $_SESSION['glpigroups'],
@@ -6053,7 +6053,7 @@ JAVASCRIPT;
             ];
         }
 
-        if (Session::haveRight("ticket", Ticket::OWN)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::OWN)) {
             $users = true;
             $where_profile[] = [
                 'tu.users_id' => Session::getLoginUserID(),
@@ -6061,7 +6061,7 @@ JAVASCRIPT;
             ];
         }
 
-        if (Session::haveRight("ticket", Ticket::READASSIGN)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)) {
             $users = true;
             $temp = [
                 'OR' => [
@@ -6080,7 +6080,7 @@ JAVASCRIPT;
                 ];
             }
 
-            if (Session::haveRight('ticket', Ticket::READNEWTICKET)) {
+            if (Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)) {
                 $temp['OR'][] = [
                     ['glpi_tickets.status' => CommonITILObject::INCOMING],
                 ];

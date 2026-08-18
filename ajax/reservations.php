@@ -35,7 +35,7 @@
 
 use function Safe\json_encode;
 
-Session::checkRightsOr('reservation', [READ, ReservationItem::RESERVEANITEM]);
+Session::checkRightsOr(Reservation::$rightname, [READ, ReservationItem::RESERVEANITEM]);
 
 if (!isset($_REQUEST["action"])) {
     return;
@@ -47,7 +47,7 @@ if ($_REQUEST["action"] == "get_events") {
     return;
 }
 
-Session::checkRight('reservation', ReservationItem::RESERVEANITEM);
+Session::checkRight(Reservation::$rightname, ReservationItem::RESERVEANITEM);
 
 if ($_REQUEST["action"] == "get_resources") {
     header("Content-Type: application/json; charset=UTF-8");

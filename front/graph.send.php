@@ -41,7 +41,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Stat\StatData;
 
 // Check rights
-Session::checkRight("statistic", READ);
+Session::checkRight(Stat::$rightname, READ);
 
 // Read params
 $statdata_itemtype = $_GET['statdata_itemtype'] ?? null;

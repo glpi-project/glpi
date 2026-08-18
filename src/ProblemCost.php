@@ -47,18 +47,18 @@ class ProblemCost extends CommonITILCost
 
     public static function canCreate(): bool
     {
-        return Session::haveRight('problem', UPDATE);
+        return Session::haveRight(Problem::$rightname, UPDATE);
     }
 
 
     public static function canView(): bool
     {
-        return Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
+        return Session::haveRightsOr(Problem::$rightname, [Problem::READALL, Problem::READMY]);
     }
 
 
     public static function canUpdate(): bool
     {
-        return Session::haveRight('problem', UPDATE);
+        return Session::haveRight(Problem::$rightname, UPDATE);
     }
 }

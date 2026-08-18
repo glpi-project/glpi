@@ -442,7 +442,7 @@ class Dropdown
 
             // KB links
             if (
-                $item->isField('knowbaseitems_id') && Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])
+                $item->isField('knowbaseitems_id') && Session::haveRightsOr(KnowbaseItem::$rightname, [READ, KnowbaseItem::READFAQ])
                 && method_exists($item, 'getLinks')
             ) {
                 // With the self-service profile, $item (whose itemtype = ITILCategory) is empty,

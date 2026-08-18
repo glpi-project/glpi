@@ -676,7 +676,7 @@ TWIG, $twig_params);
             'showmassiveactions' => false,
         ]);
 
-        if ($ok && Session::haveRight("reservation", self::RESERVEANITEM)) {
+        if ($ok && Session::haveRight(Reservation::$rightname, self::RESERVEANITEM)) {
             echo "<i class='ti ti-corner-left-up mx-3' aria-hidden='true'></i>";
             echo "<th colspan='" . ($showentity ? "5" : "4") . "'>";
             if (isset($_POST['reserve'])) {
@@ -862,12 +862,12 @@ TWIG, $twig_params);
     {
         if ($item::class === self::class) {
             $tabs = [];
-            if (Session::haveRightsOr("reservation", [READ, self::RESERVEANITEM])) {
+            if (Session::haveRightsOr(Reservation::$rightname, [READ, self::RESERVEANITEM])) {
                 $tabs[1] = self::createTabEntry(Reservation::getTypeName(Session::getPluralNumber()));
             }
             if (
                 (Session::getCurrentInterface() === "central")
-                && Session::haveRight("reservation", READ)
+                && Session::haveRight(Reservation::$rightname, READ)
             ) {
                 $tabs[2] = self::createTabEntry(__('Administration'), icon: 'ti ti-shield-check');
             }

@@ -73,7 +73,7 @@ class PlanningRecall extends CommonDBChild
                 return in_array((int) $this->fields['users_id'], ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
             }
             // Non-owners need project-level update rights or be in the task team
-            return Session::haveRight('project', UPDATE)
+            return Session::haveRight(Project::$rightname, UPDATE)
                 && in_array(Session::getLoginUserID(), ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
         }
         return parent::canUpdateItem();
@@ -91,7 +91,7 @@ class PlanningRecall extends CommonDBChild
                 return true;
             }
             // Non-owners need project-level update rights or be in the task team
-            return Session::haveRight('project', UPDATE)
+            return Session::haveRight(Project::$rightname, UPDATE)
                 && in_array(Session::getLoginUserID(), ProjectTaskTeam::getUserInTeamFor($this->fields['items_id']));
         }
         return parent::canPurgeItem();
@@ -123,7 +123,7 @@ class PlanningRecall extends CommonDBChild
                 if ($task->isDisabled() !== 1) {
                     if (
                         Session::haveRightsOr(
-                            "planning",
+                            Planning::$rightname,
                             [Planning::READMY, Planning::READGROUP, Planning::READALL]
                         )
                     ) {

@@ -114,7 +114,7 @@ class NotificationSettingConfig extends CommonDBTM
             [
                 'use_notifications' => (bool) $CFG_GLPI['use_notifications'],
                 'has_active_mode'   => Notification_NotificationTemplate::hasActiveMode(),
-                'can_update_config' => Session::haveRight("config", UPDATE) > 0,
+                'can_update_config' => Session::haveRight(Config::$rightname, UPDATE) > 0,
                 'modes'             => $modes,
             ]
         );

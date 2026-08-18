@@ -41,7 +41,7 @@ use function Safe\json_encode;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-if (!Session::haveRight('datacenter', UPDATE)) {
+if (!Session::haveRight(Datacenter::$rightname, UPDATE)) {
     throw new AccessDeniedHttpException();
 }
 if (!isset($_REQUEST['action'])) {

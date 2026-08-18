@@ -377,7 +377,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
-        if (Session::haveRight('project', self::READALL)) {
+        if (Session::haveRight(Project::$rightname, self::READALL)) {
             return [
                 'LEFT JOIN' => [],
                 'WHERE' => [],

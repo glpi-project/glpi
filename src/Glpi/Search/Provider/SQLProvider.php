@@ -757,7 +757,7 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case ProjectTask::class:
-                if (!Session::haveRightsOr('project', [Project::READALL, Project::READMY])) {
+                if (!Session::haveRightsOr(Project::$rightname, [Project::READALL, Project::READMY])) {
                     // Can only see the tasks assigned to the user or one of his groups
                     $teamtable = 'glpi_projecttaskteams';
                     $user_criteria = [
@@ -776,7 +776,7 @@ final class SQLProvider implements SearchProviderInterface
                         "glpi_projects.is_template" => 0,
                         'OR' => $or_criteria,
                     ];
-                } elseif (Session::haveRight('project', Project::READMY)) {
+                } elseif (Session::haveRight(Project::$rightname, Project::READMY)) {
                     // User must be the manager, in the manager group or in the project team
                     $teamtable = 'glpi_projectteams';
                     $user_criteria = [
@@ -801,7 +801,7 @@ final class SQLProvider implements SearchProviderInterface
                 break;
 
             case Project::class:
-                if (!Session::haveRight("project", Project::READALL)) {
+                if (!Session::haveRight(Project::$rightname, Project::READALL)) {
                     $teamtable  = 'glpi_projectteams';
                     $user_criteria = [
                         "$teamtable.itemtype" => User::class,
@@ -827,7 +827,7 @@ final class SQLProvider implements SearchProviderInterface
 
             case Ticket::class:
                 // Same structure in addDefaultJoin
-                if (!Session::haveRight("ticket", Ticket::READALL)) {
+                if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
                     $searchopt
                         = SearchOption::getOptionsForItemtype($itemtype);
                     $requester_table
@@ -860,7 +860,7 @@ final class SQLProvider implements SearchProviderInterface
                     $criteria = [
                         'OR' => [],
                     ];
-                    if (Session::haveRight("ticket", Ticket::READMY)) {
+                    if (Session::haveRight(Ticket::$rightname, Ticket::READMY)) {
                         $criteria['OR'][] = [
                             'OR' => [
                                 "$requester_table.users_id" => Session::getLoginUserID(),
@@ -872,7 +872,7 @@ final class SQLProvider implements SearchProviderInterface
                         $criteria['OR'][] = new QueryExpression('false');
                     }
 
-                    if (Session::haveRight("ticket", Ticket::READGROUP)) {
+                    if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
                         if (count($_SESSION['glpigroups'])) {
                             $criteria['OR'][] = [
                                 'OR' => [
@@ -883,13 +883,13 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     }
 
-                    if (Session::haveRight("ticket", Ticket::OWN)) {// Can own ticket: show assign to me
+                    if (Session::haveRight(Ticket::$rightname, Ticket::OWN)) {// Can own ticket: show assign to me
                         $criteria['OR'][] = [
                             "$assign_table.users_id" => Session::getLoginUserID(),
                         ];
                     }
 
-                    if (Session::haveRight("ticket", Ticket::READASSIGN)) { // assign to me
+                    if (Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)) { // assign to me
                         $criteria['OR'][] = [
                             "$assign_table.users_id" => Session::getLoginUserID(),
                         ];
@@ -900,7 +900,7 @@ final class SQLProvider implements SearchProviderInterface
                         }
                     }
 
-                    if (Session::haveRight('ticket', Ticket::READNEWTICKET)) {
+                    if (Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)) {
                         $criteria['OR'][] = [
                             'glpi_tickets.status' => CommonITILObject::INCOMING,
                         ];
@@ -1019,7 +1019,7 @@ final class SQLProvider implements SearchProviderInterface
 
                 // Check for parent item visibility unless the user can see all the
                 // possible parents
-                if (!Session::haveRight('ticket', Ticket::READALL)) {
+                if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
                     $criteria[] = [
                         new QueryExpression(TicketTask::buildParentCondition()),
                     ];
@@ -2461,7 +2461,7 @@ final class SQLProvider implements SearchProviderInterface
 
             case Project::class:
                 // Same structure in addDefaultWhere
-                if (!Session::haveRight("project", Project::READALL)) {
+                if (!Session::haveRight(Project::$rightname, Project::READALL)) {
                     $out = self::getLeftJoinCriteria(
                         $itemtype,
                         $ref_table,
@@ -2477,7 +2477,7 @@ final class SQLProvider implements SearchProviderInterface
 
             case Ticket::class:
                 // Same structure in addDefaultWhere
-                if (!Session::haveRight("ticket", Ticket::READALL)) {
+                if (!Session::haveRight(Ticket::$rightname, Ticket::READALL)) {
                     $searchopt = SearchOption::getOptionsForItemtype($itemtype);
 
                     // show mine: requester
@@ -2492,7 +2492,7 @@ final class SQLProvider implements SearchProviderInterface
                         $searchopt[4]['joinparams']['beforejoin']['joinparams']
                     );
 
-                    if (Session::haveRight("ticket", Ticket::READGROUP)) {
+                    if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
                         if (count($_SESSION['glpigroups'])) {
                             $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                                 $itemtype,
@@ -2533,7 +2533,7 @@ final class SQLProvider implements SearchProviderInterface
                         ));
                     }
 
-                    if (Session::haveRight("ticket", Ticket::OWN)) { // Can own ticket: show assign to me
+                    if (Session::haveRight(Ticket::$rightname, Ticket::OWN)) { // Can own ticket: show assign to me
                         $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                             $itemtype,
                             $ref_table,
@@ -2546,7 +2546,7 @@ final class SQLProvider implements SearchProviderInterface
                         ));
                     }
 
-                    if (Session::haveRightsOr("ticket", [Ticket::READMY, Ticket::READASSIGN])) { // show mine + assign to me
+                    if (Session::haveRightsOr(Ticket::$rightname, [Ticket::READMY, Ticket::READASSIGN])) { // show mine + assign to me
                         $out = array_merge_recursive($out, self::getLeftJoinCriteria(
                             $itemtype,
                             $ref_table,
@@ -6507,7 +6507,7 @@ final class SQLProvider implements SearchProviderInterface
                                             $user = new User();
                                             if ($user->getFromDB($data[$ID][$k]['name'])) {
                                                 $tooltip = "";
-                                                if (Session::haveRight('user', READ)) {
+                                                if (Session::haveRight(User::$rightname, READ)) {
                                                     $tooltip = Html::showToolTip(
                                                         __s('Loading...'),
                                                         [
@@ -6554,7 +6554,7 @@ final class SQLProvider implements SearchProviderInterface
                         if ($data[$ID][0]['id'] > 0) {
                             $toadd = '';
                             if (is_subclass_of($itemtype, CommonITILObject::class)) {
-                                if (Session::haveRight('user', READ)) {
+                                if (Session::haveRight(User::$rightname, READ)) {
                                     $users_id = (int) $data[$ID][0]['id'];
                                     $toadd = Html::showToolTip(
                                         __s('Loading...'),
@@ -6778,7 +6778,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($so["datatype"] == 'count') {
                         if (
                             ($data[$ID][0]['name'] > 0)
-                            && Session::haveRight("problem", Problem::READALL)
+                            && Session::haveRight(Problem::$rightname, Problem::READALL)
                         ) {
                             if ($itemtype == 'ITILCategory') {
                                 $options['criteria'][0]['field']      = 7;
@@ -6815,7 +6815,7 @@ final class SQLProvider implements SearchProviderInterface
                     if ($so["datatype"] == 'count') {
                         if (
                             ($data[$ID][0]['name'] > 0)
-                            && Session::haveRight("ticket", Ticket::READALL)
+                            && Session::haveRight(Ticket::$rightname, Ticket::READALL)
                         ) {
                             if ($itemtype == User::class) {
                                 // Requester
@@ -7219,7 +7219,7 @@ final class SQLProvider implements SearchProviderInterface
                     } else {
                         $text = Html::resume_text(RichText::getTextFromHtml($data[$ID][0]['name']));
                     }
-                    if (Session::haveRight('reservation', UPDATE)) {
+                    if (Session::haveRight(Reservation::$rightname, UPDATE)) {
                         return "<a title=\"" . __s('Modify the comment') . "\"
                            href='" . \htmlescape(ReservationItem::getFormURLWithID($data['refID'])) . "' >" . $text . "</a>";
                     }

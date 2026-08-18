@@ -1180,7 +1180,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public function addNotificationTargets($entity)
     {
-        if (Session::haveRight("config", UPDATE)) {
+        if (Session::haveRight(Config::$rightname, UPDATE)) {
             $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
         }
         $this->addTarget(Notification::ENTITY_ADMINISTRATOR, __('Entity administrator'));

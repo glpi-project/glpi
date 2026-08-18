@@ -240,7 +240,7 @@ final class SessionTracker
         global $DB;
 
         $is_own_sessions = $users_id > 0 && $users_id === Session::getLoginUserID();
-        if (!$is_own_sessions && !Session::haveRight('config', UPDATE)) {
+        if (!$is_own_sessions && !Session::haveRight(\Config::$rightname, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -696,7 +696,7 @@ final class SessionTracker
         ];
         $start = (int) ($_GET['start'] ?? 0);
 
-        if ($users_id !== Session::getLoginUserID() && !Session::haveRight('config', UPDATE)) {
+        if ($users_id !== Session::getLoginUserID() && !Session::haveRight(\Config::$rightname, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
         if ($users_id > 0) {

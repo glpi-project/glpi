@@ -145,9 +145,9 @@ class Central extends CommonGLPI
     public static function showGlobalView()
     {
 
-        $showticket  = Session::haveRight("ticket", Ticket::READALL);
-        $showproblem = Session::haveRight("problem", Problem::READALL);
-        $show_change = Session::haveRight('change', Change::READALL);
+        $showticket  = Session::haveRight(Ticket::$rightname, Ticket::READALL);
+        $showproblem = Session::haveRight(Problem::$rightname, Problem::READALL);
+        $show_change = Session::haveRight(Change::$rightname, Change::READALL);
 
         $grid_items = [];
 
@@ -184,18 +184,18 @@ class Central extends CommonGLPI
     public static function showMyView()
     {
         $showticket  = Session::haveRightsOr(
-            "ticket",
+            Ticket::$rightname,
             [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN]
         );
 
         $showmyticket = Session::haveRightsOr(
-            "ticket",
+            Ticket::$rightname,
             [Ticket::READMY, Ticket::READALL]
         );
 
-        $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
+        $showproblem = Session::haveRightsOr(Problem::$rightname, [Problem::READALL, Problem::READMY]);
 
-        $showchanges = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+        $showchanges = Session::haveRightsOr(Change::$rightname, [Change::READALL, Change::READMY]);
 
         $lists = [];
 
@@ -323,7 +323,7 @@ class Central extends CommonGLPI
             ],
         ];
 
-        if (Session::haveRight("reminder_public", READ)) {
+        if (Session::haveRight(Reminder::$rightname, READ)) {
             $idor = Session::getNewIDORToken(Reminder::class, [
                 'personal' => 'false',
             ]);
@@ -338,7 +338,7 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRight("project", Project::READMY)) {
+        if (Session::haveRight(Project::$rightname, Project::READMY)) {
             $idor = Session::getNewIDORToken(Project::class);
 
             $twig_params['cards'][] = [
@@ -418,11 +418,11 @@ class Central extends CommonGLPI
     public static function showGroupView()
     {
 
-        $showticket = Session::haveRightsOr("ticket", [Ticket::READALL, Ticket::READASSIGN]);
+        $showticket = Session::haveRightsOr(Ticket::$rightname, [Ticket::READALL, Ticket::READASSIGN]);
 
-        $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
+        $showproblem = Session::haveRightsOr(Problem::$rightname, [Problem::READALL, Problem::READMY]);
 
-        $showchange = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+        $showchange = Session::haveRightsOr(Change::$rightname, [Change::READALL, Change::READMY]);
 
         $lists = [];
 
@@ -436,7 +436,7 @@ class Central extends CommonGLPI
                 'status'    => 'todo',
             ];
         }
-        if (Session::haveRight('ticket', Ticket::READGROUP)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'waiting',
@@ -464,7 +464,7 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRight('ticket', Ticket::READGROUP)) {
+        if (Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'observed',
@@ -503,7 +503,7 @@ class Central extends CommonGLPI
             ];
         }
 
-        if (Session::haveRight("project", Project::READMY)) {
+        if (Session::haveRight(Project::$rightname, Project::READMY)) {
             $idor = Session::getNewIDORToken(Project::class);
             $twig_params['cards'][] = [
                 'itemtype'  => Project::class,
@@ -546,7 +546,7 @@ class Central extends CommonGLPI
              . '</a>';
         }
 
-        if (Session::haveRight("config", UPDATE)) {
+        if (Session::haveRight(Config::$rightname, UPDATE)) {
             $logins = User::checkDefaultPasswords();
             $user   = new User();
             if (!empty($logins)) {

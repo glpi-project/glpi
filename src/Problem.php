@@ -143,7 +143,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      */
     public function canReopen()
     {
-        return Session::haveRight('followup', CREATE)
+        return Session::haveRight(ITILFollowup::$rightname, CREATE)
              && in_array($this->fields["status"], static::getClosedStatusArray())
              && ($this->isAllowedStatus($this->fields['status'], self::INCOMING)
                  || $this->isAllowedStatus($this->fields['status'], self::ASSIGNED));
@@ -582,7 +582,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
             ],
         ];
 
-        if (Session::haveRight('change', READ)) {
+        if (Session::haveRight(Change::$rightname, READ)) {
             $tab = array_merge($tab, Change::rawSearchOptionsToAdd(self::class));
         }
 

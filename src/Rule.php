@@ -238,13 +238,13 @@ class Rule extends CommonDBTM
         $menu = [];
 
         if (
-            Session::haveRight("rule_ldap", READ)
+            Session::haveRight(RuleRight::$rightname, READ)
             || Session::haveRight("rule_import", READ)
-            || Session::haveRight("rule_location", READ)
-            || Session::haveRight("rule_ticket", READ)
-            || Session::haveRight("rule_change", READ)
-            || Session::haveRight("rule_softwarecategories", READ)
-            || Session::haveRight("rule_mailcollector", READ)
+            || Session::haveRight(RuleLocation::$rightname, READ)
+            || Session::haveRight(RuleTicket::$rightname, READ)
+            || Session::haveRight(RuleChange::$rightname, READ)
+            || Session::haveRight(RuleSoftwareCategory::$rightname, READ)
+            || Session::haveRight(RuleMailCollector::$rightname, READ)
         ) {
             $menu['rule']['title'] = static::getTypeName(Session::getPluralNumber());
             $menu['rule']['page']  = static::getSearchURL(false);
@@ -281,7 +281,7 @@ class Rule extends CommonDBTM
             $menu['rule']['options'][Transfer::class]['page']            = "/front/transfer.php";
             $menu['rule']['options'][Transfer::class]['links']['search'] = "/front/transfer.php";
 
-            if (Session::haveRightsOr("transfer", [CREATE, UPDATE])) {
+            if (Session::haveRightsOr(Transfer::$rightname, [CREATE, UPDATE])) {
                 $menu['rule']['options'][Transfer::class]['links']['transfer_list']
                                                                  = "/front/transfer.action.php";
                 $menu['rule']['options'][Transfer::class]['links']['add'] = Transfer::getFormURL(false);
@@ -289,9 +289,9 @@ class Rule extends CommonDBTM
         }
 
         if (
-            Session::haveRight("rule_dictionnary_dropdown", READ)
-            || Session::haveRight("rule_dictionnary_software", READ)
-            || Session::haveRight("rule_dictionnary_printer", READ)
+            Session::haveRight(RuleDictionnaryDropdown::$rightname, READ)
+            || Session::haveRight(RuleDictionnarySoftware::$rightname, READ)
+            || Session::haveRight(RuleDictionnaryPrinter::$rightname, READ)
         ) {
             $menu['dictionnary']['title']    = _n('Dictionary', 'Dictionaries', Session::getPluralNumber());
             $menu['dictionnary']['shortcut'] = '';

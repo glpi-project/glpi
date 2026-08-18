@@ -130,8 +130,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     public static function canCreate(): bool
     {
         // Have right to add document OR ticket followup
-        return (Session::haveRight('document', CREATE)
-              || Session::haveRight('followup', ITILFollowup::ADDMY));
+        return (Session::haveRight(Document::$rightname, CREATE)
+              || Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADDMY));
     }
 
     public function canCreateItem(): bool

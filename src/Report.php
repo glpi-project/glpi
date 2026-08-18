@@ -88,12 +88,12 @@ class Report extends CommonGLPI
             $report_list["Infocoms2"]["name"] = __('Other financial and administrative information (licenses, cartridges, consumables)');
             $report_list["Infocoms2"]["file"] = $root_doc . "/front/report.infocom.conso.php";
         }
-        if (Session::haveRight("networking", READ)) {
+        if (Session::haveRight(NetworkPort::$rightname, READ)) {
             // Network socket report
             $report_list["Rapport prises reseau"]["name"] = __('Network report');
             $report_list["Rapport prises reseau"]["file"] = $root_doc . "/front/report.networking.php";
         }
-        if (Session::haveRight("reservation", READ)) {
+        if (Session::haveRight(Reservation::$rightname, READ)) {
             $report_list["reservation"]["name"] = __('Loan');
             $report_list["reservation"]["file"] = $root_doc . "/front/report.reservation.php";
         }
@@ -101,7 +101,7 @@ class Report extends CommonGLPI
         if (
             Computer::canView()
             || Monitor::canView()
-            || Session::haveRight("networking", READ)
+            || Session::haveRight(NetworkPort::$rightname, READ)
             || Peripheral::canView()
             || Printer::canView()
             || Phone::canView()

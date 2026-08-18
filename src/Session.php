@@ -1217,7 +1217,7 @@ class Session
 
         if (!$CFG_GLPI["use_public_faq"]) {
             self::checkValidSessionId();
-            if (!Session::haveRightsOr('knowbase', [KnowbaseItem::READFAQ, READ])) {
+            if (!Session::haveRightsOr(KnowbaseItem::$rightname, [KnowbaseItem::READFAQ, READ])) {
                 throw new AccessDeniedHttpException("Missing FAQ right");
             }
         }
@@ -1968,7 +1968,7 @@ class Session
         $reauth_needed = false;
 
         // Stop here if the user can't impersonate (doesn't have the right + isn't admin)
-        if (!self::haveRight('user', User::IMPERSONATE)) {
+        if (!self::haveRight(User::$rightname, User::IMPERSONATE)) {
             return false;
         }
 
