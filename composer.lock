@@ -958,16 +958,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.2.3",
+            "version": "1.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "89f177aa93595bdff01c3f670e32edd11ace0524"
+                "reference": "c86e316ee9f6b636ded5d0fe74f835a9646f835a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/89f177aa93595bdff01c3f670e32edd11ace0524",
-                "reference": "89f177aa93595bdff01c3f670e32edd11ace0524",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/c86e316ee9f6b636ded5d0fe74f835a9646f835a",
+                "reference": "c86e316ee9f6b636ded5d0fe74f835a9646f835a",
                 "shasum": ""
             },
             "require": {
@@ -977,9 +977,9 @@
                 "ext-libxml": "*",
                 "ext-simplexml": "*",
                 "php": ">=7.4",
-                "seld/jsonlint": "^1.11",
+                "seld/jsonlint": "^1.12",
                 "swaggest/json-schema": "^0.12.43",
-                "symfony/polyfill-php81": "^1.33"
+                "symfony/polyfill-php81": "^1.38"
             },
             "require-dev": {
                 "phpstan/extension-installer": "^1.4",
@@ -1027,7 +1027,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2026-01-22T08:46:40+00:00"
+            "time": "2026-08-18T13:17:07+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -5553,16 +5553,16 @@
         },
         {
             "name": "seld/jsonlint",
-            "version": "1.11.0",
+            "version": "1.12.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/jsonlint.git",
-                "reference": "1748aaf847fc731cfad7725aec413ee46f0cc3a2"
+                "reference": "9a90eb5d32d5a500296bf43f946d60246444d5f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/1748aaf847fc731cfad7725aec413ee46f0cc3a2",
-                "reference": "1748aaf847fc731cfad7725aec413ee46f0cc3a2",
+                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/9a90eb5d32d5a500296bf43f946d60246444d5f7",
+                "reference": "9a90eb5d32d5a500296bf43f946d60246444d5f7",
                 "shasum": ""
             },
             "require": {
@@ -5601,7 +5601,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/jsonlint/issues",
-                "source": "https://github.com/Seldaek/jsonlint/tree/1.11.0"
+                "source": "https://github.com/Seldaek/jsonlint/tree/1.12.1"
             },
             "funding": [
                 {
@@ -5613,7 +5613,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-07-11T14:55:45+00:00"
+            "time": "2026-06-12T11:32:29+00:00"
         },
         {
             "name": "simplepie/simplepie",
