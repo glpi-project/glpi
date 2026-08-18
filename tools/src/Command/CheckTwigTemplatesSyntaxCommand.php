@@ -45,7 +45,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Twig\Error\Error;
 use Twig\TwigFunction;
-use function \Safe\realpath;
+
+use function Safe\realpath;
 
 final class CheckTwigTemplatesSyntaxCommand extends Command
 {
