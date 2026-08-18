@@ -1068,4 +1068,60 @@ class ProviderTest extends DbTestCase
 
         $this->assertGreaterThan(0, $nb_items);
     }
+
+    public function testTicketsByCategoryAndEntity()
+    {
+        $this->login();
+        $entity_id = $this->getTestRootEntity(true);
+
+        $category1 = $this->createItem(\ITILCategory::class, [
+            'name' => 'test dashboard category 1 for tickets by category and entity',
+        ]);
+        $category2 = $this->createItem(\ITILCategory::class, [
+            'name' => 'test dashboard category 2 for tickets by category and entity',
+        ]);
+
+        $this->createItem(\Ticket::class, [
+            'name'             => 'test dashboard ticket cat1 a',
+            'content'          => 'blablabla',
+            'entities_id'      => $entity_id,
+            'itilcategories_id' => $category1->getID(),
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'             => 'test dashboard ticket cat1 b',
+            'content'          => 'blablabla',
+            'entities_id'      => $entity_id,
+            'itilcategories_id' => $category1->getID(),
+        ]);
+        $this->createItem(\Ticket::class, [
+            'name'             => 'test dashboard ticket cat2',
+            'content'          => 'blablabla',
+            'entities_id'      => $entity_id,
+            'itilcategories_id' => $category2->getID(),
+        ]);
+
+        $result = Provider::ticketsByCategoryAndEntity();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+
+        $this->assertArrayHasKey('labels', $result['data']);
+        $this->assertArrayHasKey('series', $result['data']);
+
+        $entity = new \Entity();
+        $this->assertTrue($entity->getFromDB($entity_id));
+        $entity_index = array_search($entity->fields['completename'], $result['data']['labels'], true);
+        $this->assertNotFalse($entity_index, 'entity must appear in the report labels');
+
+        $series_by_name = [];
+        foreach ($result['data']['series'] as $serie) {
+            $series_by_name[$serie['name']] = $serie['data'];
+        }
+
+        $this->assertArrayHasKey($category1->fields['name'], $series_by_name);
+        $this->assertArrayHasKey($category2->fields['name'], $series_by_name);
+
+        $this->assertSame(2, $series_by_name[$category1->fields['name']][$entity_index], '2 tickets expected for category 1');
+        $this->assertSame(1, $series_by_name[$category2->fields['name']][$entity_index], '1 ticket expected for category 2');
+    }
 }

@@ -1542,6 +1542,15 @@ HTML;
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
+            $cards["ticket_by_category_and_entity"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by category and entity"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryAndEntity",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
             $cards["ticket_times"] = [
                 'widgettype' => ['lines', 'areas', 'bars', 'stackedbars'],
                 'itemtype'   => "\\Ticket",
