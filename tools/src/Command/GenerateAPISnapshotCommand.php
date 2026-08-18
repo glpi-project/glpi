@@ -112,11 +112,11 @@ class GenerateAPISnapshotCommand extends AbstractCommand
 
             $paths = $oapi->generatePathSnapshot();
             file_put_contents($PATHS_FILE, json_encode($paths, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-            unset($path_item, $paths);
+            unset($paths);
 
             $schema_components = $oapi->generateComponentsSnapshot();
             file_put_contents($COMPONENTS_FILE, json_encode(['schemas' => $schema_components], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-            unset($component_schema, $schema_components);
+            unset($schema_components);
         }
 
         return 0;

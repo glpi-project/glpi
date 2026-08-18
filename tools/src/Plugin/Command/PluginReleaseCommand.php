@@ -55,7 +55,6 @@ final class PluginReleaseCommand extends AbstractPluginCommand
 {
     private string $dist_dir;
     private string $plugin_name = '';
-    private string $commit = '';
 
     private const BANNED_FILES = [
         '.git*',
