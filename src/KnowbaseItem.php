@@ -3155,7 +3155,8 @@ TWIG, $twig_params);
 
     public static function getAdditionalMenuLinks(): array
     {
-        return ['all_articles' => self::getSearchURL(false)];
+        // Dummy parameter to prevent redirection to the root article.
+        return ['all_articles' => self::getSearchURL(false) . '?list=1'];
     }
 
     /** @return Article[] */

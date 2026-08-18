@@ -58,8 +58,9 @@ test('Can delete an article', async ({ page, profile, api }) => {
     await expect(confirm_button).toBeVisible();
     await confirm_button.click();
 
-    // Should be redirected to knowbase list
-    await expect(page).toHaveURL(/\/front\/knowbaseitem\.php/);
+    // Sent back to the entry point of the knowledge base, which opens the root
+    // article now that the deleted one is gone.
+    await expect(page).toHaveURL(/\/front\/knowbaseitem\.form\.php\?id=\d+/);
     await expect(page.getByText('Item successfully deleted.')).toBeVisible();
 
     // Article should no longer exist

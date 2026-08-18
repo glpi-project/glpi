@@ -42,6 +42,13 @@ global $CFG_GLPI;
 if (!Session::haveRightsOr(KnowbaseItem::$rightname, [READ, KnowbaseItem::READFAQ])) {
     throw new AccessDeniedHttpException();
 }
+
+// Entering the knowledge base without any parameter means opening its root
+// article.
+if ($_GET === []) {
+    Html::redirect(KnowbaseItem::getFormURLWithID(KnowbaseItem::getRootId()));
+}
+
 if (isset($_GET["id"])) {
     Html::redirect(KnowbaseItem::getFormURLWithID($_GET["id"]));
 }
