@@ -1,0 +1,13 @@
+From: normal@glpi-project.org
+To: unittests@glpi-project.org
+Subject: HTML com mojibake
+Message-ID: <charset-evidence-html@example.org>
+Date: Tue, 12 May 2026 10:03:00 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<!doctype html>
+<html>
+<body><p>AÃ§Ã£o &amp; validaÃ§Ã£o <strong>preservada</strong></p></body>
+</html>
