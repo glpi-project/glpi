@@ -316,7 +316,7 @@ final class OAuthApplication extends CommonDBTM
         $provider_class = match ($this->fields['provider']) {
             self::AZURE  => SmtpAzure::class,
             self::GOOGLE => SmtpGoogle::class,
-            default      => throw new \RuntimeException(sprintf('Unknown provider %s.', $this->fields['provider'])),
+            default      => throw new RuntimeException(sprintf('Unknown provider %s.', $this->fields['provider'])),
         };
 
         $options = [
@@ -342,7 +342,7 @@ final class OAuthApplication extends CommonDBTM
     public function redirectToAuthorizationUrl(string $type): void
     {
         if ($this->isNewItem()) {
-            throw new \RuntimeException('Invalid application.');
+            throw new RuntimeException('Invalid application.');
         }
 
         $provider = $this->getOauthProvider($type);

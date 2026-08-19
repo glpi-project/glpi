@@ -141,7 +141,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        <i class="ti ti-stethoscope me-1"></i>
+                        <i class="ti ti-stethoscope me-1" aria-hidden="true"></i>
                         {{ __('Connection diagnostic') }}
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
@@ -151,7 +151,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-secondary" id="oauth_diagnostic_rerun_{{ rand }}">
-                        <i class="ti ti-refresh me-1"></i>
+                        <i class="ti ti-refresh me-1" aria-hidden="true"></i>
                         {{ __('Run again') }}
                     </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('Close') }}</button>
@@ -242,13 +242,13 @@
             const CONTINUES = ['ok', 'warning', 'info'];
 
             const ICONS = {
-                pending: '<i class="ti ti-circle-dotted text-muted"></i>',
+                pending: '<i class="ti ti-circle-dotted text-muted" aria-hidden="true"></i>',
                 running: '<span class="spinner-border spinner-border-sm text-primary" role="status"></span>',
-                ok:      '<i class="ti ti-circle-check text-success"></i>',
-                failed:  '<i class="ti ti-circle-x text-danger"></i>',
-                warning: '<i class="ti ti-alert-triangle text-warning"></i>',
-                info:    '<i class="ti ti-info-circle text-info"></i>',
-                skipped: '<i class="ti ti-minus text-muted"></i>',
+                ok:      '<i class="ti ti-circle-check text-success" aria-hidden="true"></i>',
+                failed:  '<i class="ti ti-circle-x text-danger" aria-hidden="true"></i>',
+                warning: '<i class="ti ti-alert-triangle text-warning" aria-hidden="true"></i>',
+                info:    '<i class="ti ti-info-circle text-info" aria-hidden="true"></i>',
+                skipped: '<i class="ti ti-minus text-muted" aria-hidden="true"></i>',
             };
 
             let running = false;
@@ -273,7 +273,7 @@
                 const li = document.createElement('li');
                 li.dataset.step = step.key;
                 li.innerHTML = '<div class="oauth-diagnostic-node">'
-                    + '<span class="oauth-diagnostic-icon"></span>'
+                    + '<span class="oauth-diagnostic-icon" aria-hidden="true"></span>'
                     + '<div class="flex-fill">'
                     + '<div class="oauth-diagnostic-label"></div>'
                     + '<div class="oauth-diagnostic-message text-muted small"></div>'

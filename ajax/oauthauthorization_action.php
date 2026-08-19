@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\BadRequestHttpException;
+
 Session::checkRight(OAuthApplication::$rightname, UPDATE);
 
 if (isset($_POST['id']) && isset($_POST['type']) && isset($_POST['request_authorization'])) {
@@ -73,5 +75,5 @@ if (isset($_POST['id']) && isset($_POST['type']) && isset($_POST['request_author
     $authorization->revokeAuthorization();
     Html::back();
 } else {
-    throw new Glpi\Exception\Http\BadRequestHttpException();
+    throw new BadRequestHttpException();
 }
