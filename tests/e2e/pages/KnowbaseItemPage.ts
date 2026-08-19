@@ -208,13 +208,19 @@ export class KnowbaseItemPage extends GlpiPage
         return this.favoritesSection.locator(`[data-glpi-kb-article-id="${id}"]`);
     }
 
+    public getAsideTreeArticleLine(id: number): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- using scope
+        return this.getAsideTreeArticleRow(id).locator(':scope > .article-line');
+    }
+
     /**
      * The illustration slot (`<use>` element for a native icon) of an article
      * row in the aside tree.
      */
     public getAsideTreeArticleIllustration(id: number): Locator
     {
-        return this.getAsideTreeArticleRow(id)
+        return this.getAsideTreeArticleLine(id)
             .getByTestId('kb-illustration')
             .getByTestId('illustration-use')
         ;
@@ -237,7 +243,7 @@ export class KnowbaseItemPage extends GlpiPage
      */
     public getAsideArticleAddChildTrigger(id: number): Locator
     {
-        return this.getAsideTreeArticleRow(id).getByTitle('Create a child article').first();
+        return this.getAsideTreeArticleLine(id).getByTitle('Create a child article');
     }
 
     /**
@@ -245,7 +251,7 @@ export class KnowbaseItemPage extends GlpiPage
      */
     public getAsideArticleMenuTrigger(id: number): Locator
     {
-        return this.getAsideTreeArticleRow(id).getByRole('button', { name: 'More actions' });
+        return this.getAsideTreeArticleLine(id).getByRole('button', { name: 'More actions' });
     }
 
     /**
@@ -253,11 +259,10 @@ export class KnowbaseItemPage extends GlpiPage
      */
     public async doOpenAsideArticleMenu(id: number): Promise<void>
     {
-        const row = this.getAsideTreeArticleRow(id);
-        await row.hover();
+        await this.getAsideTreeArticleLine(id).hover();
         await this.getAsideArticleMenuTrigger(id).click();
         // The aside menu content is lazy-loaded; wait until it is rendered.
-        await expect(row.getByRole('button', { name: 'Add to favorites' })).toBeVisible();
+        await expect(this.getAsideArticleAction(id, 'Add to favorites')).toBeVisible();
     }
 
     /**
@@ -265,7 +270,7 @@ export class KnowbaseItemPage extends GlpiPage
      */
     public getAsideArticleAction(id: number, name: string): Locator
     {
-        return this.getAsideTreeArticleRow(id).getByRole('button', { name });
+        return this.getAsideTreeArticleLine(id).getByRole('button', { name });
     }
 
     public async doToggleAsideFavorite(id: number): Promise<void>
@@ -545,8 +550,7 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * The root-level container of the aside article tree. Doubles as the
-     * "node" for the root "+" affordance (see `aside.html.twig`).
+     * The root-level container of the aside article tree.
      */
     public get asideTree(): Locator
     {
@@ -561,19 +565,6 @@ export class KnowbaseItemPage extends GlpiPage
     {
         // eslint-disable-next-line playwright/no-raw-locators -- using scope
         return this.asideTree.locator(':scope > [data-glpi-kb-aside-category-header]');
-    }
-
-    /**
-     * The "+" link that creates a root-level article (no parent).
-     */
-    public get asideRootCreateLink(): Locator
-    {
-        return this.page.getByRole('link', { name: 'Create a root article' });
-    }
-
-    public get asideRootCreateInput(): Locator
-    {
-        return this.asideTree.getByPlaceholder('New article...');
     }
 
     public get asideSearchInput(): Locator
