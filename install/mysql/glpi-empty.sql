@@ -10045,23 +10045,6 @@ CREATE TABLE `glpi_oauth_auth_codes` (
    KEY `client` (`client`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
-DROP TABLE IF EXISTS `glpi_oauth_authorizations`;
-CREATE TABLE `glpi_oauth_authorizations` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `oauth_applications_id` int unsigned NOT NULL DEFAULT '0',
-  `type` varchar(10) NOT NULL DEFAULT 'IMAP',
-  `code` text,
-  `token` text,
-  `refresh_token` text,
-  `email` varchar(255) NOT NULL,
-  `date_creation` timestamp NULL DEFAULT NULL,
-  `date_mod` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `oauth_applications_id` (`oauth_applications_id`),
-  KEY `date_creation` (`date_creation`),
-  KEY `date_mod` (`date_mod`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-
 DROP TABLE IF EXISTS `glpi_oauthapplications`;
 CREATE TABLE `glpi_oauthapplications` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -10081,6 +10064,23 @@ CREATE TABLE `glpi_oauthapplications` (
   KEY `date_mod` (`date_mod`),
   KEY `client_id` (`client_id`),
   KEY `tenant_id` (`tenant_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+DROP TABLE IF EXISTS `glpi_oauthauthorizations`;
+CREATE TABLE `glpi_oauthauthorizations` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `oauth_applications_id` int unsigned NOT NULL DEFAULT '0',
+  `type` varchar(10) NOT NULL DEFAULT 'IMAP',
+  `code` text,
+  `token` text,
+  `refresh_token` text,
+  `email` varchar(255) NOT NULL,
+  `date_creation` timestamp NULL DEFAULT NULL,
+  `date_mod` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `oauth_applications_id` (`oauth_applications_id`),
+  KEY `date_creation` (`date_creation`),
+  KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_oauthclients`;

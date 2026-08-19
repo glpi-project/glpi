@@ -42,8 +42,8 @@ $default_charset   = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
 
-if (!$DB->tableExists('glpi_oauth_authorizations')) {
-    $query = "CREATE TABLE `glpi_oauth_authorizations` (
+if (!$DB->tableExists('glpi_oauthauthorizations')) {
+    $query = "CREATE TABLE `glpi_oauthauthorizations` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `oauth_applications_id` int {$default_key_sign} NOT NULL DEFAULT '0',
       `type` varchar(10) NOT NULL DEFAULT 'IMAP',

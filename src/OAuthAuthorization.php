@@ -80,11 +80,6 @@ class OAuthAuthorization extends CommonDBChild
 
     private ?string $error = null;
 
-    public static function getTable($classname = null)
-    {
-        return 'glpi_oauth_authorizations';
-    }
-
     public static function getTypeName($nb = 0): string
     {
         return _n('OAuth authorization', 'OAuth authorizations', $nb);
