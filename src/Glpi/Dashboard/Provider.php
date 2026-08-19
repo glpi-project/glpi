@@ -1199,7 +1199,9 @@ class Provider
         $criteria = array_merge_recursive(
             [
                 'SELECT'    => [
+                    "$entity_table.id AS entity_id",
                     "$entity_table.completename AS entity_name",
+                    "$category_table.id AS category_id",
                     "$category_table.completename AS category_name",
                     'COUNT DISTINCT' => "$ticket_table.id AS cpt",
                 ],
@@ -1230,27 +1232,26 @@ class Provider
         $iterator = $DB->request($criteria);
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
 
-        $matrix     = [];
-        $categories = [];
+        $matrix         = [];
+        $entity_names   = [];
+        $category_names = [];
         foreach ($iterator as $result) {
-            $entity_name   = $result['entity_name'] ?? __('Root entity');
-            $category_name = $result['category_name'] ?? __('None');
+            $entity_id   = $result['entity_id'] ?? 0;
+            $category_id = $result['category_id'] ?? 0;
 
-            $matrix[$entity_name][$category_name] = (int) $result['cpt'];
-            $categories[$category_name]           = true;
+            $entity_names[$entity_id]         = $result['entity_name'] ?? __('Root entity');
+            $category_names[$category_id]     = $result['category_name'] ?? __('None');
+            $matrix[$entity_id][$category_id] = (int) $result['cpt'];
         }
 
-        $entities   = array_keys($matrix);
-        $categories = array_keys($categories);
-
         $data = [
-            'labels' => $entities,
+            'labels' => array_values($entity_names),
             'series' => [],
         ];
-        foreach ($categories as $category_name) {
+        foreach ($category_names as $category_id => $category_name) {
             $series_data = [];
-            foreach ($entities as $entity_name) {
-                $series_data[] = $matrix[$entity_name][$category_name] ?? 0;
+            foreach (array_keys($entity_names) as $entity_id) {
+                $series_data[] = $matrix[$entity_id][$category_id] ?? 0;
             }
             $data['series'][] = [
                 'name' => $category_name,
