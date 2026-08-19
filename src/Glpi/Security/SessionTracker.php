@@ -41,6 +41,7 @@ use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
@@ -305,7 +306,7 @@ final class SessionTracker
                     [$start_ip, $end_ip] = IPUtilities::cidrToRange($ip);
                     $ip_criteria[] = [
                         'RAW' => [
-                            (string) QueryFunction::inet6Aton('ip_address') => [
+                            (string) QueryFunction::inet6Aton(new QueryIdentifier('ip_address')) => [
                                 'BETWEEN',
                                 new QueryExpression(
                                     QueryFunction::inet6Aton(new QueryExpression($DB::quoteValue($start_ip)))
@@ -432,10 +433,10 @@ final class SessionTracker
                 'glpi_users_sessionhistories.id',
                 new QueryExpression('glpi_users_sessionhistories.users_id', 'user_identifier'),
                 'glpi_users_sessionhistories.login_session_uid',
-                QueryFunction::ifnull('glpi_users_sessions.ip_address', 'glpi_users_sessionhistories.ip_address', 'ip_address'),
-                QueryFunction::ifnull('glpi_users_sessions.user_agent', 'glpi_users_sessionhistories.user_agent', 'user_agent'),
+                QueryFunction::ifnull(new QueryIdentifier('glpi_users_sessions.ip_address'), new QueryIdentifier('glpi_users_sessionhistories.ip_address'), 'ip_address'),
+                QueryFunction::ifnull(new QueryIdentifier('glpi_users_sessions.user_agent'), new QueryIdentifier('glpi_users_sessionhistories.user_agent'), 'user_agent'),
                 'glpi_users_sessionhistories.auth_type',
-                QueryFunction::ifnull('glpi_users_sessions.created_at', 'glpi_users_sessionhistories.logged_in_at', 'logged_in_at'),
+                QueryFunction::ifnull(new QueryIdentifier('glpi_users_sessions.created_at'), new QueryIdentifier('glpi_users_sessionhistories.logged_in_at'), 'logged_in_at'),
                 'glpi_users_sessions.last_activity_at',
                 'glpi_users_sessionhistories.logged_out_at',
                 'glpi_users_sessionhistories.logout_reason',
@@ -480,7 +481,7 @@ final class SessionTracker
                 new QueryExpression('NULL', 'user_agent'),
                 new QueryExpression('NULL', 'auth_type'),
                 QueryFunction::dateSub(
-                    date: 'glpi_oauth_access_tokens.date_expiration',
+                    date: new QueryIdentifier('glpi_oauth_access_tokens.date_expiration'),
                     interval: $access_token_lifetime_seconds,
                     interval_unit: 'SECOND',
                     alias: 'logged_in_at',

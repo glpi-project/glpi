@@ -119,16 +119,16 @@ class QueryFunction
 
     /**
      * Build an DATE_ADD SQL function call
-     * @param string|QueryExpression $date Date to add interval to
-     * @param int|string|QueryExpression $interval Interval to add
+     * @param QueryElementInterface|string $date Date to add interval to
+     * @param QueryElementInterface|int|string $interval Interval to add. A bare string is a literal value, not an identifier.
      * @param string $interval_unit Interval unit
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function dateAdd(string|QueryExpression $date, int|string|QueryExpression $interval, string $interval_unit, ?string $alias = null): QueryExpression
+    public static function dateAdd(QueryElementInterface|string $date, QueryElementInterface|int|string $interval, string $interval_unit, ?string $alias = null): QueryExpression
     {
         global $DB;
-        $date = $date instanceof QueryExpression ? $date : $DB::quoteName($date);
+        $date = $date instanceof QueryElementInterface ? $date : $DB::quoteName($date);
         $interval = is_string($interval) ? $DB::quoteValue($interval) : $interval;
         $exp = sprintf('DATE_ADD(%s, INTERVAL %s %s)', $date, $interval, strtoupper($interval_unit));
         return new QueryExpression($exp, $alias);
@@ -136,16 +136,16 @@ class QueryFunction
 
     /**
      * Build an DATE_SUB SQL function call
-     * @param string|QueryExpression $date Date to add interval to
-     * @param int|string|QueryExpression $interval Interval to add
+     * @param QueryElementInterface|string $date Date to add interval to
+     * @param QueryElementInterface|int|string $interval Interval to add. A bare string is a literal value, not an identifier.
      * @param string $interval_unit Interval unit
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
-    public static function dateSub(string|QueryExpression $date, int|string|QueryExpression $interval, string $interval_unit, ?string $alias = null): QueryExpression
+    public static function dateSub(QueryElementInterface|string $date, QueryElementInterface|int|string $interval, string $interval_unit, ?string $alias = null): QueryExpression
     {
         global $DB;
-        $date = $date instanceof QueryExpression ? $date : $DB::quoteName($date);
+        $date = $date instanceof QueryElementInterface ? $date : $DB::quoteName($date);
         $interval = is_string($interval) ? $DB::quoteValue($interval) : $interval;
         $exp = sprintf('DATE_SUB(%s, INTERVAL %s %s)', $date, $interval, strtoupper($interval_unit));
         return new QueryExpression($exp, $alias);

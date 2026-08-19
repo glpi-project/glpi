@@ -47,6 +47,8 @@ The present file will list all changes made to the project; according to the
 - Type declarations for some `CronTask` methods have been added.
 
 #### Added
+- `Glpi\DBAL\QueryElementInterface`, implemented by every SQL building block that may carry bound values (`QueryExpression`, `QueryIdentifier`, `QueryValue`, `AbstractQuery`). It exposes `getValue()` for the SQL fragment and `getParams()` for the values to bind for its `?` placeholders; both must always be used together.
+- `Glpi\DBAL\QueryIdentifier`, to designate a database identifier (table or field name) that has to be quoted, instead of relying on a bare string.
 
 #### Changes
 - `Session::haveRight()` now only returns a boolean

@@ -39,7 +39,7 @@ use RuntimeException;
 /**
  *  Query expression class
  **/
-class QueryExpression
+class QueryExpression implements QueryElementInterface
 {
     private string $expression;
 
@@ -51,18 +51,18 @@ class QueryExpression
     /**
      * Create a query expression
      *
-     * @param string|QueryExpression $expression The query expression
+     * @param string|QueryElementInterface $expression The query expression
      * @param ?string $alias     The query expression alias
      * @param array<int, mixed> $values    The query expression values
      */
-    public function __construct(string|QueryExpression $expression, ?string $alias = null, array $values = [])
+    public function __construct(string|QueryElementInterface $expression, ?string $alias = null, array $values = [])
     {
         if ($expression === '') {
             throw new RuntimeException('Cannot build an empty expression');
         }
         $this->alias = $alias;
 
-        if ($expression instanceof QueryExpression) {
+        if ($expression instanceof QueryElementInterface) {
             $this->expression = $expression->getValue();
             $values = array_merge($expression->getParams(), $values);
         } else {
@@ -78,7 +78,7 @@ class QueryExpression
      *
      * @psalm-taint-escape sql
      */
-    public function getValue()
+    public function getValue(): string
     {
         global $DB;
         $sql = $this->expression;
@@ -88,7 +88,7 @@ class QueryExpression
         return $sql;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getValue();
     }
