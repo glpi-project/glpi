@@ -37,7 +37,7 @@
             {% if article.illustration %}
                 {{ render_illustration(article.illustration, 20) }}
             {% else %}
-                <i class="ti ti-lifebuoy text-secondary"></i>
+                <i class="ti ti-lifebuoy text-secondary" aria-hidden="true"></i>
             {% endif %}
         </span>
         <span class="text-truncate">{{ article.name }}</span>
