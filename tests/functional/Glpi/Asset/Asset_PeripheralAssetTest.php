@@ -42,7 +42,6 @@ use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
 use Monitor;
 use Peripheral;
-use ReflectionMethod;
 use Toolbox;
 
 class Asset_PeripheralAssetTest extends DbTestCase
@@ -178,8 +177,12 @@ class Asset_PeripheralAssetTest extends DbTestCase
             ]);
         }
 
-        $method = new ReflectionMethod(Asset_PeripheralAsset::class, 'getUnavailablePeripherals');
-        $unavailable = iterator_to_array($method->invoke(null, $computer_2, Peripheral::class));
+        $unavailable = iterator_to_array($this->callPrivateMethod(
+            new Asset_PeripheralAsset(),
+            'getUnavailablePeripherals',
+            $computer_2,
+            Peripheral::class
+        ));
         $unavailable_ids = array_column($unavailable, 'id');
 
         $this->assertNotContains($global_on_other_computer->getID(), $unavailable_ids);
