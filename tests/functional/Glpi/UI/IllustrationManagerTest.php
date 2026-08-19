@@ -37,6 +37,7 @@ namespace tests\units\Glpi\UI;
 use Glpi\Tests\GLPITestCase;
 use Glpi\UI\IllustrationManager;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 
 final class IllustrationManagerTest extends GLPITestCase
 {
@@ -114,6 +115,50 @@ final class IllustrationManagerTest extends GLPITestCase
 
         $this->assertSame('', $manager->renderIcon(''));
         $this->assertSame('', $manager->renderIcon('', 60));
+    }
+
+    public function testRenderIconExposesItsTitle(): void
+    {
+        $manager = new IllustrationManager();
+
+        $html = $manager->renderIcon('report-issue');
+
+        $this->assertStringContainsString('role="img"', $html);
+        $this->assertStringContainsString('<title>Report an issue</title>', $html);
+    }
+
+    public function testRenderDecorativeIconIsHiddenAndUnnamed(): void
+    {
+        $manager = new IllustrationManager();
+
+        $html = $manager->renderIcon('report-issue', decorative: true);
+
+        $this->assertStringContainsString('aria-hidden="true"', $html);
+        $this->assertStringNotContainsString('<title>', $html);
+    }
+
+    public function testRenderSceneIsHiddenAndUnnamed(): void
+    {
+        $manager = new IllustrationManager();
+
+        $html = $manager->renderScene('desk');
+
+        $this->assertStringContainsString('aria-hidden="true"', $html);
+        $this->assertStringNotContainsString('<title>', $html);
+    }
+
+    public function testRenderIconWithoutTitleIsReported(): void
+    {
+        $manager = new IllustrationManager();
+
+        // An icon id that has no entry in the icons definitions, thus no title.
+        $html = $manager->renderIcon('report-issue.svg');
+
+        $this->assertStringContainsString('aria-hidden="true"', $html);
+        $this->hasPhpLogRecordThatContains(
+            'The illustration `report-issue.svg` has no title',
+            LogLevel::WARNING
+        );
     }
 
     public function testIllustrationsTranslationsAreGenerated(): void

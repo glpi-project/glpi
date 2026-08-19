@@ -369,10 +369,12 @@ final class IllustrationManager
     ): string {
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [
-            'file_path' => $this->scenes_gradient_sprites_path,
-            'icon_id'   => $icon_id,
-            'height'    => $this->computeSize($height),
-            'width'     => $this->computeSize($width),
+            'file_path'  => $this->scenes_gradient_sprites_path,
+            'icon_id'    => $icon_id,
+            'height'     => $this->computeSize($height),
+            'width'      => $this->computeSize($width),
+            // Scenes are background illustrations with no name of their own.
+            'decorative' => true,
         ]);
     }
 
