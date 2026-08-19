@@ -925,7 +925,14 @@ class CommonDBTM extends CommonGLPI
                 }
 
                 $itemtype = getItemTypeForTable($tablename);
-                if (!is_a($itemtype, self::class, true)) {
+                $is_clonable = $itemtype !== null
+                    && is_a($itemtype, self::class, true)
+                    && (
+                        !(new ReflectionClass($itemtype))->isAbstract()
+                        || (new ReflectionMethod($itemtype, 'getById'))->class !== self::class
+                    );
+
+                if (!$is_clonable) {
                     trigger_error(
                         sprintf('Unable to update relations between %s and %s tables.', static::getTable(), $tablename),
                         E_USER_WARNING
