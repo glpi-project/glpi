@@ -39,6 +39,7 @@ use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\ItemPropertyTagProvider;
 use Glpi\Form\Tag\QuestionTagProvider;
+use Glpi\Message\MessageType;
 use Glpi\Search\SearchOption;
 
 use function Safe\preg_match_all;
@@ -106,7 +107,7 @@ trait TagConversionTrait
                 }
 
                 // Resolve the FormCreator property name to a search option ID
-                $search_option_id = self::resolveFormcreatorPropertyToSearchOptionId($question, $property_name);
+                $search_option_id = self::resolveFormcreatorPropertyToSearchOptionId($question, $property_name, $migration);
                 if ($search_option_id === null) {
                     continue;
                 }
@@ -162,18 +163,38 @@ trait TagConversionTrait
      *
      * @param Question $question The question object
      * @param string $property_name The property name to resolve
+     * @param FormMigration $migration Migration object for ID mapping
      * @return int|null The corresponding search option ID, or null if not found
      */
     private static function resolveFormcreatorPropertyToSearchOptionId(
         Question $question,
-        string $property_name
+        string $property_name,
+        FormMigration $migration
     ): ?int {
         if (!is_a($question->fields['type'], QuestionTypeItem::class, true)) {
+            $migration->addMessageToResult(
+                MessageType::Warning,
+                sprintf(
+                    __('Formcreator migration: cannot convert the property "%s" tag of question "%s" because it\'s '
+                        . 'not an Item question.'),
+                    $property_name,
+                    $question->fields['name'],
+                )
+            );
             return null;
         }
 
         $itemtype = (new ($question->fields['type'])())->getDefaultValueItemtype($question);
         if ($itemtype === null || !is_a($itemtype, \CommonDBTM::class, true)) {
+            $migration->addMessageToResult(
+                MessageType::Warning,
+                sprintf(
+                    __('Formcreator migration: cannot convert the property "%s" tag of question "%s" because the Itemtype of '
+                    . 'the question is not a valid CommonDBTM.'),
+                    $property_name,
+                    $question->fields['name'],
+                )
+            );
             return null;
         }
 
@@ -183,10 +204,13 @@ trait TagConversionTrait
             ?? null;
 
         if ($field_name === null) {
-            // Log a warning about the unknown property
-            trigger_error(
-                sprintf('Formcreator migration: unknown property "%s" for %s', $property_name, $itemtype),
-                E_USER_WARNING
+            $migration->addMessageToResult(
+                MessageType::Warning,
+                sprintf(
+                    __('Formcreator migration: unknown property "%s" for %s'),
+                    $property_name,
+                    $itemtype
+                )
             );
             return null;
         }
@@ -204,6 +228,14 @@ trait TagConversionTrait
             }
         }
 
+        $migration->addMessageToResult(
+            MessageType::Warning,
+            sprintf(
+                __('Formcreator migration: cannot convert the property "%s" tag of question "%s"'),
+                $property_name,
+                $question->fields['name']
+            )
+        );
         return null;
     }
 

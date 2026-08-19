@@ -96,7 +96,6 @@ use Group;
 use ITILCategory;
 use Location;
 use LogicException;
-use Monolog\Logger;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -1231,12 +1230,11 @@ final class FormMigrationTest extends DbTestCase
             'rawContent'                => 'Unknown: ##answer_9997.unknown##',
             'expectedPatternForTitle'   => '/^Unknown: ##answer_9997.unknown##$/',
             'expectedPatternForContent' => '/^Unknown: ##answer_9997.unknown##$/',
-            'emptyLogs'                 => true,  // expect a log entry for this case, but we don't want to fail the test in GLPITestCase::tearDown()
         ];
     }
 
     #[DataProvider('provideFormMigrationTagConversion')]
-    public function testFormMigrationTagConversion(string $rawContent, string $expectedPatternForTitle, string $expectedPatternForContent, bool $emptyLogs = false): void
+    public function testFormMigrationTagConversion(string $rawContent, string $expectedPatternForTitle, string $expectedPatternForContent): void
     {
         global $DB;
 
@@ -1341,12 +1339,6 @@ final class FormMigrationTest extends DbTestCase
             $expectedPatternForContent,
             $content_config->getValue()
         );
-
-        if ($emptyLogs) {
-            /** @var Logger $PHPLOGGER */
-            global $PHPLOGGER;
-            $PHPLOGGER->reset();
-        }
     }
 
     public function testFormMigrationWithRadioQuestion(): void
