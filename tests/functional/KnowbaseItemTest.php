@@ -1002,6 +1002,91 @@ HTML,
         $this->assertStringNotContainsString('data-glpi-kb-prefilled-parent-id', $html);
     }
 
+    public function testSubArticlesTabHidesChildrenTheUserCannotOpen(): void
+    {
+        // The parent is readable through its own grant. The child has none, so it is
+        // reachable only through inherited visibility, and its own page would refuse access.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_parent',
+            'answer'      => __FUNCTION__ . '_parent',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_child',
+            'answer'      => __FUNCTION__ . '_child',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            '_parents'    => [$parent->getID()],
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $parent->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        // A session without KB admin rights, unrelated to both articles.
+        $this->login('post-only', 'postonly');
+
+        $readable = new KnowbaseItem();
+        $this->assertTrue($readable->can($parent->getID(), READ));
+        $unreadable = new KnowbaseItem();
+        $this->assertFalse($unreadable->can($child->getID(), READ));
+
+        $item = new KnowbaseItem();
+        $item->getFromDB($parent->getID());
+        $html = (string) $item->showFull(['display' => false]);
+
+        $this->assertStringNotContainsString($child->fields['name'], $html);
+        $this->assertStringNotContainsString('id="kb-children-tab"', $html);
+    }
+
+    public function testSubArticlesTabListsChildrenTheUserCanOpen(): void
+    {
+        // Same shape as the test above, but the child carries its own grant.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_parent',
+            'answer'      => __FUNCTION__ . '_parent',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_child',
+            'answer'      => __FUNCTION__ . '_child',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            '_parents'    => [$parent->getID()],
+        ]);
+        foreach ([$parent->getID(), $child->getID()] as $article_id) {
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $article_id,
+                'entities_id'      => $entity,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->login('post-only', 'postonly');
+
+        $item = new KnowbaseItem();
+        $item->getFromDB($parent->getID());
+        $html = (string) $item->showFull(['display' => false]);
+
+        $this->assertStringContainsString('id="kb-children-tab"', $html);
+        $this->assertStringContainsString($child->fields['name'], $html);
+    }
+
     public function testShowFullAddModePrefillsParentFromOptions(): void
     {
         $this->login();

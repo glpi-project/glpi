@@ -1376,23 +1376,35 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         global $DB;
 
-        $criteria = self::getListRequest(
-            ['knowbaseitems_id_parent' => $this->fields['id']],
-            'browse',
-        );
+        // No SQL visibility here: showFull() proved the parent readable, so inherited visibility matches every child.
+        $rows = $DB->request([
+            'SELECT'     => self::getTableField('id'),
+            'FROM'       => self::getTable(),
+            'INNER JOIN' => [
+                KnowbaseItem_KnowbaseItem::getTable() => [
+                    'FKEY' => [
+                        KnowbaseItem_KnowbaseItem::getTable() => 'knowbaseitems_id',
+                        self::getTable()                      => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'      => [
+                KnowbaseItem_KnowbaseItem::getTableField('knowbaseitems_id_parent') => $this->fields['id'],
+            ],
+            'ORDER'      => [self::getTableField('name') . ' ASC'],
+        ]);
 
-        // getListRequest() merges the visibility WHERE only for logged-in sessions, see its default branch.
-        $child = Session::getLoginUserID() === false ? new self() : null;
         $children = [];
-        foreach ($DB->request($criteria) as $row) {
+        $child = new self();
+        foreach ($rows as $row) {
             $child_id = (int) $row['id'];
-            if ($child !== null && !$child->can($child_id, READ)) {
+            if (!$child->can($child_id, READ)) {
                 continue;
             }
             $children[] = [
                 'id'           => $child_id,
-                'name'         => ($row['transname'] ?? '') ?: $row['name'],
-                'illustration' => $row['illustration'] ?? '',
+                'name'         => $child->getName(),
+                'illustration' => $child->fields['illustration'] ?? '',
                 'link_url'     => self::getFormURLWithID($child_id),
             ];
         }
