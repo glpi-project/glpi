@@ -655,6 +655,15 @@ final class TestableOAuthAuthorization extends OAuthAuthorization
 {
     public ?bool $probe_result = null;
 
+    /**
+     * The table name is derived from the class name, so this subclass would
+     * otherwise resolve to a table of its own that does not exist.
+     */
+    public static function getTable($classname = null)
+    {
+        return \CommonDBTM::getTable(OAuthAuthorization::class);
+    }
+
     private ?ProviderInterface $fake_provider = null;
 
     public static function withProvider(ProviderInterface $provider): self
