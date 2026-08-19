@@ -2473,7 +2473,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertSame($phone->getID(), $antivirus->fields['items_id']);
     }
 
-    public function testCleanRelationDataOnTableOwnedByAbstractItemtype(): void
+    public function testCleanRelationDataOnTableOwnedByAbstractItemtypeWithGetById(): void
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -2497,14 +2497,9 @@ class CommonDBTMTest extends DbTestCase
 
         $validation_step->cleanRelationData();
 
-        $this->hasPhpLogRecordThatContains(
-            'Unable to update relations between glpi_validationsteps and glpi_itils_validationsteps tables.',
-            LogLevel::WARNING
-        );
-
-        // The row is left untouched.
+        // The row is correctly deleted.
         $this->assertSame(
-            1,
+            0,
             countElementsInTable(
                 'glpi_itils_validationsteps',
                 ['validationsteps_id' => $validation_step->getID()]
