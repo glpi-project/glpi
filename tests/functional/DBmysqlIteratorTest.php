@@ -670,6 +670,23 @@ class DBmysqlIteratorTest extends DbTestCase
             $it->getSql()
         );
         $this->assertEquals([], $it->getValues());
+
+        $it = $this->it->execute(
+            [
+                'FROM' => 'foo',
+                'LEFT JOIN' => [
+                    [
+                        'TABLE'  => 'bar',
+                        'FKEY'   => new QueryExpression('`foo`.`id` = `bar`.`items_id` AND `bar`.`itemtype` = ?', values: ['Computer']),
+                    ],
+                ],
+            ]
+        );
+        $this->assertSame(
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`foo`.`id` = `bar`.`items_id` AND `bar`.`itemtype` = ?)',
+            $it->getSql()
+        );
+        $this->assertEquals(['Computer'], $it->getValues());
     }
 
     public function testBadJoin()
