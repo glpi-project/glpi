@@ -57,6 +57,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Config\ConfigContainer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
 use Glpi\Search\Provider\SQLProvider;
@@ -3033,9 +3034,9 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
                         // append network name
                         $concat_expr = QueryFunction::groupConcat(
                             expression: QueryFunction::concat([
-                                'ipadr.id',
+                                new QueryIdentifier('ipadr.id'),
                                 new QueryExpression($DB::quoteValue(Search::SHORTSEP)),
-                                'ipadr.name',
+                                new QueryIdentifier('ipadr.name'),
                             ]),
                             separator: Search::LONGSEP,
                             alias: 'ipadresses'

@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\RichText\RichText;
 
 /**
@@ -758,7 +759,7 @@ TWIG, $twig_params);
                 'WHERE'     => [
                     'glpi_reservationitems.entities_id' => $entity,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp('glpi_reservations.end') . ' - ' . $secs
+                        QueryFunction::unixTimestamp(new QueryIdentifier('glpi_reservations.end')) . ' - ' . $secs
                             . ' < ' . QueryFunction::unixTimestamp()
                     ),
                     'glpi_reservations.begin'  => ['<', QueryFunction::now()],

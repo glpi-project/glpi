@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Security\SessionTracker;
@@ -578,13 +579,13 @@ class CronTask extends CommonDBTM
             // Build query for next_run and allowed hour
             $WHERE[] = ['OR' => [
                 ['AND' => [
-                    ['hourmin'   => ['<', new QueryExpression($DB::quoteName('hourmax'))]],
+                    ['hourmin'   => ['<', new QueryIdentifier('hourmax')]],
                     'hourmin'   => ['<=', $hour_criteria],
                     'hourmax'   => ['>', $hour_criteria],
                 ],
                 ],
                 ['AND' => [
-                    'hourmin'   => ['>', new QueryExpression($DB::quoteName('hourmax'))],
+                    'hourmin'   => ['>', new QueryIdentifier('hourmax')],
                     'OR'        => [
                         'hourmin'   => ['<=', $hour_criteria],
                         'hourmax'   => ['>', $hour_criteria],
@@ -596,7 +597,7 @@ class CronTask extends CommonDBTM
             $WHERE[] = [
                 'OR' => [
                     'lastrun'   => null,
-                    new QueryExpression(QueryFunction::ifnull(QueryFunction::unixTimestamp('next_run'), new QueryExpression('0')) . ' <= ' . QueryFunction::unixTimestamp()),
+                    new QueryExpression(QueryFunction::ifnull(QueryFunction::unixTimestamp(new QueryIdentifier('next_run')), new QueryExpression('0')) . ' <= ' . QueryFunction::unixTimestamp()),
                 ],
             ];
         }
@@ -606,7 +607,7 @@ class CronTask extends CommonDBTM
                 '*',
                 QueryFunction::locate(
                     substring: 'Plugin',
-                    expression: $DB::quoteName('itemtype'),
+                    expression: new QueryIdentifier('itemtype'),
                     alias: 'ISPLUGIN'
                 ),
             ],
@@ -615,7 +616,7 @@ class CronTask extends CommonDBTM
             // Core task before plugins
             'ORDER'  => [
                 'ISPLUGIN',
-                QueryFunction::unixTimestamp('next_run'),
+                QueryFunction::unixTimestamp(new QueryIdentifier('next_run')),
             ],
         ]);
 
@@ -1926,9 +1927,9 @@ TWIG, ['msg' => __('Last run list')]);
             'WHERE'  => [
                 'state'  => self::STATE_RUNNING,
                 'OR'     => [
-                    new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * '
+                    new QueryExpression(QueryFunction::unixTimestamp(new QueryIdentifier('lastrun')) . ' + 2 * '
                         . $DB::quoteName('frequency') . ' < ' . QueryFunction::unixTimestamp()),
-                    new QueryExpression(QueryFunction::unixTimestamp('lastrun') . ' + 2 * '
+                    new QueryExpression(QueryFunction::unixTimestamp(new QueryIdentifier('lastrun')) . ' + 2 * '
                         . HOUR_TIMESTAMP . ' < ' . QueryFunction::unixTimestamp()),
                 ],
             ],

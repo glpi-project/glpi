@@ -38,6 +38,7 @@ use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Features\AssignableItem;
 use Glpi\Form\Category;
@@ -3514,9 +3515,9 @@ HTML;
                             "$table.entities_id",
                             QueryFunction::concat(
                                 params: [
-                                    QueryFunction::ifnull('name', new QueryExpression($DB::quoteValue(''))),
+                                    QueryFunction::ifnull(new QueryIdentifier('name'), new QueryExpression($DB::quoteValue(''))),
                                     new QueryExpression($DB::quoteValue(' ')),
-                                    QueryFunction::ifnull('firstname', new QueryExpression($DB::quoteValue(''))),
+                                    QueryFunction::ifnull(new QueryIdentifier('firstname'), new QueryExpression($DB::quoteValue(''))),
                                 ],
                                 alias: $field
                             ),
@@ -3532,7 +3533,7 @@ HTML;
                         'SELECT' => [
                             "$table.*",
                             QueryFunction::concat(
-                                params: ['glpi_softwares.name', new QueryExpression($DB::quoteValue(' - ')), 'glpi_softwarelicenses.name'],
+                                params: [new QueryIdentifier('glpi_softwares.name'), new QueryExpression($DB::quoteValue(' - ')), new QueryIdentifier('glpi_softwarelicenses.name')],
                                 alias: $field
                             ),
                         ],
