@@ -10,6 +10,7 @@ The present file will list all changes made to the project; according to the
 ### Changed
 - Fixed searching values with multiple concurrent spaces.
 - Fixed import of exported forms containing a condition on an item dropdown with no item selected.
+- Fixed missing browser caching headers on custom illustrations, causing them to be re-fetched on every page load instead of being cached.
 
 ### Deprecated
 

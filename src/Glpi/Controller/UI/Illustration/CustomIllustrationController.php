@@ -45,6 +45,17 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class CustomIllustrationController extends AbstractController
 {
+    /**
+     * Number of seconds a custom illustration response may be kept in the
+     * browser's cache before it must be revalidated with the server.
+     *
+     * Illustrations are only replaced by an explicit re-upload (see
+     * IllustrationManager::saveCustomIllustration()), so a long duration is
+     * safe here; the ETag/Last-Modified pair still lets the browser detect
+     * a change immediately if one occurs.
+     */
+    private const CACHE_MAX_AGE = 604800; // 7 days
+
     public function __construct(
         private IllustrationManager $illustration_manager
     ) {}
@@ -63,6 +74,17 @@ final class CustomIllustrationController extends AbstractController
         }
 
         // Read parameters
-        return new BinaryFileResponse($file);
+        $response = new BinaryFileResponse($file);
+        $response->setAutoEtag();
+        $response->setAutoLastModified();
+        // The route requires an authenticated session, so the response must stay
+        // "private" (per-user), but it can still be cached by the browser instead
+        // of being re-fetched on every page that displays the illustration.
+        $response->setCache([
+            'private' => true,
+            'max_age' => self::CACHE_MAX_AGE,
+        ]);
+
+        return $response;
     }
 }
