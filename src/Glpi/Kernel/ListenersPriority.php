@@ -56,6 +56,7 @@ use Glpi\Kernel\Listener\RequestListener\FrontEndAssetsListener;
 use Glpi\Kernel\Listener\RequestListener\LegacyItemtypeRouteListener;
 use Glpi\Kernel\Listener\RequestListener\LegacyRouterListener;
 use Glpi\Kernel\Listener\RequestListener\PluginsRouterListener;
+use Glpi\Kernel\Listener\RequestListener\ReAuthReplayListener;
 use Glpi\Kernel\Listener\RequestListener\RedirectLegacyRouteListener;
 use Glpi\Kernel\Listener\RequestListener\SessionActivityListener;
 use Glpi\Kernel\Listener\RequestListener\SessionCheckCookieListener;
@@ -112,6 +113,11 @@ final class ListenersPriority
 
         // Update session activity date
         SessionActivityListener::class     => 410,
+
+        // Restores the referer of a request replayed after a re-authentication.
+        // Must be executed before any controller, legacy scripts included, as they read the
+        // referer to compute where to send the user back to.
+        ReAuthReplayListener::class        => 405,
 
         // Executes the legacy controller scripts (`/ajax/*.php` or `/front/*.php` scripts) whenever the
         // requested URI matches an existing file.

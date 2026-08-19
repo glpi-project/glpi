@@ -77,6 +77,12 @@ final class ReAuthControllerTest extends DbTestCase
         // --- assert : a fresh reauth window is opened ---
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame($expected_reauth_until, $_SESSION['glpi_reauth_until']);
+        // The replayed request must carry the parameter asking for the origin page to be restored,
+        // which also pins the data the controller hands over to the replay template.
+        $this->assertStringContainsString(
+            ReAuthManager::RESTORE_REFERER_PARAM,
+            (string) $response->getContent()
+        );
     }
 
     /** Re-renders the prompt without setting glpi_reauth_until when a wrong password is submitted. */

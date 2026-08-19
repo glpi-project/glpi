@@ -65,7 +65,10 @@
 
                   <div class="dropdown-divider"></div>
 
-                  {% if has_itemtype_right('Config', constant('UPDATE')) %}
+                  {# has_profile_right() and not has_itemtype_right(): the latter denies the right
+                     while a re-authentication is pending, which would hide the entry instead of
+                     letting the user trigger the re-authentication prompt by clicking it. #}
+                  {% if has_profile_right('config', constant('UPDATE')) %}
                      <a href="{{ path('/ajax/switchdebug.php') }}"
                         class="dropdown-item {% if is_debug_active %}bg-red-lt{% endif %}"
                         title="{{ __('Change mode') }}">

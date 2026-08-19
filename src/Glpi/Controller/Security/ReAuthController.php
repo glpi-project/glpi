@@ -81,7 +81,7 @@ class ReAuthController extends AbstractController
             return $this->render('pages/redirect_post.html.twig', [
                 'http_method' => $this->reAuthManager->getRequestedMethod(),
                 'url'         => $this->reAuthManager->getRequestedURL(),
-                'post_data'   => $this->reAuthManager->getRequestedPostData(),
+                'replay_data' => $this->reAuthManager->getReplayData(),
             ]);
         }
 

@@ -53,6 +53,12 @@ final class ReAuthManager
     use SingletonTrait;
     public const int REAUTH_DELAY_SECONDS = 15 * MINUTE_TIMESTAMP;
 
+    /**
+     * Query parameter added to GET replays, asking for the origin page to be restored from the
+     * session on the replayed request. Acted upon by the ReAuthReplayListener.
+     */
+    public const string RESTORE_REFERER_PARAM = '_glpi_reauth_restore_referer';
+
     private ?ReAuthStrategyInterface $strategy = null;
 
     /**
@@ -196,26 +202,22 @@ final class ReAuthManager
     }
 
     /**
-     * query data + _glpi_http_referer (POST replays only)
+     * Data to submit along with the replayed request.
      *
-     * `_glpi_http_referer` is set to the origin page (the referer captured on
-     * the first pass, @see getOriginURL()) so that Html::back()/getBackUrl() on
-     * the replayed request returns the original page and not the reauth flow.
-     * Html::getRefererUrl() only reads $_POST['_glpi_http_referer'], so it is
-     * pointless to inject it for a replayed GET request (it would only ever
-     * land in $_GET).
+     * The replayed request must be able to send the user back to the origin page (the referer
+     * captured on the first pass, @see getOriginURL())
+     *
+     * Only the @see self::RESTORE_REFERER_PARAM parameter is sent, whatever the method: it lands
+     * in $_GET or in $_POST depending on it, and the ReAuthReplayListener restores the origin page
+     * from the session on either.
      *
      * @return array<string, string>
      */
-    public function getRequestedPostData(): array
+    public function getReplayData(): array
     {
         $reauth_data = $_SESSION['glpi_reauth_requested_post_data'] ?? [];
 
-        if ($this->getRequestedMethod() !== 'POST') {
-            return $reauth_data;
-        }
-
-        return $reauth_data + ['_glpi_http_referer' => $this->getOriginURL()];
+        return $reauth_data + [self::RESTORE_REFERER_PARAM => '1'];
     }
 
     /**
@@ -352,10 +354,10 @@ final class ReAuthManager
         $_SESSION['glpi_reauth_requested_url'] = $url;
     }
 
-    /** @param array<string, string> $post */
-    private function setRequestedData(array $post): void
+    /** @param array<string, string> $data */
+    private function setRequestedData(array $data): void
     {
-        $_SESSION['glpi_reauth_requested_post_data'] = $post;
+        $_SESSION['glpi_reauth_requested_post_data'] = $data;
     }
 
     /**
