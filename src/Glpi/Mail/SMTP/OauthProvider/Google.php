@@ -40,6 +40,7 @@ use Glpi\Mail\OauthProvider\OwnerDetails;
 use Glpi\Mail\OauthProvider\ProviderInterface as ImapProviderInterface;
 use League\OAuth2\Client\Provider\GoogleUser;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use OAuthAuthorization;
 
 final class Google extends \League\OAuth2\Client\Provider\Google implements ProviderInterface, ImapProviderInterface
@@ -48,6 +49,8 @@ final class Google extends \League\OAuth2\Client\Provider\Google implements Prov
 
     /**
      * Scopes requested for this instance.
+     *
+     * @var list<string>
      */
     private array $requestedScopes;
 
@@ -87,7 +90,7 @@ final class Google extends \League\OAuth2\Client\Provider\Google implements Prov
     /**
      * Default (SMTP-sending) scopes requested by this provider.
      *
-     * @return array
+     * @return list<string>
      */
     public static function getSmtpDefaultScopes(): array
     {
@@ -105,8 +108,14 @@ final class Google extends \League\OAuth2\Client\Provider\Google implements Prov
         ];
     }
 
-    public function getOwnerDetails(AccessToken $token): ?OwnerDetails
+    public function getOwnerDetails(AccessTokenInterface $token): ?OwnerDetails
     {
+        if (!$token instanceof AccessToken) {
+            // The resource owner endpoint requires the concrete token class
+            // used by the underlying OAuth2 client library.
+            return null;
+        }
+
         $owner = $this->getResourceOwner($token);
         if (!$owner instanceof GoogleUser) {
             return null;
@@ -120,6 +129,9 @@ final class Google extends \League\OAuth2\Client\Provider\Google implements Prov
         return $owner_details;
     }
 
+    /**
+     * @return list<string>
+     */
     protected function getImapScopes(): array
     {
         // The broad Gmail scope already covers both IMAP and SMTP usage.
@@ -128,6 +140,9 @@ final class Google extends \League\OAuth2\Client\Provider\Google implements Prov
         ];
     }
 
+    /**
+     * @return list<string>
+     */
     protected function getSmtpScopes(): array
     {
         return self::getSmtpDefaultScopes();

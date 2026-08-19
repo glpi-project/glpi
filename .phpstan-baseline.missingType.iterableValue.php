@@ -16766,12 +16766,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Mail/SMTP/OauthProvider/Azure.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Mail\\\\SMTP\\\\OauthProvider\\\\Azure\\:\\:getScopes\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Mail/SMTP/OauthProvider/Azure.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Mail\\\\SMTP\\\\OauthProvider\\\\Google\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -16785,12 +16779,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Mail\\\\SMTP\\\\OauthProvider\\\\Google\\:\\:getAuthorizationUrl\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Mail/SMTP/OauthProvider/Google.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Mail\\\\SMTP\\\\OauthProvider\\\\Google\\:\\:getScopes\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Mail/SMTP/OauthProvider/Google.php',

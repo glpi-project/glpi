@@ -35,6 +35,16 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Mail\OauthProvider\ProviderInterface;
 use League\OAuth2\Client\Token\AccessToken;
+use Safe\Exceptions\JsonException;
+use Safe\Exceptions\UrlException;
+
+use function Safe\base64_decode;
+use function Safe\fclose;
+use function Safe\fwrite;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\stream_set_timeout;
 
 class OAuthAuthorization extends CommonDBChild
 {
@@ -85,6 +95,9 @@ class OAuthAuthorization extends CommonDBChild
         return 'ti ti-key';
     }
 
+    /**
+     * @return array<string, string>
+     */
     public static function getEnumTypes(): array
     {
         return [
@@ -206,7 +219,7 @@ class OAuthAuthorization extends CommonDBChild
     {
         $id = (int) $authorization->fields['id'];
 
-        $btn = static fn (string $action, string $label, string $class) => sprintf(
+        $btn = static fn(string $action, string $label, string $class) => sprintf(
             '<form method="post" action="%1$s/ajax/oauthauthorization_action.php" class="d-inline">'
             . '<input type="hidden" name="id" value="%2$d">'
             . '<button type="submit" name="%3$s" value="1" class="btn btn-sm %4$s" title="%5$s">%5$s</button>'
@@ -248,7 +261,10 @@ class OAuthAuthorization extends CommonDBChild
         return $input;
     }
 
-    /** @param array<string, mixed> $input */
+    /**
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
+     */
     private function prepareInput(array $input): array
     {
         foreach (['code', 'token', 'refresh_token'] as $field) {
@@ -564,7 +580,9 @@ class OAuthAuthorization extends CommonDBChild
 
         $errno = 0;
         $errstr = '';
-        $socket = @stream_socket_client(
+        // Warnings are silenced on purpose: an unreachable mail server is an
+        // expected diagnostic outcome, reported through the returned message.
+        $socket = @stream_socket_client( // @phpstan-ignore theCodingMachineSafe.function
             $transport . $host . ':' . $port,
             $errno,
             $errstr,
@@ -592,7 +610,9 @@ class OAuthAuthorization extends CommonDBChild
                     'message' => sprintf(__('%s closed the connection without sending a greeting.'), $host),
                 ];
             }
-            if (preg_match('/^\*\s+(BYE|NO|BAD)\b\s*(.*)$/i', trim($greeting), $matches) === 1) {
+            $matches = [];
+            preg_match('/^\*\s+(BYE|NO|BAD)\b\s*(.*)$/i', trim($greeting), $matches);
+            if ($matches !== []) {
                 return [
                     'success' => false,
                     'message' => sprintf(__('%1$s refused the connection: %2$s'), $host, trim($matches[2])),
@@ -623,7 +643,9 @@ class OAuthAuthorization extends CommonDBChild
                     continue; // untagged information, not the command result
                 }
 
-                if (preg_match('/^GLPI1\s+(OK|NO|BAD)\b\s*(.*)$/i', $line, $matches) === 1) {
+                $matches = [];
+                preg_match('/^GLPI1\s+(OK|NO|BAD)\b\s*(.*)$/i', $line, $matches);
+                if ($matches !== []) {
                     if (strtoupper($matches[1]) === 'OK') {
                         return ['success' => true, 'message' => sprintf(__('Connected to %s successfully.'), $host)];
                     }
@@ -668,7 +690,9 @@ class OAuthAuthorization extends CommonDBChild
 
         $errno = 0;
         $errstr = '';
-        $socket = @stream_socket_client($host . ':' . $port, $errno, $errstr, self::PROBE_TIMEOUT);
+        // Warnings are silenced on purpose: an unreachable mail server is an
+        // expected diagnostic outcome, reported through the returned message.
+        $socket = @stream_socket_client($host . ':' . $port, $errno, $errstr, self::PROBE_TIMEOUT); // @phpstan-ignore theCodingMachineSafe.function
         if ($socket === false) {
             return [
                 'success' => false,
@@ -739,9 +763,10 @@ class OAuthAuthorization extends CommonDBChild
     {
         $payload = null;
         if ($challenge !== null && $challenge !== '') {
-            $decoded = base64_decode($challenge, true);
-            if ($decoded !== false) {
-                $payload = json_decode($decoded, true);
+            try {
+                $payload = json_decode(base64_decode($challenge, true), true);
+            } catch (UrlException|JsonException) {
+                // Unreadable challenge: fall back to the generic explanations.
             }
         }
 
@@ -793,6 +818,6 @@ class OAuthAuthorization extends CommonDBChild
      */
     public function revokeAuthorization(): bool
     {
-        return $this->delete(['id' => $this->getID()], 1);
+        return $this->delete(['id' => $this->getID()], true);
     }
 }

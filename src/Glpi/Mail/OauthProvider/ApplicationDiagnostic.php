@@ -48,6 +48,8 @@ use function Safe\preg_match;
  * The diagnostic is exposed as a tree of steps (each step declaring its
  * parent) so that a caller can run them one by one and report progress
  * live, skipping the descendants of any step that failed.
+ *
+ * @phpstan-type StepResult array{status: string, message: string}
  */
 class ApplicationDiagnostic
 {
@@ -126,12 +128,13 @@ class ApplicationDiagnostic
     /**
      * Runs a single step of the diagnostic.
      *
-     * @return array{status: string, message: string}
+     * @return StepResult
      */
     public function runStep(string $key): array
     {
         $matches = [];
-        if (preg_match('/^auth:(\d+):(refresh|connect)$/', $key, $matches) === 1) {
+        preg_match('/^auth:(\d+):(refresh|connect)$/', $key, $matches);
+        if ($matches !== []) {
             return $this->runAuthorizationStep((int) $matches[1], $matches[2]);
         }
 
@@ -147,6 +150,8 @@ class ApplicationDiagnostic
 
     /**
      * Checks that all fields required by the selected provider are filled in.
+     *
+     * @return StepResult
      */
     private function checkConfiguration(): array
     {
@@ -201,6 +206,8 @@ class ApplicationDiagnostic
     /**
      * Checks that the stored client secret can be decrypted with the current
      * GLPI encryption key.
+     *
+     * @return StepResult
      */
     private function checkSecret(): array
     {
@@ -222,6 +229,8 @@ class ApplicationDiagnostic
      * For Microsoft Azure this performs a real call to the tenant's OpenID
      * configuration (which also validates the tenant ID and the client ID
      * format); for Google the endpoint is a well-known constant.
+     *
+     * @return StepResult
      */
     private function checkEndpoint(): array
     {
@@ -249,6 +258,8 @@ class ApplicationDiagnostic
      * refresh token: providers authenticate the client before validating the
      * grant, so a "bad grant" error proves the credentials themselves were
      * accepted, while a "bad client" error pinpoints a credential problem.
+     *
+     * @return StepResult
      */
     private function checkCredentials(): array
     {
@@ -281,6 +292,8 @@ class ApplicationDiagnostic
      * The redirect URI can only be validated by the provider during a real
      * authorization request, so it is reported for the administrator to
      * check against the provider's application registration.
+     *
+     * @return StepResult
      */
     private function describeRedirectUri(): array
     {
@@ -293,6 +306,9 @@ class ApplicationDiagnostic
         ];
     }
 
+    /**
+     * @return StepResult
+     */
     private function runAuthorizationStep(int $authorizations_id, string $action): array
     {
         $authorization = $this->loadAuthorization($authorizations_id);
@@ -338,7 +354,8 @@ class ApplicationDiagnostic
         $message = $e->getMessage();
 
         $matches = [];
-        if (preg_match('/\bAADSTS(\d+)\b/', $message, $matches) === 1) {
+        preg_match('/\bAADSTS(\d+)\b/', $message, $matches);
+        if ($matches !== []) {
             return $this->explainAzureError($matches[1], $message);
         }
 

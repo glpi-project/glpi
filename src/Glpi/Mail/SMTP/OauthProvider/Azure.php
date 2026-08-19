@@ -39,6 +39,7 @@ use Glpi\Mail\OauthProvider\ImapOauthProviderTrait;
 use Glpi\Mail\OauthProvider\OwnerDetails;
 use Glpi\Mail\OauthProvider\ProviderInterface as ImapProviderInterface;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use OAuthAuthorization;
 use TheNetworg\OAuth2\Client\Provider\AzureResourceOwner;
 
@@ -48,6 +49,8 @@ final class Azure extends \TheNetworg\OAuth2\Client\Provider\Azure implements Pr
 
     /**
      * Scopes requested for this instance.
+     *
+     * @var list<string>
      */
     private array $requestedScopes;
 
@@ -93,7 +96,7 @@ final class Azure extends \TheNetworg\OAuth2\Client\Provider\Azure implements Pr
     /**
      * Default (SMTP-sending) scopes requested by this provider.
      *
-     * @return array
+     * @return list<string>
      */
     public static function getSmtpDefaultScopes(): array
     {
@@ -114,8 +117,14 @@ final class Azure extends \TheNetworg\OAuth2\Client\Provider\Azure implements Pr
         ];
     }
 
-    public function getOwnerDetails(AccessToken $token): ?OwnerDetails
+    public function getOwnerDetails(AccessTokenInterface $token): ?OwnerDetails
     {
+        if (!$token instanceof AccessToken) {
+            // The resource owner endpoint requires the concrete token class
+            // used by the underlying OAuth2 client library.
+            return null;
+        }
+
         $owner = $this->getResourceOwner($token);
         if (!$owner instanceof AzureResourceOwner) {
             return null;
@@ -129,6 +138,9 @@ final class Azure extends \TheNetworg\OAuth2\Client\Provider\Azure implements Pr
         return $owner_details;
     }
 
+    /**
+     * @return list<string>
+     */
     protected function getImapScopes(): array
     {
         return [
@@ -139,6 +151,9 @@ final class Azure extends \TheNetworg\OAuth2\Client\Provider\Azure implements Pr
         ];
     }
 
+    /**
+     * @return list<string>
+     */
     protected function getSmtpScopes(): array
     {
         return self::getSmtpDefaultScopes();

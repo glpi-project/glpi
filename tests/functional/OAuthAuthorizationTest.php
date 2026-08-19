@@ -39,6 +39,7 @@ use Glpi\Mail\OauthProvider\ProviderInterface;
 use Glpi\Tests\DbTestCase;
 use GLPIKey;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use OAuthApplication;
 use OAuthAuthorization;
 use RuntimeException;
@@ -629,7 +630,7 @@ final class FakeOauthProviderForTests implements ProviderInterface
         return 'fake-state';
     }
 
-    public function getOwnerDetails(AccessToken $token): ?OwnerDetails
+    public function getOwnerDetails(AccessTokenInterface $token): ?OwnerDetails
     {
         return $this->owner_details;
     }

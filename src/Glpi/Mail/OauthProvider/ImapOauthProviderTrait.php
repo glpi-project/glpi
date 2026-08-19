@@ -34,7 +34,7 @@
 
 namespace Glpi\Mail\OauthProvider;
 
-use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use OAuthAuthorization;
 
 /**
@@ -55,6 +55,7 @@ trait ImapOauthProviderTrait
      * Returns the scopes to request for the given authorization type.
      *
      * @param string $type One of `OAuthAuthorization::TYPE_IMAP`/`TYPE_SMTP`.
+     * @return list<string>
      */
     public function getScopesForType(string $type): array
     {
@@ -63,17 +64,24 @@ trait ImapOauthProviderTrait
             : $this->getImapScopes();
     }
 
+    /**
+     * @return array{host: string, port: int, ssl: string}
+     */
     abstract public static function getImapDefaults(): array;
 
-    abstract public function getOwnerDetails(AccessToken $token): ?OwnerDetails;
+    abstract public function getOwnerDetails(AccessTokenInterface $token): ?OwnerDetails;
 
     /**
      * Scopes required to authorize IMAP access.
+     *
+     * @return list<string>
      */
     abstract protected function getImapScopes(): array;
 
     /**
      * Scopes required to authorize SMTP access.
+     *
+     * @return list<string>
      */
     abstract protected function getSmtpScopes(): array;
 }

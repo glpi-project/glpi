@@ -34,7 +34,6 @@
 
 namespace Glpi\Mail\OauthProvider;
 
-use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 
 /**
@@ -45,12 +44,14 @@ use League\OAuth2\Client\Token\AccessTokenInterface;
 interface ProviderInterface
 {
     /**
+     * @param array<string, mixed> $options
      * @return string
      */
     public function getAuthorizationUrl(array $options = []);
 
     /**
      * @param string $grant
+     * @param array<string, mixed> $options
      * @return AccessTokenInterface
      */
     public function getAccessToken($grant, array $options = []);
@@ -66,7 +67,7 @@ interface ProviderInterface
      * Returns the details (email, first/last name) of the resource owner
      * that granted the given access token.
      */
-    public function getOwnerDetails(AccessToken $token): ?OwnerDetails;
+    public function getOwnerDetails(AccessTokenInterface $token): ?OwnerDetails;
 
     /**
      * Returns the default IMAP connection settings (host, port, ssl) for
