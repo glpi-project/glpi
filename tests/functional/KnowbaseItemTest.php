@@ -1085,6 +1085,10 @@ HTML,
 
         $this->assertStringContainsString('id="kb-children-tab"', $html);
         $this->assertStringContainsString($child->fields['name'], $html);
+
+        // This session cannot update the article and it has no document, so the
+        // Documents and Related items tabs must be hidden.
+        $this->assertStringContainsString('class="nav-item d-none"', $html);
     }
 
     public function testShowFullAddModePrefillsParentFromOptions(): void
