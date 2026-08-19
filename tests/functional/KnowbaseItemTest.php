@@ -1063,11 +1063,12 @@ HTML,
             'entities_id' => $entity,
         ]);
         $children = [];
+        // Relative dates: `begin_date` is a timestamp column, capped at 2038 on MySQL.
         foreach (
             [
                 'valid'   => ['begin_date' => null, 'end_date' => null],
-                'expired' => ['begin_date' => null, 'end_date' => '2020-01-01 00:00:00'],
-                'future'  => ['begin_date' => '2099-01-01 00:00:00', 'end_date' => null],
+                'expired' => ['begin_date' => null, 'end_date' => date('Y-m-d H:i:s', strtotime('-1 year'))],
+                'future'  => ['begin_date' => date('Y-m-d H:i:s', strtotime('+1 year')), 'end_date' => null],
             ] as $key => $dates
         ) {
             $children[$key] = $this->createItem(KnowbaseItem::class, [
