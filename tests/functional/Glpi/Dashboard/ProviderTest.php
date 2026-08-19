@@ -1068,4 +1068,72 @@ class ProviderTest extends DbTestCase
 
         $this->assertGreaterThan(0, $nb_items);
     }
+
+    public function testTicketsByGroupAndStatus()
+    {
+        $this->login();
+        $self = getItemByTypeName(User::class, TU_USER);
+
+        $group1 = $this->createItem(\Group::class, [
+            'name' => 'test dashboard group 1 for tickets by status',
+        ]);
+        $group2 = $this->createItem(\Group::class, [
+            'name' => 'test dashboard group 2 for tickets by status',
+        ]);
+
+        $this->createItem(\Group_User::class, [
+            'groups_id' => $group1->getID(),
+            'users_id'  => $self->getID(),
+        ]);
+        $this->createItem(\Group_User::class, [
+            'groups_id' => $group2->getID(),
+            'users_id'  => $self->getID(),
+        ]);
+
+        \Session::loadGroups();
+
+        $this->attachTicketToGroup('group1 opened 1', \Ticket::ASSIGNED, $group1);
+        $this->attachTicketToGroup('group2 opened', \Ticket::ASSIGNED, $group2);
+        $this->attachTicketToGroup('group1 opened 2', \Ticket::INCOMING, $group1);
+        $this->attachTicketToGroup('group1 closed', \Ticket::CLOSED, $group1);
+        $this->attachTicketToGroup('group2 closed/solved 1', \Ticket::SOLVED, $group2);
+        $this->attachTicketToGroup('group2 closed 2', \Ticket::CLOSED, $group2);
+
+        $result = Provider::ticketsByGroupAndStatus();
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('label', $result);
+        $this->assertArrayHasKey('icon', $result);
+
+        $this->assertArrayHasKey('labels', $result['data']);
+        $this->assertArrayHasKey('series', $result['data']);
+        $this->assertCount(2, $result['data']['series']);
+
+        $group1_index = array_search($group1->fields['name'], $result['data']['labels'], true);
+        $group2_index = array_search($group2->fields['name'], $result['data']['labels'], true);
+        $this->assertNotFalse($group1_index, 'group1 must be included in report labels');
+        $this->assertNotFalse($group2_index, 'group2 must be included in report labels');
+        $this->assertNotSame($group1_index, $group2_index, 'each group must have its own row');
+
+        $this->assertSame(2, $result['data']['series'][0]['data'][$group1_index], 'group1: 2 opened tickets expected');
+        $this->assertSame(1, $result['data']['series'][1]['data'][$group1_index], 'group1: 1 closed ticket expected');
+        $this->assertSame(1, $result['data']['series'][0]['data'][$group2_index], 'group2: 1 opened ticket expected');
+        $this->assertSame(2, $result['data']['series'][1]['data'][$group2_index], 'group2: 2 closed tickets expected');
+    }
+
+    private function attachTicketToGroup(string $name, int $status, \Group $group): \Ticket
+    {
+        $ticket = $this->createItem(\Ticket::class, [
+            'name'        => "test dashboard $name",
+            'content'     => 'blablabla',
+            'status'      => $status,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $this->createItem(\Group_Ticket::class, [
+            'tickets_id' => $ticket->getID(),
+            'groups_id'  => $group->getID(),
+            'type'       => \Group_Ticket::ASSIGN,
+        ]);
+
+        return $ticket;
+    }
 }
