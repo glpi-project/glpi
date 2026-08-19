@@ -260,7 +260,7 @@ class Tag extends CommonDropdown
             if ($conflicting_tag !== null) {
                 Session::addMessageAfterRedirect(
                     htmlescape(sprintf(
-                        __('A tag with this name already exists in entity "%s"! Transfter the tag to another entity or change its name.'),
+                        __('A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.'),
                         Dropdown::getDropdownName(Entity::getTable(), $conflicting_tag->fields['entities_id'])
                     )),
                     false,
