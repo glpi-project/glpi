@@ -35,8 +35,11 @@ import { KnowbaseItemPage } from "../../pages/KnowbaseItemPage";
 import { Profiles } from "../../utils/Profiles";
 import { getWorkerEntityId } from "../../utils/WorkerEntities";
 
-test('The Sub-articles tab lists child articles and is selected by default', async ({ page, profile, api }) => {
+test.beforeEach(async ({ profile }) => {
     await profile.set(Profiles.SuperAdmin);
+});
+
+test('The Sub-articles tab lists child articles and is selected by default', async ({ page, api }) => {
     const kb = new KnowbaseItemPage(page);
 
     const unique = crypto.randomUUID();
@@ -83,8 +86,7 @@ test('The Sub-articles tab lists child articles and is selected by default', asy
     await expect(page.getByRole('heading', { name: first_child_name })).toBeVisible();
 });
 
-test('The Sub-articles tab is absent when the article has no child', async ({ page, profile, api }) => {
-    await profile.set(Profiles.SuperAdmin);
+test('The Sub-articles tab is absent when the article has no child', async ({ page, api }) => {
     const kb = new KnowbaseItemPage(page);
 
     const article_id = await api.createItem('KnowbaseItem', {
@@ -102,8 +104,7 @@ test('The Sub-articles tab is absent when the article has no child', async ({ pa
     await expect(page.getByRole('tab', { name: /Sub-articles/ })).toHaveCount(0);
 });
 
-test('The Sub-articles tab wins the default selection over Documents', async ({ page, profile, api }) => {
-    await profile.set(Profiles.SuperAdmin);
+test('The Sub-articles tab wins the default selection over Documents', async ({ page, api }) => {
     const kb = new KnowbaseItemPage(page);
 
     const unique = crypto.randomUUID();

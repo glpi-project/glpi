@@ -246,15 +246,10 @@ export class GlpiKnowbaseArticleController
             this.#onItemLinked(e.detail.item ?? null);
         });
 
-        // The header counters are plain anchors to the footer, so activate the pane they point at.
-        const counter_tabs = [
-            ['[data-kb-documents-count]', '#kb-documents-tab-btn'],
-            ['[data-kb-related-items-count]', '#kb-items-tab-btn'],
-        ];
-        for (const [link_selector, tab_selector] of counter_tabs) {
-            const link = this.#container.querySelector(link_selector);
-            const tab = this.#container.querySelector(tab_selector);
-            if (link && tab) {
+        // The header counters are plain anchors to the footer, so activate the tab they name.
+        for (const link of this.#container.querySelectorAll('[data-glpi-kb-activates-tab]')) {
+            const tab = document.getElementById(link.dataset.glpiKbActivatesTab);
+            if (tab) {
                 link.addEventListener('click', () => bootstrap.Tab.getOrCreateInstance(tab).show());
             }
         }

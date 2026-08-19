@@ -232,14 +232,14 @@
                 {# Documents count #}
                 <div class="d-flex align-items-center {{ documents_count == 0 ? 'd-none' : '' }}" data-kb-documents-count-container>
                     <i class="ti ti-paperclip me-1 fs-3" aria-hidden="true"></i>
-                    <a href="#kb-documents" class="text-muted" data-kb-documents-count  data-testid="documents-count">
+                    <a href="#kb-documents" class="text-muted" data-kb-documents-count data-glpi-kb-activates-tab="kb-documents-tab-btn" data-testid="documents-count">
                         {{ _n("%s document", "%s documents", documents_count)|format(documents_count) }}
                     </a>
                 </div>
 
                 <div class="d-flex align-items-center {{ related_items_count == 0 ? 'd-none' : '' }}" data-kb-related-items-count-container>
                     <i class="ti ti-link me-1 fs-3" aria-hidden="true"></i>
-                    <a href="#kb-documents" class="text-muted" data-kb-related-items-count data-testid="related-items-count">
+                    <a href="#kb-documents" class="text-muted" data-kb-related-items-count data-glpi-kb-activates-tab="kb-items-tab-btn" data-testid="related-items-count">
                         {{ _n("%s related item", "%s related items", related_items_count)|format(related_items_count) }}
                     </a>
                 </div>
@@ -301,19 +301,15 @@
         </div>
 
         {# Sub-articles, Documents and Related Items section #}
-        {% set has_children = child_articles|default([])|length > 0 %}
-        {% if (mode == "view" or mode == "edit") and (has_children or documents|length > 0 or can_add_documents or related_items|length > 0 or can_link_items) %}
+        {% if (mode == "view" or mode == "edit") and (show_children_tab or show_documents_tab or show_items_tab) %}
             <div id="kb-documents" class="kb-documents-footer mt-5">
-                {% set show_documents_tab = documents|length > 0 or can_add_documents %}
-                {% set show_items_tab = related_items|length > 0 or can_link_items %}
-                {% set active_tab = has_children ? 'children' : (show_documents_tab ? 'documents' : 'items') %}
                 {# Tab navigation #}
                 <ul class="nav nav-underline mb-3" role="tablist">
-                    {% if has_children %}
+                    {% if show_children_tab %}
                         <li class="nav-item" role="presentation">
                             <button class="nav-link {{ active_tab == 'children' ? 'active' : '' }}" id="kb-children-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-children-tab" type="button" role="tab" aria-controls="kb-children-tab" aria-selected="{{ active_tab == 'children' ? 'true' : 'false' }}">
                                 <i class="ti ti-list-tree me-1" aria-hidden="true"></i>{{ __('Sub-articles') }}
-                                <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ child_articles_count }}</span>
+                                <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ child_articles|length }}</span>
                             </button>
                         </li>
                     {% endif %}
@@ -333,7 +329,7 @@
 
                 {# Tab content #}
                 <div class="tab-content">
-                    {% if has_children %}
+                    {% if show_children_tab %}
                         <div class="tab-pane fade {{ active_tab == 'children' ? 'show active' : '' }}" id="kb-children-tab" role="tabpanel" aria-labelledby="kb-children-tab-btn">
                             <ul class="kb-child-articles list-unstyled mb-0">
                                 {% for article in child_articles %}
