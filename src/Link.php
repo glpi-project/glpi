@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\TemplateManager;
-use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Features\AssignableItem;
 use Glpi\Toolbox\URL;
 
@@ -104,7 +104,7 @@ class Link extends CommonDBTM
                 $nb = countElementsInTable(
                     ['glpi_links_itemtypes','glpi_links'],
                     [
-                        'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
+                        'glpi_links_itemtypes.links_id'  => new QueryIdentifier('glpi_links.id'),
                         'glpi_links_itemtypes.itemtype'  => $item::class,
                     ] + $entity_criteria
                 );

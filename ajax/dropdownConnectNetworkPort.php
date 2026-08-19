@@ -38,6 +38,7 @@
  */
 
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 
 global $DB;
 
@@ -103,7 +104,7 @@ if (
                     'glpi_networkports_networkports' => 'networkports_id_1',
                     'glpi_networkports'              => 'id', [
                         'OR'  => [
-                            'glpi_networkports_networkports.networkports_id_2' => new QueryExpression($DB::quoteName('glpi_networkports.id')),
+                            'glpi_networkports_networkports.networkports_id_2' => new QueryIdentifier('glpi_networkports.id'),
                         ],
                     ],
                 ],

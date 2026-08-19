@@ -40,6 +40,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Exception\Http\BadRequestHttpException;
 
 global $DB;
@@ -69,7 +70,7 @@ if (
         $keys = array_keys($specificities);
         $name_field = QueryFunction::concat_ws(
             separator: new QueryExpression($DB::quoteValue(' - ')),
-            params: array_map(static fn($k) => QueryFunction::ifnull($k, new QueryExpression($DB::quoteValue(''))), $keys),
+            params: array_map(static fn($k) => QueryFunction::ifnull(new QueryIdentifier($k), new QueryExpression($DB::quoteValue(''))), $keys),
             alias: 'name'
         );
         $label_pattern = implode(' - ', array_map(
