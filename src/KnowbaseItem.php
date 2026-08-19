@@ -161,11 +161,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public function canViewItem(): bool
     {
         // The root article is the entry point of the knowledge base: everyone
-        // allowed to read the knowledge base can view it, it has no visibility
-        // rules of its own. FAQ-only readers are not concerned: the root article
-        // is not part of the FAQ, see `getVisibilityCriteriaFAQ()`.
+        // allowed to read the knowledge base, administrators included, can view
+        // it, it has no visibility rules of its own. FAQ-only readers are not
+        // concerned: the root article is not part of the FAQ, see
+        // `getVisibilityCriteriaFAQ()` and `prepareInputForUpdate()`.
         if ($this->isRoot()) {
-            return Session::haveRight(self::$rightname, READ);
+            return Session::haveRightsOr(self::$rightname, [READ, self::KNOWBASEADMIN]);
         }
 
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
@@ -249,6 +250,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
 
         return $root_id;
+    }
+
+    /**
+     * Whether the knowledge base has a root article, see `getRootId()`.
+     *
+     * Only a corrupted installation has none; callers that can do without it
+     * must use this method instead of catching `getRootId()` exception.
+     */
+    public static function hasRoot(): bool
+    {
+        return self::getConfiguredRootId() > 0;
     }
 
     /**
@@ -491,15 +503,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         // Handle parent articles. Articles created without a parent are attached
         // to the root article, so the knowledge base always is a single tree.
-        $root_id = self::getConfiguredRootId();
-        if (
-            empty($this->input['_parents'])
-            && !$this->isRoot()
-            && $root_id > 0
-            && self::getById($root_id) !== false
-        ) {
-            $this->input['_parents'] = [$root_id];
-        }
+        $this->setRootAsDefaultParent(on_creation: true);
         $this->update1NTableData(KnowbaseItem_KnowbaseItem::class, "_parents");
 
         NotificationEvent::raiseEvent('new', $this);
@@ -665,6 +669,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function cleanDBonPurge()
     {
+        // Collect the children that this purge would leave outside the tree
+        // before their links to the purged article are removed below.
+        $orphaned_children = $this->getChildrenWithoutOtherParent();
+
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Entity_KnowbaseItem::class,
@@ -685,6 +693,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             ['knowbaseitems_id_parent' => $this->fields['id']]
         );
 
+        // Attach the children that just lost their only parent back to the root
+        // article, so the knowledge base always is a single tree.
+        self::attachToRootArticle($orphaned_children);
+
         // KnowbaseItem_Comment does not extends CommonDBConnexity
         $kbic = new KnowbaseItem_Comment();
         $kbic->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
@@ -692,6 +704,62 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // KnowbaseItem_Revision does not extends CommonDBConnexity
         $kbir = new KnowbaseItem_Revision();
         $kbir->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
+    }
+
+    /**
+     * Ids of the children of the loaded article that have no other parent, and
+     * would thus be left outside the knowledge base tree if the article is
+     * removed from it.
+     *
+     * @return int[]
+     */
+    private function getChildrenWithoutOtherParent(): array
+    {
+        $relation = new KnowbaseItem_KnowbaseItem();
+
+        $children_ids = array_map('intval', array_column(
+            $relation->find(['knowbaseitems_id_parent' => $this->fields['id']]),
+            'knowbaseitems_id'
+        ));
+        if ($children_ids === []) {
+            return [];
+        }
+
+        $parents_count = array_count_values(array_map('intval', array_column(
+            $relation->find(['knowbaseitems_id' => $children_ids]),
+            'knowbaseitems_id'
+        )));
+
+        return array_values(array_filter(
+            $children_ids,
+            static fn(int $child_id): bool => ($parents_count[$child_id] ?? 0) <= 1,
+        ));
+    }
+
+    /**
+     * Attach the given articles to the root article, ignoring the ones that
+     * can not have a parent.
+     *
+     * @param int[] $article_ids
+     */
+    private static function attachToRootArticle(array $article_ids): void
+    {
+        if ($article_ids === [] || !self::hasRoot()) {
+            return;
+        }
+
+        $root_id  = self::getRootId();
+        $relation = new KnowbaseItem_KnowbaseItem();
+        foreach ($article_ids as $article_id) {
+            if ($article_id === $root_id) {
+                continue;
+            }
+
+            $relation->add([
+                'knowbaseitems_id'        => $article_id,
+                'knowbaseitems_id_parent' => $root_id,
+            ]);
+        }
     }
 
     /**
@@ -1088,6 +1156,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $input["name"] = __('New item');
         }
 
+        // The root article is the entry point of the knowledge base, not a
+        // piece of content to publish. Listing it in the FAQ or in the service
+        // catalog would offer it to readers that are not allowed to open it,
+        // down to anonymous users on a public FAQ, see `canViewItem()`.
+        if ($this->isRoot()) {
+            unset($input['is_faq'], $input['show_in_service_catalog']);
+        }
+
         return $this->prepareIllustrationInput($input);
     }
 
@@ -1113,6 +1189,50 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $input;
     }
 
+    /**
+     * Make sure the `_parents` input never leaves the article outside the
+     * knowledge base tree: an article that would end up without any parent is
+     * attached to the root article instead.
+     *
+     * @param bool $on_creation Whether the article is being created, in which
+     *                          case an input that does not mention the parents
+     *                          at all must be defaulted too.
+     */
+    private function setRootAsDefaultParent(bool $on_creation): void
+    {
+        // The root article is the only one allowed to have no parent.
+        if (!is_array($this->input) || $this->isRoot()) {
+            return;
+        }
+
+        $parents = $this->input['_parents'] ?? null;
+
+        // See `update1NTableData()`: an input that does not target the parents
+        // at all must be left alone, unless the article has no parent yet.
+        $targets_parents = $parents !== null
+            || (bool) ($this->input['__parents_defined'] ?? false);
+        if (!$targets_parents && !$on_creation) {
+            return;
+        }
+
+        // Only an emptied input needs a default.
+        if (!empty($parents)) {
+            return;
+        }
+
+        // Guard against an installation that has no root article: a link to a
+        // missing article would be worse than no link at all.
+        if (!self::hasRoot()) {
+            return;
+        }
+        $root_id = self::getRootId();
+        if (countElementsInTable(self::getTable(), ['id' => $root_id]) === 0) {
+            return;
+        }
+
+        $this->input['_parents'] = [$root_id];
+    }
+
     public function post_updateItem($history = true)
     {
         // Handle rich-text images and uploaded documents
@@ -1124,7 +1244,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             ]
         );
 
-        // Update parent articles
+        // Update parent articles. An article whose parents are all removed is
+        // attached back to the root article, so the knowledge base always is a
+        // single tree.
+        $this->setRootAsDefaultParent(on_creation: false);
         $this->update1NTableData(KnowbaseItem_KnowbaseItem::class, '_parents');
         NotificationEvent::raiseEvent('update', $this);
     }
@@ -1518,20 +1641,20 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 );
             }
 
-            $actions[] = new EditorAction(
-                label: __("Service catalog"),
-                icon: "ti ti-library",
-                type: EditorActionType::OPEN_MODAL,
-                params: [
-                    'id'    => $this->fields['id'],
-                    'key'   => 'SidePanel/service-catalog',
-                    'title' => __("Service catalog"),
-                    'icon'  => 'ti ti-library',
-                ],
-            );
-
-            // Neither of the two actions below applies to the root article.
+            // None of the actions below applies to the root article.
             if (!$this->isRoot()) {
+                $actions[] = new EditorAction(
+                    label: __("Service catalog"),
+                    icon: "ti ti-library",
+                    type: EditorActionType::OPEN_MODAL,
+                    params: [
+                        'id'    => $this->fields['id'],
+                        'key'   => 'SidePanel/service-catalog',
+                        'title' => __("Service catalog"),
+                        'icon'  => 'ti ti-library',
+                    ],
+                );
+
                 $label = __('Permissions');
                 $icon  = "ti ti-lock";
                 $actions[] = new EditorAction(
@@ -1593,7 +1716,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
         }
-        if ($this->can($this->fields['id'], UPDATE)) {
+        // The root article is not part of the FAQ, see `prepareInputForUpdate()`.
+        if (!$this->isRoot() && $this->can($this->fields['id'], UPDATE)) {
             $toggles[] = new EditorAction(
                 label: __("Add to FAQ"),
                 icon: "ti ti-bookmark",

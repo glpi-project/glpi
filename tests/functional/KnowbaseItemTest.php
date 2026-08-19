@@ -1901,12 +1901,12 @@ HTML,
             '_parents' => '',
             '__parents_defined' => 1,
         ]);
-        $this->assertEquals(
-            0,
-            countElementsInTable(
-                KnowbaseItem_KnowbaseItem::getTable(),
-                ['knowbaseitems_id' => $kbi->getID()]
-            )
+        // The chosen parent is gone. The article joins the root article rather
+        // than being left outside the tree, see
+        // `testArticleUpdatedWithoutAnyParentIsAttachedToTheRoot()`.
+        $this->assertSame(
+            [KnowbaseItem::getRootId()],
+            $this->getParentIds($kbi->getID())
         );
     }
 
@@ -2579,6 +2579,89 @@ HTML,
         $this->assertContains($root_id, $this->getVisibleArticleIds());
     }
 
+    public function testRootArticleIsReadableByKnowledgeBaseAdmins(): void
+    {
+        $this->login();
+
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Article ' . __FUNCTION__,
+            'answer'   => '',
+            // Authored by someone else, else the author shortcut would answer
+            // instead of the rights check.
+            'users_id' => getItemByTypeName('User', 'tech', true),
+        ]);
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+
+        // Knowledge base administrators bypass every visibility rule. The root
+        // article has none, so it must not be the single article they are
+        // refused, as `canUpdateItem()` already lets them edit it.
+        $_SESSION['glpiactiveprofile']['knowbase'] = KnowbaseItem::KNOWBASEADMIN;
+        $this->assertFalse(Session::haveRight('knowbase', READ));
+
+        $this->assertTrue($other->canViewItem());
+        $this->assertTrue($root->canViewItem());
+    }
+
+    public function testRootArticleIsNotPublishable(): void
+    {
+        $this->login();
+
+        $root_id = KnowbaseItem::getRootId();
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB($root_id));
+        $this->assertEquals(0, $root->fields['is_faq']);
+        $this->assertEquals(0, $root->fields['show_in_service_catalog']);
+
+        // The root article is the entry point of the knowledge base, not a piece
+        // of content. FAQ readers are not even allowed to open it, see
+        // `testRootArticleIsNotPartOfTheFaq()`, so publishing it would list it
+        // for users that can only get an error out of it, down to anonymous ones
+        // on a public FAQ.
+        $this->assertTrue($root->update([
+            'id'                      => $root_id,
+            'is_faq'                  => 1,
+            'show_in_service_catalog' => 1,
+        ]));
+        $this->assertTrue($root->getFromDB($root_id));
+        $this->assertEquals(0, $root->fields['is_faq']);
+        $this->assertEquals(0, $root->fields['show_in_service_catalog']);
+
+        // The action that would set the FAQ flag is not offered either, see
+        // `testRootArticleHasNoVisibilityRelatedActions()` for the service
+        // catalog one.
+        $this->assertNotContains('Add to FAQ', $this->getAsideActionLabels($root));
+
+        // Sanity check: a regular article can be published.
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Article ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $this->assertContains('Add to FAQ', $this->getAsideActionLabels($other));
+        $this->assertTrue($other->update([
+            'id'                      => $other->getID(),
+            'is_faq'                  => 1,
+            'show_in_service_catalog' => 1,
+        ]));
+        $this->assertTrue($other->getFromDB($other->getID()));
+        $this->assertEquals(1, $other->fields['is_faq']);
+        $this->assertEquals(1, $other->fields['show_in_service_catalog']);
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getAsideActionLabels(KnowbaseItem $article): array
+    {
+        return array_map(
+            static fn(EditorAction $action): string => $action->label,
+            array_filter(
+                $article->getAsideActions(),
+                static fn(object $action): bool => $action instanceof EditorAction,
+            ),
+        );
+    }
+
     public function testArticleCreatedWithoutParentIsAttachedToTheRoot(): void
     {
         $this->login();
@@ -2610,6 +2693,70 @@ HTML,
             ],
         ]);
         $this->assertSame([$root_id], array_map('intval', array_column($parentless, 'id')));
+    }
+
+    public function testArticleUpdatedWithoutAnyParentIsAttachedToTheRoot(): void
+    {
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Parent ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Child ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID()],
+        ]);
+        $this->assertSame([$parent->getID()], $this->getParentIds($child->getID()));
+
+        // An update that does not target the parents leaves them alone.
+        $this->updateItem(KnowbaseItem::class, $child->getID(), [
+            'name' => 'Renamed ' . __FUNCTION__,
+        ]);
+        $this->assertSame([$parent->getID()], $this->getParentIds($child->getID()));
+
+        // Removing every parent would turn the article into a second root: it
+        // is attached back to the root article instead.
+        $this->updateItem(KnowbaseItem::class, $child->getID(), [
+            '__parents_defined' => 1,
+        ]);
+        $this->assertSame([$root_id], $this->getParentIds($child->getID()));
+    }
+
+    public function testPurgingAnArticleAttachesItsOrphanedChildrenToTheRoot(): void
+    {
+        $this->login();
+        $root_id = KnowbaseItem::getRootId();
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Parent ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $other_parent = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Other parent ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $only_child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Only child ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID()],
+        ]);
+        $shared_child = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Shared child ' . __FUNCTION__,
+            'answer'   => '',
+            '_parents' => [$parent->getID(), $other_parent->getID()],
+        ]);
+
+        $this->assertTrue($parent->delete(['id' => $parent->getID()], true));
+
+        // The child that just lost its only parent is kept in the tree, under
+        // the root article, instead of becoming a second root.
+        $this->assertSame([$root_id], $this->getParentIds($only_child->getID()));
+
+        // The one that still has a parent is left alone.
+        $this->assertSame([$other_parent->getID()], $this->getParentIds($shared_child->getID()));
     }
 
     /**
@@ -2648,15 +2795,17 @@ HTML,
         $labels = $this->getEditorActionLabels($root);
 
         // Visibility rules have no effect on the root article, and scheduling it
-        // out of sight would leave the article tree headless.
+        // out of sight would leave the article tree headless. Publishing it to
+        // the service catalog would expose the entry point of the knowledge base
+        // as a piece of content, see `testRootArticleIsNotPublishable()`.
         $this->assertNotContains('Permissions', $labels);
         $this->assertNotContains('Schedule visibility', $labels);
+        $this->assertNotContains('Service catalog', $labels);
 
         // The other actions of the same block are untouched.
-        $this->assertContains('Service catalog', $labels);
         $this->assertContains('History', $labels);
 
-        // Sanity check: a regular article offers both.
+        // Sanity check: a regular article offers all three.
         $other = $this->createItem(KnowbaseItem::class, [
             'name'   => 'Article ' . __FUNCTION__,
             'answer' => '',
@@ -2664,6 +2813,7 @@ HTML,
         $labels = $this->getEditorActionLabels($other);
         $this->assertContains('Permissions', $labels);
         $this->assertContains('Schedule visibility', $labels);
+        $this->assertContains('Service catalog', $labels);
     }
 
     /**
@@ -2786,6 +2936,18 @@ HTML,
             'intval',
             array_column(iterator_to_array($DB->request($criteria)), 'id'),
         );
+    }
+
+    public function testHasRoot(): void
+    {
+        global $CFG_GLPI;
+
+        $this->assertTrue(KnowbaseItem::hasRoot());
+
+        // Only a corrupted installation has no root article. The pages that can
+        // do without one must be able to tell without catching an exception.
+        $CFG_GLPI['root_knowbaseitems_id'] = 0;
+        $this->assertFalse(KnowbaseItem::hasRoot());
     }
 
     public function testGetRootIdFailIfNotConfigured(): void

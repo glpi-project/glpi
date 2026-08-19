@@ -43,8 +43,12 @@ if (!Session::haveRightsOr(KnowbaseItem::$rightname, [READ, KnowbaseItem::READFA
 
 // Entering the knowledge base without any parameter means opening its root
 // article.
-if ($_GET === []) {
-    Html::redirect(KnowbaseItem::getFormURLWithID(KnowbaseItem::getRootId()));
+if ($_GET === [] && KnowbaseItem::hasRoot()) {
+    $root_id = KnowbaseItem::getRootId();
+    $root    = new KnowbaseItem();
+    if ($root->getFromDB($root_id) && $root->can($root_id, READ)) {
+        Html::redirect(KnowbaseItem::getFormURLWithID($root_id));
+    }
 }
 
 if (isset($_GET["id"])) {

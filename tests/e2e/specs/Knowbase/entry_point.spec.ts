@@ -63,7 +63,9 @@ test('the "All articles" button reaches the article list, not the root article',
     });
 
     await kb.goto(article_id);
-    await page.getByRole('button', { name: 'All articles' }).click();
+    // The context links of the breadcrumb bar are button-styled links, see the
+    // `action_link` macro of `layout/parts/context_links.html.twig`.
+    await page.getByRole('link', { name: 'All articles' }).click();
 
     // Still on the list: the button carries the parameter that skips the
     // redirect, and the page is a standard search page.
