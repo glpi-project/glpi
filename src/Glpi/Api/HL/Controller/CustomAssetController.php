@@ -44,6 +44,7 @@ use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -200,7 +201,7 @@ final class CustomAssetController extends AbstractController
                     'computation' =>  QueryFunction::coalesce([
                         QueryFunction::jsonUnquote(
                             expression: QueryFunction::jsonExtract([
-                                '_.custom_fields',
+                                new QueryIdentifier('_.custom_fields'),
                                 new QueryExpression($DB::quoteValue('$."' . $field->fields['id'] . '"')),
                             ])
                         ),

@@ -43,6 +43,7 @@ use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Html;
 use LogicException;
 use MassiveAction;
@@ -744,7 +745,7 @@ TWIG, $twig_params);
                 'SELECT' => [
                     'itemtype_peripheral',
                     QueryFunction::groupConcat(
-                        expression: 'items_id_peripheral',
+                        expression: new QueryIdentifier('items_id_peripheral'),
                         distinct: true,
                         alias: 'ids'
                     ),
@@ -779,7 +780,7 @@ TWIG, $twig_params);
                 'SELECT' => [
                     'itemtype_peripheral',
                     QueryFunction::groupConcat(
-                        expression: 'items_id_peripheral',
+                        expression: new QueryIdentifier('items_id_peripheral'),
                         distinct: true,
                         alias: 'ids'
                     ),

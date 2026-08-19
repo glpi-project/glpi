@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\AssignableItem;
 use Glpi\Features\AssignableItemInterface;
@@ -213,7 +214,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
                 'SELECT'       => [
                     'itemtype',
                     QueryFunction::groupConcat(
-                        expression: 'items_id',
+                        expression: new QueryIdentifier('items_id'),
                         distinct: true,
                         alias: 'ids'
                     ),

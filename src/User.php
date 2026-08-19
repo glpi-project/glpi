@@ -38,6 +38,7 @@ use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Filter;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Exception\ForgetPasswordException;
 use Glpi\Exception\PasswordTooWeakException;
@@ -4376,8 +4377,8 @@ HTML;
             if (((string) $search) !== '') {
                 $txt_search = Search::makeTextSearchValue($search);
 
-                $firstname_field = self::getTableField('firstname');
-                $realname_field = self::getTableField('realname');
+                $firstname_field = new QueryIdentifier(self::getTableField('firstname'));
+                $realname_field = new QueryIdentifier(self::getTableField('realname'));
                 $fields = $_SESSION["glpinames_format"] == self::FIRSTNAME_BEFORE
                 ? [$firstname_field, new QueryExpression($DB::quoteValue(' ')), $realname_field]
                 : [$realname_field, new QueryExpression($DB::quoteValue(' ')), $firstname_field];
@@ -6451,7 +6452,7 @@ HTML;
                 'authtype'   => Auth::DB_GLPI,
                 new QueryExpression(
                     QueryFunction::now() . ' > ' . QueryFunction::dateAdd(
-                        date: 'password_last_update',
+                        date: new QueryIdentifier('password_last_update'),
                         interval: $expiration_delay + $lock_delay,
                         interval_unit: 'DAY'
                     )
@@ -6584,14 +6585,14 @@ HTML;
         $filter_no_spaces = str_replace(" ", "", $filter);
         $concat_names_first_last = QueryFunction::lower(
             QueryFunction::replace(
-                expression: QueryFunction::concat(["$table.firstname", "$table.realname"]),
+                expression: QueryFunction::concat([new QueryIdentifier("$table.firstname"), new QueryIdentifier("$table.realname")]),
                 search: new QueryExpression($DB::quoteValue(' ')),
                 replace: new QueryExpression($DB::quoteValue(''))
             )
         );
         $concat_names_last_first = QueryFunction::lower(
             QueryFunction::replace(
-                expression: QueryFunction::concat(["$table.realname", "$table.firstname"]),
+                expression: QueryFunction::concat([new QueryIdentifier("$table.realname"), new QueryIdentifier("$table.firstname")]),
                 search: new QueryExpression($DB::quoteValue(' ')),
                 replace: new QueryExpression($DB::quoteValue(''))
             )
@@ -6599,7 +6600,7 @@ HTML;
 
         return [
             'OR' => [
-                new QueryExpression(QueryFunction::lower("$table.name") . ' LIKE ' . $DB::quoteValue("%$filter%")),
+                new QueryExpression(QueryFunction::lower(new QueryIdentifier("$table.name")) . ' LIKE ' . $DB::quoteValue("%$filter%")),
                 new QueryExpression($concat_names_first_last . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
                 new QueryExpression($concat_names_last_first . ' LIKE ' . $DB::quoteValue("%$filter_no_spaces%")),
             ],
@@ -6621,10 +6622,10 @@ HTML;
 
         $table  = self::getTable();
 
-        $first  = DBmysql::quoteName("$table.$first");
-        $second = DBmysql::quoteName("$table.$second");
-        $alias  = DBmysql::quoteName($alias);
-        $name   = DBmysql::quoteName($table . '.' . self::getNameField());
+        $first  = new QueryIdentifier("$table.$first");
+        $second = new QueryIdentifier("$table.$second");
+        $alias  = new QueryIdentifier($alias);
+        $name   = new QueryIdentifier($table . '.' . self::getNameField());
 
         return new QueryExpression("CASE
             WHEN $first <> '' AND $second <> '' THEN CONCAT($first, ' ', $second)
@@ -6959,7 +6960,7 @@ HTML;
             'WHERE'  => [
                 new QueryExpression(
                     QueryFunction::now() . ' < ' . QueryFunction::dateAdd(
-                        date: 'password_forget_token_date',
+                        date: new QueryIdentifier('password_forget_token_date'),
                         interval: $CFG_GLPI['password_init_token_delay'],
                         interval_unit: 'SECOND'
                     )

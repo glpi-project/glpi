@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Toolbox\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
@@ -652,7 +653,7 @@ JS);
                 $queued_table,
                 [
                     'OR' => [
-                        new QueryExpression(QueryFunction::unixTimestamp('send_time') . ' < ' . $DB::quoteValue($send_time)),
+                        new QueryExpression(QueryFunction::unixTimestamp(new QueryIdentifier('send_time')) . ' < ' . $DB::quoteValue($send_time)),
                         new QueryExpression($DB::quoteName($queued_table . '.sent_try') . ' >= ' . $DB::quoteName($webhook_table . '.sent_try')),
                     ],
                 ],

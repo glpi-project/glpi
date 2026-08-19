@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,74 +32,42 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryElementInterface;
+namespace Glpi\DBAL;
+
+use Stringable;
 
 /**
- *  Sub query class
- **/
-abstract class AbstractQuery implements QueryElementInterface
+ * Common contract for the SQL building blocks that may carry bound parameters.
+ *
+ * Implementations render themselves to a SQL fragment through {@see self::getValue()} and
+ * expose the values to bind for the `?` placeholders that fragment contains through
+ * {@see self::getParams()}.
+ *
+ * Both methods must always be used together: rendering a fragment without collecting its
+ * parameters silently drops them, which shifts the positional binding of the whole statement.
+ */
+interface QueryElementInterface extends Stringable
 {
-    protected ?string $alias = null;
-    /** @var array<int, mixed> */
-    protected array $params = [];
-
     /**
-     * Create a query
-     *
-     * @param string $alias Alias for the whole subquery
-     */
-    public function __construct($alias = null)
-    {
-        $this->alias = $alias;
-    }
-
-    /**
-     * Get alias
-     *
-     * @return string|null
-     */
-    public function getAlias()
-    {
-        return $this->alias;
-    }
-
-    /**
-     *
-     * Get SQL query
+     * SQL fragment.
      *
      * @return string
      *
      * @psalm-taint-escape sql
      */
-    abstract public function getQuery();
+    public function getValue(): string;
 
     /**
+     * Values to bind, in the order their placeholders appear in {@see self::getValue()}.
+     *
+     * @return array<int, mixed>
+     */
+    public function getParams(): array;
+
+    /**
+     * SQL fragment, so that the element can be interpolated in a larger one.
+     *
      * @psalm-taint-escape sql
      */
-    public function getValue(): string
-    {
-        return $this->getQuery();
-    }
-
-    public function __toString(): string
-    {
-        return $this->getQuery();
-    }
-
-    /**
-    * @return array<int, mixed>
-    */
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-    /**
-     * @param array<int, mixed> $params
-     */
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
-        return $this;
-    }
+    public function __toString(): string;
 }

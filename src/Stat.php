@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Kernel\Kernel;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Output\Csv;
@@ -1227,17 +1228,17 @@ class Stat extends CommonGLPI
         }
 
         $date_unix = QueryFunction::fromUnixtime(
-            expression: QueryFunction::unixTimestamp("$table.date"),
+            expression: QueryFunction::unixTimestamp(new QueryIdentifier("$table.date")),
             format: new QueryExpression($DB::quoteValue('%Y-%m')),
             alias: 'date_unix'
         );
         $solvedate_unix = QueryFunction::fromUnixtime(
-            expression: QueryFunction::unixTimestamp("$table.solvedate"),
+            expression: QueryFunction::unixTimestamp(new QueryIdentifier("$table.solvedate")),
             format: new QueryExpression($DB::quoteValue('%Y-%m')),
             alias: 'date_unix'
         );
         $closedate_unix = QueryFunction::fromUnixtime(
-            expression: QueryFunction::unixTimestamp("$table.closedate"),
+            expression: QueryFunction::unixTimestamp(new QueryIdentifier("$table.closedate")),
             format: new QueryExpression($DB::quoteValue('%Y-%m')),
             alias: 'date_unix'
         );

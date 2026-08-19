@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 class Domain_Item extends CommonDBRelation
 {
@@ -399,7 +400,7 @@ TWIG, $twig_params);
                 'glpi_domains.name AS assocName',
                 'glpi_domains.*',
                 QueryFunction::groupConcat(
-                    expression: Group_Item::getTable() . '.groups_id',
+                    expression: new QueryIdentifier(Group_Item::getTable() . '.groups_id'),
                     separator: ',',
                     alias: 'groups_id_tech',
                 ),

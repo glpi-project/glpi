@@ -34,6 +34,7 @@
  */
 
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /**
  * CommonDevice Class
@@ -262,7 +263,7 @@ abstract class CommonDevice extends CommonDropdown
                 'SELECT'    => [
                     'itemtype',
                     QueryFunction::groupConcat(
-                        expression: 'items_id',
+                        expression: new QueryIdentifier('items_id'),
                         distinct: true,
                         alias: 'ids'
                     ),
