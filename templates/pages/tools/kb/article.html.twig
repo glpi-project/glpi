@@ -300,19 +300,31 @@
             {{ answer|enhanced_html({text_maxsize: 0}) }}
         </div>
 
-        {# Documents and Related Items section #}
-        {% if (mode == "view" or mode == "edit") and (documents|length > 0 or can_add_documents or related_items|length > 0 or can_link_items) %}
+        {# Sub-articles, Documents and Related Items section #}
+        {% set has_children = child_articles|default([])|length > 0 %}
+        {% if (mode == "view" or mode == "edit") and (has_children or documents|length > 0 or can_add_documents or related_items|length > 0 or can_link_items) %}
             <div id="kb-documents" class="kb-documents-footer mt-5">
+                {% set show_documents_tab = documents|length > 0 or can_add_documents %}
+                {% set show_items_tab = related_items|length > 0 or can_link_items %}
+                {% set active_tab = has_children ? 'children' : (show_documents_tab ? 'documents' : 'items') %}
                 {# Tab navigation #}
                 <ul class="nav nav-underline mb-3" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="kb-documents-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-documents-tab" type="button" role="tab">
+                    {% if has_children %}
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link {{ active_tab == 'children' ? 'active' : '' }}" id="kb-children-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-children-tab" type="button" role="tab" aria-controls="kb-children-tab" aria-selected="{{ active_tab == 'children' ? 'true' : 'false' }}">
+                                <i class="ti ti-list-tree me-1" aria-hidden="true"></i>{{ __('Sub-articles') }}
+                                <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ child_articles_count }}</span>
+                            </button>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item {{ show_documents_tab ? '' : 'd-none' }}" role="presentation">
+                        <button class="nav-link {{ active_tab == 'documents' ? 'active' : '' }}" id="kb-documents-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-documents-tab" type="button" role="tab" aria-controls="kb-documents-tab" aria-selected="{{ active_tab == 'documents' ? 'true' : 'false' }}">
                             <i class="ti ti-paperclip me-1" aria-hidden="true"></i>{{ __('Documents') }}
                             <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ documents_count }}</span>
                         </button>
                     </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="kb-items-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-items-tab" type="button" role="tab">
+                    <li class="nav-item {{ show_items_tab ? '' : 'd-none' }}" role="presentation">
+                        <button class="nav-link {{ active_tab == 'items' ? 'active' : '' }}" id="kb-items-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-items-tab" type="button" role="tab" aria-controls="kb-items-tab" aria-selected="{{ active_tab == 'items' ? 'true' : 'false' }}">
                             <i class="ti ti-link me-1" aria-hidden="true"></i>{{ __('Related items') }}
                             <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ related_items_count }}</span>
                         </button>
@@ -321,7 +333,18 @@
 
                 {# Tab content #}
                 <div class="tab-content">
-                    <div class="tab-pane fade show active" id="kb-documents-tab" role="tabpanel">
+                    {% if has_children %}
+                        <div class="tab-pane fade {{ active_tab == 'children' ? 'show active' : '' }}" id="kb-children-tab" role="tabpanel" aria-labelledby="kb-children-tab-btn">
+                            <ul class="kb-child-articles list-unstyled mb-0">
+                                {% for article in child_articles %}
+                                    {{ include('pages/tools/kb/child_article_row.html.twig', {
+                                        article: article,
+                                    }, with_context = false) }}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                    <div class="tab-pane fade {{ active_tab == 'documents' ? 'show active' : '' }}" id="kb-documents-tab" role="tabpanel" aria-labelledby="kb-documents-tab-btn">
                         <div class="d-flex flex-wrap gap-2 mb-2 {{ documents|length == 0 ? 'd-none' : '' }}" data-glpi-kb-documents-list>
                             {% for doc in documents %}
                                 {{ include('pages/tools/kb/document_badge.html.twig', {
@@ -483,28 +506,28 @@
                             </div>
                         {% endif %}
                     </div>
-                </div>
 
-                {# Related Items Tab Pane #}
-                <div class="tab-pane fade" id="kb-items-tab" role="tabpanel">
-                    <div class="d-flex flex-wrap gap-2 mb-2 {{ related_items|length == 0 ? 'd-none' : '' }}" data-glpi-kb-related-items-list>
-                        {% for item in related_items %}
-                            {{ include('pages/tools/kb/related_item_badge.html.twig', {
-                                item: item,
-                                can_edit: can_edit,
-                            }, with_context = false) }}
-                        {% endfor %}
+                    {# Related Items Tab Pane #}
+                    <div class="tab-pane fade {{ active_tab == 'items' ? 'show active' : '' }}" id="kb-items-tab" role="tabpanel" aria-labelledby="kb-items-tab-btn">
+                        <div class="d-flex flex-wrap gap-2 mb-2 {{ related_items|length == 0 ? 'd-none' : '' }}" data-glpi-kb-related-items-list>
+                            {% for item in related_items %}
+                                {{ include('pages/tools/kb/related_item_badge.html.twig', {
+                                    item: item,
+                                    can_edit: can_edit,
+                                }, with_context = false) }}
+                            {% endfor %}
+                        </div>
+
+                        {% if can_link_items %}
+                        <button type="button" class="btn btn-sm btn-outline-secondary mt-2"
+                                data-glpi-kb-action="OPEN_MODAL"
+                                data-glpi-kb-action-param-id="{{ item_id }}"
+                                data-glpi-kb-action-param-key="LinkItemModal"
+                                data-glpi-kb-action-param-title="{{ __('Link to another item') }}">
+                            <i class="ti ti-link me-1" aria-hidden="true"></i>{{ __('Link to another item') }}
+                        </button>
+                        {% endif %}
                     </div>
-
-                    {% if can_link_items %}
-                    <button type="button" class="btn btn-sm btn-outline-secondary mt-2"
-                            data-glpi-kb-action="OPEN_MODAL"
-                            data-glpi-kb-action-param-id="{{ item_id }}"
-                            data-glpi-kb-action-param-key="LinkItemModal"
-                            data-glpi-kb-action-param-title="{{ __('Link to another item') }}">
-                        <i class="ti ti-link me-1" aria-hidden="true"></i>{{ __('Link to another item') }}
-                    </button>
-                    {% endif %}
                 </div>
             </div>
         {% endif %}

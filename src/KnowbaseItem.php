@@ -1183,6 +1183,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['related_items_count'] = count($items);
             $params['can_link_items']      = $can_update;
 
+            // Add child articles info
+            $child_articles = $this->getChildArticlesInfo();
+            $params['child_articles']       = $child_articles;
+            $params['child_articles_count'] = count($child_articles);
+
             // General fields
             $params['views']        = $this->fields['view'];
             $params['can_edit']     = $can_update;
@@ -1348,6 +1353,43 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
 
         return $related_items;
+    }
+
+    /**
+     * @return list<array{
+     *      'id': int,
+     *      'name': string,
+     *      'illustration': string,
+     *      'link_url': string,
+     * }>
+     */
+    private function getChildArticlesInfo(): array
+    {
+        global $DB;
+
+        $criteria = self::getListRequest(
+            ['knowbaseitems_id_parent' => $this->fields['id']],
+            'browse',
+        );
+
+        // getListRequest() merges the visibility WHERE only for logged-in sessions, see its default branch.
+        $check_visibility = Session::getLoginUserID() === false;
+        $child = new self();
+        $children = [];
+        foreach ($DB->request($criteria) as $row) {
+            $child_id = (int) $row['id'];
+            if ($check_visibility && !$child->can($child_id, READ)) {
+                continue;
+            }
+            $children[] = [
+                'id'           => $child_id,
+                'name'         => ($row['transname'] ?? '') ?: $row['name'],
+                'illustration' => $row['illustration'] ?? '',
+                'link_url'     => self::getFormURLWithID($child_id),
+            ];
+        }
+
+        return $children;
     }
 
     /** @return array<EditorAction|EditorActionSeparator> */
