@@ -391,13 +391,13 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             $entry['entity'] = $entity_cache[$data['entities_id']];
 
             if (isset($data[$type_field])) {
-                if (!isset($type_cache[$data[$type_field]])) {
-                    $type_cache[$data[$type_field]] = Dropdown::getDropdownName(
+                if (!isset($type_cache[$type_class][$data[$type_field]])) {
+                    $type_cache[$type_class][$data[$type_field]] = Dropdown::getDropdownName(
                         $type_table,
                         $data[$type_field]
                     );
                 }
-                $entry['type'] = $type_cache[$data[$type_field]];
+                $entry['type'] = $type_cache[$type_class][$data[$type_field]];
             } else {
                 $entry['type'] = '-';
             }
