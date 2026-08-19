@@ -253,7 +253,6 @@ abstract class InventoryAsset
                 //do not process field if it's locked and from update process
                 foreach ($locks as $lock) {
                     if ($key == $lock && !$this->item->isNewItem()) {
-                        unset($value->$key); // keep existing DB value; don't include raw unresolved string
                         continue 2;
                     }
                 }

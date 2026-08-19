@@ -301,7 +301,7 @@ class PDUTest extends AbstractInventoryAsset
         $this->assertGreaterThan(
             0,
             (int) $DB->insert('glpi_lockedfields', [
-                'field'    => 'plugtypes_id',
+                'field'    => 'name',
                 'itemtype' => 'Plug',
                 'is_global' => 0,
             ])
