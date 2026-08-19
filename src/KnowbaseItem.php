@@ -1376,8 +1376,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         global $DB;
 
-        // No SQL visibility here: showFull() proved the parent readable, so inherited visibility matches every child.
-        $rows = $DB->request([
+        // getListRequest()'s visibility cannot filter this query: inherited visibility matches every child of a readable parent.
+        $criteria = [
             'SELECT'     => self::getTableField('id'),
             'FROM'       => self::getTable(),
             'INNER JOIN' => [
@@ -1392,10 +1392,27 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 KnowbaseItem_KnowbaseItem::getTableField('knowbaseitems_id_parent') => $this->fields['id'],
             ],
             'ORDER'      => [self::getTableField('name') . ' ASC'],
-        ]);
+        ];
+
+        // can() ignores the validity window, so apply it here exactly as getListRequest() does.
+        if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+            $criteria['WHERE'][] = [
+                'OR' => [
+                    [self::getTableField('begin_date') => null],
+                    [self::getTableField('begin_date') => ['<', QueryFunction::now()]],
+                ],
+            ];
+            $criteria['WHERE'][] = [
+                'OR' => [
+                    [self::getTableField('end_date') => null],
+                    [self::getTableField('end_date') => ['>', QueryFunction::now()]],
+                ],
+            ];
+        }
 
         $children = [];
         $child = new self();
+        $rows = $DB->request($criteria);
         foreach ($rows as $row) {
             $child_id = (int) $row['id'];
             if (!$child->can($child_id, READ)) {

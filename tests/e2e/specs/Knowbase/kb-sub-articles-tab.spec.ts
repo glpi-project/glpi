@@ -133,4 +133,9 @@ test('The Sub-articles tab wins the default selection over Documents', async ({ 
 
     await expect(page.getByRole('tab', { name: /Sub-articles/ })).toHaveAttribute('aria-selected', 'true');
     await expect(page.getByRole('tab', { name: /Documents/ })).toHaveAttribute('aria-selected', 'false');
+
+    // The header counter must open the pane it points at, not just scroll to the footer.
+    await page.getByRole('link', { name: '1 document' }).click();
+    await expect(page.getByRole('tab', { name: /Documents/ })).toHaveAttribute('aria-selected', 'true');
+    await expect(page.getByRole('tabpanel', { name: /Documents/ })).toBeVisible();
 });
