@@ -685,6 +685,7 @@ $RELATION = [
         'glpi_solutiontypes'               => 'entities_id',
         'glpi_states'                      => 'entities_id',
         'glpi_suppliers'                   => 'entities_id',
+        'glpi_tags'                        => 'entities_id',
         'glpi_taskcategories'              => 'entities_id',
         'glpi_tasktemplates'               => 'entities_id',
         '_glpi_ticketcosts'                => 'entities_id',
@@ -1411,6 +1412,10 @@ $RELATION = [
         'glpi_suppliers' => 'suppliertypes_id',
     ],
 
+    'glpi_tags' => [
+        '_glpi_tags_itemtypes' => 'tags_id',
+    ],
+
     'glpi_taskcategories' => [
         'glpi_changetasks'    => 'taskcategories_id',
         'glpi_problemtasks'   => 'taskcategories_id',
@@ -1731,7 +1736,6 @@ $RELATION = [
         'glpi_webhookcategories'    => 'webhookcategories_id',
         'glpi_webhooks'             => 'webhookcategories_id',
     ],
-
 ];
 
 $add_mapping_entry = static function (string $source_table, string $target_table_key, string|array $relation_fields) use (&$RELATION) {

@@ -35,6 +35,7 @@
 
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Config\ProxyExclusions;
+use Glpi\Form\Category;
 use Glpi\Locale\LanguageRegistry;
 use Glpi\Marketplace\Controller;
 use Glpi\Socket;
@@ -594,8 +595,126 @@ $CFG_GLPI['admin_types'] = [
     User::class, Group::class, Entity::class, Profile::class,
 ];
 
+$CFG_GLPI['dropdown_types'] = [
+    // Common
+    Location::class, State::class, Manufacturer::class, Blacklist::class,
+    BlacklistedMailContent::class, Tag::class, DefaultFilter::class,
+
+    // Assistance
+    TicketTemplate::class, ChangeTemplate::class, ProblemTemplate::class,
+    ITILCategory::class, TaskCategory::class, TaskTemplate::class,
+    SolutionType::class, SolutionTemplate::class, ITILValidationTemplate::class,
+    RequestType::class, ITILFollowupTemplate::class, ProjectState::class,
+    ProjectType::class, ProjectTaskType::class, ProjectTaskTemplate::class,
+    PlanningExternalEventTemplate::class, PlanningEventCategory::class,
+    PendingReason::class, Category::class, ValidationStep::class,
+
+    // Types
+    ComputerType::class, NetworkEquipmentType::class, PrinterType::class,
+    MonitorType::class, PeripheralType::class, PhoneType::class,
+    SoftwareLicenseType::class, CartridgeItemType::class, ConsumableItemType::class,
+    ContractType::class, ContactType::class, DeviceGenericType::class,
+    DeviceSensorType::class, DeviceMemoryType::class, SupplierType::class,
+    InterfaceType::class, DeviceCaseType::class, PhonePowerSupply::class,
+    Filesystem::class, CertificateType::class, BudgetType::class,
+    DeviceSimcardType::class, LineType::class, RackType::class, PDUType::class,
+    PassiveDCEquipmentType::class, ClusterType::class, DatabaseInstanceType::class,
+
+    // Models
+    ComputerModel::class, NetworkEquipmentModel::class, PrinterModel::class,
+    MonitorModel::class, PeripheralModel::class, PhoneModel::class,
+    DeviceCameraModel::class, DeviceCaseModel::class, DeviceControlModel::class,
+    DeviceDriveModel::class, DeviceGenericModel::class, DeviceGraphicCardModel::class,
+    DeviceHardDriveModel::class, DeviceMemoryModel::class, DeviceMotherboardModel::class,
+    DeviceNetworkCardModel::class, DevicePciModel::class, DevicePowerSupplyModel::class,
+    DeviceProcessorModel::class, DeviceSoundCardModel::class, DeviceSensorModel::class,
+    RackModel::class, EnclosureModel::class, PDUModel::class, PassiveDCEquipmentModel::class,
+
+    // Virtual machines
+    VirtualMachineType::class, VirtualMachineSystem::class, VirtualMachineState::class,
+
+    // Management
+    DocumentCategory::class, DocumentType::class, BusinessCriticity::class,
+    DatabaseInstanceCategory::class,
+
+    // Tools
+    KnowbaseItemCategory::class,
+
+    // Calendar
+    Calendar::class, Holiday::class,
+
+    // Operating systems
+    OperatingSystem::class, OperatingSystemVersion::class, OperatingSystemServicePack::class,
+    OperatingSystemArchitecture::class, OperatingSystemEdition::class,
+    OperatingSystemKernel::class, OperatingSystemKernelVersion::class, AutoUpdateSystem::class,
+
+    // Networking
+    NetworkInterface::class, Network::class, NetworkPortType::class, Vlan::class,
+    LineOperator::class, DomainType::class, DomainRelation::class,
+    DomainRecordType::class, NetworkPortFiberchannelType::class,
+
+    // Cable management
+    CableType::class, CableStrand::class, SocketModel::class,
+
+    // Internet
+    IPNetwork::class, FQDN::class, WifiNetwork::class, NetworkName::class,
+
+    // Software
+    SoftwareCategory::class,
+
+    // Users
+    UserTitle::class, UserCategory::class,
+
+    // Authorizations
+    RuleRightParameter::class,
+
+    // Fields unicity
+    Fieldblacklist::class,
+
+    // External authentications
+    SsoVariable::class,
+
+    // Appliances
+    ApplianceType::class, ApplianceEnvironment::class,
+
+    // Device camera
+    ImageResolution::class, ImageFormat::class,
+
+    // Others
+    USBVendor::class, PCIVendor::class, WebhookCategory::class,
+];
+
 $CFG_GLPI['process_types'] = [Computer::class];
 $CFG_GLPI['environment_types'] = [Computer::class];
 
 
 $CFG_GLPI['possible_proxy_exclusions'] = new ProxyExclusions();
+$extra_taggable_types = [
+    PlanningExternalEvent::class, DCRoom::class, Datacenter::class, SLM::class,
+    AuthLDAP::class, AuthMail::class, Agent::class,
+    DeviceBatteryModel::class, DeviceFirmwareModel::class,
+    MailCollector::class, Webhook::class, NotificationTemplate::class,
+    KnowbaseItem::class, Notification::class,
+    TicketRecurrent::class, RecurrentChange::class, Link::class, Rack::class,
+    PDU::class, CartridgeItem::class, ConsumableItem::class, Enclosure::class,
+    Line::class, DatabaseInstance::class, Software::class, PassiveDCEquipment::class,
+    Cable::class, Domain::class, Cluster::class,
+    Database::class, DomainRecord::class, Item_DeviceSimcard::class,
+    DeviceBatteryType::class, DeviceFirmwareType::class, DeviceHardDriveType::class,
+];
+
+$excluded_taggable_types = [Tag::class, DefaultFilter::class];
+
+$CFG_GLPI['taggable_types'] = array_values(array_diff(
+    array_unique(array_merge(
+        $CFG_GLPI['asset_types'],
+        $CFG_GLPI['itil_types'],
+        $CFG_GLPI['management_types'],
+        $CFG_GLPI['tools_types'],
+        $CFG_GLPI['admin_types'],
+        $CFG_GLPI['dropdown_types'],
+        $CFG_GLPI['device_types'],
+        $extra_taggable_types,
+    )),
+    $excluded_taggable_types
+));

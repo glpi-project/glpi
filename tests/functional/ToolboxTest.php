@@ -1908,4 +1908,30 @@ HTML;
     {
         return GLPI_LOG_DIR . "/" . self::TEST_CUSTOM_LOG_FILE_NAME . ".log";
     }
+
+    public function testIsValidHexColor(): void
+    {
+        $this->assertTrue(\Toolbox::isValidHexColor('#fff'));
+        $this->assertTrue(\Toolbox::isValidHexColor('#FFF'));
+        $this->assertTrue(\Toolbox::isValidHexColor('#000'));
+        $this->assertTrue(\Toolbox::isValidHexColor('#ffffff'));
+        $this->assertTrue(\Toolbox::isValidHexColor('#FFFFFF'));
+        $this->assertTrue(\Toolbox::isValidHexColor('#000000'));
+        $this->assertTrue(\Toolbox::isValidHexColor('#123456'));
+        $this->assertTrue(\Toolbox::isValidHexColor('#FfFfFF'));
+        $this->assertFalse(\Toolbox::isValidHexColor('fff'));
+        $this->assertFalse(\Toolbox::isValidHexColor('000'));
+        $this->assertFalse(\Toolbox::isValidHexColor('ffffff'));
+        $this->assertFalse(\Toolbox::isValidHexColor('FFFFFF'));
+        $this->assertFalse(\Toolbox::isValidHexColor('000000'));
+        $this->assertFalse(\Toolbox::isValidHexColor('#12345'));
+        $this->assertFalse(\Toolbox::isValidHexColor('#1234567'));
+        $this->assertFalse(\Toolbox::isValidHexColor('#ggg'));
+        $this->assertFalse(\Toolbox::isValidHexColor('#gggggg'));
+        $this->assertFalse(\Toolbox::isValidHexColor('#GGG'));
+        $this->assertFalse(\Toolbox::isValidHexColor('#GGGGGG'));
+        $this->assertFalse(\Toolbox::isValidHexColor('#FFFaaG'));
+        $this->assertFalse(\Toolbox::isValidHexColor(''));
+        $this->assertFalse(\Toolbox::isValidHexColor(null));
+    }
 }

@@ -50,6 +50,7 @@ use GlpiPlugin\Tester\Form\QuestionTypeColor;
 use GlpiPlugin\Tester\Form\QuestionTypeRange;
 use GlpiPlugin\Tester\Form\TesterCategory;
 use GlpiPlugin\Tester\MyPsr4Class;
+use GlpiPlugin\Tester\Computer;
 
 function plugin_version_tester()
 {
@@ -88,7 +89,7 @@ function plugin_tester_getDropdown(): array
 
 function plugin_init_tester(): void
 {
-    global $PLUGIN_HOOKS;
+    global $CFG_GLPI, $PLUGIN_HOOKS;
     $plugin = new Plugin();
     if (!$plugin->isActivated('tester')) {
         return;
@@ -128,6 +129,7 @@ function plugin_init_tester(): void
 
     $PLUGIN_HOOKS['menu_toadd']['tester'] = ['management' => MyPsr4Class::class];
     $PLUGIN_HOOKS[Hooks::ASSIGN_TO_TICKET]['tester'] = true;
+    $CFG_GLPI['taggable_types'][] = Computer::class;
 }
 
 function plugin_tester_AssignToTicket(array $types): array

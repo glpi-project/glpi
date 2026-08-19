@@ -92,6 +92,8 @@ class SearchEngineTest extends DbTestCase
             'tools_types',
             'admin_types',
             'environment_types',
+            'taggable_types',
+            'dropdown_types',
         ];
         $fails = [];
         foreach ($CFG_GLPI as $key => $value) {

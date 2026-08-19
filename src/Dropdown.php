@@ -1247,6 +1247,7 @@ HTML;
                     'Manufacturer' => null,
                     'Blacklist' => null,
                     'BlacklistedMailContent' => null,
+                    Tag::class => null,
                     'DefaultFilter' => null,
                 ],
 
