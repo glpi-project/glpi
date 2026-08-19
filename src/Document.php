@@ -987,7 +987,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             'id'                 => '6',
             'table'              => static::getTable(),
             'field'              => 'tag',
-            'name'               => __('Tag'),
+            'name'               => _x('document', 'Tag'),
             'datatype'           => 'text',
             'massiveaction'      => false,
         ];

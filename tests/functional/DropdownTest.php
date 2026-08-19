@@ -3447,4 +3447,31 @@ HTML;
         $this->assertContains('Connect monitor assigned to me', $names);
         $this->assertNotContains('Connect monitor of someone else', $names);
     }
+
+    public function testGetStandardDropdownItemtypes(): void
+    {
+        global $CFG_GLPI;
+
+        $available_types = array_keys(array_merge(...array_values(Dropdown::getStandardDropdownItemTypes(false))));
+        $available_types = array_filter(
+            $available_types,
+            fn($itemtype) => !str_starts_with($itemtype, 'Glpi\CustomAsset')
+                && !str_starts_with($itemtype, 'Glpi\CustomDropdown')
+                && !str_starts_with($itemtype, 'PluginTester')
+                && !str_starts_with($itemtype, 'GlpiPlugin\Tester')
+        );
+
+        foreach ($CFG_GLPI['dropdown_types'] as $itemtype) {
+            $this->assertContains(
+                $itemtype,
+                $available_types,
+                sprintf('"%s" is missing from Dropdown::getStandardDropdownItemTypes()', $itemtype)
+            );
+        }
+
+        $this->assertEquals(
+            count($available_types),
+            count($CFG_GLPI['dropdown_types']),
+        );
+    }
 }

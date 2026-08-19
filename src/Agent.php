@@ -157,7 +157,7 @@ class Agent extends CommonDBTM
                 'id'            => '11',
                 'table'         => $this->getTable(),
                 'field'         => 'tag',
-                'name'          => __('Tag'),
+                'name'          => _x('agent', 'Tag'),
                 'datatype'      => 'text',
                 'massiveaction' => false,
             ], [
@@ -312,7 +312,7 @@ class Agent extends CommonDBTM
         $tab[] = [
             'id'         => 901,
             'field'      => 'tag',
-            'name'       => __('Tag'),
+            'name'       => _x('agent', 'Tag'),
             'datatype'   => 'text',
         ] + $baseopts;
 
