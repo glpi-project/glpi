@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 use function Safe\strtotime;
 
@@ -263,7 +264,7 @@ class PlanningRecall extends CommonDBChild
             [
                 'when'   => QueryFunction::dateSub(
                     date: new QueryExpression($DB::quoteValue($begin)),
-                    interval: new QueryExpression($DB::quoteName('before_time')),
+                    interval: new QueryIdentifier('before_time'),
                     interval_unit: 'SECOND'
                 ),
             ],

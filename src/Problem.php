@@ -36,7 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\ContentTemplates\Parameters\ProblemParameters;
-use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\RichText\RichText;
 use Glpi\Search\DefaultSearchRequestInterface;
 
@@ -182,7 +182,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_problems', 'glpi_problems_users'],
                             [
-                                'glpi_problems_users.problems_id'  => new QueryExpression(DBmysql::quoteName('glpi_problems.id')),
+                                'glpi_problems_users.problems_id'  => new QueryIdentifier('glpi_problems.id'),
                                 'glpi_problems_users.users_id'    => $item->getID(),
                                 'glpi_problems_users.type'        => CommonITILActor::REQUESTER,
                                 'glpi_problems.is_deleted'        => 0,
@@ -197,7 +197,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_problems', 'glpi_groups_problems'],
                             [
-                                'glpi_groups_problems.problems_id' => new QueryExpression(DBmysql::quoteName('glpi_problems.id')),
+                                'glpi_groups_problems.problems_id' => new QueryIdentifier('glpi_problems.id'),
                                 'glpi_groups_problems.groups_id'  => $item->getID(),
                                 'glpi_groups_problems.type'       => CommonITILActor::REQUESTER,
                                 'glpi_problems.is_deleted'        => 0,

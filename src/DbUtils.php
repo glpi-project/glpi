@@ -36,6 +36,7 @@
 use Glpi\Application\Environment;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Exception\Database\QueryException;
@@ -1928,7 +1929,7 @@ final class DbUtils
             $criteria = [
                 'SELECT' => [
                     QueryFunction::cast(
-                        expression: QueryFunction::substring('code', $pos, $len),
+                        expression: QueryFunction::substring(new QueryIdentifier('code'), $pos, $len),
                         type: 'UNSIGNED',
                         alias: 'no'
                     ),
@@ -1940,7 +1941,7 @@ final class DbUtils
             $criteria = [
                 'SELECT' => [
                     QueryFunction::cast(
-                        expression: QueryFunction::substring($field, $pos, $len),
+                        expression: QueryFunction::substring(new QueryIdentifier($field), $pos, $len),
                         type: 'UNSIGNED',
                         alias: 'no'
                     ),

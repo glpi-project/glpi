@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\RichText\RichText;
 
 use function Safe\preg_match;
@@ -678,7 +679,7 @@ class QueuedNotification extends CommonDBTM
                 self::getTable(),
                 [
                     'is_deleted'   => 1,
-                    new QueryExpression(QueryFunction::unixTimestamp('send_time') . ' < ' . $DB::quoteValue($send_time)),
+                    new QueryExpression(QueryFunction::unixTimestamp(new QueryIdentifier('send_time')) . ' < ' . $DB::quoteValue($send_time)),
                 ]
             );
             $vol = $DB->getAffectedRows();
@@ -714,7 +715,7 @@ class QueuedNotification extends CommonDBTM
                     'is_deleted'   => 0,
                     'mode'         => Notification_NotificationTemplate::MODE_AJAX,
                     new QueryExpression(
-                        QueryFunction::unixTimestamp('send_time') . ' + ' . $secs
+                        QueryFunction::unixTimestamp(new QueryIdentifier('send_time')) . ' + ' . $secs
                             . ' < ' . QueryFunction::unixTimestamp()
                     ),
                 ]

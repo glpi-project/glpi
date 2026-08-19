@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
@@ -446,13 +447,13 @@ class Auth extends CommonGLPI
                     'id',
                     'password',
                     QueryFunction::dateAdd(
-                        date: 'password_last_update',
+                        date: new QueryIdentifier('password_last_update'),
                         interval: $pass_expiration_delay,
                         interval_unit: 'DAY',
                         alias: 'password_expiration_date'
                     ),
                     QueryFunction::dateAdd(
-                        date: 'password_last_update',
+                        date: new QueryIdentifier('password_last_update'),
                         interval: $pass_expiration_delay + $lock_delay,
                         interval_unit: 'DAY',
                         alias: 'lock_date'

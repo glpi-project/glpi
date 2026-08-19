@@ -37,6 +37,7 @@ use Glpi\DBAL\Parts\BasePart;
 use Glpi\DBAL\Parts\Delete;
 use Glpi\DBAL\Parts\Insert;
 use Glpi\DBAL\Parts\Update;
+use Glpi\DBAL\QueryElementInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
@@ -1224,7 +1225,7 @@ class DBmysql
      *
      * @since 9.3
      *
-     * @param string|QueryExpression $name
+     * @param string|QueryElementInterface $name
      *
      * @return string
      *
@@ -1233,7 +1234,7 @@ class DBmysql
     public static function quoteName($name)
     {
         // handle verbatim names
-        if ($name instanceof QueryExpression) {
+        if ($name instanceof QueryElementInterface) {
             return $name->getValue();
         }
 
@@ -1279,8 +1280,8 @@ class DBmysql
      */
     public static function quoteValue($value)
     {
-        if ($value instanceof QueryParam || $value instanceof QueryExpression) {
-            //no quote for query parameters nor expressions
+        if ($value instanceof QueryParam || $value instanceof QueryElementInterface) {
+            //no quote for query parameters nor query elements
             $value = $value->getValue();
         } elseif ($value === null || $value === 'NULL' || $value === 'null') {
             $value = 'NULL';
@@ -1320,7 +1321,7 @@ class DBmysql
             $values = [];
             foreach ($params as $key => $value) {
                 $fields[] = static::quoteName($key);
-                if ($value instanceof QueryExpression) {
+                if ($value instanceof QueryElementInterface) {
                     $parameters[] = $value->getValue();
                     $values = array_merge($values, $value->getParams());
                     unset($params[$key]);
@@ -1421,7 +1422,7 @@ class DBmysql
         foreach ($params as $field => $value) {
             if ($value instanceof QueryParam) {
                 $query .= self::quoteName($field) . " = " . $value->getValue() . ", ";
-            } elseif ($value instanceof QueryExpression) {
+            } elseif ($value instanceof QueryElementInterface) {
                 $qvalues = $value->getParams();
                 $query .= self::quoteName($field) . " = " . $value->getValue() . ", ";
                 $set_values = array_merge($set_values, $qvalues);

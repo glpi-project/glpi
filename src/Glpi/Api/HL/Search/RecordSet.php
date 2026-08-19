@@ -40,6 +40,7 @@ use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Search;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\Debug\Profiler;
 use Glpi\Toolbox\ArrayPathAccessor;
 use Session;
@@ -180,8 +181,8 @@ final class RecordSet
             if (!$is_computed && isset($trans_alias)) {
                 // Try to use the translated value, but fall back to the default value if there is no translation
                 $criteria['SELECT'][] = QueryFunction::ifnull(
-                    expression: "{$trans_alias}.value",
-                    value: $sql_field,
+                    expression: new QueryIdentifier("{$trans_alias}.value"),
+                    value: new QueryIdentifier($sql_field),
                     alias: $alias
                 );
             } else {

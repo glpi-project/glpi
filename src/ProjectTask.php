@@ -38,6 +38,7 @@ use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\PlanningEvent;
 use Glpi\Features\Teamwork;
@@ -933,7 +934,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $iterator = $DB->request([
             'SELECT'    => [
                 QueryFunction::sum(
-                    expression: 'glpi_tickets.actiontime',
+                    expression: new QueryIdentifier('glpi_tickets.actiontime'),
                     alias: 'duration'
                 ),
             ],
@@ -998,7 +999,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $iterator = $DB->request([
             'SELECT'    => [
                 QueryFunction::sum(
-                    expression: 'planned_duration',
+                    expression: new QueryIdentifier('planned_duration'),
                     alias: 'duration'
                 ),
             ],
@@ -1990,13 +1991,13 @@ TWIG, $twig_params);
         if (isset($options['not_planned'])) {
             //not planned case
             $bdate = QueryFunction::dateSub(
-                date: $ttask_table . '.date_creation',
-                interval: new QueryExpression($DB::quoteName($ttask_table . '.planned_duration')),
+                date: new QueryIdentifier($ttask_table . '.date_creation'),
+                interval: new QueryIdentifier($ttask_table . '.planned_duration'),
                 interval_unit: 'SECOND',
             );
             $edate = QueryFunction::dateAdd(
-                date: $ttask_table . '.date_creation',
-                interval: new QueryExpression($DB::quoteName($ttask_table . '.planned_duration')),
+                date: new QueryIdentifier($ttask_table . '.date_creation'),
+                interval: new QueryIdentifier($ttask_table . '.planned_duration'),
                 interval_unit: 'SECOND',
             );
             $SELECT[] = new QueryExpression($bdate, 'notp_date');
@@ -2224,7 +2225,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT' => [
                 QueryFunction::cast(
-                    expression: QueryFunction::avg('percent_done'),
+                    expression: QueryFunction::avg(new QueryIdentifier('percent_done')),
                     type: 'UNSIGNED',
                     alias: 'percent_done'
                 ),

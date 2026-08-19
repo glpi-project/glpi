@@ -40,6 +40,7 @@ use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
 use Glpi\RichText\RichText;
@@ -719,7 +720,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_tickets_users'],
                             [
-                                'glpi_tickets_users.tickets_id'  => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
+                                'glpi_tickets_users.tickets_id'  => new QueryIdentifier('glpi_tickets.id'),
                                 'glpi_tickets_users.users_id'    => $item->getID(),
                                 'glpi_tickets_users.type'        => CommonITILActor::REQUESTER,
                                 'glpi_tickets.is_deleted'        => 0,
@@ -732,7 +733,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_suppliers_tickets'],
                             [
-                                'glpi_suppliers_tickets.tickets_id'    => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
+                                'glpi_suppliers_tickets.tickets_id'    => new QueryIdentifier('glpi_tickets.id'),
                                 'glpi_suppliers_tickets.suppliers_id'  => $item->getID(),
                                 'glpi_tickets.is_deleted'              => 0,
                             ] + getEntitiesRestrictCriteria(self::getTable())
@@ -765,7 +766,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                         $nb = countElementsInTable(
                             ['glpi_tickets', 'glpi_groups_tickets'],
                             [
-                                'glpi_groups_tickets.tickets_id' => new QueryExpression(DBmysql::quoteName('glpi_tickets.id')),
+                                'glpi_groups_tickets.tickets_id' => new QueryIdentifier('glpi_tickets.id'),
                                 'glpi_groups_tickets.groups_id'  => $item->getID(),
                                 'glpi_groups_tickets.type'       => CommonITILActor::REQUESTER,
                                 'glpi_tickets.is_deleted'        => 0,
@@ -1891,7 +1892,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 ),
                 new QueryExpression(
                     QueryFunction::dateAdd(
-                        date: static::getTable() . '.solvedate',
+                        date: new QueryIdentifier(static::getTable() . '.solvedate'),
                         interval: $days,
                         interval_unit: 'DAY'
                     ) . ' > ' . QueryFunction::now()
@@ -2544,15 +2545,15 @@ JAVASCRIPT;
                 expression: QueryFunction::least([
                     QueryFunction::if(
                         condition: ['TABLE.takeintoaccount_delay_stat' => ['<=', 0]],
-                        true_expression: QueryFunction::coalesce(['TABLE.time_to_own', $max_date]),
+                        true_expression: QueryFunction::coalesce([new QueryIdentifier('TABLE.time_to_own'), $max_date]),
                         false_expression: $max_date
                     ),
                     QueryFunction::coalesce([
-                        new QueryExpression((new QuerySubQuery(['FROM' => Item_Ola::getTable(), 'SELECT' => QueryFunction::min('due_time')]))->getQuery()), $max_date,
+                        new QueryExpression((new QuerySubQuery(['FROM' => Item_Ola::getTable(), 'SELECT' => QueryFunction::min(new QueryIdentifier('due_time'))]))->getQuery()), $max_date,
                     ]),
                     QueryFunction::if(
                         condition: ['TABLE.solvedate' => null],
-                        true_expression: QueryFunction::coalesce(['TABLE.time_to_resolve', $max_date]),
+                        true_expression: QueryFunction::coalesce([new QueryIdentifier('TABLE.time_to_resolve'), $max_date]),
                         false_expression: $max_date
                     ),
                 ]),
@@ -3877,7 +3878,7 @@ JAVASCRIPT;
                     'SELECT' => 'last_solution.id',
                     'FROM'   => 'glpi_itilsolutions AS last_solution',
                     'WHERE'  => [
-                        'last_solution.items_id'   => new QueryExpression($DB->quoteName('glpi_tickets.id')),
+                        'last_solution.items_id'   => new QueryIdentifier('glpi_tickets.id'),
                         'last_solution.itemtype'   => self::class,
                     ],
                     'ORDER'  => 'last_solution.id DESC',
@@ -3966,8 +3967,8 @@ JAVASCRIPT;
                                 new QueryExpression(
                                     QueryFunction::dateDiff(
                                         expression1: QueryFunction::dateAdd(
-                                            date: 'glpi_ticketsatisfactions.date_begin',
-                                            interval: new QueryExpression($DB::quoteName('glpi_entities.inquest_duration')),
+                                            date: new QueryIdentifier('glpi_ticketsatisfactions.date_begin'),
+                                            interval: new QueryIdentifier('glpi_entities.inquest_duration'),
                                             interval_unit: 'DAY'
                                         ),
                                         expression2: QueryFunction::curDate()
@@ -5071,7 +5072,7 @@ JAVASCRIPT;
                         // no calendar, remove all days
                         $criteria['WHERE'][] = new QueryExpression(
                             QueryFunction::dateAdd(
-                                date: 'solvedate',
+                                date: new QueryIdentifier('solvedate'),
                                 interval: $delay,
                                 interval_unit: 'DAY'
                             ) . ' < ' . QueryFunction::now()
@@ -5133,7 +5134,7 @@ JAVASCRIPT;
                     'closedate'    => null,
                     new QueryExpression(
                         QueryFunction::dateAdd(
-                            date: 'date',
+                            date: new QueryIdentifier('date'),
                             interval: $value,
                             interval_unit: 'DAY'
                         ) . ' < ' . QueryFunction::now()
@@ -5209,7 +5210,7 @@ JAVASCRIPT;
                     // remove all days
                     $criteria['WHERE'][] = new QueryExpression(
                         QueryFunction::dateAdd(
-                            date: 'closedate',
+                            date: new QueryIdentifier('closedate'),
                             interval: $delay,
                             interval_unit: 'DAY'
                         ) . ' < ' . QueryFunction::now()

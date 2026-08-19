@@ -35,7 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Plugin\Hooks;
@@ -151,7 +151,7 @@ TWIG;
                         'OR' => [
                             [
                                 $lockedfield_table . '.itemtype'  => $lockable_itemtype,
-                                $lockedfield_table . '.items_id'  => new QueryExpression($DB::quoteName($lockable_itemtype_table . '.id')),
+                                $lockedfield_table . '.items_id'  => new QueryIdentifier($lockable_itemtype_table . '.id'),
                             ], [
                                 $lockedfield_table . '.itemtype'  => $lockable_itemtype,
                                 $lockedfield_table . '.is_global' => 1,

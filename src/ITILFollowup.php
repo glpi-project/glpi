@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\ParentStatus;
 
@@ -804,7 +805,7 @@ class ITILFollowup extends CommonDBChild
                 'jointype'           => 'itemtype_item',
                 'condition'          => $followup_condition,
             ],
-            'computation'        => QueryFunction::max('TABLE.date'),
+            'computation'        => QueryFunction::max(new QueryIdentifier('TABLE.date')),
             'nometa'             => true, // cannot GROUP_CONCAT a MAX
         ];
 
