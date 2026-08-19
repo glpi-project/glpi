@@ -1649,6 +1649,8 @@ TWIG, $twig_params);
      */
     public static function showLdapUsers()
     {
+        global $CFG_GLPI;
+
         $values = array_replace([
             'order' => 'DESC',
             'start' => 0,
@@ -1719,6 +1721,7 @@ TWIG, $twig_params);
             'is_tab' => false,
             'nofilter' => true,
             'nosort' => true,
+            'href' => $CFG_GLPI['root_doc'] . '/front/ldap.import.php',
             'start' => $values['start'],
             'limit' => $_SESSION['glpilist_limit'],
             // preserve all existing parameters in the URL except start and order which are managed by the datatable component

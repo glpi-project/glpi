@@ -48,14 +48,15 @@ final class ShowAddTileFormController extends AbstractTileController
     )]
     public function __invoke(Request $request): Response
     {
+        if (!$this->tiles_manager->canAddTile()) {
+            throw new AccessDeniedHttpException();
+        }
+
         $possible_tiles = [];
         foreach ($this->tiles_manager->getTileTypes() as $tile_type) {
             if ($tile_type::canCreate()) {
                 $possible_tiles[] = $tile_type;
             }
-        }
-        if ($possible_tiles === []) {
-            throw new AccessDeniedHttpException();
         }
 
         $possible_tiles_dropdown_values = [];

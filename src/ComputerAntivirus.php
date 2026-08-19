@@ -49,7 +49,7 @@ class ComputerAntivirus extends ItemAntivirus
         //add missing itemtype, rename computers_id to items_id
         $input['itemtype'] = 'Computer';
         if (isset($input['computers_id'])) {
-            $input['itemps_id'] = $input['computers_id'];
+            $input['items_id'] = $input['computers_id'];
             unset($input['computers_id']);
         }
 
@@ -63,7 +63,7 @@ class ComputerAntivirus extends ItemAntivirus
             $input['itemtype'] = 'Computer';
         }
         if (isset($input['computers_id'])) {
-            $input['itemps_id'] = $input['computers_id'];
+            $input['items_id'] = $input['computers_id'];
             unset($input['computers_id']);
         }
 

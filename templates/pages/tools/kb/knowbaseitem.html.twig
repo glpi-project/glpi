@@ -70,7 +70,7 @@
     {% if linked_item is defined and linked_item is not null and not linked_item.isNewItem() %}
         {{ inputs.hidden('_itemtype', get_class(linked_item)) }}
         {{ inputs.hidden('_items_id', linked_item.getID()) }}
-        {{ fields.checkboxField('_do_item_link', 1, __('Link with %1$s')|format(get_item_link(linked_item))) }}
+        {{ fields.checkboxField('_do_item_link', 1, __('Link with %1$s')|format(get_item_name(linked_item))) }}
     {% endif %}
 
     {{ fields.datetimeField('begin_date', item.fields['begin_date'], __('Visible since'), {

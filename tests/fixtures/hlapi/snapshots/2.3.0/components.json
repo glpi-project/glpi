@@ -12328,7 +12328,9 @@
                 "size": {
                     "type": "number",
                     "format": "float",
-                    "minimum": 0
+                    "minimum": 0,
+                    "maximum": 999.99,
+                    "multipleOf": 0.01
                 },
                 "has_microphone": {
                     "type": "boolean",

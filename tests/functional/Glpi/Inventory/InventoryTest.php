@@ -4667,6 +4667,31 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame(countElementsInTable(\Printer::getTable()), $nbprinters);
     }
 
+    public function testCronCleantemp()
+    {
+        if (!is_dir(GLPI_INVENTORY_DIR)) {
+            mkdir(GLPI_INVENTORY_DIR);
+        }
+
+        //simulate a leftover temporary file, as created by `Inventory::setData()` through `tempnam()`
+        $old_file = tempnam(GLPI_INVENTORY_DIR, 'json_');
+        file_put_contents($old_file, '{}');
+        //older than the 12 hours threshold used by `Inventory::cronCleantemp()`
+        touch($old_file, time() - (13 * HOUR_TIMESTAMP));
+
+        //a recent temporary file must not be removed
+        $recent_file = tempnam(GLPI_INVENTORY_DIR, 'xml_');
+        file_put_contents($recent_file, '<xml/>');
+
+        $task = new \CronTask();
+        $this->assertSame(1, Inventory::cronCleantemp($task));
+
+        $this->assertFileDoesNotExist($old_file);
+        $this->assertFileExists($recent_file);
+
+        unlink($recent_file);
+    }
+
     /**
      * @extensions zip
      */
