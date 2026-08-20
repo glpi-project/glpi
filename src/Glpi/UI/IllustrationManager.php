@@ -339,6 +339,13 @@ final class IllustrationManager
             $title = '';
         }
 
+        if (!$decorative && $title === '') {
+            trigger_error(
+                "The illustration `$icon_id` has no title: flag it as `decorative` if it is purely decorative, check its id otherwise.",
+                E_USER_WARNING
+            );
+        }
+
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [
             'file_path'  => $this->icons_sprites_path,

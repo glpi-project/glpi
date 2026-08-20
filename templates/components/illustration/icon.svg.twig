@@ -33,14 +33,6 @@
 {# decorative icons duplicate an adjacent label, so they must not be named #}
 {% set decorative = decorative ?? false %}
 {% set title = decorative ? '' : title|default('') %}
-
-{# Check that an unnamed illustration is unnamed on purpose #}
-{% if not decorative and title is empty %}
-    {% do call('trigger_error', [
-        'The illustration `' ~ icon_id ~ '` has no title: flag it as `decorative` if it is purely decorative, check its id otherwise.',
-        constant('E_USER_WARNING')
-    ]) %}
-{% endif %}
 <svg
     {% if title is not empty %}
         role="img"
