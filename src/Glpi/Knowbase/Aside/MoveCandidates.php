@@ -36,12 +36,13 @@ namespace Glpi\Knowbase\Aside;
 
 use KnowbaseItem;
 use KnowbaseItem_KnowbaseItem;
+use Session;
 
 /**
  * Parents an article may legally be moved under: everything the current user
  * can see, minus the article itself and its descendants (which would close a
- * cycle), minus parents the move would refuse on entity coherence. Labels
- * carry the full path so the flat dropdown still reads as a tree.
+ * cycle), minus parents the move would refuse on entity coherence or on rights.
+ * Labels carry the full path so the flat dropdown still reads as a tree.
  *
  * The root level is not a candidate: the root article is the base of the tree
  * and is offered under its own title, like any other parent.
@@ -84,14 +85,22 @@ final class MoveCandidates
             }
         }
 
-        return $this->dropIncoherentEntities($candidates);
+        return $this->dropRefusedParents($candidates);
     }
 
     /**
+     * Drops what the endpoint would refuse: an incoherent entity, or rights that rule
+     * the parent out on their own. The move requires UPDATE on the new parent, and
+     * publishing under an FAQ article needs PUBLISHFAQ.
+     *
+     * Only the part of `canUpdateItem()` that costs nothing here: the visibility half
+     * would mean four queries per candidate, see `KnowbaseItem::post_getFromDB()`. The
+     * endpoint runs the full check anyway.
+     *
      * @param array<int, string> $candidates
      * @return array<int, string>
      */
-    private function dropIncoherentEntities(array $candidates): array
+    private function dropRefusedParents(array $candidates): array
     {
         global $DB;
 
@@ -107,18 +116,35 @@ final class MoveCandidates
         }
 
         $rows = $DB->request([
-            'SELECT' => ['id', 'entities_id', 'is_recursive'],
+            'SELECT' => ['id', 'entities_id', 'is_recursive', 'is_faq', 'users_id'],
             'FROM'   => KnowbaseItem::getTable(),
             'WHERE'  => ['id' => $ids],
         ]);
         foreach ($rows as $row) {
             $parent = new KnowbaseItem();
             $parent->getFromResultSet($row);
-            if (!KnowbaseItem_KnowbaseItem::areEntitiesCoherent($article, $parent)) {
+            if (
+                !KnowbaseItem_KnowbaseItem::areEntitiesCoherent($article, $parent)
+                || $this->isRefusedOnRights($parent)
+            ) {
                 unset($candidates[(int) $row['id']]);
             }
         }
 
         return $candidates;
+    }
+
+    private function isRefusedOnRights(KnowbaseItem $parent): bool
+    {
+        if (Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)) {
+            return false;
+        }
+        // Its author edits it whatever the article is, see `KnowbaseItem::canUpdateItem()`.
+        if ((int) $parent->fields['users_id'] === Session::getLoginUserID()) {
+            return false;
+        }
+
+        return (bool) $parent->fields['is_faq']
+            && !Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::PUBLISHFAQ);
     }
 }

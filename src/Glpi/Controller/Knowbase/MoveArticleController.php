@@ -88,27 +88,27 @@ final class MoveArticleController extends AbstractController
         }
 
         // KnowbaseItem_KnowbaseItem::$checkAlwaysBothItems only applies when the caller
-        // goes through can()/canCreateItem(); add() below never does, so this is the
-        // only rights check on the target and must stay.
+        // goes through can()/canCreateItem(); add() below never does, so this stands in
+        // for it, and enforces the same rule: gaining a child is editing the parent.
         $target = new KnowbaseItem();
         if (!$target->getFromDB($to_parent_id)) {
             throw new NotFoundHttpException();
         }
-        if (!$target->can($to_parent_id, READ)) {
+        if (!$target->can($to_parent_id, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
         if (!KnowbaseItem_KnowbaseItem::areEntitiesCoherent($article, $target)) {
             throw new AccessDeniedHttpException();
         }
 
-        // Same reason on the source: deleteByCriteria() checks no rights either, and
-        // reports success on zero rows, so an unreadable parent would sever silently.
+        // Same on the source, which loses a child: deleteByCriteria() checks no rights
+        // either, and reports success on zero rows, so it would sever silently.
         if ($from_parent_id > 0) {
             $source = new KnowbaseItem();
             if (!$source->getFromDB($from_parent_id)) {
                 throw new NotFoundHttpException();
             }
-            if (!$source->can($from_parent_id, READ)) {
+            if (!$source->can($from_parent_id, UPDATE)) {
                 throw new AccessDeniedHttpException();
             }
         }

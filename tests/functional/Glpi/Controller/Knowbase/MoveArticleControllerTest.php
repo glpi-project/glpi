@@ -41,6 +41,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_KnowbaseItem;
+use KnowbaseItem_User;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,6 +72,46 @@ class MoveArticleControllerTest extends DbTestCase
             'answer'   => '<p>x</p>',
             '_parents' => $parents,
         ])->getID();
+    }
+
+    /** Guards the rights tests against passing on the wrong article. */
+    private function assertEditable(int $id): void
+    {
+        $article = new KnowbaseItem();
+        $this->assertTrue($article->getFromDB($id));
+        $this->assertTrue($article->can($id, UPDATE));
+    }
+
+    /**
+     * An article the current user may read but not edit, and drops them to the rights
+     * that make the difference visible: an FAQ article authored by someone else needs
+     * PUBLISHFAQ to be edited, while plain READ is enough to see it.
+     *
+     * Everything is created before the rights drop, so creation itself stays allowed.
+     */
+    private function makeUneditableArticle(): int
+    {
+        $id = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Move ' . $this->getUniqueString(),
+            'answer'   => '<p>x</p>',
+            'users_id' => getItemByTypeName('User', 'normal', true),
+            'is_faq'   => 1,
+        ])->getID();
+        // Without a grant the article would not even be readable.
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $id,
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        $this->setEntity('_test_root_entity', true);
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+
+        // Not vacuous: only editing the article is out of reach.
+        $article = new KnowbaseItem();
+        $this->assertTrue($article->getFromDB($id));
+        $this->assertTrue($article->can($id, READ));
+
+        return $id;
     }
 
     private function countLink(int $child_id, int $parent_id): int
@@ -192,7 +233,7 @@ class MoveArticleControllerTest extends DbTestCase
         $this->callController($child, $parent_a, $parent_b);
     }
 
-    public function testMoveOntoAnUnreadableTargetIsDenied(): void
+    public function testMoveOntoAnUnresolvableTargetIsDenied(): void
     {
         $this->login();
         $child = $this->makeArticle();
@@ -200,6 +241,32 @@ class MoveArticleControllerTest extends DbTestCase
         // A target id that does not resolve must not be a valid drop destination.
         $this->expectException(NotFoundHttpException::class);
         $this->callController($child, 0, 999999999);
+    }
+
+    public function testMoveOntoATargetTheUserCannotEditIsDenied(): void
+    {
+        $this->login();
+        $child  = $this->makeArticle();
+        $target = $this->makeUneditableArticle();
+        $this->assertEditable($child);
+
+        // Gaining a child is editing the parent, as the model's own rules have it.
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->callController($child, 0, $target);
+    }
+
+    public function testDetachingFromASourceTheUserCannotEditIsDenied(): void
+    {
+        $this->login();
+        $source = $this->makeUneditableArticle();
+        $child  = $this->makeArticle([$source]);
+        $target = $this->makeArticle();
+        $this->assertEditable($child);
+        $this->assertEditable($target);
+
+        // Losing a child is editing the parent too.
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->callController($child, $source, $target);
     }
 
     public function testDetachingFromAnUnresolvableParentIsDenied(): void
