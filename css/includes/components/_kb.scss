@@ -1417,8 +1417,11 @@ body.in_modal .kb-editor-reserved {
 
                 // Contains the row's own bottom margin, which would otherwise collapse
                 // through the (possibly empty) child <ul> and land between the items,
-                // out of reach of the connector below.
-                display: flow-root;
+                // out of reach of the connector below. Skipped on search-hidden rows:
+                // this selector outranks their `display: none` and would unhide them.
+                &:not([data-glpi-kb-search-hidden]) {
+                    display: flow-root;
+                }
 
                 // L-shaped connector: starts $gap below the top edge so the
                 // vertical segment never "touches" the line above it.
