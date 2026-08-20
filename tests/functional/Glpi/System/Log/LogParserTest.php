@@ -36,6 +36,7 @@ namespace tests\units\Glpi\System\Log;
 
 use Glpi\System\Log\LogParser;
 use Glpi\Tests\GLPITestCase;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class LogParserTest extends GLPITestCase
 {
@@ -131,7 +132,12 @@ LOG
         $instance = new LogParser();
 
         $this->expectOutputString(file_get_contents($this->log_file_path));
-        $instance->download('test.log');
+        $response = $instance->download('test.log');
+
+        $this->assertInstanceOf(BinaryFileResponse::class, $response);
+        $this->assertSame(\Safe\realpath($this->log_file_path), $response->getFile()->getPathname());
+        $this->assertSame('application/octet-stream', $response->headers->get('Content-Type'));
+        $this->assertSame('attachment; filename=test.log', $response->headers->get('Content-Disposition'));
     }
 
 
