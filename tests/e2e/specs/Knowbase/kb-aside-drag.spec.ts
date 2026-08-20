@@ -36,6 +36,9 @@ import { KnowbaseItemPage } from '../../pages/KnowbaseItemPage';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
+// The base of the tree, seeded by the installer (see `install/empty_data.php`).
+const ROOT_ARTICLE_NAME = 'Home';
+
 test('Can drag an article under another one', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
@@ -71,13 +74,14 @@ test('Can drag an article under another one', async ({ page, profile, api }) => 
     ).toBeVisible();
 });
 
-test('Can drag an article back to the root level', async ({ page, profile, api }) => {
+test('Dropping below the tree issues no move request', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
     const unique = randomUUID().slice(0, 8);
     const parent_name = `E2E Parent ${unique}`;
     const child_name = `E2E Child ${unique}`;
+    const host_name = `E2E Host ${unique}`;
 
     const parent_id = await api.createItem('KnowbaseItem', {
         name: parent_name,
@@ -90,22 +94,35 @@ test('Can drag an article back to the root level', async ({ page, profile, api }
         entities_id: getWorkerEntityId(),
         _parents: [parent_id],
     });
+    await api.createItem('KnowbaseItem', {
+        name: host_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
 
     await kb.goto(child_id);
     await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toBeVisible();
 
-    // The move is posted fire-and-forget: reloading before it lands would
-    // abort the request.
+    let moves = 0;
+    page.on('request', (request) => {
+        if (request.url().includes('/Move')) {
+            moves++;
+        }
+    });
+
+    // Refused: the free area below the tree used to mean the root level, which the
+    // root article now owns. Nothing claims it any more.
+    await kb.doDragArticleBelowTheTree(child_name);
+    await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toBeVisible();
+
+    // Sentinel: a valid move whose response proves an earlier request, had one
+    // been issued, would already have been sent.
     await Promise.all([
         page.waitForResponse('**/Knowbase/Aside/Article/*/Move'),
-        kb.doDragArticleToRoot(child_name),
+        kb.doDropOnBand(child_name, host_name, 'middle'),
     ]);
 
-    await kb.goto(child_id);
-    await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toHaveCount(0);
-    await expect(
-        kb.getAsideArticlesList().getByRole('link', { name: child_name, exact: true })
-    ).toBeVisible();
+    expect(moves).toBe(1);
 });
 
 test('Cannot drop an article onto its own descendant', async ({ page, profile, api }) => {
@@ -278,14 +295,14 @@ test('A rejected move is reverted in the tree', async ({ page, profile, api }) =
     await expect(kb.getAsideCategoryArticle(host_name, child_name)).toHaveCount(0);
 });
 
-test('Can drop on a root article top edge to promote a child to root', async ({ page, profile, api }) => {
+test('Dropping beside the root article issues no move request', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
     const unique = randomUUID().slice(0, 8);
     const parent_name = `E2E Parent ${unique}`;
     const child_name = `E2E Child ${unique}`;
-    const other_name = `E2E Other ${unique}`;
+    const host_name = `E2E Host ${unique}`;
 
     const parent_id = await api.createItem('KnowbaseItem', {
         name: parent_name,
@@ -299,7 +316,7 @@ test('Can drop on a root article top edge to promote a child to root', async ({ 
         _parents: [parent_id],
     });
     await api.createItem('KnowbaseItem', {
-        name: other_name,
+        name: host_name,
         answer: 'Test content',
         entities_id: getWorkerEntityId(),
     });
@@ -307,18 +324,25 @@ test('Can drop on a root article top edge to promote a child to root', async ({ 
     await kb.goto(child_id);
     await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toBeVisible();
 
-    // The move is posted fire-and-forget: reloading before it lands would
-    // abort the request.
+    let moves = 0;
+    page.on('request', (request) => {
+        if (request.url().includes('/Move')) {
+            moves++;
+        }
+    });
+
+    // Refused: the root article's own edges would mean "beside the root", and the tree
+    // has no level above it.
+    await kb.doDropOnBand(child_name, ROOT_ARTICLE_NAME, 'top');
+    await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toBeVisible();
+
+    // Sentinel, as above.
     await Promise.all([
         page.waitForResponse('**/Knowbase/Aside/Article/*/Move'),
-        kb.doDropOnBand(child_name, other_name, 'top'),
+        kb.doDropOnBand(child_name, host_name, 'middle'),
     ]);
 
-    await kb.goto(child_id);
-    await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toHaveCount(0);
-    await expect(
-        kb.getAsideArticlesList().getByRole('link', { name: child_name, exact: true })
-    ).toBeVisible();
+    expect(moves).toBe(1);
 });
 
 test('Can drop on a child bottom edge to become its sibling', async ({ page, profile, api }) => {

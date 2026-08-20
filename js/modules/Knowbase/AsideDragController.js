@@ -152,6 +152,13 @@ export class GlpiKnowbaseAsideDragController
             return;
         }
 
+        // The "+" input owns the tree while it is open: the preventDefault() below would
+        // swallow the blur that commits or dismisses it, and a drag started from inside
+        // the input would carry the row hosting it.
+        if (this.#tree.querySelector('[data-glpi-kb-aside-create-row]') !== null) {
+            return;
+        }
+
         const row = e.target.closest('li[data-glpi-kb-article-id]');
         if (!row || !this.#tree.contains(row)) {
             return;
@@ -277,21 +284,16 @@ export class GlpiKnowbaseAsideDragController
             return null;
         }
 
-        // Below the list: the empty area reads as "after the last root article".
-        const intent = y > this.#root_list.getBoundingClientRect().bottom
-            ? this.#rootIntent()
-            : this.#bandIntent(y);
+        // The empty area below the list used to mean the root level, which is no longer a
+        // destination. Left to `#bandIntent()` it would read as the last visible row, deep
+        // in the tree: nothing claims it any more, so a drop there does nothing.
+        if (y > this.#root_list.getBoundingClientRect().bottom) {
+            return null;
+        }
+
+        const intent = this.#bandIntent(y);
 
         return this.#isEffective(intent) ? intent : null;
-    }
-
-    /**
-     * @returns {{row: HTMLElement, mode: string, to_parent_id: number}|null}
-     */
-    #rootIntent()
-    {
-        const last = this.#root_list.lastElementChild;
-        return last === null ? null : { row: last, mode: 'after', to_parent_id: 0 };
     }
 
     /**
@@ -356,6 +358,11 @@ export class GlpiKnowbaseAsideDragController
     #isEffective(intent)
     {
         if (intent === null) {
+            return false;
+        }
+        // The root article is the base of the tree: nothing may sit beside it, so a
+        // sibling drop on a root-level row has no destination.
+        if (intent.to_parent_id === 0) {
             return false;
         }
         // A parent taken from the dragged subtree would close a cycle.
@@ -532,10 +539,11 @@ export class GlpiKnowbaseAsideDragController
     }
 
     /**
-     * The row that becomes the parent, null at the root level.
+     * The row that becomes the parent. Always a real article: a sibling drop at
+     * the root level has no destination and never reaches here.
      *
      * @param {{row: HTMLElement, mode: string}} intent
-     * @returns {HTMLElement|null}
+     * @returns {HTMLElement}
      */
     #newParentRowOf(intent)
     {
@@ -569,26 +577,18 @@ export class GlpiKnowbaseAsideDragController
 
     /**
      * Whether the dragged article is already rendered under the destination
-     * parent. At the root the whole tree is scanned: the builder only promotes
-     * articles that have no remaining visible parent, so an occurrence left
-     * anywhere else means this one simply disappears.
+     * parent, in which case the grabbed occurrence is dropped rather than
+     * rendered twice at one place.
      *
      * @param {HTMLElement} dragged
-     * @param {HTMLElement|null} parent_row
+     * @param {HTMLElement} parent_row
      * @returns {boolean}
      */
     #hasOtherOccurrence(dragged, parent_row)
     {
         const id = dragged.dataset.glpiKbArticleId;
-
-        if (parent_row === null) {
-            const rows = this.#tree.querySelectorAll('li[data-glpi-kb-article-id]');
-            return [...rows].some(
-                (row) => row.dataset.glpiKbArticleId === id && !dragged.contains(row),
-            );
-        }
-
         const list = parent_row.querySelector(':scope > ul');
+
         return [...(list?.children ?? [])].some(
             (row) => row.dataset.glpiKbArticleId === id && row !== dragged,
         );
@@ -624,17 +624,12 @@ export class GlpiKnowbaseAsideDragController
 
     /**
      * The `<ul>` holding a row's children, created when the row was a leaf.
-     * A null row means the root list.
      *
-     * @param {HTMLElement|null} row
+     * @param {HTMLElement} row
      * @returns {HTMLElement}
      */
     #childListOf(row)
     {
-        if (row === null) {
-            return this.#root_list;
-        }
-
         let list = row.querySelector(':scope > ul');
         if (!list) {
             list = document.createElement('ul');
