@@ -131,13 +131,14 @@ LOG
     {
         $instance = new LogParser();
 
-        $this->expectOutputString(file_get_contents($this->log_file_path));
+        $this->expectOutputString('');
         $response = $instance->download('test.log');
 
         $this->assertInstanceOf(BinaryFileResponse::class, $response);
         $this->assertSame(\Safe\realpath($this->log_file_path), $response->getFile()->getPathname());
         $this->assertSame('application/octet-stream', $response->headers->get('Content-Type'));
         $this->assertSame('attachment; filename=test.log', $response->headers->get('Content-Disposition'));
+        $this->assertSame(file_get_contents($this->log_file_path), $response->getFile()->getContent());
     }
 
 
