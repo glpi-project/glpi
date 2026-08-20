@@ -624,11 +624,11 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * Drags an article to the root drop zone, i.e. inside the tree container
-     * but on no row. The rows tile the whole articles list, so its centre is
-     * never empty space: the drop must aim at the free area left below it.
+     * Drags an article to the free area below the tree, i.e. inside the tree
+     * container but on no row. The rows tile the whole articles list, so its
+     * centre is never empty space: the drop must aim at the area left below it.
      */
-    public async doDragArticleToRoot(source_title: string): Promise<void>
+    public async doDragArticleBelowTheTree(source_title: string): Promise<void>
     {
         await this.dragToPoint(this.getAsideArticleTitleLink(source_title), async () => {
             // Scroll to the last link so the list's full-content bottom edge is on screen.
