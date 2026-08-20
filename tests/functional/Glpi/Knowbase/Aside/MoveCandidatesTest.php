@@ -209,6 +209,33 @@ final class MoveCandidatesTest extends DbTestCase
         $this->assertArrayNotHasKey($visible_grandchild->getID(), $candidates);
     }
 
+    public function testFaqArticleIsNotACandidateWithoutTheRightToPublishInIt(): void
+    {
+        $this->login();
+        $moved = $this->makeArticle('Moved ' . __FUNCTION__);
+        $faq   = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Faq ' . __FUNCTION__,
+            'answer'   => '<p>x</p>',
+            // Its author could edit it whatever the rights, so someone else owns it.
+            'users_id' => getItemByTypeName('User', 'normal', true),
+            'is_faq'   => 1,
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $faq->getID(),
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        // Readable, but editing it needs PUBLISHFAQ, which the move endpoint enforces.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+
+        // Not vacuous: the article does reach the tree, it is only refused as a parent.
+        $this->assertContains($faq->getID(), $this->treeIds((new Builder())->buildTree()->getArticles()));
+
+        $candidates = (new MoveCandidates($moved->getID()))->build();
+
+        $this->assertArrayNotHasKey($faq->getID(), $candidates);
+    }
+
     public function testIncoherentEntityArticleIsNotACandidateEvenIfVisible(): void
     {
         $entity_1 = getItemByTypeName('Entity', '_test_child_1', true);
