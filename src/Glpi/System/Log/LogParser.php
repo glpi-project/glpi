@@ -39,8 +39,8 @@ use CommonGLPI;
 use RuntimeException;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\HeaderUtils;
+use Symfony\Component\HttpFoundation\Response;
 use Toolbox;
 
 use function Safe\file_get_contents;
