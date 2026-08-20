@@ -10190,6 +10190,7 @@ CREATE TABLE `glpi_webhooks` (
   `oauth_url` varchar(255) DEFAULT NULL,
   `clientid` varchar(255) DEFAULT NULL,
   `clientsecret` varchar(255) DEFAULT NULL,
+  `pinned_version` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `is_active` (`is_active`),

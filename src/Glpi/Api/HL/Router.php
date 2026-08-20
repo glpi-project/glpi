@@ -194,6 +194,29 @@ EOT;
     }
 
     /**
+     * Get the distinct major API versions and whether each of them is deprecated.
+     *
+     * A major version is only considered deprecated once all of its minor versions are.
+     *
+     * @return array<int|string, array{deprecated: bool}> Indexed by major version, sorted ascending.
+     */
+    final public static function getAPIMajorVersions(): array
+    {
+        $majors = [];
+        foreach (static::getAPIVersions() as $version) {
+            $major = $version['api_version'];
+            if (!array_key_exists($major, $majors)) {
+                $majors[$major] = ['deprecated' => true];
+            }
+            $majors[$major]['deprecated'] = $majors[$major]['deprecated'] && ($version['deprecated'] ?? false);
+        }
+        // PHP normalizes numeric string keys to int, so this closure may receive either type.
+        uksort($majors, static fn(int|string $a, int|string $b): int => version_compare((string) $a, (string) $b));
+
+        return $majors;
+    }
+
+    /**
      * Normalize the requested API version based on the available versions.
      *
      * If only a major version is specified, the latest minor version will be used.
