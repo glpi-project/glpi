@@ -1799,4 +1799,62 @@ class MassiveActionTest extends DbTestCase
             $target_itemtype::getForeignKeyField() => $target->getID(),
         ]));
     }
+
+    /**
+     * Multi-value fields (e.g. a plugin's "multiple" dropdown) submit an
+     * array as their value. A field matching the foreign-key naming pattern
+     * (isForeignKeyField(), e.g. "locations_id") must not be treated as a
+     * single scalar foreign key in that case, or PHP emits
+     * "Array to string conversion" warnings (which fail the test, as
+     * GLPITestCase asserts there are no unexpected log entries).
+     */
+    public function testProcessMassiveActionsForOneItemtypeDoesNotWarnOnArrayValueForForeignKeyNamedField(): void
+    {
+        $ticket = new Ticket();
+        $id = $ticket->add([
+            'name'        => 'test',
+            'content'     => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->assertGreaterThan(0, $id);
+        $ticket->getFromDB($id);
+
+        $location = new Location();
+        $location_id = $location->add([
+            'name'        => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->assertGreaterThan(0, $location_id);
+
+        $location_so_id = null;
+        foreach (SearchOption::getOptionsForItemtype($ticket->getType()) as $so_id => $so) {
+            if (($so['table'] ?? null) === Location::getTable() && ($so['linkfield'] ?? null) === 'locations_id') {
+                $location_so_id = $so_id;
+                break;
+            }
+        }
+        $this->assertNotNull($location_so_id);
+
+        // Deny update rights so processing stops before reaching update():
+        // this isolates the code path under test (the entity-validation
+        // branch, where the warnings originated) from the actual field
+        // write, which is not what is being tested here.
+        $old_right = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+
+        $this->processMassiveActionsForOneItemtype(
+            'update',
+            $ticket,
+            [$ticket->fields['id']],
+            [
+                'locations_id'   => [$location_id], // array, as a "multiple" field would submit
+                'search_options' => [$ticket->getType() => $location_so_id],
+                'field'          => 'locations_id',
+            ],
+            0,
+            1,
+        );
+
+        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_right;
+    }
 }

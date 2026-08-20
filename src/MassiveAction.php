@@ -1571,7 +1571,9 @@ class MassiveAction
                                 ) {
                                     $related_item = null;
                                     // Case 1: The modified field is a foreign key (ex : locations_id)
-                                    if (isForeignKeyField($field_name)) {
+                                    // Multi-value fields (e.g. a "multiple" dropdown) submit an array
+                                    // as $field_value, which is not a valid single foreign key value.
+                                    if (isForeignKeyField($field_name) && !is_array($field_value)) {
                                         // Attempt to load the related object using its ID (from the input value)
                                         if ($item2->getFromDB($field_value)) {
                                             $related_item = $item2;
