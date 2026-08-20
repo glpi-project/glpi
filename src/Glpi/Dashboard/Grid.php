@@ -1651,7 +1651,7 @@ HTML;
                 'widgettype' => ['hBars', 'stackedHBars'],
                 'itemtype'   => "\\Ticket",
                 'group'      => __('Assistance'),
-                'label'      => __("Number of opened and closed tickets by group"),
+                'label'      => __("Number of opened and solved tickets by group"),
                 'provider'   => "Glpi\\Dashboard\\Provider::ticketsByGroupAndStatus",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
