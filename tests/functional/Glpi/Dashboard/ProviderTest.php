@@ -1118,11 +1118,11 @@ class ProviderTest extends DbTestCase
             $series_by_name[$serie['name']] = $serie['data'];
         }
 
-        $this->assertArrayHasKey($category1->fields['name'], $series_by_name);
-        $this->assertArrayHasKey($category2->fields['name'], $series_by_name);
+        $this->assertArrayHasKey($category1->fields['completename'], $series_by_name);
+        $this->assertArrayHasKey($category2->fields['completename'], $series_by_name);
 
-        $this->assertSame(2, $series_by_name[$category1->fields['name']][$entity_index], '2 tickets expected for category 1');
-        $this->assertSame(1, $series_by_name[$category2->fields['name']][$entity_index], '1 ticket expected for category 2');
+        $this->assertSame(2, $series_by_name[$category1->fields['completename']][$entity_index], '2 tickets expected for category 1');
+        $this->assertSame(1, $series_by_name[$category2->fields['completename']][$entity_index], '1 ticket expected for category 2');
     }
 
     public function testTicketsByCategoryAndType()
