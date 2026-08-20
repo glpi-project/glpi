@@ -1290,6 +1290,11 @@ body.in_modal .kb-article {
                 padding-bottom: 0;
                 margin-bottom: 0;
 
+                // Contains the row's own bottom margin, which would otherwise collapse
+                // through the (possibly empty) child <ul> and land between the items,
+                // out of reach of the connector below.
+                display: flow-root;
+
                 // L-shaped connector: starts $gap below the top edge so the
                 // vertical segment never "touches" the line above it.
                 &::before {
@@ -1308,6 +1313,9 @@ body.in_modal .kb-article {
                     border-bottom: 1px solid var(--tblr-border-color);
                 }
 
+                // Vertical run down to the next sibling's connector. No `height`: with
+                // `top` and `bottom` both set it would win and `bottom` be ignored, so
+                // the line stopped short as soon as the row hosted a subtree.
                 &:not(:last-child)::after {
                     content: "";
                     position: absolute;
@@ -1315,7 +1323,6 @@ body.in_modal .kb-article {
                     top: 0.825rem;
                     bottom: 0;
                     width: 1px;
-                    height: 20px;
                     background-color: var(--tblr-border-color);
                 }
             }
