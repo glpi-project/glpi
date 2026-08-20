@@ -353,14 +353,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
         // GROUP BY field list
         if (is_array($groupby)) {
             if (count($groupby)) {
-                $groupby = array_map([DBmysql::class, 'quoteName'], $groupby);
-                $this->sql .= ' GROUP BY ' . implode(", ", $groupby);
+                $this->sql .= ' GROUP BY ' . implode(", ", $this->handleGroupByFields($groupby));
             } else {
                 throw new LogicException("Missing group by field.");
             }
         } elseif ($groupby) {
-            $groupby = DBmysql::quoteName($groupby);
-            $this->sql .= " GROUP BY $groupby";
+            $this->sql .= " GROUP BY " . implode(", ", $this->handleGroupByFields([$groupby]));
         }
 
         // HAVING criteria list
@@ -375,6 +373,27 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
         //LIMIT & OFFSET
         $this->sql .= $this->handleLimits($limit, $start);
+    }
+
+    /**
+     * Handle "GROUP BY" fields
+     *
+     * @param array<int, string|QueryElementInterface> $fields
+     *
+     * @return array<int, string>
+     */
+    private function handleGroupByFields(array $fields): array
+    {
+        $groupby = [];
+        foreach ($fields as $field) {
+            if ($field instanceof QueryElementInterface) {
+                $this->values = array_merge($this->values, $field->getParams());
+                $groupby[] = $field->getValue();
+            } else {
+                $groupby[] = DBmysql::quoteName($field);
+            }
+        }
+        return $groupby;
     }
 
     /**
