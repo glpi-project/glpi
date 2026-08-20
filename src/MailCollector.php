@@ -2191,7 +2191,7 @@ class MailCollector extends CommonDBTM
 
             $ticket = new Ticket();
             if (
-                preg_match('/\[.+#(\d+)\]/', $subject, $matches) === 1
+                preg_match('/\[[^\]]*\s#(\d+)\]/', $subject, $matches) === 1
                 && $ticket->getFromDB($matches[1])
             ) {
                 return $ticket;
