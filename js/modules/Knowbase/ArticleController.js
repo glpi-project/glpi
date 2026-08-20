@@ -248,7 +248,7 @@ export class GlpiKnowbaseArticleController
 
         // The header counters are plain anchors to the footer, so activate the tab they name.
         for (const link of this.#container.querySelectorAll('[data-glpi-kb-activates-tab]')) {
-            const tab = this.#container.querySelector(`#${link.dataset.glpiKbActivatesTab}`);
+            const tab = this.#container.querySelector(`#${CSS.escape(link.dataset.glpiKbActivatesTab)}`);
             if (tab) {
                 link.addEventListener('click', () => bootstrap.Tab.getOrCreateInstance(tab).show());
             }
