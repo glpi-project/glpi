@@ -39,10 +39,19 @@ use CartridgeItem;
 use Computer;
 use Consumable;
 use ConsumableItem;
+use DeviceControl;
+use DeviceDrive;
+use DeviceGraphicCard;
+use DeviceNetworkCard;
 use DeviceSimcard;
 use Glpi\Tests\DbTestCase;
 use Infocom;
+use Item_DeviceControl;
+use Item_DeviceDrive;
+use Item_DeviceGraphicCard;
+use Item_DeviceNetworkCard;
 use Item_DeviceSimcard;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Supplier;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -227,5 +236,95 @@ class SupplierTest extends DbTestCase
                 "Missing link to search results for infocom type {$current_itemtype}",
             );
         }
+    }
+
+    public static function deviceComponentProvider(): iterable
+    {
+        yield [
+            'itemtype'      => Item_DeviceDrive::class,
+            'devicetype'    => DeviceDrive::class,
+            'device_fkfield' => 'devicedrives_id',
+        ];
+        yield [
+            'itemtype'      => Item_DeviceGraphicCard::class,
+            'devicetype'    => DeviceGraphicCard::class,
+            'device_fkfield' => 'devicegraphiccards_id',
+        ];
+        yield [
+            'itemtype'      => Item_DeviceNetworkCard::class,
+            'devicetype'    => DeviceNetworkCard::class,
+            'device_fkfield' => 'devicenetworkcards_id',
+        ];
+        yield [
+            'itemtype'      => Item_DeviceControl::class,
+            'devicetype'    => DeviceControl::class,
+            'device_fkfield' => 'devicecontrols_id',
+        ];
+    }
+
+    /**
+     * Non-regression test for https://github.com/glpi-project/glpi/issues/25170
+     *
+     * A Supplier can be linked to a device component (e.g. a hard drive or
+     * graphic card) directly through that component's own "Financial &
+     * Administrative Information" tab. This creates a `glpi_infocoms` row
+     * whose `itemtype` is the `Item_Device*` link class, which is not part
+     * of `$CFG_GLPI['infocom_types']`. Supplier::showInfocoms() must still
+     * be able to display such rows without a SQL error.
+     */
+    #[DataProvider('deviceComponentProvider')]
+    public function testShowInfocomsForDeviceComponents(string $itemtype, string $devicetype, string $device_fkfield): void
+    {
+        $this->login();
+
+        $entities_id = $this->getTestRootEntity(true);
+
+        $supplier = $this->createItem(Supplier::class, [
+            'name'        => $this->getUniqueString(),
+            'entities_id' => $entities_id,
+        ]);
+
+        $computer = getItemByTypeName(Computer::class, '_test_pc01', true);
+
+        $device = $this->createItem($devicetype, [
+            'designation' => $this->getUniqueString(),
+            'entities_id' => $entities_id,
+        ]);
+
+        $item_device = $this->createItem($itemtype, [
+            'itemtype'      => Computer::class,
+            'items_id'      => $computer,
+            $device_fkfield => $device->getID(),
+            'entities_id'   => $entities_id,
+            'serial'        => "{$itemtype}-serial",
+            'otherserial'   => "{$itemtype}-otherserial",
+        ]);
+
+        $this->createItem(Infocom::class, [
+            'entities_id'  => $entities_id,
+            'suppliers_id' => $supplier->getID(),
+            'itemtype'     => $itemtype,
+            'items_id'     => $item_device->getID(),
+        ]);
+
+        ob_start();
+        $supplier->showInfocoms();
+        $out = ob_get_clean();
+
+        $crawler = new Crawler($out);
+        $rows = $crawler->filter('table tbody tr');
+        $this->assertGreaterThan(0, $rows->count(), "No row rendered for {$itemtype}");
+
+        $found = false;
+        foreach ($rows as $row) {
+            $cells = (new Crawler($row))->filter('td');
+            $name_cell = trim($cells->getNode(2)->textContent);
+            if (str_contains($name_cell, $device->fields['designation'])) {
+                $found = true;
+                $this->assertStringContainsString("{$itemtype}-serial", trim($cells->getNode(3)->textContent));
+                $this->assertStringContainsString("{$itemtype}-otherserial", trim($cells->getNode(4)->textContent));
+            }
+        }
+        $this->assertTrue($found, "Missing row for {$itemtype} device '{$device->fields['designation']}'");
     }
 }
