@@ -628,6 +628,15 @@ class MailCollectorTest extends DbTestCase
                 'expected_items_id' => null,
                 'accepted'          => false,
             ],
+            // Subject fallback - GLPI tag found, ignoring a foreign `[Ticket#...]` reference
+            [
+                'headers'           => [
+                    'subject' => "Re: [GLPI #{$ticket_id}] [Ticket#2026072803024161] Foo",
+                ],
+                'expected_itemtype' => Ticket::class,
+                'expected_items_id' => $ticket_id,
+                'accepted'          => true,
+            ],
         ];
     }
 
