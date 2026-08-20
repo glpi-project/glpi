@@ -65,15 +65,20 @@ class MoveModalControllerTest extends DbTestCase
         $this->callController($article, 0);
     }
 
-    public function testModalRendersTheRootOption(): void
+    public function testRootLevelIsNotOfferedAndTheRootArticleStandsIn(): void
     {
         $this->login();
         $article = $this->makeArticle();
 
         $response = $this->callController($article, 0);
+        $content  = $response->getContent();
 
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertStringContainsString(__('Root level'), $response->getContent());
+        $this->assertDoesNotMatchRegularExpression("/<option value='0'/", $content);
+        $this->assertMatchesRegularExpression(
+            "/<option value='" . KnowbaseItem::getRootId() . "' selected/",
+            $content,
+        );
     }
 
     public function testRealParentIsPreselected(): void

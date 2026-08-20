@@ -35,6 +35,7 @@
 namespace tests\unit\Glpi\Knowbase\Aside;
 
 use Entity_KnowbaseItem;
+use Glpi\Knowbase\Aside\Article;
 use Glpi\Knowbase\Aside\Builder;
 use Glpi\Knowbase\Aside\MoveCandidates;
 use Glpi\Tests\DbTestCase;
@@ -44,15 +45,16 @@ use Session;
 
 final class MoveCandidatesTest extends DbTestCase
 {
-    public function testRootLevelIsAlwaysOffered(): void
+    public function testRootLevelIsNotOfferedButTheRootArticleIs(): void
     {
         $this->login();
         $article = $this->makeArticle('Lonely ' . __FUNCTION__);
 
         $candidates = (new MoveCandidates($article->getID()))->build();
 
-        $this->assertArrayHasKey(0, $candidates);
-        $this->assertSame(__('Root level'), $candidates[0]);
+        // Nothing sits beside the root article, so there is no root level to move to.
+        $this->assertArrayNotHasKey(0, $candidates);
+        $this->assertArrayHasKey(KnowbaseItem::getRootId(), $candidates);
     }
 
     public function testArticleItselfIsNotACandidate(): void
@@ -89,9 +91,13 @@ final class MoveCandidatesTest extends DbTestCase
 
         $candidates = (new MoveCandidates($moved->getID()))->build();
 
-        $this->assertSame('Parent ' . __FUNCTION__, $candidates[$parent->getID()]);
+        // Every path starts at the root article, which hosts articles created without a parent.
         $this->assertSame(
-            'Parent ' . __FUNCTION__ . ' > Child ' . __FUNCTION__,
+            $this->rootTitle() . ' > Parent ' . __FUNCTION__,
+            $candidates[$parent->getID()],
+        );
+        $this->assertSame(
+            $this->rootTitle() . ' > Parent ' . __FUNCTION__ . ' > Child ' . __FUNCTION__,
             $candidates[$child->getID()],
         );
     }
@@ -112,7 +118,7 @@ final class MoveCandidatesTest extends DbTestCase
 
         // Deep created before shallow: DFS would wrongly reach it first.
         $this->assertSame(
-            'Shallow ' . __FUNCTION__ . ' > Shared ' . __FUNCTION__,
+            $this->rootTitle() . ' > Shallow ' . __FUNCTION__ . ' > Shared ' . __FUNCTION__,
             $candidates[$shared->getID()],
         );
     }
@@ -232,12 +238,35 @@ final class MoveCandidatesTest extends DbTestCase
         $this->setEntity($entity_1, false);
 
         // Not vacuous: the share really does make $foreign reach the tree.
-        $roots = array_map(static fn($article) => $article->id, (new Builder())->buildTree()->getArticles());
-        $this->assertContains($foreign->getID(), $roots);
+        $this->assertContains($foreign->getID(), $this->treeIds((new Builder())->buildTree()->getArticles()));
 
         $candidates = (new MoveCandidates($moved->getID()))->build();
 
         $this->assertArrayNotHasKey($foreign->getID(), $candidates);
+    }
+
+    /** Title of the root article, which prefixes every candidate path. */
+    private function rootTitle(): string
+    {
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+
+        return (string) $root->fields['name'];
+    }
+
+    /**
+     * @param Article[] $articles
+     * @return int[]
+     */
+    private function treeIds(array $articles): array
+    {
+        $ids = [];
+        foreach ($articles as $article) {
+            $ids[] = $article->id;
+            $ids   = array_merge($ids, $this->treeIds($article->getChildren()));
+        }
+
+        return $ids;
     }
 
     /**

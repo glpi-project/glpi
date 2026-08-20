@@ -41,6 +41,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
 use KnowbaseItem_KnowbaseItem;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -108,15 +109,20 @@ class MoveArticleControllerTest extends DbTestCase
         $this->assertSame(1, $this->countLink($child, $parent_c));
     }
 
-    public function testMoveToRootOnlyRemovesTheGrabbedEdge(): void
+    public function testMoveToTheRootLevelIsRejected(): void
     {
         $this->login();
         $parent_a = $this->makeArticle();
         $child    = $this->makeArticle([$parent_a]);
 
-        $this->callController($child, $parent_a, 0);
+        try {
+            $this->callController($child, $parent_a, 0);
+            $this->fail('The root level is not a destination.');
+        } catch (BadRequestHttpException) {
+            // Expected: the root article is the base of the tree, nothing sits beside it.
+        }
 
-        $this->assertSame(0, $this->countLink($child, $parent_a));
+        $this->assertSame(1, $this->countLink($child, $parent_a));
     }
 
     public function testMoveFromRootOnlyCreatesTheTargetEdge(): void
@@ -175,6 +181,7 @@ class MoveArticleControllerTest extends DbTestCase
     {
         $this->login();
         $parent_a = $this->makeArticle();
+        $parent_b = $this->makeArticle();
         $child    = $this->makeArticle([$parent_a]);
 
         // Drop the knowbase UPDATE right, keeping READ so the article loads.
@@ -182,7 +189,7 @@ class MoveArticleControllerTest extends DbTestCase
         $_SESSION['glpiactiveprofile']['knowbase'] = READ;
 
         $this->expectException(AccessDeniedHttpException::class);
-        $this->callController($child, $parent_a, 0);
+        $this->callController($child, $parent_a, $parent_b);
     }
 
     public function testMoveOntoAnUnreadableTargetIsDenied(): void
@@ -198,12 +205,13 @@ class MoveArticleControllerTest extends DbTestCase
     public function testDetachingFromAnUnresolvableParentIsDenied(): void
     {
         $this->login();
-        $child = $this->makeArticle();
+        $target = $this->makeArticle();
+        $child  = $this->makeArticle();
 
         // deleteByCriteria() reports success on zero rows, so the source needs
         // its own check or an unreadable parent would be severed silently.
         $this->expectException(NotFoundHttpException::class);
-        $this->callController($child, 999999999, 0);
+        $this->callController($child, 999999999, $target);
     }
 
     public function testMoveAcrossIncoherentEntitiesIsRejected(): void
@@ -225,6 +233,45 @@ class MoveArticleControllerTest extends DbTestCase
 
         $this->expectException(AccessDeniedHttpException::class);
         $this->callController($child, 0, $target);
+    }
+
+    public function testStaleSourceParentIsRejected(): void
+    {
+        $this->login();
+        $parent_a = $this->makeArticle();
+        $stranger = $this->makeArticle();
+        $target   = $this->makeArticle();
+        $child    = $this->makeArticle([$parent_a]);
+
+        try {
+            // The aside was rendered from a state where $stranger held the article.
+            $this->callController($child, $stranger, $target);
+            $this->fail('A source that holds no edge must be rejected.');
+        } catch (BadRequestHttpException) {
+            // Expected: attaching $target anyway would add a parent instead of moving one.
+        }
+
+        $this->assertSame(0, $this->countLink($child, $target));
+        $this->assertSame(1, $this->countLink($child, $parent_a));
+    }
+
+    public function testUnrelatedSessionErrorsSurviveARejectedMove(): void
+    {
+        $this->login();
+        $parent = $this->makeArticle();
+        $child  = $this->makeArticle([$parent]);
+
+        Session::addMessageAfterRedirect('Posted by something else', false, ERROR);
+
+        try {
+            // Cycle: the model refuses the link and posts its own message next to that one.
+            $this->callController($parent, 0, $child);
+            $this->fail('A cycle must be rejected.');
+        } catch (BadRequestHttpException) {
+            // Expected.
+        }
+
+        $this->hasSessionMessages(ERROR, ['Posted by something else']);
     }
 
     public function testMissingPayloadKeysAreRejected(): void
