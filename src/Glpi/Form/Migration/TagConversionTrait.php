@@ -115,6 +115,14 @@ trait TagConversionTrait
                 $provider = new ItemPropertyTagProvider();
                 $new_tag = $provider->getTagFromRawValue($question_id . ':' . $search_option_id);
                 if ($new_tag === null) {
+                    $migration->addMessageToResult(
+                        MessageType::Warning,
+                        sprintf(
+                            __('Formcreator migration: cannot convert legacy tag "%s" tag of question "%s".'),
+                            $tag,
+                            $question->fields['name']
+                        )
+                    );
                     continue;
                 }
 
@@ -160,6 +168,7 @@ trait TagConversionTrait
 
     /**
      * Resolves a Formcreator property name to the corresponding search option ID for a given question.
+     * If the resolving fails, a warning message describing the failure is added to the migration result object.
      *
      * @param Question $question The question object
      * @param string $property_name The property name to resolve
@@ -221,9 +230,9 @@ trait TagConversionTrait
         }
 
         // Find the search option ID corresponding to the field name
-        $options = SearchOption::getOptionsForItemtype($itemtype);
+        $options = SearchOption::getOptionsForItemtype($itemtype, true, false);
         foreach ($options as $id => $option) {
-            if (is_int($id) && ($option['field'] ?? null) === $field_name) {
+            if (is_int($id) && ($option['field'] ?? null) === $field_name && ($option['table'] ?? null) === $itemtype::getTable()) {
                 return $id;
             }
         }

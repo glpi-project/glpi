@@ -117,13 +117,21 @@ final class ItemPropertyTagProvider implements TagProviderInterface, CompositeTa
         }
 
         $itemtype = $raw['itemtype'];
+        if (!is_string($itemtype) || !is_a($itemtype, CommonDBTM::class, true)) {
+            return '';
+        }
+
         $field_values = [];
         foreach ($raw['items_ids'] as $item_id) {
             $item = $itemtype::getById((int) $item_id);
             if (!$item) {
                 continue;
             }
-            $field_values[] = $this->resolveProperty($item, $itemtype, $option_id);
+            $value = $this->resolveProperty($item, $itemtype, $option_id);
+            if ($value === '') {
+                continue;
+            }
+            $field_values[] = $value;
         }
 
         return implode(', ', $field_values);
@@ -183,7 +191,7 @@ final class ItemPropertyTagProvider implements TagProviderInterface, CompositeTa
             return [];
         }
 
-        $options = SearchOption::getOptionsForItemtype($itemtype);
+        $options = SearchOption::getOptionsForItemtype($itemtype, true, false);
         $allowed_types = $this->getAllowedDataTypes();
         $properties = [];
 
@@ -226,7 +234,7 @@ final class ItemPropertyTagProvider implements TagProviderInterface, CompositeTa
             return '';
         }
 
-        $options = SearchOption::getOptionsForItemtype($itemtype);
+        $options = SearchOption::getOptionsForItemtype($itemtype, true, false);
         $option = $options[$option_id] ?? null;
         if ($option === null) {
             return '';

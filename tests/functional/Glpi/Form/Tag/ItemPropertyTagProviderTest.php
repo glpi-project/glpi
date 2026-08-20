@@ -123,7 +123,7 @@ final class ItemPropertyTagProviderTest extends DbTestCase
         // Every exposed property must belong to the main itemtype table,
         // not to a joined table (ex: manufacturer name, location name, ...),
         // and must be an allowed data type (ex: no password, no image, ...).
-        $options = SearchOption::getOptionsForItemtype($item_type);
+        $options = SearchOption::getOptionsForItemtype($item_type, true, false);
         foreach ($tags as $tag) {
             $this->assertInstanceOf(Tag::class, $tag);
 
@@ -314,7 +314,7 @@ final class ItemPropertyTagProviderTest extends DbTestCase
         // Test with blacklisted properties
         $allowed_types = $item_property_tag_provider->getAllowedDataTypes();
         $black_listed_search_options = array_filter(
-            SearchOption::getOptionsForItemtype(User::class),
+            SearchOption::getOptionsForItemtype(User::class, true, false),
             fn($option) => isset($option['datatype']) && !in_array($option['datatype'], $allowed_types, true)
         );
 
@@ -360,7 +360,7 @@ final class ItemPropertyTagProviderTest extends DbTestCase
 
     private function getSearchOptionId(string $itemtype, string $field): int
     {
-        foreach (SearchOption::getOptionsForItemtype($itemtype) as $id => $option) {
+        foreach (SearchOption::getOptionsForItemtype($itemtype, true, false) as $id => $option) {
             if (
                 is_int($id)
                 && ($option['field'] ?? null) === $field
