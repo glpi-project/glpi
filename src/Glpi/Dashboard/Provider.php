@@ -1301,7 +1301,6 @@ class Provider
             [
                 'SELECT'    => [
                     "$category_table.completename AS category_name",
-                    "$category_table.id AS category_id",
                     "$ticket_table.type AS ticket_type",
                     'COUNT DISTINCT' => "$ticket_table.id AS cpt",
                 ],
