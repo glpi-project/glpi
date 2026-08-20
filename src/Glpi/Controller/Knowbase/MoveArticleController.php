@@ -50,7 +50,12 @@ use Symfony\Component\Routing\Attribute\Route;
  * An article may have several parents and is rendered under each of them, so
  * this endpoint moves a single edge: the link to `from_parent_id` is removed
  * and a link to `to_parent_id` is created. The article's other parents are
- * left alone. `0` means the root level, which carries no link at all.
+ * left alone.
+ *
+ * `to_parent_id` is always a real article: the root article is the base of the
+ * tree, nothing may sit beside it. `from_parent_id` may be `0`, for an article
+ * the aside promoted to the root level because none of its parents are visible
+ * to the current user: there is then no edge to remove.
  */
 final class MoveArticleController extends AbstractController
 {
@@ -70,7 +75,7 @@ final class MoveArticleController extends AbstractController
         $from_parent_id = $payload->getInt('from_parent_id', -1);
         $to_parent_id   = $payload->getInt('to_parent_id', -1);
 
-        if ($from_parent_id < 0 || $to_parent_id < 0 || $from_parent_id === $to_parent_id) {
+        if ($from_parent_id < 0 || $to_parent_id <= 0 || $from_parent_id === $to_parent_id) {
             throw new BadRequestHttpException();
         }
 
@@ -85,17 +90,15 @@ final class MoveArticleController extends AbstractController
         // KnowbaseItem_KnowbaseItem::$checkAlwaysBothItems only applies when the caller
         // goes through can()/canCreateItem(); add() below never does, so this is the
         // only rights check on the target and must stay.
-        if ($to_parent_id > 0) {
-            $target = new KnowbaseItem();
-            if (!$target->getFromDB($to_parent_id)) {
-                throw new NotFoundHttpException();
-            }
-            if (!$target->can($to_parent_id, READ)) {
-                throw new AccessDeniedHttpException();
-            }
-            if (!KnowbaseItem_KnowbaseItem::areEntitiesCoherent($article, $target)) {
-                throw new AccessDeniedHttpException();
-            }
+        $target = new KnowbaseItem();
+        if (!$target->getFromDB($to_parent_id)) {
+            throw new NotFoundHttpException();
+        }
+        if (!$target->can($to_parent_id, READ)) {
+            throw new AccessDeniedHttpException();
+        }
+        if (!KnowbaseItem_KnowbaseItem::areEntitiesCoherent($article, $target)) {
+            throw new AccessDeniedHttpException();
         }
 
         // Same reason on the source: deleteByCriteria() checks no rights either, and
@@ -114,24 +117,38 @@ final class MoveArticleController extends AbstractController
 
         $DB->beginTransaction();
 
+        // The page may have been rendered before someone else moved the article, and
+        // deleteByCriteria() reports success on zero rows: without this the move would
+        // add a parent instead of moving one.
+        if ($from_parent_id > 0 && !KnowbaseItem_KnowbaseItem::isParentOf($from_parent_id, $id)) {
+            $DB->rollBack();
+            throw new BadRequestHttpException();
+        }
+
+        $already_linked = $link->find([
+            'knowbaseitems_id'        => $id,
+            'knowbaseitems_id_parent' => $to_parent_id,
+        ]) !== [];
+
         // Target edge created first: the model's cycle check needs it in place.
-        if ($to_parent_id > 0) {
-            $already_linked = $link->find([
-                'knowbaseitems_id'        => $id,
-                'knowbaseitems_id_parent' => $to_parent_id,
-            ]) !== [];
+        if (!$already_linked) {
+            $errors_before = $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] ?? null;
 
             if (
-                !$already_linked
-                && $link->add([
+                $link->add([
                     'knowbaseitems_id'        => $id,
                     'knowbaseitems_id_parent' => $to_parent_id,
                 ]) === false
             ) {
                 $DB->rollBack();
                 // The model reports the reason via a redirect flash message, but this
-                // endpoint never redirects: drop it so it doesn't leak into the next page.
-                unset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR]);
+                // endpoint never redirects: put the bucket back as it was, so only the
+                // model's own message is dropped.
+                if ($errors_before === null) {
+                    unset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR]);
+                } else {
+                    $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR] = $errors_before;
+                }
                 throw new BadRequestHttpException();
             }
         }

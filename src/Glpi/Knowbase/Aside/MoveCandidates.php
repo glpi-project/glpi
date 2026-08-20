@@ -42,6 +42,9 @@ use KnowbaseItem_KnowbaseItem;
  * can see, minus the article itself and its descendants (which would close a
  * cycle), minus parents the move would refuse on entity coherence. Labels
  * carry the full path so the flat dropdown still reads as a tree.
+ *
+ * The root level is not a candidate: the root article is the base of the tree
+ * and is offered under its own title, like any other parent.
  */
 final class MoveCandidates
 {
@@ -58,7 +61,7 @@ final class MoveCandidates
         $tree      = (new Builder())->buildTree();
         $forbidden = KnowbaseItem_KnowbaseItem::getDescendantIds($this->article_id);
 
-        $candidates = [0 => __('Root level')];
+        $candidates = [];
 
         // Level order, so a multi-parent article keeps its shortest path.
         $queue = [];
@@ -98,7 +101,7 @@ final class MoveCandidates
         }
 
         // KB sharing (glpi_entities_knowbaseitems) is independent of entities_id/is_recursive coherence.
-        $ids = array_filter(array_keys($candidates), static fn(int $id): bool => $id !== 0);
+        $ids = array_keys($candidates);
         if ($ids === []) {
             return $candidates;
         }

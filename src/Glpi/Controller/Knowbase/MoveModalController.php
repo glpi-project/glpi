@@ -72,13 +72,32 @@ final class MoveModalController extends AbstractController
         $hint       = $request->query->getInt('from_parent_id');
         $candidates = (new MoveCandidates($id))->build();
 
+        // Verified, not trusted: kept only if it is a real edge AND an offered candidate.
+        $from_parent_id = KnowbaseItem_KnowbaseItem::isParentOf($hint, $id) && array_key_exists($hint, $candidates)
+            ? $hint
+            : 0;
+
         return $this->render('pages/tools/kb/modal/move.html.twig', [
             'id'             => $id,
-            // Verified, not trusted: kept only if it is a real edge AND an offered candidate.
-            'from_parent_id' => KnowbaseItem_KnowbaseItem::isParentOf($hint, $id) && array_key_exists($hint, $candidates)
-                ? $hint
-                : 0,
+            'from_parent_id' => $from_parent_id,
+            // The root level is no longer a destination, so the dropdown has to open on a
+            // real article: it falls back to the root one when the occurrence is unknown.
+            'selected_id'    => $from_parent_id > 0 ? $from_parent_id : $this->fallbackSelection($candidates),
             'candidates'     => $candidates,
         ]);
+    }
+
+    /**
+     * @param array<int, string> $candidates
+     */
+    private function fallbackSelection(array $candidates): int
+    {
+        $root_id = KnowbaseItem::hasRoot() ? KnowbaseItem::getRootId() : 0;
+        if (array_key_exists($root_id, $candidates)) {
+            return $root_id;
+        }
+
+        // Only a corrupted installation, or an article the root cannot host, gets here.
+        return (int) (array_key_first($candidates) ?? 0);
     }
 }
