@@ -1005,7 +1005,22 @@ class Document_Item extends CommonDBRelation
                 ];
             }
 
-            $params = array_merge_recursive($params, $kb_params);
+            // Use a subquery to check visibility instead of merging LEFT JOINs
+            // into the main query, which would multiply rows when a KB article
+            // has multiple visibility targets (profiles, users, groups, entities).
+            $subquery_criteria = [
+                'SELECT' => ['glpi_knowbaseitems.id'],
+                'FROM'   => 'glpi_knowbaseitems',
+            ];
+            if (isset($kb_params['LEFT JOIN'])) {
+                $subquery_criteria['LEFT JOIN'] = $kb_params['LEFT JOIN'];
+            }
+            if (isset($kb_params['WHERE'])) {
+                $subquery_criteria['WHERE'] = $kb_params['WHERE'];
+            }
+            $params['WHERE'][] = [
+                'glpi_knowbaseitems.id' => new QuerySubQuery($subquery_criteria),
+            ];
         }
 
         return $params;
