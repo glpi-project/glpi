@@ -1810,21 +1810,22 @@ class MassiveActionTest extends DbTestCase
      */
     public function testProcessMassiveActionsForOneItemtypeDoesNotWarnOnArrayValueForForeignKeyNamedField(): void
     {
-        $ticket = new Ticket();
-        $id = $ticket->add([
-            'name'        => 'test',
-            'content'     => 'test',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
-        $this->assertGreaterThan(0, $id);
-        $ticket->getFromDB($id);
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name'        => 'test',
+                'content'     => 'test',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
 
-        $location = new Location();
-        $location_id = $location->add([
-            'name'        => 'test',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-        ]);
-        $this->assertGreaterThan(0, $location_id);
+        $location_id = $this->createItem(
+            Location::class,
+            [
+                'name'        => 'test',
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
 
         $location_so_id = null;
         foreach (SearchOption::getOptionsForItemtype($ticket->getType()) as $so_id => $so) {
