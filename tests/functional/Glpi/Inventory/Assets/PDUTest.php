@@ -504,7 +504,7 @@ class PDUTest extends AbstractInventoryAsset
         );
     }
 
-    /*public function testLockedFieldAndPlug(): void
+    public function testLockedFieldAndPlug(): void
     {
         global $DB;
 
@@ -527,5 +527,30 @@ class PDUTest extends AbstractInventoryAsset
         $plug = new \Plug();
         $plugs = $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]);
         $this->assertCount(2, $plugs);
-    }*/
+    }
+
+      public function testLockedFieldForeignKeyAndPlug(): void
+    {
+        global $DB;
+
+        // insert a locked field for Plug to verify inventory is resilient
+        $this->assertGreaterThan(
+            0,
+            (int) $DB->insert('glpi_lockedfields', [
+                'field'    => 'plugtypes_id',
+                'itemtype' => 'Plug',
+                'is_global' => 0,
+            ])
+        );
+
+        $inventory = $this->doInventory(self::XML_TWO_PLUGS, true);
+        $pdu = $inventory->getItem();
+        $pdus_id = $pdu->fields['id'];
+        $this->assertGreaterThan(0, $pdus_id);
+
+        // plugs must still be created despite the locked field
+        $plug = new \Plug();
+        $plugs = $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]);
+        $this->assertCount(2, $plugs);
+    }
 }
