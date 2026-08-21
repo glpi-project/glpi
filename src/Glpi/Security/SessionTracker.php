@@ -359,7 +359,7 @@ final class SessionTracker
         }
 
         if (isset($filters['authtype']) && $filters['authtype'] !== 'all') {
-            $where['glpi_users_sessions.auth_type'] = $filters['authtype'];
+            $where['glpi_users_sessionhistories.auth_type'] = $filters['authtype'];
         }
 
         if (isset($filters['user']) && $filters['user'] !== '') {
@@ -431,7 +431,7 @@ final class SessionTracker
                 'glpi_users_sessionhistories.login_session_uid',
                 QueryFunction::ifnull('glpi_users_sessions.ip_address', 'glpi_users_sessionhistories.ip_address', 'ip_address'),
                 QueryFunction::ifnull('glpi_users_sessions.user_agent', 'glpi_users_sessionhistories.user_agent', 'user_agent'),
-                'glpi_users_sessions.auth_type',
+                'glpi_users_sessionhistories.auth_type',
                 QueryFunction::ifnull('glpi_users_sessions.created_at', 'glpi_users_sessionhistories.logged_in_at', 'logged_in_at'),
                 'glpi_users_sessions.last_activity_at',
                 'glpi_users_sessionhistories.logged_out_at',
