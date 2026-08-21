@@ -164,6 +164,40 @@ class PDUTest extends AbstractInventoryAsset
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>';
 
+    private const XML_NO_SERIAL = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <COMMENTS>APC Rack PDU Switched, 2G, Metered-by-Outlet</COMMENTS>
+        <FIRMWARE>6.9.6</FIRMWARE>
+        <ID>1</ID>
+        <IPS><IP>192.168.1.50</IP></IPS>
+        <MAC>00:C0:B7:65:DE:02</MAC>
+        <MANUFACTURER>APC</MANUFACTURER>
+        <MODEL>AP8853</MODEL>
+        <NAME>PDU-NO-SERIAL</NAME>
+        <TYPE>PDU</TYPE>
+      </INFO>
+      <PDU>
+        <TYPE>C13/C19</TYPE>
+        <PLUG>
+          <NAME>Server_Blade_02</NAME>
+          <TYPE>C15</TYPE>
+        </PLUG>
+        <PLUG>
+          <NAME>Storage_SAN_Controller_B1</NAME>
+          <TYPE>C14</TYPE>
+        </PLUG>
+      </PDU>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>APC-PDU-NOSERIAL</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
     public static function assetProvider(): array
     {
         return [
@@ -356,6 +390,58 @@ class PDUTest extends AbstractInventoryAsset
         // lock must still be present
         $locks = $lockedfield->find(['itemtype' => \PDU::class, 'items_id' => $pdus_id, 'field' => 'name']);
         $this->assertCount(1, $locks);
+    }
+
+    public function testHandleRefusedByRule(): void
+    {
+        $this->login();
+
+        $refuse_id = $this->addRule(
+            \RuleImportAsset::class,
+            'Refuse PDU without serial',
+            [
+                [
+                    'criteria'  => 'serial',
+                    'condition' => \Rule::PATTERN_IS_EMPTY,
+                    'pattern'   => '',
+                ],
+            ],
+            [
+                'action_type' => 'assign',
+                'field'       => '_inventory',
+                'value'       => '0',
+            ]
+        );
+
+        // move the new rule before all existing rules so it takes priority
+        $existing = (new \RuleImportAsset())->find(
+            ['sub_type' => \RuleImportAsset::class],
+            ['ranking ASC'],
+            1
+        );
+        if (!empty($existing)) {
+            $first_id = (int) array_key_first($existing);
+            if ($first_id !== $refuse_id) {
+                (new \RuleImportAssetCollection())->moveRule(
+                    $refuse_id,
+                    $first_id,
+                    \RuleCollection::MOVE_BEFORE
+                );
+            }
+        }
+
+        $this->logout();
+
+        $this->doInventory(self::XML_NO_SERIAL, true);
+
+        $pdu = new \PDU();
+        $this->assertCount(0, $pdu->find(['name' => 'PDU-NO-SERIAL']));
+
+        $plug = new \Plug();
+        $this->assertCount(
+            0,
+            $plug->find(['name' => ['Server_Blade_02', 'Storage_SAN_Controller_B1']])
+        );
     }
 
     /*public function testLockedFieldAndPlug(): void

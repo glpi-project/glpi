@@ -65,6 +65,8 @@ class PDU extends NetworkEquipment
 
             if (property_exists($val, 'pdu') && property_exists($val->pdu, 'plug')) {
                 $inventory_plugs[] = $val->pdu->plug;
+            } elseif (property_exists($val, 'pdu') && property_exists($val->pdu, 'plugs')) {
+                $inventory_plugs[] = $val->pdu->plugs;
             }
         }
 
@@ -79,7 +81,7 @@ class PDU extends NetworkEquipment
     public function handle()
     {
         parent::handle();
-        if (isset($this->plugs)) {
+        if (isset($this->plugs) && !$this->item->isNewItem()) {
             $this->plugs->handleLinks();
             $this->plugs->handle();
         }
