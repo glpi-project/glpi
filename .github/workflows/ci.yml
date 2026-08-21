@@ -38,7 +38,7 @@ jobs:
       matrix:
         include:
           - {php-version: "8.2"} # Lint on lower PHP version to detected too early usage of new syntaxes
-          - {php-version: "8.5"} # Lint on higher PHP version to detected deprecated elements usage
+          - {php-version: "8.6"} # Lint on higher PHP version to detected deprecated elements usage
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
@@ -130,10 +130,10 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.5", "db-image": "mariadb:12.3", "run-js-tests": true},
+                  {"php-version": "8.6", "db-image": "mariadb:12.3", "run-js-tests": true},
                   {"php-version": "8.2", "db-image": "mariadb:10.6", "run-js-tests": false},
-                  {"php-version": "8.5", "db-image": "mysql:9.7", "run-js-tests": false},
-                  {"php-version": "8.5", "db-image": "mysql:8.0", "run-js-tests": false}
+                  {"php-version": "8.6", "db-image": "mysql:9.7", "run-js-tests": false},
+                  {"php-version": "8.6", "db-image": "mysql:8.0", "run-js-tests": false}
                 ]
               }
             '
@@ -141,7 +141,7 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.5", "db-image": "mariadb:12.3", "run-js-tests": true},
+                  {"php-version": "8.6", "db-image": "mariadb:12.3", "run-js-tests": true},
                   {"php-version": "8.2", "db-image": "mysql:9.7", "run-js-tests": false}
                 ]
               }
@@ -260,7 +260,7 @@ jobs:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
       DB_IMAGE: "githubactions-mariadb:12.3"
-      PHP_IMAGE: "githubactions-php-apache:8.5"
+      PHP_IMAGE: "githubactions-php-apache:8.6"
       UPDATE_FILES_ACL: true
     steps:
       - name: "Set env"
@@ -331,7 +331,7 @@ jobs:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
       DB_IMAGE: "githubactions-mariadb:12.3"
-      PHP_IMAGE: "githubactions-php-apache:8.5"
+      PHP_IMAGE: "githubactions-php-apache:8.6"
       UPDATE_FILES_ACL: true
     steps:
       - name: "Set env"
@@ -345,9 +345,9 @@ jobs:
           path: |
             ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
             ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
-          key: "app_home_deps-8.5-${{ hashFiles('composer.lock', 'package-lock.json') }}"
+          key: "app_home_deps-8.6-${{ hashFiles('composer.lock', 'package-lock.json') }}"
           restore-keys: |
-            app_home_deps-8.5-
+            app_home_deps-8.6-
             app_home_deps-
       - name: "Initialize containers"
         run: |
