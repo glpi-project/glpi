@@ -54,7 +54,7 @@ if (!$DB->tableExists('glpi_oauthauthorizations')) {
       `date_creation` timestamp NULL DEFAULT NULL,
       `date_mod` timestamp NULL DEFAULT NULL,
       PRIMARY KEY (`id`),
-      KEY `oauth_applications_id` (`oauth_applications_id`),
+      UNIQUE KEY `unicity` (`oauth_applications_id`,`email`,`type`),
       KEY `date_creation` (`date_creation`),
       KEY `date_mod` (`date_mod`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC";

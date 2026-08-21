@@ -10078,7 +10078,7 @@ CREATE TABLE `glpi_oauthauthorizations` (
   `date_creation` timestamp NULL DEFAULT NULL,
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `oauth_applications_id` (`oauth_applications_id`),
+  UNIQUE KEY `unicity` (`oauth_applications_id`,`email`,`type`),
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;

@@ -542,6 +542,37 @@ class OAuthAuthorizationTest extends DbTestCase
         $this->assertSame('refresh_token', $provider->last_grant);
     }
 
+    public function testTestConnectionFailsWhenTokenIsExpiredAndNoRefreshTokenIsStored(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+
+        $expired_token = new AccessToken(['access_token' => 'old', 'expires' => time() - 100]);
+        /** @var OAuthAuthorization $authorization */
+        $authorization = $this->createItem(OAuthAuthorization::class, [
+            'oauth_applications_id' => $app->getID(),
+            'type'                  => OAuthAuthorization::TYPE_IMAP,
+            'email'                 => 'user@example.com',
+            'token'                 => json_encode($expired_token->jsonSerialize()),
+        ], ['token']);
+
+        $provider = new FakeOauthProviderForTests();
+
+        $testable = TestableOAuthAuthorization::withProvider($provider);
+        $testable->getFromDB($authorization->getID());
+        // The probe would succeed if it were reached, so a failure here can
+        // only come from the token refresh attempt.
+        $testable->probe_result = true;
+
+        $result = $testable->testConnection();
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('No refresh token is available for this authorization', $result['message']);
+        // No token exchange must have been attempted against the provider.
+        $this->assertNull($provider->last_grant);
+    }
+
     public function testTestConnectionAcceptsATokenWithoutExpirationDate(): void
     {
         $this->login();

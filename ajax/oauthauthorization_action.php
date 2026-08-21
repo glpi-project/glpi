@@ -36,7 +36,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
 
 if (isset($_POST['id']) && isset($_POST['type']) && isset($_POST['request_authorization'])) {
     $application = new OAuthApplication();
-    $application->check($_POST['id'], UPDATE);
+    $application->check((int) ($_POST['id'] ?? 0), UPDATE);
     $application->redirectToAuthorizationUrl($_POST['type']);
 } elseif (isset($_POST['id']) && isset($_POST['refresh'])) {
     $authorization = new OAuthAuthorization();
@@ -53,8 +53,7 @@ if (isset($_POST['id']) && isset($_POST['type']) && isset($_POST['request_author
     Html::back();
 } elseif (isset($_POST['id']) && isset($_POST['test'])) {
     $authorization = new OAuthAuthorization();
-    $authorization->getFromDB($_POST['id']);
-    $authorization->check($_POST['id'], READ);
+    $authorization->check((int) ($_POST['id'] ?? 0), READ);
 
     $result = $authorization->testConnection();
     Session::addMessageAfterRedirect(
@@ -65,8 +64,7 @@ if (isset($_POST['id']) && isset($_POST['type']) && isset($_POST['request_author
     Html::back();
 } elseif (isset($_POST['id']) && isset($_POST['delete'])) {
     $authorization = new OAuthAuthorization();
-    $authorization->getFromDB($_POST['id']);
-    $authorization->check($_POST['id'], DELETE);
+    $authorization->check((int) ($_POST['id'] ?? 0), DELETE);
 
     $authorization->revokeAuthorization();
     Html::back();
