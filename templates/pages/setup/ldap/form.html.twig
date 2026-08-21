@@ -50,6 +50,10 @@
     {{ fields.textField('name', item.fields['name'], __('Name')) }}
     {{ fields.nullField() }}
 
+    {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
+        {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+    {% endif %}
+
     {{ fields.dropdownYesNo('is_default', item.fields['is_default'], __('Default server')) }}
     {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
     {{ fields.textField('host', item.fields['host'], __('Server')) }}

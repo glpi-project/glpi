@@ -4544,6 +4544,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
+        // Add tags for taggable itemtypes
+        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(get_class($this)));
+
         // For ITIL template
         $tab[] = [
             'id'                 => '142',

@@ -1537,6 +1537,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $this->updateCounter();
 
         $params = [
+            'item'    => $this,
             'item_id' => $mode === 'add' ? null : $this->fields['id'],
             'subject' => $this->fields['name'],
             'answer'  => $this->getAnswer(),
@@ -3310,6 +3311,9 @@ TWIG, $twig_params);
 
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
+
+        // Add tags for taggable itemtypes
+        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
     }

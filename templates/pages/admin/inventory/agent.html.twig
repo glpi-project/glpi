@@ -64,6 +64,10 @@
                         field_options
                     ) }}
 
+                    {% if call('Tag_Itemtype::isTaggableItemtype', [item_type]) %}
+                        {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
+                    {% endif %}
+
                     {{ fields.htmlField(
                         'agenttypes_id',
                         get_item_name('AgentType', item.fields['agenttypes_id'])|e,

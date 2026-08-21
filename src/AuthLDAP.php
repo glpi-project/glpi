@@ -1147,6 +1147,9 @@ TWIG, ['authldaps_id' => $ID]);
             'datatype'           => 'string',
         ];
 
+        // Add tags for taggable itemtypes
+        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(static::class));
+
         return $tab;
     }
 

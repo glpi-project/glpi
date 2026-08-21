@@ -58,6 +58,7 @@ use RRule\RSet;
 use Safe\DateTime;
 use Safe\Exceptions\JsonException;
 use Session;
+use Tag;
 use Toolbox;
 use User;
 
@@ -1157,6 +1158,9 @@ trait PlanningEvent
                 'datatype'      => 'text',
             ];
         }
+
+        // Add tags for taggable itemtypes
+        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
     }

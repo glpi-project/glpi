@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QuerySubQuery;
+
 class Tag_Itemtype extends CommonDBChild
 {
     // From CommonDBChild
@@ -62,18 +64,93 @@ class Tag_Itemtype extends CommonDBChild
     /**
      * Get itemtypes for a given tag
      *
-     * @param Tag $tag Tag for which itemtypes must be retrieved
+     * @param Tag  $tag          Tag for which itemtypes must be retrieved
+     * @param bool $all_if_empty If true and the tag has no restriction in DB, return all taggable itemtypes instead of an empty list.
      *
      * @return list<class-string<CommonDBTM>>
      */
-    public static function getItemtypesByTag(Tag $tag): array
+    public static function getItemtypesByTag(Tag $tag, bool $all_if_empty = true): array
     {
         if ($tag->getID() <= 0) {
             return [];
         }
 
         $tag_itemtype = new self();
-        return array_column($tag_itemtype->find(['tags_id' => $tag->getID()]), 'itemtype');
+        $itemtypes = array_column($tag_itemtype->find(['tags_id' => $tag->getID()]), 'itemtype');
+
+        if ($all_if_empty && count($itemtypes) === 0) {
+            return self::getTaggableItems();
+        }
+
+        return $itemtypes;
+    }
+
+    /**
+     * Get tags allowed to be attached to items of the given itemtype.
+     *
+     * @param string $itemtype
+     *
+     * @return list<Tag>
+     */
+    public static function getTagsByItemtype(string $itemtype): array
+    {
+        $tag = new Tag();
+        $tags = [];
+
+        $criteria = [
+            'OR' => [
+                'id' => new QuerySubQuery([
+                    'SELECT' => 'tags_id',
+                    'FROM'   => self::getTable(),
+                    'WHERE'  => ['itemtype' => $itemtype],
+                ]),
+                ['NOT' => [
+                    'id' => new QuerySubQuery([
+                        'SELECT' => 'tags_id',
+                        'FROM'   => self::getTable(),
+                    ]),
+                ]],
+            ],
+            'is_active' => 1,
+        ];
+        $criteria += getEntitiesRestrictCriteria($tag->getTable(), '', '', true);
+
+        foreach ($tag->find($criteria) as $tag_data) {
+            $tag = new Tag();
+            $tag->getFromResultSet($tag_data);
+            $tags[] = $tag;
+        }
+
+        return $tags;
+    }
+
+    /**
+     * Get tags allowed to be attached to items of ALL the given itemtypes (intersection).
+     *
+     * @param list<string> $itemtypes
+     *
+     * @return list<Tag>
+     */
+    public static function getTagsByItemtypes(array $itemtypes): array
+    {
+        if ($itemtypes === []) {
+            return [];
+        }
+
+        $common_tags = null;
+
+        foreach ($itemtypes as $itemtype) {
+            $tags_for_itemtype = [];
+            foreach (self::getTagsByItemtype($itemtype) as $tag) {
+                $tags_for_itemtype[$tag->getID()] = $tag;
+            }
+
+            $common_tags = $common_tags === null
+                ? $tags_for_itemtype
+                : array_intersect_key($common_tags, $tags_for_itemtype);
+        }
+
+        return array_values($common_tags);
     }
 
     /**
@@ -116,5 +193,29 @@ class Tag_Itemtype extends CommonDBChild
                 ], true);
             }
         }
+    }
+
+    /**
+     * Check if an itemtype is allowed to be tagged.
+     *
+     * @param string $itemtype The itemtype to check.
+     *
+     * @return bool True if the itemtype is allowed to be tagged, false otherwise.
+     */
+    public static function isTaggableItemtype(string $itemtype): bool
+    {
+        return in_array($itemtype, self::getTaggableItems(), true);
+    }
+
+    /**
+     * Get all itemtypes that can be tagged, regardless of any per-tag restriction.
+     *
+     * @return list<class-string<CommonDBTM>>
+     */
+    public static function getTaggableItems(): array
+    {
+        global $CFG_GLPI;
+
+        return $CFG_GLPI['taggable_types'];
     }
 }

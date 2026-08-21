@@ -48,6 +48,10 @@
         full_width: true,
     }) }}
 
+    {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
+        {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+    {% endif %}
+
     {% if params['from_planning_ajax'] is not defined %}
         {% set visibility_fields %}
             {{ fields.datetimeField('begin_view_date', item.fields['begin_view_date'], __('Begin'), {

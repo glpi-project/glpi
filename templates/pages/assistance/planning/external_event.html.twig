@@ -115,6 +115,11 @@
     {% else %}
         {{ fields.htmlField('', item.fields['name']|e, __('Title'), field_options) }}
     {% endif %}
+
+    {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
+        {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
+    {% endif %}
+
     {{ _self.null_field(params) }}
 
     {% if params.from_planning_edit_ajax is defined and params.from_planning_edit_ajax %}

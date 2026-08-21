@@ -415,6 +415,9 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
+        
+        // Add tags for taggable itemtypes
+        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(static::class));
 
         return $tab;
     }

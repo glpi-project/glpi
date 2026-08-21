@@ -38,6 +38,11 @@
 {% block form_fields %}
    {% block more_fields %}
       {{ fields.textField('name', item.fields['name'], __('Name')) }}
+
+      {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
+          {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+      {% endif %}
+
       {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
 
       {{ fields.textField('code', item.fields['code'], __('Code')) }}

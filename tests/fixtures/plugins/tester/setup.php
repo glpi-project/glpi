@@ -69,13 +69,49 @@ function plugin_version_tester()
 
 function plugin_tester_install(): bool
 {
+    global $DB;
+
+    if (!$DB->tableExists(Computer::getTable())) {
+        $default_charset    = DBConnection::getDefaultCharset();
+        $default_collation  = DBConnection::getDefaultCollation();
+        $default_key_sign   = DBConnection::getDefaultPrimaryKeySignOption();
+
+        $DB->doQuery(
+            "CREATE TABLE `" . Computer::getTable() . "` (
+                `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+                `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+                `is_recursive` tinyint NOT NULL DEFAULT '0',
+                `name` varchar(255) DEFAULT NULL,
+                `date_creation` timestamp NULL DEFAULT NULL,
+                `date_mod` timestamp NULL DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                KEY `entities_id` (`entities_id`),
+                KEY `is_recursive` (`is_recursive`),
+                KEY `name` (`name`)
+            ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
+        );
+    }
+
     return true;
 }
 
 
 function plugin_tester_uninstall(): bool
 {
+    global $DB;
+
+    $DB->dropTable(Computer::getTable());
+
     return true;
+}
+
+function plugin_tester_getDatabaseRelations(): array
+{
+    return [
+        'glpi_entities' => [
+            Computer::getTable() => 'entities_id',
+        ],
+    ];
 }
 
 function plugin_tester_getDropdown(): array

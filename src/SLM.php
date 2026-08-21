@@ -248,6 +248,9 @@ TWIG, $twig_params);
             'massiveaction' => false,
         ];
 
+        // Add tags for taggable itemtypes
+        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(static::class));
+
         return $tab;
     }
 
