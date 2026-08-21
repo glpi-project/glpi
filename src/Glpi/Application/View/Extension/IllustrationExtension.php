@@ -67,12 +67,16 @@ class IllustrationExtension extends AbstractExtension
                 'countIcons',
                 [$this->illustration_manager, 'countIcons'],
             ),
+            new TwigFunction(
+                'getIconTitle',
+                [$this->illustration_manager, 'getIconTitle'],
+            ),
         ];
     }
 
-    public function renderIllustration(string $filename, ?int $size = null, bool $decorative = false): string
+    public function renderIllustration(string $filename, ?int $size = null): string
     {
-        return $this->illustration_manager->renderIcon($filename, $size, $decorative);
+        return $this->illustration_manager->renderIcon($filename, $size);
     }
 
     public function renderScene(

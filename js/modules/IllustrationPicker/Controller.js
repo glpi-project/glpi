@@ -237,6 +237,10 @@ export class GlpiIllustrationPickerController
         native_slot.classList.remove('d-none');
         this.#getCustomPreviewSlot().classList.add('d-none');
         this.#getPlaceholderSlot()?.classList.add('d-none');
+
+        // The svg illustration itself is never named (see icon.svg.twig), so the
+        // grid tile's own aria-label (the icon's title) is reused here instead.
+        this.#setPreviewStatus(illustration.getAttribute('aria-label'));
     }
 
     #setEmptyPreview()
@@ -244,6 +248,35 @@ export class GlpiIllustrationPickerController
         this.#getNativePreviewSlot()?.classList.add('d-none');
         this.#getCustomPreviewSlot()?.classList.add('d-none');
         this.#getPlaceholderSlot()?.classList.remove('d-none');
+
+        this.#setPreviewStatus(null);
+    }
+
+    /**
+     * Names the currently selected illustration for assistive technologies,
+     * independently of the (always hidden) svg illustration and of the
+     * trigger button's own, unrelated, "Select an illustration" label.
+     *
+     * @param {?string} title
+     */
+    #setPreviewStatus(title)
+    {
+        const preview = this.#getPreviewElement();
+        let status = preview.querySelector('[data-glpi-icon-picker-value-preview-status]');
+
+        if (!title) {
+            status?.remove();
+            return;
+        }
+
+        if (status === null) {
+            status = document.createElement('span');
+            status.className = 'visually-hidden';
+            status.setAttribute('role', 'img');
+            status.setAttribute('data-glpi-icon-picker-value-preview-status', '');
+            preview.prepend(status);
+        }
+        status.setAttribute('aria-label', title);
     }
 
     #getNativePreviewSlot()
@@ -273,6 +306,8 @@ export class GlpiIllustrationPickerController
         custom_slot.classList.remove('d-none');
         this.#getNativePreviewSlot().classList.add('d-none');
         this.#getPlaceholderSlot()?.classList.add('d-none');
+
+        this.#setPreviewStatus(null);
     }
 
     /**

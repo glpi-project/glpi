@@ -30,19 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{# decorative icons duplicate an adjacent label, so they must not be named #}
-{% set decorative = decorative ?? false %}
-{% set title = decorative ? '' : title|default('') %}
-<svg
-    {% if title is not empty %}
-        role="img"
-    {% else %}
-        aria-hidden="true"
-    {% endif %}
-    width="{{ width }}" height="{{ height }}" class="flex-shrink-0"
->
-    {% if title is not empty %}
-        <title>{{ title }}</title>
-    {% endif %}
+{# Illustration icons always duplicate an adjacent label, so they must never carry a name of their own. #}
+<svg aria-hidden="true" width="{{ width }}" height="{{ height }}" class="flex-shrink-0">
     <use data-testid="illustration-use" xlink:href="{{ path(file_path) }}#{{ icon_id }}"/>
 </svg>

@@ -106,10 +106,8 @@ final class IllustrationManager
 
     /**
      * @param int|null $size Height and width (px). Will be set to 100% if null.
-     * @param bool $decorative Hide the icon from assistive technologies when it
-     *                         only duplicates an adjacent text label.
      */
-    public function renderIcon(string $icon_id, ?int $size = null, bool $decorative = false): string
+    public function renderIcon(string $icon_id, ?int $size = null): string
     {
         if ($icon_id === '') {
             return '';
@@ -122,7 +120,27 @@ final class IllustrationManager
                 $size
             );
         } else {
-            return $this->renderNativeIcon($icon_id, $size, $decorative);
+            return $this->renderNativeIcon($icon_id, $size);
+        }
+    }
+
+    /**
+     * Human-readable title of a native icon, e.g. for use as an `aria-label`
+     * on a caller-provided interactive element.
+     */
+    public function getIconTitle(string $icon_id): string
+    {
+        global $TRANSLATE;
+
+        $icons = $this->getIconsDefinitions();
+
+        try {
+            // Cannot call `_x()` here as it results in an illegal empty translation `id` when strings are extracted.
+            // see #21049
+            $title = $TRANSLATE->translate("Icon\004" . ($icons[$icon_id]['title'] ?? ""), 'glpi');
+            return str_replace("Icon\004", "", $title);
+        } catch (Throwable $e) {
+            return '';
         }
     }
 
@@ -322,38 +340,16 @@ final class IllustrationManager
         }
     }
 
-    private function renderNativeIcon(string $icon_id, ?int $size = null, bool $decorative = false): string
+    private function renderNativeIcon(string $icon_id, ?int $size = null): string
     {
-        global $TRANSLATE;
-
         $size = $this->computeSize($size);
-
-        $icons = $this->getIconsDefinitions();
-
-        try {
-            // Cannot call `_x()` here as it results in an illegal empty translation `id` when strings are extracted.
-            // see #21049
-            $title = $TRANSLATE->translate("Icon\004" . ($icons[$icon_id]['title'] ?? ""), 'glpi');
-            $title = str_replace("Icon\004", "", $title);
-        } catch (Throwable $e) {
-            $title = '';
-        }
-
-        if (!$decorative && $title === '') {
-            trigger_error(
-                "The illustration `$icon_id` has no title: flag it as `decorative` if it is purely decorative, check its id otherwise.",
-                E_USER_WARNING
-            );
-        }
 
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [
-            'file_path'  => $this->icons_sprites_path,
-            'icon_id'    => $icon_id,
-            'width'      => $size,
-            'height'     => $size,
-            'title'      => $title,
-            'decorative' => $decorative,
+            'file_path' => $this->icons_sprites_path,
+            'icon_id'   => $icon_id,
+            'width'     => $size,
+            'height'    => $size,
         ]);
     }
 
@@ -376,12 +372,10 @@ final class IllustrationManager
     ): string {
         $twig = TemplateRenderer::getInstance();
         return $twig->render('components/illustration/icon.svg.twig', [
-            'file_path'  => $this->scenes_gradient_sprites_path,
-            'icon_id'    => $icon_id,
-            'height'     => $this->computeSize($height),
-            'width'      => $this->computeSize($width),
-            // Scenes are background illustrations with no name of their own.
-            'decorative' => true,
+            'file_path' => $this->scenes_gradient_sprites_path,
+            'icon_id'   => $icon_id,
+            'height'    => $this->computeSize($height),
+            'width'     => $this->computeSize($width),
         ]);
     }
 

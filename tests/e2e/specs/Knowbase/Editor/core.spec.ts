@@ -277,7 +277,7 @@ test.describe('Knowledge Base Editor - Core', () => {
         await page.getByRole('button', { name: 'Select an illustration' }).click();
         const modal = page.getByTestId('illustration-picker-modal');
         await expect(modal).toBeVisible();
-        await modal.getByRole('img', { name: 'Antivirus', exact: true }).click();
+        await modal.getByRole('button', { name: 'Antivirus', exact: true }).click();
         await expect(modal).toBeHidden();
         await kb.editor.save();
 

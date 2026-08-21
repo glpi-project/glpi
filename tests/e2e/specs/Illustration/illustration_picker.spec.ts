@@ -86,19 +86,19 @@ test.describe('Illustration picker', () => {
         // We are on the first page by default
         await picker_page.doOpenIllustrationPicker();
         for (const name of icons_from_first_page) {
-            await expect(picker_page.picker_modal.getByRole('img', { name })).toBeVisible();
+            await expect(picker_page.picker_modal.getByRole('button', { name })).toBeVisible();
         }
         for (const name of icons_from_second_page) {
-            await expect(picker_page.picker_modal.getByRole('img', { name })).not.toBeAttached();
+            await expect(picker_page.picker_modal.getByRole('button', { name })).not.toBeAttached();
         }
 
         // Go to second page
         await picker_page.doGoToPage(2);
         for (const name of icons_from_first_page) {
-            await expect(picker_page.picker_modal.getByRole('img', { name })).not.toBeAttached();
+            await expect(picker_page.picker_modal.getByRole('button', { name })).not.toBeAttached();
         }
         for (const name of icons_from_second_page) {
-            await expect(picker_page.picker_modal.getByRole('img', { name })).toBeVisible();
+            await expect(picker_page.picker_modal.getByRole('button', { name })).toBeVisible();
         }
         await expect(picker_page.picker_modal).toBeVisible();
     });
@@ -121,7 +121,7 @@ test.describe('Illustration picker', () => {
         // Only the matching icons must be found
         await expect(picker_page.getModalImages()).toHaveCount(expected_icons.length);
         for (const name of expected_icons) {
-            await expect(picker_page.picker_modal.getByRole('img', { name })).toBeVisible();
+            await expect(picker_page.picker_modal.getByRole('button', { name })).toBeVisible();
         }
     });
 
@@ -166,6 +166,6 @@ test.describe('Illustration picker', () => {
         await expect(picker_page.getModalImages()).toHaveCount(1);
 
         // The icon must be the one we are looking for
-        await expect(picker_page.picker_modal.getByRole('img', { name: 'World' })).toBeVisible();
+        await expect(picker_page.picker_modal.getByRole('button', { name: 'World' })).toBeVisible();
     });
 });
