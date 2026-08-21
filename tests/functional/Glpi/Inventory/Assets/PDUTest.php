@@ -164,6 +164,35 @@ class PDUTest extends AbstractInventoryAsset
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>';
 
+    private const XML_ZERO_PLUGS = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <COMMENTS>APC Rack PDU Switched, 2G, Metered-by-Outlet</COMMENTS>
+        <FIRMWARE>6.9.6</FIRMWARE>
+        <ID>1</ID>
+        <IPS>
+          <IP>192.168.1.50</IP>
+        </IPS>
+        <MAC>00:C0:B7:65:DE:01</MAC>
+        <MANUFACTURER>APC</MANUFACTURER>
+        <MODEL>AP8853</MODEL>
+        <NAME>PDU-MASTER-RACK-A4</NAME>
+        <SERIAL>ZA133456789</SERIAL>
+        <TYPE>PDU</TYPE>
+      </INFO>
+      <PDU>
+        <TYPE>C13/C19</TYPE>
+      </PDU>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>APC-PDU-001</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
     private const XML_NO_SERIAL = '<?xml version="1.0" encoding="UTF-8" ?>
 <REQUEST>
   <CONTENT>
@@ -363,6 +392,37 @@ class PDUTest extends AbstractInventoryAsset
         $this->assertContains('Server_Blade_01', $plug_names);
         $this->assertContains('Storage_SAN_Controller_B', $plug_names);
         $this->assertContains('Network_Switch_Core', $plug_names);
+    }
+
+    public function testDynamicPlugsDeletedOnReInventoryWithNoPlugs(): void
+    {
+        $plug = new \Plug();
+
+        // initial inventory: 2 dynamic plugs
+        $inventory = $this->doInventory(self::XML_TWO_PLUGS, true);
+        $pdu = $inventory->getItem();
+        $pdus_id = $pdu->fields['id'];
+        $this->assertGreaterThan(0, $pdus_id);
+        $this->assertCount(2, $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]));
+
+        // add a manual (non-dynamic) plug to verify it is preserved
+        $manual_id = $plug->add([
+            'name'          => 'Manual_Plug',
+            'plugtypes_id'  => 0,
+            'itemtype_main' => \PDU::class,
+            'items_id_main' => $pdus_id,
+            'is_dynamic'    => 0,
+        ]);
+        $this->assertGreaterThan(0, $manual_id);
+
+        // re-inventory with 0 plugs: dynamic plugs deleted, manual plug preserved
+        $this->doInventory(self::XML_ZERO_PLUGS, true);
+
+        $remaining = $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]);
+        $this->assertCount(1, $remaining);
+        $remaining_plug = reset($remaining);
+        $this->assertSame('Manual_Plug', $remaining_plug['name']);
+        $this->assertSame(0, (int) $remaining_plug['is_dynamic']);
     }
 
     public function testLockedFieldPDU(): void
