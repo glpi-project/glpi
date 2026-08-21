@@ -746,10 +746,10 @@ final class SessionTracker
         $start = (int) ($_GET['start'] ?? 0);
         try {
             $filters['date'] = json_decode($filters['date'], true);
-            if (!empty($filters['date']) && $filters['date'][0] === $filters['date'][1]) {
+            if (!empty($filters['date']) && (count($filters['date']) === 1 || $filters['date'][0] === $filters['date'][1])) {
                 // Same date selected. cover the full days as may be expected
                 $new_start_date = date('Y-m-d 00:00:00', strtotime($filters['date'][0]));
-                $new_end_date = date('Y-m-d 23:59:59', strtotime($filters['date'][1]));
+                $new_end_date = date('Y-m-d 23:59:59', strtotime($filters['date'][0]));
                 $filters['date'] = [$new_start_date, $new_end_date];
             }
         } catch (JsonException) {
