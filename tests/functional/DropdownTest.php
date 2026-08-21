@@ -62,6 +62,7 @@ use NetworkName;
 use Peripheral;
 use Phone;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use Printer;
 use Profile;
 use Project;
@@ -2159,6 +2160,18 @@ HTML;
 
             $this->assertEquals($expected[$key], $dropdown_entry['id']);
         }
+    }
+
+    #[TestWith(['DeviceHardDriveType'])]
+    #[TestWith(['DeviceBatteryType'])]
+    #[TestWith(['DeviceFirmwareType'])]
+    #[TestWith(['DeviceBatteryModel'])]
+    #[TestWith(['DeviceFirmwareModel'])]
+    public function testDeviceDropdownsArePresent(string $itemtype): void
+    {
+        $dropdowns = array_merge(...array_values(Dropdown::getStandardDropdownItemTypes(false)));
+
+        $this->assertArrayHasKey($itemtype, $dropdowns, "$itemtype should be a registered standard dropdown");
     }
 
     public function testClone()
