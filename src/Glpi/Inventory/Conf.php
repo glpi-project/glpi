@@ -95,6 +95,7 @@ use function Safe\simplexml_load_string;
  * @property int $import_antivirus
  * @property int $import_registry
  * @property int $import_process
+ * @property int $import_pdu
  * @property int $import_vm
  * @property int $import_monitor_on_partial_sn
  * @property int $import_unmanaged
@@ -696,6 +697,7 @@ class Conf extends CommonGLPI
             'import_antivirus'               => 1,
             'import_registry'                => 1,
             'import_process'                 => 1,
+            'import_pdu'                     => 1,
             'import_vm'                      => 1,
             'import_monitor_on_partial_sn'   => 0,
             'import_unmanaged'               => 1,

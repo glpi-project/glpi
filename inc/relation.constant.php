@@ -134,6 +134,8 @@ $RELATION = [
         'glpi_databaseinstances' => 'autoupdatesystems_id',
         'glpi_monitors'          => 'autoupdatesystems_id',
         'glpi_networkequipments' => 'autoupdatesystems_id',
+        'glpi_pdus'              => 'autoupdatesystems_id',
+        'glpi_plugs'             => 'autoupdatesystems_id',
         'glpi_peripherals'       => 'autoupdatesystems_id',
         'glpi_phones'            => 'autoupdatesystems_id',
         'glpi_printers'          => 'autoupdatesystems_id',
@@ -654,6 +656,7 @@ $RELATION = [
         'glpi_planningexternalevents'      => 'entities_id',
         'glpi_planningexternaleventtemplates' => 'entities_id',
         'glpi_plugs'                       => 'entities_id',
+        'glpi_plugtypes'                   => 'entities_id',
         'glpi_printers'                    => 'entities_id',
         '_glpi_problemcosts'               => 'entities_id',
         'glpi_problems'                    => 'entities_id',
@@ -698,6 +701,11 @@ $RELATION = [
         'glpi_wifinetworks'                => 'entities_id',
         'glpi_webhooks'                    => 'entities_id',
         'glpi_queuedwebhooks'              => 'entities_id',
+
+    ],
+
+    'glpi_plugtypes' => [
+        'glpi_plugs' => 'plugtypes_id',
     ],
 
     'glpi_filesystems' => [
@@ -1291,6 +1299,7 @@ $RELATION = [
 
     'glpi_snmpcredentials' => [
         'glpi_networkequipments' => 'snmpcredentials_id',
+        'glpi_pdus'              => 'snmpcredentials_id',
         'glpi_printers'          => 'snmpcredentials_id',
         'glpi_unmanageds'        => 'snmpcredentials_id',
     ],
@@ -1854,7 +1863,9 @@ foreach ($CFG_GLPI['plug_types'] as $source_itemtype) {
     $target_table_key = Plug::getTable();
     $source_table     = $source_itemtype::getTable();
 
-    $add_mapping_entry($source_table, $target_table_key, ['items_id_main', 'itemtype_main']);
+    // Plug purge is handled by GLPI itself
+    // Prevent errors from 'null' assignment when the PDU is purged and Plug update (as relation)
+    $add_mapping_entry($source_table, "_" . $target_table_key, ['items_id_main', 'itemtype_main']);
 }
 
 

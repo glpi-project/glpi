@@ -1,0 +1,14 @@
+diff --git a/lib/php/Converter.php b/lib/php/Converter.php
+index 4f9d759..ef3e57a 100644
+--- a/lib/php/Converter.php
++++ b/lib/php/Converter.php
+@@ -1440,6 +1440,9 @@ public function convertNetworkInventory(array $data): array
+                     break;
+                 case "pdu":
+                     // put pdu into network_device
++                    if (isset($device_data['plugs']) && !array_is_list($device_data['plugs'])) {
++                        $device_data['plugs'] = [$device_data['plugs']];
++                    }
+                     $data['content']['network_device'][$key] = $device_data;
+                     break;
+                 default:
