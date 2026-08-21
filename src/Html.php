@@ -2118,7 +2118,7 @@ TWIG,
                       onclick= \"if ( checkAsCheckboxes(this, '" . htmlescape(jsescape($container_id)) . "', '.massive_action_checkbox')) {return true;}\">";
 
         // permit to shift select checkboxes
-        $out .= Html::scriptBlock("\$(function() {\$('#" . jsescape($container_id) . " input[type=\"checkbox\"]').shiftSelectable();});");
+        $out .= Html::scriptBlock("\$(function() {\$('#" . jsescape(addcslashes($container_id, '\\')) . " input[type=\"checkbox\"]').shiftSelectable();});");
 
         return $out;
     }
@@ -2157,7 +2157,7 @@ TWIG,
         ) {
             // Filtering on the container !
             if (!empty($params['container_id'])) {
-                $criterion = '#' . $params['container_id'] . ' ';
+                $criterion = '#' . addcslashes($params['container_id'], '\\') . ' ';
             } else {
                 $criterion = '';
             }
@@ -2513,7 +2513,7 @@ TWIG,
                 if (!empty($p['tag_to_send'])) {
                     $js_modal_fields  = "var items = $('";
                     if (!empty($p['container'])) {
-                        $js_modal_fields .= '#' . jsescape($p['container']) . ' ';
+                        $js_modal_fields .= '#' . jsescape(addcslashes($p['container'], '\\')) . ' ';
                     }
                     $js_modal_fields .= "[data-glpicore-ma-tags~=" . jsescape($p['tag_to_send']) . "]').each(function( index ) {
                   fields[$(this).attr('name')] = $(this).val();
