@@ -360,11 +360,38 @@ class RuleCollection extends CommonDBTM
      *
      * @return bool true if confirmation is needed, else false
      *
+     * @deprecated use getWarningBeforeReplayRulesOnExistingDB() or hasWarningBeforeReplayRulesOnExistingDB() instead
+     *
      * since 11.0.0 The `$target` parameter has been removed and its value is automatically computed.
      */
     public function warningBeforeReplayRulesOnExistingDB()
     {
+        Toolbox::deprecated('The `' . __FUNCTION__ . '` method is deprecated, use `getWarningBeforeReplayRulesOnExistingDB()` or `hasWarningBeforeReplayRulesOnExistingDB()` instead.');
+
         return false;
+    }
+
+    /**
+     * @return bool
+     * @see RuleCollection::warningBeforeReplayRulesOnExistingDB()
+     */
+    public function hasWarningBeforeReplayRulesOnExistingDB(): bool
+    {
+        // @todo implémenter dans les classes filles
+        return false;
+    }
+
+    /**
+     * @return string Html warning message
+     * Must have content only if hasWarningBeforeReplayRulesOnExistingDB() returns true
+     */
+    public function getWarningBeforeReplayRulesOnExistingDB(): string
+    {
+        if (!$this->hasWarningBeforeReplayRulesOnExistingDB()) {
+            return '';
+        }
+
+        return 'ma réponse';
     }
 
     /**
@@ -674,9 +701,12 @@ HTML;
                     </button>
 
                     {% set reset_btn %}
-                        <a class="btn btn-danger w-100" role="button" href="{{ rule_class|itemtype_search_path }}?reinit=true&amp;subtype={{ rule_class|url_encode }}">
-                            {{ reset_label }}
-                        </a>
+                        <form class="d-inline" method="post" action="{{ item.getFormURL() }}">
+                            <input type="hidden" name="subtype" value="{{ rule_class }}">
+                            <button type="submit" class="btn btn-danger w-100" name="reinit" value="1">
+                                {{ reset_label }}
+                            </button>
+                        </form>
                     {% endset %}
 
                     {{ include('components/danger_modal.html.twig', {
