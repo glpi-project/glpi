@@ -399,7 +399,10 @@ final class SessionTracker
         }
 
         if (isset($filters['ip']) && $filters['ip'] !== '') {
-            $having[] = $this->getIPAddressHavingCriteria($filters['ip']);
+            $ip_having = $this->getIPAddressHavingCriteria($filters['ip']);
+            if ($ip_having !== []) {
+                $having[] = $ip_having;
+            }
         }
 
         if (!empty($filters['date'] ?? [])) {
@@ -423,7 +426,7 @@ final class SessionTracker
             ];
         }
 
-        return [
+        $criteria = [
             'SELECT' => [
                 new QueryExpression($DB::quoteValue('web'), '_type'),
                 'glpi_users_sessionhistories.id',
@@ -445,8 +448,11 @@ final class SessionTracker
             'FROM' => 'glpi_users_sessionhistories',
             "LEFT JOIN" => $joins,
             'WHERE' => $where,
-            'HAVING' => $having,
         ];
+        if ($having !== []) {
+            $criteria['HAVING'] = $having;
+        }
+        return $criteria;
     }
 
     /**
@@ -548,7 +554,10 @@ final class SessionTracker
         }
 
         if (isset($filters['ip']) && $filters['ip'] !== '') {
-            $criteria['HAVING'][] = $this->getIPAddressHavingCriteria($filters['ip']);
+            $ip_having = $this->getIPAddressHavingCriteria($filters['ip']);
+            if ($ip_having !== []) {
+                $criteria['HAVING'][] = $ip_having;
+            }
         }
 
         if (!empty($filters['date'] ?? [])) {
@@ -566,6 +575,10 @@ final class SessionTracker
                     ],
                 ],
             ];
+        }
+
+        if ($criteria['HAVING'] === []) {
+            unset($criteria['HAVING']);
         }
 
         return $criteria;
