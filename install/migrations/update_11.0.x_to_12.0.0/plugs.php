@@ -167,7 +167,7 @@ if ($DB->tableExists('glpi_items_plugs')) {
         if ($plug_data !== null) {
             for ($i = 1; $i <= $plug_item_data['number_plugs']; $i++) {
 
-                $plug_name = !empty($plug_data['name']) ? $plug_data['name'] . ' - ' . $i : $i;
+                $plug_name = !empty($plug_data['name']) ? $plug_data['name'] . ' - ' . $i : __('Plug') . ' ' . $i;
                 // create dedicated plug
                 $migration->addPostQuery(
                     $DB->buildInsert('glpi_plugs', [
