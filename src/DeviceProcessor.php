@@ -56,14 +56,20 @@ class DeviceProcessor extends CommonDevice
                     'label' => sprintf(__('%1$s (%2$s)'), __('Frequency by default'), __('MHz')),
                     'type'  => 'integer',
                     'min'   => 0,
-                    'unit'  => __('MHz'),
+                    'unit_factors' => [
+                        __('MHz') => 1,
+                        __('GHz') => 1000,
+                    ],
                 ],
                 [
                     'name'  => 'frequence',
                     'label' => sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')),
                     'type'  => 'integer',
                     'min'   => 0,
-                    'unit'  => __('MHz'),
+                    'unit_factors' => [
+                        __('MHz') => 1,
+                        __('GHz') => 1000,
+                    ],
                 ],
                 [
                     'name'  => 'nbcores_default',
@@ -141,6 +147,7 @@ class DeviceProcessor extends CommonDevice
      **/
     public function prepareInputForAddOrUpdate($input)
     {
+        $input = $this->prepareUnitAwareInput($input);
         foreach (
             ['frequence', 'frequency_default', 'nbcores_default',
                 'nbthreads_default',
