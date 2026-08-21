@@ -158,7 +158,7 @@ if ($DB->tableExists('glpi_items_plugs')) {
     foreach ($iterator as $plug_item_data) {
         // try to load plug from DB
         $plug_data = $DB->request([
-            'SELECT' => ["id", "name"],
+            'SELECT' => ["id", "name", "comment"],
             'FROM'   => 'glpi_plugs',
             'WHERE'  => ['id' => $plug_item_data['plugs_id']],
         ])->current();
