@@ -175,8 +175,8 @@ if ($DB->tableExists('glpi_items_plugs')) {
                         'number'            => $i,
                         'itemtype_main'     => $plug_item_data['itemtype'],
                         'items_id_main'     => $plug_item_data['items_id'],
-                        'entities_id'       => 0,
-                        'is_recursive'      => 1,
+                        'entities_id'       => $plug_item_data['entities_id'],
+                        'is_recursive'      => $plug_item_data['is_recursive'],
                         'comment'           => $plug_data['comment'] ?? '',
                     ])
                 );
