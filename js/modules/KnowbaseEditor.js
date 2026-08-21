@@ -80,6 +80,7 @@ class KnowbaseEditor {
             placeholder: __('Type / to insert...'),
             onUpdate: null,
             item_id: null,
+            can_comment: false,
             comment_anchors: [],
             comment_anchor_max_length: Number.POSITIVE_INFINITY,
             ...options
@@ -257,9 +258,14 @@ class KnowbaseEditor {
             { type: 'divider' },
             { command: 'setLink', icon: 'ti ti-link', title: _x('button', 'Link'), special: 'link' },
             { command: 'unsetLink', icon: 'ti ti-link-off', title: __('Remove link'), special: 'unlink' },
-            { type: 'divider' },
-            { command: 'comment', icon: 'ti ti-message-circle-plus', title: _x('button', 'Comment'), special: 'comment' },
         ];
+
+        if (this.#options.can_comment) {
+            buttons.push(
+                { type: 'divider' },
+                { command: 'comment', icon: 'ti ti-message-circle-plus', title: _x('button', 'Comment'), special: 'comment' },
+            );
+        }
 
         buttons.forEach((btn) => {
             if (btn.type === 'divider') {

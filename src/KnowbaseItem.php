@@ -1484,6 +1484,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         } elseif ($mode === "add") {
             $params['can_edit']     = $this->can(-1, CREATE);
             $params['illustration'] = '';
+            // Nothing to comment on yet: the article doesn't exist until it's saved.
+            $params['can_comment']  = false;
 
             $raw_parent_id = (int) ($options['knowbaseitems_id_parent'] ?? 0);
             $prefilled_parent_id = self::getReadablePrefilledParentId($raw_parent_id);

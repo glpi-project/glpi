@@ -39,7 +39,6 @@ use KnowbaseItem;
 use KnowbaseItem_Comment;
 use KnowbaseItem_User;
 use Session;
-use User;
 
 class KnowbaseItem_CommentTest extends DbTestCase
 {
@@ -340,7 +339,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertSame('untouchable', $comment->fields['anchor_exact']);
     }
 
-    public function testClearAnchorsForItemSkipsCommentsTheUserCannotUpdate(): void
+    public function testClearAnchorsForItemSkipsWhenUserCannotUpdateArticle(): void
     {
         $this->login();
         $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
@@ -348,16 +347,66 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $comment = new KnowbaseItem_Comment();
         $id = $comment->add([
             'knowbaseitems_id' => $kb1->getID(),
-            'users_id'         => getItemByTypeName(User::class, 'normal', true),
             'comment'          => 'Someone else comment',
             'anchor_exact'     => 'untouchable',
         ]);
 
-        // Keeps the comment right but drops the KB-admin bit: neither author nor admin.
+        // 'tech' is not the article's author; drop KB-admin/update/publish-FAQ bits too.
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] &= ~(UPDATE | KnowbaseItem::KNOWBASEADMIN | KnowbaseItem::PUBLISHFAQ);
+        (new KnowbaseItem_Comment())->clearAnchorsForItem($kb1, [$id]);
+
+        $this->login();
+        $comment->getFromDB($id);
+        $this->assertTrue($comment->hasAnchor());
+        $this->assertSame('untouchable', $comment->fields['anchor_exact']);
+    }
+
+    public function testClearAnchorsForItemSucceedsForNonAuthorWhoCanUpdateArticle(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id' => $kb1->getID(),
+            'comment'          => 'Someone else comment',
+            'anchor_exact'     => 'to be cleared',
+        ]);
+
+        // 'tech' can update the article and comment, but is neither its
+        // author, the comment's author, nor a KB admin.
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] |= READ | UPDATE | KnowbaseItem::COMMENTS;
         $_SESSION['glpiactiveprofile']['knowbase'] &= ~KnowbaseItem::KNOWBASEADMIN;
 
         (new KnowbaseItem_Comment())->clearAnchorsForItem($kb1, [$id]);
 
+        $this->login();
+        $comment->getFromDB($id);
+        $this->assertFalse($comment->hasAnchor());
+    }
+
+    public function testClearAnchorsForItemSkipsWhenUserCanUpdateArticleButNotComment(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+
+        $comment = new KnowbaseItem_Comment();
+        $id = $comment->add([
+            'knowbaseitems_id' => $kb1->getID(),
+            'comment'          => 'Someone else comment',
+            'anchor_exact'     => 'untouchable',
+        ]);
+
+        // 'tech' can update the article, but the comment feature itself is disabled for them.
+        $this->login('tech', 'tech');
+        $_SESSION['glpiactiveprofile']['knowbase'] |= READ | UPDATE;
+        $_SESSION['glpiactiveprofile']['knowbase'] &= ~(KnowbaseItem::KNOWBASEADMIN | KnowbaseItem::COMMENTS);
+
+        (new KnowbaseItem_Comment())->clearAnchorsForItem($kb1, [$id]);
+
+        $this->login();
         $comment->getFromDB($id);
         $this->assertTrue($comment->hasAnchor());
         $this->assertSame('untouchable', $comment->fields['anchor_exact']);

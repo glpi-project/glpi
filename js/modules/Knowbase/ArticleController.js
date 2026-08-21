@@ -107,6 +107,9 @@ export class GlpiKnowbaseArticleController
     /** @type {DocumentLinkController|null} */
     #document_link_controller = null;
 
+    /** @type {boolean} */
+    #can_comment = false;
+
     /** @type {Array<{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}>} */
     #comment_anchors = [];
 
@@ -165,6 +168,7 @@ export class GlpiKnowbaseArticleController
             );
         }
         this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;
+        this.#can_comment = container.dataset.glpiKbCanComment === 'true';
         if (mode === 'add') {
             const prefilled_id = Number(container.dataset.glpiKbPrefilledCategoryId);
             if (Number.isInteger(prefilled_id) && prefilled_id > 0) {
@@ -1019,6 +1023,11 @@ export class GlpiKnowbaseArticleController
 
     #initCommentAnchors()
     {
+        // Covers "add" mode and users who lack the comment right.
+        if (!this.#can_comment) {
+            return;
+        }
+
         const content_el = this.#container.querySelector('[data-glpi-kb-content]');
         if (!content_el) {
             return;
@@ -1267,6 +1276,7 @@ export class GlpiKnowbaseArticleController
                     return __("Type / to insert...");
                 },
                 item_id: this.#item_id,
+                can_comment: this.#can_comment,
                 comment_anchors: this.#comment_anchors,
                 comment_anchor_max_length: this.#comment_anchor_max_length,
                 onUpdate: () => {

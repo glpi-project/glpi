@@ -273,7 +273,9 @@ final class KnowbaseItem_Comment extends CommonDBTM
      */
     private static function writeAnchors(KnowbaseItem $article, array $updates, bool $only_anchored): void
     {
-        if ($updates === []) {
+        // Anchors track position in the article's content, not comment ownership,
+        // but still require the comment feature itself to be enabled for the user.
+        if ($updates === [] || !$article->can($article->getID(), UPDATE) || !$article->canComment()) {
             return;
         }
 
@@ -284,9 +286,6 @@ final class KnowbaseItem_Comment extends CommonDBTM
 
         foreach ($comments as $comment) {
             if ($only_anchored && !$comment->hasAnchor()) {
-                continue;
-            }
-            if (!$comment->can($comment->getID(), UPDATE)) {
                 continue;
             }
             $comment->update(
