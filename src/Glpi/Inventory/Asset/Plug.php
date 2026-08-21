@@ -67,21 +67,6 @@ class Plug extends InventoryAsset
         return GlobalPlug::class;
     }
 
-
-    /**
-     * Resolve FK string values that handleLinks() may have skipped for locked fields.
-     *
-     * handleLinks() skips locked FK fields when the parent item is not new (i.e. an existing PDU).
-     * For newly created Plugs we still need the integer ID, so resolve any remaining strings.
-     */
-    private function resolveInput(array $input): array
-    {
-        if (isset($input['plugtypes_id']) && !is_numeric($input['plugtypes_id'])) {
-            $input['plugtypes_id'] = \Dropdown::importExternal('PlugType', (string) $input['plugtypes_id'], $this->entities_id);
-        }
-        return $input;
-    }
-
     public function handle(): void
     {
 
@@ -114,11 +99,11 @@ class Plug extends InventoryAsset
             // if found update it
             if ($found_key !== null) {
                 $plug->getFromDB($found_key);
-                $plug->update($this->resolveInput($this->handleInput($val, $plug)) + ['id' => $found_key]);
+                $plug->update($this->handleInput($val, $plug)) + ['id' => $found_key];
                 unset($db_plugs[$found_key]);
             } else { // else add plug to current PDU
                 $plug->reset();
-                $plug->add($this->resolveInput($this->handleInput($val, $plug)));
+                $plug->add($this->handleInput($val, $plug));
             }
         }
 
