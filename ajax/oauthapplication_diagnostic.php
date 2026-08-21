@@ -40,8 +40,8 @@ use function Safe\json_encode;
 header('Content-Type: application/json; charset=UTF-8');
 Html::header_nocache();
 
-Session::checkRight(OAuthApplication::$rightname, READ);
-
+// `check()` is used rather than `Session::checkRight()` so that the
+// re-authentication ("sudo mode") required by this itemtype is enforced here too.
 $application = new OAuthApplication();
 $application->check((int) ($_POST['id'] ?? 0), READ);
 

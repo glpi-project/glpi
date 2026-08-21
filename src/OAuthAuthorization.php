@@ -85,6 +85,20 @@ class OAuthAuthorization extends CommonDBChild
         return _n('OAuth authorization', 'OAuth authorizations', $nb);
     }
 
+    /**
+     * An authorization stores the access and refresh tokens of a mailbox, so
+     * listing, refreshing, troubleshooting or revoking one is a sensitive
+     * action and requires the user to re-authenticate ("sudo mode").
+     *
+     * The flag is not inherited from the parent OAuthApplication, hence the
+     * dedicated override here.
+     */
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
     public static function getIcon(): string
     {
         return 'ti ti-key';

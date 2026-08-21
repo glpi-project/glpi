@@ -37,15 +37,25 @@ namespace tests\units;
 use Glpi\Mail\OauthProvider\OwnerDetails;
 use Glpi\Mail\OauthProvider\ProviderInterface;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use GLPIKey;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Token\AccessTokenInterface;
 use OAuthApplication;
 use OAuthAuthorization;
+use PHPUnit\Framework\Attributes\Group;
 use RuntimeException;
 
 class OAuthAuthorizationTest extends DbTestCase
 {
+    use ReAuthTrait;
+
+    public function tearDown(): void
+    {
+        $this->restoreWebContext();
+        parent::tearDown();
+    }
+
     private function createApplication(): OAuthApplication
     {
         return $this->createItem(OAuthApplication::class, [
@@ -621,6 +631,76 @@ class OAuthAuthorizationTest extends DbTestCase
         $id = $authorization->getID();
         $this->assertTrue($authorization->revokeAuthorization());
         $this->assertFalse((new OAuthAuthorization())->getFromDB($id));
+    }
+
+    // -------------------------------------------------------------------------
+    // Re-authentication ("sudo mode")
+    // -------------------------------------------------------------------------
+
+    #[Group('reauth')]
+    public function testItemTypeRequiresReauthentication(): void
+    {
+        $this->login();
+
+        /** @var OAuthAuthorization $authorization */
+        $authorization = $this->createItem(OAuthAuthorization::class, [
+            'oauth_applications_id' => $this->createApplication()->getID(),
+            'type'                  => OAuthAuthorization::TYPE_IMAP,
+            'email'                 => 'user@example.com',
+            'refresh_token'         => 'refresh-value',
+        ], ['refresh_token']);
+        $id = $authorization->getID();
+
+        $this->fakeWebContext();
+
+        // Listing the authorizations of an application, refreshing a token and
+        // revoking an authorization all handle mailbox tokens, so each of these
+        // must ask for a re-authentication.
+        foreach ([READ, UPDATE, PURGE] as $right) {
+            $this->setReauthenticated(false);
+            $reauth_needed = null;
+            $input = null;
+            $this->assertFalse(
+                (new OAuthAuthorization())->can($id, $right, $input, $reauth_needed),
+                "{$right}: can() should be denied while not re-authenticated"
+            );
+            $this->assertTrue($reauth_needed, "{$right}: a re-authentication should be requested");
+
+            $this->setReauthenticated(true);
+            $reauth_needed = null;
+            $input = null;
+            $this->assertTrue(
+                (new OAuthAuthorization())->can($id, $right, $input, $reauth_needed),
+                "{$right}: can() should be granted once re-authenticated"
+            );
+            $this->assertFalse($reauth_needed, "{$right}: no re-authentication should be requested anymore");
+        }
+    }
+
+    /**
+     * The OAuth callback stores the authorization on behalf of the provider
+     * redirect, without going through can()/check(), so granting a new
+     * authorization must not be blocked by the re-authentication requirement.
+     */
+    #[Group('reauth')]
+    public function testCreateFromCodeIsNotBlockedByTheReauthenticationRequirement(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+
+        $provider = new FakeOauthProviderForTests();
+        $provider->access_token_result = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
+        $owner = new OwnerDetails();
+        $owner->email = 'user@example.com';
+        $provider->owner_details = $owner;
+
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+
+        $authorization = TestableOAuthAuthorization::withProvider($provider);
+
+        $this->assertTrue($authorization->createFromCode($app->getID(), OAuthAuthorization::TYPE_IMAP, 'a-code'));
     }
 }
 

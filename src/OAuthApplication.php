@@ -57,6 +57,17 @@ final class OAuthApplication extends CommonDBTM
         return _n('OAuth application', 'OAuth applications', $nb);
     }
 
+    /**
+     * An application carries the OAuth client credentials used to obtain mail
+     * access tokens, so reading or altering one is a sensitive action and
+     * requires the user to re-authenticate ("sudo mode").
+     */
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
     public static function getSectorizedDetails(): array
     {
         return ['config', self::class];
