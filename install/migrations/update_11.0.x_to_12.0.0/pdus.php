@@ -37,6 +37,9 @@
  * @var DBmysql $DB
  */
 
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
+
 $migration->addField(
     'glpi_pdus',
     'sysdescr',
