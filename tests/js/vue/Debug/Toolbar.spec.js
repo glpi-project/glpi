@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import '/build/vue/app.js';
+import '/js/src/vue/app.js';
 import {flushPromises, mount} from "@vue/test-utils";
 
 describe("Debug Bar", () => {
