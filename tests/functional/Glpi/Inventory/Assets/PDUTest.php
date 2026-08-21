@@ -75,14 +75,14 @@ class PDUTest extends AbstractInventoryAsset
       </INFO>
       <PDU>
         <TYPE>C13/C19</TYPE>
-        <PLUG>
+        <PLUGs>
           <NAME>Server_Blade_01</NAME>
           <TYPE>C15</TYPE>
-        </PLUG>
-        <PLUG>
+        </PLUGs>
+        <PLUGs>
           <NAME>Storage_SAN_Controller_B</NAME>
           <TYPE>C14</TYPE>
-        </PLUG>
+        </PLUGs>
       </PDU>
     </DEVICE>
     <MODULEVERSION>4.1</MODULEVERSION>
@@ -112,18 +112,18 @@ class PDUTest extends AbstractInventoryAsset
       </INFO>
       <PDU>
         <TYPE>C13/C19</TYPE>
-        <PLUG>
+        <PLUGs>
           <NAME>Server_Blade_01</NAME>
           <TYPE>C15</TYPE>
-        </PLUG>
-        <PLUG>
+        </PLUGs>
+        <PLUGs>
           <NAME>Storage_SAN_Controller_B</NAME>
           <TYPE>C14</TYPE>
-        </PLUG>
-        <PLUG>
+        </PLUGs>
+        <PLUGs>
           <NAME>Network_Switch_Core</NAME>
           <TYPE>C13</TYPE>
-        </PLUG>
+        </PLUGs>
       </PDU>
     </DEVICE>
     <MODULEVERSION>4.1</MODULEVERSION>
@@ -151,10 +151,10 @@ class PDUTest extends AbstractInventoryAsset
       </INFO>
       <PDU>
         <TYPE>C13/C19</TYPE>
-        <PLUG>
+        <PLUGs>
           <NAME>Server_Blade_01</NAME>
           <TYPE>C15</TYPE>
-        </PLUG>
+        </PLUGs>
       </PDU>
     </DEVICE>
     <MODULEVERSION>4.1</MODULEVERSION>
@@ -210,14 +210,14 @@ class PDUTest extends AbstractInventoryAsset
       </INFO>
       <PDU>
         <TYPE>C13/C19</TYPE>
-        <PLUG>
+        <PLUGs>
           <NAME>Server_Blade_02</NAME>
           <TYPE>C15</TYPE>
-        </PLUG>
-        <PLUG>
+        </PLUGs>
+        <PLUGs>
           <NAME>Storage_SAN_Controller_B1</NAME>
           <TYPE>C14</TYPE>
-        </PLUG>
+        </PLUGs>
       </PDU>
     </DEVICE>
     <MODULEVERSION>4.1</MODULEVERSION>
@@ -232,11 +232,11 @@ class PDUTest extends AbstractInventoryAsset
         return [
             [
                 'xml' => self::XML_TWO_PLUGS,
-                'expected' => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","is_deleted":0,"contact":"Schneider Electric Support","firmware":"6.9.6","ips":["192.168.1.50"],"location":"DataCenter_Room_01_Rack_A4","mac":"00:C0:B7:65:DE:01","manufacturer":"APC","model":"AP8853","name":"PDU-MASTER-RACK-A4","serial":"ZA133456789","type":"Pdu","uptime":"45:12:30.22","description":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdu":{"plug":[{"name":"Server_Blade_01","plugtypes_id":"C15"},{"name":"Storage_SAN_Controller_B","plugtypes_id":"C14"}]},"sysdescr":"APC Rack PDU Switched, 2G, Metered-by-Outlet","locations_id":"DataCenter_Room_01_Rack_A4","pdumodels_id":"AP8853","pdutypes_id":"C13\/C19","manufacturers_id":"APC"}',
+                'expected' => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","is_deleted":0,"contact":"Schneider Electric Support","firmware":"6.9.6","ips":["192.168.1.50"],"location":"DataCenter_Room_01_Rack_A4","mac":"00:C0:B7:65:DE:01","manufacturer":"APC","model":"AP8853","name":"PDU-MASTER-RACK-A4","serial":"ZA133456789","type":"Pdu","uptime":"45:12:30.22","description":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdu":{"plugs":[{"name":"Server_Blade_01","plugtypes_id":"C15"},{"name":"Storage_SAN_Controller_B","plugtypes_id":"C14"}]},"sysdescr":"APC Rack PDU Switched, 2G, Metered-by-Outlet","locations_id":"DataCenter_Room_01_Rack_A4","pdumodels_id":"AP8853","pdutypes_id":"C13\/C19","manufacturers_id":"APC"}',
             ],
             [
                 'xml' => self::XML_ONE_PLUGS,
-                'expected' => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","is_deleted":0,"firmware":"6.9.6","ips":["192.168.1.50"],"mac":"00:C0:B7:65:DE:01","manufacturer":"APC","model":"AP8853","name":"PDU-SINGLE-PLUG","serial":"ZA-SINGLE-001","type":"Pdu","description":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdu":{"plug":[{"name":"Server_Blade_01","plugtypes_id":"C15"}]},"sysdescr":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdumodels_id":"AP8853","pdutypes_id":"C13\/C19","manufacturers_id":"APC"}',
+                'expected' => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","is_deleted":0,"firmware":"6.9.6","ips":["192.168.1.50"],"mac":"00:C0:B7:65:DE:01","manufacturer":"APC","model":"AP8853","name":"PDU-SINGLE-PLUG","serial":"ZA-SINGLE-001","type":"Pdu","description":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdu":{"plugs":[{"name":"Server_Blade_01","plugtypes_id":"C15"}]},"sysdescr":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdumodels_id":"AP8853","pdutypes_id":"C13\/C19","manufacturers_id":"APC"}',
             ],
         ];
     }
