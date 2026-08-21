@@ -33,6 +33,9 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Mail\OauthProvider\ProviderInterface as ImapOauthProviderInterface;
+use Glpi\Mail\SMTP\OauthProvider\Azure as SmtpAzure;
+use Glpi\Mail\SMTP\OauthProvider\Google as SmtpGoogle;
 
 final class OAuthApplication extends CommonDBTM
 {
@@ -54,6 +57,17 @@ final class OAuthApplication extends CommonDBTM
         return _n('OAuth application', 'OAuth applications', $nb);
     }
 
+    /**
+     * An application carries the OAuth client credentials used to obtain mail
+     * access tokens, so reading or altering one is a sensitive action and
+     * requires the user to re-authenticate ("sudo mode").
+     */
+    #[Override]
+    protected static function itemTypeRequiresReauthentication(): bool
+    {
+        return true;
+    }
+
     public static function getSectorizedDetails(): array
     {
         return ['config', self::class];
@@ -69,6 +83,7 @@ final class OAuthApplication extends CommonDBTM
     {
         $tabs = parent::defineTabs($options);
         $this->addStandardTab(self::class, $tabs, $options);
+        $this->addStandardTab(OAuthAuthorization::class, $tabs, $options);
         return $tabs;
     }
 
@@ -219,7 +234,7 @@ final class OAuthApplication extends CommonDBTM
             return false;
         }
 
-        if (($input['provider'] ?? null) !== self::AZURE) {
+        if (($full['provider'] ?? null) !== self::AZURE) {
             $input['tenant_id'] = '';
         }
 
@@ -300,6 +315,68 @@ final class OAuthApplication extends CommonDBTM
             self::GOOGLE => __('Google'),
         ];
     }
+
+    /**
+     * Builds the OAuth provider instance configured for this application,
+     * requesting the scopes relevant to the given authorization type.
+     *
+     * @param string $type One of `OAuthAuthorization::TYPE_IMAP`/`TYPE_SMTP`.
+     */
+    public function getOauthProvider(string $type): ImapOauthProviderInterface
+    {
+        $provider_class = match ($this->fields['provider']) {
+            self::AZURE  => SmtpAzure::class,
+            self::GOOGLE => SmtpGoogle::class,
+            default      => throw new RuntimeException(sprintf('Unknown provider %s.', $this->fields['provider'])),
+        };
+
+        $options = [
+            'clientId'     => $this->fields['client_id'],
+            'clientSecret' => (new GLPIKey())->decrypt($this->fields['client_secret']),
+            'redirectUri'  => self::getCallbackUrl(),
+            'type'         => $type,
+        ];
+
+        if ($this->fields['provider'] === self::AZURE && !empty($this->fields['tenant_id'])) {
+            $options['tenant'] = $this->fields['tenant_id'];
+        }
+
+        return new $provider_class($options);
+    }
+
+    /**
+     * Redirects the current user to the provider's consent screen, in order
+     * to authorize a mailbox for the given authorization type.
+     *
+     * @param string $type One of `OAuthAuthorization::TYPE_IMAP`/`TYPE_SMTP`.
+     */
+    public function redirectToAuthorizationUrl(string $type): void
+    {
+        if ($this->isNewItem()) {
+            throw new RuntimeException('Invalid application.');
+        }
+
+        $provider = $this->getOauthProvider($type);
+
+        $auth_url = $provider->getAuthorizationUrl();
+
+        $_SESSION['oauth2_provider_id'] = $this->fields['id'];
+        $_SESSION['oauth2_type']        = $type;
+        $_SESSION['oauth2_state']       = $provider->getState();
+
+        Html::redirect($auth_url);
+    }
+
+    /**
+     * Returns the absolute URL of the OAuth callback route.
+     */
+    public static function getCallbackUrl(): string
+    {
+        global $CFG_GLPI;
+
+        return $CFG_GLPI['url_base'] . '/oauth/callback';
+    }
+
 
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {

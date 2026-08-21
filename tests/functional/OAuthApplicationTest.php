@@ -35,12 +35,22 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
 use GLPIKey;
 use MailCollector;
 use OAuthApplication;
+use PHPUnit\Framework\Attributes\Group;
 
 class OAuthApplicationTest extends DbTestCase
 {
+    use ReAuthTrait;
+
+    public function tearDown(): void
+    {
+        $this->restoreWebContext();
+        parent::tearDown();
+    }
+
     // -------------------------------------------------------------------------
     // CRUD
     // -------------------------------------------------------------------------
@@ -501,6 +511,85 @@ class OAuthApplicationTest extends DbTestCase
         $this->withRight(fn($right) => READ, function () {
             $this->assertFalse(OAuthApplication::canUpdate());
             $this->assertTrue(OAuthApplication::canView());
+        });
+    }
+
+    // -------------------------------------------------------------------------
+    // Re-authentication ("sudo mode")
+    // -------------------------------------------------------------------------
+
+    #[Group('reauth')]
+    public function testItemTypeRequiresReauthentication(): void
+    {
+        $this->login();
+        $app_id = $this->createItem(OAuthApplication::class, [
+            'name'          => 'Reauth app',
+            'is_active'     => 1,
+            'provider'      => OAuthApplication::AZURE,
+            'client_id'     => 'my-client-id',
+            'client_secret' => 'my-secret',
+            'tenant_id'     => 'my-tenant',
+        ], ['client_secret'])->getID();
+        $this->fakeWebContext();
+
+        // Listing, updating and purging an application all expose or alter the
+        // stored client credentials, so each of them must ask for a re-authentication.
+        foreach ([READ, UPDATE, PURGE] as $right) {
+            $this->setReauthenticated(false);
+            $reauth_needed = null;
+            $input = null;
+            $this->assertFalse(
+                (new OAuthApplication())->can($app_id, $right, $input, $reauth_needed),
+                "{$right}: can() should be denied while not re-authenticated"
+            );
+            $this->assertTrue($reauth_needed, "{$right}: a re-authentication should be requested");
+
+            $this->setReauthenticated(true);
+            $reauth_needed = null;
+            $input = null;
+            $this->assertTrue(
+                (new OAuthApplication())->can($app_id, $right, $input, $reauth_needed),
+                "{$right}: can() should be granted once re-authenticated"
+            );
+            $this->assertFalse($reauth_needed, "{$right}: no re-authentication should be requested anymore");
+        }
+    }
+
+    #[Group('reauth')]
+    public function testCreationRequiresReauthentication(): void
+    {
+        $this->login();
+        $this->fakeWebContext();
+
+        $this->setReauthenticated(false);
+        $reauth_needed = null;
+        $input = null;
+        $this->assertFalse((new OAuthApplication())->can(-1, CREATE, $input, $reauth_needed));
+        $this->assertTrue($reauth_needed);
+
+        $this->setReauthenticated(true);
+        $reauth_needed = null;
+        $input = null;
+        $this->assertTrue((new OAuthApplication())->can(-1, CREATE, $input, $reauth_needed));
+        $this->assertFalse($reauth_needed);
+    }
+
+    /**
+     * Without the right, the request must be denied outright rather than
+     * answered with a re-authentication prompt.
+     */
+    #[Group('reauth')]
+    public function testMissingRightDoesNotRequestAReauthentication(): void
+    {
+        $this->login();
+        $this->fakeWebContext();
+        $this->setReauthenticated(false);
+
+        $this->withRight(fn($right) => 0, function () {
+            $reauth_needed = null;
+            $input = null;
+            $this->assertFalse((new OAuthApplication())->can(-1, CREATE, $input, $reauth_needed));
+            $this->assertFalse($reauth_needed);
         });
     }
 
