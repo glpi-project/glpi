@@ -45,6 +45,31 @@
         {% endif %}
     {% endmacro %}
 
+    {{ fields.dropdownField('Entity', 'entities_id', item.fields['entities_id'], 'Entity'|itemtype_name, {
+        'display_emptychoice': true,
+        'required': true,
+        rand: rand,
+        on_change: 'entity_update' ~ rand ~ '(this.value)'
+    }|merge(field_options)) }}
+
+    <script>
+        function entity_update{{ rand }}(value) {
+            formdata = $('[name="asset_form"]').serializeArray();
+            $.ajax({
+                url: "{{ path('ajax/planning.php')|e('js') }}",
+                type: "POST",
+                data: {
+                    action: 'get_externalevent_entity',
+                    entities_id: value,
+                    data: formdata,
+                    rand: {{ params.rand_reminder }}
+                }
+            }).done(function(data) {
+                    $("#ajax_reminder{{ params.rand_reminder }}").html(data);
+            });
+        }
+    </script>
+
     {% if params.canedit %}
         {{ fields.dropdownField(
             'PlanningExternalEventTemplate',
