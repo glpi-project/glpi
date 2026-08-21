@@ -99,9 +99,11 @@ class Plug extends InventoryAsset
 
             // if found update it
             if ($found_key !== null) {
+                $plug->getFromDB($found_key);
                 $plug->update($this->handleInput($val, $plug) + ['id' => $found_key]);
                 unset($db_plugs[$found_key]);
             } else { // else add plug to current PDU
+                $plug->reset();
                 $plug->add($this->handleInput($val, $plug));
             }
         }
