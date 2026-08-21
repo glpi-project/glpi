@@ -37,6 +37,7 @@ namespace tests\units\Glpi\System\Log;
 use Glpi\System\Log\LogParser;
 use Glpi\Tests\GLPITestCase;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class LogParserTest extends GLPITestCase
 {
@@ -139,6 +140,16 @@ LOG
         $this->assertSame('application/octet-stream', $response->headers->get('Content-Type'));
         $this->assertSame('attachment; filename=test.log', $response->headers->get('Content-Disposition'));
         $this->assertSame(file_get_contents($this->log_file_path), $response->getFile()->getContent());
+    }
+
+
+    public function testDownloadMissingFile()
+    {
+        $instance = new LogParser();
+
+        $response = $instance->download('missing.log');
+
+        $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 
 
