@@ -65,7 +65,7 @@ export class IllustrationPickerPage extends GlpiPage
 
     public async doSelectIllustration(name: string): Promise<void>
     {
-        await this.picker_modal.getByRole('img', { name }).click();
+        await this.picker_modal.getByRole('button', { name }).click();
         await expect(this.picker_modal).toHaveAttribute('data-cy-shown', 'false');
     }
 
@@ -97,7 +97,7 @@ export class IllustrationPickerPage extends GlpiPage
 
     public getModalImages(): Locator
     {
-        return this.picker_modal.getByRole('img');
+        return this.picker_modal.getByRole('group', { name: 'Illustrations' }).getByRole('button');
     }
 
     public getCustomPreview(): Locator

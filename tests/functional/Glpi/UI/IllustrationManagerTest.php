@@ -116,6 +116,34 @@ final class IllustrationManagerTest extends GLPITestCase
         $this->assertSame('', $manager->renderIcon('', 60));
     }
 
+    public function testRenderIconIsHiddenAndUnnamed(): void
+    {
+        $manager = new IllustrationManager();
+
+        $html = $manager->renderIcon('report-issue');
+
+        $this->assertStringContainsString('aria-hidden="true"', $html);
+        $this->assertStringNotContainsString('<title>', $html);
+    }
+
+    public function testRenderSceneIsHiddenAndUnnamed(): void
+    {
+        $manager = new IllustrationManager();
+
+        $html = $manager->renderScene('desk');
+
+        $this->assertStringContainsString('aria-hidden="true"', $html);
+        $this->assertStringNotContainsString('<title>', $html);
+    }
+
+    public function testGetIconTitle(): void
+    {
+        $manager = new IllustrationManager();
+
+        $this->assertSame('Report an issue', $manager->getIconTitle('report-issue'));
+        $this->assertSame('', $manager->getIconTitle('report-issue.svg'));
+    }
+
     public function testIllustrationsTranslationsAreGenerated(): void
     {
         // Assert: a file with translations for each icons should exist in the

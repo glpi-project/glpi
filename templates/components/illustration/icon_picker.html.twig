@@ -69,6 +69,9 @@
         data-testid="illustration-input"
     >
 
+    {% set is_custom_file = value starts with custom_icon_prefix %}
+    {% set is_empty = value is empty %}
+
     <div
         class="{{ preview_css_classes }}"
         {% if editable %}
@@ -82,10 +85,17 @@
         data-glpi-icon-picker-value-preview
         data-testid="illustration-picker"
     >
+        {% if not is_empty and not is_custom_file %}
+            {# The svg illustration itself is never named (see icon.svg.twig), so the
+             # currently selected illustration's name is carried by this hidden status instead. #}
+            <span
+                class="visually-hidden"
+                role="img"
+                aria-label="{{ getIconTitle(value) }}"
+                data-glpi-icon-picker-value-preview-status
+            ></span>
+        {% endif %}
         <div class="{{ preview_inner_css_classes }}">
-            {% set is_custom_file = value starts with custom_icon_prefix %}
-            {% set is_empty = value is empty %}
-
             {# Placeholder: visible when no illustration is set. #}
             <div
                 class="d-flex align-items-center justify-content-center{% if not is_empty %} d-none{% endif %}"
