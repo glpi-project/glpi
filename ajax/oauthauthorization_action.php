@@ -34,17 +34,13 @@
 
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkRight(OAuthApplication::$rightname, UPDATE);
-
 if (isset($_POST['id']) && isset($_POST['type']) && isset($_POST['request_authorization'])) {
     $application = new OAuthApplication();
     $application->check($_POST['id'], UPDATE);
     $application->redirectToAuthorizationUrl($_POST['type']);
 } elseif (isset($_POST['id']) && isset($_POST['refresh'])) {
     $authorization = new OAuthAuthorization();
-    $authorization->getFromDB($_POST['id']);
-    $authorization->check($_POST['id'], UPDATE);
-
+    $authorization->check((int) ($_POST['id'] ?? 0), UPDATE);
     if ($authorization->refreshToken()) {
         Session::addMessageAfterRedirect(__s('Token refreshed'), false, INFO);
     } else {

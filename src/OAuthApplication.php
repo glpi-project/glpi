@@ -223,7 +223,7 @@ final class OAuthApplication extends CommonDBTM
             return false;
         }
 
-        if (($input['provider'] ?? null) !== self::AZURE) {
+        if (($full['provider'] ?? null) !== self::AZURE) {
             $input['tenant_id'] = '';
         }
 
