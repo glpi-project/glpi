@@ -419,6 +419,9 @@ class Reminder extends CommonDBVisible implements
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(static::class));
 
+        // Add tags for taggable itemtypes
+        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(static::class));
+
         return $tab;
     }
 

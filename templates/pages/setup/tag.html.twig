@@ -36,13 +36,17 @@
 {% set generate_bg_color = params.bg_color ?? item.generateBackgroundColor(random()) %}
 {% set generate_color = params.color ?? item.generateTextColor(generate_bg_color) %}
 {% set preview_id = 'tag_preview_' ~ random() %}
+{% set itemtypes_rand = random() %}
 
 {% block more_fields %}
     {{ fields.dropdownItemTypes('_itemtypes', null, _n('Associated Itemtype', 'Associated Itemtypes', get_plural_number()), {
-        types: config('taggable_types'),
+        types: call('Tag_Itemtype::getTaggableItems'),
         multiple: true,
-        values: item.getItemtypes(),
+        values: item.getItemtypes(false),
+        rand: itemtypes_rand,
+        helper: __('If no itemtype is selected, the tag can be associated with any taggable itemtype'),
     }) }}
+
     {{ fields.colorField('bg_color', item.isNewItem() ? generate_bg_color : item.getBackgroundColor(), __('Background Color')) }}
     {{ fields.colorField('color', item.isNewItem() ? generate_color : item.getTextColor(), __('Color')) }}
 
@@ -56,6 +60,13 @@
             </span>
         </div>
     </div>
+
+    <style>
+        #dropdown__itemtypes{{ itemtypes_rand }} + .select2 .select2-selection--multiple {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+    </style>
 
     <script type="module">
         const preview = document.getElementById('{{ preview_id|e('js') }}');

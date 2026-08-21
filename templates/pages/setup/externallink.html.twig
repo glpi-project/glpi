@@ -37,6 +37,11 @@
     {{ fields.textField('name', item.fields['name'], __('Name'), {
         full_width: true,
     }) }}
+
+    {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
+        {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+    {% endif %}
+
     {{ fields.dropdownItemTypes('itemtypes', null, _n('Type', 'Types', get_plural_number()), {
         types: config('link_types'),
         multiple: true,

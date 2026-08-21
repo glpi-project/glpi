@@ -110,6 +110,10 @@
                field_options
             ) }}
 
+            {% if call('Tag_Itemtype::isTaggableItemtype', [item.getType()]) %}
+               {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
+            {% endif %}
+
             {% if item.getType() != 'Ticket' %}
                {{ fields.datetimeField(
                   'time_to_resolve',
