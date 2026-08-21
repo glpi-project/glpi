@@ -192,6 +192,24 @@ body.in_modal .kb-article {
     }
 }
 
+// Sub-articles tab: one navigation row per child article
+.kb-child-articles {
+    .kb-child-article {
+        padding: 0.25rem 0;
+
+        // No color here: it would override the anchor's text-hover-link
+        a:hover .text-truncate {
+            text-decoration: underline;
+        }
+    }
+
+    // Fixed slot so titles stay aligned whether or not the child has an illustration
+    .kb-child-article-icon {
+        flex: 0 0 20px;
+        height: 20px;
+    }
+}
+
 // KB revision diff - inline highlights
 .kb-article--diff-mode {
     ins.diffins {

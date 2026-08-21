@@ -1437,6 +1437,20 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['related_items_count'] = count($items);
             $params['can_link_items']      = $can_update;
 
+            // Add child articles info
+            $child_articles = $this->getChildArticlesInfo();
+            $params['child_articles'] = $child_articles;
+
+            // Which footer tabs exist, and which one opens by default
+            $params['show_children_tab']  = $child_articles !== [];
+            $params['show_documents_tab'] = $documents !== [] || $can_update;
+            $params['show_items_tab']     = $items !== [] || $can_update;
+            $params['active_tab']         = match (true) {
+                $params['show_children_tab']  => 'children',
+                $params['show_documents_tab'] => 'documents',
+                default                       => 'items',
+            };
+
             // General fields
             $params['views']        = $this->fields['view'];
             $params['can_edit']     = $can_update;
@@ -1602,6 +1616,71 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
 
         return $related_items;
+    }
+
+    /**
+     * @return list<array{
+     *      'id': int,
+     *      'name': string,
+     *      'illustration': string,
+     *      'link_url': string,
+     * }>
+     */
+    private function getChildArticlesInfo(): array
+    {
+        global $DB;
+
+        // getListRequest()'s visibility cannot filter this query: inherited visibility matches every child of a readable parent.
+        $criteria = [
+            'SELECT'     => self::getTableField('id'),
+            'FROM'       => self::getTable(),
+            'INNER JOIN' => [
+                KnowbaseItem_KnowbaseItem::getTable() => [
+                    'FKEY' => [
+                        KnowbaseItem_KnowbaseItem::getTable() => 'knowbaseitems_id',
+                        self::getTable()                      => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'      => [
+                KnowbaseItem_KnowbaseItem::getTableField('knowbaseitems_id_parent') => $this->fields['id'],
+            ],
+            'ORDER'      => [self::getTableField('name') . ' ASC'],
+        ];
+
+        // can() ignores the validity window, so apply it here exactly as getListRequest() does.
+        if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+            $criteria['WHERE'][] = [
+                'OR' => [
+                    [self::getTableField('begin_date') => null],
+                    [self::getTableField('begin_date') => ['<', QueryFunction::now()]],
+                ],
+            ];
+            $criteria['WHERE'][] = [
+                'OR' => [
+                    [self::getTableField('end_date') => null],
+                    [self::getTableField('end_date') => ['>', QueryFunction::now()]],
+                ],
+            ];
+        }
+
+        $children = [];
+        $child = new self();
+        $rows = $DB->request($criteria);
+        foreach ($rows as $row) {
+            $child_id = (int) $row['id'];
+            if (!$child->can($child_id, READ)) {
+                continue;
+            }
+            $children[] = [
+                'id'           => $child_id,
+                'name'         => $child->getName(),
+                'illustration' => $child->fields['illustration'] ?? '',
+                'link_url'     => self::getFormURLWithID($child_id),
+            ];
+        }
+
+        return $children;
     }
 
     /** @return array<EditorAction|EditorActionSeparator> */

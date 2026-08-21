@@ -995,6 +995,153 @@ HTML,
         $this->assertStringNotContainsString('data-glpi-kb-prefilled-parent-id', $html);
     }
 
+    public function testSubArticlesTabHidesChildrenTheUserCannotOpen(): void
+    {
+        // The parent is readable through its own grant. The child has none, so it is
+        // reachable only through inherited visibility, and its own page would refuse access.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_parent',
+            'answer'      => __FUNCTION__ . '_parent',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_child',
+            'answer'      => __FUNCTION__ . '_child',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            '_parents'    => [$parent->getID()],
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $parent->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        // A session without KB admin rights, unrelated to both articles.
+        $this->login('post-only', 'postonly');
+
+        $readable = new KnowbaseItem();
+        $this->assertTrue($readable->can($parent->getID(), READ));
+        $unreadable = new KnowbaseItem();
+        $this->assertFalse($unreadable->can($child->getID(), READ));
+
+        $item = new KnowbaseItem();
+        $item->getFromDB($parent->getID());
+        $html = (string) $item->showFull(['display' => false]);
+
+        $this->assertStringNotContainsString($child->fields['name'], $html);
+        $this->assertStringNotContainsString('id="kb-children-tab"', $html);
+    }
+
+    public function testSubArticlesTabHidesChildrenOutsideTheirValidityWindow(): void
+    {
+        // can() ignores begin_date/end_date, so the tab must apply the window itself,
+        // otherwise it publishes scheduled or expired articles the rest of the KB hides.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_parent',
+            'answer'      => __FUNCTION__ . '_parent',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $children = [];
+        // Relative dates: `begin_date` is a timestamp column, capped at 2038 on MySQL.
+        foreach (
+            [
+                'valid'   => ['begin_date' => null, 'end_date' => null],
+                'expired' => ['begin_date' => null, 'end_date' => date('Y-m-d H:i:s', strtotime('-1 year'))],
+                'future'  => ['begin_date' => date('Y-m-d H:i:s', strtotime('+1 year')), 'end_date' => null],
+            ] as $key => $dates
+        ) {
+            $children[$key] = $this->createItem(KnowbaseItem::class, [
+                'name'        => __FUNCTION__ . '_' . $key,
+                'answer'      => __FUNCTION__ . '_' . $key,
+                'is_faq'      => 1,
+                'users_id'    => $glpi_user,
+                'entities_id' => $entity,
+                '_parents'    => [$parent->getID()],
+                'begin_date'  => $dates['begin_date'],
+                'end_date'    => $dates['end_date'],
+            ]);
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $children[$key]->getID(),
+                'entities_id'      => $entity,
+                'is_recursive'     => 1,
+            ]);
+        }
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $parent->getID(),
+            'entities_id'      => $entity,
+            'is_recursive'     => 1,
+        ]);
+
+        $this->login('post-only', 'postonly');
+
+        $item = new KnowbaseItem();
+        $item->getFromDB($parent->getID());
+        $html = (string) $item->showFull(['display' => false]);
+
+        $this->assertStringContainsString($children['valid']->fields['name'], $html);
+        $this->assertStringNotContainsString($children['expired']->fields['name'], $html);
+        $this->assertStringNotContainsString($children['future']->fields['name'], $html);
+    }
+
+    public function testSubArticlesTabListsChildrenTheUserCanOpen(): void
+    {
+        // Same shape as the test above, but the child carries its own grant.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_parent',
+            'answer'      => __FUNCTION__ . '_parent',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+        ]);
+        $child = $this->createItem(KnowbaseItem::class, [
+            'name'        => __FUNCTION__ . '_child',
+            'answer'      => __FUNCTION__ . '_child',
+            'is_faq'      => 1,
+            'users_id'    => $glpi_user,
+            'entities_id' => $entity,
+            '_parents'    => [$parent->getID()],
+        ]);
+        foreach ([$parent->getID(), $child->getID()] as $article_id) {
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $article_id,
+                'entities_id'      => $entity,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->login('post-only', 'postonly');
+
+        $item = new KnowbaseItem();
+        $item->getFromDB($parent->getID());
+        $html = (string) $item->showFull(['display' => false]);
+
+        $this->assertStringContainsString('id="kb-children-tab"', $html);
+        $this->assertStringContainsString($child->fields['name'], $html);
+
+        // This session cannot update the article and it has no document, so the
+        // Documents and Related items tabs must not be rendered at all.
+        $this->assertStringNotContainsString('id="kb-documents-tab-btn"', $html);
+        $this->assertStringNotContainsString('id="kb-items-tab-btn"', $html);
+    }
+
     public function testShowFullAddModePrefillsParentFromOptions(): void
     {
         $this->login();
