@@ -64,6 +64,7 @@ class AssetParametersTest extends AbstractParametersTest
                     'completename' => 'Root entity > _test_root_entity > _test_child_2',
                 ],
                 'comment'     => 'This is a test computer.',
+                'created_tickets' => [],
             ],
             $values
         );
