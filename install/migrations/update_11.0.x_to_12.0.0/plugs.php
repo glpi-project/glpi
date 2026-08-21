@@ -36,13 +36,15 @@
  * @var Migration $migration
  * @var DBmysql $DB
  */
+$default_charset = DBConnection::getDefaultCharset();
+$default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
 if (!$DB->tableExists('glpi_plugtypes')) {
     $query = <<<SQL
         CREATE TABLE `glpi_plugtypes` (
             `id` int unsigned NOT NULL AUTO_INCREMENT,
-            `entities_id` int unsigned NOT NULL DEFAULT '0',
+            `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `is_recursive` tinyint NOT NULL DEFAULT '0',
             `name` varchar(255) DEFAULT NULL,
             `comment` text,
@@ -54,7 +56,7 @@ if (!$DB->tableExists('glpi_plugtypes')) {
             KEY `name` (`name`),
             KEY `date_creation` (`date_creation`),
             KEY `date_mod` (`date_mod`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+            ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
 SQL;
     $DB->doQuery($query);
 }
