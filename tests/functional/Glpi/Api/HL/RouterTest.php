@@ -249,6 +249,43 @@ class RouterTest extends GLPITestCase
         $this->assertEquals('50.2.0', TestRouter::normalizeAPIVersion('50.2'));
     }
 
+    public function testGetAPIMajorVersions()
+    {
+        $majors = Router::getAPIMajorVersions();
+        // Numeric string keys are normalized to int by PHP, hence the array_map().
+        $declared = array_map('strval', array_keys($majors));
+
+        // Asserted as invariants rather than as an exact list: shipping a new major is precisely
+        // what this whole feature prepares for, and must not turn this test red.
+
+        // Deduplicated: the real router declares several 2.x minor versions.
+        $this->assertCount(count(array_unique($declared)), $declared);
+
+        // Sorted ascending, which is what makes "oldest" and "latest" meaningful to the callers.
+        $sorted = $declared;
+        usort($sorted, static fn(string $a, string $b): int => version_compare($a, $b));
+        $this->assertSame($sorted, $declared);
+
+        // Major 2 still has non deprecated minor versions (2.3, 2.4).
+        $this->assertArrayHasKey('2', $majors);
+        $this->assertFalse($majors['2']['deprecated']);
+        $this->assertArrayHasKey('1', $majors);
+        $this->assertFalse($majors['1']['deprecated']);
+    }
+
+    public function testGetAPIMajorVersionsDeprecatedMajor()
+    {
+        $majors = FullyDeprecatedMajorRouter::getAPIMajorVersions();
+
+        // Major 60 only has deprecated minor versions, so the major itself is deprecated.
+        $this->assertTrue($majors['60']['deprecated']);
+        // Major 61 has one non deprecated minor version.
+        $this->assertFalse($majors['61']['deprecated']);
+        // Sorted by ascending version, not by declaration order.
+        // Numeric string keys are normalized to int by PHP, hence the array_map().
+        $this->assertSame(['1', '2', '60', '61'], array_map('strval', array_keys($majors)));
+    }
+
     public function testRoutingByVersion()
     {
         $router = TestRouter::getInstance();
@@ -432,5 +469,38 @@ class TestController extends AbstractController
     public function testVersion510(RequestInterface $request): Response
     {
         return new Response(200, [], __FUNCTION__);
+    }
+}
+
+// @codingStandardsIgnoreStart
+class FullyDeprecatedMajorRouter extends Router
+{
+    // @codingStandardsIgnoreEnd
+    public static function getAPIVersions(): array
+    {
+        global $CFG_GLPI;
+
+        $versions = parent::getAPIVersions();
+
+        // Declared out of order on purpose to check the sorting.
+        $versions[] = [
+            'api_version' => '61',
+            'version' => '61.0.0',
+            'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v61',
+        ];
+        $versions[] = [
+            'api_version' => '60',
+            'version' => '60.0.0',
+            'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v60',
+            'deprecated' => true,
+        ];
+        $versions[] = [
+            'api_version' => '60',
+            'version' => '60.1.0',
+            'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v60.1',
+            'deprecated' => true,
+        ];
+
+        return $versions;
     }
 }
