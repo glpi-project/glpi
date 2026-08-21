@@ -234,6 +234,26 @@ class OAuthAuthorizationTest extends DbTestCase
         $this->assertNull($authorization->getLastError());
         $this->assertSame('user@example.com', $authorization->fields['email']);
         $this->assertSame(OAuthAuthorization::TYPE_IMAP, $authorization->fields['type']);
+
+        // Exchange: the code must be redeemed through the `authorization_code` grant.
+        $this->assertSame('authorization_code', $provider->last_grant);
+        $this->assertSame(['code' => 'a-code'], $provider->last_options);
+
+        // Save: everything the provider returned must land on the stored row, encrypted.
+        $stored = new OAuthAuthorization();
+        $this->assertTrue($stored->getFromDB($authorization->getID()));
+        $this->assertSame($app->getID(), (int) $stored->fields['oauth_applications_id']);
+        $this->assertSame('user@example.com', $stored->fields['email']);
+        $this->assertSame(OAuthAuthorization::TYPE_IMAP, $stored->fields['type']);
+
+        $key = new GLPIKey();
+        $this->assertSame('a-code', $key->decrypt($stored->fields['code']));
+        $this->assertSame('refresh-abc', $key->decrypt($stored->fields['refresh_token']));
+
+        $stored_token = new AccessToken(json_decode($key->decrypt($stored->fields['token']), true));
+        $this->assertSame('abc', $stored_token->getToken());
+        $this->assertSame('refresh-abc', $stored_token->getRefreshToken());
+        $this->assertNotNull($stored_token->getExpires());
     }
 
     public function testCreateFromCodeUpdatesExistingAuthorizationForSameEmailAndType(): void
@@ -258,6 +278,16 @@ class OAuthAuthorizationTest extends DbTestCase
 
         $this->assertSame($first_id, $second->getID());
 
+        // Save: the row must carry the token obtained by the second exchange, not the first one.
+        $stored = new OAuthAuthorization();
+        $this->assertTrue($stored->getFromDB($first_id));
+        $key = new GLPIKey();
+        $this->assertSame('code-2', $key->decrypt($stored->fields['code']));
+        $this->assertSame(
+            'second',
+            (new AccessToken(json_decode($key->decrypt($stored->fields['token']), true)))->getToken()
+        );
+
         global $DB;
         $count = $DB->request([
             'COUNT' => 'cpt',
@@ -269,6 +299,47 @@ class OAuthAuthorizationTest extends DbTestCase
             ],
         ])->current()['cpt'];
         $this->assertSame(1, (int) $count);
+    }
+
+    public function testCreateFromCodeStoresNoRefreshTokenWhenTheProviderIssuesNone(): void
+    {
+        $this->login();
+
+        $app = $this->createApplication();
+
+        $provider = new FakeOauthProviderForTests();
+        $provider->access_token_result = new AccessToken(['access_token' => 'abc', 'expires_in' => 3600]);
+        $owner = new OwnerDetails();
+        $owner->email = 'user@example.com';
+        $provider->owner_details = $owner;
+
+        $authorization = TestableOAuthAuthorization::withProvider($provider);
+        $this->assertTrue($authorization->createFromCode($app->getID(), OAuthAuthorization::TYPE_IMAP, 'a-code'));
+
+        $stored = new OAuthAuthorization();
+        $this->assertTrue($stored->getFromDB($authorization->getID()));
+
+        // Nothing to encrypt, so the field is stored as an empty string: that is
+        // the value getTokenStatus() and refreshToken() test for.
+        $this->assertSame('', $stored->fields['refresh_token']);
+
+        $key = new GLPIKey();
+        $stored_token = new AccessToken(json_decode($key->decrypt($stored->fields['token']), true));
+        $this->assertSame('abc', $stored_token->getToken());
+        $this->assertNull($stored_token->getRefreshToken());
+    }
+
+    public function testCreateFromCodeFailsWithAnUnknownApplication(): void
+    {
+        $this->login();
+
+        $provider = new FakeOauthProviderForTests();
+        $authorization = TestableOAuthAuthorization::withProvider($provider);
+
+        $this->assertFalse($authorization->createFromCode(999999, OAuthAuthorization::TYPE_IMAP, 'a-code'));
+        $this->assertSame('Invalid OAuth application', $authorization->getLastError());
+        // The code must not be redeemed when the application cannot be loaded.
+        $this->assertNull($provider->last_grant);
     }
 
     // -------------------------------------------------------------------------
