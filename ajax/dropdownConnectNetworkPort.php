@@ -50,8 +50,8 @@ Session::checkRight("networking", UPDATE);
 if (
     class_exists($_POST["itemtype"])
     && isset($_POST["item"])
+    && ($item = getItemForItemtype($_POST["itemtype"]))
 ) {
-    $item = getItemForItemtype($_POST["itemtype"]);
     $table = $item::getTable();
 
     $joins = [];
