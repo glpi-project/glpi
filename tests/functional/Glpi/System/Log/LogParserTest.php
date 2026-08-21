@@ -36,8 +36,8 @@ namespace tests\units\Glpi\System\Log;
 
 use Glpi\System\Log\LogParser;
 use Glpi\Tests\GLPITestCase;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class LogParserTest extends GLPITestCase
 {
@@ -135,11 +135,32 @@ LOG
         $this->expectOutputString('');
         $response = $instance->download('test.log');
 
-        $this->assertInstanceOf(BinaryFileResponse::class, $response);
-        $this->assertSame(\Safe\realpath($this->log_file_path), $response->getFile()->getPathname());
+        $this->assertInstanceOf(StreamedResponse::class, $response);
         $this->assertSame('application/octet-stream', $response->headers->get('Content-Type'));
         $this->assertSame('attachment; filename=test.log', $response->headers->get('Content-Disposition'));
-        $this->assertSame(file_get_contents($this->log_file_path), $response->getFile()->getContent());
+
+        ob_start();
+        $response->sendContent();
+        $content = ob_get_clean();
+
+        $this->assertSame(file_get_contents($this->log_file_path), $content);
+    }
+
+
+    public function testDownloadChangedFile()
+    {
+        $instance = new LogParser();
+
+        $response = $instance->download('test.log');
+        \Safe\file_put_contents($this->log_file_path, "\nappended test log", FILE_APPEND);
+
+        $this->assertFalse($response->headers->has('Content-Length'));
+
+        ob_start();
+        $response->sendContent();
+        $content = ob_get_clean();
+
+        $this->assertSame(file_get_contents($this->log_file_path), $content);
     }
 
 

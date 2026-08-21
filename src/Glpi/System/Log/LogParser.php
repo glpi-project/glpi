@@ -38,15 +38,18 @@ namespace Glpi\System\Log;
 use CommonGLPI;
 use RuntimeException;
 use Safe\Exceptions\FilesystemException;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Toolbox;
 
+use function Safe\fclose;
 use function Safe\file_get_contents;
 use function Safe\file_put_contents;
 use function Safe\filemtime;
 use function Safe\filesize;
+use function Safe\fopen;
+use function Safe\fread;
 use function Safe\preg_match;
 use function Safe\preg_replace_callback;
 use function Safe\preg_split;
@@ -210,14 +213,28 @@ final class LogParser extends CommonGLPI
             return new Response(status: Response::HTTP_NOT_FOUND);
         }
 
-        $response = new BinaryFileResponse($fullpath);
-        $response->headers->set('Content-Type', 'application/octet-stream');
-        $response->setContentDisposition(
-            HeaderUtils::DISPOSITION_ATTACHMENT,
-            basename($fullpath)
-        );
+        return new StreamedResponse(
+            function () use ($fullpath) {
+                $file_stream = fopen($fullpath, 'rb');
 
-        return $response;
+                try {
+                    while (!feof($file_stream)) {
+                        echo fread($file_stream, 8192);
+                        flush();
+                    }
+                } finally {
+                    fclose($file_stream);
+                }
+            },
+            status: 200,
+            headers: [
+                'Content-Type' => 'application/octet-stream',
+                'Content-Disposition' => HeaderUtils::makeDisposition(
+                    HeaderUtils::DISPOSITION_ATTACHMENT,
+                    basename($fullpath)
+                ),
+            ]
+        );
     }
 
     /**
