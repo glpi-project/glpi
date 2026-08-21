@@ -1403,6 +1403,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'answer'  => $this->getAnswer(),
             'mode'    => $mode,
             'actions' => [],
+            'comment_anchor_max_length' => KnowbaseItem_Comment::MAX_ANCHOR_LENGTH,
         ];
 
         if ($mode === "edit" || $mode === "view") {
@@ -1470,6 +1471,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['comments_count'] = $this->canComment() ? countElementsInTable(KnowbaseItem_Comment::getTable(), [
                 'knowbaseitems_id' => $this->fields['id'],
             ]) : 0;
+            $params['comment_anchors'] = $this->canComment()
+                ? KnowbaseItem_Comment::getAnchorsForItem($this)
+                : [];
 
             // Add actions
             $params['actions'] = $this->getEditorActions();
@@ -1480,6 +1484,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         } elseif ($mode === "add") {
             $params['can_edit']     = $this->can(-1, CREATE);
             $params['illustration'] = '';
+            // Nothing to comment on yet: the article doesn't exist until it's saved.
+            $params['can_comment']  = false;
 
             $raw_parent_id = (int) ($options['knowbaseitems_id_parent'] ?? 0);
             $prefilled_parent_id = self::getReadablePrefilledParentId($raw_parent_id);

@@ -37,6 +37,8 @@ import { DocumentLinkController } from "/js/modules/Knowbase/DocumentLinkControl
 import { LinkItemFormController } from "/js/modules/Knowbase/LinkItemFormController.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
 import { GlpiKnowbaseServiceCatalogPanelController } from "/js/modules/Knowbase/ServiceCatalogPanelController.js";
+import { highlightComments } from "/js/modules/Knowbase/CommentHighlighter.js";
+import { ReadModeSelectionBubble } from "/js/modules/Knowbase/ReadModeSelectionBubble.js";
 import {
     EditorActionType,
     extractParamsFromDataset,
@@ -105,6 +107,18 @@ export class GlpiKnowbaseArticleController
     /** @type {DocumentLinkController|null} */
     #document_link_controller = null;
 
+    /** @type {boolean} */
+    #can_comment = false;
+
+    /** @type {Array<{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}>} */
+    #comment_anchors = [];
+
+    /** @type {number} */
+    #comment_anchor_max_length = Number.POSITIVE_INFINITY;
+
+    /** @type {Array<{id: string, text: string}>} */
+    #resolved_anchors = [];
+
     #handleTitleKeydown = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -144,7 +158,9 @@ export class GlpiKnowbaseArticleController
     constructor(container, side_panel_container, offcanvas_container, mode)
     {
         this.#container = container;
-        if (mode === "edit") {
+        // The side panel (comments, related items, service catalog, revisions...)
+        // is only meaningless in "add" mode, where the article doesn't exist yet.
+        if (mode !== "add") {
             this.#side_panel = new GlpiKnowbaseArticleSidePanelController(
                 side_panel_container,
                 offcanvas_container,
@@ -152,6 +168,7 @@ export class GlpiKnowbaseArticleController
             );
         }
         this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;
+        this.#can_comment = container.dataset.glpiKbCanComment === 'true';
         if (mode === 'add') {
             const prefilled_id = Number(container.dataset.glpiKbPrefilledCategoryId);
             if (Number.isInteger(prefilled_id) && prefilled_id > 0) {
@@ -163,6 +180,7 @@ export class GlpiKnowbaseArticleController
         this.#initDiffListeners();
         this.#initIllustrationPicker();
         this.#initRecursiveToggle();
+        this.#initCommentAnchors();
 
         if (mode === "edit") {
             this.#default_language = container.dataset.glpiKbDefaultLanguage;
@@ -1003,6 +1021,174 @@ export class GlpiKnowbaseArticleController
         return picker?.glpiIllustrationPicker ?? null;
     }
 
+    #initCommentAnchors()
+    {
+        // Covers "add" mode and users who lack the comment right.
+        if (!this.#can_comment) {
+            return;
+        }
+
+        const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+        if (!content_el) {
+            return;
+        }
+
+        try {
+            this.#comment_anchors = JSON.parse(content_el.dataset.glpiCommentAnchors || '[]');
+        } catch {
+            this.#comment_anchors = [];
+        }
+
+        // Absent attribute means no client-side gate; the server still enforces it.
+        this.#comment_anchor_max_length =
+            Number.parseInt(content_el.dataset.glpiCommentAnchorMaxLength, 10)
+            || Number.POSITIVE_INFINITY;
+
+        this.#renderCommentAnchors();
+        new ReadModeSelectionBubble(content_el, this.#comment_anchor_max_length);
+
+        content_el.addEventListener('glpi:kb:comment-selection', (e) => {
+            this.#onCommentSelection(e.detail.anchor);
+        });
+
+        // Listened on `document`, not the container: the mobile offcanvas panel
+        // sits outside the article container in the DOM.
+        document.addEventListener('glpi:kb:comment-anchored', (e) => {
+            this.#onCommentAnchored(e.detail.anchor);
+        });
+
+        document.addEventListener('glpi:kb:comment-unanchored', (e) => {
+            this.#onCommentUnanchored(e.detail.id);
+        });
+
+        // Panel content is replaced by AJAX; re-apply the quote state to the new HTML.
+        document.addEventListener('glpi:kb:panel-loaded', () => {
+            this.#syncAnchorQuotes();
+        });
+
+        document.addEventListener('glpi:kb:comment-focus-changed', (e) => {
+            this.#onCommentFocusChanged(e.detail.id, e.detail.source);
+        });
+
+        content_el.addEventListener('click', (e) => {
+            const mark = e.target.closest('.kb-comment-highlight');
+            if (!mark) {
+                this.#side_panel?.focusComment(null);
+                return;
+            }
+            this.#onHighlightClick(mark.dataset.commentId);
+        });
+
+        // Highlights carry role="button"/tabindex="0" (set in DomTextIndex.js
+        // and CommentHighlightExtension.js) — keep them keyboard-operable.
+        content_el.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter' && e.key !== ' ') {
+                return;
+            }
+            const mark = e.target.closest('.kb-comment-highlight');
+            if (!mark) {
+                return;
+            }
+            e.preventDefault();
+            this.#onHighlightClick(mark.dataset.commentId);
+        });
+    }
+
+    /**
+     * @param {{prefix: string, exact: string, suffix: string, occurrence: number}} anchor
+     */
+    async #onCommentSelection(anchor)
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+        await this.#side_panel.load(this.#item_id, 'comments');
+        this.#side_panel.setPendingCommentAnchor(anchor);
+    }
+
+    /**
+     * @param {{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}} anchor
+     */
+    #onCommentAnchored(anchor)
+    {
+        this.#comment_anchors = [...this.#comment_anchors, anchor];
+        this.#renderCommentAnchors();
+    }
+
+    /**
+     * @param {number|string} comment_id - Root comment id of the deleted thread.
+     */
+    #onCommentUnanchored(comment_id)
+    {
+        this.#comment_anchors = this.#comment_anchors.filter(
+            (anchor) => String(anchor.id) !== String(comment_id)
+        );
+        this.#renderCommentAnchors();
+    }
+
+    #renderCommentAnchors()
+    {
+        if (this.#editor) {
+            this.#editor.refreshCommentAnchors(this.#comment_anchors);
+            this.#resolved_anchors = this.#editor.getResolvedCommentAnchors();
+        } else {
+            const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+            this.#resolved_anchors = content_el
+                ? highlightComments(content_el, this.#comment_anchors)
+                : [];
+        }
+
+        this.#syncAnchorQuotes();
+    }
+
+    #syncAnchorQuotes()
+    {
+        // Undefined in "add" mode, where the article doesn't exist yet.
+        this.#side_panel?.setResolvedCommentAnchors(this.#resolved_anchors);
+    }
+
+    /**
+     * @param {string} comment_id
+     */
+    async #onHighlightClick(comment_id)
+    {
+        if (this.#item_id === null) {
+            return;
+        }
+        await this.#side_panel.load(this.#item_id, 'comments');
+        this.#side_panel.focusComment(comment_id, 'article');
+    }
+
+    /**
+     * @param {string|null} comment_id
+     * @param {'panel'|'article'} source
+     */
+    #onCommentFocusChanged(comment_id, source)
+    {
+        // Edit-mode marks are ProseMirror decorations, rebuilt on every keystroke.
+        if (this.#editor) {
+            return;
+        }
+
+        const content_el = this.#container.querySelector('[data-glpi-kb-content]');
+        if (!content_el) {
+            return;
+        }
+
+        content_el.querySelectorAll('.kb-comment-highlight').forEach((mark) => {
+            mark.classList.toggle(
+                'kb-comment-highlight--focused',
+                mark.dataset.commentId === comment_id
+            );
+        });
+
+        if (comment_id !== null && source === 'panel') {
+            content_el
+                .querySelector(`.kb-comment-highlight[data-comment-id="${CSS.escape(comment_id)}"]`)
+                ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+
     #initScheduleVisibilityDialog(modal)
     {
         const begin_input = modal.querySelector('[data-glpi-kb-begin-date]');
@@ -1090,8 +1276,13 @@ export class GlpiKnowbaseArticleController
                     return __("Type / to insert...");
                 },
                 item_id: this.#item_id,
+                can_comment: this.#can_comment,
+                comment_anchors: this.#comment_anchors,
+                comment_anchor_max_length: this.#comment_anchor_max_length,
                 onUpdate: () => {
                     setHasUnsavedChanges(true);
+                    this.#resolved_anchors = this.#editor?.getResolvedCommentAnchors() ?? [];
+                    this.#syncAnchorQuotes();
                 },
             });
         } else {
@@ -1171,10 +1362,25 @@ export class GlpiKnowbaseArticleController
         save_button.disabled = true;
         save_button.innerHTML = `<i class="ti ti-loader me-1" aria-hidden="true"></i>${__("Saving...")}`;
 
+        // Anchors whose quoted passage the saved content no longer carries: the
+        // server drops them, so they can't linger as dead rows.
+        const orphaned_ids = this.#comment_anchors
+            .filter((anchor) => !this.#resolved_anchors.some((resolved) => resolved.id === String(anchor.id)))
+            .map((anchor) => anchor.id);
+
+        // The others moved with the edits, so their stored quote has to move too.
+        const refreshed_anchors = this.#editor.getRefreshedCommentAnchors();
+
         try {
             const body = {
                 answer: this.#editor.getHTML(),
             };
+            if (orphaned_ids.length > 0) {
+                body.orphaned_comment_ids = orphaned_ids;
+            }
+            if (refreshed_anchors.length > 0) {
+                body.comment_anchors = refreshed_anchors;
+            }
             if (new_title !== null) {
                 body.name = new_title;
             }
@@ -1184,6 +1390,19 @@ export class GlpiKnowbaseArticleController
             }
 
             await post(`Knowbase/KnowbaseItem/${this.#item_id}/Answer`, body);
+
+            if (orphaned_ids.length > 0) {
+                this.#comment_anchors = this.#comment_anchors.filter(
+                    (anchor) => !orphaned_ids.includes(anchor.id)
+                );
+            }
+
+            // Keep the in-memory anchors in step with what was just stored, so a second
+            // save in the same session doesn't report them against a stale quote.
+            this.#comment_anchors = this.#comment_anchors.map((anchor) => {
+                const refreshed = refreshed_anchors.find((candidate) => candidate.id === String(anchor.id));
+                return refreshed === undefined ? anchor : { ...anchor, ...refreshed, id: anchor.id };
+            });
 
             // Update originals for future cancel operations
             this.#original_content = this.#editor.getHTML();
