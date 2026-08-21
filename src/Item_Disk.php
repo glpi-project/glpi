@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /**
  * Disk Class
@@ -447,7 +448,7 @@ TWIG, $twig_params);
             'width'              => 2,
             // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
             'computation'        => QueryFunction::lpad(
-                expression: QueryFunction::round(new QueryExpression('100*TABLE.freesize/' . QueryFunction::nullif('TABLE.totalsize', new QueryExpression('0')))),
+                expression: QueryFunction::round(new QueryExpression('100*TABLE.freesize/' . QueryFunction::nullif(new QueryIdentifier('TABLE.totalsize'), new QueryExpression('0')))),
                 length: 3,
                 pad_string: '0'
             ),

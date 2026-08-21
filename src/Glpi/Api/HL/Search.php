@@ -53,6 +53,7 @@ use Glpi\Api\HL\Search\SearchContext;
 use Glpi\Application\Environment;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profiler;
@@ -228,7 +229,7 @@ final class Search
 
 
                                     $parent_keys[] = QueryFunction::ifnull(
-                                        expression: $primary_key,
+                                        expression: new QueryIdentifier($primary_key),
                                         value: new QueryExpression('0x0')
                                     );
                                     $current_join_parent = $current_join_def['join_parent'] ?? null;
@@ -236,16 +237,16 @@ final class Search
                                 }
                                 $parent_keys = array_reverse($parent_keys);
                                 $expression = QueryFunction::groupConcat(
-                                    expression: QueryFunction::concat([...$parent_keys, QueryFunction::ifnull($sql_field, new QueryExpression('0x0'))]),
+                                    expression: QueryFunction::concat([...$parent_keys, QueryFunction::ifnull(new QueryIdentifier($sql_field), new QueryExpression('0x0'))]),
                                     separator: new QueryExpression(chr(0x1D)),
                                 );
                             } else {
                                 // Probably a nested property
-                                $expression = QueryFunction::ifnull($sql_field, new QueryExpression('0x0'));
+                                $expression = QueryFunction::ifnull(new QueryIdentifier($sql_field), new QueryExpression('0x0'));
                                 $expression = QueryFunction::groupConcat($expression, new QueryExpression(chr(0x1D)), $distinct_groups);
                             }
                         } else {
-                            $expression = QueryFunction::ifnull($sql_field, new QueryExpression('0x0'));
+                            $expression = QueryFunction::ifnull(new QueryIdentifier($sql_field), new QueryExpression('0x0'));
                             $expression = QueryFunction::groupConcat($expression, new QueryExpression(chr(0x1D)), $distinct_groups);
                         }
                     }
@@ -703,9 +704,9 @@ final class Search
                     ];
                 }
                 if ($this->context->isUnionSearchMode()) {
-                    $count_select = [QueryFunction::count(QueryFunction::concat(['_itemtype', new QueryExpression('0x1E'), "$table_alias.id",]), true, 'count')];
+                    $count_select = [QueryFunction::count(QueryFunction::concat([new QueryIdentifier('_itemtype'), new QueryExpression('0x1E'), new QueryIdentifier("$table_alias.id"),]), true, 'count')];
                 } else {
-                    $count_select = [QueryFunction::count("$table_alias.id", true, 'count')];
+                    $count_select = [QueryFunction::count(new QueryIdentifier("$table_alias.id"), true, 'count')];
                 }
                 $criteria['SELECT'] = $count_select;
             }

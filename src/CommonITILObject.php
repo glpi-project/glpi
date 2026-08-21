@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Event;
@@ -1567,7 +1568,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         return countElementsInTable(
             [$itemtable, $linktable],
             [
-                "$linktable.$itemfk"    => new QueryExpression(DBmysql::quoteName("$itemtable.id")),
+                "$linktable.$itemfk"    => new QueryIdentifier("$itemtable.id"),
                 "$linktable.$field"     => $id,
                 "$linktable.type"       => $role,
                 "$itemtable.is_deleted" => 0,
@@ -1762,7 +1763,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         'NOT' => [$this->getTable() . '.solvedate' => null],
                         new QueryExpression(
                             QueryFunction::dateAdd(
-                                date: static::getTable() . '.solvedate',
+                                date: new QueryIdentifier(static::getTable() . '.solvedate'),
                                 interval: $days,
                                 interval_unit: 'DAY'
                             ) . ' > ' . QueryFunction::now()
@@ -4676,7 +4677,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'SELECT' => 'id',
             'FROM'   => ITILSolution::getTable(),
             'WHERE'  => [
-                ITILSolution::getTable() . '.items_id' => new QueryExpression($DB::quoteName('REFTABLE.id')),
+                ITILSolution::getTable() . '.items_id' => new QueryIdentifier('REFTABLE.id'),
                 ITILSolution::getTable() . '.itemtype' => static::class,
             ],
             'ORDER'  => ITILSolution::getTable() . '.id DESC',
@@ -4712,7 +4713,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
             ],
-            'computation'        => QueryFunction::max('TABLE.date_creation'),
+            'computation'        => QueryFunction::max(new QueryIdentifier('TABLE.date_creation')),
             'nometa'             => true, // cannot GROUP_CONCAT a MAX
         ];
 
@@ -5118,7 +5119,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             [
                                 'AND' => [
                                     'NOT' => ["$table.takeintoaccountdate" => null],
-                                    "$table.takeintoaccountdate" => ['>', new QueryExpression($DB::quoteName("{$table}.{$type}"))],
+                                    "$table.takeintoaccountdate" => ['>', new QueryIdentifier("{$table}.{$type}")],
                                 ],
                             ],
                             [
@@ -5127,8 +5128,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                     "$table.takeintoaccount_delay_stat" => ['>',
                                         QueryFunction::timestampdiff(
                                             unit: 'SECOND',
-                                            expression1: "$table.date",
-                                            expression2: "{$table}.{$type}"
+                                            expression1: new QueryIdentifier("$table.date"),
+                                            expression2: new QueryIdentifier("{$table}.{$type}")
                                         ),
                                     ],
                                 ],
@@ -5151,7 +5152,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         'NOT' => ["{$table}.{$type}" => null],
                         "$table.status" => ['<>', self::WAITING],
                         'OR' => [
-                            "$table.solvedate" => ['>', new QueryExpression($DB::quoteName("$table.$type"))],
+                            "$table.solvedate" => ['>', new QueryIdentifier("$table.$type")],
                             'AND' => [
                                 "$table.solvedate" => null,
                                 "$table.$type" => ['<', QueryFunction::now()],
@@ -10933,14 +10934,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     "$table.closedate"            => ['>', $max_closedate],
                     new QueryExpression(
                         QueryFunction::dateAdd(
-                            date: "$table.closedate",
+                            date: new QueryIdentifier("$table.closedate"),
                             interval: $delay,
                             interval_unit: 'DAY'
                         ) . ' <= ' . QueryFunction::now()
                     ),
                     new QueryExpression(
                         QueryFunction::dateAdd(
-                            date: "glpi_entities.max_closedate$config_suffix",
+                            date: new QueryIdentifier("glpi_entities.max_closedate$config_suffix"),
                             interval: $duration,
                             interval_unit: 'DAY'
                         ) . ' <= ' . QueryFunction::now()

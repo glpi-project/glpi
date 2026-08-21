@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QueryParam;
 use Glpi\Debug\Profiler;
 use Glpi\Event;
@@ -6114,7 +6115,7 @@ class CommonDBTM extends CommonGLPI
 
         return [
             'RAW' => [
-                (string) QueryFunction::lower("$table.$name_field") => ['LIKE', "%$filter%"],
+                (string) QueryFunction::lower(new QueryIdentifier("$table.$name_field")) => ['LIKE', "%$filter%"],
             ],
         ];
     }

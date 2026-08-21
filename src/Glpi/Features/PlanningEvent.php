@@ -43,6 +43,7 @@ use Entity;
 use ExtraVisibilityCriteria;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\ArrayNormalizer;
 use Group_User;
@@ -485,7 +486,7 @@ trait PlanningEvent
                     'OR' => [
                         "$table.users_id" => $who,
                         QueryFunction::jsonContains(
-                            "$table.users_id_guests",
+                            new QueryIdentifier("$table.users_id_guests"),
                             new QueryExpression($DB::quoteValue((int) $who)),
                             '$'
                         ),

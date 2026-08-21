@@ -38,6 +38,7 @@ use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\ParentStatus;
 use Glpi\Features\PlanningEvent;
@@ -1207,7 +1208,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 'jointype'           => 'child',
                 'condition'          => $task_condition,
             ],
-            'computation'        => QueryFunction::max('TABLE.date'),
+            'computation'        => QueryFunction::max(new QueryIdentifier('TABLE.date')),
             'nometa'             => true, // cannot GROUP_CONCAT a MAX
             'usehaving'          => true,
         ];
@@ -1364,8 +1365,8 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             // begin date is task date minus duration
             // and end date is task date
             $bdate = QueryFunction::dateSub(
-                date: $item::getTable() . '.date',
-                interval: new QueryExpression($DB::quoteName($item::getTable() . '.actiontime')),
+                date: new QueryIdentifier($item::getTable() . '.date'),
+                interval: new QueryIdentifier($item::getTable() . '.actiontime'),
                 interval_unit: 'SECOND'
             );
             $SELECT[] = new QueryExpression($bdate, 'notp_date');

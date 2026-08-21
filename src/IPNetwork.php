@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QueryIdentifier;
 
 /// Class IPNetwork : Represent an IPv4 or an IPv6 network.
 /// It fully use IPAddress and IPNetmask to check validity and change representation from binary
@@ -721,7 +722,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
         // the last should be 0.0.0.0/0.0.0.0 of x.y.z.a/255.255.255.255 regarding the interested
         // element)
         for ($i = $startIndex; $i < 4; ++$i) {
-            $ORDER[] = new QueryExpression(QueryFunction::bitCount($netmaskDB[$i]) . " $ORDER_ORIENTATION");
+            $ORDER[] = new QueryExpression(QueryFunction::bitCount(new QueryIdentifier($netmaskDB[$i])) . " $ORDER_ORIENTATION");
         }
 
         if (!empty($condition["where"])) {
