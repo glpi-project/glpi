@@ -57,6 +57,33 @@ services:
       PORT_glpi: 3306
       ENGINE_glpi: "mysql@dbgate-plugin-mysql"
 
+  # OpenID OAuth server
+  # Opt-in: `docker compose --profile keycloak up -d keycloak`.
+  # Same host:9090 as in-container port so the OIDC issuer is identical whether
+  # reached from the browser (needs `127.0.0.1 keycloak.glpi.local` in /etc/hosts) or from
+  # the app container (compose DNS alias). See .docker/keycloak/README.md.
+  keycloak:
+    image: "quay.io/keycloak/keycloak:26.0"
+    profiles: ["keycloak"]
+    restart: "unless-stopped"
+    command: ["start-dev", "--import-realm", "--http-port=9090"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "admin"
+      KC_HOSTNAME: "http://keycloak.glpi.local:9090"
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+    ports:
+      - "9090:9090"
+    # Network alias so the app container resolves the same hostname as the browser,
+    # keeping the OIDC issuer identical on both sides.
+    networks:
+      default:
+        aliases:
+          - "keycloak.glpi.local"
+    volumes:
+      - "./.docker/keycloak/realm-glpi.json:/opt/keycloak/data/import/realm-glpi.json:ro"
+
   # To create a preconfigured LDAP object in GLPI, run `make console c='tools:generate_dev_ldap'`
   openldap:
     image: "osixia/openldap:latest"
