@@ -58,6 +58,10 @@
     {% endif %}
     {{ fields.textField('name', item.fields['name'], __('Name')) }}
 
+    {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
+        {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+    {% endif %}
+
     {{ fields.dropdownField(
         'DomainRecordType',
         'domainrecordtypes_id',

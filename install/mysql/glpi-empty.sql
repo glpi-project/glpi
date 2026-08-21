@@ -10626,4 +10626,18 @@ CREATE TABLE `glpi_tags_itemtypes` (
   KEY `tags_id` (`tags_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+### Dump table glpi_tags_items
+
+DROP TABLE IF EXISTS `glpi_tags_items`;
+CREATE TABLE `glpi_tags_items` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tags_id` int unsigned NOT NULL,
+  `itemtype` varchar(255) NOT NULL,
+  `items_id` int unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`tags_id`,`itemtype`,`items_id`),
+  KEY `itemtype` (`itemtype`),
+  KEY `items_id` (`items_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 SET FOREIGN_KEY_CHECKS=1;

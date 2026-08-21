@@ -869,6 +869,9 @@ TWIG, $twig_params);
         // Add asset URL search option for asset types
         $tab = array_merge($tab, BarcodeManager::rawSearchOptionsToAdd(get_class($this)));
 
+        // Add tags for taggable itemtypes
+        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(get_class($this)));
+
         return $tab;
     }
 

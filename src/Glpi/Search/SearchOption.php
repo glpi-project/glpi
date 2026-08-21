@@ -61,6 +61,7 @@ use Problem;
 use Reservation;
 use ReservationItem;
 use Session;
+use Tag;
 use Ticket;
 use User;
 
@@ -309,6 +310,8 @@ final class SearchOption implements ArrayAccess
                 $search[$itemtype][80]['table']         = 'glpi_entities';
                 $search[$itemtype][80]['field']         = 'completename';
                 $search[$itemtype][80]['name']          = Entity::getTypeName(1);
+
+                $fn_append_options(Tag::getSearchOptionsToAdd($itemtype));
                 break;
 
             default:

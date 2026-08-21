@@ -31,6 +31,7 @@
  #}
 
 {% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 <div
     class="d-flex mx-n2 my-n2 pe-none"
@@ -171,6 +172,12 @@
                 {{ actions_menu.render_actions_menu(actions) }}
             </div>
         </div>
+
+        {% if mode == 'edit' and call('Tag_Itemtype::isTaggableItemtype', ['KnowbaseItem']) %}
+            <div class="mb-2">
+                {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+            </div>
+        {% endif %}
 
         {% if mode == "view" or mode == "edit" %}
             <div class="text-muted d-flex align-items-center gap-3">

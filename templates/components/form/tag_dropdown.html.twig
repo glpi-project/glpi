@@ -30,19 +30,33 @@
  # ---------------------------------------------------------------------
  #}
 
-{% extends "generic_show_form.html.twig" %}
-{% import 'components/form/fields_macros.html.twig' as fields %}
+{#
+ # Renders a Tag dropdown
+ #}
 
-{% block form_fields %}
-   {{ fields.textField('name', item.fields['name'], __('Name')) }}
+{% set dropdown_html = call('Dropdown::showFromArray', [options.name, data.tag_names, options|merge({'display': false})]) %}
 
-   {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
-       {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
-   {% endif %}
+{% if can_create %}
+    <div class="btn-group btn-group-sm w-100" role="group">
+        {{ dropdown_html|raw }}
+        <div class="btn btn-outline-secondary" title="{{ __('Add') }}" data-bs-toggle="modal" data-bs-target="#add_{{ field_id }}">
+            {{ call('Ajax::createIframeModalWindow', ['add_' ~ field_id, call('Tag::getFormURL'), {'display': false}])|raw }}
+            <span data-bs-toggle="tooltip">
+                <i class="ti ti-plus"></i>
+                <span class="visually-hidden">{{ __('Add') }}</span>
+            </span>
+        </div>
+    </div>
+{% else %}
+    {{ dropdown_html|raw }}
+{% endif %}
 
-   {{ fields.dropdownItemTypes('itemtype', item.fields['itemtype']|default('Ticket'), _n('Type', 'Types', 1), {
-      types: config('notificationtemplates_types')
-   }) }}
-   {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
-   {{ fields.textareaField('css', item.fields['css'], __('CSS')) }}
-{% endblock %}
+<script type="module">
+    import('/js/modules/Form/TagDropdownColorizer.js').then((m) => {
+        new m.default(
+            {{ data.bg_colors|json_encode|raw }},
+            {{ data.text_colors|json_encode|raw }},
+            'select[data-glpi-tag-dropdown-uuid="{{ rand }}"]'
+        );
+    });
+</script>

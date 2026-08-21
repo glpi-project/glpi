@@ -36,6 +36,11 @@
 
 {% block form_fields %}
     {{ fields.textField('name', item.fields['name'], __('Name')) }}
+
+    {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
+        {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+    {% endif %}
+
     {% if item.isNewItem %}
         {{ fields.nullField() }}
     {% else %}
