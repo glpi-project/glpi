@@ -63,8 +63,8 @@ class PDU extends NetworkEquipment
                 unset($val->pdu->type);
             }
 
-            if (property_exists($val, 'pdu') && property_exists($val->pdu, 'plugs')) {
-                $inventory_plugs[] = $val->pdu->plugs;
+            if (property_exists($val, 'pdu') && property_exists($val->pdu, 'plug')) {
+                $inventory_plugs[] = $val->pdu->plug;
             }
         }
 
