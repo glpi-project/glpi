@@ -1825,7 +1825,7 @@ class MassiveActionTest extends DbTestCase
                 'name'        => 'test',
                 'entities_id' => $this->getTestRootEntity(true),
             ]
-        );
+        )->getID();
 
         $location_so_id = null;
         foreach (SearchOption::getOptionsForItemtype($ticket->getType()) as $so_id => $so) {
@@ -1843,19 +1843,21 @@ class MassiveActionTest extends DbTestCase
         $old_right = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
         $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
 
-        $this->processMassiveActionsForOneItemtype(
-            'update',
-            $ticket,
-            [$ticket->fields['id']],
-            [
-                'locations_id'   => [$location_id], // array, as a "multiple" field would submit
-                'search_options' => [$ticket->getType() => $location_so_id],
-                'field'          => 'locations_id',
-            ],
-            0,
-            1,
-        );
-
-        $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_right;
+        try {
+            $this->processMassiveActionsForOneItemtype(
+                'update',
+                $ticket,
+                [$ticket->fields['id']],
+                [
+                    'locations_id'   => [$location_id], // array, as a "multiple" field would submit
+                    'search_options' => [$ticket->getType() => $location_so_id],
+                    'field'          => 'locations_id',
+                ],
+                0,
+                1,
+            );
+        } finally {
+            $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_right;
+        }
     }
 }
