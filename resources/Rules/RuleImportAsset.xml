@@ -2242,7 +2242,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>29</ranking>
+        <ranking>72</ranking>
         <name>PDU constraint (name)</name>
         <description></description>
         <match>AND</match>
@@ -2271,7 +2271,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>30</ranking>
+        <ranking>73</ranking>
         <name>PDU update (by serial)</name>
         <description></description>
         <match>AND</match>
@@ -2305,7 +2305,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>32</ranking>
+        <ranking>74</ranking>
         <name>PDU import (by serial)</name>
         <description></description>
         <match>AND</match>
@@ -2334,7 +2334,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>34</ranking>
+        <ranking>75</ranking>
         <name>PDU import denied</name>
         <description></description>
         <match>AND</match>
