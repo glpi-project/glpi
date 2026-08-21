@@ -68,11 +68,11 @@ class PDU extends NetworkEquipment
             }
         }
 
-        if (count($inventory_plugs)) {
-            $this->plugs = new AssetPlug($this->item);
-            $this->plugs->setData($inventory_plugs);
-            $this->plugs->prepare();
-        }
+
+        $this->plugs = new AssetPlug($this->item);
+        $this->plugs->setData($inventory_plugs);
+        $this->plugs->prepare();
+
         return $this->data;
     }
 
