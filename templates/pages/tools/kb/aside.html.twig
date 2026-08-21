@@ -72,7 +72,7 @@
                     <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
                 </button>
             {% endif %}
-            <a class="text-dark text-hover-link text-truncate flex-grow-1" href="{{ article.link }}">
+            <a class="text-dark text-hover-link text-truncate flex-grow-1" href="{{ article.link }}" draggable="false">
                 <span data-glpi-kb-article-illustration data-testid="kb-illustration">
                     {% if article.illustration %}
                         {{ render_illustration(article.illustration, 20) }}
@@ -188,7 +188,7 @@
         <i class="ti ti-star-filled me-1 fs-5 text-yellow" aria-hidden="true"></i>
         {{ __("Favorites") }}
     </h4>
-        <ul class="kb-tree ps-0">
+        <ul class="kb-tree ps-0" aria-label="{{ __('Favorite articles') }}">
             {% for article in favorites %}
                 {% if article.is_current %}
                     {{ macros.render_article(
@@ -210,7 +210,7 @@
     data-glpi-kb-aside-tree
     data-testid="aside-tree"
 >
-    <ul class="kb-tree ps-0">
+    <ul class="kb-tree ps-0" aria-label="{{ __('All articles') }}">
         {% for article in tree.getArticles %}
             {{ macros.render_article(article, can_create, show_actions) }}
         {% endfor %}
@@ -228,4 +228,13 @@
 
     const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
     new GlpiKnowbaseAsideController(aside);
+    {# Without the update right every move would be refused server-side. Loaded
+     # dynamically: a drag cannot start before the user moves the pointer, so
+     # this one has no server-rendered state to reach in time. #}
+    {% if can_update %}
+        const { GlpiKnowbaseAsideDragController } = await import(
+            "/js/modules/Knowbase/AsideDragController.js"
+        );
+        new GlpiKnowbaseAsideDragController(aside);
+    {% endif %}
 </script>
