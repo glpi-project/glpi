@@ -134,6 +134,21 @@ class Item_SoftwareVersion extends CommonDBRelation
 
     public function prepareInputForAdd($input)
     {
+        if (
+            isset($input['itemtype'], $input['items_id'], $input['softwareversions_id'])
+            && countElementsInTable(
+                static::getTable(),
+                [
+                    'itemtype'            => $input['itemtype'],
+                    'items_id'            => $input['items_id'],
+                    'softwareversions_id' => $input['softwareversions_id'],
+                ]
+            ) > 0
+        ) {
+            Session::addMessageAfterRedirect(__s('This software version is already installed on this item.'), false, ERROR);
+            return false;
+        }
+
         $input = $this->prepareInputForAddAndUpdate($input, true);
         if ($input === false) {
             return false;
