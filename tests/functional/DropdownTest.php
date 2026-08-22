@@ -2161,6 +2161,36 @@ HTML;
         }
     }
 
+    public function testDeviceTypesAndModelsArePresent(): void
+    {
+        $this->login();
+
+        $groups = Dropdown::getStandardDropdownItemTypes(false);
+
+        $type_key = _n('Type', 'Types', Session::getPluralNumber());
+        $model_key = _n('Model', 'Models', Session::getPluralNumber());
+
+        $this->assertArrayHasKey($type_key, $groups);
+        $this->assertArrayHasKey($model_key, $groups);
+
+        $type_group = $groups[$type_key];
+        $model_group = $groups[$model_key];
+
+        $device_itemtypes = array_merge(...array_values(Dropdown::getDeviceItemTypes(false)));
+
+        foreach (array_keys($device_itemtypes) as $device_class) {
+            $type_class = $device_class . 'Type';
+            if (class_exists($type_class)) {
+                $this->assertArrayHasKey($type_class, $type_group, "$type_class should be a registered standard dropdown");
+            }
+
+            $model_class = $device_class . 'Model';
+            if (class_exists($model_class)) {
+                $this->assertArrayHasKey($model_class, $model_group, "$model_class should be a registered standard dropdown");
+            }
+        }
+    }
+
     public function testClone()
     {
         $this->login();
