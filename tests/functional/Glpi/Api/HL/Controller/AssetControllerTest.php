@@ -685,6 +685,17 @@ class AssetControllerTest extends HLAPITestCase
                 });
         });
 
+        // Re-installing the same version must be a no-op success (204), not an error.
+        $duplicate_request = new Request('POST', "/Assets/Computer/{$computer_id}/SoftwareInstallation");
+        $duplicate_request->setParameter('softwareversion', $softwareversion_id);
+        $this->api->call($duplicate_request, function ($call) {
+            $call->response
+                ->isOK()
+                ->status(function ($status_code) {
+                    $this->assertEquals(204, $status_code);
+                });
+        });
+
         // Search
         $this->api->call(new Request('GET', "/Assets/Computer/{$computer_id}/SoftwareInstallation"), function ($call) use ($softwareversion_id) {
             $call->response

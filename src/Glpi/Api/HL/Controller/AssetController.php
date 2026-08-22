@@ -3774,8 +3774,29 @@ EOT,
     {
         $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
         $request->setParameter('items_id', $request->getAttribute('asset_id'));
+
+        $schema = $this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request));
+        $input = ResourceAccessor::getInputParamsBySchema($schema, $request->getParameters());
+
+        $item = new Item_SoftwareVersion();
+        if (
+            isset($input['itemtype'], $input['items_id'], $input['softwareversions_id'])
+            && $item->can($item->getID(), CREATE, $input)
+            && countElementsInTable(
+                Item_SoftwareVersion::getTable(),
+                [
+                    'itemtype'            => $input['itemtype'],
+                    'items_id'            => $input['items_id'],
+                    'softwareversions_id' => $input['softwareversions_id'],
+                ]
+            ) > 0
+        ) {
+            // Already installed: treat a repeat install request as a no-op success.
+            return new JSONResponse(null, 204);
+        }
+
         return ResourceAccessor::createBySchema(
-            $this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)),
+            $schema,
             $request->getParameters(),
             [self::class, 'getSoftwareInstallation'],
             [
