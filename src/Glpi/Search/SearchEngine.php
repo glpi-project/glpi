@@ -432,6 +432,7 @@ final class SearchEngine
         $data['toview'] = SearchOption::getDefaultToView($itemtype, $params);
         if ($p['sort'] === [0]) {
             $p['sort'] = [array_values($data['toview'])[0]];
+            $data['search']['sort'] = $p['sort'];
         }
         $data['meta_toview'] = [];
         if (!$forcetoview) {
