@@ -274,6 +274,7 @@ EOD,
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
                         'x-version-introduced' => '2.2.0',
                     ],
+                    'supervisor' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_supervisor', full_schema: 'User', params: ['x-version-introduced' => '2.4.0']),
                 ],
             ],
             'Group' => [
