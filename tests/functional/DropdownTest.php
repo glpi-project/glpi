@@ -3174,4 +3174,35 @@ HTML;
         $this->assertContains($computer_with_contact_id, $ids);
         $this->assertNotContains($other_computer_id, $ids);
     }
+
+    public function testGetDropdownMyDevicesCustomAsset(): void
+    {
+        $this->login();
+
+        $custom_asset = getItemByTypeName('Glpi\\CustomAsset\\Test01Asset', 'TestA');
+        $this->assertTrue($custom_asset->update([
+            'id' => $custom_asset->getID(),
+            'users_id' => Session::getLoginUserID(),
+        ]));
+
+        // Ensure user has permission to see the asset and has permission to link that type of custom asset to tickets
+        $_SESSION["glpiactiveprofile"]["asset_test01"] = 3871;
+        $_SESSION["glpiactiveprofile"]["helpdesk_item_type"][] = 'Glpi\\CustomAsset\\Test01Asset';
+
+        // Check dropdown results
+        $results = Dropdown::getDropdownMyDevices([
+            'entity_restrict' => $_SESSION["glpiactiveentities"]
+        ], false)['results'];
+        $has_match = false;
+        foreach ($results as $result) {
+            if ($result['text'] === 'My Test01') {
+                foreach ($result['children'] as $child_result) {
+                    if ($child_result['text'] === 'TestA') {
+                        $has_match = true;
+                    }
+                }
+            }
+        }
+        $this->assertTrue($has_match);
+    }
 }
