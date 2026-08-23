@@ -39,6 +39,7 @@ use Glpi\Asset\Capacity\HasSocketCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Socket;
 use Glpi\Tests\DbTestCase;
+use Location;
 use NetworkPort;
 use NetworkPortEthernet;
 use Toolbox;
@@ -174,6 +175,36 @@ class SocketTest extends DbTestCase
         $this->assertSame('Computer', $socket->fields['itemtype']);
         $this->assertSame($computer->getID(), $socket->fields['items_id']);
         $this->assertSame(0, $socket->fields['networkports_id']);
+    }
+
+    public function testShowListForItemDisplaysLocation()
+    {
+        $this->login();
+
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->assertNotFalse($computer);
+
+        $location = new Location();
+        $location_id = (int) $location->add([
+            'name'   => 'Socket test location',
+        ]);
+        $this->assertGreaterThan(0, $location_id);
+
+        $socket = new Socket();
+        $socket_id = (int) $socket->add([
+            'name'         => 'Socket with location',
+            'items_id'     => $computer->getID(),
+            'itemtype'     => 'Computer',
+            'locations_id' => $location_id,
+        ]);
+        $this->assertGreaterThan(0, $socket_id);
+
+        ob_start();
+        $this->assertTrue(Socket::showListForItem($computer));
+        $result = ob_get_clean();
+
+        $this->assertStringContainsString('Location', $result);
+        $this->assertStringContainsString('Socket test location', $result);
     }
 
 
