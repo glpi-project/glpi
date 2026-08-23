@@ -3191,7 +3191,7 @@ HTML;
 
         // Check dropdown results
         $results = Dropdown::getDropdownMyDevices([
-            'entity_restrict' => $_SESSION["glpiactiveentities"]
+            'entity_restrict' => $_SESSION["glpiactiveentities"],
         ], false)['results'];
         $has_match = false;
         foreach ($results as $result) {
