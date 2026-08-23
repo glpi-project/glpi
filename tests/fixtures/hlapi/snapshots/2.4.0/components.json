@@ -28101,6 +28101,21 @@
                 "substitution_end_date": {
                     "type": "string",
                     "format": "date-time"
+                },
+                "supervisor": {
+                    "type": "object",
+                    "x-itemtype": "User",
+                    "properties": {
+                        "id": {
+                            "type": "integer",
+                            "format": "int64"
+                        },
+                        "name": {
+                            "type": "string",
+                            "readOnly": true
+                        }
+                    },
+                    "x-full-schema": "User"
                 }
             }
         },
