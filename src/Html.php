@@ -142,7 +142,7 @@ class Html
     public static function convDate($time, $format = null)
     {
 
-        if (is_null($time) || trim($time) == '' || in_array($time, ['NULL', '0000-00-00', '0000-00-00 00:00:00'])) {
+        if (is_null($time) || trim($time) == '' || in_array($time, ['null', 'NULL', '0000-00-00', '0000-00-00 00:00:00'])) {
             return null;
         }
 
@@ -187,7 +187,7 @@ class Html
      **/
     public static function convDateTime($time, $format = null, bool $with_seconds = false)
     {
-        if (is_null($time) || ($time === 'NULL')) {
+        if (is_null($time) || $time === 'NULL' || $time === 'null') {
             return null;
         }
 

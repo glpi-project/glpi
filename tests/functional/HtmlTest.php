@@ -57,6 +57,7 @@ class HtmlTest extends DbTestCase
     public function testConvDate()
     {
         $this->assertNull(Html::convDate(null));
+        $this->assertNull(Html::convDate('null'));
         $this->assertNull(Html::convDate('NULL'));
         $this->assertNull(Html::convDate(''));
         $this->assertNull(Html::convDate('0000-00-00'));
@@ -92,6 +93,7 @@ class HtmlTest extends DbTestCase
     public function testConvDateTime()
     {
         $this->assertNull(Html::convDateTime(null));
+        $this->assertNull(Html::convDateTime('null'));
         $this->assertNull(Html::convDateTime('NULL'));
 
         $timestamp = time();
