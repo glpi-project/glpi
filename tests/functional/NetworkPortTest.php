@@ -37,6 +37,7 @@ namespace tests\units;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasNetworkPortCapacity;
 use Glpi\Features\Clonable;
+use Glpi\Socket;
 use Glpi\Tests\DbTestCase;
 use NetworkPort;
 use NetworkPortEthernet;
@@ -457,6 +458,63 @@ class NetworkPortTest extends DbTestCase
                     $this->assertStringContainsString((string) $netport->fields[$column['field']], $result);
                 }
             }
+        }
+    }
+
+    public function testShowForItemDisplaysLinkedSocket()
+    {
+        $this->login();
+
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+
+        // Add a network port with a linked socket
+        $networkport = new NetworkPort();
+        $np_id = $networkport->add([
+            'items_id'                    => $computer->getID(),
+            'itemtype'                    => 'Computer',
+            'entities_id'                 => $computer->fields['entities_id'],
+            'is_recursive'                => 0,
+            'logical_number'              => 7,
+            'mac'                         => '00:24:81:eb:c6:d7',
+            'instantiation_type'          => 'NetworkPortEthernet',
+            'name'                        => 'eth_socket',
+            'items_devicenetworkcards_id' => 0,
+            'type'                        => 'T',
+            'speed'                       => 1000,
+            '_create_children'            => true,
+        ]);
+        $this->assertGreaterThan(0, (int) $np_id);
+
+        $socket = new Socket();
+        $sockets_id = $socket->add([
+            'name'        => 'socket_1',
+            'items_id'    => '',
+            'itemtype'    => '',
+        ]);
+        $this->assertGreaterThan(0, (int) $sockets_id);
+
+        $ethernetPort = new NetworkPortEthernet();
+        $this->assertTrue($ethernetPort->getFromDBByCrit(['networkports_id' => $np_id]));
+        $this->assertTrue($ethernetPort->update([
+            'id'               => $ethernetPort->getID(),
+            'sockets_id'       => $sockets_id,
+            'networkports_id'  => $np_id,
+        ]));
+
+        // Add the socket display preference (option 9)
+        $displaypref = new \DisplayPreference();
+        $this->assertGreaterThan(0, (int) $displaypref->add([
+            'itemtype' => 'NetworkPort',
+            'users_id' => \Session::getLoginUserID(),
+            'num'      => 9,
+        ]));
+
+        foreach (['showForItem', 'displayTabContentForItem'] as $method) {
+            ob_start();
+            NetworkPort::$method($computer);
+            $result = ob_get_clean();
+            $this->assertStringContainsString(Socket::getTypeName(1), $result);
+            $this->assertStringContainsString('socket_1', $result);
         }
     }
 
