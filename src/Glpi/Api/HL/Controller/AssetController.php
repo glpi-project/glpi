@@ -1401,6 +1401,7 @@ final class AssetController extends AbstractController
                             'table' => Cartridge::getTable(),
                             'fkey' => 'id',
                             'field' => CartridgeItem::getForeignKeyField(),
+                            'primary-property' => 'id',
                         ],
                         'properties' => [
                             'id' => [

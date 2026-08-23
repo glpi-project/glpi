@@ -894,4 +894,41 @@ class AssetControllerTest extends HLAPITestCase
                 });
         });
     }
+
+    public function testCartridgeItemShowsCreatedCartridges()
+    {
+        $cartridge_item_id = getItemByTypeName('CartridgeItem', '_test_cartridgeitem01', true);
+        $this->assertIsInt($cartridge_item_id);
+        $this->assertGreaterThan(0, $cartridge_item_id);
+
+        $created = $this->createItems('Cartridge', [
+            ['cartridgeitems_id' => $cartridge_item_id],
+            ['cartridgeitems_id' => $cartridge_item_id],
+            ['cartridgeitems_id' => $cartridge_item_id],
+        ]);
+
+        $created_ids = array_map(static fn($it) => $it->getID(), $created);
+        $this->assertCount(3, $created_ids);
+
+        $this->login();
+        $request = new Request('GET', '/Assets/Cartridge');
+        $request->setParameter('filter', ['id==' . $cartridge_item_id]);
+
+        $this->api->call($request, function ($call) use ($created_ids) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($created_ids) {
+                    $this->assertCount(1, $content);
+                    $ci = $content[0];
+
+                    $this->assertEquals('_test_cartridgeitem01', $ci['name']);
+                    $returned_ids = array_column($ci['cartridges'], 'id');
+
+                    foreach ($created_ids as $id) {
+                        $this->assertContains($id, $returned_ids);
+                    }
+                });
+        });
+    }
+
 }
