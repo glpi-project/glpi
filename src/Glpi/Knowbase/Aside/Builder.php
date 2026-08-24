@@ -50,7 +50,7 @@ use KnowbaseItem_KnowbaseItem;
  */
 final class Builder
 {
-    private const array LIST_COLUMNS = [
+    public const array LIST_COLUMNS = [
         'glpi_knowbaseitems.id',
         'glpi_knowbaseitems.name',
         'glpi_knowbaseitems.illustration',

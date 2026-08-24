@@ -3373,6 +3373,7 @@ TWIG, $twig_params);
         }
 
         $criteria = self::getListRequest([], 'browse');
+        $criteria['SELECT'] = Builder::LIST_COLUMNS;
 
         $is_favorite_condition = [
             self::getTable() . '.id' => new QuerySubQuery([
