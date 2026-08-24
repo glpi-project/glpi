@@ -67,11 +67,9 @@ class EntityFilter extends AbstractFilter
                 Session::getActiveEntities()
             );
 
-            if ($sons !== []) {
-                $criteria["WHERE"] = [
-                    "$table.entities_id" => $sons,
-                ];
-            }
+            $criteria["WHERE"] = [
+                "$table.entities_id" => $sons,
+            ];
         }
 
         return $criteria;
@@ -82,7 +80,11 @@ class EntityFilter extends AbstractFilter
     {
         $criteria = [];
 
-        if ((int) $value > 0) {
+        $sons = (int) $value > 0
+            ? array_intersect(getSonsOf(Entity::getTable(), (int) $value), Session::getActiveEntities())
+            : [];
+
+        if ($sons !== []) {
             $criteria[] = [
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'entities_id', 'glpi_entities'),

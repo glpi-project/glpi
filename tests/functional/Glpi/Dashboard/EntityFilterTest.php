@@ -92,6 +92,9 @@ class EntityFilterTest extends DbTestCase
         // Only child_1 is active — picking child_2 must not leak any WHERE.
         $this->setEntity($child_1, false);
 
-        $this->assertSame([], EntityFilter::getCriteria('glpi_tickets', $child_2));
+        $this->assertSame(
+            ['WHERE' => ['glpi_tickets.entities_id' => []]],
+            EntityFilter::getCriteria('glpi_tickets', $child_2)
+        );
     }
 }
