@@ -35,6 +35,9 @@ const CONTEXT_LENGTH = 32;
 /** Mirrors KnowbaseItem_Comment::MAX_ANCHOR_LENGTH. */
 const MAX_ANCHOR_LENGTH = 1000;
 
+/** Below this, a shared run of characters is too short to mean much. */
+const MIN_SIGNIFICANT_OVERLAP_LENGTH = 5;
+
 /**
  * Count how many times `exact` occurs in `text` strictly before `before_index`.
  * @param {string} text
@@ -89,17 +92,41 @@ function findAllOccurrences(text, needle) {
 }
 
 /**
+ * Whether `a` and `b` share a run of `MIN_SIGNIFICANT_OVERLAP_LENGTH`+ characters,
+ * ignoring case and whitespace. Used to tell a genuine reworded quote from unrelated
+ * text that happens to share the same prefix/suffix context. Substring-based rather
+ * than word-based: it needs no word-boundary notion, so it works the same for
+ * space-separated and CJK-style text alike.
+ * @param {string} a
+ * @param {string} b
+ * @returns {boolean}
+ */
+function sharesSignificantOverlap(a, b) {
+    const normalize = (str) => str.toLowerCase().replace(/\s+/g, '');
+    const na = normalize(a);
+    const nb = normalize(b);
+    for (let i = 0; i <= na.length - MIN_SIGNIFICANT_OVERLAP_LENGTH; i++) {
+        if (nb.includes(na.slice(i, i + MIN_SIGNIFICANT_OVERLAP_LENGTH))) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
  * Locate the quoted passage by bracketing it between `prefix` and `suffix`, for when
  * `exact` no longer matches verbatim. Each occurrence of `prefix` opens one candidate,
  * closed by the first `suffix` that follows it. A `prefix` directly touching a `suffix`
- * means the quote was deleted, not edited, so that candidate is dropped rather than
- * bracketing the next `suffix` occurrence. Refuses when several candidates remain.
+ * means the quote was deleted there: if that's the only finding, the search stops.
+ * If a candidate is also found elsewhere, it's trusted only when it reads like an
+ * edit of `exact` rather than unrelated text sharing the same context by coincidence.
  * @param {string} text
  * @param {string} prefix
  * @param {string} suffix
+ * @param {string} exact
  * @returns {[number, number]|null}
  */
-function locateByBracketing(text, prefix, suffix) {
+function locateByBracketing(text, prefix, suffix, exact) {
     const starts = prefix.length === 0
         ? [0]
         : findAllOccurrences(text, prefix).map((idx) => idx + prefix.length);
@@ -108,17 +135,27 @@ function locateByBracketing(text, prefix, suffix) {
         : findAllOccurrences(text, suffix);
 
     let candidate = null;
+    let saw_deleted_elsewhere = false;
     for (const start of starts) {
-        // findAllOccurrences returns ascending indices, so this is the nearest suffix
-        // at or after start; `end === start` means prefix and suffix are adjacent.
         const end = ends.find((idx) => idx >= start);
-        if (end === undefined || end === start || end - start > MAX_ANCHOR_LENGTH) {
+        if (end !== undefined && end === start) {
+            saw_deleted_elsewhere = true;
+            continue;
+        }
+        if (end === undefined || end - start > MAX_ANCHOR_LENGTH) {
             continue;
         }
         if (candidate !== null) {
             return null;
         }
         candidate = [start, end];
+    }
+
+    if (candidate !== null && saw_deleted_elsewhere) {
+        const [start, end] = candidate;
+        if (!sharesSignificantOverlap(text.slice(start, end), exact)) {
+            return null;
+        }
     }
 
     return candidate;
@@ -171,7 +208,7 @@ export function locateAnchor(text, anchor) {
         }
     }
 
-    return locateByBracketing(text, prefix, suffix);
+    return locateByBracketing(text, prefix, suffix, exact);
 }
 
 /**

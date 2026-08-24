@@ -287,6 +287,68 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await expect(kb.getCommentAnchorQuotes()).toHaveText('The passage absolutely needs tweaking.');
     });
 
+    test('A comment stays orphaned, not reattached elsewhere, when its passage is deleted and its context repeats', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test deletion with a coincidentally repeated context',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Restart the affected service. The database times out here. Check the logs for errors. '
+                + 'And that is all for now, nothing more to add here today. Restart the affected service. '
+                + 'Nothing related to any of this happened. Check the logs for errors. And nothing else needs to be done.</p>',
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode('The database times out here.');
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment on the deleted passage');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment on the deleted passage')).toBeVisible();
+
+        await kb.editor.enterEditMode();
+        await kb.selectTextInEditMode('The database times out here.');
+        await kb.editor.pressKey('Backspace');
+
+        // Must not reattach to the second, unrelated "Restart..." occurrence.
+        await expect(kb.getCommentHighlights()).toHaveCount(0);
+
+        await kb.doOpenCommentsPanel();
+        await expect(kb.getComment('Comment on the deleted passage')).toBeVisible();
+        await expect(kb.getCommentAnchorQuotes()).toHaveCount(0);
+    });
+
+    test('A comment anchor still resolves after an in-place edit, despite an unrelated deletion-like pattern elsewhere', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test in-place edit alongside a coincidental deletion-like pattern',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Restart the service. Wait five seconds and check it works as expected. '
+                + 'Elsewhere in the article: Restart the service. and check it works as expected.</p>',
+        });
+
+        await kb.goto(id);
+        await kb.selectTextInReadMode('Wait five seconds');
+        await kb.readModeCommentBubble.click();
+        await kb.getNewCommentTextarea().fill('Comment on the reworded passage');
+        await page.getByRole('button', { name: 'Add comment' }).click();
+        await expect(kb.getComment('Comment on the reworded passage')).toBeVisible();
+
+        await kb.editor.enterEditMode();
+        // Must still resolve despite the deletion-like pattern further down.
+        await kb.editor.setContent(
+            'Restart the service. Wait ten seconds instead and check it works as expected. '
+            + 'Elsewhere in the article: Restart the service. and check it works as expected.'
+        );
+        await kb.editor.save();
+
+        await page.reload();
+        await kb.waitForArticleReady();
+        await expect(kb.getCommentHighlightByText('Wait ten seconds instead')).toBeVisible();
+    });
+
     test('A comment anchor resolves correctly when its quoted text also appears elsewhere in the article', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);
