@@ -84,15 +84,12 @@ final class Builder
         // 2) Visible parent -> [visible children] adjacency, and child -> has a visible parent?
         $children_of         = [];     // parent_id => int[] child ids
         $has_visible_parent  = [];     // child_id => true
-        foreach ($DB->request([
-            'FROM'  => KnowbaseItem_KnowbaseItem::getTable(),
-            'WHERE' => [
-                'knowbaseitems_id'        => $visible_ids,
-                'knowbaseitems_id_parent' => $visible_ids,
-            ],
-        ]) as $link) {
+        foreach ($DB->request(['FROM' => KnowbaseItem_KnowbaseItem::getTable()]) as $link) {
             $child  = (int) $link['knowbaseitems_id'];
             $parent = (int) $link['knowbaseitems_id_parent'];
+            if (!isset($data[$child], $data[$parent])) {
+                continue; // one of the ends is not visible to the current user
+            }
             $children_of[$parent][] = $child;
             $has_visible_parent[$child] = true;
         }
