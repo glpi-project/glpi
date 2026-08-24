@@ -646,16 +646,23 @@ export class GlpiKnowbaseAsideController
             }
         });
 
-        // Prefetch the menu content as soon as the row is hovered or focused, so
-        // it is ready by the time the user opens the kebab (no visible latency).
-        const prefetch = (e) => {
+        // Create the row's menu and prefetch its content as soon as the row is
+        // hovered or focused, so both are ready by the time the user opens the
+        // kebab (no visible latency).
+        const prepare = (e) => {
             const line = e.target.closest('.article[data-glpi-kb-article-id]');
             if (line && this.#aside.contains(line)) {
+                this.#ensureActionsMenu(line);
                 this.#populateMenus(parseInt(line.dataset.glpiKbArticleId));
             }
         };
-        this.#aside.addEventListener('mouseover', prefetch);
-        this.#aside.addEventListener('focusin', prefetch);
+        this.#aside.addEventListener('mouseover', prepare);
+        this.#aside.addEventListener('focusin', prepare);
+        // Safety net for opens that skip hover and focus (touch, synthetic
+        // clicks): the menu has to exist before Bootstrap looks it up, and the
+        // capture phase runs before its own delegated click handler.
+        this.#aside.addEventListener('pointerdown', prepare);
+        this.#aside.addEventListener('click', prepare, true);
 
         // Fallback for opens that outran the prefetch (touch, instant clicks,
         // keyboard): make sure the content is loaded when the menu opens.
@@ -665,6 +672,31 @@ export class GlpiKnowbaseAsideController
                 this.#populateMenus(parseInt(line.dataset.glpiKbArticleId));
             }
         });
+    }
+
+    /**
+     * Create an article row's kebab menu element, unless it already has one.
+     *
+     * The tree only renders the menu triggers: a large knowledge base would
+     * otherwise carry thousands of identical, never-opened menus. The menu is
+     * cloned from the template the aside renders once, see
+     * `render_actions_menu_lazy()`.
+     *
+     * @param {HTMLElement} line
+     */
+    #ensureActionsMenu(line)
+    {
+        // Scoped to the row itself: a row nests its child rows, whose own
+        // triggers must not be confused with it.
+        const dropdown = line.querySelector(':scope > .article-line > .dropdown');
+        if (!dropdown || dropdown.querySelector(':scope > [data-glpi-kb-actions-menu]')) {
+            return;
+        }
+
+        const template = this.#aside.querySelector('[data-glpi-kb-actions-menu-template]');
+        if (template) {
+            dropdown.append(template.content.cloneNode(true));
+        }
     }
 
     /**

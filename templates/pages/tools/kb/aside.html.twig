@@ -106,8 +106,13 @@
 {% endmacro %}
 
 {% import _self as macros %}
+{% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
 
 {% set hide_favorites = not has_other_favorites and not current_is_favorite %}
+
+{% if show_actions %}
+    {{ actions_menu.render_actions_menu_placeholder() }}
+{% endif %}
 
 {# Apply the persisted collapsed state before first paint to avoid a flash of the open aside. #}
 <script>
