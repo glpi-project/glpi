@@ -1642,9 +1642,8 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      **/
     public static function cronInfo($name)
     {
-        switch ($name) {
-            case 'createinquestchange':
-                return ['description' => __('Generation of changes satisfaction surveys')];
+        if ($name === 'createinquestchange') {
+            return ['description' => __('Generation of changes satisfaction surveys')];
         }
         return [];
     }
