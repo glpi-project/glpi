@@ -37,20 +37,13 @@ namespace Glpi\DBAL;
 use Glpi\Exception\Database\QueryException;
 
 /**
- * A scalar value used in a statement.
+ * A database scalar value used in a statement.
  *
  * Renders as a `?` placeholder and carries the value to bind for it, so the value travels with
  * the SQL fragment instead of being inlined into it:
  * ```php
  * QueryFunction::dateAdd(new QueryIdentifier('date_creation'), new QueryValue(3), 'DAY')
  * ```
- *
- * Not to be confused with {@see QueryParam}, which also renders as `?` but binds *nothing*: it
- * marks the placeholders of a statement that is prepared once and executed many times.
- *
- * Note that the SQL engine does not accept a placeholder everywhere. `GROUP_CONCAT(... SEPARATOR
- * 'x')`, `CAST(x AS TYPE)` and `CONVERT(x USING charset)` require a literal, so those positions
- * cannot take a `QueryValue`.
  */
 final class QueryValue implements QueryElementInterface
 {

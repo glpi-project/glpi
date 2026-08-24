@@ -52,6 +52,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\DBAL\QueryValue`, to designate a scalar value used in a statement. It renders as a `?` placeholder and carries the value to bind for it, instead of the value being inlined into the SQL. Not to be confused with `QueryParam`, which renders as `?` but binds nothing.
 
 #### Changes
+- `QueryFunction` methods now accept any `QueryElementInterface` where they used to accept only a `string` or a `QueryExpression`
 - `Session::haveRight()` now only returns a boolean
 - All `CommonGLPI`, `CommonDBTM` parameters now have a native PHP type
 - `KnowbaseItem_Comment` is now final
