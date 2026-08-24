@@ -516,6 +516,16 @@ class NetworkPortTest extends DbTestCase
             $this->assertStringContainsString(Socket::getTypeName(1), $result);
             $this->assertStringContainsString('socket_1', $result);
         }
+
+        // Check that the search engine can filter by the linked socket (option 9).
+        // This tests the JOIN between glpi_networkports and glpi_sockets, which is
+        // the actual fix for filtering/sorting by socket.
+        $data = \Search::getDatas('NetworkPort', [
+            'criteria' => [
+                ['field' => 9, 'searchtype' => 'contains', 'value' => 'socket_1'],
+            ],
+        ], [9]);
+        $this->assertGreaterThan(0, $data['data']['totalcount']);
     }
 
     public function testCanViewItemWithoutGlobalReadRight()
