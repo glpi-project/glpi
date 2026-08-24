@@ -184,20 +184,16 @@ class SocketTest extends DbTestCase
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->assertNotFalse($computer);
 
-        $location = new Location();
-        $location_id = (int) $location->add([
+        $location = $this->createItem(Location::class, [
             'name'   => 'Socket test location',
         ]);
-        $this->assertGreaterThan(0, $location_id);
 
-        $socket = new Socket();
-        $socket_id = (int) $socket->add([
+        $socket = $this->createItem(Socket::class, [
             'name'         => 'Socket with location',
             'items_id'     => $computer->getID(),
             'itemtype'     => 'Computer',
-            'locations_id' => $location_id,
+            'locations_id' => $location->getID(),
         ]);
-        $this->assertGreaterThan(0, $socket_id);
 
         ob_start();
         $this->assertTrue(Socket::showListForItem($computer));
