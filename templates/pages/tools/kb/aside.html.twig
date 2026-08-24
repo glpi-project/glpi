@@ -81,17 +81,15 @@
                 <span data-glpi-kb-article-title>{{ article.title }}</span>
             </a>
             {% if can_create %}
-                {% set add_href = path('/front/knowbaseitem.form.php', {knowbaseitems_id_parent: article.id}) %}
-                {% set add_title = __('Create a child article') %}
-                <a
-                    href="{{ add_href }}"
-                    class="d-flex align-items-center ms-2 p-1 text-secondary pe-none"
-                    data-glpi-kb-aside-category-add
+                <button
+                    type="button"
+                    class="d-flex align-items-center ms-2 p-1 text-secondary border-0 bg-transparent"
+                    data-glpi-kb-aside-category-add="{{ article.id }}"
                     aria-label="{{ __('Create an article under %s')|format(article.title) }}"
-                    title="{{ add_title }}"
+                    title="{{ __('Create a child article under %s')|format(article.title) }}"
                 >
                     <i class="ti ti-plus" aria-hidden="true"></i>
-                </a>
+                </button>
             {% endif %}
             {% if show_actions %}
                 {{ actions_menu.render_actions_menu_lazy() }}

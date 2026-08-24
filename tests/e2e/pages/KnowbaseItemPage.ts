@@ -502,14 +502,14 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * The "+" link that creates a child article under the given (parent)
+     * The "+" button that creates a child article under the given (parent)
      * article's aside tree node. Hidden until the node's header is hovered
      * or focused (see `_kb.scss`), hence exposed separately from
      * `getAsideCategoryArticle()`.
      */
-    public getAsideCategoryAddLink(title: string): Locator
+    public getAsideCategoryAddButton(title: string): Locator
     {
-        return this.getAsideCategory(title).getByRole('link', {
+        return this.getAsideCategory(title).getByRole('button', {
             name: new RegExp(`Create an article under ${title}`, 'i'),
         });
     }
