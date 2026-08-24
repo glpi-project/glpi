@@ -67,6 +67,13 @@ final class AsideSearchController extends AbstractController
 
         // Get article IDs that match this filter
         $criteria = KnowbaseItem::getListRequest(['contains' => $contains], 'search');
+
+        // The response is only used for membership tests, so neither the article
+        // columns (`glpi_knowbaseitems.*` includes `answer`) nor the relevance
+        // ordering are needed.
+        $criteria['SELECT'] = [KnowbaseItem::getTableField('id')];
+        unset($criteria['ORDERBY']);
+
         $ids = [];
         foreach ($DB->request($criteria) as $data) {
             $ids[] = (int) $data['id'];
