@@ -74,21 +74,21 @@ class UserAssignedFilterTest extends DbTestCase
         $criteria = UserAssignedFilter::getCriteria($table, '42');
         $this->assertSame(
             [
-                "$ul_table as ul_assigned" => [
+                "$ul_table as ul_user_assigned" => [
                     'ON' => [
-                        'ul_assigned' => $fk,
-                        $table        => 'id',
+                        'ul_user_assigned' => $fk,
+                        $table             => 'id',
                     ],
                 ],
             ],
             $criteria['JOIN']
         );
-        $this->assertSame(CommonITILActor::ASSIGN, $criteria['WHERE']['ul_assigned.type']);
-        $this->assertSame(42, $criteria['WHERE']['ul_assigned.users_id']);
+        $this->assertSame(CommonITILActor::ASSIGN, $criteria['WHERE']['ul_user_assigned.type']);
+        $this->assertSame(42, $criteria['WHERE']['ul_user_assigned.users_id']);
 
         $myself = UserAssignedFilter::getCriteria($table, 'myself');
-        $this->assertSame(CommonITILActor::ASSIGN, $myself['WHERE']['ul_assigned.type']);
-        $this->assertSame($_SESSION['glpiID'], $myself['WHERE']['ul_assigned.users_id']);
+        $this->assertSame(CommonITILActor::ASSIGN, $myself['WHERE']['ul_user_assigned.type']);
+        $this->assertSame($_SESSION['glpiID'], $myself['WHERE']['ul_user_assigned.users_id']);
 
         $this->assertSame([], UserAssignedFilter::getCriteria($table, ''));
         $this->assertSame([], UserAssignedFilter::getCriteria($table, '0'));
