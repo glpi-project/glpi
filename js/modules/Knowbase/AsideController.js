@@ -294,31 +294,25 @@ export class GlpiKnowbaseAsideController
 
     #initCreateArticle()
     {
-        // The links are rendered with pe-none so a click cannot fall through to
-        // their plain href before the listener below exists.
-        for (const add_link of this.#aside.querySelectorAll('[data-glpi-kb-aside-category-add]')) {
-            add_link.classList.remove('pe-none');
-        }
-
         this.#aside.addEventListener('click', (e) => {
-            const add_link = e.target.closest('[data-glpi-kb-aside-category-add]');
-            if (!add_link) {
+            const add_button = e.target.closest('[data-glpi-kb-aside-category-add]');
+            if (!add_button) {
                 return;
             }
             e.preventDefault();
-            this.#openCreateInput(add_link);
+            this.#openCreateInput(add_button);
         });
     }
 
     /**
-     * @param {HTMLElement} add_link
+     * @param {HTMLElement} add_button
      */
-    #openCreateInput(add_link)
+    #openCreateInput(add_button)
     {
-        const header = add_link.closest('[data-glpi-kb-aside-category-header]');
+        const header = add_button.closest('[data-glpi-kb-aside-category-header]');
         const node = header.closest('[data-glpi-kb-aside-category]');
         const list = node.querySelector(':scope > ul');
-        const parent_id = Number(new URL(add_link.href).searchParams.get('knowbaseitems_id_parent')) || 0;
+        const parent_id = Number(add_button.dataset.glpiKbAsideCategoryAdd) || 0;
 
         // The list is hidden while the node is collapsed, so the input below
         // would be inserted into a `display: none` subtree: invisible, and
