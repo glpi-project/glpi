@@ -50,6 +50,12 @@ use KnowbaseItem_KnowbaseItem;
  */
 final class Builder
 {
+    private const array LIST_COLUMNS = [
+        'glpi_knowbaseitems.id',
+        'glpi_knowbaseitems.name',
+        'glpi_knowbaseitems.illustration',
+    ];
+
     /** @var int[] */
     private array $folded_ids = [];
 
@@ -63,7 +69,9 @@ final class Builder
         $this->folded_ids = KnowbaseItem::getFoldedIdsForCurrentUser();
 
         // 1) All articles the current user may see (visibility applied).
-        $rows = $DB->request(KnowbaseItem::getListRequest([], 'browse'));
+        $criteria = KnowbaseItem::getListRequest([], 'browse');
+        $criteria['SELECT'] = self::LIST_COLUMNS;
+        $rows = $DB->request($criteria);
         $data = [];              // id => row
         foreach ($rows as $row) {
             $data[(int) $row['id']] = $row;
