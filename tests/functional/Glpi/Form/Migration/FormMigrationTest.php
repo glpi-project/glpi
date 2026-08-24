@@ -2491,8 +2491,22 @@ final class FormMigrationTest extends DbTestCase
                     'legacy_itemtype'            => $itemtype,
                     'legacy_table'               => $table,
                     'legacy_strategy'            => $key,
+                    'condition'                  => [
+                        'show_condition' => 1,
+                        'show_value'     => 'Test',
+                        'show_logic'     => 1,
+                    ],
                     'expected_creation_strategy' => $strategy,
                     'expected_conditions'        => $expected_conditions,
+                ];
+
+                yield 'Destination ' . $itemtype . ' - ' . $strategy->getLabel() . ' with no conditions' => [
+                    'legacy_itemtype'            => $itemtype,
+                    'legacy_table'               => $table,
+                    'legacy_strategy'            => $key,
+                    'condition'                  => [],
+                    'expected_creation_strategy' => $strategy,
+                    'expected_conditions'        => [],
                 ];
             }
         }
@@ -2503,6 +2517,7 @@ final class FormMigrationTest extends DbTestCase
         string $legacy_itemtype,
         string $legacy_table,
         int $legacy_strategy,
+        array $condition,
         CreationStrategy $expected_creation_strategy,
         array $expected_conditions
     ): void {
@@ -2552,14 +2567,14 @@ final class FormMigrationTest extends DbTestCase
         // Insert condition
         $this->assertTrue($DB->insert(
             'glpi_plugin_formcreator_conditions',
-            [
-                'itemtype'                        => $legacy_itemtype,
-                'items_id'                        => $destination_id,
-                'plugin_formcreator_questions_id' => $target_question_id,
-                'show_condition'                  => 1,
-                'show_value'                      => 'Test',
-                'show_logic'                      => 1,
-            ]
+            array_merge(
+                [
+                    'itemtype'                        => $legacy_itemtype,
+                    'items_id'                        => $destination_id,
+                    'plugin_formcreator_questions_id' => $target_question_id,
+                ],
+                $condition
+            )
         ));
 
         // Process migration

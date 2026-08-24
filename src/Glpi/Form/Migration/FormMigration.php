@@ -1619,8 +1619,15 @@ class FormMigration extends AbstractPluginMigration
                 $conditioning_item,
                 $target_item
             );
+
             if ($condition_entry === null) {
-                continue;
+                if ($target_item['itemtype'] !== FormDestination::class) {
+                    continue;
+                }
+
+                // If the target item is a destination, we still want to create the destination even if the condition is invalid.
+                // Some users use empty strategies without conditions to "disable" the destination.
+                $condition_entry = [];
             }
 
             if (is_a($target_item['itemtype'], FormDestination::class, true)) {
