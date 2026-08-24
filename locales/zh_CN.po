@@ -15,8 +15,8 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
 # 李赋 <fu792659@163.com>, 2026
 # Cédric Anne, 2026
-# DWXXX, 2026
 # Hongbin <wanghongbin@outlook.com>, 2026
+# DWXXX, 2026
 # 
 #, fuzzy
 msgid ""
@@ -25,7 +25,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-19 15:12+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: Hongbin <wanghongbin@outlook.com>, 2026\n"
+"Last-Translator: DWXXX, 2026\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/glpi/teams/1637/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1381,7 +1381,7 @@ msgstr "搜索…"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Go to main navigation"
-msgstr ""
+msgstr "回到主导航"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
@@ -5918,7 +5918,7 @@ msgstr "收藏夹"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Create a root article"
-msgstr ""
+msgstr "创建一个根文章"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "No articles found."
@@ -5926,12 +5926,12 @@ msgstr "未发现文章。"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Create a child article"
-msgstr ""
+msgstr "创建一个子文章"
 
 #: templates/pages/tools/kb/aside.html.twig
 #, php-format
 msgid "Create an article under %s"
-msgstr ""
+msgstr "在%s下创建一个文章"
 
 #: templates/pages/tools/kb/document_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:700
@@ -6436,11 +6436,11 @@ msgstr[0] "授权"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 msgid "Login session data retention"
-msgstr ""
+msgstr "登录会话数据保留"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 msgid "Retention period (days)"
-msgstr ""
+msgstr "保留周期(天)"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -6473,7 +6473,7 @@ msgstr "启用"
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Configure automatic action"
-msgstr ""
+msgstr "配置自动化动作"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "Session list"
@@ -7891,7 +7891,7 @@ msgstr "SQL 错误："
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Historical data retention"
-msgstr ""
+msgstr "历史数据保留"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1631
 msgid "Delete all"
@@ -9320,25 +9320,25 @@ msgstr "网格"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Column"
-msgstr ""
+msgstr "列"
 
 #: templates/pages/management/dcroom_racks.html.twig
 #, php-format
 msgid "Edit label for column %s"
-msgstr ""
+msgstr "编辑列%s的标签"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Row"
-msgstr ""
+msgstr "行"
 
 #: templates/pages/management/dcroom_racks.html.twig
 #, php-format
 msgid "Edit label for row %s"
-msgstr ""
+msgstr "编辑行%s的标签"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Unable to save the room axis label."
-msgstr ""
+msgstr "无法保存房间的轴标签。"
 
 #: templates/pages/management/budget.html.twig
 #: templates/pages/management/cost.html.twig src/ContractCost.php:165
@@ -10134,11 +10134,11 @@ msgstr "资产盘点"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Inventory configuration"
-msgstr ""
+msgstr "资产盘点配置"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Inventory enabled"
-msgstr ""
+msgstr "启用资产盘点"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Authorization header"
@@ -10149,7 +10149,7 @@ msgstr "认证头文件"
 msgid ""
 "Using OAuth Client Credentials requires a registered OAuth client with the "
 "%1$s scope."
-msgstr ""
+msgstr "使用OAuth 客户端凭证需要注册OAuth客户端在范围%1$s内。"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 #, php-format
@@ -10175,11 +10175,11 @@ msgstr "导入选项"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Enable all"
-msgstr ""
+msgstr "启用全部"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Disable all"
-msgstr ""
+msgstr "禁用全部"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Default status"
@@ -10364,7 +10364,7 @@ msgstr "确认密码"
 
 #: templates/pages/admin/user/user.html.twig src/User.php:3514
 msgid "Middle name / Patronymic"
-msgstr ""
+msgstr "中间名/继承名"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Not enough rights to change this field"
@@ -13415,7 +13415,7 @@ msgstr "订单管理"
 #: resources/.illustrations_translations.php:128
 msgctxt "Icon"
 msgid "Order supplies"
-msgstr "订单需求量"
+msgstr "采购耗材"
 
 #: resources/.illustrations_translations.php:129
 msgctxt "Icon"
@@ -13897,7 +13897,7 @@ msgstr "分析"
 #: resources/.illustrations_translations.php:228
 msgctxt "Icon"
 msgid "favorite"
-msgstr "最受欢迎"
+msgstr "收藏夹"
 
 #: resources/.illustrations_translations.php:229
 msgctxt "Icon"
@@ -15954,7 +15954,7 @@ msgstr "模板参数文档"
 #: front/networkname.form.php:138
 #, php-format
 msgid "%s associates a network name to an item"
-msgstr "%s 把网络名和设备关联"
+msgstr "%s 关联网络名和设备"
 
 #. TRANS: %s is the user login
 #: front/item_softwareversion.form.php:62
@@ -16118,7 +16118,7 @@ msgstr "无效的子网掩码"
 
 #: src/IPNetwork.php:357
 msgid "Network already defined in visible entities"
-msgstr "可见组织中已经存在此网络"
+msgstr "可见实体中已经存在此网络"
 
 #: src/IPNetwork.php:410
 msgid "Invalid gateway address"
@@ -16958,7 +16958,7 @@ msgstr "输入/输出错误"
 
 #: src/NetworkPortMetrics.php:184
 msgid "Input megabytes"
-msgstr "输入 Mbyte"
+msgstr "输入兆字节"
 
 #: src/NetworkPortMetrics.php:185
 msgid "Output megabytes"
@@ -17236,7 +17236,7 @@ msgstr "定义的实体中限制查询"
 
 #: src/RuleImportAsset.php:201
 msgid "Restrict criteria to same network port"
-msgstr "受限的规则到相同网络接口"
+msgstr "筛选相同网络端口"
 
 #: src/RuleImportAsset.php:206
 msgid "Only criteria of this rule in data"
@@ -17425,7 +17425,7 @@ msgstr[0] "合同类型"
 
 #: src/Report.php:1156 src/Report.php:2069
 msgid "List of the hardware under contract"
-msgstr "根据合同的硬件列表"
+msgstr "依合同的硬件清单"
 
 #: src/Report.php:1526
 msgid "ANV"
@@ -17688,7 +17688,7 @@ msgstr "审批申请已被提交"
 
 #: src/NotificationTargetChange.php:340 src/NotificationTargetTicket.php:760
 msgid "An answer to an approval request was produced"
-msgstr "审批申请已经被答复"
+msgstr "审批申请已答复"
 
 #: src/Change_Problem.php:57
 msgid "Link Problem/Change"
@@ -17701,7 +17701,7 @@ msgstr "添加变更"
 
 #: src/Change_Problem.php:166
 msgid "Create a change from this problem"
-msgstr "从此工单创建变更"
+msgstr "从此故障创建变更"
 
 #: src/Change_Problem.php:264 src/Problem_Ticket.php:311
 msgid "Add a problem"
@@ -18440,21 +18440,21 @@ msgstr "故障的业务规则"
 
 #: src/KnowbaseItem_KnowbaseItem.php:82
 msgid "An article cannot be its own parent."
-msgstr ""
+msgstr "文章不能是自己的父级。"
 
 #: src/KnowbaseItem_KnowbaseItem.php:92
 msgid "This link would create a cycle in the knowledge base tree."
-msgstr ""
+msgstr "此链接会创建一个环形知识库树。"
 
 #: src/KnowbaseItem_KnowbaseItem.php:108
 #, php-format
 msgid "Missing '%s' value."
-msgstr ""
+msgstr "缺失值 '%s' 。"
 
 #: src/KnowbaseItem_KnowbaseItem.php:115
 #, php-format
 msgid "Invalid '%s' value: '%s'."
-msgstr ""
+msgstr "无效 '%s' 值: '%s'。"
 
 #: src/RuleDictionnaryPrinter.php:82 src/RuleRight.php:309
 #: src/RuleSoftwareCategory.php:92 src/RuleDictionnarySoftware.php:91
@@ -19678,11 +19678,11 @@ msgstr "未验证"
 
 #: src/Glpi/Form/Condition/ValidationStrategy.php:50
 msgid "Valid if..."
-msgstr "有效的基于..."
+msgstr "有效基于..."
 
 #: src/Glpi/Form/Condition/ValidationStrategy.php:51
 msgid "Invalid if..."
-msgstr "无效的项基于..."
+msgstr "无效基于..."
 
 #: src/Glpi/Form/Condition/LogicOperator.php:45
 msgid "And"
@@ -19738,7 +19738,7 @@ msgstr "至少有一个品类"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:79
 msgid "All items of itemtype"
-msgstr "所有项品类"
+msgstr "所有品类项"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:80
 msgid "Match regular expression"
@@ -19882,7 +19882,7 @@ msgstr "总是创建"
 
 #: src/Glpi/Form/Condition/CreationStrategy.php:50
 msgid "Created if..."
-msgstr "创建于..."
+msgstr "创建基于..."
 
 #: src/Glpi/Form/Condition/CreationStrategy.php:51
 msgid "Created unless..."
@@ -19894,11 +19894,11 @@ msgstr "总是可见"
 
 #: src/Glpi/Form/Condition/VisibilityStrategy.php:50
 msgid "Visible if..."
-msgstr "可见于..."
+msgstr "可见基于..."
 
 #: src/Glpi/Form/Condition/VisibilityStrategy.php:51
 msgid "Hidden if..."
-msgstr "隐藏于..."
+msgstr "隐藏基于..."
 
 #: src/Glpi/Form/AnswersHandler/AnswersHandler.php:123 src/Html.php:4233
 msgid "This field is mandatory"
@@ -21515,21 +21515,21 @@ msgstr "对象不应该使用代理配置："
 #: src/Glpi/Config/DataAndPrivacyConfig.php:51
 msgctxt "setup"
 msgid "Data and Privacy"
-msgstr ""
+msgstr "数据与隐私"
 
 #: src/Glpi/Config/DataAndPrivacyConfig.php:93
 msgid "Historical logs"
-msgstr ""
+msgstr "历史日志"
 
 #: src/Glpi/Config/DataAndPrivacyConfig.php:94
 #: src/Glpi/Security/SecurityConfig.php:91
 msgid "Login session"
 msgid_plural "Login sessions"
-msgstr[0] ""
+msgstr[0] "登录会话"
 
 #: src/Glpi/Config/DataAndPrivacyConfig.php:164
 msgid "Purge session history"
-msgstr ""
+msgstr "清除会话历史"
 
 #: src/Glpi/Socket.php:290 src/Item_Rack.php:146 src/Item_Rack.php:337
 #: src/Item_Rack.php:670
@@ -25672,19 +25672,19 @@ msgstr "已解决"
 
 #: src/Glpi/Dashboard/Provider.php:2092
 msgid "< 1 year"
-msgstr ""
+msgstr "< 1 年"
 
 #: src/Glpi/Dashboard/Provider.php:2093
 msgid "1-3 years"
-msgstr ""
+msgstr "1-3 年"
 
 #: src/Glpi/Dashboard/Provider.php:2094
 msgid "3-5 years"
-msgstr ""
+msgstr "3-5年"
 
 #: src/Glpi/Dashboard/Provider.php:2095
 msgid "> 5 years"
-msgstr ""
+msgstr "> 5年"
 
 #: src/Glpi/Dashboard/FakeProvider.php:299
 msgctxt "fake_data"
@@ -26002,7 +26002,7 @@ msgstr "按月份筛选工单状态"
 
 #: src/Glpi/Dashboard/Grid.php:1549
 msgid "Number of tickets by category and entity"
-msgstr ""
+msgstr "依分类和实体的工单数量"
 
 #: src/Glpi/Dashboard/Grid.php:1558
 msgid "Tickets times (in hours)"
@@ -26062,15 +26062,15 @@ msgstr "工单受理人群组榜单"
 
 #: src/Glpi/Dashboard/Grid.php:1636
 msgid "Number of tickets by status"
-msgstr ""
+msgstr "依状态工单数量"
 
 #: src/Glpi/Dashboard/Grid.php:1645
 msgid "Number of computers by operating system"
-msgstr ""
+msgstr "依操作系统的电脑数量"
 
 #: src/Glpi/Dashboard/Grid.php:1654
 msgid "Number of computers by age"
-msgstr ""
+msgstr "依年限的电脑数量"
 
 #: src/Glpi/Dashboard/Grid.php:1669
 msgid "Editable markdown card"
@@ -27621,7 +27621,7 @@ msgstr[0] "任务团队"
 
 #: src/ProjectTaskTeam.php:364
 msgid "An item type is mandatory"
-msgstr "类型必填"
+msgstr "品类必填"
 
 #: src/ProjectTaskTeam.php:373
 msgid "An item ID is mandatory"
@@ -27733,7 +27733,7 @@ msgstr "正则表达式的结果"
 
 #: src/Rule.php:2505
 msgid "No item type defined"
-msgstr "没有定义类型"
+msgstr "没有定义品类"
 
 #: src/Rule.php:2605
 msgid "Patterns must include delimiters, e.g. /pattern/"
@@ -31619,7 +31619,7 @@ msgstr "删除文章"
 
 #: src/KnowbaseItem.php:2123
 msgid "Parent articles"
-msgstr ""
+msgstr "父级文章"
 
 #: src/KnowbaseItem.php:2241
 msgid "Use as a solution"
@@ -31651,7 +31651,7 @@ msgstr "可见结束日期"
 
 #: src/KnowbaseItem.php:2504
 msgid "Parent article"
-msgstr ""
+msgstr "父级文章"
 
 #: src/KnowbaseItem.php:2631
 msgid "Is favorite"
@@ -33088,7 +33088,7 @@ msgstr "执行命令出错"
 
 #: src/CommonGLPI.php:1437
 msgid "Item already defined"
-msgstr "条目已经被定义"
+msgstr "此项已定义"
 
 #: src/ITILReminder.php:46
 msgid "Automatic reminder"
@@ -33226,7 +33226,7 @@ msgstr "品项ID"
 
 #: src/NotificationTargetObjectLock.php:58
 msgid "Item Type"
-msgstr "品项类型"
+msgstr "品类"
 
 #: src/NotificationTargetObjectLock.php:59
 #: src/NotificationTargetObjectLock.php:60
@@ -34453,7 +34453,7 @@ msgstr "服务台群组"
 #: src/DeviceCase.php:43
 msgid "Case"
 msgid_plural "Cases"
-msgstr[0] "案例"
+msgstr[0] "壳"
 
 #: src/ItemAntivirus.php:52 src/ItemAntivirus.php:155
 msgid "Antivirus"
@@ -35867,7 +35867,7 @@ msgstr "定制字段"
 
 #: js/src/vue/Debug/Widget/HTTPRequests.vue:218
 msgid "Show full URL"
-msgstr ""
+msgstr "显示所有URL"
 
 #: js/src/vue/EntitySelector/EntitySelector.vue:20
 msgid "⌥ (option) + ⌘ (command) + E"

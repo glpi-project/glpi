@@ -9,8 +9,8 @@
 # Ali AY <contact@moonict.com>, 2026
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2026
 # Mehmet Fatih ULUÇAM <mulucam@gmail.com>, 2026
-# Kaya Zeren <kayazeren@gmail.com>, 2026
 # Cédric Anne, 2026
+# Kaya Zeren <kayazeren@gmail.com>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-19 15:12+0200\n"
 "PO-Revision-Date: 2026-07-06 08:00+0000\n"
-"Last-Translator: Cédric Anne, 2026\n"
+"Last-Translator: Kaya Zeren <kayazeren@gmail.com>, 2026\n"
 "Language-Team: Turkish (Turkey) (https://app.transifex.com/glpi/teams/1637/tr_TR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1385,7 +1385,7 @@ msgstr "Ara…"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Go to main navigation"
-msgstr ""
+msgstr "Ana gezinmeye git"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
@@ -5994,7 +5994,7 @@ msgstr "Sık kullanılanlar"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Create a root article"
-msgstr ""
+msgstr "Bir üst yazı oluştur"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "No articles found."
@@ -6002,12 +6002,12 @@ msgstr "Herhangi bir yazı bulunamadı."
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Create a child article"
-msgstr ""
+msgstr "Bir alt yazı oluştur"
 
 #: templates/pages/tools/kb/aside.html.twig
 #, php-format
 msgid "Create an article under %s"
-msgstr ""
+msgstr "%s altında bir yazı oluştur"
 
 #: templates/pages/tools/kb/document_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:700
@@ -6522,11 +6522,11 @@ msgstr[1] "Yetkilendirmeler"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 msgid "Login session data retention"
-msgstr ""
+msgstr "Oturum açma oturumu verilerini tutma"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 msgid "Retention period (days)"
-msgstr ""
+msgstr "Tutma süresi (gün)"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -6559,7 +6559,7 @@ msgstr "Kullanılıyor"
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Configure automatic action"
-msgstr ""
+msgstr "Otomatik işlemi yapılandır"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "Session list"
@@ -8029,7 +8029,7 @@ msgstr "SQL hatası:"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Historical data retention"
-msgstr ""
+msgstr "Geçmiş veri tutma"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1631
 msgid "Delete all"
@@ -9081,7 +9081,7 @@ msgid ""
 "Once the form has been validated, you will be redirected to your supplierʼs "
 "authentication page if necessary."
 msgstr ""
-"Form doğrulandıktan sonra gerekirse hizmet sağlayıcınızın kimlik doğrulama "
+"Form doğrulandıktan sonra gerekirse tedarikçinizin kimlik doğrulama "
 "sayfasına yönlendirileceksiniz."
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
@@ -9502,25 +9502,25 @@ msgstr "Izgara"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Column"
-msgstr ""
+msgstr "Sütun"
 
 #: templates/pages/management/dcroom_racks.html.twig
 #, php-format
 msgid "Edit label for column %s"
-msgstr ""
+msgstr "%s sütununun etiketini düzenle"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Row"
-msgstr ""
+msgstr "Satır"
 
 #: templates/pages/management/dcroom_racks.html.twig
 #, php-format
 msgid "Edit label for row %s"
-msgstr ""
+msgstr "%s satırının etiketini düzenle"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Unable to save the room axis label."
-msgstr ""
+msgstr "Oda ekseni etiketi kaydedilemedi."
 
 #: templates/pages/management/budget.html.twig
 #: templates/pages/management/cost.html.twig src/ContractCost.php:165
@@ -9650,7 +9650,7 @@ msgstr "Malzeme maliyeti"
 
 #: templates/pages/management/contact_supplier.html.twig
 msgid "Add a supplier"
-msgstr "Sağlayıcı ekle"
+msgstr "Tedarikçi ekle"
 
 #: templates/pages/management/contact_supplier.html.twig
 msgid "Add a contact"
@@ -9967,11 +9967,11 @@ msgstr "İdari"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If suppliers are no longer used"
-msgstr "Sağlayıcılar artık kullanılmıyorsa"
+msgstr "Tedarikçiler artık kullanılmıyorsa"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "Links between suppliers and contacts"
-msgstr "Sağlayıcı ve ilgililer arasındaki bağlantılar"
+msgstr "Tedarikçiler ve ilgililer arasındaki bağlantılar"
 
 #: templates/pages/admin/transfer.html.twig
 msgid "If contacts are no longer used"
@@ -10339,11 +10339,11 @@ msgstr "Envanter"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Inventory configuration"
-msgstr ""
+msgstr "Envanter yapılandırması"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Inventory enabled"
-msgstr ""
+msgstr "Envanter kullanılıyor"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Authorization header"
@@ -10355,6 +10355,8 @@ msgid ""
 "Using OAuth Client Credentials requires a registered OAuth client with the "
 "%1$s scope."
 msgstr ""
+"OAuth istemci kimlik doğrulama bilgilerini kullanmak için %1$s kapsamında "
+"kayıtlı bir OAuth istemcisi gerekir."
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 #, php-format
@@ -10385,11 +10387,11 @@ msgstr "İçe aktarma seçenekleri"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Enable all"
-msgstr ""
+msgstr "Tümünü etkinleştir"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Disable all"
-msgstr ""
+msgstr "Tümünü etkisizleştir"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Default status"
@@ -10577,7 +10579,7 @@ msgstr "Parola onayı"
 
 #: templates/pages/admin/user/user.html.twig src/User.php:3514
 msgid "Middle name / Patronymic"
-msgstr ""
+msgstr "İkinci ad"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Not enough rights to change this field"
@@ -12040,7 +12042,7 @@ msgstr "7/24"
 #: templates/pages/admin/entity/assistance.html.twig src/Ticket.php:3231
 #: src/Ticket.php:3251 src/ITILCategory.php:487
 msgid "Incident"
-msgstr "Arıza"
+msgstr "Olay"
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:1470
 msgid "Tickets default type"
@@ -12061,7 +12063,7 @@ msgstr "Destek kayıtları, değişiklikler ve sorunlar otomatik olarak atansın
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Mark followup added by a supplier though an email collector as private"
 msgstr ""
-"Bir sağlayıcı tarafından gizli bir e-posta toplayıcı ile izleme işareti "
+"Bir tedarikçi tarafından gizli bir e-posta toplayıcı ile izleme işareti "
 "eklendi"
 
 #: templates/pages/admin/entity/assistance.html.twig src/Entity.php:2530
@@ -12387,7 +12389,7 @@ msgstr "Envanter kuralları"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Agent sends an inventory file"
-msgstr "Aracı bir envanter dosyası gönderdi"
+msgstr "Aracı bir envanter dosyası gönderdiğinde"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Transform itemtypes"
@@ -12395,7 +12397,7 @@ msgstr "Öge türlerini dönüştür"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Override the asset to another custom definition (like Servers)"
-msgstr "Varlığı başka bir özel tanımla değiştir (Sunucular gibi)"
+msgstr "Varlığı başka bir özel tanımla değiştirir (sunucular gibi)"
 
 #: templates/pages/admin/rules/index.html.twig
 #: src/RuleImportEntityCollection.php:52 src/RuleImportEntity.php:46
@@ -12404,7 +12406,7 @@ msgstr "Bir ögeyi bir birime atama kuralları"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Set an entity with some criteria (by its tag for example)"
-msgstr "Bazı ölçütlerle bir varlık ayarla (örneğin etiketine göre)"
+msgstr "Bazı ölçütlerle bir varlık ayarlar (etiketine göre gibi)"
 
 #: templates/pages/admin/rules/index.html.twig
 #: src/RuleLocationCollection.php:44 src/RuleLocation.php:43
@@ -12413,7 +12415,7 @@ msgstr "Konum kuralları"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Apply a location by checking common criteria"
-msgstr "Ortak ölçütleri denetleyerek bir konum uygulayın"
+msgstr "Ortak ölçütleri denetleyerek bir konum uygular"
 
 #: templates/pages/admin/rules/index.html.twig
 #: src/RuleImportAssetCollection.php:82
@@ -12424,8 +12426,8 @@ msgstr "Aygıtları içe aktarma ve bağlama kuralları"
 msgid ""
 "Match data with an existing asset, create a new asset, or deny the import"
 msgstr ""
-"Verileri var olan bir varlıkla eşleştirin, yeni bir varlık oluşturun veya "
-"içe aktarmayı reddedin"
+"Verileri var olan bir varlıkla eşleştirir, yeni bir varlık oluşturur veya "
+"içe aktarmayı reddeder"
 
 #: templates/pages/admin/rules/index.html.twig front/dictionnary.php:44
 #: src/Rule.php:296
@@ -12437,7 +12439,7 @@ msgstr[1] "Sözlükler"
 #: templates/pages/admin/rules/index.html.twig
 msgid "Normalize sub-data (like softwares, OS and models)"
 msgstr ""
-"Alt verileri normalleştir (yazılımlar, işletim sistemi ve modeller gibi)"
+"Alt verileri normalleştirir (yazılımlar, işletim sistemi ve modeller gibi)"
 
 #: templates/pages/admin/rules/index.html.twig src/RuleAsset.php:48
 #: src/RuleAssetCollection.php:45 src/Profile.php:1126
@@ -12446,11 +12448,11 @@ msgstr "Varlıkların iş kuralları"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Alter asset fields based on their data"
-msgstr "Varlık alanları verilerine göre değiştirilsin"
+msgstr "Varlık alanlarını verilerine göre değiştirir"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "The asset is created or updated in GLPI"
-msgstr "Varlık GLPI üzerinde oluşturulmuş veya güncellenmiş"
+msgstr "Varlık GLPI üzerinde oluşturulur veya güncellenir"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "You do not have the required permissions"
@@ -15622,7 +15624,7 @@ msgstr[1] "Sözleşmeler"
 #: front/contract_supplier.form.php:69 front/contact_supplier.form.php:66
 #, php-format
 msgid "%s adds a link with a supplier"
-msgstr "%s sağlayıcıyla bir bağlantı ekledi"
+msgstr "%s bir tedarikçi ile bir bağlantı ekledi"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:117
@@ -17854,7 +17856,7 @@ msgstr "Proje ekibinin ilgilisi"
 #: src/NotificationTargetProjectTask.php:71
 #: src/NotificationTargetProject.php:77
 msgid "Supplier of project team"
-msgstr "Proje ekibinin sağlayıcısı"
+msgstr "Proje ekibinin tedarikçisi"
 
 #: src/NotificationTargetProjectTask.php:580 src/CommonTreeDropdown.php:809
 #: src/NotificationTargetProject.php:635 src/ProjectTask.php:1041
@@ -18164,7 +18166,7 @@ msgstr "Teknisyen grubu"
 #: src/NotificationTargetCommonITILObject.php:2142
 #: src/CommonITILObject.php:4986
 msgid "Assigned to a supplier"
-msgstr "Bir sağlayıcıya atanmış"
+msgstr "Bir tedarikçiye atanmış"
 
 #: src/RuleCommonITILObject.php:774 src/RuleCommonITILObject.php:941
 #: src/RuleCommonITILObject.php:950
@@ -18824,21 +18826,21 @@ msgstr "Sorunların iş kuralları"
 
 #: src/KnowbaseItem_KnowbaseItem.php:82
 msgid "An article cannot be its own parent."
-msgstr ""
+msgstr "Bir yazı kendisinin üst yazısı olamaz."
 
 #: src/KnowbaseItem_KnowbaseItem.php:92
 msgid "This link would create a cycle in the knowledge base tree."
-msgstr ""
+msgstr "Bu bağlantı, bilgi bankarı ağacında bir döngü oluşturur."
 
 #: src/KnowbaseItem_KnowbaseItem.php:108
 #, php-format
 msgid "Missing '%s' value."
-msgstr ""
+msgstr "'%s' değeri eksik."
 
 #: src/KnowbaseItem_KnowbaseItem.php:115
 #, php-format
 msgid "Invalid '%s' value: '%s'."
-msgstr ""
+msgstr "Geçersiz '%s' değeri: '%s'."
 
 #: src/RuleDictionnaryPrinter.php:82 src/RuleRight.php:309
 #: src/RuleSoftwareCategory.php:92 src/RuleDictionnarySoftware.php:91
@@ -20986,7 +20988,7 @@ msgstr "%1$s bilgi bankası ögesi %2$s varlıkla ilişkilendirilmiş"
 #: src/Glpi/Asset/Capacity/HasContractsCapacity.php:59
 msgid "Link contracts to the assets for costs, renewal and supplier tracking"
 msgstr ""
-"Maliyet, yenileme ve sağlayıcı izleme için sözleşmeler ile varlıkları "
+"Maliyet, yenileme ve tedarikçi izleme için sözleşmeler ile varlıkları "
 "bağlayın"
 
 #: src/Glpi/Asset/Capacity/HasContractsCapacity.php:78
@@ -21729,8 +21731,8 @@ msgstr[1] "Atanan gruplar"
 #: src/Glpi/ContentTemplates/Parameters/CommonITILObjectParameters.php:81
 msgid "Assigned supplier"
 msgid_plural "Assigned suppliers"
-msgstr[0] "Atanan sağlayıcı"
-msgstr[1] "Atanan sağlayıcılar"
+msgstr[0] "Atanmış tedarikçi"
+msgstr[1] "Atanmış tedarikçiler"
 
 #: src/Glpi/ContentTemplates/Parameters/LevelAgreementParameters.php:56
 msgid "Duration unit"
@@ -22009,22 +22011,22 @@ msgstr "Vekil sunucu yapılandırmasını kullanmayacak nesneler:"
 #: src/Glpi/Config/DataAndPrivacyConfig.php:51
 msgctxt "setup"
 msgid "Data and Privacy"
-msgstr ""
+msgstr "Veriler ve Gizlilik"
 
 #: src/Glpi/Config/DataAndPrivacyConfig.php:93
 msgid "Historical logs"
-msgstr ""
+msgstr "Günlük kayıtları geçmişi"
 
 #: src/Glpi/Config/DataAndPrivacyConfig.php:94
 #: src/Glpi/Security/SecurityConfig.php:91
 msgid "Login session"
 msgid_plural "Login sessions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Oturum açma oturumu"
+msgstr[1] "Oturum açma oturumları"
 
 #: src/Glpi/Config/DataAndPrivacyConfig.php:164
 msgid "Purge session history"
-msgstr ""
+msgstr "Oturum geçmişini temizle"
 
 #: src/Glpi/Socket.php:290 src/Item_Rack.php:146 src/Item_Rack.php:337
 #: src/Item_Rack.php:670
@@ -24127,6 +24129,8 @@ msgid ""
 "You must provide either a username, a session ID, or the --all option to "
 "revoke sessions."
 msgstr ""
+"Oturumları iptal etmek için bir kullanıcı adı, bir oturum kimliği veya --all"
+" seçeneği belirtmelisiniz."
 
 #: src/Glpi/Console/Security/DisableTFACommand.php:53
 msgid "Disable 2FA for a user"
@@ -24899,14 +24903,16 @@ msgstr "Veri tabanı hazırlanırken bir sorun çıktı. Sorun: %s"
 msgid ""
 "Check if the database schema version matches the installed GLPI version."
 msgstr ""
+"Veri tabanı şeması sürümünün kurulu GLPI sürümüyle eşleşip eşleşmediğine "
+"bakın."
 
 #: src/Glpi/Console/Database/IsUpToDateCommand.php:62
 msgid "The database is not up to date."
-msgstr ""
+msgstr "Veri tabanı güncel değil."
 
 #: src/Glpi/Console/Database/IsUpToDateCommand.php:68
 msgid "The database is up to date."
-msgstr ""
+msgstr "Veri tabanı güncel."
 
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:108
 msgid ""
@@ -25585,26 +25591,26 @@ msgstr "Günlük dosyalarının izinleri"
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:79
 #, php-format
 msgid "The log directory %s could not be created."
-msgstr ""
+msgstr "%s günlük klasörü oluşturulamadı."
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:86
 #, php-format
 msgid "The log directory %s is not writable."
-msgstr ""
+msgstr "%s günlük klasörü yazılabilir değil."
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:98
 #, php-format
 msgid "The log file %s is not writable."
-msgstr ""
+msgstr "%s günlük dosyası yazılabilir değil."
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:105
 #, php-format
 msgid "The log file %s could not be created."
-msgstr ""
+msgstr "%s günlük dosyası oluşturulamadı."
 
 #: src/Glpi/System/Requirement/LogsWriteAccess.php:111
 msgid "Write access to log files has been validated."
-msgstr ""
+msgstr "Günlük dosyalarına yazılabildiği doğrulandı."
 
 #: src/Glpi/System/Requirement/Extension.php:57
 #, php-format
@@ -25660,33 +25666,33 @@ msgstr "Günlük dosyası"
 #: src/Glpi/Knowbase/History/TranslationRevisionEvent.php:56
 #, php-format
 msgid "%s — Version %s"
-msgstr ""
+msgstr "%s — %s sürümü"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:256
 #, php-format
 msgid "Access granted to %s by"
-msgstr ""
+msgstr "%s izni şu kullanıcı tarafından verildi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:257
 #, php-format
 msgid "Access revoked from %s by"
-msgstr ""
+msgstr "%s izni şu kullanıcı tarafından kaldırıldı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:260
 msgid "Permissions updated"
-msgstr ""
+msgstr "İzinler güncellendi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:295
 msgid "Sharing link regenerated"
-msgstr ""
+msgstr "Paylaşım bağlantısı yeniden oluşturuldu"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:296
 msgid "Sharing enabled"
-msgstr ""
+msgstr "Paylaşım etkinleştirildi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:297
 msgid "Sharing disabled"
-msgstr ""
+msgstr "Paylaşım etkisizleştirildi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:302
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:328
@@ -25695,129 +25701,129 @@ msgstr ""
 #: src/Glpi/Knowbase/History/CurrentTranslationEvent.php:58
 #: src/Glpi/Knowbase/History/CurrentVersionLogEvent.php:45
 msgid "Updated by"
-msgstr ""
+msgstr "Güncelleyen"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:327
 msgid "Renamed"
-msgstr ""
+msgstr "Yeniden adlandırıldı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:359
 msgid "Added to the FAQ"
-msgstr ""
+msgstr "Sık sorulan sorulara eklendi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:360
 msgid "Removed from the FAQ"
-msgstr ""
+msgstr "Sık sorulan sorulardan kaldırıldı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:414
 msgid "Item linked"
-msgstr ""
+msgstr "Öge bağlantısı eklendi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:415
 msgid "Item unlinked"
-msgstr ""
+msgstr "Öge bağlantısı kaldırıldı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:419
 #, php-format
 msgid "%s — Linked by"
-msgstr ""
+msgstr "%s — Şu kullanıcı tarafından bağlantı eklendi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:419
 #, php-format
 msgid "%s — Unlinked by"
-msgstr ""
+msgstr "%s — Şu kullanıcı tarafından bağlantısı kaldırıldı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:465
 msgid "Added to category"
-msgstr ""
+msgstr "Kategoriye eklendi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:466
 msgid "Removed from category"
-msgstr ""
+msgstr "Kategoriden kaldırıldı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:470
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:518
 #, php-format
 msgid "%s — Added by"
-msgstr ""
+msgstr "%s — Şu kullanıcı tarafından eklendi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:470
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:518
 #, php-format
 msgid "%s — Removed by"
-msgstr ""
+msgstr "%s — Şu kullanıcı tarafından kaldırıldı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:513
 msgid "File added"
-msgstr ""
+msgstr "Dosya eklendi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:514
 msgid "File removed"
-msgstr ""
+msgstr "Dosya kaldırıldı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:554
 msgid "Illustration removed by"
-msgstr ""
+msgstr "Gösterim şu kullanıcı tarafından kaldırıldı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:559
 msgid "Custom illustration set by"
-msgstr ""
+msgstr "Özel gösterim şu kullanıcı tarafından ayarlandı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:561
 msgid "Native illustration set by"
-msgstr ""
+msgstr "Doğal gösterim şu kullanıcı tarafından ayarlandı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:565
 msgid "Illustration updated"
-msgstr ""
+msgstr "Gösterim güncellendi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:603
 msgid "Added to the service catalog by"
-msgstr ""
+msgstr "Hizmet kataloğuna şu kullanıcı tarafından eklendi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:604
 msgid "Removed from the service catalog by"
-msgstr ""
+msgstr "Hizmet kataloğundan şu kullanıcı tarafından kaldırıldı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:607
 msgid "Pinned to the top by"
-msgstr ""
+msgstr "Üste sabitlemesi şu kullanıcı tarafından eklendi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:608
 msgid "Unpinned from the top by"
-msgstr ""
+msgstr "Üste sabitlemesi şu kullanıcı tarafından kaldırıldı"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:610
 msgid "Description updated by"
-msgstr ""
+msgstr "Açıklama şu kullanıcı tarafından güncellendi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:611
 msgid "Category updated by"
-msgstr ""
+msgstr "Kategori şu kullanıcı tarafından güncellendi"
 
 #: src/Glpi/Knowbase/History/HistoryBuilder.php:618
 msgid "Service catalog updated"
-msgstr ""
+msgstr "Hizmet kataloğu güncellendi"
 
 #: src/Glpi/Knowbase/History/CreationEvent.php:49
 #: src/Glpi/Knowbase/History/CurrentVersionLogEvent.php:44
 msgid "Current version"
-msgstr ""
+msgstr "Geçerli sürüm"
 
 #: src/Glpi/Knowbase/History/CreationEvent.php:55
 #: src/Glpi/Knowbase/History/RevisionEvent.php:57
 msgid "Created by"
-msgstr ""
+msgstr "Oluşturan"
 
 #: src/Glpi/Knowbase/History/RevisionEvent.php:51
 #, php-format
 msgid "Version %s"
-msgstr ""
+msgstr "%s sürümü"
 
 #: src/Glpi/Knowbase/History/CurrentTranslationEvent.php:52
 #, php-format
 msgid "%s — Current version"
-msgstr ""
+msgstr "%s — Geçerli sürüm"
 
 #: src/Glpi/Mail/SMTP/OauthProvider/Azure.php:68
 msgctxt "oauth"
@@ -25923,54 +25929,54 @@ msgstr "Varsayılan (kullanıcı profilinden)"
 
 #: src/Glpi/Controller/Knowbase/RevertTranslationRevisionController.php:101
 msgid "Failed to restore the translation revision."
-msgstr ""
+msgstr "Çeviri sürümü geri yüklenemedi."
 
 #: src/Glpi/Controller/Knowbase/DeleteTranslationController.php:78
 msgid "Translation not found"
-msgstr ""
+msgstr "Çeviri bulunamadı"
 
 #: src/Glpi/Controller/Knowbase/DeleteTranslationController.php:86
 #: js/modules/Knowbase/ArticleController.js:1637
 msgid "Translation deleted successfully"
-msgstr ""
+msgstr "Çeviri silindi"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:85
 msgid "Missing required fields"
-msgstr ""
+msgstr "Doldurulması zorunlu alanlar eksik"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:95
 msgid "Content cannot be empty"
-msgstr ""
+msgstr "İçerik boş olamaz"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:108
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:155
 #: js/modules/Knowbase/ArticleController.js:1157
 #: js/modules/Knowbase/ArticleController.js:1543
 msgid "Title cannot be empty"
-msgstr ""
+msgstr "Başlık boş olamaz"
 
 #: src/Glpi/Controller/Knowbase/SaveTranslationController.php:146
 #: js/modules/Knowbase/ArticleController.js:1577
 msgid "Translation saved successfully"
-msgstr ""
+msgstr "Çeviri kaydedildi"
 
 #: src/Glpi/Controller/Knowbase/DeleteArticleController.php:60
 msgid "Item successfully deleted."
-msgstr ""
+msgstr "Öge silindi."
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:136
 msgid "Missing answer content"
-msgstr ""
+msgstr "Yanıt içeriği eksik"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:170
 #: js/modules/Knowbase/ArticleController.js:1205
 #: js/modules/Knowbase/ArticleController.js:1596
 msgid "Article saved successfully"
-msgstr ""
+msgstr "Yazı kaydedildi"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:176
 msgid "Failed to save the article"
-msgstr ""
+msgstr "Yazı kaydedilemedi"
 
 #: src/Glpi/Controller/Knowbase/KnowbaseItemController.php:228
 #: src/Glpi/Search/Provider/SQLProvider.php:7511 src/KnowbaseItem.php:2173
@@ -25985,19 +25991,19 @@ msgstr "Bu öge henüz yayınlanmamış"
 
 #: src/Glpi/Controller/Knowbase/RevertRevisionController.php:81
 msgid "Failed to restore the revision."
-msgstr ""
+msgstr "Sürüm geri yüklenemedi."
 
 #: src/Glpi/Controller/Knowbase/RevertRevisionController.php:85
 msgid "Article restored successfully."
-msgstr ""
+msgstr "Yazı geri yüklendi."
 
 #: src/Glpi/Controller/ShareTokenController.php:106
 msgid "Failed to create share link"
-msgstr ""
+msgstr "Paylaşım bağlantısı oluşturulamadı"
 
 #: src/Glpi/Controller/ShareTokenController.php:165
 msgid "Failed to regenerate share link"
-msgstr ""
+msgstr "Paylaşım bağlantısı yeniden oluşturulamadı"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:223
 #, php-format
@@ -26030,13 +26036,13 @@ msgstr "%1$s > %2$s"
 #: src/Glpi/Search/Output/Spreadsheet.php:461
 #, php-format
 msgid "%1$s <= %2$s"
-msgstr ""
+msgstr "%1$s <= %2$s"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:315
 #: src/Glpi/Search/Output/Spreadsheet.php:469
 #, php-format
 msgid "%1$s >= %2$s"
-msgstr ""
+msgstr "%1$s >= %2$s"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:338
 #: src/Glpi/Search/Output/Spreadsheet.php:497
@@ -26137,11 +26143,11 @@ msgstr "şundan küçük olan"
 
 #: src/Glpi/Search/SearchOption.php:579
 msgid "greater than or equal to"
-msgstr ""
+msgstr "şundan büyük ya da eşit olan"
 
 #: src/Glpi/Search/SearchOption.php:580
 msgid "less than or equal to"
-msgstr ""
+msgstr "şundan küçük ya da eşit olan"
 
 #: src/Glpi/Search/Input/QueryBuilder.php:299
 #: src/Glpi/Dashboard/Filters/AbstractGroupFilter.php:220
@@ -26245,8 +26251,8 @@ msgstr "Sonuç ön izlemesi"
 #: src/Glpi/ShareToken.php:62
 msgid "Share token"
 msgid_plural "Share tokens"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Paylaşım kodu"
+msgstr[1] "Paylaşım kodları"
 
 #: src/Glpi/Dashboard/Provider.php:298 src/Glpi/Dashboard/FakeProvider.php:211
 #: src/Problem.php:737 src/Ticket.php:3275 src/Change.php:740
@@ -26381,19 +26387,19 @@ msgstr "Çözülmüş"
 
 #: src/Glpi/Dashboard/Provider.php:2092
 msgid "< 1 year"
-msgstr ""
+msgstr "< 1 yıl"
 
 #: src/Glpi/Dashboard/Provider.php:2093
 msgid "1-3 years"
-msgstr ""
+msgstr "1-3 yıl"
 
 #: src/Glpi/Dashboard/Provider.php:2094
 msgid "3-5 years"
-msgstr ""
+msgstr "3-5 yıl"
 
 #: src/Glpi/Dashboard/Provider.php:2095
 msgid "> 5 years"
-msgstr ""
+msgstr "> 5 yıl"
 
 #: src/Glpi/Dashboard/FakeProvider.php:299
 msgctxt "fake_data"
@@ -26433,8 +26439,8 @@ msgstr "Grup / İsteyen grubu"
 #: src/Glpi/Dashboard/Filters/TicketStatusFilter.php:44
 msgid "Ticket status"
 msgid_plural "Ticket statuses"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Destek kaydı durumu"
+msgstr[1] "Destek kaydı durumları"
 
 #: src/Glpi/Dashboard/Filters/TicketTypeFilter.php:45
 msgid "Ticket type"
@@ -26444,7 +26450,7 @@ msgstr[1] "Destek kaydı türleri"
 
 #: src/Glpi/Dashboard/Filters/UserAssignedFilter.php:49
 msgid "User / Assigned user"
-msgstr ""
+msgstr "Kullanıcı / Atanmış kullanıcı"
 
 #: src/Glpi/Dashboard/Dashboard.php:783
 msgid "Central"
@@ -26716,7 +26722,7 @@ msgstr "Aya göre destek kayıtlarının durumu"
 
 #: src/Glpi/Dashboard/Grid.php:1549
 msgid "Number of tickets by category and entity"
-msgstr ""
+msgstr "Kategoriye ve varlığa göre destek kaydı sayısı"
 
 #: src/Glpi/Dashboard/Grid.php:1558
 msgid "Tickets times (in hours)"
@@ -26777,15 +26783,15 @@ msgstr "Önde gelen destek kaydına atanan kişi grupları"
 
 #: src/Glpi/Dashboard/Grid.php:1636
 msgid "Number of tickets by status"
-msgstr ""
+msgstr "Duruma göre destek kaydı sayısı"
 
 #: src/Glpi/Dashboard/Grid.php:1645
 msgid "Number of computers by operating system"
-msgstr ""
+msgstr "İşletim sistemine göre bilgisayar sayısı"
 
 #: src/Glpi/Dashboard/Grid.php:1654
 msgid "Number of computers by age"
-msgstr ""
+msgstr "Yaşa göre bilgisayar sayısı"
 
 #: src/Glpi/Dashboard/Grid.php:1669
 msgid "Editable markdown card"
@@ -27339,7 +27345,7 @@ msgstr "Bu kutuya yeni öge ekle..."
 
 #: src/Item_Enclosure.php:127
 msgid "You are not allowed to view this item"
-msgstr ""
+msgstr "Bu ögeyi görüntüleme izniniz yok"
 
 #: src/Item_Enclosure.php:158 src/MassiveAction.php:690
 #: src/DatabaseInstance.php:531
@@ -27715,7 +27721,7 @@ msgstr "Atama: Aygıt MAC adresi"
 
 #: src/RuleAction.php:403
 msgid "Assign: equipment by name"
-msgstr ""
+msgstr "Atama: Ada göre aygıt"
 
 #: src/RuleAction.php:404
 msgid "Recalculate"
@@ -27793,7 +27799,7 @@ msgstr "Bir istek için bir onay isteği ekle"
 
 #: src/TicketValidation.php:112
 msgid "Create for incident"
-msgstr "Arıza için ekle"
+msgstr "Olay için ekle"
 
 #: src/TicketValidation.php:113
 msgid "Create an approval request for an incident"
@@ -28215,7 +28221,7 @@ msgstr "Destek kaydı ekle"
 
 #: src/Change_Ticket.php:270
 msgid "Create a ticket from this change"
-msgstr ""
+msgstr "Bu değişikliten bir destek kaydı oluştur"
 
 #: src/Change_Ticket.php:295 src/Problem_Ticket.php:255
 msgid "Solve tickets"
@@ -28398,7 +28404,7 @@ msgstr[1] "Çözüm türleri"
 #: src/SolutionType.php:54 src/SolutionType.php:89 src/ITILCategory.php:95
 #: src/ITILCategory.php:217
 msgid "Visible for an incident"
-msgstr "Arıza durumunda görünsün"
+msgstr "Olay durumunda görünsün"
 
 #: src/SolutionType.php:60 src/SolutionType.php:97 src/ITILCategory.php:101
 #: src/ITILCategory.php:225
@@ -28853,7 +28859,7 @@ msgstr "Herhangi bir öge seçilmemiş"
 #: src/Reservation.php:235
 #, php-format
 msgid "%1$s adds reservation %2$s for %3$s %4$s"
-msgstr ""
+msgstr "%1$s, %3$s %4$s için %2$s ayıtmasını ekledi  "
 
 #: src/Reservation.php:244
 #, php-format
@@ -29011,7 +29017,7 @@ msgstr "Atanmışlardan yeni grup"
 
 #: src/NotificationTargetCommonITILObject.php:130
 msgid "New supplier in assignees"
-msgstr "Atanmışlardan yeni sağlayıcı"
+msgstr "Atanmışlardan yeni tedarikçi"
 
 #: src/NotificationTargetCommonITILObject.php:131
 msgid "New task"
@@ -29136,12 +29142,12 @@ msgstr "İstekte bulunan kimliği"
 #: src/Profile.php:1013 src/Profile.php:1926
 msgid "Supplier"
 msgid_plural "Suppliers"
-msgstr[0] "Sağlayıcı"
-msgstr[1] "Sağlayıcılar"
+msgstr[0] "Tedarikçi"
+msgstr[1] "Tedarikçiler"
 
 #: src/NotificationTargetCommonITILObject.php:2106
 msgid "Supplier ID"
-msgstr "Sağlayıcı kimliği"
+msgstr "Tedarikçi kimliği"
 
 #: src/NotificationTargetCommonITILObject.php:2121
 msgid "Assigned to technicians"
@@ -29425,27 +29431,27 @@ msgstr "Sonraki üste aktarma düzeyi"
 
 #: src/Ticket.php:2679 src/Ticket.php:2700 src/Ticket.php:2717
 msgid "time to own"
-msgstr ""
+msgstr "ele alınma süresi"
 
 #: src/Ticket.php:2700 src/Ticket.php:2771 src/Ticket.php:5432
 msgid "due time"
-msgstr ""
+msgstr "bitiş zamanı"
 
 #: src/Ticket.php:2717 src/Ticket.php:2788
 msgid "due time + progress"
-msgstr ""
+msgstr "bitiş zamanı + ilerleme"
 
 #: src/Ticket.php:2733
 msgid "time to own exceeded"
-msgstr ""
+msgstr "ele alınma süresi aşıldı"
 
 #: src/Ticket.php:2750 src/Ticket.php:2771 src/Ticket.php:2788
 msgid "time to resolve"
-msgstr ""
+msgstr "çözümlenme süresi"
 
 #: src/Ticket.php:2804
 msgid "time to resolve exceeded"
-msgstr ""
+msgstr "çözümlenme süresi aşıldı"
 
 #: src/Ticket.php:2865
 msgid "Take into account time"
@@ -30370,7 +30376,7 @@ msgstr ""
 #: src/Webhook.php:1125
 #, php-format
 msgid "Unexpected code %d received"
-msgstr ""
+msgstr "Alınan %d kodu beklenmiyordu"
 
 #: src/Webhook.php:1255
 #, php-format
@@ -30491,8 +30497,8 @@ msgstr "Geçerlilik sonu yok"
 #: src/Contact_Supplier.php:51
 msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
-msgstr[0] "İlgili  /sağlayıcı bağlantısı"
-msgstr[1] "İlgili / sağlayıcı bağlantıları"
+msgstr[0] "İlgili  / Tedarikçi bağlantısı"
+msgstr[1] "İlgili / Tedarikçi bağlantıları"
 
 #: src/ITILValidationTemplate.php:55
 msgid "Approval template"
@@ -31034,7 +31040,7 @@ msgstr "İki adımlı doğrulama durumu"
 
 #: src/User.php:3908
 msgid "Notifications to myself"
-msgstr ""
+msgstr "Kendime bildirimler"
 
 #: src/User.php:4625 src/TaskTemplate.php:204 src/TaskTemplate.php:235
 #: src/TaskTemplate.php:263
@@ -31411,11 +31417,11 @@ msgstr "Bitiş: %s"
 
 #: src/ProjectTask.php:2479
 msgid "Send project task plan end date reminders"
-msgstr ""
+msgstr "Proje görev planı bitiş tarihi anımsatıcıları gönderilsin"
 
 #: src/ProjectTask.php:2480
 msgid "Number of days before planned end date"
-msgstr ""
+msgstr "Planlanan bitiş tarihinden önceki gün sayısı"
 
 #: src/RSSFeed.php:64 src/Central.php:79 src/Config.php:692
 msgid "RSS feed"
@@ -31831,7 +31837,7 @@ msgstr "Ögenin ekibindeki bir grup"
 #: src/CommonITILObject.php:10400 src/Project.php:2136
 msgctxt "filters"
 msgid "A supplier in the team of the item"
-msgstr "Ögenin ekibindeki bir sağlayıcı"
+msgstr "Ögenin ekibindeki bir tedarikçi"
 
 #: src/CommonITILObject.php:10842
 msgid "Generation of satisfaction surveys"
@@ -32552,20 +32558,20 @@ msgstr "Bilgi bankası"
 
 #: src/KnowbaseItem.php:1453
 msgid "Add to favorites"
-msgstr ""
+msgstr "Sık kullanılanlara ekle"
 
 #: src/KnowbaseItem.php:1464
 msgid "Add to FAQ"
-msgstr ""
+msgstr "Sık sorulan sorulara ekle"
 
 #: src/KnowbaseItem.php:1481 js/modules/Knowbase/AsideController.js:822
 #: js/modules/Knowbase/ArticleController.js:652
 msgid "Delete article"
-msgstr ""
+msgstr "Yazıyı sil"
 
 #: src/KnowbaseItem.php:2123
 msgid "Parent articles"
-msgstr ""
+msgstr "Üst yazılar"
 
 #: src/KnowbaseItem.php:2241
 msgid "Use as a solution"
@@ -32597,11 +32603,11 @@ msgstr "Görünürlük bitiş tarihi"
 
 #: src/KnowbaseItem.php:2504
 msgid "Parent article"
-msgstr ""
+msgstr "Üst yazı"
 
 #: src/KnowbaseItem.php:2631
 msgid "Is favorite"
-msgstr ""
+msgstr "Sık kullanılan"
 
 #: src/KnowbaseItem.php:2734
 msgid "Knowledge base administration"
@@ -32896,7 +32902,7 @@ msgstr[1] "Fişler"
 
 #: src/Plug.php:86
 msgid "Plug name is required"
-msgstr ""
+msgstr "Fiş adı belirtilmelidir"
 
 #: src/Plug.php:187
 msgid "Add a new plug"
@@ -32904,15 +32910,15 @@ msgstr "Fiş ekle"
 
 #: src/Plug.php:188
 msgid "Name will by suffixed by number"
-msgstr ""
+msgstr "Ada son ek olarak bir sayı eklenecek"
 
 #: src/Plug.php:195
 msgid "Plug name"
-msgstr ""
+msgstr "Fiş adı"
 
 #: src/Plug.php:204
 msgid "Number of plugs to add"
-msgstr ""
+msgstr "Eklenecek fiş sayısı"
 
 #: src/SavedSearch.php:100
 msgid "Unset as default"
@@ -33074,11 +33080,14 @@ msgstr "Herhangi bir ilgili %s etkin olmadan bekleme nedenleri tanımladınız."
 #, php-format
 msgid "Re-authentication on sensitive actions is disabled by the \"%s\" constant."
 msgstr ""
+"Önemli işlemlerde yeniden kimlik doğrulama isteği \"%s\" sabiti ile "
+"kapatılır."
 
 #: src/Central.php:661
 msgid ""
 "Remove it from your configuration to restore the expected security level."
 msgstr ""
+"Beklenen güvenlik düzeyine geri dönmek için yapılandırmanızdan kaldırın."
 
 #: src/Central.php:671
 msgid "View plugins"
@@ -33374,7 +33383,7 @@ msgstr "İstek kalıbı"
 
 #: src/ITILCategory.php:135 src/ITILCategory.php:191
 msgid "Template for an incident"
-msgstr "Arıza kalıbı"
+msgstr "Bir olay içlin kalıp"
 
 #: src/ITILCategory.php:141 src/ITILCategory.php:200
 msgid "Template for a change"
@@ -33891,12 +33900,12 @@ msgstr "Varsayılan e-posta"
 #: src/UserEmail.php:193 src/UserEmail.php:237
 #, php-format
 msgid "Set %s email as default"
-msgstr ""
+msgstr "%s e-posta adresini varsayılan olarak ayarla"
 
 #: src/UserEmail.php:195 src/UserEmail.php:242
 #, php-format
 msgid "Email address %s"
-msgstr ""
+msgstr "%s e-posta adresi"
 
 #: src/NotificationTargetMailCollector.php:46
 msgid "Receiver errors"
@@ -33908,7 +33917,7 @@ msgstr "Bağlanma yetkiniz yok"
 
 #: src/Session.php:251
 msgid "An error occurred while creating your session. Please try again."
-msgstr ""
+msgstr "Oturumunuz oluşturulurken bir sorun çıktı. Lütfen yeniden deneyin."
 
 #: src/Session.php:255
 msgid ""
@@ -34116,7 +34125,7 @@ msgstr[1] "Otomatin anımsatıcılar"
 #: src/Cartridge.php:259
 #, php-format
 msgid "Cartridge (%1$s): back to stock"
-msgstr ""
+msgstr "Kartuş (%1$s): Yeniden stoğa alındı"
 
 #: src/Cartridge.php:321
 msgid "Installing a cartridge"
@@ -34125,7 +34134,7 @@ msgstr "Bir kartuşun takılması"
 #: src/Cartridge.php:328
 #, php-format
 msgid "Install the cartridge %1$s on printer : %2$s"
-msgstr ""
+msgstr "%1$s kartuşu yazıcı üzerine takıldı : %2$s"
 
 #: src/Cartridge.php:341
 msgid "No free cartridge"
@@ -34138,7 +34147,7 @@ msgstr "Bir kartuşun çıkarılması"
 #: src/Cartridge.php:395
 #, php-format
 msgid "Uninstall the cartridge %1$s for end life"
-msgstr ""
+msgstr "%1$s kartuşunu kullanım süresi dolduğundan kaldır"
 
 #: src/Cartridge.php:435 src/Cartridge.php:775
 msgctxt "cartridge"
@@ -34310,7 +34319,7 @@ msgstr "Sözleşme sayısı"
 #: src/Contract.php:420 src/Contact.php:232
 msgctxt "button"
 msgid "Add a supplier"
-msgstr "Sağlayıcı ekle"
+msgstr "Tedarikçi ekle"
 
 #: src/Contract.php:665
 msgid "Expiration date + notice"
@@ -34319,8 +34328,8 @@ msgstr "Geçerlilik sonu + bildirim"
 #: src/Contract.php:731 src/Contact.php:388
 msgid "Associated supplier"
 msgid_plural "Associated suppliers"
-msgstr[0] "İlişkili sağlayıcı"
-msgstr[1] "İlişkili sağlayıcılar"
+msgstr[0] "İlişkili tedarikçi"
+msgstr[1] "İlişkili tedarikçiler"
 
 #: src/Contract.php:993
 msgid "Contracts expired in the last 30 days"
@@ -35075,7 +35084,7 @@ msgstr "VOIP kullanılabilsin"
 #: src/DeviceSimcard.php:131
 #, php-format
 msgid "%1$s %2$s: %3$s"
-msgstr ""
+msgstr "%1$s %2$s: %3$s"
 
 #: src/DeviceSimcard.php:131
 msgid "items"
@@ -35083,7 +35092,7 @@ msgstr "ogeler"
 
 #: src/DeviceSimcard.php:143
 msgid "Designation"
-msgstr ""
+msgstr "Atama"
 
 #: src/Dropdown.php:431 js/common.js:769
 msgid "Display on map"
@@ -35737,7 +35746,7 @@ msgstr "Şimdi"
 #: src/Html.php:6230
 #, php-format
 msgid "%s minute ago"
-msgstr ""
+msgstr "%s dakika önce"
 
 #: src/Html.php:6233 js/common.js:1165
 #, javascript-format, php-format
@@ -35747,7 +35756,7 @@ msgstr "%s dakika önce"
 #: src/Html.php:6236
 #, php-format
 msgid "%s hour ago"
-msgstr ""
+msgstr "%s saat önce"
 
 #: src/Html.php:6239 js/common.js:1167
 #, javascript-format, php-format
@@ -36051,7 +36060,7 @@ msgstr "İstekler"
 
 #: js/impact.js:2615
 msgid "Incidents"
-msgstr "Arızalar"
+msgstr "Olaylar"
 
 #: js/impact.js:2616
 msgid "Changes"
@@ -36071,7 +36080,7 @@ msgstr "Bir seçim yapın"
 
 #: js/src/vue/Planning/usePlanningScheduler.js:293
 msgid "Delete the whole series of the recurrent event"
-msgstr ""
+msgstr "Yinelenen olay dizisinin tümünü sil"
 
 #: js/src/vue/Planning/usePlanningScheduler.js:294
 msgid "or just add an exception by deleting this instance?"
@@ -36081,7 +36090,7 @@ msgstr "ya da kopyayı silerken yalnızca bir istisna mı ekliyorsunuz?"
 #: js/src/vue/Planning/usePlanningScheduler.js:385
 #: js/src/vue/Planning/usePlanningScheduler.js:409
 msgid "Series"
-msgstr ""
+msgstr "Diziler"
 
 #: js/src/vue/Planning/usePlanningScheduler.js:302
 #: js/src/vue/Planning/usePlanningScheduler.js:388
@@ -36104,6 +36113,8 @@ msgid ""
 "The resized event is a recurring event. Do you want to change the series or "
 "instance ?"
 msgstr ""
+"Süresi değiştirilen etkinlik yineleniyor. Tüm dizinin mi yoksa bu kopyanın "
+"mı süresini değiştirmek istiyorsunuz?"
 
 #: js/src/vue/Planning/usePlanningScheduler.js:405
 msgid "Recurring event dragged"
@@ -36114,6 +36125,8 @@ msgid ""
 "The dragged event is a recurring event. Do you want to move the series or "
 "instance?"
 msgstr ""
+"Sürüklenen etkinlik yineleniyor. Tüm diziyi mi yoksa bu kopyayı mı taşımak "
+"istiyorsunuz?"
 
 #: js/src/vue/Kanban/TeamBadgeProvider.js:256
 #, javascript-format
@@ -36127,7 +36140,7 @@ msgstr "Katılmasın"
 #: js/src/vue/EntitySelector/useEntitySelector.js:165
 #: js/src/vue/EntitySelector/EntitySelector.vue:214
 msgid "An error occurred while changing the entity. Please try again."
-msgstr ""
+msgstr "Birim değiştirilirken bir sorun çıktı. Lütfen yeniden deneyin."
 
 #: js/src/vue/FullCalendar/useScheduler.js:54
 msgid "Timeline Week"
@@ -36415,53 +36428,53 @@ msgstr "Beklenmeyen bir sorun çıktı"
 #: js/modules/KnowbaseEditor.js:77
 #: js/modules/Knowbase/ArticleController.js:1082
 msgid "Type / to insert..."
-msgstr ""
+msgstr "Eklemek için / yazın"
 
 #: js/modules/KnowbaseEditor.js:172 js/modules/KnowbaseEditor.js:456
 msgid "Image upload failed"
-msgstr ""
+msgstr "Görsel yüklenemedi"
 
 #: js/modules/KnowbaseEditor.js:239
 msgid "Bold"
-msgstr ""
+msgstr "Koyu"
 
 #: js/modules/KnowbaseEditor.js:240
 msgid "Italic"
-msgstr ""
+msgstr "Yatık"
 
 #: js/modules/KnowbaseEditor.js:241
 msgid "Strikethrough"
-msgstr ""
+msgstr "Üzeri çizili"
 
 #: js/modules/KnowbaseEditor.js:244
 #: js/modules/TipTap/SlashCommandsExtension.js:240
 msgid "Heading 1"
-msgstr ""
+msgstr "1. başlık"
 
 #: js/modules/KnowbaseEditor.js:245
 #: js/modules/TipTap/SlashCommandsExtension.js:245
 msgid "Heading 2"
-msgstr ""
+msgstr "2. başlık"
 
 #: js/modules/KnowbaseEditor.js:246
 #: js/modules/TipTap/SlashCommandsExtension.js:250
 msgid "Heading 3"
-msgstr ""
+msgstr "3. başlık"
 
 #: js/modules/KnowbaseEditor.js:248
 #: js/modules/TipTap/SlashCommandsExtension.js:255
 msgid "Bullet List"
-msgstr ""
+msgstr "Madde imli liste"
 
 #: js/modules/KnowbaseEditor.js:249
 #: js/modules/TipTap/SlashCommandsExtension.js:260
 msgid "Numbered List"
-msgstr ""
+msgstr "Sıralı liste"
 
 #: js/modules/KnowbaseEditor.js:250
 #: js/modules/TipTap/SlashCommandsExtension.js:265
 msgid "Quote"
-msgstr ""
+msgstr "Alıntı"
 
 #: js/modules/KnowbaseEditor.js:252
 msgctxt "button"
@@ -36470,15 +36483,15 @@ msgstr "Bağlantı"
 
 #: js/modules/KnowbaseEditor.js:253
 msgid "Remove link"
-msgstr ""
+msgstr "Bağlantıyı kaldır"
 
 #: js/modules/KnowbaseEditor.js:302
 msgid "Enter URL"
-msgstr ""
+msgstr "Adresi yazın"
 
 #: js/modules/KnowbaseEditor.js:430
 msgid "Document creation failed"
-msgstr ""
+msgstr "Belge oluşturulamadı"
 
 #: js/modules/ProgressIndicator.js:175
 msgid "failed"
@@ -36486,7 +36499,7 @@ msgstr "tamamlanamadı"
 
 #: js/modules/Knowbase/AsideController.js:346
 msgid "New article..."
-msgstr ""
+msgstr "Yeni yazı..."
 
 #: js/modules/Knowbase/AsideController.js:650
 #: js/modules/Knowbase/RevisionsPanelController.js:238
@@ -36503,60 +36516,60 @@ msgstr "Beklenmeyen bir sorun çıktı."
 #: js/modules/Knowbase/AsideController.js:823
 #: js/modules/Knowbase/ArticleController.js:653
 msgid "Are you sure you want to delete this article?"
-msgstr ""
+msgstr "Bu yazıyı silmek istediğinize emin misiniz?"
 
 #: js/modules/Knowbase/ServiceCatalogPanelController.js:141
 msgid "Service catalog settings saved."
-msgstr ""
+msgstr "Hizmet kataloğu ayarları kaydedildi."
 
 #: js/modules/Knowbase/PermissionsFormController.js:38
 msgid "Hide advanced options"
-msgstr ""
+msgstr "Gelişmiş ayarları gizle"
 
 #: js/modules/Knowbase/PermissionsFormController.js:177
 msgid "Access added successfully"
-msgstr ""
+msgstr "Erişme izni eklendi"
 
 #: js/modules/Knowbase/LinkItemFormController.js:107
 msgid "Please select an item to link."
-msgstr ""
+msgstr "Lütfen bağlanacak bir öge seçin."
 
 #: js/modules/Knowbase/LinkItemFormController.js:130
 msgid "Item linked successfully"
-msgstr ""
+msgstr "Öge bağlandı"
 
 #: js/modules/Knowbase/LinkItemFormController.js:151
 #: js/modules/Knowbase/DocumentLinkController.js:327
 msgid "Linking..."
-msgstr ""
+msgstr "Bağlanıyor..."
 
 #: js/modules/Knowbase/UploadController.js:193
 msgid "Please wait until file uploads complete."
-msgstr ""
+msgstr "Lütfen dosya yüklemeleri tamamlanana kadar bekleyin."
 
 #: js/modules/Knowbase/UploadController.js:199
 msgid "Please add at least one valid file before uploading."
-msgstr ""
+msgstr "Lütfen yüklemeden önce en az bir geçerli dosya ekleyin."
 
 #: js/modules/Knowbase/UploadController.js:210 js/modules/FileUploader.js:171
 #: js/modules/FileUploader.js:178 js/modules/FileUploader.js:359
 #: js/modules/FileUploader.js:362 js/modules/FileUploader.js:371
 #: js/modules/FileUploader.js:374
 msgid "Upload failed"
-msgstr ""
+msgstr "Yüklenemedi"
 
 #: js/modules/Knowbase/UploadController.js:229
 msgid "Uploading..."
-msgstr ""
+msgstr "Yükleniyor..."
 
 #: js/modules/Knowbase/UploadController.js:279
 msgid "Document uploaded successfully"
-msgstr ""
+msgstr "Belge yüklendi"
 
 #: js/modules/Knowbase/UploadController.js:280
 #, javascript-format
 msgid "%d documents uploaded successfully"
-msgstr ""
+msgstr "%d belge yüklendi"
 
 #: js/modules/Knowbase/CommentsPanelController.js:206
 msgid "Are you sure you want to delete this comment?"
@@ -36564,13 +36577,15 @@ msgstr "Bu yorumu silmek istediğinize emin misiniz?"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:355
 msgid "Restore revision"
-msgstr ""
+msgstr "Sürümü geri yükle"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:356
 msgid ""
 "Are you sure you want to restore this version? The current content will be "
 "saved as a new revision."
 msgstr ""
+"Bu sürümü geri yüklemek istediğinize emin misiniz? Var olan içerik yeni bir "
+"sürüm olarak kaydedilecek."
 
 #: js/modules/Knowbase/RevisionsPanelController.js:361
 #: js/modules/Knowbase/RevisionsPanelController.js:421
@@ -36579,17 +36594,19 @@ msgstr "Onayla"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:415
 msgid "Restore translation revision"
-msgstr ""
+msgstr "Çeviri sürümünü geri yükle"
 
 #: js/modules/Knowbase/RevisionsPanelController.js:416
 msgid ""
 "Are you sure you want to restore this translation version? The current "
 "translation content will be saved as a new revision."
 msgstr ""
+"Bu çeviri sürümünü geri yüklemek istediğinize emin misiniz? Var olan çeviri "
+"içeriği yeni bir sürüm olarak kaydedilecek."
 
 #: js/modules/Knowbase/RevisionsPanelController.js:462
 msgid "Translation revision restored successfully."
-msgstr ""
+msgstr "Çeviri sürümü geri yüklendi."
 
 #: js/modules/Knowbase/DocumentLinkController.js:112
 msgid "Search for a document..."
@@ -36597,56 +36614,60 @@ msgstr "Belge ara..."
 
 #: js/modules/Knowbase/DocumentLinkController.js:263
 msgid "Please select at least one document before linking."
-msgstr ""
+msgstr "Lütfen bağlamadan önce en az bir belge seçin."
 
 #: js/modules/Knowbase/DocumentLinkController.js:279
 msgid "Linking failed"
-msgstr ""
+msgstr "Bağlanamadı"
 
 #: js/modules/Knowbase/DocumentLinkController.js:305
 msgid "Document linked successfully"
-msgstr ""
+msgstr "Belge bağlandı"
 
 #: js/modules/Knowbase/DocumentLinkController.js:306
 #, javascript-format
 msgid "%d documents linked successfully"
-msgstr ""
+msgstr "%d belge bağlandı"
 
 #: js/modules/Knowbase/SharePopoverController.js:127
 msgid "The current link will stop working. Continue?"
-msgstr ""
+msgstr "Var olan bağlantı kaldırılacak. İlerlemek istiyor musunuz?"
 
 #: js/modules/Knowbase/SharePopoverController.js:201
 msgid "Public link copied to clipboard"
-msgstr ""
+msgstr "Herkese açık bağlantı panoya kopyalandı"
 
 #: js/modules/Knowbase/ArticleController.js:256
 #: js/modules/Knowbase/ArticleController.js:272
 msgid "Preview unavailable"
-msgstr ""
+msgstr "Ön izleme kullanılamıyor"
 
 #: js/modules/Knowbase/ArticleController.js:257
 msgid ""
 "Please save or cancel your current changes before previewing a revision."
 msgstr ""
+"Lütfen bir sürümü ön izlemeden önce yaptığınız değişiklikleri kaydedin ya da"
+" iptal edin."
 
 #: js/modules/Knowbase/ArticleController.js:273
 msgid ""
 "Please save or cancel your current changes before previewing a translation "
 "revision."
 msgstr ""
+"Çeviri sürümünü ön izlemeden önce lütfen yaptığınız değişiklikleri kaydedin "
+"ya da iptal edin."
 
 #: js/modules/Knowbase/ArticleController.js:293
 msgid "Action unavailable"
-msgstr ""
+msgstr "İşlem yapılamıyor"
 
 #: js/modules/Knowbase/ArticleController.js:294
 msgid "Please save or cancel your current changes first."
-msgstr ""
+msgstr "Lütfen önce yaptığınız değişiklikleri kaydedin ya da iptal edin."
 
 #: js/modules/Knowbase/ArticleController.js:701
 msgid "Are you sure you want to unlink this document from the article?"
-msgstr ""
+msgstr "Bu belgenin yazıyla bağlantısını kaldırmak istediğinize emin misiniz?"
 
 #: js/modules/Knowbase/ArticleController.js:702
 #: js/modules/Knowbase/ArticleController.js:747
@@ -36655,79 +36676,81 @@ msgstr "Bağlantıyı kaldır"
 
 #: js/modules/Knowbase/ArticleController.js:733
 msgid "Document unlinked successfully"
-msgstr ""
+msgstr "Belgenin bağlantısı kaldırıldı"
 
 #: js/modules/Knowbase/ArticleController.js:746
 msgid "Are you sure you want to unlink this item from the article?"
-msgstr ""
+msgstr "Bu ögenin yazı ile bağlantısını kaldırmak istediğinize emin misiniz?"
 
 #: js/modules/Knowbase/ArticleController.js:764
 msgid "Item unlinked successfully"
-msgstr ""
+msgstr "Ögenin bağlantısı kaldırıldı"
 
 #: js/modules/Knowbase/ArticleController.js:1018
 #: js/modules/Knowbase/ArticleController.js:1164
 #: js/modules/Knowbase/ArticleController.js:1550
 msgid "Saving..."
-msgstr ""
+msgstr "Kaydediliyor..."
 
 #: js/modules/Knowbase/ArticleController.js:1027
 msgid "Visibility dates updated"
-msgstr ""
+msgstr "Görünürlük tarihleri güncellendi"
 
 #: js/modules/Knowbase/ArticleController.js:1053
 msgid "Child entities enabled"
-msgstr ""
+msgstr "Alt birimler açık"
 
 #: js/modules/Knowbase/ArticleController.js:1053
 msgid "Child entities disabled"
-msgstr ""
+msgstr "Alt birimler kapalı"
 
 #: js/modules/Knowbase/ArticleController.js:1073
 msgid "Keep typing to filter..."
-msgstr ""
+msgstr "Süzmek için yazmaya başlayın..."
 
 #: js/modules/Knowbase/ArticleController.js:1080
 msgid "Type / to insert, or start writing..."
-msgstr ""
+msgstr "Eklemek için / yazın ya da yazmaya başlayın..."
 
 #: js/modules/Knowbase/ArticleController.js:1148
 #: js/modules/Knowbase/ArticleController.js:1535
 msgid "Cannot save: article ID is missing"
-msgstr ""
+msgstr "Kaydedilemedi: Yazı kimliği eksik"
 
 #: js/modules/Knowbase/ArticleController.js:1305
 msgid "Translation mode unavailable"
-msgstr ""
+msgstr "Çeviri kipi kullanılamıyor"
 
 #: js/modules/Knowbase/ArticleController.js:1306
 msgid ""
 "Please save or cancel your current changes before entering translation mode."
 msgstr ""
+"Çeviri kipine geçmeden önce lütfen yaptığınız değişiklikleri kaydedin ya da "
+"iptal edin."
 
 #: js/modules/Knowbase/ArticleController.js:1366
 #: js/modules/Knowbase/ArticleController.js:1661
 #: js/modules/Knowbase/ArticleController.js:1664
 #: js/modules/Knowbase/ArticleController.js:1705
 msgid "Existing translations"
-msgstr ""
+msgstr "Var olan çeviriler"
 
 #: js/modules/Knowbase/ArticleController.js:1384
 #: js/modules/Knowbase/ArticleController.js:1670
 #: js/modules/Knowbase/ArticleController.js:1690
 #: js/modules/Knowbase/ArticleController.js:1693
 msgid "Add new translation"
-msgstr ""
+msgstr "Yeni çeviri ekle"
 
 #: js/modules/Knowbase/ArticleController.js:1613
 msgid "Are you sure you want to delete this translation?"
-msgstr ""
+msgstr "Bu çeviriyi silmek istediğinize emin misiniz?"
 
 #: js/modules/Knowbase/ArticleController.js:1645
 msgid "translation"
 msgid_plural "translations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "çeviri"
+msgstr[1] "çeviri"
 
 #: js/modules/Forms/EditorController.js:1409
 msgid "Submit button visibility"
@@ -36780,16 +36803,16 @@ msgstr "Kaydetmeden önce geçerli aramayı gönder"
 #: js/modules/FileUploader.js:271
 #, javascript-format
 msgid "File %s exceeds maximum size"
-msgstr ""
+msgstr "%s dosyası izin verilen en fazla boyutu aşıyor"
 
 #: js/modules/FileUploader.js:276
 #, javascript-format
 msgid "File %s is empty"
-msgstr ""
+msgstr "%s dosyası boş"
 
 #: js/modules/FileUploader.js:347 js/modules/FileUploader.js:353
 msgid "Invalid server response"
-msgstr ""
+msgstr "Sunucu yanıtı geçersiz"
 
 #: js/modules/Dashboard/Dashboard.js:409
 msgid "Add a card"
@@ -36822,25 +36845,29 @@ msgstr "Pano ekle"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:178
 msgid "Insert video"
-msgstr ""
+msgstr "Görüntü ekle"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:198
 msgid "Video URL"
-msgstr ""
+msgstr "Görüntü adresi"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:212
 msgid "Supported: a YouTube URL, or a direct video file URL (MP4, WebM, Ogg)."
 msgstr ""
+"Desteklenenler: Bir YouTube adresi veya doğrudan bir görüntü dosyası adresi "
+"(MP4, WebM, Ogg)."
 
 #: js/modules/TipTap/VideoEmbedExtension.js:234
 msgid "Insert"
-msgstr ""
+msgstr "Ekle"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:252
 msgid ""
 "This video URL is not recognized. Use a YouTube URL or a direct video file "
 "URL (MP4, WebM, Ogg)."
 msgstr ""
+"Bu görüntü adresi anlaşılamadı. Bir YouTube adresi veya doğrudan bir görüntü"
+" dosyası adresi (MP4, WebM, Ogg) kullanın."
 
 #: js/modules/TipTap/VideoEmbedExtension.js:403
 msgid "video"
@@ -36849,77 +36876,77 @@ msgstr "goruntu"
 #: js/modules/TipTap/VideoEmbedExtension.js:403
 #: js/modules/TipTap/VideoEmbedExtension.js:429
 msgid "Invalid video"
-msgstr ""
+msgstr "Görüntü geçersiz"
 
 #: js/modules/TipTap/VideoEmbedExtension.js:412
 msgid "video player"
-msgstr ""
+msgstr "görüntü oynatıcı"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:58
 msgid "Insert/Edit Image"
-msgstr ""
+msgstr "Görsel ekle/düzenle"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:71
 msgid "Alternative description"
-msgstr ""
+msgstr "Ek açıklama"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:84
 msgid "Constrain proportions"
-msgstr ""
+msgstr "Oran korunsun"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:270
 msgid "Code Block"
-msgstr ""
+msgstr "Kod bloğu"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:275
 msgid "Table"
-msgstr ""
+msgstr "Tablo"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:280
 msgid "Divider"
-msgstr ""
+msgstr "Bölücü"
 
 #: js/modules/TipTap/SlashCommandsExtension.js:285
 msgid "Image"
-msgstr ""
+msgstr "Görsel"
 
 #: js/modules/TipTap/TableGripsExtension.js:181
 #, javascript-format
 msgid "Select column %s"
-msgstr ""
+msgstr "%s sütununu seç"
 
 #: js/modules/TipTap/TableGripsExtension.js:187
 #: js/modules/TipTap/TableGripsExtension.js:193
 #, javascript-format
 msgid "Insert column at position %s"
-msgstr ""
+msgstr "%s konuma sütun ekle"
 
 #: js/modules/TipTap/TableGripsExtension.js:204
 msgid "Select table"
-msgstr ""
+msgstr "Tabloyu seç"
 
 #: js/modules/TipTap/TableGripsExtension.js:208
 #: js/modules/TipTap/TableGripsExtension.js:218
 #, javascript-format
 msgid "Insert row at position %s"
-msgstr ""
+msgstr "%s konumda satır ekle"
 
 #: js/modules/TipTap/TableGripsExtension.js:213
 #, javascript-format
 msgid "Select row %s"
-msgstr ""
+msgstr "%s satırını seç"
 
 #: js/modules/TipTap/TableContextMenu.js:56
 msgid "Delete column"
-msgstr ""
+msgstr "Sütunu sil"
 
 #: js/modules/TipTap/TableContextMenu.js:59
 msgid "Delete row"
-msgstr ""
+msgstr "Satırı sil"
 
 #: js/modules/TipTap/TableContextMenu.js:61
 msgid "Delete table"
-msgstr ""
+msgstr "Tabloyu sil"
 
 #: js/glpi_dialog.js:374
 msgid "Are you sure?"
@@ -36953,7 +36980,7 @@ msgstr "Özel alanlar"
 
 #: js/src/vue/Debug/Widget/HTTPRequests.vue:218
 msgid "Show full URL"
-msgstr ""
+msgstr "Tam adresi görüntüle"
 
 #: js/src/vue/EntitySelector/EntitySelector.vue:20
 msgid "⌥ (option) + ⌘ (command) + E"
@@ -36979,11 +37006,11 @@ msgstr "Tümünü seç"
 #: js/src/vue/EntitySelector/EntitySelector.vue:268
 #: js/src/vue/EntitySelector/EntitySelector.vue:269
 msgid "Select this entity and all its children"
-msgstr ""
+msgstr "Bu birimi ve tüm alt birimlerini seç"
 
 #: js/src/vue/FullCalendar/BaseFullCalendar.vue:49
 msgid "Resources"
-msgstr ""
+msgstr "Kaynaklar"
 
 #: js/src/vue/FuzzySearch/Modal.vue:10
 msgid "Go to menu"
