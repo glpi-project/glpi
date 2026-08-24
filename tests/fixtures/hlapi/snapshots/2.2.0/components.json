@@ -2013,7 +2013,7 @@
                                 14,
                                 13
                             ],
-                            "description": "- 1: New\n- 9: Evaluation\n- 10: Approval\n- 7: Accepted\n- 4: Pending\n- 11: Testing\n- 12: Qualification\n- 5: Applied\n- 8: Review\n- 6: Closed\n- 14: Cancelled\n- 13: Refused\n",
+                            "description": "- 1: Nouveau\n- 9: \u00c9valuation\n- 10: Validation\n- 7: Accept\u00e9\n- 4: En attente\n- 11: En test\n- 12: Qualification\n- 5: Appliqu\u00e9\n- 8: Revue\n- 6: Clos\n- 14: Annul\u00e9\n- 13: Refus\u00e9e\n",
                             "readOnly": true
                         },
                         "name": {
@@ -3840,25 +3840,25 @@
                         "type": "string",
                         "enum": {
                             "0": "bigNumber",
-                            "58": "summaryNumbers",
-                            "59": "multipleNumber",
-                            "60": "pie",
-                            "61": "donut",
-                            "62": "halfpie",
-                            "63": "halfdonut",
-                            "64": "bar",
-                            "65": "hbar",
-                            "710": "searchShowList",
-                            "727": "line",
-                            "728": "area",
-                            "730": "lines",
-                            "731": "areas",
-                            "732": "bars",
-                            "733": "stackedbars",
-                            "746": "hBars",
-                            "747": "stackedHBars",
-                            "830": "articleList",
-                            "831": "markdown"
+                            "59": "summaryNumbers",
+                            "60": "multipleNumber",
+                            "61": "pie",
+                            "62": "donut",
+                            "63": "halfpie",
+                            "64": "halfdonut",
+                            "65": "bar",
+                            "66": "hbar",
+                            "711": "searchShowList",
+                            "728": "line",
+                            "729": "area",
+                            "731": "lines",
+                            "732": "areas",
+                            "733": "bars",
+                            "734": "stackedbars",
+                            "739": "hBars",
+                            "740": "stackedHBars",
+                            "857": "articleList",
+                            "858": "markdown"
                         }
                     }
                 },
@@ -3878,6 +3878,7 @@
                         "enum": [
                             "dates",
                             "dates_mod",
+                            "entity",
                             "itilcategory",
                             "location",
                             "manufacturer",
@@ -12647,7 +12648,7 @@
                                 8,
                                 6
                             ],
-                            "description": "- 1: New\n- 7: Accepted\n- 2: Processing (assigned)\n- 3: Processing (planned)\n- 4: Pending\n- 5: Solved\n- 8: Under observation\n- 6: Closed\n",
+                            "description": "- 1: Nouveau\n- 7: Accept\u00e9\n- 2: En cours (Attribu\u00e9)\n- 3: En cours (Planifi\u00e9)\n- 4: En attente\n- 5: R\u00e9solu\n- 8: En observation\n- 6: Clos\n",
                             "readOnly": true
                         },
                         "name": {
@@ -15294,7 +15295,7 @@
                             "properties": {
                                 "agent": {
                                     "type": "integer",
-                                    "description": "Agents rights. Possible values:\n- 1: Read\n- 2: Update\n- 16: Purge",
+                                    "description": "Agents rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
@@ -15305,7 +15306,7 @@
                                 },
                                 "appliance": {
                                     "type": "integer",
-                                    "description": "Appliances rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Applicatifs rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15319,7 +15320,7 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Appliances",
+                                    "x-label": "Applicatifs",
                                     "x-right-scope": "entity"
                                 },
                                 "backup": {
@@ -15327,19 +15328,19 @@
                                 },
                                 "bookmark_public": {
                                     "type": "integer",
-                                    "description": "Public saved searches rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Recherches publiques sauvegard\u00e9es rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Public saved searches",
+                                    "x-label": "Recherches publiques sauvegard\u00e9es",
                                     "x-right-scope": "entity"
                                 },
                                 "budget": {
                                     "type": "integer",
-                                    "description": "Budgets rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes",
+                                    "description": "Budgets rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes",
                                     "enum": [
                                         1,
                                         2,
@@ -15354,7 +15355,7 @@
                                 },
                                 "cable_management": {
                                     "type": "integer",
-                                    "description": "Cables rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "C\u00e2bles rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15366,24 +15367,24 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Cables",
+                                    "x-label": "C\u00e2bles",
                                     "x-right-scope": "entity"
                                 },
                                 "calendar": {
                                     "type": "integer",
-                                    "description": "Calendars rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Calendriers rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Calendars",
+                                    "x-label": "Calendriers",
                                     "x-right-scope": "entity"
                                 },
                                 "cartridge": {
                                     "type": "integer",
-                                    "description": "Cartridges rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Cartouches rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15397,12 +15398,12 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Cartridges",
+                                    "x-label": "Cartouches",
                                     "x-right-scope": "entity"
                                 },
                                 "certificate": {
                                     "type": "integer",
-                                    "description": "Certificates rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Certificats rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15416,12 +15417,12 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Certificates",
+                                    "x-label": "Certificats",
                                     "x-right-scope": "entity"
                                 },
                                 "change": {
                                     "type": "integer",
-                                    "description": "Changes rights. Possible values:\n- 1: See (author)\n- 2: Update\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 1024: See all\n- 131072: Reply to survey (my change)",
+                                    "description": "Changements rights. Possible values:\n- 1: Voir (auteur)\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 1024: Voir tous\n- 131072: R\u00e9pondre au questionnaire (mes changements)",
                                     "enum": [
                                         1,
                                         2,
@@ -15433,23 +15434,23 @@
                                         1024,
                                         131072
                                     ],
-                                    "x-label": "Changes",
+                                    "x-label": "Changements",
                                     "x-right-scope": "entity"
                                 },
                                 "changevalidation": {
                                     "type": "integer",
-                                    "description": "Change approvals rights. Possible values:\n- 4: Create\n- 16: Purge\n- 1024: Validate",
+                                    "description": "Validations du changement rights. Possible values:\n- 4: Cr\u00e9er \n- 16: Purger\n- 1024: Valider",
                                     "enum": [
                                         4,
                                         16,
                                         1024
                                     ],
-                                    "x-label": "Change approvals",
+                                    "x-label": "Validations du changement",
                                     "x-right-scope": "entity"
                                 },
                                 "cluster": {
                                     "type": "integer",
-                                    "description": "Clusters rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Clusters rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15466,7 +15467,7 @@
                                 },
                                 "computer": {
                                     "type": "integer",
-                                    "description": "Computers rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Ordinateurs rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15480,22 +15481,22 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Computers",
+                                    "x-label": "Ordinateurs",
                                     "x-right-scope": "entity"
                                 },
                                 "config": {
                                     "type": "integer",
-                                    "description": "Setup rights. Possible values:\n- 1: Read\n- 2: Update",
+                                    "description": "Configuration rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour",
                                     "enum": [
                                         1,
                                         2
                                     ],
-                                    "x-label": "Setup",
+                                    "x-label": "Configuration",
                                     "x-right-scope": "entity"
                                 },
                                 "consumable": {
                                     "type": "integer",
-                                    "description": "Consumables rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Consommables rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15509,12 +15510,12 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Consumables",
+                                    "x-label": "Consommables",
                                     "x-right-scope": "entity"
                                 },
                                 "contact_enterprise": {
                                     "type": "integer",
-                                    "description": "Contacts / Suppliers rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes",
+                                    "description": "Contacts / Fournisseurs rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes",
                                     "enum": [
                                         1,
                                         2,
@@ -15524,12 +15525,12 @@
                                         32,
                                         64
                                     ],
-                                    "x-label": "Contacts / Suppliers",
+                                    "x-label": "Contacts / Fournisseurs",
                                     "x-right-scope": "entity"
                                 },
                                 "contract": {
                                     "type": "integer",
-                                    "description": "Contracts rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes",
+                                    "description": "Contrats rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes",
                                     "enum": [
                                         1,
                                         2,
@@ -15539,24 +15540,24 @@
                                         32,
                                         64
                                     ],
-                                    "x-label": "Contracts",
+                                    "x-label": "Contrats",
                                     "x-right-scope": "entity"
                                 },
                                 "dashboard": {
                                     "type": "integer",
-                                    "description": "All dashboards rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Tous les tableaux de bord rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "All dashboards",
+                                    "x-label": "Tous les tableaux de bord",
                                     "x-right-scope": "entity"
                                 },
                                 "database": {
                                     "type": "integer",
-                                    "description": "Database instances rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Instances de base de donn\u00e9es rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15570,12 +15571,12 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Database instances",
+                                    "x-label": "Instances de base de donn\u00e9es",
                                     "x-right-scope": "entity"
                                 },
                                 "datacenter": {
                                     "type": "integer",
-                                    "description": "Data centers rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 8: Delete\n- 16: Purge",
+                                    "description": "Data centers rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
@@ -15586,40 +15587,52 @@
                                     "x-label": "Data centers",
                                     "x-right-scope": "entity"
                                 },
-                                "device": {
+                                "defaultfilter": {
                                     "type": "integer",
-                                    "description": "Components rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Filtres par d\u00e9faut rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Components",
+                                    "x-label": "Filtres par d\u00e9faut",
+                                    "x-right-scope": "entity"
+                                },
+                                "device": {
+                                    "type": "integer",
+                                    "description": "Composants rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
+                                    "enum": [
+                                        1,
+                                        2,
+                                        4,
+                                        16
+                                    ],
+                                    "x-label": "Composants",
                                     "x-right-scope": "entity"
                                 },
                                 "devicesimcard_pinpuk": {
                                     "type": "integer",
-                                    "description": "Simcard PIN/PUK rights. Possible values:\n- 1: View all\n- 2: Update all",
+                                    "description": "PIN/PUK Carte SIM rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous",
                                     "enum": [
                                         1,
                                         2
                                     ],
-                                    "x-label": "Simcard PIN/PUK",
+                                    "x-label": "PIN/PUK Carte SIM",
                                     "x-right-scope": "entity"
                                 },
                                 "document": {
                                     "type": "integer",
-                                    "description": "Document items rights. Possible values:\n- 8192: See private ones",
+                                    "description": "\u00c9l\u00e9ments associ\u00e9s au document rights. Possible values:\n- 8192: Voir les priv\u00e9s",
                                     "enum": [
                                         8192
                                     ],
-                                    "x-label": "Document items",
+                                    "x-label": "\u00c9l\u00e9ments associ\u00e9s au document",
                                     "x-right-scope": "entity"
                                 },
                                 "domain": {
                                     "type": "integer",
-                                    "description": "Domains rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Domaines rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15633,24 +15646,41 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Domains",
+                                    "x-label": "Domaines",
                                     "x-right-scope": "entity"
                                 },
                                 "dropdown": {
                                     "type": "integer",
-                                    "description": "Global dropdowns rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Intitul\u00e9s globaux rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Global dropdowns",
+                                    "x-label": "Intitul\u00e9s globaux",
                                     "x-right-scope": "global"
+                                },
+                                "enclosure": {
+                                    "type": "integer",
+                                    "description": "Ch\u00e2ssis rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
+                                    "enum": [
+                                        1,
+                                        2,
+                                        4,
+                                        8,
+                                        16,
+                                        256,
+                                        512,
+                                        1024,
+                                        2048
+                                    ],
+                                    "x-label": "Ch\u00e2ssis",
+                                    "x-right-scope": "entity"
                                 },
                                 "entity": {
                                     "type": "integer",
-                                    "description": "Entities rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 1024: Read parameters\n- 2048: Update parameters",
+                                    "description": "Entit\u00e9s rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 1024: Lecture param\u00e8tres\n- 2048: Mise \u00e0 jour param\u00e8tres",
                                     "enum": [
                                         1,
                                         2,
@@ -15661,12 +15691,12 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Entities",
+                                    "x-label": "Entit\u00e9s",
                                     "x-right-scope": "global"
                                 },
                                 "externalevent": {
                                     "type": "integer",
-                                    "description": "External events rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 1024: manage background events",
+                                    "description": "\u00c9v\u00e8nements externes rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger\n- 1024: G\u00e9rer les \u00e9v\u00e8nements d'arri\u00e8re plan",
                                     "enum": [
                                         1,
                                         2,
@@ -15674,12 +15704,12 @@
                                         16,
                                         1024
                                     ],
-                                    "x-label": "External events",
+                                    "x-label": "\u00c9v\u00e8nements externes",
                                     "x-right-scope": "entity"
                                 },
                                 "followup": {
                                     "type": "integer",
-                                    "description": "Followups rights. Possible values:\n- 1: See public ones\n- 2: Update (author)\n- 4: Add (requester)\n- 16: Purge\n- 1024: Update all\n- 2048: Add (associated groups)\n- 4096: Add to all items\n- 8192: See private ones\n- 16384: Add (observer)\n- 32768: Add (technician)\n- 65536: See private of my groups",
+                                    "description": "Suivis rights. Possible values:\n- 1: Voir les publics\n- 2: Mettre \u00e0 jour (auteur)\n- 4: Ajouter (demandeur)\n- 16: Purger\n- 1024: \u00c9diter tous\n- 2048: Ajouter suivi (groupes associ\u00e9s)\n- 4096: Ajouter \u00e0 tous les \u00e9l\u00e9ments\n- 8192: Voir les priv\u00e9s\n- 16384: Ajouter (observateur)\n- 32768: Ajouter (technicien)\n- 65536: Voir les tickets priv\u00e9s de mes groupes",
                                     "enum": [
                                         1,
                                         2,
@@ -15693,12 +15723,12 @@
                                         32768,
                                         65536
                                     ],
-                                    "x-label": "Followups",
+                                    "x-label": "Suivis",
                                     "x-right-scope": "entity"
                                 },
                                 "form": {
                                     "type": "integer",
-                                    "description": "Forms rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 8: Delete\n- 16: Purge",
+                                    "description": "Formulaires rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
@@ -15706,7 +15736,7 @@
                                         8,
                                         16
                                     ],
-                                    "x-label": "Forms",
+                                    "x-label": "Formulaires",
                                     "x-right-scope": "entity"
                                 },
                                 "global_validation": {
@@ -15714,7 +15744,7 @@
                                 },
                                 "group": {
                                     "type": "integer",
-                                    "description": "Groups rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 32: Read notes\n- 64: Update notes",
+                                    "description": "Groupes rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes",
                                     "enum": [
                                         1,
                                         2,
@@ -15723,24 +15753,24 @@
                                         32,
                                         64
                                     ],
-                                    "x-label": "Groups",
+                                    "x-label": "Groupes",
                                     "x-right-scope": "global"
                                 },
                                 "infocom": {
                                     "type": "integer",
-                                    "description": "Financial and administrative information rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Informations financi\u00e8res et administratives rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Financial and administrative information",
+                                    "x-label": "Informations financi\u00e8res et administratives",
                                     "x-right-scope": "entity"
                                 },
                                 "internet": {
                                     "type": "integer",
-                                    "description": "Internet rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge",
+                                    "description": "Internet rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
@@ -15753,66 +15783,66 @@
                                 },
                                 "inventory": {
                                     "type": "integer",
-                                    "description": "Inventory rights. Possible values:\n- 1: Read\n- 1024: Import\n- 2048: Configure",
+                                    "description": "Inventaire rights. Possible values:\n- 1: Lecture\n- 1024: Importer\n- 2048: Configurer",
                                     "enum": [
                                         1,
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Inventory",
+                                    "x-label": "Inventaire",
                                     "x-right-scope": "global"
                                 },
                                 "itilcategory": {
                                     "type": "integer",
-                                    "description": "ITIL categories rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Cat\u00e9gories ITIL rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "ITIL categories",
+                                    "x-label": "Cat\u00e9gories ITIL",
                                     "x-right-scope": "entity"
                                 },
                                 "itilfollowuptemplate": {
                                     "type": "integer",
-                                    "description": "Followup templates rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Gabarits de suivis rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Followup templates",
+                                    "x-label": "Gabarits de suivis",
                                     "x-right-scope": "entity"
                                 },
                                 "itiltemplate": {
                                     "type": "integer",
-                                    "description": "Templates rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Gabarits rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Templates",
+                                    "x-label": "Gabarits",
                                     "x-right-scope": "entity"
                                 },
                                 "itilvalidationtemplate": {
                                     "type": "integer",
-                                    "description": "Approval templates rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Gabarits de validation rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Approval templates",
+                                    "x-label": "Gabarits de validation",
                                     "x-right-scope": "entity"
                                 },
                                 "knowbase": {
                                     "type": "integer",
-                                    "description": "Knowledge base rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 1024: Knowledge base administration\n- 2048: Read the FAQ\n- 4096: Publish in the FAQ\n- 8192: Comment KB entries",
+                                    "description": "Base de connaissances rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger\n- 1024: Administration de la base de connaissance\n- 2048: Lire la FAQ\n- 4096: Publier dans la FAQ\n- 8192: Commenter les entr\u00e9es de la base de connaissances",
                                     "enum": [
                                         1,
                                         2,
@@ -15823,12 +15853,12 @@
                                         4096,
                                         8192
                                     ],
-                                    "x-label": "Knowledge base",
+                                    "x-label": "Base de connaissances",
                                     "x-right-scope": "entity"
                                 },
                                 "license": {
                                     "type": "integer",
-                                    "description": "Licenses rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Licences rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15842,12 +15872,12 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Licenses",
+                                    "x-label": "Licences",
                                     "x-right-scope": "entity"
                                 },
                                 "line": {
                                     "type": "integer",
-                                    "description": "Phone lines rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Lignes t\u00e9l\u00e9phoniques rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15861,67 +15891,67 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Phone lines",
+                                    "x-label": "Lignes t\u00e9l\u00e9phoniques",
                                     "x-right-scope": "entity"
                                 },
                                 "lineoperator": {
                                     "type": "integer",
-                                    "description": "Line operators rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Op\u00e9rateurs t\u00e9l\u00e9phoniques rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Line operators",
+                                    "x-label": "Op\u00e9rateurs t\u00e9l\u00e9phoniques",
                                     "x-right-scope": "entity"
                                 },
                                 "link": {
                                     "type": "integer",
-                                    "description": "External links rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Liens externes rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "External links",
+                                    "x-label": "Liens externes",
                                     "x-right-scope": "entity"
                                 },
                                 "location": {
                                     "type": "integer",
-                                    "description": "Locations rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Lieux rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Locations",
+                                    "x-label": "Lieux",
                                     "x-right-scope": "entity"
                                 },
                                 "locked_field": {
                                     "type": "integer",
-                                    "description": "Locked fields rights. Possible values:\n- 2: Update\n- 4: Create",
+                                    "description": "Champs verrouill\u00e9s rights. Possible values:\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er ",
                                     "enum": [
                                         2,
                                         4
                                     ],
-                                    "x-label": "Locked fields",
+                                    "x-label": "Champs verrouill\u00e9s",
                                     "x-right-scope": "global"
                                 },
                                 "logs": {
                                     "type": "integer",
-                                    "description": "Historical rights. Possible values:\n- 1: Read",
+                                    "description": "Historique rights. Possible values:\n- 1: Lecture",
                                     "enum": [
                                         1
                                     ],
-                                    "x-label": "Historical",
+                                    "x-label": "Historique",
                                     "x-right-scope": "global"
                                 },
                                 "monitor": {
                                     "type": "integer",
-                                    "description": "Monitors rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Moniteurs rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15935,12 +15965,12 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Monitors",
+                                    "x-label": "Moniteurs",
                                     "x-right-scope": "entity"
                                 },
                                 "networking": {
                                     "type": "integer",
-                                    "description": "Network devices rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Mat\u00e9riels r\u00e9seau rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -15954,12 +15984,12 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Network devices",
+                                    "x-label": "Mat\u00e9riels r\u00e9seau",
                                     "x-right-scope": "entity"
                                 },
                                 "notification": {
                                     "type": "integer",
-                                    "description": "Notifications rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Notifications rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
@@ -15971,14 +16001,14 @@
                                 },
                                 "oauth_client": {
                                     "type": "integer",
-                                    "description": "OAuth clients rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Clients OAuth rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "OAuth clients",
+                                    "x-label": "Clients OAuth",
                                     "x-right-scope": "entity"
                                 },
                                 "password_update": {
@@ -15986,19 +16016,19 @@
                                 },
                                 "pendingreason": {
                                     "type": "integer",
-                                    "description": "Pending reasons rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Raisons d'attentes rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Pending reasons",
+                                    "x-label": "Raisons d'attentes",
                                     "x-right-scope": "entity"
                                 },
                                 "peripheral": {
                                     "type": "integer",
-                                    "description": "Peripherals rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "P\u00e9riph\u00e9riques rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -16012,22 +16042,22 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Peripherals",
+                                    "x-label": "P\u00e9riph\u00e9riques",
                                     "x-right-scope": "entity"
                                 },
                                 "personalization": {
                                     "type": "integer",
-                                    "description": "Personalization rights. Possible values:\n- 1: Read\n- 2: Update",
+                                    "description": "Personnalisation rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour",
                                     "enum": [
                                         1,
                                         2
                                     ],
-                                    "x-label": "Personalization",
+                                    "x-label": "Personnalisation",
                                     "x-right-scope": "entity"
                                 },
                                 "phone": {
                                     "type": "integer",
-                                    "description": "Phones rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "T\u00e9l\u00e9phones rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -16041,12 +16071,12 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Phones",
+                                    "x-label": "T\u00e9l\u00e9phones",
                                     "x-right-scope": "entity"
                                 },
                                 "planning": {
                                     "type": "integer",
-                                    "description": "Planning rights. Possible values:\n- 1: See personal planning\n- 1024: See schedule of people in my groups\n- 2048: See all plannings",
+                                    "description": "Planning rights. Possible values:\n- 1: Voir le planning personnel\n- 1024: Voir les planning des personnes de mes groupes\n- 2048: Voir tous les plannings",
                                     "enum": [
                                         1,
                                         1024,
@@ -16057,7 +16087,7 @@
                                 },
                                 "printer": {
                                     "type": "integer",
-                                    "description": "Printers rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Imprimantes rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -16071,12 +16101,12 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Printers",
+                                    "x-label": "Imprimantes",
                                     "x-right-scope": "entity"
                                 },
                                 "problem": {
                                     "type": "integer",
-                                    "description": "Problems rights. Possible values:\n- 1: See (author)\n- 2: Update\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 1024: See all",
+                                    "description": "Probl\u00e8mes rights. Possible values:\n- 1: Voir (auteur)\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 1024: Voir tous",
                                     "enum": [
                                         1,
                                         2,
@@ -16087,24 +16117,24 @@
                                         64,
                                         1024
                                     ],
-                                    "x-label": "Problems",
+                                    "x-label": "Probl\u00e8mes",
                                     "x-right-scope": "entity"
                                 },
                                 "profile": {
                                     "type": "integer",
-                                    "description": "Profiles rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Profils rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Profiles",
+                                    "x-label": "Profils",
                                     "x-right-scope": "global"
                                 },
                                 "project": {
                                     "type": "integer",
-                                    "description": "Projects rights. Possible values:\n- 1: See (actor)\n- 2: Update\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 1024: See all",
+                                    "description": "Projets rights. Possible values:\n- 1: Voir (acteur)\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 1024: Voir tous",
                                     "enum": [
                                         1,
                                         2,
@@ -16115,12 +16145,12 @@
                                         64,
                                         1024
                                     ],
-                                    "x-label": "Projects",
+                                    "x-label": "Projets",
                                     "x-right-scope": "entity"
                                 },
                                 "projecttask": {
                                     "type": "integer",
-                                    "description": "Project tasks rights. Possible values:\n- 1: See (actor)\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 1024: Update (actor)",
+                                    "description": "T\u00e2ches de projet rights. Possible values:\n- 1: Voir (acteur)\n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 1024: Mise \u00e0 jour (acteur)",
                                     "enum": [
                                         1,
                                         8,
@@ -16129,12 +16159,12 @@
                                         64,
                                         1024
                                     ],
-                                    "x-label": "Project tasks",
+                                    "x-label": "T\u00e2ches de projet",
                                     "x-right-scope": "entity"
                                 },
                                 "queuednotification": {
                                     "type": "integer",
-                                    "description": "Notification queue rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 8: Delete\n- 16: Purge",
+                                    "description": "File d'attente des notifications rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
@@ -16142,35 +16172,35 @@
                                         8,
                                         16
                                     ],
-                                    "x-label": "Notification queue",
+                                    "x-label": "File d'attente des notifications",
                                     "x-right-scope": "global"
                                 },
                                 "recurrentchange": {
                                     "type": "integer",
-                                    "description": "Recurrent changes rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Changements r\u00e9currents rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Recurrent changes",
+                                    "x-label": "Changements r\u00e9currents",
                                     "x-right-scope": "entity"
                                 },
                                 "refusedequipment": {
                                     "type": "integer",
-                                    "description": "Equipments refused by rules log rights. Possible values:\n- 1: Read\n- 2: Update\n- 16: Purge",
+                                    "description": "Historique des \u00e9quipements refus\u00e9s rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         16
                                     ],
-                                    "x-label": "Equipments refused by rules log",
+                                    "x-label": "Historique des \u00e9quipements refus\u00e9s",
                                     "x-right-scope": "global"
                                 },
                                 "reminder_public": {
                                     "type": "integer",
-                                    "description": "Public reminders rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 128: Manage personal",
+                                    "description": "Notes publiques rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger\n- 128: G\u00e9rer les \u00e9l\u00e9ments personnels",
                                     "enum": [
                                         1,
                                         2,
@@ -16178,21 +16208,21 @@
                                         16,
                                         128
                                     ],
-                                    "x-label": "Public reminders",
+                                    "x-label": "Notes publiques",
                                     "x-right-scope": "entity"
                                 },
                                 "reports": {
                                     "type": "integer",
-                                    "description": "Reports rights. Possible values:\n- 1: Read",
+                                    "description": "Rapports rights. Possible values:\n- 1: Lecture",
                                     "enum": [
                                         1
                                     ],
-                                    "x-label": "Reports",
+                                    "x-label": "Rapports",
                                     "x-right-scope": "entity"
                                 },
                                 "reservation": {
                                     "type": "integer",
-                                    "description": "Reservable items rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 1024: Make a reservation",
+                                    "description": "\u00c9l\u00e9ments r\u00e9servables rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger\n- 1024: Faire une r\u00e9servation",
                                     "enum": [
                                         1,
                                         2,
@@ -16200,12 +16230,12 @@
                                         16,
                                         1024
                                     ],
-                                    "x-label": "Reservable items",
+                                    "x-label": "\u00c9l\u00e9ments r\u00e9servables",
                                     "x-right-scope": "entity"
                                 },
                                 "rssfeed_public": {
                                     "type": "integer",
-                                    "description": "Public RSS feeds rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 128: Manage personal",
+                                    "description": "Flux RSS publics rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger\n- 128: G\u00e9rer les \u00e9l\u00e9ments personnels",
                                     "enum": [
                                         1,
                                         2,
@@ -16213,12 +16243,12 @@
                                         16,
                                         128
                                     ],
-                                    "x-label": "Public RSS feeds",
+                                    "x-label": "Flux RSS publics",
                                     "x-right-scope": "entity"
                                 },
                                 "rule_asset": {
                                     "type": "integer",
-                                    "description": "Business rules for assets rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 1024: Parent business",
+                                    "description": "R\u00e8gles m\u00e9tier pour les actifs rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger\n- 1024: R\u00e8gles m\u00e9tiers (parent)",
                                     "enum": [
                                         1,
                                         2,
@@ -16226,12 +16256,12 @@
                                         16,
                                         1024
                                     ],
-                                    "x-label": "Business rules for assets",
+                                    "x-label": "R\u00e8gles m\u00e9tier pour les actifs",
                                     "x-right-scope": "entity"
                                 },
                                 "rule_change": {
                                     "type": "integer",
-                                    "description": "Business rules for changes (entity) rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 1024: Parent business",
+                                    "description": "R\u00e8gles m\u00e9tier pour les changements (entit\u00e9) rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger\n- 1024: R\u00e8gles m\u00e9tiers (parent)",
                                     "enum": [
                                         1,
                                         2,
@@ -16239,96 +16269,96 @@
                                         16,
                                         1024
                                     ],
-                                    "x-label": "Business rules for changes (entity)",
+                                    "x-label": "R\u00e8gles m\u00e9tier pour les changements (entit\u00e9)",
                                     "x-right-scope": "entity"
                                 },
                                 "rule_dictionnary_dropdown": {
                                     "type": "integer",
-                                    "description": "Dropdowns dictionary rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Dictionnaire des intitul\u00e9s rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Dropdowns dictionary",
+                                    "x-label": "Dictionnaire des intitul\u00e9s",
                                     "x-right-scope": "global"
                                 },
                                 "rule_dictionnary_printer": {
                                     "type": "integer",
-                                    "description": "Printers dictionary rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Dictionnaire des imprimantes rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Printers dictionary",
+                                    "x-label": "Dictionnaire des imprimantes",
                                     "x-right-scope": "global"
                                 },
                                 "rule_dictionnary_software": {
                                     "type": "integer",
-                                    "description": "Software dictionary rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Dictionnaire des logiciels rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Software dictionary",
+                                    "x-label": "Dictionnaire des logiciels",
                                     "x-right-scope": "global"
                                 },
                                 "rule_import": {
                                     "type": "integer",
-                                    "description": "Rules for assigning a computer to an entity rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "R\u00e8gles d'affectation d'un ordinateur \u00e0 une entit\u00e9 rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Rules for assigning a computer to an entity",
+                                    "x-label": "R\u00e8gles d'affectation d'un ordinateur \u00e0 une entit\u00e9",
                                     "x-right-scope": "global"
                                 },
                                 "rule_ldap": {
                                     "type": "integer",
-                                    "description": "Authorizations assignment rules rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "R\u00e8gles d'affectation d'habilitations \u00e0 un utilisateur rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Authorizations assignment rules",
+                                    "x-label": "R\u00e8gles d'affectation d'habilitations \u00e0 un utilisateur",
                                     "x-right-scope": "global"
                                 },
                                 "rule_location": {
                                     "type": "integer",
-                                    "description": "Rules for assigning a computer to a location rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "R\u00e8gles d'affectation d'un ordinateur \u00e0 un lieu rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Rules for assigning a computer to a location",
+                                    "x-label": "R\u00e8gles d'affectation d'un ordinateur \u00e0 un lieu",
                                     "x-right-scope": "global"
                                 },
                                 "rule_mailcollector": {
                                     "type": "integer",
-                                    "description": "Rules for assigning a ticket created through a mails receiver rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "R\u00e8gles pour assigner un ticket cr\u00e9\u00e9 via un collecteur de mails rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Rules for assigning a ticket created through a mails receiver",
+                                    "x-label": "R\u00e8gles pour assigner un ticket cr\u00e9\u00e9 via un collecteur de mails",
                                     "x-right-scope": "global"
                                 },
                                 "rule_problem": {
                                     "type": "integer",
-                                    "description": "Business rules for problems (entity) rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 1024: Parent business",
+                                    "description": "R\u00e8gles m\u00e9tier pour les probl\u00e8mes (entit\u00e9) rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger\n- 1024: R\u00e8gles m\u00e9tiers (parent)",
                                     "enum": [
                                         1,
                                         2,
@@ -16336,24 +16366,24 @@
                                         16,
                                         1024
                                     ],
-                                    "x-label": "Business rules for problems (entity)",
+                                    "x-label": "R\u00e8gles m\u00e9tier pour les probl\u00e8mes (entit\u00e9)",
                                     "x-right-scope": "entity"
                                 },
                                 "rule_softwarecategories": {
                                     "type": "integer",
-                                    "description": "Rules for assigning a category to a software rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "R\u00e8gles d'affectation d'une cat\u00e9gorie \u00e0 un logiciel rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Rules for assigning a category to a software",
+                                    "x-label": "R\u00e8gles d'affectation d'une cat\u00e9gorie \u00e0 un logiciel",
                                     "x-right-scope": "global"
                                 },
                                 "rule_ticket": {
                                     "type": "integer",
-                                    "description": "Business rules for tickets (entity) rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 1024: Parent business",
+                                    "description": "R\u00e8gles m\u00e9tier pour les tickets (entit\u00e9) rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger\n- 1024: R\u00e8gles m\u00e9tiers (parent)",
                                     "enum": [
                                         1,
                                         2,
@@ -16361,17 +16391,17 @@
                                         16,
                                         1024
                                     ],
-                                    "x-label": "Business rules for tickets (entity)",
+                                    "x-label": "R\u00e8gles m\u00e9tier pour les tickets (entit\u00e9)",
                                     "x-right-scope": "entity"
                                 },
                                 "search_config": {
                                     "type": "integer",
-                                    "description": "Search result display rights. Possible values:\n- 1024: User display\n- 2048: Default display",
+                                    "description": "Colonnes par d\u00e9faut rights. Possible values:\n- 1024: Affichage utilisateur\n- 2048: Affichage par d\u00e9faut",
                                     "enum": [
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Search result display",
+                                    "x-label": "Colonnes par d\u00e9faut",
                                     "x-right-scope": "entity"
                                 },
                                 "show_group_hardware": {
@@ -16379,7 +16409,7 @@
                                 },
                                 "slm": {
                                     "type": "integer",
-                                    "description": "SLM rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge\n- 256: Assign",
+                                    "description": "SLM rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger\n- 256: Assigner",
                                     "enum": [
                                         1,
                                         2,
@@ -16392,7 +16422,7 @@
                                 },
                                 "snmpcredential": {
                                     "type": "integer",
-                                    "description": "SNMP credentials rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 8: Delete\n- 16: Purge",
+                                    "description": "Identifiants SNMP rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
@@ -16400,12 +16430,12 @@
                                         8,
                                         16
                                     ],
-                                    "x-label": "SNMP credentials",
+                                    "x-label": "Identifiants SNMP",
                                     "x-right-scope": "global"
                                 },
                                 "software": {
                                     "type": "integer",
-                                    "description": "Software rights. Possible values:\n- 1: View all\n- 2: Update all\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 32: Read notes\n- 64: Update notes\n- 256: View assigned\n- 512: Update assigned\n- 1024: View owned\n- 2048: Update owned",
+                                    "description": "Logiciels rights. Possible values:\n- 1: Voir tous\n- 2: \u00c9diter tous\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 32: Lire les notes\n- 64: Mise \u00e0 jour des notes\n- 256: Voir les \u00e9l\u00e9ments assign\u00e9s\n- 512: Mettre \u00e0 jour les \u00e9l\u00e9ments assign\u00e9s\n- 1024: Voir mes \u00e9l\u00e9ments\n- 2048: Mettre \u00e0 jour mes \u00e9l\u00e9ments",
                                     "enum": [
                                         1,
                                         2,
@@ -16419,54 +16449,54 @@
                                         1024,
                                         2048
                                     ],
-                                    "x-label": "Software",
+                                    "x-label": "Logiciels",
                                     "x-right-scope": "entity"
                                 },
                                 "solutiontemplate": {
                                     "type": "integer",
-                                    "description": "Solution templates rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Gabarits de solution rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Solution templates",
+                                    "x-label": "Gabarits de solution",
                                     "x-right-scope": "entity"
                                 },
                                 "state": {
                                     "type": "integer",
-                                    "description": "Statuses of items rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Statuts des \u00e9l\u00e9ments rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Statuses of items",
+                                    "x-label": "Statuts des \u00e9l\u00e9ments",
                                     "x-right-scope": "entity"
                                 },
                                 "statistic": {
                                     "type": "integer",
-                                    "description": "Statistics rights. Possible values:\n- 1: Read",
+                                    "description": "Statistiques rights. Possible values:\n- 1: Lecture",
                                     "enum": [
                                         1
                                     ],
-                                    "x-label": "Statistics",
+                                    "x-label": "Statistiques",
                                     "x-right-scope": "entity"
                                 },
                                 "system_logs": {
                                     "type": "integer",
-                                    "description": "System logs rights. Possible values:\n- 1: Read",
+                                    "description": "Journaux syst\u00e8me rights. Possible values:\n- 1: Lecture",
                                     "enum": [
                                         1
                                     ],
-                                    "x-label": "System logs",
+                                    "x-label": "Journaux syst\u00e8me",
                                     "x-right-scope": "global"
                                 },
                                 "task": {
                                     "type": "integer",
-                                    "description": "Ticket tasks rights. Possible values:\n- 1: See public ones\n- 2: Update (author)\n- 4: Add (requester)\n- 16: Purge\n- 1024: Update all\n- 2048: Add (associated groups)\n- 4096: Add to all items\n- 8192: See private ones\n- 16384: Add (observer)\n- 32768: Add (technician)\n- 65536: See private of my groups",
+                                    "description": "T\u00e2ches d'un ticket rights. Possible values:\n- 1: Voir les publics\n- 2: Mettre \u00e0 jour (auteur)\n- 4: Ajouter (demandeur)\n- 16: Purger\n- 1024: \u00c9diter tous\n- 2048: Ajouter suivi (groupes associ\u00e9s)\n- 4096: Ajouter \u00e0 tous les \u00e9l\u00e9ments\n- 8192: Voir les priv\u00e9s\n- 16384: Ajouter (observateur)\n- 32768: Ajouter (technicien)\n- 65536: Voir les tickets priv\u00e9s de mes groupes",
                                     "enum": [
                                         1,
                                         2,
@@ -16480,36 +16510,36 @@
                                         32768,
                                         65536
                                     ],
-                                    "x-label": "Ticket tasks",
+                                    "x-label": "T\u00e2ches d'un ticket",
                                     "x-right-scope": "entity"
                                 },
                                 "taskcategory": {
                                     "type": "integer",
-                                    "description": "Task categories rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Cat\u00e9gories de t\u00e2ches rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Task categories",
+                                    "x-label": "Cat\u00e9gories de t\u00e2ches",
                                     "x-right-scope": "entity"
                                 },
                                 "tasktemplate": {
                                     "type": "integer",
-                                    "description": "Task templates rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Gabarits de t\u00e2che rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Task templates",
+                                    "x-label": "Gabarits de t\u00e2che",
                                     "x-right-scope": "entity"
                                 },
                                 "ticket": {
                                     "type": "integer",
-                                    "description": "Tickets rights. Possible values:\n- 1: See my ticket\n- 2: Update\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 1024: See all tickets\n- 2048: See group ticket\n- 4096: See assigned\n- 8192: Assign\n- 16384: Steal\n- 32768: Be in charge\n- 65536: Change the priority\n- 131072: Approve solution/Reply survey (my ticket)\n- 262144: View new tickets",
+                                    "description": "Tickets rights. Possible values:\n- 1: Voir mes tickets\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 1024: Voir tous les tickets\n- 2048: Voir tickets des groupes\n- 4096: Voir assign\u00e9\n- 8192: Assigner\n- 16384: Voler\n- 32768: \u00catre en charge\n- 65536: Modifier la priorit\u00e9\n- 131072: Approbation solution / R\u00e9ponse satisfaction (mes tickets)\n- 262144: Voir les nouveaux tickets",
                                     "enum": [
                                         1,
                                         2,
@@ -16531,31 +16561,31 @@
                                 },
                                 "ticketcost": {
                                     "type": "integer",
-                                    "description": "Costs rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Co\u00fbts rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Costs",
+                                    "x-label": "Co\u00fbts",
                                     "x-right-scope": "entity"
                                 },
                                 "ticketrecurrent": {
                                     "type": "integer",
-                                    "description": "Recurrent tickets rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Tickets r\u00e9currents rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Recurrent tickets",
+                                    "x-label": "Tickets r\u00e9currents",
                                     "x-right-scope": "entity"
                                 },
                                 "ticketvalidation": {
                                     "type": "integer",
-                                    "description": "Ticket approvals rights. Possible values:\n- 16: Purge\n- 1024: Create for request\n- 2048: Create for incident\n- 4096: Approve a request\n- 8192: Approve an incident",
+                                    "description": "Validations des tickets rights. Possible values:\n- 16: Purger\n- 1024: Cr\u00e9er pour une demande\n- 2048: Cr\u00e9er pour un incident\n- 4096: Valider une Demande\n- 8192: Valider un Incident",
                                     "enum": [
                                         16,
                                         1024,
@@ -16563,48 +16593,48 @@
                                         4096,
                                         8192
                                     ],
-                                    "x-label": "Ticket approvals",
+                                    "x-label": "Validations des tickets",
                                     "x-right-scope": "entity"
                                 },
                                 "transfer": {
                                     "type": "integer",
-                                    "description": "Transfer rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Transf\u00e9rer rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Transfer",
+                                    "x-label": "Transf\u00e9rer",
                                     "x-right-scope": "global"
                                 },
                                 "typedoc": {
                                     "type": "integer",
-                                    "description": "Document types rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
+                                    "description": "Types de documents rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         4,
                                         16
                                     ],
-                                    "x-label": "Document types",
+                                    "x-label": "Types de documents",
                                     "x-right-scope": "entity"
                                 },
                                 "unmanaged": {
                                     "type": "integer",
-                                    "description": "Unmanaged assets rights. Possible values:\n- 1: Read\n- 2: Update\n- 8: Delete\n- 16: Purge",
+                                    "description": "Actifs non g\u00e9r\u00e9s rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 8: Supprimer\n- 16: Purger",
                                     "enum": [
                                         1,
                                         2,
                                         8,
                                         16
                                     ],
-                                    "x-label": "Unmanaged assets",
+                                    "x-label": "Actifs non g\u00e9r\u00e9s",
                                     "x-right-scope": "global"
                                 },
                                 "user": {
                                     "type": "integer",
-                                    "description": "Users rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 8: Delete\n- 16: Purge\n- 1024: Add external\n- 2048: Read auth\n- 4096: Update auth, sync and 2FA\n- 8192: Impersonate",
+                                    "description": "Utilisateurs rights. Possible values:\n- 1: Lecture\n- 2: Mettre \u00e0 jour\n- 4: Cr\u00e9er \n- 8: Supprimer\n- 16: Purger\n- 1024: Ajout externe\n- 2048: Lecture auth\n- 4096: Mise \u00e0 jour auth\n- 8192: Personnifier",
                                     "enum": [
                                         1,
                                         2,
@@ -16616,7 +16646,7 @@
                                         4096,
                                         8192
                                     ],
-                                    "x-label": "Users",
+                                    "x-label": "Utilisateurs",
                                     "x-right-scope": "entity"
                                 }
                             }
@@ -18750,7 +18780,7 @@
                                 5,
                                 6
                             ],
-                            "description": "- 1: New\n- 10: Approval\n- 2: Processing (assigned)\n- 3: Processing (planned)\n- 4: Pending\n- 5: Solved\n- 6: Closed\n",
+                            "description": "- 1: Nouveau\n- 10: Validation\n- 2: En cours (Attribu\u00e9)\n- 3: En cours (Planifi\u00e9)\n- 4: En attente\n- 5: R\u00e9solu\n- 6: Clos\n",
                             "readOnly": true
                         },
                         "name": {
