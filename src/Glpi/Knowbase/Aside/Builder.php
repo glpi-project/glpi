@@ -56,8 +56,8 @@ final class Builder
         'glpi_knowbaseitems.illustration',
     ];
 
-    /** @var int[] */
-    private array $folded_ids = [];
+    /** @var array<int, true> */
+    private array $folded_ids_lookup_map = [];
 
     public function __construct(private readonly int $current_id = 0) {}
 
@@ -66,7 +66,7 @@ final class Builder
         global $DB;
 
         // Articles the current user has collapsed, restored on each render.
-        $this->folded_ids = KnowbaseItem::getFoldedIdsForCurrentUser();
+        $this->folded_ids_lookup_map = array_fill_keys(KnowbaseItem::getFoldedIdsForCurrentUser(), true);
 
         // 1) All articles the current user may see (visibility applied).
         $criteria = KnowbaseItem::getListRequest([], 'browse');
@@ -118,7 +118,7 @@ final class Builder
             illustration: $row['illustration'] ?? '',
             link: KnowbaseItem::getFormURLWithID($id),
             is_current: $this->current_id > 0 && $id === $this->current_id,
-            collapsed: in_array($id, $this->folded_ids, true),
+            collapsed: isset($this->folded_ids_lookup_map[$id]),
         );
         $ancestors[$id] = true;
         foreach ($children_of[$id] ?? [] as $child_id) {
