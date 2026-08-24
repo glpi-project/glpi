@@ -218,7 +218,7 @@ class GenericFormController extends AbstractController
      */
     private function displayModal(mixed $object, Request $request): Response
     {
-        $form_options = [];
+        $form_options = $object->getFormOptionsFromUrl($request->query->all());
         if ($object->maybeTemplate()) {
             $form_options['withtemplate'] = $request->query->get('withtemplate', '');
         }

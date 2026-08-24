@@ -39,7 +39,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight("config", UPDATE);
+Session::checkRight(MailCollector::$rightname, UPDATE);
 
 $mailcollector = new MailCollector();
 

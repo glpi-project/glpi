@@ -133,6 +133,8 @@ trait ReAuthTrait
             $_SERVER['HTTP_ACCEPT'],
             $_SERVER['HTTP_X_REQUESTED_WITH'],
         );
+        $_GET  = [];
+        $_POST = [];
     }
 
     private function setReauthenticated(bool $reauthenticated): void

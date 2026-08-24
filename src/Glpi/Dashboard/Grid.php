@@ -266,10 +266,10 @@ HTML;
 
         $nb_dashboards = count(self::$all_dashboards);
 
-        $can_view_all  = Session::haveRight('dashboard', READ) || self::$embed;
-        $can_create    = Session::haveRight('dashboard', CREATE);
-        $can_edit      = Session::haveRight('dashboard', UPDATE) && $nb_dashboards;
-        $can_purge     = Session::haveRight('dashboard', PURGE) && $nb_dashboards;
+        $can_view_all  = Session::haveRight(Dashboard::$rightname, READ) || self::$embed;
+        $can_create    = Session::haveRight(Dashboard::$rightname, CREATE);
+        $can_edit      = Session::haveRight(Dashboard::$rightname, UPDATE) && $nb_dashboards;
+        $can_purge     = Session::haveRight(Dashboard::$rightname, PURGE) && $nb_dashboards;
         $can_clone     = $can_create && $nb_dashboards;
 
         // prepare html for add controls
@@ -1539,6 +1539,15 @@ HTML;
                 'group'      => __('Assistance'),
                 'label'      => __("Tickets status by month"),
                 'provider'   => "Glpi\\Dashboard\\Provider::getTicketsStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+            ];
+
+            $cards["ticket_by_category_and_entity"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of tickets by category and entity"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByCategoryAndEntity",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 

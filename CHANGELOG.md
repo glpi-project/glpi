@@ -15,6 +15,7 @@ The present file will list all changes made to the project; according to the
 - Remember me support for multiple devices at the same time.
 - `Setup > Data and Privacy` menu item to centralize all data policies and privacy related settings.
 - New automatic action "purgesessionhistory" to automate deleting old login history data based on a retention period set in `Setup > Data and Privacy`.
+- A root article, base of the knowledge base tree, is now created on installation and on upgrade. Its id is stored in the `root_knowbaseitems_id` configuration. It can be edited like any other article but it cannot be deleted. **On upgrade, articles that have no parent (including the ones created from the former categories) become children of it.**
 
 ### Changed
 - "Computer" search option (ID 12) for Databases has been replaced by "Associated item type" (ID 14) and "Associated item" (ID 12) options. These are not searchable but can be displayed.
@@ -29,7 +30,7 @@ The present file will list all changes made to the project; according to the
   If your monitoring relies on parsing this string, make sure it can handle the new format.
 - New `errored` property for the cronttask (automatic actions) service in the status checker to indicate the names of the errored actions requiring manual intervention.
 - "Logs purge" tab moved from `Setup > General` to `Setup > Data and Privacy` and renamed to "Historical logs".
-- Knowledge base article visibility now inherits down the tree: a user who can access an article, or any of its ancestors, can view it. **On upgrade, existing categories become invisible until access is granted to them** (which then cascades to their contents).
+- Knowledge base article visibility now inherits down the tree: a user who can access an article, or any of its ancestors, can view it. **On upgrade, existing categories become invisible until access is granted to them** (which then cascades to their contents). The root article is an exception: it is readable by anyone who can read the knowledge base, and it never grants access to its descendants.
 
 ### Deprecated
 
@@ -37,6 +38,7 @@ The present file will list all changes made to the project; according to the
 - CSRF protection is now handled via browser-native `Sec-Fetch-Site`/`Origin` header validation instead of per-request tokens. All `_glpi_csrf_token` hidden form fields and `X-Glpi-Csrf-Token` AJAX headers must be removed from plugins. See API changes below for the full list of removed methods and helpers.
 - The `KnowbaseItemCategory` itemtype and the `knowbasecategory` right have been removed. Knowledge base categories are now regular articles; hierarchy is expressed by linking child articles to parent articles.
 - Generic tree-browse (`TreeBrowse`) support for the knowledge base. The KB aside provides browsing.
+- The `Search` and `Browse` tabs of the knowledge base article list. The list is now a plain search page.
 
 ### API changes
 - Type declarations for some `CronTask` methods have been added.

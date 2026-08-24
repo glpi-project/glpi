@@ -81,17 +81,15 @@
                 <span data-glpi-kb-article-title>{{ article.title }}</span>
             </a>
             {% if can_create %}
-                {% set add_href = path('/front/knowbaseitem.form.php', {knowbaseitems_id_parent: article.id}) %}
-                {% set add_title = __('Create a child article') %}
-                <a
-                    href="{{ add_href }}"
-                    class="d-flex align-items-center ms-2 p-1 text-secondary pe-none"
-                    data-glpi-kb-aside-category-add
+                <button
+                    type="button"
+                    class="d-flex align-items-center ms-2 p-1 text-secondary border-0 bg-transparent"
+                    data-glpi-kb-aside-category-add="{{ article.id }}"
                     aria-label="{{ __('Create an article under %s')|format(article.title) }}"
-                    title="{{ add_title }}"
+                    title="{{ __('Create a child article under %s')|format(article.title) }}"
                 >
                     <i class="ti ti-plus" aria-hidden="true"></i>
-                </a>
+                </button>
             {% endif %}
             {% if show_actions %}
                 {{ actions_menu.render_actions_menu_lazy() }}
@@ -209,30 +207,7 @@
     class="card-body"
     data-glpi-kb-aside-tree
     data-testid="aside-tree"
-    {% if can_create %}
-        {#- The tree container doubles as the "node" for the root-level "+"
-         # affordance below, reusing the same collapsible-node DOM contract as
-         # any other article (see AsideController.js `#openCreateInput`,
-         # which walks up to the closest `[data-glpi-kb-aside-category]` and
-         # looks for its direct child `<ul>`). -#}
-        data-glpi-kb-aside-category
-    {% endif %}
 >
-    {% if can_create %}
-        <div class="d-flex align-items-center mb-2" data-glpi-kb-aside-category-header>
-            {% set add_href = path('/front/knowbaseitem.form.php') %}
-            <a
-                href="{{ add_href }}"
-                class="d-flex align-items-center p-1 text-secondary pe-none"
-                data-glpi-kb-aside-category-add
-                aria-label="{{ __('Create a root article') }}"
-                title="{{ __('Create a root article') }}"
-            >
-                <i class="ti ti-plus" aria-hidden="true"></i>
-                <span class="ms-1">{{ __('Create a root article') }}</span>
-            </a>
-        </div>
-    {% endif %}
     <ul class="kb-tree ps-0">
         {% for article in tree.getArticles %}
             {{ macros.render_article(article, can_create, show_actions) }}

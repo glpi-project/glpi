@@ -578,7 +578,7 @@ class MassiveAction
     {
 
         if (
-            Session::haveRight('transfer', READ)
+            Session::haveRight(Transfer::$rightname, READ)
             && Session::isMultiEntitiesMode()
             && !isAPI()
         ) {

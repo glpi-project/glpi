@@ -129,7 +129,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public static function getMenuName()
     {
-        if (!Session::haveRight('knowbase', READ)) {
+        if (!Session::haveRight(KnowbaseItem::$rightname, READ)) {
             return __('FAQ');
         }
         return static::getTypeName(Session::getPluralNumber());
@@ -160,6 +160,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function canViewItem(): bool
     {
+        // The root article is the entry point of the knowledge base: everyone
+        // allowed to read the knowledge base, administrators included, can view
+        // it, it has no visibility rules of its own. FAQ-only readers are not
+        // concerned: the root article is not part of the FAQ, see
+        // `getVisibilityCriteriaFAQ()` and `prepareInputForUpdate()`.
+        if ($this->isRoot()) {
+            return Session::haveRightsOr(self::$rightname, [READ, self::KNOWBASEADMIN]);
+        }
+
         if ($this->fields['users_id'] === Session::getLoginUserID()) {
             return true;
         }
@@ -177,6 +186,13 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function canUpdateItem(): bool
     {
+        // The root article is the entry point of the knowledge base: everyone
+        // allowed to update the knowledge base can edit it, it has no visibility
+        // rules of its own (see `canViewItem()`).
+        if ($this->isRoot()) {
+            return Session::haveRightsOr(self::$rightname, [UPDATE, self::KNOWBASEADMIN]);
+        }
+
         // Personal knowbase or visibility and write access
         return (Session::haveRight(self::$rightname, self::KNOWBASEADMIN)
               || (Session::getCurrentInterface() === "central"
@@ -187,6 +203,26 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                   && $this->haveVisibilityAccess()));
     }
 
+    public function canDeleteItem(): bool
+    {
+        // The root article is the base of the knowledge base tree, it must
+        // always exist.
+        if ($this->isRoot()) {
+            return false;
+        }
+
+        return parent::canDeleteItem();
+    }
+
+    public function canPurgeItem(): bool
+    {
+        if ($this->isRoot()) {
+            return false;
+        }
+
+        return parent::canPurgeItem();
+    }
+
     /**
      * Check if current user can comment on KB entries
      *
@@ -195,6 +231,65 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public function canComment()
     {
         return $this->can($this->getID(), READ) && Session::haveRight(self::$rightname, self::COMMENTS);
+    }
+
+    /**
+     * Id of the root article, which is the base of the knowledge base tree.
+     *
+     * The root article is created by the installation process, see
+     * `install/empty_data.php` and the 12.0.0 migration.
+     *
+     * @throws RuntimeException if the configuration value is missing, which can
+     *                          only happen on a corrupted installation.
+     */
+    public static function getRootId(): int
+    {
+        $root_id = self::getConfiguredRootId();
+        if ($root_id <= 0) {
+            throw new RuntimeException('The knowledge base root article is not defined.');
+        }
+
+        return $root_id;
+    }
+
+    /**
+     * Whether the knowledge base has a root article, see `getRootId()`.
+     *
+     * Only a corrupted installation has none; callers that can do without it
+     * must use this method instead of catching `getRootId()` exception.
+     */
+    public static function hasRoot(): bool
+    {
+        return self::getConfiguredRootId() > 0;
+    }
+
+    /**
+     * Whether the loaded article is the root article, see `getRootId()`.
+     */
+    public function isRoot(): bool
+    {
+        return self::isRootId((int) ($this->fields['id'] ?? 0));
+    }
+
+    /**
+     * Whether the given article id is the root article's one, see `getRootId()`.
+     */
+    public static function isRootId(int $id): bool
+    {
+        // Compared to the raw configuration value instead of `getRootId()`: this
+        // method is called from rights checks, which must not fail on an
+        // installation that has no root article (no article is the root then).
+        return $id > 0 && $id === self::getConfiguredRootId();
+    }
+
+    /**
+     * Configured id of the root article, 0 if there is none.
+     */
+    private static function getConfiguredRootId(): int
+    {
+        global $CFG_GLPI;
+
+        return (int) ($CFG_GLPI['root_knowbaseitems_id'] ?? 0);
     }
 
     public static function getSearchURL($full = true)
@@ -301,7 +396,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     {
         if (
             Session::haveRight(self::$rightname, self::PUBLISHFAQ)
-            && !Session::haveRight("knowbase", UPDATE)
+            && !Session::haveRight(KnowbaseItem::$rightname, UPDATE)
         ) {
             $this->fields["is_faq"] = 1;
         }
@@ -406,7 +501,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $kb_item_item->add($params);
         }
 
-        // Handle parent articles
+        // Handle parent articles. Articles created without a parent are attached
+        // to the root article, so the knowledge base always is a single tree.
+        $this->setRootAsDefaultParent(on_creation: true);
         $this->update1NTableData(KnowbaseItem_KnowbaseItem::class, "_parents");
 
         NotificationEvent::raiseEvent('new', $this);
@@ -553,8 +650,29 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $this->load1NTableData(KnowbaseItem_KnowbaseItem::class, '_parents');
     }
 
+    public function pre_deleteItem()
+    {
+        // Last line of defense: `canDeleteItem()` and `canPurgeItem()` already
+        // forbid the action, but this hook is the single gate that every deletion
+        // goes through, including the code paths that do not check rights.
+        if ($this->isRoot()) {
+            Session::addMessageAfterRedirect(
+                msg: __s('The root article of the knowledge base cannot be deleted.'),
+                message_type: ERROR,
+            );
+
+            return false;
+        }
+
+        return parent::pre_deleteItem();
+    }
+
     public function cleanDBonPurge()
     {
+        // Collect the children that this purge would leave outside the tree
+        // before their links to the purged article are removed below.
+        $orphaned_children = $this->getChildrenWithoutOtherParent();
+
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Entity_KnowbaseItem::class,
@@ -575,6 +693,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             ['knowbaseitems_id_parent' => $this->fields['id']]
         );
 
+        // Attach the children that just lost their only parent back to the root
+        // article, so the knowledge base always is a single tree.
+        self::attachToRootArticle($orphaned_children);
+
         // KnowbaseItem_Comment does not extends CommonDBConnexity
         $kbic = new KnowbaseItem_Comment();
         $kbic->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
@@ -582,6 +704,62 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // KnowbaseItem_Revision does not extends CommonDBConnexity
         $kbir = new KnowbaseItem_Revision();
         $kbir->deleteByCriteria(['knowbaseitems_id' => $this->fields['id']]);
+    }
+
+    /**
+     * Ids of the children of the loaded article that have no other parent, and
+     * would thus be left outside the knowledge base tree if the article is
+     * removed from it.
+     *
+     * @return int[]
+     */
+    private function getChildrenWithoutOtherParent(): array
+    {
+        $relation = new KnowbaseItem_KnowbaseItem();
+
+        $children_ids = array_map('intval', array_column(
+            $relation->find(['knowbaseitems_id_parent' => $this->fields['id']]),
+            'knowbaseitems_id'
+        ));
+        if ($children_ids === []) {
+            return [];
+        }
+
+        $parents_count = array_count_values(array_map('intval', array_column(
+            $relation->find(['knowbaseitems_id' => $children_ids]),
+            'knowbaseitems_id'
+        )));
+
+        return array_values(array_filter(
+            $children_ids,
+            static fn(int $child_id): bool => ($parents_count[$child_id] ?? 0) <= 1,
+        ));
+    }
+
+    /**
+     * Attach the given articles to the root article, ignoring the ones that
+     * can not have a parent.
+     *
+     * @param int[] $article_ids
+     */
+    private static function attachToRootArticle(array $article_ids): void
+    {
+        if ($article_ids === [] || !self::hasRoot()) {
+            return;
+        }
+
+        $root_id  = self::getRootId();
+        $relation = new KnowbaseItem_KnowbaseItem();
+        foreach ($article_ids as $article_id) {
+            if ($article_id === $root_id) {
+                continue;
+            }
+
+            $relation->add([
+                'knowbaseitems_id'        => $article_id,
+                'knowbaseitems_id_parent' => $root_id,
+            ]);
+        }
     }
 
     /**
@@ -788,9 +966,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         // Inherited visibility: an article is also visible if any of its
         // ancestors is directly visible. Build the inherited term from the
         // direct terms BEFORE appending it (it must not contain itself).
-        $inherited = self::getInheritedVisibilityCondition($direct_or);
+        $criteria = array_merge($direct_or, [self::getInheritedVisibilityCondition($direct_or)]);
 
-        return ['OR' => array_merge($direct_or, [$inherited])];
+        // The root article is the entry point of the knowledge base: everyone
+        // allowed to read the knowledge base sees it, it has no visibility rules
+        // of its own. Appended after the inherited term on purpose, see
+        // `getInheritedVisibilityCondition()` for why it must not seed it.
+        $root_id = self::getConfiguredRootId();
+        if ($root_id > 0) {
+            $criteria[] = [self::getTableField('id') => $root_id];
+        }
+
+        return ['OR' => $criteria];
     }
 
     /**
@@ -808,11 +995,23 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         global $DB;
 
         // Seed: ids of directly-visible articles (self-contained subquery).
+        $seed_where = ['OR' => $direct_or];
+
+        // The root article is the ancestor of every article: were it part of the
+        // seed, the whole knowledge base would inherit its visibility.
+        $root_id = self::getConfiguredRootId();
+        if ($root_id > 0) {
+            $seed_where = [
+                $seed_where,
+                ['NOT' => [self::getTableField('id') => $root_id]],
+            ];
+        }
+
         $seed = new QuerySubQuery([
             'SELECT'    => self::getTableField('id'),
             'FROM'      => self::getTable(),
             'LEFT JOIN' => self::getVisibilityCriteriaCommonJoin(true),
-            'WHERE'     => ['OR' => $direct_or],
+            'WHERE'     => $seed_where,
         ]);
 
         // GLPI's iterator emits `?` placeholders and keeps the bound values
@@ -957,6 +1156,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $input["name"] = __('New item');
         }
 
+        // The root article is the entry point of the knowledge base, not a
+        // piece of content to publish. Listing it in the FAQ or in the service
+        // catalog would offer it to readers that are not allowed to open it,
+        // down to anonymous users on a public FAQ, see `canViewItem()`.
+        if ($this->isRoot()) {
+            unset($input['is_faq'], $input['show_in_service_catalog']);
+        }
+
         return $this->prepareIllustrationInput($input);
     }
 
@@ -982,6 +1189,50 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $input;
     }
 
+    /**
+     * Make sure the `_parents` input never leaves the article outside the
+     * knowledge base tree: an article that would end up without any parent is
+     * attached to the root article instead.
+     *
+     * @param bool $on_creation Whether the article is being created, in which
+     *                          case an input that does not mention the parents
+     *                          at all must be defaulted too.
+     */
+    private function setRootAsDefaultParent(bool $on_creation): void
+    {
+        // The root article is the only one allowed to have no parent.
+        if (!is_array($this->input) || $this->isRoot()) {
+            return;
+        }
+
+        $parents = $this->input['_parents'] ?? null;
+
+        // See `update1NTableData()`: an input that does not target the parents
+        // at all must be left alone, unless the article has no parent yet.
+        $targets_parents = $parents !== null
+            || (bool) ($this->input['__parents_defined'] ?? false);
+        if (!$targets_parents && !$on_creation) {
+            return;
+        }
+
+        // Only an emptied input needs a default.
+        if (!empty($parents)) {
+            return;
+        }
+
+        // Guard against an installation that has no root article: a link to a
+        // missing article would be worse than no link at all.
+        if (!self::hasRoot()) {
+            return;
+        }
+        $root_id = self::getRootId();
+        if (countElementsInTable(self::getTable(), ['id' => $root_id]) === 0) {
+            return;
+        }
+
+        $this->input['_parents'] = [$root_id];
+    }
+
     public function post_updateItem($history = true)
     {
         // Handle rich-text images and uploaded documents
@@ -993,7 +1244,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             ]
         );
 
-        // Update parent articles
+        // Update parent articles. An article whose parents are all removed is
+        // attached back to the root article, so the knowledge base always is a
+        // single tree.
+        $this->setRootAsDefaultParent(on_creation: false);
         $this->update1NTableData(KnowbaseItem_KnowbaseItem::class, '_parents');
         NotificationEvent::raiseEvent('update', $this);
     }
@@ -1013,6 +1267,22 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         if (isset($query_params['knowbaseitems_id_parent'])) {
             $options['knowbaseitems_id_parent'] = $query_params['knowbaseitems_id_parent'];
         }
+
+        // Parameters set by the "Save and add to the knowledge base" actions of
+        // the ITIL objects timeline, see self::getFormURLWithParam().
+        $itil_params = [
+            'item_itemtype',
+            'item_items_id',
+            '_fup_to_kb',
+            '_task_to_kb',
+            '_sol_to_kb',
+        ];
+        foreach ($itil_params as $itil_param) {
+            if (isset($query_params[$itil_param])) {
+                $options[$itil_param] = $query_params[$itil_param];
+            }
+        }
+
         return $options;
     }
 
@@ -1028,8 +1298,58 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             return false;
         }
 
+        $this->initFromItilObject($ID, $options);
+
         $this->showFull(['mode' => 'add'] + $options);
         return true;
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     */
+    private function initFromItilObject(int $ID, array $options): void
+    {
+        if (
+            !self::isNewID($ID)
+            || empty($options['item_itemtype'])
+            || empty($options['item_items_id'])
+        ) {
+            return;
+        }
+
+        $item = getItemForItemtype($options['item_itemtype']);
+        if (
+            !($item instanceof CommonITILObject)
+            || !$item->can($options['item_items_id'], READ)
+        ) {
+            return;
+        }
+
+        $this->fields['name'] = $item->getField('name');
+
+        if (isset($options['_fup_to_kb'])) {
+            $followup = new ITILFollowup();
+            if ($followup->can($options['_fup_to_kb'], READ)) {
+                $this->fields['answer'] = $followup->getField('content');
+            }
+        } elseif (isset($options['_task_to_kb'])) {
+            $task = $item->getTaskClassInstance();
+            if ($task->can($options['_task_to_kb'], READ)) {
+                $this->fields['answer'] = $task->getField('content');
+            }
+        } elseif (isset($options['_sol_to_kb'])) {
+            // Unlike _fup_to_kb and _task_to_kb, _sol_to_kb does not contain
+            // the target solution it
+            $solution = new ITILSolution();
+            $found = $solution->getFromDBByCrit([
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
+                ['NOT' => ['status' => CommonITILValidation::REFUSED]],
+            ]);
+            if ($found && $solution->can($solution->fields['id'], READ)) {
+                $this->fields['answer'] = $solution->getField('content');
+            }
+        }
     }
 
     /**
@@ -1116,6 +1436,20 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $params['related_items']       = $items;
             $params['related_items_count'] = count($items);
             $params['can_link_items']      = $can_update;
+
+            // Add child articles info
+            $child_articles = $this->getChildArticlesInfo();
+            $params['child_articles'] = $child_articles;
+
+            // Which footer tabs exist, and which one opens by default
+            $params['show_children_tab']  = $child_articles !== [];
+            $params['show_documents_tab'] = $documents !== [] || $can_update;
+            $params['show_items_tab']     = $items !== [] || $can_update;
+            $params['active_tab']         = match (true) {
+                $params['show_children_tab']  => 'children',
+                $params['show_documents_tab'] => 'documents',
+                default                       => 'items',
+            };
 
             // General fields
             $params['views']        = $this->fields['view'];
@@ -1284,6 +1618,71 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $related_items;
     }
 
+    /**
+     * @return list<array{
+     *      'id': int,
+     *      'name': string,
+     *      'illustration': string,
+     *      'link_url': string,
+     * }>
+     */
+    private function getChildArticlesInfo(): array
+    {
+        global $DB;
+
+        // getListRequest()'s visibility cannot filter this query: inherited visibility matches every child of a readable parent.
+        $criteria = [
+            'SELECT'     => self::getTableField('id'),
+            'FROM'       => self::getTable(),
+            'INNER JOIN' => [
+                KnowbaseItem_KnowbaseItem::getTable() => [
+                    'FKEY' => [
+                        KnowbaseItem_KnowbaseItem::getTable() => 'knowbaseitems_id',
+                        self::getTable()                      => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'      => [
+                KnowbaseItem_KnowbaseItem::getTableField('knowbaseitems_id_parent') => $this->fields['id'],
+            ],
+            'ORDER'      => [self::getTableField('name') . ' ASC'],
+        ];
+
+        // can() ignores the validity window, so apply it here exactly as getListRequest() does.
+        if (!Session::haveRight(self::$rightname, self::KNOWBASEADMIN)) {
+            $criteria['WHERE'][] = [
+                'OR' => [
+                    [self::getTableField('begin_date') => null],
+                    [self::getTableField('begin_date') => ['<', QueryFunction::now()]],
+                ],
+            ];
+            $criteria['WHERE'][] = [
+                'OR' => [
+                    [self::getTableField('end_date') => null],
+                    [self::getTableField('end_date') => ['>', QueryFunction::now()]],
+                ],
+            ];
+        }
+
+        $children = [];
+        $child = new self();
+        $rows = $DB->request($criteria);
+        foreach ($rows as $row) {
+            $child_id = (int) $row['id'];
+            if (!$child->can($child_id, READ)) {
+                continue;
+            }
+            $children[] = [
+                'id'           => $child_id,
+                'name'         => $child->getName(),
+                'illustration' => $child->fields['illustration'] ?? '',
+                'link_url'     => self::getFormURLWithID($child_id),
+            ];
+        }
+
+        return $children;
+    }
+
     /** @return array<EditorAction|EditorActionSeparator> */
     private function getEditorActions(): array
     {
@@ -1321,41 +1720,44 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 );
             }
 
-            $actions[] = new EditorAction(
-                label: __("Service catalog"),
-                icon: "ti ti-library",
-                type: EditorActionType::OPEN_MODAL,
-                params: [
-                    'id'    => $this->fields['id'],
-                    'key'   => 'SidePanel/service-catalog',
-                    'title' => __("Service catalog"),
-                    'icon'  => 'ti ti-library',
-                ],
-            );
+            // None of the actions below applies to the root article.
+            if (!$this->isRoot()) {
+                $actions[] = new EditorAction(
+                    label: __("Service catalog"),
+                    icon: "ti ti-library",
+                    type: EditorActionType::OPEN_MODAL,
+                    params: [
+                        'id'    => $this->fields['id'],
+                        'key'   => 'SidePanel/service-catalog',
+                        'title' => __("Service catalog"),
+                        'icon'  => 'ti ti-library',
+                    ],
+                );
 
-            $label = __('Permissions');
-            $icon  = "ti ti-lock";
-            $actions[] = new EditorAction(
-                label: $label,
-                icon: $icon,
-                type: EditorActionType::OPEN_MODAL,
-                params: [
-                    'id'    => $this->fields['id'],
-                    'key'   => 'SidePanel/targets',
-                    'title' => $label,
-                    'icon'  => $icon,
-                ],
-            );
-            $actions[] = new EditorAction(
-                label: __('Schedule visibility'),
-                icon: 'ti ti-calendar-clock',
-                type: EditorActionType::OPEN_MODAL,
-                params: [
-                    'id'    => $this->fields['id'],
-                    'key'   => 'SidePanel/schedule-visibility',
-                    'title' => __('Schedule visibility'),
-                ],
-            );
+                $label = __('Permissions');
+                $icon  = "ti ti-lock";
+                $actions[] = new EditorAction(
+                    label: $label,
+                    icon: $icon,
+                    type: EditorActionType::OPEN_MODAL,
+                    params: [
+                        'id'    => $this->fields['id'],
+                        'key'   => 'SidePanel/targets',
+                        'title' => $label,
+                        'icon'  => $icon,
+                    ],
+                );
+                $actions[] = new EditorAction(
+                    label: __('Schedule visibility'),
+                    icon: 'ti ti-calendar-clock',
+                    type: EditorActionType::OPEN_MODAL,
+                    params: [
+                        'id'    => $this->fields['id'],
+                        'key'   => 'SidePanel/schedule-visibility',
+                        'title' => __('Schedule visibility'),
+                    ],
+                );
+            }
         }
 
         // Include base actions that are available for articles in the aside
@@ -1393,7 +1795,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
         }
-        if ($this->can($this->fields['id'], UPDATE)) {
+        // The root article is not part of the FAQ, see `prepareInputForUpdate()`.
+        if (!$this->isRoot() && $this->can($this->fields['id'], UPDATE)) {
             $toggles[] = new EditorAction(
                 label: __("Add to FAQ"),
                 icon: "ti ti-bookmark",
@@ -2843,7 +3246,7 @@ TWIG, $twig_params);
                 'virtual'       => true,
                 'value'         => 2, // always false, to avoid any result
             ];
-        } elseif (!Session::haveRight('knowbase', READ)) {
+        } elseif (!Session::haveRight(KnowbaseItem::$rightname, READ)) {
             $params['criteria'][] = [
                 'link'          => "AND",
                 'field'         => '8', // is_faq
@@ -2955,7 +3358,8 @@ TWIG, $twig_params);
 
     public static function getAdditionalMenuLinks(): array
     {
-        return ['all_articles' => self::getSearchURL(false)];
+        // Dummy parameter to prevent redirection to the root article.
+        return ['all_articles' => self::getSearchURL(false) . '?list=1'];
     }
 
     /** @return Article[] */

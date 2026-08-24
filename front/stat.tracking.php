@@ -50,7 +50,7 @@ global $CFG_GLPI;
 
 Html::header(__('Statistics'), '', "helpdesk", "stat");
 
-Session::checkRight("statistic", READ);
+Session::checkRight(Stat::$rightname, READ);
 
 if (!$item = getItemForItemtype($_GET['itemtype'])) {
     throw new BadRequestHttpException();

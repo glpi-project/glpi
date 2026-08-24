@@ -109,7 +109,7 @@ final class LogViewer extends CommonGLPI
             );
         }
 
-        $can_config = Session::haveRight('config', UPDATE);
+        $can_config = Session::haveRight(\Config::$rightname, UPDATE);
 
         TemplateRenderer::getInstance()->display(
             'pages/admin/logs_list.html.twig',
@@ -137,7 +137,7 @@ final class LogViewer extends CommonGLPI
         $log_entries = $this->log_parser->parseLogFile($filepath);
 
         $log_files = $this->log_parser->getLogsFilesList();
-        $can_config = Session::haveRight('config', UPDATE);
+        $can_config = Session::haveRight(\Config::$rightname, UPDATE);
 
         TemplateRenderer::getInstance()->display(
             'pages/admin/log_viewer.html.twig',

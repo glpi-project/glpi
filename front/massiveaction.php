@@ -57,7 +57,7 @@ try {
         $reauth_manager->checkReAuthenticationOrRedirect();
 
         // Reauth is valid. Whether we are back from the reauth form (the ReAuth
-        // flow injects _glpi_http_referer = calling page) or still within the
+        // flow restores the calling page as the referer) or still within the
         // active reauth window (real HTTP Referer = calling page), getBackUrl()
         // returns the calling page.
         $back_url = Html::getBackUrl();

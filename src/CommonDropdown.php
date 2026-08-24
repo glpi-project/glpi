@@ -964,7 +964,7 @@ abstract class CommonDropdown extends CommonDBTM
             !$this->isNewItem()
             && $this->isField('knowbaseitems_id')
             && $this->fields['knowbaseitems_id']
-            && Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])
+            && Session::haveRightsOr(KnowbaseItem::$rightname, [READ, KnowbaseItem::READFAQ])
         ) {
             $is_central = Session::getCurrentInterface() == 'central';
 

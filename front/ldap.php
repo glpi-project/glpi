@@ -37,7 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Application\View\TemplateRenderer;
 
-Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
+Session::checkRight(User::$rightname, User::IMPORTEXTAUTHUSERS);
 
 Html::header(__('LDAP directory link'), '', "admin", "user", "ldap");
 

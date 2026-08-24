@@ -454,7 +454,7 @@ class Item_SoftwareVersion extends CommonDBRelation
             return;
         }
 
-        $canedit       = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
+        $canedit       = Session::haveRightsOr(Software::$rightname, [CREATE, UPDATE, DELETE, PURGE]);
         $canshowitems  = [];
         $item_version_table = self::getTable(self::class);
 
@@ -994,7 +994,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         $rand          = mt_rand();
         $filters       = $_GET['filters'] ?? [];
         $is_filtered   = count($filters) > 0;
-        $canedit       = Session::haveRightsOr("software", [CREATE, UPDATE, DELETE, PURGE]);
+        $canedit       = Session::haveRightsOr(Software::$rightname, [CREATE, UPDATE, DELETE, PURGE]);
         $entities_id   = $item->fields["entities_id"];
 
         $crit         = Session::getSavedOption(self::class, 'criterion', -1);

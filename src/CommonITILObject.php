@@ -1510,7 +1510,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         /// TODO own_ticket -> own_itilobject
         if ($type == CommonITILActor::ASSIGN) {
             if (
-                Session::haveRight("ticket", Ticket::OWN)
+                Session::haveRight(Ticket::$rightname, Ticket::OWN)
                 && $_SESSION['glpiset_default_tech']
             ) {
                 return Session::getLoginUserID();
@@ -6598,7 +6598,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $candelete   = static::canDelete();
         $canupdate   = Session::haveRight(static::$rightname, UPDATE);
-        $showprivate = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
+        $showprivate = Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE);
         $align       = "class='left'";
         $align_desc  = "class='left'";
 
@@ -7030,7 +7030,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'ticket_stats' => false,
         ], $params);
 
-        $showprivate_fup = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
+        $showprivate_fup = Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE);
         $showprivate_task = [];
         $rand = mt_rand();
         // Cache of entity names
@@ -7581,7 +7581,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $restrict_fup = $restrict_task = [];
         if (
             $params['hide_private_items']
-            || ($params['check_view_rights'] && !Session::haveRight("followup", ITILFollowup::SEEPRIVATE))
+            || ($params['check_view_rights'] && !Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE))
         ) {
             if (!$params['check_view_rights']) {
                 // notification case, we cannot rely on session
@@ -7859,7 +7859,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 // Check visibility for private documents
                 if ($params['check_view_rights'] && (bool) $document_item['is_private']) {
                     if (
-                        !Session::haveRight('document', Document_Item::SEEPRIVATE)
+                        !Session::haveRight(Document::$rightname, Document_Item::SEEPRIVATE)
                         && (int) ($document_item['users_id'] ?? 0) !== Session::getLoginUserID()
                     ) {
                         continue;
@@ -9633,6 +9633,34 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             }
 
+            $do_not_compute_status = false;
+            foreach ($added as $actor) {
+                if ($actor['type'] === CommonITILActor::ASSIGN) {
+                    $do_not_compute_status = true;
+                }
+            }
+
+            // Process deleted actors
+            foreach ($actor_itemtypes as $actor_itemtype) {
+                $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
+                $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
+
+                $deleted = array_key_exists($actors_deleted_input_key, $this->input)
+                    ? $this->input[$actors_deleted_input_key]
+                    : [];
+                foreach ($deleted as $actor) {
+                    $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
+                    if ($do_not_compute_status) {
+                        $actor_obj->delete([
+                            'id' => $actor['id'],
+                            '_do_not_compute_status' => $do_not_compute_status,
+                        ]);
+                    } else {
+                        $actor_obj->delete(['id' => $actor['id']]);
+                    }
+                }
+            }
+
             // Add new actors
             foreach ($added as $actor) {
                 $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
@@ -9665,22 +9693,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             foreach ($updated as $actor) {
                 $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
                 $actor_obj->update($common_actor_input + $actor);
-            }
-        }
-
-        // Process deleted actors
-        foreach ($actor_types as $actor_type) {
-            foreach ($actor_itemtypes as $actor_itemtype) {
-                $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
-                $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
-
-                $deleted = array_key_exists($actors_deleted_input_key, $this->input)
-                    ? $this->input[$actors_deleted_input_key]
-                    : [];
-                foreach ($deleted as $actor) {
-                    $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
-                    $actor_obj->delete(['id' => $actor['id']]);
-                }
             }
         }
 

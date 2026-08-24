@@ -13862,24 +13862,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'type\' might not exist on array\\{type\\?\\: 1\\|2\\|3, use_notification\\?\\: bool, users_id\\?\\: int, alternative_email\\?\\: string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'use_notification\' might not exist on array\\{type\\: 2, use_notification\\?\\: bool, users_id\\?\\: int, alternative_email\\?\\: string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'users_id\' might not exist on array\\{type\\: 2, use_notification\\: true, users_id\\?\\: int, alternative_email\\?\\: string\\}\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, string given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 6,

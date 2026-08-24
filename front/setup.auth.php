@@ -37,7 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Application\View\TemplateRenderer;
 
-Session::checkRight("config", READ);
+Session::checkRight(Config::$rightname, READ);
 
 Html::header(__('External authentication sources'), '', "config", "auth");
 

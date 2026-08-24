@@ -40,7 +40,7 @@ use Glpi\Cache\CacheManager;
 $config = new Config();
 $config->checkGlobal(READ);
 if (isset($_GET['check_version'])) {
-    Session::checkRight("config", UPDATE);
+    Session::checkRight(Config::$rightname, UPDATE);
     Session::addMessageAfterRedirect(
         htmlescape(Toolbox::checkNewVersionAvailable())
     );

@@ -143,6 +143,18 @@ class Notification extends CommonDBTM implements FilterableInterface
     public const VALIDATION_TARGET                   = 40;
     // Notification to the ticket's validation substitutes (Who can approve if the target is not available)
     public const VALIDATION_TARGET_SUBSTITUTES       = 41;
+    //Notification to the requester user previously in the ticket
+    public const OLD_REQUESTER_USER                  = 42;
+    //Notification to the requester group previously in the ticket
+    public const OLD_REQUESTER_GROUP                 = 43;
+    //Notification to the observer user previously in the ticket
+    public const OLD_OBSERVER_USER                   = 44;
+    //Notification to the observer group previously in the ticket
+    public const OLD_OBSERVER_GROUP                  = 45;
+    //Notification to the assigned group previously in charge of the ticket
+    public const OLD_ASSIGN_GROUP                    = 46;
+    //Notification to the assigned supplier previously in charge of the ticket
+    public const OLD_ASSIGN_SUPPLIER                 = 47;
 
     // From CommonDBTM
     public bool $dohistory = true;

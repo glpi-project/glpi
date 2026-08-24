@@ -97,3 +97,50 @@ test('Can toggle favorites from true to false', async ({ page, profile, api }) =
     await expect(favorite_toggle_after_reload.getByRole('checkbox')).not.toBeChecked();
     await expect(kb.getFavoriteArticle(name)).toBeHidden();
 });
+
+test('The favorites area stays a flat list when favoriting an article with children', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const parent_name = `Favorite parent ${unique}`;
+    const child_name = `Favorite child ${unique}`;
+
+    const viewed_id = await api.createItem('KnowbaseItem', {
+        name: `Favorite viewed ${unique}`,
+        entities_id: getWorkerEntityId(),
+        answer: "My answer",
+    });
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        entities_id: getWorkerEntityId(),
+        answer: "Parent content",
+    });
+    await api.createItem('KnowbaseItem', {
+        name: child_name,
+        entities_id: getWorkerEntityId(),
+        answer: "Child content",
+        _parents: [parent_id],
+    });
+
+    await kb.goto(viewed_id);
+    await kb.waitForAsideReady();
+
+    // Favorite another article than the current one, so the entry is built from
+    // its tree row instead of the current article's dedicated one.
+    await kb.doOpenAsideArticleMenu(parent_id);
+    await kb.doToggleAsideFavorite(parent_id);
+
+    // The favorites area lists the article alone: no children, and none of the
+    // tree affordances (the collapse toggle is a button labelled by the title).
+    await expect(kb.getFavoriteArticle(parent_name)).toBeVisible();
+    await expect(kb.getFavoriteArticle(child_name)).toBeHidden();
+    await expect(
+        kb.favoritesSection.getByRole('button', { name: parent_name, exact: true }),
+    ).toHaveCount(0);
+
+    // The server-rendered version agrees.
+    await page.reload();
+    await expect(kb.getFavoriteArticle(parent_name)).toBeVisible();
+    await expect(kb.getFavoriteArticle(child_name)).toBeHidden();
+});

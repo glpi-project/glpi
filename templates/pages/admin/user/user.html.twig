@@ -97,6 +97,9 @@
                             {{ fields.textField('firstname', item.fields['firstname'], __('First name'), {
                                 readonly: external_auth,
                             }) }}
+                            {{ fields.textField('middlename', item.fields['middlename'], __('Middle name / Patronymic'), {
+                                readonly: external_auth,
+                            }) }}
 
                             {% if use_timezones %}
                                 {{ fields.dropdownArrayField('timezone', item.fields['timezone'], timezones, __('Timezone'), field_options|merge({

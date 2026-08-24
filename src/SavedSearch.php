@@ -105,7 +105,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_visibility']
                 = "<i class='ti ti-eye-search' aria-hidden='true'></i>" . __s('Change visibility');
         }
-        if (Session::haveRight('transfer', READ)) {
+        if (Session::haveRight(Transfer::$rightname, READ)) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
                      = "<i class='ti ti-corner-right-up' aria-hidden='true'></i>" . __s('Change entity');
         }
@@ -266,7 +266,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     {
 
         if ($this->fields['is_private'] == 1) {
-            return (Session::haveRight('config', UPDATE)
+            return (Session::haveRight(Config::$rightname, UPDATE)
                  || $this->fields['users_id'] == Session::getLoginUserID());
         }
         return parent::canCreateItem();
@@ -281,7 +281,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     public function canViewItem(): bool
     {
         if ($this->fields['is_private'] == 1) {
-            return (Session::haveRight('config', READ)
+            return (Session::haveRight(Config::$rightname, READ)
                  || $this->fields['users_id'] == Session::getLoginUserID());
         }
         return parent::canViewItem();
@@ -667,7 +667,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     {
         global $DB;
 
-        if (Session::haveRight('config', UPDATE)) {
+        if (Session::haveRight(Config::$rightname, UPDATE)) {
             return $DB->delete(
                 'glpi_savedsearches_users',
                 [
@@ -1216,7 +1216,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      */
     public static function getVisibilityCriteria(bool $forceall = false): array
     {
-        if (Session::haveRight('config', UPDATE)) {
+        if (Session::haveRight(Config::$rightname, UPDATE)) {
             return ['WHERE' => []];
         }
 

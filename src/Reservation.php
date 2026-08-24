@@ -60,7 +60,7 @@ class Reservation extends CommonDBChild
     {
         if (
             !$withtemplate
-            && Session::haveRight("reservation", READ)
+            && Session::haveRight(Reservation::$rightname, READ)
         ) {
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::class);
         }
@@ -86,7 +86,7 @@ class Reservation extends CommonDBChild
         if (
             isset($this->fields["users_id"])
             && (($this->fields["users_id"] === Session::getLoginUserID())
-              || Session::haveRight("reservation", PURGE))
+              || Session::haveRight(Reservation::$rightname, PURGE))
         ) {
             // Processing Email
             if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
@@ -520,7 +520,7 @@ class Reservation extends CommonDBChild
     {
         global $CFG_GLPI;
 
-        if (!Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
+        if (!Session::haveRightsOr(Reservation::$rightname, [READ, ReservationItem::RESERVEANITEM])) {
             return;
         }
 
@@ -567,7 +567,7 @@ class Reservation extends CommonDBChild
         echo "</div>"; // .reservation_panel
 
         $can_reserve = (
-            Session::haveRight("reservation", ReservationItem::RESERVEANITEM)
+            Session::haveRight(Reservation::$rightname, ReservationItem::RESERVEANITEM)
             && count(self::getReservableItemtypes()) > 0
         );
 
@@ -612,9 +612,9 @@ HTML;
         $res_table   = static::getTable();
         $res_i_table = ReservationItem::getTable();
 
-        $can_read    = Session::haveRight("reservation", READ);
-        $can_edit    = Session::getCurrentInterface() === "central" && Session::haveRight("reservation", UPDATE);
-        $can_reserve = Session::haveRight("reservation", ReservationItem::RESERVEANITEM);
+        $can_read    = Session::haveRight(Reservation::$rightname, READ);
+        $can_edit    = Session::getCurrentInterface() === "central" && Session::haveRight(Reservation::$rightname, UPDATE);
+        $can_reserve = Session::haveRight(Reservation::$rightname, ReservationItem::RESERVEANITEM);
 
         $user = new User();
 
@@ -843,7 +843,7 @@ HTML;
         $resa->fields["users_id_friendlyname"] = User::getFriendlyNameById($uid);
 
         $entities_id  = (isset($item)) ? $item->getEntityID() : Session::getActiveEntity();
-        $canedit = Session::haveRight("reservation", UPDATE) && Session::haveAccessToEntity($entities_id);
+        $canedit = Session::haveRight(Reservation::$rightname, UPDATE) && Session::haveAccessToEntity($entities_id);
 
         $default_delay = floor((strtotime($resa->fields["end"]) - strtotime($resa->fields["begin"]))
                              / $CFG_GLPI['time_step'] / MINUTE_TIMESTAMP)
@@ -1001,7 +1001,7 @@ HTML;
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        if (!Session::haveRight("reservation", READ)) {
+        if (!Session::haveRight(Reservation::$rightname, READ)) {
             return;
         }
 
@@ -1032,7 +1032,7 @@ HTML;
         $default_date = jsescape($default_date);
 
         $can_reserve_js =  (
-            Session::haveRight("reservation", ReservationItem::RESERVEANITEM)
+            Session::haveRight(Reservation::$rightname, ReservationItem::RESERVEANITEM)
             && count(self::getReservableItemtypes()) > 0
         ) ? "true" : "false";
         $now = jsescape($_SESSION["glpi_currenttime"]);
@@ -1229,7 +1229,7 @@ HTML;
      **/
     public static function showForUser($ID)
     {
-        if (!Session::haveRight("reservation", READ)) {
+        if (!Session::haveRight(Reservation::$rightname, READ)) {
             return;
         }
 

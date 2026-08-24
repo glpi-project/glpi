@@ -57,7 +57,7 @@ class Preference extends CommonGLPI
         $ong = [];
         $this->addStandardTab(User::class, $ong, $options);
         $this->addStandardTab(self::class, $ong, $options);
-        if (Session::haveRightsOr('personalization', [READ, UPDATE])) {
+        if (Session::haveRightsOr(Profile::HELPDESK_RIGHT_PERSONALIZATION, [READ, UPDATE])) {
             $this->addStandardTab(Config::class, $ong, $options);
         }
         $this->addStandardTab(ValidatorSubstitute::class, $ong, $options);

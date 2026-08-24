@@ -61,6 +61,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     /** @use Clonable<static> */
     use Clonable;
 
+    public const HELPDESK_RIGHT_PASSWORD_UPDATE = 'password_update';
+    public const HELPDESK_RIGHT_PERSONALIZATION = 'personalization';
+    public const HELPDESK_RIGHT_SHOW_GROUP_HARDWARE = 'show_group_hardware';
+
     // Specific ones
 
     /**
@@ -74,13 +78,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         'helpdesk_hardware',
         'helpdesk_item_type',
         'knowbase',
-        'password_update',
-        'personalization',
+        self::HELPDESK_RIGHT_PASSWORD_UPDATE,
+        self::HELPDESK_RIGHT_PERSONALIZATION,
         'problemtemplates_id',
         'reminder_public',
         'reservation',
         'rssfeed_public',
-        'show_group_hardware',
+        self::HELPDESK_RIGHT_SHOW_GROUP_HARDWARE,
         'use_mentions',
         'task',
         'ticket',

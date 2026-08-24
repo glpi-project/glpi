@@ -709,6 +709,14 @@ abstract class AbstractPluginMigration
     }
 
     /**
+     * Add a message to the result object.
+     */
+    final public function addMessageToResult(MessageType $type, string $message): void
+    {
+        $this->result->addMessage($type, $message);
+    }
+
+    /**
      * Add the session messages from the session to the result object.
      * Transfered messages will be removed from the session, to prevent output duplicates.
      */

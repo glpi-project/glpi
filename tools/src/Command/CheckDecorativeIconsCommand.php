@@ -39,11 +39,18 @@ use Override;
 use RecursiveCallbackFilterIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Safe\Exceptions\FilesystemException;
 use SplFileInfo;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+
+use function Safe\file_get_contents;
+use function Safe\file_put_contents;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
 
 /**
  * Icon fonts expose their glyph through a CSS `::before { content: "\eXXX" }` rule. The accessible
@@ -156,9 +163,7 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
         $failed_files = [];
 
         foreach ($this->getFilesToParse($directories) as $filename) {
-            if (($contents = file_get_contents($filename)) === false) {
-                throw new \RuntimeException(sprintf('Unable to read file "%s".', $filename));
-            }
+            $contents = file_get_contents($filename);
 
             $icons = $this->findIconsToReport($contents);
             if ($icons === []) {
@@ -195,8 +200,12 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
             }
 
             $updated = $this->addAriaHidden($contents, $icons);
-            if ($updated !== $contents && file_put_contents($filename, $updated) === false) {
-                $failed_files[] = $relative_path;
+            if ($updated !== $contents) {
+                try {
+                    file_put_contents($filename, $updated);
+                } catch (FilesystemException) {
+                    $failed_files[] = $relative_path;
+                }
             }
         }
 
@@ -306,13 +315,13 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
      */
     private function flatten(string $tag): string
     {
-        return trim((string) preg_replace('/\s+/', ' ', $tag));
+        return trim(preg_replace('/\s+/', ' ', $tag));
     }
 
     /**
      * Print full review summary
      *
-     * @param list<string> $shown_categories
+     * @param list<string>                $shown_categories
      * @param array<string, list<string>> $review
      */
     private function reportReviewSummary(array $shown_categories, array $review): void
@@ -440,7 +449,8 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
         $window_start = max(0, $before - 2000);
         $window = substr($contents, $window_start, $before - $window_start);
 
-        if (preg_match_all('/<' . $tag_name . '\b(?<attrs>[^>]*)>/i', $window, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER) === 0) {
+        preg_match_all('/<' . $tag_name . '\b(?<attrs>[^>]*)>/i', $window, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
+        if (empty($matches)) {
             return null;
         }
 
@@ -457,7 +467,8 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
 
     private function hasIconClass(string $attrs): bool
     {
-        if (preg_match('/\bclass\s*=\s*(?<quote>["\'])(?<value>.*?)\g{quote}/is', $attrs, $matches) !== 1) {
+        preg_match('/\bclass\s*=\s*(?<quote>["\'])(?<value>.*?)\g{quote}/is', $attrs, $matches);
+        if (!isset($matches['value'])) {
             return false;
         }
 
@@ -479,8 +490,9 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
             return 'interactive';
         }
 
+        preg_match('/\bclass\s*=\s*(?<quote>["\'])(?<value>.*?)\g{quote}/is', $attrs, $matches);
         if (
-            preg_match('/\bclass\s*=\s*(?<quote>["\'])(?<value>.*?)\g{quote}/is', $attrs, $matches) === 1
+            isset($matches['value'])
             && preg_match('/\b(?:btn|pointer|cursor-pointer)\b/', $matches['value']) === 1
         ) {
             return 'styled-as-control';
@@ -513,7 +525,8 @@ final class CheckDecorativeIconsCommand extends AbstractCommand
             $tag = $icon['tag'];
             // Reuse the quoting style already used in the tag: the markup often lives inside a PHP
             // or JS string literal, and the wrong quote would break it.
-            $quote = preg_match('/=\s*(?<quote>["\'])/', $tag, $matches) === 1 ? $matches['quote'] : '"';
+            preg_match('/=\s*(?<quote>["\'])/', $tag, $matches);
+            $quote = $matches['quote'] ?? '"';
 
             // Insert right after the last attribute, i.e. before the closing `>` and the `/` of a
             // self closing tag.

@@ -324,7 +324,7 @@ class Entity extends CommonTreeDropdown implements
     public static function canUpdate(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [UPDATE, self::UPDATEHELPDESK])
-              || Session::haveRight('notification', UPDATE));
+              || Session::haveRight(Notification::$rightname, UPDATE));
     }
 
     public function canUpdateItem(): bool

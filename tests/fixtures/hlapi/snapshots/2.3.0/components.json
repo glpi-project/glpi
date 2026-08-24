@@ -25351,6 +25351,9 @@
                 "firstname": {
                     "type": "string"
                 },
+                "middlename": {
+                    "type": "string"
+                },
                 "phone": {
                     "type": "string"
                 },

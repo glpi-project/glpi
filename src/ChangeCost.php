@@ -47,18 +47,18 @@ class ChangeCost extends CommonITILCost
 
     public static function canCreate(): bool
     {
-        return Session::haveRight('change', UPDATE);
+        return Session::haveRight(Change::$rightname, UPDATE);
     }
 
 
     public static function canView(): bool
     {
-        return Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
+        return Session::haveRightsOr(Change::$rightname, [Change::READALL, Change::READMY]);
     }
 
 
     public static function canUpdate(): bool
     {
-        return Session::haveRight('change', UPDATE);
+        return Session::haveRight(Change::$rightname, UPDATE);
     }
 }

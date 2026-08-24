@@ -38,7 +38,6 @@ use Budget;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use KnowbaseItem;
-use KnowbaseItem_KnowbaseItem;
 use KnowbaseItemTranslation;
 use Project;
 use Ticket;
@@ -194,23 +193,22 @@ class KnowbaseControllerTest extends HLAPITestCase
         $this->loginWeb();
 
         $entity = $this->getTestRootEntity(true);
+
+        // Chained at creation time: adding the links afterwards would leave each
+        // article with a second parent, the root article every parentless
+        // creation is attached to.
         $articles = [];
+        $parent_id = 0;
         foreach (['root', 'middle', 'leaf'] as $name) {
             $articles[$name] = $this->createItem(KnowbaseItem::class, [
                 'name' => '_kbcategory_' . $name,
                 'answer' => $name,
                 'entities_id' => $entity,
                 'is_recursive' => 1,
+                '_parents' => $parent_id > 0 ? [$parent_id] : [],
             ]);
+            $parent_id = $articles[$name]->getID();
         }
-        $this->createItem(KnowbaseItem_KnowbaseItem::class, [
-            'knowbaseitems_id' => $articles['middle']->getID(),
-            'knowbaseitems_id_parent' => $articles['root']->getID(),
-        ]);
-        $this->createItem(KnowbaseItem_KnowbaseItem::class, [
-            'knowbaseitems_id' => $articles['leaf']->getID(),
-            'knowbaseitems_id_parent' => $articles['middle']->getID(),
-        ]);
 
         $this->login();
 
@@ -226,15 +224,17 @@ class KnowbaseControllerTest extends HLAPITestCase
                     $this->assertArrayHasKey($articles['root']->getID(), $categories);
                     $this->assertArrayHasKey($articles['middle']->getID(), $categories);
 
+                    // Every article hangs under the root article, which is thus
+                    // the first level of the deprecated category tree.
                     $root = $categories[$articles['root']->getID()];
-                    $this->assertEquals('_kbcategory_root', $root['completename']);
-                    $this->assertEquals(1, $root['level']);
-                    $this->assertNull($root['parent']);
+                    $this->assertEquals('Home > _kbcategory_root', $root['completename']);
+                    $this->assertEquals(2, $root['level']);
+                    $this->assertEquals(KnowbaseItem::getRootId(), $root['parent']['id']);
                     $this->assertEquals('', $root['comment']);
 
                     $middle = $categories[$articles['middle']->getID()];
-                    $this->assertEquals('_kbcategory_root > _kbcategory_middle', $middle['completename']);
-                    $this->assertEquals(2, $middle['level']);
+                    $this->assertEquals('Home > _kbcategory_root > _kbcategory_middle', $middle['completename']);
+                    $this->assertEquals(3, $middle['level']);
                     $this->assertEquals($articles['root']->getID(), $middle['parent']['id']);
                     $this->assertEquals('_kbcategory_root', $middle['parent']['name']);
                 });
@@ -245,8 +245,8 @@ class KnowbaseControllerTest extends HLAPITestCase
                 ->isOK()
                 ->jsonContent(function ($content) use ($articles) {
                     $this->assertEquals('_kbcategory_middle', $content['name']);
-                    $this->assertEquals('_kbcategory_root > _kbcategory_middle', $content['completename']);
-                    $this->assertEquals(2, $content['level']);
+                    $this->assertEquals('Home > _kbcategory_root > _kbcategory_middle', $content['completename']);
+                    $this->assertEquals(3, $content['level']);
                     $this->assertEquals($articles['root']->getID(), $content['parent']['id']);
                 });
         });

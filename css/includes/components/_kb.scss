@@ -135,6 +135,11 @@
     }
 }
 
+body.in_modal .kb-article {
+    max-height: none;
+    overflow: visible;
+}
+
 .kb-article {
     position: relative;
     max-height: calc(100vh - 150px);
@@ -184,6 +189,24 @@
         a {
             color: var(--tblr-dark);
         }
+    }
+}
+
+// Sub-articles tab: one navigation row per child article
+.kb-child-articles {
+    .kb-child-article {
+        padding: 0.25rem 0;
+
+        // No color here: it would override the anchor's text-hover-link
+        a:hover .text-truncate {
+            text-decoration: underline;
+        }
+    }
+
+    // Fixed slot so titles stay aligned whether or not the child has an illustration
+    .kb-child-article-icon {
+        flex: 0 0 20px;
+        height: 20px;
     }
 }
 
@@ -371,6 +394,12 @@
         border-bottom-right-radius: var(--tblr-border-radius) !important;
         border-bottom-width: 1px !important;
     }
+}
+
+// Reserve the height that the editor will take once tiptap is mounted, which
+// happens asynchronously. Prevent some height issues on chrome based browsers.
+body.in_modal .kb-editor-reserved {
+    min-height: 200px;
 }
 
 // Tiptap Editor styles for KB articles

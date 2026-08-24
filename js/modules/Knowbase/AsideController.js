@@ -294,31 +294,25 @@ export class GlpiKnowbaseAsideController
 
     #initCreateArticle()
     {
-        // The links are rendered with pe-none so a click cannot fall through to
-        // their plain href before the listener below exists.
-        for (const add_link of this.#aside.querySelectorAll('[data-glpi-kb-aside-category-add]')) {
-            add_link.classList.remove('pe-none');
-        }
-
         this.#aside.addEventListener('click', (e) => {
-            const add_link = e.target.closest('[data-glpi-kb-aside-category-add]');
-            if (!add_link) {
+            const add_button = e.target.closest('[data-glpi-kb-aside-category-add]');
+            if (!add_button) {
                 return;
             }
             e.preventDefault();
-            this.#openCreateInput(add_link);
+            this.#openCreateInput(add_button);
         });
     }
 
     /**
-     * @param {HTMLElement} add_link
+     * @param {HTMLElement} add_button
      */
-    #openCreateInput(add_link)
+    #openCreateInput(add_button)
     {
-        const header = add_link.closest('[data-glpi-kb-aside-category-header]');
+        const header = add_button.closest('[data-glpi-kb-aside-category-header]');
         const node = header.closest('[data-glpi-kb-aside-category]');
         const list = node.querySelector(':scope > ul');
-        const parent_id = Number(new URL(add_link.href).searchParams.get('knowbaseitems_id_parent')) || 0;
+        const parent_id = Number(add_button.dataset.glpiKbAsideCategoryAdd) || 0;
 
         // The list is hidden while the node is collapsed, so the input below
         // would be inserted into a `display: none` subtree: invisible, and
@@ -685,9 +679,7 @@ export class GlpiKnowbaseAsideController
             return;
         }
 
-        const selector = `[data-glpi-kb-article-id="${CSS.escape(id)}"] `
-            + `[data-glpi-kb-actions-menu]:not([data-glpi-kb-actions-loaded])`;
-        if (this.#aside.querySelector(selector) === null) {
+        if (this.#findEmptyMenus(id).length === 0) {
             return; // Nothing left to populate for this id.
         }
 
@@ -700,10 +692,26 @@ export class GlpiKnowbaseAsideController
             return;
         }
 
-        for (const menu of this.#aside.querySelectorAll(selector)) {
+        for (const menu of this.#findEmptyMenus(id)) {
             menu.innerHTML = html;
             menu.setAttribute('data-glpi-kb-actions-loaded', '');
         }
+    }
+
+    /**
+     * @param {number} id
+     * @returns {HTMLElement[]}
+     */
+    #findEmptyMenus(id)
+    {
+        const menus = this.#aside.querySelectorAll(
+            `[data-glpi-kb-article-id="${CSS.escape(id)}"] `
+            + `[data-glpi-kb-actions-menu]:not([data-glpi-kb-actions-loaded])`,
+        );
+
+        return Array.from(menus).filter(
+            (menu) => menu.closest('[data-glpi-kb-article-id]')?.dataset.glpiKbArticleId === String(id),
+        );
     }
 
     /**
@@ -909,6 +917,7 @@ export class GlpiKnowbaseAsideController
                     const clone = source.cloneNode(true);
                     clone.classList.add('mb-2');
                     clone.removeAttribute('data-glpi-kb-search-hidden');
+                    this.#flattenClonedFavorite(clone);
                     // The source row's dots menu is still open (the user just
                     // clicked a toggle inside it); close it in the clone.
                     this.#resetClonedDropdown(clone);
@@ -924,6 +933,36 @@ export class GlpiKnowbaseAsideController
         }
 
         this.#refreshFavoritesVisibility(favorites);
+    }
+
+    /**
+     * @param {HTMLElement} clone
+     */
+    #flattenClonedFavorite(clone)
+    {
+        for (const children of clone.querySelectorAll(':scope > ul')) {
+            children.remove();
+        }
+
+        for (const affordance of clone.querySelectorAll(
+            '[data-glpi-kb-aside-category-toggle], [data-glpi-kb-aside-category-add]',
+        )) {
+            affordance.remove();
+        }
+
+        clone.classList.remove('node');
+        clone.removeAttribute('data-glpi-kb-aside-category');
+        clone.removeAttribute('data-glpi-kb-aside-category-collapsed');
+        // Node rows are groups labelled by their title; a flat entry is a plain
+        // list item again.
+        clone.removeAttribute('role');
+        clone.removeAttribute('aria-label');
+
+        const line = clone.querySelector(':scope > .article-line');
+        if (line) {
+            line.removeAttribute('data-glpi-kb-aside-category-header');
+            line.classList.remove('mb-2');
+        }
     }
 
     /**

@@ -130,8 +130,8 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     public static function canCreate(): bool
     {
         // Have right to add document OR ticket followup
-        return (Session::haveRight('document', CREATE)
-              || Session::haveRight('followup', ITILFollowup::ADDMY));
+        return (Session::haveRight(Document::$rightname, CREATE)
+              || Session::haveRight(ITILFollowup::$rightname, ITILFollowup::ADDMY));
     }
 
     public function canCreateItem(): bool
@@ -1340,7 +1340,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         if (empty($dir)) {
             $message = __s('Unauthorized file type');
 
-            if (Session::haveRight('dropdown', READ)) {
+            if (Session::haveRight(DocumentType::$rightname, READ)) {
                 $message .= " <a target='_blank' href='" . htmlescape(DocumentType::getSearchURL()) . "' class='pointer'>
                          <i class='fa fa-info'</i><span class='visually-hidden'>" . __s('Manage document types') . "</span></a>";
             }

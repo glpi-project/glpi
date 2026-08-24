@@ -70,7 +70,7 @@ final class AddCommentController extends AbstractController
 
         // Parse content
         $content = $data['content'] ?? '';
-        if (empty($content)) {
+        if ($content === "") {
             throw new BadRequestHttpException();
         }
 

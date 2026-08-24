@@ -743,7 +743,7 @@ class NetworkPort extends CommonDBChild
 
         $search_config_top    = '';
         if (
-            Session::haveRightsOr('search_config', [
+            Session::haveRightsOr(DisplayPreference::$rightname, [
                 DisplayPreference::PERSONAL,
                 DisplayPreference::GENERAL,
             ])

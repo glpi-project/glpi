@@ -86,6 +86,17 @@ final class KnowbaseItem_KnowbaseItem extends CommonDBRelation
             return false;
         }
 
+        // The root article is the base of the knowledge base tree, it cannot be
+        // moved under another article.
+        if (KnowbaseItem::isRootId($child_id)) {
+            Session::addMessageAfterRedirect(
+                __s('The root article of the knowledge base cannot have a parent.'),
+                false,
+                ERROR,
+            );
+            return false;
+        }
+
         // Reject if $child is an ancestor of $parent
         if (self::isAncestor($child_id, $parent_id)) {
             Session::addMessageAfterRedirect(

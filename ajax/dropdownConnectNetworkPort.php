@@ -44,7 +44,7 @@ global $DB;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight("networking", UPDATE);
+Session::checkRight(NetworkPort::$rightname, UPDATE);
 
 // Make a select box
 if (

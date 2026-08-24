@@ -82,7 +82,7 @@ class Domain_Item extends CommonDBRelation
 
         if (
             $item instanceof DomainRelation || (in_array($item::class, Domain::getTypes(true), true)
-                && Session::haveRight('domain', READ))
+                && Session::haveRight(Domain::$rightname, READ))
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -475,7 +475,7 @@ TWIG, $twig_params);
     {
         global $DB;
 
-        if ($item->isNewItem() || !Session::haveRight('domain', READ)) {
+        if ($item->isNewItem() || !Session::haveRight(Domain::$rightname, READ)) {
             return false;
         }
 

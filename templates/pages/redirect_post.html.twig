@@ -50,7 +50,7 @@
 </head>
 <body>
     <form method="{{ http_method }}" action="{{ url }}" id="redirect-form" data-submit-once>
-        {{ _self.render_inputs(post_data, '') }}
+        {{ _self.render_inputs(replay_data, '') }}
     </form>
     <script>document.getElementById('redirect-form').submit();</script>
     <noscript>

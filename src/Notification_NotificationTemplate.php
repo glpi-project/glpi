@@ -316,7 +316,7 @@ TWIG, $twig_params);
     #[Override]
     public function showForm($ID, array $options = [])
     {
-        if (!Session::haveRight("notification", UPDATE)) {
+        if (!Session::haveRight(Notification::$rightname, UPDATE)) {
             return false;
         }
 
