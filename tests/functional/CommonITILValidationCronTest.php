@@ -179,10 +179,7 @@ class CommonITILValidationCronTest extends DbTestCase
 
         $ticket_validation->getFromDB($ticket_validation->getID());
 
-        $ticket->update([
-            'id' => $ticket->getID(),
-            'is_deleted' => 1,
-        ]);
+        $this->updateItem(Ticket::class, $ticket->getID(), ['is_deleted' => 1]);
 
         $crontask = new \CronTask();
         $this->assertTrue($crontask->getFromDBbyName('CommonITILValidationCron', 'approvalreminder'));
