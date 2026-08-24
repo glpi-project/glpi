@@ -116,14 +116,15 @@ final class IllustrationManagerTest extends GLPITestCase
         $this->assertSame('', $manager->renderIcon('', 60));
     }
 
-    public function testRenderIconIsHiddenAndUnnamed(): void
+    public function testRenderIconIsHiddenButKeepsTitleForTooltip(): void
     {
         $manager = new IllustrationManager();
 
         $html = $manager->renderIcon('report-issue');
 
+        // aria-hidden hides it regardless of the title.
         $this->assertStringContainsString('aria-hidden="true"', $html);
-        $this->assertStringNotContainsString('<title>', $html);
+        $this->assertStringContainsString('<title>Report an issue</title>', $html);
     }
 
     public function testRenderSceneIsHiddenAndUnnamed(): void

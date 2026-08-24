@@ -65,15 +65,30 @@ export class GlpiIllustrationPickerController
      */
     #initial_preview_html;
 
+    /**
+     * Baseline for #selected_title, restored by restore(). Lives outside
+     * #initial_preview_html since the status is now a sibling, not a child.
+     * @type {?string}
+     */
+    #initial_title;
+
+    /**
+     * Title of the currently selected native illustration, if any.
+     * @type {?string}
+     */
+    #selected_title;
+
     constructor(container, modal_node, custom_icon_prefix)
     {
         this.#container = container;
         this.#modal_node = modal_node;
         this.#custom_icon_prefix = custom_icon_prefix;
+        this.#selected_title = this.#getPreviewElement().dataset['glpiIconPickerValuePreviewTitle'] || null;
         this.#initEventListeners();
 
         this.#initial_value = this.#getSelectedIllustrationsInput().value;
         this.#initial_preview_html = this.#getPreviewElement().innerHTML;
+        this.#initial_title = this.#selected_title;
 
         container.glpiIllustrationPicker = this;
         container.dispatchEvent(new CustomEvent('glpi:illustration-picker:ready', {
@@ -105,6 +120,9 @@ export class GlpiIllustrationPickerController
             preview.removeAttribute('data-bs-target');
             preview.setAttribute('aria-disabled', 'true');
         }
+
+        // Re-apply now that the role changed.
+        this.#setPreviewStatus(this.#selected_title);
     }
 
     /**
@@ -122,6 +140,7 @@ export class GlpiIllustrationPickerController
     {
         this.#initial_value = this.#getSelectedIllustrationsInput().value;
         this.#initial_preview_html = this.#getPreviewElement().innerHTML;
+        this.#initial_title = this.#selected_title;
     }
 
     /**
@@ -131,6 +150,7 @@ export class GlpiIllustrationPickerController
     {
         this.#getSelectedIllustrationsInput().value = this.#initial_value;
         this.#getPreviewElement().innerHTML = this.#initial_preview_html;
+        this.#setPreviewStatus(this.#initial_title);
     }
 
     #getPreviewElement()
@@ -253,30 +273,35 @@ export class GlpiIllustrationPickerController
     }
 
     /**
-     * Names the currently selected illustration for assistive technologies,
-     * independently of the (always hidden) svg illustration and of the
-     * trigger button's own, unrelated, "Select an illustration" label.
+     * Names the currently selected illustration, as a sibling of the
+     * trigger referenced via aria-describedby (a descendant would be
+     * pruned by the trigger's own role="button" name computation).
      *
      * @param {?string} title
      */
     #setPreviewStatus(title)
     {
-        const preview = this.#getPreviewElement();
-        let status = preview.querySelector('[data-glpi-icon-picker-value-preview-status]');
+        this.#selected_title = title;
 
-        if (!title) {
+        const preview = this.#getPreviewElement();
+        let status = this.#container.querySelector('[data-glpi-icon-picker-value-preview-status]');
+
+        if (!title || preview.getAttribute('role') !== 'button') {
             status?.remove();
+            preview.removeAttribute('aria-describedby');
             return;
         }
 
         if (status === null) {
             status = document.createElement('span');
+            status.id = `${this.#container.id}-status`;
             status.className = 'visually-hidden';
             status.setAttribute('role', 'img');
             status.setAttribute('data-glpi-icon-picker-value-preview-status', '');
-            preview.prepend(status);
+            preview.insertAdjacentElement('afterend', status);
         }
         status.setAttribute('aria-label', title);
+        preview.setAttribute('aria-describedby', status.id);
     }
 
     #getNativePreviewSlot()

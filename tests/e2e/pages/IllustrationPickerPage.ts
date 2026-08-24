@@ -90,6 +90,10 @@ export class IllustrationPickerPage extends GlpiPage
         await expect(this.picker_modal).toHaveAttribute('data-cy-shown', 'false');
     }
 
+    /**
+     * The svg illustration is always aria-hidden; this matches the
+     * accessibility-only status span carrying the selected illustration's name.
+     */
     public getIllustration(name: string): Locator
     {
         return this.page.getByRole('img', { name });

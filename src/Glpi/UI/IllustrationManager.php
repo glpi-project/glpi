@@ -350,6 +350,7 @@ final class IllustrationManager
             'icon_id'   => $icon_id,
             'width'     => $size,
             'height'    => $size,
+            'title'     => $this->getIconTitle($icon_id),
         ]);
     }
 
