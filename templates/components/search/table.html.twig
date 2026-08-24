@@ -113,12 +113,12 @@
                   <td colspan="{{ data['data']['cols']|length }}">
                      {% if search_error %}
                          <twig:Alert:Danger
-                             :title="__('An error occurred during the search')"
-                             :message="__('Consider changing the search criteria or adjusting the displayed columns.')"
+                             :heading="__('An error occurred during the search')"
+                             :content="__('Consider changing the search criteria or adjusting the displayed columns.')"
                          />
                      {% else %}
                          <twig:Alert
-                             :message="__('No results found')"
+                             :content="__('No results found')"
                          />
                      {% endif %}
                   </td>

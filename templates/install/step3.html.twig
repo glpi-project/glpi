@@ -35,8 +35,8 @@
 {% if host|length == 0 or user|length == 0 or link.connect_error %}
 
     <twig:Alert:Danger
-        :title="__('Can\'t connect to the database')"
-        :message="__('The server answered: %s')|format(link.connect_error)"
+        :heading="__('Can\'t connect to the database')"
+        :content="__('The server answered: %s')|format(link.connect_error)"
     />
 
    <form action="install.php" method="post" class="d-inline" data-submit-once>
@@ -50,20 +50,20 @@
    </form>
 {% else %}
     <twig:Alert:Success
-        :message="__('Database connection successful')"
+        :content="__('Database connection successful')"
     />
 
    {% if not engine_requirement.isValidated() %}
        <twig:Alert:Danger
-           :title="__('Database engine is not supported.')"
-           :message="engine_requirement.getValidationMessages()"
+           :heading="__('Database engine is not supported.')"
+           :content="engine_requirement.getValidationMessages()"
        />
    {% endif %}
 
    {% if not config_requirement.isValidated() %}
        <twig:Alert:Danger
-           :title="__('Database configuration is not supported.')"
-           :message="config_requirement.getValidationMessages()"
+           :heading="__('Database configuration is not supported.')"
+           :content="config_requirement.getValidationMessages()"
        />
    {% endif %}
 

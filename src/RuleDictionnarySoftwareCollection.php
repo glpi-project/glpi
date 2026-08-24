@@ -83,8 +83,8 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
                 <div class="card">
                     <div class="card-body">
                         <twig:Alert:Warning
-                            :title="warning_title"
-                            :message="warning_message"
+                            :heading="warning_title"
+                            :content="warning_message"
                         />
                         <div>
                             {{ fields.dropdownField('Manufacturer', 'manufacturer', 0, manufacturer_label, {
