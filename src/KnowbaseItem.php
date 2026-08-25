@@ -1859,7 +1859,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
     public function getLastUpdateInfo(): LastUpdateInfo
     {
-        $history = (new HistoryBuilder($this))->buildHistory();
+        // Only the most recent event is needed here: building the whole history
+        // of an article that has been updated for years would cost hundreds of
+        // milliseconds on every display.
+        $history = (new HistoryBuilder($this))->buildHistory(limit: 1);
         $event = $history->getLatestEvent();
 
         $author = User::getById($event->getAuthor()) ?: null;

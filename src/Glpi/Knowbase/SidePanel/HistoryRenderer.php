@@ -79,9 +79,11 @@ final class HistoryRenderer implements RendererInterface
      */
     public function getPageParams(KnowbaseItem $item, int $offset): array
     {
-        // Build revisions list
-        $history = (new HistoryBuilder($item))->buildHistory();
         $next_offset = $offset + self::PAGE_SIZE;
+
+        // Build revisions list. Only the events up to the requested page are
+        // needed, plus one to know whether there is a page after this one.
+        $history = (new HistoryBuilder($item))->buildHistory($next_offset + 1);
 
         return [
             'id' => $item->getID(),
@@ -91,7 +93,7 @@ final class HistoryRenderer implements RendererInterface
             // Only the very first event of the history is highlighted as being
             // the one currently displayed.
             'first_page' => $offset === 0,
-            'next_offset' => $next_offset < $history->count() ? $next_offset : null,
+            'next_offset' => $history->count() > $next_offset ? $next_offset : null,
         ];
     }
 }

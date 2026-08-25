@@ -51,14 +51,28 @@ final class HistoryBuilder
 {
     private HistoryEventList $history;
 
+    /**
+     * Maximum number of events read from each source, `null` for all of them.
+     * @see self::buildHistory()
+     */
+    private ?int $limit = null;
+
     public function __construct(
         private KnowbaseItem $kb,
     ) {
         $this->history = new HistoryEventList();
     }
 
-    public function buildHistory(): HistoryEventList
+    /**
+     * @param int|null $limit Number of events to build, the most recent ones.
+     */
+    public function buildHistory(?int $limit = null): HistoryEventList
     {
+        // Every source is read newest first and limited to $limit rows: the
+        // $limit most recent events of the whole history cannot hold more than
+        // $limit events coming from a single source.
+        $this->limit = $limit;
+
         $this->addCurrentVersionToHistory();
         $this->addCurrentTranslationsToHistory();
         $this->addRevisionsToHistory();
@@ -74,6 +88,13 @@ final class HistoryBuilder
         $this->addIllustrationChangesToHistory();
 
         $this->history->sort();
+
+        if ($this->limit !== null) {
+            // Each source was limited on its own, so the merged list may hold
+            // more events than asked for.
+            $this->history = $this->history->slice(0, $this->limit);
+        }
+
         return $this->history;
     }
 
@@ -94,21 +115,24 @@ final class HistoryBuilder
                 'knowbaseitems_id' => $this->kb->getID(),
                 'language' => '',
             ],
-            'ORDER' => ['revision DESC'],
+            // Several revisions may share the same date, the revision number
+            // then keeps the newest one first.
+            'ORDER' => ['date DESC', 'revision DESC'],
+            'LIMIT' => $this->limit,
         ]);
 
-        $total = \count($result);
-        $current = $total;
-
         foreach ($result as $row) {
+            // The displayed version number is the revision number itself:
+            // `KnowbaseItem_Revision::getNewRevision()` numbers them from 1
+            // without any hole, as reverting an article creates a new revision
+            // instead of removing one, and revisions are only deleted with the
+            // article they belong to.
             $this->history->addEvent(new RevisionEvent(
                 id: $row['id'],
-                index: $current,
+                index: (int) $row['revision'],
                 date: $row['date'],
                 author_id: (int) $row['users_id'],
             ));
-
-            $current--;
         }
     }
 
@@ -132,33 +156,23 @@ final class HistoryBuilder
                 'knowbaseitems_id' => $this->kb->getID(),
                 ['NOT' => ['language' => '']],
             ],
-            'ORDER' => ['language ASC', 'revision DESC'],
+            // Revisions of different translations may share the same date, they
+            // are then grouped by language, newest first.
+            'ORDER' => ['date DESC', 'language ASC', 'revision DESC'],
+            'LIMIT' => $this->limit,
         ]);
 
-        // Group revisions by language, this is needed so we can compute the
-        // revision index compared to others revisions from the same language
-        // only.
-        $by_language = [];
         foreach ($result as $row) {
-            $by_language[$row['language']][] = $row;
-        }
-
-        // Insert events into the history.
-        foreach ($by_language as $language => $rows) {
-            $total = \count($rows);
-            $current = $total;
-
-            foreach ($rows as $row) {
-                $this->history->addEvent(new TranslationRevisionEvent(
-                    id: $row['id'],
-                    index: $current,
-                    date: $row['date'],
-                    author_id: (int) $row['users_id'],
-                    language: $language,
-                ));
-
-                $current--;
-            }
+            // Revisions are numbered per language, so the revision number is
+            // also the version number displayed for that language.
+            // @see self::addRevisionsToHistory()
+            $this->history->addEvent(new TranslationRevisionEvent(
+                id: $row['id'],
+                index: (int) $row['revision'],
+                date: $row['date'],
+                author_id: (int) $row['users_id'],
+                language: $row['language'],
+            ));
         }
     }
 
@@ -180,6 +194,9 @@ final class HistoryBuilder
                 'linked_action'    => 0, // Update
                 'id_search_option' => 7, // Content
             ],
+            // The current version is the last content update that was written,
+            // whatever its date is, and it is the only one that is displayed:
+            // neither the order nor the limit depend on $this->limit here.
             'LIMIT' => 1,
             'ORDER' => 'id DESC',
         ]);
@@ -215,6 +232,8 @@ final class HistoryBuilder
             'WHERE' => [
                 'knowbaseitems_id' => $this->kb->getID(),
             ],
+            'ORDER' => ['date_mod DESC', 'id DESC'],
+            'LIMIT' => $this->limit,
         ]);
 
         foreach ($translations as $translation) {
@@ -246,7 +265,8 @@ final class HistoryBuilder
                 'linked_action' => [Log::HISTORY_ADD_RELATION, Log::HISTORY_DEL_RELATION],
                 'itemtype_link' => $target_types,
             ],
-            'ORDER' => 'id DESC',
+            'ORDER' => ['date_mod DESC', 'id DESC'],
+            'LIMIT' => $this->limit,
         ]);
 
         foreach ($logs as $row) {
@@ -285,7 +305,8 @@ final class HistoryBuilder
                     Log::HISTORY_UPDATE_RELATION,
                 ],
             ],
-            'ORDER' => 'id DESC',
+            'ORDER' => ['date_mod DESC', 'id DESC'],
+            'LIMIT' => $this->limit,
         ]);
 
         foreach ($logs as $row) {
@@ -319,7 +340,8 @@ final class HistoryBuilder
                 'linked_action'    => 0, // Update
                 'id_search_option' => 1, // Name
             ],
-            'ORDER' => 'id DESC',
+            'ORDER' => ['date_mod DESC', 'id DESC'],
+            'LIMIT' => $this->limit,
         ]);
 
         foreach ($logs as $row) {
@@ -351,7 +373,8 @@ final class HistoryBuilder
                 'linked_action'    => 0, // Update
                 'id_search_option' => 8, // is_faq
             ],
-            'ORDER' => 'id DESC',
+            'ORDER' => ['date_mod DESC', 'id DESC'],
+            'LIMIT' => $this->limit,
         ]);
 
         foreach ($logs as $row) {
@@ -402,7 +425,8 @@ final class HistoryBuilder
                     Log::HISTORY_DEL_RELATION,
                 ],
             ],
-            'ORDER' => 'id DESC',
+            'ORDER' => ['date_mod DESC', 'id DESC'],
+            'LIMIT' => $this->limit,
         ]);
 
         foreach ($logs as $row) {
@@ -454,7 +478,8 @@ final class HistoryBuilder
                     Log::HISTORY_DEL_RELATION,
                 ],
             ],
-            'ORDER' => 'id DESC',
+            'ORDER' => ['date_mod DESC', 'id DESC'],
+            'LIMIT' => $this->limit,
         ]);
 
         foreach ($logs as $row) {
@@ -502,7 +527,8 @@ final class HistoryBuilder
                     Log::HISTORY_DEL_RELATION,
                 ],
             ],
-            'ORDER' => 'id DESC',
+            'ORDER' => ['date_mod DESC', 'id DESC'],
+            'LIMIT' => $this->limit,
         ]);
 
         foreach ($logs as $row) {
@@ -546,7 +572,8 @@ final class HistoryBuilder
                 'linked_action'    => 0, // Update
                 'id_search_option' => 88, // illustration
             ],
-            'ORDER' => 'id DESC',
+            'ORDER' => ['date_mod DESC', 'id DESC'],
+            'LIMIT' => $this->limit,
         ]);
 
         foreach ($logs as $row) {
@@ -594,7 +621,8 @@ final class HistoryBuilder
                     87, // forms_categories_id
                 ],
             ],
-            'ORDER' => 'id DESC',
+            'ORDER' => ['date_mod DESC', 'id DESC'],
+            'LIMIT' => $this->limit,
         ]);
 
         foreach ($logs as $row) {
