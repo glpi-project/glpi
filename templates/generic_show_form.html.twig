@@ -68,9 +68,7 @@
 
                           {% if field is same as 'name' %}
                               {{ fields.autoNameField('name', item, (item_type == 'Contact' ? __('Surname') : __('Name')), withtemplate, specific_field_options) }}
-                              {% if call('Tag_Itemtype::isTaggableItemtype', [item_type]) %}
-                                  {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
-                              {% endif %}
+                              {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
                           {% elseif field is same as 'firstname' %}
                               {{ fields.autoNameField('firstname', item, __('First name'), withtemplate, specific_field_options) }}
                           {% elseif field is same as 'template_name' and withtemplate == 1 and no_header %}

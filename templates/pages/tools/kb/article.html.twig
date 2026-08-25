@@ -173,7 +173,7 @@
             </div>
         </div>
 
-        {% if mode == 'edit' and call('Tag_Itemtype::isTaggableItemtype', ['KnowbaseItem']) %}
+        {% if mode == 'edit' %}
             <div class="mb-2">
                 {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
             </div>

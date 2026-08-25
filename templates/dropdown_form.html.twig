@@ -66,9 +66,7 @@
                     withtemplate
                 ) }}
 
-                {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
-                    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
-                {% endif %}
+                {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
 
                 {% if item.isField('comment') %}
                     {{ fields.textareaField(

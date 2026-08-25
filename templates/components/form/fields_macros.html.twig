@@ -660,28 +660,30 @@
 {% endmacro %}
 
 {% macro tagsField(name, item, label = '', options = {}) %}
-    {% set options = {
-        'rand': random(),
-        'width': '100%',
-        'disabled': false,
-    }|merge(options) %}
-    {% if options.fields_template.isMandatoryField(name)|default(false) %}
-        {% set options = {'required': true}|merge(options) %}
+    {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
+        {% set options = {
+            'rand': random(),
+            'width': '100%',
+            'disabled': false,
+        }|merge(options) %}
+        {% if options.fields_template.isMandatoryField(name)|default(false) %}
+            {% set options = {'required': true}|merge(options) %}
+        {% endif %}
+
+        {% if options.fields_template.isReadonlyField(name)|default(false) %}
+            {% set options = options|merge({'readonly': true}) %}
+        {% endif %}
+
+        {% if options.disabled %}
+            {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
+        {% endif %}
+
+        {% set field %}
+            {% do call('Tag::dropdown', [options|merge({'name': name, '_item': item})]) %}
+        {% endset %}
+
+        {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
     {% endif %}
-
-    {% if options.fields_template.isReadonlyField(name)|default(false) %}
-        {% set options = options|merge({'readonly': true}) %}
-    {% endif %}
-
-    {% if options.disabled %}
-        {% set options = options|merge({specific_tags: {'disabled': 'disabled'}}) %}
-    {% endif %}
-
-    {% set field %}
-        {% do call('Tag::dropdown', [options|merge({'name': name, '_item': item})]) %}
-    {% endset %}
-
-    {{ _self.field(name, field, label, options|merge({'id': 'dropdown_' ~ name|replace({'[': '_', ']': '_'}) ~ options.rand})) }}
 {% endmacro %}
 
 {% macro dropdownHoursField(name, value, label = '', options = {}) %}

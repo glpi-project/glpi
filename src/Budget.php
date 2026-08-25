@@ -270,8 +270,6 @@ class Budget extends CommonDropdown
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
-        // Add tags for taggable itemtypes
-        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
     }

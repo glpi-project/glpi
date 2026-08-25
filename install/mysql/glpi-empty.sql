@@ -10635,9 +10635,7 @@ CREATE TABLE `glpi_tags_items` (
   `itemtype` varchar(255) NOT NULL,
   `items_id` int unsigned NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`tags_id`,`itemtype`,`items_id`),
-  KEY `itemtype` (`itemtype`),
-  KEY `items_id` (`items_id`)
+  UNIQUE KEY `unicity` (`itemtype`,`items_id`,`tags_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS=1;

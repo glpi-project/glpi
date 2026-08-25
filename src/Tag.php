@@ -48,7 +48,7 @@ class Tag extends CommonDropdown
 
     /**
      * Get itemtypes that can be tagged with this tag.
-     * 
+     *
      * @param bool $all_if_empty If true and the tag has no restriction in DB, return all taggable itemtypes instead of an empty list.
      *
      * @return list<class-string<CommonDBTM>>
@@ -513,9 +513,9 @@ class Tag extends CommonDropdown
 
     /**
      * Dropdown for tags
-     * 
+     *
      * @param array $options Display options
-     * 
+     *
      * @return string|null
      */
     public static function dropdown($options = [])
@@ -528,8 +528,6 @@ class Tag extends CommonDropdown
             '_itemtype' => [],
         ];
         $options = array_merge($default_options, $options);
-
-        $options['add_data_attributes'] = ['glpi-tag-dropdown-uuid' => $options['rand']];
 
         $item = $options['_item'];
         $itemtype = $options['_itemtype'];
@@ -544,12 +542,22 @@ class Tag extends CommonDropdown
 
         $data = self::getTagsDropdownData($itemtype);
 
+        $add_option_attributes = [];
+        foreach ($data['bg_colors'] as $tag_id => $bg_color) {
+            $add_option_attributes[$tag_id] = [
+                'bg-color'   => $bg_color,
+                'text-color' => $data['text_colors'][$tag_id] ?? '',
+            ];
+        }
+        $options['add_option_attributes'] = $add_option_attributes;
+        $options['templateResult']        = 'templateTagResult';
+        $options['templateSelection']     = 'templateTagSelection';
+
         $twig_params = [
             'data'          => $data,
             'options'       => $options,
             'can_create'    => self::canCreate() && !isset($_REQUEST['_in_modal']),
             'field_id'      => Html::cleanId('dropdown_' . $options['name'] . $options['rand']),
-            'rand'          => $options['rand'],
         ];
 
         if (!$options['display']) {

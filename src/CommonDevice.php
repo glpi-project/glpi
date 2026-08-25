@@ -390,8 +390,6 @@ abstract class CommonDevice extends CommonDropdown
             'searchtype' => 'equals',
         ];
 
-        // Add tags for taggable itemtypes
-        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(static::class));
 
         return $tab;
     }

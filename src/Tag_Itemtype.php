@@ -32,8 +32,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QuerySubQuery;
-
 class Tag_Itemtype extends CommonDBChild
 {
     // From CommonDBChild
@@ -88,46 +86,48 @@ class Tag_Itemtype extends CommonDBChild
     /**
      * Get tags allowed to be attached to items of the given itemtype.
      *
-     * @param string $itemtype
+     * @param class-string<CommonGLPI> $itemtype
      *
-     * @return list<Tag>
+     * @return iterable<Tag>
      */
-    public static function getTagsByItemtype(string $itemtype): array
+    public static function getTagsByItemtype(string $itemtype): iterable
     {
-        $tag = new Tag();
-        $tags = [];
+        global $DB;
 
-        $criteria = [
-            'OR' => [
-                'id' => new QuerySubQuery([
-                    'SELECT' => 'tags_id',
-                    'FROM'   => self::getTable(),
-                    'WHERE'  => ['itemtype' => $itemtype],
-                ]),
-                ['NOT' => [
-                    'id' => new QuerySubQuery([
-                        'SELECT' => 'tags_id',
-                        'FROM'   => self::getTable(),
-                    ]),
-                ]],
-            ],
-            'is_active' => 1,
-        ];
-        $criteria += getEntitiesRestrictCriteria($tag->getTable(), '', '', true);
+        $tag_table = Tag::getTable();
 
-        foreach ($tag->find($criteria) as $tag_data) {
-            $tag = new Tag();
-            $tag->getFromResultSet($tag_data);
-            $tags[] = $tag;
+        if (!Tag_Itemtype::isTaggableItemtype($itemtype)) {
+            return [];
         }
 
-        return $tags;
+        return Tag::getFromIter($DB->request([
+            'SELECT' => [$tag_table . '.id'],
+            'FROM' => Tag::getTable(),
+            'LEFT JOIN' => [
+                self::getTable() => [
+                    'ON' => [
+                        $tag_table => 'id',
+                        self::getTable() => 'tags_id',
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                'is_active' => 1,
+                [
+                    'OR' => [
+                        ['itemtype' => $itemtype],
+                        ['itemtype' => null],
+                    ],
+                ],
+                getEntitiesRestrictCriteria($tag_table, '', '', true),
+            ],
+        ]));
     }
 
     /**
      * Get tags allowed to be attached to items of ALL the given itemtypes (intersection).
      *
-     * @param list<string> $itemtypes
+     * @param list<class-string<CommonGLPI>> $itemtypes
      *
      * @return list<Tag>
      */
@@ -142,15 +142,17 @@ class Tag_Itemtype extends CommonDBChild
         foreach ($itemtypes as $itemtype) {
             $tags_for_itemtype = [];
             foreach (self::getTagsByItemtype($itemtype) as $tag) {
-                $tags_for_itemtype[$tag->getID()] = $tag;
+                $tags_for_itemtype[$tag->getID()] = clone $tag;
             }
 
-            $common_tags = $common_tags === null
-                ? $tags_for_itemtype
-                : array_intersect_key($common_tags, $tags_for_itemtype);
+            if ($common_tags === null) {
+                $common_tags = $tags_for_itemtype;
+            } else {
+                $common_tags = array_intersect_key($common_tags, $tags_for_itemtype);
+            }
         }
 
-        return array_values($common_tags);
+        return $common_tags;
     }
 
     /**

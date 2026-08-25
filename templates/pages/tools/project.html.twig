@@ -55,9 +55,7 @@
     {% endif %}
     {{ fields.autoNameField('name', item, __('Name'), withtemplate, field_options) }}
 
-    {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
-        {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
-    {% endif %}
+    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
 
     {{ fields.textField('code', item.fields['code'], __('Code'), field_options) }}
 

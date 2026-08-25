@@ -259,8 +259,6 @@ class Domain extends CommonDBTM implements AssignableItemInterface
             'name'               => sprintf('%s-%s', Entity::getTypeName(1), __('ID')),
         ];
 
-        // Add tags for taggable itemtypes
-        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(static::class));
 
         return $tab;
     }
