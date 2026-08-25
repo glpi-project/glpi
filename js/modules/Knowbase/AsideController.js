@@ -150,33 +150,39 @@ export class GlpiKnowbaseAsideController
      */
     async #setCollapsed(node, collapsed)
     {
-        node.toggleAttribute('data-glpi-kb-aside-category-collapsed', collapsed);
-
-        // The same article can be rendered twice (original tree + search results)
-        // Update the second node data properties too if found.
         const id = node.dataset.glpiKbArticleId;
-        for (const twin of this.#aside.querySelectorAll(
+
+        // The same article can be rendered more than once: under each of its
+        // parents, and again in the search results while the rendered tree is
+        // kept hidden. They all share one fold state, so every copy gets the
+        // very same treatment.
+        const nodes = id ? this.#aside.querySelectorAll(
             `[data-glpi-kb-aside-category][data-glpi-kb-article-id="${CSS.escape(id)}"]`,
-        )) {
-            if (twin !== node) {
-                twin.toggleAttribute('data-glpi-kb-aside-category-collapsed', collapsed);
+        ) : [node];
+
+        const loading = [];
+        for (const twin of nodes) {
+            twin.toggleAttribute('data-glpi-kb-aside-category-collapsed', collapsed);
+
+            // `:scope >` on the header is required: without it we would reach
+            // the toggle of a nested article instead of this node's own one.
+            const toggle = twin.querySelector(
+                ':scope > [data-glpi-kb-aside-category-header] [data-glpi-kb-aside-category-toggle]'
+            );
+            // A childless node has no toggle to update (it is still collapsible,
+            // so that a child created below lands in a visible list).
+            toggle?.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+
+            if (!collapsed) {
+                // A single fetch feeds them all: `#loadChildren()` caches the
+                // pending request per article id.
+                loading.push(this.#loadChildren(twin));
             }
         }
 
-        // `:scope >` on the header is required: without it we would reach the
-        // toggle of a nested article instead of this node's own one.
-        const toggle = node.querySelector(
-            ':scope > [data-glpi-kb-aside-category-header] [data-glpi-kb-aside-category-toggle]'
-        );
-        // A childless node has no toggle to update (it is still collapsible, so
-        // that a child created below lands in a visible list).
-        toggle?.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        this.#persistArticleFold(id, collapsed);
 
-        this.#persistArticleFold(node.dataset.glpiKbArticleId, collapsed);
-
-        if (!collapsed) {
-            await this.#loadChildren(node);
-        }
+        await Promise.all(loading);
     }
 
     /**
