@@ -71,6 +71,7 @@ use NetworkPort;
 use NetworkPortType;
 use OAuthClient;
 use Override;
+use PDU;
 use Peripheral;
 use Plugin;
 use Printer;
@@ -397,6 +398,7 @@ class Conf extends CommonGLPI
             'import_process'           => Item_Process::getTypeName($plural),
             'import_env'               => Item_Environment::getTypeName($plural),
             'import_unmanaged'         => Unmanaged::getTypeName($plural),
+            'import_pdu'               => PDU::getTypeName($plural),
         ];
 
         // Boolean component options (field name => label)

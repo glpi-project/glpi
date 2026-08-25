@@ -80,6 +80,11 @@ class PDU extends NetworkEquipment
     {
         parent::handle();
         if (isset($this->plugs) && !$this->item->isNewItem()) {
+            $this->plugs
+                ->setMainAsset($this)
+                ->setAgent($this->getAgent())
+                ->setEntityID($this->getEntityID())
+                ->setEntityRecursive($this->getEntityRecursive());
             $this->plugs->handleLinks();
             $this->plugs->handle();
         }
@@ -88,8 +93,9 @@ class PDU extends NetworkEquipment
     public function checkConf(Conf $conf): bool
     {
         global $CFG_GLPI;
-        $this->conf = $conf;
-        return $conf->import_pdu == 1 && in_array($this->item::class, $CFG_GLPI['plug_types']);
+        return parent::checkConf($conf)
+            && $conf->import_pdu == 1
+            && in_array($this->item::class, $CFG_GLPI['plug_types']);
     }
 
     protected function getModelsFieldName(): string
