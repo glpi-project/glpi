@@ -215,6 +215,16 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
+     * The title link of an article row in the aside tree. Scoped to the row's
+     * own line, so a nested child row's link is never returned instead.
+     */
+    public getAsideTreeArticleTitleLink(id: number): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- using scope
+        return this.getAsideTreeArticleLine(id).locator(':scope > a');
+    }
+
+    /**
      * The illustration slot (`<use>` element for a native icon) of an article
      * row in the aside tree.
      */

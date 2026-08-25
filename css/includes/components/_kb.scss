@@ -1235,7 +1235,7 @@ body.in_modal .kb-editor-reserved {
 
     // Current article: highlighted with primary color to identify it in the tree and favorites.
     [data-glpi-kb-article-current] {
-        > a {
+        > .article-line > a {
             color: color-mix(
                 in srgb,
                 transparent,
