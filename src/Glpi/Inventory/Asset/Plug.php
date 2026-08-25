@@ -78,6 +78,8 @@ class Plug extends InventoryAsset
         $db_plugs = $plug->find([
             'itemtype_main' => $main_item::class,
             'items_id_main' => $main_item->fields['id'],
+            'is_dynamic' => 1,
+            'is_deleted' => 0,
         ]);
 
         // handle each plug from inventory
