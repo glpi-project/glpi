@@ -267,7 +267,7 @@
                         </div>
                         <template v-if="query.has_params">
                             <button type="button" class="toggle-sql-params btn btn-sm btn-ghost-secondary px-1 py-0 mt-1"
-                                    :aria-expanded="isExpanded(query) ? 'true' : 'false'" aria-label="Toggle prepared statement and parameters"
+                                    :aria-expanded="isExpanded(query)" aria-label="Toggle prepared statement and parameters"
                                     @click="toggleParams(query)">
                                 <i :class="isExpanded(query) ? 'ti ti-chevron-down' : 'ti ti-chevron-right'" aria-hidden="true"></i>
                                 <span class="ms-1">Prepared statement</span>
