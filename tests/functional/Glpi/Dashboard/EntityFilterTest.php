@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Dashboard;
 
 use Glpi\Dashboard\Filters\EntityFilter;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
 use Ticket;
 
@@ -89,9 +90,12 @@ class EntityFilterTest extends DbTestCase
         $child_1 = getItemByTypeName('Entity', '_test_child_1', true);
         $child_2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-        // Only child_1 is active — picking child_2 must not leak any WHERE.
+        // Only child_1 is active — picking child_2 must yield a WHERE
         $this->setEntity($child_1, false);
 
-        $this->assertSame([], EntityFilter::getCriteria('glpi_tickets', $child_2));
+        $this->assertEquals(
+            ['WHERE' => [new QueryExpression('false')]],
+            EntityFilter::getCriteria('glpi_tickets', $child_2)
+        );
     }
 }
