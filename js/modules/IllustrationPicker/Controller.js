@@ -102,27 +102,52 @@ export class GlpiIllustrationPickerController
      */
     setEditable(editable)
     {
-        const preview = this.#getPreviewElement();
-        if (preview === null) {
+        if (this.#getPreviewElement() === null) {
             return;
         }
 
+        const preview = this.#morphPreview(editable ? 'button' : 'div');
+
         if (editable) {
-            preview.setAttribute('role', 'button');
+            preview.setAttribute('type', 'button');
             preview.setAttribute('aria-label', __('Select an illustration'));
             preview.setAttribute('data-bs-toggle', 'modal');
             preview.setAttribute('data-bs-target', `#${this.#modal_node.id}`);
             preview.removeAttribute('aria-disabled');
         } else {
-            preview.removeAttribute('role');
+            preview.removeAttribute('type');
             preview.removeAttribute('aria-label');
             preview.removeAttribute('data-bs-toggle');
             preview.removeAttribute('data-bs-target');
             preview.setAttribute('aria-disabled', 'true');
         }
 
-        // Re-apply now that the role changed.
+        // Re-apply now that the trigger changed.
         this.#setPreviewStatus(this.#selected_title);
+    }
+
+    /**
+     * Swaps the trigger between <button> (editable) and <div> (read-only),
+     * carrying over its attributes and children.
+     *
+     * @param {string} tag
+     * @return {HTMLElement}
+     */
+    #morphPreview(tag)
+    {
+        const current = this.#getPreviewElement();
+        if (current.localName === tag) {
+            return current;
+        }
+
+        const morphed = document.createElement(tag);
+        for (const { name, value } of current.attributes) {
+            morphed.setAttribute(name, value);
+        }
+        morphed.replaceChildren(...current.childNodes);
+        current.replaceWith(morphed);
+
+        return morphed;
     }
 
     /**
@@ -230,6 +255,14 @@ export class GlpiIllustrationPickerController
         this.#modal_node.addEventListener('shown.bs.modal', () => {
             this.#container.querySelector("[data-glpi-icon-picker-filter]").focus();
         });
+
+        // The picker is often injected after page load, where Bootstrap's tab
+        // data-api no longer runs: instantiate the active tab ourselves,
+        // otherwise arrow-key navigation and the roving tabindex are missing.
+        const active_tab = this.#container.querySelector('[data-bs-toggle="tab"].active');
+        if (active_tab !== null) {
+            bootstrap.Tab.getOrCreateInstance(active_tab);
+        }
     }
 
     #setNativeIllustration(illustration)
@@ -275,7 +308,7 @@ export class GlpiIllustrationPickerController
     /**
      * Names the currently selected illustration, as a sibling of the
      * trigger referenced via aria-describedby (a descendant would be
-     * pruned by the trigger's own role="button" name computation).
+     * pruned by the trigger button's own name computation).
      *
      * @param {?string} title
      */
@@ -286,7 +319,7 @@ export class GlpiIllustrationPickerController
         const preview = this.#getPreviewElement();
         let status = this.#container.querySelector('[data-glpi-icon-picker-value-preview-status]');
 
-        if (!title || preview.getAttribute('role') !== 'button') {
+        if (!title || preview.localName !== 'button') {
             status?.remove();
             preview.removeAttribute('aria-describedby');
             return;

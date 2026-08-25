@@ -41,10 +41,8 @@
  #   - preview_inner_css_classes: CSS classes for the inner preview wrapper
  #   - backdrop: whether the modal should have a backdrop (defaults to true)
  #   - editable: whether clicking the preview opens the modal (defaults to true).
- #     When false, the preview renders without role/aria-label/data-bs-toggle, so
- #     it is neither clickable nor exposed as a button to assistive tech.
- #     Consumers can flip this state at runtime via
- #     GlpiIllustrationPickerController.setEditable().
+ #     Renders a <button> when true, a plain <div> otherwise. Consumers can flip
+ #     this state at runtime via GlpiIllustrationPickerController.setEditable().
  #}
 
 {% set custom_icon_prefix = constant(
@@ -75,10 +73,11 @@
     {% set selected_title = (not is_empty and not is_custom_file) ? getIconTitle(value) : '' %}
     {% set status_id = container_id ~ "-status" %}
 
-    <div
-        class="{{ preview_css_classes }}"
+    {% set preview_tag = editable ? 'button' : 'div' %}
+    <{{ preview_tag }}
+        class="{{ preview_css_classes }} illustration-picker-btn"
         {% if editable %}
-            role="button"
+            type="button"
             aria-label="{{ __("Select an illustration") }}"
             {% if selected_title is not empty %}
                 aria-describedby="{{ status_id }}"
@@ -122,11 +121,11 @@
                 {{ render_illustration(is_custom_file ? value : custom_icon_prefix, size) }}
             </div>
         </div>
-    </div>
+    </{{ preview_tag }}>
 
     {% if editable and selected_title is not empty %}
         {# Named as the trigger's description, not a child: a descendant would be
-         # pruned by the trigger's own role="button" name computation. #}
+         # pruned by the trigger button's own name computation. #}
         <span
             id="{{ status_id }}"
             class="visually-hidden"

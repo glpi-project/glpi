@@ -46,3 +46,22 @@
 .illustration-selector-extra-margin {
     padding-bottom: 10px;
 }
+
+// Neutralize the user-agent styling of the <button> now used by the trigger and
+// the tiles; :where() keeps it at zero specificity so component classes win.
+// `width` included: a button shrinks to its content where the <div> filled its
+// container (`100%` would break the sizing of a shrink-to-fit parent).
+:where(.illustration-picker-btn, .illustration-picker-tile) {
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: stretch;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    text-align: inherit;
+}
+
+.illustration-picker-tile {
+    cursor: pointer;
+}

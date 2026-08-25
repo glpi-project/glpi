@@ -67,6 +67,41 @@ test.describe('Illustration picker', () => {
         await expect(picker_page.getIllustration('Request a service')).not.toBeAttached();
     });
 
+    test('Can pick an image with the keyboard', async ({ profile, page }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const picker_page = new IllustrationPickerPage(page);
+        await picker_page.gotoFormServiceCatalogTab(form_id);
+
+        // The trigger must be focusable and driven by Enter.
+        await picker_page.select_illustration_button.press('Enter');
+        await expect(picker_page.picker_modal).toBeVisible();
+        await expect(picker_page.picker_modal).toHaveAttribute('data-cy-shown', 'true');
+
+        // The tabs must be focusable, so that the upload pane can be reached
+        // with the arrow keys.
+        const illustrations_tab = picker_page.picker_modal.getByRole('tab', {
+            name: 'Pick an illustration',
+        });
+        await illustrations_tab.focus();
+        await expect(illustrations_tab).toBeFocused();
+        await illustrations_tab.press('ArrowRight');
+        await expect(picker_page.picker_modal.getByRole('button', {
+            name: 'Use selected file',
+        })).toBeVisible();
+
+        // Back to the illustrations, then pick one with Enter.
+        await picker_page.picker_modal.getByRole('tab', {
+            name: 'Upload your own illustration',
+        }).press('ArrowLeft');
+        await picker_page.picker_modal.getByRole('button', {
+            name: 'Cartridge',
+            exact: true,
+        }).press('Enter');
+
+        await expect(picker_page.picker_modal).toHaveAttribute('data-cy-shown', 'false');
+        await expect(picker_page.getIllustration('Cartridge')).toBeVisible();
+    });
+
     test('Can use pagination', async ({ profile, page }) => {
         await profile.set(Profiles.SuperAdmin);
         const picker_page = new IllustrationPickerPage(page);
