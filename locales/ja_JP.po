@@ -279,7 +279,7 @@ msgstr "認証コード"
 #: templates/twig_components/Mfa/CodeInput.html.twig
 #, php-format
 msgid "Digit %1$s of %2$s"
-msgstr ""
+msgstr "%1$s / %2$s 桁　"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
@@ -1378,7 +1378,7 @@ msgstr "検索..."
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Go to main navigation"
-msgstr ""
+msgstr "メインナビゲーション"
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Sidebar"
@@ -5918,7 +5918,7 @@ msgstr "お気に入り"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Create a root article"
-msgstr ""
+msgstr "ルート文書を作成"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "No articles found."
@@ -5926,12 +5926,12 @@ msgstr "文書が見つかりません。"
 
 #: templates/pages/tools/kb/aside.html.twig
 msgid "Create a child article"
-msgstr ""
+msgstr "下位文書を作成"
 
 #: templates/pages/tools/kb/aside.html.twig
 #, php-format
 msgid "Create an article under %s"
-msgstr ""
+msgstr "%s 下に文書を作成"
 
 #: templates/pages/tools/kb/document_badge.html.twig
 #: js/modules/Knowbase/ArticleController.js:700
@@ -6436,11 +6436,11 @@ msgstr[0] "認証"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 msgid "Login session data retention"
-msgstr ""
+msgstr "ログインセッションデータの保持期間"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 msgid "Retention period (days)"
-msgstr ""
+msgstr "保持期間 (日)"
 
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 #: templates/pages/setup/webhook/webhook_security.html.twig
@@ -6473,7 +6473,7 @@ msgstr "有効"
 #: templates/pages/setup/data_privacy/session_retention.html.twig
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Configure automatic action"
-msgstr ""
+msgstr "自動操作構成"
 
 #: templates/pages/setup/sessiontracker/sessiontracker.html.twig
 msgid "Session list"
@@ -7897,7 +7897,7 @@ msgstr "SQL エラー : "
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Historical data retention"
-msgstr ""
+msgstr "履歴データ保持期間"
 
 #: templates/pages/setup/general/logs_setup.html.twig src/Config.php:1631
 msgid "Delete all"
@@ -9317,7 +9317,7 @@ msgstr "グラフィック表示を見る"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Following elements are out of room bounds"
-msgstr "以下は部屋の枠外"
+msgstr "以下の要素は部屋の枠外"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Blueprint"
@@ -9329,25 +9329,25 @@ msgstr "グリッド"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Column"
-msgstr ""
+msgstr "ラック列"
 
 #: templates/pages/management/dcroom_racks.html.twig
 #, php-format
 msgid "Edit label for column %s"
-msgstr ""
+msgstr "%s ラック列のラベルを編集"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Row"
-msgstr ""
+msgstr "ロー"
 
 #: templates/pages/management/dcroom_racks.html.twig
 #, php-format
 msgid "Edit label for row %s"
-msgstr ""
+msgstr "%s ローのラベルを編集"
 
 #: templates/pages/management/dcroom_racks.html.twig
 msgid "Unable to save the room axis label."
-msgstr ""
+msgstr "部屋の軸ラベルを保存できません"
 
 #: templates/pages/management/budget.html.twig
 #: templates/pages/management/cost.html.twig src/ContractCost.php:165
@@ -10145,11 +10145,11 @@ msgstr "資産"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Inventory configuration"
-msgstr ""
+msgstr "インベントリー構成"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Inventory enabled"
-msgstr ""
+msgstr "インベントリー有効"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Authorization header"
@@ -10160,7 +10160,7 @@ msgstr "認証ヘッダ"
 msgid ""
 "Using OAuth Client Credentials requires a registered OAuth client with the "
 "%1$s scope."
-msgstr ""
+msgstr "OAuth クライアント証明には %1$s スコープ上で登録した OAuth クライアントが必要です。"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 #, php-format
@@ -10168,6 +10168,7 @@ msgid ""
 "The generated client ID and secret must then be set in the GLPI Agent "
 "configuration using the %1$s and %2$s parameters."
 msgstr ""
+"%1$s と %2$s パラメーターを使った GLPI エージェント構成の設定に、生成済みのクライアント ID と秘密鍵を設定してください。"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Add an OAuth client"
@@ -10187,11 +10188,11 @@ msgstr "インポートのオプション"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Enable all"
-msgstr ""
+msgstr "すべて有効に"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Disable all"
-msgstr ""
+msgstr "すべて無効に"
 
 #: templates/pages/admin/inventory/conf/config_form.html.twig
 msgid "Default status"
@@ -10263,7 +10264,7 @@ msgstr "インポート処理が完了しました。"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Inventory files import results"
-msgstr ""
+msgstr "インベントリーファイルのインポート結果"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Filename"
@@ -10285,7 +10286,7 @@ msgstr "インポートを拒否 ( ログなし )"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "No file imported"
-msgstr ""
+msgstr "インポートしたファイルはありません"
 
 #: templates/pages/admin/ldap.users.html.twig
 msgid "Bulk import users from a LDAP directory"
@@ -10376,7 +10377,7 @@ msgstr "パスワードの確認"
 
 #: templates/pages/admin/user/user.html.twig src/User.php:3514
 msgid "Middle name / Patronymic"
-msgstr ""
+msgstr "ミドルネーム・父称"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Not enough rights to change this field"
@@ -10901,7 +10902,7 @@ msgstr "値を入力してください..."
 msgid ""
 "For anonymous forms, the ALTCHA anti-bot widget will follow this same "
 "visibility."
-msgstr ""
+msgstr "匿名フォームでの ALTCHA Bot 防止ウィジェットは、以下と同じ表示設定に従います。"
 
 #: templates/pages/admin/form/form_comment.html.twig
 msgid "New comment"
@@ -12481,7 +12482,7 @@ msgstr "配線側"
 
 #: templates/pages/assets/rack.html.twig ajax/dcroom_size.php:62
 msgid "No room found or selected"
-msgstr "スペースがないか、選択していません"
+msgstr "部屋がないか、選択していません"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Position in room"
@@ -17617,7 +17618,7 @@ msgstr "画像ファイルを保存できません。"
 
 #: src/DCRoom.php:377
 msgid "New room for this datacenter..."
-msgstr "このデータセンターに新しいスペースを作る..."
+msgstr "このデータセンターの新しい部屋..."
 
 #: src/DCRoom.php:459
 #, php-format
@@ -17995,7 +17996,7 @@ msgstr "YB"
 
 #: src/Toolbox.php:981 src/Toolbox.php:994
 msgid "Unable to fetch GLPI releases data."
-msgstr ""
+msgstr "GLPI のリリース日付を取得することができません。"
 
 #: src/Toolbox.php:1001
 msgid "You have the latest available version"
@@ -18456,21 +18457,21 @@ msgstr "問題の業務ルール"
 
 #: src/KnowbaseItem_KnowbaseItem.php:82
 msgid "An article cannot be its own parent."
-msgstr ""
+msgstr "文書を自身の上位文書にすることはできません。"
 
 #: src/KnowbaseItem_KnowbaseItem.php:92
 msgid "This link would create a cycle in the knowledge base tree."
-msgstr ""
+msgstr "このリンクは、ナレッジベースのツリー構造に循環を作ることになります。"
 
 #: src/KnowbaseItem_KnowbaseItem.php:108
 #, php-format
 msgid "Missing '%s' value."
-msgstr ""
+msgstr "「%s」値が見つかりません。"
 
 #: src/KnowbaseItem_KnowbaseItem.php:115
 #, php-format
 msgid "Invalid '%s' value: '%s'."
-msgstr ""
+msgstr "「%s」の値としては無効 : %s"
 
 #: src/RuleDictionnaryPrinter.php:82 src/RuleRight.php:309
 #: src/RuleSoftwareCategory.php:92 src/RuleDictionnarySoftware.php:91
@@ -18989,14 +18990,14 @@ msgstr "OLAで定義したエスカレーションは、この新しい日付で
 
 #: src/OLA.php:240
 msgid "You must select a group to associate with the OLA."
-msgstr ""
+msgstr "業務レベル合意に関連付けるグループを選択してください。"
 
 #: src/OLA.php:250
 #, php-format
 msgid ""
 "The group #%d is not allowed to be associated with an OLA. group.is_assign "
 "must be set to 1"
-msgstr ""
+msgstr "#%d グループは業務レベル合意との関連付けは許可されていません。group.is_assign に 1 を設定してください。"
 
 #: src/NotificationAjaxSetting.php:46
 msgid "Browser notifications configuration"
