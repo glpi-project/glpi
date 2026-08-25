@@ -50,8 +50,14 @@ use KnowbaseItem_KnowbaseItem;
  */
 final class Builder
 {
-    /** @var int[] */
-    private array $folded_ids = [];
+    public const array LIST_COLUMNS = [
+        'glpi_knowbaseitems.id',
+        'glpi_knowbaseitems.name',
+        'glpi_knowbaseitems.illustration',
+    ];
+
+    /** @var array<int, true> */
+    private array $folded_ids_lookup_map = [];
 
     public function __construct(private readonly int $current_id = 0) {}
 
@@ -60,10 +66,12 @@ final class Builder
         global $DB;
 
         // Articles the current user has collapsed, restored on each render.
-        $this->folded_ids = KnowbaseItem::getFoldedIdsForCurrentUser();
+        $this->folded_ids_lookup_map = array_fill_keys(KnowbaseItem::getFoldedIdsForCurrentUser(), true);
 
         // 1) All articles the current user may see (visibility applied).
-        $rows = $DB->request(KnowbaseItem::getListRequest([], 'browse'));
+        $criteria = KnowbaseItem::getListRequest([], 'browse');
+        $criteria['SELECT'] = self::LIST_COLUMNS;
+        $rows = $DB->request($criteria);
         $data = [];              // id => row
         foreach ($rows as $row) {
             $data[(int) $row['id']] = $row;
@@ -76,15 +84,12 @@ final class Builder
         // 2) Visible parent -> [visible children] adjacency, and child -> has a visible parent?
         $children_of         = [];     // parent_id => int[] child ids
         $has_visible_parent  = [];     // child_id => true
-        foreach ($DB->request([
-            'FROM'  => KnowbaseItem_KnowbaseItem::getTable(),
-            'WHERE' => [
-                'knowbaseitems_id'        => $visible_ids,
-                'knowbaseitems_id_parent' => $visible_ids,
-            ],
-        ]) as $link) {
+        foreach ($DB->request(['FROM' => KnowbaseItem_KnowbaseItem::getTable()]) as $link) {
             $child  = (int) $link['knowbaseitems_id'];
             $parent = (int) $link['knowbaseitems_id_parent'];
+            if (!isset($data[$child], $data[$parent])) {
+                continue; // one of the ends is not visible to the current user
+            }
             $children_of[$parent][] = $child;
             $has_visible_parent[$child] = true;
         }
@@ -113,7 +118,7 @@ final class Builder
             illustration: $row['illustration'] ?? '',
             link: KnowbaseItem::getFormURLWithID($id),
             is_current: $this->current_id > 0 && $id === $this->current_id,
-            collapsed: in_array($id, $this->folded_ids, true),
+            collapsed: isset($this->folded_ids_lookup_map[$id]),
         );
         $ancestors[$id] = true;
         foreach ($children_of[$id] ?? [] as $child_id) {
