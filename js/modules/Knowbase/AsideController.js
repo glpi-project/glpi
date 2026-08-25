@@ -146,8 +146,9 @@ export class GlpiKnowbaseAsideController
      *
      * @param {HTMLElement} node
      * @param {boolean} collapsed
+     * @returns {Promise<void>}
      */
-    #setCollapsed(node, collapsed)
+    async #setCollapsed(node, collapsed)
     {
         node.toggleAttribute('data-glpi-kb-aside-category-collapsed', collapsed);
 
@@ -174,7 +175,7 @@ export class GlpiKnowbaseAsideController
         this.#persistArticleFold(node.dataset.glpiKbArticleId, collapsed);
 
         if (!collapsed) {
-            this.#loadChildren(node);
+            await this.#loadChildren(node);
         }
     }
 
@@ -369,11 +370,10 @@ export class GlpiKnowbaseAsideController
     /**
      * @param {HTMLElement} add_button
      */
-    #openCreateInput(add_button)
+    async #openCreateInput(add_button)
     {
         const header = add_button.closest('[data-glpi-kb-aside-category-header]');
         const node = header.closest('[data-glpi-kb-aside-category]');
-        const list = node.querySelector(':scope > ul');
         const parent_id = Number(add_button.dataset.glpiKbAsideCategoryAdd) || 0;
 
         // The list is hidden while the node is collapsed, so the input below
@@ -383,8 +383,11 @@ export class GlpiKnowbaseAsideController
         // article: were the parent still folded on that reload, the article the
         // user just created would be hidden.
         if (node.hasAttribute('data-glpi-kb-aside-category-collapsed')) {
-            this.#setCollapsed(node, false);
+            await this.#setCollapsed(node, false);
         }
+
+        // Looked up after the expansion above, which may have refilled it.
+        const list = node.querySelector(':scope > ul');
 
         // Only one inline input at a time across the whole tree.
         const existing = this.#aside.querySelector('[data-glpi-kb-aside-create-row]');
