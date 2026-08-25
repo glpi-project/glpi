@@ -143,6 +143,17 @@ export class GlpiKnowbaseAsideController
     {
         node.toggleAttribute('data-glpi-kb-aside-category-collapsed', collapsed);
 
+        // The same article can be rendered twice (original tree + search results)
+        // Update the second node data properties too if found.
+        const id = node.dataset.glpiKbArticleId;
+        for (const twin of this.#aside.querySelectorAll(
+            `[data-glpi-kb-aside-category][data-glpi-kb-article-id="${CSS.escape(id)}"]`,
+        )) {
+            if (twin !== node) {
+                twin.toggleAttribute('data-glpi-kb-aside-category-collapsed', collapsed);
+            }
+        }
+
         // `:scope >` on the header is required: without it we would reach the
         // toggle of a nested article instead of this node's own one.
         const toggle = node.querySelector(
@@ -470,17 +481,45 @@ export class GlpiKnowbaseAsideController
 
         // Send request to backend
         const request_id = ++this.#search_request_id;
+        const current_id = this.#aside
+            .querySelector('[data-glpi-kb-article-current]')?.dataset.glpiKbArticleId ?? '';
         const response = await get(
-            `Knowbase/Aside/Search?contains=${encodeURIComponent(value)}`,
+            `Knowbase/Aside/Search?contains=${encodeURIComponent(value)}`
+            + `&current_id=${encodeURIComponent(current_id)}`,
         );
-        const matching_ids = new Set(await response.json());
+        const { ids, html } = await response.json();
         if (request_id !== this.#search_request_id) {
             return;
         }
 
         // Apply results
-        this.#filterTree(tree, matching_ids);
-        this.#filterFavorites(favorites, matching_ids);
+        this.#showTreeResults(tree, html);
+        this.#filterFavorites(favorites, new Set(ids));
+    }
+
+    /**
+     * Replace the tree with the server-rendered search results. The rendered
+     * tree is kept in place (hidden) so clearing the search restores it without
+     * a round trip.
+     *
+     * @param {HTMLElement} tree
+     * @param {string}      html
+     */
+    #showTreeResults(tree, html)
+    {
+        const rendered = tree.querySelector(':scope > ul.kb-tree');
+        rendered?.setAttribute('data-glpi-kb-search-hidden', '');
+
+        let results = tree.querySelector(':scope > [data-glpi-kb-aside-tree-results]');
+        if (!results) {
+            results = document.createElement('div');
+            results.setAttribute('data-glpi-kb-aside-tree-results', '');
+            rendered ? rendered.after(results) : tree.prepend(results);
+        }
+        results.innerHTML = html;
+
+        const no_results = tree.querySelector('[data-glpi-kb-aside-no-results]');
+        no_results.hidden = results.querySelector('[data-glpi-kb-article-id]') !== null;
     }
 
     /**
@@ -490,6 +529,8 @@ export class GlpiKnowbaseAsideController
      */
     #showAllTreeItems(tree)
     {
+        tree.querySelector(':scope > [data-glpi-kb-aside-tree-results]')?.remove();
+
         for (const el of tree.querySelectorAll('[data-glpi-kb-search-hidden]')) {
             el.removeAttribute('data-glpi-kb-search-hidden');
         }
@@ -563,62 +604,6 @@ export class GlpiKnowbaseAsideController
             favorites_el.setAttribute('data-glpi-kb-aside-favorites-hidden', '');
             header.setAttribute('data-glpi-kb-aside-header-no-border', '');
         }
-    }
-
-    /**
-     * Filter the tree to only show articles whose IDs are in matching_ids.
-     * Articles (leaf or with children) with no visible descendant are hidden
-     * recursively.
-     *
-     * @param {HTMLElement} tree
-     * @param {Set<number>} matching_ids
-     */
-    #filterTree(tree, matching_ids)
-    {
-        let any_visible = false;
-
-        for (const article of tree.querySelectorAll(':scope > ul > [data-glpi-kb-article-id]')) {
-            if (this.#filterArticle(article, matching_ids)) {
-                any_visible = true;
-            }
-        }
-
-        // Show information message if no results are found
-        const no_results = tree.querySelector('[data-glpi-kb-aside-no-results]');
-        no_results.hidden = any_visible;
-    }
-
-    /**
-     * Recursively determines whether an article row (leaf or with children)
-     * should stay visible — either its own title/id matched the search, or
-     * one of its descendants did — and hides/shows it (and recurses into its
-     * children, if any) in place.
-     *
-     * @param {HTMLElement} article_el
-     * @param {Set<number>} matching_ids
-     * @returns {boolean} Whether this article or any of its descendants match.
-     */
-    #filterArticle(article_el, matching_ids)
-    {
-        const id = parseInt(article_el.dataset.glpiKbArticleId);
-        let visible = matching_ids.has(id);
-
-        const ul = article_el.querySelector(':scope > ul');
-        if (ul) {
-            for (const child of ul.querySelectorAll(':scope > [data-glpi-kb-article-id]')) {
-                if (this.#filterArticle(child, matching_ids)) {
-                    visible = true;
-                }
-            }
-        }
-
-        if (visible) {
-            article_el.removeAttribute('data-glpi-kb-search-hidden');
-        } else {
-            article_el.setAttribute('data-glpi-kb-search-hidden', '');
-        }
-
-        return visible;
     }
 
     /**

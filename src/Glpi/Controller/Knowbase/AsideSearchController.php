@@ -34,9 +34,11 @@
 
 namespace Glpi\Controller\Knowbase;
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Knowbase\Aside\Builder;
 use KnowbaseItem;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,9 +70,7 @@ final class AsideSearchController extends AbstractController
         // Get article IDs that match this filter
         $criteria = KnowbaseItem::getListRequest(['contains' => $contains], 'search');
 
-        // The response is only used for membership tests, so neither the article
-        // columns (`glpi_knowbaseitems.*` includes `answer`) nor the relevance
-        // ordering are needed.
+        // Only the matching ids are needed here
         $criteria['SELECT'] = [KnowbaseItem::getTableField('id')];
         unset($criteria['ORDERBY']);
 
@@ -79,6 +79,21 @@ final class AsideSearchController extends AbstractController
             $ids[] = (int) $data['id'];
         }
 
-        return new JsonResponse($ids);
+        // Render the filtered tree
+        $tree = (new Builder($request->query->getInt('current_id')))->buildSearchTree($ids);
+
+        return new JsonResponse([
+            // Consumed by the favorites section, which filters the rows it
+            // already holds.
+            'ids'  => $ids,
+            'html' => TemplateRenderer::getInstance()->render(
+                'pages/tools/kb/aside_tree.html.twig',
+                [
+                    'tree'         => $tree,
+                    'can_create'   => KnowbaseItem::canCreate(),
+                    'show_actions' => KnowbaseItem::canShowAsideActions(),
+                ]
+            ),
+        ]);
     }
 }
