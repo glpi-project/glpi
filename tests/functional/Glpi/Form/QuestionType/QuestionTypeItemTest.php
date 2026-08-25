@@ -477,16 +477,26 @@ final class QuestionTypeItemTest extends DbTestCase
             'entities_id'  => $this->getTestRootEntity(true),
         ]);
 
+        // Only `name` is translated on purpose: GLPI derives the `completename`
+        // translation from the ancestors' translated names, and overwrites any
+        // `completename` row that is written directly.
+        $this->createItem(DropdownTranslation::class, [
+            'items_id' => $parent->getID(),
+            'itemtype' => Location::class,
+            'language' => 'fr_FR',
+            'field'    => 'name',
+            'value'    => 'Siège social',
+        ]);
         $this->createItem(DropdownTranslation::class, [
             'items_id' => $child->getID(),
             'itemtype' => Location::class,
             'language' => 'fr_FR',
-            'field'    => 'completename',
-            'value'    => 'Siège social > Salle de réunion',
+            'field'    => 'name',
+            'value'    => 'Salle de réunion',
         ]);
 
         // The translation cache is built at login, so the user must be logged
-        // in after the translation exists.
+        // in after the translations exist.
         $this->createItem(User::class, [
             'name'         => 'fr_FR',
             'language'     => 'fr_FR',
