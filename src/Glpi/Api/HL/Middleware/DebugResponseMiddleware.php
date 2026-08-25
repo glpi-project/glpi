@@ -61,12 +61,12 @@ class DebugResponseMiddleware extends AbstractMiddleware implements ResponseMidd
             return;
         }
         $outputs = [];
-        // Go through all output buffers
-        while (ob_get_level() > 0) {
+        $request_output_buffer_level = (int) $input->request->getAttribute('_request_output_buffer_level', 0);
+        while (ob_get_level() > $request_output_buffer_level) {
             try {
                 $outputs[] = ob_get_clean();
             } catch (OutcontrolException $e) {
-                //just contineu, seems not an error.
+                break;
             }
         }
         $debug_messages = [];

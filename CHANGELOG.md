@@ -15,6 +15,12 @@ The present file will list all changes made to the project; according to the
 - New schema/endpoints to view and change Kanban view state data in High-Level API v2.4.
 - `supervisor` property added for `User` schema in High-Level API v2.4.
 - Support for `If-Modified-Since` and `If-Unmodified-Since` HTTP headers for some types of requests in High-Level API. This is not controlled by the API version.
+- Support for `multipart/form-data` requests in the High-Level API (not version-specific).
+- New schema properties to enable file/picture uploads in the High-Level API v2.4.
+  To remove a file/picture from fields that accept a single file/picture, you can send an empty string for the field.
+  File uploads also work with the existing update (PATCH) endpoints.
+- New schema properties to enable the selective removal of files/pictures for fields that accept multiple files/pictures in the High-Level API v2.4.
+- Support for converting inline images in rich text fields to attachments in the High-Level API v2.4.
 
 ### Changed
 - Fixed searching values with multiple concurrent spaces.
