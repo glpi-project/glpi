@@ -6128,20 +6128,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method hydrate\\(\\) on Glpi\\\\Api\\\\HL\\\\Search\\\\RecordSet\\|int\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method maybeRecursive\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Search\\:\\:getSearchResultsBySchema\\(\\) should return array\\{results\\: array, start\\: int, limit\\: int, total\\: int\\} but returns array\\{results\\: list, start\\: 0\\|array, limit\\: array\\|int\\<0, max\\>, total\\: Glpi\\\\Api\\\\HL\\\\Search\\\\RecordSet\\|int\\}\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
