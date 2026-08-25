@@ -2178,6 +2178,8 @@ HTML;
 
         $device_itemtypes = array_merge(...array_values(Dropdown::getDeviceItemTypes(false)));
 
+        $this->assertNotEmpty($device_itemtypes);
+
         foreach (array_keys($device_itemtypes) as $device_class) {
             $type_class = $device_class . 'Type';
             if (class_exists($type_class)) {
