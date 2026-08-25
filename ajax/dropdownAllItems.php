@@ -64,7 +64,7 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
         'value'               => 0,
         'valuename'           => Dropdown::EMPTY_VALUE,
         'itemtype'            => $_POST["idtable"],
-        'display_emptychoice' => $_POST['display_emptychoice'] ?? true,
+        'display_emptychoice' => filter_var($_POST['display_emptychoice'] ?? true, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? true,
         'displaywith'         => $displaywith,
     ];
     $idor_params = [
