@@ -890,8 +890,7 @@ EOT;
                     'name' => 'force',
                     'in' => 'query',
                     'description' => 'If "true", the item will be permanently deleted instead of being moved to the trash (if the item supported soft-deletion).',
-                    'default' => false,
-                    'schema' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'schema' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
                 ];
             }
             // Inject global headers

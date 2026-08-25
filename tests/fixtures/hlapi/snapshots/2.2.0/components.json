@@ -8258,8 +8258,8 @@
                 },
                 "port": {
                     "type": "integer",
-                    "min": 1,
-                    "max": 65535,
+                    "minimum": 1,
+                    "maximum": 65535,
                     "default": 389
                 },
                 "is_default": {
@@ -13393,8 +13393,8 @@
                 },
                 "refresh_interval": {
                     "type": "integer",
-                    "min": 3600,
-                    "max": 86400,
+                    "minimum": 3600,
+                    "maximum": 86400,
                     "multipleOf": 3600
                 },
                 "max_items": {
@@ -19734,7 +19734,7 @@
                 },
                 "list_limit": {
                     "type": "integer",
-                    "min": 5,
+                    "minimum": 5,
                     "multipleOf": 5
                 },
                 "date_format": {
@@ -19831,8 +19831,8 @@
                 },
                 "refresh_view_interval": {
                     "type": "integer",
-                    "min": 0,
-                    "max": 30
+                    "minimum": 0,
+                    "maximum": 30
                 },
                 "set_default_tech": {
                     "type": "boolean"
@@ -19848,8 +19848,8 @@
                 },
                 "home_list_limit": {
                     "type": "integer",
-                    "min": 0,
-                    "max": 30
+                    "minimum": 0,
+                    "maximum": 30
                 },
                 "notification_to_myself": {
                     "type": "boolean"
