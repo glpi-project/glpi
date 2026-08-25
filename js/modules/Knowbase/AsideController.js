@@ -526,6 +526,8 @@ export class GlpiKnowbaseAsideController
         const tree      = this.#aside.querySelector('[data-glpi-kb-aside-tree]');
         const favorites = this.#aside.querySelector('[data-glpi-kb-aside-favorites]');
 
+        const request_id = ++this.#search_request_id;
+
         // Search criteria was removed, show all items again
         if (value.trim() === '') {
             this.#showAllTreeItems(tree);
@@ -534,7 +536,6 @@ export class GlpiKnowbaseAsideController
         }
 
         // Send request to backend
-        const request_id = ++this.#search_request_id;
         const current_id = this.#aside
             .querySelector('[data-glpi-kb-article-current]')?.dataset.glpiKbArticleId ?? '';
         const response = await get(
