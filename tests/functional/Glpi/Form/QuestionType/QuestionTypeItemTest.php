@@ -36,6 +36,7 @@ namespace tests\units\Glpi\Form\QuestionType;
 
 use Computer;
 use Contact;
+use DropdownTranslation;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
@@ -452,5 +453,56 @@ final class QuestionTypeItemTest extends DbTestCase
         $result = (new QuestionTypeItem())->formatRawAnswer($case['answer'], new Question());
 
         $this->assertEquals($case['expected'], $result);
+    }
+
+    /**
+     * Non-regression test for #25249.
+     *
+     * The generated ticket content is frozen at submission time, so the item
+     * name has to be resolved in the requester language at that moment. Before
+     * the fix, formatRawAnswer() read the raw completename column and the
+     * answer was stored in the source language whatever the requester used.
+     */
+    public function testFormatRawAnswerUsesDropdownTranslation(): void
+    {
+        $this->login();
+
+        $parent = $this->createItem(Location::class, [
+            'name'        => 'Head office',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $child = $this->createItem(Location::class, [
+            'name'         => 'Meeting room',
+            'locations_id' => $parent->getID(),
+            'entities_id'  => $this->getTestRootEntity(true),
+        ]);
+
+        $this->createItem(DropdownTranslation::class, [
+            'items_id' => $child->getID(),
+            'itemtype' => Location::class,
+            'language' => 'fr_FR',
+            'field'    => 'completename',
+            'value'    => 'Siège social > Salle de réunion',
+        ]);
+
+        // The translation cache is built at login, so the user must be logged
+        // in after the translation exists.
+        $this->createItem(User::class, [
+            'name'         => 'fr_FR',
+            'language'     => 'fr_FR',
+            '_entities_id' => $this->getTestRootEntity(true),
+            '_profiles_id' => 1,
+        ]);
+        $this->login('fr_FR');
+
+        $result = (new QuestionTypeItem())->formatRawAnswer(
+            [
+                'itemtype' => Location::class,
+                'items_id' => $child->getID(),
+            ],
+            new Question()
+        );
+
+        $this->assertEquals('Siège social > Salle de réunion', $result);
     }
 }
