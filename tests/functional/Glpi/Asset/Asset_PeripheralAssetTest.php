@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Asset;
 
+use Computer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasPeripheralAssetsCapacity;
@@ -100,7 +101,7 @@ class Asset_PeripheralAssetTest extends DbTestCase
     public function testDeletePeripheralDoesNotCallCleanRelationData(): void
     {
         $computer = $this->createItem(
-            \Computer::class,
+            Computer::class,
             [
                 'name'   => 'Le PC',
                 'serial' => 'qqzder45',
@@ -132,6 +133,60 @@ class Asset_PeripheralAssetTest extends DbTestCase
 
         $this->assertTrue($_SESSION['MESSAGE_AFTER_REDIRECT'] === []);
         $this->assertFalse((new Asset_PeripheralAsset())->getFromDB($relation->getID()));
+    }
 
+    public function testUnavailablePeripheralsForAsset(): void
+    {
+        $this->login();
+
+        $entity_id = $this->getTestRootEntity(true);
+        $computer_1 = $this->createItem(Computer::class, [
+            'name' => 'Computer 1',
+            'entities_id' => $entity_id,
+        ]);
+        $computer_2 = $this->createItem(Computer::class, [
+            'name' => 'Computer 2',
+            'entities_id' => $entity_id,
+        ]);
+        $global_on_other_computer = $this->createItem(Peripheral::class, [
+            'name' => 'Global peripheral on other computer',
+            'entities_id' => $entity_id,
+            'is_global' => 1,
+        ]);
+        $global_on_current_computer = $this->createItem(Peripheral::class, [
+            'name' => 'Global peripheral on current computer',
+            'entities_id' => $entity_id,
+            'is_global' => 1,
+        ]);
+        $non_global_on_other_computer = $this->createItem(Peripheral::class, [
+            'name' => 'Non-global peripheral on other computer',
+            'entities_id' => $entity_id,
+            'is_global' => 0,
+        ]);
+
+        foreach ([
+            [$computer_1, $global_on_other_computer],
+            [$computer_1, $non_global_on_other_computer],
+            [$computer_2, $global_on_current_computer],
+        ] as [$computer, $peripheral]) {
+            $this->createItem(Asset_PeripheralAsset::class, [
+                'itemtype_asset' => Computer::class,
+                'items_id_asset' => $computer->getID(),
+                'itemtype_peripheral' => Peripheral::class,
+                'items_id_peripheral' => $peripheral->getID(),
+            ]);
+        }
+
+        $unavailable = iterator_to_array($this->callPrivateMethod(
+            new Asset_PeripheralAsset(),
+            'getUnavailablePeripherals',
+            $computer_2,
+            Peripheral::class
+        ));
+        $unavailable_ids = array_column($unavailable, 'id');
+
+        $this->assertNotContains($global_on_other_computer->getID(), $unavailable_ids);
+        $this->assertContains($global_on_current_computer->getID(), $unavailable_ids);
+        $this->assertContains($non_global_on_other_computer->getID(), $unavailable_ids);
     }
 }
