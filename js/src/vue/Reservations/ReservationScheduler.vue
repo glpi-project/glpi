@@ -11,7 +11,7 @@
     import timeGridPlugin from "@fullcalendar/timegrid";
     import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
     import BaseFullCalendar from "../FullCalendar/BaseFullCalendar.vue";
-    import {onMounted, ref, useTemplateRef, watch} from "vue";
+    import {nextTick, onMounted, ref, useTemplateRef, watch} from "vue";
     import ReservationEvent from "./ReservationEvent.vue";
     import useScheduler from "../FullCalendar/useScheduler.js";
 
@@ -83,6 +83,8 @@
             }
             return [];
         },
+        datesSet: () => nextTick(markDayHeadings),
+        eventsSet: () => nextTick(markDayHeadings),
         selectable: props.can_reserve,
         select: (info) => {
             if (props.can_reserve) {
@@ -130,6 +132,7 @@
 
     onMounted(() => {
         calendar_api = calendar.value.getApi();
+        markDayHeadings();
     });
 
     function editEvent(info) {
@@ -163,6 +166,21 @@
         return date1.getFullYear() === date2.getFullYear() &&
             date1.getMonth() === date2.getMonth() &&
             date1.getDate() === date2.getDate();
+    }
+
+    // FullCalendar has no content hook for list day rows, mark both views after render.
+    function markDayHeadings() {
+        const root = calendar_api?.el;
+        if (!root) {
+            return;
+        }
+
+        root
+            .querySelectorAll('.fc-daygrid-day-number, .fc-list-day-text')
+            .forEach((day) => {
+                day.setAttribute('role', 'heading');
+                day.setAttribute('aria-level', '3');
+            });
     }
 
     watch(current_view, (new_view) => {
