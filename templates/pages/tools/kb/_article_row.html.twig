@@ -96,10 +96,10 @@
             {% endif %}
         </div>
         {% if is_node %}
-            <ul>
-                {% for child in article.getChildren %}
-                    {{ macros.render_article(child, can_create, show_actions) }}
-                {% endfor %}
+            {# A folded article renders without its children; the aside fetches
+             # them the first time the reader unfolds it. #}
+            <ul {{ article.hasChildren and not article.children_loaded ? 'data-glpi-kb-children-unloaded' : '' }}>
+                {{ macros.render_rows(article.getChildren, can_create, show_actions) }}
             </ul>
         {% endif %}
     </li>
@@ -112,8 +112,17 @@
 {% macro render_tree(articles, can_create = false, show_actions = false) %}
     {% import _self as macros %}
     <ul class="kb-tree ps-0">
-        {% for article in articles %}
-            {{ macros.render_article(article, can_create, show_actions) }}
-        {% endfor %}
+        {{ macros.render_rows(articles, can_create, show_actions) }}
     </ul>
+{% endmacro %}
+
+{#
+ # Renders a list of articles as bare rows, without the wrapping list. Used to
+ # fill in the children of an article that the reader just unfolded.
+ #}
+{% macro render_rows(articles, can_create = false, show_actions = false) %}
+    {% import _self as macros %}
+    {% for article in articles %}
+        {{ macros.render_article(article, can_create, show_actions) }}
+    {% endfor %}
 {% endmacro %}

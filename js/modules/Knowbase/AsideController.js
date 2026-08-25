@@ -58,6 +58,14 @@ export class GlpiKnowbaseAsideController
     #search_request_id = 0;
 
     /**
+     * Children requests by article id, so a branch is only fetched once even if
+     * the reader folds and unfolds it repeatedly.
+     *
+     * @type {Map<number, Promise<string>>}
+     */
+    #children_cache = new Map();
+
+    /**
      * Whether the favorites section was hidden on initial server render.
      * Used to restore the correct state after clearing the search.
      * @type {boolean}
@@ -164,6 +172,49 @@ export class GlpiKnowbaseAsideController
         toggle?.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
 
         this.#persistArticleFold(node.dataset.glpiKbArticleId, collapsed);
+
+        if (!collapsed) {
+            this.#loadChildren(node);
+        }
+    }
+
+    /**
+     * Fill in the children of a node the reader just unfolded, if the tree was
+     * rendered without them.
+     *
+     * @param {HTMLElement} node
+     */
+    async #loadChildren(node)
+    {
+        // `:scope >` is required: a nested node has a list of its own.
+        const list = node.querySelector(':scope > ul[data-glpi-kb-children-unloaded]');
+        if (!list) {
+            return;
+        }
+        // Claim it right away, so a second unfold does not fetch it again.
+        list.removeAttribute('data-glpi-kb-children-unloaded');
+
+        const id = parseInt(node.dataset.glpiKbArticleId);
+        if (!this.#children_cache.has(id)) {
+            const current_id = this.#aside
+                .querySelector('[data-glpi-kb-aside-tree] [data-glpi-kb-article-current]')
+                ?.dataset.glpiKbArticleId ?? '';
+            this.#children_cache.set(
+                id,
+                get(
+                    `Knowbase/Aside/Article/${encodeURIComponent(id)}/Children`
+                    + `?current_id=${encodeURIComponent(current_id)}`,
+                ).then((response) => response.text()),
+            );
+        }
+
+        try {
+            list.innerHTML = await this.#children_cache.get(id);
+        } catch {
+            // Drop the cached rejection and let a later unfold retry.
+            this.#children_cache.delete(id);
+            list.setAttribute('data-glpi-kb-children-unloaded', '');
+        }
     }
 
     #initToggle()

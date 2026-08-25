@@ -68,6 +68,13 @@ final class BuilderTest extends DbTestCase
         $this->makeArticle('Eagle article', $birds->getID());
         $this->makeArticle('Rose article', $plants->getID());
 
+        // A folded article renders without its children, so unfold the branches
+        // walked below: this test is about the shape of the tree, not about the
+        // fold defaults.
+        foreach ([$animals, $birds, $plants] as $article) {
+            KnowbaseItem::setUnfoldedForCurrentUser($article->getID(), true);
+        }
+
         $tree = (new Builder())->buildTree();
 
         // The tree has a single root, the installation's root article, and every
@@ -223,6 +230,9 @@ final class BuilderTest extends DbTestCase
         $parent2 = $this->makeArticle('Parent two ' . __FUNCTION__);
         $this->makeArticle('Shared child ' . __FUNCTION__, [$parent1->getID(), $parent2->getID()]);
 
+        KnowbaseItem::setUnfoldedForCurrentUser($parent1->getID(), true);
+        KnowbaseItem::setUnfoldedForCurrentUser($parent2->getID(), true);
+
         $tree = (new Builder())->buildTree();
         $by_title = $this->getTopLevelArticles($tree);
 
@@ -334,6 +344,61 @@ final class BuilderTest extends DbTestCase
         // Seen from anywhere else, the branch is folded again.
         $tree = (new Builder())->buildTree();
         $this->assertTrue($this->getTopLevelArticles($tree)['Animals']->collapsed);
+    }
+
+    public function testFoldedArticlesRenderWithoutTheirChildren(): void
+    {
+        $this->login();
+
+        $animals = $this->makeArticle('Animals');
+        $this->makeArticle('Cat article', $animals->getID());
+
+        $node = $this->getTopLevelArticles((new Builder())->buildTree())['Animals'];
+
+        // The row still announces that it can be unfolded, so the reader gets a
+        // toggle, but the children are left out of the render.
+        $this->assertTrue($node->collapsed);
+        $this->assertTrue($node->hasChildren());
+        $this->assertFalse($node->children_loaded);
+        $this->assertSame([], $node->getChildren());
+
+        // Unfolded, the same article renders them.
+        KnowbaseItem::setUnfoldedForCurrentUser($animals->getID(), true);
+        $node = $this->getTopLevelArticles((new Builder())->buildTree())['Animals'];
+        $this->assertFalse($node->collapsed);
+        $this->assertTrue($node->children_loaded);
+        $this->assertEquals(['Cat article'], array_column($node->getChildren(), 'title'));
+    }
+
+    public function testBuildChildrenReturnsTheChildrenOfOneArticle(): void
+    {
+        $this->login();
+
+        $animals = $this->makeArticle('Animals');
+        $birds   = $this->makeArticle('Birds', $animals->getID());
+        $this->makeArticle('Cat article', $animals->getID());
+        $this->makeArticle('Eagle article', $birds->getID());
+
+        $children = (new Builder())->buildChildren($animals->getID());
+        $this->assertEqualsCanonicalizing(
+            ['Birds', 'Cat article'],
+            array_column($children, 'title'),
+        );
+
+        // The children carry their own fold state, so the branch below them is
+        // fetched in turn rather than all at once.
+        $birds_node = array_column($children, null, 'title')['Birds'];
+        $this->assertTrue($birds_node->collapsed);
+        $this->assertTrue($birds_node->hasChildren());
+        $this->assertSame([], $birds_node->getChildren());
+    }
+
+    public function testBuildChildrenOfAnArticleThatIsNotVisible(): void
+    {
+        $this->login();
+
+        $this->assertSame([], (new Builder())->buildChildren(0));
+        $this->assertSame([], (new Builder())->buildChildren(99999999));
     }
 
     /**
