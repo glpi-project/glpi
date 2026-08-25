@@ -56,7 +56,15 @@ final class Builder
         'glpi_knowbaseitems.illustration',
     ];
 
-    /** @var array<int, true> */
+    /**
+     * Articles that render folded, as a lookup map.
+     *
+     * The knowledge base is folded by default.
+     * An article is unfolded when it is a root (the entry point of the tree),
+     * when the user unfolded it, or when it leads to the article being read.
+     *
+     * @var array<int, true>
+     */
     private array $folded_ids_lookup_map = [];
 
     /**
@@ -97,9 +105,6 @@ final class Builder
     {
         global $DB;
 
-        // Articles the current user has collapsed, restored on each render.
-        $this->folded_ids_lookup_map = array_fill_keys(KnowbaseItem::getFoldedIdsForCurrentUser(), true);
-
         // 1) All articles the current user may see (visibility applied).
         $criteria = KnowbaseItem::getListRequest([], 'browse');
         $criteria['SELECT'] = self::LIST_COLUMNS;
@@ -133,6 +138,16 @@ final class Builder
             : $this->withAncestors(array_intersect_key($matching_ids, $data), $parents_of);
 
         // 3) Roots = visible articles with no visible parent (promote-to-root).
+        $roots = [];
+        foreach ($visible_ids as $id) {
+            if (!isset($has_visible_parent[$id])) {
+                $roots[$id] = true;
+            }
+        }
+
+        // 4) Which of those articles render folded, see `$folded_ids_lookup_map`.
+        $this->folded_ids_lookup_map = $this->computeFoldedIds($visible_ids, $roots, $parents_of);
+
         $tree = new Tree();
         foreach ($visible_ids as $id) {
             if (isset($has_visible_parent[$id]) || !$this->isRendered($id)) {
@@ -168,6 +183,38 @@ final class Builder
             $article->addChild($this->buildArticle($child_id, $data, $children_of, $ancestors));
         }
         return $article;
+    }
+
+    /**
+     * Resolve the fold state of every visible article, see
+     * `$folded_ids_lookup_map`.
+     *
+     * @param int[] $visible_ids
+     * @param array<int, true> $roots
+     * @param array<int, int[]> $parents_of
+     *
+     * @return array<int, true>
+     */
+    private function computeFoldedIds(array $visible_ids, array $roots, array $parents_of): array
+    {
+        $unfolded = array_fill_keys(KnowbaseItem::getUnfoldedIdsForCurrentUser(), true);
+
+        // The branch leading to the article being read is always unfolded, so
+        // the reader can see where they are. It is not persisted: reading an
+        // article is not the same as opening a branch for good.
+        $on_current_branch = $this->current_id > 0
+            ? $this->withAncestors([$this->current_id => true], $parents_of)
+            : [];
+
+        $folded = [];
+        foreach ($visible_ids as $id) {
+            if (isset($roots[$id]) || isset($unfolded[$id]) || isset($on_current_branch[$id])) {
+                continue;
+            }
+            $folded[$id] = true;
+        }
+
+        return $folded;
     }
 
     private function isRendered(int $id): bool

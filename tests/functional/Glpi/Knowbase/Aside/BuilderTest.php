@@ -254,6 +254,88 @@ final class BuilderTest extends DbTestCase
         $this->fail('The root article is missing from the tree');
     }
 
+    public function testArticlesAreFoldedByDefaultExceptTheRoot(): void
+    {
+        $this->login();
+
+        $animals = $this->makeArticle('Animals');
+        $this->makeArticle('Cat article', $animals->getID());
+
+        $tree = (new Builder())->buildTree();
+
+        // The root is the entry point of the knowledge base, it is never folded.
+        $root = $tree->getArticles()[0];
+        $this->assertFalse($root->collapsed);
+
+        // Everything below it starts folded, so a large knowledge base does not
+        // open with every branch expanded.
+        $this->assertTrue($this->getTopLevelArticles($tree)['Animals']->collapsed);
+    }
+
+    public function testBranchLeadingToTheCurrentArticleIsUnfolded(): void
+    {
+        $this->login();
+
+        $animals = $this->makeArticle('Animals');
+        $birds   = $this->makeArticle('Birds', $animals->getID());
+        $eagle   = $this->makeArticle('Eagle article', $birds->getID());
+        $this->makeArticle('Plants');
+
+        $tree = (new Builder($eagle->getID()))->buildTree();
+        $by_title = $this->getTopLevelArticles($tree);
+
+        // Both ancestors of the read article are unfolded, so it is visible.
+        $animals_node = $by_title['Animals'];
+        $this->assertFalse($animals_node->collapsed);
+        $birds_node = array_column($animals_node->getChildren(), null, 'title')['Birds'];
+        $this->assertFalse($birds_node->collapsed);
+
+        // A branch that does not lead to it keeps the default.
+        $this->assertTrue($by_title['Plants']->collapsed);
+    }
+
+    public function testArticlesUnfoldedByTheUserAreRestored(): void
+    {
+        $this->login();
+
+        $plants = $this->makeArticle('Plants');
+        $this->makeArticle('Rose article', $plants->getID());
+        $animals = $this->makeArticle('Animals');
+        $this->makeArticle('Cat article', $animals->getID());
+
+        KnowbaseItem::setUnfoldedForCurrentUser($plants->getID(), true);
+
+        $by_title = $this->getTopLevelArticles((new Builder())->buildTree());
+        $this->assertFalse($by_title['Plants']->collapsed);
+        $this->assertTrue($by_title['Animals']->collapsed);
+
+        // Folding it again drops it from the stored ids.
+        KnowbaseItem::setUnfoldedForCurrentUser($plants->getID(), false);
+
+        $by_title = $this->getTopLevelArticles((new Builder())->buildTree());
+        $this->assertTrue($by_title['Plants']->collapsed);
+    }
+
+    public function testReadingAnArticleUnfoldsItsBranchWithoutStoringIt(): void
+    {
+        $this->login();
+
+        $animals = $this->makeArticle('Animals');
+        $birds   = $this->makeArticle('Birds', $animals->getID());
+        $eagle   = $this->makeArticle('Eagle article', $birds->getID());
+
+        // Reading an article reveals the branch leading to it even though the
+        // user never unfolded it, and reading it does not open that branch for
+        // good either.
+        $tree = (new Builder($eagle->getID()))->buildTree();
+        $this->assertFalse($this->getTopLevelArticles($tree)['Animals']->collapsed);
+        $this->assertSame([], KnowbaseItem::getUnfoldedIdsForCurrentUser());
+
+        // Seen from anywhere else, the branch is folded again.
+        $tree = (new Builder())->buildTree();
+        $this->assertTrue($this->getTopLevelArticles($tree)['Animals']->collapsed);
+    }
+
     /**
      * @param int|int[] $parent_id
      */

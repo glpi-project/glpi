@@ -99,10 +99,13 @@ test('A nested article dots menu acts on that article, not on its parent', async
     await kb.goto(viewed_id);
     await kb.waitForAsideReady();
 
-    // Load parent menu actions.
+    // Load parent menu actions. Revealing the child under its parent (the tree
+    // is folded by default) already interacts with the parent row, which
+    // prefetches them, so the waiter has to be armed before that.
     const parent_actions = page.waitForResponse(
         (response) => response.url().includes(`/Knowbase/${parent_id}/AsideActions`),
     );
+    await kb.doExpandAsideCategory(parent_name);
     await kb.getAsideArticleTitleLink(parent_name).hover();
     await parent_actions;
 
