@@ -855,8 +855,6 @@ class Contract extends CommonDBTM implements StateInterface
             ],
         ];
 
-        // Add tags for taggable itemtypes
-        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(static::class));
 
         return $tab;
     }

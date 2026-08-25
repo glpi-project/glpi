@@ -271,8 +271,6 @@ class PassiveDCEquipment extends CommonDBTM implements AssignableItemInterface, 
 
         $tab = array_merge($tab, DCRoom::rawSearchOptionsToAdd());
 
-        // Add tags for taggable itemtypes
-        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
     }

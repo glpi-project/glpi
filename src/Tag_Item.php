@@ -44,39 +44,26 @@ class Tag_Item extends CommonDBRelation
 
     /**
      * Attach a tag to an item.
-     * 
+     *
      * @param CommonDBTM $asset The item to which the tag should be attached.
      * @param int $tag_id The ID of the tag to attach.
-     * 
+     *
      * @return bool True if the tag was successfully attached, false otherwise.
      */
-    public static function attachTag(CommonDBTM $asset, int $tag_id): bool
+    public static function addTag(CommonDBTM $asset, int $tag_id): bool
     {
-        if (!$asset->isTaggable()) {
-            return false;
-        }
-
-        if ($asset->isNewItem()) {
-            return false;
-        }
-
-        if (self::hasTag($asset, $tag_id)) {
+        if (!$asset->isTaggable() || $asset->isNewItem() || self::hasTag($asset, $tag_id)) {
             return false;
         }
 
         $tag = new Tag();
-        if (!$tag->getFromDB($tag_id)) {
-            return false;
-        }
-
-        // Check that the tag's entity is visible from the current session
-        if (!$tag->checkEntity(true)) {
+        if (!$tag->getFromDB($tag_id) || !$tag->checkEntity(true)) {
             return false;
         }
 
         // Check if the tag is allowed to be attached to the given itemtype
         $allowed_itemtypes = $tag->getItemtypes();
-        if (count($allowed_itemtypes) === 0) {
+        if ($allowed_itemtypes === []) {
             $allowed_itemtypes = Tag_Itemtype::getTaggableItems();
         }
 
@@ -85,18 +72,11 @@ class Tag_Item extends CommonDBRelation
             return false;
         }
 
-        // Attach the tag to the item
-        $is_attached = (new self())->add([
+        return (bool) (new self())->add([
             'tags_id'  => $tag_id,
             'itemtype' => $asset::class,
             'items_id' => $asset->getID(),
         ]);
-
-        if (!$is_attached) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -107,17 +87,9 @@ class Tag_Item extends CommonDBRelation
      *
      * @return bool True if the tag was successfully detached, false otherwise.
      */
-    public static function detachTag(CommonDBTM $asset, int $tag_id): bool
+    public static function removeTag(CommonDBTM $asset, int $tag_id): bool
     {
-        if (!$asset->isTaggable()) {
-            return false;
-        }
-
-        if ($asset->isNewItem()) {
-            return false;
-        }
-
-        if (!self::hasTag($asset, $tag_id)) {
+        if (!$asset->isTaggable() || $asset->isNewItem() || !self::hasTag($asset, $tag_id)) {
             return false;
         }
 
@@ -139,35 +111,19 @@ class Tag_Item extends CommonDBRelation
      */
     public static function replaceTag(CommonDBTM $asset, int $old_tag_id, int $new_tag_id): bool
     {
-        if (!$asset->isTaggable()) {
-            return false;
-        }
-
-        if ($asset->isNewItem()) {
-            return false;
-        }
-
-        if (!self::hasTag($asset, $old_tag_id)) {
-            return false;
-        }
-
-        return self::detachTag($asset, $old_tag_id) && self::attachTag($asset, $new_tag_id);
+        return self::removeTag($asset, $old_tag_id) && self::addTag($asset, $new_tag_id);
     }
 
     /**
      * Clean all tags attached to an item.
-     * 
+     *
      * @param CommonDBTM $asset The item from which all tags should be detached.
-     * 
+     *
      * @return bool True if all tags were successfully detached, false otherwise.
      */
     public static function cleanTag(CommonDBTM $asset): bool
     {
-        if (!$asset->isTaggable()) {
-            return false;
-        }
-
-        if ($asset->isNewItem()) {
+        if (!$asset->isTaggable() || $asset->isNewItem()) {
             return false;
         }
 
@@ -187,11 +143,7 @@ class Tag_Item extends CommonDBRelation
      */
     public static function hasTag(CommonDBTM $asset, int $tag_id): bool
     {
-        if (!$asset->isTaggable()) {
-            return false;
-        }
-
-        if ($asset->isNewItem()) {
+        if (!$asset->isTaggable() || $asset->isNewItem()) {
             return false;
         }
 
@@ -204,18 +156,14 @@ class Tag_Item extends CommonDBRelation
 
     /**
      * Get IDs of tags currently attached to the given item.
-     * 
+     *
      * @param CommonDBTM $asset The item for which to retrieve attached tag IDs.
      *
      * @return list<int>
      */
     public static function getTagsForItem(CommonDBTM $item): array
     {
-        if (!$item->isTaggable()) {
-            return [];
-        }
-
-        if ($item->isNewItem()) {
+        if (!$item->isTaggable() || $item->isNewItem()) {
             return [];
         }
 
@@ -288,7 +236,7 @@ class Tag_Item extends CommonDBRelation
                 $tag_id = (int) ($input['peer_tags_id'] ?? 0);
                 foreach ($ids as $id) {
                     $item->fields['id'] = $id;
-                    if ($tag_id > 0 && self::attachTag($item, $tag_id)) {
+                    if ($tag_id > 0 && self::addTag($item, $tag_id)) {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
@@ -300,7 +248,7 @@ class Tag_Item extends CommonDBRelation
                 foreach ($ids as $id) {
                     $item->fields['id'] = $id;
                     $success = $tag_id > 0
-                        ? self::detachTag($item, $tag_id)
+                        ? self::removeTag($item, $tag_id)
                         : self::cleanTag($item);
                     if ($success) {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);

@@ -311,7 +311,6 @@ final class SearchOption implements ArrayAccess
                 $search[$itemtype][80]['field']         = 'completename';
                 $search[$itemtype][80]['name']          = Entity::getTypeName(1);
 
-                $fn_append_options(Tag::getSearchOptionsToAdd($itemtype));
                 break;
 
             default:
@@ -389,6 +388,13 @@ final class SearchOption implements ArrayAccess
         if (in_array($itemtype, $CFG_GLPI['socket_types'], true)) {
             $search[$itemtype]['socket'] = Socket::getTypeName(Session::getPluralNumber());
             $fn_append_options(Socket::getSearchOptionsToAdd($itemtype));
+        }
+
+        if (
+            in_array($itemtype, $CFG_GLPI['taggable_types'], true)
+            || $itemtype == AllAssets::class
+        ) {
+            $fn_append_options(Tag::getSearchOptionsToAdd($itemtype));
         }
 
         if ($withplugins) {

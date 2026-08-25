@@ -1408,7 +1408,7 @@ class CommonDBTM extends CommonGLPI
                     }
 
                     $this->post_addItem();
-                    $this->syncTags();
+                    $this->handleTags();
                     if ($this instanceof CacheableListInterface) {
                         $this->invalidateListCache();
                     }
@@ -1832,7 +1832,7 @@ class CommonDBTM extends CommonGLPI
                 }
 
                 $this->post_updateItem($history);
-                $this->syncTags();
+                $this->handleTags();
                 if ($this instanceof CacheableListInterface) {
                     $this->invalidateListCache();
                 }
@@ -4033,8 +4033,6 @@ class CommonDBTM extends CommonGLPI
             $tab = array_merge($tab, Project::rawSearchOptionsToAdd(static::class));
         }
 
-        // Add tags for taggable itemtypes
-        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(static::class));
 
         return $tab;
     }
@@ -6943,7 +6941,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      */
-    private function syncTags(): void
+    private function handleTags(): void
     {
         // Check if the itemtype is taggable and if the `_tags` input is set
         if (!isset($this->input['_tags']) || !$this->isTaggable()) {
@@ -6963,14 +6961,14 @@ class CommonDBTM extends CommonGLPI
         // Remove old tag associations
         foreach ($old_tags_ids as $tags_id) {
             if (!in_array($tags_id, $tags_id_input, true)) {
-                Tag_Item::detachTag($this, $tags_id);
+                Tag_Item::removeTag($this, $tags_id);
             }
         }
 
         // Add new tag associations
         foreach ($tags_id_input as $tags_id) {
             if (!in_array($tags_id, $old_tags_ids, true)) {
-                Tag_Item::attachTag($this, $tags_id);
+                Tag_Item::addTag($this, $tags_id);
             }
         }
     }

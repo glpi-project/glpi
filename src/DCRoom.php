@@ -264,8 +264,6 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
 
         $tab = array_merge($tab, Datacenter::rawSearchOptionsToAdd(get_class($this)));
 
-        // Add tags for taggable itemtypes
-        $tab = array_merge($tab, Tag::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
     }

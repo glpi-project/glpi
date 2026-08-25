@@ -116,9 +116,7 @@
         {{ fields.htmlField('', item.fields['name']|e, __('Title'), field_options) }}
     {% endif %}
 
-    {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
-        {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
-    {% endif %}
+    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
 
     {{ _self.null_field(params) }}
 

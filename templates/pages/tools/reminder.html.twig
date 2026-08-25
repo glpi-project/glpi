@@ -48,9 +48,7 @@
         full_width: true,
     }) }}
 
-    {% if call('Tag_Itemtype::isTaggableItemtype', [get_class(item)]) %}
-        {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
-    {% endif %}
+    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
 
     {% if params['from_planning_ajax'] is not defined %}
         {% set visibility_fields %}

@@ -35,20 +35,17 @@
 namespace tests\units;
 
 use CommonDBTM;
+use Computer;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\TagTrait;
-use Computer;
-use CommonDropdown;
-use CommonITILObject;
+use GlpiPlugin\Tester\Computer as TesterComputer;
 use MassiveAction;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use Printer;
-use ReflectionClass;
 use Symfony\Component\DomCrawler\Crawler;
+use Tag;
 use Tag_Item;
 use Tag_Itemtype;
-use GlpiPlugin\Tester\Computer as TesterComputer;
-use Tag;
 
 class Tag_ItemTest extends DbTestCase
 {
@@ -68,22 +65,22 @@ class Tag_ItemTest extends DbTestCase
         $computer_tag = $this->createTag(['name' => 'Computer Tag', '_itemtypes' => [Computer::class], 'entities_id' => $this->getTestRootEntity(true)]);
 
         // Try to attach a tag to an item that is not taggable
-        $this->assertFalse(Tag_Item::attachTag($rule, $all_assets_tag->getID()));
+        $this->assertFalse(Tag_Item::addTag($rule, $all_assets_tag->getID()));
 
         // Attach tags to taggable items
-        $this->assertTrue(Tag_Item::attachTag($computer, $all_assets_tag->getID()));
-        $this->assertTrue(Tag_Item::attachTag($printer, $all_assets_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer, $all_assets_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($printer, $all_assets_tag->getID()));
 
         // Try to attach the same tag again to the same item
-        $this->assertFalse(Tag_Item::attachTag($computer, $all_assets_tag->getID()));
+        $this->assertFalse(Tag_Item::addTag($computer, $all_assets_tag->getID()));
 
         // Attach a tag that is restricted to a specific itemtype
-        $this->assertTrue(Tag_Item::attachTag($computer, $computer_tag->getID()));
-        $this->assertFalse(Tag_Item::attachTag($computer, $computer_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer, $computer_tag->getID()));
+        $this->assertFalse(Tag_Item::addTag($computer, $computer_tag->getID()));
 
         // Try to attach a tag to plugin itemtype and a custom itemtype
-        $this->assertTrue(Tag_Item::attachTag($custom_asset, $all_assets_tag->getID()));
-        $this->assertTrue(Tag_Item::attachTag($tester_computer, $all_assets_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($custom_asset, $all_assets_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($tester_computer, $all_assets_tag->getID()));
 
         // Verify that the tag is attached to the asset
         $this->assertFalse(Tag_Item::hasTag($rule, $all_assets_tag->getID()));
@@ -96,22 +93,22 @@ class Tag_ItemTest extends DbTestCase
         $this->assertTrue(Tag_Item::hasTag($tester_computer, $all_assets_tag->getID()));
 
         // Try to detach a tag from an item that is not taggable
-        $this->assertFalse(Tag_Item::detachTag($rule, $all_assets_tag->getID()));
+        $this->assertFalse(Tag_Item::removeTag($rule, $all_assets_tag->getID()));
 
         // Detach tags from taggable items
-        $this->assertTrue(Tag_Item::detachTag($computer, $all_assets_tag->getID()));
+        $this->assertTrue(Tag_Item::removeTag($computer, $all_assets_tag->getID()));
 
         // Try to detach a tag that is not attached to the item
-        $this->assertFalse(Tag_Item::detachTag($computer, $all_assets_tag->getID()));
+        $this->assertFalse(Tag_Item::removeTag($computer, $all_assets_tag->getID()));
 
         // Try to detach a unrelated tag from a taggable item
-        $this->assertFalse(Tag_Item::detachTag($printer, $computer_tag->getID()));
+        $this->assertFalse(Tag_Item::removeTag($printer, $computer_tag->getID()));
 
         // Try to detach a tag from a plugin itemtype
-        $this->assertTrue(Tag_Item::detachTag($tester_computer, $all_assets_tag->getID()));
+        $this->assertTrue(Tag_Item::removeTag($tester_computer, $all_assets_tag->getID()));
 
         // Try to detach a tag from a custom itemtype
-        $this->assertTrue(Tag_Item::detachTag($custom_asset, $all_assets_tag->getID()));
+        $this->assertTrue(Tag_Item::removeTag($custom_asset, $all_assets_tag->getID()));
 
         // Verify that the tag is detached from the asset
         $this->assertFalse(Tag_Item::hasTag($computer, $all_assets_tag->getID()));
@@ -127,7 +124,7 @@ class Tag_ItemTest extends DbTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
         ]);
         $this->setEntity('_test_root_entity', false);
-        $this->assertFalse(Tag_Item::attachTag($computer, $foreign_tag->getID()));
+        $this->assertFalse(Tag_Item::addTag($computer, $foreign_tag->getID()));
         $this->assertFalse(Tag_Item::hasTag($computer, $foreign_tag->getID()));
     }
 
@@ -141,8 +138,8 @@ class Tag_ItemTest extends DbTestCase
         $computer_tag = $this->createTag(['name' => 'Computer Tag', '_itemtypes' => [Computer::class], 'entities_id' => $this->getTestRootEntity(true)]);
 
         // Attach tags to taggable items
-        $this->assertTrue(Tag_Item::attachTag($computer, $all_assets_tag->getID()));
-        $this->assertTrue(Tag_Item::attachTag($computer, $computer_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer, $all_assets_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer, $computer_tag->getID()));
 
         // Clean tags from taggable items
         $this->assertTrue(Tag_Item::cleanTag($computer));
@@ -163,13 +160,13 @@ class Tag_ItemTest extends DbTestCase
         $tag = $this->createTag(['name' => 'Tag', 'entities_id' => $this->getTestRootEntity(true)]);
         $printer_tag = $this->createTag(['name' => 'Printer Tag', '_itemtypes' => [Printer::class], 'entities_id' => $this->getTestRootEntity(true)]);
 
-        $this->assertTrue(Tag_Item::attachTag($computer, $tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer, $tag->getID()));
 
         // Try to replace a tag that is not attached to the computer
         $this->assertFalse(Tag_Item::replaceTag($computer, $old_tag->getID(), $new_tag->getID()));
 
         // Attach the old tag to the computer
-        $this->assertTrue(Tag_Item::attachTag($computer, $old_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer, $old_tag->getID()));
 
         // Try to replace a tag that is not allowed for the computer's itemtype
         $this->assertFalse(Tag_Item::replaceTag($computer, $old_tag->getID(), $printer_tag->getID()));
@@ -177,7 +174,7 @@ class Tag_ItemTest extends DbTestCase
         $this->assertFalse(Tag_Item::hasTag($computer, $printer_tag->getID()));
 
         // Re-attach the old tag to test the successful replacement path
-        $this->assertTrue(Tag_Item::attachTag($computer, $old_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer, $old_tag->getID()));
 
         // Replace the old tag with the new tag
         $this->assertTrue(Tag_Item::replaceTag($computer, $old_tag->getID(), $new_tag->getID()));
@@ -200,9 +197,9 @@ class Tag_ItemTest extends DbTestCase
         $computer_tag = $this->createTag(['name' => 'Computer Tag', '_itemtypes' => [Computer::class], 'entities_id' => $this->getTestRootEntity(true)]);
 
         // Attach tags to taggable items
-        $this->assertTrue(Tag_Item::attachTag($computer, $all_assets_tag->getID()));
-        $this->assertTrue(Tag_Item::attachTag($computer, $computer_tag->getID()));
-        $this->assertTrue(Tag_Item::attachTag($computer2, $all_assets_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer, $all_assets_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer, $computer_tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer2, $all_assets_tag->getID()));
 
         $this->assertSame(
             [$all_assets_tag->getID(), $computer_tag->getID()],
@@ -222,20 +219,20 @@ class Tag_ItemTest extends DbTestCase
             'name' => 'Computer Tag',
             '_itemtypes' => [Computer::class],
             'is_active' => 1,
-            'entities_id' => $this->getTestRootEntity(true)
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         $printer_tag = $this->createTag([
             'name' => 'Printer Tag',
             '_itemtypes' => [Printer::class],
             'is_active' => 1,
-            'entities_id' => $this->getTestRootEntity(true)
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         $all_assets_tag = $this->createTag([
             'name' => 'All Assets Tag',
             'is_active' => 1,
-            'entities_id' => $this->getTestRootEntity(true)
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // Restricted to Computer but inactive
@@ -243,7 +240,7 @@ class Tag_ItemTest extends DbTestCase
             'name' => 'Inactive Computer Tag',
             '_itemtypes' => [Computer::class],
             'is_active' => 0,
-            'entities_id' => $this->getTestRootEntity(true)
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
 
         // A tag with no restriction is allowed for every itemtype
@@ -270,11 +267,14 @@ class Tag_ItemTest extends DbTestCase
      * Assert that the given tags match the expected tag IDs, regardless of order.
      *
      * @param list<int> $expected_tags_ids
-     * @param list<Tag> $tags
+     * @param iterable<Tag> $tags
      */
-    private function assertSameTagIds(array $expected_tags_ids, array $tags): void
+    private function assertSameTagIds(array $expected_tags_ids, iterable $tags): void
     {
-        $actual_tags_ids = array_map(static fn (Tag $tag) => $tag->getID(), $tags);
+        $actual_tags_ids = [];
+        foreach ($tags as $tag) {
+            $actual_tags_ids[] = $tag->getID();
+        }
         sort($expected_tags_ids);
         sort($actual_tags_ids);
         $this->assertSame($expected_tags_ids, $actual_tags_ids);
@@ -376,7 +376,7 @@ class Tag_ItemTest extends DbTestCase
         $this->assertFalse(Tag_Item::hasTag($computer1, $printer_tag->getID()));
         $this->assertFalse(Tag_Item::hasTag($computer2, $printer_tag->getID()));
 
-        $this->assertTrue(Tag_Item::detachTag($computer1, $all_assets_tag->getID()));
+        $this->assertTrue(Tag_Item::removeTag($computer1, $all_assets_tag->getID()));
 
         // Add a tag to one computer that has it and one that doesn't
         $this->processTagMassiveAction(
@@ -424,10 +424,10 @@ class Tag_ItemTest extends DbTestCase
         $tag1 = $this->createTag(['name' => 'Tag 1 for MA remove', 'entities_id' => $this->getTestRootEntity(true)]);
         $tag2 = $this->createTag(['name' => 'Tag 2 for MA remove', 'entities_id' => $this->getTestRootEntity(true)]);
 
-        $this->assertTrue(Tag_Item::attachTag($computer1, $tag1->getID()));
-        $this->assertTrue(Tag_Item::attachTag($computer1, $tag2->getID()));
-        $this->assertTrue(Tag_Item::attachTag($computer2, $tag1->getID()));
-        $this->assertTrue(Tag_Item::attachTag($computer2, $tag2->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer1, $tag1->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer1, $tag2->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer2, $tag1->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer2, $tag2->getID()));
 
         // Remove the tag from both computers: both succeed
         $this->processTagMassiveAction(
@@ -453,7 +453,7 @@ class Tag_ItemTest extends DbTestCase
             2
         );
 
-        $this->assertTrue(Tag_Item::attachTag($computer1, $tag1->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer1, $tag1->getID()));
 
         // Remove a tag from one computer that has it and one that doesn't
         $this->processTagMassiveAction(
@@ -469,8 +469,8 @@ class Tag_ItemTest extends DbTestCase
         $this->assertFalse(Tag_Item::hasTag($computer2, $tag1->getID()));
         $this->assertTrue(Tag_Item::hasTag($computer2, $tag2->getID()));
 
-        $this->assertTrue(Tag_Item::attachTag($computer1, $tag1->getID()));
-        $this->assertTrue(Tag_Item::attachTag($computer2, $tag1->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer1, $tag1->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer2, $tag1->getID()));
 
         // "Remove all at once" is submitted as an empty/0 peer_tags_id: both succeed
         $this->processTagMassiveAction(

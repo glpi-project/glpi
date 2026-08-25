@@ -50,13 +50,3 @@
 {% else %}
     {{ dropdown_html|raw }}
 {% endif %}
-
-<script type="module">
-    import('/js/modules/Form/TagDropdownColorizer.js').then((m) => {
-        new m.default(
-            {{ data.bg_colors|json_encode|raw }},
-            {{ data.text_colors|json_encode|raw }},
-            'select[data-glpi-tag-dropdown-uuid="{{ rand }}"]'
-        );
-    });
-</script>

@@ -483,7 +483,7 @@ class TagTest extends DbTestCase
             'name'        => 'Test Computer for Tag Purge',
             'entities_id' => $this->getTestRootEntity(true),
         ]);
-        $this->assertTrue(Tag_Item::attachTag($computer, $tag->getID()));
+        $this->assertTrue(Tag_Item::addTag($computer, $tag->getID()));
 
         $this->deleteItem(Tag::class, $tag->getID());
 
@@ -635,7 +635,7 @@ class TagTest extends DbTestCase
             'bg_color'    => '#222222',
             'entities_id' => $this->getTestRootEntity(true),
         ]);
-        $printer_tag = $this->createTag([
+        $this->createTag([
             'name'        => 'Printer Tag',
             '_itemtypes'  => [Printer::class],
             'is_active'   => 1,
@@ -676,12 +676,12 @@ class TagTest extends DbTestCase
                 'bg_colors'   => [
                     $computer_tag->getID()   => '#222222',
                     $all_assets_tag->getID() => '#666666',
-                    $computer_printer_tag->getID() => '#888888'
+                    $computer_printer_tag->getID() => '#888888',
                 ],
                 'text_colors' => [
                     $computer_tag->getID()   => '#111111',
                     $all_assets_tag->getID() => '#555555',
-                    $computer_printer_tag->getID() => '#777777'
+                    $computer_printer_tag->getID() => '#777777',
                 ],
             ],
             Tag::getTagsDropdownData(Computer::class)
