@@ -141,6 +141,75 @@ class DBTest extends GLPITestCase
         $this->assertSame($expected, \DBmysql::quoteValue($raw));
     }
 
+    public static function dataInterpolateParams(): iterable
+    {
+        yield ['SELECT * FROM `glpi_computers`', null, 'SELECT * FROM `glpi_computers`'];
+        yield ['SELECT * FROM `glpi_computers`', [], 'SELECT * FROM `glpi_computers`'];
+
+        // nominal case, several placeholders
+        yield [
+            'SELECT * FROM `glpi_computers` WHERE `name` = ? AND `id` = ?',
+            ['foo', 42],
+            'SELECT * FROM `glpi_computers` WHERE `name` = \'foo\' AND `id` = \'42\'',
+        ];
+
+        // special values
+        yield ['SELECT * FROM `t` WHERE `a` = ?', [null], 'SELECT * FROM `t` WHERE `a` = NULL'];
+        yield ['SELECT * FROM `t` WHERE `a` = ?', [true], 'SELECT * FROM `t` WHERE `a` = 1'];
+        yield ['SELECT * FROM `t` WHERE `a` = ?', [false], 'SELECT * FROM `t` WHERE `a` = 0'];
+
+        // a value used to be handled as a regex replacement string: `$1` was expanded as a
+        // (non existing) capturing group, and silently dropped from the displayed query
+        yield [
+            'SELECT * FROM `t` WHERE `a` = ?',
+            ['$1 and ${2}'],
+            'SELECT * FROM `t` WHERE `a` = \'$1 and ${2}\'',
+        ];
+
+        // a `?` contained in a value used to be picked as the next placeholder, shifting
+        // every remaining parameter
+        yield [
+            'SELECT * FROM `t` WHERE `a` = ? AND `b` = ?',
+            ['what?', 'z'],
+            'SELECT * FROM `t` WHERE `a` = \'what?\' AND `b` = \'z\'',
+        ];
+
+        // quoting is left untouched
+        yield [
+            'SELECT * FROM `t` WHERE `a` = ?',
+            ["O'Brien"],
+            'SELECT * FROM `t` WHERE `a` = \'O\\\'Brien\'',
+        ];
+        yield [
+            'SELECT * FROM `t` WHERE `a` = ?',
+            ['back\\slash'],
+            'SELECT * FROM `t` WHERE `a` = \'back\\\\slash\'',
+        ];
+
+        // keys are ignored, just like when binding
+        yield [
+            'SELECT * FROM `t` WHERE `a` = ? AND `b` = ?',
+            ['a' => 'foo', 'b' => 'bar'],
+            'SELECT * FROM `t` WHERE `a` = \'foo\' AND `b` = \'bar\'',
+        ];
+
+        // more parameters than placeholders
+        yield ['SELECT * FROM `t` WHERE `a` = ?', ['foo', 'bar'], 'SELECT * FROM `t` WHERE `a` = \'foo\''];
+        // more placeholders than parameters
+        yield [
+            'SELECT * FROM `t` WHERE `a` = ? AND `b` = ?',
+            ['foo'],
+            'SELECT * FROM `t` WHERE `a` = \'foo\' AND `b` = ?',
+        ];
+    }
+
+    #[DataProvider('dataInterpolateParams')]
+    public function testInterpolateParams(string $query, ?array $params, string $expected)
+    {
+        $instance = new \DB();
+        $this->assertSame($expected, $instance->interpolateParams($query, $params));
+    }
+
 
     public static function dataInsert()
     {
