@@ -39,6 +39,13 @@ final class Article
     /** @var Article[] */
     private array $children = [];
 
+    /**
+     * @param bool $has_children    Whether the article has children to show,
+     *                              whether or not they are loaded.
+     * @param bool $children_loaded Whether `getChildren()` holds them. A folded
+     *                              article renders without its children, which
+     *                              the aside fetches when the reader unfolds it.
+     */
     public function __construct(
         public readonly int $id,
         public readonly string $title,
@@ -46,6 +53,8 @@ final class Article
         public readonly string $link,
         public readonly bool $is_current = false,
         public readonly bool $collapsed = false,
+        public readonly bool $has_children = false,
+        public readonly bool $children_loaded = true,
     ) {}
 
     public function addChild(self $child): void
@@ -61,6 +70,6 @@ final class Article
 
     public function hasChildren(): bool
     {
-        return $this->children !== [];
+        return $this->has_children || $this->children !== [];
     }
 }

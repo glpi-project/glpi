@@ -35,48 +35,44 @@
 namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Http\Firewall;
-use Glpi\Security\Attribute\SecurityStrategy;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Knowbase\Aside\Builder;
 use KnowbaseItem;
-use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * Persists whether a knowledge base aside article is collapsed (folded) for the
- * current user.
+ * Renders the children of a single knowledge base article, for the aside tree.
+ *
+ * The tree is folded by default and renders a folded article without its
+ * children: rendering the whole knowledge base up front is what makes a large
+ * one expensive. This fills a branch in when the reader unfolds it.
  */
-final class AsideArticleFoldController extends AbstractController
+final class AsideArticleChildrenController extends AbstractController
 {
     #[Route(
-        "/Knowbase/Aside/Article/{id}/Fold",
-        name: "knowbase_aside_article_fold",
+        "/Knowbase/Aside/Article/{id}/Children",
+        name: "knowbase_aside_article_children",
         requirements: [
             'id' => '\d+',
         ],
-        methods: 'POST',
+        methods: 'GET',
     )]
-    #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(int $id, Request $request): Response
     {
-        $collapsed = $request->getPayload()->get('collapsed');
-        if ($collapsed === null) {
-            throw new BadRequestHttpException();
+        if (!KnowbaseItem::canView()) {
+            throw new AccessDeniedHttpException();
         }
 
-        if (!Session::isAuthenticated()) {
-            // Nothing to be done as the user don't exist in the database, we
-            // can't persist any data.
-            return new Response();
-        }
+        // Visibility is applied by the builder, which returns nothing for an
+        // article the current user may not see.
+        $children = (new Builder($request->query->getInt('current_id')))->buildChildren($id);
 
-        KnowbaseItem::setUnfoldedForCurrentUser(
-            id: $id,
-            unfolded: !((bool) $collapsed)
-        );
-
-        return new Response(); // OK
+        return $this->render('pages/tools/kb/aside_children.html.twig', [
+            'children'     => $children,
+            'can_create'   => KnowbaseItem::canCreate(),
+            'show_actions' => KnowbaseItem::canShowAsideActions(),
+        ]);
     }
 }

@@ -3421,11 +3421,15 @@ TWIG, $twig_params);
     }
 
     /**
-     * Ids of the KB aside articles the current user has collapsed (folded).
+     * Ids of the aside articles the current user has unfolded.
+     *
+     * The knowledge base is folded by default, so this holds what the user
+     * opened. Articles unfolded because they lead to the article being read are
+     * not stored, see `Glpi\Knowbase\Aside\Builder`.
      *
      * @return int[]
      */
-    public static function getFoldedIdsForCurrentUser(): array
+    public static function getUnfoldedIdsForCurrentUser(): array
     {
         $user_id = Session::getLoginUserID();
         if ($user_id === false) {
@@ -3437,15 +3441,15 @@ TWIG, $twig_params);
             return [];
         }
 
-        $ids = json_decode($user->fields['folded_knowbaseitems'] ?? '[]', true);
+        $ids = json_decode($user->fields['unfolded_knowbaseitems'] ?? '[]', true);
 
         return array_map('intval', array_values(is_array($ids) ? $ids : []));
     }
 
     /**
-     * Persist whether an aside article is collapsed (folded) for the current user.
+     * Persist whether an aside article is unfolded for the current user.
      */
-    public static function setFoldedForCurrentUser(int $id, bool $folded): void
+    public static function setUnfoldedForCurrentUser(int $id, bool $unfolded): void
     {
         $user_id = Session::getLoginUserID();
         if ($user_id === false) {
@@ -3453,16 +3457,16 @@ TWIG, $twig_params);
         }
 
         $ids = array_values(array_filter(
-            self::getFoldedIdsForCurrentUser(),
+            self::getUnfoldedIdsForCurrentUser(),
             static fn(int $existing): bool => $existing !== $id,
         ));
-        if ($folded) {
+        if ($unfolded) {
             $ids[] = $id;
         }
 
         (new User())->update([
-            'id'                   => $user_id,
-            'folded_knowbaseitems' => json_encode($ids),
+            'id'                     => $user_id,
+            'unfolded_knowbaseitems' => json_encode($ids),
         ]);
     }
 
@@ -3481,14 +3485,6 @@ TWIG, $twig_params);
             return null;
         }
 
-        // Whether to render the per-article dots menu trigger. This is a cheap
-        // session-level check: the menu content itself (and its per-article
-        // permission gating) is lazy-loaded on demand, so we never load every
-        // tree article here just to know if any action is available.
-        $show_actions = KnowbaseItem_Favorite::canCreate()
-            || self::canUpdate()
-            || self::canPurge();
-
         return TemplateRenderer::getInstance()->render(
             'pages/tools/kb/aside.html.twig',
             [
@@ -3497,8 +3493,23 @@ TWIG, $twig_params);
                 'current_is_favorite' => $current_is_favorite,
                 'has_other_favorites' => $has_other_favorites,
                 'can_create'          => self::canCreate(),
-                'show_actions'        => $show_actions,
+                'show_actions'        => self::canShowAsideActions(),
             ]
         );
+    }
+
+    /**
+     * Whether the aside renders the per-article dots menu trigger. This is a
+     * cheap session-level check: the menu content itself (and its per-article
+     * permission gating) is lazy-loaded on demand, so we never load every tree
+     * article just to know if any action is available.
+     *
+     * Shared with `AsideSearchController`, which renders the same rows.
+     */
+    public static function canShowAsideActions(): bool
+    {
+        return KnowbaseItem_Favorite::canCreate()
+            || self::canUpdate()
+            || self::canPurge();
     }
 }

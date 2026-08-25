@@ -30,84 +30,14 @@
  # ---------------------------------------------------------------------
  #}
 
-{#
- # Renders a single article, recursing into its children.
- #
- # - `can_create`   whether to show the "+" (create a child article) action.
- # - `show_actions` whether to show the per-article kebab (favorite/FAQ/delete) menu.
- # - `add_margin`   extra bottom margin on the row (used by the favorites list).
- # - `favorite_state` null | 'active' | 'pending' (used by the favorites list; see
- #   `data-glpi-kb-favorite-current` consumers in AsideController.js).
- #}
-{% macro render_article(article, can_create = false, show_actions = false, add_margin = false, favorite_state = null) %}
-    {% import _self as macros %}
-    {% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
-    {% set is_node = article.hasChildren or can_create %}
-    <li
-        data-glpi-kb-article-id="{{ article.id }}"
-        {% if is_node %}
-            data-glpi-kb-aside-category
-            {{ article.collapsed ? 'data-glpi-kb-aside-category-collapsed' : '' }}
-            role="group"
-            aria-label="{{ article.title }}"
-        {% endif %}
-        {% if favorite_state is not null %}
-            data-glpi-kb-favorite-current="{{ favorite_state }}"
-        {% endif %}
-        {% if article.is_current %}
-            data-glpi-kb-article-current
-            aria-current="page"
-        {% endif %}
-        class="article {{ is_node ? 'node' : '' }} {{ add_margin ? 'mb-2' : '' }}"
-    >
-        <div class="article-line d-flex align-items-center {{ is_node ? 'mb-2' : '' }}" {{ is_node ? 'data-glpi-kb-aside-category-header' : '' }}>
-            {% if article.hasChildren %}
-                <button
-                    type="button"
-                    class="d-flex align-items-center p-0 border-0 bg-transparent"
-                    data-glpi-kb-aside-category-toggle
-                    aria-label="{{ article.title }}"
-                    aria-expanded="{{ article.collapsed ? 'false' : 'true' }}"
-                >
-                    <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
-                </button>
-            {% endif %}
-            <a class="text-dark text-hover-link text-truncate flex-grow-1" href="{{ article.link }}">
-                <span data-glpi-kb-article-illustration data-testid="kb-illustration">
-                    {% if article.illustration %}
-                        {{ render_illustration(article.illustration, 20) }}
-                    {% endif %}
-                </span>
-                <span data-glpi-kb-article-title>{{ article.title }}</span>
-            </a>
-            {% if can_create %}
-                <button
-                    type="button"
-                    class="d-flex align-items-center ms-2 p-1 text-secondary border-0 bg-transparent"
-                    data-glpi-kb-aside-category-add="{{ article.id }}"
-                    aria-label="{{ __('Create an article under %s')|format(article.title) }}"
-                    title="{{ __('Create a child article under %s')|format(article.title) }}"
-                >
-                    <i class="ti ti-plus" aria-hidden="true"></i>
-                </button>
-            {% endif %}
-            {% if show_actions %}
-                {{ actions_menu.render_actions_menu_lazy() }}
-            {% endif %}
-        </div>
-        {% if is_node %}
-            <ul>
-                {% for child in article.getChildren %}
-                    {{ macros.render_article(child, can_create, show_actions) }}
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </li>
-{% endmacro %}
-
-{% import _self as macros %}
+{% import "pages/tools/kb/_article_row.html.twig" as macros %}
+{% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
 
 {% set hide_favorites = not has_other_favorites and not current_is_favorite %}
+
+{% if show_actions %}
+    {{ actions_menu.render_actions_menu_placeholder() }}
+{% endif %}
 
 {# Apply the persisted collapsed state before first paint to avoid a flash of the open aside. #}
 <script>
@@ -208,11 +138,7 @@
     data-glpi-kb-aside-tree
     data-testid="aside-tree"
 >
-    <ul class="kb-tree ps-0">
-        {% for article in tree.getArticles %}
-            {{ macros.render_article(article, can_create, show_actions) }}
-        {% endfor %}
-    </ul>
+    {{ include('pages/tools/kb/aside_tree.html.twig') }}
     <p class="text-muted" data-glpi-kb-aside-no-results hidden>
         {{ __("No articles found.") }}
     </p>

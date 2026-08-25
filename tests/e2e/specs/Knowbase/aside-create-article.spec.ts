@@ -220,3 +220,68 @@ test('the "+" on a folded article expands it, so the inline input is usable', as
     await expect(kb.getAsideTreeArticleRow(new_id)).toBeVisible();
     await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
 });
+
+// Regression test that make sure we can create a child into a folded article.
+test('the inline input survives the lazy load of a folded article\'s children', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const read_name = `E2E Lazy Read ${unique}`;
+    const parent_name = `E2E Lazy Parent ${unique}`;
+    const child_name = `E2E Lazy Child ${unique}`;
+    const article_title = `E2E Lazy New ${unique}`;
+
+    // The article being read is unrelated to the parent below, so that parent
+    // renders folded: its children are then not in the DOM at all, and
+    // unfolding it has to fetch them.
+    const read_id = await api.createItem('KnowbaseItem', {
+        name: read_name,
+        answer: 'Read content',
+        entities_id: getWorkerEntityId(),
+    });
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    // Slow the children endpoint down, to widen the window in which its
+    // response can land on top of the inline input.
+    await page.route('**/Knowbase/Aside/Article/*/Children*', async (route) => {
+        const response = await route.fetch();
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await route.fulfill({ response });
+    });
+
+    await kb.goto(read_id);
+    await kb.waitForAsideReady();
+
+    const parent_toggle = kb.getAsideCategoryToggle(parent_name);
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'false');
+
+    const add_button = kb.getAsideCategoryAddButton(parent_name);
+    await kb.getAsideArticleTitleLink(parent_name).hover();
+    await add_button.click();
+
+    const inline_input = kb.getAsideCategoryCreateInput(parent_name);
+    await inline_input.fill(article_title);
+
+    // The fetched children fill the very list the input was inserted into.
+    // Once they are here, the input and what was typed into it must have
+    // survived.
+    await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toBeVisible();
+    await expect(inline_input).toHaveValue(article_title);
+    await expect(inline_input).toBeFocused();
+
+    // And it still creates.
+    await inline_input.press('Enter');
+    await expect(page).toHaveURL(/knowbaseitem\.form\.php\?id=\d+/);
+    await expect(page.getByTestId('subject')).toHaveText(article_title);
+});

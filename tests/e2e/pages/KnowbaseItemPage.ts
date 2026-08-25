@@ -683,6 +683,19 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
+     * Unfold an article of the aside tree, unless it already is unfolded. The
+     * tree is folded by default, so a nested row has to be revealed before it
+     * can be interacted with.
+     */
+    public async doExpandAsideCategory(title: string): Promise<void>
+    {
+        const toggle = this.getAsideCategoryToggle(title);
+        if (await toggle.getAttribute('aria-expanded') === 'false') {
+            await toggle.click();
+        }
+    }
+
+    /**
      * Toggle an article and wait for its fold state to be persisted server-side.
      * Persistence is a fire-and-forget POST, so callers that reload right after
      * toggling must wait for it, otherwise the reload can abort the in-flight
