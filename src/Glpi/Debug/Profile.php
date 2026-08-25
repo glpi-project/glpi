@@ -46,6 +46,11 @@ use function Safe\json_encode;
 
 final class Profile
 {
+    /**
+     * Maximum length, in bytes, of a bound value kept for debug display.
+     */
+    private const MAX_PARAM_LENGTH = 2048;
+
     private string $id;
 
     private ?string $parent_id;
@@ -155,6 +160,33 @@ final class Profile
     }
 
     /**
+     * Make a bound value safe to JSON encode.
+     *
+     * The whole debug info is JSON encoded, and a single value that is not valid UTF-8 makes
+     * that encoding fail: the AJAX endpoint throws, and the toolbar bootstrap in the page
+     * emits broken JavaScript. Since the client cannot recover from a failed encoding, binary
+     * and oversized values are replaced here, before they are stored.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     */
+    private function sanitizeBoundValue(mixed $value): mixed
+    {
+        if (!is_string($value)) {
+            return $value;
+        }
+        if (!mb_check_encoding($value, 'UTF-8')) {
+            return sprintf('<binary: %d bytes>', strlen($value));
+        }
+        if (strlen($value) > self::MAX_PARAM_LENGTH) {
+            return mb_strcut($value, 0, self::MAX_PARAM_LENGTH)
+                . sprintf('… <truncated, %d bytes>', strlen($value));
+        }
+        return $value;
+    }
+
+    /**
      * @param string $query
      * @param ?array<int|string, mixed> $params
      * @param float $time
@@ -176,6 +208,13 @@ final class Profile
                 'queries' => [],
             ];
         }
+
+        //interpolate from the sanitized values, so that a binary value cannot make the whole
+        //debug info unencodable while still leaving the query readable
+        if ($params !== null) {
+            $params = array_map($this->sanitizeBoundValue(...), $params);
+        }
+
         $next_num = count($this->additional_info['sql']['queries'] ?? []);
         $this->additional_info['sql']['queries'][] = [
             'num' => $next_num,

@@ -2,7 +2,7 @@
     /**
      * @typedef {{ id: string, parent_id: string|null, category: string, name: string, start: number, end: number }} ProfilerSection
      * @typedef {{ execution_time: number, memory_usage: number, memory_peak: number, memory_limit: number }} ServerPerformanceMetrics
-     * @typedef {{ total_requests: number, total_duration: number, queries: { request_id: string, num: number, query: string, time: number, rows: number, warnings: string[], errors: string[] } }} SQLMetrics
+     * @typedef {{ total_requests: number, total_duration: number, queries: { request_id: string, num: number, query: string, raw_query: string, params: Array|Object|null, time: number, rows: number, warnings: string, errors: string } }} SQLMetrics
      * @typedef {{ id: string, parent_id: string, server_performance: ServerPerformanceMetrics, sql: SQLMetrics, globals: Object.<string, string>, [profiler]: ProfilerSection[] }} Profile
      * @typedef {{ id: string, data: Object.<string, string>, url: string, server_global: Object.<string, string>, type: string, start: Date, time: number, status: number, status_type: string, profile: Profile|null }} AJAXRequestData
      * @typedef {{ x: number, y: number, width: number, height: number }} ClientTimingBounds
