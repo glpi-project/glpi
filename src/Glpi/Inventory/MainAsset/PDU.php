@@ -85,7 +85,6 @@ class PDU extends NetworkEquipment
                 ->setAgent($this->getAgent())
                 ->setEntityID($this->getEntityID())
                 ->setEntityRecursive($this->getEntityRecursive());
-            $this->plugs->handleLinks();
             $this->plugs->handle();
         }
     }

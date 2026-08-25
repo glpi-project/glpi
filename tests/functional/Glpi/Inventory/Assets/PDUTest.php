@@ -314,6 +314,10 @@ class PDUTest extends AbstractInventoryAsset
 
         $plug_data = reset($plugs);
         $this->assertSame('Server_Blade_01', $plug_data['name']);
+
+        $plugtype = new \PlugType();
+        $this->assertTrue($plugtype->getFromDB($plug_data['plugtypes_id']));
+        $this->assertSame('C15', $plugtype->fields['name']);
     }
 
     public function testPduGeneralFields(): void
@@ -529,7 +533,7 @@ class PDUTest extends AbstractInventoryAsset
         $this->assertCount(2, $plugs);
     }
 
-    /*public function testLockedFieldForeignKeyAndPlug(): void
+    public function testLockedFieldForeignKeyAndPlug(): void
     {
         global $DB;
 
@@ -552,5 +556,5 @@ class PDUTest extends AbstractInventoryAsset
         $plug = new \Plug();
         $plugs = $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]);
         $this->assertCount(2, $plugs);
-    }*/
+    }
 }

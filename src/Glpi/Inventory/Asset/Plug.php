@@ -39,6 +39,8 @@ use Plug as GlobalPlug;
 
 class Plug extends InventoryAsset
 {
+    protected ?int $current_key = null;
+
     public function prepare(): array
     {
         $plug_list = [];
@@ -69,23 +71,18 @@ class Plug extends InventoryAsset
 
     public function handle(): void
     {
+        $main_item = $this->item;
 
         // load all plug from DB
         $plug = new GlobalPlug();
         $db_plugs = $plug->find([
-            'itemtype_main' => $this->item::class,
-            'items_id_main' => $this->item->fields['id'],
+            'itemtype_main' => $main_item::class,
+            'items_id_main' => $main_item->fields['id'],
         ]);
 
         // handle each plug from inventory
-        foreach ($this->data as $val) {
+        foreach ($this->data as $data_key => $val) {
             $name = (string) ($val->name ?? $val->number ?? ''); // rely to number as Glpi-Agent
-            $val->is_dynamic              = 1;
-            $val->autoupdatesystems_id    = $this->item->fields['autoupdatesystems_id'];
-            $val->entities_id             = $this->item->fields['entities_id'];
-            $val->is_recursive            = $this->item->fields['is_recursive'];
-            $val->itemtype_main           = $this->item::class;
-            $val->items_id_main           = $this->item->fields['id'];
             $found_key = null;
 
             // keep key if exist from DB
@@ -96,13 +93,30 @@ class Plug extends InventoryAsset
                 }
             }
 
-            // if found update it
             if ($found_key !== null) {
                 $plug->getFromDB($found_key);
+            } else {
+                $plug->reset();
+            }
+
+            // resolve links against the plug itself, so locked fields target the right item
+            $this->setItem($plug);
+            $this->current_key = $data_key;
+            $this->handleLinks();
+            $this->setItem($main_item);
+
+            $val->is_dynamic              = 1;
+            $val->autoupdatesystems_id    = $main_item->fields['autoupdatesystems_id'];
+            $val->entities_id             = $main_item->fields['entities_id'];
+            $val->is_recursive            = $main_item->fields['is_recursive'];
+            $val->itemtype_main           = $main_item::class;
+            $val->items_id_main           = $main_item->fields['id'];
+
+            // if found update it
+            if ($found_key !== null) {
                 $plug->update($this->handleInput($val, $plug) + ['id' => $found_key]);
                 unset($db_plugs[$found_key]);
             } else { // else add plug to current PDU
-                $plug->reset();
                 $plug->add($this->handleInput($val, $plug));
             }
         }
