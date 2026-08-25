@@ -34,6 +34,7 @@
 
 namespace Glpi\Dashboard\Filters;
 
+use DbUtils;
 use Entity;
 use Session;
 
@@ -67,9 +68,15 @@ class EntityFilter extends AbstractFilter
                 Session::getActiveEntities()
             );
 
-            $criteria["WHERE"] = [
-                "$table.entities_id" => $sons,
-            ];
+            $itemtype = getItemForTable($table);
+            // Use the DbUtils method directly: the global getEntitiesRestrictCriteria()
+            // wraps its result under a crc32 key so it merges safely via
+            // array_merge_recursive(), which we don't need for a plain assignment here.
+            $criteria['WHERE'] = (new DbUtils())->getEntitiesRestrictCriteria(
+                $table,
+                value: $sons,
+                is_recursive: $itemtype->maybeRecursive()
+            );
         }
 
         return $criteria;
