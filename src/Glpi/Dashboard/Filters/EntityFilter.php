@@ -75,7 +75,7 @@ class EntityFilter extends AbstractFilter
             $criteria['WHERE'] = (new DbUtils())->getEntitiesRestrictCriteria(
                 $table,
                 value: $sons,
-                is_recursive: $itemtype->maybeRecursive()
+                is_recursive: $itemtype?->maybeRecursive() ?? false
             );
         }
 
