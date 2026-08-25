@@ -39,6 +39,7 @@ use Contract;
 use DatabaseInstance;
 use Document;
 use Domain;
+use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
@@ -66,13 +67,6 @@ class ManagementControllerTest extends HLAPITestCase
             'domain' => $domains_id,
             'ttl' => 3600,
         ], ['ttl' => 7200]);
-    }
-
-    public function testDocumentDownload()
-    {
-        $this->login();
-        // Not sure we can mock a file upload to actually test the download. At least we need to check the endpoint exists.
-        $this->assertTrue($this->api->hasMatch(new Request('GET', '/Management/Document/1/Download')));
     }
 
     public function testCRUDNoRights()
@@ -213,5 +207,219 @@ class ManagementControllerTest extends HLAPITestCase
         ], [
             'contract' => $contracts_id,
         ]);
+    }
+
+    public function testCreateAndUpdateDocumentWithFile(): void
+    {
+        $bar_file_path = GLPI_ROOT . '/tests/fixtures/uploads/bar.png';
+        $bar_file_content = file_get_contents($bar_file_path);
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $this->login();
+
+        // multipart form data request with the document item's name, the file, and the entity ID
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="name"
+
+test_document_with_file
+-----boundary
+Content-Disposition: form-data; name="entity"
+
+$entities_id
+-----boundary
+Content-Disposition: form-data; name="file"; filename="bar.png"
+Content-Type: image/png
+
+$bar_file_content
+-----boundary--
+EOT;
+        $request = new Request('POST', '/Management/Document', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $new_location = null;
+        $doc_id = null;
+        $this->api->call($request, function ($call) use (&$new_location, &$doc_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$new_location, &$doc_id) {
+                    $new_location = $content['href'];
+                    $doc_id = $content['id'];
+                });
+        });
+
+        $download_url = null;
+        $this->api->call(new Request('GET', $new_location), function ($call) use (&$download_url) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$download_url) {
+                    $this->assertEquals('test_document_with_file', $content['name']);
+                    $this->assertMatchesRegularExpression('/document\.send\.php\?docid=\d+/', $content['filepath']);
+                    $this->assertMatchesRegularExpression('/Management\/Document\/\d+\/Download/', $content['download_url']);
+                    $download_url = $content['download_url'];
+                });
+        });
+
+        $doc = new Document();
+        $doc->getFromDB($doc_id);
+
+        // Make sure the downloaded file contents match the original file contents
+        $this->api->call(new Request('GET', $download_url), function ($call) use ($bar_file_content) {
+            $call->response
+                ->isOK()
+                ->content(function ($content) use ($bar_file_content) {
+                    $this->assertEquals($bar_file_content, $content);
+                });
+        });
+
+        $foo_file_path = GLPI_ROOT . '/tests/fixtures/uploads/foo.png';
+        $foo_file_content = file_get_contents($foo_file_path);
+
+        // multipart form data request to update the document item's file
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="name"
+
+test_document_with_file_updated
+-----boundary
+Content-Disposition: form-data; name="entity"
+
+$entities_id
+-----boundary
+Content-Disposition: form-data; name="file"; filename="foo.png"
+Content-Type: image/png
+
+$foo_file_content
+-----boundary--
+EOT;
+
+        $request = new Request('PATCH', '/Management/Document/' . $doc_id, [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('test_document_with_file_updated', $content['name']);
+                });
+        });
+
+        // Make sure the downloaded file contents match the updated file contents
+        $this->api->call(new Request('GET', $download_url), function ($call) use ($foo_file_content) {
+            $call->response
+                ->isOK()
+                ->content(function ($content) use ($foo_file_content) {
+                    $this->assertEquals($foo_file_content, $content);
+                });
+        });
+    }
+
+    public function testCreateDocumentFileTooBig(): void
+    {
+        global $CFG_GLPI;
+
+        $original_max_size = $CFG_GLPI['document_max_size'];
+        $CFG_GLPI['document_max_size'] = 330 / 1024 / 1024; // 330 bytes
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $allowed_file_path = GLPI_ROOT . '/tests/fixtures/uploads/foo.png';
+        $too_big_file_path = GLPI_ROOT . '/tests/fixtures/uploads/bar.png';
+
+        $allowed_file_content = file_get_contents($allowed_file_path);
+        $too_big_file_content = file_get_contents($too_big_file_path);
+
+        $this->login();
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="name"
+
+test_document_with_file
+-----boundary
+Content-Disposition: form-data; name="entity"
+
+$entities_id
+-----boundary
+Content-Disposition: form-data; name="file"; filename="bar.png"
+Content-Type: image/png
+
+$too_big_file_content
+-----boundary--
+EOT;
+        $request = new Request('POST', '/Management/Document', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isNotOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(AbstractController::ERROR_INVALID_PARAMETER, $content['status']);
+                    $this->assertEquals('file_size_exceeded', $content['detail']['file'][0]['error']);
+                });
+        });
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="name"
+
+test_document_with_file
+-----boundary
+Content-Disposition: form-data; name="entity"
+
+$entities_id
+-----boundary
+Content-Disposition: form-data; name="file"; filename="bar.png"
+Content-Type: image/png
+
+$allowed_file_content
+-----boundary--
+EOT;
+        $request = new Request('POST', '/Management/Document', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $this->api->call($request, function ($call) {
+            $call->response->isOK();
+        });
+
+        $CFG_GLPI['document_max_size'] = $original_max_size;
+    }
+
+    public function testCreateDocumentFileNotAllowed(): void
+    {
+        $this->login();
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="name"
+
+test_document_with_file
+-----boundary
+Content-Disposition: form-data; name="entity"
+
+$entities_id
+-----boundary
+Content-Disposition: form-data; name="file"; filename="bar.glpi"
+Content-Type: text/glpi
+
+test
+-----boundary--
+EOT;
+        $request = new Request('POST', '/Management/Document', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $this->api->call($request, function ($call) {
+            $call->response
+                ->isNotOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals(AbstractController::ERROR_INVALID_PARAMETER, $content['status']);
+                    $this->assertEquals('invalid_file_type', $content['detail']['file'][0]['error']);
+                });
+        });
     }
 }

@@ -1813,6 +1813,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     private function filterFields(array $input): array
     {
+        if (isHLAPI()) {
+            // High-level API already responsibly filters the input, so this just prevents normal API operation
+            return $input;
+        }
         // security (don't accept filename from $_REQUEST)
         if (array_key_exists('filename', $_REQUEST)) {
             unset($input['filename']);

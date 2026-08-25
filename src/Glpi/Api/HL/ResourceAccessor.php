@@ -36,8 +36,12 @@ namespace Glpi\Api\HL;
 
 use CommonDBTM;
 use CommonGLPI;
+use Document;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\FileUpload\FileManager;
+use Glpi\Api\HL\FileUpload\FileUploadException;
+use Glpi\Api\HL\FileUpload\HashedUploadedFile;
 use Glpi\Api\HL\RSQL\RSQLException;
 use Glpi\Api\HL\Search\SearchContext;
 use Glpi\Http\JSONResponse;
@@ -121,9 +125,11 @@ final class ResourceAccessor
      * Creating/updating relations should be done using the appropriate endpoints.
      * @param array $schema
      * @param array $request_params
+     * @param CommonDBTM|null $existing_item The existing item for update operations.
      * @return array
+     * @throws FileUploadException If a file upload fails
      */
-    public static function getInputParamsBySchema(array $schema, array $request_params): array
+    public static function getInputParamsBySchema(array $schema, array $request_params, ?CommonDBTM $existing_item = null): array
     {
         $params = [];
         $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
@@ -147,6 +153,10 @@ final class ResourceAccessor
                 }
             }
 
+            if (isset($prop['x-file-removal-options'])) {
+                continue;
+            }
+
             // Field resolution priority: x-field -> x-join.fkey -> property name
             if (isset($prop['x-input-field'])) {
                 $internal_name = $prop['x-input-field'];
@@ -167,6 +177,33 @@ final class ResourceAccessor
                 continue;
             }
 
+            if (array_key_exists('format', $prop) && $prop['format'] === Doc\Schema::FORMAT_STRING_HTML) {
+                if (isset($prop['x-supports-inline-images'])) {
+                    // Need to extract base64 data uris from img tags and upload them as documents, replacing the src with the document URL
+                    $html = ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name);
+                    $html = FileManager::handleInlineImagesInHTML($html);
+                    ArrayPathAccessor::setElementByArrayPath($request_params, $prop_name, $html);
+                }
+            }
+
+            // Handle single-file removals
+            if (
+                ($prop['format'] ?? null) === Doc\Schema::FORMAT_STRING_BINARY
+                && ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name) === ''
+                && !empty($existing_item?->fields[$internal_name])
+            ) {
+                $upload_as = $prop['x-file-upload-options']['upload_as'] ?? FileManager::UPLOAD_AS_DOCUMENT;
+
+                if ($upload_as === FileManager::UPLOAD_AS_PICTURE) {
+                    if (FileManager::deletePicture($existing_item->fields[$internal_name])) {
+                        ArrayPathAccessor::setElementByArrayPath($request_params, $prop_name, null);
+                        $params[$prop_name] = null;
+                    } else {
+                        throw new FileUploadException($prop_name, 'File removal failed', 0, null, null, 'file_removal_failed');
+                    }
+                }
+            }
+
             // Modify the request params to support setting a dropdown value by its id as expected from the OpenAPI schema
             foreach ($request_params as $key => $value) {
                 if (is_array($value) && array_key_exists('id', $value)) {
@@ -178,6 +215,70 @@ final class ResourceAccessor
                 $params[$internal_name] = ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name);
             }
         }
+
+        //TODO v3 Refactor ResourceAccessor to accept the Request itself instead of indivudual params for parameters and attributes.
+        // This way we can have access to uploaded files as well
+        $uploaded_files = Router::getInstance()->getFinalRequest()?->getUploadedFiles() ?? [];
+
+        /** @var HashedUploadedFile $file */
+        foreach ($uploaded_files as $field => $files) {
+            if (str_ends_with($field, '[]')) {
+                $field = substr($field, 0, -2);
+            }
+            $file_prop = $schema['properties'][$field] ?? null;
+            foreach ($files as $file) {
+                $is_array_of_files = $file_prop !== null
+                    && $file_prop['type'] === Doc\Schema::TYPE_ARRAY
+                    && isset($file_prop['items']['x-file-upload-options']);
+                $file_upload_options = $is_array_of_files ? $file_prop['items']['x-file-upload-options'] : $file_prop['x-file-upload-options'] ?? null;
+
+                if ($file_prop === null || $file_upload_options === null) {
+                    continue;
+                }
+                $input_name = ($is_array_of_files ? ($file_prop['items']['x-input-field'] ?? $field) : ($file_prop['x-input-field']) ?? $field);
+                $upload_as = $file_upload_options['upload_as'] ?? FileManager::UPLOAD_AS_DOCUMENT;
+
+                if ($upload_as === 'file') {
+                    $result = FileManager::uploadFile($file);
+                    if (is_int($result)) {
+                        throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
+                    } else {
+                        $params = array_merge($params, $result);
+                    }
+                } elseif ($upload_as === 'document') {
+                    $mime = $file->getClientMediaType();
+                    $ext = pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
+                    if (!FileManager::isDocumentUploadAllowed($mime, $ext)) {
+                        throw new FileUploadException($field, 'File upload failed: Document could not be created', UPLOAD_ERR_CANT_WRITE);
+                    }
+                    $result = FileManager::uploadAsDocument($file);
+                    if ($result === null) {
+                        throw new FileUploadException($field, 'File upload failed: Document could not be created', UPLOAD_ERR_CANT_WRITE);
+                    } elseif (is_int($result)) {
+                        throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
+                    } else {
+                        $document_id = $result['documents_id'];
+                        if ($is_array_of_files) {
+                            $params[$input_name][] = $document_id;
+                        } else {
+                            $params[$input_name] = $document_id;
+                        }
+                    }
+                } elseif ($upload_as === 'picture') {
+                    $result = FileManager::uploadAsPicture($file);
+                    if (is_int($result)) {
+                        throw new FileUploadException($field, 'File upload failed with error code ' . $result, $result);
+                    } else {
+                        if ($is_array_of_files) {
+                            $params[$input_name][] = $result['filepath'];
+                        } else {
+                            $params[$input_name] = $result['filepath'];
+                        }
+                    }
+                }
+            }
+        }
+
         return $params;
     }
 
@@ -189,8 +290,12 @@ final class ResourceAccessor
      */
     private static function validateInputParamsBySchema(array $schema, array $input, bool $is_create_input): array
     {
+        global $CFG_GLPI;
+
+        $max_file_size_bytes = $CFG_GLPI['document_max_size'] * 1024 * 1024;
         $errors = [];
         $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
+        $uploaded_files = Router::getInstance()->getFinalRequest()?->getUploadedFiles() ?? [];
 
         if ($is_create_input) {
             // Check required properties
@@ -248,6 +353,44 @@ final class ResourceAccessor
                 ];
             }
         }
+
+        foreach ($flattened_properties as $key => $prop) {
+            $file_upload_options = null;
+            if (isset($prop['x-file-upload-options'])) {
+                $file_upload_options = $prop['x-file-upload-options'];
+            } elseif (($prop['type'] ?? null) === Doc\Schema::TYPE_ARRAY && isset($prop['items']['x-file-upload-options'])) {
+                $file_upload_options = $prop['items']['x-file-upload-options'];
+            }
+
+            if ($file_upload_options !== null && isset($uploaded_files[$key])) {
+                foreach ($uploaded_files[$key] as $file) {
+                    // Validate file upload options
+
+                    if ($file->getSize() > $max_file_size_bytes) {
+                        $errors[$key][] = [
+                            'error' => 'file_size_exceeded',
+                            'message' => "The uploaded file exceeds the maximum allowed size of {$CFG_GLPI['document_max_size']} MB.",
+                            'max_file_size_bytes' => $max_file_size_bytes,
+                        ];
+                    }
+
+                    $file_mime = $file->getClientMediaType();
+                    $file_extension = pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
+
+                    if (
+                        isset($file_upload_options['allowed_specifiers'])
+                        && !in_array(strtolower($file_mime), $file_upload_options['allowed_specifiers'], true)
+                        && !in_array(strtolower($file_extension), $file_upload_options['allowed_specifiers'], true)
+                    ) {
+                        $errors[$key][] = [
+                            'error' => 'invalid_file_type',
+                            'message' => 'This file type is not allowed for upload as a picture.',
+                        ];
+                    }
+                }
+            }
+        }
+
         return $errors;
     }
 
@@ -298,10 +441,25 @@ final class ResourceAccessor
                 400
             );
         }
-        $input = self::getInputParamsBySchema($schema, $request_params);
+        $item = self::getItemFromSchema($schema);
+        if (!$item->getFromDB($items_id)) {
+            return AbstractController::getNotFoundErrorResponse();
+        }
+        try {
+            $input = self::getInputParamsBySchema($schema, $request_params, $item);
+        } catch (FileUploadException $e) {
+            return new JSONResponse(
+                AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, 'File upload failed', [
+                    $e->getPropertyName() => [
+                        'error' => $e->getErrorName(),
+                        'message' => $e->getMessage(),
+                    ],
+                ]),
+                400
+            );
+        }
         $input['id'] = $items_id;
 
-        $item = self::getItemFromSchema($schema);
         if (!$item->can($items_id, UPDATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
@@ -340,7 +498,19 @@ final class ResourceAccessor
                 400
             );
         }
-        $input = self::getInputParamsBySchema($schema, $request_params);
+        try {
+            $input = self::getInputParamsBySchema($schema, $request_params);
+        } catch (FileUploadException $e) {
+            return new JSONResponse(
+                AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, 'File upload failed', [
+                    $e->getPropertyName() => [
+                        'error' => $e->getErrorName(),
+                        'message' => $e->getMessage(),
+                    ],
+                ]),
+                400
+            );
+        }
 
         $item = self::getItemFromSchema($schema);
         if (!$item->can($item->getID(), CREATE, $input)) {

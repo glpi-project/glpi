@@ -36,6 +36,7 @@ namespace Glpi\Api\HL\Controller;
 
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\FileUpload\FileManager;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -281,6 +282,38 @@ final class CustomAssetController extends AbstractController
                     'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER],
                     'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER],
                     'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'picture_front_upload' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                        'writeOnly' => true,
+                        'x-input-field' => 'picture_front',
+                        'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_PICTURE),
+                        'x-version-introduced' => '2.4.0',
+                    ],
+                    'picture_rear_upload' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                        'writeOnly' => true,
+                        'x-input-field' => 'picture_rear',
+                        'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_PICTURE),
+                        'x-version-introduced' => '2.4.0',
+                    ],
+                    'pictures_upload' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                            'writeOnly' => true,
+                            'x-input-field' => 'pictures',
+                            'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_PICTURE),
+                            'x-version-introduced' => '2.4.0',
+                        ],
+                    ],
+                    'pictures_remove' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'x-version-introduced' => '2.4.0',
+                        'items' => ['type' => Doc\Schema::TYPE_STRING, 'x-input-field' => '_blank_pictures', 'writeOnly' => true],
+                    ],
                     'picture_front' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture_front',

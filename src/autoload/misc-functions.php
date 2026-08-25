@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Api\HL\Router;
 use Twig\Runtime\EscaperRuntime;
 
 use function Safe\preg_match;
@@ -65,6 +66,12 @@ function isAPI()
     }
 
     return false;
+}
+
+function isHLAPI()
+{
+    $script = $_SERVER['REQUEST_URI'] ?? '';
+    return str_contains($script, 'api.php') && Router::getInstance()->getOriginalRequest() !== null;
 }
 
 /**

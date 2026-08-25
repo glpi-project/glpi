@@ -66,6 +66,7 @@ use DomainRelation;
 use DomainType;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\FileUpload\FileManager;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
@@ -623,6 +624,13 @@ EOT,
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                     'filename' => ['type' => Doc\Schema::TYPE_STRING],
+                    'file' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_BINARY,
+                        'writeOnly' => true,
+                        'x-file-upload-options' => self::getDefaultFileUploadOptions(FileManager::UPLOAD_AS_FILE),
+                        'x-version-introduced' => '2.4.0',
+                    ],
                     'filepath' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-mapped-from' => 'id',
@@ -853,6 +861,13 @@ EOT,
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'documents_id',
                     'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
+                    'readOnly' => true,
+                ],
+                'download_url' => [
+                    'x-version-introduced' => '2.4.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'documents_id',
+                    'x-mapper' => static fn($v) => '/Management/Document/' . $v . '/Download',
                     'readOnly' => true,
                 ],
                 'timeline_position' => [

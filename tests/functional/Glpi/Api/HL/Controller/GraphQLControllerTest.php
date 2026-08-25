@@ -255,7 +255,6 @@ GRAPHQL);
         // Can see no tickets
         $_SESSION['glpiactiveprofile']['ticket'] = 0;
         $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {
