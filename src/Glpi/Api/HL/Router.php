@@ -70,6 +70,7 @@ use Glpi\Api\HL\Middleware\DebugResponseMiddleware;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware;
 use Glpi\Api\HL\Middleware\MiddlewareInput;
+use Glpi\Api\HL\Middleware\MultipartFormDataRequestMiddleware;
 use Glpi\Api\HL\Middleware\OAuthRequestMiddleware;
 use Glpi\Api\HL\Middleware\RequestMiddlewareInterface;
 use Glpi\Api\HL\Middleware\ResponseMiddlewareInterface;
@@ -289,6 +290,7 @@ EOT;
             // Cookie middleware shouldn't run by default. Must be explicitly enabled by adding it in a Route attribute.
             self::$instance->registerAuthMiddleware(new CookieAuthMiddleware(), 0, static fn(RoutePath $route_path) => false);
 
+            self::$instance->registerRequestMiddleware(new MultipartFormDataRequestMiddleware());
             self::$instance->registerRequestMiddleware(new IPRestrictionRequestMiddleware());
             self::$instance->registerRequestMiddleware(new OAuthRequestMiddleware());
             self::$instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static fn(RoutePath $route_path) => Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class));
@@ -695,6 +697,7 @@ EOT;
             }
         }
 
+        $request->setAttribute('_request_output_buffer_level', $current_output_buffer_level);
         $this->original_request = clone $request;
         $matched_route = $this->match($request);
         $routes_allowed_when_disabled = ['/token', '/status/all'];
