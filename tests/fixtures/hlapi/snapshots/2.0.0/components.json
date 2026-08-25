@@ -7691,8 +7691,8 @@
                 },
                 "port": {
                     "type": "integer",
-                    "min": 1,
-                    "max": 65535,
+                    "minimum": 1,
+                    "maximum": 65535,
                     "default": 389
                 },
                 "is_default": {

@@ -135,8 +135,8 @@ final class ToolController extends AbstractController
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'Refresh interval in seconds',
                         'x-field' => 'refresh_rate',
-                        'min' => HOUR_TIMESTAMP,
-                        'max' => DAY_TIMESTAMP,
+                        'minimum' => HOUR_TIMESTAMP,
+                        'maximum' => DAY_TIMESTAMP,
                         'multipleOf' => HOUR_TIMESTAMP,
                     ],
                     'max_items' => [
