@@ -35,6 +35,7 @@
 
 namespace Glpi\Features;
 
+use Glpi\Api\HL\FileUpload\FileManager;
 use Session;
 use Toolbox;
 
@@ -50,6 +51,10 @@ trait AssetImage
      */
     public function managePictures($input)
     {
+        if (isHLAPI()) {
+            return $this->managePicturesHLAPI($input);
+        }
+
         foreach (['picture_front', 'picture_rear', 'picture'] as $name) {
             if (
                 isset($input["_blank_$name"])
@@ -87,7 +92,7 @@ trait AssetImage
         $pictures_removed = false;
         if (!$this->isNewItem() && $this->isField('pictures')) {
             $input_keys = array_keys($input);
-            $pictures = importArrayFromDB($this->fields['pictures']);
+            $pictures = is_string($this->fields['pictures']) ? importArrayFromDB($this->fields['pictures']) : ($this->fields['pictures'] ?? []);
             $to_remove = [];
             foreach ($input_keys as $input_key) {
                 if (str_starts_with($input_key, '_blank_pictures_') && $input[$input_key]) {
@@ -129,6 +134,39 @@ trait AssetImage
             $input['pictures'] = exportArrayToDB(array_merge($pictures, $new_pictures));
         }
 
+        if (isset($input['pictures']) && is_array($input['pictures'])) {
+            $input['pictures'] = exportArrayToDB($input['pictures']);
+        }
+
+        return $input;
+    }
+
+    /**
+     * Less involved handling of pictures coming from the HLAPI which already handled the saving of the pictures and has more structured inputs.
+     * @param array<string, mixed> $input the form input
+     * @return array<string, mixed>       the altered input
+     */
+    private function managePicturesHLAPI($input): array
+    {
+        // single images like picture_front, picture_rear, and picture are already uploaded or delete by the API as needed.
+        // Nothing needs done here except for the 'pictures' field which can have multiple images and isn't handle (yet) by the HLAPI.
+        $existing_pictures = is_string($this->fields['pictures'] ?? []) ? importArrayFromDB($this->fields['pictures']) : ($this->fields['pictures'] ?? []);
+        $all_pictures = array_unique(
+            array_merge($existing_pictures, $input['pictures'] ?? [])
+        );
+        $to_remove = is_string($input['pictures_remove'] ?? []) ? [$input['pictures_remove']] : ($input['pictures_remove'] ?? []);
+        $to_remove = array_map(static fn($p) => FileManager::normalizeClientFileValue($p, FileManager::UPLOAD_AS_PICTURE), $to_remove);
+
+        // Remove any pictures that are in the remove list and delete the pictures only if it was in the existing pictures list.
+        foreach ($to_remove as $remove) {
+            $index = array_search($remove, $all_pictures, true);
+            if ($index !== false) {
+                FileManager::deletePicture((string) $all_pictures[$index]);
+                unset($all_pictures[$index]);
+            }
+        }
+
+        $input['pictures'] = exportArrayToDB($all_pictures);
         return $input;
     }
 }
