@@ -54,6 +54,16 @@ final class HistoryEventList
         return $this->events;
     }
 
+    public function count(): int
+    {
+        return \count($this->events);
+    }
+
+    public function slice(int $offset, int $limit): self
+    {
+        return new self(\array_slice($this->events, $offset, $limit));
+    }
+
     public function getLatestEvent(): HistoryEventInterface
     {
         $key = array_key_first($this->events);

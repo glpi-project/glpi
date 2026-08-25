@@ -340,3 +340,54 @@ test('Clicking current version deactivates comparison', async ({ page, profile, 
     await expect(initialRevision).not.toHaveClass(/kb-revision--selected/);
     await expect(page.getByText('Updated content')).toBeVisible();
 });
+
+test('History is loaded page by page as the user scrolls', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    // Each update changes both the title and the content, which produces two
+    // events: a revision and a "Renamed" entry. With the single "Current
+    // version" event, the article ends up with more events than a page holds.
+    const page_size = 50;
+    const updates = (page_size / 2) + 1;
+    const total_events = (updates * 2) + 1;
+
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'Paginated history',
+        entities_id: getWorkerEntityId(),
+        answer: '<p>Content 0</p>',
+    });
+    for (let i = 1; i <= updates; i++) {
+        await api.updateItem('KnowbaseItem', id, {
+            name: `Paginated history ${i}`,
+            answer: `<p>Content ${i}</p>`,
+        });
+    }
+
+    await kb.goto(id);
+    await kb.articleActionsMenu.click();
+    await kb.getButton('History').click();
+    await expect(kb.getHeading('History')).toBeVisible();
+
+    // Only the first page is rendered, with a marker for the next one.
+    const events = page.getByTestId('history-event');
+    await expect(events).toHaveCount(page_size);
+    const list = page.locator('[data-glpi-revisions]').first();
+    await expect(list.locator('[data-glpi-history-load-more]')).toBeAttached();
+
+    // Reaching the end of the list loads the remaining events.
+    await list.evaluate((element) => element.scrollTop = element.scrollHeight);
+    await expect(events).toHaveCount(total_events);
+    await expect(list.locator('[data-glpi-history-load-more]')).not.toBeAttached();
+
+    // The newest event is still the only highlighted one.
+    await expect(page.locator('.step-item.active')).toHaveCount(1);
+    await expect(events.nth(0).getByText('Current version')).toBeVisible();
+
+    // Events loaded on the second page stay usable.
+    const lastEvent = events.nth(total_events - 1);
+    await expect(lastEvent.getByText('Version 1')).toBeVisible();
+    await lastEvent.click();
+    await expect(page.getByRole('article')).toHaveClass(/kb-article--diff-mode/);
+    await expect(lastEvent).toHaveClass(/kb-revision--selected/);
+});
