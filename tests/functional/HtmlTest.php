@@ -1614,4 +1614,23 @@ SCSS,
 
         $this->assertStringContainsString('Selection too large, massive action disabled.', $output);
     }
+
+    public function testFileWithoutMultipleOptionDoesNotRenderMultipleAttribute(): void
+    {
+        $result = Html::file([
+            'display' => false,
+        ]);
+
+        $this->assertStringNotContainsString("multiple='multiple'", $result);
+    }
+
+    public function testFileWithMultipleOptionRendersMultipleAttribute(): void
+    {
+        $result = Html::file([
+            'display'  => false,
+            'multiple' => true,
+        ]);
+
+        $this->assertStringContainsString("multiple='multiple'", $result);
+    }
 }
