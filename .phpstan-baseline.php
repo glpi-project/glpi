@@ -1168,7 +1168,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$fields\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 17,
+	'count' => 16,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
