@@ -43,6 +43,7 @@ use ConsumableItem;
 use Datacenter;
 use DbUtils;
 use Dropdown;
+use DropdownTranslation;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Category;
@@ -412,9 +413,17 @@ class QuestionTypeItem extends AbstractQuestionType implements
             return $item->getFriendlyName();
         }
 
-        $name = $item instanceof CommonTreeDropdown
-            ? $item->fields['completename']
-            : $item->getFriendlyName();
+        $field = $item instanceof CommonTreeDropdown ? 'completename' : 'name';
+        $name  = $item->fields[$field];
+
+        // GLPI issue #25249: apply the dropdown translation so the generated
+        // ticket content and title follow the requester language.
+        $name = DropdownTranslation::getTranslatedValue(
+            $item->getID(),
+            $item::class,
+            $field,
+            value: $name
+        );
 
         // Append additional fields to match what is displayed in renderEndUserTemplate.
         $itemtype = $answer['itemtype'];
