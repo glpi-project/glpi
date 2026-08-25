@@ -54,7 +54,7 @@ test('Can pick a native illustration', async ({ page, profile, api }) => {
     const modal = page.getByTestId('illustration-picker-modal');
     await expect(modal).toBeVisible();
 
-    const icon = modal.getByRole('img', { name: "Antivirus", exact: true });
+    const icon = modal.getByRole('button', { name: "Antivirus", exact: true });
     await icon.click();
 
     await expect(modal).toBeHidden();
@@ -119,7 +119,7 @@ test('Can pick an illustration when creating an article', async ({ page, profile
     await page.getByRole('button', { name: 'Select an illustration' }).click();
     const modal = page.getByTestId('illustration-picker-modal');
     await expect(modal).toBeVisible();
-    await modal.getByRole('img', { name: 'Antivirus', exact: true }).click();
+    await modal.getByRole('button', { name: 'Antivirus', exact: true }).click();
     await expect(modal).toBeHidden();
 
     // Fill the title
@@ -151,7 +151,7 @@ test('Picking an illustration during creation does not trigger an UpdateIllustra
     await page.getByRole('button', { name: 'Select an illustration' }).click();
     const modal = page.getByTestId('illustration-picker-modal');
     await expect(modal).toBeVisible();
-    await modal.getByRole('img', { name: 'Antivirus', exact: true }).click();
+    await modal.getByRole('button', { name: 'Antivirus', exact: true }).click();
     await expect(modal).toBeHidden();
 
     expect(ajax_calls).toHaveLength(0);
@@ -222,7 +222,7 @@ test('Cancelling edit reverts illustration to original', async ({ page, profile,
     await page.getByRole('button', { name: 'Select an illustration' }).click();
     const modal = page.getByTestId('illustration-picker-modal');
     await expect(modal).toBeVisible();
-    await modal.getByRole('img', { name: 'Antivirus', exact: true }).click();
+    await modal.getByRole('button', { name: 'Antivirus', exact: true }).click();
     await expect(modal).toBeHidden();
 
     await expect(illustration_input).toHaveValue('antivirus');

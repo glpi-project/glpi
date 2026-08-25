@@ -69,23 +69,30 @@
         data-testid="illustration-input"
     >
 
+    {% set is_custom_file = value starts with custom_icon_prefix %}
+    {% set is_empty = value is empty %}
+    {# Only native illustrations have a title; custom uploads don't. #}
+    {% set selected_title = (not is_empty and not is_custom_file) ? getIconTitle(value) : '' %}
+    {% set status_id = container_id ~ "-status" %}
+
     <div
         class="{{ preview_css_classes }}"
         {% if editable %}
             role="button"
             aria-label="{{ __("Select an illustration") }}"
+            {% if selected_title is not empty %}
+                aria-describedby="{{ status_id }}"
+            {% endif %}
             data-bs-toggle="modal"
             data-bs-target="#{{ modal_id }}"
         {% else %}
             aria-disabled="true"
         {% endif %}
         data-glpi-icon-picker-value-preview
+        data-glpi-icon-picker-value-preview-title="{{ selected_title }}"
         data-testid="illustration-picker"
     >
         <div class="{{ preview_inner_css_classes }}">
-            {% set is_custom_file = value starts with custom_icon_prefix %}
-            {% set is_empty = value is empty %}
-
             {# Placeholder: visible when no illustration is set. #}
             <div
                 class="d-flex align-items-center justify-content-center{% if not is_empty %} d-none{% endif %}"
@@ -116,6 +123,18 @@
             </div>
         </div>
     </div>
+
+    {% if editable and selected_title is not empty %}
+        {# Named as the trigger's description, not a child: a descendant would be
+         # pruned by the trigger's own role="button" name computation. #}
+        <span
+            id="{{ status_id }}"
+            class="visually-hidden"
+            role="img"
+            aria-label="{{ selected_title }}"
+            data-glpi-icon-picker-value-preview-status
+        ></span>
+    {% endif %}
 
     {{ include('components/illustration/icon_picker_modal.html.twig', {
         'id': modal_id,

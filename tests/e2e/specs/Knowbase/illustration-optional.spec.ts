@@ -114,9 +114,10 @@ test('Cancelling edit after clearing illustration restores the original value', 
 
     await kb.editor.cancel();
 
+    // Back to view mode: the picker is decorative again, nothing is named.
     const picker = page.getByTestId('illustration-picker');
     await expect(page.getByTestId('illustration-input')).toHaveValue('antivirus');
-    await expect(picker.getByRole('img', { name: 'Antivirus', exact: true })).toBeVisible();
+    await expect(picker).toHaveAttribute('aria-disabled', 'true');
 });
 
 test('History panel shows "Illustration removed by" when illustration is cleared', async ({ page, profile, api }) => {

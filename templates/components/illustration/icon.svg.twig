@@ -30,15 +30,10 @@
  # ---------------------------------------------------------------------
  #}
 
+{# Illustration icons always duplicate an adjacent label, so they must never carry a name of their own.
+ # aria-hidden keeps the title out of the accessibility tree; it only feeds the hover tooltip. #}
 {% set title = title|default('') %}
-<svg
-    {% if title is not empty %}
-        role="img"
-    {% else %}
-        aria-hidden="true"
-    {% endif %}
-    width="{{ width }}" height="{{ height }}" class="flex-shrink-0"
->
+<svg aria-hidden="true" width="{{ width }}" height="{{ height }}" class="flex-shrink-0">
     {% if title is not empty %}
         <title>{{ title }}</title>
     {% endif %}
