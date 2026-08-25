@@ -38,6 +38,7 @@ namespace Glpi\Form\QuestionType;
 use CartridgeItem;
 use Cluster;
 use CommonDBTM;
+use CommonDropdown;
 use CommonTreeDropdown;
 use ConsumableItem;
 use Datacenter;
@@ -413,17 +414,21 @@ class QuestionTypeItem extends AbstractQuestionType implements
             return $item->getFriendlyName();
         }
 
-        $field = $item instanceof CommonTreeDropdown ? 'completename' : 'name';
-        $name  = $item->fields[$field];
+        $name = $item instanceof CommonTreeDropdown
+            ? $item->fields['completename']
+            : $item->getFriendlyName();
 
-        // GLPI issue #25249: apply the dropdown translation so the generated
-        // ticket content and title follow the requester language.
-        $name = DropdownTranslation::getTranslatedValue(
-            $item->getID(),
-            $item::class,
-            $field,
-            value: $name
-        );
+        // The ticket content is frozen at submission time, so the value must be
+        // resolved in the requester language here. Conditions are deliberately
+        // left untranslated: they must compare against the source value.
+        if ($item instanceof CommonDropdown) {
+            $name = DropdownTranslation::getTranslatedValue(
+                $item->getID(),
+                $item::class,
+                $item instanceof CommonTreeDropdown ? 'completename' : 'name',
+                value: $name
+            );
+        }
 
         // Append additional fields to match what is displayed in renderEndUserTemplate.
         $itemtype = $answer['itemtype'];
