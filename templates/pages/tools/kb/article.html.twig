@@ -37,6 +37,7 @@
     data-glpi-knowbase-article
     data-glpi-kb-item-id="{{ item_id }}"
     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}"
+    data-glpi-kb-can-comment="{{ can_comment ? 'true' : 'false' }}"
     {% if prefilled_parent is defined %}
         data-glpi-kb-prefilled-parent-id="{{ prefilled_parent.id }}"
     {% endif %}
@@ -295,6 +296,8 @@
             id="kb-tiptap-editor"
             class="rich_text_container article-container mt-4 {{ mode in ['add', 'edit'] ? 'kb-editor-reserved' }}"
             data-glpi-kb-content
+            data-glpi-comment-anchors="{{ (comment_anchors ?? [])|json_encode|e('html_attr') }}"
+            data-glpi-comment-anchor-max-length="{{ comment_anchor_max_length ?? 0 }}"
             data-testid="content"
         >
             {{ answer|enhanced_html({text_maxsize: 0}) }}
