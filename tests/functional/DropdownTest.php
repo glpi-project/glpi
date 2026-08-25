@@ -3180,10 +3180,13 @@ HTML;
         $this->login();
 
         $custom_asset = getItemByTypeName('Glpi\\CustomAsset\\Test01Asset', 'TestA');
-        $this->assertTrue($custom_asset->update([
-            'id' => $custom_asset->getID(),
-            'users_id' => Session::getLoginUserID(),
-        ]));
+        $custom_asset = $this->updateItem(
+            'Glpi\\CustomAsset\\Test01Asset',
+            $custom_asset->getID(),
+            [
+                'users_id' => Session::getLoginUserID(),
+            ]
+        );
 
         // Ensure user has permission to see the asset and has permission to link that type of custom asset to tickets
         $_SESSION["glpiactiveprofile"]["asset_test01"] = 3871;
