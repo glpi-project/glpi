@@ -3254,7 +3254,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             ];
         }
 
-
         return $tab;
     }
 

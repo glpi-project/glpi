@@ -274,7 +274,6 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             ];
         }
 
-
         return $tab;
     }
 

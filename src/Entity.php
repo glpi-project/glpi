@@ -1651,7 +1651,6 @@ class Entity extends CommonTreeDropdown implements
             'datatype'           => 'specific',
         ];
 
-
         return $tab;
     }
 

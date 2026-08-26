@@ -420,7 +420,6 @@ class Reminder extends CommonDBVisible implements
         // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(static::class));
 
-
         return $tab;
     }
 

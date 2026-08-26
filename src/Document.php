@@ -1080,7 +1080,6 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
-
         return $tab;
     }
 

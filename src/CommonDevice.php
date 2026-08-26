@@ -390,7 +390,6 @@ abstract class CommonDevice extends CommonDropdown
             'searchtype' => 'equals',
         ];
 
-
         return $tab;
     }
 

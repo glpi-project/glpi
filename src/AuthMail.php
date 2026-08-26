@@ -187,7 +187,6 @@ class AuthMail extends CommonDBTM
             'datatype'           => 'text',
         ];
 
-
         return $tab;
     }
 
