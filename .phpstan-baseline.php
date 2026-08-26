@@ -50,12 +50,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/ajax/dashboard.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of function getTableForItemType expects class\\-string\\<CommonDBTM\\>, class\\-string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/ajax/dropdownConnectNetworkPort.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Offset \'toupdate\' might not exist on array\\{name\\: non\\-falsy\\-string, entity\\: array\\<int\\>\\|int, rand\\: int\\<0, max\\>, to_update\\: null, toupdate\\?\\: array\\{value_fieldname\\: \'value\', to_update\\: non\\-falsy\\-string, url\\: non\\-falsy\\-string, moreparams\\: array\\{value\\: \'__VALUE__\', allow_email\\: bool, field\\: non\\-falsy\\-string, typefield\\: \'supplier\', use_notification\\: mixed\\}\\}\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -1174,7 +1168,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$fields\\.$#',
 	'identifier' => 'property.notFound',
-	'count' => 17,
+	'count' => 16,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
@@ -2050,7 +2044,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$object_or_class of function is_a expects object\\|string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
-	'count' => 5,
+	'count' => 4,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
@@ -9770,7 +9764,79 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$company\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$hostid\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$install_date\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$license_number\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$licenseid\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemarchitectures_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemeditions_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemkernels_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemkernelversions_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystems_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemservicepacks_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$operatingsystemversions_id\\.$#',
+	'identifier' => 'property.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Access to an undefined property object\\:\\:\\$owner\\.$#',
 	'identifier' => 'property.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
@@ -11958,12 +12024,6 @@ $ignoreErrors[] = [
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Output/HTMLSearchOutput.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$itemtype of function getItemForItemtype expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Output/Spreadsheet.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$count of class GLPIPDF@anonymous/src/Glpi/Search/Output/Tcpdf\\.php\\:46 constructor expects int\\|null, bool\\|float\\|int\\|string\\|null given\\.$#',

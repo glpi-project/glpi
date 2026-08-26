@@ -1244,6 +1244,9 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
                             resolved_params[k] = v;
                         }
                     });
+                    if ($.fn.select2) {
+                        $(target).find('.select2-hidden-accessible').select2('destroy');
+                    }
                     $(target).load(url, resolved_params);
                 };
                 if (conditional && (min_size_condition || force_load_condition)) {
@@ -1812,6 +1815,16 @@ function setupAjaxDropdown(config) {
         const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${CSS.escape(e.target.id)}-results']`);
         if (search_input) {
             search_input.focus();
+        }
+    });
+
+    $('#' + field_id).on('select2:selecting', function (e) {
+        if (e?.params?.args?.data) {
+            const data = e.params.args.data;
+            const option = this.querySelector(`option[value="${CSS.escape(String(data.id))}"]`);
+            if (option) {
+                option.text = data.text;
+            }
         }
     });
 

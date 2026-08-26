@@ -311,7 +311,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         foreach ($CFG_GLPI['directconnect_types'] as $itemtype) {
             if ($itemtype::canView()) {
                 $iterator = self::getPeripheralAssets($asset, $itemtype);
-                $usediterator = self::getUsedPeripherals($itemtype);
+                $usediterator = self::getUnavailablePeripherals($asset, $itemtype);
 
                 foreach ($iterator as $data) {
                     $data['assoc_itemtype'] = $itemtype;
@@ -998,13 +998,14 @@ TWIG, $twig_params);
     }
 
     /**
-     * Returns used peripherals.
+     * Returns peripherals that cannot be connected to the given asset.
      *
+     * @param CommonDBTM               $asset    Main asset.
      * @param class-string<CommonDBTM> $itemtype Itemtype of the peripherals to retrieve.
      *
      * @return DBmysqlIterator
-    */
-    private static function getUsedPeripherals(string $itemtype): DBmysqlIterator
+     */
+    private static function getUnavailablePeripherals(CommonDBTM $asset, string $itemtype): DBmysqlIterator
     {
         global $DB;
 
@@ -1027,7 +1028,14 @@ TWIG, $twig_params);
                 ],
             ],
             'WHERE' => [
-                self::getTable() . '.is_deleted'     => 0,
+                self::getTable() . '.is_deleted' => 0,
+                'OR' => [
+                    $peripheral::getTable() . '.is_global' => 0,
+                    [
+                        self::getTable() . '.itemtype_asset' => $asset::class,
+                        self::getTable() . '.items_id_asset' => $asset->getID(),
+                    ],
+                ],
             ] + getEntitiesRestrictCriteria($peripheral::getTable()),
             'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField(),
         ]);

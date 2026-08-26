@@ -485,6 +485,16 @@ class Hooks
     public const PRE_ITEM_UPDATE           = 'pre_item_update';
 
     /**
+     * Register a function to handle the 'post_prepareupdate' lifecycle event for an item.
+     * The function is called with the item as a parameter.
+     * The function is expected to return nothing.
+     * This hook is called after the input has been modified, but before the item is added to the database.
+     * The input can be found in the `input` property of the item. Setting the `input` property to false will cancel the update process.
+     * @see CommonDBTM::prepareInputForAdd()
+     */
+    public const POST_PREPAREUPDATE           = 'post_prepareupdate';
+
+    /**
      * Register a function to handle the 'item_update' lifecycle event for an item.
      * The function is called with the item as a parameter.
      * The function is expected to return nothing.
@@ -1435,6 +1445,7 @@ class Hooks
             self::POST_SHOW_ITEM,
             self::POST_SHOW_TAB,
             self::POST_PREPAREADD,
+            self::POST_PREPAREUPDATE,
             self::SHOW_ITEM_STATS,
             self::TIMELINE_ACTIONS,
         ];
