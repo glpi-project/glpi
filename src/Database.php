@@ -254,7 +254,6 @@ class Database extends CommonDBChild
             'datatype'           => 'bool',
         ];
 
-
         return $tab;
     }
 

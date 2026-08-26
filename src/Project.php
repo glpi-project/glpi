@@ -1116,7 +1116,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
-
         return $tab;
     }
 

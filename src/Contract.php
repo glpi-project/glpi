@@ -854,7 +854,6 @@ class Contract extends CommonDBTM implements StateInterface
             ],
         ];
 
-
         return $tab;
     }
 

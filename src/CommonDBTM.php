@@ -3941,7 +3941,6 @@ class CommonDBTM extends CommonGLPI
             $tab = array_merge($tab, Project::rawSearchOptionsToAdd(static::class));
         }
 
-
         return $tab;
     }
 

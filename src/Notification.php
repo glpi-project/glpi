@@ -455,7 +455,6 @@ class Notification extends CommonDBTM implements FilterableInterface
             'datatype'           => 'bool',
         ];
 
-
         return $tab;
     }
 

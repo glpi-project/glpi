@@ -470,7 +470,6 @@ class MailCollector extends CommonDBTM
             'massiveaction'      => false,
         ];
 
-
         return $tab;
     }
 

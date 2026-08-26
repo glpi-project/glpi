@@ -248,7 +248,6 @@ TWIG, $twig_params);
             'massiveaction' => false,
         ];
 
-
         return $tab;
     }
 

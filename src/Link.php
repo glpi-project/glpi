@@ -285,7 +285,6 @@ class Link extends CommonDBTM
             'datatype'           => 'dropdown',
         ];
 
-
         return $tab;
     }
 

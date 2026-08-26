@@ -249,7 +249,6 @@ class Agent extends CommonDBTM
 
         ];
 
-
         return $tab;
     }
 

@@ -1141,7 +1141,6 @@ TWIG, ['authldaps_id' => $ID]);
             'datatype'           => 'string',
         ];
 
-
         return $tab;
     }
 

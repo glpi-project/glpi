@@ -1143,7 +1143,6 @@ trait PlanningEvent
             ];
         }
 
-
         return $tab;
     }
 

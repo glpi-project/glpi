@@ -372,7 +372,6 @@ class Supplier extends CommonDBTM
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
-
         return $tab;
     }
 

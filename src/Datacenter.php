@@ -135,7 +135,6 @@ class Datacenter extends CommonDBTM
             'datatype'           => 'dropdown',
         ];
 
-
         return $tab;
     }
 

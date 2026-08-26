@@ -175,7 +175,6 @@ class NotificationTemplate extends CommonDBTM
             'datatype'           => 'text',
         ];
 
-
         return $tab;
     }
 

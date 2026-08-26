@@ -270,7 +270,6 @@ class Budget extends CommonDropdown
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
-
         return $tab;
     }
 

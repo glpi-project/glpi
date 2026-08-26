@@ -407,7 +407,6 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
             'massiveaction'      => false,
         ];
 
-
         return $tab;
     }
 

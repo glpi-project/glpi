@@ -259,7 +259,6 @@ class Domain extends CommonDBTM implements AssignableItemInterface
             'name'               => sprintf('%s-%s', Entity::getTypeName(1), __('ID')),
         ];
 
-
         return $tab;
     }
 
