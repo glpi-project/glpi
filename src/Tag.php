@@ -380,7 +380,7 @@ class Tag extends CommonDropdown
     }
 
     /**
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     public static function rawSearchOptionsToAdd(string $itemtype): array
     {
@@ -425,7 +425,7 @@ class Tag extends CommonDropdown
             $tags_ids = array_column($values['values'], 'id');
 
             $badges = [];
-            if (!empty($tags_ids)) {
+            if ($tags_ids !== []) {
                 foreach ((new self())->find(['id' => $tags_ids]) as $tag_data) {
                     $tag = new self();
                     $tag->getFromResultSet($tag_data);
@@ -433,7 +433,7 @@ class Tag extends CommonDropdown
                 }
             }
 
-            if (empty($badges)) {
+            if ($badges === []) {
                 return '';
             }
 
@@ -455,7 +455,7 @@ class Tag extends CommonDropdown
                 'value'     => $values[$field] ?? '',
                 'display'   => false,
                 '_itemtype' => $options['searchopt']['itemtype_for_tags'] ?? null,
-            ]);
+            ]) ?? '';
         }
 
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
@@ -463,9 +463,6 @@ class Tag extends CommonDropdown
 
     /**
      * Render a tag's name as a colored badge.
-     *
-     * @param int    $tags_id
-     * @param string $name
      *
      * @return string
      */
@@ -482,7 +479,7 @@ class Tag extends CommonDropdown
     /**
      * Get the data needed to render a tags dropdown.
      *
-     * @param string|array|null $itemtype Restrict the tags to those allowed for the given itemtype(s).
+     * @param class-string<CommonGLPI>|list<class-string<CommonGLPI>>|null $itemtype Restrict the tags to those allowed for the given itemtype(s).
      *                                    Use null to get every active tag, regardless of itemtype (e.g. for the "All assets" search).
      *
      * @return array{tag_names: array<int, string>, bg_colors: array<int, string>, text_colors: array<int, string>}
@@ -514,7 +511,7 @@ class Tag extends CommonDropdown
     /**
      * Dropdown for tags
      *
-     * @param array $options Display options
+     * @param array<string, mixed> $options Display options
      *
      * @return string|null
      */
@@ -565,13 +562,14 @@ class Tag extends CommonDropdown
         }
 
         TemplateRenderer::getInstance()->display('components/form/tag_dropdown.html.twig', $twig_params);
+        return null;
     }
 
     /**
      * Add the "add a tag" / "remove a tag" massive actions to the given itemtype's action list.
      *
      * @param array<string, string> $actions
-     * @param class-string<CommonDBTM> $itemtype
+     * @param string $itemtype
      * @param bool $is_deleted
      * @param CommonDBTM|null $checkitem
      *
