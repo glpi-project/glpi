@@ -45,6 +45,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class CustomIllustrationController extends AbstractController
 {
+    private const CACHE_MAX_AGE = 60 * 60 * 24 * 365;
+
     public function __construct(
         private IllustrationManager $illustration_manager
     ) {}
@@ -62,7 +64,21 @@ final class CustomIllustrationController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        // Read parameters
-        return new BinaryFileResponse($file);
+        // Clear the no-cache headers sent by the session cache limiter, Symfony only appends its own.
+        header_remove('Cache-Control');
+        header_remove('Expires');
+        header_remove('Pragma');
+
+        // Id is immutable per upload (see UploadController), safe to cache long-term.
+        $response = new BinaryFileResponse($file);
+        $response->setAutoEtag();
+        $response->setAutoLastModified();
+        $response->setCache([
+            'private' => true,
+            'immutable' => true,
+            'max_age' => self::CACHE_MAX_AGE,
+        ]);
+
+        return $response;
     }
 }
