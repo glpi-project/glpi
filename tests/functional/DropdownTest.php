@@ -2161,7 +2161,7 @@ HTML;
         }
     }
 
-    public function testDeviceTypesAndModelsArePresent(): void
+    public function testDeviceTypesAndModelsAreRegisteredAsStandardDropdowns(): void
     {
         $this->login();
 
