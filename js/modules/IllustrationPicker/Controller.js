@@ -127,8 +127,7 @@ export class GlpiIllustrationPickerController
     }
 
     /**
-     * Swaps the trigger between <button> (editable) and <div> (read-only),
-     * carrying over its attributes and children.
+     * Swaps the trigger between <button> (editable) and <div> (read-only).
      *
      * @param {string} tag
      * @return {HTMLElement}
@@ -256,9 +255,7 @@ export class GlpiIllustrationPickerController
             this.#container.querySelector("[data-glpi-icon-picker-filter]").focus();
         });
 
-        // The picker is often injected after page load, where Bootstrap's tab
-        // data-api no longer runs: instantiate the active tab ourselves,
-        // otherwise arrow-key navigation and the roving tabindex are missing.
+        // The tab data-api skips pickers injected after load: no arrows, no roving tabindex.
         const active_tab = this.#container.querySelector('[data-bs-toggle="tab"].active');
         if (active_tab !== null) {
             bootstrap.Tab.getOrCreateInstance(active_tab);

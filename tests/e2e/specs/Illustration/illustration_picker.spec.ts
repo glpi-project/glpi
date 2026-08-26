@@ -72,13 +72,15 @@ test.describe('Illustration picker', () => {
         const picker_page = new IllustrationPickerPage(page);
         await picker_page.gotoFormServiceCatalogTab(form_id);
 
-        // The trigger must be focusable and driven by Enter.
+        // Trigger: focusable and driven by Enter.
         await picker_page.select_illustration_button.press('Enter');
         await expect(picker_page.picker_modal).toBeVisible();
         await expect(picker_page.picker_modal).toHaveAttribute('data-cy-shown', 'true');
 
-        // The tabs must be focusable, so that the upload pane can be reached
-        // with the arrow keys.
+        // Autofocus proves the controller ran, unlike `data-cy-shown`.
+        await expect(picker_page.search_input).toBeFocused();
+
+        // Tabs must be focusable for the arrows to reach the upload pane.
         const illustrations_tab = picker_page.picker_modal.getByRole('tab', {
             name: 'Pick an illustration',
         });

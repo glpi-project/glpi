@@ -153,14 +153,12 @@
         border-color 0.2s ease,
         box-shadow 0.2s ease;
 
-    // Only add spacing in edit mode, where the preview becomes a real <button>
-    // that can be hovered to pick an illustration.
+    // Spacing only in edit mode, where the preview is a real <button>.
     // Offset the padding with a matching negative margin so surrounding
     // content keeps its position when switching between view and edit mode.
     &:is(button) {
         padding: 0.25rem;
         margin: -0.25rem;
-        cursor: pointer;
 
         &:hover {
             border-color: var(--tblr-border-color);
