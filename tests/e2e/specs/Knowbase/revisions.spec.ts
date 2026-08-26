@@ -365,24 +365,41 @@ test('History is loaded page by page as the user scrolls', async ({ page, profil
     }
 
     await kb.goto(id);
-    await kb.articleActionsMenu.click();
-    await kb.getButton('History').click();
+    await kb.doOpenHistoryPanel();
     await expect(kb.getHeading('History')).toBeVisible();
 
     // Only the first page is rendered, with a marker for the next one.
-    const events = page.getByTestId('history-event');
+    const events = kb.getHistoryEvents();
     await expect(events).toHaveCount(page_size);
-    const list = page.locator('[data-glpi-revisions]').first();
-    await expect(list.locator('[data-glpi-history-load-more]')).toBeAttached();
+    await expect(kb.getHistoryLoadMoreMarker()).toBeAttached();
 
     // Reaching the end of the list loads the remaining events.
-    await list.evaluate((element) => element.scrollTop = element.scrollHeight);
+    await kb.doScrollToHistoryListEnd();
     await expect(events).toHaveCount(total_events);
-    await expect(list.locator('[data-glpi-history-load-more]')).not.toBeAttached();
+    await expect(kb.getHistoryLoadMoreMarker()).not.toBeAttached();
 
-    // The newest event is still the only highlighted one.
-    await expect(page.locator('.step-item.active')).toHaveCount(1);
+    // The newest event is still the highlighted one, and the events appended
+    // afterwards did not highlight the first entry of their own page.
+    await expect(events.nth(0)).toHaveAttribute('aria-current', 'step');
     await expect(events.nth(0).getByText('Current version')).toBeVisible();
+    await expect(events.nth(page_size)).not.toHaveAttribute('aria-current');
+
+    // Regression test: there was an issue with infinite scroll not working
+    // after the panel was closed an re-opened so we trigger a close/reopen here.
+    const side_panel = page.getByTestId('side-panel');
+    await side_panel.getByTestId('side-panel-close').click();
+    await expect(side_panel).toHaveCSS('width', '0px');
+    await kb.doOpenHistoryPanel();
+    await expect(kb.getHeading('History')).toBeVisible();
+
+    // The reopened panel starts back at the first page...
+    await expect(kb.getHistoryLoadMoreMarker()).toBeAttached();
+    await expect(events).toHaveCount(page_size);
+
+    // ... and reaching its end still loads the remaining events.
+    await kb.doScrollToHistoryListEnd();
+    await expect(events).toHaveCount(total_events);
+    await expect(kb.getHistoryLoadMoreMarker()).not.toBeAttached();
 
     // Events loaded on the second page stay usable.
     const lastEvent = events.nth(total_events - 1);

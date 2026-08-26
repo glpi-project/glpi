@@ -98,27 +98,29 @@ export class GlpiKnowbaseRevisionsPanelController
      */
     #watchLoadMoreMarker()
     {
+        // The panel content is replaced on each load, we must always reset the
+        // observer.
+        this.#loadMoreObserver?.disconnect();
+        this.#loadMoreObserver = null;
+
         const list = this.#container.querySelector(list_selector);
         const marker = list?.querySelector(load_more_selector);
         if (!marker) {
             return;
         }
 
-        if (this.#loadMoreObserver === null) {
-            this.#loadMoreObserver = new IntersectionObserver(
-                (entries) => {
-                    for (const entry of entries) {
-                        if (entry.isIntersecting) {
-                            this.#loadNextPage(entry.target);
-                        }
+        this.#loadMoreObserver = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (entry.isIntersecting) {
+                        this.#loadNextPage(entry.target);
                     }
-                },
-                // The list scrolls inside its own box, and the next page is
-                // loaded slightly before the marker is actually reached.
-                {root: list, rootMargin: '200px'}
-            );
-        }
-
+                }
+            },
+            // The list scrolls inside its own box, and the next page is
+            // loaded slightly before the marker is actually reached.
+            {root: list, rootMargin: '200px'}
+        );
         this.#loadMoreObserver.observe(marker);
     }
 
@@ -132,7 +134,7 @@ export class GlpiKnowbaseRevisionsPanelController
             return;
         }
         marker.dataset.glpiLoading = '';
-        this.#loadMoreObserver.unobserve(marker);
+        this.#loadMoreObserver?.unobserve(marker);
 
         const kbId = marker.dataset.glpiKbId;
         const offset = marker.dataset.glpiHistoryNextOffset;
