@@ -32,7 +32,9 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<div id="tabsbody" class="m-n2 display_preference_config">
+{% set rand = random() %}
+
+<div id="displaypreference_config{{ rand }}" class="m-n2 display_preference_config">
     <input type="hidden" name="itemtype" value="{{ itemtype }}">
     <input type="hidden" name="users_id" value="{{ users_id }}">
     {% if not available_itemtype %}
@@ -128,16 +130,16 @@
 {% if can_edit %}
     <script>
         $(() => {
-            const config_forms = $(`#tabsbody.display_preference_config`);
+            const config_form = $(`#displaypreference_config{{ rand }}`);
             // Select nothing by default because select2 has no problem defaulting the selection to the first item even if it is filtered out
-            config_forms.find(`select[name="num"]`).val('').trigger('change');
+            config_form.find(`select[name="num"]`).val('').trigger('change');
             // Make sure the table rows are sortable only once
-            const sortables = `#tabsbody.display_preference_config ul.list-group`;
+            const sortables = `#displaypreference_config{{ rand }} ul.list-group`;
             try {
                 sortable(sortables, 'destroy');
             } catch (e) {}
             sortable(sortables, {
-                acceptFrom: '#tabsbody.display_preference_config ul.list-group',
+                acceptFrom: sortables,
                 items: '{% if can_edit %}li:not([data-fixed]){% else %}none{% endif %}',
             });
 
@@ -156,8 +158,8 @@
                     type: 'POST',
                     data: {
                         'action': 'update_order',
-                        'itemtype': config_forms.find(`input[name="itemtype"]`).val(),
-                        'users_id': config_forms.find(`input[name="users_id"]`).val(),
+                        'itemtype': config_form.find(`input[name="itemtype"]`).val(),
+                        'users_id': config_form.find(`input[name="users_id"]`).val(),
                         'interface': '{{ interface }}',
                         'opts': opts,
                     },
@@ -179,11 +181,11 @@
             $(sortables).off('sortupdate').on('sortupdate', (e) => {
                 updateOrder(e.target);
             });
-            const submitForm = (specific_form, data) => {
-                data['itemtype'] = specific_form.find(`input[name="itemtype"]`).val();
-                data['users_id'] = specific_form.find(`input[name="users_id"]`).val();
+            const submitForm = (data) => {
+                data['itemtype'] = config_form.find(`input[name="itemtype"]`).val();
+                data['users_id'] = config_form.find(`input[name="users_id"]`).val();
                 // Disable all buttons since there can only be one action done at a time
-                config_forms.find(`button`).prop('disabled', true);
+                config_form.find(`button`).prop('disabled', true);
                 $.ajax({
                     url: "{{ path('/ajax/displaypreference.php') }}",
                     type: 'POST',
@@ -196,17 +198,16 @@
                     window.location.reload();
                 });
             };
-            config_forms.find(`button[name="activate"]`).on(`click`, (e) => {
-                submitForm($(e.target).closest('.display_preference_config'), {activate: 1});
+            config_form.find(`button[name="activate"]`).on(`click`, () => {
+                submitForm({activate: 1});
             });
 
-            config_forms.find(`button[name="disable"]`).on(`click`, (e) => {
-                submitForm($(e.target).closest('.display_preference_config'), {disable: 1});
+            config_form.find(`button[name="disable"]`).on(`click`, () => {
+                submitForm({disable: 1});
             });
 
-            config_forms.find(`button[name="add_opt"]`).on(`click`, (e) => {
-                const specific_form = $(e.target).closest('.display_preference_config');
-                const num_select = specific_form.find(`select[name="num"]`);
+            config_form.find(`button[name="add_opt"]`).on(`click`, () => {
+                const num_select = config_form.find(`select[name="num"]`);
                 const num = num_select.val();
                 if (num === null) {
                     return;
@@ -216,7 +217,7 @@
                 const opt = num_select.find(`option[value="${num}"]`);
                 const label = opt.closest('optgroup').index() === 0 ? opt.text() : `${opt.closest('optgroup').attr('label')} - ${opt.text()}`;
 
-                const tbody = specific_form.find(`ul.list-group`);
+                const tbody = config_form.find(`ul.list-group`);
                 tbody.append(`
                <li data-opt-id="${num}" class="cursor-grab list-group-item py-2 d-flex px-2 align-items-center">
                   <i class="ti ti-grip-vertical" aria-hidden="true"></i>
@@ -231,12 +232,11 @@
                 // Reset selection to first item. templateResult will automatically hide the item, but it doesn't remove it as the active selection.
                 // New selection will be blank. Doesn't seem to be a good way to reset the selection to the first item that isn't hidden by the result template.
                 num_select.val('').trigger('change');
-                updateOrder(specific_form);
+                updateOrder(config_form);
             });
 
-            config_forms.on(`click`, 'button[name="remove_opt"]', (e) => {
-                const specific_form = $(e.target).closest('.display_preference_config');
-                const num_select = specific_form.find(`select[name="num"]`);
+            config_form.on(`click`, 'button[name="remove_opt"]', (e) => {
+                const num_select = config_form.find(`select[name="num"]`);
                 const list = $(e.target).closest('ul');
                 $(e.target).closest('li').remove();
                 // Trigger an update for the select to re-run the templateResult function
