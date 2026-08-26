@@ -68,9 +68,27 @@ final class HistoryBuilder
      */
     public function buildHistory(?int $limit = null): HistoryEventList
     {
-        // Every source is read newest first and limited to $limit rows: the
-        // $limit most recent events of the whole history cannot hold more than
-        // $limit events coming from a single source.
+        // We use a trick to limit memory usage here.
+        // A real pagination that always return a single page of result from a
+        // sql request is very hard to implement due to the code merging multiple
+        // data sources together.
+        // A single union sorted query would be required, which will be hard to
+        // understand and maintain.
+        // Instead, we limit each data source to the maximum data thay may be
+        // returned (50 for page 1, 100 for page 2, ...).
+        // Then, the results are merged in PHP, then sorted, then reduced to the
+        // page size of 50 (remember, we may have 50 par source so the total is
+        // way over the 50 requested items).
+        // This mean the client always have 50 items returned so everything is OK
+        // on its side.
+        // For the server, the limit mean that the cost scale by page number.
+        // First page cost almost nothing and the last page cost a full read of the
+        // data into the memory (= same memory impact of having no pagination).
+        // This is actually good because first page is the default state and what
+        // users will interact with 99.9% of the time.
+        // The memory impact would only be felt on article with huge history if
+        // the user manually scroll to the end, which is quite unlikely (the
+        // longer the logs, the less likely you are to scroll to the end).
         $this->limit = $limit;
 
         $this->addCurrentVersionToHistory();
