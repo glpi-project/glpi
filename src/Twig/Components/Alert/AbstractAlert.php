@@ -38,7 +38,7 @@ abstract class AbstractAlert
 {
     /**
      * Var is exposed in the template, for the backward compatibility.
-     * So type can be used with {{ component('Alert', {type: 'warning') }}
+     * So type can be used with {{ component('Alert', {color: 'warning') }}
      *
      * @var 'primary'|'secondary'|'success'|'danger'|'warning'|'info'|'light'|'dark'
      */

@@ -54,17 +54,27 @@
     />
 
    {% if not engine_requirement.isValidated() %}
-       <twig:Alert:Danger
-           :heading="__('Database engine is not supported.')"
-           :content="engine_requirement.getValidationMessages()"
-       />
+       <twig:Alert:Danger :heading="__('Database engine is not supported.')">
+           <twig:block name="content">
+               <ul class="alert-list">
+                   {% for message in engine_requirement.getValidationMessages() %}
+                       <li>{{ message }}</li>
+                   {% endfor %}
+               </ul>
+           </twig:block>
+       </twig:Alert:Danger>
    {% endif %}
 
    {% if not config_requirement.isValidated() %}
-       <twig:Alert:Danger
-           :heading="__('Database configuration is not supported.')"
-           :content="config_requirement.getValidationMessages()"
-       />
+       <twig:Alert:Danger :heading="__('Database configuration is not supported.')">
+           <twig:block name="content">
+               <ul class="alert-list">
+                   {% for message in config_requirement.getValidationMessages() %}
+                       <li>{{ message }}</li>
+                   {% endfor %}
+               </ul>
+           </twig:block>
+       </twig:Alert:Danger>
    {% endif %}
 
    {% if engine_requirement.isValidated() and config_requirement.isValidated() %}
