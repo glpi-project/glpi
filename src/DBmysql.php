@@ -2185,8 +2185,12 @@ class DBmysql
      *
      * The result is never executed; it just rebuilds the final query the debug bar
      * used to show before queries were turned into prepared statements. Placeholders
-     * are replaced left-to-right, mirroring how self::bindStatementParams() coerces
-     * values.
+     * are filled left-to-right; keys are ignored, just like self::bindStatementParams()
+     * does. This is only an approximation of what the server executed: values are
+     * rendered the way they read best, not the way mysqli coerces them.
+     *
+     * Values are appended to an output buffer instead of being substituted in place, so
+     * a `?` inside a value can never be mistaken for the next placeholder.
      *
      * @param string $query  Query string with `?` placeholders
      * @param ?array<int|string, mixed> $params Parameters bound to the query
@@ -2198,7 +2202,14 @@ class DBmysql
         if (empty($params)) {
             return $query;
         }
+        $result = '';
+        $offset = 0;
         foreach ($params as $param) {
+            $pos = strpos($query, '?', $offset);
+            if ($pos === false) {
+                //more parameters than placeholders
+                break;
+            }
             if ($param === null) {
                 $value = 'NULL';
             } elseif (is_bool($param)) {
@@ -2206,9 +2217,10 @@ class DBmysql
             } else {
                 $value = $this->quote($param);
             }
-            $query = preg_replace('/\?/', $value, $query, 1);
+            $result .= substr($query, $offset, $pos - $offset) . $value;
+            $offset = $pos + 1;
         }
-        return $query;
+        return $result . substr($query, $offset);
     }
 
     /**
