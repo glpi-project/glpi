@@ -11,7 +11,7 @@
     import timeGridPlugin from "@fullcalendar/timegrid";
     import resourceTimelinePlugin from "@fullcalendar/resource-timeline";
     import BaseFullCalendar from "../FullCalendar/BaseFullCalendar.vue";
-    import {nextTick, onMounted, ref, useTemplateRef, watch} from "vue";
+    import {onMounted, ref, useTemplateRef, watch} from "vue";
     import ReservationEvent from "./ReservationEvent.vue";
     import useScheduler from "../FullCalendar/useScheduler.js";
 
@@ -83,8 +83,15 @@
             }
             return [];
         },
-        datesSet: () => nextTick(markDayHeadings),
-        eventsSet: () => nextTick(markDayHeadings),
+        dayCellDidMount: (arg) => markDayHeading(arg.el.querySelector('.fc-daygrid-day-number')),
+        dayHeaderDidMount: (arg) => {
+            // Month view column headers are weekday names, not days: they carry no date.
+            if (arg.el.dataset.date === undefined) {
+                return;
+            }
+
+            markDayHeading(arg.el.querySelector('.fc-col-header-cell-cushion, .fc-list-day-text'));
+        },
         selectable: props.can_reserve,
         select: (info) => {
             if (props.can_reserve) {
@@ -132,7 +139,6 @@
 
     onMounted(() => {
         calendar_api = calendar.value.getApi();
-        markDayHeadings();
     });
 
     function editEvent(info) {
@@ -168,19 +174,15 @@
             date1.getDate() === date2.getDate();
     }
 
-    // FullCalendar has no content hook for list day rows, mark both views after render.
-    function markDayHeadings() {
-        const root = calendar_api?.el;
-        if (!root) {
+    // Mark the node FullCalendar already renders, to keep the grid and table semantics.
+    function markDayHeading(day) {
+        // Disabled cells render an empty placeholder number, which must not become a heading.
+        if (!day || day.textContent.trim() === '') {
             return;
         }
 
-        root
-            .querySelectorAll('.fc-daygrid-day-number, .fc-list-day-text')
-            .forEach((day) => {
-                day.setAttribute('role', 'heading');
-                day.setAttribute('aria-level', '3');
-            });
+        day.setAttribute('role', 'heading');
+        day.setAttribute('aria-level', '3');
     }
 
     watch(current_view, (new_view) => {
