@@ -628,6 +628,31 @@ export class KnowbaseItemPage extends GlpiPage
         return this.getHistoryEvents().filter({hasText: text});
     }
 
+    /**
+     * The scrollable list holding the history events. Events are loaded one
+     * page at a time as the end of this list is reached.
+     */
+    public getHistoryList(): Locator
+    {
+        return this.page.getByTestId('history-list').filter({visible: true});
+    }
+
+    /**
+     * Marker rendered after the last loaded event, as long as another page of
+     * events remains to be loaded.
+     */
+    public getHistoryLoadMoreMarker(): Locator
+    {
+        return this.getHistoryList().getByTestId('history-load-more');
+    }
+
+    public async doScrollToHistoryListEnd(): Promise<void>
+    {
+        await this.getHistoryList().evaluate(
+            (element) => element.scrollTop = element.scrollHeight
+        );
+    }
+
     public getAsideCategory(title: string): Locator
     {
         return this.page.getByRole('group', { name: title });
