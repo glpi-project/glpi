@@ -62,6 +62,13 @@ final class HistoryPageController extends AbstractController
     )]
     public function __invoke(int $id, int $offset): Response
     {
+        // Pages are served one after the other, thus the only valid offsets are
+        // the ones this controller handed out through the "load more" marker.
+        // Anything else would return events overlapping the previous page.
+        if ($offset % HistoryRenderer::PAGE_SIZE !== 0) {
+            throw new BadRequestHttpException();
+        }
+
         $kb = KnowbaseItem::getById($id);
         if (!$kb) {
             throw new BadRequestHttpException();
