@@ -1301,9 +1301,13 @@ HTML;
                                 'color': (param) => palette[param.dataIndex % palette.length]
                             }
                         }
+                        // Hide labels with a value of zero to avoid overlapping values
                         serie['label'] = {
                             ...serie['label'],
-                            'formatter': (param) => param.data.value == 0 ? '' : param.data.value
+                            'formatter': (param) => {
+                                const raw_value = (param.data !== null && typeof param.data === 'object') ? param.data.value : param.data;
+                                return raw_value == 0 ? '' : raw_value;
+                            }
                         };
                     });
                     if ({{ horizontal ? 'true' : 'false' }}) {

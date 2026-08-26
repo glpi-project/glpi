@@ -1271,6 +1271,104 @@ class Provider
     }
 
     /**
+     * count number of opened and closed tickets grouped by their assigned group
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    public static function ticketsByGroupAndStatus(array $params = []): array
+    {
+        $DB = DBConnection::getReadConnection();
+
+        $default_params = [
+            'label'         => "",
+            'icon'          => Ticket::getIcon(),
+            'apply_filters' => [],
+        ];
+        $params = array_merge($default_params, $params);
+
+        $ticket_table       = Ticket::getTable();
+        $group_ticket_table = Group_Ticket::getTable();
+        $group_table        = Group::getTable();
+
+        $opened_statuses = implode(',', [Ticket::INCOMING, Ticket::ASSIGNED, Ticket::PLANNED, Ticket::WAITING]);
+        $closed_statuses = implode(',', [Ticket::SOLVED, Ticket::CLOSED]);
+
+        // Restrict our own grouping to the groups selected by the "technician
+        // group" filter, not just which tickets are included (see
+        // extractActorFilterIds() doc for why this is needed).
+        $filtered_group_ids = self::extractActorFilterIds(
+            GroupTechFilter::class,
+            'gl_' . GroupTechFilter::getId() . '.groups_id',
+            $ticket_table,
+            $params['apply_filters']
+        );
+
+        Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
+        $criteria = array_merge_recursive(
+            [
+                'SELECT'    => [
+                    "$group_table.name AS group_name",
+                    new QueryExpression("COUNT(DISTINCT CASE WHEN $ticket_table.status IN ($opened_statuses) THEN $ticket_table.id END) AS opened"),
+                    new QueryExpression("COUNT(DISTINCT CASE WHEN $ticket_table.status IN ($closed_statuses) THEN $ticket_table.id END) AS closed"),
+                ],
+                'FROM'      => $ticket_table,
+                'INNER JOIN' => [
+                    $group_ticket_table => [
+                        'ON' => [
+                            $group_ticket_table => 'tickets_id',
+                            $ticket_table        => 'id',
+                            [
+                                'AND' => [
+                                    "$group_ticket_table.type" => Group_Ticket::ASSIGN,
+                                ],
+                            ],
+                        ],
+                    ],
+                    $group_table => [
+                        'ON' => [
+                            $group_table         => 'id',
+                            $group_ticket_table  => 'groups_id',
+                        ],
+                    ],
+                ],
+                'WHERE'     => [
+                    "$ticket_table.is_deleted" => 0,
+                ] + ($filtered_group_ids !== null ? ["$group_table.id" => $filtered_group_ids] : [])
+                  + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY'   => "$group_table.id",
+                'ORDERBY'   => "$group_table.name",
+            ],
+            Ticket::getCriteriaFromProfile(),
+            self::getFiltersCriteria($ticket_table, $params['apply_filters'])
+        );
+        $iterator = $DB->request($criteria);
+        Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
+
+        $data = [
+            'labels' => [],
+            'series' => [
+                ['name' => __('Opened'), 'data' => []],
+                ['name' => __('Closed'), 'data' => []],
+            ],
+        ];
+        foreach ($iterator as $result) {
+            $data['labels'][] = $result['group_name'];
+            $data['series'][0]['data'][] = (int) $result['opened'];
+            $data['series'][1]['data'][] = (int) $result['closed'];
+        }
+
+        if (count($data['labels']) === 0) {
+            $data['nodata'] = true;
+        }
+
+        return [
+            'data'  => $data,
+            'label' => $params['label'],
+            'icon'  => $params['icon'],
+        ];
+    }
+
+    /**
      * Get a list of article for an compatible item (with date,name,text fields)
      *
      * @param CommonDBTM $item the itemtype to list
@@ -2211,6 +2309,29 @@ class Provider
 
         Profiler::getInstance()->stop(__METHOD__);
         return ['criteria' => $s_criteria];
+    }
+
+    /**
+     * Extracts an actor filter's resolved ids (e.g. selected group ids) so a
+     * provider can restrict its own GROUP BY, not just gate ticket inclusion.
+     * Also unsets the filter from $apply_filters to avoid a redundant join later.
+     *
+     * @param array<string, mixed> $apply_filters
+     *
+     * @return int[]|null
+     */
+    private static function extractActorFilterIds(
+        string $filter_class,
+        string $where_key,
+        string $table,
+        array &$apply_filters
+    ): ?array {
+        $value = $apply_filters[$filter_class::getId()] ?? null;
+        unset($apply_filters[$filter_class::getId()]);
+
+        $ids = $value !== null ? ($filter_class::getCriteria($table, $value)['WHERE'][$where_key] ?? null) : null;
+
+        return $ids === null ? null : (array) $ids;
     }
 
     /**
