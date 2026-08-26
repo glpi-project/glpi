@@ -139,6 +139,7 @@ export class GlpiKnowbaseRevisionsPanelController
         const kbId = marker.dataset.glpiKbId;
         const offset = marker.dataset.glpiHistoryNextOffset;
 
+        let page;
         try {
             const base_url = CFG_GLPI.root_doc;
             const response = await fetch(
@@ -150,17 +151,20 @@ export class GlpiKnowbaseRevisionsPanelController
                 throw new Error('Failed to load the next history page');
             }
 
-            // The page ends with the marker of the following one, if any.
-            marker.insertAdjacentHTML('beforebegin', await response.text());
-            marker.remove();
-
-            this.#watchLoadMoreMarker();
-            // Newly loaded events may hold the revision being compared.
-            this.#updateHighlighting();
+            page = await response.text();
         } catch {
             delete marker.dataset.glpiLoading;
             marker.textContent = __("An unexpected error occurred.");
+            return;
         }
+
+        // The page ends with the marker of the following one, if any.
+        marker.insertAdjacentHTML('beforebegin', page);
+        marker.remove();
+
+        this.#watchLoadMoreMarker();
+        // Newly loaded events may hold the revision being compared.
+        this.#updateHighlighting();
     }
 
     #initClickListeners()
