@@ -45,7 +45,7 @@
     {% if not config['enabled_inventory'] %}
         <div class="col-8 mx-auto mb-3">
             <twig:Alert:Info
-                :title="__('The inventory is disabled, remember to activate it if necessary')"
+                :heading="__('The inventory is disabled, remember to activate it if necessary')"
             />
         </div>
     {% endif %}

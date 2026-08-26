@@ -44,7 +44,7 @@
 
 {% block content_block %}
    {% if failed ?? false %}
-       <twig:Alert:Danger :title="__('Authentication failure')" />
+       <twig:Alert:Danger :heading="__('Authentication failure')" />
    {% endif %}
 
   <form method="{{ verify_http_method }}" action="{{ verify_url }}" data-submit-once autocomplete="off">

@@ -82,8 +82,8 @@
 
         {% if constant('GLPI_WEBHOOK_CRA_MANDATORY') %}
             <twig:Alert
-                :title="__('CRA is mandatory due to GLPI configuration')"
-                :message="cra_tooltip"
+                :heading="__('CRA is mandatory due to GLPI configuration')"
+                :content="cra_tooltip"
             />
             <input type="hidden" name="use_cra_challenge" value="1" />
         {% else %}
