@@ -241,9 +241,13 @@ class CommonITILObjectStatsTest extends DbTestCase
             }
         }
 
+        // finally: a template error must surface as itself, not as a leaked buffer.
         ob_start();
-        $item->$method();
-        $html = ob_get_clean();
+        try {
+            $item->$method();
+        } finally {
+            $html = ob_get_clean();
+        }
 
         return $this->normalizeHtml($html);
     }

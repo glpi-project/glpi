@@ -5654,14 +5654,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function showStatsDates()
     {
+        $is_solved = !$this->isNotSolved();
+        $is_closed = in_array($this->fields['status'], static::getClosedStatusArray());
+
         // Row presence depends on the status; its value may be empty.
         TemplateRenderer::getInstance()->display('components/itilobject/stats_dates.html.twig', [
             'opening_date'    => Html::convDateTime($this->fields['date']),
             'time_to_resolve' => Html::convDateTime($this->fields['time_to_resolve']),
-            'is_solved'       => !$this->isNotSolved(),
-            'solve_date'      => Html::convDateTime($this->fields['solvedate']),
-            'is_closed'       => in_array($this->fields['status'], static::getClosedStatusArray()),
-            'close_date'      => Html::convDateTime($this->fields['closedate']),
+            'is_solved'       => $is_solved,
+            'solve_date'      => $is_solved ? Html::convDateTime($this->fields['solvedate']) : null,
+            'is_closed'       => $is_closed,
+            'close_date'      => $is_closed ? Html::convDateTime($this->fields['closedate']) : null,
         ]);
     }
 
