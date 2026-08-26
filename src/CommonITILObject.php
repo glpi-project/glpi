@@ -5654,26 +5654,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function showStatsDates()
     {
-        $rand = mt_rand();
-        echo "<h2 class='header lh-base' id='stats_dates_$rand'>" . _sn('Date', 'Dates', Session::getPluralNumber()) . "</h2>";
-        echo "<table class='tab_cadre_fixe' aria-labelledby='stats_dates_$rand'>";
-
-        echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Opening date') . "</th>";
-        echo "<td>" . htmlescape(Html::convDateTime($this->fields['date'])) . "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Time to resolve') . "</th>";
-        echo "<td>" . htmlescape(Html::convDateTime($this->fields['time_to_resolve'])) . "</td></tr>";
-
-        if (!$this->isNotSolved()) {
-            echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Resolution date') . "</th>";
-            echo "<td>" . htmlescape(Html::convDateTime($this->fields['solvedate'])) . "</td></tr>";
-        }
-
-        if (in_array($this->fields['status'], static::getClosedStatusArray())) {
-            echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Closing date') . "</th>";
-            echo "<td>" . htmlescape(Html::convDateTime($this->fields['closedate'])) . "</td></tr>";
-        }
-        echo "</table>";
+        // Row presence depends on the status; its value may be empty.
+        TemplateRenderer::getInstance()->display('components/itilobject/stats_dates.html.twig', [
+            'opening_date'    => Html::convDateTime($this->fields['date']),
+            'time_to_resolve' => Html::convDateTime($this->fields['time_to_resolve']),
+            'is_solved'       => !$this->isNotSolved(),
+            'solve_date'      => Html::convDateTime($this->fields['solvedate']),
+            'is_closed'       => in_array($this->fields['status'], static::getClosedStatusArray()),
+            'close_date'      => Html::convDateTime($this->fields['closedate']),
+        ]);
     }
 
     /**
@@ -5681,52 +5670,27 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function showStatsTimes()
     {
-        echo "<div class='dates_timelines'>";
-        $rand = mt_rand();
-        echo "<h2 class='header lh-base' id='stats_times_$rand'>" . _sn('Time', 'Times', Session::getPluralNumber()) . "</h2>";
-        echo "<table class='tab_cadre_fixe' aria-labelledby='stats_times_$rand'>";
+        $has_takeintoaccount = isset($this->fields['takeintoaccount_delay_stat']);
+        $is_solved           = !$this->isNotSolved();
+        $is_closed           = in_array($this->fields['status'], static::getClosedStatusArray());
 
-        if (isset($this->fields['takeintoaccount_delay_stat'])) {
-            echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Take into account') . "</th><td>";
-            if ($this->fields['takeintoaccount_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false));
-            } else {
-                echo '&nbsp;';
-            }
-            echo "</td></tr>";
-        }
-
-        if (!$this->isNotSolved()) {
-            echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Resolution') . "</th><td>";
-
-            if ($this->fields['solve_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['solve_delay_stat'], false, false));
-            } else {
-                echo '&nbsp;';
-            }
-            echo "</td></tr>";
-        }
-
-        if (in_array($this->fields['status'], static::getClosedStatusArray())) {
-            echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Closure') . "</th><td>";
-            if ($this->fields['close_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['close_delay_stat'], true, false));
-            } else {
-                echo '&nbsp;';
-            }
-            echo "</td></tr>";
-        }
-
-        echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Pending') . "</th><td>";
-        if ($this->fields['waiting_duration'] > 0) {
-            echo htmlescape(Html::timestampToString($this->fields['waiting_duration'], false, false));
-        } else {
-            echo '&nbsp;';
-        }
-        echo "</td></tr>";
-
-        echo "</table>";
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/itilobject/stats_times.html.twig', [
+            'has_takeintoaccount' => $has_takeintoaccount,
+            'takeintoaccount'     => $has_takeintoaccount && $this->fields['takeintoaccount_delay_stat'] > 0
+                ? Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false)
+                : null,
+            'is_solved'           => $is_solved,
+            'resolution'          => $is_solved && $this->fields['solve_delay_stat'] > 0
+                ? Html::timestampToString($this->fields['solve_delay_stat'], false, false)
+                : null,
+            'is_closed'           => $is_closed,
+            'closure'             => $is_closed && $this->fields['close_delay_stat'] > 0
+                ? Html::timestampToString($this->fields['close_delay_stat'], true, false)
+                : null,
+            'pending'             => $this->fields['waiting_duration'] > 0
+                ? Html::timestampToString($this->fields['waiting_duration'], false, false)
+                : null,
+        ]);
     }
 
 

@@ -1,0 +1,43 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+{% set rand = random() %}
+<h2 class="header lh-base" id="stats_dates_{{ rand }}">{{ _n('Date', 'Dates', get_plural_number()) }}</h2>
+<table class="tab_cadre_fixe" aria-labelledby="stats_dates_{{ rand }}">
+    <tr class="tab_bg_2"><th scope="row">{{ __('Opening date') }}</th><td>{{ opening_date }}</td></tr>
+    <tr class="tab_bg_2"><th scope="row">{{ __('Time to resolve') }}</th><td>{{ time_to_resolve }}</td></tr>
+    {% if is_solved %}
+        <tr class="tab_bg_2"><th scope="row">{{ __('Resolution date') }}</th><td>{{ solve_date }}</td></tr>
+    {% endif %}
+    {% if is_closed %}
+        <tr class="tab_bg_2"><th scope="row">{{ __('Closing date') }}</th><td>{{ close_date }}</td></tr>
+    {% endif %}
+</table>
