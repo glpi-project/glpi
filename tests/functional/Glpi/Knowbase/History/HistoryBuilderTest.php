@@ -95,6 +95,42 @@ final class HistoryBuilderTest extends DbTestCase
         $this->assertEquals("Created by", $events[0]->getDescription());
     }
 
+    /**
+     * The builder holds the list it fills while reading its sources, so it must
+     * start over on each build instead of stacking a second read on top of the
+     * first one.
+     */
+    public function testBuildingTwiceWithTheSameBuilderYieldsTheSameHistory(): void
+    {
+        $this->login();
+        $this->setCurrentTime("2026-01-15 10:00:00");
+
+        $kb = $this->createItem(KnowbaseItem::class, [
+            'users_id' => 2,
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'name' => 'Original title',
+            'answer' => 'Original content',
+        ]);
+
+        $this->setCurrentTime("2026-01-15 12:00:00");
+        $this->updateItem(KnowbaseItem::class, $kb->getID(), [
+            'name' => 'Updated title',
+            'answer' => 'Updated content',
+        ]);
+        $kb->getFromDB($kb->getID());
+
+        $builder = new HistoryBuilder($kb);
+        $first = $builder->buildHistory();
+        $second = $builder->buildHistory();
+
+        $this->assertEquals($first->getEvents(), $second->getEvents());
+
+        // A limited build must not be polluted by the previous one either, nor
+        // leave the next one short.
+        $this->assertCount(1, $builder->buildHistory(1)->getEvents());
+        $this->assertEquals($first->getEvents(), $builder->buildHistory()->getEvents());
+    }
+
     public function testUpdatedKnowbaseItemReturnsLogEventAndRevision(): void
     {
         $this->login();

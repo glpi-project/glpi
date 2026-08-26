@@ -59,9 +59,7 @@ final class HistoryBuilder
 
     public function __construct(
         private KnowbaseItem $kb,
-    ) {
-        $this->history = new HistoryEventList();
-    }
+    ) {}
 
     /**
      * @param int|null $limit Number of events to build, the most recent ones.
@@ -91,6 +89,7 @@ final class HistoryBuilder
         // longer the logs, the less likely you are to scroll to the end).
         $this->limit = $limit;
 
+        $this->history = new HistoryEventList();
         $this->addCurrentVersionToHistory();
         $this->addCurrentTranslationsToHistory();
         $this->addRevisionsToHistory();
