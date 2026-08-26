@@ -122,10 +122,11 @@ class CronTask extends CommonDBTM
 
     public function cleanDBonPurge()
     {
+        global $DB;
+
         // Delete related CronTaskLog.
         // It cannot be done with `deleteChildrenAndRelationsFromDb` because `CronTaskLog` does not extend CommonDBConnexity.
-        $ctl = new CronTaskLog();
-        $ctl->deleteByCriteria(['crontasks_id' => $this->fields['id']]);
+        $DB->delete(CronTaskLog::getTable(), ['crontasks_id' => $this->fields['id']]);
     }
 
     /**
