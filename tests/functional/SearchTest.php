@@ -182,6 +182,50 @@ class SearchTest extends DbTestCase
         );
     }
 
+    public function testMetaComputerSoftwareDuplicateFieldColumn()
+    {
+        $search_params = ['is_deleted'   => 0,
+            'start'        => 0,
+            'criteria'     => [0 => ['field'      => 'view',
+                'searchtype' => 'contains',
+                'value'      => '',
+            ],
+            ],
+            // two meta criteria targeting the same Software field (name)
+            'metacriteria' => [
+                0 => [
+                    'link'       => 'OR',
+                    'itemtype'   => 'Software',
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'firefox',
+                ],
+                1 => ['link'       => 'OR',
+                    'itemtype'   => 'Software',
+                    'field'      => 160,
+                    'searchtype' => 'contains',
+                    'value'      => 'chrome',
+                ],
+            ],
+        ];
+
+        $data = $this->doSearch('Computer', $search_params);
+
+        // the Software "name" field must only produce a single result column,
+        // even though it is targeted by two meta criteria
+        $cols = array_filter(
+            $data['data']['cols'],
+            static fn($col) => ($col['itemtype'] ?? null) === 'Software' && $col['id'] == 160
+        );
+        $this->assertCount(1, $cols);
+
+        // the corresponding SELECT alias must not be duplicated either
+        $this->assertSame(
+            1,
+            substr_count($data['sql']['search'], '`ITEM_Software_160`')
+        );
+    }
+
     public function testSoftwareLinkedToAnyComputer()
     {
         $search_params = [
