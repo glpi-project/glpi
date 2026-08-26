@@ -557,4 +557,78 @@ class PDUTest extends AbstractInventoryAsset
         $plugs = $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]);
         $this->assertCount(2, $plugs);
     }
+
+    public function testPlugsKeptOnPduDelete(): void
+    {
+        $inventory = $this->doInventory(self::XML_TWO_PLUGS, true);
+        $pdu = $inventory->getItem();
+        $pdus_id = $pdu->fields['id'];
+        $this->assertGreaterThan(0, $pdus_id);
+
+        $plug = new \Plug();
+        $criteria = ['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id];
+        $this->assertCount(2, $plug->find($criteria));
+
+        $this->assertTrue($pdu->delete(['id' => $pdus_id]));
+        $this->assertTrue($pdu->getFromDB($pdus_id));
+        $this->assertSame(1, $pdu->fields['is_deleted']);
+
+        $this->assertCount(2, $plug->find($criteria));
+
+        $this->assertTrue($pdu->restore(['id' => $pdus_id]));
+        $this->assertCount(2, $plug->find($criteria));
+    }
+
+    public function testPlugsPurgedOnPduPurge(): void
+    {
+        $inventory = $this->doInventory(self::XML_TWO_PLUGS, true);
+        $pdu = $inventory->getItem();
+        $pdus_id = $pdu->fields['id'];
+        $this->assertGreaterThan(0, $pdus_id);
+
+        $plug = new \Plug();
+        $criteria = ['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id];
+        $this->assertCount(2, $plug->find($criteria));
+
+        // a manual plug must be purged along with the dynamic ones
+        $manual_id = $plug->add([
+            'name'          => 'Manual_Plug',
+            'itemtype_main' => \PDU::class,
+            'items_id_main' => $pdus_id,
+            'is_dynamic'    => 0,
+        ]);
+        $this->assertGreaterThan(0, $manual_id);
+        $this->assertCount(3, $plug->find($criteria));
+
+        $this->assertTrue($pdu->delete(['id' => $pdus_id], true));
+        $this->assertFalse($pdu->getFromDB($pdus_id));
+
+        $this->assertCount(0, $plug->find($criteria));
+        $this->assertFalse($plug->getFromDB($manual_id));
+    }
+
+    public function testPlugsOfOtherPduKeptOnPduPurge(): void
+    {
+        $inventory = $this->doInventory(self::XML_TWO_PLUGS, true);
+        $purged_pdu = $inventory->getItem();
+        $purged_pdus_id = $purged_pdu->fields['id'];
+        $this->assertGreaterThan(0, $purged_pdus_id);
+
+        $inventory = $this->doInventory(self::XML_ONE_PLUGS, true);
+        $kept_pdus_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $kept_pdus_id);
+        $this->assertNotSame($purged_pdus_id, $kept_pdus_id);
+
+        $plug = new \Plug();
+        $kept_criteria = ['itemtype_main' => \PDU::class, 'items_id_main' => $kept_pdus_id];
+        $this->assertCount(1, $plug->find($kept_criteria));
+
+        $this->assertTrue($purged_pdu->delete(['id' => $purged_pdus_id], true));
+
+        $this->assertCount(
+            0,
+            $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $purged_pdus_id])
+        );
+        $this->assertCount(1, $plug->find($kept_criteria));
+    }
 }
