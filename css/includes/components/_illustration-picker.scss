@@ -47,8 +47,6 @@
     padding-bottom: 10px;
 }
 
-// Strip the UA button styling; :where() and the tag let component classes win.
-// `width`: a button shrinks to its content where the <div> filled its container.
 :where(button.illustration-picker-btn, button.illustration-picker-tile) {
     width: -moz-available;
     width: -webkit-fill-available;
