@@ -152,7 +152,7 @@ class Tag_Itemtype extends CommonDBChild
             }
         }
 
-        return $common_tags;
+        return array_values($common_tags);
     }
 
     /**

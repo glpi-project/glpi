@@ -157,7 +157,7 @@ class Tag_Item extends CommonDBRelation
     /**
      * Get IDs of tags currently attached to the given item.
      *
-     * @param CommonDBTM $asset The item for which to retrieve attached tag IDs.
+     * @param CommonDBTM $item The item for which to retrieve attached tag IDs.
      *
      * @return list<int>
      */
@@ -176,6 +176,9 @@ class Tag_Item extends CommonDBRelation
         ));
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getRelationMassiveActionsSpecificities(): array
     {
         $specificities = parent::getRelationMassiveActionsSpecificities();

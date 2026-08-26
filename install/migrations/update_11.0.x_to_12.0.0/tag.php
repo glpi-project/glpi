@@ -82,7 +82,8 @@ if (!$DB->tableExists('glpi_tags_items')) {
         `itemtype` varchar(255) NOT NULL,
         `items_id` int {$default_key_sign} NOT NULL,
         PRIMARY KEY (`id`),
-        UNIQUE KEY `unicity` (`itemtype`, `items_id`, `tags_id`)
+        UNIQUE KEY `unicity` (`itemtype`, `items_id`, `tags_id`),
+        KEY `tags_id` (`tags_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;";
     $DB->doQuery($query);
 }
