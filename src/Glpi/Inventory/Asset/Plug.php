@@ -85,6 +85,7 @@ class Plug extends InventoryAsset
         // handle each plug from inventory
         foreach ($this->data as $data_key => $val) {
             $name = (string) ($val->name ?? $val->number ?? ''); // rely to number as Glpi-Agent
+            $val->name = $name;
             $found_key = null;
 
             // keep key if exist from DB

@@ -173,7 +173,7 @@ if ($DB->tableExists('glpi_items_plugs')) {
             'WHERE'  => ['id' => $plug_item_data['items_id']],
         ])->current();
         $entities_id  = $item_entity['entities_id'] ?? 0;
-        $is_recursive = $item_entity['is_recursive'] ?? 1;
+        $is_recursive = $item_entity['is_recursive'] ?? 0;
 
         // handle plug migration if exist
         if ($plug_data !== null) {
