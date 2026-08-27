@@ -739,4 +739,114 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await page.getByText('Plain body text with nothing anchored').click();
         await expect(neighbour).toHaveCSS('opacity', '1');
     });
+
+    test('Hovering one fragment of a passage spanning two blocks emphasises all of them', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test hover across blocks',
+            entities_id: getWorkerEntityId(),
+            answer: '<h3>Section title</h3><p>Body sentence here</p><p>Untouched trailing text</p>',
+        });
+        // Across the heading/paragraph boundary: the indexed text has no separator.
+        await api.createItem('KnowbaseItem_Comment', {
+            knowbaseitems_id: id,
+            comment: 'Comment on a two-block passage',
+            anchor_prefix: 'Section ',
+            anchor_exact: 'titleBody sentence',
+            anchor_suffix: ' here',
+            anchor_occurrence: 0,
+        });
+
+        await kb.goto(id);
+        await kb.waitForArticleReady();
+
+        // One element per text node crossed.
+        await expect(kb.getCommentHighlights()).toHaveCount(2);
+        expect(await kb.getCommentHighlightThicknesses()).toEqual(['2px', '2px']);
+
+        await kb.getCommentHighlights().nth(1).hover();
+        await expect
+            .poll(() => kb.getCommentHighlightThicknesses())
+            .toEqual(['3px', '3px']);
+
+        // And symmetrically, from the heading fragment.
+        await page.getByText('Untouched trailing text').hover();
+        await expect
+            .poll(() => kb.getCommentHighlightThicknesses())
+            .toEqual(['2px', '2px']);
+
+        await kb.getCommentHighlights().nth(0).hover();
+        await expect
+            .poll(() => kb.getCommentHighlightThicknesses())
+            .toEqual(['3px', '3px']);
+    });
+
+    test('Hovering a passage split by inline markup emphasises all of it', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test hover across inline markup',
+            entities_id: getWorkerEntityId(),
+            answer: '<p>Hello <strong>brave</strong> new world</p>',
+        });
+        // A <strong> inside a single paragraph splits the passage just like a block boundary.
+        await api.createItem('KnowbaseItem_Comment', {
+            knowbaseitems_id: id,
+            comment: 'Comment on a bold-split passage',
+            anchor_prefix: 'Hello ',
+            anchor_exact: 'brave new',
+            anchor_suffix: ' world',
+            anchor_occurrence: 0,
+        });
+
+        await kb.goto(id);
+        await kb.waitForArticleReady();
+
+        await expect(kb.getCommentHighlights()).toHaveCount(2);
+
+        await kb.getCommentHighlights().nth(0).hover();
+        await expect
+            .poll(() => kb.getCommentHighlightThicknesses())
+            .toEqual(['3px', '3px']);
+    });
+
+    test('Hovering one fragment emphasises the whole passage in edit mode too', async ({ page, profile, api }) => {
+        await profile.set(Profiles.SuperAdmin);
+        const kb = new KnowbaseItemPage(page);
+
+        const id = await api.createItem('KnowbaseItem', {
+            name: 'Test hover across blocks while editing',
+            entities_id: getWorkerEntityId(),
+            answer: '<h3>Section title</h3><p>Body sentence here</p><p>Untouched trailing text</p>',
+        });
+        await api.createItem('KnowbaseItem_Comment', {
+            knowbaseitems_id: id,
+            comment: 'Comment on a two-block passage',
+            anchor_prefix: 'Section ',
+            anchor_exact: 'titleBody sentence',
+            anchor_suffix: ' here',
+            anchor_occurrence: 0,
+        });
+
+        await kb.goto(id);
+        await kb.waitForArticleReady();
+        // Highlights become ProseMirror decorations, still one per text node.
+        await kb.editor.enterEditMode();
+
+        await expect(kb.getCommentHighlights()).toHaveCount(2);
+        expect(await kb.getCommentHighlightThicknesses()).toEqual(['2px', '2px']);
+
+        await kb.getCommentHighlights().nth(1).hover();
+        await expect
+            .poll(() => kb.getCommentHighlightThicknesses())
+            .toEqual(['3px', '3px']);
+
+        await page.getByText('Untouched trailing text').hover();
+        await expect
+            .poll(() => kb.getCommentHighlightThicknesses())
+            .toEqual(['2px', '2px']);
+    });
 });

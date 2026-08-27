@@ -42,6 +42,22 @@ const { Decoration, DecorationSet } = TiptapPMView;
 const comment_highlight_key = new PluginKey('commentHighlight');
 
 /**
+ * Attrs of one decoration; a passage's hovered state is carried by every fragment.
+ * @param {string} comment_id
+ * @param {boolean} is_hovered
+ * @returns {object}
+ */
+function decorationAttrs(comment_id, is_hovered) {
+    return {
+        class: `kb-comment-highlight${is_hovered ? ' kb-comment-highlight--hovered' : ''}`,
+        'data-comment-id': comment_id,
+        role: 'button',
+        tabindex: '0',
+        'aria-label': __('View comment'),
+    };
+}
+
+/**
  * Anchors whose quoted text is still present in the document.
  * @param {object} state - ProseMirror editor state.
  * @returns {Array<{id: string, text: string}>} The text actually located, which can
@@ -111,7 +127,7 @@ const CommentHighlight = Extension.create({
 
     addProseMirrorPlugins() {
         /** Locate one anchor by text search, as done on load and when recovering a lost range. */
-        const locate = (index, anchor) => {
+        const locate = (index, anchor, hovered_id) => {
             const located = locateAnchor(index.text, anchor);
             if (!located) {
                 return null;
@@ -122,21 +138,20 @@ const CommentHighlight = Extension.create({
             for (const { segment, start: seg_start, end: seg_end } of overlaps(index.segments, start, end)) {
                 const from = segment.pos + (seg_start - segment.start);
                 const to = segment.pos + (seg_end - segment.start);
-                decorations.push(Decoration.inline(from, to, {
-                    class: 'kb-comment-highlight',
-                    'data-comment-id': id,
-                    role: 'button',
-                    tabindex: '0',
-                    'aria-label': __('View comment'),
-                }, { comment_id: id }));
+                decorations.push(Decoration.inline(
+                    from,
+                    to,
+                    decorationAttrs(id, id === hovered_id),
+                    { comment_id: id },
+                ));
             }
             return { decorations, resolved: { id, text: index.text.slice(start, end) } };
         };
 
-        const build = (doc) => {
+        const build = (doc, hovered_id) => {
             const anchors = this.storage.anchors;
             if (!anchors || anchors.length === 0) {
-                return { set: DecorationSet.empty, resolved: [] };
+                return { set: DecorationSet.empty, resolved: [], hovered_id };
             }
 
             const index = buildPmTextIndex(doc);
@@ -144,7 +159,7 @@ const CommentHighlight = Extension.create({
             const resolved = [];
 
             for (const anchor of anchors) {
-                const found = locate(index, anchor);
+                const found = locate(index, anchor, hovered_id);
                 if (found === null) {
                     continue;
                 }
@@ -152,7 +167,7 @@ const CommentHighlight = Extension.create({
                 resolved.push(found.resolved);
             }
 
-            return { set: DecorationSet.create(doc, decorations), resolved };
+            return { set: DecorationSet.create(doc, decorations), resolved, hovered_id };
         };
 
         /**
@@ -161,7 +176,7 @@ const CommentHighlight = Extension.create({
         const remap = (old, tr) => {
             const anchors = this.storage.anchors;
             if (!anchors || anchors.length === 0) {
-                return { set: DecorationSet.empty, resolved: [] };
+                return { set: DecorationSet.empty, resolved: [], hovered_id: old.hovered_id };
             }
 
             const surviving = new Map();
@@ -187,24 +202,40 @@ const CommentHighlight = Extension.create({
                     continue;
                 }
                 index ??= buildPmTextIndex(tr.doc);
-                const found = locate(index, anchor);
+                const found = locate(index, anchor, old.hovered_id);
                 if (found !== null) {
                     decorations.push(...found.decorations);
                     resolved.push(found.resolved);
                 }
             }
 
-            return { set: DecorationSet.create(tr.doc, decorations), resolved };
+            return { set: DecorationSet.create(tr.doc, decorations), resolved, hovered_id: old.hovered_id };
+        };
+
+        /** Decoration attrs are immutable, so a hover change recreates them in place. */
+        const rehover = (old, doc, hovered_id) => {
+            const decorations = old.set.find().map((deco) => Decoration.inline(
+                deco.from,
+                deco.to,
+                decorationAttrs(deco.spec.comment_id, deco.spec.comment_id === hovered_id),
+                deco.spec,
+            ));
+            return { set: DecorationSet.create(doc, decorations), resolved: old.resolved, hovered_id };
         };
 
         return [
             new Plugin({
                 key: comment_highlight_key,
                 state: {
-                    init: (_config, state) => build(state.doc),
+                    init: (_config, state) => build(state.doc, null),
                     apply: (tr, old) => {
                         if (tr.getMeta('commentHighlightRefresh')) {
-                            return build(tr.doc);
+                            return build(tr.doc, old.hovered_id);
+                        }
+                        // Distinguish a null hover (nothing hovered) from no meta at all.
+                        const hovered_id = tr.getMeta('commentHighlightHover');
+                        if (hovered_id !== undefined) {
+                            return rehover(old, tr.doc, hovered_id);
                         }
                         if (!tr.docChanged) {
                             return old;
@@ -229,6 +260,13 @@ const CommentHighlight = Extension.create({
                 }
                 if (dispatch) {
                     dispatch(tr.setMeta('commentHighlightRefresh', true));
+                }
+                return true;
+            },
+
+            setCommentHighlightHover: (comment_id) => ({ tr, dispatch }) => {
+                if (dispatch) {
+                    dispatch(tr.setMeta('commentHighlightHover', comment_id));
                 }
                 return true;
             },

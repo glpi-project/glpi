@@ -497,6 +497,16 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
+     * Computed underline thickness of every highlight fragment, in document order.
+     */
+    public async getCommentHighlightThicknesses(): Promise<string[]>
+    {
+        return this.getCommentHighlights().evaluateAll(
+            (els) => els.map((el) => getComputedStyle(el).textDecorationThickness)
+        );
+    }
+
+    /**
      * Anchor quotes currently displayed on comment threads in the side panel.
      */
     public getCommentAnchorQuotes(): Locator
