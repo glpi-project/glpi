@@ -3007,7 +3007,7 @@ HTML;
                         $where[$key] = $value;
                     }
                 }
-                if (!empty($or_where)) {
+                if ($or_where !== []) {
                     $where[] = ['OR' => $or_where];
                 }
             }
