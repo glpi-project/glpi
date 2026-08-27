@@ -90,36 +90,37 @@
         data-glpi-icon-picker-value-preview-title="{{ selected_title }}"
         data-testid="illustration-picker"
     >
-        <div class="{{ preview_inner_css_classes }}">
+        {# <span>s only: a <button> trigger cannot hold block-level children. #}
+        <span class="d-block {{ preview_inner_css_classes }}">
             {# Placeholder: visible when no illustration is set. #}
-            <div
+            <span
                 class="d-flex align-items-center justify-content-center{% if not is_empty %} d-none{% endif %}"
                 data-glpi-icon-picker-value-preview-placeholder
                 style="width: {{ size }}px; height: {{ size }}px;"
             >
                 <i class="ti ti-photo-plus text-muted" style="font-size: {{ (size * 0.6)|round }}px;" aria-hidden="true"></i>
-            </div>
+            </span>
 
             {# Native illustration preview slot. #}
-            <div
-                class="{% if is_custom_file or is_empty %}d-none{% endif %}"
+            <span
+                class="d-block{% if is_custom_file or is_empty %} d-none{% endif %}"
                 data-glpi-icon-picker-value-preview-native
                 style="width: {{ size }}px; height: {{ size }}px;"
             >
                 {% if not is_custom_file and not is_empty %}
                     {{ render_illustration(value, size) }}
                 {% endif %}
-            </div>
+            </span>
 
             {# Custom illustration preview slot. #}
-            <div
-                class="{% if not is_custom_file %}d-none{% endif %}"
+            <span
+                class="d-block{% if not is_custom_file %} d-none{% endif %}"
                 data-glpi-icon-picker-value-preview-custom
                 data-testid="illustration-custom-preview"
             >
                 {{ render_illustration(is_custom_file ? value : custom_icon_prefix, size) }}
-            </div>
-        </div>
+            </span>
+        </span>
     </{{ preview_tag }}>
 
     {% if editable and selected_title is not empty %}
