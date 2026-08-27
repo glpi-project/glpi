@@ -394,7 +394,7 @@ body.in_modal .kb-article {
 // Recede the others rather than decorate the focused thread.
 [data-glpi-comments].kb-comments--has-focus
     .kb-comment-thread:not(.kb-comment-thread--focused) {
-    opacity: 0.65;
+    opacity: 0.35;
 
     // A receded thread stays readable.
     &:hover,
