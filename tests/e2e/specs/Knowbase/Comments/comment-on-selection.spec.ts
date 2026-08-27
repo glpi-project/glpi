@@ -642,7 +642,7 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         const other = kb.getCommentThreadByContent('The other one');
 
         await kb.getComment('Focused then released').click();
-        await expect(other).toHaveCSS('opacity', '0.65');
+        await expect(other).toHaveCSS('opacity', '0.35');
 
         await page.keyboard.press('Escape');
         await expect(other).toHaveCSS('opacity', '1');
@@ -678,7 +678,7 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
 
         // Persistent, unlike the former 2s flash.
         await expect(anchored).toHaveCSS('opacity', '1');
-        await expect(unrelated).toHaveCSS('opacity', '0.65');
+        await expect(unrelated).toHaveCSS('opacity', '0.35');
     });
 
     test('Focusing an anchored thread emphasises its passage in the article', async ({ page, profile, api }) => {
