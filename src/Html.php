@@ -2490,7 +2490,7 @@ TWIG,
             && ($max < ($p['num_displayed'] + 10))
         ) {
             $out .= "<span class='btn btn-sm border-danger text-danger me-1'>
-                        <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;'></i>"
+                        <i class='ti ti-corner-left-down mt-1' style='margin-left: -2px;' aria-hidden='true'></i>"
                         . __s('Selection too large, massive action disabled.')
                     . "</span>";
             if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
