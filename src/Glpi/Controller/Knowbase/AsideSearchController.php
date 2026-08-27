@@ -34,16 +34,19 @@
 
 namespace Glpi\Controller\Knowbase;
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Knowbase\Aside\Builder;
+use Glpi\Knowbase\Aside\SearchResultsBuilder;
 use KnowbaseItem;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * Render one page of the aside search results, which replace the article tree
+ * for as long as the reader is searching.
+ */
 final class AsideSearchController extends AbstractController
 {
     #[Route(
@@ -51,10 +54,8 @@ final class AsideSearchController extends AbstractController
         name: "knowbase_aside_search",
         methods: 'GET',
     )]
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(Request $request): Response
     {
-        global $DB;
-
         // If we can't see the knowbase, it make no sense to search inside it
         if (!KnowbaseItem::canView()) {
             throw new AccessDeniedHttpException();
@@ -67,33 +68,17 @@ final class AsideSearchController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        // Get article IDs that match this filter
-        $criteria = KnowbaseItem::getListRequest(['contains' => $contains], 'search');
-
-        // Only the matching ids are needed here
-        $criteria['SELECT'] = [KnowbaseItem::getTableField('id')];
-        unset($criteria['ORDERBY']);
-
-        $ids = [];
-        foreach ($DB->request($criteria) as $data) {
-            $ids[] = (int) $data['id'];
+        // Validate offset
+        $offset = $request->query->getInt('offset');
+        if ($offset < 0 || $offset % SearchResultsBuilder::PAGE_SIZE !== 0) {
+            throw new BadRequestHttpException();
         }
 
-        // Render the filtered tree
-        $tree = (new Builder($request->query->getInt('current_id')))->buildSearchTree($ids);
+        $builder = new SearchResultsBuilder($request->query->getInt('current_id'));
 
-        return new JsonResponse([
-            // Consumed by the favorites section, which filters the rows it
-            // already holds.
-            'ids'  => $ids,
-            'html' => TemplateRenderer::getInstance()->render(
-                'pages/tools/kb/aside_tree.html.twig',
-                [
-                    'tree'         => $tree,
-                    'can_create'   => KnowbaseItem::canCreate(),
-                    'show_actions' => KnowbaseItem::canShowAsideActions(),
-                ]
-            ),
+        return $this->render('pages/tools/kb/aside_search_results.html.twig', [
+            'results'  => $builder->build($contains, $offset),
+            'contains' => $contains,
         ]);
     }
 }

@@ -2139,6 +2139,21 @@ TWIG, $twig_params);
                 break;
 
             case 'search':
+                // Publication window
+                $criteria['WHERE'][] = [
+                    [
+                        'OR'  => [
+                            ['glpi_knowbaseitems.begin_date'  => null],
+                            ['glpi_knowbaseitems.begin_date'  => ['<', QueryFunction::now()]],
+                        ],
+                    ], [
+                        'OR'  => [
+                            ['glpi_knowbaseitems.end_date'    => null],
+                            ['glpi_knowbaseitems.end_date'    => ['>', QueryFunction::now()]],
+                        ],
+                    ],
+                ];
+
                 if (((string) $params["contains"]) !== '') {
                     $search = $params["contains"];
                     $search_wilcard = self::computeBooleanFullTextSearch($search);
@@ -2191,22 +2206,6 @@ TWIG, $twig_params);
 
                     $search_where[] = ['OR' => $ors];
 
-                    // Add visibility date
-                    $visibility_crit = [
-                        [
-                            'OR'  => [
-                                ['glpi_knowbaseitems.begin_date'  => null],
-                                ['glpi_knowbaseitems.begin_date'  => ['<', QueryFunction::now()]],
-                            ],
-                        ], [
-                            'OR'  => [
-                                ['glpi_knowbaseitems.end_date'    => null],
-                                ['glpi_knowbaseitems.end_date'    => ['>', QueryFunction::now()]],
-                            ],
-                        ],
-                    ];
-                    $search_where[] = $visibility_crit;
-
                     $criteria['ORDERBY'] = ['SCORE DESC'];
 
                     // preliminar query to allow alternate search if no result with fulltext
@@ -2240,8 +2239,6 @@ TWIG, $twig_params);
                             $ors[] = ["glpi_knowbaseitemtranslations.answer" => ['LIKE', Search::makeTextSearchValue($contains)]];
                         }
                         $criteria['WHERE'][] = ['OR' => $ors];
-                        // Add visibility date
-                        $criteria['WHERE'][] = $visibility_crit;
                     } else {
                         $criteria['WHERE'] = $search_where;
                     }

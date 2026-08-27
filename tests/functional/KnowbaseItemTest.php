@@ -805,6 +805,51 @@ HTML,
         }
     }
 
+    public function testGetListRequestHidesArticlesOutsideTheirValidityWindowOnWildcardSearch(): void
+    {
+        global $DB;
+
+        // A search made only of operators result in `*`, which matches the whole
+        // knowledge base. Make sure the publication window is still applied.
+        $glpi_user = getItemByTypeName("User", "glpi", true);
+        $this->login();
+        $entity = $this->getTestRootEntity(only_id: true);
+
+        $articles = [];
+        // Relative dates: `begin_date` is a timestamp column, capped at 2038 on MySQL.
+        foreach (
+            [
+                'valid'   => ['begin_date' => null, 'end_date' => null],
+                'expired' => ['begin_date' => null, 'end_date' => date('Y-m-d H:i:s', strtotime('-1 year'))],
+                'future'  => ['begin_date' => date('Y-m-d H:i:s', strtotime('+1 year')), 'end_date' => null],
+            ] as $key => $dates
+        ) {
+            $articles[$key] = $this->createItem(KnowbaseItem::class, [
+                'name'        => __FUNCTION__ . '_' . $key,
+                'answer'      => __FUNCTION__ . '_' . $key,
+                'is_faq'      => 1,
+                'users_id'    => $glpi_user,
+                'entities_id' => $entity,
+                'begin_date'  => $dates['begin_date'],
+                'end_date'    => $dates['end_date'],
+            ]);
+            $this->createItem(\Entity_KnowbaseItem::class, [
+                'knowbaseitems_id' => $articles[$key]->getID(),
+                'entities_id'      => $entity,
+                'is_recursive'     => 1,
+            ]);
+        }
+
+        $this->login('post-only', 'postonly');
+
+        $criteria = KnowbaseItem::getListRequest(['contains' => '*'], 'search');
+        $names = array_column(iterator_to_array($DB->request($criteria)), 'name');
+
+        $this->assertContains($articles['valid']->fields['name'], $names);
+        $this->assertNotContains($articles['expired']->fields['name'], $names);
+        $this->assertNotContains($articles['future']->fields['name'], $names);
+    }
+
     public function testGetAnswerAnchors(): void
     {
         // Create test KB with multiple headers

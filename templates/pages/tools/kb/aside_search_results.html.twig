@@ -1,0 +1,100 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{#
+ # One page of the aside search results. Rendered by `AsideSearchController`,
+ # both when a search is run and when the aside asks for the next page as the
+ # reader scrolls through the results.
+ #}
+
+{% for result in results.getResults %}
+    <li
+        data-glpi-kb-article-id="{{ result.id }}"
+        data-testid="kb-search-result-{{ result.id }}"
+        {% if result.is_current %}
+            data-glpi-kb-article-current
+            aria-current="page"
+        {% endif %}
+        class="article"
+    >
+        <a class="d-block text-dark text-hover-link" href="{{ result.link }}">
+            <span class="d-flex align-items-center">
+                <span
+                    class="{{ result.illustration ? 'me-1' : '' }}"
+                    data-glpi-kb-article-illustration
+                    data-testid="kb-illustration"
+                >
+                    {% if result.illustration %}
+                        {{ render_illustration(result.illustration, 20) }}
+                    {% endif %}
+                </span>
+                <span class="text-truncate" data-glpi-kb-article-title>{{ result.title }}</span>
+            </span>
+            {# No `d-block`: its `!important` would beat the `-webkit-box` the
+             # three line clamp needs. #}
+            {% if result.excerpt %}
+                <span
+                    class="text-muted small"
+                    data-glpi-kb-search-result-excerpt
+                    data-testid="kb-search-result-excerpt"
+                >
+                    {{ result.excerpt }}
+                </span>
+            {% endif %}
+        </a>
+    </li>
+{% endfor %}
+
+{% if results.getNextOffset is not null %}
+    {# Watched by the aside, which swaps it for the next page when it comes
+     # into view. It carries the search it belongs to, so a page arriving after
+     # the reader has typed something else can be discarded. #}
+    <li
+        class="text-secondary small"
+        role="status"
+        data-testid="kb-search-load-more"
+        data-glpi-kb-aside-search-load-more
+        data-glpi-kb-aside-search-next-offset="{{ results.getNextOffset }}"
+        data-glpi-kb-aside-search-contains="{{ contains }}"
+    >
+        {# The marker ships with the page before it, and a live region
+         # announces whatever it holds: both states stay hidden until the aside
+         # says which one applies. #}
+        <span data-glpi-kb-aside-search-load-more-loading hidden>
+            <span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>
+            {{ __("Loading...") }}
+        </span>
+        <span data-glpi-kb-aside-search-load-more-error hidden>
+            {{ __("The next results could not be loaded.") }}
+        </span>
+    </li>
+{% endif %}
