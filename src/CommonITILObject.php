@@ -5655,7 +5655,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     public function showStatsDates()
     {
         $rand = mt_rand();
-        echo "<h2 class='header' id='stats_dates_$rand'>" . _sn('Date', 'Dates', Session::getPluralNumber()) . "</h2>";
+        echo "<h2 class='header lh-base' id='stats_dates_$rand'>" . _sn('Date', 'Dates', Session::getPluralNumber()) . "</h2>";
         echo "<table class='tab_cadre_fixe' aria-labelledby='stats_dates_$rand'>";
 
         echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Opening date') . "</th>";
@@ -5683,7 +5683,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         echo "<div class='dates_timelines'>";
         $rand = mt_rand();
-        echo "<h2 class='header' id='stats_times_$rand'>" . _sn('Time', 'Times', Session::getPluralNumber()) . "</h2>";
+        echo "<h2 class='header lh-base' id='stats_times_$rand'>" . _sn('Time', 'Times', Session::getPluralNumber()) . "</h2>";
         echo "<table class='tab_cadre_fixe' aria-labelledby='stats_times_$rand'>";
 
         if (isset($this->fields['takeintoaccount_delay_stat'])) {

@@ -37,7 +37,7 @@
         },
     });
 
-    const { getListFullView, getResourceWeekView } = useScheduler();
+    const { getListFullView, getResourceWeekView, resourceWeekDayLevel } = useScheduler();
     const id = Number(props.id);
     const default_date = new Date(props.default_date);
     const calendar = useTemplateRef('calendar');
@@ -91,6 +91,14 @@
             }
 
             markDayHeading(arg.el.querySelector('.fc-col-header-cell-cushion, .fc-list-day-text'));
+        },
+        slotLabelDidMount: (arg) => {
+            // Timeline rows are week, day then hour. timeGrid time axis labels are always level 0.
+            if (arg.level !== resourceWeekDayLevel) {
+                return;
+            }
+
+            markDayHeading(arg.el.querySelector('.fc-timeline-slot-cushion'));
         },
         selectable: props.can_reserve,
         select: (info) => {

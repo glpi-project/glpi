@@ -82,8 +82,8 @@
 <div class="mb-3">
    <form id="{{ link_itemtype|lower ~ "_form" ~ rand }}" name="{{ link_itemtype|lower ~ "_form" ~ rand }}" method="post" action="{{ link_itemtype|itemtype_form_path }}">
       {% if form_label_level is defined and form_label is not empty %}
-         {# Structure only: fs-4 is the body text size here, the label must not look different. #}
-         <h{{ form_label_level }} class="fw-normal mb-0 fs-4">{{ form_label }}</h{{ form_label_level }}>
+         {# Structure only: fs-4 and lh-base restore the surrounding body text metrics. #}
+         <h{{ form_label_level }} class="fw-normal mb-0 fs-4 lh-base">{{ form_label }}</h{{ form_label_level }}>
       {% else %}
          {{ form_label }}
       {% endif %}

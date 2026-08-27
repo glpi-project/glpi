@@ -1018,7 +1018,8 @@ HTML;
         $ID     = $ri->getID();
 
         echo "<br>";
-        echo "<h1>" . __s('Reservations for this item') . "</h1>";
+        // Level 2: the page already carries the item h1. The h1 class keeps the rendering unchanged.
+        echo "<h2 class='h1'>" . __s('Reservations for this item') . "</h2>";
         echo "<div id='reservations_planning_$rand' class='reservations-planning tabbed'></div>";
 
         $default_date = date('Y-m-d');
