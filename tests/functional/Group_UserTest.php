@@ -267,7 +267,7 @@ class Group_UserTest extends DbTestCase
         $this->assertNotContains($non_manager_in_child, $listed_ids);
     }
 
-    public function testCountForItemRespectsTreeSessionOption()
+    public function testCountForItemAlwaysCountsDirectMembersOnly()
     {
         $this->login();
 
@@ -280,15 +280,12 @@ class Group_UserTest extends DbTestCase
         $group_user->add(['groups_id' => $child_id, 'users_id' => $uid]);
 
         $this->assertTrue($group->getFromDB($parent_id));
-
-        // Make sure no leftover request param interferes with the saved option.
         unset($_REQUEST['tree']);
 
-        $_SESSION['glpi_saved'][\Group_User::class]['tree'] = 0;
-        $this->assertSame(0, $group_user->countForItem($group));
-
+        // The tab badge cannot reflect the "tree" toggle live, so it must
+        // always reflect direct membership only, regardless of its value.
         $_SESSION['glpi_saved'][\Group_User::class]['tree'] = 1;
-        $this->assertSame(1, $group_user->countForItem($group));
+        $this->assertSame(0, $group_user->countForItem($group));
 
         unset($_SESSION['glpi_saved'][\Group_User::class]['tree']);
     }

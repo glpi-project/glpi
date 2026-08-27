@@ -740,8 +740,9 @@ TWIG, ['tree' => $tree, 'reload_suffix' => $reload_suffix]);
         if ($item instanceof Group) {
             $members = [];
             $ids = [];
-            $tree = (int) Session::getSavedOption(self::class, 'tree', 0);
-            self::getDataForGroup($item, $members, $ids, '', $tree, false);
+            // Always count direct members only: the tab badge cannot reflect
+            // the "tree" toggle live (reloadTab() never refreshes it).
+            self::getDataForGroup($item, $members, $ids, '', 0, false);
 
             // We will also count implicits members from parents groups
             $members = array_merge(
