@@ -1,0 +1,11 @@
+Date: Wed, 26 Aug 2026 09:47:00 +0200 (CEST)
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+Subject: 43.5 - Invalid UTF-8 byte sequence in content
+Message-ID: <54-invalid-utf8-content@glpi-project.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+
+Invalid byte sequence: Ã
+End of message.
