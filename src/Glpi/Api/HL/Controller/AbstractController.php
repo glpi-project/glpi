@@ -523,7 +523,7 @@ abstract class AbstractController
      * Get the default file upload options for a given upload type.
      * @param string $upload_as
      * @phpstan-param FileManager::UPLOAD_AS_* $upload_as
-     * @return array
+     * @return array{upload_as: string, allowed_specifiers: string[]}
      */
     protected static function getDefaultFileUploadOptions(string $upload_as = FileManager::UPLOAD_AS_DOCUMENT): array
     {

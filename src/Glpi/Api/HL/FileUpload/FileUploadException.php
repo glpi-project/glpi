@@ -42,15 +42,22 @@ class FileUploadException extends APIException
     private string $property_name;
     private string $error_name;
 
+    /**
+     * @param string $property_name
+     * @param string $message
+     * @param int $code
+     * @param array<string, mixed>|string|null $details
+     * @param Throwable|null $previous
+     * @param string $error_name
+     */
     public function __construct(
         string $property_name,
         string $message,
         int $code,
-        array|null|string $details = null,
+        array|string|null $details = null,
         ?Throwable $previous = null,
         string $error_name = 'file_upload_failed'
-    )
-    {
+    ) {
         parent::__construct($message, $message, $details, $code, $previous);
         $this->property_name = $property_name;
         $this->error_name = $error_name;

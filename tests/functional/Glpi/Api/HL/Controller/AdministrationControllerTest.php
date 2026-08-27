@@ -903,7 +903,7 @@ testuser
 EOT;
 
         $request = new Request('POST', '/Administration/User', [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary'
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
         ], $multipart_body);
         $new_location = null;
         $this->api->call($request, function ($call) use (&$new_location) {

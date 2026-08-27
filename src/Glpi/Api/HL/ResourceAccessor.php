@@ -181,8 +181,9 @@ final class ResourceAccessor
                 if (isset($prop['x-supports-inline-images'])) {
                     // Need to extract base64 data uris from img tags and upload them as documents, replacing the src with the document URL
                     $html = ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name);
-                    $html = FileManager::handleInlineImagesInHTML($html);
-                    ArrayPathAccessor::setElementByArrayPath($request_params, $prop_name, $html);
+                    if (($html = FileManager::handleInlineImagesInHTML($html)) !== false) {
+                        ArrayPathAccessor::setElementByArrayPath($request_params, $prop_name, $html);
+                    }
                 }
             }
 
@@ -220,12 +221,12 @@ final class ResourceAccessor
         // This way we can have access to uploaded files as well
         $uploaded_files = Router::getInstance()->getFinalRequest()?->getUploadedFiles() ?? [];
 
-        /** @var HashedUploadedFile $file */
         foreach ($uploaded_files as $field => $files) {
             if (str_ends_with($field, '[]')) {
                 $field = substr($field, 0, -2);
             }
             $file_prop = $schema['properties'][$field] ?? null;
+            /** @var HashedUploadedFile $file */
             foreach ($files as $file) {
                 $is_array_of_files = $file_prop !== null
                     && $file_prop['type'] === Doc\Schema::TYPE_ARRAY

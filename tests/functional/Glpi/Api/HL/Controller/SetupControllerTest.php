@@ -974,7 +974,7 @@ $bar_file_content
 EOT;
 
         $request = new Request('POST', '/Setup/AssetDefinition', [
-            'Content-Type' => 'multipart/form-data; boundary=---boundary'
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
         ], $multipart_body);
 
         $new_location = null;

@@ -68,7 +68,11 @@ function isAPI()
     return false;
 }
 
-function isHLAPI()
+/**
+ * Is the script launched From HLAPI?
+ * @return bool
+ */
+function isHLAPI(): bool
 {
     $script = $_SERVER['REQUEST_URI'] ?? '';
     return str_contains($script, 'api.php') && Router::getInstance()->getOriginalRequest() !== null;

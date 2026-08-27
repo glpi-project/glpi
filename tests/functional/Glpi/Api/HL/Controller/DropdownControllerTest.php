@@ -36,7 +36,6 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Blacklist;
 use BlacklistedMailContent;
-use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;

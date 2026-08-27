@@ -40,6 +40,12 @@ use Glpi\Http\Request;
 use GuzzleHttp\Psr7\Utils;
 use Riverline\MultiPartParser\Converters\PSR7;
 
+use function Safe\finfo_open;
+use function Safe\fopen;
+use function Safe\file_put_contents;
+use function Safe\sha1_file;
+use function Safe\tempnam;
+
 class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {
     public function process(MiddlewareInput $input, callable $next): void
@@ -89,16 +95,16 @@ class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements R
                 $finfo = finfo_open(FILEINFO_MIME_TYPE);
                 $mime = $finfo->buffer($file_body);
                 $sha1 = sha1($file_body);
-                finfo_close($finfo);
 
                 $tmp = tempnam(GLPI_TMP_DIR, 'glpi_hlapi_upload_');
                 file_put_contents($tmp, $file_body);
                 $file_stream = Utils::streamFor(fopen($tmp, 'rb'));
+                $default_filename = 'file_' . $sha1;
                 $uploaded_files[$part_name][] = new HashedUploadedFile(
                     streamOrFile: $file_stream,
                     size: $file_stream->getSize(),
                     errorStatus: UPLOAD_ERR_OK,
-                    clientFilename: $part->getFileName(),
+                    clientFilename: $part->getFileName() ?: $default_filename,
                     clientMediaType: $mime ?: $part->getMimeType(),
                     hash_algo: 'sha1',
                     hash: $sha1
@@ -114,6 +120,9 @@ class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements R
         $next($input);
     }
 
+    /**
+     * @return array<string, HashedUploadedFile[]>
+     */
     private function getUploadedFilesFromSuperglobal(): array
     {
         $uploaded_files = [];

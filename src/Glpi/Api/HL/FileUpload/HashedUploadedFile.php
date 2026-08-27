@@ -41,11 +41,29 @@ class HashedUploadedFile extends UploadedFile
     private string $hash_algo;
     private string $hash;
 
-    public function __construct($streamOrFile, ?int $size, int $errorStatus, ?string $clientFilename, ?string $clientMediaType, string $hash_algo, string $hash)
+    public function __construct($streamOrFile, ?int $size, int $errorStatus, string $clientFilename, string $clientMediaType, string $hash_algo, string $hash)
     {
         parent::__construct($streamOrFile, $size, $errorStatus, $clientFilename, $clientMediaType);
         $this->hash_algo = $hash_algo;
         $this->hash = $hash;
+    }
+
+    public function getClientMediaType(): string
+    {
+        $mediaType = parent::getClientMediaType();
+        if ($mediaType === null) {
+            throw new \LogicException('Client media type is not available for this uploaded file.');
+        }
+        return $mediaType;
+    }
+
+    public function getClientFilename(): string
+    {
+        $filename = parent::getClientFilename();
+        if ($filename === null) {
+            throw new \LogicException('Client filename is not available for this uploaded file.');
+        }
+        return $filename;
     }
 
     public function getHashAlgo(): string

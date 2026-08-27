@@ -36,10 +36,17 @@ namespace Glpi\Api\HL\FileUpload;
 
 use Document;
 use DOMDocument;
+use DOMElement;
 use Safe\Exceptions\FilesystemException;
 use Toolbox;
 
+use function Safe\base64_decode;
+use function Safe\finfo_open;
+use function Safe\fopen;
+use function Safe\fwrite;
 use function Safe\mkdir;
+use function Safe\preg_match;
+use function Safe\rewind;
 
 /**
  * Slim file upload manager designed specifically for the High-Level API.
@@ -58,7 +65,7 @@ final class FileManager
     /**
      * Returns an array of file specifiers (extensions or mime types) that are allowed to be uploaded as Documents.
      * Similar to {@link DocumentType::getUploadableFilePattern()} but returns an array and prefers mime types over extensions.
-     * @return array
+     * @return string[]
      */
     public static function getUploadableFileSpecifiers(): array
     {
@@ -179,15 +186,18 @@ final class FileManager
     public static function deletePicture(string $picture_path): bool
     {
         $path = self::normalizePictureClientValue($picture_path);
+        if ($path === null) {
+            return false;
+        }
         return Toolbox::deletePicture($path);
     }
 
     /**
      * Extracts base64-encoded inline images from HTML content, saves them as documents, and replaces the inline images with document references.
      * @param string $html_content
-     * @return string The modified HTML content with inline images replaced by document references
+     * @return false|string The modified HTML content with inline images replaced by document references
      */
-    public static function handleInlineImagesInHTML(string $html_content): string
+    public static function handleInlineImagesInHTML(string $html_content): false|string
     {
         $dom = new DOMDocument();
         @$dom->loadHTML($html_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -201,10 +211,11 @@ final class FileManager
             'image/webp' => 'webp',
         ];
 
+        /** @var DOMElement $img */
         foreach ($images as $img) {
             $src = $img->getAttribute('src');
             if (preg_match('/^data:(image\/[a-zA-Z]+);base64,(.*)$/', $src, $matches)) {
-                $mime_type = $matches[1];
+                $mime_type = (string) $matches[1];
                 $extension = $mime_to_extension_map[$mime_type] ?? '';
                 $base64_data = $matches[2];
                 $image_data = base64_decode($base64_data);
@@ -212,9 +223,9 @@ final class FileManager
                 $image_data_hash = sha1($image_data);
                 $detected_mime_type = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $image_data);
 
-                if (strtolower($mime_type) !== strtolower($detected_mime_type) || !self::isDocumentUploadAllowed($mime_type, $extension)) {
+                if ($detected_mime_type === false || strtolower($mime_type) !== strtolower($detected_mime_type) || !self::isDocumentUploadAllowed($mime_type, $extension)) {
                     // completely remove the image if the upload is not allowed
-                    $img->parentNode->removeChild($img);
+                    $img->parentNode?->removeChild($img);
                     continue;
                 }
 
@@ -261,6 +272,11 @@ final class FileManager
         };
     }
 
+    /**
+     * @param string $value
+     * @return string|null
+     * @phpstan-return ($value is '' ? null : string)
+     */
     private static function normalizePictureClientValue(string $value): ?string
     {
         if ($value === '') {

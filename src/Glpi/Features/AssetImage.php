@@ -143,8 +143,8 @@ trait AssetImage
 
     /**
      * Less involved handling of pictures coming from the HLAPI which already handled the saving of the pictures and has more structured inputs.
-     * @param array $input the form input
-     * @return array       the altered input
+     * @param array<string, mixed> $input the form input
+     * @return array<string, mixed>       the altered input
      */
     private function managePicturesHLAPI($input): array
     {
@@ -161,7 +161,7 @@ trait AssetImage
         foreach ($to_remove as $remove) {
             $index = array_search($remove, $all_pictures, true);
             if ($index !== false) {
-                FileManager::deletePicture($all_pictures[$index]);
+                FileManager::deletePicture((string) $all_pictures[$index]);
                 unset($all_pictures[$index]);
             }
         }

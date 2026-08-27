@@ -36,8 +36,6 @@ namespace Glpi\Controller;
 
 use Glpi\Api\APIRest;
 use Glpi\Api\HL\Controller\AbstractController as ApiAbstractController;
-use Glpi\Api\HL\FileUpload\FileManager;
-use Glpi\Api\HL\FileUpload\HashedUploadedFile;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\StreamedResponseWrapper;
 use Glpi\Error\ErrorHandler;
