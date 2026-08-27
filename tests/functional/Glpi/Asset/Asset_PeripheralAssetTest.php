@@ -169,11 +169,12 @@ class Asset_PeripheralAssetTest extends DbTestCase
             'is_global' => 0,
         ]);
 
-        foreach ([
-                     [$computer_1, $global_on_other_computer],
-                     [$computer_1, $non_global_on_other_computer],
-                     [$computer_2, $global_on_current_computer],
-                 ] as [$computer, $peripheral]) {
+        $links = [
+            [$computer_1, $global_on_other_computer],
+            [$computer_1, $non_global_on_other_computer],
+            [$computer_2, $global_on_current_computer],
+        ];
+        foreach ($links as [$computer, $peripheral]) {
             $this->createItem(Asset_PeripheralAsset::class, [
                 'itemtype_asset' => Computer::class,
                 'items_id_asset' => $computer->getID(),
