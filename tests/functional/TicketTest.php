@@ -5937,7 +5937,7 @@ HTML,
         CronTask::launch(
             - CronTask::MODE_INTERNAL, // force
             1,
-            'createinquest'
+            'createinquestticket'
         );
 
         // Ensure survey has been created

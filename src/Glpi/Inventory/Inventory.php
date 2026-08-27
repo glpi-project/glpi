@@ -1011,7 +1011,7 @@ class Inventory
             case 'cleantemp':
                 return ['description' => __('Clean temporary files created from inventories')];
 
-            case 'cleanorphans':
+            case 'cleanorphansinventory':
                 return ['description' => __('Clean inventories orphaned files')];
         }
         return [];
@@ -1061,7 +1061,7 @@ class Inventory
      *
      * @return int
      **/
-    public static function cronCleanorphans($task)
+    public static function cronCleanOrphansInventory($task)
     {
         global $DB;
 

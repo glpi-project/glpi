@@ -331,4 +331,29 @@ class CronTaskTest extends DbTestCase
             'CronTaskLog entries must not generate history entries on the parent CronTask'
         );
     }
+
+    public function testDuplicateCronTaskName()
+    {
+        global $DB;
+
+        $names = [];
+        $iterator = $DB->request([
+            'SELECT' => ['itemtype', 'name'],
+            'FROM'   => \CronTask::getTable(),
+        ]);
+
+        foreach ($iterator as $row) {
+            $names[] = $row['name'];
+        }
+
+        $duplicates = array_diff_assoc($names, array_unique($names));
+
+        $this->assertEmpty(
+            $duplicates,
+            sprintf(
+                'Some cron tasks share the same name across itemtypes: %s',
+                implode(', ', array_unique($duplicates))
+            )
+        );
+    }
 }
