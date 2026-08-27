@@ -931,4 +931,39 @@ class AssetControllerTest extends HLAPITestCase
         });
     }
 
+    public function testConsumableItemShowsCreatedConsumables()
+    {
+        $consumable_item_id = getItemByTypeName('ConsumableItem', '_test_consumableitem01', true);
+        $this->assertIsInt($consumable_item_id);
+        $this->assertGreaterThan(0, $consumable_item_id);
+
+        $created = $this->createItems('Consumable', [
+            ['consumableitems_id' => $consumable_item_id],
+            ['consumableitems_id' => $consumable_item_id],
+            ['consumableitems_id' => $consumable_item_id],
+        ]);
+
+        $created_ids = array_map(static fn($it) => $it->getID(), $created);
+        $this->assertCount(3, $created_ids);
+
+        $this->login();
+        $request = new Request('GET', '/Assets/Consumable');
+        $request->setParameter('filter', ['id==' . $consumable_item_id]);
+
+        $this->api->call($request, function ($call) use ($created_ids) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($created_ids) {
+                    $this->assertCount(1, $content);
+                    $ci = $content[0];
+
+                    $this->assertEquals('_test_consumableitem01', $ci['name']);
+                    $returned_ids = array_column($ci['consumables'], 'id');
+
+                    foreach ($created_ids as $id) {
+                        $this->assertContains($id, $returned_ids);
+                    }
+                });
+        });
+    }
 }
