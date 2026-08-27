@@ -771,12 +771,12 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
             .poll(() => kb.getCommentHighlightThicknesses())
             .toEqual(['3px', '3px']);
 
-        // And symmetrically, from the heading fragment.
         await page.getByText('Untouched trailing text').hover();
         await expect
             .poll(() => kb.getCommentHighlightThicknesses())
             .toEqual(['2px', '2px']);
 
+        // And symmetrically, from the heading fragment.
         await kb.getCommentHighlights().nth(0).hover();
         await expect
             .poll(() => kb.getCommentHighlightThicknesses())

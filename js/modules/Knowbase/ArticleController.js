@@ -1099,7 +1099,7 @@ export class GlpiKnowbaseArticleController
         // CSS :hover would reach only the fragment under the cursor.
         content_el.addEventListener('mouseover', (e) => {
             const mark = e.target.closest('.kb-comment-highlight');
-            this.#setHoveredComment(mark ? mark.dataset.commentId : null);
+            this.#setHoveredComment(mark?.dataset.commentId ?? null);
         });
 
         content_el.addEventListener('mouseleave', () => {
@@ -1330,6 +1330,8 @@ export class GlpiKnowbaseArticleController
                     this.#syncAnchorQuotes();
                 },
             });
+            // The pointer may already sit on a passage, edit mode being keyboard-reachable.
+            this.#applyHoveredComment();
         } else {
             this.#editor.setEditable(true);
         }

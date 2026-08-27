@@ -235,7 +235,8 @@ const CommentHighlight = Extension.create({
                         // Distinguish a null hover (nothing hovered) from no meta at all.
                         const hovered_id = tr.getMeta('commentHighlightHover');
                         if (hovered_id !== undefined) {
-                            return rehover(old, tr.doc, hovered_id);
+                            // A chained command can carry both: map positions before retagging.
+                            return rehover(tr.docChanged ? remap(old, tr) : old, tr.doc, hovered_id);
                         }
                         if (!tr.docChanged) {
                             return old;
