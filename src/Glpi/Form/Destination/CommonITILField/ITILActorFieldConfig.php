@@ -59,6 +59,25 @@ abstract class ITILActorFieldConfig implements
         private array $specific_question_ids = [],
     ) {}
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return non-empty-array<ITILActorFieldStrategy>
+     */
+    protected static function deserializeStrategies(
+        array $data,
+        ITILActorFieldStrategy $default
+    ): array {
+        $strategies = array_values(array_filter(array_map(
+            fn($strategy) => is_scalar($strategy)
+                ? ITILActorFieldStrategy::tryFrom((string) $strategy)
+                : null,
+            $data[self::STRATEGIES] ?? []
+        )));
+
+        return $strategies ?: [$default];
+    }
+
     #[Override]
     public function jsonSerialize(): array
     {

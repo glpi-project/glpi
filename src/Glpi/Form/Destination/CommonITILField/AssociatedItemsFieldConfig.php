@@ -64,16 +64,15 @@ final class AssociatedItemsFieldConfig implements
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
-        $strategies = array_map(
-            fn(string $strategy) => AssociatedItemsFieldStrategy::tryFrom($strategy),
+        $strategies = array_values(array_filter(array_map(
+            fn($strategy) => is_scalar($strategy)
+                ? AssociatedItemsFieldStrategy::tryFrom((string) $strategy)
+                : null,
             $data[self::STRATEGIES] ?? []
-        );
-        if ($strategies === []) {
-            $strategies = [AssociatedItemsFieldStrategy::ALL_VALID_ANSWERS];
-        }
+        )));
 
         return new self(
-            strategies: $strategies,
+            strategies: $strategies ?: [AssociatedItemsFieldStrategy::ALL_VALID_ANSWERS],
             specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
             specific_associated_items: $data[self::SPECIFIC_ASSOCIATED_ITEMS] ?? [],
         );
