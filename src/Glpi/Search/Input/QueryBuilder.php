@@ -188,7 +188,7 @@ final class QueryBuilder implements SearchInputInterface
         $num    = (int) $request['num'];
         $prefix = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
 
-        if (!is_subclass_of($request['itemtype'], 'CommonDBTM')) {
+        if (!is_string($request['itemtype']) || !is_subclass_of($request['itemtype'], 'CommonDBTM')) {
             throw new RuntimeException('Invalid itemtype provided!');
         }
 

@@ -5696,6 +5696,11 @@ final class SQLProvider implements SearchProviderInterface
     /**
      * Search retained old/new values of one field, without multiplying result rows.
      * Negation applies to the entire set of values, not individual log entries.
+     *
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array<string, mixed> $criterion
+     *
+     * @return array<string, mixed>
      */
     private static function getHistoryWhereCriteria(string $itemtype, array $criterion, bool $not, bool $meta): array
     {
@@ -5706,7 +5711,7 @@ final class SQLProvider implements SearchProviderInterface
             || !SearchOption::canSearchHistory($itemtype, $criterion['field'])
         ) {
             // Fail closed for forged requests and saved searches whose permissions changed.
-            return [new QueryExpression('false')];
+            return ['AND' => [new QueryExpression('false')]];
         }
 
         $table = $itemtype::getTable();
