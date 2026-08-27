@@ -40,6 +40,7 @@ use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\UI\IllustrationManager;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -57,7 +58,7 @@ final class CustomIllustrationController extends AbstractController
         name: "glpi_ui_illustration_custom_illustration",
         methods: "GET",
     )]
-    public function __invoke(string $id): Response
+    public function __invoke(string $id, Request $request): Response
     {
         $file = $this->illustration_manager->getCustomIllustrationFile($id);
         if (!$file) {
@@ -78,6 +79,9 @@ final class CustomIllustrationController extends AbstractController
             'immutable' => true,
             'max_age' => self::CACHE_MAX_AGE,
         ]);
+
+        // Turns the response into a 304 when the client's cached ETag/Last-Modified still matches.
+        $response->isNotModified($request);
 
         return $response;
     }

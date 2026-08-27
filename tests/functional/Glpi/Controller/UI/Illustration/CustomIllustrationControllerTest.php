@@ -38,6 +38,7 @@ use Glpi\Controller\UI\Illustration\CustomIllustrationController;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Tests\DbTestCase;
 use Glpi\UI\IllustrationManager;
+use Symfony\Component\HttpFoundation\Request;
 
 final class CustomIllustrationControllerTest extends DbTestCase
 {
@@ -54,7 +55,7 @@ final class CustomIllustrationControllerTest extends DbTestCase
         $this->saveFixtureIllustration('foo.png', $id);
 
         $controller = new CustomIllustrationController(new IllustrationManager());
-        $response = $controller->__invoke($id);
+        $response = $controller->__invoke($id, new Request());
 
         // private: route is authenticated, must not be cached by shared/proxy caches
         $this->assertTrue($response->headers->hasCacheControlDirective('private'));
@@ -72,6 +73,6 @@ final class CustomIllustrationControllerTest extends DbTestCase
         $this->expectException(BadRequestHttpException::class);
 
         $controller = new CustomIllustrationController(new IllustrationManager());
-        $controller->__invoke('unknown-illustration-id.png');
+        $controller->__invoke('unknown-illustration-id.png', new Request());
     }
 }
