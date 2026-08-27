@@ -1401,6 +1401,7 @@ final class AssetController extends AbstractController
                             'table' => Cartridge::getTable(),
                             'fkey' => 'id',
                             'field' => CartridgeItem::getForeignKeyField(),
+                            'primary-property' => 'id',
                         ],
                         'properties' => [
                             'id' => [
@@ -1484,6 +1485,7 @@ final class AssetController extends AbstractController
                             'table' => Consumable::getTable(),
                             'fkey' => 'id',
                             'field' => ConsumableItem::getForeignKeyField(),
+                            'primary-property' => 'id',
                         ],
                         'properties' => [
                             'id' => [
