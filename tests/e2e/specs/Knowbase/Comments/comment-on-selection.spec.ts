@@ -734,7 +734,7 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         const neighbour = kb.getCommentThreadByContent('Neighbour comment');
 
         await kb.getComment('Comment to be released').click();
-        await expect(neighbour).toHaveCSS('opacity', '0.65');
+        await expect(neighbour).toHaveCSS('opacity', '0.35');
 
         await page.getByText('Plain body text with nothing anchored').click();
         await expect(neighbour).toHaveCSS('opacity', '1');
