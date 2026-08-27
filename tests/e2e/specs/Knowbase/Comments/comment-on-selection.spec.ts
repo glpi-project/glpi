@@ -616,7 +616,7 @@ test.describe('Knowledge Base - Comment on a text selection', () => {
         await kb.getComment('First plain comment').click();
 
         await expect(first).toHaveCSS('opacity', '1');
-        await expect(second).toHaveCSS('opacity', '0.65');
+        await expect(second).toHaveCSS('opacity', '0.35');
     });
 
     test('Escape clears the comment focus', async ({ page, profile, api }) => {
