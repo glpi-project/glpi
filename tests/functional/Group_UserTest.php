@@ -192,6 +192,175 @@ class Group_UserTest extends DbTestCase
         $this->assertSame(1, $group_user->countForItem($group));
     }
 
+    public function testGetDataForGroupTreeParameter()
+    {
+        $this->login();
+
+        $group = new \Group();
+        $parent_id = (int) $group->add([
+            'name' => 'Parent group',
+        ]);
+        $this->assertGreaterThan(0, $parent_id);
+
+        $child_id = (int) $group->add([
+            'name'      => 'Child group',
+            'groups_id' => $parent_id,
+        ]);
+        $this->assertGreaterThan(0, $child_id);
+
+        $user_child_only = getItemByTypeName('User', 'normal', true);
+
+        $group_user = new \Group_User();
+        $this->assertGreaterThan(
+            0,
+            (int) $group_user->add(['groups_id' => $child_id, 'users_id' => $user_child_only])
+        );
+
+        $this->assertTrue($group->getFromDB($parent_id));
+
+        // Default / tree = 0: the parent only sees its own direct members,
+        // a member of the child group is not listed here.
+        $members = [];
+        $ids = [];
+        \Group_User::getDataForGroup($group, $members, $ids, '', 0, false);
+        $this->assertNotContains($user_child_only, array_column($members, 'id'));
+
+        // tree = 1 (explicit opt-in): the parent's list also includes
+        // members of its sub-groups.
+        $members = [];
+        $ids = [];
+        \Group_User::getDataForGroup($group, $members, $ids, '', 1, false);
+        $this->assertContains($user_child_only, array_column($members, 'id'));
+    }
+
+    public function testGetDataForGroupTreeAndManagerFilterCombined()
+    {
+        $this->login();
+
+        $group = new \Group();
+        $parent_id = (int) $group->add(['name' => 'Parent group']);
+        $child_id  = (int) $group->add(['name' => 'Child group', 'groups_id' => $parent_id]);
+
+        $manager_in_child     = getItemByTypeName('User', 'normal', true);
+        $non_manager_in_child = getItemByTypeName('User', 'post-only', true);
+
+        $group_user = new \Group_User();
+        $group_user->add(['groups_id' => $child_id, 'users_id' => $manager_in_child, 'is_manager' => 1]);
+        $group_user->add(['groups_id' => $child_id, 'users_id' => $non_manager_in_child, 'is_manager' => 0]);
+
+        $this->assertTrue($group->getFromDB($parent_id));
+
+        // tree = 0: the "Manager" filter has nothing to work on, since
+        // sub-group members are not part of the parent's list at all.
+        $members = [];
+        $ids = [];
+        \Group_User::getDataForGroup($group, $members, $ids, ['manager' => '1'], 0, false);
+        $this->assertCount(0, $members);
+
+        // tree = 1: the "Manager" filter must correctly keep only the
+        // sub-group member who actually is a manager of that sub-group.
+        $members = [];
+        $ids = [];
+        \Group_User::getDataForGroup($group, $members, $ids, ['manager' => '1'], 1, false);
+        $listed_ids = array_column($members, 'id');
+        $this->assertContains($manager_in_child, $listed_ids);
+        $this->assertNotContains($non_manager_in_child, $listed_ids);
+    }
+
+    public function testCountForItemRespectsTreeSessionOption()
+    {
+        $this->login();
+
+        $group = new \Group();
+        $parent_id = (int) $group->add(['name' => 'Parent group']);
+        $child_id  = (int) $group->add(['name' => 'Child group', 'groups_id' => $parent_id]);
+
+        $uid = getItemByTypeName('User', 'normal', true);
+        $group_user = new \Group_User();
+        $group_user->add(['groups_id' => $child_id, 'users_id' => $uid]);
+
+        $this->assertTrue($group->getFromDB($parent_id));
+
+        // Make sure no leftover request param interferes with the saved option.
+        unset($_REQUEST['tree']);
+
+        $_SESSION['glpi_saved'][\Group_User::class]['tree'] = 0;
+        $this->assertSame(0, $group_user->countForItem($group));
+
+        $_SESSION['glpi_saved'][\Group_User::class]['tree'] = 1;
+        $this->assertSame(1, $group_user->countForItem($group));
+
+        unset($_SESSION['glpi_saved'][\Group_User::class]['tree']);
+    }
+
+    public function testShowForGroupRendersTreeToggle()
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $group = new \Group();
+        $parent_id = (int) $group->add(['name' => 'Parent group', 'entities_id' => $entities_id]);
+        $child_id  = (int) $group->add(['name' => 'Child group', 'groups_id' => $parent_id, 'entities_id' => $entities_id]);
+
+        $uid = getItemByTypeName('User', 'normal', true);
+        $group_user = new \Group_User();
+        $group_user->add(['groups_id' => $child_id, 'users_id' => $uid]);
+
+        $this->assertTrue($group->getFromDB($parent_id));
+
+        unset($_REQUEST['tree'], $_SESSION['glpi_saved'][\Group_User::class]['tree']);
+
+        ob_start();
+        \Group_User::showForGroup($group);
+        $output = ob_get_clean();
+
+        // The "include sub-groups" toggle must be rendered since the group
+        // has a child.
+        $this->assertStringContainsString("name='tree'", $output);
+
+        // A group with no children must not display the toggle at all.
+        $leaf_id = (int) $group->add(['name' => 'Leaf group', 'entities_id' => $entities_id]);
+        $this->assertTrue($group->getFromDB($leaf_id));
+        ob_start();
+        \Group_User::showForGroup($group);
+        $output = ob_get_clean();
+        $this->assertStringNotContainsString("name='tree'", $output);
+    }
+
+    public function testTreeToggleReloadPreservesActiveFilters()
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $group = new \Group();
+        $parent_id = (int) $group->add(['name' => 'PF Parent', 'entities_id' => $entities_id]);
+        $child_id  = (int) $group->add(['name' => 'PF Child', 'groups_id' => $parent_id, 'entities_id' => $entities_id]);
+        $this->assertTrue($group->getFromDB($parent_id));
+
+        unset($_REQUEST['tree'], $_SESSION['glpi_saved'][\Group_User::class]['tree']);
+
+        // No active filter: the toggle's reload must not append a stray '&'.
+        $_GET['filters'] = [];
+        ob_start();
+        \Group_User::showForGroup($group);
+        $output = ob_get_clean();
+        $this->assertMatchesRegularExpression(
+            '/reloadTab\(&quot;start=0&amp;tree=&quot;\+this\.value\+&quot;&quot;\)/',
+            $output
+        );
+
+        // An active "Manager" filter must be carried over into the toggle's
+        // reload string, otherwise switching the toggle would silently reset it.
+        $_GET['filters'] = ['manager' => '1'];
+        ob_start();
+        \Group_User::showForGroup($group);
+        $output = ob_get_clean();
+        $this->assertStringContainsString('filters%5Bmanager%5D=1', $output);
+
+        unset($_GET['filters']);
+    }
+
     public function testIsUserInGroup()
     {
         $group = new \Group();

@@ -413,14 +413,36 @@ class Group_User extends CommonDBRelation
         $used    = [];
         $ids     = [];
 
-        self::getDataForGroup($group, $used, $ids, $_GET['filters'] ?? [], true, false);
+        // Whether to also include members of this group's sub-groups.
+        // Persisted per-session, like other saved list options.
+        $tree = (int) Session::getSavedOption(self::class, 'tree', 0);
+
+        if ($group->haveChildren()) {
+            // Carry over any active column filter: reloadTab() doesn't merge
+            // query strings across calls, so we must resend them ourselves.
+            $filters_qs = http_build_query(['filters' => $_GET['filters'] ?? []]);
+            $reload_suffix = $filters_qs !== '' ? ('&' . $filters_qs) : '';
+
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <div class="d-flex justify-content-center mb-2">
+                    {{ fields.dropdownYesNo('tree', tree, __('Include members of sub-groups'), {
+                        on_change: 'reloadTab("start=0&tree="+this.value+"' ~ reload_suffix ~ '")'
+                    }) }}
+                </div>
+TWIG, ['tree' => $tree, 'reload_suffix' => $reload_suffix]);
+        } else {
+            $tree = 0;
+        }
+
+        self::getDataForGroup($group, $used, $ids, $_GET['filters'] ?? [], $tree, false);
         $all_groups = count($used);
         $used    = [];
         $ids     = [];
 
         // Retrieve member list
         // TODO: migrate to use CommonDBRelation::getListForItem()
-        $entityrestrict = self::getDataForGroup($group, $used, $ids, $_GET['filters'] ?? [], true, true);
+        $entityrestrict = self::getDataForGroup($group, $used, $ids, $_GET['filters'] ?? [], $tree, true);
 
         // We will load implicits members from parents groups and display
         // them after all the "direct" members
@@ -718,7 +740,8 @@ class Group_User extends CommonDBRelation
         if ($item instanceof Group) {
             $members = [];
             $ids = [];
-            self::getDataForGroup($item, $members, $ids, '', true, false);
+            $tree = (int) Session::getSavedOption(self::class, 'tree', 0);
+            self::getDataForGroup($item, $members, $ids, '', $tree, false);
 
             // We will also count implicits members from parents groups
             $members = array_merge(
