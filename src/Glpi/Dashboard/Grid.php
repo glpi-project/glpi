@@ -54,6 +54,7 @@ use Session;
 use ShareDashboardDropdown;
 use Telemetry;
 use Throwable;
+use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Ticket;
 use Toolbox;
 
@@ -1566,7 +1567,10 @@ HTML;
                     'args'       => [
                         'case' => $case,
                     ],
-                    'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
+                    'filters'    => array_values(array_diff(
+                        Filter::getAppliableFilters(Ticket::getTable()),
+                        [TicketStatusFilter::getId()]
+                    )),
                 ];
             }
 
