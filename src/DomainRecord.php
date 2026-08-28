@@ -237,7 +237,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         if (!CommonDBTM::canCreateItem()) {
             return false;
         }
-        
+
         return $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] === [-1]
             || in_array($this->fields['domainrecordtypes_id'], $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'], true);
     }

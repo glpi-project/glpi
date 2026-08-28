@@ -115,7 +115,8 @@ class DomainRecordTest extends DbTestCase
         $this->assertSame('www', DomainRecord::getDisplayName($domain, 'www.Test'));
     }
 
-    public static function testDomainRecordCRUDRightsProvider() {
+    public static function testDomainRecordCRUDRightsProvider()
+    {
 
         $empty_manageable_records = [];
         $all_manageable_records_id = [-1];
@@ -138,7 +139,7 @@ class DomainRecordTest extends DbTestCase
                     'canUpdate' => false,
                     'canDelete' => false,
                     'canPurge' => false,
-                ]
+                ],
             ];
 
             yield [
@@ -155,7 +156,7 @@ class DomainRecordTest extends DbTestCase
                     'canUpdate' => true,
                     'canDelete' => true,
                     'canPurge' => true,
-                ]
+                ],
             ];
 
             yield [
@@ -172,12 +173,13 @@ class DomainRecordTest extends DbTestCase
                     'canUpdate' => false,
                     'canDelete' => false,
                     'canPurge' => false,
-                ]
+                ],
             ];
         }
     }
 
-    public function testDomainRecordCRUDRights() {
+    public function testDomainRecordCRUDRights()
+    {
         $this->login();
 
         $profile = $this->createItem(\Profile::class, [
@@ -192,12 +194,12 @@ class DomainRecordTest extends DbTestCase
             '_entities_id' => $this->getTestRootEntity(true),
         ], ['password', 'password2', '_profiles_id', '_entities_id']);
 
-        $profile_rights = new \ProfileRight();
+        $profile_rights = new ProfileRight();
         $profile_rights->getFromDBByCrit([
             'profiles_id' => $profile->getID(),
             'name' => 'domain',
         ]);
-        $domain = $this->createItem(\Domain::class, [
+        $domain = $this->createItem(Domain::class, [
             "name" => "DomainTest",
             "entities_id" => $this->getTestRootEntity(true),
         ]);
@@ -205,7 +207,7 @@ class DomainRecordTest extends DbTestCase
         $a_domain_record_type = getItemByTypeName(DomainRecordType::class, 'A');
         $aaaa_domain_record_type = getItemByTypeName(DomainRecordType::class, 'AAAA');
 
-        [$a_domain_record, $aaaa_domain_record] = $this->createItems(\DomainRecord::class, [
+        [$a_domain_record, $aaaa_domain_record] = $this->createItems(DomainRecord::class, [
             [
                 'domains_id' => $domain->getID(),
                 'domainrecordtypes_id' => $a_domain_record_type->getID(),
@@ -220,7 +222,7 @@ class DomainRecordTest extends DbTestCase
 
         foreach (self::testDomainRecordCRUDRightsProvider() as $i => $data) {
             $this->login();
-            $this->updateItem(\ProfileRight::class, $profile_rights->getID(), [
+            $this->updateItem(ProfileRight::class, $profile_rights->getID(), [
                 'rights' => $data['rights'],
             ]);
             $this->updateItem(\Profile::class, $profile->getID(), [
