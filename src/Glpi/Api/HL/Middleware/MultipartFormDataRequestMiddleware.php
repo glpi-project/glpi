@@ -41,10 +41,7 @@ use GuzzleHttp\Psr7\Utils;
 use Riverline\MultiPartParser\Converters\PSR7;
 
 use function Safe\finfo_open;
-use function Safe\fopen;
-use function Safe\file_put_contents;
 use function Safe\sha1_file;
-use function Safe\tempnam;
 
 class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {
@@ -96,9 +93,8 @@ class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements R
                 $mime = $finfo->buffer($file_body);
                 $sha1 = sha1($file_body);
 
-                $tmp = tempnam(GLPI_TMP_DIR, 'glpi_hlapi_upload_');
-                file_put_contents($tmp, $file_body);
-                $file_stream = Utils::streamFor(fopen($tmp, 'rb'));
+                // move file contents to a memory stream to avoid writing to disk unless the file is too large.
+                $file_stream = Utils::streamFor($file_body);
                 $default_filename = 'file_' . $sha1;
                 $uploaded_files[$part_name][] = new HashedUploadedFile(
                     streamOrFile: $file_stream,
@@ -136,12 +132,14 @@ class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements R
                 // Multiple files for this field
                 foreach ($file_info['name'] as $index => $name) {
                     if ($file_info['error'][$index] === UPLOAD_ERR_OK) {
+                        $detected_mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file_info['tmp_name'][$index]) ?: $file_info['type'][$index];
+
                         $uploaded_files[$field_name][] = new HashedUploadedFile(
                             streamOrFile: $file_info['tmp_name'][$index],
                             size: $file_info['size'][$index],
                             errorStatus: $file_info['error'][$index],
                             clientFilename: $name,
-                            clientMediaType: $file_info['type'][$index],
+                            clientMediaType: $detected_mime,
                             hash_algo: 'sha1',
                             hash: sha1_file($file_info['tmp_name'][$index])
                         );
@@ -150,12 +148,14 @@ class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements R
             } else {
                 // Single file for this field
                 if ($file_info['error'] === UPLOAD_ERR_OK) {
+                    $detected_mime = finfo_file(finfo_open(FILEINFO_MIME_TYPE), $file_info['tmp_name']) ?: $file_info['type'];
+
                     $uploaded_files[$field_name][] = new HashedUploadedFile(
                         streamOrFile: $file_info['tmp_name'],
                         size: $file_info['size'],
                         errorStatus: $file_info['error'],
                         clientFilename: $file_info['name'],
-                        clientMediaType: $file_info['type'],
+                        clientMediaType: $detected_mime,
                         hash_algo: 'sha1',
                         hash: sha1_file($file_info['tmp_name'])
                     );

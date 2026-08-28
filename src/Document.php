@@ -173,6 +173,15 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         );
 
         // Unlink/delete the file
+        $this->cleanFile();
+    }
+
+    /**
+     * Delete the file linked to this document from filesystem if no other document is using it
+     * @return void
+     */
+    public function cleanFile(): void
+    {
         if (!empty($this->fields["filepath"])) {
             if (
                 is_file(GLPI_DOC_DIR . "/" . $this->fields["filepath"])

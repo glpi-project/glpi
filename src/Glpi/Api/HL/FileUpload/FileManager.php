@@ -61,6 +61,17 @@ final class FileManager
     /** @var string Upload the file by saving it as a picture */
     public const UPLOAD_AS_PICTURE = 'picture';
 
+    /**
+     * @var array<string, string> Mapping of image mime types to their corresponding file extensions.
+     * This is used for handling inline images in HTML content and for saving pictures.
+     */
+    private static array $image_mime_to_extension_map = [
+        'image/jpeg' => 'jpg',
+        'image/bmp' => 'bmp',
+        'image/png' => 'png',
+        'image/gif' => 'gif',
+        'image/webp' => 'webp',
+    ];
 
     /**
      * Returns an array of file specifiers (extensions or mime types) that are allowed to be uploaded as Documents.
@@ -114,6 +125,9 @@ final class FileManager
         }
 
         $ext = pathinfo($uploaded_file->getClientFilename(), PATHINFO_EXTENSION);
+        if (!preg_match('/^[a-zA-Z0-9]+$/', $ext)) {
+            return UPLOAD_ERR_CANT_WRITE;
+        }
         $dest = Document::getUploadFileValidLocationName(strtoupper($ext), $uploaded_file->getHash());
         try {
             $uploaded_file->moveTo(GLPI_DOC_DIR . '/' . $dest);
@@ -132,9 +146,9 @@ final class FileManager
      * Creates a Document with the uploaded file.
      * This function assumes the file is authorized to be uploaded and meets the GLPI file size requirements.
      * @param HashedUploadedFile $uploaded_file The file to upload
-     * @return array{documents_id: int}|int|null An array containing the ID of the created Document, an error status, or null if the Document could not be created
+     * @return Document|int|null An array containing the ID of the created Document, an error status, or null if the Document could not be created
      */
-    public static function uploadAsDocument(HashedUploadedFile $uploaded_file): array|int|null
+    public static function uploadAsDocument(HashedUploadedFile $uploaded_file): Document|int|null
     {
         $result = self::uploadFile($uploaded_file);
         if (is_int($result)) {
@@ -145,7 +159,7 @@ final class FileManager
         $input['filepath'] = $result['filepath'];
         $document = new Document();
         $documents_id = $document->add($input);
-        return $documents_id !== false ? ['documents_id' => $documents_id] : null;
+        return $documents_id !== false ? $document : null;
     }
 
     /**
@@ -162,7 +176,10 @@ final class FileManager
             return UPLOAD_ERR_NO_FILE;
         }
 
-        $ext = pathinfo($uploaded_file->getClientFilename(), PATHINFO_EXTENSION);
+        $ext = self::$image_mime_to_extension_map[$uploaded_file->getClientMediaType()] ?? '';
+        if ($ext === '') {
+            return UPLOAD_ERR_CANT_WRITE;
+        }
         $unique_name = uniqid('', true) . '.' . $ext;
         $subdir = substr($unique_name, 0, 2);
         $dest = GLPI_PICTURE_DIR . '/' . $subdir . '/' . $unique_name;
@@ -183,6 +200,13 @@ final class FileManager
         ];
     }
 
+    /**
+     * Deletes a picture from the GLPI picture directory.
+     * The path should already be validated and protected against directory traversal.
+     * This function only normalizes the picture path and then attempts to delete it.
+     * @param string $picture_path
+     * @return bool
+     */
     public static function deletePicture(string $picture_path): bool
     {
         $path = self::normalizePictureClientValue($picture_path);
@@ -195,30 +219,41 @@ final class FileManager
     /**
      * Extracts base64-encoded inline images from HTML content, saves them as documents, and replaces the inline images with document references.
      * @param string $html_content
+     * @param Document[] $created_documents An array to store the created documents. Useful for implementing cleanup logic if needed.
      * @return false|string The modified HTML content with inline images replaced by document references
      */
-    public static function handleInlineImagesInHTML(string $html_content): false|string
+    public static function handleInlineImagesInHTML(string $html_content, array &$created_documents = []): false|string
     {
+        global $CFG_GLPI;
+
         $dom = new DOMDocument();
         @$dom->loadHTML($html_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $images = $dom->getElementsByTagName('img');
 
-        $mime_to_extension_map = [
-            'image/jpeg' => 'jpg',
-            'image/bmp' => 'bmp',
-            'image/png' => 'png',
-            'image/gif' => 'gif',
-            'image/webp' => 'webp',
-        ];
+        if ($images->length === 0) {
+            // Return input as-is if there are no images to process to avoid unnecessarily changing a plaintext value into HTML
+            return $html_content;
+        }
+
+        $max_image_size = $CFG_GLPI['document_max_size'] * 1024 * 1024;
 
         /** @var DOMElement $img */
         foreach ($images as $img) {
             $src = $img->getAttribute('src');
             if (preg_match('/^data:(image\/[a-zA-Z]+);base64,(.*)$/', $src, $matches)) {
                 $mime_type = (string) $matches[1];
-                $extension = $mime_to_extension_map[$mime_type] ?? '';
+                $extension = self::$image_mime_to_extension_map[$mime_type] ?? '';
                 $base64_data = $matches[2];
+                // Rough estimate of the decoded size (won't be more than this) to avoid decoding large images into memory unnecessarily
+                $estimated_size = ceil(strlen($base64_data) * 3 / 4);
+                if ($estimated_size > $max_image_size) {
+                    // completely remove the image if it exceeds the maximum size
+                    $img->parentNode?->removeChild($img);
+                    continue;
+                }
+
                 $image_data = base64_decode($base64_data);
+                unset($base64_data);
                 $image_data_size = strlen($image_data);
                 $image_data_hash = sha1($image_data);
                 $detected_mime_type = finfo_buffer(finfo_open(FILEINFO_MIME_TYPE), $image_data);
@@ -252,9 +287,10 @@ final class FileManager
 
                 // Upload the image as a document
                 $upload_result = self::uploadAsDocument($uploaded_file);
-                if (is_array($upload_result) && isset($upload_result['documents_id'])) {
+                if ($upload_result instanceof Document) {
                     // Replace the inline image with a reference to the document
-                    $img->setAttribute('src', '/front/document.send.php?docid=' . $upload_result['documents_id']);
+                    $img->setAttribute('src', '/front/document.send.php?docid=' . $upload_result->getID());
+                    $created_documents[] = $upload_result;
                 }
             }
         }
