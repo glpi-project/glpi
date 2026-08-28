@@ -66,6 +66,8 @@ export default function useScheduler() {
     return {
         getListFullView,
         getResourceWeekView,
+        // Index of the day row in getResourceWeekView()'s slotLabelFormat, above weeks and below hours.
+        resourceWeekDayLevel: 1,
         defaultHeaderToolbar: {
             start: 'prev,next today',
             center: 'title',

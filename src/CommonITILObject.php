@@ -5654,22 +5654,23 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function showStatsDates()
     {
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . _sn('Date', 'Dates', Session::getPluralNumber()) . "</th></tr>";
+        $rand = mt_rand();
+        echo "<h2 class='header lh-base' id='stats_dates_$rand'>" . _sn('Date', 'Dates', Session::getPluralNumber()) . "</h2>";
+        echo "<table class='tab_cadre_fixe' aria-labelledby='stats_dates_$rand'>";
 
-        echo "<tr class='tab_bg_2'><td>" . __s('Opening date') . "</td>";
+        echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Opening date') . "</th>";
         echo "<td>" . htmlescape(Html::convDateTime($this->fields['date'])) . "</td></tr>";
 
-        echo "<tr class='tab_bg_2'><td>" . __s('Time to resolve') . "</td>";
+        echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Time to resolve') . "</th>";
         echo "<td>" . htmlescape(Html::convDateTime($this->fields['time_to_resolve'])) . "</td></tr>";
 
         if (!$this->isNotSolved()) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Resolution date') . "</td>";
+            echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Resolution date') . "</th>";
             echo "<td>" . htmlescape(Html::convDateTime($this->fields['solvedate'])) . "</td></tr>";
         }
 
         if (in_array($this->fields['status'], static::getClosedStatusArray())) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Closing date') . "</td>";
+            echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Closing date') . "</th>";
             echo "<td>" . htmlescape(Html::convDateTime($this->fields['closedate'])) . "</td></tr>";
         }
         echo "</table>";
@@ -5681,11 +5682,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     public function showStatsTimes()
     {
         echo "<div class='dates_timelines'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . _sn('Time', 'Times', Session::getPluralNumber()) . "</th></tr>";
+        $rand = mt_rand();
+        echo "<h2 class='header lh-base' id='stats_times_$rand'>" . _sn('Time', 'Times', Session::getPluralNumber()) . "</h2>";
+        echo "<table class='tab_cadre_fixe' aria-labelledby='stats_times_$rand'>";
 
         if (isset($this->fields['takeintoaccount_delay_stat'])) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Take into account') . "</td><td>";
+            echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Take into account') . "</th><td>";
             if ($this->fields['takeintoaccount_delay_stat'] > 0) {
                 echo htmlescape(Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false));
             } else {
@@ -5695,7 +5697,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if (!$this->isNotSolved()) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Resolution') . "</td><td>";
+            echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Resolution') . "</th><td>";
 
             if ($this->fields['solve_delay_stat'] > 0) {
                 echo htmlescape(Html::timestampToString($this->fields['solve_delay_stat'], false, false));
@@ -5706,7 +5708,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if (in_array($this->fields['status'], static::getClosedStatusArray())) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Closure') . "</td><td>";
+            echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Closure') . "</th><td>";
             if ($this->fields['close_delay_stat'] > 0) {
                 echo htmlescape(Html::timestampToString($this->fields['close_delay_stat'], true, false));
             } else {
@@ -5715,7 +5717,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             echo "</td></tr>";
         }
 
-        echo "<tr class='tab_bg_2'><td>" . __s('Pending') . "</td><td>";
+        echo "<tr class='tab_bg_2'><th scope='row'>" . __s('Pending') . "</th><td>";
         if ($this->fields['waiting_duration'] > 0) {
             echo htmlescape(Html::timestampToString($this->fields['waiting_duration'], false, false));
         } else {
