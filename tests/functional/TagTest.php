@@ -373,6 +373,20 @@ class TagTest extends DbTestCase
             Dropdown::getDropdownName(Entity::getTable(), $root_entity_id)
         ))]);
 
+        // Check if updating another tag to use an already-used name fails the same way
+        $other_tag = $this->createTag([
+            'name'        => 'Other Tag Name',
+            'entities_id' => $root_entity_id,
+        ]);
+        $this->assertFalse($other_tag->update([
+            'id'   => $other_tag->getID(),
+            'name' => 'Unique Tag Name',
+        ]));
+        $this->hasSessionMessages(ERROR, [htmlescape(sprintf(
+            'A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.',
+            Dropdown::getDropdownName(Entity::getTable(), $root_entity_id)
+        ))]);
+
         // Updating the tag with its own name must still be allowed
         $this->updateTag($tag, [
             'name'        => 'Unique Tag Name',
@@ -395,6 +409,21 @@ class TagTest extends DbTestCase
             'A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.',
             Dropdown::getDropdownName(Entity::getTable(), $root_entity_id)
         ))]);
+
+        // Check if updating a tag in a child entity to a name used in the root entity fails
+        $child_tag = $this->createTag([
+            'name'        => 'Child Tag Name',
+            'entities_id' => $child_entity->getID(),
+        ]);
+        $this->assertFalse($child_tag->update([
+            'id'   => $child_tag->getID(),
+            'name' => 'Duplicate Tag Name',
+        ]));
+        $this->hasSessionMessages(ERROR, [htmlescape(sprintf(
+            'A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.',
+            Dropdown::getDropdownName(Entity::getTable(), $root_entity_id)
+        ))]);
+        $this->deleteItem(Tag::class, $child_tag->getID());
         $this->deleteItem(Tag::class, $duplicate_tag->getID());
 
         // Check if creating a tag with the same name in a child entity fails
@@ -414,7 +443,58 @@ class TagTest extends DbTestCase
             'A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.',
             Dropdown::getDropdownName(Entity::getTable(), $root_entity_id)
         ))]);
+
+        // Same check, but by updating an existing tag instead of adding a new one
+        $another_child_tag = $this->createTag([
+            'name'        => 'Another Child Tag Name',
+            'entities_id' => $child_entity->getID(),
+        ]);
+        $this->assertFalse($another_child_tag->update([
+            'id'   => $another_child_tag->getID(),
+            'name' => 'Recursive Tag Name',
+        ]));
+        $this->hasSessionMessages(ERROR, [htmlescape(sprintf(
+            'A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.',
+            Dropdown::getDropdownName(Entity::getTable(), $root_entity_id)
+        ))]);
+        $this->deleteItem(Tag::class, $another_child_tag->getID());
         $this->deleteItem(Tag::class, $recursive_tag->getID());
+
+        // The "already exists" message only discloses the conflicting tag's
+        // entity name when the current user has access to that entity.
+        $hidden_entity = $this->createItem(Entity::class, [
+            'name'        => 'Entity without access',
+            'entities_id' => $root_entity_id,
+        ]);
+        $hidden_tag = $this->createTag([
+            'name'        => 'Restricted Entity Tag Name',
+            'entities_id' => $hidden_entity->getID(),
+        ]);
+        $updated_tag = $this->createTag([
+            'name'        => 'Tag To Update',
+            'entities_id' => $root_entity_id,
+        ]);
+
+        // Without access to the tag's entity: the message stays generic.
+        $_SESSION['glpiactiveentities'] = [$root_entity_id];
+
+        $conflicting = new Tag();
+        $result = $conflicting->add([
+            'name'        => 'Restricted Entity Tag Name',
+            'entities_id' => $hidden_entity->getID(),
+        ]);
+        $this->assertFalse($result);
+        $this->hasSessionMessages(ERROR, [htmlescape('A tag with this name already exists! Change its name.')]);
+
+        // Same check, but by updating an existing tag instead of adding a new one
+        $this->assertFalse($updated_tag->update([
+            'id'   => $updated_tag->getID(),
+            'name' => 'Restricted Entity Tag Name',
+        ]));
+        $this->hasSessionMessages(ERROR, [htmlescape('A tag with this name already exists! Change its name.')]);
+
+        $this->deleteItem(Tag::class, $updated_tag->getID());
+        $this->deleteItem(Tag::class, $hidden_tag->getID());
     }
 
     /**

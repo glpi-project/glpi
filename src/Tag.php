@@ -223,24 +223,7 @@ class Tag extends CommonDropdown
         }
 
         if (!$this->isUnique($input)) {
-            $conflicting_tag = $this->getTagByName($input['name']);
-            if ($conflicting_tag !== null) {
-                Session::addMessageAfterRedirect(
-                    htmlescape(sprintf(
-                        __('A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.'),
-                        Dropdown::getDropdownName(Entity::getTable(), $conflicting_tag->fields['entities_id'])
-                    )),
-                    false,
-                    ERROR
-                $entities_id = $conflicting_tag->fields['entities_id'];
-                $message = Session::haveAccessToEntity($entities_id)
-                    ? sprintf(
-                        __('A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.'),
-                        Dropdown::getDropdownName(Entity::getTable(), $entities_id)
-                    )
-                    : __('A tag with this name already exists! Change its name.');
-                Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
-            }
+            $this->showConflictNameErrorMessage($input);
             return false;
         }
 
@@ -270,29 +253,36 @@ class Tag extends CommonDropdown
         }
 
         if (!$this->isUnique($input)) {
-            $conflicting_tag = $this->getTagByName($input['name']);
-            if ($conflicting_tag !== null) {
-                Session::addMessageAfterRedirect(
-                    htmlescape(sprintf(
-                        __('A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.'),
-                        Dropdown::getDropdownName(Entity::getTable(), $conflicting_tag->fields['entities_id'])
-                    )),
-                    false,
-                    ERROR
-                $entities_id = $conflicting_tag->fields['entities_id'];
-                $message = Session::haveAccessToEntity($entities_id)
-                    ? sprintf(
-                        __('A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.'),
-                        Dropdown::getDropdownName(Entity::getTable(), $entities_id)
-                    )
-                    : __('A tag with this name already exists! Change its name.');
-                Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
-            }
+            $this->showConflictNameErrorMessage($input);
             return false;
         }
         $input = $this->prepareItemtypes($input);
         $input = $this->prepareColorsInput($input);
         return $input;
+    }
+
+    /**
+     * @param array<string, mixed> $input
+     */
+    private function showConflictNameErrorMessage(array $input): void
+    {
+        $conflicting_tag = $this->getTagByName($input['name']);
+
+        if ($conflicting_tag === null) {
+            return;
+        }
+
+        $entities_id = $conflicting_tag->fields['entities_id'];
+        $message = __('A tag with this name already exists! Change its name.');
+
+        if (Session::haveAccessToEntity($entities_id)) {
+            $message = sprintf(
+                __('A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.'),
+                Dropdown::getDropdownName(Entity::getTable(), $entities_id)
+            );
+        }
+
+        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
     }
 
     /**

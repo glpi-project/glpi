@@ -394,6 +394,7 @@ final class SearchOption implements ArrayAccess
             in_array($itemtype, $CFG_GLPI['taggable_types'], true)
             || $itemtype == AllAssets::class
         ) {
+            $search[$itemtype]['tag'] = Tag::getTypeName(Session::getPluralNumber());
             $fn_append_options(Tag::getSearchOptionsToAdd($itemtype));
         }
 
