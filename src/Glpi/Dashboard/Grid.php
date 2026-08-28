@@ -39,6 +39,7 @@ use Config;
 use Dropdown;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -54,7 +55,6 @@ use Session;
 use ShareDashboardDropdown;
 use Telemetry;
 use Throwable;
-use Glpi\Dashboard\Filters\TicketStatusFilter;
 use Ticket;
 use Toolbox;
 
