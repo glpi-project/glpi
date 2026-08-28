@@ -335,6 +335,52 @@ HTML,
         $this->assertEquals(2, $count);
     }
 
+    /**
+     * The attached documents table must render the Heading cell for each row.
+     */
+    public function testShowFullAttachmentsColumnsAlignment(): void
+    {
+        $this->login();
+        $entity_id = (int) getItemByTypeName('Entity', '_test_root_entity', true);
+        $this->setEntity('_test_root_entity', true);
+
+        $category = $this->createItem(\DocumentCategory::class, [
+            'name' => __FUNCTION__ . ' heading',
+        ]);
+
+        $kbitem = $this->createItem(\KnowbaseItem::class, [
+            'name'   => __FUNCTION__,
+            'answer' => __FUNCTION__,
+        ]);
+        $this->createItem(\Entity_KnowbaseItem::class, [
+            'knowbaseitems_id' => $kbitem->getID(),
+            'entities_id'      => $entity_id,
+            'is_recursive'     => 1,
+        ]);
+
+        $document = $this->createItem(\Document::class, [
+            'name'                  => __FUNCTION__ . ' document',
+            'entities_id'           => $entity_id,
+            'documentcategories_id' => $category->getID(),
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'documents_id' => $document->getID(),
+            'itemtype'     => \KnowbaseItem::class,
+            'items_id'     => $kbitem->getID(),
+        ]);
+
+        $this->assertTrue($kbitem->getFromDB($kbitem->getID()));
+        $html = $kbitem->showFull(['display' => false]);
+
+        $this->assertSame(
+            1,
+            preg_match_all(
+                '#<td[^>]*>(?:(?!</td>).)*?' . preg_quote(__FUNCTION__ . ' heading', '#') . '(?:(?!</td>).)*?</td>#s',
+                $html
+            )
+        );
+    }
+
     public function testGetForCategory()
     {
         global $DB;
