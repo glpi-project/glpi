@@ -1,0 +1,128 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{#
+ # Renders a single article, recursing into its children.
+ #
+ # - `can_create`   whether to show the "+" (create a child article) action.
+ # - `show_actions` whether to show the per-article kebab (favorite/FAQ/delete) menu.
+ # - `add_margin`   extra bottom margin on the row (used by the favorites list).
+ # - `favorite_state` null | 'active' | 'pending' (used by the favorites list; see
+ #   `data-glpi-kb-favorite-current` consumers in AsideController.js).
+ #}
+{% macro render_article(article, can_create = false, show_actions = false, add_margin = false, favorite_state = null) %}
+    {% import _self as macros %}
+    {% import "pages/tools/kb/_actions_menu.html.twig" as actions_menu %}
+    {% set is_node = article.hasChildren or can_create %}
+    <li
+        data-glpi-kb-article-id="{{ article.id }}"
+        {% if is_node %}
+            data-glpi-kb-aside-category
+            {{ article.collapsed ? 'data-glpi-kb-aside-category-collapsed' : '' }}
+            role="group"
+            aria-label="{{ article.title }}"
+        {% endif %}
+        {% if favorite_state is not null %}
+            data-glpi-kb-favorite-current="{{ favorite_state }}"
+        {% endif %}
+        {% if article.is_current %}
+            data-glpi-kb-article-current
+            aria-current="page"
+        {% endif %}
+        class="article {{ is_node ? 'node' : '' }} {{ add_margin ? 'mb-2' : '' }}"
+    >
+        <div class="article-line d-flex align-items-center {{ is_node ? 'mb-2' : '' }}" {{ is_node ? 'data-glpi-kb-aside-category-header' : '' }}>
+            {% if article.hasChildren %}
+                <button
+                    type="button"
+                    class="d-flex align-items-center p-0 border-0 bg-transparent"
+                    data-glpi-kb-aside-category-toggle
+                    aria-label="{{ article.title }}"
+                    aria-expanded="{{ article.collapsed ? 'false' : 'true' }}"
+                >
+                    <i class="ti ti-chevron-down me-1 fs-4" aria-hidden="true"></i>
+                </button>
+            {% endif %}
+            <a class="text-dark text-hover-link text-truncate flex-grow-1" href="{{ article.link }}">
+                <span data-glpi-kb-article-illustration data-testid="kb-illustration">
+                    {% if article.illustration %}
+                        {{ render_illustration(article.illustration, 20) }}
+                    {% endif %}
+                </span>
+                <span data-glpi-kb-article-title>{{ article.title }}</span>
+            </a>
+            {% if can_create %}
+                <button
+                    type="button"
+                    class="d-flex align-items-center ms-2 p-1 text-secondary border-0 bg-transparent"
+                    data-glpi-kb-aside-category-add="{{ article.id }}"
+                    aria-label="{{ __('Create an article under %s')|format(article.title) }}"
+                    title="{{ __('Create a child article under %s')|format(article.title) }}"
+                >
+                    <i class="ti ti-plus" aria-hidden="true"></i>
+                </button>
+            {% endif %}
+            {% if show_actions %}
+                {{ actions_menu.render_actions_menu_lazy() }}
+            {% endif %}
+        </div>
+        {% if is_node %}
+            {# A folded article renders without its children; the aside fetches
+             # them the first time the reader unfolds it. #}
+            <ul {{ article.hasChildren and not article.children_loaded ? 'data-glpi-kb-children-unloaded' : '' }}>
+                {{ macros.render_rows(article.getChildren, can_create, show_actions) }}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
+{#
+ # Renders a list of articles as a tree, as rendered by the aside and by the
+ # search endpoint (which returns the matching branches to swap in).
+ #}
+{% macro render_tree(articles, can_create = false, show_actions = false) %}
+    {% import _self as macros %}
+    <ul class="kb-tree ps-0">
+        {{ macros.render_rows(articles, can_create, show_actions) }}
+    </ul>
+{% endmacro %}
+
+{#
+ # Renders a list of articles as bare rows, without the wrapping list. Used to
+ # fill in the children of an article that the reader just unfolded.
+ #}
+{% macro render_rows(articles, can_create = false, show_actions = false) %}
+    {% import _self as macros %}
+    {% for article in articles %}
+        {{ macros.render_article(article, can_create, show_actions) }}
+    {% endfor %}
+{% endmacro %}

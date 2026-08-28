@@ -77,7 +77,7 @@ abstract class AbstractGroupFilter extends AbstractFilter
      * @param mixed $value
      * @return int[]
      */
-    private static function resolveGroupIds($value): array
+    public static function resolveGroupIds($value): array
     {
         $values = is_array($value) ? $value : [$value];
         // Expand "mygroups" to the current user's groups and normalize to unique positive IDs
@@ -122,36 +122,38 @@ abstract class AbstractGroupFilter extends AbstractFilter
             $grouplink = $main_item->grouplinkclass;
             $gl_table  = $grouplink::getTable();
             $fk        = $main_item::getForeignKeyField();
+            $alias = self::uniqueAlias('gl');
 
             $criteria["JOIN"] = [
-                "$gl_table as gl" => [
+                "$gl_table as $alias" => [
                     'ON' => [
-                        'gl'   => $fk,
+                        $alias => $fk,
                         $table => 'id',
                     ],
                 ],
             ];
             $criteria["WHERE"] = [
-                "gl.type"      => static::getGroupType(),
-                "gl.groups_id" => $groups_ids_value,
+                "$alias.type"      => static::getGroupType(),
+                "$alias.groups_id" => $groups_ids_value,
             ];
         } else {
             $group_item_table = Group_Item::getTable();
+            $alias            = self::uniqueAlias('gi');
             $criteria['JOIN'] = [
-                $group_item_table => [
+                "$group_item_table as $alias" => [
                     'ON' => [
-                        $group_item_table => 'items_id',
+                        $alias => 'items_id',
                         $table => 'id', [
                             'AND' => [
-                                $group_item_table . '.itemtype' => getItemtypeForTable($table),
+                                "$alias.itemtype" => getItemtypeForTable($table),
                             ],
                         ],
                     ],
                 ],
             ];
             $criteria["WHERE"] = [
-                $group_item_table . ".type"      => static::getGroupType(),
-                $group_item_table . '.groups_id' => $groups_ids_value,
+                "$alias.type"      => static::getGroupType(),
+                "$alias.groups_id" => $groups_ids_value,
             ];
         }
 

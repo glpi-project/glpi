@@ -1510,7 +1510,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         /// TODO own_ticket -> own_itilobject
         if ($type == CommonITILActor::ASSIGN) {
             if (
-                Session::haveRight("ticket", Ticket::OWN)
+                Session::haveRight(Ticket::$rightname, Ticket::OWN)
                 && $_SESSION['glpiset_default_tech']
             ) {
                 return Session::getLoginUserID();
@@ -5654,25 +5654,18 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function showStatsDates()
     {
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . _sn('Date', 'Dates', Session::getPluralNumber()) . "</th></tr>";
+        $is_solved = !$this->isNotSolved();
+        $is_closed = in_array($this->fields['status'], static::getClosedStatusArray());
 
-        echo "<tr class='tab_bg_2'><td>" . __s('Opening date') . "</td>";
-        echo "<td>" . htmlescape(Html::convDateTime($this->fields['date'])) . "</td></tr>";
-
-        echo "<tr class='tab_bg_2'><td>" . __s('Time to resolve') . "</td>";
-        echo "<td>" . htmlescape(Html::convDateTime($this->fields['time_to_resolve'])) . "</td></tr>";
-
-        if (!$this->isNotSolved()) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Resolution date') . "</td>";
-            echo "<td>" . htmlescape(Html::convDateTime($this->fields['solvedate'])) . "</td></tr>";
-        }
-
-        if (in_array($this->fields['status'], static::getClosedStatusArray())) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Closing date') . "</td>";
-            echo "<td>" . htmlescape(Html::convDateTime($this->fields['closedate'])) . "</td></tr>";
-        }
-        echo "</table>";
+        // Row presence depends on the status; its value may be empty.
+        TemplateRenderer::getInstance()->display('components/itilobject/stats_dates.html.twig', [
+            'opening_date'    => Html::convDateTime($this->fields['date']),
+            'time_to_resolve' => Html::convDateTime($this->fields['time_to_resolve']),
+            'is_solved'       => $is_solved,
+            'solve_date'      => $is_solved ? Html::convDateTime($this->fields['solvedate']) : null,
+            'is_closed'       => $is_closed,
+            'close_date'      => $is_closed ? Html::convDateTime($this->fields['closedate']) : null,
+        ]);
     }
 
     /**
@@ -5680,51 +5673,27 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function showStatsTimes()
     {
-        echo "<div class='dates_timelines'>";
-        echo "<table class='tab_cadre_fixe'>";
-        echo "<tr><th colspan='2'>" . _sn('Time', 'Times', Session::getPluralNumber()) . "</th></tr>";
+        $has_takeintoaccount = isset($this->fields['takeintoaccount_delay_stat']);
+        $is_solved           = !$this->isNotSolved();
+        $is_closed           = in_array($this->fields['status'], static::getClosedStatusArray());
 
-        if (isset($this->fields['takeintoaccount_delay_stat'])) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Take into account') . "</td><td>";
-            if ($this->fields['takeintoaccount_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false));
-            } else {
-                echo '&nbsp;';
-            }
-            echo "</td></tr>";
-        }
-
-        if (!$this->isNotSolved()) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Resolution') . "</td><td>";
-
-            if ($this->fields['solve_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['solve_delay_stat'], false, false));
-            } else {
-                echo '&nbsp;';
-            }
-            echo "</td></tr>";
-        }
-
-        if (in_array($this->fields['status'], static::getClosedStatusArray())) {
-            echo "<tr class='tab_bg_2'><td>" . __s('Closure') . "</td><td>";
-            if ($this->fields['close_delay_stat'] > 0) {
-                echo htmlescape(Html::timestampToString($this->fields['close_delay_stat'], true, false));
-            } else {
-                echo '&nbsp;';
-            }
-            echo "</td></tr>";
-        }
-
-        echo "<tr class='tab_bg_2'><td>" . __s('Pending') . "</td><td>";
-        if ($this->fields['waiting_duration'] > 0) {
-            echo htmlescape(Html::timestampToString($this->fields['waiting_duration'], false, false));
-        } else {
-            echo '&nbsp;';
-        }
-        echo "</td></tr>";
-
-        echo "</table>";
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('components/itilobject/stats_times.html.twig', [
+            'has_takeintoaccount' => $has_takeintoaccount,
+            'takeintoaccount'     => $has_takeintoaccount && $this->fields['takeintoaccount_delay_stat'] > 0
+                ? Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false)
+                : null,
+            'is_solved'           => $is_solved,
+            'resolution'          => $is_solved && $this->fields['solve_delay_stat'] > 0
+                ? Html::timestampToString($this->fields['solve_delay_stat'], false, false)
+                : null,
+            'is_closed'           => $is_closed,
+            'closure'             => $is_closed && $this->fields['close_delay_stat'] > 0
+                ? Html::timestampToString($this->fields['close_delay_stat'], true, false)
+                : null,
+            'pending'             => $this->fields['waiting_duration'] > 0
+                ? Html::timestampToString($this->fields['waiting_duration'], false, false)
+                : null,
+        ]);
     }
 
 
@@ -6598,7 +6567,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         $candelete   = static::canDelete();
         $canupdate   = Session::haveRight(static::$rightname, UPDATE);
-        $showprivate = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
+        $showprivate = Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE);
         $align       = "class='left'";
         $align_desc  = "class='left'";
 
@@ -7030,7 +6999,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'ticket_stats' => false,
         ], $params);
 
-        $showprivate_fup = Session::haveRight('followup', ITILFollowup::SEEPRIVATE);
+        $showprivate_fup = Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE);
         $showprivate_task = [];
         $rand = mt_rand();
         // Cache of entity names
@@ -7581,7 +7550,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $restrict_fup = $restrict_task = [];
         if (
             $params['hide_private_items']
-            || ($params['check_view_rights'] && !Session::haveRight("followup", ITILFollowup::SEEPRIVATE))
+            || ($params['check_view_rights'] && !Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE))
         ) {
             if (!$params['check_view_rights']) {
                 // notification case, we cannot rely on session
@@ -7859,7 +7828,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 // Check visibility for private documents
                 if ($params['check_view_rights'] && (bool) $document_item['is_private']) {
                     if (
-                        !Session::haveRight('document', Document_Item::SEEPRIVATE)
+                        !Session::haveRight(Document::$rightname, Document_Item::SEEPRIVATE)
                         && (int) ($document_item['users_id'] ?? 0) !== Session::getLoginUserID()
                     ) {
                         continue;
@@ -9633,6 +9602,34 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             }
 
+            $do_not_compute_status = false;
+            foreach ($added as $actor) {
+                if ($actor['type'] === CommonITILActor::ASSIGN) {
+                    $do_not_compute_status = true;
+                }
+            }
+
+            // Process deleted actors
+            foreach ($actor_itemtypes as $actor_itemtype) {
+                $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
+                $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
+
+                $deleted = array_key_exists($actors_deleted_input_key, $this->input)
+                    ? $this->input[$actors_deleted_input_key]
+                    : [];
+                foreach ($deleted as $actor) {
+                    $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
+                    if ($do_not_compute_status) {
+                        $actor_obj->delete([
+                            'id' => $actor['id'],
+                            '_do_not_compute_status' => $do_not_compute_status,
+                        ]);
+                    } else {
+                        $actor_obj->delete(['id' => $actor['id']]);
+                    }
+                }
+            }
+
             // Add new actors
             foreach ($added as $actor) {
                 $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
@@ -9665,22 +9662,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             foreach ($updated as $actor) {
                 $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
                 $actor_obj->update($common_actor_input + $actor);
-            }
-        }
-
-        // Process deleted actors
-        foreach ($actor_types as $actor_type) {
-            foreach ($actor_itemtypes as $actor_itemtype) {
-                $actor_fkey = getForeignKeyFieldForItemType($actor_itemtype);
-                $actors_deleted_input_key = sprintf('_%s_%s_deleted', $actor_fkey, $actor_type);
-
-                $deleted = array_key_exists($actors_deleted_input_key, $this->input)
-                    ? $this->input[$actors_deleted_input_key]
-                    : [];
-                foreach ($deleted as $actor) {
-                    $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
-                    $actor_obj->delete(['id' => $actor['id']]);
-                }
             }
         }
 

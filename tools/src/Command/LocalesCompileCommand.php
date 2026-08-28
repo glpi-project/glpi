@@ -34,12 +34,16 @@
 
 namespace Glpi\Tools\Command;
 
+use Override;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
+
+use function Safe\glob;
+use function Safe\preg_replace;
 
 final class LocalesCompileCommand extends AbstractCommand
 {
@@ -49,6 +53,7 @@ final class LocalesCompileCommand extends AbstractCommand
         return true;
     }
 
+    #[Override]
     protected function configure(): void
     {
         parent::configure();
@@ -90,7 +95,7 @@ final class LocalesCompileCommand extends AbstractCommand
         }
 
         $files = glob($locales_dir . '/*.po');
-        if (empty($files)) {
+        if ($files === []) {
             $this->io->error("No .po files found in $locales_dir");
             return false;
         }

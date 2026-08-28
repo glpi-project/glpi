@@ -36,13 +36,13 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 if (!isset($_GET['genical'])) {
-    Session::checkRight("planning", READ);
+    Session::checkRight(Planning::$rightname, READ);
 }
 
 if (!isset($_GET["uID"])) {
     if (
         ($uid = Session::getLoginUserID())
-        && !Session::haveRight("planning", Planning::READALL)
+        && !Session::haveRight(Planning::$rightname, Planning::READALL)
     ) {
         $_GET["uID"] = $uid;
     } else {
@@ -149,7 +149,7 @@ if (isset($_GET['checkavailability'])) {
 } else {
     Html::header(__('Planning'), '', "helpdesk", "planning");
 
-    Session::checkRightsOr('planning', [Planning::READALL, Planning::READMY]);
+    Session::checkRightsOr(Planning::$rightname, [Planning::READALL, Planning::READMY]);
 
     if (!isset($_GET["date"]) || empty($_GET["date"])) {
         $_GET["date"] = date("Y-m-d");

@@ -220,7 +220,7 @@ final class LanguageRegistryTest extends GLPITestCase
             'zh_TW'   => ['繁體中文', 'zh_TW.mo', 'zh-TW', 'zh', 'chinese', 2],
             'ko_KR'   => ['한국/韓國', 'ko_KR.mo', 'ko', 'ko', 'korean', 1],
             'zh_HK'   => ['香港', 'zh_HK.mo', 'zh-HK', 'zh', 'chinese', 2],
-            'be_BY'   => ['Belarussian', 'be_BY.mo', 'be', 'be', 'belarussian', 3],
+            'be_BY'   => ['Беларуская', 'be_BY.mo', 'be', 'be', 'belarusian', 3],
             'is_IS'   => ['íslenska', 'is_IS.mo', 'is', 'en', 'icelandic', 2],
             'eo'      => ['Esperanto', 'eo.mo', 'eo', 'en', 'esperanto', 2],
             'es_CL'   => ['Español chileno', 'es_CL.mo', 'es', 'es', 'spanish chilean', 2],

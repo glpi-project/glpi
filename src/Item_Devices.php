@@ -664,7 +664,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
         $canedit = (($withtemplate != 2)
                   && $item->canEdit($ID)
-                  && Session::haveRightsOr('device', [UPDATE, PURGE]));
+                  && Session::haveRightsOr(self::$rightname, [UPDATE, PURGE]));
         echo "<div class='spaced table-responsive'>";
         $rand = mt_rand();
         if ($canedit) {
@@ -1130,7 +1130,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 $current_row->addCell($firmware_column, implode('<br>', $firmware_versions));
             }
 
-            if (Session::haveRight('device', UPDATE)) {
+            if (Session::haveRight(self::$rightname, UPDATE)) {
                 $mode = __s('Update');
             } else {
                 $mode = _sn('View', 'Views', 1);
@@ -1634,7 +1634,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $specificities_fields[] = $specificities;
         }
 
-        $options['canedit'] =  Session::haveRight('device', UPDATE);
+        $options['canedit'] =  Session::haveRight(self::$rightname, UPDATE);
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('components/form/item_device.html.twig', [
             'item'                   => $this,

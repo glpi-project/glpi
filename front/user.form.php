@@ -128,14 +128,14 @@ if (isset($_GET['getvcard'])) {
     $user->redirectToList();
 } elseif (isset($_POST["force_ldap_resynch"])) { // triggered by 'Synchronzation' tab on User detail page.
     $user->check($_POST['id'], UPDATE);
-    Session::checkRight('user', User::UPDATEAUTHENT);
+    Session::checkRight(User::$rightname, User::UPDATEAUTHENT);
 
     $user->getFromDB($_POST["id"]);
     AuthLDAP::forceOneUserSynchronization($user);
     Html::back();
 } elseif (isset($_POST["clean_ldap_fields"])) { // triggered by 'Synchronzation' tab on User detail page.
     $user->check($_POST['id'], UPDATE);
-    Session::checkRight('user', User::UPDATEAUTHENT);
+    Session::checkRight(User::$rightname, User::UPDATEAUTHENT);
 
     $user->getFromDB($_POST["id"]);
     AuthLDAP::forceOneUserSynchronization($user, true);
@@ -154,7 +154,7 @@ if (isset($_GET['getvcard'])) {
     Html::back();
 } elseif (isset($_POST["change_auth_method"])) { // triggered by 'Synchronzation' tab on User detail page.
     $user->check($_POST['id'], UPDATE);
-    Session::checkRight('user', User::UPDATEAUTHENT);
+    Session::checkRight(User::$rightname, User::UPDATEAUTHENT);
 
     if (isset($_POST["auths_id"])) {
         User::changeAuthMethod([$_POST["id"]], $_POST["authtype"], $_POST["auths_id"]);
@@ -178,7 +178,7 @@ if (isset($_GET['getvcard'])) {
 // start impersonation
 elseif (isset($_POST['impersonate']) && $_POST['impersonate']) {
     User::checkReAuthenticationOrRedirect();
-    Session::checkRight('user', User::IMPERSONATE);
+    Session::checkRight(User::$rightname, User::IMPERSONATE);
 
     if (!Session::startImpersonating($_POST['id'])) {
         Session::addMessageAfterRedirect(__s('Unable to impersonate user'), false, ERROR);
@@ -199,21 +199,21 @@ elseif (isset($_POST['impersonate']) && !$_POST['impersonate']) {
     Html::redirect(User::getFormURLWithID($impersonated_user_id));
 } elseif (isset($_POST['disable_2fa'])) { // Trigger on first tab of user page
     $user->check($_POST['id'], UPDATE);
-    Session::checkRight('user', User::UPDATEAUTHENT);
+    Session::checkRight(User::$rightname, User::UPDATEAUTHENT);
 
     (new TOTPManager())->disable2FAForUser($_POST['id']);
     Html::back();
 } else {
     if (isset($_GET["ext_auth"])) { // triggered on 'add from external source' on user management pages
         User::checkReAuthenticationOrRedirect();
-        Session::checkRight('user', User::READAUTHENT);
+        Session::checkRight(User::$rightname, User::READAUTHENT);
 
         Html::header(User::getTypeName(Session::getPluralNumber()), '', "admin", "user");
         User::showAddExtAuthForm();
         Html::footer();
     } elseif (isset($_POST['add_ext_auth_ldap'])) {
         User::checkReAuthenticationOrRedirect();
-        Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
+        Session::checkRight(User::$rightname, User::IMPORTEXTAUTHUSERS);
 
         if (isset($_POST['login']) && !empty($_POST['login'])) {
             AuthLDAP::importUserFromServers(['name' => $_POST['login']]);
@@ -222,7 +222,7 @@ elseif (isset($_POST['impersonate']) && !$_POST['impersonate']) {
     } elseif (isset($_POST['add_ext_auth_simple'])) { // 'Import from other sources' button from 'add from external source' page (on user management page)
         if (isset($_POST['login']) && !empty($_POST['login'])) {
             $user->check(-1, CREATE, $input);
-            Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
+            Session::checkRight(User::$rightname, User::IMPORTEXTAUTHUSERS);
             $input = ['name'     => $_POST['login'],
                 '_extauth' => 1,
                 'add'      => 1,

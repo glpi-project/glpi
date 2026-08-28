@@ -40,6 +40,7 @@ use Glpi\Form\Form;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Glpi\UI\IllustrationManager;
 use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
@@ -184,6 +185,36 @@ class CategoryTest extends DbTestCase
             'name' => 'My category',
             'description' => 'My description',
         ], $it_IT);
+    }
+
+    public static function illustrationValueProvider(): iterable
+    {
+        yield 'native icon' => [
+            'value'    => 'report-issue',
+            'expected' => 'role="img" aria-label="Report an issue"',
+        ];
+        yield 'empty value' => [
+            'value'    => '',
+            'expected' => null,
+        ];
+        yield 'custom uploaded illustration' => [
+            'value'    => IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX . 'some-file.png',
+            'expected' => null,
+        ];
+    }
+
+    #[DataProvider('illustrationValueProvider')]
+    public function testGetSpecificValueToDisplayForIllustration(string $value, ?string $expected): void
+    {
+        // The rendered icon is aria-hidden; only a native illustration has a
+        // title to name the cell with, so only that case gets a role="img" wrapper.
+        $html = Category::getSpecificValueToDisplay('illustration', ['illustration' => $value]);
+
+        if ($expected === null) {
+            $this->assertStringNotContainsString('role="img"', $html);
+        } else {
+            $this->assertStringContainsString($expected, $html);
+        }
     }
 
     private function translateCategory(

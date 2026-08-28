@@ -57,18 +57,16 @@ test('the aside "+" opens an inline input under a parent article; an empty submi
 
     await kb.goto(parent_id);
 
-    // The "+" click is intercepted by AsideController (a dynamically
-    // imported module), instead of being a plain <a href> navigation. Wait
-    // for the controller to finish initializing before clicking it, using
-    // the same readiness signal doSearchAside() relies on, otherwise the
-    // click can race the module load and fall through to the browser's
-    // default navigation.
+    // The "+" is handled by AsideController (a dynamically imported module).
+    // Wait for the controller to finish initializing before clicking it, using
+    // the same readiness signal doSearchAside() relies on, otherwise the click
+    // can race the module load and do nothing.
     await expect(kb.asideSearchInput).not.toHaveClass(/pe-none/);
 
-    const add_link = kb.getAsideCategoryAddLink(parent_name);
+    const add_button = kb.getAsideCategoryAddButton(parent_name);
     await kb.getAsideArticleTitleLink(parent_name).hover();
-    await expect(add_link).toBeVisible();
-    await add_link.click();
+    await expect(add_button).toBeVisible();
+    await add_button.click();
 
     // No navigation: the "+" now opens an inline input instead of a full page.
     await expect(page).not.toHaveURL(/knowbaseitems_id_parent=/);
@@ -80,60 +78,13 @@ test('the aside "+" opens an inline input under a parent article; an empty submi
     await expect(inline_input).toBeHidden();
 
     // Re-open and blur while empty: same result.
-    await add_link.click();
+    await add_button.click();
     await expect(kb.getAsideCategoryCreateInput(parent_name)).toBeFocused();
     await page.keyboard.press('Tab');
     await expect(kb.getAsideCategoryCreateInput(parent_name)).toBeHidden();
 });
 
-test('using the root-level "+" creates an article without a parent', async ({ page, profile, api }) => {
-    await profile.set(Profiles.SuperAdmin);
-    const kb = new KnowbaseItemPage(page);
-
-    const unique = randomUUID().slice(0, 8);
-    const article_title = `E2E Root Article ${unique}`;
-
-    const seed_id = await api.createItem('KnowbaseItem', {
-        name: `Seed ${unique}`,
-        answer: 'Seed content',
-        entities_id: getWorkerEntityId(),
-    });
-
-    await kb.goto(seed_id);
-
-    // The "+" click is intercepted by AsideController (a dynamically
-    // imported module), instead of being a plain <a href> navigation. Wait
-    // for the controller to finish initializing before clicking it, using
-    // the same readiness signal doSearchAside() relies on, otherwise the
-    // click can race the module load and fall through to the browser's
-    // default navigation.
-    await expect(kb.asideSearchInput).not.toHaveClass(/pe-none/);
-
-    await kb.asideRootHeader.hover();
-    await expect(kb.asideRootCreateLink).toBeVisible();
-    await kb.asideRootCreateLink.click();
-
-    // No navigation: the "+" now opens an inline input instead of a full page,
-    // so we are still on the seed article's page.
-    await expect(page).toHaveURL(new RegExp(`id=${seed_id}\\b`));
-    const inline_input = kb.asideRootCreateInput;
-    await expect(inline_input).toBeFocused();
-    await inline_input.fill(article_title);
-    await inline_input.press('Enter');
-
-    await expect(page).toHaveURL(/knowbaseitem\.form\.php\?id=\d+/);
-    await expect(page.getByTestId('subject')).toHaveText(article_title);
-
-    // The new article is visible at the root of the tree, and marked current.
-    // (Its <li> has `role="group"` since article creation is allowed here,
-    // overriding the implicit "listitem" role — locate it by id instead.)
-    const new_id = Number(new URL(page.url()).searchParams.get('id'));
-    const article_row = kb.getAsideTreeArticleRow(new_id);
-    await expect(article_row).toBeVisible();
-    await expect(article_row).toHaveAttribute('aria-current', 'page');
-});
-
-test('hovering a child article does not reveal its parent\'s add-article link', async ({ page, profile, api }) => {
+test('hovering a child article does not reveal its parent\'s add-article button', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);
 
@@ -155,12 +106,12 @@ test('hovering a child article does not reveal its parent\'s add-article link', 
 
     await kb.goto(child_id);
 
-    const parent_add = kb.getAsideCategoryAddLink(parent_name);
-    const child_add = kb.getAsideCategoryAddLink(child_name);
+    const parent_add = kb.getAsideCategoryAddButton(parent_name);
+    const child_add = kb.getAsideCategoryAddButton(child_name);
 
     await kb.getAsideArticleTitleLink(child_name).hover();
 
-    // visibility:hidden removes the parent link from the a11y tree, so the
+    // visibility:hidden removes the parent button from the a11y tree, so the
     // role-based locator resolves to nothing — assert visibility, not CSS.
     await expect(child_add).toBeVisible();
     await expect(parent_add).toBeHidden();
@@ -182,17 +133,15 @@ test('typing a title and pressing Enter creates the child article and navigates 
 
     await kb.goto(parent_id);
 
-    // The "+" click is intercepted by AsideController (a dynamically imported
-    // module) instead of being a plain <a href> navigation. Wait for the
-    // controller to finish initializing before clicking it, using the same
-    // readiness signal doSearchAside() relies on, otherwise the click can
-    // race the module load and fall through to the browser's default
-    // navigation.
+    // The "+" is handled by AsideController (a dynamically imported module).
+    // Wait for the controller to finish initializing before clicking it, using
+    // the same readiness signal doSearchAside() relies on, otherwise the click
+    // can race the module load and do nothing.
     await expect(kb.asideSearchInput).not.toHaveClass(/pe-none/);
 
-    const add_link = kb.getAsideCategoryAddLink(parent_name);
+    const add_button = kb.getAsideCategoryAddButton(parent_name);
     await kb.getAsideArticleTitleLink(parent_name).hover();
-    await add_link.click();
+    await add_button.click();
 
     const inline_input = kb.getAsideCategoryCreateInput(parent_name);
     await expect(inline_input).toBeFocused();
@@ -249,9 +198,9 @@ test('the "+" on a folded article expands it, so the inline input is usable', as
 
     // The "+" must expand the node before inserting the inline input, else the
     // input lands in a hidden subtree: invisible, and impossible to focus.
-    const add_link = kb.getAsideCategoryAddLink(parent_name);
+    const add_button = kb.getAsideCategoryAddButton(parent_name);
     await kb.getAsideArticleTitleLink(parent_name).hover();
-    await add_link.click();
+    await add_button.click();
 
     await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
     const inline_input = kb.getAsideCategoryCreateInput(parent_name);
@@ -270,4 +219,69 @@ test('the "+" on a folded article expands it, so the inline input is usable', as
     const new_id = Number(new URL(page.url()).searchParams.get('id'));
     await expect(kb.getAsideTreeArticleRow(new_id)).toBeVisible();
     await expect(parent_toggle).toHaveAttribute('aria-expanded', 'true');
+});
+
+// Regression test that make sure we can create a child into a folded article.
+test('the inline input survives the lazy load of a folded article\'s children', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const read_name = `E2E Lazy Read ${unique}`;
+    const parent_name = `E2E Lazy Parent ${unique}`;
+    const child_name = `E2E Lazy Child ${unique}`;
+    const article_title = `E2E Lazy New ${unique}`;
+
+    // The article being read is unrelated to the parent below, so that parent
+    // renders folded: its children are then not in the DOM at all, and
+    // unfolding it has to fetch them.
+    const read_id = await api.createItem('KnowbaseItem', {
+        name: read_name,
+        answer: 'Read content',
+        entities_id: getWorkerEntityId(),
+    });
+    const parent_id = await api.createItem('KnowbaseItem', {
+        name: parent_name,
+        answer: 'Parent content',
+        entities_id: getWorkerEntityId(),
+    });
+    await api.createItem('KnowbaseItem', {
+        name: child_name,
+        answer: 'Child content',
+        entities_id: getWorkerEntityId(),
+        _parents: [parent_id],
+    });
+
+    // Slow the children endpoint down, to widen the window in which its
+    // response can land on top of the inline input.
+    await page.route('**/Knowbase/Aside/Article/*/Children*', async (route) => {
+        const response = await route.fetch();
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await route.fulfill({ response });
+    });
+
+    await kb.goto(read_id);
+    await kb.waitForAsideReady();
+
+    const parent_toggle = kb.getAsideCategoryToggle(parent_name);
+    await expect(parent_toggle).toHaveAttribute('aria-expanded', 'false');
+
+    const add_button = kb.getAsideCategoryAddButton(parent_name);
+    await kb.getAsideArticleTitleLink(parent_name).hover();
+    await add_button.click();
+
+    const inline_input = kb.getAsideCategoryCreateInput(parent_name);
+    await inline_input.fill(article_title);
+
+    // The fetched children fill the very list the input was inserted into.
+    // Once they are here, the input and what was typed into it must have
+    // survived.
+    await expect(kb.getAsideCategoryArticle(parent_name, child_name)).toBeVisible();
+    await expect(inline_input).toHaveValue(article_title);
+    await expect(inline_input).toBeFocused();
+
+    // And it still creates.
+    await inline_input.press('Enter');
+    await expect(page).toHaveURL(/knowbaseitem\.form\.php\?id=\d+/);
+    await expect(page.getByTestId('subject')).toHaveText(article_title);
 });

@@ -30,6 +30,18 @@
  # ---------------------------------------------------------------------
  #}
 
+{% macro action_link(url, label, icon, btn_class, tooltip) %}
+   <li class="nav-item">
+      <a href="{{ url }}" class="btn btn-sm {{ btn_class|default('btn-ghost-secondary') }} me-1 pe-2"
+         data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ tooltip|default(label) }}">
+         <i class="{{ icon }}" aria-hidden="true"></i>
+         <span class="d-none d-xxl-block" aria-hidden="true">{{ label }}</span>
+         <span class="visually-hidden">{{ label }}</span>
+      </a>
+   </li>
+{% endmacro %}
+{% import _self as context_links %}
+
 {% set links = menu[sector]['content'][item]['options'][option]['links'] ?? menu[sector]['content'][item]['links'] ?? '' %}
 {% set lists_itemtype = menu[sector]['content'][item]['options'][option]['lists_itemtype'] ?? menu[sector]['content'][item]['lists_itemtype'] ?? '' %}
 {% if lists_itemtype is empty %}
@@ -44,86 +56,35 @@
 {% endif %}
 
 {% if links['add'] is defined %}
-<li class="nav-item">
-   <a href="{{ path(links['add']) }}" class="btn btn-sm btn-primary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Add') }}">
-      <i class="ti ti-plus" aria-hidden="true"></i>
-      <span class="d-none d-xxl-block">{{ __('Add') }}</span>
-   </a>
-</li>
+   {{ context_links.action_link(path(links['add']), __('Add'), 'ti ti-plus', 'btn-primary') }}
 {% endif %}
 
 {% for type, link in links %}
    {% if type == 'add' or type == 'search' or type == 'lists' %}
    {% elseif type == 'template' %}
-      <li class="nav-item">
-         <a href="{{ path(link) }}" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Manage templates...') }}">
-            <i class="ti ti-template" aria-hidden="true"></i>
-            <span class="d-none d-xxl-block">{{ __('Templates') }}</span>
-         </a>
-      </li>
+      {{ context_links.action_link(path(link), __('Templates'), 'ti ti-template', null, __('Manage templates...')) }}
    {% elseif type == 'showall' %}
-      <li class="nav-item">
-         <a href="{{ path(link) }}" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Show all') }}">
-            <i class="ti ti-eye-check" aria-hidden="true"></i>
-            <span class="d-none d-xxl-block">{{ __('Show all') }}</span>
-         </a>
-      </li>
+      {{ context_links.action_link(path(link), __('Show all'), 'ti ti-eye-check') }}
    {% elseif type == 'summary' %}
-      <li class="nav-item">
-         <a href="{{ path(link) }}" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Summary') }}">
-            <i class="ti ti-notes" aria-hidden="true"></i>
-            <span class="d-none d-xxl-block">{{ __('Summary') }}</span>
-         </a>
-      </li>
+      {{ context_links.action_link(path(link), __('Summary'), 'ti ti-notes') }}
    {% elseif type == 'summary_kanban' %}
-      <li class="nav-item">
-         <a href="{{ path(link) }}" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Global Kanban') }}">
-            <i class="ti ti-layout-columns" aria-hidden="true"></i>
-            <span class="d-none d-xxl-block">{{ __('Global Kanban') }}</span>
-         </a>
-      </li>
+      {{ context_links.action_link(path(link), __('Global Kanban'), 'ti ti-layout-columns') }}
    {% elseif type == 'transfer_list' %}
-      <li class="nav-item">
-         <a href="{{ path(link) }}" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Transfer list') }}">
-            <i class="ti ti-list-check" aria-hidden="true"></i>
-            <span class="d-none d-xxl-block">{{ __('Transfer list') }}</span>
-         </a>
-      </li>
+      {{ context_links.action_link(path(link), __('Transfer list'), 'ti ti-list-check') }}
    {% elseif type == 'config' %}
-      <li class="nav-item">
-         <a href="{{ path(link) }}" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Setup') }}">
-            <i class="ti ti-tool" aria-hidden="true"></i>
-            <span class="d-none d-xxl-block">{{ __('Setup') }}</span>
-         </a>
-      </li>
+      {{ context_links.action_link(path(link), __('Setup'), 'ti ti-tool') }}
    {% elseif type == 'view_form_categories' %}
-      <li class="nav-item">
-         <a href="{{ path(link) }}" role="button" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ 'Glpi\\Form\\Category'|itemtype_name(get_plural_number()) }}">
-            <i class="ti ti-folder" aria-hidden="true"></i>
-            <span class="d-none d-xxl-block">{{ 'Glpi\\Form\\Category'|itemtype_name(get_plural_number()) }}</span>
-         </a>
-      </li>
+      {{ context_links.action_link(path(link), 'Glpi\\Form\\Category'|itemtype_name(get_plural_number()), 'ti ti-folder') }}
    {% elseif type == 'all_articles' %}
-      <li class="nav-item">
-         <a href="{{ path(link) }}" role="button" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('All articles') }}">
-            <i class="ti ti-list-search" aria-hidden="true"></i>
-            <span class="d-none d-xxl-block">{{ __('All articles') }}</span>
-         </a>
-      </li>
+      {{ context_links.action_link(path(link), __('All articles'), 'ti ti-list-search') }}
    {% elseif type == 'import_forms' %}
-      <li class="nav-item">
-         <a href="{{ path(link) }}" role="button" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Import forms') }}">
-            <i class="ti ti-file-arrow-left" aria-hidden="true"></i>
-            <span class="d-none d-xxl-block">{{ __('Import forms') }}</span>
-         </a>
-      </li>
+      {{ context_links.action_link(path(link), __('Import forms'), 'ti ti-file-arrow-left') }}
    {% elseif type == 'Glpi\\Dropdown\\DropdownDefinition' %}
-      <li class="nav-item">
-         <a href="{{ path(link) }}" role="button" class="btn btn-sm btn-ghost-secondary me-1 pe-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ 'Glpi\\Dropdown\\DropdownDefinition'|itemtype_name }}">
-            <i class="{{ 'Glpi\\Dropdown\\DropdownDefinition'|itemtype_icon }}" aria-hidden="true"></i>
-            <span class="d-none d-xxl-block">{{ 'Glpi\\Dropdown\\DropdownDefinition'|itemtype_name }}</span>
-         </a>
-      </li>
+      {{ context_links.action_link(
+         path(link),
+         'Glpi\\Dropdown\\DropdownDefinition'|itemtype_name,
+         'Glpi\\Dropdown\\DropdownDefinition'|itemtype_icon
+      ) }}
    {% else %}
       <li class="nav-item">
          <a href="{{ path(link) }}" class="btn btn-sm btn-ghost-secondary me-1 pe-2">

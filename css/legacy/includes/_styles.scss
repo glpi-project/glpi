@@ -273,6 +273,14 @@
       padding: 10px 5px;
    }
 
+   /* Row headers carry structure only, they must render like the data cells. */
+   .tab_cadre_fixe th[scope="row"] {
+      background-color: transparent;
+      font-weight: inherit;
+      font-size: inherit;
+      padding: 5px;
+   }
+
    .tab_cadre_fixehov th {
       background-color: #F8F8F8;
       color: #2E2E2E;

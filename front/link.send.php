@@ -39,7 +39,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 global $DB;
 
-Session::checkRight("link", READ);
+Session::checkRight(Link::$rightname, READ);
 
 if (isset($_GET["lID"])) {
     $iterator = $DB->request([

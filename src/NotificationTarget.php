@@ -109,6 +109,14 @@ class NotificationTarget extends CommonDBChild
      *          users_id?: int,
      *          alternative_email?: string,
      *     },
+     *     _old_group?: array{
+     *          type?: CommonITILActor::ASSIGN|CommonITILActor::REQUESTER|CommonITILActor::OBSERVER,
+     *          groups_id?: int,
+     *     },
+     *     _old_supplier?: array{
+     *          type?: CommonITILActor::ASSIGN|CommonITILActor::REQUESTER|CommonITILActor::OBSERVER,
+     *          suppliers_id?: int,
+     *     },
      *     sendprivate?: bool}
      */
     public array $options = [];
@@ -1180,7 +1188,7 @@ class NotificationTarget extends CommonDBChild
      **/
     public function addNotificationTargets($entity)
     {
-        if (Session::haveRight("config", UPDATE)) {
+        if (Session::haveRight(Config::$rightname, UPDATE)) {
             $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
         }
         $this->addTarget(Notification::ENTITY_ADMINISTRATOR, __('Entity administrator'));

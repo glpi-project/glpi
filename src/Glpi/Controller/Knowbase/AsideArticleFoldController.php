@@ -72,9 +72,9 @@ final class AsideArticleFoldController extends AbstractController
             return new Response();
         }
 
-        KnowbaseItem::setFoldedForCurrentUser(
+        KnowbaseItem::setUnfoldedForCurrentUser(
             id: $id,
-            folded: (bool) $collapsed
+            unfolded: !((bool) $collapsed)
         );
 
         return new Response(); // OK

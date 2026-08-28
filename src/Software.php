@@ -253,7 +253,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         }
 
         if (
-            Session::haveRightsOr("rule_dictionnary_software", [CREATE, UPDATE])
+            Session::haveRightsOr(RuleDictionnarySoftware::$rightname, [CREATE, UPDATE])
             && (countElementsInTable("glpi_rules", ['sub_type' => 'RuleDictionnarySoftware']) > 0)
         ) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'replay_dictionnary']

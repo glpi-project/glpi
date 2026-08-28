@@ -41,6 +41,32 @@
     }
 }
 
+// Shared by the editor's <span> and the read view's <mark>: neutralize Tabler's
+// `mark` styling, which reaches only the latter.
+.kb-comment-highlight {
+    padding: 0;
+    color: inherit;
+    background-color: transparent;
+    text-decoration: underline;
+    text-decoration-color: var(--tblr-warning);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+    cursor: pointer;
+
+    // A focused thread points at its passage the same way hovering does.
+    &:hover,
+    &.kb-comment-highlight--focused {
+        text-decoration-thickness: 3px;
+        background-color: var(--tblr-warning-bg-subtle);
+    }
+
+    // Distinct from the :hover wash, so selecting text stays tellable from
+    // merely hovering it.
+    &::selection {
+        background-color: rgb(var(--tblr-warning-rgb), 0.4);
+    }
+}
+
 // Shared by editor and read view so a saved article renders as edited.
 .kb-editor-wrapper .ProseMirror table,
 .article-container table {
@@ -75,6 +101,13 @@
     background-color: var(--tblr-card-cap-bg);
     border-left: 1px solid #e1e4e8;
     height: calc(100vh - 150px);
+
+    // Mirror .kb-article's transition so the pair always sums to the row width;
+    // `clip` contains the content mid-animation without making this a scroller.
+    overflow-x: clip;
+    transition:
+        width 0.35s ease-in-out,
+        padding 0.35s ease-in-out;
 
     .steps-vertical {
         position: relative;
@@ -120,11 +153,10 @@
         border-color 0.2s ease,
         box-shadow 0.2s ease;
 
-    // Only add spacing in edit mode, where the preview becomes an interactive
-    // button (role="button") that can be hovered to pick an illustration.
+    // Spacing only in edit mode, where the preview is a real <button>.
     // Offset the padding with a matching negative margin so surrounding
     // content keeps its position when switching between view and edit mode.
-    &[role="button"] {
+    &:is(button) {
         padding: 0.25rem;
         margin: -0.25rem;
 
@@ -189,6 +221,24 @@ body.in_modal .kb-article {
         a {
             color: var(--tblr-dark);
         }
+    }
+}
+
+// Sub-articles tab: one navigation row per child article
+.kb-child-articles {
+    .kb-child-article {
+        padding: 0.25rem 0;
+
+        // No color here: it would override the anchor's text-hover-link
+        a:hover .text-truncate {
+            text-decoration: underline;
+        }
+    }
+
+    // Fixed slot so titles stay aligned whether or not the child has an illustration
+    .kb-child-article-icon {
+        flex: 0 0 20px;
+        height: 20px;
     }
 }
 
@@ -329,6 +379,8 @@ body.in_modal .kb-article {
 
 // KB comment thread reply trigger
 .kb-comment-thread {
+    transition: opacity 0.15s ease-in-out;
+
     .kb-reply-trigger {
         transition: opacity 0.15s ease-in-out;
     }
@@ -336,6 +388,39 @@ body.in_modal .kb-article {
     &:hover .kb-reply-trigger {
         opacity: 1 !important;
     }
+}
+
+// Recede the others rather than decorate the focused thread.
+[data-glpi-comments].kb-comments--has-focus
+    .kb-comment-thread:not(.kb-comment-thread--focused) {
+    opacity: 0.65;
+
+    // A receded thread stays readable.
+    &:hover,
+    &:focus-within {
+        opacity: 1;
+    }
+}
+
+// One line: the passage itself is one click away in the article.
+.kb-comment-anchor-quote {
+    /* stylelint-disable-next-line value-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+    display: -webkit-box;
+    /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+    -webkit-line-clamp: 1;
+    /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+
+    // Blockquote's block padding widens the clip box, bleeding an extra line.
+    padding-block: 0;
+}
+
+// The preview is the last chance to read the selection back before storing it.
+.kb-comment-anchor-quote--preview {
+    /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+    -webkit-line-clamp: 3;
 }
 
 // KB visibility dates
@@ -380,7 +465,7 @@ body.in_modal .kb-article {
 
 // Reserve the height that the editor will take once tiptap is mounted, which
 // happens asynchronously. Prevent some height issues on chrome based browsers.
-.kb-editor-reserved {
+body.in_modal .kb-editor-reserved {
     min-height: 200px;
 }
 
@@ -820,6 +905,15 @@ body.in_modal .kb-article {
             background: var(--tblr-bg-surface-secondary);
         }
 
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.4;
+
+            &:hover {
+                background: none;
+            }
+        }
+
         &.is-active {
             background: var(--tblr-primary);
             color: var(--tblr-primary-fg);
@@ -832,6 +926,13 @@ body.in_modal .kb-article {
         background: var(--tblr-border-color);
         margin: 0 0.25rem;
     }
+}
+
+// Single labelled action, so it grows past the icon-only 2rem square.
+.kb-read-mode-comment-bubble .bubble-menu-btn {
+    width: auto;
+    gap: 0.375rem;
+    padding: 0 0.5rem;
 }
 
 // Grip-triggered table delete control
@@ -1217,7 +1318,7 @@ body.in_modal .kb-article {
 
     // Current article: highlighted with primary color to identify it in the tree and favorites.
     [data-glpi-kb-article-current] {
-        > a {
+        > .article-line > a {
             color: color-mix(
                 in srgb,
                 transparent,

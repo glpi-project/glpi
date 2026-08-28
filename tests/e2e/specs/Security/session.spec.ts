@@ -118,13 +118,16 @@ test.describe('Session', () => {
         await profile.invalidateCachedProfile(); // This test will do some manual profiles changes
         await page.goto('/front/computer.form.php');
 
+        const admin_menu = page.getByRole('navigation', { name: 'Main navigation' })
+            .getByRole('button', { name: 'Administration', exact: true });
+
         await expect(glpi_page.user_menu).toContainText('Super-Admin');
-        await expect(page.getByRole('listitem', { name: 'Administration' })).toBeVisible();
+        await expect(admin_menu).toBeVisible();
 
         await glpi_page.doChangeProfile('Self-Service');
 
         await expect(glpi_page.user_menu).toContainText('Self-Service');
-        await expect(page.getByRole('listitem', { name: 'Administration' })).not.toBeAttached();
+        await expect(admin_menu).not.toBeAttached();
     });
 
     test('can setup 2FA during login', async ({ anonymousPage, api }) => {

@@ -65,7 +65,7 @@ class DbTimezones extends AbstractRequirement
 
         if (count($available_timezones) === 0) {
             $this->validated = false;
-            $this->validation_messages[] = __('Timezones seems not loaded, see https://glpi-install.readthedocs.io/en/latest/timezones.html.');
+            $this->validation_messages[] = sprintf(__('Timezones seems not loaded, see %1$s'), 'https://glpi-install.readthedocs.io/en/latest/timezones.html.');
             return;
         }
 

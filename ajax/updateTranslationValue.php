@@ -38,7 +38,7 @@ use Glpi\Application\View\TemplateRenderer;
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight("dropdown", UPDATE);
+Session::checkRight(DropdownTranslation::$rightname, UPDATE);
 
 $matching_field = null;
 

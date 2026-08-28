@@ -34,9 +34,11 @@
 
 namespace Glpi\Tools\Command;
 
+use Override;
 use RecursiveDirectoryIterator;
 use RecursiveFilterIterator;
 use RecursiveIteratorIterator;
+use Safe\Exceptions\FilesystemException;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,6 +53,16 @@ use Twig\Loader\LoaderInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
+
+use function Safe\file_put_contents;
+use function Safe\ini_set;
+use function Safe\mkdir;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\realpath;
+use function Safe\tempnam;
+use function Safe\touch;
+use function Safe\unlink;
 
 final class LocalesExtractCommand extends AbstractCommand
 {
@@ -116,18 +128,28 @@ final class LocalesExtractCommand extends AbstractCommand
 
         $potfile = $working_dir . '/locales/' . strtolower($name) . '.pot';
 
-        if (!is_dir($working_dir . '/locales') && !mkdir($working_dir . '/locales')) {
-            $this->io->error(sprintf('Unable to create the `%s/locales` directory.', $working_dir));
-            return Command::FAILURE;
+        if (!is_dir($working_dir . '/locales')) {
+            try {
+                mkdir($working_dir . '/locales');
+            } catch (FilesystemException) {
+                $this->io->error(sprintf('Unable to create the `%s/locales` directory.', $working_dir));
+                return Command::FAILURE;
+            }
         }
 
         // Clean existing POT file
-        if (file_exists($potfile) && (!unlink($potfile))) {
-            $this->io->error(sprintf('Unable to override the `%s` file.', $potfile));
-            return Command::FAILURE;
+        if (file_exists($potfile)) {
+            try {
+                unlink($potfile);
+            } catch (FilesystemException) {
+                $this->io->error(sprintf('Unable to override the `%s` file.', $potfile));
+                return Command::FAILURE;
+            }
         }
 
-        if (!touch($potfile)) {
+        try {
+            touch($potfile);
+        } catch (FilesystemException) {
             $this->io->error(sprintf('Unable to create the `%s` file.', $potfile));
             return Command::FAILURE;
         }
@@ -136,7 +158,9 @@ final class LocalesExtractCommand extends AbstractCommand
         if (is_dir($working_dir . '/templates')) {
             $this->io->section('Processing Twig templates...');
             $temp_twig_dir = sys_get_temp_dir() . '/glpi-locales-' . uniqid();
-            if (!mkdir($temp_twig_dir . '/templates', 0o777, true)) {
+            try {
+                mkdir($temp_twig_dir . '/templates', 0o777, true);
+            } catch (FilesystemException) {
                 $this->io->error(sprintf('Unable to create the `%s/templates` dir.', $temp_twig_dir));
                 return Command::FAILURE;
             }
@@ -153,10 +177,10 @@ final class LocalesExtractCommand extends AbstractCommand
             $twig_files = $this->getFiles($temp_twig_dir, 'twig');
             if (count($twig_files) > 0) {
                 // Write files list to usage in xgettext via -f
-                if (
-                    ($list_file = tempnam(sys_get_temp_dir(), 'twigfiles')) === false
-                    || file_put_contents($list_file, implode("\n", $twig_files)) === false
-                ) {
+                try {
+                    $list_file = tempnam(sys_get_temp_dir(), 'twigfiles');
+                    file_put_contents($list_file, implode("\n", $twig_files));
+                } catch (FilesystemException) {
                     $this->io->error('Unable to create the Twig files list file.');
                     return Command::FAILURE;
                 }
@@ -190,10 +214,10 @@ final class LocalesExtractCommand extends AbstractCommand
         $php_files = $this->getFiles($working_dir, 'php', $exclude_regex);
         if (count($php_files) > 0) {
             // Write files list to usage in xgettext via -f
-            if (
-                ($list_file = tempnam(sys_get_temp_dir(), 'phpfiles')) === false
-                || file_put_contents($list_file, implode("\n", $php_files)) === false
-            ) {
+            try {
+                $list_file = tempnam(sys_get_temp_dir(), 'phpfiles');
+                file_put_contents($list_file, implode("\n", $php_files));
+            } catch (FilesystemException) {
                 $this->io->error('Unable to create the PHP files list file.');
                 return Command::FAILURE;
             }
@@ -228,10 +252,10 @@ final class LocalesExtractCommand extends AbstractCommand
         $js_files = array_filter($js_files, fn($f) => !str_ends_with($f, '.min.js'));
 
         if (count($js_files) > 0) {
-            if (
-                ($list_file = tempnam(sys_get_temp_dir(), 'jsfiles')) === false
-                || file_put_contents($list_file, implode("\n", $js_files)) === false
-            ) {
+            try {
+                $list_file = tempnam(sys_get_temp_dir(), 'jsfiles');
+                file_put_contents($list_file, implode("\n", $js_files));
+            } catch (FilesystemException) {
                 $this->io->error('Unable to create the JS files list file.');
                 return Command::FAILURE;
             }

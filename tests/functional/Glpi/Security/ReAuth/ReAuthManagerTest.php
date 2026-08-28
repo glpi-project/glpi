@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Security\ReAuth;
 use Computer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\RedirectException;
+use Glpi\Kernel\Listener\RequestListener\ReAuthReplayListener;
 use Glpi\Security\ReAuth\ReAuthManager;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Security\ReAuth\ReAuthTrait;
@@ -153,13 +154,15 @@ class ReAuthManagerTest extends DbTestCase
 
         // --- assert ---
         $this->assertSame('POST', $this->getReAuthManager()->getRequestedMethod());
-        $this->assertSame('value', $this->getReAuthManager()->getRequestedPostData()['name']);
+        $this->assertSame('value', $this->getReAuthManager()->getReplayData()['name']);
         // The GET query string of a POST request is preserved: browsers keep the action
         // URL's query string untouched on replay since the form data goes in the body.
         $this->assertSame('https://glpi.example.org/front/user.form.php?id=2', $this->getReAuthManager()->getRequestedURL());
-        // _glpi_http_referer is only meaningful for POST replays: Html::getRefererUrl()
-        // reads it from $_POST, so it must be present here.
-        $this->assertArrayHasKey('_glpi_http_referer', $this->getReAuthManager()->getRequestedPostData());
+        // The replay carries the restore parameter, never the origin URL itself, whatever the
+        // method: the referer is restored from the session on the replayed request.
+        $replay_data = $this->getReAuthManager()->getReplayData();
+        $this->assertArrayNotHasKey('_glpi_http_referer', $replay_data);
+        $this->assertSame('1', $replay_data[ReAuthManager::RESTORE_REFERER_PARAM]);
     }
 
     /** The requested URL drops its GET query string: browsers rebuild it from the form fields on replay. */
@@ -178,9 +181,39 @@ class ReAuthManagerTest extends DbTestCase
 
         // --- assert ---
         $this->assertSame('https://glpi.example.org/front/user.form.php', $this->getReAuthManager()->getRequestedURL());
-        // _glpi_http_referer would only ever land in $_GET on replay, which
-        // Html::getRefererUrl() never reads, so it must not be injected here.
-        $this->assertArrayNotHasKey('_glpi_http_referer', $this->getReAuthManager()->getRequestedPostData());
+        // A GET replay carries the restore parameter instead of the origin URL itself: a
+        // client-supplied _glpi_http_referer would drive where the user is redirected to.
+        $replay_data = $this->getReAuthManager()->getReplayData();
+        $this->assertArrayNotHasKey('_glpi_http_referer', $replay_data);
+        $this->assertSame('1', $replay_data[ReAuthManager::RESTORE_REFERER_PARAM]);
+    }
+
+    /**
+     * The origin page recorded on the first pass is the one the replayed request must send the
+     * user back to. Restoring it on the replay is the listener's job.
+     *
+     * @see ReAuthReplayListener
+     */
+    public function testOriginUrlIsRecordedFromTheReferer(): void
+    {
+        // --- arrange ---
+        $this->fakeWebContext(
+            request_uri: '/ajax/switchdebug.php',
+            referer: 'https://glpi.example.org/front/central.php',
+        );
+
+        // --- act ---
+        try {
+            $this->getReAuthManager()->redirectToReauth();
+            $this->fail('A RedirectException should have been thrown.');
+        } catch (RedirectException) {
+        }
+
+        // --- assert ---
+        $this->assertSame(
+            'https://glpi.example.org/front/central.php',
+            $this->getReAuthManager()->getOriginURL()
+        );
     }
 
     /**
@@ -256,8 +289,12 @@ class ReAuthManagerTest extends DbTestCase
         $this->assertSame('/', $this->getReAuthManager()->getRequestedURL());
         $this->assertSame('GET', $this->getReAuthManager()->getRequestedMethod());
         $this->assertSame($CFG_GLPI['root_doc'], $this->getReAuthManager()->getOriginURL());
-        // Default method is GET: no _glpi_http_referer is injected (see testRedirectToReauthStoresPostRequestData).
-        $this->assertSame([], $this->getReAuthManager()->getRequestedPostData());
+        // Default method is GET: the restore parameter is injected, not _glpi_http_referer
+        // (see testRedirectToReauthStoresPostRequestData).
+        $this->assertSame(
+            [ReAuthManager::RESTORE_REFERER_PARAM => '1'],
+            $this->getReAuthManager()->getReplayData()
+        );
     }
 
     /**

@@ -126,7 +126,19 @@ class Category extends CommonTreeDropdown implements ServiceCatalogCompositeInte
 
         switch ($field) {
             case 'illustration':
-                return (new IllustrationManager())->renderIcon($values[$field], 32);
+                $illustration_manager = new IllustrationManager();
+                $value = $values[$field];
+                $icon = $illustration_manager->renderIcon($value, 32);
+
+                // Only native illustrations have a title.
+                $is_custom_file = str_starts_with($value, IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX);
+                $title = (!$is_custom_file && $value !== '') ? $illustration_manager->getIconTitle($value) : '';
+                if ($title === '') {
+                    return $icon;
+                }
+
+                // The icon is aria-hidden by design; name the cell here instead.
+                return '<span role="img" aria-label="' . htmlescape($title) . '">' . $icon . '</span>';
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }

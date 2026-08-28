@@ -71,7 +71,7 @@ class Group extends CommonTreeDropdown
 
     public static function getAdditionalMenuOptions()
     {
-        if (Session::haveRight('user', User::UPDATEAUTHENT)) {
+        if (Session::haveRight(User::$rightname, User::UPDATEAUTHENT)) {
             return [
                 'ldap' => [
                     'title' => AuthLDAP::getTypeName(Session::getPluralNumber()),
@@ -147,7 +147,7 @@ class Group extends CommonTreeDropdown
                     if (
                         $item->fields['is_usergroup']
                         && self::canUpdate()
-                        && Session::haveRight("user", User::UPDATEAUTHENT)
+                        && Session::haveRight(User::$rightname, User::UPDATEAUTHENT)
                         && AuthLDAP::useAuthLdap()
                     ) {
                         $ong[3] = self::createTabEntry(__('LDAP directory link'), 0, $item::class, 'ti ti-login');
@@ -236,7 +236,7 @@ class Group extends CommonTreeDropdown
         $links = [];
         if (
             AuthLDAP::useAuthLdap()
-            && Session::haveRight("user", User::IMPORTEXTAUTHUSERS)
+            && Session::haveRight(User::$rightname, User::IMPORTEXTAUTHUSERS)
             && static::canUpdate()
         ) {
             $links['<i class="ti ti-settings" aria-hidden="true"></i><span>' . __s('LDAP directory link') . '</span>'] = "/front/ldap.group.php";
@@ -499,7 +499,7 @@ class Group extends CommonTreeDropdown
         if (
             !$this->fields['is_usergroup']
             || !$this->can($this->getID(), UPDATE)
-            || !Session::haveRight("user", User::UPDATEAUTHENT)
+            || !Session::haveRight(User::$rightname, User::UPDATEAUTHENT)
             || !AuthLDAP::useAuthLdap()
         ) {
             return;
@@ -520,7 +520,7 @@ class Group extends CommonTreeDropdown
      **/
     public function showSecurityForm($ID)
     {
-        $canedit = $this->can($this->getID(), UPDATE) && Session::haveRight("user", User::UPDATEAUTHENT);
+        $canedit = $this->can($this->getID(), UPDATE) && Session::haveRight(User::$rightname, User::UPDATEAUTHENT);
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $this,

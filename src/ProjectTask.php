@@ -104,7 +104,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public static function canView(): bool
     {
-        return (Session::haveRightsOr('project', [Project::READALL, Project::READMY])
+        return (Session::haveRightsOr(Project::$rightname, [Project::READALL, Project::READMY])
               || Session::haveRight(self::$rightname, self::READMY));
     }
 
@@ -120,8 +120,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
         $project = new Project();
         if ($project->getFromDB($this->fields['projects_id'])) {
-            return (Session::haveRight('project', Project::READALL)
-                 || (Session::haveRight('project', Project::READMY)
+            return (Session::haveRight(Project::$rightname, Project::READALL)
+                 || (Session::haveRight(Project::$rightname, Project::READMY)
                      && (($project->fields["users_id"] === Session::getLoginUserID())
                          || $project->isInTheManagerGroup()
                          || $project->isInTheTeam()))
@@ -134,7 +134,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     public static function canCreate(): bool
     {
-        return (Session::haveRight('project', UPDATE));
+        return (Session::haveRight(Project::$rightname, UPDATE));
     }
 
     public static function canUpdate(): bool
@@ -155,7 +155,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
         $project = new Project();
         if ($project->getFromDB($this->fields['projects_id'])) {
-            return (Session::haveRight('project', UPDATE)
+            return (Session::haveRight(Project::$rightname, UPDATE)
                  || (Session::haveRight(self::$rightname, self::UPDATEMY)
                      && (($this->fields["users_id"] === Session::getLoginUserID())
                          || $this->isInTheTeam())));

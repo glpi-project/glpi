@@ -67,7 +67,7 @@ class Reminder extends CommonDBVisible implements
 
     public static function getTypeName($nb = 0)
     {
-        if (Session::haveRight('reminder_public', READ)) {
+        if (Session::haveRight(Reminder::$rightname, READ)) {
             return _n('Reminder', 'Reminders', $nb);
         }
         return _n('Personal reminder', 'Personal reminders', $nb);
@@ -454,7 +454,7 @@ class Reminder extends CommonDBVisible implements
             $nb = 0;
             switch (get_class($item)) {
                 case Reminder::class:
-                    if (Session::haveRight('reminder_public', CREATE)) {
+                    if (Session::haveRight(Reminder::$rightname, CREATE)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = $item->countVisibilities();
                         }

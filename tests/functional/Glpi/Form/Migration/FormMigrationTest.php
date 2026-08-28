@@ -1182,13 +1182,54 @@ final class FormMigrationTest extends DbTestCase
         yield 'FULLFORM placeholder' => [
             'rawContent'                => '##FULLFORM##',
             'expectedPatternForTitle'   => '/##FULLFORM##/',
-            'expectedPatternForContent' => '/<p><b>1\) <span[^>]*>#Question: Question for tag tests 1<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 1<\/span><br><b>2\) <span[^>]*>#Question: Question for tag tests 2<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 2<\/span><br><\/p>/',
+            'expectedPatternForContent' => '/<p>'
+                                                . '<b>1\) <span[^>]*>#Question: Question for tag tests 1<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 1<\/span><br>'
+                                                . '<b>2\) <span[^>]*>#Question: Question for tag tests 2<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 2<\/span><br>'
+                                                . '<b>3\) <span[^>]*>#Question: Question for tag tests 3<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 3<\/span><br>'
+                                                . '<b>4\) <span[^>]*>#Question: Question for tag tests 4<\/span><\/b>: <span[^>]*>#Answer: Question for tag tests 4<\/span><br>'
+                                            . '<\/p>/',
         ];
 
         yield 'No tags' => [
             'rawContent'                => 'Plain text without any tags',
             'expectedPatternForTitle' => '/^Plain text without any tags$/',
             'expectedPatternForContent' => '/^Plain text without any tags$/',
+        ];
+
+        yield 'Property tag on a non "GLPI Object" question is left untouched' => [
+            'rawContent'                => 'NonItem: ##answer_9998.serial##',
+            'expectedPatternForTitle'   => '/^NonItem: ##answer_9998\.serial##$/',
+            'expectedPatternForContent' => '/^NonItem: ##answer_9998\.serial##$/',
+        ];
+
+        yield 'Property tag on a "GLPI Object" question (simple field)' => [
+            'rawContent'                => 'Serial: ##answer_9996.serial##',
+            'expectedPatternForTitle'   => '/Serial: <span[^>]*>#Answer: Question for tag tests 3 › Serial number<\/span>/',
+            'expectedPatternForContent' => '/Serial: <span[^>]*>#Answer: Question for tag tests 3 › Serial number<\/span>/',
+        ];
+
+        yield 'Property tag on a "GLPI Object" question (generic field)' => [
+            'rawContent'                => 'Name: ##answer_9996.name##',
+            'expectedPatternForTitle'   => '/Name: <span[^>]*>#Answer: Question for tag tests 3 › Name<\/span>/',
+            'expectedPatternForContent' => '/Name: <span[^>]*>#Answer: Question for tag tests 3 › Name<\/span>/',
+        ];
+
+        yield 'Property tag on a User question (simple field)' => [
+            'rawContent'                => 'Email: ##answer_9997.login##',
+            'expectedPatternForTitle'   => '/Email: <span[^>]*>#Answer: Question for tag tests 4 › Login<\/span>/',
+            'expectedPatternForContent' => '/Email: <span[^>]*>#Answer: Question for tag tests 4 › Login<\/span>/',
+        ];
+
+        yield 'Email tag on a User question' => [
+            'rawContent'                => 'Email: ##answer_9997.email##',
+            'expectedPatternForTitle'   => '/Email: <span[^>]*>#Answer: Question for tag tests 4 › Email addresses<\/span>/',
+            'expectedPatternForContent' => '/Email: <span[^>]*>#Answer: Question for tag tests 4 › Email addresses<\/span>/',
+        ];
+
+        yield 'Unknown property tag tag on a User question' => [
+            'rawContent'                => 'Unknown: ##answer_9997.unknown##',
+            'expectedPatternForTitle'   => '/^Unknown: ##answer_9997.unknown##$/',
+            'expectedPatternForContent' => '/^Unknown: ##answer_9997.unknown##$/',
         ];
     }
 
@@ -1233,6 +1274,32 @@ final class FormMigrationTest extends DbTestCase
                 'plugin_formcreator_sections_id' => $section_id,
                 'name'                           => 'Question for tag tests 2',
                 'row'                            => 1,
+            ]
+        ));
+
+        // "GLPI Object" questions (fieldtype "glpiselect"), migrated into a
+        // `QuestionTypeItem` question so that its properties can be resolved.
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'id'                             => 9996,                         // Fixed ID to match our test tags
+                'plugin_formcreator_sections_id' => $section_id,
+                'name'                           => 'Question for tag tests 3',
+                'fieldtype'                      => 'glpiselect',
+                'itemtype'                       => 'Computer',
+                'row'                            => 2,
+            ]
+        ));
+
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'id'                             => 9997,                         // Fixed ID to match our test tags
+                'plugin_formcreator_sections_id' => $section_id,
+                'name'                           => 'Question for tag tests 4',
+                'fieldtype'                      => 'glpiselect',
+                'itemtype'                       => 'User',
+                'row'                            => 3,
             ]
         ));
 

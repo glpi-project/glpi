@@ -925,7 +925,7 @@ JAVASCRIPT;
     public static function showAddPlanningForm()
     {
         $planning_types = ['user' => User::getTypeName(1)];
-        if (Session::haveRightsOr('planning', [self::READGROUP, self::READALL])) {
+        if (Session::haveRightsOr(Planning::$rightname, [self::READGROUP, self::READALL])) {
             $planning_types['group_users'] = __('All users of a group');
             $planning_types['group']       = Group::getTypeName(1);
         }
@@ -980,13 +980,13 @@ TWIG, $twig_params);
         // show only users with right to add planning events
         $rights = ['change', 'problem', 'reminder', 'task', 'projecttask'];
         // Can we see only personal planning ?
-        if (!Session::haveRightsOr('planning', [self::READALL, self::READGROUP])) {
+        if (!Session::haveRightsOr(Planning::$rightname, [self::READALL, self::READGROUP])) {
             $rights = 'id';
         }
         // Can we see user of my groups ?
         if (
-            Session::haveRight('planning', self::READGROUP)
-            && !Session::haveRight('planning', self::READALL)
+            Session::haveRight(Planning::$rightname, self::READGROUP)
+            && !Session::haveRight(Planning::$rightname, self::READALL)
         ) {
             $rights = 'groups';
         }
@@ -1043,7 +1043,7 @@ TWIG, $twig_params);
     {
         $condition = [];
         // filter groups
-        if (!Session::haveRight('planning', self::READALL) && count($_SESSION['glpigroups'])) {
+        if (!Session::haveRight(Planning::$rightname, self::READALL) && count($_SESSION['glpigroups'])) {
             $condition['id'] = $_SESSION['glpigroups'];
         }
 
@@ -1164,7 +1164,7 @@ TWIG, $twig_params);
     {
         $condition = ['is_task' => 1];
         // filter groups
-        if (!Session::haveRight('planning', self::READALL) && count($_SESSION['glpigroups'])) {
+        if (!Session::haveRight(Planning::$rightname, self::READALL) && count($_SESSION['glpigroups'])) {
             $condition['id'] = $_SESSION['glpigroups'];
         }
 

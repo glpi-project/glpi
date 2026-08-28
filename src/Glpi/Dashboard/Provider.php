@@ -1199,10 +1199,10 @@ class Provider
         $criteria = array_merge_recursive(
             [
                 'SELECT'    => [
-                    "$entity_table.completename AS entity_name",
                     "$entity_table.id AS entity_id",
-                    "$category_table.completename AS category_name",
+                    "$entity_table.completename AS entity_name",
                     "$category_table.id AS category_id",
+                    "$category_table.completename AS category_name",
                     'COUNT DISTINCT' => "$ticket_table.id AS cpt",
                 ],
                 'FROM'      => $ticket_table,
@@ -1232,27 +1232,26 @@ class Provider
         $iterator = $DB->request($criteria);
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
 
-        $matrix     = [];
-        $categories = [];
+        $matrix         = [];
+        $entity_names   = [];
+        $category_names = [];
         foreach ($iterator as $result) {
-            $entity_name   = $result['entity_name'] ?? __('Root entity');
-            $category_name = $result['category_name'] ?? __('None');
+            $entity_id   = $result['entity_id'] ?? 0;
+            $category_id = $result['category_id'] ?? 0;
 
-            $matrix[$entity_name][$category_name] = (int) $result['cpt'];
-            $categories[$category_name]           = true;
+            $entity_names[$entity_id]         = $result['entity_name'] ?? __('Root entity');
+            $category_names[$category_id]     = $result['category_name'] ?? __('None');
+            $matrix[$entity_id][$category_id] = (int) $result['cpt'];
         }
 
-        $entities   = array_keys($matrix);
-        $categories = array_keys($categories);
-
         $data = [
-            'labels' => $entities,
+            'labels' => array_values($entity_names),
             'series' => [],
         ];
-        foreach ($categories as $category_name) {
+        foreach ($category_names as $category_id => $category_name) {
             $series_data = [];
-            foreach ($entities as $entity_name) {
-                $series_data[] = $matrix[$entity_name][$category_name] ?? 0;
+            foreach (array_keys($entity_names) as $entity_id) {
+                $series_data[] = $matrix[$entity_id][$category_id] ?? 0;
             }
             $data['series'][] = [
                 'name' => $category_name,
@@ -1271,14 +1270,12 @@ class Provider
         ];
     }
 
-
     /**
-     * Count number of tickets grouped by their category and their type restricted to either opened or closed tickets
-     * @param string $case 'open' or 'close'
+     * count number of opened and closed tickets grouped by their assigned group
      * @param array<string, mixed> $params
      * @return array<string, mixed>
      */
-    public static function ticketsByCategoryAndType(string $case = 'open', array $params = []): array
+    public static function ticketsByGroupAndStatus(array $params = []): array
     {
         $DB = DBConnection::getReadConnection();
 
@@ -1289,37 +1286,57 @@ class Provider
         ];
         $params = array_merge($default_params, $params);
 
-        $statuses = $case === 'close'
-            ? [Ticket::SOLVED, Ticket::CLOSED]
-            : [Ticket::INCOMING, Ticket::ASSIGNED, Ticket::PLANNED, Ticket::WAITING];
+        $ticket_table       = Ticket::getTable();
+        $group_ticket_table = Group_Ticket::getTable();
+        $group_table        = Group::getTable();
 
-        $ticket_table   = Ticket::getTable();
-        $category_table = \ITILCategory::getTable();
+        $opened_statuses = implode(',', [Ticket::INCOMING, Ticket::ASSIGNED, Ticket::PLANNED, Ticket::WAITING]);
+        $closed_statuses = implode(',', [Ticket::SOLVED, Ticket::CLOSED]);
+
+        // Restrict our own grouping to the groups selected by the "technician
+        // group" filter, not just which tickets are included (see
+        // extractActorFilterIds() doc for why this is needed).
+        $filtered_group_ids = self::extractActorFilterIds(
+            GroupTechFilter::class,
+            'gl_' . GroupTechFilter::getId() . '.groups_id',
+            $ticket_table,
+            $params['apply_filters']
+        );
 
         Profiler::getInstance()->start(__METHOD__ . ' build SQL criteria');
         $criteria = array_merge_recursive(
             [
                 'SELECT'    => [
-                    "$category_table.completename AS category_name",
-                    "$category_table.id AS category_id",
-                    "$ticket_table.type AS ticket_type",
-                    'COUNT DISTINCT' => "$ticket_table.id AS cpt",
+                    "$group_table.name AS group_name",
+                    new QueryExpression("COUNT(DISTINCT CASE WHEN $ticket_table.status IN ($opened_statuses) THEN $ticket_table.id END) AS opened"),
+                    new QueryExpression("COUNT(DISTINCT CASE WHEN $ticket_table.status IN ($closed_statuses) THEN $ticket_table.id END) AS closed"),
                 ],
                 'FROM'      => $ticket_table,
-                'LEFT JOIN' => [
-                    $category_table => [
+                'INNER JOIN' => [
+                    $group_ticket_table => [
                         'ON' => [
-                            $ticket_table   => 'itilcategories_id',
-                            $category_table => 'id',
+                            $group_ticket_table => 'tickets_id',
+                            $ticket_table        => 'id',
+                            [
+                                'AND' => [
+                                    "$group_ticket_table.type" => Group_Ticket::ASSIGN,
+                                ],
+                            ],
+                        ],
+                    ],
+                    $group_table => [
+                        'ON' => [
+                            $group_table         => 'id',
+                            $group_ticket_table  => 'groups_id',
                         ],
                     ],
                 ],
                 'WHERE'     => [
                     "$ticket_table.is_deleted" => 0,
-                    "$ticket_table.status"     => $statuses,
-                ] + getEntitiesRestrictCriteria($ticket_table),
-                'GROUPBY'   => ["$category_table.id", "$ticket_table.type"],
-                'ORDERBY'   => "$category_table.completename",
+                ] + ($filtered_group_ids !== null ? ["$group_table.id" => $filtered_group_ids] : [])
+                  + getEntitiesRestrictCriteria($ticket_table),
+                'GROUPBY'   => "$group_table.id",
+                'ORDERBY'   => "$group_table.name",
             ],
             Ticket::getCriteriaFromProfile(),
             self::getFiltersCriteria($ticket_table, $params['apply_filters'])
@@ -1327,34 +1344,17 @@ class Provider
         $iterator = $DB->request($criteria);
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
 
-        $matrix = [];
-        $types  = [];
-        foreach ($iterator as $result) {
-            $category_name = $result['category_name'] ?? __('None');
-            $type_name     = (int) $result['ticket_type'] > 0
-                ? Ticket::getTicketTypeName((int) $result['ticket_type'])
-                : __('Undefined');
-
-            $matrix[$category_name][$type_name] = (int) $result['cpt'];
-            $types[$type_name]                  = true;
-        }
-
-        $categories = array_keys($matrix);
-        $types      = array_keys($types);
-
         $data = [
-            'labels' => $categories,
-            'series' => [],
+            'labels' => [],
+            'series' => [
+                ['name' => __('Opened'), 'data' => []],
+                ['name' => __('Closed'), 'data' => []],
+            ],
         ];
-        foreach ($types as $type_name) {
-            $series_data = [];
-            foreach ($categories as $category_name) {
-                $series_data[] = $matrix[$category_name][$type_name] ?? 0;
-            }
-            $data['series'][] = [
-                'name' => $type_name,
-                'data' => $series_data,
-            ];
+        foreach ($iterator as $result) {
+            $data['labels'][] = $result['group_name'];
+            $data['series'][0]['data'][] = (int) $result['opened'];
+            $data['series'][1]['data'][] = (int) $result['closed'];
         }
 
         if (count($data['labels']) === 0) {
@@ -2309,6 +2309,29 @@ class Provider
 
         Profiler::getInstance()->stop(__METHOD__);
         return ['criteria' => $s_criteria];
+    }
+
+    /**
+     * Extracts an actor filter's resolved ids (e.g. selected group ids) so a
+     * provider can restrict its own GROUP BY, not just gate ticket inclusion.
+     * Also unsets the filter from $apply_filters to avoid a redundant join later.
+     *
+     * @param array<string, mixed> $apply_filters
+     *
+     * @return int[]|null
+     */
+    private static function extractActorFilterIds(
+        string $filter_class,
+        string $where_key,
+        string $table,
+        array &$apply_filters
+    ): ?array {
+        $value = $apply_filters[$filter_class::getId()] ?? null;
+        unset($apply_filters[$filter_class::getId()]);
+
+        $ids = $value !== null ? ($filter_class::getCriteria($table, $value)['WHERE'][$where_key] ?? null) : null;
+
+        return $ids === null ? null : (array) $ids;
     }
 
     /**

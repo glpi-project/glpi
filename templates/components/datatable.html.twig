@@ -58,7 +58,8 @@
  * - footer_class: Additional CSS classes applied to the table footer element.
  * - no_header: Hide all column headers when set to true. Defaults to false.
  * - super_header: Optional header row spanning all columns. Can be a string or an
- *   array with 'label' (string) and optional 'is_raw' (boolean) keys.
+ *   array with 'label' (string) and optional 'is_raw' (boolean) and 'level' (int) keys.
+ *   'level' exposes the label as a heading of that level, for pages that need it.
  *
  * - nosort: Disable sorting on all columns. Defaults to false.
  * - sort: The currently sorted column key.
@@ -110,9 +111,12 @@
             {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
             {% if super_header_label is not empty %}
                 {% set super_header_raw = super_header is array ? (super_header['is_raw'] ?? false) : false %}
+                {% set super_header_level = super_header is array ? (super_header['level'] ?? null) : null %}
                 <tr>
                     <th colspan="1">
+                        {% if super_header_level and super_header_raw is not same as 'th_elements' %}<span role="heading" aria-level="{{ super_header_level }}">{% endif %}
                         {{ super_header_raw ? super_header_label|raw : super_header_label }}
+                        {% if super_header_level and super_header_raw is not same as 'th_elements' %}</span>{% endif %}
                     </th>
                 </tr>
             {% endif %}
@@ -148,9 +152,12 @@
                 {% if super_header is defined and super_header is not empty %}
                     {% set super_header_label = super_header is array ? super_header['label'] : super_header %}
                     {% set super_header_raw = super_header is array ? (super_header['is_raw'] ?? false) : false %}
+                    {% set super_header_level = super_header is array ? (super_header['level'] ?? null) : null %}
                     <tr>
                         {% if super_header_raw is not same as 'th_elements' %}<th colspan="{{ total_cols }}">{% endif %}
+                            {% if super_header_level and super_header_raw is not same as 'th_elements' %}<span role="heading" aria-level="{{ super_header_level }}">{% endif %}
                             {{ super_header_raw ? super_header_label|raw : super_header_label }}
+                            {% if super_header_level and super_header_raw is not same as 'th_elements' %}</span>{% endif %}
                         {% if super_header_raw is not same as 'th_elements' %}</th>{% endif %}
                     </tr>
                 {% endif %}
@@ -385,7 +392,7 @@
                     <tr>
                         <td colspan="{{ total_cols }}">
                             <twig:Alert
-                                :message="__('No results found')"
+                                :content="__('No results found')"
                             />
                         </td>
                     </tr>

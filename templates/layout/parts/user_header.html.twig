@@ -38,15 +38,14 @@
          <div class="nav-item dropdown">
             <button type="button" class="nav-link d-flex lh-1 text-reset p-1 border-0 dropdown-toggle user-menu-dropdown-toggle {% if is_debug_active %}bg-red-lt{% else %}bg-transparent{% endif %}"
                data-bs-toggle="dropdown" data-bs-auto-close="outside"
-               aria-haspopup="true" aria-expanded="false"
-               aria-label="{{ __('User menu') }}">
+               aria-haspopup="true" aria-expanded="false">
+               <span class="visually-hidden">{{ __('User menu') }}</span>
                {% if not anonymous %}
                   <div class="pe-2 d-none d-xl-block">
                      <div>{{ (session('glpiactiveprofile')['name'] ?? '')|u.truncate(35, '...') }}</div>
                      {% set entity_completename = session('glpiactive_entity_name') %}
                      <div class="mt-1 small text-muted-menu" title="{{ entity_completename }}"
-                          data-testid="current-entity"
-                          data-bs-toggle="tooltip" data-bs-placement="bottom">
+                          data-testid="current-entity">
                         {{ entity_completename|truncate_left }}
                      </div>
                   </div>
@@ -59,14 +58,17 @@
                {% endif %}
             </button>
             <div class="dropdown-menu dropdown-menu-end mt-1 dropdown-menu-arrow animate__animated animate__fadeInRight" data-testid="user-menu-dropdown">
-               <h6 class="dropdown-header">{{ get_item_name(user) }}</h6>
+               <span class="dropdown-header">{{ get_item_name(user) }}</span>
 
                {% if not anonymous %}
                   {{ include('layout/parts/profile_selector.html.twig') }}
 
                   <div class="dropdown-divider"></div>
 
-                  {% if has_itemtype_right('Config', constant('UPDATE')) %}
+                  {# has_profile_right() and not has_itemtype_right(): the latter denies the right
+                     while a re-authentication is pending, which would hide the entry instead of
+                     letting the user trigger the re-authentication prompt by clicking it. #}
+                  {% if has_profile_right('config', constant('UPDATE')) %}
                      <a href="{{ path('/ajax/switchdebug.php') }}"
                         class="dropdown-item {% if is_debug_active %}bg-red-lt{% endif %}"
                         title="{{ __('Change mode') }}">
@@ -85,32 +87,33 @@
 
                <div class="dropdown-divider"></div>
 
-               <a href="{{ help_url }}" class="dropdown-item" title="{{ __('Help') }}">
+               <a href="{{ help_url }}" class="dropdown-item">
                   <i class="ti ti-help" aria-hidden="true"></i>
                   {{ __('Help') }}
                </a>
 
       {% if has_profile_right('config', constant('READ')) %}
-               <a href="#" class="dropdown-item" title="{{ __('About') }}"
+               <button type="button" class="dropdown-item"
                   id="show_about_modal_{{ rand_header }}"
                   data-testid="about-link">
                   <i class="ti ti-info-circle" aria-hidden="true"></i>
                   {{ __('About') }}
                   {% if found_new_version is not null %}
                      <span class="badge bg-info text-dark ms-2">
-                        1
+                        <span aria-hidden="true">1</span>
+                        <span class="visually-hidden">{{ __('A new version is available: %s.')|format(found_new_version) }}</span>
                      </span>
                   {% endif %}
-               </a>
+               </button>
       {% endif %}
 
                <div class="dropdown-divider"></div>
 
-               <a href="{{ path('/front/preference.php') }}" class="dropdown-item" title="{{ __('My settings') }}">
+               <a href="{{ path('/front/preference.php') }}" class="dropdown-item">
                   <i class="ti ti-user-cog" aria-hidden="true"></i>
                   {{ __('My settings') }}
                </a>
-               <a href="{{ path('/front/logout.php' ~ ((session('glpiextauth') ?: false) ? '?noAUTO=1' : '')) }}" class="dropdown-item" title="{{ __('Logout') }}">
+               <a href="{{ path('/front/logout.php' ~ ((session('glpiextauth') ?: false) ? '?noAUTO=1' : '')) }}" class="dropdown-item">
                   <i class="ti ti-logout" aria-hidden="true"></i>
                   {{ __('Logout') }}
                </a>
@@ -119,16 +122,17 @@
       </div>
 
       {% if has_profile_right('config', constant('READ')) %}
-      <div class="modal fade" id="about_modal_{{ rand_header }}" role="dialog">
+      <div class="modal fade" id="about_modal_{{ rand_header }}" tabindex="-1"
+           aria-labelledby="about_modal_title_{{ rand_header }}">
          <div class="modal-dialog">
             <div class="modal-content">
                <div class="modal-header">
-                  <h4 class="modal-title">{{ __('About') }}</h4>
+                  <h4 class="modal-title" id="about_modal_title_{{ rand_header }}">{{ __('About') }}</h4>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}" title="{{ __('Close') }}" data-bs-toggle="tooltip" data-bs-placement="left"></button>
                </div>
                <div class="modal-body text-center">
                   <p>
-                     <img src="{{ path('pics/logos/logo-GLPI-100-grey.png') }}" title="GLPI Logo" style="max-width:100px; height:auto;" />
+                     <img src="{{ path('pics/logos/logo-GLPI-100-grey.png') }}" alt="" style="max-width:100px; height:auto;" />
                   </p>
                   {% if not call('\\Glpi\\Toolbox\\VersionParser::isStableRelease', [constant('GLPI_VERSION')]) %}
                       <div class='alert alert-important alert-warning d-flex'>
@@ -136,7 +140,7 @@
                       </div>
                   {% endif %}
                   <p><a href="https://glpi-project.org/" title="Powered by Teclib and contributors" class="copyright">
-                     <p>GLPI {{ constant('GLPI_VERSION') }}</p>
+                     <span class="d-block">GLPI {{ constant('GLPI_VERSION') }}</span>
                      Copyright (C) 2015-{{ constant('GLPI_YEAR') }} Teclib' and contributors
                   </a></p>
                   {% if found_new_version is not null %}

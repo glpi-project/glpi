@@ -37,6 +37,7 @@ import { TipTapEditorHelper } from "../utils/TipTapEditorHelper";
 import { SlashMenuHelper } from "../utils/SlashMenuHelper";
 import { BubbleMenuHelper } from "../utils/BubbleMenuHelper";
 import { TableEditorHelper } from "../utils/TableEditorHelper";
+import { ReadModeCommentBubbleHelper } from "../utils/ReadModeCommentBubbleHelper";
 
 export class KnowbaseItemPage extends GlpiPage
 {
@@ -44,6 +45,7 @@ export class KnowbaseItemPage extends GlpiPage
     private _slashMenuHelper: SlashMenuHelper | null = null;
     private _bubbleMenuHelper: BubbleMenuHelper | null = null;
     private _tableEditorHelper: TableEditorHelper | null = null;
+    private _readModeCommentBubbleHelper: ReadModeCommentBubbleHelper | null = null;
 
     public constructor(page: Page)
     {
@@ -80,6 +82,14 @@ export class KnowbaseItemPage extends GlpiPage
             this._tableEditorHelper = new TableEditorHelper(this.page, this.editor);
         }
         return this._tableEditorHelper;
+    }
+
+    public get readModeCommentBubble(): ReadModeCommentBubbleHelper
+    {
+        if (!this._readModeCommentBubbleHelper) {
+            this._readModeCommentBubbleHelper = new ReadModeCommentBubbleHelper(this.page);
+        }
+        return this._readModeCommentBubbleHelper;
     }
 
     public get imageDialog(): Locator
@@ -127,15 +137,15 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * The article header's dots menu trigger. Scoped to the article content so
-     * it is not confused with the per-row "More actions" menus that the aside
-     * tree renders on every article.
+     * The article header's dots menu trigger, scoped to avoid other "More
+     * actions" menus (aside rows, comments); `.first()` picks the header's.
      */
     public get articleActionsMenu(): Locator
     {
         return this.page
             .getByTestId('kb-article')
-            .getByRole('button', { name: 'More actions' });
+            .getByRole('button', { name: 'More actions' })
+            .first();
     }
 
     public async doToggleFaqStatus(): Promise<void>
@@ -208,13 +218,29 @@ export class KnowbaseItemPage extends GlpiPage
         return this.favoritesSection.locator(`[data-glpi-kb-article-id="${id}"]`);
     }
 
+    public getAsideTreeArticleLine(id: number): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- using scope
+        return this.getAsideTreeArticleRow(id).locator(':scope > .article-line');
+    }
+
+    /**
+     * The title link of an article row in the aside tree. Scoped to the row's
+     * own line, so a nested child row's link is never returned instead.
+     */
+    public getAsideTreeArticleTitleLink(id: number): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- using scope
+        return this.getAsideTreeArticleLine(id).locator(':scope > a');
+    }
+
     /**
      * The illustration slot (`<use>` element for a native icon) of an article
      * row in the aside tree.
      */
     public getAsideTreeArticleIllustration(id: number): Locator
     {
-        return this.getAsideTreeArticleRow(id)
+        return this.getAsideTreeArticleLine(id)
             .getByTestId('kb-illustration')
             .getByTestId('illustration-use')
         ;
@@ -237,7 +263,7 @@ export class KnowbaseItemPage extends GlpiPage
      */
     public getAsideArticleAddChildTrigger(id: number): Locator
     {
-        return this.getAsideTreeArticleRow(id).getByTitle('Create a child article').first();
+        return this.getAsideTreeArticleLine(id).getByTitle('Create a child article');
     }
 
     /**
@@ -245,7 +271,7 @@ export class KnowbaseItemPage extends GlpiPage
      */
     public getAsideArticleMenuTrigger(id: number): Locator
     {
-        return this.getAsideTreeArticleRow(id).getByRole('button', { name: 'More actions' });
+        return this.getAsideTreeArticleLine(id).getByRole('button', { name: 'More actions' });
     }
 
     /**
@@ -253,11 +279,10 @@ export class KnowbaseItemPage extends GlpiPage
      */
     public async doOpenAsideArticleMenu(id: number): Promise<void>
     {
-        const row = this.getAsideTreeArticleRow(id);
-        await row.hover();
+        await this.getAsideTreeArticleLine(id).hover();
         await this.getAsideArticleMenuTrigger(id).click();
         // The aside menu content is lazy-loaded; wait until it is rendered.
-        await expect(row.getByRole('button', { name: 'Add to favorites' })).toBeVisible();
+        await expect(this.getAsideArticleAction(id, 'Add to favorites')).toBeVisible();
     }
 
     /**
@@ -265,7 +290,7 @@ export class KnowbaseItemPage extends GlpiPage
      */
     public getAsideArticleAction(id: number, name: string): Locator
     {
-        return this.getAsideTreeArticleRow(id).getByRole('button', { name });
+        return this.getAsideTreeArticleLine(id).getByRole('button', { name });
     }
 
     public async doToggleAsideFavorite(id: number): Promise<void>
@@ -330,6 +355,16 @@ export class KnowbaseItemPage extends GlpiPage
         await this.getButton('Comments').click();
     }
 
+    /**
+     * Wait for ArticleController's init, including highlight marks (same
+     * `pe-none` readiness signal as doToggleChildEntities/waitForAsideReady).
+     */
+    public async waitForArticleReady(): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- no semantic alternative for article container
+        await this.page.locator('[data-glpi-knowbase-article]:not(.pe-none)').waitFor();
+    }
+
     public getCommentByContent(content: string): Locator
     {
         return this.page.getByText(content).filter({
@@ -352,6 +387,139 @@ export class KnowbaseItemPage extends GlpiPage
         return this.page.getByTestId('comment').filter({
             hasText: content
         });
+    }
+
+    /**
+     * Select `text` in the read-only article content (outside edit mode) to
+     * trigger the ReadModeSelectionBubble. Uses a scripted Range instead of a
+     * triple-click, which doesn't reliably confine to one paragraph.
+     */
+    public async selectTextInReadMode(text: string): Promise<void>
+    {
+        await this.waitForArticleReady();
+        await this.selectTextIn('[data-glpi-kb-content]', text, true);
+    }
+
+    /**
+     * Select `text` inside the editor so the next keystroke replaces exactly that
+     * run. Lets a test edit within a comment's quoted passage the way a user does,
+     * instead of replacing the whole document through setContent().
+     */
+    public async selectTextInEditMode(text: string): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- ProseMirror's own root, as TipTapEditorHelper uses
+        const editor = this.page.locator('.ProseMirror[contenteditable="true"]');
+        await editor.waitFor();
+        await editor.focus();
+        await this.selectTextIn('.ProseMirror[contenteditable="true"]', text, false);
+    }
+
+    /**
+     * Scripted Range shared by the read-mode and edit-mode selection helpers.
+     */
+    private async selectTextIn(
+        container_selector: string,
+        text: string,
+        dispatch_selectionchange: boolean,
+    ): Promise<void>
+    {
+        await this.page.evaluate(({ selector, needle, dispatch }) => {
+            const container = document.querySelector(selector);
+            if (!container) {
+                return;
+            }
+            const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+            let node = walker.nextNode();
+            while (node) {
+                const idx = (node.nodeValue ?? '').indexOf(needle);
+                if (idx !== -1) {
+                    const range = document.createRange();
+                    range.setStart(node, idx);
+                    range.setEnd(node, idx + needle.length);
+                    const selection = window.getSelection();
+                    if (!selection) {
+                        return;
+                    }
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    if (dispatch) {
+                        document.dispatchEvent(new Event('selectionchange'));
+                    }
+                    return;
+                }
+                node = walker.nextNode();
+            }
+        }, { selector: container_selector, needle: text, dispatch: dispatch_selectionchange });
+    }
+
+    /**
+     * Select the paragraph containing `text` the way a triple-click does, with
+     * Range boundaries on the element instead of on a text node.
+     */
+    public async selectWholeParagraphInReadMode(text: string): Promise<void>
+    {
+        await this.waitForArticleReady();
+        await this.page.evaluate((needle) => {
+            const paragraph = [...document.querySelectorAll('[data-glpi-kb-content] p')]
+                .find((candidate) => (candidate.textContent ?? '').includes(needle));
+            const selection = window.getSelection();
+            if (!paragraph || !selection) {
+                return;
+            }
+            const range = document.createRange();
+            range.selectNodeContents(paragraph);
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.dispatchEvent(new Event('selectionchange'));
+        }, text);
+    }
+
+    /**
+     * All comment-anchor highlights currently rendered in the article content.
+     */
+    public getCommentHighlights(): Locator
+    {
+        return this.page.getByRole('article').getByRole('button', { name: 'View comment' });
+    }
+
+    public getCommentHighlightByText(text: string): Locator
+    {
+        return this.getCommentHighlights().filter({ hasText: text });
+    }
+
+    /**
+     * Read as a computed style: filtering on a class would need a raw locator.
+     */
+    public async getCommentHighlightThickness(text: string): Promise<string>
+    {
+        return this.getCommentHighlightByText(text)
+            .evaluate((el) => getComputedStyle(el).textDecorationThickness);
+    }
+
+    /**
+     * Anchor quotes currently displayed on comment threads in the side panel.
+     */
+    public getCommentAnchorQuotes(): Locator
+    {
+        // eslint-disable-next-line playwright/no-raw-locators -- Semantic data attribute used by CommentsPanelController.js, not a test ID
+        return this.page.locator('[data-glpi-comments]')
+            .getByRole('blockquote')
+            .filter({ visible: true });
+    }
+
+    public getPendingAnchorQuote(): Locator
+    {
+        return this.page.getByTestId('pending-anchor-quote').filter({ visible: true });
+    }
+
+    /**
+     * Addressed by text because the comment id is not known to the test.
+     */
+    public getCommentThreadByContent(content: string): Locator
+    {
+        return this.page.getByTestId(/^comment-thread-/)
+            .filter({ hasText: content })
+            .filter({ visible: true });
     }
 
     public getNewCommentTextarea(): Locator
@@ -460,6 +628,31 @@ export class KnowbaseItemPage extends GlpiPage
         return this.getHistoryEvents().filter({hasText: text});
     }
 
+    /**
+     * The scrollable list holding the history events. Events are loaded one
+     * page at a time as the end of this list is reached.
+     */
+    public getHistoryList(): Locator
+    {
+        return this.page.getByTestId('history-list').filter({visible: true});
+    }
+
+    /**
+     * Marker rendered after the last loaded event, as long as another page of
+     * events remains to be loaded.
+     */
+    public getHistoryLoadMoreMarker(): Locator
+    {
+        return this.getHistoryList().getByTestId('history-load-more');
+    }
+
+    public async doScrollToHistoryListEnd(): Promise<void>
+    {
+        await this.getHistoryList().evaluate(
+            (element) => element.scrollTop = element.scrollHeight
+        );
+    }
+
     public getAsideCategory(title: string): Locator
     {
         return this.page.getByRole('group', { name: title });
@@ -497,14 +690,14 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * The "+" link that creates a child article under the given (parent)
+     * The "+" button that creates a child article under the given (parent)
      * article's aside tree node. Hidden until the node's header is hovered
      * or focused (see `_kb.scss`), hence exposed separately from
      * `getAsideCategoryArticle()`.
      */
-    public getAsideCategoryAddLink(title: string): Locator
+    public getAsideCategoryAddButton(title: string): Locator
     {
-        return this.getAsideCategory(title).getByRole('link', {
+        return this.getAsideCategory(title).getByRole('button', {
             name: new RegExp(`Create an article under ${title}`, 'i'),
         });
     }
@@ -512,6 +705,19 @@ export class KnowbaseItemPage extends GlpiPage
     public async doToggleAsideCategory(title: string): Promise<void>
     {
         await this.getAsideCategoryToggle(title).click();
+    }
+
+    /**
+     * Unfold an article of the aside tree, unless it already is unfolded. The
+     * tree is folded by default, so a nested row has to be revealed before it
+     * can be interacted with.
+     */
+    public async doExpandAsideCategory(title: string): Promise<void>
+    {
+        const toggle = this.getAsideCategoryToggle(title);
+        if (await toggle.getAttribute('aria-expanded') === 'false') {
+            await toggle.click();
+        }
     }
 
     /**
@@ -545,8 +751,7 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
-     * The root-level container of the aside article tree. Doubles as the
-     * "node" for the root "+" affordance (see `aside.html.twig`).
+     * The root-level container of the aside article tree.
      */
     public get asideTree(): Locator
     {
@@ -561,19 +766,6 @@ export class KnowbaseItemPage extends GlpiPage
     {
         // eslint-disable-next-line playwright/no-raw-locators -- using scope
         return this.asideTree.locator(':scope > [data-glpi-kb-aside-category-header]');
-    }
-
-    /**
-     * The "+" link that creates a root-level article (no parent).
-     */
-    public get asideRootCreateLink(): Locator
-    {
-        return this.page.getByRole('link', { name: 'Create a root article' });
-    }
-
-    public get asideRootCreateInput(): Locator
-    {
-        return this.asideTree.getByPlaceholder('New article...');
     }
 
     public get asideSearchInput(): Locator

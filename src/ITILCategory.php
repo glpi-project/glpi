@@ -104,7 +104,7 @@ class ITILCategory extends CommonTreeDropdown
             ],
         ];
 
-        $show_for_problem = Session::haveRightsOr('problem', [CREATE, UPDATE, DELETE, Problem::READALL, Problem::READMY]);
+        $show_for_problem = Session::haveRightsOr(Problem::$rightname, [CREATE, UPDATE, DELETE, Problem::READALL, Problem::READMY]);
 
         if ($show_for_problem) {
             $tab[] = [

@@ -266,10 +266,10 @@ HTML;
 
         $nb_dashboards = count(self::$all_dashboards);
 
-        $can_view_all  = Session::haveRight('dashboard', READ) || self::$embed;
-        $can_create    = Session::haveRight('dashboard', CREATE);
-        $can_edit      = Session::haveRight('dashboard', UPDATE) && $nb_dashboards;
-        $can_purge     = Session::haveRight('dashboard', PURGE) && $nb_dashboards;
+        $can_view_all  = Session::haveRight(Dashboard::$rightname, READ) || self::$embed;
+        $can_create    = Session::haveRight(Dashboard::$rightname, CREATE);
+        $can_edit      = Session::haveRight(Dashboard::$rightname, UPDATE) && $nb_dashboards;
+        $can_purge     = Session::haveRight(Dashboard::$rightname, PURGE) && $nb_dashboards;
         $can_clone     = $can_create && $nb_dashboards;
 
         // prepare html for add controls
@@ -1673,6 +1673,15 @@ HTML;
                 'label'      => __("Number of computers by age"),
                 'provider'   => "Glpi\\Dashboard\\Provider::computersByAge",
                 'filters'    => Filter::getAppliableFilters(\Computer::getTable()),
+            ];
+
+            $cards["report_ticket_by_group_and_status"] = [
+                'widgettype' => ['hBars', 'stackedHBars'],
+                'itemtype'   => "\\Ticket",
+                'group'      => __('Assistance'),
+                'label'      => __("Number of opened and solved tickets by group"),
+                'provider'   => "Glpi\\Dashboard\\Provider::ticketsByGroupAndStatus",
+                'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
 
             $cards["RemindersList"] = [

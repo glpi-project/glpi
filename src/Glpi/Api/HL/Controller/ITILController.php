@@ -387,7 +387,7 @@ final class ITILController extends AbstractController
 
                         if (
                             Session::haveRightsOr(
-                                'ticketvalidation',
+                                TicketValidation::$rightname,
                                 [TicketValidation::VALIDATEINCIDENT,
                                     TicketValidation::VALIDATEREQUEST,
                                 ]

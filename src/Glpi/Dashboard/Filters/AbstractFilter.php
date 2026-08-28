@@ -115,6 +115,22 @@ abstract class AbstractFilter
     }
 
     /**
+     * Build a SQL alias unique to this filter, for use in a JOIN this filter
+     * adds to a query. Several filters can be active on the same query at
+     * once (e.g. two different group filters); a hardcoded/shared alias
+     * would make their JOIN/WHERE keys collide, and Provider::getFiltersCriteria()
+     * would silently drop one filter's conditions when merging them.
+     *
+     * @param string $prefix short prefix describing what's joined (e.g. 'gl' for a group link table)
+     *
+     * @return string e.g. "gl_group_tech" for GroupTechFilter with prefix 'gl'
+     */
+    protected static function uniqueAlias(string $prefix): string
+    {
+        return $prefix . '_' . static::getId();
+    }
+
+    /**
      * @return list<int>
      */
     protected static function normalizeIntValues(mixed $value): array

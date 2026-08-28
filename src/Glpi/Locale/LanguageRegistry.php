@@ -289,7 +289,7 @@ final class LanguageRegistry
             new Language('zh_TW', '繁體中文', jquery_code: 'zh-TW', english_name: 'chinese'),
             new Language('ko_KR', '한국/韓國', english_name: 'korean', plural_number: 1),
             new Language('zh_HK', '香港', jquery_code: 'zh-HK', english_name: 'chinese'),
-            new Language('be_BY', 'Belarussian', english_name: 'belarussian', plural_number: 3),
+            new Language('be_BY', 'Беларуская', english_name: 'belarusian', plural_number: 3),
             new Language('is_IS', 'íslenska', js_code: 'en', english_name: 'icelandic'),
             new Language('eo', 'Esperanto', js_code: 'en', english_name: 'esperanto'),
             new Language('es_CL', 'Español chileno', english_name: 'spanish chilean'),

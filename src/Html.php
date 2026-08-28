@@ -41,6 +41,7 @@ use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Config\ConfigContainer;
 use Glpi\Config\DataAndPrivacyConfig;
 use Glpi\Console\Application;
+use Glpi\Dashboard\Dashboard;
 use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profile as DebugProfile;
 use Glpi\Debug\Profiler;
@@ -836,7 +837,7 @@ TWIG,
     {
         global $CFG_GLPI;
 
-        $can_read_dashboard      = Session::haveRight('dashboard', READ);
+        $can_read_dashboard      = Session::haveRight(Dashboard::$rightname, READ);
         $default_asset_dashboard = defined('TU_USER') ? "" : Grid::getDefaultDashboardForMenu('assets');
         $default_asset_helpdesk  = defined('TU_USER') ? "" : Grid::getDefaultDashboardForMenu('helpdesk');
 
@@ -1086,8 +1087,8 @@ TWIG,
         }
 
         if (
-            Session::haveRight("ticket", READ)
-            || Session::haveRight("ticket", Ticket::READMY)
+            Session::haveRight(Ticket::$rightname, READ)
+            || Session::haveRight(Ticket::$rightname, Ticket::READMY)
         ) {
             $menu['tickets'] = [
                 'default' => '/front/ticket.php',
@@ -1103,12 +1104,12 @@ TWIG,
                 ],
             ];
 
-            if (Session::haveRight("ticket", CREATE)) {
+            if (Session::haveRight(Ticket::$rightname, CREATE)) {
                 $menu['tickets']['content']['ticket']['links']['add'] = ServiceCatalog::getSearchURL(false);
             }
         }
 
-        if (Session::haveRightsOr("reservation", [READ, ReservationItem::RESERVEANITEM])) {
+        if (Session::haveRightsOr(Reservation::$rightname, [READ, ReservationItem::RESERVEANITEM])) {
             $menu['reservation'] = [
                 'default' => '/front/reservationitem.php',
                 'title'   => _n('Reservation', 'Reservations', Session::getPluralNumber()),
@@ -1116,7 +1117,7 @@ TWIG,
             ];
         }
 
-        if (Session::haveRight('knowbase', KnowbaseItem::READFAQ)) {
+        if (Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::READFAQ)) {
             $menu['faq'] = [
                 'default' => '/front/helpdesk.faq.php',
                 'title'   => __('FAQ'),

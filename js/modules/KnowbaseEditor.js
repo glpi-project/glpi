@@ -40,6 +40,9 @@ import { VideoEmbed } from '/js/modules/TipTap/VideoEmbedExtension.js';
 import { TableGrips } from '/js/modules/TipTap/TableGripsExtension.js';
 import { post } from '/js/modules/Ajax.js';
 import { FileUploader } from '/js/modules/FileUploader.js';
+import { CommentHighlight, getRefreshedCommentAnchors, getResolvedCommentAnchors } from '/js/modules/TipTap/CommentHighlightExtension.js';
+import { buildPmTextIndex, pmPositionToOffset } from '/js/modules/TipTap/CommentPosition.js';
+import { extractAnchor } from '/js/modules/Knowbase/CommentAnchor.js';
 
 /**
  * Knowbase article editor based on Tiptap
@@ -77,6 +80,9 @@ class KnowbaseEditor {
             placeholder: __('Type / to insert...'),
             onUpdate: null,
             item_id: null,
+            can_comment: false,
+            comment_anchors: [],
+            comment_anchor_max_length: Number.POSITIVE_INFINITY,
             ...options
         };
 
@@ -143,6 +149,7 @@ class KnowbaseEditor {
             }),
             TableGrips,
             VideoEmbed,
+            CommentHighlight.configure({ anchors: this.#options.comment_anchors }),
         ];
 
         // Add FileHandler for image drag & drop and paste (only for existing articles)
@@ -253,6 +260,13 @@ class KnowbaseEditor {
             { command: 'unsetLink', icon: 'ti ti-link-off', title: __('Remove link'), special: 'unlink' },
         ];
 
+        if (this.#options.can_comment) {
+            buttons.push(
+                { type: 'divider' },
+                { command: 'comment', icon: 'ti ti-message-circle-plus', title: _x('button', 'Comment'), special: 'comment' },
+            );
+        }
+
         buttons.forEach((btn) => {
             if (btn.type === 'divider') {
                 const divider = document.createElement('span');
@@ -308,9 +322,47 @@ class KnowbaseEditor {
             }
         } else if (special === 'heading') {
             this.#editor.chain().focus().toggleHeading({ level }).run();
+        } else if (special === 'comment') {
+            this.#dispatchCommentSelection();
         } else if (this.#editor.chain().focus()[command]) {
             this.#editor.chain().focus()[command]().run();
         }
+    }
+
+    /**
+     * A passage longer than the server accepts can't be commented on.
+     * @param {HTMLButtonElement} button
+     */
+    #updateCommentButtonAvailability(button) {
+        const { from, to } = this.#editor.state.selection;
+        const selected = this.#editor.state.doc.textBetween(from, to);
+
+        button.disabled = selected.length > this.#options.comment_anchor_max_length;
+    }
+
+    /**
+     * Extract an anchor for the current selection and dispatch it so
+     * ArticleController.js can open the Comments panel with it pre-filled.
+     */
+    #dispatchCommentSelection() {
+        if (!this.#editor) return;
+
+        const { from, to } = this.#editor.state.selection;
+        if (from === to) return;
+
+        const { text, segments } = buildPmTextIndex(this.#editor.state.doc);
+        const start = pmPositionToOffset(segments, from);
+        const end = pmPositionToOffset(segments, to);
+        const anchor = extractAnchor(text, start, end);
+
+        if (anchor.exact.length > this.#options.comment_anchor_max_length) {
+            return;
+        }
+
+        this.#element.dispatchEvent(new CustomEvent('glpi:kb:comment-selection', {
+            bubbles: true,
+            detail: { anchor },
+        }));
     }
 
     /**
@@ -348,6 +400,8 @@ class KnowbaseEditor {
                 isActive = this.#editor.isActive('orderedList');
             } else if (command === 'toggleBlockquote') {
                 isActive = this.#editor.isActive('blockquote');
+            } else if (special === 'comment') {
+                this.#updateCommentButtonAvailability(btn);
             }
 
             btn.classList.toggle('is-active', isActive);
@@ -391,6 +445,31 @@ class KnowbaseEditor {
         } else {
             this.#element.classList.remove('is-editing');
         }
+    }
+
+    /**
+     * Recompute the highlighted comment ranges (e.g. after a new anchored
+     * comment was added while editing).
+     * @param {Array<{id: number|string, prefix: string, exact: string, suffix: string, occurrence: number}>} anchors
+     */
+    refreshCommentAnchors(anchors) {
+        this.#editor?.commands.refreshCommentHighlights(anchors);
+    }
+
+    /**
+     * Anchors whose quoted text is still present in the document.
+     * @returns {Array<{id: string, text: string}>}
+     */
+    getResolvedCommentAnchors() {
+        return this.#editor ? getResolvedCommentAnchors(this.#editor.state) : [];
+    }
+
+    /**
+     * Anchors re-extracted from where their highlight now sits, to be persisted on save.
+     * @returns {Array<{id: string, prefix: string, exact: string, suffix: string, occurrence: number}>}
+     */
+    getRefreshedCommentAnchors() {
+        return this.#editor ? getRefreshedCommentAnchors(this.#editor.state) : [];
     }
 
     /**

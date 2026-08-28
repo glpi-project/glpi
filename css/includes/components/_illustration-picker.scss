@@ -46,3 +46,16 @@
 .illustration-selector-extra-margin {
     padding-bottom: 10px;
 }
+
+:where(button.illustration-picker-btn, button.illustration-picker-tile) {
+    width: -moz-available;
+    width: -webkit-fill-available;
+    width: stretch;
+    align-items: normal;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    text-align: inherit;
+}

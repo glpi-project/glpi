@@ -101,10 +101,15 @@
     </div>
 {% endmacro %}
 
-{# Renders a dots menu whose items are lazy-loaded (on hover/open) by the aside
- # controller, so the tree never has to build every article's actions up-front.
- # The menu starts with a loading placeholder that gets replaced with the
- # fetched items. #}
+{# Renders the trigger of a dots menu whose items are lazy-loaded (on
+ # hover/open) by the aside controller, so the tree never has to build every
+ # article's actions up-front.
+ #
+ # The menu element itself is not rendered here: the aside controller clones it
+ # from `render_actions_menu_placeholder()` when the row is first hovered,
+ # focused or pressed. A large tree would otherwise carry thousands of
+ # identical, never-opened menus. The trigger, on the other hand, stays in the
+ # markup so it remains exposed to assistive technologies. #}
 {% macro render_actions_menu_lazy() %}
     <div class="dropdown cursor-pointer d-flex align-items-center">
         <button
@@ -118,6 +123,14 @@
         >
             <i class="fs-08x ti ti-dots-vertical " aria-hidden="true"></i>
         </button>
+    </div>
+{% endmacro %}
+
+{# The menu element cloned into a row by the aside controller, see
+ # `render_actions_menu_lazy()`. Rendered once per aside; its content is inert
+ # until cloned, and gets replaced with the fetched items. #}
+{% macro render_actions_menu_placeholder() %}
+    <template data-glpi-kb-actions-menu-template>
         <ul class="dropdown-menu" data-bs-popper="none" data-glpi-kb-actions-menu>
             <li data-glpi-kb-actions-loading>
                 <span class="dropdown-item-text text-muted d-flex align-items-center">
@@ -126,5 +139,5 @@
                 </span>
             </li>
         </ul>
-    </div>
+    </template>
 {% endmacro %}
