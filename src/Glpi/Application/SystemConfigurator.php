@@ -150,7 +150,7 @@ final class SystemConfigurator
                 'GLPI_NETWORK_REGISTRATION_API_URL' => '{GLPI_NETWORK_API_URL}/registration/',
                 'GLPI_MARKETPLACE_ENABLE'           => 3, // 0 = Completely disabled, 1 = CLI only, 2 = Web only, 3 = CLI and Web
                 'GLPI_MARKETPLACE_PLUGINS_API_URI'  => '{GLPI_NETWORK_API_URL}/marketplace/',
-                'GLPI_MARKETPLACE_PRERELEASES'      => preg_match('/-(dev|alpha\d*|beta\d*|rc\d*)$/', GLPI_VERSION) === 1, // allow marketplace to expose unstable plugins versions
+                'GLPI_MARKETPLACE_PRERELEASES'      => 1, // allow marketplace to expose unstable plugins versions by default
                 'GLPI_MARKETPLACE_ALLOW_OVERRIDE'   => true, // allow marketplace to override a plugin found outside GLPI_MARKETPLACE_DIR
                 'GLPI_MARKETPLACE_MANUAL_DOWNLOADS' => true, // propose manual download link of plugins which cannot be installed/updated by marketplace
                 'GLPI_USER_AGENT_EXTRA_COMMENTS'    => '', // Extra comment to add to GLPI User-Agent
