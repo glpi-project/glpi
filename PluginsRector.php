@@ -36,6 +36,7 @@ use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Config\RectorConfig;
 use Rector\Configuration\RectorConfigBuilder;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRector;
+use RectorGlpi\Set\GlpiSetList;
 
 /**
  * Shared rector baseline for GLPI plugins.
@@ -53,6 +54,9 @@ use Rector\TypeDeclaration\Rector\StmtsAwareInterface\SafeDeclareStrictTypesRect
 return static fn(array $paths): RectorConfigBuilder => RectorConfig::configure()
     ->withPaths($paths)
     ->withRootFiles()
+    ->withSets([
+        GlpiSetList::GLPI_DEFAULT_SET,
+    ])
     ->withCache(
         cacheDirectory: 'var/rector',
         cacheClass: FileCacheStorage::class,
