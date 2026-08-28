@@ -2985,12 +2985,15 @@ HTML;
             if (isset($condition['WHERE'])) {
                 $where = array_merge($where, $condition['WHERE']);
             } else {
+                $or_where = [];
                 foreach ($condition as $key => $value) {
                     if (is_array($value) && isset($value['LEFT JOIN'])) {
-                        $ljoin = $value['LEFT JOIN'];
+                        $ljoin = array_merge($ljoin, $value['LEFT JOIN']);
                     }
                     if (is_array($value) && isset($value['WHERE'])) {
-                        $where = array_merge($where, $value['WHERE']);
+                        // Combine with OR: sub-conditions target different types but must match any one of them,
+                        // and array_merge would silently produce AND instead of the required OR.
+                        $or_where[] = $value['WHERE'];
                     } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
                         $where["$table.$key"] = $value;
@@ -3002,6 +3005,9 @@ HTML;
                         // e.g. to override the default `is_template` / `is_deleted` filtering.
                         $where[$key] = $value;
                     }
+                }
+                if ($or_where !== []) {
+                    $where[] = ['OR' => $or_where];
                 }
             }
         }
