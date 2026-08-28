@@ -751,18 +751,16 @@ class MailCollector extends CommonDBTM
                         }
                     } catch (Throwable $e) {
                         $error++;
-                        ErrorHandler::logCaughtException($e);
-                        ErrorHandler::displayCaughtExceptionMessage($e);
-                        Toolbox::logInFile(
-                            'mailgate',
+                        $this->reportMailCollectError(
+                            $e,
+                            $rejinput,
+                            $rejected,
                             sprintf(
-                                __('Error during message parsing (%s). Check in "%s" for more details') . "\n",
+                                __('Error during message parsing (%s). Check in "%s" for more details'),
                                 $e->getMessage(),
                                 GLPI_LOG_DIR . '/php-errors.log'
                             )
                         );
-                        $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
-                        $rejected->add($rejinput);
                         continue;
                     }
 
@@ -788,7 +786,22 @@ class MailCollector extends CommonDBTM
                         } elseif (isset($tkt['_refuse_email_with_response'])) {
                             $delete[$uid] =  self::REFUSED_FOLDER;
                             $refused++;
-                            $this->sendMailRefusedResponse($requester, $tkt['name']);
+                            try {
+                                $this->sendMailRefusedResponse($requester, $tkt['name']);
+                            } catch (Throwable $e) {
+                                // The message was already correctly classified as refused above ;
+                                // a failure to notify the sender must not be reported as a failed import.
+                                ErrorHandler::logCaughtException($e);
+                                Toolbox::logInFile(
+                                    'mailgate',
+                                    sprintf(
+                                        __('Unable to send refused response for message from collector "%s" (%s) (%s)'),
+                                        $this->fields['name'],
+                                        $this->fields['host'],
+                                        $e->getMessage()
+                                    ) . "\n"
+                                );
+                            }
                         } elseif (isset($tkt['_refuse_email_no_response'])) {
                             $delete[$uid] =  self::REFUSED_FOLDER;
                             $refused++;
@@ -894,20 +907,18 @@ class MailCollector extends CommonDBTM
                         }
                     } catch (Throwable $e) {
                         $error++;
-                        ErrorHandler::logCaughtException($e);
-                        ErrorHandler::displayCaughtExceptionMessage($e);
-                        Toolbox::logInFile(
-                            'mailgate',
+                        $this->reportMailCollectError(
+                            $e,
+                            $rejinput,
+                            $rejected,
                             sprintf(
-                                __('Error while creating ticket/followup from collector "%s" (%s) (%s). Check in "%s" for more details') . "\n",
+                                __('Error while creating ticket/followup from collector "%s" (%s) (%s). Check in "%s" for more details'),
                                 $this->fields['name'],
                                 $this->fields['host'],
                                 $e->getMessage(),
                                 GLPI_LOG_DIR . '/php-errors.log'
                             )
                         );
-                        $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
-                        $rejected->add($rejinput);
                     }
 
                     // Clean mail author used for notification settings
@@ -957,6 +968,34 @@ class MailCollector extends CommonDBTM
             } else {
                 return $msg;
             }
+        }
+    }
+
+    /**
+     * Logs an exception caught during collect() and reports the corresponding message as rejected.
+     *
+     * @param Throwable        $e           Caught exception
+     * @param array<string, mixed> $rejinput    Input used to build the NotImportedEmail entry
+     * @param NotImportedEmail $rejected    NotImportedEmail instance to add the entry to
+     * @param string           $log_message Message to write to the mailgate log file
+     */
+    private function reportMailCollectError(Throwable $e, array $rejinput, NotImportedEmail $rejected, string $log_message): void
+    {
+        ErrorHandler::logCaughtException($e);
+        ErrorHandler::displayCaughtExceptionMessage($e);
+        Toolbox::logInFile('mailgate', $log_message . "\n");
+
+        $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+        try {
+            $rejected->add($rejinput);
+        } catch (Throwable $inner_e) {
+            // Reporting itself failed (e.g. same malformed content) ; log-only to avoid letting
+            // the exception escape the caller's catch block and abort the whole collect batch.
+            ErrorHandler::logCaughtException($inner_e);
+            Toolbox::logInFile(
+                'mailgate',
+                sprintf(__('Unable to report rejected email (%s)'), $inner_e->getMessage()) . "\n"
+            );
         }
     }
 
