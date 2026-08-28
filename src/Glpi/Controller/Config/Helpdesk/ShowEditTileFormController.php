@@ -34,7 +34,6 @@
 
 namespace Glpi\Controller\Config\Helpdesk;
 
-use Glpi\Exception\Http\AccessDeniedHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -53,9 +52,8 @@ final class ShowEditTileFormController extends AbstractTileController
             $request->query->getString('tile_itemtype'),
             $request->query->getInt('tile_id'),
         );
-        if (!$tile::canUpdate() || !$tile->canUpdateItem()) {
-            throw new AccessDeniedHttpException();
-        }
+        // Access is granted based on the linked item (entity/profile), not the tile itself.
+        $this->getAndValidateLinkedItemFromDatabase($tile);
 
         // Render form
         return $this->render('pages/admin/helpdesk_home_config_edit_tile_form.html.twig', [
