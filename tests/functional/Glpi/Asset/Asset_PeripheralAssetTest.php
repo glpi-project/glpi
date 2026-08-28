@@ -41,7 +41,12 @@ use Glpi\Asset\Capacity\HasPeripheralAssetsCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
 use Monitor;
+use MonitorType;
 use Peripheral;
+use Printer;
+use PrinterType;
+use ReflectionMethod;
+use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
 
 class Asset_PeripheralAssetTest extends DbTestCase
@@ -164,11 +169,12 @@ class Asset_PeripheralAssetTest extends DbTestCase
             'is_global' => 0,
         ]);
 
-        foreach ([
+        $links = [
             [$computer_1, $global_on_other_computer],
             [$computer_1, $non_global_on_other_computer],
             [$computer_2, $global_on_current_computer],
-        ] as [$computer, $peripheral]) {
+        ];
+        foreach ($links as [$computer, $peripheral]) {
             $this->createItem(Asset_PeripheralAsset::class, [
                 'itemtype_asset' => Computer::class,
                 'items_id_asset' => $computer->getID(),
@@ -188,5 +194,56 @@ class Asset_PeripheralAssetTest extends DbTestCase
         $this->assertNotContains($global_on_other_computer->getID(), $unavailable_ids);
         $this->assertContains($global_on_current_computer->getID(), $unavailable_ids);
         $this->assertContains($non_global_on_other_computer->getID(), $unavailable_ids);
+    }
+
+    public function testShowForAsset(): void
+    {
+        $this->login();
+
+        $computer = getItemByTypeName(Computer::class, '_test_pc01');
+        $monitor = getItemByTypeName(Monitor::class, '_test_monitor_1');
+        $printer = getItemByTypeName(Printer::class, '_test_printer_all');
+
+        $this->createItem(MonitorType::class, ['name' => '_test_monitor_type']);
+        $this->createItem(PrinterType::class, ['name' => '_test_printer_type']);
+
+        $this->assertTrue($monitor->update([
+            'id' => $monitor->getID(),
+            'monitortypes_id' => getItemByTypeName(MonitorType::class, '_test_monitor_type', true),
+        ]));
+        $this->assertTrue($printer->update([
+            'id' => $printer->getID(),
+            'printertypes_id' => getItemByTypeName(PrinterType::class, '_test_printer_type', true),
+        ]));
+
+        $this->createItem(
+            Asset_PeripheralAsset::class,
+            [
+                'itemtype_asset' => Computer::class,
+                'items_id_asset' => $computer->getID(),
+                'itemtype_peripheral' => Monitor::class,
+                'items_id_peripheral' => $monitor->getID(),
+            ]
+        );
+        $this->createItem(
+            Asset_PeripheralAsset::class,
+            [
+                'itemtype_asset' => Computer::class,
+                'items_id_asset' => $computer->getID(),
+                'itemtype_peripheral' => Printer::class,
+                'items_id_peripheral' => $printer->getID(),
+            ]
+        );
+
+        ob_start();
+        $method = new ReflectionMethod(Asset_PeripheralAsset::class, 'showForAsset');
+        $method->invoke(null, $computer);
+        $output = ob_get_clean();
+
+        $crawler = new Crawler($output);
+        $this->assertStringContainsString($monitor->getName(), $crawler->filter('table tbody tr')->eq(0)->text());
+        $this->assertStringContainsString('_test_monitor_type', $crawler->filter('table tbody tr')->eq(0)->text());
+        $this->assertStringContainsString($printer->getName(), $crawler->filter('table tbody tr')->eq(1)->text());
+        $this->assertStringContainsString('_test_printer_type', $crawler->filter('table tbody tr')->eq(1)->text());
     }
 }
