@@ -32,6 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
+
 class Tag_Itemtype extends CommonDBChild
 {
     // From CommonDBChild
@@ -129,30 +132,51 @@ class Tag_Itemtype extends CommonDBChild
      *
      * @param list<class-string<CommonGLPI>> $itemtypes
      *
-     * @return list<Tag>
+     * @return iterable<Tag>
      */
-    public static function getTagsByItemtypes(array $itemtypes): array
+    public static function getTagsByItemtypes(array $itemtypes): iterable
     {
+        global $DB;
+
         if ($itemtypes === []) {
             return [];
         }
 
-        $common_tags = null;
+        $tag_table = Tag::getTable();
+        $link_table = self::getTable();
 
-        foreach ($itemtypes as $itemtype) {
-            $tags_for_itemtype = [];
-            foreach (self::getTagsByItemtype($itemtype) as $tag) {
-                $tags_for_itemtype[$tag->getID()] = clone $tag;
-            }
+        $tags_ids_with_a_restriction = new QuerySubQuery([
+            'SELECT' => ['tags_id'],
+            'FROM' => $link_table,
+        ]);
 
-            if ($common_tags === null) {
-                $common_tags = $tags_for_itemtype;
-            } else {
-                $common_tags = array_intersect_key($common_tags, $tags_for_itemtype);
-            }
-        }
+        // Tags restricted to a set of itemtypes that covers every requested itemtype.
+        $tags_covering_all_itemtypes = new QuerySubQuery([
+            'SELECT' => ['tags_id'],
+            'FROM' => $link_table,
+            'WHERE' => ['itemtype' => $itemtypes],
+            'GROUPBY' => ['tags_id'],
+            'HAVING' => [
+                new QueryExpression(
+                    'COUNT(DISTINCT ' . $DB::quoteName('itemtype') . ') = ' . count($itemtypes)
+                ),
+            ],
+        ]);
 
-        return array_values($common_tags);
+        $iterator = $DB->request([
+            'SELECT' => [$tag_table . '.id'],
+            'FROM' => $tag_table,
+            'WHERE' => [
+                'is_active' => 1,
+                getEntitiesRestrictCriteria($tag_table, '', '', true),
+                'OR' => [
+                    [$tag_table . '.id' => ['NOT IN', $tags_ids_with_a_restriction]],
+                    [$tag_table . '.id' => $tags_covering_all_itemtypes],
+                ],
+            ],
+        ]);
+
+        return Tag::getFromIter($iterator);
     }
 
     /**
