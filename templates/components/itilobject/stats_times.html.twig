@@ -1,0 +1,55 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+<div class="dates_timelines">
+    {% set rand = random() %}
+    <h2 class="header lh-base" id="stats_times_{{ rand }}">{{ _n('Time', 'Times', get_plural_number()) }}</h2>
+    <table class="tab_cadre_fixe" aria-labelledby="stats_times_{{ rand }}">
+        {% if has_takeintoaccount %}
+            <tr class="tab_bg_2"><th scope="row">{{ __('Take into account') }}</th><td>
+                {%- if takeintoaccount is not null %}{{ takeintoaccount }}{% else %}&nbsp;{% endif -%}
+            </td></tr>
+        {% endif %}
+        {% if is_solved %}
+            <tr class="tab_bg_2"><th scope="row">{{ __('Resolution') }}</th><td>
+                {%- if resolution is not null %}{{ resolution }}{% else %}&nbsp;{% endif -%}
+            </td></tr>
+        {% endif %}
+        {% if is_closed %}
+            <tr class="tab_bg_2"><th scope="row">{{ __('Closure') }}</th><td>
+                {%- if closure is not null %}{{ closure }}{% else %}&nbsp;{% endif -%}
+            </td></tr>
+        {% endif %}
+        <tr class="tab_bg_2"><th scope="row">{{ __('Pending') }}</th><td>
+            {%- if pending is not null %}{{ pending }}{% else %}&nbsp;{% endif -%}
+        </td></tr>
+    </table>
+</div>
