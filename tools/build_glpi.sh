@@ -104,6 +104,7 @@ dev_nodes=(
     "tsconfig.json"
     "vendor/glpi-project/inventory_format/examples"
     "vendor/glpi-project/inventory_format/source_files"
+    "vitest.config.ts"
 )
 for node in "${dev_nodes[@]}"
 do
