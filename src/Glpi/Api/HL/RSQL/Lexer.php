@@ -117,6 +117,7 @@ final class Lexer
         while ($pos < $length) {
             $char = mb_substr($query, $pos, 1, 'UTF-8');
             $prev_char = $pos - 1 >= 0 ? mb_substr($query, $pos - 1, 1, 'UTF-8') : null;
+            $in_unary_operator = false;
 
             if (!$in_value && $char === self::CHAR_GROUP_OPEN && $prev_char !== self::CHAR_ESCAPE) {
                 $tokens[] = [self::T_GROUP_OPEN, $char];
@@ -152,12 +153,22 @@ final class Lexer
                 if (empty($nextChar) || $nextChar !== '=') {
                     throw new RSQLException('', sprintf(__('RSQL query has an incomplete operator in filter for property "%1$s"'), $tokens[count($tokens) - 1][1]));
                 }
-                $tokens[] = [self::T_OPERATOR, $buffer . '='];
+                $buffer .= '=';
+                if (Parser::isOperatorUnary($buffer)) {
+                    $in_unary_operator = true;
+                }
+                $tokens[] = [self::T_OPERATOR, $buffer];
                 // Now the value is started
                 $buffer = '';
                 $pos += 2;
                 $fn_validate_pos();
+                if ($in_unary_operator) {
+                    $tokens[] = [self::T_UNSPECIFIED_VALUE, ''];
+                    $in_filter = false;
+                    continue;
+                }
                 $in_value = true;
+                $is_escaped = false;
                 $char = mb_substr($query, $pos, 1, 'UTF-8');
                 if ($char === '' || $char === self::CHAR_AND || $char === self::CHAR_OR) {
                     $tokens[] = [self::T_UNSPECIFIED_VALUE, ''];
@@ -174,18 +185,22 @@ final class Lexer
                 // When matching, we ignore escaped quotes and parenthesis.
                 $starting_char = $char;
                 $expected_ending_char = null;
-                $buffer = $char;
+                if ($char !== self::CHAR_ESCAPE) {
+                    $buffer = $char;
+                } else {
+                    $is_escaped = true;
+                }
                 if (in_array($starting_char, ['(', '"', '\''])) {
                     $expected_ending_char = $starting_char === '(' ? ')' : $starting_char;
                 } else {
                     // We have no starting quote or parenthesis, so the value continues until an unescaped comma, unescaped semicolon, unescaped close parenthesis, or end of string is found.
                 }
+
                 while ($pos + 1 < $length) {
                     $char = mb_substr($query, ++$pos, 1, 'UTF-8');
                     if ($char === self::CHAR_ESCAPE) {
-                        // If the current char is an escape character, then the next character is part of the value.
-                        $buffer .= $char;
-                    } elseif ($expected_ending_char !== null && $char === $expected_ending_char) {
+                        $is_escaped = true;
+                    } elseif (!$is_escaped && $expected_ending_char !== null && $char === $expected_ending_char) {
                         // If the current char is the expected ending char, then the value is complete.
                         $buffer .= $char;
                         $tokens[] = [self::T_VALUE, $buffer];
@@ -193,7 +208,7 @@ final class Lexer
                         $in_filter = false;
                         $in_value = false;
                         break;
-                    } elseif ($expected_ending_char === null && in_array($char, [self::CHAR_AND, self::CHAR_OR, self::CHAR_GROUP_CLOSE])) {
+                    } elseif (!$is_escaped && $expected_ending_char === null && in_array($char, [self::CHAR_AND, self::CHAR_OR, self::CHAR_GROUP_CLOSE])) {
                         // If the current char is a comma, semicolon, or close parenthesis, then the value is complete.
                         $tokens[] = [self::T_VALUE, $buffer];
                         $buffer = '';
@@ -203,6 +218,7 @@ final class Lexer
                         break;
                     } else {
                         $buffer .= $char;
+                        $is_escaped = false;
                     }
                 }
                 if ($buffer !== '') {
