@@ -39,6 +39,7 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Controller\DropdownFormController;
 use Glpi\Controller\GenericFormController;
 use Glpi\Controller\GenericListController;
+use Glpi\Controller\Rule\RuleListController;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Event;
 use Glpi\Form\Form;
@@ -69,7 +70,16 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
 
         $listener->onKernelRequest($event);
 
-        if (\str_contains($path_info, '.form.php')) {
+        $is_a_rule_file = function ($file_path): bool {
+            if (\str_contains($file_path, 'rulerightparameter')) {
+                return false;
+            }
+            return \str_contains($file_path, 'rule') || \str_contains($file_path, 'olalevel.php') || \str_contains($file_path, 'slalevel.php');
+        };
+
+        if ($is_a_rule_file($path_info)) {
+            self::assertSame(RuleListController::class, $request->attributes->get('_controller'));
+        } elseif (\str_contains($path_info, '.form.php')) {
             $expected_controller = is_a($expected_class_name, CommonDropdown::class, true)
                 ? DropdownFormController::class
                 : GenericFormController::class;
