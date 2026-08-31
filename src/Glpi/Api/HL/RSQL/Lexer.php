@@ -78,6 +78,14 @@ final class Lexer
     public const CHAR_ESCAPE = '\\';
     public const CHARS_PROPERTY = '/[a-zA-Z0-9_.]/';
 
+    public const ESCAPEABLE_CHARS = [
+        self::CHAR_AND,
+        self::CHAR_OR,
+        self::CHAR_GROUP_OPEN,
+        self::CHAR_GROUP_CLOSE,
+        self::CHAR_ESCAPE,
+    ];
+
     private function __construct() {}
 
     /**
@@ -198,7 +206,7 @@ final class Lexer
 
                 while ($pos + 1 < $length) {
                     $char = mb_substr($query, ++$pos, 1, 'UTF-8');
-                    if ($char === self::CHAR_ESCAPE) {
+                    if (!$is_escaped && $char === self::CHAR_ESCAPE) {
                         $is_escaped = true;
                     } elseif (!$is_escaped && $expected_ending_char !== null && $char === $expected_ending_char) {
                         // If the current char is the expected ending char, then the value is complete.
@@ -217,6 +225,9 @@ final class Lexer
                         $pos--;
                         break;
                     } else {
+                        if ($is_escaped && !in_array($char, self::ESCAPEABLE_CHARS, true)) {
+                            $buffer .= self::CHAR_ESCAPE;
+                        }
                         $buffer .= $char;
                         $is_escaped = false;
                     }

@@ -130,7 +130,7 @@ class LexerTest extends GLPITestCase
                 'name=empty=;id==10',
                 [
                     [Lexer::T_PROPERTY, 'name'], [Lexer::T_OPERATOR, '=empty='], [Lexer::T_UNSPECIFIED_VALUE, ''], [Lexer::T_AND, ';'],
-                    [Lexer::T_PROPERTY, 'id'], [Lexer::T_OPERATOR, '=='], [Lexer::T_VALUE, '10']
+                    [Lexer::T_PROPERTY, 'id'], [Lexer::T_OPERATOR, '=='], [Lexer::T_VALUE, '10'],
                 ],
             ],
             [
@@ -209,6 +209,30 @@ class LexerTest extends GLPITestCase
                 'name=like=";*"',
                 [
                     [Lexer::T_PROPERTY, 'name'], [Lexer::T_OPERATOR, '=like='], [Lexer::T_VALUE, '";*"'],
+                ],
+            ],
+            [
+                'name==\\Test',
+                [
+                    [Lexer::T_PROPERTY, 'name'], [Lexer::T_OPERATOR, '=='], [Lexer::T_VALUE, '\Test'],
+                ],
+            ],
+            [
+                'name==\\\Test',
+                [
+                    [Lexer::T_PROPERTY, 'name'], [Lexer::T_OPERATOR, '=='], [Lexer::T_VALUE, '\Test'],
+                ],
+            ],
+            [
+                'name==\\\\Test',
+                [
+                    [Lexer::T_PROPERTY, 'name'], [Lexer::T_OPERATOR, '=='], [Lexer::T_VALUE, '\\Test'],
+                ],
+            ],
+            [
+                'name==\\\\\\\\Test',
+                [
+                    [Lexer::T_PROPERTY, 'name'], [Lexer::T_OPERATOR, '=='], [Lexer::T_VALUE, '\\\\Test'],
                 ],
             ],
         ];
