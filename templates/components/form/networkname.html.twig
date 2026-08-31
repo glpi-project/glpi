@@ -66,6 +66,8 @@
                      field_options
                   ) }}
 
+                  {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
+
                   {% if display_dissociate_btn %}
                      {% set unaffect_btn %}
                         <a class="btn btn-sm btn-outline-danger"

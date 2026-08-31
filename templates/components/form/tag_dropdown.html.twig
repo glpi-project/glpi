@@ -30,31 +30,23 @@
  # ---------------------------------------------------------------------
  #}
 
-{% extends 'generic_show_form.html.twig' %}
-{% import 'components/form/fields_macros.html.twig' as fields %}
+{#
+ # Renders a Tag dropdown
+ #}
 
-{% block form_fields %}
-    {{ fields.textField('name', item.fields['name'], __('Name')) }}
+{% set dropdown_html = call('Dropdown::showFromArray', [options.name, data.tag_names, options|merge({'display': false})]) %}
 
-    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
-
-    {{ fields.dropdownField('BudgetType', 'budgettypes_id', item.fields['budgettypes_id'], _n('Type', 'Types', 1)) }}
-
-    {{ fields.numberField('value', item.fields['value'], __('Value'), {
-        min: 0,
-        max: constant('PHP_INT_MAX'),
-        step: 0.0001
-    }) }}
-    {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
-
-    {{ fields.dateField('begin_date', item.fields['begin_date'], __('Begin date'), {
-        clearable: true
-    }) }}
-    {{ fields.dateField('end_date', item.fields['end_date'], __('End date'), {
-        clearable: true
-    }) }}
-
-    {{ fields.dropdownField('Location', 'locations_id', item.fields['locations_id'], 'Location'|itemtype_name, {
-        entity: item.fields['entities_id'],
-    }) }}
-{% endblock %}
+{% if can_create %}
+    <div class="btn-group btn-group-sm w-100" role="group">
+        {{ dropdown_html|raw }}
+        <div class="btn btn-outline-secondary" title="{{ __('Add') }}" data-bs-toggle="modal" data-bs-target="#add_{{ field_id }}">
+            {{ call('Ajax::createIframeModalWindow', ['add_' ~ field_id, call('Tag::getFormURL'), {'display': false}])|raw }}
+            <span data-bs-toggle="tooltip">
+                <i class="ti ti-plus"></i>
+                <span class="visually-hidden">{{ __('Add') }}</span>
+            </span>
+        </div>
+    </div>
+{% else %}
+    {{ dropdown_html|raw }}
+{% endif %}

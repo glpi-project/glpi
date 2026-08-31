@@ -2265,30 +2265,31 @@ HTML;
     /**
      * Dropdown of values in an array
      *
-     * @param string $name      select name
-     * @param array  $elements  array of elements to display
-     * @param array  $options   array of possible options:
-     *    - value               : integer / preselected value (default 0)
-     *    - used                : array / Already used items ID: not to display in dropdown (default empty)
-     *    - readonly            : boolean / used as a readonly item (default false)
-     *    - on_change           : string / value to transmit to "onChange"
-     *    - multiple            : boolean / can select several values (default false)
-     *    - size                : integer / number of rows for the select (default = 1)
-     *    - display             : boolean / display or return string
-     *    - other               : boolean or string if not false, then we can use an "other" value
-     *                            if it is a string, then the default value will be this string
-     *    - rand                : specific rand if needed (default is generated one)
-     *    - width               : specific width needed (default not set)
-     *    - emptylabel          : empty label if empty displayed (default self::EMPTY_VALUE)
-     *    - display_emptychoice : display empty choice, cannot be used when "multiple" option set to true (default false)
-     *    - class               : class attributes to add
-     *    - tooltip             : string / message to add as tooltip on the dropdown (default '')
-     *    - option_tooltips     : array / message to add as tooltip on the dropdown options. Use the same keys as for the $elements parameter, but none is mandotary. Missing keys will just be ignored and no tooltip will be added. To add a tooltip on an option group, is the '__optgroup_label' key inside the array describing option tooltips : 'optgroupname1' => array('__optgroup_label' => 'tooltip for option group') (default empty)
-     *    - noselect2           : if true, don't use select2 lib
-     *    - templateResult      : if not empty, call this as template results of select2
-     *    - templateSelection   : if not empty, call this as template selection of select2
-     *    - aria_label          : string / aria-label attribute for the select
-     *    - add_data_attributes : array / additional data attributes to add to the select tag
+     * @param string $name        select name
+     * @param array  $elements    array of elements to display
+     * @param array  $options     array of possible options:
+     *    - value                 : integer / preselected value (default 0)
+     *    - used                  : array / Already used items ID: not to display in dropdown (default empty)
+     *    - readonly              : boolean / used as a readonly item (default false)
+     *    - on_change             : string / value to transmit to "onChange"
+     *    - multiple              : boolean / can select several values (default false)
+     *    - size                  : integer / number of rows for the select (default = 1)
+     *    - display               : boolean / display or return string
+     *    - other                 : boolean or string if not false, then we can use an "other" value
+     *                              if it is a string, then the default value will be this string
+     *    - rand                  : specific rand if needed (default is generated one)
+     *    - width                 : specific width needed (default not set)
+     *    - emptylabel            : empty label if empty displayed (default self::EMPTY_VALUE)
+     *    - display_emptychoice   : display empty choice, cannot be used when "multiple" option set to true (default false)
+     *    - class                 : class attributes to add
+     *    - tooltip               : string / message to add as tooltip on the dropdown (default '')
+     *    - option_tooltips       : array / message to add as tooltip on the dropdown options. Use the same keys as for the $elements parameter, but none is mandotary. Missing keys will just be ignored and no tooltip will be added. To add a tooltip on an option group, is the '__optgroup_label' key inside the array describing option tooltips : 'optgroupname1' => array('__optgroup_label' => 'tooltip for option group') (default empty)
+     *    - noselect2             : if true, don't use select2 lib
+     *    - templateResult        : if not empty, call this as template results of select2
+     *    - templateSelection     : if not empty, call this as template selection of select2
+     *    - aria_label            : string / aria-label attribute for the select
+     *    - add_data_attributes   : array / additional data attributes to add to the select tag
+     *    - add_option_attributes : array / additional data attributes to add to individual options.
      *
      * Permit to use optgroup defining items in arrays
      * array('optgroupname'  => array('key1' => 'val1',
@@ -2303,32 +2304,33 @@ HTML;
     public static function showFromArray($name, array $elements, $options = [])
     {
 
-        $param['value']               = '';
-        $param['values']              = [''];
-        $param['class']               = 'form-select';
-        $param['tooltip']             = '';
-        $param['option_tooltips']     = [];
-        $param['used']                = [];
-        $param['readonly']            = false;
-        $param['on_change']           = '';
-        $param['width']               = '';
-        $param['multiple']            = false;
-        $param['size']                = 1;
-        $param['display']             = true;
-        $param['other']               = false;
-        $param['rand']                = mt_rand();
-        $param['emptylabel']          = self::EMPTY_VALUE;
-        $param['display_emptychoice'] = false;
-        $param['disabled']            = false;
-        $param['required']            = false;
-        $param['noselect2']           = false;
-        $param['templateResult']      = "templateResult";
-        $param['templateSelection']   = "templateSelection";
-        $param['track_changes']       = "true";
-        $param['init']                = true;
-        $param['aria_label']          = '';
-        $param['add_data_attributes'] = '';
-        $param['dropdownCssClass']    = '';
+        $param['value']                 = '';
+        $param['values']                = [''];
+        $param['class']                 = 'form-select';
+        $param['tooltip']               = '';
+        $param['option_tooltips']       = [];
+        $param['used']                  = [];
+        $param['readonly']              = false;
+        $param['on_change']             = '';
+        $param['width']                 = '';
+        $param['multiple']              = false;
+        $param['size']                  = 1;
+        $param['display']               = true;
+        $param['other']                 = false;
+        $param['rand']                  = mt_rand();
+        $param['emptylabel']            = self::EMPTY_VALUE;
+        $param['display_emptychoice']   = false;
+        $param['disabled']              = false;
+        $param['required']              = false;
+        $param['noselect2']             = false;
+        $param['templateResult']        = "templateResult";
+        $param['templateSelection']     = "templateSelection";
+        $param['track_changes']         = "true";
+        $param['init']                  = true;
+        $param['aria_label']            = '';
+        $param['add_data_attributes']   = '';
+        $param['add_option_attributes'] = [];
+        $param['dropdownCssClass']      = '';
 
         if (is_array($options) && count($options)) {
             if (isset($options['value']) && strlen($options['value'])) {
@@ -2475,6 +2477,13 @@ HTML;
                             if ($optgroup_tooltips && isset($optgroup_tooltips[$key2])) {
                                 $output .= ' title="' . htmlescape($optgroup_tooltips[$key2]) . '"';
                             }
+                            if (isset($param['add_option_attributes'][$key2]) && is_array($param['add_option_attributes'][$key2])) {
+                                $output .= ' ' . implode(' ', array_map(
+                                    fn($attr, $value) => htmlescape('data-' . $attr) . '="' . htmlescape($value) . '"',
+                                    array_keys($param['add_option_attributes'][$key2]),
+                                    $param['add_option_attributes'][$key2]
+                                ));
+                            }
                             $output .= ">" . htmlescape($val2) . "</option>";
                             if ($max_option_size < strlen($val2)) {
                                 $max_option_size = strlen($val2);
@@ -2494,6 +2503,13 @@ HTML;
                         }
                         if (isset($param['option_tooltips'][$key])) {
                             $output .= ' title="' . htmlescape($param['option_tooltips'][$key]) . '"';
+                        }
+                        if (isset($param['add_option_attributes'][$key]) && is_array($param['add_option_attributes'][$key])) {
+                            $output .= ' ' . implode(' ', array_map(
+                                fn($attr, $value) => htmlescape('data-' . $attr) . '="' . htmlescape($value) . '"',
+                                array_keys($param['add_option_attributes'][$key]),
+                                $param['add_option_attributes'][$key]
+                            ));
                         }
                         $output .= ">" . htmlescape($val) . "</option>";
                         if (!is_null($val) && ($max_option_size < strlen($val))) {

@@ -36,6 +36,8 @@
 {% block form_fields %}
     {{ fields.textField('name', item.fields['name'], __('Name'), field_options) }}
 
+    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number()), field_options) }}
+
     {{ fields.textareaField('comment', item.fields['comment'], __('Comments'), field_options) }}
 
     {{ fields.dropdownYesNo('is_default', item.fields['is_default'], __('Default server'), field_options) }}

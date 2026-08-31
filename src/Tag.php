@@ -49,11 +49,13 @@ class Tag extends CommonDropdown
     /**
      * Get itemtypes that can be tagged with this tag.
      *
+     * @param bool $all_if_empty If true and the tag has no restriction in DB, return all taggable itemtypes instead of an empty list.
+     *
      * @return list<class-string<CommonDBTM>>
      */
-    public function getItemtypes(): array
+    public function getItemtypes($all_if_empty = true): array
     {
-        return Tag_Itemtype::getItemtypesByTag($this);
+        return Tag_Itemtype::getItemtypesByTag($this, $all_if_empty);
     }
 
     /**
@@ -120,13 +122,18 @@ class Tag extends CommonDropdown
      */
     private function prepareColorsInput(array $input): array
     {
+        // If bg_color is not set or invalid, generate a background color based on the tag name
         if (isset($input['bg_color']) && (empty($input['bg_color']) || !Toolbox::isValidHexColor($input['bg_color']))) {
             $input['bg_color'] = $this->generateBackgroundColor($input['name'] ?? $this->fields['name'] ?? '');
         }
+
+        // If color is not set or invalid, generate a text color based on the background color
         $effective_bg = $input['bg_color'] ?? $this->fields['bg_color'] ?? null;
         if (!Toolbox::isValidHexColor($effective_bg)) {
             $effective_bg = $this->generateBackgroundColor($input['name'] ?? $this->fields['name'] ?? '');
         }
+
+        // If color is not set or invalid, generate a text color based on the background color
         if (isset($input['color']) && (empty($input['color']) || !Toolbox::isValidHexColor($input['color']))) {
             $input['color'] = $this->generateTextColor($effective_bg);
         }
@@ -216,17 +223,7 @@ class Tag extends CommonDropdown
         }
 
         if (!$this->isUnique($input)) {
-            $conflicting_tag = $this->getTagByName($input['name']);
-            if ($conflicting_tag !== null) {
-                Session::addMessageAfterRedirect(
-                    htmlescape(sprintf(
-                        __('A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.'),
-                        Dropdown::getDropdownName(Entity::getTable(), $conflicting_tag->fields['entities_id'])
-                    )),
-                    false,
-                    ERROR
-                );
-            }
+            $this->showConflictNameErrorMessage($input);
             return false;
         }
 
@@ -256,22 +253,36 @@ class Tag extends CommonDropdown
         }
 
         if (!$this->isUnique($input)) {
-            $conflicting_tag = $this->getTagByName($input['name']);
-            if ($conflicting_tag !== null) {
-                Session::addMessageAfterRedirect(
-                    htmlescape(sprintf(
-                        __('A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.'),
-                        Dropdown::getDropdownName(Entity::getTable(), $conflicting_tag->fields['entities_id'])
-                    )),
-                    false,
-                    ERROR
-                );
-            }
+            $this->showConflictNameErrorMessage($input);
             return false;
         }
         $input = $this->prepareItemtypes($input);
         $input = $this->prepareColorsInput($input);
         return $input;
+    }
+
+    /**
+     * @param array<string, mixed> $input
+     */
+    private function showConflictNameErrorMessage(array $input): void
+    {
+        $conflicting_tag = $this->getTagByName($input['name']);
+
+        if ($conflicting_tag === null) {
+            return;
+        }
+
+        $entities_id = $conflicting_tag->fields['entities_id'];
+        $message = __('A tag with this name already exists! Change its name.');
+
+        if (Session::haveAccessToEntity($entities_id)) {
+            $message = sprintf(
+                __('A tag with this name already exists in entity "%s"! Transfer the tag to another entity or change its name.'),
+                Dropdown::getDropdownName(Entity::getTable(), $entities_id)
+            );
+        }
+
+        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
     }
 
     /**
@@ -282,6 +293,7 @@ class Tag extends CommonDropdown
         $this->deleteChildrenAndRelationsFromDb(
             [
                 Tag_Itemtype::class,
+                Tag_Item::class,
             ]
         );
     }
@@ -311,7 +323,7 @@ class Tag extends CommonDropdown
             return;
         }
 
-        $old_itemtypes = $this->getItemtypes();
+        $old_itemtypes = $this->getItemtypes(false);
         $tag_itemtype = new Tag_Itemtype();
         foreach ($old_itemtypes as $itemtype) {
             if (!in_array($itemtype, $this->input['_itemtypes'], true)) {
@@ -369,5 +381,217 @@ class Tag extends CommonDropdown
         ];
 
         return $tab;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    public static function rawSearchOptionsToAdd(string $itemtype): array
+    {
+        if ($itemtype !== AllAssets::class && !Tag_Itemtype::isTaggableItemtype($itemtype)) {
+            return [];
+        }
+
+        $tab = [];
+        $name = _n('Tag', 'Tags', Session::getPluralNumber());
+
+        $tab[] = [
+            'id'                 => '490',
+            'table'              => self::getTable(),
+            'field'              => 'name',
+            'name'               => $name,
+            'datatype'           => 'specific',
+            'forcegroupby'       => true,
+            'aggregate'          => true,
+            'massiveaction'      => false,
+            'itemtype_for_tags'  => $itemtype !== AllAssets::class ? $itemtype : null,
+            'joinparams'         => [
+                'beforejoin' => [
+                    'table'      => Tag_Item::getTable(),
+                    'joinparams' => [
+                        'jointype' => 'itemtype_item',
+                    ],
+                ],
+            ],
+        ];
+
+        return $tab;
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        // If the field is "name" and the values contain an array of tag IDs, render them as badges
+        if ($field === 'name' && isset($values['values']) && is_array($values['values'])) {
+            $tags_ids = array_column($values['values'], 'id');
+
+            $badges = [];
+            if ($tags_ids !== []) {
+                foreach ((new self())->find(['id' => $tags_ids]) as $tag_data) {
+                    $tag = new self();
+                    $tag->getFromResultSet($tag_data);
+                    $badges[] = $tag->getBadgeHtml();
+                }
+            }
+
+            if ($badges === []) {
+                return '';
+            }
+
+            return '<div class="d-flex flex-wrap gap-1">' . implode('', $badges) . '</div>';
+        }
+
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    {
+        if ($field === 'name') {
+            if (!is_array($values)) {
+                $values = [$field => $values];
+            }
+
+            return self::dropdown([
+                'name'      => $name,
+                'value'     => $values[$field] ?? '',
+                'display'   => false,
+                '_itemtype' => $options['searchopt']['itemtype_for_tags'] ?? null,
+            ]) ?? '';
+        }
+
+        return parent::getSpecificValueToSelect($field, $name, $values, $options);
+    }
+
+    /**
+     * Render a tag's name as a colored badge.
+     *
+     * @return string
+     */
+    public function getBadgeHtml(): string
+    {
+        return sprintf(
+            '<span class="badge" style="background-color:%s;color:%s">%s</span>',
+            htmlescape($this->getBackgroundColor()),
+            htmlescape($this->getTextColor()),
+            htmlescape($this->fields['name'])
+        );
+    }
+
+    /**
+     * Get the data needed to render a tags dropdown.
+     *
+     * @param class-string<CommonGLPI>|list<class-string<CommonGLPI>>|null $itemtype Restrict the tags to those allowed for the given itemtype(s).
+     *                                    Use null to get every active tag, regardless of itemtype (e.g. for the "All assets" search).
+     *
+     * @return array{tag_names: array<int, string>, bg_colors: array<int, string>, text_colors: array<int, string>}
+     */
+    public static function getTagsDropdownData(string|array|null $itemtype): array
+    {
+        $tag_names = [];
+        $bg_colors = [];
+        $text_colors = [];
+
+        // Get tags allowed to be attached to items of the given itemtype(s)
+        if ($itemtype === null) {
+            $tags = [];
+        } elseif (is_array($itemtype)) {
+            $tags = Tag_Itemtype::getTagsByItemtypes($itemtype);
+        } else {
+            $tags = Tag_Itemtype::getTagsByItemtype($itemtype);
+        }
+
+        foreach ($tags as $tag) {
+            $tag_names[$tag->getID()] = $tag->fields['name'];
+            $bg_colors[$tag->getID()] = $tag->getBackgroundColor();
+            $text_colors[$tag->getID()] = $tag->getTextColor();
+        }
+
+        return ['tag_names' => $tag_names, 'bg_colors' => $bg_colors, 'text_colors' => $text_colors];
+    }
+
+    /**
+     * Dropdown for tags
+     *
+     * @param array<string, mixed> $options Display options
+     *
+     * @return string|null
+     */
+    public static function dropdown($options = [])
+    {
+        $default_options = [
+            'rand'      => mt_rand(),
+            'display'   => true,
+            'name'      => self::getForeignKeyField(),
+            '_item'     => null,
+            '_itemtype' => [],
+        ];
+        $options = array_merge($default_options, $options);
+
+        $item = $options['_item'];
+        $itemtype = $options['_itemtype'];
+
+        if ($item instanceof CommonDBTM) {
+            $itemtype = get_class($item);
+            $options['multiple'] = true;
+            $options['values'] = Tag_Item::getTagsForItem($item);
+        } else {
+            $options['display_emptychoice'] = true;
+        }
+
+        $data = self::getTagsDropdownData($itemtype);
+
+        $add_option_attributes = [];
+        foreach ($data['bg_colors'] as $tag_id => $bg_color) {
+            $add_option_attributes[$tag_id] = [
+                'bg-color'   => $bg_color,
+                'text-color' => $data['text_colors'][$tag_id] ?? '',
+            ];
+        }
+        $options['add_option_attributes'] = $add_option_attributes;
+        $options['templateResult']        = 'templateTagResult';
+        $options['templateSelection']     = 'templateTagSelection';
+
+        $twig_params = [
+            'data'          => $data,
+            'options'       => $options,
+            'can_create'    => self::canCreate() && !isset($_REQUEST['_in_modal']),
+            'field_id'      => Html::cleanId('dropdown_' . $options['name'] . $options['rand']),
+        ];
+
+        if (!$options['display']) {
+            return TemplateRenderer::getInstance()->render('components/form/tag_dropdown.html.twig', $twig_params);
+        }
+
+        TemplateRenderer::getInstance()->display('components/form/tag_dropdown.html.twig', $twig_params);
+        return null;
+    }
+
+    /**
+     * Add the "add a tag" / "remove a tag" massive actions to the given itemtype's action list.
+     *
+     * @param array<string, string> $actions
+     * @param string $itemtype
+     * @param bool $is_deleted
+     * @param CommonDBTM|null $checkitem
+     *
+     * @return void
+     */
+    public static function getMassiveActionsForItemtype(
+        array &$actions,
+        $itemtype,
+        $is_deleted = false,
+        ?CommonDBTM $checkitem = null
+    ): void {
+        if (!Tag_Itemtype::isTaggableItemtype($itemtype) || !self::canView()) {
+            return;
+        }
+
+        $action_prefix = Tag_Item::class . MassiveAction::CLASS_ACTION_SEPARATOR;
+
+        $actions[$action_prefix . 'add']    = "<i class='ti ti-tag-plus'></i>" . _sx('button', 'Add a tag');
+        $actions[$action_prefix . 'remove'] = "<i class='ti ti-tag-minus'></i>" . _sx('button', 'Remove a tag');
     }
 }

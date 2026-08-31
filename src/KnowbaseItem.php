@@ -1034,6 +1034,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $this->updateCounter();
 
         $params = [
+            'item'    => $this,
             'item_id' => $mode === 'add' ? null : $this->fields['id'],
             'subject' => $this->fields['name'],
             'answer'  => $this->getAnswer(),

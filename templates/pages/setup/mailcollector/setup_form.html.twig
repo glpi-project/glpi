@@ -64,6 +64,8 @@
         }
     ) }}
 
+    {{ fields.tagsField('_tags', item, _n('Tag', 'Tags', get_plural_number())) }}
+
     {{ fields.textareaField(
         'comment',
         item.fields['comment'],

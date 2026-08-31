@@ -967,6 +967,57 @@ var templateItilStatus = function(option) {
     return $(`<span><i class="itilstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
 };
 
+/**
+ * Function that renders tag select2 results.
+ */
+const templateTagResult = function(option) {
+    if (option.loading || !option.element) {
+        return templateResult(option);
+    }
+
+    const bg_color = option.element.dataset.bgColor;
+    const text_color = option.element.dataset.textColor;
+
+    const _elt = document.createElement('span');
+    _elt.className = 'badge';
+    _elt.textContent = option.text;
+
+    if (bg_color) {
+        _elt.style.backgroundColor = bg_color;
+        _elt.style.color = text_color || '';
+    }
+
+    return _elt;
+};
+
+/**
+ * Function that renders tag select2 selections.
+ */
+const templateTagSelection = function(selection, container) {
+    if (!selection.element) {
+        return templateSelection(selection);
+    }
+
+    const bg_color = selection.element.dataset.bgColor;
+    const text_color = selection.element.dataset.textColor;
+
+    if (bg_color && container) {
+        $(container).css({ 'background-color': bg_color, 'color': text_color || '' });
+
+        const node = $(container).get(0);
+        const observer = new MutationObserver(() => {
+            const $remove = $(node).find('.select2-selection__choice__remove');
+            if ($remove.length) {
+                $remove.css('color', text_color || '');
+                observer.disconnect();
+            }
+        });
+        observer.observe(node, { childList: true });
+    }
+
+    return _.escape(selection.text);
+};
+
 var templateValidation = function(option) {
     if (option === false) {
         // Option is false when element does not match searched terms

@@ -67,48 +67,48 @@ class MassiveActionTest extends DbTestCase
             [
                 'itemtype'     => 'Computer',
                 'items_id'     => '_test_pc01',
-                'allcount'     => 31,
-                'singlecount'  => 22,
+                'allcount'     => 33,
+                'singlecount'  => 23,
             ], [
                 'itemtype'     => 'Monitor',
                 'items_id'     => '_test_monitor_1',
-                'allcount'     => 26,
-                'singlecount'  => 19,
-            ], [
-                'itemtype'     => 'SoftwareLicense',
-                'items_id'     => '_test_softlic_1',
-                'allcount'     => 17,
-                'singlecount'  => 11,
-            ], [
-                'itemtype'     => 'NetworkEquipment',
-                'items_id'     => '_test_networkequipment_1',
-                'allcount'     => 26,
-                'singlecount'  => 19,
-            ], [
-                'itemtype'     => 'Peripheral',
-                'items_id'     => '_test_peripheral_1',
                 'allcount'     => 28,
                 'singlecount'  => 20,
             ], [
+                'itemtype'     => 'SoftwareLicense',
+                'items_id'     => '_test_softlic_1',
+                'allcount'     => 19,
+                'singlecount'  => 12,
+            ], [
+                'itemtype'     => 'NetworkEquipment',
+                'items_id'     => '_test_networkequipment_1',
+                'allcount'     => 28,
+                'singlecount'  => 20,
+            ], [
+                'itemtype'     => 'Peripheral',
+                'items_id'     => '_test_peripheral_1',
+                'allcount'     => 30,
+                'singlecount'  => 21,
+            ], [
                 'itemtype'     => 'Printer',
                 'items_id'     => '_test_printer_all',
-                'allcount'     => 27,
-                'singlecount'  => 19,
+                'allcount'     => 29,
+                'singlecount'  => 20,
             ], [
                 'itemtype'     => 'Phone',
                 'items_id'     => '_test_phone_1',
-                'allcount'     => 27,
-                'singlecount'  => 19,
+                'allcount'     => 29,
+                'singlecount'  => 20,
             ], [
                 'itemtype'     => 'Ticket',
                 'items_id'     => '_ticket01',
-                'allcount'     => 20,
-                'singlecount'  => 9,
+                'allcount'     => 22,
+                'singlecount'  => 10,
             ], [
                 'itemtype'     => 'Profile',
                 'items_id'     => 'Super-Admin',
-                'allcount'     => 3,
-                'singlecount'  => 2,
+                'allcount'     => 5,
+                'singlecount'  => 3,
             ],
         ];
     }
