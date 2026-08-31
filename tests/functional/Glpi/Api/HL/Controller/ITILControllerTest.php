@@ -744,4 +744,22 @@ class ITILControllerTest extends HLAPITestCase
             'cost_fixed' => 150,
         ]);
     }
+
+    public function testCRUDExternalEvent(): void
+    {
+        $entities_id = $this->getTestRootEntity(true);
+
+        $this->api->autoTestCRUD('/Assistance/ExternalEvent', [
+            'name' => __FUNCTION__,
+            'text' => 'test',
+            'entity' => $entities_id,
+            'user' => 2,
+            'date_begin' => date(\DateTimeInterface::RFC3339, strtotime('+1 day')),
+            'date_end' => date(\DateTimeInterface::RFC3339, strtotime('+2 days')),
+        ], [
+            'name' => __FUNCTION__ . '2',
+            'date_begin' => date(\DateTimeInterface::RFC3339, strtotime('+3 days')),
+            'date_end' => date(\DateTimeInterface::RFC3339, strtotime('+4 days')),
+        ]);
+    }
 }
