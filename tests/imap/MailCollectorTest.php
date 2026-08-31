@@ -676,6 +676,142 @@ class MailCollectorTest extends DbTestCase
         $this->assertEquals(!$accepted, $instance->isResponseToMessageSentByAnotherGlpi($message));
     }
 
+    public static function charsetEvidenceMailProvider(): iterable
+    {
+        yield 'latin1 quoted-printable' => [
+            'file'             => '01-latin1-quoted-printable.eml',
+            'expected_subject' => 'Ação não concluída',
+            'expected_content' => 'Ação não concluída: número ç e acentuação',
+        ];
+
+        yield 'windows-1252 quoted-printable' => [
+            'file'             => '02-windows1252-quoted-printable.eml',
+            'expected_subject' => 'Remetente inválido – teste',
+            'expected_content' => 'Remetente inválido: “aspas”, travessão – e euro €',
+        ];
+
+        yield 'utf-8 mojibake' => [
+            'file'             => '03-utf8-mojibake.eml',
+            'expected_subject' => 'Conteúdo com mojibake',
+            'expected_content' => 'Ação não concluída no módulo de chamados.',
+        ];
+
+        yield 'html mojibake' => [
+            'file'             => '04-html-mojibake.eml',
+            'expected_subject' => 'HTML com mojibake',
+            'expected_content' => '<p>Ação &amp; validação <strong>preservada</strong></p>',
+        ];
+
+        yield 'invalid base64 fallback' => [
+            'file'             => '05-invalid-base64-fallback.eml',
+            'expected_subject' => 'Base64 invalido',
+            'expected_content' => 'Solicitação em base64 inválido ainda deve continuar',
+        ];
+
+        yield 'utf-8 bom stripped' => [
+            'file'             => '06-utf8-bom.eml',
+            'expected_subject' => 'BOM UTF-8',
+            'expected_content' => 'Texto com BOM antes do conteúdo',
+        ];
+
+        yield 'control bytes stripped' => [
+            'file'             => '07-control-bytes-quoted-printable.eml',
+            'expected_subject' => 'Bytes de controle',
+            'expected_content' => "Linha 1\nLinha 2",
+        ];
+
+        yield 'replacement mojibake token' => [
+            'file'             => '08-replacement-token-mojibake.eml',
+            'expected_subject' => 'Token replacement',
+            'expected_content' => 'Conteúdo � parcial',
+        ];
+
+        yield 'broken utf-8 bytes guarded' => [
+            'file'             => '09-broken-utf8-quoted-printable.eml',
+            'expected_subject' => 'UTF-8 quebrado',
+            'expected_content' => 'Prefixo',
+        ];
+    }
+
+    #[DataProvider('charsetEvidenceMailProvider')]
+    public function testBuildTicketNormalizesCharsetEvidenceMails(
+        string $file,
+        string $expected_subject,
+        string $expected_content
+    ): void {
+        $collector = new \MailCollector();
+        $collector->getEmpty();
+        $collector->fields['name'] = 'unittests@glpi-project.org';
+        $collector->fields['create_user_from_email'] = 0;
+        $collector->fields['use_mail_date'] = 0;
+        $collector->fields['filesize_max'] = 0;
+        $collector->fields['add_to_to_observer'] = 0;
+        $collector->fields['add_cc_to_observer'] = 0;
+
+        $message = new Message([
+            'raw' => file_get_contents(GLPI_ROOT . '/tests/emails-tests/charset-evidence/' . $file),
+        ]);
+
+        $ticket = $collector->buildTicket(
+            'charset-evidence-' . $file,
+            $message,
+            [
+                'mailgates_id' => 1,
+                'play_rules'   => false,
+            ]
+        );
+
+        $this->assertSame($expected_subject, $ticket['name']);
+        $this->assertStringContainsString($expected_content, $ticket['content']);
+        $this->assertTrue(mb_check_encoding($ticket['name'], 'UTF-8'));
+        $this->assertTrue(mb_check_encoding($ticket['content'], 'UTF-8'));
+    }
+
+    public function testBuildTicketNormalizesCharsetEvidenceFollowup(): void
+    {
+        $existing_ticket = getItemByTypeName('Ticket', '_ticket01');
+        $reference = sprintf(
+            'GLPI-%d.%d.%d@localhost',
+            $existing_ticket->getID(),
+            time(),
+            rand()
+        );
+
+        $message = new Message([
+            'headers' => [
+                'from'       => '_test_user@glpi.com',
+                'to'         => 'unittests@glpi-project.org',
+                'subject'    => sprintf('[GLPI #%d] Acompanhamento com mojibake', $existing_ticket->getID()),
+                'references' => $reference,
+                'date'       => 'Tue, 12 May 2026 10:09:00 +0000',
+            ],
+            'content' => 'AÃ§Ã£o nÃ£o concluÃ­da no followup.',
+        ]);
+
+        $collector = new \MailCollector();
+        $collector->getEmpty();
+        $collector->fields['name'] = 'unittests@glpi-project.org';
+        $collector->fields['create_user_from_email'] = 0;
+        $collector->fields['use_mail_date'] = 0;
+        $collector->fields['filesize_max'] = 0;
+        $collector->fields['add_to_to_observer'] = 0;
+        $collector->fields['add_cc_to_observer'] = 0;
+
+        $ticket = $collector->buildTicket(
+            'charset-evidence-followup',
+            $message,
+            [
+                'mailgates_id' => 1,
+                'play_rules'   => false,
+            ]
+        );
+
+        $this->assertSame((int) $existing_ticket->getID(), $ticket['tickets_id']);
+        $this->assertSame(sprintf('[GLPI #%d] Acompanhamento com mojibake', $existing_ticket->getID()), $ticket['name']);
+        $this->assertSame('Ação não concluída no followup.', $ticket['content']);
+        $this->assertTrue(mb_check_encoding($ticket['content'], 'UTF-8'));
+    }
+
     private function doConnect()
     {
         if (null === $this->collector) {

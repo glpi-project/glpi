@@ -1,0 +1,10 @@
+From: normal@glpi-project.org
+To: unittests@glpi-project.org
+Subject: BOM UTF-8
+Message-ID: <charset-evidence-bom@example.org>
+Date: Tue, 12 May 2026 10:05:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+=EF=BB=BFTexto com BOM antes do conteúdo
