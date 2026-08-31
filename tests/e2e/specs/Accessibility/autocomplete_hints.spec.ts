@@ -32,8 +32,13 @@
 
 import { test, expect } from '../../fixtures/glpi_fixture';
 import { LoginPage } from '../../pages/LoginPage';
+import { UserPage } from '../../pages/UserPage';
 import { Profiles } from '../../utils/Profiles';
 import AxeBuilder from '@axe-core/playwright';
+
+// Main tab of the preference page, and of the admin user form.
+const PREFERENCE_TAB = 'User$1';
+const USER_FORM_TAB = 'User$main';
 
 // Login page, logged-out.
 test('login fields expose autocomplete tokens', async ({ anonymousPage }) => {
@@ -52,12 +57,13 @@ test('login fields expose autocomplete tokens', async ({ anonymousPage }) => {
 });
 
 // Lost-password "forget" email also carries autocomplete="email", but its form only renders
-// with password-recovery notifications enabled (off in e2e) — verified manually instead.
+// with password-recovery notifications enabled (off in e2e), so it is verified manually.
 
 // Preference page: tokens emitted only in the preference context.
 test('profile identity fields expose autocomplete tokens when editing own profile', async ({ page, profile }) => {
     await profile.set(Profiles.SuperAdmin);
-    await page.goto('/front/preference.php');
+    const user_page = new UserPage(page);
+    await user_page.gotoPreferences(PREFERENCE_TAB);
 
     await expect(page.getByLabel('Surname', { exact: true })).toHaveAttribute('autocomplete', 'family-name');
     await expect(page.getByLabel('First name', { exact: true })).toHaveAttribute('autocomplete', 'given-name');
@@ -69,24 +75,35 @@ test('profile identity fields expose autocomplete tokens when editing own profil
 // Guard: the admin user form (outside the preference context) must NOT emit personal tokens.
 test('admin user form does not expose personal autocomplete tokens (guard)', async ({ page, profile }) => {
     await profile.set(Profiles.SuperAdmin);
-    await page.goto('/front/user.form.php');
+    await page.goto(`/front/user.form.php?forcetab=${USER_FORM_TAB}`);
 
     await expect(page.getByLabel('Surname', { exact: true })).not.toHaveAttribute('autocomplete', 'family-name');
 });
 
-// User's own e-mail input on the profile page.
-test('profile email input exposes autocomplete=email when editing own profile', async ({ page, profile }) => {
+// User's own e-mail inputs on the profile page, server-rendered and client-added alike.
+test('profile email inputs expose autocomplete=email when editing own profile', async ({ page, profile }) => {
     await profile.set(Profiles.SuperAdmin);
-    await page.goto('/front/preference.php');
+    const user_page = new UserPage(page);
+    await user_page.gotoPreferences(PREFERENCE_TAB);
 
-    await expect(page.getByLabel('Email address').first())
-        .toHaveAttribute('autocomplete', 'email');
+    const emails = user_page.getEmailFields();
+    await expect(emails.first()).toHaveAttribute('autocomplete', 'email');
+
+    // The "+" button builds its row from JS, which is a distinct render path.
+    const initial_count = await emails.count();
+    await user_page.doAddNewEmailField();
+    await expect(emails).toHaveCount(initial_count + 1);
+    await expect(emails.last()).toHaveAttribute('autocomplete', 'email');
 });
 
 // Regression: no invalid autocomplete tokens anywhere on the profile form.
 test('profile form has no invalid autocomplete tokens', async ({ page, profile }) => {
     await profile.set(Profiles.SuperAdmin);
-    await page.goto('/front/preference.php');
+    const user_page = new UserPage(page);
+    await user_page.gotoPreferences(PREFERENCE_TAB);
+
+    // The tab loads over AJAX; without this axe would scan an empty page.
+    await expect(page.getByLabel('Surname', { exact: true })).toBeVisible();
 
     const a11y = await new AxeBuilder({ page })
         .include('form')
