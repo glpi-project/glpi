@@ -100,7 +100,7 @@ class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements R
                     streamOrFile: $file_stream,
                     size: $file_stream->getSize(),
                     errorStatus: UPLOAD_ERR_OK,
-                    clientFilename: $part->getFileName() ?: $default_filename,
+                    clientFilename: basename($part->getFileName() ?: $default_filename),
                     clientMediaType: $mime ?: $part->getMimeType(),
                     hash_algo: 'sha1',
                     hash: $sha1
@@ -138,7 +138,7 @@ class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements R
                             streamOrFile: $file_info['tmp_name'][$index],
                             size: $file_info['size'][$index],
                             errorStatus: $file_info['error'][$index],
-                            clientFilename: $name,
+                            clientFilename: basename($name),
                             clientMediaType: $detected_mime,
                             hash_algo: 'sha1',
                             hash: sha1_file($file_info['tmp_name'][$index])
@@ -154,7 +154,7 @@ class MultipartFormDataRequestMiddleware extends AbstractMiddleware implements R
                         streamOrFile: $file_info['tmp_name'],
                         size: $file_info['size'],
                         errorStatus: $file_info['error'],
-                        clientFilename: $file_info['name'],
+                        clientFilename: basename($file_info['name']),
                         clientMediaType: $detected_mime,
                         hash_algo: 'sha1',
                         hash: sha1_file($file_info['tmp_name'])
