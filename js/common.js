@@ -978,9 +978,13 @@ const templateTagResult = function(option) {
     const bg_color = option.element.dataset.bgColor;
     const text_color = option.element.dataset.textColor;
 
-    const _elt = $('<span class="badge"></span>').text(option.text);
+    const _elt = document.createElement('span');
+    _elt.className = 'badge';
+    _elt.textContent = option.text;
+
     if (bg_color) {
-        _elt.css({ 'background-color': bg_color, 'color': text_color || '' });
+        _elt.style.backgroundColor = bg_color;
+        _elt.style.color = text_color || '';
     }
 
     return _elt;
