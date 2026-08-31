@@ -590,4 +590,71 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         ]);
         $this->assertFalse($result);
     }
+
+    /**
+     * Duplicate detection must distinguish linked objects using both `itemtype`
+     * and `items_id`, not `items_id` alone (see GLPI issue #25161).
+     */
+    public function testSameIdWithDifferentItemtypesIsNotConsideredDuplicate(): void
+    {
+        $this->login();
+
+        $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
+
+        // Create a Change.
+        $change = new \Change();
+        $changes_id = $change->add([
+            'name'        => 'Change with shared id',
+            'content'     => 'test',
+            'status'      => \Change::INCOMING,
+            'entities_id' => $entities_id,
+        ]);
+        $this->assertGreaterThan(0, $changes_id);
+
+        // Create a Ticket with the same ID as the Change.
+        $ticket = new \Ticket();
+        $shared_id_ticket_id = $ticket->add([
+            'id'          => $changes_id,
+            'name'        => 'Ticket sharing the change id',
+            'content'     => 'test',
+            'status'      => \Ticket::INCOMING,
+            'entities_id' => $entities_id,
+        ]);
+        $this->assertSame($changes_id, $shared_id_ticket_id);
+
+        // Create another Ticket with a different ID.
+        $other_ticket_id = $ticket->add([
+            'name'        => 'Other ticket',
+            'content'     => 'test',
+            'status'      => \Ticket::INCOMING,
+            'entities_id' => $entities_id,
+        ]);
+        $this->assertGreaterThan(0, $other_ticket_id);
+
+        $change_ticket = new \Change_Ticket();
+
+        // Create the initial link: Change #1 <-> Ticket #1.
+        $link_id = $change_ticket->add([
+            'changes_id' => $changes_id,
+            'tickets_id' => $shared_id_ticket_id,
+            'link'       => \CommonITILObject_CommonITILObject::LINK_TO,
+        ]);
+        $this->assertGreaterThan(0, $link_id);
+
+        // The exact same link must still be rejected as a duplicate.
+        $duplicate_link_id = $change_ticket->add([
+            'changes_id' => $changes_id,
+            'tickets_id' => $shared_id_ticket_id,
+            'link'       => \CommonITILObject_CommonITILObject::LINK_TO,
+        ]);
+        $this->assertFalse($duplicate_link_id);
+
+        // The existing Ticket #1 must not prevent linking another Ticket to Change #1.
+        $allowed_link_id = $change_ticket->add([
+            'changes_id' => $changes_id,
+            'tickets_id' => $other_ticket_id,
+            'link'       => \CommonITILObject_CommonITILObject::LINK_TO,
+        ]);
+        $this->assertGreaterThan(0, $allowed_link_id);
+    }
 }
