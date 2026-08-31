@@ -5518,103 +5518,111 @@ class CommonDBTM extends CommonGLPI
                 continue;
             }
 
-            //retrieve entity
-            $entities_id = $_SESSION['glpiactive_entity'] ?? 0;
-            if (isset($this->fields["entities_id"])) {
-                $entities_id = $this->fields["entities_id"];
-            } elseif (isset($input['entities_id'])) {
-                $entities_id = $input['entities_id'];
-            } elseif (isset($input['_job']->fields['entities_id'])) {
-                $entities_id = $input['_job']->fields['entities_id'];
-            }
+            if (!isHLAPI()) {
+                // The HLAPI already handles inline images as well as file uploads. We only need to worry about creating the links between the item and the document.
 
-            //retrieve is_recursive
-            $is_recursive = 0;
-            if (isset($this->fields["is_recursive"])) {
-                $is_recursive = $this->fields["is_recursive"];
-            } elseif (isset($input['is_recursive'])) {
-                $is_recursive = $input['is_recursive'];
-            } elseif (isset($input['_job']->fields['is_recursive'])) {
-                $is_recursive = $input['_job']->fields['is_recursive'];
-            } elseif ($this instanceof CommonDBVisible) {
-                // CommonDBVisible visibility restriction is unpredictable as
-                // it may change over time, and can be related to dynamic profiles assignation.
-                // Related documents have to be available on all entities.
-                $is_recursive = 1;
-            }
-
-            // Check if document is blacklisted when importing via mail collector
-            if ($input['_auto_import'] ?? false) {
-                $blacklisted_doc = new Document();
-                if (
-                    $blacklisted_doc->getFromDBbyContent($entities_id, $filename)
-                    && $blacklisted_doc->fields['is_blacklisted']
-                ) {
-                    // Document is blacklisted, skip attachment
-                    continue;
+                //retrieve entity
+                $entities_id = $_SESSION['glpiactive_entity'] ?? 0;
+                if (isset($this->fields["entities_id"])) {
+                    $entities_id = $this->fields["entities_id"];
+                } elseif (isset($input['entities_id'])) {
+                    $entities_id = $input['entities_id'];
+                } elseif (isset($input['_job']->fields['entities_id'])) {
+                    $entities_id = $input['_job']->fields['entities_id'];
                 }
-            }
 
-            // Check for duplicate and availability (e.g. file deleted in _files)
-            if ($doc->getDuplicateOf($entities_id, $filename)) {
-                $docID = $doc->fields["id"];
-                // File already exist, we replace the tag by the existing one
-                if (
-                    isset($input['_tag'][$key])
-                    && ($docID > 0)
-                    && isset($input[$options['content_field']])
-                ) {
-                    $input[$options['content_field']] = str_replace(
-                        $input['_tag'][$key],
-                        $doc->fields["tag"],
-                        $input[$options['content_field']]
-                    );
-                    $docadded[$docID]['tag'] = $doc->fields["tag"];
+                //retrieve is_recursive
+                $is_recursive = 0;
+                if (isset($this->fields["is_recursive"])) {
+                    $is_recursive = $this->fields["is_recursive"];
+                } elseif (isset($input['is_recursive'])) {
+                    $is_recursive = $input['is_recursive'];
+                } elseif (isset($input['_job']->fields['is_recursive'])) {
+                    $is_recursive = $input['_job']->fields['is_recursive'];
+                } elseif ($this instanceof CommonDBVisible) {
+                    // CommonDBVisible visibility restriction is unpredictable as
+                    // it may change over time, and can be related to dynamic profiles assignation.
+                    // Related documents have to be available on all entities.
+                    $is_recursive = 1;
                 }
-                if (!$doc->checkAvailability($filename)) {
-                    $input2 = [
-                        'id'                      => $docID,
-                        '_only_if_upload_succeed' => 1,
-                        '_filename'               => [$file],
-                        'current_filepath'        => $filename,
-                    ];
+
+                // Check if document is blacklisted when importing via mail collector
+                if ($input['_auto_import'] ?? false) {
+                    $blacklisted_doc = new Document();
+                    if (
+                        $blacklisted_doc->getFromDBbyContent($entities_id, $filename)
+                        && $blacklisted_doc->fields['is_blacklisted']
+                    ) {
+                        // Document is blacklisted, skip attachment
+                        continue;
+                    }
+                }
+
+                // Check for duplicate and availability (e.g. file deleted in _files)
+                if ($doc->getDuplicateOf($entities_id, $filename)) {
+                    $docID = $doc->fields["id"];
+                    // File already exist, we replace the tag by the existing one
+                    if (
+                        isset($input['_tag'][$key])
+                        && ($docID > 0)
+                        && isset($input[$options['content_field']])
+                    ) {
+                        $input[$options['content_field']] = str_replace(
+                            $input['_tag'][$key],
+                            $doc->fields["tag"],
+                            $input[$options['content_field']]
+                        );
+                        $docadded[$docID]['tag'] = $doc->fields["tag"];
+                    }
+                    if (!$doc->checkAvailability($filename)) {
+                        $input2 = [
+                            'id' => $docID,
+                            '_only_if_upload_succeed' => 1,
+                            '_filename' => [$file],
+                            'current_filepath' => $filename,
+                        ];
+                        if (isset($this->input[$prefixUploadName][$key])) {
+                            $input2[$prefixUploadName] = [$this->input[$prefixUploadName][$key]];
+                        }
+                        $doc->update($input2);
+                    }
+                } else {
+                    if ($this instanceof Ticket || (isset($input['_job']) && $input['_job'] instanceof Ticket)) {
+                        if (isset($input['_job']) && $input['_job'] instanceof Ticket) {
+                            $ticket_id = $input['_job']->getID();
+                        } else {
+                            $ticket_id = $this->getID();
+                        }
+
+                        //TRANS: Default document to files attached to tickets : %d is the ticket id
+                        $input2["name"] = sprintf(__('Document Ticket %d'), $this->getID());
+                        $input2["tickets_id"] = $ticket_id;
+                        $input2['itemtype'] = Ticket::class;
+                    }
+
+                    if (isset($input['_tag'][$key])) {
+                        // Insert image tag
+                        $input2["tag"] = $input['_tag'][$key];
+                    }
+
+                    $input2["entities_id"] = $entities_id;
+                    $input2["is_recursive"] = $is_recursive;
+                    $input2["_only_if_upload_succeed"] = 1;
+                    $input2["_filename"] = [$file];
                     if (isset($this->input[$prefixUploadName][$key])) {
-                        $input2[$prefixUploadName]  = [$this->input[$prefixUploadName][$key]];
+                        $input2[$prefixUploadName] = [$this->input[$prefixUploadName][$key]];
                     }
-                    $doc->update($input2);
-                }
-            } else {
-                if ($this instanceof Ticket || (isset($input['_job']) && $input['_job'] instanceof Ticket)) {
-                    if (isset($input['_job']) && $input['_job'] instanceof Ticket) {
-                        $ticket_id = $input['_job']->getID();
-                    } else {
-                        $ticket_id = $this->getID();
+                    $docID = $doc->add($input2);
+
+                    if (isset($input['_tag'][$key])) {
+                        // Store image tag
+                        $docadded[$docID]['tag'] = $doc->fields["tag"];
                     }
-
-                    //TRANS: Default document to files attached to tickets : %d is the ticket id
-                    $input2["name"] = sprintf(__('Document Ticket %d'), $this->getID());
-                    $input2["tickets_id"] = $ticket_id;
-                    $input2['itemtype'] = Ticket::class;
                 }
-
-                if (isset($input['_tag'][$key])) {
-                    // Insert image tag
-                    $input2["tag"] = $input['_tag'][$key];
-                }
-
-                $input2["entities_id"]             = $entities_id;
-                $input2["is_recursive"]            = $is_recursive;
-                $input2["_only_if_upload_succeed"] = 1;
-                $input2["_filename"]               = [$file];
-                if (isset($this->input[$prefixUploadName][$key])) {
-                    $input2[$prefixUploadName]  = [$this->input[$prefixUploadName][$key]];
-                }
-                $docID = $doc->add($input2);
-
-                if (isset($input['_tag'][$key])) {
-                    // Store image tag
-                    $docadded[$docID]['tag'] = $doc->fields["tag"];
-                }
+            } elseif (isHLAPI()) {
+                // HLAPI already created the document, we just need to link it to the item
+                $docID = $file;
+                $doc->getFromDB($docID);
             }
 
             if ($docID > 0) {

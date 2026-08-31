@@ -41,6 +41,7 @@ use CommonDBTM;
 use Document;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
+use Glpi\Api\HL\FileUpload\FileManager;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\StreamedResponseWrapper;
@@ -516,5 +517,25 @@ abstract class AbstractController
             $content = $is_head_request ? null : (string) $symfony_response->getContent();
             return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $content);
         }
+    }
+
+    /**
+     * Get the default file upload options for a given upload type.
+     * @param string $upload_as
+     * @phpstan-param FileManager::UPLOAD_AS_* $upload_as
+     * @return array{upload_as: string, allowed_specifiers: string[]}
+     */
+    protected static function getDefaultFileUploadOptions(string $upload_as = FileManager::UPLOAD_AS_DOCUMENT): array
+    {
+        $params = [
+            'upload_as' => $upload_as,
+        ];
+        if ($upload_as === FileManager::UPLOAD_AS_PICTURE) {
+            $params['allowed_specifiers'] = ['image/gif', 'image/png', 'image/jpeg', 'image/bmp', 'image/webp'];
+        } else {
+            $params['allowed_specifiers'] = FileManager::getUploadableFileSpecifiers();
+        }
+
+        return $params;
     }
 }

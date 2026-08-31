@@ -295,6 +295,7 @@ final class HLAPIHelper
      */
     public function call(Request $request, callable $fn, bool $auto_auth_header = true): self
     {
+        $_SERVER['REQUEST_URI'] = '/api.php/' . $this->api_version . $request->getUri();
         if ($auto_auth_header && $this->test->getCurrentBearerToken() !== null) {
             $request = $request->withHeader('Authorization', 'Bearer ' . $this->test->getCurrentBearerToken());
         }

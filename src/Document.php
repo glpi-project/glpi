@@ -173,6 +173,15 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         );
 
         // Unlink/delete the file
+        $this->cleanFile();
+    }
+
+    /**
+     * Delete the file linked to this document from filesystem if no other document is using it
+     * @return void
+     */
+    public function cleanFile(): void
+    {
         if (!empty($this->fields["filepath"])) {
             if (
                 is_file(GLPI_DOC_DIR . "/" . $this->fields["filepath"])
@@ -1813,6 +1822,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      */
     private function filterFields(array $input): array
     {
+        if (isHLAPI()) {
+            // High-level API already responsibly filters the input, so this just prevents normal API operation
+            return $input;
+        }
         // security (don't accept filename from $_REQUEST)
         if (array_key_exists('filename', $_REQUEST)) {
             unset($input['filename']);

@@ -869,4 +869,58 @@ class AdministrationControllerTest extends HLAPITestCase
             $call->response->status(fn($status) => $this->assertEquals(409, $status));
         });
     }
+
+    public function testCreateUserWithPicture(): void
+    {
+        $bar_file_path = GLPI_ROOT . '/tests/fixtures/uploads/bar.png';
+        $bar_file_content = file_get_contents($bar_file_path);
+
+        $this->login();
+
+        // multipart form data request with the document item's name, the file, and the entity ID
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="username"
+
+userwithpic
+-----boundary
+Content-Disposition: form-data; name="label"
+
+Car
+-----boundary
+Content-Disposition: form-data; name="picture_upload"; filename="bar.png"
+
+$bar_file_content
+-----boundary
+Content-Disposition: form-data; name="password"
+
+testuser
+-----boundary
+Content-Disposition: form-data; name="password2"
+
+testuser
+-----boundary--
+EOT;
+
+        $request = new Request('POST', '/Administration/User', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+        $new_location = null;
+        $this->api->call($request, function ($call) use (&$new_location) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_location) {
+                    $new_location = $headers['Location'];
+                });
+        });
+
+        $this->api->call(new Request('GET', $new_location), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertNotEmpty($content['picture']);
+                    $this->assertStringNotContainsString('picture.png', $content['picture']);
+                });
+        });
+    }
 }

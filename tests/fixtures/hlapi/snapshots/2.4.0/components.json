@@ -776,6 +776,11 @@
                     "type": "string",
                     "maxLength": 255
                 },
+                "picture_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
                 "picture": {
                     "type": "string",
                     "readOnly": true
@@ -3478,6 +3483,14 @@
                         4
                     ]
                 },
+                "file": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
                 "changes_id": {
                     "type": "integer",
                     "format": "int64"
@@ -3607,6 +3620,14 @@
                         3,
                         4
                     ]
+                },
+                "file": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
                 },
                 "changes_id": {
                     "type": "integer",
@@ -4531,6 +4552,31 @@
                 "is_half_rack": {
                     "type": "boolean",
                     "default": false
+                },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
                 },
                 "picture_front": {
                     "type": "string",
@@ -5663,6 +5709,31 @@
                 "is_half_rack": {
                     "type": "boolean"
                 },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
                 "picture_front": {
                     "type": "string",
                     "readOnly": true
@@ -5969,6 +6040,31 @@
                 },
                 "is_half_rack": {
                     "type": "boolean"
+                },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
                 },
                 "picture_front": {
                     "type": "string",
@@ -6285,6 +6381,31 @@
                 "is_half_rack": {
                     "type": "boolean"
                 },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
                 "picture_front": {
                     "type": "string",
                     "readOnly": true
@@ -6578,6 +6699,31 @@
                 },
                 "is_half_rack": {
                     "type": "boolean"
+                },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
                 },
                 "picture_front": {
                     "type": "string",
@@ -6877,6 +7023,31 @@
                 },
                 "is_half_rack": {
                     "type": "boolean"
+                },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
                 },
                 "picture_front": {
                     "type": "string",
@@ -7212,6 +7383,31 @@
                 },
                 "is_half_rack": {
                     "type": "boolean"
+                },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
                 },
                 "picture_front": {
                     "type": "string",
@@ -8083,6 +8279,11 @@
                 "filename": {
                     "type": "string"
                 },
+                "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
                 "filepath": {
                     "type": "string",
                     "readOnly": true
@@ -8268,6 +8469,10 @@
                     "x-full-schema": "Document"
                 },
                 "filepath": {
+                    "type": "string",
+                    "readOnly": true
+                },
+                "download_url": {
                     "type": "string",
                     "readOnly": true
                 },
@@ -9352,6 +9557,31 @@
                 "is_half_rack": {
                     "type": "boolean",
                     "default": false
+                },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
                 },
                 "picture_front": {
                     "type": "string",
@@ -10667,6 +10897,14 @@
                 "source_of_item_id": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "file": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
                 }
             }
         },
@@ -14602,6 +14840,31 @@
                     "type": "boolean",
                     "default": false
                 },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
                 "picture_front": {
                     "type": "string",
                     "readOnly": true
@@ -15214,6 +15477,31 @@
                 "is_half_rack": {
                     "type": "boolean",
                     "default": false
+                },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
                 },
                 "picture_front": {
                     "type": "string",
@@ -18119,6 +18407,31 @@
                     "type": "boolean",
                     "default": false
                 },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
                 "picture_front": {
                     "type": "string",
                     "readOnly": true
@@ -18464,6 +18777,31 @@
                 "product_number": {
                     "type": "string",
                     "maxLength": 255
+                },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
                 },
                 "picture_front": {
                     "type": "string",
@@ -19175,6 +19513,31 @@
                 "product_number": {
                     "type": "string"
                 },
+                "picture_front_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "picture_rear_upload": {
+                    "type": "string",
+                    "format": "binary",
+                    "writeOnly": true
+                },
+                "pictures_upload": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
+                "pictures_remove": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "writeOnly": true
+                    }
+                },
                 "picture_front": {
                     "type": "string",
                     "readOnly": true
@@ -19693,6 +20056,14 @@
                         3,
                         4
                     ]
+                },
+                "file": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
                 },
                 "problems_id": {
                     "type": "integer",
@@ -25635,6 +26006,14 @@
                 "date_approval": {
                     "type": "string",
                     "format": "date-time"
+                },
+                "file": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
                 }
             }
         },
@@ -27374,6 +27753,14 @@
                         4
                     ]
                 },
+                "file": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
+                },
                 "tickets_id": {
                     "type": "integer",
                     "format": "int64"
@@ -27511,6 +27898,14 @@
                         3,
                         4
                     ]
+                },
+                "file": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "binary",
+                        "writeOnly": true
+                    }
                 },
                 "tickets_id": {
                     "type": "integer",
@@ -27964,6 +28359,11 @@
                 "password2": {
                     "type": "string",
                     "format": "password",
+                    "writeOnly": true
+                },
+                "picture_upload": {
+                    "type": "string",
+                    "format": "binary",
                     "writeOnly": true
                 },
                 "picture": {

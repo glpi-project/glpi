@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Api\HL\Controller;
 use Change;
 use ChangeValidation;
 use CommonITILObject;
+use Document_Item;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
@@ -284,7 +285,7 @@ class ITILControllerTest extends HLAPITestCase
         $solution = new \ITILSolution();
         $validation = new TicketValidation();
         $document = new \Document();
-        $document_item = new \Document_Item();
+        $document_item = new Document_Item();
 
         // Create a followup
         $this->assertGreaterThan(0, $fup_id = $fup->add([
@@ -733,5 +734,63 @@ class ITILControllerTest extends HLAPITestCase
             'name' => __FUNCTION__ . '2',
             'cost_fixed' => 150,
         ]);
+    }
+
+    public function testAddFollowupWithFiles(): void
+    {
+        $this->login();
+        $ticket_id = getItemByTypeName(Ticket::class, '_ticket01', true);
+
+        $foo_txt = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.txt');
+        $foo_img = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/foo.png');
+        $foo_img_base64 = base64_encode($foo_img);
+        $bar_txt = file_get_contents(GLPI_ROOT . '/tests/fixtures/uploads/bar.txt');
+
+        // Request with the img in the content as a base64 data uri, and the other files on the "file" field
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="content"
+
+This is a test followup with an image: <img src="data:image/png;base64,{$foo_img_base64}" alt="foo.png" />
+-----boundary
+Content-Disposition: form-data; name="file"; filename="foo.txt"
+
+{$foo_txt}
+-----boundary
+Content-Disposition: form-data; name="file"; filename="bar.txt"
+
+{$bar_txt}
+-----boundary--
+EOT;
+
+        $request = new Request('POST', "/Assistance/Ticket/{$ticket_id}/Timeline/Followup", [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+        $followup_id = null;
+        $this->api->call($request, function ($call) use (&$followup_id) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$followup_id) {
+                    $followup_id = $content['id'];
+                });
+        });
+
+        // confirm 2 document items were created and linked to the followup
+        $this->assertEquals(2, countElementsInTable(
+            table: Document_Item::getTable(),
+            condition: [
+                'itemtype' => 'ITILFollowup',
+                'items_id' => $followup_id,
+            ]
+        ));
+
+        // confirm the content of the followup has the image src replaced with the document item URL
+        $this->api->call(new Request('GET', "/Assistance/Ticket/{$ticket_id}/Timeline/Followup/{$followup_id}"), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertStringContainsString("document.send.php?docid=", $content['content']);
+                });
+        });
     }
 }

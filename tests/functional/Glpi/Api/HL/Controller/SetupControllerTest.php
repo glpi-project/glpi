@@ -948,4 +948,52 @@ class SetupControllerTest extends HLAPITestCase
                 });
         });
     }
+
+    public function testCreateAssetDefinitionWithPicture(): void
+    {
+        $bar_file_path = GLPI_ROOT . '/tests/fixtures/uploads/bar.png';
+        $bar_file_content = file_get_contents($bar_file_path);
+
+        $this->login();
+
+        // multipart form data request with the document item's name, the file, and the entity ID
+        $multipart_body = <<<EOT
+-----boundary
+Content-Disposition: form-data; name="system_name"
+
+Car
+-----boundary
+Content-Disposition: form-data; name="label"
+
+Car
+-----boundary
+Content-Disposition: form-data; name="picture_upload"; filename="bar.png"
+
+$bar_file_content
+-----boundary--
+EOT;
+
+        $request = new Request('POST', '/Setup/AssetDefinition', [
+            'Content-Type' => 'multipart/form-data; boundary=---boundary',
+        ], $multipart_body);
+
+        $new_location = null;
+        $this->api->call($request, function ($call) use (&$new_location) {
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_location) {
+                    $new_location = $headers['Location'];
+                });
+        });
+
+        $this->api->call(new Request('GET', $new_location), function ($call) {
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('Car', $content['system_name']);
+                    $this->assertEquals('Car', $content['label']);
+                    $this->assertNotEmpty($content['picture']);
+                });
+        });
+    }
 }
