@@ -43,6 +43,8 @@ use BackedEnum;
 trait DeserializeStrategiesTrait
 {
     /**
+     * @template T of BackedEnum
+     *
      * @param array<string, mixed> $data
      * @param T                    $default
      *
