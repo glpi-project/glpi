@@ -415,25 +415,8 @@ class Group_User extends CommonDBRelation
 
         // Whether to also include members of this group's sub-groups.
         // Persisted per-session, like other saved list options.
-        $tree = (int) Session::getSavedOption(self::class, 'tree', 0);
-
-        if ($group->haveChildren()) {
-            // Carry over any active column filter: reloadTab() doesn't merge
-            // query strings across calls, so we must resend them ourselves.
-            $filters_qs = http_build_query(['filters' => $_GET['filters'] ?? []]);
-            $reload_suffix = $filters_qs !== '' ? ('&' . $filters_qs) : '';
-
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                {% import 'components/form/fields_macros.html.twig' as fields %}
-                <div class="d-flex justify-content-center mb-2">
-                    {{ fields.dropdownYesNo('tree', tree, __('Include members of sub-groups'), {
-                        on_change: 'reloadTab("start=0&tree="+this.value+"' ~ reload_suffix ~ '")'
-                    }) }}
-                </div>
-TWIG, ['tree' => $tree, 'reload_suffix' => $reload_suffix]);
-        } else {
-            $tree = 0;
-        }
+        $has_children = $group->haveChildren();
+        $tree = $has_children ? (int) Session::getSavedOption(self::class, 'tree', 0) : 0;
 
         self::getDataForGroup($group, $used, $ids, $_GET['filters'] ?? [], $tree, false);
         $all_groups = count($used);
@@ -465,6 +448,24 @@ TWIG, ['tree' => $tree, 'reload_suffix' => $reload_suffix]);
 
         if ($canedit) {
             self::showAddUserForm($group, $ids, $entityrestrict);
+        }
+
+        if ($has_children) {
+            // Carry over any active column filter: reloadTab() doesn't merge
+            // query strings across calls, so we must resend them ourselves.
+            $filters_qs = http_build_query(['filters' => $_GET['filters'] ?? []]);
+            $reload_suffix = $filters_qs !== '' ? ('&' . $filters_qs) : '';
+
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                {% import 'components/form/fields_macros.html.twig' as fields %}
+                <hr class="my-3">
+                <div class="d-flex justify-content-end">
+                    {{ fields.dropdownYesNo('tree', tree, __('Include members of sub-groups'), {
+                        field_class: 'col-12 col-sm-8 col-md-5 col-xxl-4 mb-2',
+                        on_change: 'reloadTab("start=0&tree="+this.value+"' ~ reload_suffix ~ '")'
+                    }) }}
+                </div>
+TWIG, ['tree' => $tree, 'reload_suffix' => $reload_suffix]);
         }
 
         $number = count($used);
