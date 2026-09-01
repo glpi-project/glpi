@@ -1567,7 +1567,7 @@ TWIG, $twig_params);
 
             $restrict = [];
             if (!empty($column_ids) && !$get_default) {
-                $restrict = ['id' => $column_ids];
+                $restrict = [ProjectState::getTable() . '.id' => $column_ids];
             }
 
             $addselect = [];
