@@ -751,18 +751,16 @@ class MailCollector extends CommonDBTM
                         }
                     } catch (Throwable $e) {
                         $error++;
-                        ErrorHandler::logCaughtException($e);
-                        ErrorHandler::displayCaughtExceptionMessage($e);
-                        Toolbox::logInFile(
-                            'mailgate',
+                        $this->reportMailCollectError(
+                            $e,
+                            $rejinput,
+                            $rejected,
                             sprintf(
-                                __('Error during message parsing (%s). Check in "%s" for more details') . "\n",
+                                __('Error during message parsing (%s). Check in "%s" for more details'),
                                 $e->getMessage(),
                                 GLPI_LOG_DIR . '/php-errors.log'
                             )
                         );
-                        $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
-                        $rejected->add($rejinput);
                         continue;
                     }
 
@@ -781,115 +779,146 @@ class MailCollector extends CommonDBTM
                         $_SESSION['mailcollector_user'] = $tkt["_users_id_requester_notif"]['alternative_email'][0];
                     }
 
-                    if (isset($tkt['_blacklisted']) && $tkt['_blacklisted']) {
-                        $delete[$uid] =  self::REFUSED_FOLDER;
-                        $blacklisted++;
-                    } elseif (isset($tkt['_refuse_email_with_response'])) {
-                        $delete[$uid] =  self::REFUSED_FOLDER;
-                        $refused++;
-                        $this->sendMailRefusedResponse($requester, $tkt['name']);
-                    } elseif (isset($tkt['_refuse_email_no_response'])) {
-                        $delete[$uid] =  self::REFUSED_FOLDER;
-                        $refused++;
-                    } elseif (
-                        isset($tkt['entities_id'])
-                          && !isset($tkt['tickets_id'])
-                          && ($CFG_GLPI["use_anonymous_helpdesk"]
-                              || !$is_user_anonymous
-                              || !$is_supplier_anonymous)
-                    ) {
-                        // New ticket case
-                        $ticket = new Ticket();
-
-                        if (
-                            !$CFG_GLPI["use_anonymous_helpdesk"]
-                            && !Profile::haveUserRight(
-                                $tkt['_users_id_requester'],
-                                Ticket::$rightname,
-                                CREATE,
-                                $tkt['entities_id']
-                            )
-                        ) {
+                    try {
+                        if (isset($tkt['_blacklisted']) && $tkt['_blacklisted']) {
+                            $delete[$uid] =  self::REFUSED_FOLDER;
+                            $blacklisted++;
+                        } elseif (isset($tkt['_refuse_email_with_response'])) {
                             $delete[$uid] =  self::REFUSED_FOLDER;
                             $refused++;
-                            $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
-                            $rejected->add($rejinput);
-                        } elseif ($ticket->add($tkt)) {
-                            $delete[$uid] =  self::ACCEPTED_FOLDER;
-                        } else {
-                            $error++;
-                            $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
-                            $rejected->add($rejinput);
-                        }
-                    } elseif (
-                        isset($tkt['tickets_id'])
-                          && ($CFG_GLPI['use_anonymous_followups'] || !$is_user_anonymous || $tkt['_supplier_email'])
-                    ) {
-                        // Followup case
-                        $ticket = new Ticket();
-                        $ticketExist = $ticket->getFromDB($tkt['tickets_id']);
-                        $fup = new ITILFollowup();
-
-                        $fup_input = $tkt;
-                        $fup_input['itemtype'] = Ticket::class;
-                        $fup_input['items_id'] = $fup_input['tickets_id'];
-                        unset($fup_input['tickets_id']);
-
-                        if (
-                            $ticketExist && Entity::getUsedConfig(
-                                'suppliers_as_private',
-                                $ticket->fields['entities_id']
-                            )
+                            try {
+                                $this->sendMailRefusedResponse($requester, $tkt['name']);
+                            } catch (Throwable $e) {
+                                // The message was already correctly classified as refused above ;
+                                // a failure to notify the sender must not be reported as a failed import.
+                                ErrorHandler::logCaughtException($e);
+                                Toolbox::logInFile(
+                                    'mailgate',
+                                    sprintf(
+                                        __('Unable to send refused response for message from collector "%s" (%s) (%s)'),
+                                        $this->fields['name'],
+                                        $this->fields['host'],
+                                        $e->getMessage()
+                                    ) . "\n"
+                                );
+                            }
+                        } elseif (isset($tkt['_refuse_email_no_response'])) {
+                            $delete[$uid] =  self::REFUSED_FOLDER;
+                            $refused++;
+                        } elseif (
+                            isset($tkt['entities_id'])
+                              && !isset($tkt['tickets_id'])
+                              && ($CFG_GLPI["use_anonymous_helpdesk"]
+                                  || !$is_user_anonymous
+                                  || !$is_supplier_anonymous)
                         ) {
-                            // Get suppliers matching the from email
-                            $suppliers = Supplier::getSuppliersByEmail(
-                                $rejinput['from']
-                            );
+                            // New ticket case
+                            $ticket = new Ticket();
 
-                            foreach ($suppliers as $supplier) {
-                                // If the supplier is assigned to this ticket then
-                                // the followup must be private
-                                if (
-                                    $ticket->isSupplier(
-                                        CommonITILActor::ASSIGN,
-                                        $supplier['id']
-                                    )
-                                ) {
-                                    $fup_input['is_private'] = true;
-                                    break;
+                            if (
+                                !$CFG_GLPI["use_anonymous_helpdesk"]
+                                && !Profile::haveUserRight(
+                                    $tkt['_users_id_requester'],
+                                    Ticket::$rightname,
+                                    CREATE,
+                                    $tkt['entities_id']
+                                )
+                            ) {
+                                $delete[$uid] =  self::REFUSED_FOLDER;
+                                $refused++;
+                                $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
+                                $rejected->add($rejinput);
+                            } elseif ($ticket->add($tkt)) {
+                                $delete[$uid] =  self::ACCEPTED_FOLDER;
+                            } else {
+                                $error++;
+                                $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+                                $rejected->add($rejinput);
+                            }
+                        } elseif (
+                            isset($tkt['tickets_id'])
+                              && ($CFG_GLPI['use_anonymous_followups'] || !$is_user_anonymous || $tkt['_supplier_email'])
+                        ) {
+                            // Followup case
+                            $ticket = new Ticket();
+                            $ticketExist = $ticket->getFromDB($tkt['tickets_id']);
+                            $fup = new ITILFollowup();
+
+                            $fup_input = $tkt;
+                            $fup_input['itemtype'] = Ticket::class;
+                            $fup_input['items_id'] = $fup_input['tickets_id'];
+                            unset($fup_input['tickets_id']);
+
+                            if (
+                                $ticketExist && Entity::getUsedConfig(
+                                    'suppliers_as_private',
+                                    $ticket->fields['entities_id']
+                                )
+                            ) {
+                                // Get suppliers matching the from email
+                                $suppliers = Supplier::getSuppliersByEmail(
+                                    $rejinput['from']
+                                );
+
+                                foreach ($suppliers as $supplier) {
+                                    // If the supplier is assigned to this ticket then
+                                    // the followup must be private
+                                    if (
+                                        $ticket->isSupplier(
+                                            CommonITILActor::ASSIGN,
+                                            $supplier['id']
+                                        )
+                                    ) {
+                                        $fup_input['is_private'] = true;
+                                        break;
+                                    }
                                 }
                             }
-                        }
 
-                        if (!$ticketExist) {
-                            $error++;
-                            $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
-                            $rejected->add($rejinput);
-                        } elseif (
-                            !$CFG_GLPI['use_anonymous_followups']
-                             && !$ticket->canUserAddFollowups($tkt['_users_id_requester'])
-                             && !$tkt['_supplier_email']
-                        ) {
-                            $delete[$uid] =  self::REFUSED_FOLDER;
+                            if (!$ticketExist) {
+                                $error++;
+                                $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+                                $rejected->add($rejinput);
+                            } elseif (
+                                !$CFG_GLPI['use_anonymous_followups']
+                                 && !$ticket->canUserAddFollowups($tkt['_users_id_requester'])
+                                 && !$tkt['_supplier_email']
+                            ) {
+                                $delete[$uid] =  self::REFUSED_FOLDER;
+                                $refused++;
+                                $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
+                                $rejected->add($rejinput);
+                            } elseif ($fup->add($fup_input)) {
+                                $delete[$uid] =  self::ACCEPTED_FOLDER;
+                            } else {
+                                $error++;
+                                $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+                                $rejected->add($rejinput);
+                            }
+                        } else {
+                            if ($is_user_anonymous && !$CFG_GLPI["use_anonymous_helpdesk"]) {
+                                $rejinput['reason'] = NotImportedEmail::USER_UNKNOWN;
+                            } else {
+                                $rejinput['reason'] = NotImportedEmail::MATCH_NO_RULE;
+                            }
                             $refused++;
-                            $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
                             $rejected->add($rejinput);
-                        } elseif ($fup->add($fup_input)) {
-                            $delete[$uid] =  self::ACCEPTED_FOLDER;
-                        } else {
-                            $error++;
-                            $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
-                            $rejected->add($rejinput);
+                            $delete[$uid] =  self::REFUSED_FOLDER;
                         }
-                    } else {
-                        if ($is_user_anonymous && !$CFG_GLPI["use_anonymous_helpdesk"]) {
-                            $rejinput['reason'] = NotImportedEmail::USER_UNKNOWN;
-                        } else {
-                            $rejinput['reason'] = NotImportedEmail::MATCH_NO_RULE;
-                        }
-                        $refused++;
-                        $rejected->add($rejinput);
-                        $delete[$uid] =  self::REFUSED_FOLDER;
+                    } catch (Throwable $e) {
+                        $error++;
+                        $this->reportMailCollectError(
+                            $e,
+                            $rejinput,
+                            $rejected,
+                            sprintf(
+                                __('Error while creating ticket/followup from collector "%s" (%s) (%s). Check in "%s" for more details'),
+                                $this->fields['name'],
+                                $this->fields['host'],
+                                $e->getMessage(),
+                                GLPI_LOG_DIR . '/php-errors.log'
+                            )
+                        );
                     }
 
                     // Clean mail author used for notification settings
@@ -939,6 +968,34 @@ class MailCollector extends CommonDBTM
             } else {
                 return $msg;
             }
+        }
+    }
+
+    /**
+     * Logs an exception caught during collect() and reports the corresponding message as rejected.
+     *
+     * @param Throwable        $e           Caught exception
+     * @param array<string, mixed> $rejinput    Input used to build the NotImportedEmail entry
+     * @param NotImportedEmail $rejected    NotImportedEmail instance to add the entry to
+     * @param string           $log_message Message to write to the mailgate log file
+     */
+    private function reportMailCollectError(Throwable $e, array $rejinput, NotImportedEmail $rejected, string $log_message): void
+    {
+        ErrorHandler::logCaughtException($e);
+        ErrorHandler::displayCaughtExceptionMessage($e);
+        Toolbox::logInFile('mailgate', $log_message . "\n");
+
+        $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
+        try {
+            $rejected->add($rejinput);
+        } catch (Throwable $inner_e) {
+            // Reporting itself failed (e.g. same malformed content) ; log-only to avoid letting
+            // the exception escape the caller's catch block and abort the whole collect batch.
+            ErrorHandler::logCaughtException($inner_e);
+            Toolbox::logInFile(
+                'mailgate',
+                sprintf(__('Unable to report rejected email (%s)'), $inner_e->getMessage()) . "\n"
+            );
         }
     }
 
