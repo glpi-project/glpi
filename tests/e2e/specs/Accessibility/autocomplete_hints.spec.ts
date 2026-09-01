@@ -67,17 +67,23 @@ test('profile identity fields expose autocomplete tokens when editing own profil
 
     await expect(page.getByLabel('Surname', { exact: true })).toHaveAttribute('autocomplete', 'family-name');
     await expect(page.getByLabel('First name', { exact: true })).toHaveAttribute('autocomplete', 'given-name');
+    await expect(page.getByLabel('Middle name / Patronymic', { exact: true })).toHaveAttribute('autocomplete', 'additional-name');
     await expect(page.getByLabel('Phone', { exact: true })).toHaveAttribute('autocomplete', 'tel');
-    await expect(page.getByLabel('Mobile phone', { exact: true })).toHaveAttribute('autocomplete', 'tel');
+    // Qualified so autofill does not treat it as the same field as `phone`.
+    await expect(page.getByLabel('Mobile phone', { exact: true })).toHaveAttribute('autocomplete', 'mobile tel');
     await expect(page.getByLabel('Phone 2', { exact: true })).toHaveAttribute('autocomplete', 'tel');
 });
 
 // Guard: the admin user form (outside the preference context) must NOT emit personal tokens.
 test('admin user form does not expose personal autocomplete tokens (guard)', async ({ page, profile }) => {
     await profile.set(Profiles.SuperAdmin);
+    const user_page = new UserPage(page);
     await page.goto(`/front/user.form.php?forcetab=${USER_FORM_TAB}`);
 
     await expect(page.getByLabel('Surname', { exact: true })).not.toHaveAttribute('autocomplete', 'family-name');
+
+    // Email rows are built in PHP, so they carry their own guard.
+    await expect(user_page.getEmailFields().first()).not.toHaveAttribute('autocomplete');
 });
 
 // User's own e-mail inputs on the profile page, server-rendered and client-added alike.

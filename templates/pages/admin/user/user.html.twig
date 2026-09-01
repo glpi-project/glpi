@@ -101,6 +101,7 @@
                             }) }}
                             {{ fields.textField('middlename', item.fields['middlename'], __('Middle name / Patronymic'), {
                                 readonly: external_auth,
+                                additional_attributes: is_preference_form ? {autocomplete: 'additional-name'} : {},
                             }) }}
 
                             {% if use_timezones %}
@@ -263,7 +264,7 @@
                                 additional_attributes: is_preference_form ? {autocomplete: 'tel'} : {},
                             }) }}
                             {{ fields.textField('mobile', item.fields['mobile'], __('Mobile phone'), {
-                                additional_attributes: is_preference_form ? {autocomplete: 'tel'} : {},
+                                additional_attributes: is_preference_form ? {autocomplete: 'mobile tel'} : {},
                             }) }}
                             {% if not simple_form %}
                                 {{ fields.textField('phone2', item.fields['phone2'], __('Phone 2'), {
