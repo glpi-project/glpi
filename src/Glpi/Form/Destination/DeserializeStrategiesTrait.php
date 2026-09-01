@@ -8,6 +8,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,21 +33,33 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Form\Destination\CommonITILField;
+namespace Glpi\Form\Destination;
 
-use Glpi\Form\Destination\HasFieldWithQuestionId;
-use Override;
+use BackedEnum;
 
-#[HasFieldWithQuestionId(self::SPECIFIC_QUESTION_IDS, is_array: true)]
-final class ObserverFieldConfig extends ITILActorFieldConfig
+/**
+ * Shared strategies deserialization for configs that hold multiple strategies.
+ */
+trait DeserializeStrategiesTrait
 {
-    #[Override]
-    public static function jsonDeserialize(array $data): self
+    /**
+     * @template T of BackedEnum
+     *
+     * @param array<string, mixed> $data
+     * @param T                    $default
+     *
+     * @return non-empty-array<T>
+     */
+    protected static function deserializeStrategies(array $data, BackedEnum $default): array
     {
-        return new self(
-            strategies: self::deserializeStrategies($data, ITILActorFieldStrategy::FROM_TEMPLATE),
-            specific_itilactors_ids: $data[self::SPECIFIC_ITILACTORS_IDS] ?? [],
-            specific_question_ids: $data[self::SPECIFIC_QUESTION_IDS] ?? [],
-        );
+        $strategy_class = $default::class;
+        $strategies = array_values(array_filter(array_map(
+            fn($strategy) => is_scalar($strategy)
+                ? $strategy_class::tryFrom((string) $strategy)
+                : null,
+            $data[static::getStrategiesInputName()] ?? []
+        )));
+
+        return $strategies ?: [$default];
     }
 }
