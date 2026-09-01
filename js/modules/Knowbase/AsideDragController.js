@@ -56,6 +56,9 @@ export class GlpiKnowbaseAsideDragController
     /** @type {HTMLElement|null} */
     #root_list = null;
 
+    /** @type {number} The root article: the base of the tree, nothing may host it. */
+    #root_article_id = 0;
+
     /** @type {HTMLElement|null} The `<li>` being dragged. */
     #dragged = null;
 
@@ -109,6 +112,7 @@ export class GlpiKnowbaseAsideDragController
         if (!this.#root_list) {
             return;
         }
+        this.#root_article_id = Number(this.#tree.dataset.glpiKbRootId) || 0;
         this.#initEventHandlers();
     }
 
@@ -161,6 +165,11 @@ export class GlpiKnowbaseAsideDragController
 
         const row = e.target.closest('li[data-glpi-kb-article-id]');
         if (!row || !this.#tree.contains(row)) {
+            return;
+        }
+
+        // The root article is the base of the tree: no article may host it.
+        if (Number(row.dataset.glpiKbArticleId) === this.#root_article_id) {
             return;
         }
 
@@ -529,7 +538,13 @@ export class GlpiKnowbaseAsideDragController
             );
         } catch {
             // `post()` already toasted: undo the move, restoring a dropped duplicate too.
-            previous_list.insertBefore(dragged, previous_sibling);
+            // The captured sibling may have moved during the request, and `insertBefore`
+            // would then throw, skipping the rest of the rollback.
+            if (previous_sibling?.parentElement === previous_list) {
+                previous_list.insertBefore(dragged, previous_sibling);
+            } else {
+                previous_list.append(dragged);
+            }
             this.#refreshNodeState(new_parent_row);
             this.#refreshNodeState(previous_parent_row);
             if (intent.mode === 'into') {
@@ -639,13 +654,13 @@ export class GlpiKnowbaseAsideDragController
     }
 
     /**
-     * Re-apply the leaf/node contract after a row's children changed: a row
-     * that lost its last child drops its fold toggle, one that gained its
-     * first acquires it.
+     * Re-apply the leaf/node contract after a row's children changed, on the rule
+     * `_article_row.html.twig` uses: the fold toggle follows the children, the node
+     * markup follows `hasChildren or can_create`. The "+" writes into the child list,
+     * so a row carrying it stays a node without children.
      *
-     * The `<ul>` itself is never removed: when article creation is allowed it
-     * is also where the "+" affordance writes (AsideController
-     * `#openCreateInput`).
+     * The `<ul>` itself is never removed: it is where that "+" affordance writes
+     * (AsideController `#openCreateInput`).
      *
      * @param {HTMLElement|null} row
      */
@@ -655,27 +670,38 @@ export class GlpiKnowbaseAsideDragController
             return;
         }
 
+        const line = row.querySelector(':scope > .article-line');
+        if (line === null) {
+            return;
+        }
+
         const list = row.querySelector(':scope > ul');
         const has_children = list !== null && list.children.length > 0;
-        const line = row.querySelector(':scope > .article-line');
-        const toggle = line?.querySelector('[data-glpi-kb-aside-category-toggle]') ?? null;
+        const toggle = line.querySelector('[data-glpi-kb-aside-category-toggle]');
 
-        if (has_children && !toggle && line) {
-            // Server-rendered nodes carry these; a leaf becoming one needs them too.
-            row.setAttribute('data-glpi-kb-aside-category', '');
-            row.setAttribute('role', 'group');
-            // Names the group, and `AsideController#setCollapsed` reaches the
-            // toggle only through the header attribute.
-            row.setAttribute('aria-label', this.#titleOf(row));
-            line.setAttribute('data-glpi-kb-aside-category-header', '');
-            line.classList.add('mb-2');
+        if (has_children && toggle === null) {
             line.prepend(this.#buildFoldToggle(row));
-        } else if (!has_children && toggle) {
+        } else if (!has_children && toggle !== null) {
             toggle.remove();
             row.removeAttribute('data-glpi-kb-aside-category-collapsed');
         }
 
-        row.classList.toggle('node', has_children);
+        const is_node = has_children
+            || line.querySelector('[data-glpi-kb-aside-category-add]') !== null;
+
+        row.classList.toggle('node', is_node);
+        row.toggleAttribute('data-glpi-kb-aside-category', is_node);
+        // `AsideController#setCollapsed` reaches the toggle only through the header.
+        line.toggleAttribute('data-glpi-kb-aside-category-header', is_node);
+        line.classList.toggle('mb-2', is_node);
+        if (is_node) {
+            // Names the group, as the server-rendered nodes do.
+            row.setAttribute('role', 'group');
+            row.setAttribute('aria-label', this.#titleOf(row));
+        } else {
+            row.removeAttribute('role');
+            row.removeAttribute('aria-label');
+        }
     }
 
     /**

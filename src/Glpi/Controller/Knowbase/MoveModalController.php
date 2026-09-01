@@ -68,14 +68,17 @@ final class MoveModalController extends AbstractController
         if (!$item->can($id, UPDATE)) {
             throw new AccessDeniedHttpException();
         }
+        // The root article is the base of the tree, it cannot be moved.
+        if ($item->isRoot()) {
+            throw new AccessDeniedHttpException();
+        }
 
         $hint       = $request->query->getInt('from_parent_id');
         $candidates = (new MoveCandidates($id))->build();
 
-        // Verified, not trusted: kept only if it is a real edge AND an offered candidate.
-        $from_parent_id = KnowbaseItem_KnowbaseItem::isParentOf($hint, $id) && array_key_exists($hint, $candidates)
-            ? $hint
-            : 0;
+        // Verified, not trusted: a real edge. Candidacy qualifies the destination, never
+        // the edge to remove, or a refused parent would turn the move into a copy.
+        $from_parent_id = KnowbaseItem_KnowbaseItem::isParentOf($hint, $id) ? $hint : 0;
 
         return $this->render('pages/tools/kb/modal/move.html.twig', [
             'id'             => $id,

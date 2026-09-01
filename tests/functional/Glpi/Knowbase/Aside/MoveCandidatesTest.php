@@ -236,6 +236,50 @@ final class MoveCandidatesTest extends DbTestCase
         $this->assertArrayNotHasKey($faq->getID(), $candidates);
     }
 
+    public function testNonFaqArticleIsNotACandidateWithoutTheUpdateRight(): void
+    {
+        $this->login();
+        $moved  = $this->makeArticle('Moved ' . __FUNCTION__);
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Parent ' . __FUNCTION__,
+            'answer'   => '<p>x</p>',
+            // Its author could edit it whatever the rights, so someone else owns it.
+            'users_id' => getItemByTypeName('User', 'normal', true),
+        ]);
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $parent->getID(),
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+
+        // Publishing in the FAQ is not editing a regular article, and gaining a child
+        // is: the move endpoint enforces UPDATE on the new parent.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | KnowbaseItem::PUBLISHFAQ;
+
+        // Not vacuous: the article does reach the tree, it is only refused as a parent.
+        $this->assertContains(
+            $parent->getID(),
+            $this->treeIds((new Builder())->buildTree()->getArticles()),
+        );
+
+        $candidates = (new MoveCandidates($moved->getID()))->build();
+
+        $this->assertArrayNotHasKey($parent->getID(), $candidates);
+    }
+
+    public function testRootArticleIsNotACandidateWithoutTheUpdateRight(): void
+    {
+        $this->login();
+        $moved = $this->makeArticle('Moved ' . __FUNCTION__);
+
+        // The root article has neither an author rule nor a visibility rule of its own,
+        // see `KnowbaseItem::canUpdateItem()`: only the global right stands in the way.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | KnowbaseItem::PUBLISHFAQ;
+
+        $candidates = (new MoveCandidates($moved->getID()))->build();
+
+        $this->assertArrayNotHasKey(KnowbaseItem::getRootId(), $candidates);
+    }
+
     public function testIncoherentEntityArticleIsNotACandidateEvenIfVisible(): void
     {
         $entity_1 = getItemByTypeName('Entity', '_test_child_1', true);
@@ -263,6 +307,8 @@ final class MoveCandidatesTest extends DbTestCase
 
         $this->login('normal', 'normal');
         $this->setEntity($entity_1, false);
+        // Keeps the entity as the only possible reason for the refusal.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
 
         // Not vacuous: the share really does make $foreign reach the tree.
         $this->assertContains($foreign->getID(), $this->treeIds((new Builder())->buildTree()->getArticles()));
@@ -270,6 +316,9 @@ final class MoveCandidatesTest extends DbTestCase
         $candidates = (new MoveCandidates($moved->getID()))->build();
 
         $this->assertArrayNotHasKey($foreign->getID(), $candidates);
+        // The root article is in entity 0 and recursive, so it stays coherent: the list
+        // is not empty for another reason.
+        $this->assertArrayHasKey(KnowbaseItem::getRootId(), $candidates);
     }
 
     /** Title of the root article, which prefixes every candidate path. */

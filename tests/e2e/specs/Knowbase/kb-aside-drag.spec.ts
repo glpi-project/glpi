@@ -351,6 +351,58 @@ test('Dropping beside the root article issues no move request', async ({ page, p
     expect(moves).toBe(1);
 });
 
+test('The root article cannot be dragged under another article', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    const unique = randomUUID().slice(0, 8);
+    const orphan_name = `E2E Orphan ${unique}`;
+    const host_name = `E2E Host ${unique}`;
+
+    const orphan_id = await api.createItem('KnowbaseItem', {
+        name: orphan_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+    // Created articles join the root: dropping that edge promotes the article to the
+    // root level, where it becomes a sibling of the root article rather than a
+    // descendant. That is the only kind of row the root could be dropped onto.
+    const links = await api.getSubItems(
+        'KnowbaseItem',
+        orphan_id,
+        'KnowbaseItem_KnowbaseItem',
+    );
+    await api.purgeItem('KnowbaseItem_KnowbaseItem', links[0].id);
+
+    await api.createItem('KnowbaseItem', {
+        name: host_name,
+        answer: 'Test content',
+        entities_id: getWorkerEntityId(),
+    });
+
+    await kb.goto(orphan_id);
+    await expect(kb.getAsideArticleTitleLink(orphan_name)).toBeVisible();
+
+    let moves = 0;
+    page.on('request', (request) => {
+        if (request.url().includes('/Move')) {
+            moves++;
+        }
+    });
+
+    // Refused before the drag even arms: the root article is the base of the tree.
+    await kb.doDropOnBand(ROOT_ARTICLE_NAME, orphan_name, 'middle');
+    await expect(kb.getAsideCategoryArticle(orphan_name, ROOT_ARTICLE_NAME)).toHaveCount(0);
+
+    // Sentinel: the counter does catch a move that is allowed to happen.
+    await Promise.all([
+        page.waitForResponse('**/Knowbase/Aside/Article/*/Move'),
+        kb.doDropOnBand(orphan_name, host_name, 'middle'),
+    ]);
+
+    expect(moves).toBe(1);
+});
+
 test('Can drop on a child bottom edge to become its sibling', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
     const kb = new KnowbaseItemPage(page);

@@ -140,12 +140,22 @@ final class MoveCandidates
         if (Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)) {
             return false;
         }
-        // Its author edits it whatever the article is, see `KnowbaseItem::canUpdateItem()`.
-        if ((int) $parent->fields['users_id'] === Session::getLoginUserID()) {
+        // The root article has no author rule of its own, see `KnowbaseItem::canUpdateItem()`.
+        if ($parent->isRoot()) {
+            return !Session::haveRight(KnowbaseItem::$rightname, UPDATE);
+        }
+        // Its author edits it whatever the article is, central interface only.
+        if (
+            Session::getCurrentInterface() === 'central'
+            && (int) $parent->fields['users_id'] === Session::getLoginUserID()
+        ) {
             return false;
         }
 
-        return (bool) $parent->fields['is_faq']
-            && !Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::PUBLISHFAQ);
+        if ((bool) $parent->fields['is_faq']) {
+            return !Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::PUBLISHFAQ);
+        }
+
+        return !Session::haveRight(KnowbaseItem::$rightname, UPDATE);
     }
 }

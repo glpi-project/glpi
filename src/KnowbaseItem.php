@@ -1820,7 +1820,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         array_push($actions, ...$toggles);
 
         $management = [];
-        if ($with_move && $this->can($this->fields['id'], UPDATE)) {
+        // The root article is the base of the tree, it cannot be moved.
+        if ($with_move && !$this->isRoot() && $this->can($this->fields['id'], UPDATE)) {
             $management[] = new EditorAction(
                 label: __("Move"),
                 icon: "ti ti-file-symlink",
@@ -3514,6 +3515,8 @@ TWIG, $twig_params);
                 'can_create'          => self::canCreate(),
                 'can_update'          => self::canUpdate(),
                 'show_actions'        => self::canShowAsideActions(),
+                // The base of the tree: the aside refuses to drag it.
+                'root_id'             => self::hasRoot() ? self::getRootId() : 0,
             ]
         );
     }

@@ -39,6 +39,8 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
+use KnowbaseItem_User;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -63,6 +65,14 @@ class MoveModalControllerTest extends DbTestCase
 
         $this->expectException(AccessDeniedHttpException::class);
         $this->callController($article, 0);
+    }
+
+    public function testRootArticleIsDenied(): void
+    {
+        $this->login();
+
+        $this->expectException(AccessDeniedHttpException::class);
+        $this->callController(KnowbaseItem::getRootId(), 0);
     }
 
     public function testRootLevelIsNotOfferedAndTheRootArticleStandsIn(): void
@@ -106,6 +116,39 @@ class MoveModalControllerTest extends DbTestCase
         // Reverse edge: catches isParentOf() being called with swapped arguments.
         $this->assertMatchesRegularExpression(
             '/name="from_parent_id"\s+value="0"/',
+            $content,
+        );
+    }
+
+    public function testRealParentIsKeptEvenWhenItIsNotAnOfferedCandidate(): void
+    {
+        $this->login();
+        $parent = $this->createItem(KnowbaseItem::class, [
+            'name'     => 'Move modal parent ' . $this->getUniqueString(),
+            'answer'   => '<p>x</p>',
+            // Its author could edit it whatever the rights, so someone else owns it.
+            'users_id' => getItemByTypeName('User', 'normal', true),
+            'is_faq'   => 1,
+        ])->getID();
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $parent,
+            'users_id'         => Session::getLoginUserID(),
+        ]);
+        $child = $this->makeArticle([$parent]);
+
+        // Hosting a child under an FAQ article needs PUBLISHFAQ, so the dropdown drops
+        // this parent. It is still the edge to remove, or the move would duplicate.
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | UPDATE;
+
+        $content = $this->callController($child, $parent)->getContent();
+
+        $this->assertMatchesRegularExpression(
+            '/name="from_parent_id"\s+value="' . $parent . '"/',
+            $content,
+        );
+        // Not vacuous: it really is refused as a destination.
+        $this->assertDoesNotMatchRegularExpression(
+            "/<option value='" . $parent . "'/",
             $content,
         );
     }
