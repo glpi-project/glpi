@@ -2883,6 +2883,39 @@ HTML,
         );
     }
 
+    public function testRootArticleIsNotOfferedTheMoveAction(): void
+    {
+        $this->login();
+
+        $root = new KnowbaseItem();
+        $this->assertTrue($root->getFromDB(KnowbaseItem::getRootId()));
+        $this->assertNotContains('Move', $this->getMovableAsideActionLabels($root));
+
+        // Sanity check: the action is offered for a regular article.
+        $other = $this->createItem(KnowbaseItem::class, [
+            'name'   => 'Article ' . __FUNCTION__,
+            'answer' => '',
+        ]);
+        $this->assertContains('Move', $this->getMovableAsideActionLabels($other));
+    }
+
+    /**
+     * Unlike `getAsideActionLabels()`, asks for the occurrence-aware actions: "Move"
+     * needs the aside row context and is never offered without it.
+     *
+     * @return string[]
+     */
+    private function getMovableAsideActionLabels(KnowbaseItem $article): array
+    {
+        return array_map(
+            static fn(EditorAction $action): string => $action->label,
+            array_filter(
+                $article->getAsideActions(with_move: true),
+                static fn(object $action): bool => $action instanceof EditorAction,
+            ),
+        );
+    }
+
     public function testArticleCreatedWithoutParentIsAttachedToTheRoot(): void
     {
         $this->login();

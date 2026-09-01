@@ -116,7 +116,7 @@
         <i class="ti ti-star-filled me-1 fs-5 text-yellow" aria-hidden="true"></i>
         {{ __("Favorites") }}
     </h4>
-        <ul class="kb-tree ps-0">
+        <ul class="kb-tree ps-0" aria-label="{{ __('Favorite articles') }}">
             {% for article in favorites %}
                 {% if article.is_current %}
                     {{ macros.render_article(
@@ -136,6 +136,7 @@
 <div
     class="card-body"
     data-glpi-kb-aside-tree
+    data-glpi-kb-root-id="{{ root_id }}"
     data-testid="aside-tree"
 >
     {{ include('pages/tools/kb/aside_tree.html.twig') }}
@@ -152,4 +153,13 @@
 
     const aside = document.querySelector('[data-main-page-aside="knowbaseitem"]');
     new GlpiKnowbaseAsideController(aside);
+    {# Without the update right every move would be refused server-side. Loaded
+     # dynamically: a drag cannot start before the user moves the pointer, so
+     # this one has no server-rendered state to reach in time. #}
+    {% if can_update %}
+        const { GlpiKnowbaseAsideDragController } = await import(
+            "/js/modules/Knowbase/AsideDragController.js"
+        );
+        new GlpiKnowbaseAsideDragController(aside);
+    {% endif %}
 </script>

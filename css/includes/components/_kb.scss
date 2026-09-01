@@ -1415,6 +1415,14 @@ body.in_modal .kb-editor-reserved {
                 padding-bottom: 0;
                 margin-bottom: 0;
 
+                // Contains the row's own bottom margin, which would otherwise collapse
+                // through the (possibly empty) child <ul> and land between the items,
+                // out of reach of the connector below. Skipped on search-hidden rows:
+                // this selector outranks their `display: none` and would unhide them.
+                &:not([data-glpi-kb-search-hidden]) {
+                    display: flow-root;
+                }
+
                 // L-shaped connector: starts $gap below the top edge so the
                 // vertical segment never "touches" the line above it.
                 &::before {
@@ -1433,6 +1441,9 @@ body.in_modal .kb-editor-reserved {
                     border-bottom: 1px solid var(--tblr-border-color);
                 }
 
+                // Vertical run down to the next sibling's connector. No `height`: with
+                // `top` and `bottom` both set it would win and `bottom` be ignored, so
+                // the line stopped short as soon as the row hosted a subtree.
                 &:not(:last-child)::after {
                     content: "";
                     position: absolute;
@@ -1440,7 +1451,6 @@ body.in_modal .kb-editor-reserved {
                     top: 0.825rem;
                     bottom: 0;
                     width: 1px;
-                    height: 20px;
                     background-color: var(--tblr-border-color);
                 }
             }
@@ -1591,7 +1601,9 @@ body.in_modal .kb-editor-reserved {
 
             // visibility (not opacity) keeps the closed overlay out of the tab order.
             visibility: hidden;
-            transition: transform 0.3s ease, visibility 0.3s ease;
+            transition:
+                transform 0.3s ease,
+                visibility 0.3s ease;
             overflow-y: auto;
             z-index: 1045;
         }
@@ -1613,5 +1625,74 @@ body.in_modal .kb-editor-reserved {
 @media (prefers-reduced-motion: reduce) {
     [data-main-page-aside="knowbaseitem"] [data-glpi-kb-aside-body] {
         transition: none;
+    }
+}
+
+// KB aside: drag and drop reparenting.
+.kb-drag-ghost {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1080;
+    max-width: 240px;
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--tblr-border-radius);
+    background: var(--tblr-bg-surface);
+    border: 1px solid var(--tblr-border-color);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    pointer-events: none;
+}
+
+body.kb-drag-active {
+    cursor: grabbing;
+    user-select: none;
+}
+
+body.kb-drag-refused {
+    cursor: no-drop;
+
+    .kb-drag-ghost {
+        opacity: 0.5;
+    }
+}
+
+[data-glpi-kb-aside-tree] {
+    // Containing block for the insertion line.
+    position: relative;
+
+    [data-glpi-kb-drag-source] > .article-line {
+        opacity: 0.4;
+    }
+
+    // `outline-offset` gives the ring its breathing room without taking layout
+    // space, so the tree never shifts as the target changes.
+    [data-glpi-kb-drop-target] > .article-line {
+        outline: 2px solid var(--tblr-blue);
+        outline-offset: 4px;
+        border-radius: var(--tblr-border-radius);
+    }
+}
+
+.kb-drag-insert {
+    position: absolute;
+    height: 2px;
+    background: var(--tblr-blue);
+    border-radius: 1px;
+    pointer-events: none;
+
+    // Head dot: keeps a 2px rule legible.
+    &::before {
+        content: "";
+        position: absolute;
+        inset-block-start: -2px;
+        inset-inline-start: -3px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: inherit;
     }
 }
