@@ -77,10 +77,12 @@ class PDUTest extends AbstractInventoryAsset
         <TYPE>C13/C19</TYPE>
         <PLUGs>
           <NAME>Server_Blade_01</NAME>
+          <NUMBER>1</NUMBER>
           <TYPE>C15</TYPE>
         </PLUGs>
         <PLUGs>
           <NAME>Storage_SAN_Controller_B</NAME>
+          <NUMBER>2</NUMBER>
           <TYPE>C14</TYPE>
         </PLUGs>
       </PDU>
@@ -114,10 +116,12 @@ class PDUTest extends AbstractInventoryAsset
         <TYPE>C13/C19</TYPE>
         <PLUGs>
           <NAME>Server_Blade_01</NAME>
+          <NUMBER>1</NUMBER>
           <TYPE>C19</TYPE>
         </PLUGs>
         <PLUGs>
           <NAME>Storage_SAN_Controller_B</NAME>
+          <NUMBER>2</NUMBER>
           <TYPE>C14</TYPE>
         </PLUGs>
       </PDU>
@@ -151,14 +155,17 @@ class PDUTest extends AbstractInventoryAsset
         <TYPE>C13/C19</TYPE>
         <PLUGs>
           <NAME>Server_Blade_01</NAME>
+          <NUMBER>1</NUMBER>
           <TYPE>C15</TYPE>
         </PLUGs>
         <PLUGs>
           <NAME>Storage_SAN_Controller_B</NAME>
+          <NUMBER>2</NUMBER>
           <TYPE>C14</TYPE>
         </PLUGs>
         <PLUGs>
           <NAME>Network_Switch_Core</NAME>
+          <NUMBER>3</NUMBER>
           <TYPE>C13</TYPE>
         </PLUGs>
       </PDU>
@@ -190,6 +197,7 @@ class PDUTest extends AbstractInventoryAsset
         <TYPE>C13/C19</TYPE>
         <PLUGs>
           <NAME>Server_Blade_01</NAME>
+          <NUMBER>1</NUMBER>
           <TYPE>C15</TYPE>
         </PLUGs>
       </PDU>
@@ -249,10 +257,12 @@ class PDUTest extends AbstractInventoryAsset
         <TYPE>C13/C19</TYPE>
         <PLUGs>
           <NAME>Server_Blade_02</NAME>
+          <NUMBER>1</NUMBER>
           <TYPE>C15</TYPE>
         </PLUGs>
         <PLUGs>
           <NAME>Storage_SAN_Controller_B1</NAME>
+          <NUMBER>2</NUMBER>
           <TYPE>C14</TYPE>
         </PLUGs>
       </PDU>
@@ -269,11 +279,11 @@ class PDUTest extends AbstractInventoryAsset
         return [
             [
                 'xml' => self::XML_TWO_PLUGS,
-                'expected' => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","is_deleted":0,"contact":"Schneider Electric Support","firmware":"6.9.6","ips":["192.168.1.50"],"location":"DataCenter_Room_01_Rack_A4","mac":"00:C0:B7:65:DE:01","manufacturer":"APC","model":"AP8853","name":"PDU-MASTER-RACK-A4","serial":"ZA133456789","type":"Pdu","uptime":"45:12:30.22","description":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdu":{"plugs":[{"name":"Server_Blade_01","plugtypes_id":"C15"},{"name":"Storage_SAN_Controller_B","plugtypes_id":"C14"}]},"sysdescr":"APC Rack PDU Switched, 2G, Metered-by-Outlet","locations_id":"DataCenter_Room_01_Rack_A4","pdumodels_id":"AP8853","pdutypes_id":"C13\/C19","manufacturers_id":"APC"}',
+                'expected' => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","is_deleted":0,"contact":"Schneider Electric Support","firmware":"6.9.6","ips":["192.168.1.50"],"location":"DataCenter_Room_01_Rack_A4","mac":"00:C0:B7:65:DE:01","manufacturer":"APC","model":"AP8853","name":"PDU-MASTER-RACK-A4","serial":"ZA133456789","type":"Pdu","uptime":"45:12:30.22","description":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdu":{"plugs":[{"name":"Server_Blade_01","number":1,"plugtypes_id":"C15"},{"name":"Storage_SAN_Controller_B","number":2,"plugtypes_id":"C14"}]},"sysdescr":"APC Rack PDU Switched, 2G, Metered-by-Outlet","locations_id":"DataCenter_Room_01_Rack_A4","pdumodels_id":"AP8853","pdutypes_id":"C13\/C19","manufacturers_id":"APC"}',
             ],
             [
                 'xml' => self::XML_ONE_PLUGS,
-                'expected' => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","is_deleted":0,"firmware":"6.9.6","ips":["192.168.1.50"],"mac":"00:C0:B7:65:DE:01","manufacturer":"APC","model":"AP8853","name":"PDU-SINGLE-PLUG","serial":"ZA-SINGLE-001","type":"Pdu","description":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdu":{"plugs":[{"name":"Server_Blade_01","plugtypes_id":"C15"}]},"sysdescr":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdumodels_id":"AP8853","pdutypes_id":"C13\/C19","manufacturers_id":"APC"}',
+                'expected' => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","is_deleted":0,"firmware":"6.9.6","ips":["192.168.1.50"],"mac":"00:C0:B7:65:DE:01","manufacturer":"APC","model":"AP8853","name":"PDU-SINGLE-PLUG","serial":"ZA-SINGLE-001","type":"Pdu","description":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdu":{"plugs":[{"name":"Server_Blade_01","number":1,"plugtypes_id":"C15"}]},"sysdescr":"APC Rack PDU Switched, 2G, Metered-by-Outlet","pdumodels_id":"AP8853","pdutypes_id":"C13\/C19","manufacturers_id":"APC"}',
             ],
         ];
     }
@@ -321,6 +331,10 @@ class PDUTest extends AbstractInventoryAsset
             'is_dynamic'    => 1,
         ]);
         $this->assertCount(2, $dynamic_plugs);
+
+        $plugs_by_name = array_column($plugs, null, 'name');
+        $this->assertSame(1, (int) $plugs_by_name['Server_Blade_01']['number']);
+        $this->assertSame(2, (int) $plugs_by_name['Storage_SAN_Controller_B']['number']);
     }
 
     public function testHandleOnePlug(): void
@@ -351,6 +365,7 @@ class PDUTest extends AbstractInventoryAsset
 
         $plug_data = reset($plugs);
         $this->assertSame('Server_Blade_01', $plug_data['name']);
+        $this->assertEquals(1, $plug_data['number']);
 
         $plugtype = new \PlugType();
         $this->assertTrue($plugtype->getFromDB($plug_data['plugtypes_id']));
@@ -413,6 +428,11 @@ class PDUTest extends AbstractInventoryAsset
         $plugs = $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]);
         $this->assertCount(3, $plugs);
 
+        $plugs_by_name = array_column($plugs, null, 'name');
+        $this->assertSame(1, (int) $plugs_by_name['Server_Blade_01']['number']);
+        $this->assertSame(2, (int) $plugs_by_name['Storage_SAN_Controller_B']['number']);
+        $this->assertSame(3, (int) $plugs_by_name['Network_Switch_Core']['number']);
+
         // re-inventory with 2 plugs: the third dynamic plug must be deleted
         $this->doInventory(self::XML_TWO_PLUGS, true);
 
@@ -422,6 +442,10 @@ class PDUTest extends AbstractInventoryAsset
         $plug_names = array_column($plugs, 'name');
         $this->assertContains('Server_Blade_01', $plug_names);
         $this->assertContains('Storage_SAN_Controller_B', $plug_names);
+
+        $plugs_by_name = array_column($plugs, null, 'name');
+        $this->assertSame(1, (int) $plugs_by_name['Server_Blade_01']['number']);
+        $this->assertSame(2, (int) $plugs_by_name['Storage_SAN_Controller_B']['number']);
 
         // re-inventory with 3 plugs: the removed plug must be re-added
         $this->doInventory(self::XML_THREE_PLUGS, true);
@@ -433,6 +457,11 @@ class PDUTest extends AbstractInventoryAsset
         $this->assertContains('Server_Blade_01', $plug_names);
         $this->assertContains('Storage_SAN_Controller_B', $plug_names);
         $this->assertContains('Network_Switch_Core', $plug_names);
+
+        $plugs_by_name = array_column($plugs, null, 'name');
+        $this->assertSame(1, (int) $plugs_by_name['Server_Blade_01']['number']);
+        $this->assertSame(2, (int) $plugs_by_name['Storage_SAN_Controller_B']['number']);
+        $this->assertSame(3, (int) $plugs_by_name['Network_Switch_Core']['number']);
     }
 
     public function testDynamicPlugsDeletedOnReInventoryWithNoPlugs(): void
@@ -444,7 +473,12 @@ class PDUTest extends AbstractInventoryAsset
         $pdu = $inventory->getItem();
         $pdus_id = $pdu->fields['id'];
         $this->assertGreaterThan(0, $pdus_id);
-        $this->assertCount(2, $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]));
+        $plugs = $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]);
+        $this->assertCount(2, $plugs);
+
+        $plugs_by_name = array_column($plugs, null, 'name');
+        $this->assertSame(1, (int) $plugs_by_name['Server_Blade_01']['number']);
+        $this->assertSame(2, (int) $plugs_by_name['Storage_SAN_Controller_B']['number']);
 
         // add a manual (non-dynamic) plug to verify it is preserved
         $manual_id = $plug->add([
@@ -568,6 +602,10 @@ class PDUTest extends AbstractInventoryAsset
         $plug = new \Plug();
         $plugs = $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]);
         $this->assertCount(2, $plugs);
+
+        $plugs_by_name = array_column($plugs, null, 'name');
+        $this->assertSame(1, (int) $plugs_by_name['Server_Blade_01']['number']);
+        $this->assertSame(2, (int) $plugs_by_name['Storage_SAN_Controller_B']['number']);
     }
 
     public function testLockedFieldForeignKeyAndPlug(): void
@@ -593,6 +631,10 @@ class PDUTest extends AbstractInventoryAsset
         $plug = new \Plug();
         $plugs = $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]);
         $this->assertCount(2, $plugs);
+
+        $plugs_by_name = array_column($plugs, null, 'name');
+        $this->assertSame(1, (int) $plugs_by_name['Server_Blade_01']['number']);
+        $this->assertSame(2, (int) $plugs_by_name['Storage_SAN_Controller_B']['number']);
     }
 
     public function testSoftDeletedPlugNotUpdated(): void
@@ -609,6 +651,7 @@ class PDUTest extends AbstractInventoryAsset
         $locked_plug = reset($plugs);
         $plugs_id = $locked_plug['id'];
         $original_plugtypes_id = $locked_plug['plugtypes_id'];
+        $this->assertSame(1, (int) $locked_plug['number']);
 
         // simulate a lock: soft-delete the plug
         $this->assertTrue($plug->delete(['id' => $plugs_id]));
@@ -621,10 +664,11 @@ class PDUTest extends AbstractInventoryAsset
         // no duplicate created for the locked plug
         $this->assertCount(1, $plug->find($criteria));
 
-        // the locked plug is left untouched: still deleted, type unchanged
+        // the locked plug is left untouched: still deleted, type and number unchanged
         $this->assertTrue($plug->getFromDB($plugs_id));
         $this->assertSame(1, $plug->fields['is_deleted']);
         $this->assertSame($original_plugtypes_id, $plug->fields['plugtypes_id']);
+        $this->assertSame(1, (int) $plug->fields['number']);
     }
 
     public function testPlugsKeptOnPduDelete(): void
@@ -636,7 +680,12 @@ class PDUTest extends AbstractInventoryAsset
 
         $plug = new \Plug();
         $criteria = ['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id];
-        $this->assertCount(2, $plug->find($criteria));
+        $plugs = $plug->find($criteria);
+        $this->assertCount(2, $plugs);
+
+        $plugs_by_name = array_column($plugs, null, 'name');
+        $this->assertSame(1, (int) $plugs_by_name['Server_Blade_01']['number']);
+        $this->assertSame(2, (int) $plugs_by_name['Storage_SAN_Controller_B']['number']);
 
         $this->assertTrue($pdu->delete(['id' => $pdus_id]));
         $this->assertTrue($pdu->getFromDB($pdus_id));
@@ -657,7 +706,12 @@ class PDUTest extends AbstractInventoryAsset
 
         $plug = new \Plug();
         $criteria = ['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id];
-        $this->assertCount(2, $plug->find($criteria));
+        $plugs = $plug->find($criteria);
+        $this->assertCount(2, $plugs);
+
+        $plugs_by_name = array_column($plugs, null, 'name');
+        $this->assertSame(1, (int) $plugs_by_name['Server_Blade_01']['number']);
+        $this->assertSame(2, (int) $plugs_by_name['Storage_SAN_Controller_B']['number']);
 
         // a manual plug must be purged along with the dynamic ones
         $manual_id = $plug->add([
@@ -690,7 +744,9 @@ class PDUTest extends AbstractInventoryAsset
 
         $plug = new \Plug();
         $kept_criteria = ['itemtype_main' => \PDU::class, 'items_id_main' => $kept_pdus_id];
-        $this->assertCount(1, $plug->find($kept_criteria));
+        $kept_plugs = $plug->find($kept_criteria);
+        $this->assertCount(1, $kept_plugs);
+        $this->assertSame(1, (int) reset($kept_plugs)['number']);
 
         $this->assertTrue($purged_pdu->delete(['id' => $purged_pdus_id], true));
 
