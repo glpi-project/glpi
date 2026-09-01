@@ -529,6 +529,9 @@ export class GlpiKnowbaseArticleController
     }
 
     /**
+     * Mirror the favorite state in the aside; same visibility rule as the
+     * aside's own `#refreshFavoritesVisibility()`.
+     *
      * @param {boolean} is_favorited
      */
     #updateFavoritesAside(is_favorited)

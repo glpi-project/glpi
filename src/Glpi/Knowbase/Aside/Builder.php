@@ -79,14 +79,6 @@ final class Builder
      */
     private array $folded_ids_lookup_map = [];
 
-    /**
-     * Articles to render, when the tree is restricted to a subset (search).
-     * Null renders the whole tree.
-     *
-     * @var array<int, true>|null
-     */
-    private ?array $rendered_ids = null;
-
     private bool $hierarchy_loaded = false;
 
     public function __construct(private readonly int $current_id = 0) {}
@@ -94,42 +86,11 @@ final class Builder
     public function buildTree(): Tree
     {
         $this->loadHierarchy();
-        $this->rendered_ids = null;
         $this->folded_ids_lookup_map = $this->computeFoldedIds();
 
         $tree = new Tree();
         foreach (array_keys($this->roots) as $id) {
             $tree->addArticle($this->buildArticle($id, []));
-        }
-
-        return $tree;
-    }
-
-    /**
-     * Tree restricted to the given articles and to the branches leading to
-     * them, as used by the aside search.
-     *
-     * Ancestors are included so a match is never orphaned, and nothing is
-     * folded: a match has to be visible without the reader unfolding its
-     * ancestors first. Descendants of a match are left out unless they match
-     * too, which is what the search filter it replaces did.
-     *
-     * @param int[] $matching_ids
-     */
-    public function buildSearchTree(array $matching_ids): Tree
-    {
-        $this->loadHierarchy();
-        $this->rendered_ids = $this->withAncestors(array_intersect_key(
-            array_fill_keys(array_map('intval', $matching_ids), true),
-            $this->data
-        ));
-        $this->folded_ids_lookup_map = [];
-
-        $tree = new Tree();
-        foreach (array_keys($this->roots) as $id) {
-            if ($this->isRendered($id)) {
-                $tree->addArticle($this->buildArticle($id, []));
-            }
         }
 
         return $tree;
@@ -147,7 +108,6 @@ final class Builder
         if (!isset($this->data[$parent_id])) {
             return [];
         }
-        $this->rendered_ids = null;
         $this->folded_ids_lookup_map = $this->computeFoldedIds();
 
         $children = [];
@@ -208,12 +168,12 @@ final class Builder
     private function buildArticle(int $id, array $ancestors): Article
     {
         $row = $this->data[$id];
-        $folded = $this->rendered_ids === null && isset($this->folded_ids_lookup_map[$id]);
+        $folded = isset($this->folded_ids_lookup_map[$id]);
 
         $ancestors[$id] = true;
         $children = [];
         foreach ($this->children_of[$id] ?? [] as $child_id) {
-            if (isset($ancestors[$child_id]) || !$this->isRendered($child_id)) {
+            if (isset($ancestors[$child_id])) {
                 continue; // cycles are forbidden by writes; guard defensively
             }
             $children[] = $child_id;
@@ -267,14 +227,8 @@ final class Builder
         return $folded;
     }
 
-    private function isRendered(int $id): bool
-    {
-        return $this->rendered_ids === null || isset($this->rendered_ids[$id]);
-    }
-
     /**
-     * The given articles plus every ancestor leading to them, so a restricted
-     * tree stays attached to its roots.
+     * The given articles plus every ancestor leading to them.
      *
      * @param array<int, true> $ids
      *

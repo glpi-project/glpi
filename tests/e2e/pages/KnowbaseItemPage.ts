@@ -815,6 +815,85 @@ export class KnowbaseItemPage extends GlpiPage
     }
 
     /**
+     * The search results list, which stands in for the tree while a search is
+     * active.
+     */
+    public get asideSearchResults(): Locator
+    {
+        return this.aside.getByTestId('kb-search-results');
+    }
+
+    /**
+     * Every result row. The "load more" marker closing a page is a status
+     * message, not an item of the list, so it is not one of these.
+     */
+    public get asideSearchResultRows(): Locator
+    {
+        return this.asideSearchResults.getByRole('listitem');
+    }
+
+    public getAsideSearchResultRow(id: number): Locator
+    {
+        return this.asideSearchResults.getByTestId(`kb-search-result-${id}`);
+    }
+
+    public getAsideSearchResultExcerpt(id: number): Locator
+    {
+        return this.getAsideSearchResultRow(id).getByTestId('kb-search-result-excerpt');
+    }
+
+    /**
+     * The marker closing a page of results, swapped for the next page as it
+     * comes into view.
+     */
+    public get asideSearchLoadMore(): Locator
+    {
+        return this.page.getByTestId('kb-search-load-more');
+    }
+
+    /**
+     * The marker's "loading" state, shown only while a page is on its way.
+     */
+    public get asideSearchLoadMoreLoading(): Locator
+    {
+        return this.asideSearchLoadMore.getByText('Loading...');
+    }
+
+    /**
+     * The marker's error state, shown when a page could not be loaded.
+     */
+    public get asideSearchLoadMoreError(): Locator
+    {
+        return this.asideSearchLoadMore.getByText('The next results could not be loaded.');
+    }
+
+    /**
+     * The rendered tree, kept in place (hidden) while the search results stand
+     * in for it.
+     */
+    public get asideRenderedTree(): Locator
+    {
+        return this.asideTree.getByTestId('kb-aside-tree-list');
+    }
+
+    /**
+     * Scroll the results to their end, which is what asks for the next page.
+     */
+    public async doScrollAsideSearchResultsToEnd(): Promise<void>
+    {
+        await this.asideTree.evaluate((el) => el.scrollTo(0, el.scrollHeight));
+    }
+
+    /**
+     * Scroll the results back to their start, which takes the marker closing
+     * the page out of view.
+     */
+    public async doScrollAsideSearchResultsToStart(): Promise<void>
+    {
+        await this.asideTree.evaluate((el) => el.scrollTo(0, 0));
+    }
+
+    /**
      * Open the header "Share" popover and wait for its lazily-loaded content
      * to be ready.
      */

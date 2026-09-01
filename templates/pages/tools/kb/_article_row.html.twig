@@ -106,12 +106,11 @@
 {% endmacro %}
 
 {#
- # Renders a list of articles as a tree, as rendered by the aside and by the
- # search endpoint (which returns the matching branches to swap in).
+ # Renders a list of articles as a tree, as rendered by the aside.
  #}
 {% macro render_tree(articles, can_create = false, show_actions = false) %}
     {% import _self as macros %}
-    <ul class="kb-tree ps-0">
+    <ul class="kb-tree ps-0" data-testid="kb-aside-tree-list">
         {{ macros.render_rows(articles, can_create, show_actions) }}
     </ul>
 {% endmacro %}

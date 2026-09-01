@@ -1317,9 +1317,11 @@ body.in_modal .kb-editor-reserved {
         }
     }
 
-    // Current article: highlighted with primary color to identify it in the tree and favorites.
+    // Current article: highlighted with primary color to identify it in the
+    // tree, in the favorites and in the search results (`> a`).
     [data-glpi-kb-article-current] {
-        > .article-line > a {
+        > .article-line > a,
+        > a {
             color: color-mix(
                 in srgb,
                 transparent,
@@ -1343,9 +1345,15 @@ body.in_modal .kb-editor-reserved {
         border-bottom: 0;
     }
 
-    // Tree items hidden by the search filter.
+    // The tree and the favorites, kept in place while the search results stand
+    // in for them.
     [data-glpi-kb-search-hidden] {
         display: none;
+    }
+
+    // Header border, dropped for as long as the favorites are standing aside.
+    [data-glpi-kb-aside-header][data-glpi-kb-aside-header-search-no-border] {
+        border-bottom: 0;
     }
 
     // Clear button: interactive only when active (has text to clear).
@@ -1372,6 +1380,21 @@ body.in_modal .kb-editor-reserved {
         [data-glpi-kb-aside-category-add] {
             visibility: visible;
         }
+    }
+
+    // Favorites keep their natural height, but never at the expense of the
+    // list below them now that the aside is bounded.
+    [data-glpi-kb-aside-favorites] {
+        min-height: 0;
+        overflow-y: auto;
+    }
+
+    // The tree pane takes what the header leaves and scrolls as a whole, so the
+    // scrollbar sits on the card edge instead of inside whichever list is
+    // standing in it.
+    [data-glpi-kb-aside-tree] {
+        min-height: 0;
+        overflow-y: auto;
     }
 
     // KB aside tree hierarchy connector lines
@@ -1422,6 +1445,47 @@ body.in_modal .kb-editor-reserved {
                 }
             }
         }
+    }
+
+    // Search results: a flat list of rows replacing the tree, each one showing
+    // the beginning of the article's content.
+    .kb-search-results {
+        list-style: none;
+        margin: 0;
+
+        > .article > a {
+            display: block;
+            padding: 0.25rem 0.375rem;
+            border-radius: var(--tblr-border-radius);
+
+            &:hover,
+            &:focus-visible {
+                background-color: var(--tblr-bg-surface-secondary);
+            }
+        }
+
+        // Required so `text-truncate` shrinks the title below its content.
+        [data-glpi-kb-article-title] {
+            min-width: 0;
+        }
+
+        // Three lines of content, whatever the width of the aside.
+        [data-glpi-kb-search-result-excerpt] {
+            /* stylelint-disable-next-line value-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+            display: -webkit-box;
+            /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+            -webkit-line-clamp: 3;
+            /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            overflow-wrap: anywhere;
+        }
+    }
+
+    // The next page is loaded as this row comes into view.
+    [data-glpi-kb-aside-search-load-more] {
+        list-style: none;
+        padding: 0.5rem 0.375rem;
     }
 }
 
@@ -1475,8 +1539,15 @@ body.in_modal .kb-editor-reserved {
         justify-content: flex-end;
     }
 
-    // Desktop collapse via max-width + overflow:hidden (zeroes the flex min so the column shrinks to the rail).
     @media (min-width: 992px) {
+        // Taken out of the flow so it follows the main article height, itself
+        // floored at the viewport by Tabler's .page/.page-body flex chain.
+        [data-glpi-kb-aside-body] {
+            position: absolute;
+            inset: 0;
+        }
+
+        // Collapse via max-width + overflow:hidden (zeroes the flex min so the column shrinks to the rail).
         &[data-glpi-kb-aside-collapsed] {
             max-width: 2.75rem;
             overflow: hidden;
