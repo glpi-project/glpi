@@ -92,6 +92,43 @@ class PDUTest extends AbstractInventoryAsset
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>';
 
+    private const XML_TWO_PLUGS_TYPE_CHANGED = '<?xml version="1.0" encoding="UTF-8" ?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <INFO>
+        <COMMENTS>APC Rack PDU Switched, 2G, Metered-by-Outlet</COMMENTS>
+        <FIRMWARE>6.9.6</FIRMWARE>
+        <ID>1</ID>
+        <IPS>
+          <IP>192.168.1.50</IP>
+        </IPS>
+        <MAC>00:C0:B7:65:DE:01</MAC>
+        <MANUFACTURER>APC</MANUFACTURER>
+        <MODEL>AP8853</MODEL>
+        <NAME>PDU-MASTER-RACK-A4</NAME>
+        <SERIAL>ZA133456789</SERIAL>
+        <TYPE>PDU</TYPE>
+      </INFO>
+      <PDU>
+        <TYPE>C13/C19</TYPE>
+        <PLUGs>
+          <NAME>Server_Blade_01</NAME>
+          <TYPE>C19</TYPE>
+        </PLUGs>
+        <PLUGs>
+          <NAME>Storage_SAN_Controller_B</NAME>
+          <TYPE>C14</TYPE>
+        </PLUGs>
+      </PDU>
+    </DEVICE>
+    <MODULEVERSION>4.1</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>APC-PDU-001</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
     private const XML_THREE_PLUGS = '<?xml version="1.0" encoding="UTF-8" ?>
 <REQUEST>
   <CONTENT>
@@ -556,6 +593,38 @@ class PDUTest extends AbstractInventoryAsset
         $plug = new \Plug();
         $plugs = $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]);
         $this->assertCount(2, $plugs);
+    }
+
+    public function testSoftDeletedPlugNotUpdated(): void
+    {
+        $inventory = $this->doInventory(self::XML_TWO_PLUGS, true);
+        $pdu = $inventory->getItem();
+        $pdus_id = $pdu->fields['id'];
+        $this->assertGreaterThan(0, $pdus_id);
+
+        $plug = new \Plug();
+        $criteria = ['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id, 'name' => 'Server_Blade_01'];
+        $plugs = $plug->find($criteria);
+        $this->assertCount(1, $plugs);
+        $locked_plug = reset($plugs);
+        $plugs_id = $locked_plug['id'];
+        $original_plugtypes_id = $locked_plug['plugtypes_id'];
+
+        // simulate a lock: soft-delete the plug
+        $this->assertTrue($plug->delete(['id' => $plugs_id]));
+        $this->assertTrue($plug->getFromDB($plugs_id));
+        $this->assertSame(1, $plug->fields['is_deleted']);
+
+        // re-run inventory with a different type for the same plug name
+        $this->doInventory(self::XML_TWO_PLUGS_TYPE_CHANGED, true);
+
+        // no duplicate created for the locked plug
+        $this->assertCount(1, $plug->find($criteria));
+
+        // the locked plug is left untouched: still deleted, type unchanged
+        $this->assertTrue($plug->getFromDB($plugs_id));
+        $this->assertSame(1, $plug->fields['is_deleted']);
+        $this->assertSame($original_plugtypes_id, $plug->fields['plugtypes_id']);
     }
 
     public function testPlugsKeptOnPduDelete(): void

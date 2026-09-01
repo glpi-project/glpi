@@ -73,13 +73,12 @@ class Plug extends InventoryAsset
     {
         $main_item = $this->item;
 
-        // load all plug from DB
+        // load all plugs from DB, including locked (soft-deleted) ones, so they can be matched by name and left untouched
         $plug = new GlobalPlug();
         $db_plugs = $plug->find([
             'itemtype_main' => $main_item::class,
             'items_id_main' => $main_item->fields['id'],
             'is_dynamic' => 1,
-            'is_deleted' => 0,
         ]);
 
         // handle each plug from inventory
@@ -94,6 +93,12 @@ class Plug extends InventoryAsset
                     $found_key = $key;
                     break;
                 }
+            }
+
+            // a locked (soft-deleted) plug must never be restored or updated by inventory
+            if ($found_key !== null && $db_plugs[$found_key]['is_deleted']) {
+                unset($db_plugs[$found_key]);
+                continue;
             }
 
             if ($found_key !== null) {
@@ -124,10 +129,10 @@ class Plug extends InventoryAsset
             }
         }
 
-        // clean obsolete plugs if needed
+        // clean obsolete plugs if needed (locked/soft-deleted plugs are left untouched)
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_plugs) != 0) {
             foreach ($db_plugs as $db_plug) {
-                if ($db_plug['is_dynamic']) {
+                if ($db_plug['is_dynamic'] && !$db_plug['is_deleted']) {
                     $plug->delete([
                         'id' => $db_plug['id'],
                     ], true);
