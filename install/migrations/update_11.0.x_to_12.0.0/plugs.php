@@ -167,13 +167,17 @@ if ($DB->tableExists('glpi_items_plugs')) {
 
         // fetch entity context from the parent item (glpi_items_plugs has no entity columns)
         $item_table = getTableForItemType($plug_item_data['itemtype']);
-        $item_entity = $DB->request([
-            'SELECT' => ['entities_id', 'is_recursive'],
-            'FROM'   => $item_table,
-            'WHERE'  => ['id' => $plug_item_data['items_id']],
-        ])->current();
-        $entities_id  = $item_entity['entities_id'] ?? 0;
-        $is_recursive = $item_entity['is_recursive'] ?? 0;
+        $entities_id = 0;
+        $is_recursive = 0;
+        if ($DB->tableExists($item_table)) {
+            $item_entity = $DB->request([
+                'SELECT' => ['entities_id', 'is_recursive'],
+                'FROM'   => $item_table,
+                'WHERE'  => ['id' => $plug_item_data['items_id']],
+            ])->current();
+            $entities_id  = $item_entity['entities_id'] ?? 0;
+            $is_recursive = $item_entity['is_recursive'] ?? 0;
+        }
 
         // handle plug migration if exist
         if ($plug_data !== null) {
