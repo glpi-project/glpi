@@ -36,6 +36,7 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Plug as GlobalPlug;
+use stdClass;
 
 class Plug extends InventoryAsset
 {
@@ -45,6 +46,7 @@ class Plug extends InventoryAsset
     {
         $plug_list = [];
         foreach ($this->data as &$val) {
+            /** @var array<int, stdClass> $val */
             foreach ($val as $plug_values) {
                 if (property_exists($plug_values, 'type')) {
                     $plug_values->plugtypes_id = $plug_values->type;
@@ -83,6 +85,7 @@ class Plug extends InventoryAsset
 
         // handle each plug from inventory
         foreach ($this->data as $data_key => $val) {
+            /** @var stdClass $val */
             $name = (string) ($val->name ?? $val->number ?? ''); // rely to number as Glpi-Agent
             $val->name = $name;
             $found_key = null;

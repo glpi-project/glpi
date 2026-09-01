@@ -39,6 +39,7 @@ use Glpi\Inventory\Asset\Plug as AssetPlug;
 use Glpi\Inventory\Conf;
 use PDUModel;
 use PDUType;
+use stdClass;
 
 class PDU extends NetworkEquipment
 {
@@ -56,6 +57,7 @@ class PDU extends NetworkEquipment
 
         $inventory_plugs = [];
         foreach ($this->data as &$val) {
+            /** @var stdClass $val */
 
             // asset type is defined under 'pdu->type'
             if (property_exists($val, 'pdu') && property_exists($val->pdu, 'type')) {
