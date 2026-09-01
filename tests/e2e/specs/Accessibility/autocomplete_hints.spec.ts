@@ -34,6 +34,7 @@ import { test, expect } from '../../fixtures/glpi_fixture';
 import { LoginPage } from '../../pages/LoginPage';
 import { UserPage } from '../../pages/UserPage';
 import { Profiles } from '../../utils/Profiles';
+import { getWorkerEntityId } from '../../utils/WorkerEntities';
 import AxeBuilder from '@axe-core/playwright';
 
 // Main tab of the preference page, and of the admin user form.
@@ -74,16 +75,49 @@ test('profile identity fields expose autocomplete tokens when editing own profil
     await expect(page.getByLabel('Phone 2', { exact: true })).toHaveAttribute('autocomplete', 'tel');
 });
 
-// Guard: the admin user form (outside the preference context) must NOT emit personal tokens.
-test('admin user form does not expose personal autocomplete tokens (guard)', async ({ page, profile }) => {
+// Guard: an admin editing someone else's profile must not be offered their own data.
+test('admin user form does not expose personal autocomplete tokens (guard)', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
+
+    const suffix = crypto.randomUUID().slice(0, 8);
+    const user_id = await api.createItem('User', {
+        name: `autocomplete_guard_${suffix}`,
+    });
+    // A lower profile keeps the user visible and its e-mail rows editable.
+    await api.createItem('Profile_User', {
+        users_id: user_id,
+        profiles_id: Profiles.SelfService,
+        entities_id: getWorkerEntityId(),
+        is_recursive: 1,
+    });
+    await api.createItem('UserEmail', {
+        users_id: user_id,
+        email: `autocomplete_guard_${suffix}@example.com`,
+    });
+
     const user_page = new UserPage(page);
-    await page.goto(`/front/user.form.php?forcetab=${USER_FORM_TAB}`);
+    await user_page.gotoUserForm(user_id, USER_FORM_TAB);
 
-    await expect(page.getByLabel('Surname', { exact: true })).not.toHaveAttribute('autocomplete', 'family-name');
+    const labels = [
+        'Surname',
+        'First name',
+        'Middle name / Patronymic',
+        'Phone',
+        'Mobile phone',
+        'Phone 2',
+    ];
+    for (const label of labels) {
+        await expect(page.getByLabel(label, { exact: true })).not.toHaveAttribute('autocomplete');
+    }
 
-    // Email rows are built in PHP, so they carry their own guard.
-    await expect(user_page.getEmailFields().first()).not.toHaveAttribute('autocomplete');
+    const emails = user_page.getEmailFields();
+    await expect(emails.first()).not.toHaveAttribute('autocomplete');
+
+    // Email rows are built in PHP, so the JS-added row carries its own guard.
+    const initial_count = await emails.count();
+    await user_page.doAddNewEmailField();
+    await expect(emails).toHaveCount(initial_count + 1);
+    await expect(emails.last()).not.toHaveAttribute('autocomplete');
 });
 
 // User's own e-mail inputs on the profile page, server-rendered and client-added alike.
