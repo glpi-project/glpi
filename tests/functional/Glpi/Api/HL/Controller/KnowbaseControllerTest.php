@@ -214,7 +214,7 @@ class KnowbaseControllerTest extends HLAPITestCase
 
         $request = new Request('GET', '/Knowledgebase/Category');
         $request->setParameter('filter', 'name=like=_kbcategory_*');
-        $this->api->call($request, function ($call) use ($articles) {
+        $this->api->withVersion('2.4.0')->call($request, function ($call) use ($articles) {
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($articles) {
@@ -240,7 +240,7 @@ class KnowbaseControllerTest extends HLAPITestCase
                 });
         });
 
-        $this->api->call(new Request('GET', '/Knowledgebase/Category/' . $articles['middle']->getID()), function ($call) use ($articles) {
+        $this->api->withVersion('2.4.0')->call(new Request('GET', '/Knowledgebase/Category/' . $articles['middle']->getID()), function ($call) use ($articles) {
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) use ($articles) {
@@ -252,7 +252,7 @@ class KnowbaseControllerTest extends HLAPITestCase
         });
 
         // An article without any child is not a category
-        $this->api->call(new Request('GET', '/Knowledgebase/Category/' . $articles['leaf']->getID()), function ($call) {
+        $this->api->withVersion('2.4.0')->call(new Request('GET', '/Knowledgebase/Category/' . $articles['leaf']->getID()), function ($call) {
             $call->response->isNotFoundError();
         });
     }
