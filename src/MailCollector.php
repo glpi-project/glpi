@@ -2495,9 +2495,9 @@ class MailCollector extends CommonDBTM
 
         $charset = $content_type->getParameter('charset');
 
-        // If charset is not specified, and not UTF-8, force fallback default encoding
+        // If charset is not specified, fallback on detected encoding
         if ($charset === null) {
-            $charset = mb_check_encoding($contents, 'UTF-8') ? 'UTF-8' : 'ISO-8859-1';
+            $charset = $this->detectCharset($contents);
         }
 
         if (strtoupper($charset) != 'UTF-8') {
@@ -2525,16 +2525,43 @@ class MailCollector extends CommonDBTM
 
                 // Try to convert using iconv with TRANSLIT, then with IGNORE.
                 // TRANSLIT may result in failure depending on system iconv implementation.
-                try {
-                    $converted = @iconv($charset, 'UTF-8//TRANSLIT', $contents);
-                } catch (IconvException $e) {
-                    $converted = iconv($charset, 'UTF-8//IGNORE', $contents);
+                $converted = null;
+                foreach (['UTF-8//TRANSLIT', 'UTF-8//IGNORE'] as $target_charset) {
+                    try {
+                        $converted = @iconv($charset, $target_charset, $contents);
+                        break;
+                    } catch (IconvException $e) {
+                        // Conversion failed, try the next target charset, or fallback below.
+                    }
                 }
+
+                if ($converted === null) {
+                    // The declared charset is not supported by iconv either. It may not even be a
+                    // charset name at all (e.g. `Content-Type: text/html; charset="text/html"`).
+                    // Fallback on detected encoding, as if no charset was declared.
+                    $converted = mb_convert_encoding($contents, 'UTF-8', $this->detectCharset($contents));
+                }
+
                 $contents = $converted;
             }
         }
 
         return $contents;
+    }
+
+    /**
+     * Detect the charset of the given contents.
+     *
+     * Used when the message part declares no charset, or declares one that cannot be used
+     * for conversion.
+     *
+     * @param string $contents
+     *
+     * @return string
+     */
+    private function detectCharset(string $contents): string
+    {
+        return mb_check_encoding($contents, 'UTF-8') ? 'UTF-8' : 'ISO-8859-1';
     }
 
 
