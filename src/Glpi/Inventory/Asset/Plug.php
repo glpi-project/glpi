@@ -125,11 +125,13 @@ class Plug extends InventoryAsset
         }
 
         // clean obsolete plugs if needed
-        foreach ($db_plugs as $db_plug) {
-            if ($db_plug['is_dynamic']) {
-                $plug->delete([
-                    'id' => $db_plug['id'],
-                ], true);
+        if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_plugs) != 0) {
+            foreach ($db_plugs as $db_plug) {
+                if ($db_plug['is_dynamic']) {
+                    $plug->delete([
+                        'id' => $db_plug['id'],
+                    ], true);
+                }
             }
         }
     }
