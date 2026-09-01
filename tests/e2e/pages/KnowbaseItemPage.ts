@@ -869,11 +869,7 @@ export class KnowbaseItemPage extends GlpiPage
     ): Promise<void> {
         const target = this.getAsideArticleTitleLink(target_title);
         await this.dragToPoint(this.getAsideArticleTitleLink(source_title), async () => {
-            await target.scrollIntoViewIfNeeded();
-            const to = await target.boundingBox();
-            if (to === null) {
-                throw new Error('Cannot drag: target is not visible');
-            }
+            const to = await this.centerInAside(target);
 
             const offset = {
                 top: 2,
@@ -888,13 +884,24 @@ export class KnowbaseItemPage extends GlpiPage
     private async dragTo(source: Locator, target: Locator): Promise<void>
     {
         await this.dragToPoint(source, async () => {
-            await target.scrollIntoViewIfNeeded();
-            const to = await target.boundingBox();
-            if (to === null) {
-                throw new Error('Cannot drag: target is not visible');
-            }
+            const to = await this.centerInAside(target);
             return { x: to.x + to.width / 2, y: to.y + to.height / 2 };
         });
+    }
+
+    /**
+     * Box of a tree row, centred in the aside first.
+     */
+    private async centerInAside(
+        target: Locator
+    ): Promise<{ x: number, y: number, width: number, height: number }> {
+        await target.evaluate((element) => element.scrollIntoView({ block: 'center' }));
+        const box = await target.boundingBox();
+        if (box === null) {
+            throw new Error('Cannot drag: target is not visible');
+        }
+
+        return box;
     }
 
     // boundingBox() never scrolls, so callers scroll into view first;
@@ -911,12 +918,24 @@ export class KnowbaseItemPage extends GlpiPage
 
         await this.page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
         await this.page.mouse.down();
-        // Two moves: the first crosses the 5px arming threshold, the second
-        // settles on the target so the drop zone is resolved.
+        // Crosses the 5px arming threshold before the destination is resolved.
         await this.page.mouse.move(from.x + from.width / 2 + 20, from.y + from.height / 2);
-        const to = await resolveTo();
+
+        // The tree can scroll under the pointer between two moves, so one
+        // measurement is not enough: correct until two of them agree.
+        let to = await resolveTo();
         await this.page.mouse.move(to.x, to.y, { steps: 10 });
-        await this.page.mouse.up();
+        for (let attempt = 0; attempt < 10; attempt++) {
+            const next = await resolveTo();
+            if (Math.abs(next.x - to.x) < 1 && Math.abs(next.y - to.y) < 1) {
+                await this.page.mouse.up();
+                return;
+            }
+            await this.page.mouse.move(next.x, next.y);
+            to = next;
+        }
+
+        throw new Error('Cannot drag: the destination never settled');
     }
 
     /**

@@ -86,7 +86,27 @@ final class Builder
     public function buildTree(): Tree
     {
         $this->loadHierarchy();
-        $this->folded_ids_lookup_map = $this->computeFoldedIds();
+
+        return $this->buildTreeWith($this->computeFoldedIds());
+    }
+
+    /**
+     * The whole visible tree, folding ignored: a consumer that walks the
+     * hierarchy instead of rendering it needs every descendant loaded.
+     */
+    public function buildUnfoldedTree(): Tree
+    {
+        $this->loadHierarchy();
+
+        return $this->buildTreeWith([]);
+    }
+
+    /**
+     * @param array<int, true> $folded_ids_lookup_map
+     */
+    private function buildTreeWith(array $folded_ids_lookup_map): Tree
+    {
+        $this->folded_ids_lookup_map = $folded_ids_lookup_map;
 
         $tree = new Tree();
         foreach (array_keys($this->roots) as $id) {

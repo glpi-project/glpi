@@ -236,6 +236,10 @@ test('Cannot drop an article onto another occurrence of its descendant', async (
     });
 
     await kb.goto(ancestor_id);
+    // The unrelated parent is off the current branch, so it renders folded and
+    // its occurrence of the descendant is not in the DOM yet.
+    await kb.waitForAsideReady();
+    await kb.doExpandAsideCategory(other_name);
 
     // Drop the ancestor onto the descendant's occurrence sitting under the
     // unrelated parent. DOM containment would say that occurrence is outside
@@ -245,6 +249,8 @@ test('Cannot drop an article onto another occurrence of its descendant', async (
     await kb.dragOntoOccurrence(ancestor_name, other_name, descendant_name);
 
     await kb.goto(ancestor_id);
+    await kb.waitForAsideReady();
+    await kb.doExpandAsideCategory(other_name);
 
     // No cycle: the ancestor must not appear nested under the descendant.
     await expect(
@@ -372,6 +378,9 @@ test('Can drop on a child bottom edge to become its sibling', async ({ page, pro
     });
 
     await kb.goto(moved_id);
+    // The parent is off the current branch, so it renders folded and the child is not in the DOM yet.
+    await kb.waitForAsideReady();
+    await kb.doExpandAsideCategory(parent_name);
 
     await Promise.all([
         page.waitForResponse('**/Knowbase/Aside/Article/*/Move'),

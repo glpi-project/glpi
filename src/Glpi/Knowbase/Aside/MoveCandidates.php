@@ -59,7 +59,8 @@ final class MoveCandidates
      */
     public function build(): array
     {
-        $tree      = (new Builder())->buildTree();
+        // Unfolded: a folded article renders without its children
+        $tree      = (new Builder())->buildUnfoldedTree();
         $forbidden = KnowbaseItem_KnowbaseItem::getDescendantIds($this->article_id);
 
         $candidates = [];
