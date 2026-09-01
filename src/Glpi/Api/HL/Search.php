@@ -188,7 +188,7 @@ final class Search
     public function getSelectCriteriaForProperty(string $prop_name, bool $distinct_groups = false): ?QueryExpression
     {
         $prop = $this->context->getFlattenedProperties()[$prop_name];
-        if ($prop['writeOnly'] ?? false) {
+        if ($prop === null || ($prop['writeOnly'] ?? false)) {
             // Do not expose write-only fields
             return null;
         }

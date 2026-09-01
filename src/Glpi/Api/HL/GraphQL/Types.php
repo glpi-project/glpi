@@ -122,28 +122,67 @@ class Types
             return ['type' => $graphql_type];
         }
 
+        $field_resolver = $property['x-graphql-resolver'] ?? null;
+
+        // Handle top-level anyOf/oneOf on properties (union of object types)
+        if (isset($property['anyOf']) || isset($property['oneOf'])) {
+            $union_defs = $property['anyOf'] ?? $property['oneOf'];
+            // Accept either bare schema names (strings) or $ref objects
+            $type_list = array_values(array_filter(array_map(
+                static fn($r) => is_string($r) ? $r : (isset($r['$ref']) ? str_replace('#/components/schemas/', '', $r['$ref']) : null),
+                $union_defs
+            )));
+
+            $disc_prop = $property['discriminator']['propertyName'] ?? null;
+            $union_config = [
+                'name' => "_{$prefix}_{$name}",
+                'types' => static fn() => array_map(static fn($t) => self::load($t, $api_version), $type_list),
+                'resolveType' => static function ($value) use ($api_version, $disc_prop): ?Type {
+                    $type_name = null;
+                    if ($disc_prop !== null && isset($value[$disc_prop])) {
+                        $type_name = $value[$disc_prop];
+                    } elseif (isset($value['__typename'])) {
+                        $type_name = $value['__typename'];
+                    } elseif (isset($value['itemtype'])) {
+                        $type_name = $value['itemtype'];
+                    } elseif (isset($value['_itemtype'])) {
+                        $type_name = $value['_itemtype'];
+                    }
+                    return $type_name ? self::load($type_name, $api_version) : null;
+                },
+            ];
+            /** @phpstan-ignore-next-line */
+            $graphql_type = new UnionType($union_config);
+            return ['type' => $graphql_type, 'resolve' => $field_resolver];
+        }
+
         // Handle array and object types
         if ($type === Doc\Schema::TYPE_ARRAY) {
             $items = $property['items'];
 
             // Unions
             if (isset($items['anyOf']) || isset($items['oneOf'])) {
-                $type_list = array_map(
-                    static fn($r) => str_replace('#/components/schemas/', '', $r),
-                    array_column($items['anyOf'] ?? $items['oneOf'], '$ref')
-                );
+                $union_defs = $items['anyOf'] ?? $items['oneOf'];
+                $type_list = array_values(array_filter(array_map(
+                    static fn($r) => is_string($r) ? $r : (isset($r['$ref']) ? str_replace('#/components/schemas/', '', $r['$ref']) : null),
+                    $union_defs
+                )));
+
+                $disc_prop = $property['discriminator']['propertyName'] ?? ($items['discriminator']['propertyName'] ?? null);
                 // anyOf and oneOf could both use UnionType. Not sure there is a good way to properly say for oneOf that all items are the same type.
                 $union_config = [
                     'name' => "_{$prefix}_{$name}",
                     'types' => static fn() => array_map(static fn($t) => self::load($t, $api_version), $type_list),
-                    'resolveType' => static function ($value) use ($api_version): Type {
-                        $t = $value;
-                        return self::load($t['_tile_type'], $api_version);
+                    'resolveType' => static function ($value) use ($api_version, $disc_prop): ?Type {
+                        if ($disc_prop !== null && isset($value[$disc_prop])) {
+                            return self::load($value[$disc_prop], $api_version);
+                        }
+                        return null;
                     },
                 ];
                 /** @phpstan-ignore-next-line */
                 $graphql_type = new UnionType($union_config);
-                return ['type' => new ListOfType($graphql_type)];
+                return ['type' => new ListOfType($graphql_type), 'resolve' => $field_resolver];
             }
 
             // Regular arrays
@@ -155,7 +194,33 @@ class Types
         }
 
         if ($type === Doc\Schema::TYPE_OBJECT) {
-            $properties = $property['properties'];
+            // Support anyOf/oneOf union for object properties
+            if (isset($property['anyOf']) || isset($property['oneOf'])) {
+                $union_defs = $property['anyOf'] ?? $property['oneOf'];
+                // Accept either bare schema names (strings) or $ref objects
+                $type_list = array_values(array_filter(array_map(
+                    static fn($r) => is_string($r) ? $r : (isset($r['$ref']) ? str_replace('#/components/schemas/', '', $r['$ref']) : null),
+                    $union_defs
+                )));
+
+                $disc_prop = $property['discriminator']['propertyName'] ?? null;
+
+                $union_config = [
+                    'name' => "_{$prefix}_{$name}",
+                    'types' => static fn() => array_map(static fn($t) => self::load($t, $api_version), $type_list),
+                    'resolveType' => static function ($value) use ($api_version, $disc_prop): ?Type {
+                        if ($disc_prop !== null && isset($value[$disc_prop])) {
+                            return self::load($value[$disc_prop], $api_version);
+                        }
+                        return null;
+                    },
+                ];
+                /** @phpstan-ignore-next-line */
+                $graphql_type = new UnionType($union_config);
+                return ['type' => $graphql_type, 'resolve' => $field_resolver];
+            }
+
+            $properties = $property['properties'] ?? [];
             $fields = [];
             foreach ($properties as $prop_name => $prop_value) {
                 $fields[$prop_name] = static fn() => self::convertRESTPropertyToGraphQLType($prop_value, $prop_name, $prefix, $api_version);
@@ -164,6 +229,7 @@ class Types
                 $full_schema_name = $property['x-full-schema'];
                 return [
                     'type' => static fn() => self::load($full_schema_name, $api_version),
+                    'resolve' => $field_resolver
                 ];
             }
             return [
@@ -171,6 +237,7 @@ class Types
                     'name' => "_{$prefix}_{$name}",
                     'fields' => $fields,
                 ]),
+                'resolve' => $field_resolver
             ];
         }
         return null;

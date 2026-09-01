@@ -1859,6 +1859,22 @@ final class AssetController extends AbstractController
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'asset' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'x-graphql-only' => true,
+                    'oneOf' => ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'],
+                    'discriminator' => [
+                        'propertyName' => '_itemtype',
+                        'mapping' => [
+                            'Computer' => 'Computer',
+                            'Monitor' => 'Monitor',
+                            'NetworkEquipment' => 'NetworkEquipment',
+                            'Peripheral' => 'Peripheral',
+                            'Phone' => 'Phone',
+                            'Printer' => 'Printer',
+                        ],
+                    ],
+                ],
             ],
         ];
 

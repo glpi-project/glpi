@@ -41,6 +41,7 @@ use Glpi\Api\HL\Controller\CoreController;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
@@ -366,6 +367,8 @@ final class HLAPIHelper
                 $this->test->assertNull($delete_schema, 'The DELETE route for endpoint "' . $endpoint . '" has a body schema');
             }
         }
+
+        $schema = ResourceAccessor::applyFieldReadRestrictions($schema);
 
         // CREATE
         $request = new Request('POST', $endpoint);
