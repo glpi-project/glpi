@@ -457,6 +457,14 @@ class KnowbaseEditor {
     }
 
     /**
+     * Mark `comment_id`'s passage as hovered across all its fragments, or clear it with null.
+     * @param {string|null} comment_id
+     */
+    setCommentHighlightHover(comment_id) {
+        this.#editor?.commands.setCommentHighlightHover(comment_id);
+    }
+
+    /**
      * Anchors whose quoted text is still present in the document.
      * @returns {Array<{id: string, text: string}>}
      */

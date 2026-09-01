@@ -53,14 +53,15 @@
     text-underline-offset: 3px;
     cursor: pointer;
 
+    // Hover is JS-driven: a passage is one element per text node it crosses.
     // A focused thread points at its passage the same way hovering does.
-    &:hover,
+    &.kb-comment-highlight--hovered,
     &.kb-comment-highlight--focused {
         text-decoration-thickness: 3px;
         background-color: var(--tblr-warning-bg-subtle);
     }
 
-    // Distinct from the :hover wash, so selecting text stays tellable from
+    // Distinct from the --hovered wash, so selecting text stays tellable from
     // merely hovering it.
     &::selection {
         background-color: rgb(var(--tblr-warning-rgb), 0.4);
