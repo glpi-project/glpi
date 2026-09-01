@@ -283,7 +283,8 @@ run_single_test () {
       || LAST_EXIT_CODE=$?
       ;;
     "functional")
-         docker compose exec -T app .github/actions/test_tests-functional.sh $TEST_ARGS \
+         $APPLICATION_ROOT/.github/actions/init_clone-databases.sh \
+      && docker compose exec -T app .github/actions/test_tests-functional.sh $TEST_ARGS \
       || LAST_EXIT_CODE=$?
       ;;
     "cache")

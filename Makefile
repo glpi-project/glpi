@@ -250,7 +250,7 @@ phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/M
 paratest: ## Run paratest, example: make paratest p=8
 	@$(eval p ?= 4)
 	@$(eval c ?=)
-	$(PHP) php vendor/bin/paratest -p $(p) --exclude-group "single-thread" $(c)
+	$(PHP) php vendor/bin/paratest -p $(p) $(c)
 .PHONY: paratest
 
 phpstan: ## Run phpstan
