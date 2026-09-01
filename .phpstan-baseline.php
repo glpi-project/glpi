@@ -5912,7 +5912,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Condition/EditorController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\$value_operator of class Glpi\\\\Form\\\\Condition\\\\ConditionData constructor expects string\\|null, int\\|string\\|false given\\.$#',
+	'message' => '#^Parameter \\$value_operator of class Glpi\\\\Form\\\\Condition\\\\ConditionData constructor expects string\\|null, int\\|string\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Controller/Form/Condition/EditorController.php',
