@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Change;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Tests\DbTestCase;
@@ -594,5 +595,69 @@ JSON;
             static fn(string $msg) => stripos($msg, 'webhook') !== false
         );
         $this->assertEmpty($webhook_errors);
+    }
+
+    public function testParentItemResolvedProperly(): void
+    {
+        $entity_id = $this->getTestRootEntity(only_id: true);
+        $this->login();
+
+        // Create webhook for new followups
+        $webhook = $this->createItem(Webhook::class, [
+            'name'                => 'Test webhook',
+            'entities_id'         => $entity_id,
+            'url'                 => 'http://localhost',
+            'itemtype'            => ITILFollowup::class,
+            'event'               => 'new',
+            'is_active'           => 1,
+            'use_default_payload' => 1,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'Test ticket',
+            'entities_id' => $entity_id,
+            '_actors' => [
+                'observer' => [
+                    [
+                        'itemtype' => User::class,
+                        'items_id' => 2,
+                    ],
+                ],
+            ],
+        ]);
+
+        $change = $this->createItem(Change::class, [
+            'name' => 'Test change',
+            'entities_id' => $entity_id,
+            '_actors' => [
+                'observer' => [
+                    [
+                        'itemtype' => User::class,
+                        'items_id' => 3,
+                    ],
+                ],
+            ],
+        ]);
+
+        $this->createItem(ITILFollowup::class, [
+            'items_id' => $ticket->getID(),
+            'itemtype' => Ticket::class,
+            'content'  => 'Test followup for ticket',
+        ]);
+
+        $this->createItem(ITILFollowup::class, [
+            'items_id' => $change->getID(),
+            'itemtype' => Change::class,
+            'content'  => 'Test followup for change',
+        ]);
+
+        $webhooks = array_values(getAllDataFromTable(QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]));
+        $this->assertCount(2, $webhooks);
+        $team_1 = json_decode($webhooks[0]['body'], true)['parent_item']['team'][0];
+        $team_2 = json_decode($webhooks[1]['body'], true)['parent_item']['team'][0];
+        $this->assertSame('glpi', $team_1['name']);
+        $this->assertSame('observer', $team_1['role']);
+        $this->assertSame('post-only', $team_2['name']);
+        $this->assertSame('observer', $team_2['role']);
     }
 }

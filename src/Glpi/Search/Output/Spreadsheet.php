@@ -256,7 +256,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                                 $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain, $searchoptname);
                                 $itemtype     = getItemTypeForTable($searchopt[$criteria['field']]["table"]);
                                 $valuename    = '';
-                                if ($item = getItemForItemtype($itemtype)) {
+                                if ($itemtype !== null && $item = getItemForItemtype($itemtype)) {
                                     $valuename = $item->getValueToDisplay(
                                         $searchopt[$criteria['field']],
                                         $criteria['value']

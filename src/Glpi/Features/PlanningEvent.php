@@ -152,7 +152,8 @@ trait PlanningEvent
             $input["name"] = __('Without title');
         }
 
-        $input["begin"] = $input["end"] = "NULL";
+        $input["begin"] ??= 'NULL';
+        $input["end"] ??= "NULL";
 
         if (isset($input['plan'])) {
             if (

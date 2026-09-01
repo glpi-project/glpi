@@ -285,7 +285,7 @@
             <tbody>
                 {% if entries|length > 0 %}
                     {% for entry in entries %}
-                        {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
+                        {% set row_massiveactions = entry['showmassiveactions'] is defined ? entry['showmassiveactions'] : showmassiveactions %}
                         <tr
                             class="{{ loop.last ? "border-transparent" : "" }} {{ row_class|default('') }} {{ entry['row_class']|default('') }}"
                             {% if entry['itemtype'] is defined %}
@@ -298,12 +298,14 @@
                                 aria-label="{{ entry['row_aria_label'] }}"
                             {% endif %}
                         >
-                            {% if row_massiveactions %}
+                            {% if showmassiveactions %}
                                 <td style="width: 10px">
-                                    {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
-                                        <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
-                                               value="1" aria-label="{{ __("Select item") }}"
-                                               name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
+                                    {% if row_massiveactions %}
+                                        {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
+                                            <input class="form-check-input massive_action_checkbox" type="checkbox" data-glpicore-ma-tags="common"
+                                                   value="1" aria-label="{{ __("Select item") }}"
+                                                   name="item[{{ entry['itemtype'] }}][{{ entry['id'] }}]" />
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                             {% endif %}

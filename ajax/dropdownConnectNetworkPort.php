@@ -50,11 +50,12 @@ Session::checkRight(NetworkPort::$rightname, UPDATE);
 if (
     class_exists($_POST["itemtype"])
     && isset($_POST["item"])
+    && ($item = getItemForItemtype($_POST["itemtype"]))
 ) {
-    $table = getTableForItemType($_POST["itemtype"]);
+    $table = $item::getTable();
 
     $joins = [];
-    $name_field = new QueryExpression("'' AS " . $DB->quoteName('socketname'));
+    $name_field = new QueryExpression("'' AS " . $DB::quoteName('socketname'));
 
     if ($_POST['instantiation_type'] == 'NetworkPortEthernet') {
         $name_field = 'glpi_sockets.name AS socketname';
@@ -91,7 +92,7 @@ if (
                     $table               => 'id', [
                         'AND' => [
                             'glpi_networkports.items_id'           => $_POST['item'],
-                            'glpi_networkports.itemtype'           => $_POST["itemtype"],
+                            'glpi_networkports.itemtype'           => $item::class,
                             'glpi_networkports.instantiation_type' => $_POST['instantiation_type'],
                         ],
                     ],
@@ -102,7 +103,7 @@ if (
                     'glpi_networkports_networkports' => 'networkports_id_1',
                     'glpi_networkports'              => 'id', [
                         'OR'  => [
-                            'glpi_networkports_networkports.networkports_id_2' => new QueryExpression($DB->quoteName('glpi_networkports.id')),
+                            'glpi_networkports_networkports.networkports_id_2' => new QueryExpression($DB::quoteName('glpi_networkports.id')),
                         ],
                     ],
                 ],
@@ -112,11 +113,18 @@ if (
             'glpi_networkports_networkports.id' => null,
             'NOT'                               => ['glpi_networkports.id' => null],
             'glpi_networkports.id'              => ['<>', $_POST['networkports_id']],
-            "$table.is_deleted"                 => 0,
-            "$table.is_template"                => 0,
         ],
         'ORDERBY'   => 'glpi_networkports.id',
     ];
+
+    if ($item->maybeDeleted()) {
+        $criteria['WHERE']["$table.is_deleted"] = 0;
+    }
+
+    if ($item->maybeTemplate()) {
+        $criteria['WHERE']["$table.is_template"] = 0;
+    }
+
     $iterator = $DB->request($criteria);
 
     echo "<br>";

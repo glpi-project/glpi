@@ -70,6 +70,16 @@ final class CloneMapper implements MapperInterface
         return $this->mapped_ids[$class][$old_id];
     }
 
+    /**
+     * Check whether an item has already been cloned during the current clone process.
+     *
+     * @param class-string<\CommonDBTM> $class
+     */
+    public function hasItemId(string $class, string|int $old_id): bool
+    {
+        return isset($this->mapped_ids[$class][$old_id]);
+    }
+
     public function cleanMappedIds(): void
     {
         $this->mapped_ids = [];

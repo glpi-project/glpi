@@ -342,6 +342,19 @@ final class TilesManager
         ]);
     }
 
+    /**
+     * Whether the current user is allowed to create at least one tile type.
+     */
+    public function canAddTile(): bool
+    {
+        foreach ($this->getTileTypes() as $tile_type) {
+            if ($tile_type::canCreate()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function copyTilesFromParentEntity(Entity $entity): void
     {
         $parent_entity = Entity::getById($entity->fields['entities_id']);

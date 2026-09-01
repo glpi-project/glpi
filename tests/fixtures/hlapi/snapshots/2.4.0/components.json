@@ -5437,17 +5437,17 @@
                             "64": "halfdonut",
                             "65": "bar",
                             "66": "hbar",
-                            "711": "searchShowList",
-                            "728": "line",
-                            "729": "area",
-                            "731": "lines",
-                            "732": "areas",
-                            "733": "bars",
-                            "734": "stackedbars",
-                            "739": "hBars",
-                            "740": "stackedHBars",
-                            "857": "articleList",
-                            "858": "markdown"
+                            "703": "searchShowList",
+                            "720": "line",
+                            "721": "area",
+                            "723": "lines",
+                            "724": "areas",
+                            "725": "bars",
+                            "726": "stackedbars",
+                            "731": "hBars",
+                            "732": "stackedHBars",
+                            "851": "articleList",
+                            "852": "markdown"
                         }
                     }
                 },
@@ -12282,7 +12282,9 @@
                 "size": {
                     "type": "number",
                     "format": "float",
-                    "minimum": 0
+                    "minimum": 0,
+                    "maximum": 999.99,
+                    "multipleOf": 0.01
                 },
                 "has_microphone": {
                     "type": "boolean",
@@ -21200,18 +21202,6 @@
                                         16
                                     ],
                                     "x-label": "Data centers",
-                                    "x-right-scope": "entity"
-                                },
-                                "defaultfilter": {
-                                    "type": "integer",
-                                    "description": "Default filters rights. Possible values:\n- 1: Read\n- 2: Update\n- 4: Create\n- 16: Purge",
-                                    "enum": [
-                                        1,
-                                        2,
-                                        4,
-                                        16
-                                    ],
-                                    "x-label": "Default filters",
                                     "x-right-scope": "entity"
                                 },
                                 "device": {

@@ -5712,7 +5712,7 @@ HTML;
         } catch (PasswordTooWeakException $e) {
             // Force display on error
             foreach ($e->getMessages() as $message) {
-                Session::addMessageAfteRredirect(htmlescape($message), false, ERROR);
+                Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
             }
         }
 
@@ -5737,7 +5737,7 @@ HTML;
             Session::addMessageAfterRedirect(htmlescape($e->getMessage()), false, ERROR);
             return;
         }
-        Session::addMessageAfteRredirect(__s('If the given email address corresponds to one and only one GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive an email.'));
+        Session::addMessageAfterRedirect(__s('If the given email address corresponds to one and only one GLPI user, you will receive an email containing the information required to reset your password. Please contact your administrator if you do not receive an email.'));
 
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'messages_only' => true,

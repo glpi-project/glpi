@@ -210,7 +210,7 @@ class CommonITILObjectStatsTest extends DbTestCase
                     'solve_delay_stat' => 0,
                     'close_delay_stat' => 0,
                 ]),
-                'expected' => '<div class="dates_timelines"><h2 class="header lh-base" id="stats_times_RAND">Times</h2><table class="tab_cadre_fixe" aria-labelledby="stats_times_RAND"><tr class="tab_bg_2"><th scope="row">Take into account</th><td>5 minutes</td></tr><tr class="tab_bg_2"><th scope="row">Resolution</th><td>&nbsp;</td></tr><tr class="tab_bg_2"><th scope="row">Closure</th><td>&nbsp;</td></tr><tr class="tab_bg_2"><th scope="row">Pending</th><td>&nbsp;</td></tr></table></div>',
+                'expected' => '<div class="dates_timelines"><h2 class="header lh-base" id="stats_times_RAND">Times</h2><table class="tab_cadre_fixe" aria-labelledby="stats_times_RAND"><tr class="tab_bg_2"><th scope="row">Take into account</th><td>5 minutes</td></tr><tr class="tab_bg_2"><th scope="row">Resolution</th><td>0 seconds</td></tr><tr class="tab_bg_2"><th scope="row">Closure</th><td>0 seconds</td></tr><tr class="tab_bg_2"><th scope="row">Pending</th><td>&nbsp;</td></tr></table></div>',
             ];
         }
     }

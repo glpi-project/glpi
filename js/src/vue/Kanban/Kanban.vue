@@ -369,7 +369,7 @@
                 entry.folded = entry.folded === 'true' || entry.folded === true;
                 const element = $(`#column-${CSS.escape(props.column_field.id)}-${CSS.escape(entry.column)}`);
                 if (element.length === 0) {
-                    promises.push(loadColumn(entry.column, true, false));
+                    promises.push(loadColumn(entry.column, true));
                 }
                 $(`#${CSS.escape(props.element_id)} .kanban-columns .kanban-column:nth-child(${index})`).after(element);
                 if (entry.folded) {
@@ -424,9 +424,10 @@
      * Load a column from the server and append it to the Kanban if it is visible.
      * @param {number} column_id The ID of the column to load.
      *    This is useful if an item is changed in another tab or by another user to be in the new column after the original column was added.
+     * @param {boolean} nosave Prevent saving the state even if the column doesn't seem present in the current state. This should be true if called during the loadState() function to prevent saving the state before it is fully loaded.
      * @return {Promise<void>}
      */
-    async function loadColumn(column_id) {
+    async function loadColumn(column_id, nosave = false) {
         let skip_load = false;
         if (user_state.value.state !== undefined) {
             $.each(user_state.value.state, function (i, c) {
@@ -467,7 +468,7 @@
                     refreshSortables();
 
                     // If there are no cards in the state for this column, force a state save
-                    if ((state_for_col?.cards || []).length === 0) {
+                    if (!nosave && (state_for_col?.cards || []).length === 0) {
                         saveState();
                     }
                 }

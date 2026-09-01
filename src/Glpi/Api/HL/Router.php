@@ -581,7 +581,7 @@ EOT;
             }
             $action = static fn($input) => $middleware['middleware']($input, $action);
         }
-        $action($input); // @phpstan-ignore expr.resultUnused (phpstan doens't understand this, TODO rewrite with listeners instead of callbacks)
+        $action($input);
     }
 
     private function doRequestMiddleware(MiddlewareInput $input): ?Response
@@ -613,7 +613,7 @@ EOT;
             }
             $action = static fn($input) => $middleware['middleware']($input, $action);
         }
-        $action($input); // @phpstan-ignore expr.resultUnused (phpstan doens't understand this, TODO rewrite with listeners instead of callbacks)
+        $action($input);
     }
 
     public function handleRequest(Request $request): Response

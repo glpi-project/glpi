@@ -45,6 +45,7 @@ use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportData;
+use Glpi\Form\QuestionType\PredefinedValueValidationInterface;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\TranslationAwareQuestionType;
@@ -298,9 +299,19 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
             $type = $this->getQuestionType();
             $value = $type->formatPredefinedValue($get[$uuid]);
 
-            if ($value !== null) {
-                $this->fields['default_value'] = $value;
+            if ($value === null) {
+                return;
             }
+
+            // Discard values that can not be applied to this specific question
+            if (
+                $type instanceof PredefinedValueValidationInterface
+                && !$type->isValidPredefinedValue($value, $this)
+            ) {
+                return;
+            }
+
+            $this->fields['default_value'] = $value;
         }
     }
 

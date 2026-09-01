@@ -37,6 +37,7 @@ namespace Glpi\Dashboard;
 
 use Config;
 use Dropdown;
+use Entity;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Debug\Profiler;
@@ -45,6 +46,8 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Plugin\Hooks;
 use Html;
 use Item_Devices;
+use Location;
+use Manufacturer;
 use Plugin;
 use Profile;
 use Ramsey\Uuid\Uuid;
@@ -52,6 +55,7 @@ use ReflectionClass;
 use Reminder;
 use Session;
 use ShareDashboardDropdown;
+use State;
 use Telemetry;
 use Throwable;
 use Ticket;
@@ -1438,12 +1442,27 @@ HTML;
             // add multiple width for Assets itemtypes grouped by their foreign keys
             $assets = array_merge($CFG_GLPI['asset_types'], ['Software']);
             foreach ($assets as $itemtype) {
-                $fk_itemtypes = [
-                    'State',
-                    'Entity',
-                    'Manufacturer',
-                    'Location',
-                ];
+                $item = getItemForItemtype($itemtype);
+                if ($item === false) {
+                    continue;
+                }
+                $fk_itemtypes = [];
+
+                if ($item->isField(State::getForeignKeyField())) {
+                    $fk_itemtypes[] = State::class;
+                }
+
+                if ($item->isField(Entity::getForeignKeyField())) {
+                    $fk_itemtypes[] = Entity::class;
+                }
+
+                if ($item->isField(Manufacturer::getForeignKeyField())) {
+                    $fk_itemtypes[] = Manufacturer::class;
+                }
+
+                if ($item->isField(Location::getForeignKeyField())) {
+                    $fk_itemtypes[] = Location::class;
+                }
 
                 if (class_exists($itemtype . 'Type')) {
                     $fk_itemtypes[] = $itemtype . 'Type';
@@ -1461,7 +1480,7 @@ HTML;
 
                     $cards["count_" . $itemtype . "_" . $fk_itemtype] = [
                         'widgettype' => ['summaryNumbers', 'multipleNumber', 'pie', 'donut', 'halfpie', 'halfdonut', 'bar', 'hbar'],
-                        'itemtype'   => "\\Computer",
+                        'itemtype'   => $itemtype,
                         'group'      => _n('Asset', 'Assets', Session::getPluralNumber()),
                         'label'      => $label,
                         'provider'   => "Glpi\\Dashboard\\Provider::multipleNumber" . $itemtype . "By" . $fk_itemtype,

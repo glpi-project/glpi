@@ -1860,13 +1860,13 @@ foreach ($CFG_GLPI['plug_types'] as $source_itemtype) {
 
 // Asset_PeripheralAsset specific case
 foreach ($CFG_GLPI['directconnect_types'] as $directconnect_itemtype) {
-    $target_table_key = Asset_PeripheralAsset::getTable();
+    $target_table_key = '_' . Asset_PeripheralAsset::getTable();
     $source_table     = $directconnect_itemtype::getTable();
 
     $add_mapping_entry($source_table, $target_table_key, ['itemtype_peripheral', 'items_id_peripheral']);
 }
 foreach (Asset_PeripheralAsset::getPeripheralHostItemtypes() as $peripheralhost_itemtype) {
-    $target_table_key = Asset_PeripheralAsset::getTable();
+    $target_table_key = '_' . Asset_PeripheralAsset::getTable();
     $source_table     = $peripheralhost_itemtype::getTable();
 
     $add_mapping_entry($source_table, $target_table_key, ['itemtype_asset', 'items_id_asset']);

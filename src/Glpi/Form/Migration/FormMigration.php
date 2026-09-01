@@ -85,6 +85,7 @@ use Item_Problem;
 use Item_Ticket;
 use LogicException;
 use Override;
+use Ramsey\Uuid\Uuid;
 use Throwable;
 
 use function Safe\json_decode;
@@ -104,6 +105,18 @@ class FormMigration extends AbstractPluginMigration
      * @var array<int, array>
      */
     private array $formcreator_raw_forms = [];
+
+    /**
+     * Source UUIDs already used in this run, to detect Formcreator duplicates.
+     * @var array<string, true>
+     */
+    private array $seen_form_uuids = [];
+
+    /**
+     * Form IDs already reconciled in this run, excluded from the legacy fallback.
+     * @var int[]
+     */
+    private array $claimed_form_ids = [];
 
     public function __construct(
         DBmysql $db,
@@ -453,7 +466,7 @@ class FormMigration extends AbstractPluginMigration
                 'id', 'name', 'plugin_formcreator_categories_id', 'level',
             ],
             'glpi_plugin_formcreator_forms' => [
-                'id', 'name', 'description', 'plugin_formcreator_categories_id', 'entities_id',
+                'id', 'uuid', 'name', 'description', 'plugin_formcreator_categories_id', 'entities_id',
                 'is_recursive', 'is_visible',
             ],
             'glpi_plugin_formcreator_sections' => [
@@ -621,6 +634,7 @@ class FormMigration extends AbstractPluginMigration
         $raw_forms = $this->db->request([
             'SELECT' => [
                 'id',
+                'uuid',
                 'description',
                 'content AS header',
                 'name',
@@ -636,16 +650,57 @@ class FormMigration extends AbstractPluginMigration
         ]);
 
         foreach ($raw_forms as $raw_form) {
+            $uuid = $raw_form['uuid'];
+
+            // No unique constraint on Formcreator's side: an empty or duplicate value
+            // must not merge unrelated forms.
+            if (empty($uuid) || isset($this->seen_form_uuids[$uuid])) {
+                if (!empty($uuid)) {
+                    $this->result->addMessage(
+                        MessageType::Warning,
+                        sprintf(
+                            __('Form "%s" has a UUID ("%s") already used by another form in the Formcreator data. A new UUID has been generated to avoid merging them.'),
+                            $raw_form['name'],
+                            $uuid
+                        )
+                    );
+                }
+                // Deterministic, not random: a replay must regenerate the same UUID.
+                $uuid = (string) Uuid::uuid5(Uuid::NAMESPACE_URL, 'formcreator-form-' . $raw_form['id']);
+            }
+            $this->seen_form_uuids[$uuid] = true;
+
+            $forms_categories_id = $this->getMappedItemTarget(
+                'PluginFormcreatorCategory',
+                $raw_form['plugin_formcreator_categories_id']
+            )['items_id'] ?? 0;
+
+            $reconciliation_criteria = ['uuid' => $uuid];
+            $existing_form = new Form();
+            if (!$existing_form->getFromDBByCrit($reconciliation_criteria)) {
+                // Fallback for forms migrated before reconciliation switched from name to uuid.
+                $legacy_criteria = [
+                    'name'                => $raw_form['name'],
+                    'entities_id'         => $raw_form['entities_id'],
+                    'forms_categories_id' => $forms_categories_id,
+                ];
+                if ($this->claimed_form_ids !== []) {
+                    // Skip forms already claimed this run, to avoid re-merging them.
+                    $legacy_criteria['id'] = ['NOT IN', $this->claimed_form_ids];
+                }
+                if ($existing_form->getFromDBByCrit($legacy_criteria)) {
+                    $reconciliation_criteria = ['id' => $existing_form->getID()];
+                }
+            }
+
             $form = $this->importItem(
                 Form::class,
                 [
+                    'uuid'                  => $uuid,
                     'name'                  => $raw_form['name'],
                     'header'                => $raw_form['header'],
                     'description'           => $raw_form['description'],
-                    'forms_categories_id'   => $this->getMappedItemTarget(
-                        'PluginFormcreatorCategory',
-                        $raw_form['plugin_formcreator_categories_id']
-                    )['items_id'] ?? 0,
+                    'forms_categories_id'   => $forms_categories_id,
                     'entities_id'           => $raw_form['entities_id'],
                     'is_recursive'          => $raw_form['is_recursive'],
                     'is_active'             => $raw_form['is_active'],
@@ -653,15 +708,9 @@ class FormMigration extends AbstractPluginMigration
                     'render_layout'         => 'single_page',
                     '_from_migration'       =>  true,
                 ],
-                [
-                    'name'                => $raw_form['name'],
-                    'entities_id'         => $raw_form['entities_id'],
-                    'forms_categories_id' => $this->getMappedItemTarget(
-                        'PluginFormcreatorCategory',
-                        $raw_form['plugin_formcreator_categories_id']
-                    )['items_id'] ?? 0,
-                ]
+                $reconciliation_criteria
             );
+            $this->claimed_form_ids[] = $form->getID();
 
             // Store the form for later use
             $this->forms[$raw_form['id']] = $form;

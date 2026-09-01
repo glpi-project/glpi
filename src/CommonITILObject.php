@@ -613,6 +613,34 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
+     * Resolve the entity to use for a new item created from an asset (via the
+     * "_add_fromitem"/"itemtype"/"items_id" form options), provided the
+     * current user has access to that entity.
+     *
+     * @param array<string, mixed> $options
+     *
+     * @return int|null The asset entity, or null if it cannot be determined or is not accessible.
+     */
+    protected function getEntitiesIdFromAddFromItemOptions(array $options): ?int
+    {
+        if (
+            !isset($options['_add_fromitem'], $options['itemtype'])
+            || !is_a($options['itemtype'], CommonDBTM::class, true)
+        ) {
+            return null;
+        }
+
+        $item = new $options['itemtype']();
+        $item->getFromDB($options['items_id'][$options['itemtype']][0]);
+
+        if (!Session::haveAccessToEntity($item->fields['entities_id'])) {
+            return null;
+        }
+
+        return $item->fields['entities_id'];
+    }
+
+    /**
      * @param $ID
      * @param $options   array
      **/
@@ -620,6 +648,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         if (!static::canView()) {
             return false;
+        }
+
+        $entities_id = $this->getEntitiesIdFromAddFromItemOptions($options);
+        if ($entities_id !== null) {
+            $options['entities_id'] = $entities_id;
         }
 
         $this->restoreInputAndDefaults($ID, $options);
@@ -5683,11 +5716,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 ? Html::timestampToString($this->fields['takeintoaccount_delay_stat'], false, false)
                 : null,
             'is_solved'           => $is_solved,
-            'resolution'          => $is_solved && $this->fields['solve_delay_stat'] > 0
+            'resolution'          => $is_solved
                 ? Html::timestampToString($this->fields['solve_delay_stat'], false, false)
                 : null,
             'is_closed'           => $is_closed,
-            'closure'             => $is_closed && $this->fields['close_delay_stat'] > 0
+            'closure'             => $is_closed
                 ? Html::timestampToString($this->fields['close_delay_stat'], true, false)
                 : null,
             'pending'             => $this->fields['waiting_duration'] > 0
@@ -6854,7 +6887,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 $solvedelay_column = "";
                 // Show only for solved tickets
-                if ($item->fields['solve_delay_stat'] > 0) {
+                if (!empty($item->fields['solvedate'])) {
                     $solvedelay_column = htmlescape(Html::timestampToString($item->fields['solve_delay_stat']));
                 }
                 echo $output::showItem($solvedelay_column, $item_num, $p['row_num'], $align_desc . " width='150'");
@@ -7657,10 +7690,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             foreach ($tasks as $tasks_id => $task_row) {
                 // Safer to use a clean object to load our data
+                /** @var CommonITILTask $tltask */
                 $tltask = getItemForItemtype($taskClass);
                 if (($tltask === false)) {
                     continue;
                 }
+
+                $tltask->setParentItem($this);
                 $tltask->fields = $task_row;
                 $tltask->post_getFromDB();
 
@@ -7741,11 +7777,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 // Safer to use a clean object to load our data
                 /** @var CommonITILValidation $validation */
                 $validation = getItemForItemtype($validation_class);
+                $validation->setParentItem($this);
                 $validation->fields = $validation_row;
                 $validation->post_getFromDB();
 
-                $canedit = $validation_obj->can($validations_id, UPDATE);
-                $cananswer = $validation_obj->canAnswer()
+                // Use $validation (already loaded with this row's data) instead of $validation_obj,
+                // so that can() does not reload it from the DB.
+                $canedit = $validation->can($validations_id, UPDATE);
+                $cananswer = $validation->canAnswer()
                     && $validation_row['status'] == CommonITILValidation::WAITING
                     && !$this->isSolved(true);
                 $user = new User();
@@ -8752,10 +8791,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             'users_id' => $user_id,
                             'users_id_tech' => $user_id,
                         ];
+
+                        if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {
+                            $private_task_crit['groups_id_tech'] = $_SESSION["glpigroups"];
+                        }
                     }
-                }
-                if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {
-                    $private_task_crit['groups_id_tech'] = $_SESSION["glpigroups"];
                 }
                 if (!empty($private_task_crit)) {
                     $tasks_crit[] = ['OR' => $private_task_crit];
@@ -9500,7 +9540,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         } else {
                             $actor_id = $actor;
                         }
-                        if (!is_numeric($actor_id)) {
+                        if (!is_numeric($actor_id) && $actor_id !== 'requester_manager') {
                             trigger_error(
                                 sprintf(
                                     'Invalid value "%s" found for additional actor in "%s".',
@@ -10811,18 +10851,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (!$this->isNewItem() && !isset($input['entities_id'])) {
             $input['entities_id'] = $this->fields['entities_id'];
         }
-    }
-
-    /**
-     * @param string $name
-     * @return array{description: string, parameter?: string}
-     */
-    public static function cronInfo($name)
-    {
-        return match ($name) {
-            'createinquest' => ['description' => __('Generation of satisfaction surveys')],
-            default => [],
-        };
     }
 
     /**

@@ -241,7 +241,7 @@ describe("Debug Bar", () => {
 
         const serverPerformanceWidget = wrapper.find('.debug-toolbar-widget[data-glpi-debug-widget-id="server_performance"]');
         expect(serverPerformanceWidget.exists()).toBe(true);
-        expect(serverPerformanceWidget.text()).toMatch(/200\s+ms\s+using\s+4\.94\s+MiB/);
+        expect(serverPerformanceWidget.text()).toMatch(/200\s+ms\s+total\s+using\s+4\.94\s+MiB/);
         await serverPerformanceWidget.trigger('click');
         expect(wrapper.find('#debug-toolbar-expanded-content').element).toBeVisible();
         const expandedContent = wrapper.find('#debug-toolbar-expanded-content');

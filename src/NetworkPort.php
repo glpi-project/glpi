@@ -958,6 +958,12 @@ class NetworkPort extends CommonDBChild
                         case 6:
                             $output .= htmlescape(Dropdown::getYesNo($port['is_deleted']));
                             break;
+                        case 9:
+                            $socket = new Socket();
+                            if ($socket->getFromDBByCrit(['networkports_id' => $port['id']])) {
+                                $output .= $socket->getLink();
+                            }
+                            break;
                         case 1:
                             if ($agg === true) {
                                 $td_class = 'aggregated';
@@ -1584,15 +1590,17 @@ class NetworkPort extends CommonDBChild
             'massiveaction'      => false,
         ];
 
-        if ($this->isField('sockets_id')) {
-            $tab[] = [
-                'id'                 => '9',
-                'table'              => 'glpi_sockets',
-                'field'              => 'name',
-                'name'               => Socket::getTypeName(1),
-                'datatype'           => 'dropdown',
-            ];
-        }
+        $tab[] = [
+            'id'                 => '9',
+            'table'              => 'glpi_sockets',
+            'field'              => 'name',
+            'name'               => Socket::getTypeName(1),
+            'datatype'           => 'dropdown',
+            'joinparams'         => [
+                'jointype'  => 'child',
+                'linkfield' => 'networkports_id',
+            ],
+        ];
 
         $tab[] = [
             'id'                 => '16',

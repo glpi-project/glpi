@@ -2162,6 +2162,38 @@ HTML;
         }
     }
 
+    public function testDeviceTypesAndModelsAreRegisteredAsStandardDropdowns(): void
+    {
+        $this->login();
+
+        $groups = Dropdown::getStandardDropdownItemTypes(false);
+
+        $type_key = _n('Type', 'Types', Session::getPluralNumber());
+        $model_key = _n('Model', 'Models', Session::getPluralNumber());
+
+        $this->assertArrayHasKey($type_key, $groups);
+        $this->assertArrayHasKey($model_key, $groups);
+
+        $type_group = $groups[$type_key];
+        $model_group = $groups[$model_key];
+
+        $device_itemtypes = array_merge(...array_values(Dropdown::getDeviceItemTypes(false)));
+
+        $this->assertNotEmpty($device_itemtypes);
+
+        foreach (array_keys($device_itemtypes) as $device_class) {
+            $type_class = $device_class . 'Type';
+            if (class_exists($type_class)) {
+                $this->assertArrayHasKey($type_class, $type_group, "$type_class should be a registered standard dropdown");
+            }
+
+            $model_class = $device_class . 'Model';
+            if (class_exists($model_class)) {
+                $this->assertArrayHasKey($model_class, $model_group, "$model_class should be a registered standard dropdown");
+            }
+        }
+    }
+
     public function testClone()
     {
         $this->login();
@@ -3172,5 +3204,39 @@ HTML;
 
         $this->assertContains($computer_with_contact_id, $ids);
         $this->assertNotContains($other_computer_id, $ids);
+    }
+
+    public function testGetDropdownMyDevicesCustomAsset(): void
+    {
+        $this->login();
+
+        $custom_asset = getItemByTypeName('Glpi\\CustomAsset\\Test01Asset', 'TestA');
+        $custom_asset = $this->updateItem(
+            'Glpi\\CustomAsset\\Test01Asset',
+            $custom_asset->getID(),
+            [
+                'users_id' => Session::getLoginUserID(),
+            ]
+        );
+
+        // Ensure user has permission to see the asset and has permission to link that type of custom asset to tickets
+        $_SESSION["glpiactiveprofile"]["asset_test01"] = 3871;
+        $_SESSION["glpiactiveprofile"]["helpdesk_item_type"][] = 'Glpi\\CustomAsset\\Test01Asset';
+
+        // Check dropdown results
+        $results = Dropdown::getDropdownMyDevices([
+            'entity_restrict' => $_SESSION["glpiactiveentities"],
+        ], false)['results'];
+        $has_match = false;
+        foreach ($results as $result) {
+            if ($result['text'] === 'My Test01') {
+                foreach ($result['children'] as $child_result) {
+                    if ($child_result['text'] === 'TestA') {
+                        $has_match = true;
+                    }
+                }
+            }
+        }
+        $this->assertTrue($has_match);
     }
 }

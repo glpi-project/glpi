@@ -139,7 +139,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'add_document'      => __('New document'),
             'pendingreason_add' => __('Pending reason added'),
             'pendingreason_del' => __('Pending reason removed'),
-            'pendingreason_close' => __('Pending reason auto close'),
+            'pendingreason_resolve' => __('Pending reason auto resolve'),
             'remove_requester_user' => __('Deletion of a user in requesters'),
             'remove_requester_group' => __('Deletion of a group in requesters'),
             'remove_observer_user' => __('Deletion of a user in observers'),

@@ -307,7 +307,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
                 $input['date_creation'] = 'NULL';
             }
 
-            if (empty($input['ttl'])) {
+            if (!isset($input['ttl']) || $input['ttl'] === '') {
                 $input['ttl'] = self::DEFAULT_TTL;
             }
         }
@@ -379,6 +379,13 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
             $this->fields['data_obj'] = 'NULL';
             $this->updates[]          = 'data_obj';
         }
+    }
+
+    public function post_getEmpty()
+    {
+        // Reflect the actual default applied on add, so the form does not
+        // display "0" for a value that will really be saved as DEFAULT_TTL.
+        $this->fields['ttl'] = self::DEFAULT_TTL;
     }
 
     public function showForm($ID, array $options = [])
@@ -541,14 +548,20 @@ TWIG, $twig_params);
      */
     public static function getDisplayName(Domain $domain, $name)
     {
-        $name_txt = rtrim(
-            str_replace(
-                rtrim($domain->getCanonicalName(), '.'),
-                '',
-                $name
-            ),
-            '.'
-        );
+        $canonical = rtrim($domain->getCanonicalName(), '.');
+        $suffix = '.' . $canonical;
+
+        if ($name === $canonical) {
+            $name_txt = '';
+        } elseif (str_ends_with($name, $suffix)) {
+            // Only strip the domain name when it is a genuine trailing suffix,
+            // not when it merely appears as a substring of the record name.
+            $name_txt = substr($name, 0, -strlen($suffix));
+        } else {
+            $name_txt = $name;
+        }
+
+        $name_txt = rtrim($name_txt, '.');
         if (empty($name_txt)) {
             //dns root
             $name_txt = '@';

@@ -256,6 +256,112 @@ class RequestTest extends GLPITestCase
         ];
     }
 
+    public static function specialCharsProvider(): iterable
+    {
+        //see https://github.com/glpi-project/glpi-inventory-plugin/issues/936
+        yield 'ampersand' => [
+            'value'         => '12345&67890',
+            'in_element'    => '12345&amp;67890',
+            'in_attribute'  => '12345&amp;67890',
+        ];
+        yield 'encoded ampersand' => [
+            'value'         => 'foo&amp;bar',
+            'in_element'    => 'foo&amp;amp;bar',
+            'in_attribute'  => 'foo&amp;amp;bar',
+        ];
+        yield 'numeric entity' => [
+            'value'         => 'a&#38;b',
+            'in_element'    => 'a&amp;#38;b',
+            'in_attribute'  => 'a&amp;#38;b',
+        ];
+        yield 'angle brackets' => [
+            'value'         => 'a<b>c',
+            'in_element'    => 'a&lt;b&gt;c',
+            'in_attribute'  => 'a&lt;b&gt;c',
+        ];
+        //double quotes only need escaping inside an attribute value
+        yield 'quotes' => [
+            'value'         => 'p"q\'r',
+            'in_element'    => 'p"q\'r',
+            'in_attribute'  => 'p&quot;q\'r',
+        ];
+        //the response DOMDocument carries no encoding declaration, so libxml
+        //serializes non-ASCII characters as numeric entities
+        yield 'accents' => [
+            'value'         => 'café crème',
+            'in_element'    => 'caf&#xE9; cr&#xE8;me',
+            'in_attribute'  => 'caf&#xE9; cr&#xE8;me',
+        ];
+    }
+
+    /**
+     * Special characters must be escaped, both in element contents and in
+     * attribute values, and the agent must read back exactly what was stored.
+     */
+    #[DataProvider('specialCharsProvider')]
+    public function testAddResponseEscapesSpecialChars(string $value, string $in_element, string $in_attribute)
+    {
+        $request = new Request();
+        $request->handleContentType('application/xml');
+        $request->addToResponse([
+            'AUTHENTICATION' => [
+                'PRIVPASSPHRASE' => $value,
+            ],
+        ]);
+
+        $response = $request->getResponse();
+        $this->assertSame(
+            "<?xml version=\"1.0\"?>\n<REPLY><AUTHENTICATION><PRIVPASSPHRASE>$in_element</PRIVPASSPHRASE></AUTHENTICATION></REPLY>",
+            $response
+        );
+
+        //the whole point: what the agent parses must match what we sent
+        $parsed = simplexml_load_string($response);
+        $this->assertNotFalse($parsed, $response);
+        $this->assertSame($value, (string) $parsed->AUTHENTICATION->PRIVPASSPHRASE);
+
+        //same value, carried as an attribute
+        $request = new Request();
+        $request->handleContentType('application/xml');
+        $request->addToResponse([
+            'AUTHENTICATION' => [
+                'content'    => '',
+                'attributes' => ['PRIVPASSPHRASE' => $value],
+            ],
+        ]);
+
+        $response = $request->getResponse();
+        $this->assertSame(
+            "<?xml version=\"1.0\"?>\n<REPLY><AUTHENTICATION PRIVPASSPHRASE=\"$in_attribute\"/></REPLY>",
+            $response
+        );
+
+        $parsed = simplexml_load_string($response);
+        $this->assertNotFalse($parsed, $response);
+        $this->assertSame($value, (string) $parsed->AUTHENTICATION['PRIVPASSPHRASE']);
+    }
+
+    /**
+     * Empty contents must still be serialized as a self-closing element:
+     * appending an empty text node would change the wire format.
+     */
+    public function testAddResponseKeepsEmptyNodesSelfClosing()
+    {
+        $request = new Request();
+        $request->handleContentType('application/xml');
+        $request->addToResponse([
+            'AUTHENTICATION' => [
+                'USERNAME'       => '',
+                'PRIVPASSPHRASE' => null,
+            ],
+        ]);
+
+        $this->assertSame(
+            "<?xml version=\"1.0\"?>\n<REPLY><AUTHENTICATION><USERNAME/><PRIVPASSPHRASE/></AUTHENTICATION></REPLY>",
+            $request->getResponse()
+        );
+    }
+
     /**
      * Test request compression
      *

@@ -63,6 +63,12 @@ final class QuestionTypeRadio extends AbstractQuestionTypeSelectable implements 
     }
 
     #[Override]
+    public function allowsMultipleDefaultValues(?Question $question): bool
+    {
+        return false;
+    }
+
+    #[Override]
     public function getConditionHandlers(
         ?JsonFieldInterface $question_config
     ): array {

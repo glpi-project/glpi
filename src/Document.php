@@ -1738,7 +1738,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     public static function cronInfo($name): array
     {
         return match ($name) {
-            'cleanorphans' => ['description' => __('Clean orphaned documents: deletes all documents that are not associated with any items.')],
+            'cleanorphansdocument' => ['description' => __('Clean orphaned documents: deletes all documents that are not associated with any items.')],
             default => [],
         };
     }
@@ -1751,7 +1751,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      * @return int (0 : nothing done - 1 : done)
      * @used-by CronTask
      **/
-    public static function cronCleanOrphans(CronTask $task): int
+    public static function cronCleanOrphansDocument(CronTask $task): int
     {
         global $DB;
 

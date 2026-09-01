@@ -74,8 +74,9 @@ class TicketValidation extends CommonITILValidation
     {
 
         if ($this->canChildItem('canViewItem', 'canView')) {
-            $ticket = new Ticket();
-            if ($ticket->getFromDB($this->fields['tickets_id'])) {
+            $parent_loaded = $this->isParentAlreadyLoaded();
+            $ticket = $parent_loaded ? $this->item : new Ticket();
+            if ($parent_loaded || $ticket->getFromDB($this->fields['tickets_id'])) {
                 // No validation for closed tickets
                 if (in_array($ticket->fields['status'], $ticket->getClosedStatusArray())) {
                     return false;

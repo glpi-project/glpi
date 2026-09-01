@@ -156,6 +156,28 @@ class OperatingSystem extends InventoryAsset
             'items_id'  => $this->item->fields['id'],
         ]);
 
+        if (!$ios->isNewItem()) {
+            $reset_fields = [
+                'operatingsystemversions_id'       => 0,
+                'operatingsystemservicepacks_id'   => 0,
+                'operatingsystemarchitectures_id'  => 0,
+                'operatingsystemkernelversions_id' => 0,
+                'operatingsystemkernels_id'        => 0,
+                'operatingsystemeditions_id'       => 0,
+                'licenseid'                        => '',
+                'license_number'                   => '',
+                'company'                          => '',
+                'owner'                            => '',
+                'hostid'                           => '',
+                'install_date'                     => null,
+            ];
+            foreach ($reset_fields as $field => $empty_value) {
+                if (!property_exists($val, $field)) {
+                    $val->$field = $empty_value;
+                }
+            }
+        }
+
         $input_os = $this->handleInput($val, $ios) + [
             'itemtype'                          => $this->item::class,
             'items_id'                          => $this->item->fields['id'],
