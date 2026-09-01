@@ -597,59 +597,59 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
      */
     public function testSameIdWithDifferentItemtypesIsNotConsideredDuplicate(): void
     {
+        global $DB;
+
         $this->login();
 
         $entities_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
-        // Create a Change.
-        $change = new \Change();
-        $changes_id = $change->add([
-            'name'        => 'Change with shared id',
+        $changes_id = $this->createItem(\Change::class, [
+            'name'        => 'Change #25161',
             'content'     => 'test',
             'status'      => \Change::INCOMING,
             'entities_id' => $entities_id,
-        ]);
-        $this->assertGreaterThan(0, $changes_id);
+        ])->getID();
 
-        // Create a Ticket with the same ID as the Change.
-        $ticket = new \Ticket();
-        $shared_id_ticket_id = $ticket->add([
-            'id'          => $changes_id,
-            'name'        => 'Ticket sharing the change id',
+        // Create two tickets with consecutive ids so at least one is guaranteed to
+        // differ from the Change id, without forcing an auto-increment value.
+        $ticket_a = $this->createItem(\Ticket::class, [
+            'name'        => 'Ticket A #25161',
             'content'     => 'test',
             'status'      => \Ticket::INCOMING,
             'entities_id' => $entities_id,
-        ]);
-        $this->assertSame($changes_id, $shared_id_ticket_id);
+        ])->getID();
 
-        // Create another Ticket with a different ID.
-        $other_ticket_id = $ticket->add([
-            'name'        => 'Other ticket',
+        $ticket_b = $this->createItem(\Ticket::class, [
+            'name'        => 'Ticket B #25161',
             'content'     => 'test',
             'status'      => \Ticket::INCOMING,
             'entities_id' => $entities_id,
-        ]);
-        $this->assertGreaterThan(0, $other_ticket_id);
+        ])->getID();
+
+        $other_ticket_id = $ticket_a === $changes_id ? $ticket_b : $ticket_a;
+
+        $this->assertNotSame($changes_id, $other_ticket_id);
+
+        // Reproduce the existing link returned by `getLinkedTo()` for the regression:
+        // a Ticket relation with the same numeric id as the Change.
+        // The linked Ticket does not need to exist for this test.
+        $this->assertNotFalse($DB->insert('glpi_changes_tickets', [
+            'changes_id' => $changes_id,
+            'tickets_id' => $changes_id,
+            'link'       => \CommonITILObject_CommonITILObject::LINK_TO,
+        ]));
 
         $change_ticket = new \Change_Ticket();
 
-        // Create the initial link: Change #1 <-> Ticket #1.
-        $link_id = $change_ticket->add([
+        // A genuine duplicate of that exact pair is still rejected.
+        $this->assertFalse($change_ticket->add([
             'changes_id' => $changes_id,
-            'tickets_id' => $shared_id_ticket_id,
+            'tickets_id' => $changes_id,
             'link'       => \CommonITILObject_CommonITILObject::LINK_TO,
-        ]);
-        $this->assertGreaterThan(0, $link_id);
+        ]));
 
-        // The exact same link must still be rejected as a duplicate.
-        $duplicate_link_id = $change_ticket->add([
-            'changes_id' => $changes_id,
-            'tickets_id' => $shared_id_ticket_id,
-            'link'       => \CommonITILObject_CommonITILObject::LINK_TO,
-        ]);
-        $this->assertFalse($duplicate_link_id);
-
-        // The existing Ticket #1 must not prevent linking another Ticket to Change #1.
+        // A different Ticket must not be considered a duplicate just because
+        // its ID is compared with the Change ID from the existing relation.
         $allowed_link_id = $change_ticket->add([
             'changes_id' => $changes_id,
             'tickets_id' => $other_ticket_id,
