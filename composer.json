@@ -208,8 +208,7 @@
         ],
         "patch": [
             "VENDOR_DIR='vendor/guzzlehttp/guzzle/' PATCH_FILE='tools/patches/guzzlehttp-guzzle-restrict-http-methods.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
-            "VENDOR_DIR='vendor/laminas/laminas-mail/' PATCH_FILE='tools/patches/laminas-laminas-mail-invalid-header-ignore.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'",
-            "VENDOR_DIR='vendor/wapmorgan/unified-archive/' PATCH_FILE='tools/patches/wapmorgan-unified-archive-php-8.5-compat.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
+            "VENDOR_DIR='vendor/laminas/laminas-mail/' PATCH_FILE='tools/patches/laminas-laminas-mail-invalid-header-ignore.patch' bash -c 'patch --dry-run -R --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE &>/dev/null || patch --fuzz=0 -f -p1 -d $VENDOR_DIR < $PATCH_FILE'"
         ]
     }
 }
