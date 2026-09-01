@@ -500,6 +500,37 @@ class PDUTest extends AbstractInventoryAsset
         $this->assertSame(0, (int) $remaining_plug['is_dynamic']);
     }
 
+    public function testPlugsKeptOnPartialInventoryWithNoPlugs(): void
+    {
+        $plug = new \Plug();
+
+        // initial inventory: 2 dynamic plugs
+        $inventory = $this->doInventory(self::XML_TWO_PLUGS, true);
+        $pdu = $inventory->getItem();
+        $pdus_id = $pdu->fields['id'];
+        $this->assertGreaterThan(0, $pdus_id);
+        $plugs = $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]);
+        $this->assertCount(2, $plugs);
+
+        $plugs_by_name = array_column($plugs, null, 'name');
+        $this->assertSame(1, (int) $plugs_by_name['Server_Blade_01']['number']);
+        $this->assertSame(2, (int) $plugs_by_name['Storage_SAN_Controller_B']['number']);
+
+        // partial re-inventory with 0 plugs: dynamic plugs must be kept untouched
+        $converter = new Converter();
+        $source = json_decode($converter->convert(self::XML_ZERO_PLUGS));
+        $source->partial = true;
+        $inventory = $this->doInventory($source);
+        $this->assertSame($pdus_id, $inventory->getItem()->fields['id']);
+
+        $plugs = $plug->find(['itemtype_main' => \PDU::class, 'items_id_main' => $pdus_id]);
+        $this->assertCount(2, $plugs);
+
+        $plugs_by_name = array_column($plugs, null, 'name');
+        $this->assertSame(1, (int) $plugs_by_name['Server_Blade_01']['number']);
+        $this->assertSame(2, (int) $plugs_by_name['Storage_SAN_Controller_B']['number']);
+    }
+
     public function testLockedFieldPDU(): void
     {
         // create PDU via inventory
