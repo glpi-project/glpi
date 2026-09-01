@@ -105,6 +105,11 @@ class MailCollectorTest extends DbTestCase
             ], [
                 'raw'       => str_repeat('A', 300),
                 'expected'  => str_repeat('A', 255),
+            ], [
+                // Subject containing invalid UTF-8 sequences, that would be rejected by the DB server.
+                // See https://github.com/glpi-project/glpi/issues/25325
+                'raw'       => "Probl\xE8me sur l'imprimante",
+                'expected'  => "Problème sur l'imprimante",
             ],
         ];
     }
@@ -805,6 +810,12 @@ class MailCollectorTest extends DbTestCase
             $msg
         );
 
+        // No message should be left in the mailbox: even the messages that cannot be imported have
+        // to be moved out of the inbox, otherwise they would be fetched again on every collect, and
+        // would prevent other collectors to be processed.
+        // See https://github.com/glpi-project/glpi/issues/25325
+        $this->assertSame(0, $this->collector->getTotalMails());
+
         // Check not imported emails
         $not_imported_specs = [
             [
@@ -917,6 +928,7 @@ class MailCollectorTest extends DbTestCase
                     '49 - Message with invalid CC email address',
                     '53 - Large HTML Email Test',
                     '54 - Invalid charset',
+                    '55 - Invalid UTF-8 body',
                     $long_subject_expected,
                 ],
             ],
@@ -1055,6 +1067,15 @@ PLAINTEXT,
             // The declared charset is not a charset name at all, contents encoding has to be detected.
             '54 - Invalid charset' => <<<HTML
 <p>This message declares an invalid charset: café and pièces jointes.</p>
+HTML,
+            // Email declaring the UTF-8 charset but containing invalid UTF-8 sequences
+            // (55-invalid-utf8-body.eml).
+            // Contents encoding has to be detected, otherwise the ticket creation would fail on
+            // DB servers that reject invalid UTF-8 sequences, and the message would stay in the
+            // mailbox, blocking the whole mailgate crontask on every run.
+            // See https://github.com/glpi-project/glpi/issues/25325
+            '55 - Invalid UTF-8 body' => <<<HTML
+<p>This message declares the UTF-8 charset but contains invalid bytes: café and pièces jointes.</p>
 HTML,
         ];
 
@@ -1755,6 +1776,15 @@ HTML,
         yield 'invalid charset with UTF-8 contents' => [
             'charset'  => 'text/html',
             'contents' => 'Café',
+            'expected' => 'Café',
+        ];
+
+        // Charset declared as UTF-8, but contents are not encoded in UTF-8.
+        // Invalid sequences would be rejected by the DB server, contents encoding has to be detected.
+        // See https://github.com/glpi-project/glpi/issues/25325
+        yield 'UTF-8 charset with invalid UTF-8 contents' => [
+            'charset'  => 'utf-8',
+            'contents' => "Caf\xE9",
             'expected' => 'Café',
         ];
     }
