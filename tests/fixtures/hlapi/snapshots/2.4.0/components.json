@@ -4012,6 +4012,21 @@
                 },
                 "is_deleted": {
                     "type": "boolean"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -4475,6 +4490,96 @@
                     "type": "string",
                     "format": "date-time",
                     "readOnly": true
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
+                },
+                "os_installs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_OperatingSystem",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "OSInstallation"
+                    }
+                },
+                "software_installs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_SoftwareVersion",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "SoftwareInstallation"
+                    }
+                },
+                "lines": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Line",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Line"
+                    }
+                },
+                "volumes": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_Disk",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Volume"
+                    }
+                },
+                "virtual_machines": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "ItemVirtualMachine",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "VirtualMachine"
+                    }
                 }
             }
         },
@@ -9296,6 +9401,21 @@
                 },
                 "template_name": {
                     "type": "string"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -14492,7 +14612,9 @@
                 "size": {
                     "type": "number",
                     "format": "float",
-                    "minimum": 0
+                    "minimum": 0,
+                    "maximum": 999.99,
+                    "multipleOf": 0.01
                 },
                 "has_microphone": {
                     "type": "boolean",
@@ -14545,6 +14667,51 @@
                 "is_dynamic": {
                     "type": "boolean",
                     "default": false
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
+                },
+                "os_installs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_OperatingSystem",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "OSInstallation"
+                    }
+                },
+                "software_installs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_SoftwareVersion",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "SoftwareInstallation"
+                    }
                 }
             }
         },
@@ -15158,6 +15325,81 @@
                         }
                     },
                     "x-full-schema": "SNMPCredential"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
+                },
+                "os_installs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_OperatingSystem",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "OSInstallation"
+                    }
+                },
+                "software_installs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_SoftwareVersion",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "SoftwareInstallation"
+                    }
+                },
+                "lines": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Line",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Line"
+                    }
+                },
+                "volumes": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_Disk",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Volume"
+                    }
                 }
             }
         },
@@ -16654,6 +16896,40 @@
                 "is_recursive": {
                     "type": "boolean",
                     "default": false
+                },
+                "asset": {
+                    "type": "object",
+                    "oneOf": [
+                        "Computer",
+                        "Monitor",
+                        "NetworkEquipment",
+                        "Peripheral",
+                        "Phone",
+                        "Printer"
+                    ],
+                    "discriminator": {
+                        "propertyName": "_itemtype",
+                        "mapping": {
+                            "Computer": {
+                                "$ref": "#/components/schemas/Computer"
+                            },
+                            "Monitor": {
+                                "$ref": "#/components/schemas/Monitor"
+                            },
+                            "NetworkEquipment": {
+                                "$ref": "#/components/schemas/NetworkEquipment"
+                            },
+                            "Peripheral": {
+                                "$ref": "#/components/schemas/Peripheral"
+                            },
+                            "Phone": {
+                                "$ref": "#/components/schemas/Phone"
+                            },
+                            "Printer": {
+                                "$ref": "#/components/schemas/Printer"
+                            }
+                        }
+                    }
                 }
             }
         },
@@ -17290,6 +17566,21 @@
                 },
                 "template_name": {
                     "type": "string"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
@@ -18031,6 +18322,66 @@
                 "is_dynamic": {
                     "type": "boolean",
                     "default": false
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
+                },
+                "os_installs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_OperatingSystem",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "OSInstallation"
+                    }
+                },
+                "software_installs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_SoftwareVersion",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "SoftwareInstallation"
+                    }
+                },
+                "lines": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Line",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Line"
+                    }
                 }
             }
         },
@@ -18443,6 +18794,81 @@
                 "last_inventory_update": {
                     "type": "string",
                     "format": "date-time"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
+                },
+                "os_installs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_OperatingSystem",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "OSInstallation"
+                    }
+                },
+                "software_installs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_SoftwareVersion",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "SoftwareInstallation"
+                    }
+                },
+                "lines": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Line",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Line"
+                    }
+                },
+                "volumes": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_Disk",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Volume"
+                    }
                 }
             }
         },
@@ -19154,6 +19580,81 @@
                         }
                     },
                     "x-full-schema": "SNMPCredential"
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
+                },
+                "os_installs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_OperatingSystem",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "OSInstallation"
+                    }
+                },
+                "software_installs": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_SoftwareVersion",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "SoftwareInstallation"
+                    }
+                },
+                "lines": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Line",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Line"
+                    }
+                },
+                "volumes": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "Item_Disk",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "Volume"
+                    }
                 }
             }
         },
@@ -25138,6 +25639,21 @@
                     "type": "number",
                     "format": "float",
                     "minimum": 0
+                },
+                "versions": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "SoftwareVersion",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "SoftwareVersion"
+                    }
                 }
             }
         },
@@ -27890,6 +28406,21 @@
                     "type": "string",
                     "format": "date-time",
                     "readOnly": true
+                },
+                "network_ports": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-itemtype": "NetworkPort",
+                        "properties": {
+                            "id": {
+                                "type": "integer",
+                                "format": "int64",
+                                "readOnly": true
+                            }
+                        },
+                        "x-full-schema": "NetworkPort"
+                    }
                 }
             }
         },
