@@ -78,7 +78,12 @@
                 </tr>
                 <tr>
                     <td>{{ data['content_text']|nl2br }}</td>
-                    <td>{{ data['content_html']|raw }}</td>
+                    <td>
+                        <iframe srcdoc="{{ data['content_html']|e('html_attr') }}"
+                                style="width: 100%; border: none; min-height: 200px;"
+                                onload="this.style.height = (this.contentDocument.body ? this.contentDocument.body.scrollHeight + 30 : 200) + 'px';"
+                                sandbox="allow-same-origin"></iframe>
+                    </td>
                 </tr>
             </tbody>
         </table>
