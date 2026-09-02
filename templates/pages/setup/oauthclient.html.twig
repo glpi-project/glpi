@@ -108,23 +108,30 @@
                             </div>
                             <script>
                                 $('button[name="add_uri"]').on('click', () => {
-                                    $('.authorized-uri-fields button[name="add_uri"]').before($('#authorized-uri-fields-template').html());
+                                    const template = $($('#authorized-uri-fields-template').html());
+                                    $('.authorized-uri-fields button[name="add_uri"]').before(template);
+                                    window.initTooltips?.(template[0]);
                                 });
                                 $('.authorized-uri-fields').on('click', 'button[name="remove_header"]', function() {
+                                    bootstrap.Tooltip.getInstance(this)?.dispose();
                                     $(this).closest('.authorized-uri-field').remove();
                                 });
                                 const already_added_uris = {{ item.fields['redirect_uri']|default([])|json_encode|raw }};
                                 const global_uris = ['/api.php/oauth2/redirection', '/api.php/swagger-oauth-redirect'];
                                 global_uris.forEach((uri) => {
-                                    $('.authorized-uri-fields button[name="add_uri"]').before($('#authorized-uri-fields-template').html());
-                                    $('.authorized-uri-field input').last().val(uri);
+                                    const template = $($('#authorized-uri-fields-template').html());
+                                    $('.authorized-uri-fields button[name="add_uri"]').before(template);
+                                    template.find('input').val(uri);
                                     // Remove delete button and disable input
-                                    $('.authorized-uri-field button[name="remove_header"]').remove();
-                                    $('.authorized-uri-field input').last().prop('disabled', true);
+                                    template.find('button[name="remove_header"]').remove();
+                                    template.find('input').prop('disabled', true);
+                                    window.initTooltips?.(template[0]);
                                 });
                                 already_added_uris.forEach((uri) => {
-                                    $('.authorized-uri-fields button[name="add_uri"]').before($('#authorized-uri-fields-template').html());
-                                    $('.authorized-uri-field input').last().val(uri);
+                                    const template = $($('#authorized-uri-fields-template').html());
+                                    $('.authorized-uri-fields button[name="add_uri"]').before(template);
+                                    template.find('input').val(uri);
+                                    window.initTooltips?.(template[0]);
                                 });
                             </script>
 
