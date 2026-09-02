@@ -188,7 +188,7 @@ final class QueryBuilder implements SearchInputInterface
         $num    = (int) $request['num'];
         $prefix = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
 
-        if (!is_subclass_of($request['itemtype'], 'CommonDBTM')) {
+        if (!is_string($request['itemtype']) || !is_subclass_of($request['itemtype'], 'CommonDBTM')) {
             throw new RuntimeException('Invalid itemtype provided!');
         }
 
@@ -241,6 +241,10 @@ final class QueryBuilder implements SearchInputInterface
             'itemtype' => $request['itemtype'],
             'fieldname' => $fieldname,
             'searchtype' => $request['searchtype'],
+            'history_search_available' => !filter_var($request['from_meta'] ?? false, FILTER_VALIDATE_BOOLEAN)
+                && !filter_var($request['disable_history_search'] ?? false, FILTER_VALIDATE_BOOLEAN)
+                && SearchOption::canSearchHistory($request['itemtype'], $request['field']),
+            'scope' => $request['scope'] ?? 'current',
             'actions' => $actions,
             'searchopt' => $searchopt,
             'dropdownname' => $dropdownname,

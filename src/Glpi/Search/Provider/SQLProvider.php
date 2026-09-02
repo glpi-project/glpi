@@ -5544,6 +5544,7 @@ final class SQLProvider implements SearchProviderInterface
             // common search
             if (
                 !isset($criterion['field'])
+                || ($criterion['scope'] ?? 'current') !== 'current'
                 || ($criterion['field'] != "all"
                     && $criterion['field'] != "view")
             ) {
@@ -5585,6 +5586,15 @@ final class SQLProvider implements SearchProviderInterface
                 } elseif (!isset($criterion['field'])) {
                     // No field to filter on
                     continue;
+                } elseif (($criterion['scope'] ?? 'current') !== 'current') {
+                    if ($is_having) {
+                        continue;
+                    }
+                    $new_where = (new Where())
+                        ->setOperator($LINK)
+                        ->withCriteria(self::getHistoryWhereCriteria($itemtype, $criterion, $NOT, $meta));
+                    $sql .= ' ' . $new_where->getQuery();
+                    $values = array_merge($values, $new_where->getParams());
                 } elseif (
                     isset($meta_searchopt[$criterion['field']]["usehaving"])
                     || ($meta && "AND NOT" === $criterion['link'])
@@ -5712,6 +5722,57 @@ final class SQLProvider implements SearchProviderInterface
             ->setQuery($sql)
             ->setParams($values)
         ;
+    }
+
+    /**
+     * Search retained old/new values of one field, without multiplying result rows.
+     * Negation applies to the entire set of values, not individual log entries.
+     *
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array<string, mixed> $criterion
+     *
+     * @return array<string, mixed>
+     */
+    private static function getHistoryWhereCriteria(string $itemtype, array $criterion, bool $not, bool $meta): array
+    {
+        if (
+            $meta
+            || !in_array($criterion['scope'], ['history', 'current_and_history'], true)
+            || !in_array($criterion['searchtype'], ['contains', 'notcontains'], true)
+            || !SearchOption::canSearchHistory($itemtype, $criterion['field'])
+        ) {
+            // Fail closed for forged requests and saved searches whose permissions changed.
+            return ['AND' => [new QueryExpression('false')]];
+        }
+
+        $table = $itemtype::getTable();
+        $history = [
+            "$table.id" => new QuerySubQuery([
+                'SELECT' => 'items_id',
+                'FROM' => 'glpi_logs',
+                'WHERE' => [
+                    'itemtype' => $itemtype,
+                    'id_search_option' => (int) $criterion['field'],
+                    'linked_action' => 0,
+                    'OR' => [
+                        self::getTextCriteria('old_value', $criterion['value'], false, Operator::NONE),
+                        self::getTextCriteria('new_value', $criterion['value'], false, Operator::NONE),
+                    ],
+                ],
+            ]),
+        ];
+        if ($criterion['searchtype'] === 'notcontains') {
+            $not = !$not;
+        }
+        $history = $not ? ['NOT' => $history] : $history;
+        if ($criterion['scope'] === 'current_and_history') {
+            return [$not ? 'AND' : 'OR' => [
+                self::getWhereCriteria($not, $itemtype, $criterion['field'], 'contains', $criterion['value']),
+                $history,
+            ]];
+        }
+
+        return $history;
     }
 
     /**

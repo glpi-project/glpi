@@ -98,6 +98,9 @@
                   _idor_token: idor_token(used_itemtype),
                   field: value,
                   searchtype: searchtype,
+                  scope: criteria['scope']|default('current'),
+                  from_meta: from_meta,
+                  disable_history_search: itemtype == 'AllAssets',
                   value: p_value,
                   num: num,
                   p: p,
@@ -113,6 +116,7 @@
                params|merge({
                   action: 'display_searchoption',
                   field: '__VALUE__',
+                  scope: 'current',
                })
             ]) %}
          </div>
