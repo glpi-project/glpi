@@ -37,15 +37,13 @@ namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
-use HLAPICallAsserter;
 
-class ServiceCatalogControllerTest extends HLAPITestCase
+class HelpdeskControllerTest extends HLAPITestCase
 {
     public function testGetMyServiceCatalogInfo(): void
     {
         $this->login();
-        $this->api->call(new Request('GET', '/ServiceCatalog/My'), function ($call) {
-            /** @var HLAPICallAsserter $call */
+        $this->api->call(new Request('GET', '/Helpdesk/TilesInfo/My'), function ($call) {
             $call->response
                 ->isOK()
                 ->jsonContent(function ($content) {

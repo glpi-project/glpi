@@ -117686,24 +117686,24 @@
             ]
         }
     },
-    "/ServiceCatalog/My": {
+    "/Helpdesk/TilesInfo/My": {
         "get": {
             "responses": {
                 "200": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ServiceCatalogInfo"
+                                "$ref": "#/components/schemas/HelpdeskTilesInfo"
                             }
                         },
                         "text/csv": {
                             "schema": {
-                                "$ref": "#/components/schemas/ServiceCatalogInfo"
+                                "$ref": "#/components/schemas/HelpdeskTilesInfo"
                             }
                         },
                         "application/xml": {
                             "schema": {
-                                "$ref": "#/components/schemas/ServiceCatalogInfo"
+                                "$ref": "#/components/schemas/HelpdeskTilesInfo"
                             }
                         }
                     }

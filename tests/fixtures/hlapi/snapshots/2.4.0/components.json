@@ -23146,7 +23146,7 @@
                 }
             }
         },
-        "ServiceCatalogInfo": {
+        "HelpdeskTilesInfo": {
             "type": "object",
             "readOnly": true,
             "properties": {
