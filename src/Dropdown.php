@@ -4992,7 +4992,12 @@ HTML;
             $entity_restrict = Toolbox::jsonDecode($post['entity_restrict']);
             $entity_restrict = Session::getMatchingActiveEntities($entity_restrict);
         }
-        $default_use_notif = Entity::getUsedConfig('is_notif_enable_default', $_SESSION['glpiactive_entity'], '', 1);
+        $default_use_notif = Entity::getUsedConfig(
+            'is_notif_enable_default',
+            $post['item']['entities_id'] ?? $_SESSION['glpiactive_entity'],
+            '',
+            1
+        );
 
         // prevent instanciation of bad classes
         if (!is_subclass_of($post['itiltemplate_class'], ITILTemplate::class)) {
