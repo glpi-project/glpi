@@ -138,7 +138,7 @@ updates:
     directory: "/"
     schedule:
       interval: "cron"
-      cronjob: "0 11 1 * *"
+      cronjob: "0 13 1 * *"
       timezone: "Europe/Paris"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
@@ -171,7 +171,7 @@ updates:
     directory: "/"
     schedule:
       interval: "cron"
-      cronjob: "0 11 1 * *"
+      cronjob: "0 13 1 * *"
       timezone: "Europe/Paris"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
@@ -212,7 +212,7 @@ updates:
     directory: "/"
     schedule:
       interval: "cron"
-      cronjob: "0 13 1 * *"
+      cronjob: "0 15 1 * *"
       timezone: "Europe/Paris"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
@@ -255,7 +255,7 @@ updates:
     directory: "/"
     schedule:
       interval: "cron"
-      cronjob: "0 13 1 * *"
+      cronjob: "0 15 1 * *"
       timezone: "Europe/Paris"
     open-pull-requests-limit: 100
     rebase-strategy: "disabled"
