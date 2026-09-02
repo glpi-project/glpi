@@ -68,13 +68,10 @@ The present file will list all changes made to the project; according to the
 - `User::getAuthToken()` cannot be used for `cookie_token` anymore.
 - Remember me cookie token no longer stored in the `glpi_users` table. It is now stored in the `glpi_user_tokens` table.
 - `Auth::setRememberMeCookie()` signature changed. It no longer accepts an empty value to trigger the removal of the cookie.
-<<<<<<< HEAD
 - `KnowbaseItem_KnowbaseItemCategory` renamed to `KnowbaseItem_KnowbaseItem`; table `glpi_knowbaseitems_knowbaseitemcategories` renamed to `glpi_knowbaseitems_knowbaseitems` with columns `knowbaseitems_id` (child) and `knowbaseitems_id_parent` (parent).
 - The `knowbaseitemcategories_id` column of `ITILCategory` and `TaskCategory` is renamed to `knowbaseitems_id` and now references a knowledge base article.
 - `KnowbaseItem::getForCategory()` renamed to `KnowbaseItem::getChildrenArticles()`; the HL API `/Knowledge base/Category` endpoints and the `KBCategory` schema are removed.
-=======
 - `Glpi\Api\HL\Controller\AbstractController::getRawKnownSchemas()` now has an optional `$api_version` parameter to accommodate complex schema differences between API versions.
->>>>>>> 1273f007b9 (initialize hlapi v3)
 
 #### Deprecated
 - Usage of coma separated list of fields in `ORDER BY` clause.
