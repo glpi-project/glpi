@@ -2106,6 +2106,8 @@ TWIG,
      **/
     public static function getCheckAllAsCheckbox($container_id, $rand = null)
     {
+        $container_id = self::cleanId($container_id);
+
         if ($rand === null) {
             $rand = mt_rand();
         } elseif ($rand !== "__RAND__") {
@@ -2118,7 +2120,7 @@ TWIG,
                       onclick= \"if ( checkAsCheckboxes(this, '" . htmlescape(jsescape($container_id)) . "', '.massive_action_checkbox')) {return true;}\">";
 
         // permit to shift select checkboxes
-        $out .= Html::scriptBlock("\$(function() {\$('#" . jsescape(addcslashes($container_id, '\\')) . " input[type=\"checkbox\"]').shiftSelectable();});");
+        $out .= Html::scriptBlock("\$(function() {\$('#" . jsescape($container_id) . " input[type=\"checkbox\"]').shiftSelectable();});");
 
         return $out;
     }
@@ -2157,7 +2159,7 @@ TWIG,
         ) {
             // Filtering on the container !
             if (!empty($params['container_id'])) {
-                $criterion = '#' . addcslashes($params['container_id'], '\\') . ' ';
+                $criterion = '#' . self::cleanId($params['container_id']) . ' ';
             } else {
                 $criterion = '';
             }
@@ -2375,7 +2377,7 @@ TWIG,
             $name = 'massaction_' . mt_rand();
         }
 
-        $name = htmlescape($name);
+        $name = htmlescape(self::cleanId($name));
 
         return  "<form name='$name' id='$name' method='post'
                action='" . htmlescape($CFG_GLPI["root_doc"]) . "/front/massiveaction.php'
@@ -2513,7 +2515,7 @@ TWIG,
                 if (!empty($p['tag_to_send'])) {
                     $js_modal_fields  = "var items = $('";
                     if (!empty($p['container'])) {
-                        $js_modal_fields .= '#' . jsescape(addcslashes($p['container'], '\\')) . ' ';
+                        $js_modal_fields .= '#' . jsescape(self::cleanId($p['container'])) . ' ';
                     }
                     $js_modal_fields .= "[data-glpicore-ma-tags~=" . jsescape($p['tag_to_send']) . "]').each(function( index ) {
                   fields[$(this).attr('name')] = $(this).val();
@@ -4452,7 +4454,7 @@ JAVASCRIPT
      **/
     public static function cleanId($id)
     {
-        return str_replace(['[',']'], '_', $id);
+        return str_replace('\\', '', str_replace(['[',']'], '_', $id));
     }
 
     /**

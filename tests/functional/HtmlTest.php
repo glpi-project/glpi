@@ -37,6 +37,7 @@ namespace tests\units;
 use Glpi\Tests\DbTestCase;
 use Glpi\Toolbox\FrontEnd;
 use GlpiPlugin\Tester\MyPsr4Class;
+use Html;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
@@ -1590,19 +1591,20 @@ SCSS,
     public function testMassiveActionContainerIdEscaping(): void
     {
         $container_id = 'massGlpiPlugin\Samlsso\RuleSamlCollection1891979255';
+        $cleaned_id = Html::cleanId($container_id);
 
         // Test getCheckAllAsCheckbox
-        $html = \Html::getCheckAllAsCheckbox($container_id);
-        $this->assertStringContainsString(jsescape(addcslashes($container_id, '\\')), $html);
+        $html = Html::getCheckAllAsCheckbox($container_id);
+        $this->assertStringContainsString(jsescape($cleaned_id), $html);
 
         // Test getCriterionForMassiveCheckboxes
-        $html = \Html::getCriterionForMassiveCheckboxes(['container_id' => $container_id]);
-        $this->assertStringContainsString('#' . addcslashes($container_id, '\\'), $html);
+        $html = Html::getCriterionForMassiveCheckboxes(['container_id' => $container_id]);
+        $this->assertStringContainsString('#' . $cleaned_id, $html);
 
         // Test showMassiveActions
         ob_start();
-        \Html::showMassiveActions(['container' => $container_id, 'forcecreate' => true, 'tag_to_send' => 'common']);
+        Html::showMassiveActions(['container' => $container_id, 'forcecreate' => true, 'tag_to_send' => 'common']);
         $html = ob_get_clean();
-        $this->assertStringContainsString('#' . jsescape(addcslashes($container_id, '\\')), $html);
+        $this->assertStringContainsString('#' . jsescape($cleaned_id), $html);
     }
 }
