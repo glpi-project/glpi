@@ -86,6 +86,7 @@
                             required                : true,
                             default_itemtype        : item.fields['itemtype_main']|default(''),
                             default_items_id        : item.fields['items_id_main']|default(0),
+                            rand                    : rand,
                         }
                     ) }}
 
@@ -101,7 +102,20 @@
                             display_emptychoice     : false,
                             default_itemtype        : item.fields['itemtype_asset']|default(''),
                             default_items_id        : item.fields['items_id_asset']|default(0),
+                            rand                    : rand,
                         }
+                    ) }}
+
+                    {{ fields.dropdownArrayField(
+                        'items_devicepowersupplies_id',
+                        item.fields['items_devicepowersupplies_id']|default(0),
+                        power_supplies,
+                        _n('Power supply', 'Power supplies', 1),
+                        field_options|merge({
+                            display_emptychoice: true,
+                            required: power_supplies is not empty,
+                            container_id: 'show_power_supply_field' ~ rand,
+                        })
                     ) }}
 
                     {{ fields.textareaField(
@@ -127,3 +141,24 @@
       </div>
    {% endif %}
 </div>
+
+<script>
+   $(function() {
+      const power_supply_container = '#show_power_supply_field{{ rand }}';
+      const asset_itemtype = '#dropdown_itemtype_asset{{ rand }}';
+      const asset_id = '#dropdown_items_id_asset{{ rand }}';
+
+      const refreshPowerSupplies = (clear_asset = false) => {
+         $.post('{{ path('/ajax/dropdownPowerSupplies.php')|e('js') }}', {
+            itemtype: $(asset_itemtype).val() ?? '',
+            items_id: clear_asset ? 0 : ($(asset_id).val() ?? 0),
+            rand: {{ rand }},
+         }).done((html) => {
+            $(power_supply_container).html(html);
+         });
+      };
+
+      $(document).on('change', asset_itemtype, () => refreshPowerSupplies(true));
+      $(document).on('change', asset_id, () => refreshPowerSupplies(false));
+   });
+</script>

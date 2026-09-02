@@ -70,6 +70,12 @@ $migration->addField(
 
 $migration->addField(
     'glpi_plugs',
+    'items_devicepowersupplies_id',
+    'fkey'
+);
+
+$migration->addField(
+    'glpi_plugs',
     'entities_id',
     'fkey'
 );
@@ -82,6 +88,7 @@ $migration->addField(
 
 $migration->addKey('glpi_plugs', ['itemtype_asset', 'items_id_asset'], 'asset_item');
 $migration->addKey('glpi_plugs', ['itemtype_main', 'items_id_main'], 'main_item');
+$migration->addKey('glpi_plugs', 'items_devicepowersupplies_id');
 $migration->addKey('glpi_plugs', 'entities_id');
 $migration->addKey('glpi_plugs', 'is_recursive');
 
